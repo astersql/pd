@@ -1,0 +1,21 @@
+[package]
+name = "astersql-pd-storage"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[lib]
+path = "lib.rs"
+
+[dependencies]
+async-trait.workspace = true
+thiserror.workspace = true
+etcd-client.workspace = true
+tokio.workspace = true
+tokio-util.workspace = true
+tonic.workspace = true
+
+[[test]]
+name = "etcd_contract"
+path = "etcd_store_test.rs"
