@@ -49,6 +49,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "astersql-pd-compat-tests"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-proto",
+ "prost",
+ "serde_json",
+]
+
+[[package]]
 name = "astersql-pd-proto"
 version = "0.1.0"
 dependencies = [

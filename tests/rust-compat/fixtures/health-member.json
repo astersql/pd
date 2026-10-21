@@ -1,0 +1,6 @@
+{
+  "health_status": 200,
+  "members_status": 200,
+  "config_status": 200,
+  "config": {"schedule.max-snapshot-count": 64, "replication.max-replicas": 3}
+}

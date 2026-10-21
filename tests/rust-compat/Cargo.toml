@@ -1,0 +1,23 @@
+[package]
+name = "astersql-pd-compat-tests"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[lib]
+path = "lib.rs"
+
+[dependencies]
+serde_json.workspace = true
+prost.workspace = true
+astersql-pd-proto.workspace = true
+
+[[test]]
+name = "health_member"
+path = "health_member_test.rs"
+
+[[bin]]
+name = "pd-compat-different-service"
+path = "fixtures/different_service.rs"
+test = false
