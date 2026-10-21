@@ -1,0 +1,3 @@
+# CARGO_TARGET_DIR is supplied by the caller after claiming a shared Rust slot.
+[term]
+color = "auto"

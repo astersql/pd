@@ -37,3 +37,6 @@ tmp*
 !.claude/
 .claude/*
 !.claude/skills
+
+# Shared Rust build slots and locks
+/target/

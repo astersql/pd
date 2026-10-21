@@ -1,0 +1,18 @@
+[package]
+name = "astersql-pd-cmd-pd-server"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[lib]
+path = "lib.rs"
+
+[[bin]]
+name = "pd-server"
+path = "bin_main.rs"
+
+[dependencies]
+astersql-pd-runtime.workspace = true
+tokio.workspace = true
+tokio-util.workspace = true
