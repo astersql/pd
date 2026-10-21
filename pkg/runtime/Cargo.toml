@@ -11,3 +11,17 @@ path = "lib.rs"
 [dependencies]
 tokio.workspace = true
 tokio-util.workspace = true
+astersql-pd-server.workspace = true
+astersql-pd-storage.workspace = true
+astersql-pd-member.workspace = true
+astersql-pd-id.workspace = true
+astersql-pd-tso.workspace = true
+prometheus.workspace = true
+async-trait.workspace = true
+prost.workspace = true
+astersql-pd-proto.workspace = true
+axum.workspace = true
+[dev-dependencies]
+serde_json.workspace = true
+tonic.workspace = true
+tokio-stream.workspace = true

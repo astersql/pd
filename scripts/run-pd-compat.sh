@@ -2,10 +2,11 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 mode=go
+cases=()
 while (($#)); do
   case "$1" in
     --mode) mode="$2"; shift 2 ;;
-    --case) [[ "$2" == health-member ]] || { echo 'unknown case' >&2; exit 2; }; shift 2 ;;
+    --case) [[ "$2" == health-member || "$2" == tso ]] || { echo 'unknown case' >&2; exit 2; }; cases+=("$2"); shift 2 ;;
     *) echo "unknown argument: $1" >&2; exit 2 ;;
   esac
 done
@@ -27,4 +28,14 @@ if [[ "$mode" != rust && -z "${PD_COMPAT_GO_BIN:-}" ]]; then
   export PD_COMPAT_GO_BIN="$PWD/bin/pd-server"
 fi
 export PD_COMPAT_MODE="$mode"
-cargo test -p astersql-pd-compat-tests health_member_processes -- --nocapture
+if [[ "$mode" != go && -z "${PD_COMPAT_RUST_BIN:-}" ]]; then
+  cargo build --locked -p astersql-pd-cmd-pd-server --bin pd-server
+  export PD_COMPAT_RUST_BIN="$CARGO_TARGET_DIR/debug/pd-server"
+fi
+((${#cases[@]})) || cases=(health-member tso)
+for scenario in "${cases[@]}"; do
+  case "$scenario" in
+    health-member) cargo test --locked -p astersql-pd-compat-tests --test health_member health_member_processes -- --nocapture ;;
+    tso) cargo test --locked -p astersql-pd-compat-tests --test tso tso_processes -- --ignored --nocapture ;;
+  esac
+done

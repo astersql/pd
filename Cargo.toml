@@ -1,5 +1,5 @@
 [workspace]
-members = ["pkg/runtime", "cmd/pd-server", "pkg/proto", "tests/rust-compat", "pkg/storage", "pkg/member", "pkg/id", "pkg/tso"]
+members = ["pkg/server", "pkg/runtime", "cmd/pd-server", "pkg/proto", "tests/rust-compat", "pkg/storage", "pkg/member", "pkg/id", "pkg/tso"]
 resolver = "3"
 
 [workspace.package]
@@ -8,6 +8,12 @@ rust-version = "1.85"
 license = "Apache-2.0"
 
 [workspace.dependencies]
+astersql-pd-server = { path = "pkg/server" }
+axum = "=0.8.9"
+futures-util = "=0.3.34"
+tokio-stream = "=0.1.19"
+prometheus = { version = "=0.14.0", default-features = false }
+
 astersql-pd-tso = { path = "pkg/tso" }
 astersql-pd-member = { path = "pkg/member" }
 astersql-pd-id = { path = "pkg/id" }
@@ -26,7 +32,7 @@ sha2 = "=0.10.9"
 zip = { version = "=2.4.2", default-features = false, features = ["deflate"] }
 astersql-pd-runtime = { path = "pkg/runtime" }
 astersql-pd-proto = { path = "pkg/proto" }
-tokio = { version = "=1.48.0", features = ["rt-multi-thread", "macros", "signal", "sync", "time"] }
+tokio = { version = "=1.48.0", features = ["rt-multi-thread", "macros", "net", "signal", "sync", "time"] }
 tokio-util = { version = "=0.7.17", features = ["rt"] }
 
 [package]

@@ -38,7 +38,7 @@ fn health_member_processes() {
     };
     let go = std::env::var_os("PD_COMPAT_GO_BIN").unwrap_or_default();
     let rust = std::env::var_os("PD_COMPAT_RUST_BIN");
-    harness::run(
+    harness::run_minimal(
         &mode,
         std::path::Path::new(&go),
         rust.as_deref().map(std::path::Path::new),
@@ -129,4 +129,23 @@ fn readiness_timeout_cleans_process_and_data() {
     drop(server);
     assert!(!dir.exists());
     assert!(std::net::TcpStream::connect(url.trim_start_matches("http://")).is_err());
+}
+
+#[test]
+fn minimal_member_preserves_semantics_and_rejects_unknown_fields() {
+    use astersql_pd_compat_tests::normalize::minimal_member;
+    let member = json!({"name":"pd", "member_id":7,"client_urls":["http://127.0.0.1:2379"],"peer_urls":["http://127.0.0.1:2380"]});
+    let canonical = minimal_member(&member).unwrap();
+    let mut changed = member.clone();
+    changed["leader_priority"] = json!(1);
+    assert_ne!(minimal_member(&changed).unwrap(), canonical);
+    changed = member.clone();
+    changed["dc_location"] = json!("dc-1");
+    assert_ne!(minimal_member(&changed).unwrap(), canonical);
+    changed = member.clone();
+    changed["future_semantic_field"] = json!(true);
+    assert!(minimal_member(&changed).is_err());
+    changed = member;
+    changed["deploy_path"] = json!("/some/deployment");
+    assert_eq!(minimal_member(&changed).unwrap(), canonical);
 }

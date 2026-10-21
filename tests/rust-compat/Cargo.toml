@@ -9,6 +9,10 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
+tokio.workspace = true
+tokio-stream.workspace = true
+tonic.workspace = true
+astersql-pd-storage.workspace = true
 serde_json.workspace = true
 prost.workspace = true
 astersql-pd-proto.workspace = true
@@ -21,3 +25,7 @@ path = "health_member_test.rs"
 name = "pd-compat-different-service"
 path = "fixtures/different_service.rs"
 test = false
+
+[[test]]
+name = "tso"
+path = "tso_test.rs"

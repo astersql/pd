@@ -84,3 +84,34 @@ pub fn tso(bytes: &[u8], physical_origin: i64) -> Result<Value, prost::DecodeErr
         "timestamp":response.timestamp.map(|t|serde_json::json!({"physical": i128::from(t.physical)-i128::from(physical_origin),"logical":t.logical,"suffix_bits":t.suffix_bits}))
     }))
 }
+
+/// Canonicalize only absent protobuf defaults and explicit build/deployment metadata.
+/// Unknown fields fail closed so a new semantic field cannot silently escape the MVP comparison.
+pub fn minimal_member(value: &Value) -> Result<Value, String> {
+    let mut member = value.as_object().ok_or("member must be an object")?.clone();
+    for key in member.keys() {
+        if ![
+            "name",
+            "member_id",
+            "client_urls",
+            "peer_urls",
+            "leader_priority",
+            "dc_location",
+            "binary_version",
+            "git_hash",
+            "deploy_path",
+        ]
+        .contains(&key.as_str())
+        {
+            return Err(format!("unreviewed member field: {key}"));
+        }
+    }
+    for key in ["binary_version", "git_hash", "deploy_path"] {
+        member.remove(key);
+    }
+    member
+        .entry("leader_priority")
+        .or_insert(serde_json::json!(0));
+    member.entry("dc_location").or_insert(serde_json::json!(""));
+    Ok(Value::Object(member))
+}

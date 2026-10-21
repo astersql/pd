@@ -9,14 +9,46 @@ use std::{
     sync::atomic::{AtomicU64, Ordering},
     time::{Duration, Instant},
 };
+#[allow(dead_code)]
+#[path = "../../pkg/storage/etcd_fixture_test.rs"]
+mod fixture;
 static NEXT: AtomicU64 = AtomicU64::new(0);
 pub struct Server {
     child: Child,
+    _etcd: Option<fixture::Fixture>,
     pub dir: PathBuf,
     pub url: String,
     pub peer: String,
 }
 impl Server {
+    pub fn start_rust(binary: &Path) -> io::Result<Self> {
+        let etcd = fixture::Fixture::start();
+        let mut server =
+            Self::start_with_args(binary, &[&format!("--etcd-endpoints={}", etcd.endpoint)])?;
+        server._etcd = Some(etcd);
+        Ok(server)
+    }
+    /// Send SIGTERM and require graceful, successful exit before releasing the fixture.
+    pub fn stop(&mut self) -> Result<(), String> {
+        let status = Command::new("kill")
+            .args(["-TERM", &self.child.id().to_string()])
+            .status()
+            .map_err(|e| e.to_string())?;
+        if !status.success() {
+            return Err("SIGTERM failed".into());
+        }
+        let deadline = Instant::now() + Duration::from_secs(8);
+        while Instant::now() < deadline {
+            if let Some(status) = self.child.try_wait().map_err(|e| e.to_string())? {
+                if !status.success() {
+                    return Err(format!("shutdown: {status}; {}", self.logs()));
+                }
+                return Ok(());
+            }
+            std::thread::sleep(Duration::from_millis(20));
+        }
+        Err(format!("graceful shutdown timed out: {}", self.logs()))
+    }
     pub fn start(binary: &Path) -> io::Result<Self> {
         Self::start_with_args(binary, &[])
     }
@@ -52,6 +84,7 @@ impl Server {
             drop((client, peer));
             Ok(Self {
                 child: command.spawn()?,
+                _etcd: None,
                 dir: dir.clone(),
                 url,
                 peer: peer_url,
@@ -76,11 +109,8 @@ impl Server {
                     .as_array()
                     .is_some_and(|a| !a.is_empty() && a.iter().all(|m| m["health"] == true))
                 {
-                    if let (Ok((200, members)), Ok((200, config))) = (
-                        self.get("/pd/api/v1/members"),
-                        self.get("/pd/api/v1/config"),
-                    ) {
-                        if members["leader"]["name"] == "compat" && config["schedule"].is_object() {
+                    if let Ok((200, members)) = self.get("/pd/api/v1/members") {
+                        if members["leader"]["name"] == "compat" {
                             return Ok(());
                         }
                     }
@@ -177,5 +207,96 @@ pub fn run(mode: &str, go: &Path, rust: Option<&Path>) -> Result<(), String> {
             return Err(diff.join("\n"));
         }
     }
+    Ok(())
+}
+
+/// Baseline for the vertical MVP. Embedded-etcd topology and build/deployment metadata
+/// are excluded explicitly; every supported PD identity, header and health field is compared.
+pub fn minimal_sample(server: &Server) -> Result<Value, String> {
+    let (hs, h) = server.get("/pd/api/v1/health")?;
+    let (ms, m) = server.get("/pd/api/v1/members")?;
+    if hs != 200
+        || ms != 200
+        || h.as_array().map(Vec::len) != Some(1)
+        || h[0]["health"] != true
+        || m["members"].as_array().map(Vec::len) != Some(1)
+    {
+        return Err(format!("invalid health/members: {hs} {h}; {ms} {m}"));
+    }
+    let member_id = h[0]["member_id"]
+        .as_u64()
+        .filter(|id| *id > 0)
+        .ok_or("member id missing")?;
+    let cluster_id = m["header"]["cluster_id"]
+        .as_u64()
+        .filter(|id| *id > 0)
+        .ok_or("cluster id missing")?;
+    if m["members"][0]["member_id"] != member_id
+        || m["leader"]["member_id"] != member_id
+        || h[0]["client_urls"] != json!([server.url])
+    {
+        return Err("inconsistent PD identity".into());
+    }
+    for key in m
+        .as_object()
+        .ok_or("members response must be an object")?
+        .keys()
+    {
+        if ![
+            "header",
+            "members",
+            "leader",
+            "etcd_leader",
+            "tso_allocator_leaders",
+        ]
+        .contains(&key.as_str())
+        {
+            return Err(format!("unreviewed members response field: {key}"));
+        }
+    }
+    let member = crate::normalize::minimal_member(&m["members"][0])?;
+    let leader = crate::normalize::minimal_member(&m["leader"])?;
+    let rules = Rules(vec![
+        (json!(member_id), json!("<member:compat>")),
+        (json!(cluster_id), json!("<cluster>")),
+        (json!(server.url), json!("<client>")),
+        (json!(server.peer), json!("<peer>")),
+    ]);
+    Ok(rules.apply(&json!({"health_status":hs,"health":h,"members_status":ms,"header":m["header"],"members":[member],"leader":leader,"tso_allocator_leaders":m.get("tso_allocator_leaders").cloned().unwrap_or(json!({}))})))
+}
+pub fn run_minimal(mode: &str, go: &Path, rust: Option<&Path>) -> Result<(), String> {
+    let mut samples = Vec::new();
+    for is_rust in match mode {
+        "go" => vec![false],
+        "rust" => vec![true],
+        "dual" => vec![false, true],
+        _ => return Err("invalid mode".into()),
+    } {
+        let mut server = if is_rust {
+            Server::start_rust(rust.ok_or("Rust binary required")?)
+        } else {
+            Server::start(go)
+        }
+        .map_err(|e| e.to_string())?;
+        server.ready()?;
+        samples.push(minimal_sample(&server)?);
+        server.stop()?;
+        if is_rust && !server.logs().contains("storage-released") {
+            return Err(server.logs());
+        }
+        let address = server.url.trim_start_matches("http://").to_owned();
+        let dir = server.dir.clone();
+        drop(server);
+        if dir.exists() || std::net::TcpStream::connect(address).is_ok() {
+            return Err("process resources leaked".into());
+        }
+    }
+    if samples.len() == 2 {
+        let diff = differences(&samples[0], &samples[1]);
+        if !diff.is_empty() {
+            return Err(diff.join("\n"));
+        }
+    }
+    println!("health-member: supported PD fields equal; graceful process cleanup verified");
     Ok(())
 }

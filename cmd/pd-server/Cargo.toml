@@ -16,3 +16,7 @@ path = "bin_main.rs"
 astersql-pd-runtime.workspace = true
 tokio.workspace = true
 tokio-util.workspace = true
+astersql-pd-storage.workspace = true
+prometheus.workspace = true
+[dev-dependencies]
+serde_json.workspace = true

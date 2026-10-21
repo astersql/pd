@@ -64,6 +64,7 @@ fn main() {
     let mut config = tonic_prost_build::Config::new();
     config.protoc_executable(protoc_bin_vendored::protoc_bin_path().unwrap());
     tonic_prost_build::configure()
+        .generate_default_stubs(true)
         .include_file("kvproto.rs")
         .file_descriptor_set_path(out.join("kvproto.bin"))
         .compile_with_config(
