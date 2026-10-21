@@ -1,0 +1,6 @@
+{
+  "concurrent": [1000, 320],
+  "rollback": [1000, 321],
+  "before_overflow": [1000, 262143],
+  "overflow": [1001, 2]
+}

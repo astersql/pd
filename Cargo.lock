@@ -114,6 +114,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "astersql-pd-tso"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-member",
+ "astersql-pd-storage",
+ "serde_json",
+ "thiserror",
+ "tokio",
+ "tokio-util",
+]
+
+[[package]]
 name = "async-trait"
 version = "0.1.92"
 source = "registry+https://github.com/rust-lang/crates.io-index"

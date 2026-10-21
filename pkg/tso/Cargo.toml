@@ -1,0 +1,19 @@
+[package]
+name = "astersql-pd-tso"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+[lib]
+path = "lib.rs"
+[dependencies]
+astersql-pd-storage.workspace = true
+astersql-pd-member.workspace = true
+thiserror.workspace = true
+tokio.workspace = true
+tokio-util.workspace = true
+[dev-dependencies]
+serde_json.workspace = true
+[[test]]
+name = "etcd_behavior"
+path = "etcd_behavior_test.rs"

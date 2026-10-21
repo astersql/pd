@@ -13,7 +13,7 @@ use std::{
 pub struct Fixture {
     child: Child,
     directory: PathBuf,
-    endpoint: String,
+    pub endpoint: String,
 }
 impl Fixture {
     pub fn start() -> Self {
