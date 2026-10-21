@@ -1,0 +1,21 @@
+[package]
+name = "astersql-pd-raft-prototype"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+[lib]
+path = "lib.rs"
+[features]
+default = []
+prototype = ["dep:raft", "dep:protobuf", "dep:slog", "dep:serde_json", "dep:sha2"]
+[dependencies]
+raft = { workspace = true, optional = true }
+protobuf = { workspace = true, optional = true }
+slog = { workspace = true, optional = true }
+serde_json = { workspace = true, optional = true }
+sha2 = { workspace = true, optional = true }
+[[test]]
+name = "cluster_test"
+path = "cluster_test.rs"
+required-features = ["prototype"]
