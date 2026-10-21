@@ -181,3 +181,15 @@ Reusable agent skills live under `.agents/skills/`. Each skill has a `SKILL.md` 
 - Keep error handling consistent with `pingcap/errors` and errcode usage.
 - Avoid new global state; keep concurrency safe; close resources.
 - Leave workspace clean (no stray tmp, coverage, or generated dashboard files).
+
+## Rust Migration (Rust files only)
+
+- Architecture: [ADR-001](docs/rust/architecture.md); dependencies: [baseline](docs/rust/dependencies.md); workflow: [porting guide](docs/rust/porting-guide.md).
+- Use Rust 2024, resolver 3, centralized workspace dependencies and a committed Cargo.lock once the workspace is introduced. These rules do not imply a working Rust service exists today.
+- Keep Rust beside the corresponding Go package; one canonical `astersql-pd-*` crate per stable package. The root facade only re-exports APIs.
+- Follow library-first boundaries: domain types stay independent of protobuf and transports; adapters perform conversions. Libraries must not exit the process, install global signals/subscribers, or create private Tokio runtimes.
+- Keep production tests in separate `*_test.rs` files with explicit module/target registration. Record Go oracle behavior and failure evidence before implementation; require real behavior and relevant differential/fault tests before completion.
+- Once Cargo targets exist, run `cargo metadata --format-version 1 --no-deps`, `cargo fmt --all -- --check`, `cargo check --workspace --locked`, and `cargo test --workspace --locked`, plus task-specific checks. Follow the workspace rustfmt configuration.
+- Add `// Copyright 2026 AsterSQL.` to usable ported Rust source; do not mark mechanical translations or stubs as complete. Keep generated-source provenance explicit.
+- Keep MetaStore backend-neutral; local production persistence awaits durability evidence. Follow ADR-001 for protocol pinning, embedding constraints and prohibited interop routes.
+- Go build, formatting and failpoint rules remain unchanged for Go files. Documentation-only tasks validate links, commands and diffs without requiring Go package tests.
