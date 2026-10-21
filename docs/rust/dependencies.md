@@ -6,7 +6,7 @@
 
 | 当前 Go 依赖/能力 | 本地基线 | Rust 方向与约束 |
 | --- | --- | --- |
-| kvproto | 两模块均为 `v0.0.0-20261016101550-f8ad079c8e98` | AsterSQL kvproto fork 增加 prost/tonic 生成能力；固定可追溯 tag/commit |
+| kvproto | 两模块均为 `v0.0.0-20261016101550-f8ad079c8e98` | 当前精确消费 Go 同源 commit，在 OUT_DIR 生成 prost/tonic；未来 fork 切换须通过同一验收 |
 | gogo/protobuf、grpc | v1.3.2、v1.82.1 | prost、tonic、tower；服务端仅使用新协议栈 |
 | Gin、Gorilla、Negroni、cmux | v1.11.0、v1.7.4、v3.1.1、v0.1.5 | axum、hyper、tower；验证同监听器路由与探针 |
 | etcd server/client/api | v3.5.15 | MetaStore + EtcdMetaStore；etcd-client 仅作过渡适配 |
@@ -28,8 +28,10 @@ Rust workspace 任务负责确认相互兼容的精确版本、features、工具
 统一在 workspace.dependencies 管理并提交 Cargo.lock；本任务不凭空指定 crate 版本。
 协议任务负责记录 fork URL、不可变 commit、proto 来源、生成工具版本和生成命令，
 审核字段编号、service、流和序列化兼容性，不允许跟随浮动分支。
-当前未核验 AsterSQL fork 的版本或生成能力，不认定与本仓库已一致；协议任务须比较
-本表 Go commit 与目标 fork，列出并解决漂移后再锁定。已有 Go client 必须继续可用。
+AsterSQL fork 的 `v0.0.2-aster.20260929` 指向
+`0e902bac627b0f2ef8955f2a28bf39838ec1b16c`，仍使用 grpcio/protobuf 2.8，
+其 prost 0.9 feature 也依赖 grpcio，不能直接用于新服务端。
+按任务继续执行授权，现采用以下同源生成策略，不等待 fork 发布；已有 Go client 继续可用。
 
 HTTP/gRPC/TLS 的依赖特性应共同审查，避免引入第二套 protobuf、TLS 或异步运行时。
 后续用 cargo metadata 和依赖树验证同一 prometheus 版本，不能仅检查 manifest。
@@ -47,3 +49,41 @@ HTTP/gRPC/TLS 的依赖特性应共同审查，避免引入第二套 protobuf、
 计划中的 232 个 failpoint 是迁移盘点基线，不是本表重新核实的现时数量。
 后续须扫描全部生产目录中的 Inject/InjectCall/其他注入形式，为每个点记录源码位置、
 触发时机、故障语义、Rust 对应点及测试；新增/删除点要说明差异，不能靠数量认定覆盖。
+
+## 当前协议生成基线
+
+`astersql-pd-proto` 固定 pingcap/kvproto commit
+`f8ad079c8e9812ed5900b0c12b5f1d97171464c4`，与两个 Go 模块一致。
+构建使用 Go 下载 `v0.0.0-20261016101550-f8ad079c8e98` 的模块 ZIP，校验完整归档
+SHA-256 `aff09d074d493874bfd7e3e63c766a8d93f42901ff235dde2d2ced0c7f2a615e`，
+然后仅在 Cargo OUT_DIR 解压与生成，不信任可编辑的模块解压缓存。
+Go go.sum 中该版本的内容摘要为 `h1:ymP9CnhW3cNZLg5cea2ZgqCSTG91FrQts2e6HnULBu8=`。
+不提交第三方源码、生成副本或 path patch；Cargo.lock 固定生成工具传递依赖。
+构建需要 Go（遵循仓库 Go 版本）及首次可访问的 GOPROXY/Go 模块缓存，
+无需系统 protoc；使用 protoc-bin-vendored 3.2.0 内的 protoc。
+直接版本集中固定：prost/prost-types 0.14.1、tonic/tonic-prost/tonic-prost-build 0.14.2。
+领域层仍禁止依赖协议类型；未来切换 fork 时须重新核验来源、摘要和 wire fixtures。
+
+生成入口为 `pkg/proto/build.rs`。覆盖生产注册的 PD、Keyspace、Diagnostics、
+ResourceManager、TSO、Scheduling、MetaStorage、Router 服务及传递消息依赖；
+标准 gRPC Health 不属于 kvproto。注册位置见 `server/server.go`、
+`pkg/mcs/{tso,scheduling,metastorage,router,resourcemanager}/server/grpc_service.go`
+和 `pkg/mcs/utils/util.go`。PD 主节点条件注册 ResourceManager。
+
+`go run ./scripts/rust-proto-oracle` 使用当前 Go 模块的真实 gogo 序列化器输出
+`pkg/proto/wire-fixtures.json`：RequestHeader、RegionHeartbeatRequest、TsoRequest、
+TsoResponse、GetMembersResponse、显式零值 oneof、错误枚举。Rust 测试验证字段语义与
+逐字节重新编码；descriptor 测试检查全部服务、关键字段号和双向流方法。
+这些是协议基线测试，不代表完整 Go/Rust 服务行为差分已完成。
+
+先按任务规则领取共享槽位并设置绝对 CARGO_TARGET_DIR，再执行：
+
+```sh
+cargo test --locked -p astersql-pd-proto --lib -- --nocapture
+cargo tree --locked -p astersql-pd-proto -d
+./scripts/check-rust-proto-clean.sh
+```
+
+漂移脚本比较 Go fixtures、两次真实生成的 Rust 文件及 descriptor 哈希，检查协议依赖
+单版本且没有 protobuf/grpcio/OpenSSL，并要求对应 tracked 文件无 unstaged diff。
+新基线审查暂存后可运行脚本；脚本不自行领取或释放调用者持有的 Cargo 槽位。
