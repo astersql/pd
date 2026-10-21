@@ -61,7 +61,12 @@ func main() {
 		}
 	}
 	publish := func(name, value string) {
-		if err := os.WriteFile(filepath.Join(dir, name), []byte(value), 0600); err != nil {
+		// Publish only complete contents: readers use file existence as readiness.
+		temporary := filepath.Join(dir, name+".tmp")
+		if err := os.WriteFile(temporary, []byte(value), 0600); err != nil {
+			panic(err)
+		}
+		if err := os.Rename(temporary, filepath.Join(dir, name)); err != nil {
 			panic(err)
 		}
 	}

@@ -58,6 +58,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "astersql-pd-id"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-member",
+ "astersql-pd-storage",
+ "thiserror",
+ "tokio",
+ "tokio-util",
+]
+
+[[package]]
+name = "astersql-pd-member"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-storage",
+ "thiserror",
+ "tokio",
+ "tokio-util",
+]
+
+[[package]]
 name = "astersql-pd-proto"
 version = "0.1.0"
 dependencies = [

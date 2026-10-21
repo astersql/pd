@@ -1,5 +1,5 @@
 [workspace]
-members = ["pkg/runtime", "cmd/pd-server", "pkg/proto", "tests/rust-compat", "pkg/storage"]
+members = ["pkg/runtime", "cmd/pd-server", "pkg/proto", "tests/rust-compat", "pkg/storage", "pkg/member", "pkg/id"]
 resolver = "3"
 
 [workspace.package]
@@ -8,6 +8,8 @@ rust-version = "1.85"
 license = "Apache-2.0"
 
 [workspace.dependencies]
+astersql-pd-member = { path = "pkg/member" }
+astersql-pd-id = { path = "pkg/id" }
 async-trait = "=0.1.92"
 thiserror = "=2.0.21"
 etcd-client = { version = "=0.17.0", features = ["tls", "tls-roots"] }
