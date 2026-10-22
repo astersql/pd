@@ -31,3 +31,15 @@ fn service_names_and_root() {
     assert_eq!(SCHEDULING_SERVICE_NAME, "scheduling");
     assert_eq!(ROUTER_SERVICE_NAME, "router");
 }
+
+#[test]
+fn keyspace_group_limits() {
+    let max_group_count: u32 = MAX_KEYSPACE_GROUP_COUNT;
+    let max_group_count_in_use: u32 = MAX_KEYSPACE_GROUP_COUNT_IN_USE;
+
+    assert_eq!(max_group_count, 100_000);
+    assert_eq!(max_group_count_in_use, 4_096);
+    assert!(max_group_count_in_use <= max_group_count);
+    assert_eq!(DEFAULT_KEYSPACE_GROUP_REPLICA_COUNT, 2);
+    assert_eq!(DEFAULT_KEYSPACE_GROUP_REPLICA_PRIORITY, 0);
+}

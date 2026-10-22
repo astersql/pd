@@ -53,5 +53,17 @@ pub const SCHEDULING_SERVICE_NAME: &str = "scheduling";
 /// Service name of the router server.
 pub const ROUTER_SERVICE_NAME: &str = "router";
 
+/// Maximum number of keyspace groups supported by the storage layout.
+pub const MAX_KEYSPACE_GROUP_COUNT: u32 = 100_000;
+
+/// Practical maximum number of keyspace groups in use.
+pub const MAX_KEYSPACE_GROUP_COUNT_IN_USE: u32 = 4_096;
+
+/// Default number of replicas assigned to a keyspace group.
+pub const DEFAULT_KEYSPACE_GROUP_REPLICA_COUNT: usize = 2;
+
+/// Default weighted-election priority for a keyspace group replica.
+pub const DEFAULT_KEYSPACE_GROUP_REPLICA_PRIORITY: i32 = 0;
+
 #[cfg(test)]
 mod constant_test;
