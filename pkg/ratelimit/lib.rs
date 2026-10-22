@@ -8,3 +8,8 @@ mod concurrency_test;
 #[cfg(test)]
 mod rate_limiter_test;
 pub use concurrency::{AcquireCancelled, ConcurrencyLimiter, TaskToken};
+
+mod limiter;
+pub use limiter::{Limiter, UpdateStatus};
+#[cfg(test)]
+mod limiter_test;
