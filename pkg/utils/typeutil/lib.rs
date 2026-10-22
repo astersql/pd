@@ -2,12 +2,17 @@
 
 mod comparison;
 mod conversion;
+mod duration;
 
 pub use comparison::*;
 pub use conversion::*;
+pub use duration::*;
 
 #[cfg(test)]
 mod comparison_test;
 
 #[cfg(test)]
 mod conversion_test;
+
+#[cfg(test)]
+mod duration_test;
