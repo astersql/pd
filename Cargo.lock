@@ -51,6 +51,15 @@ name = "astersql-pd-btree"
 version = "0.1.0"
 
 [[package]]
+name = "astersql-pd-cache"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-typeutil",
+ "tokio",
+ "tokio-util",
+]
+
+[[package]]
 name = "astersql-pd-cmd-pd-server"
 version = "0.1.0"
 dependencies = [
@@ -58,15 +67,6 @@ dependencies = [
  "astersql-pd-storage",
  "prometheus",
  "serde_json",
- "tokio",
- "tokio-util",
-]
-
-[[package]]
-name = "astersql-pd-cache"
-version = "0.1.0"
-dependencies = [
- "astersql-pd-typeutil",
  "tokio",
  "tokio-util",
 ]
@@ -86,6 +86,14 @@ dependencies = [
  "tokio",
  "tokio-stream",
  "tonic",
+]
+
+[[package]]
+name = "astersql-pd-core"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
 ]
 
 [[package]]

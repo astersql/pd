@@ -1,0 +1,579 @@
+[
+  {
+    "name": "role_0_witness_False",
+    "peers": [
+      {
+        "id": 1,
+        "store_id": 2,
+        "role": 0,
+        "witness": false
+      }
+    ],
+    "expected": {
+      "classes": [
+        [
+          true,
+          false,
+          true,
+          false,
+          false
+        ]
+      ],
+      "joint": false,
+      "count": 0
+    },
+    "source": {
+      "go_file": "pkg/core/peer.go",
+      "symbols": [
+        "IsVoter",
+        "IsLearner",
+        "IsVoterOrIncomingVoter",
+        "IsLearnerOrDemotingVoter",
+        "IsWitness",
+        "IsInJointState",
+        "CountInJointState"
+      ],
+      "class_order": [
+        "voter",
+        "learner",
+        "voter_or_incoming",
+        "learner_or_demoting",
+        "witness"
+      ],
+      "derivation": "For each role r: [r == 0, r == 1, r in {0,2}, r in {1,3}, witness]. Joint counts roles in {2,3}; any is count > 0. Empty input yields no classes, false and 0. Unknown 99 matches no branch; witness remains independent.",
+      "existing_test": "pkg/core/region_test.go::TestSortedEqual passes but tests sorted peer equality, not these classification branches. Classification expectations are source-derived, not claimed as existing-test differential coverage."
+    }
+  },
+  {
+    "name": "role_0_witness_True",
+    "peers": [
+      {
+        "id": 1,
+        "store_id": 2,
+        "role": 0,
+        "witness": true
+      }
+    ],
+    "expected": {
+      "classes": [
+        [
+          true,
+          false,
+          true,
+          false,
+          true
+        ]
+      ],
+      "joint": false,
+      "count": 0
+    },
+    "source": {
+      "go_file": "pkg/core/peer.go",
+      "symbols": [
+        "IsVoter",
+        "IsLearner",
+        "IsVoterOrIncomingVoter",
+        "IsLearnerOrDemotingVoter",
+        "IsWitness",
+        "IsInJointState",
+        "CountInJointState"
+      ],
+      "class_order": [
+        "voter",
+        "learner",
+        "voter_or_incoming",
+        "learner_or_demoting",
+        "witness"
+      ],
+      "derivation": "For each role r: [r == 0, r == 1, r in {0,2}, r in {1,3}, witness]. Joint counts roles in {2,3}; any is count > 0. Empty input yields no classes, false and 0. Unknown 99 matches no branch; witness remains independent.",
+      "existing_test": "pkg/core/region_test.go::TestSortedEqual passes but tests sorted peer equality, not these classification branches. Classification expectations are source-derived, not claimed as existing-test differential coverage."
+    }
+  },
+  {
+    "name": "role_1_witness_False",
+    "peers": [
+      {
+        "id": 1,
+        "store_id": 2,
+        "role": 1,
+        "witness": false
+      }
+    ],
+    "expected": {
+      "classes": [
+        [
+          false,
+          true,
+          false,
+          true,
+          false
+        ]
+      ],
+      "joint": false,
+      "count": 0
+    },
+    "source": {
+      "go_file": "pkg/core/peer.go",
+      "symbols": [
+        "IsVoter",
+        "IsLearner",
+        "IsVoterOrIncomingVoter",
+        "IsLearnerOrDemotingVoter",
+        "IsWitness",
+        "IsInJointState",
+        "CountInJointState"
+      ],
+      "class_order": [
+        "voter",
+        "learner",
+        "voter_or_incoming",
+        "learner_or_demoting",
+        "witness"
+      ],
+      "derivation": "For each role r: [r == 0, r == 1, r in {0,2}, r in {1,3}, witness]. Joint counts roles in {2,3}; any is count > 0. Empty input yields no classes, false and 0. Unknown 99 matches no branch; witness remains independent.",
+      "existing_test": "pkg/core/region_test.go::TestSortedEqual passes but tests sorted peer equality, not these classification branches. Classification expectations are source-derived, not claimed as existing-test differential coverage."
+    }
+  },
+  {
+    "name": "role_1_witness_True",
+    "peers": [
+      {
+        "id": 1,
+        "store_id": 2,
+        "role": 1,
+        "witness": true
+      }
+    ],
+    "expected": {
+      "classes": [
+        [
+          false,
+          true,
+          false,
+          true,
+          true
+        ]
+      ],
+      "joint": false,
+      "count": 0
+    },
+    "source": {
+      "go_file": "pkg/core/peer.go",
+      "symbols": [
+        "IsVoter",
+        "IsLearner",
+        "IsVoterOrIncomingVoter",
+        "IsLearnerOrDemotingVoter",
+        "IsWitness",
+        "IsInJointState",
+        "CountInJointState"
+      ],
+      "class_order": [
+        "voter",
+        "learner",
+        "voter_or_incoming",
+        "learner_or_demoting",
+        "witness"
+      ],
+      "derivation": "For each role r: [r == 0, r == 1, r in {0,2}, r in {1,3}, witness]. Joint counts roles in {2,3}; any is count > 0. Empty input yields no classes, false and 0. Unknown 99 matches no branch; witness remains independent.",
+      "existing_test": "pkg/core/region_test.go::TestSortedEqual passes but tests sorted peer equality, not these classification branches. Classification expectations are source-derived, not claimed as existing-test differential coverage."
+    }
+  },
+  {
+    "name": "role_2_witness_False",
+    "peers": [
+      {
+        "id": 1,
+        "store_id": 2,
+        "role": 2,
+        "witness": false
+      }
+    ],
+    "expected": {
+      "classes": [
+        [
+          false,
+          false,
+          true,
+          false,
+          false
+        ]
+      ],
+      "joint": true,
+      "count": 1
+    },
+    "source": {
+      "go_file": "pkg/core/peer.go",
+      "symbols": [
+        "IsVoter",
+        "IsLearner",
+        "IsVoterOrIncomingVoter",
+        "IsLearnerOrDemotingVoter",
+        "IsWitness",
+        "IsInJointState",
+        "CountInJointState"
+      ],
+      "class_order": [
+        "voter",
+        "learner",
+        "voter_or_incoming",
+        "learner_or_demoting",
+        "witness"
+      ],
+      "derivation": "For each role r: [r == 0, r == 1, r in {0,2}, r in {1,3}, witness]. Joint counts roles in {2,3}; any is count > 0. Empty input yields no classes, false and 0. Unknown 99 matches no branch; witness remains independent.",
+      "existing_test": "pkg/core/region_test.go::TestSortedEqual passes but tests sorted peer equality, not these classification branches. Classification expectations are source-derived, not claimed as existing-test differential coverage."
+    }
+  },
+  {
+    "name": "role_2_witness_True",
+    "peers": [
+      {
+        "id": 1,
+        "store_id": 2,
+        "role": 2,
+        "witness": true
+      }
+    ],
+    "expected": {
+      "classes": [
+        [
+          false,
+          false,
+          true,
+          false,
+          true
+        ]
+      ],
+      "joint": true,
+      "count": 1
+    },
+    "source": {
+      "go_file": "pkg/core/peer.go",
+      "symbols": [
+        "IsVoter",
+        "IsLearner",
+        "IsVoterOrIncomingVoter",
+        "IsLearnerOrDemotingVoter",
+        "IsWitness",
+        "IsInJointState",
+        "CountInJointState"
+      ],
+      "class_order": [
+        "voter",
+        "learner",
+        "voter_or_incoming",
+        "learner_or_demoting",
+        "witness"
+      ],
+      "derivation": "For each role r: [r == 0, r == 1, r in {0,2}, r in {1,3}, witness]. Joint counts roles in {2,3}; any is count > 0. Empty input yields no classes, false and 0. Unknown 99 matches no branch; witness remains independent.",
+      "existing_test": "pkg/core/region_test.go::TestSortedEqual passes but tests sorted peer equality, not these classification branches. Classification expectations are source-derived, not claimed as existing-test differential coverage."
+    }
+  },
+  {
+    "name": "role_3_witness_False",
+    "peers": [
+      {
+        "id": 1,
+        "store_id": 2,
+        "role": 3,
+        "witness": false
+      }
+    ],
+    "expected": {
+      "classes": [
+        [
+          false,
+          false,
+          false,
+          true,
+          false
+        ]
+      ],
+      "joint": true,
+      "count": 1
+    },
+    "source": {
+      "go_file": "pkg/core/peer.go",
+      "symbols": [
+        "IsVoter",
+        "IsLearner",
+        "IsVoterOrIncomingVoter",
+        "IsLearnerOrDemotingVoter",
+        "IsWitness",
+        "IsInJointState",
+        "CountInJointState"
+      ],
+      "class_order": [
+        "voter",
+        "learner",
+        "voter_or_incoming",
+        "learner_or_demoting",
+        "witness"
+      ],
+      "derivation": "For each role r: [r == 0, r == 1, r in {0,2}, r in {1,3}, witness]. Joint counts roles in {2,3}; any is count > 0. Empty input yields no classes, false and 0. Unknown 99 matches no branch; witness remains independent.",
+      "existing_test": "pkg/core/region_test.go::TestSortedEqual passes but tests sorted peer equality, not these classification branches. Classification expectations are source-derived, not claimed as existing-test differential coverage."
+    }
+  },
+  {
+    "name": "role_3_witness_True",
+    "peers": [
+      {
+        "id": 1,
+        "store_id": 2,
+        "role": 3,
+        "witness": true
+      }
+    ],
+    "expected": {
+      "classes": [
+        [
+          false,
+          false,
+          false,
+          true,
+          true
+        ]
+      ],
+      "joint": true,
+      "count": 1
+    },
+    "source": {
+      "go_file": "pkg/core/peer.go",
+      "symbols": [
+        "IsVoter",
+        "IsLearner",
+        "IsVoterOrIncomingVoter",
+        "IsLearnerOrDemotingVoter",
+        "IsWitness",
+        "IsInJointState",
+        "CountInJointState"
+      ],
+      "class_order": [
+        "voter",
+        "learner",
+        "voter_or_incoming",
+        "learner_or_demoting",
+        "witness"
+      ],
+      "derivation": "For each role r: [r == 0, r == 1, r in {0,2}, r in {1,3}, witness]. Joint counts roles in {2,3}; any is count > 0. Empty input yields no classes, false and 0. Unknown 99 matches no branch; witness remains independent.",
+      "existing_test": "pkg/core/region_test.go::TestSortedEqual passes but tests sorted peer equality, not these classification branches. Classification expectations are source-derived, not claimed as existing-test differential coverage."
+    }
+  },
+  {
+    "name": "role_99_witness_False",
+    "peers": [
+      {
+        "id": 1,
+        "store_id": 2,
+        "role": 99,
+        "witness": false
+      }
+    ],
+    "expected": {
+      "classes": [
+        [
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      ],
+      "joint": false,
+      "count": 0
+    },
+    "source": {
+      "go_file": "pkg/core/peer.go",
+      "symbols": [
+        "IsVoter",
+        "IsLearner",
+        "IsVoterOrIncomingVoter",
+        "IsLearnerOrDemotingVoter",
+        "IsWitness",
+        "IsInJointState",
+        "CountInJointState"
+      ],
+      "class_order": [
+        "voter",
+        "learner",
+        "voter_or_incoming",
+        "learner_or_demoting",
+        "witness"
+      ],
+      "derivation": "For each role r: [r == 0, r == 1, r in {0,2}, r in {1,3}, witness]. Joint counts roles in {2,3}; any is count > 0. Empty input yields no classes, false and 0. Unknown 99 matches no branch; witness remains independent.",
+      "existing_test": "pkg/core/region_test.go::TestSortedEqual passes but tests sorted peer equality, not these classification branches. Classification expectations are source-derived, not claimed as existing-test differential coverage."
+    }
+  },
+  {
+    "name": "role_99_witness_True",
+    "peers": [
+      {
+        "id": 1,
+        "store_id": 2,
+        "role": 99,
+        "witness": true
+      }
+    ],
+    "expected": {
+      "classes": [
+        [
+          false,
+          false,
+          false,
+          false,
+          true
+        ]
+      ],
+      "joint": false,
+      "count": 0
+    },
+    "source": {
+      "go_file": "pkg/core/peer.go",
+      "symbols": [
+        "IsVoter",
+        "IsLearner",
+        "IsVoterOrIncomingVoter",
+        "IsLearnerOrDemotingVoter",
+        "IsWitness",
+        "IsInJointState",
+        "CountInJointState"
+      ],
+      "class_order": [
+        "voter",
+        "learner",
+        "voter_or_incoming",
+        "learner_or_demoting",
+        "witness"
+      ],
+      "derivation": "For each role r: [r == 0, r == 1, r in {0,2}, r in {1,3}, witness]. Joint counts roles in {2,3}; any is count > 0. Empty input yields no classes, false and 0. Unknown 99 matches no branch; witness remains independent.",
+      "existing_test": "pkg/core/region_test.go::TestSortedEqual passes but tests sorted peer equality, not these classification branches. Classification expectations are source-derived, not claimed as existing-test differential coverage."
+    }
+  },
+  {
+    "name": "empty",
+    "peers": [],
+    "expected": {
+      "classes": [],
+      "joint": false,
+      "count": 0
+    },
+    "source": {
+      "go_file": "pkg/core/peer.go",
+      "symbols": [
+        "IsVoter",
+        "IsLearner",
+        "IsVoterOrIncomingVoter",
+        "IsLearnerOrDemotingVoter",
+        "IsWitness",
+        "IsInJointState",
+        "CountInJointState"
+      ],
+      "class_order": [
+        "voter",
+        "learner",
+        "voter_or_incoming",
+        "learner_or_demoting",
+        "witness"
+      ],
+      "derivation": "For each role r: [r == 0, r == 1, r in {0,2}, r in {1,3}, witness]. Joint counts roles in {2,3}; any is count > 0. Empty input yields no classes, false and 0. Unknown 99 matches no branch; witness remains independent.",
+      "existing_test": "pkg/core/region_test.go::TestSortedEqual passes but tests sorted peer equality, not these classification branches. Classification expectations are source-derived, not claimed as existing-test differential coverage."
+    }
+  },
+  {
+    "name": "mixed",
+    "peers": [
+      {
+        "id": 1,
+        "store_id": 11,
+        "role": 0,
+        "witness": false
+      },
+      {
+        "id": 2,
+        "store_id": 12,
+        "role": 1,
+        "witness": false
+      },
+      {
+        "id": 3,
+        "store_id": 13,
+        "role": 2,
+        "witness": false
+      },
+      {
+        "id": 4,
+        "store_id": 14,
+        "role": 3,
+        "witness": false
+      },
+      {
+        "id": 5,
+        "store_id": 15,
+        "role": 99,
+        "witness": false
+      }
+    ],
+    "expected": {
+      "classes": [
+        [
+          true,
+          false,
+          true,
+          false,
+          false
+        ],
+        [
+          false,
+          true,
+          false,
+          true,
+          false
+        ],
+        [
+          false,
+          false,
+          true,
+          false,
+          false
+        ],
+        [
+          false,
+          false,
+          false,
+          true,
+          false
+        ],
+        [
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      ],
+      "joint": true,
+      "count": 2
+    },
+    "source": {
+      "go_file": "pkg/core/peer.go",
+      "symbols": [
+        "IsVoter",
+        "IsLearner",
+        "IsVoterOrIncomingVoter",
+        "IsLearnerOrDemotingVoter",
+        "IsWitness",
+        "IsInJointState",
+        "CountInJointState"
+      ],
+      "class_order": [
+        "voter",
+        "learner",
+        "voter_or_incoming",
+        "learner_or_demoting",
+        "witness"
+      ],
+      "derivation": "For each role r: [r == 0, r == 1, r in {0,2}, r in {1,3}, witness]. Joint counts roles in {2,3}; any is count > 0. Empty input yields no classes, false and 0. Unknown 99 matches no branch; witness remains independent.",
+      "existing_test": "pkg/core/region_test.go::TestSortedEqual passes but tests sorted peer equality, not these classification branches. Classification expectations are source-derived, not claimed as existing-test differential coverage."
+    }
+  }
+]
