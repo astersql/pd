@@ -4,6 +4,9 @@
 mod fifo;
 pub use fifo::Fifo;
 
+mod priority_queue;
+pub use priority_queue::{Entry, PriorityQueue, PriorityQueueItem};
+
 mod two_queue;
 pub use two_queue::TwoQueue;
 

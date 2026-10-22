@@ -3,6 +3,66 @@ use super::Lru;
 use std::sync::Arc;
 
 #[test]
+fn priority_queue_put_update() {
+    use super::{PriorityQueue, PriorityQueueItem};
+    struct Value(u64, &'static str);
+    impl PriorityQueueItem for Value {
+        fn id(&self) -> u64 {
+            self.0
+        }
+    }
+    let mut zero = PriorityQueue::new(0);
+    assert!(!zero.put(1, Value(1, "zero")));
+    assert!(zero.is_empty());
+    let mut negative = PriorityQueue::new(-1);
+    assert!(!negative.put(1, Value(1, "negative")));
+    let mut q = PriorityQueue::new(3);
+    assert!(q.put(1, Value(1, "original")));
+    assert!(q.put(2, Value(2, "two")));
+    assert!(q.put(3, Value(4, "four")));
+    assert!(q.put(5, Value(4, "ignored")));
+    assert!(!q.put(5, Value(5, "rejected equal")));
+    assert!(!q.put(6, Value(6, "rejected worse")));
+    assert!(q.put(3, Value(3, "three")));
+    assert!(q.put(3, Value(3, "ignored")));
+    assert_eq!(q.len(), 3);
+    assert_eq!(
+        q.elems()
+            .iter()
+            .map(|e| (e.priority, e.value.0))
+            .collect::<Vec<_>>(),
+        [(1, 1), (2, 2), (3, 3)]
+    );
+    assert_eq!(q.elems()[2].value.1, "three");
+    assert!(q.put(i64::MIN, Value(3, "ignored")));
+    assert!(q.put(i64::MAX, Value(1, "ignored")));
+    assert_eq!(
+        q.elems().iter().map(|e| e.priority).collect::<Vec<_>>(),
+        [i64::MIN, 2, i64::MAX]
+    );
+    assert_eq!(q.elems()[2].value.1, "original");
+    assert!(q.put(0, Value(9, "replacement")));
+    assert_eq!(
+        q.elems().iter().map(|e| e.value.0).collect::<Vec<_>>(),
+        [3, 9, 2]
+    );
+
+    // Go compares priority alone: ties replace the sorted entry, but retain
+    // displaced IDs in the ID map. Updates still retain the original value.
+    let mut ties = PriorityQueue::new(2);
+    assert!(ties.put(10, Value(1, "first")));
+    assert!(ties.put(10, Value(2, "second")));
+    assert_eq!(ties.len(), 1);
+    assert_eq!(ties.elems()[0].value.0, 2);
+    assert!(ties.put(9, Value(1, "ignored")));
+    assert_eq!(ties.len(), 1);
+    assert_eq!(ties.elems()[0].value.1, "first");
+    assert!(ties.put(9, Value(2, "ignored")));
+    assert_eq!(ties.len(), 1);
+    assert_eq!(ties.elems()[0].value.1, "second");
+}
+
+#[test]
 fn lru_behavior() {
     let mut cache = Lru::new(3);
     assert!(cache.is_empty());
