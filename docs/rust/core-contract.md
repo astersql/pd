@@ -12,7 +12,7 @@ Go 基准 `0820f0b67b0e49b289b84fdf66b7b8fb178afe82`；审计 HEAD `d594a0f133de
 批次 7 的 [feedback 实现](../../pkg/core/storelimit/window_feedback.rs) 按 low 可用性决定是否累积误差，
 以 `max(100, 20*e+10*last_sum)` 调容且保留 used；[测试](../../pkg/core/storelimit/window_feedback_test.rs)
 登记了 `core_task_07_go_feedback_sequence` 与 `core_task_07_all_priority_capacities_and_usage_survive_feedback`。
-[Go oracle](../../pkg/core/storelimit/rust_core_task_07_oracle_test.go) 与 Rust 读取同一
+历史 Go oracle（提交 `d594a0f13` 的 `pkg/core/storelimit/rust_core_task_07_oracle_test.go`，后于 `014342310` 删除） 与 Rust 读取同一
 [fixture](../../pkg/core/storelimit/rust-fixtures/core_task_07.json)，[lib](../../pkg/core/storelimit/lib.rs) 已注册测试模块。
 这是提交和源码核验，本任务没有重跑前序行为测试，不把任务文件删除当作通过证据。
 
