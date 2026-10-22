@@ -40,3 +40,8 @@ pub use store_stats::*;
 #[cfg(test)]
 #[path = "store_stats_test.rs"]
 mod store_stats_test;
+
+pub mod store_stats_average;
+#[cfg(test)]
+#[path = "store_stats_average_test.rs"]
+mod store_stats_average_test;

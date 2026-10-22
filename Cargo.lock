@@ -92,6 +92,7 @@ dependencies = [
 name = "astersql-pd-core"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-movingaverage",
  "serde",
  "serde_json",
 ]

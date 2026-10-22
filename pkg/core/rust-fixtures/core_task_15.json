@@ -1,0 +1,33 @@
+{
+  "sources": [
+    "pkg/core/store_stats.go:newStoreStats/updateRawStats/GetAvgAvailable/climp0 (unchanged since 0820f0b)",
+    "pkg/core/store_stats_test.go:TestStoreStats asserts first 150 GiB, second strictly between 150 and 160 GiB",
+    "pkg/movingaverage/hull_moving_average.go and weight_moving_average.go: HMA(60), WMA(30/60/7); second exact rational 1991850/13039 GiB, truncate after byte conversion; zero capacity never divides; default absent smoother returns raw; negative overshoot clamped. Rollover and boundaries are source-derived, not runtime Go differential evidence."
+  ],
+  "scenarios": [
+    {
+      "name": "existing_go_assertion_sequence",
+      "samples": [
+        161061273600,
+        171798691840
+      ],
+      "expected": [
+        161061273600,
+        164025818861
+      ]
+    },
+    {
+      "name": "zero_capacity_and_zero_samples",
+      "samples": [
+        0,
+        0,
+        0
+      ],
+      "expected": [
+        0,
+        0,
+        0
+      ]
+    }
+  ]
+}

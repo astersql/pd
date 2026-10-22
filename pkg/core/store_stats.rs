@@ -32,6 +32,9 @@ impl super::StoreInfo {
 
     /// Replace the entire report, including fields reset to zero.
     pub fn update_raw_stats(&mut self, stats: StoreStats) {
+        if let Some(average) = &mut self.avg_available {
+            average.add(stats.available as f64);
+        }
         self.raw_stats = stats;
     }
 
