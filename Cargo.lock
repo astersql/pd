@@ -92,6 +92,10 @@ name = "astersql-pd-mcs-constant"
 version = "0.1.0"
 
 [[package]]
+name = "astersql-pd-slice"
+version = "0.1.0"
+
+[[package]]
 name = "astersql-pd-member"
 version = "0.1.0"
 dependencies = [

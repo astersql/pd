@@ -1,0 +1,22 @@
+// Copyright 2026 AsterSQL.
+
+use super::*;
+
+#[test]
+fn predicate_quantifiers() {
+    let cases = [
+        (&[][..], false, true, true),
+        (&[1, 2, 3][..], true, false, false),
+        (&[1, 3][..], false, true, false),
+        (&[2, 2, 4][..], true, false, true),
+    ];
+
+    for (values, expected_any, expected_none, expected_all) in cases {
+        assert_eq!(any_of(values, |index| values[index] % 2 == 0), expected_any);
+        assert_eq!(
+            none_of(values, |index| values[index] % 2 == 0),
+            expected_none
+        );
+        assert_eq!(all_of(values, |index| values[index] % 2 == 0), expected_all);
+    }
+}
