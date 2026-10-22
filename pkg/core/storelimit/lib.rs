@@ -34,3 +34,9 @@ mod sliding_windows_test;
 
 mod sliding_windows;
 pub use sliding_windows::SlidingWindows;
+
+#[cfg(test)]
+#[path = "window_feedback_test.rs"]
+mod window_feedback_test;
+
+mod window_feedback;

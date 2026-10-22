@@ -1,0 +1,122 @@
+[
+  {
+    "action": "feedback",
+    "error": 100,
+    "capacity": 100,
+    "sum": 0,
+    "used": [
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "action": "take",
+    "token": 91,
+    "capacity": 100,
+    "sum": 0,
+    "used": [
+      91,
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "action": "feedback",
+    "error": 10,
+    "capacity": 300,
+    "sum": 10,
+    "used": [
+      91,
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "action": "feedback",
+    "error": 999,
+    "capacity": 300,
+    "sum": 10,
+    "used": [
+      91,
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "action": "take",
+    "token": 300,
+    "capacity": 300,
+    "sum": 10,
+    "used": [
+      391,
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "action": "feedback",
+    "error": 0,
+    "capacity": 100,
+    "sum": 10,
+    "used": [
+      391,
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "action": "feedback",
+    "error": -30,
+    "capacity": 100,
+    "sum": -20,
+    "used": [
+      391,
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "action": "feedback",
+    "error": 0,
+    "capacity": 100,
+    "sum": -20,
+    "used": [
+      391,
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "action": "feedback",
+    "error": 25.25,
+    "capacity": 557,
+    "sum": 5.25,
+    "used": [
+      391,
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "action": "feedback",
+    "error": -999,
+    "capacity": 557,
+    "sum": 5.25,
+    "used": [
+      391,
+      0,
+      0,
+      0
+    ]
+  }
+]

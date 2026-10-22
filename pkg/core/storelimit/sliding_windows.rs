@@ -7,7 +7,8 @@ use crate::{Type, VERSION_V2, Window};
 /// Priority snapshot windows. Mutation requires exclusive access by the caller.
 #[derive(Debug, Clone)]
 pub struct SlidingWindows {
-    windows: [Window; 4],
+    pub(crate) windows: [Window; 4],
+    pub(crate) last_sum: f64,
 }
 
 impl Default for SlidingWindows {
@@ -21,6 +22,7 @@ impl SlidingWindows {
     pub fn new() -> Self {
         Self {
             windows: std::array::from_fn(|i| Window::new(100 >> i)),
+            last_sum: 0.0,
         }
     }
 
