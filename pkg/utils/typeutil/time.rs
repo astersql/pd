@@ -39,3 +39,25 @@ pub fn sub_real_time_by_wall_clock(after: SystemTime, before: SystemTime) -> Dur
 pub fn sub_tso_physical_by_wall_clock(after: SystemTime, before: SystemTime) -> i64 {
     unix_nanos(after) / 1_000_000 - unix_nanos(before) / 1_000_000
 }
+
+/// An optional Unix timestamp with second precision.
+///
+/// The integer representation covers Go's full signed-second range without
+/// depending on the platform's `SystemTime` range. Serialization emits zero for
+/// an unset value. Deserialization clears null, nonpositive values and i64::MAX;
+/// malformed or out-of-range numbers are errors.
+#[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
+pub struct TimeOptional(pub Option<i64>);
+
+impl serde::Serialize for TimeOptional {
+    fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+        serializer.serialize_i64(self.0.unwrap_or(0))
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for TimeOptional {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let seconds = <Option<i64> as serde::Deserialize>::deserialize(deserializer)?.unwrap_or(0);
+        Ok(Self((seconds > 0 && seconds < i64::MAX).then_some(seconds)))
+    }
+}
