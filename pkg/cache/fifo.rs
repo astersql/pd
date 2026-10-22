@@ -52,6 +52,32 @@ impl<V> Fifo<V> {
 }
 
 impl<V: Clone> Fifo<V> {
+    /// Returns the newest contiguous group, ordered newest to oldest.
+    /// The newest entry is always included. Earlier entries join only when both
+    /// adjacent values have valid, equal classifications. The callback runs under
+    /// a shared lock and must not mutate this cache.
+    pub fn from_last_same_elems<F>(&self, mut check: F) -> Vec<Item<V>>
+    where
+        F: FnMut(&V) -> (bool, String),
+    {
+        let items = self.items.read().unwrap();
+        let mut newest_first = items.iter().rev();
+        let Some(mut last) = newest_first.next() else {
+            return Vec::new();
+        };
+        let mut group = vec![last.clone()];
+        for item in newest_first {
+            let (valid, class) = check(&item.value);
+            let (last_valid, last_class) = check(&last.value);
+            if !valid || !last_valid || class != last_class {
+                break;
+            }
+            group.push(item.clone());
+            last = item;
+        }
+        group
+    }
+
     /// Returns snapshots from oldest to newest.
     pub fn elems(&self) -> Vec<Item<V>> {
         self.items.read().unwrap().iter().cloned().collect()

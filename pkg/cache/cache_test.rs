@@ -250,3 +250,48 @@ fn fifo_behavior_concurrent_insertion() {
     }
     assert!(cache.is_empty());
 }
+
+#[test]
+fn fifo_last_same_group() {
+    let cache = super::Fifo::new(4);
+    let group = || {
+        cache.from_last_same_elems(|value: &Option<&str>| {
+            (value.is_some(), value.unwrap_or_default().to_owned())
+        })
+    };
+    assert!(group().is_empty());
+    cache.put(1, Some("1"));
+    cache.put(1, Some("2"));
+    cache.put(1, Some("3"));
+    assert_eq!(group().len(), 1);
+    cache.put(1, Some("3"));
+    cache.put(2, Some("3"));
+    assert_eq!(group().iter().map(|i| i.key).collect::<Vec<_>>(), [2, 1, 1]);
+    assert!(group().iter().all(|i| i.value == Some("3")));
+    cache.put(1, Some("2"));
+    assert_eq!(group().len(), 1);
+    assert_eq!(group()[0].value, Some("2"));
+    cache.put(3, None);
+    assert_eq!(group().len(), 1);
+    assert_eq!(group()[0].value, None);
+    cache.put(4, Some("2"));
+    assert_eq!(group().len(), 1);
+    cache.put(5, Some("2"));
+    assert_eq!(group().iter().map(|i| i.key).collect::<Vec<_>>(), [5, 4]);
+    cache.put(6, Some("2"));
+    cache.put(7, Some("2"));
+    assert_eq!(
+        group().iter().map(|i| i.key).collect::<Vec<_>>(),
+        [7, 6, 5, 4]
+    );
+    assert_eq!(cache.len(), 4);
+    assert_eq!(cache.elems()[0].key, 4);
+    let single = super::Fifo::new(0);
+    single.put(0, 10);
+    assert_eq!(
+        single
+            .from_last_same_elems(|_| (false, String::new()))
+            .len(),
+        1
+    );
+}
