@@ -168,3 +168,10 @@ mod region_guide_test;
 
 pub mod region_guide;
 pub use region_guide::*;
+
+#[cfg(test)]
+#[path = "region_format_test.rs"]
+mod region_format_test;
+
+pub mod region_format;
+pub use region_format::*;

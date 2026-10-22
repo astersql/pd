@@ -1,0 +1,118 @@
+{
+  "source": "pkg/core/region.go Rule.String/NewRule/MarshalJSON/UnmarshalJSON; baseline 0820f0b67b0e49b289b84fdf66b7b8fb178afe82 unchanged",
+  "evidence": "TestCodecRule runs leader/peer/learner/witness, all unknown; known spellings and whitespace/raw decode derive from exact source comparisons. TestRegionKey asserts uppercase hex inclusion. DiffRegionPeersInfo uses deep equality, removal before addition and comma separator; region_tree_test.go asserts Add/Remove/empty. Key diff exact punctuation and empty bounds derive from DiffRegionKeyInfo. HexMeta strings derive from CompactTextString, metapb field order and omission of zero scalar fields; no added Go oracle and no claim of runtime differential coverage for these derived cases. Nil metadata: typeutil.DeepClone returns nil, then HexRegionMeta.String dereferences it; Rust formatting also panics. Canonical RegionMeta has no encryption metadata or unknown protobuf fields; formatting covers its representable fields only.",
+  "rules": [
+    [
+      "leader-scatter",
+      "leader-scatter"
+    ],
+    [
+      "peer-scatter",
+      "peer-scatter"
+    ],
+    [
+      "learner-scatter",
+      "learner-scatter"
+    ],
+    [
+      "leader",
+      "unknown"
+    ],
+    [
+      "peer",
+      "unknown"
+    ],
+    [
+      "learner",
+      "unknown"
+    ],
+    [
+      "witness",
+      "unknown"
+    ],
+    [
+      "",
+      "unknown"
+    ]
+  ],
+  "scenarios": [
+    {
+      "symbol": "HexRegionKey",
+      "source": "TestRegionKey uppercase assertion; hex.Encode and ToUpperASCIIInplace",
+      "input": [
+        0,
+        171,
+        255
+      ],
+      "expected": "00ABFF"
+    },
+    {
+      "symbol": "DiffRegionKeyInfo",
+      "source": "source branches; existing TestRegionKey checks changed marker and key inclusion",
+      "start_before": [],
+      "start_after": [
+        171
+      ],
+      "end_before": [],
+      "end_after": [],
+      "expected": "StartKey Changed:{} -> {AB}, EndKey:{}"
+    },
+    {
+      "symbol": "DiffRegionKeyInfo",
+      "source": "equal empty branches",
+      "expected": "StartKey:{}, EndKey:{}"
+    },
+    {
+      "symbol": "DiffRegionPeersInfo",
+      "source": "deep equality loops; region_tree_test.go TestRegionInfo add/remove/empty assertions",
+      "before": {
+        "id": 1,
+        "store_id": 2,
+        "role": 0
+      },
+      "after": {
+        "id": 1,
+        "store_id": 2,
+        "role": 99
+      },
+      "expected": "Remove peer:{id:1 store_id:2 },Add peer:{id:1 store_id:2 role:99 }"
+    },
+    {
+      "symbol": "HexRegionMeta.String",
+      "source": "region.go plus gogo/protobuf v1.3.2 proto/text.go writeStruct/writeAny and pinned metapb field order",
+      "input": {
+        "id": 7,
+        "end_key": [
+          255
+        ],
+        "epoch": {
+          "conf_ver": 2,
+          "version": 3
+        },
+        "peers": [
+          {
+            "id": 1,
+            "store_id": 2,
+            "role": 1,
+            "is_witness": true
+          }
+        ],
+        "is_in_flashback": true,
+        "flashback_start_ts": 9
+      },
+      "expected": "id:7 end_key:\"FF\" region_epoch:<conf_ver:2 version:3 > peers:<id:1 store_id:2 role:Learner is_witness:true > is_in_flashback:true flashback_start_ts:9"
+    },
+    {
+      "symbol": "HexRegionsMeta.String",
+      "source": "concatenates CompactTextString before trimming outer whitespace",
+      "input": [],
+      "expected": ""
+    },
+    {
+      "symbol": "HexRegionMeta.String",
+      "source": "typeutil.DeepClone nil return then direct meta.StartKey dereference",
+      "input": null,
+      "expected": "panic"
+    }
+  ]
+}
