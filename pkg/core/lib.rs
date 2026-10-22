@@ -208,3 +208,8 @@ mod region_tree_scan;
 #[cfg(test)]
 #[path = "region_tree_scan_test.rs"]
 mod region_tree_scan_test;
+
+mod region_tree_random;
+#[cfg(test)]
+#[path = "region_tree_random_test.rs"]
+mod region_tree_random_test;

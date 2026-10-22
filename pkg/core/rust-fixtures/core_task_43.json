@@ -1,0 +1,223 @@
+{
+  "source": {
+    "commit": "0820f0b67b0e49b289b84fdf66b7b8fb178afe82 (current region_tree.go unchanged)",
+    "symbols": [
+      "regionTree.RandomRegions",
+      "RegionInfo.isInvolved"
+    ],
+    "tests": [
+      "TestRandomRegion",
+      "TestRandomRegionDiscontinuous"
+    ],
+    "evidence": "Existing tests assert full containment, nil on partial ranges, duplicates and discontinuous gaps. Cases use TestRandomRegionDiscontinuous regions c-f,n-x,z-infinity. Reversed/equal ranges and retry tests derive from rank bounds, isInvolved and curLen==0 branches; these are Rust-only source-derived checks, not executed differential cases. Continuous coverage derives from TestRandomRegion and adjacent c-f,n-x singleton bounds. Random sequences need not match."
+  },
+  "regions": [
+    [
+      1,
+      "c",
+      "f"
+    ],
+    [
+      2,
+      "n",
+      "x"
+    ],
+    [
+      3,
+      "z",
+      ""
+    ]
+  ],
+  "cases": [
+    [
+      "c",
+      "e",
+      []
+    ],
+    [
+      "c",
+      "f",
+      [
+        1
+      ]
+    ],
+    [
+      "a",
+      "g",
+      [
+        1
+      ]
+    ],
+    [
+      "g",
+      "x",
+      [
+        2
+      ]
+    ],
+    [
+      "n",
+      "y",
+      [
+        2
+      ]
+    ],
+    [
+      "o",
+      "y",
+      []
+    ],
+    [
+      "y",
+      "",
+      [
+        3
+      ]
+    ],
+    [
+      "",
+      "",
+      [
+        1,
+        2,
+        3
+      ]
+    ],
+    [
+      "x",
+      "c",
+      []
+    ],
+    [
+      "n",
+      "n",
+      []
+    ],
+    [
+      "a",
+      "b",
+      []
+    ]
+  ],
+  "scenario_sources": [
+    {
+      "input": [
+        "c",
+        "e"
+      ],
+      "expected_ids": [],
+      "source": "TestRandomRegionDiscontinuous: c-f,n-x,z-unbounded regions; explicit nil/equality assertions, plus checkRandomRegion whole-tree membership",
+      "derivation": "Only regions with start >= requested start and finite end <= requested finite end qualify; empty end is unbounded. Candidate rank includes containing predecessor, then isInvolved rejects partial containment."
+    },
+    {
+      "input": [
+        "c",
+        "f"
+      ],
+      "expected_ids": [
+        1
+      ],
+      "source": "TestRandomRegionDiscontinuous: c-f,n-x,z-unbounded regions; explicit nil/equality assertions, plus checkRandomRegion whole-tree membership",
+      "derivation": "Only regions with start >= requested start and finite end <= requested finite end qualify; empty end is unbounded. Candidate rank includes containing predecessor, then isInvolved rejects partial containment."
+    },
+    {
+      "input": [
+        "a",
+        "g"
+      ],
+      "expected_ids": [
+        1
+      ],
+      "source": "TestRandomRegionDiscontinuous: c-f,n-x,z-unbounded regions; explicit nil/equality assertions, plus checkRandomRegion whole-tree membership",
+      "derivation": "Only regions with start >= requested start and finite end <= requested finite end qualify; empty end is unbounded. Candidate rank includes containing predecessor, then isInvolved rejects partial containment."
+    },
+    {
+      "input": [
+        "g",
+        "x"
+      ],
+      "expected_ids": [
+        2
+      ],
+      "source": "TestRandomRegionDiscontinuous: c-f,n-x,z-unbounded regions; explicit nil/equality assertions, plus checkRandomRegion whole-tree membership",
+      "derivation": "Only regions with start >= requested start and finite end <= requested finite end qualify; empty end is unbounded. Candidate rank includes containing predecessor, then isInvolved rejects partial containment."
+    },
+    {
+      "input": [
+        "n",
+        "y"
+      ],
+      "expected_ids": [
+        2
+      ],
+      "source": "TestRandomRegionDiscontinuous: c-f,n-x,z-unbounded regions; explicit nil/equality assertions, plus checkRandomRegion whole-tree membership",
+      "derivation": "Only regions with start >= requested start and finite end <= requested finite end qualify; empty end is unbounded. Candidate rank includes containing predecessor, then isInvolved rejects partial containment."
+    },
+    {
+      "input": [
+        "o",
+        "y"
+      ],
+      "expected_ids": [],
+      "source": "TestRandomRegionDiscontinuous: c-f,n-x,z-unbounded regions; explicit nil/equality assertions, plus checkRandomRegion whole-tree membership",
+      "derivation": "Only regions with start >= requested start and finite end <= requested finite end qualify; empty end is unbounded. Candidate rank includes containing predecessor, then isInvolved rejects partial containment."
+    },
+    {
+      "input": [
+        "y",
+        ""
+      ],
+      "expected_ids": [
+        3
+      ],
+      "source": "TestRandomRegionDiscontinuous: c-f,n-x,z-unbounded regions; explicit nil/equality assertions, plus checkRandomRegion whole-tree membership",
+      "derivation": "Only regions with start >= requested start and finite end <= requested finite end qualify; empty end is unbounded. Candidate rank includes containing predecessor, then isInvolved rejects partial containment."
+    },
+    {
+      "input": [
+        "",
+        ""
+      ],
+      "expected_ids": [
+        1,
+        2,
+        3
+      ],
+      "source": "TestRandomRegionDiscontinuous: c-f,n-x,z-unbounded regions; explicit nil/equality assertions, plus checkRandomRegion whole-tree membership",
+      "derivation": "Only regions with start >= requested start and finite end <= requested finite end qualify; empty end is unbounded. Candidate rank includes containing predecessor, then isInvolved rejects partial containment."
+    },
+    {
+      "input": [
+        "x",
+        "c"
+      ],
+      "expected_ids": [],
+      "source": "regionTree.RandomRegions rank check endIndex <= startIndex; source-derived, not asserted by existing Go tests",
+      "derivation": "Only regions with start >= requested start and finite end <= requested finite end qualify; empty end is unbounded. Candidate rank includes containing predecessor, then isInvolved rejects partial containment."
+    },
+    {
+      "input": [
+        "n",
+        "n"
+      ],
+      "expected_ids": [],
+      "source": "regionTree.RandomRegions rank check endIndex <= startIndex; source-derived, not asserted by existing Go tests",
+      "derivation": "Only regions with start >= requested start and finite end <= requested finite end qualify; empty end is unbounded. Candidate rank includes containing predecessor, then isInvolved rejects partial containment."
+    },
+    {
+      "input": [
+        "a",
+        "b"
+      ],
+      "expected_ids": [],
+      "source": "regionTree.RandomRegions rank check endIndex <= startIndex; source-derived, not asserted by existing Go tests",
+      "derivation": "Only regions with start >= requested start and finite end <= requested finite end qualify; empty end is unbounded. Candidate rank includes containing predecessor, then isInvolved rejects partial containment."
+    }
+  ],
+  "additional_rust_checks": {
+    "continuous": "TestRandomRegion exact g-n,n-t,t-unbounded, nil h-s and a-z membership assertions",
+    "duplicates": "TestRandomRegion explicitly expects [regionA, regionA] for n=2; Rust additionally checks Arc identity",
+    "retry": "RandomRegions curLen==0 breaks after first single-range draw or first shuffled pass. Source-derived sequence success, rejection, success, success verifies retry after success; all-invalid and reversed ranges skip RNG. Not Go runtime differential coverage.",
+    "invalid_rng": "Rust injected RNG contract violation panics; no Go equivalent, since Go rand.IntN always respects bound."
+  }
+}
