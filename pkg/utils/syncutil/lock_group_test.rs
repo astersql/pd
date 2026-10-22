@@ -41,3 +41,26 @@ async fn lock_group_serialization() {
     drop(first);
     drop(same_hash.await);
 }
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn lock_group_cleanup() {
+    let group = Arc::new(LockGroup::with_remove_entry_on_unlock(true));
+    let first = group.lock(42).await;
+
+    let waiting = group.lock(42);
+    tokio::pin!(waiting);
+    tokio::select! {
+        biased;
+        _ = &mut waiting => panic!("the waiter acquired a held lock"),
+        _ = tokio::task::yield_now() => {}
+    }
+    assert_eq!(group.reference_count(42), 2);
+
+    drop(first);
+    let second = waiting.await;
+    assert_eq!(group.entry_count(), 1);
+    assert_eq!(group.reference_count(42), 1);
+
+    drop(second);
+    assert_eq!(group.entry_count(), 0);
+}

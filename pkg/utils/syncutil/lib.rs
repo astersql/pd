@@ -4,7 +4,7 @@
 
 mod lock_group;
 
-pub use lock_group::LockGroup;
+pub use lock_group::{LockGroup, LockGroupGuard};
 
 /// Blocking locks backed directly by [`std::sync`].
 ///
