@@ -42,3 +42,39 @@ fn same_fields_by_json() {
     ));
     assert!(!find_same_field_by_json(&fields, &json!({"missing": null})));
 }
+
+#[test]
+fn field_type_by_json_path() {
+    let fields = json!({
+        "object": {
+            "name": "",
+            "action": {
+                "enable": false,
+            },
+        },
+    });
+
+    assert_eq!(
+        find_field_by_json_tag(&fields, &["object"]),
+        Some(&fields["object"])
+    );
+    assert_eq!(
+        find_field_by_json_tag(&fields, &["object", "action"]),
+        Some(&fields["object"]["action"])
+    );
+    assert_eq!(
+        find_field_by_json_tag(&fields, &["object", "name"]),
+        Some(&fields["object"]["name"])
+    );
+    assert_eq!(
+        find_field_by_json_tag(&fields, &["object", "action", "enable"]),
+        Some(&fields["object"]["action"]["enable"])
+    );
+
+    assert_eq!(find_field_by_json_tag(&fields, &["missing"]), None);
+    assert_eq!(
+        find_field_by_json_tag(&fields, &["object", "name", "nested"]),
+        None
+    );
+    assert_eq!(find_field_by_json_tag(&fields, &[]), Some(&fields));
+}

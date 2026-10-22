@@ -22,6 +22,19 @@ pub fn find_same_field_by_json(fields: &Value, input: &Value) -> bool {
     input.keys().any(|field| fields.contains_key(field))
 }
 
+/// Finds the field type descriptor at a JSON tag path.
+///
+/// Each path component must name a field in an object. An empty path returns
+/// the current descriptor, while an unknown field or a non-object
+/// intermediate descriptor returns `None`.
+pub fn find_field_by_json_tag<'a>(fields: &'a Value, tags: &[&str]) -> Option<&'a Value> {
+    let mut field = fields;
+    for tag in tags {
+        field = field.as_object()?.get(*tag)?;
+    }
+    Some(field)
+}
+
 fn find_path(fields: &Value, tag: &str) -> Option<String> {
     let object = fields.as_object()?;
     for (field, value) in object {
