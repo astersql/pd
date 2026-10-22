@@ -18,3 +18,8 @@ mod controller;
 pub use controller::{Controller, ControllerDone, ControllerOption};
 #[cfg(test)]
 mod controller_test;
+
+mod runner;
+pub use runner::{ConcurrentRunner, RunnerStopped, SyncRunner};
+#[cfg(test)]
+mod runner_test;
