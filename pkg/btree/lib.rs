@@ -121,6 +121,24 @@ impl<T, F: Fn(&T, &T) -> bool> BTree<T, F> {
         }
     }
 
+    /// Returns the first item in comparator order, or `None` for an empty tree.
+    pub fn min(&self) -> Option<&T> {
+        let mut node = self.root.as_ref()?;
+        while let Some(child) = node.children.first() {
+            node = child;
+        }
+        node.items.first()
+    }
+
+    /// Returns the last item in comparator order, or `None` for an empty tree.
+    pub fn max(&self) -> Option<&T> {
+        let mut node = self.root.as_ref()?;
+        while let Some(child) = node.children.last() {
+            node = child;
+        }
+        node.items.last()
+    }
+
     /// Reports whether an equivalent item exists.
     pub fn has(&self, key: &T) -> bool {
         self.get(key).is_some()

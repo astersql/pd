@@ -81,3 +81,57 @@ fn descending_order() {
 fn zero_degree() {
     let _ = BTree::new(0, |a: &i32, b: &i32| a < b);
 }
+
+#[test]
+fn split_replace_min_max() {
+    for degree in [2, 3, 8] {
+        for descending in [false, true] {
+            let mut tree = BTree::new(
+                degree,
+                |a: &(i32, i32), b: &(i32, i32)| {
+                    if descending { a.0 > b.0 } else { a.0 < b.0 }
+                },
+            );
+            assert_eq!(tree.min(), None);
+            assert_eq!(tree.max(), None);
+            let mut expected = std::collections::BTreeMap::new();
+            for key in (0..2048).map(|i| (i * 317) % 2048) {
+                assert_eq!(tree.replace_or_insert((key, key)), None);
+                expected.insert(key, key);
+                let first = *expected.first_key_value().unwrap().0;
+                let last = *expected.last_key_value().unwrap().0;
+                let (min, max) = if descending {
+                    (last, first)
+                } else {
+                    (first, last)
+                };
+                assert_eq!(tree.min(), Some(&(min, min)));
+                assert_eq!(tree.max(), Some(&(max, max)));
+                assert_eq!(tree.len(), expected.len());
+            }
+            let mut node = tree.root.as_ref().unwrap();
+            let mut height = 0;
+            while let Some(child) = node.children.first() {
+                height += 1;
+                node = child;
+            }
+            assert!(height >= 2);
+            for key in 0..2048 {
+                assert_eq!(tree.replace_or_insert((key, -key - 1)), Some((key, key)));
+                assert_eq!(tree.get(&(key, 0)), Some(&(key, -key - 1)));
+                assert_eq!(tree.len(), 2048);
+                let (min, max) = if descending { (2047, 0) } else { (0, 2047) };
+                let value = |k: i32| if k <= key { -k - 1 } else { k };
+                assert_eq!(tree.min(), Some(&(min, value(min))));
+                assert_eq!(tree.max(), Some(&(max, value(max))));
+            }
+            let mut ordered = Vec::new();
+            collect(tree.root.as_ref().unwrap(), &mut ordered);
+            let mut expected: Vec<_> = (0..2048).map(|k| (k, -k - 1)).collect();
+            if descending {
+                expected.reverse();
+            }
+            assert_eq!(ordered, expected);
+        }
+    }
+}

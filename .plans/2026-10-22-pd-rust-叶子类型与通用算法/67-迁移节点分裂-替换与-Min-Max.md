@@ -2,7 +2,7 @@
 
 批次：【批次 17】依赖批次 16
 
-状态：未开始
+状态：已完成，待回归
 
 目的：跨多层分裂、同 key 替换、最小/最大值一致
 
@@ -67,3 +67,17 @@
 
 完成 `pkg/btree/lib.rs` 中的本任务行为和 `pkg/btree/btree_test.rs` 的独立测试；只在上述红绿证据、crate 回归和差异审查齐全后标记完成。
 
+
+## 执行证据（2026-10-22）
+
+- 直接依赖任务 66 已实现并通过 4 个 crate 测试；其未完成项是无关 workspace 回归。批次 16 未全部关闭，按用户允许突破依赖阻塞的授权继续，不修改其他任务源码。
+- 新增 min/max：沿首/末孩子下降到叶子，空树返回 None，遵循调用方比较器。复用任务 66 已有的分裂与等价替换实现。
+- 测试 split_replace_min_max 覆盖 degree 2/3/8、升/降序、2048 项置换插入、多层分裂、全 key 不同 payload 替换、每步边界值/长度及最终排序。
+- 红：cargo test --locked -p astersql-pd-btree split_replace_min_max -- --nocapture，退出 101，缺少 min/max 方法（E0599）。补充实现后修复测试闭包的显式 i32 类型。
+- 绿：上述聚焦命令退出 0，1 个有效测试；cargo test --locked -p astersql-pd-btree --lib 退出 0，5 个有效测试。
+- cargo fmt --all、cargo fmt --all -- --check、cargo metadata --format-version 1 --no-deps、cargo check --workspace --locked、cargo tree --locked -p astersql-pd-btree 均退出 0；crate 无外部依赖。
+- 每个 Cargo 阶段动态领取槽位 1；CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1。各阶段已删除自己的 owner 和锁目录，保留缓存。
+- Go oracle：go test ./pkg/btree -run '^(TestBTreeG)$' -count=1 退出 0，1 个有效测试。该包无 failpoint 注入。Go 源和测试相对基准 42a0da684cf28f16a48c74c54575b711031f3c5d 无差异；源码逐项对照 split/insert 等价替换及 min/max 的首末叶子行为。
+- 指定 make gotest GOTEST_ARGS='./pkg/btree -run "^(TestBTreeG)$" -count=1' 退出 2：Makefile 将 failpoint-ctl 输出作为 shell 命令执行，Rewrite: command not found；make failpoint-disable 同样退出 2。随后 .tools/bin/failpoint-ctl disable . 退出 0，完成清理。
+- git diff --check 退出 0。
+- 待回归：cargo test --workspace --locked 退出 101，pkg/movingaverage/avg_over_time_test.rs 导入尚未实现的 crate::AvgOverTime（E0432）；属于其他在执行任务，不扩展修改其共享源码。按用户规则保留本任务文件，待该依赖实现后回归；plan.md 未修改。
