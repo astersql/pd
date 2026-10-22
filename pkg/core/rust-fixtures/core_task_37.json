@@ -1,0 +1,12 @@
+{
+  "source": "pkg/core/region.go SplitRegions, unchanged from 0820f0b67b0e49b289b84fdf66b7b8fb178afe82; Clone deep-copies metadata, preserves peers/leader/stats and resets source to Storage",
+  "existing_test": "pkg/core/region_tree_test.go TestRegionTreeSplitAndMerge splits the unbounded region seven times and checks tree updates, then mixed splits/merges; TestRegionKey checks key containment. Neither asserts each explicit midpoint below.",
+  "derivation": "Each case uses one input: child IDs are id+1/id+2 modulo 2^64; version+1 modulo 2^64; conf_ver stays 9. Empty bounds supply 0/255; only first bytes participate; divide each operand before addition. These explicit outputs are source-derived, not executed Go differential fixtures. Empty batch returns empty; two IDs 10,20 yield 12,14,22,24 in input order. Absent epoch panics at left.meta.RegionEpoch.Version++.",
+  "cases": [
+    {"name":"unbounded","start":[],"end":[],"middle":127,"id":1,"version":3,"left_id":2,"right_id":3,"next_version":4},
+    {"name":"odd-rounding-and-first-byte","start":[3,200],"end":[7,1],"middle":4,"id":10,"version":0,"left_id":11,"right_id":12,"next_version":1},
+    {"name":"equal","start":[255],"end":[255],"middle":254,"id":5,"version":7,"left_id":6,"right_id":7,"next_version":8},
+    {"name":"reversed","start":[200],"end":[10],"middle":105,"id":8,"version":2,"left_id":9,"right_id":10,"next_version":3},
+    {"name":"unsigned-wrap","start":[],"end":[1],"middle":0,"id":18446744073709551615,"version":18446744073709551615,"left_id":0,"right_id":1,"next_version":0}
+  ]
+}

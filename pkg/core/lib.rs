@@ -175,3 +175,9 @@ mod region_format_test;
 
 pub mod region_format;
 pub use region_format::*;
+
+pub mod region_split;
+pub use region_split::*;
+#[cfg(test)]
+#[path = "region_split_test.rs"]
+mod region_split_test;
