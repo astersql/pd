@@ -24,5 +24,21 @@ where
     none_of(slice, |index| !predicate(index))
 }
 
+/// Returns whether `slice` contains `value`.
+pub fn contains<T>(slice: &[T], value: &T) -> bool
+where
+    T: PartialEq,
+{
+    slice.iter().any(|item| item == value)
+}
+
+/// Removes every element equal to `value` while preserving the remaining order.
+pub fn remove<T>(slice: &mut Vec<T>, value: &T)
+where
+    T: PartialEq,
+{
+    slice.retain(|item| item != value);
+}
+
 #[cfg(test)]
 mod slice_test;

@@ -20,3 +20,20 @@ fn predicate_quantifiers() {
         assert_eq!(all_of(values, |index| values[index] % 2 == 0), expected_all);
     }
 }
+
+#[test]
+fn contains_and_remove() {
+    assert!(contains(&["a", "b", "c"], &"a"));
+    assert!(!contains(&["a", "b", "c"], &"d"));
+    assert!(!contains::<i64>(&[], &1));
+
+    let mut values = vec![1, 2, 1, 3, 1, 4];
+    remove(&mut values, &1);
+    assert_eq!(values, vec![2, 3, 4]);
+
+    remove(&mut values, &9);
+    assert_eq!(values, vec![2, 3, 4]);
+
+    remove(&mut values, &2);
+    assert_eq!(values, vec![3, 4]);
+}
