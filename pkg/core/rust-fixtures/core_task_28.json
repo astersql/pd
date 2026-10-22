@@ -1,0 +1,9 @@
+{
+  "source": "pkg/core/region.go NewRegionInfo, classifyVoterAndLearner, GetPeer, GetStorePeer, GetFollowers, GetNonWitnessVoters, GetDiffFollowers; region_option.go WithDownPeers/WithPendingPeers; peerSlice.Less/peerStatsSlice.Less",
+  "existing_tests": "pkg/core/region_tree_test.go TestRegionInfo: IDs 0..2, down 0, pending 1, missing 3, followers 1/2; pkg/core/region_test.go TestSortedEqual: unsorted peer lists compare equal after construction",
+  "input": [{"id":5,"role":"Unknown(99)"},{"id":3,"role":"Learner","witness":true},{"id":2,"role":"IncomingVoter"},{"id":4,"role":"DemotingVoter","witness":true},{"id":1,"role":"Voter"}],
+  "voters": [1,2,4,5],
+  "derivation": "Only Learner is excluded from voters. Classifications sort ascending by ID; witnesses independently include learner 3 and demoting voter 4. Metadata order remains 5,3,2,4,1. Down input 5/3 sorts 3/5 preserving seconds; pending 4/3 sorts 3/4. Leader 1 excluded from voters yields followers 2/4/5; non-witness voters 1/2/5; subtract store of peer 2 yields 4/5.",
+  "boundary_source": "Source-derived Rust coverage, not runtime differential: absent leader includes all voters, empty lists and unmatched IDs return none; duplicate store metadata lookup returns first original peer 9 while sorted voter lookup returns 1 and map insertion overwrites with 9. Unknown and joint roles are non-Learner.",
+  "evidence_boundary": "Read-only existing Go tests validate their original scenarios only; added role/duplicate/empty combinations are derived from current Go branches."
+}

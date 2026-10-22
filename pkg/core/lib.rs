@@ -117,3 +117,9 @@ pub use stores_control::*;
 #[cfg(test)]
 #[path = "stores_control_test.rs"]
 mod stores_control_test;
+
+pub mod region;
+pub use region::*;
+#[cfg(test)]
+#[path = "region_test.rs"]
+mod region_test;
