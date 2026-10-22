@@ -257,3 +257,9 @@ mod regions_scan;
 #[cfg(test)]
 #[path = "regions_scan_test.rs"]
 mod regions_scan_test;
+
+pub mod regions_batch_scan;
+pub use regions_batch_scan::*;
+#[cfg(test)]
+#[path = "regions_batch_scan_test.rs"]
+mod regions_batch_scan_test;

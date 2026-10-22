@@ -1,0 +1,340 @@
+{
+  "source": {
+    "revision": "0820f0b67b0e49b289b84fdf66b7b8fb178afe82 (current source unchanged)",
+    "symbols": [
+      "pkg/core/region.go:BatchScanRegions",
+      "pkg/core/region.go:scanRegion",
+      "pkg/core/basic_cluster.go:WithLimit/WithOutputMustContainAllKeyRange",
+      "pkg/utils/keyutil/keyrange.go:KeyRanges.Merge"
+    ],
+    "evidence": "Go TestScanRegionLimit executed unchanged; TestScanRegion assertions read and executed unchanged. Other cases derive from named branches, not runtime differential oracle."
+  },
+  "regions": [
+    [
+      1,
+      "a",
+      "b"
+    ],
+    [
+      2,
+      "b",
+      "c"
+    ],
+    [
+      3,
+      "d",
+      "f"
+    ],
+    [
+      4,
+      "f",
+      "i"
+    ],
+    [
+      6,
+      "l",
+      ""
+    ]
+  ],
+  "cases": [
+    {
+      "name": "continuous",
+      "ranges": [
+        [
+          "a",
+          "c"
+        ]
+      ],
+      "limit": 0,
+      "strict": true,
+      "ids": [
+        1,
+        2
+      ],
+      "error": false,
+      "basis": "TestScanRegion: contiguous two regions",
+      "empty": false
+    },
+    {
+      "name": "internal-hole",
+      "ranges": [
+        [
+          "a",
+          "e"
+        ]
+      ],
+      "limit": 0,
+      "strict": true,
+      "ids": [],
+      "error": true,
+      "basis": "TestScanRegion: scanError(a,e,0)",
+      "empty": false
+    },
+    {
+      "name": "leading-hole",
+      "ranges": [
+        [
+          "c",
+          "e"
+        ]
+      ],
+      "limit": 0,
+      "strict": true,
+      "ids": [],
+      "error": true,
+      "basis": "TestScanRegion: scanError(c,e,0)",
+      "empty": false
+    },
+    {
+      "name": "tail-hole",
+      "ranges": [
+        [
+          "f",
+          "k"
+        ]
+      ],
+      "limit": 0,
+      "strict": true,
+      "ids": [],
+      "error": true,
+      "basis": "scanRegion tail comparison i < k",
+      "empty": false
+    },
+    {
+      "name": "limit-hides-hole",
+      "ranges": [
+        [
+          "a",
+          "e"
+        ]
+      ],
+      "limit": 2,
+      "strict": true,
+      "ids": [
+        1,
+        2
+      ],
+      "error": false,
+      "basis": "scanRegion exceedLimit precedes hole check",
+      "empty": false
+    },
+    {
+      "name": "permissive",
+      "ranges": [
+        [
+          "a",
+          "e"
+        ]
+      ],
+      "limit": 0,
+      "strict": false,
+      "ids": [
+        1,
+        2,
+        3
+      ],
+      "error": false,
+      "basis": "TestScanRegion: permissive scan(a,e) length 3",
+      "empty": false
+    },
+    {
+      "name": "shared-region",
+      "ranges": [
+        [
+          "d",
+          "e"
+        ],
+        [
+          "ee",
+          "h"
+        ]
+      ],
+      "limit": 0,
+      "strict": true,
+      "ids": [
+        3,
+        4
+      ],
+      "error": false,
+      "basis": "BatchScanRegions removes equal boundary ID",
+      "empty": false
+    },
+    {
+      "name": "merge-adjacent",
+      "ranges": [
+        [
+          "d",
+          "e"
+        ],
+        [
+          "e",
+          "h"
+        ]
+      ],
+      "limit": 0,
+      "strict": true,
+      "ids": [
+        3,
+        4
+      ],
+      "error": false,
+      "basis": "keyutil.KeyRanges.Merge equal endpoints",
+      "empty": false
+    },
+    {
+      "name": "total-limit",
+      "ranges": [
+        [
+          "a",
+          "c"
+        ],
+        [
+          "d",
+          "i"
+        ]
+      ],
+      "limit": 3,
+      "strict": true,
+      "ids": [
+        1,
+        2,
+        3
+      ],
+      "error": false,
+      "basis": "BatchScanRegions total truncate; TestScanRegionLimit lengths 1..18",
+      "empty": false
+    },
+    {
+      "name": "later-error-before-truncate",
+      "ranges": [
+        [
+          "a",
+          "b"
+        ],
+        [
+          "b",
+          "e"
+        ]
+      ],
+      "limit": 3,
+      "strict": true,
+      "ids": [],
+      "error": true,
+      "basis": "merged range scans hole before total truncate",
+      "empty": false
+    },
+    {
+      "name": "later-range-error",
+      "ranges": [
+        [
+          "a",
+          "b"
+        ],
+        [
+          "d",
+          "k"
+        ]
+      ],
+      "limit": 2,
+      "strict": true,
+      "ids": [
+        1,
+        3
+      ],
+      "error": false,
+      "basis": "each range limit 2 suppresses tail after d,f",
+      "empty": false
+    },
+    {
+      "name": "later-internal-error",
+      "ranges": [
+        [
+          "a",
+          "b"
+        ],
+        [
+          "d",
+          "z"
+        ]
+      ],
+      "limit": 3,
+      "strict": true,
+      "ids": [],
+      "error": true,
+      "basis": "each range uses full limit, so i..l hole errors before global truncation",
+      "empty": false
+    },
+    {
+      "name": "boundless",
+      "ranges": [
+        [
+          "m",
+          ""
+        ]
+      ],
+      "limit": -1,
+      "strict": true,
+      "ids": [
+        6
+      ],
+      "error": false,
+      "basis": "TestScanRegion: scanNoError(m,nil,0)",
+      "empty": false
+    },
+    {
+      "name": "no-ranges",
+      "ranges": [],
+      "limit": 0,
+      "strict": true,
+      "ids": [],
+      "error": false,
+      "basis": "BatchScanRegions empty krs",
+      "empty": false
+    },
+    {
+      "name": "no-candidate",
+      "ranges": [
+        [
+          "x",
+          "z"
+        ]
+      ],
+      "limit": 0,
+      "strict": true,
+      "ids": [],
+      "error": true,
+      "basis": "empty registry: last end x < z",
+      "empty": true
+    },
+    {
+      "name": "empty-origin",
+      "ranges": [
+        [
+          "",
+          "z"
+        ]
+      ],
+      "limit": 0,
+      "strict": true,
+      "ids": [],
+      "error": false,
+      "basis": "empty registry: last end empty skips tail check",
+      "empty": true
+    },
+    {
+      "name": "unbounded-empty",
+      "ranges": [
+        [
+          "x",
+          ""
+        ]
+      ],
+      "limit": 0,
+      "strict": true,
+      "ids": [],
+      "error": false,
+      "basis": "empty registry: empty requested end skips tail check",
+      "empty": true
+    }
+  ]
+}
