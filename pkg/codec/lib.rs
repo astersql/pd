@@ -3,6 +3,7 @@
 mod bytes;
 mod keyspace;
 mod number;
+mod table;
 
 pub use bytes::{DecodeBytesError, decode_bytes, encode_bytes};
 pub use keyspace::{
@@ -11,6 +12,7 @@ pub use keyspace::{
     decode_keyspace_key, encode_keyspace_boundary, make_keyspace_prefix, parse_keyspace_prefix,
 };
 pub use number::{DecodeIntError, decode_int, encode_int};
+pub use table::{TableIdentity, meta_or_table, table_identity};
 
 #[cfg(test)]
 mod bytes_test;
@@ -18,3 +20,5 @@ mod bytes_test;
 mod keyspace_test;
 #[cfg(test)]
 mod number_test;
+#[cfg(test)]
+mod table_test;
