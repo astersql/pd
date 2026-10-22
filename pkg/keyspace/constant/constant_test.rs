@@ -18,3 +18,18 @@ fn base_keyspace_ids() {
     assert_eq!(NULL_KEYSPACE_ID, u32::MAX);
     assert_eq!(DEFAULT_KEYSPACE_GROUP_ID, 0);
 }
+
+#[test]
+fn reserved_keyspaces_and_labels() {
+    let _: u64 = RESERVED_KEYSPACE_ID_COUNT;
+    let _: u64 = RESERVED_KEYSPACE_ID_START;
+    let _: u32 = SYSTEM_KEYSPACE_ID;
+
+    assert_eq!(DEFAULT_KEYSPACE_NAME, "DEFAULT");
+    assert_eq!(REGION_LABEL_ID_PREFIX, "keyspaces/");
+    assert_eq!(REGION_LABEL_KEY, "id");
+    assert_eq!(RESERVED_KEYSPACE_ID_COUNT, 1024);
+    assert_eq!(RESERVED_KEYSPACE_ID_START, 0x00ff_ffff_u64 - 1024);
+    assert_eq!(SYSTEM_KEYSPACE_ID, 0x00ff_fffe);
+    assert_eq!(SYSTEM_KEYSPACE_NAME, "SYSTEM");
+}
