@@ -1,0 +1,71 @@
+{
+  "input": "Two disjoint regions sized 5 and 8 MiB; store 1 leader, store 2 witness follower, store 3 pending learner; stores 0 and 4 have no peers; store 4 Removed. Initial region_count=99.",
+  "expected": {
+    "0": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "1": [
+      2,
+      2,
+      0,
+      0,
+      0,
+      13,
+      13
+    ],
+    "2": [
+      0,
+      2,
+      2,
+      0,
+      0,
+      0,
+      13
+    ],
+    "3": [
+      0,
+      2,
+      0,
+      2,
+      2,
+      0,
+      13
+    ]
+  },
+  "sources": {
+    "counts": "region.go GetStoreStats aggregates leader/follower/learner trees, witness and pending separately; TestStoreRegionCount in region_tree_test.go asserts leader 1, learner 3 and peer 1/2/3 counts equal root counts. Sizes 5+8=13 and witness/pending are source-derived extensions, not a runtime Go differential.",
+    "status": "basic_cluster.go UpdateStoreStatus delegates seven values to store.go StoresInfo.UpdateStoreStatus, which shallow-clones present entries and skips absent IDs. Old handles retain 99. UpdateAllStoreStatus skips IsRemoved; direct update does not.",
+    "removal": "After removal of size 5 region, store 1 has [1,1,0,0,0,8,8]; removing both makes all counts/sizes zero by GetStoreStats empty-tree branches.",
+    "leader": "basic_cluster.go GetLeaderStoreByRegionID explicitly returns nil for absent region or absent leader (even with store 0); absent registered leader store returns GetStore nil. These branches are source-derived."
+  },
+  "evidence_boundary": "Existing TestStoreRegionCount validates role counts only. BasicCluster branches and additional sizes/roles are verified against source and Rust tests; no new Go oracle was created.",
+  "go_validation": {
+    "command": "go test ./pkg/core -run '^(TestStoreRegionCount.*)$' -count=1 -v",
+    "exit_code": 0,
+    "tests": [
+      "TestStoreRegionCount"
+    ],
+    "count": 1,
+    "mode": "No failpoint rewriting or make commands; existing test does not require injected branches."
+  },
+  "rust_validation": {
+    "slot": 1,
+    "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "red": "cargo test --locked -p astersql-pd-core --lib core_task_57 -- --nocapture: exit 101, E0425/E0433 missing BasicCluster",
+    "green": "same command: exit 0, 3 passed, 0 ignored",
+    "core": "cargo test --locked -p astersql-pd-core --lib: exit 0, 151 passed",
+    "workspace": {
+      "command": "cargo test --workspace --locked",
+      "exit_code": 0,
+      "passed": 406,
+      "ignored": 1
+    },
+    "checks": "cargo fmt --all; cargo metadata --format-version 1 --no-deps; cargo fmt --all -- --check; cargo check --workspace --locked: all exit 0"
+  }
+}

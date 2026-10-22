@@ -287,3 +287,9 @@ mod regions_random_test;
 mod stores_region_test;
 
 pub mod stores_region;
+
+pub mod basic_cluster;
+pub use basic_cluster::*;
+#[cfg(test)]
+#[path = "basic_cluster_test.rs"]
+mod basic_cluster_test;
