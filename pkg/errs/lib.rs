@@ -4,6 +4,9 @@
 
 use std::{error::Error, fmt};
 
+/// Stable PD domain error catalog.
+pub mod catalog;
+
 /// A reusable definition for one stable PD domain error.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct ErrorTemplate {
@@ -159,3 +162,6 @@ fn source_chains_equal(
 
 #[cfg(test)]
 mod error_test;
+
+#[cfg(test)]
+mod catalog_test;
