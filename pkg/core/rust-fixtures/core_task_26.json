@@ -1,0 +1,42 @@
+{
+  "empty_count": 0,
+  "sources": [
+    {
+      "scenario": "insert and patch current",
+      "source": "pkg/core/store_test.go TestPutStore; pkg/core/store.go putStoreLocked",
+      "expected": "plain put preserves handle; patch clones current entry and retains unrelated fields"
+    },
+    {
+      "scenario": "removed patch",
+      "source": "pkg/core/store_test.go TestPutStoreSkipsPatchForRemovedStore",
+      "expected": "delete followed by patch leaves missing entry and does not execute options"
+    },
+    {
+      "scenario": "replacement, missing delete, reset and snapshot",
+      "source": "pkg/core/store.go GetStore/GetStores/GetMetaStores/GetStoreIDs/GetStoreCount/DeleteStore/ResetStores",
+      "expected": "map insert replaces same ID; delete absent is no-op; reset empties map; lists own their membership with retained store handles; ordering unspecified",
+      "coverage": "source-derived, not a Go runtime differential"
+    },
+    {
+      "scenario": "800 accepted concurrent patches",
+      "source": "pkg/core/store.go PutStore locks across lookup, Clone(opts...) and assignment",
+      "expected": "8 workers x 100 increments retain 800, old snapshots retain zero",
+      "coverage": "source-derived lock invariant; Rust concurrency test, not Go runtime differential"
+    },
+    {
+      "scenario": "zero ID and absent metadata",
+      "source": "pkg/core/store.go NewStoreInfo/GetID/GetMeta, StoresInfo.PutStore/GetMetaStores/ResetStores",
+      "expected": "nil metadata yields ID zero, metadata remains absent; reset removes ID zero; patch skips absent entry",
+      "coverage": "source-derived boundary, Rust-only execution"
+    }
+  ],
+  "ids_after_insert": [
+    1,
+    2
+  ],
+  "workers": 8,
+  "patches_per_worker": 100,
+  "expected_leader_count": 800,
+  "baseline": "0820f0b67b0e49b289b84fdf66b7b8fb178afe82",
+  "review": "git diff baseline -- pkg/core/store.go is empty at task start; existing Go tests run read-only, 2 passed; no cross-language runtime differential for derived cases"
+}

@@ -105,3 +105,9 @@ mod store_topology_test;
 
 pub mod store_topology;
 pub use store_topology::*;
+
+pub mod stores;
+pub use stores::*;
+#[cfg(test)]
+#[path = "stores_test.rs"]
+mod stores_test;
