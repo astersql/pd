@@ -110,3 +110,9 @@ mod reduce_test;
 
 mod reduce;
 pub use reduce::{Iterator, avg, count, max, min, sum};
+
+#[cfg(test)]
+mod policy_test;
+
+mod policy;
+pub use policy::RollingPolicy;
