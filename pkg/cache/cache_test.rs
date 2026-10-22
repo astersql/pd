@@ -295,3 +295,77 @@ fn fifo_last_same_group() {
         1
     );
 }
+
+#[test]
+fn two_queue_behavior() {
+    use super::TwoQueue;
+    let mut c = TwoQueue::new(4);
+    let keys = |c: &TwoQueue<u64>| c.elems().iter().map(|i| i.key).collect::<Vec<_>>();
+    for k in 1..=4 {
+        c.put(k, k);
+    }
+    assert_eq!(keys(&c), [4, 3, 2, 1]);
+    assert_eq!(c.peek(1), Some(&1));
+    assert_eq!(keys(&c), [4, 3, 2, 1]);
+    assert_eq!(c.get(1), Some(&1));
+    c.put(2, 20);
+    assert_eq!(keys(&c), [4, 3, 2, 1]);
+    c.put(5, 5); // recent 3 becomes a ghost
+    assert_eq!(c.get(3), None);
+    assert_eq!(c.len(), 4);
+    c.put(3, 30); // ghost returns to frequent, recent 4 is evicted
+    assert_eq!(keys(&c), [5, 3, 2, 1]);
+    c.put(4, 40); // recent == target: ghost hit evicts frequent 1
+    assert_eq!(keys(&c), [5, 4, 3, 2]);
+    c.put(6, 6); // recent == target: new key evicts recent 5
+    assert_eq!(keys(&c), [6, 4, 3, 2]);
+    c.put(2, 200);
+    assert_eq!(keys(&c), [6, 2, 4, 3]);
+    assert_eq!(c.get(3), Some(&30));
+    assert_eq!(keys(&c), [6, 3, 2, 4]);
+    c.remove(5); // removing a ghost must prevent promotion on reinsertion
+    c.put(5, 50);
+    assert_eq!(keys(&c), [5, 3, 2, 4]);
+    for k in [2, 3, 4, 5, 99] {
+        c.remove(k);
+    }
+    assert!(c.is_empty());
+    assert_eq!(c.get(99), None);
+}
+
+#[test]
+fn two_queue_behavior_ghost_capacity_and_ratios() {
+    use super::TwoQueue;
+    let keys = |c: &TwoQueue<u64>| c.elems().iter().map(|i| i.key).collect::<Vec<_>>();
+    let mut c = TwoQueue::with_ratios(4, 0.5, 0.25);
+    for k in 1..=6 {
+        c.put(k, k);
+    }
+    // Ghost capacity one discards key 1; key 2 remains a ghost.
+    c.put(1, 10);
+    assert_eq!(keys(&c), [1, 6, 5, 4]);
+    c.put(3, 30);
+    assert_eq!(keys(&c), [1, 6, 5, 3]);
+    let mut unbounded_ghost = TwoQueue::with_ratios(4, 0.25, 0.0);
+    for k in 1..=7 {
+        unbounded_ghost.put(k, k);
+    }
+    unbounded_ghost.put(1, 10);
+    assert_eq!(keys(&unbounded_ghost), [7, 6, 5, 1]);
+    let mut small = TwoQueue::new(1);
+    small.put(1, 1);
+    small.put(2, 2);
+    small.put(3, 3);
+    // Go LRU treats ghost size zero as unbounded.
+    small.put(1, 10);
+    assert_eq!(keys(&small), [1]);
+    assert_eq!(small.peek(1), Some(&10));
+    let mut zero = TwoQueue::new(0);
+    zero.put(1, 1);
+    zero.put(2, 2);
+    assert_eq!(keys(&zero), [2]);
+    let mut shared = TwoQueue::new(2);
+    let value = Arc::new(vec![1]);
+    shared.put(1, Arc::clone(&value));
+    assert!(Arc::ptr_eq(shared.get(1).unwrap(), &value));
+}

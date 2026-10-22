@@ -4,6 +4,9 @@
 mod fifo;
 pub use fifo::Fifo;
 
+mod two_queue;
+pub use two_queue::TwoQueue;
+
 mod lru;
 pub use lru::{Item, Lru};
 
@@ -30,12 +33,7 @@ pub struct Cache<V> {
 
 enum Policy<V> {
     Lru(Lru<V>),
-    TwoQueue {
-        size: usize,
-        recent: Lru<V>,
-        frequent: Lru<V>,
-        ghost: Lru<()>,
-    },
+    TwoQueue(TwoQueue<V>),
 }
 
 impl<V: Clone> Cache<V> {
@@ -43,12 +41,7 @@ impl<V: Clone> Cache<V> {
     pub fn new(size: usize, kind: CacheType) -> Self {
         let policy = match kind {
             CacheType::Lru => Policy::Lru(Lru::new(size)),
-            CacheType::TwoQueue => Policy::TwoQueue {
-                size,
-                recent: Lru::new(size),
-                frequent: Lru::new(size),
-                ghost: Lru::new(size / 2),
-            },
+            CacheType::TwoQueue => Policy::TwoQueue(TwoQueue::new(size)),
         };
         Self {
             inner: RwLock::new(policy),
@@ -64,41 +57,7 @@ impl<V: Clone> Cache<V> {
     pub fn put(&self, key: u64, value: V) {
         match &mut *self.inner.write().unwrap() {
             Policy::Lru(cache) => cache.put(key, value),
-            Policy::TwoQueue {
-                size,
-                recent,
-                frequent,
-                ghost,
-            } => {
-                if frequent.peek(key).is_some() {
-                    frequent.put(key, value);
-                    return;
-                }
-                if recent.peek(key).is_some() {
-                    recent.remove(key);
-                    frequent.put(key, value);
-                    return;
-                }
-                let was_ghost = ghost.peek(key).is_some();
-                if recent.len() + frequent.len() >= *size {
-                    let target = *size / 4;
-                    if !recent.is_empty()
-                        && (recent.len() > target || (recent.len() == target && !was_ghost))
-                    {
-                        let oldest = recent.oldest_key().unwrap();
-                        recent.remove(oldest);
-                        ghost.put(oldest, ());
-                    } else if let Some(oldest) = frequent.oldest_key() {
-                        frequent.remove(oldest);
-                    }
-                }
-                if was_ghost {
-                    ghost.remove(key);
-                    frequent.put(key, value);
-                } else {
-                    recent.put(key, value);
-                }
-            }
+            Policy::TwoQueue(cache) => cache.put(key, value),
         }
     }
 
@@ -106,17 +65,7 @@ impl<V: Clone> Cache<V> {
     pub fn get(&self, key: u64) -> Option<V> {
         match &mut *self.inner.write().unwrap() {
             Policy::Lru(cache) => cache.get(key).cloned(),
-            Policy::TwoQueue {
-                recent, frequent, ..
-            } => {
-                if let Some(value) = frequent.get(key) {
-                    return Some(value.clone());
-                }
-                let value = recent.peek(key)?.clone();
-                recent.remove(key);
-                frequent.put(key, value.clone());
-                Some(value)
-            }
+            Policy::TwoQueue(cache) => cache.get(key).cloned(),
         }
     }
 
@@ -124,9 +73,7 @@ impl<V: Clone> Cache<V> {
     pub fn peek(&self, key: u64) -> Option<V> {
         match &*self.inner.read().unwrap() {
             Policy::Lru(cache) => cache.peek(key).cloned(),
-            Policy::TwoQueue {
-                recent, frequent, ..
-            } => frequent.peek(key).or_else(|| recent.peek(key)).cloned(),
+            Policy::TwoQueue(cache) => cache.peek(key).cloned(),
         }
     }
 
@@ -134,16 +81,7 @@ impl<V: Clone> Cache<V> {
     pub fn remove(&self, key: u64) {
         match &mut *self.inner.write().unwrap() {
             Policy::Lru(cache) => cache.remove(key),
-            Policy::TwoQueue {
-                recent,
-                frequent,
-                ghost,
-                ..
-            } => {
-                recent.remove(key);
-                frequent.remove(key);
-                ghost.remove(key);
-            }
+            Policy::TwoQueue(cache) => cache.remove(key),
         }
     }
 
@@ -151,13 +89,7 @@ impl<V: Clone> Cache<V> {
     pub fn elems(&self) -> Vec<Item<V>> {
         match &*self.inner.read().unwrap() {
             Policy::Lru(cache) => cache.elems(),
-            Policy::TwoQueue {
-                recent, frequent, ..
-            } => {
-                let mut items = recent.elems();
-                items.extend(frequent.elems());
-                items
-            }
+            Policy::TwoQueue(cache) => cache.elems(),
         }
     }
 
@@ -165,9 +97,7 @@ impl<V: Clone> Cache<V> {
     pub fn len(&self) -> usize {
         match &*self.inner.read().unwrap() {
             Policy::Lru(cache) => cache.len(),
-            Policy::TwoQueue {
-                recent, frequent, ..
-            } => recent.len() + frequent.len(),
+            Policy::TwoQueue(cache) => cache.len(),
         }
     }
 
