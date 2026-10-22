@@ -50,6 +50,3 @@ pub fn trim_scheme(value: &str) -> &str {
         .or_else(|| value.strip_prefix("http://"))
         .unwrap_or(value)
 }
-
-#[cfg(test)]
-mod comparison_test;

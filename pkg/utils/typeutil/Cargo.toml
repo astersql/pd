@@ -6,4 +6,7 @@ rust-version.workspace = true
 license.workspace = true
 
 [lib]
-path = "comparison.rs"
+path = "lib.rs"
+
+[dependencies]
+serde_json.workspace = true

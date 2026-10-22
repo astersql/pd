@@ -209,6 +209,9 @@ dependencies = [
 [[package]]
 name = "astersql-pd-typeutil"
 version = "0.1.0"
+dependencies = [
+ "serde_json",
+]
 
 [[package]]
 name = "async-trait"
