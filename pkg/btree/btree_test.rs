@@ -212,3 +212,58 @@ fn delete_and_rebalance() {
         }
     }
 }
+
+#[test]
+fn delete_min_max() {
+    for degree in [2, 3, 8, 32] {
+        for descending in [false, true] {
+            for mode in 0..3 {
+                let mut tree = BTree::new(
+                    degree,
+                    |a: &(i32, String), b: &(i32, String)| {
+                        if descending { a.0 > b.0 } else { a.0 < b.0 }
+                    },
+                );
+                assert_eq!(tree.delete_min(), None);
+                assert_eq!(tree.delete_max(), None);
+                for key in (0..512).map(|i| (i * 317) % 512) {
+                    tree.replace_or_insert((key, format!("value-{key}")));
+                }
+                let mut expected: std::collections::VecDeque<_> =
+                    (0..512).map(|key| (key, format!("value-{key}"))).collect();
+                if descending {
+                    expected.make_contiguous().reverse();
+                }
+                for step in 0..512 {
+                    let take_min = mode == 0 || (mode == 2 && step % 2 == 0);
+                    let want = if take_min {
+                        expected.pop_front()
+                    } else {
+                        expected.pop_back()
+                    };
+                    let got = if take_min {
+                        tree.delete_min()
+                    } else {
+                        tree.delete_max()
+                    };
+                    assert_eq!(got, want);
+                    assert_eq!(tree.len(), expected.len());
+                    assert_eq!(tree.is_empty(), expected.is_empty());
+                    assert_eq!(tree.min(), expected.front());
+                    assert_eq!(tree.max(), expected.back());
+                    for item in &expected {
+                        assert_eq!(tree.get(&(item.0, String::new())), Some(item));
+                    }
+                }
+                assert!(tree.root.is_none());
+                assert_eq!(tree.delete_min(), None);
+                assert_eq!(tree.delete_max(), None);
+                tree.replace_or_insert((0, "zero".to_owned()));
+                assert_eq!(tree.delete_min(), Some((0, "zero".to_owned())));
+                tree.replace_or_insert((0, "zero".to_owned()));
+                assert_eq!(tree.delete_max(), Some((0, "zero".to_owned())));
+                assert!(tree.is_empty());
+            }
+        }
+    }
+}

@@ -79,6 +79,17 @@ impl<T> Node<T> {
         }
     }
 
+    fn remove_min(&mut self, degree: usize) -> T {
+        if self.children.is_empty() {
+            return self.items.remove(0);
+        }
+        if self.children[0].items.len() < degree {
+            self.grow_child(0, degree);
+            return self.remove_min(degree);
+        }
+        self.children[0].remove_min(degree)
+    }
+
     fn remove_max(&mut self, degree: usize) -> T {
         if self.children.is_empty() {
             return self.items.pop().unwrap();
@@ -186,6 +197,28 @@ impl<T, F: Fn(&T, &T) -> bool> BTree<T, F> {
             self.root = root.children.pop();
         }
         removed
+    }
+
+    /// Removes the first item in comparator order, or returns `None` when empty.
+    pub fn delete_min(&mut self) -> Option<T> {
+        let removed = self.root.as_mut()?.remove_min(self.degree);
+        self.finish_extreme_removal();
+        Some(removed)
+    }
+
+    /// Removes the last item in comparator order, or returns `None` when empty.
+    pub fn delete_max(&mut self) -> Option<T> {
+        let removed = self.root.as_mut()?.remove_max(self.degree);
+        self.finish_extreme_removal();
+        Some(removed)
+    }
+
+    fn finish_extreme_removal(&mut self) {
+        self.length -= 1;
+        if self.root.as_ref().is_some_and(|root| root.items.is_empty()) {
+            let mut root = self.root.take().unwrap();
+            self.root = root.children.pop();
+        }
     }
 
     /// Returns the stored item equivalent to `key`.

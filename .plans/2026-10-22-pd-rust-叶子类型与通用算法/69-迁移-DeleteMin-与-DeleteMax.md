@@ -2,7 +2,7 @@
 
 批次：【批次 19】依赖批次 18
 
-状态：未开始
+状态：已完成，待回归
 
 目的：连续删除两端直到空树，返回值和 found 标志一致
 
@@ -67,3 +67,16 @@
 
 完成 `pkg/btree/lib.rs` 中的本任务行为和 `pkg/btree/btree_test.rs` 的独立测试；只在上述红绿证据、crate 回归和差异审查齐全后标记完成。
 
+
+## 本次验证证据（2026-10-22）
+
+- 批次 18：48、74 的实现分别已提交 `2c33c6528`、`f7aa5e4af`，68 已提交 `9588d7396` 且任务文件已删除；保留前置文件中的待回归原因是当时 BTree delete 缺失，现已补齐。
+- 红：`cargo test --locked -p astersql-pd-btree delete_min_max -- --nocapture` 退出 101，E0599 精确指向缺失的 delete_min/delete_max。
+- 绿：相同命令退出 0，1 项有效测试通过，覆盖 4 种 degree × 2 种比较顺序 × 3 种删除模式（每组 512 项）；校验完整返回值、空树 None、len/min/max/get、删除至空后重新插入，值包含非 Copy 的 String。
+- `cargo test --locked -p astersql-pd-btree --lib` 退出 0，7 项通过，0 ignored。
+- `cargo fmt --all`、`cargo fmt --all -- --check`、`cargo metadata --format-version 1 --no-deps`、`cargo tree --locked -p astersql-pd-btree` 和 `git diff --check` 均退出 0。BTree 无外部依赖，无 Cargo 配置变更。
+- Go oracle：`make gotest GOTEST_ARGS='./pkg/btree -run "^(TestDeleteMinG|TestDeleteMaxG)$$" -count=1'` 退出 0，2 项通过，make 已自动禁用 failpoints；双美元用于 Make 转义。
+- `cargo check --workspace --locked` 退出 101：并行任务未跟踪文件 pkg/movingaverage/time_median.rs:19 向 MedianFilter::new(isize) 传 i64。
+- `cargo test --workspace --locked` 退出 101：并行任务 pkg/utils/keyutil/util_test.rs 引用尚未实现的 build_key_range_maps 等函数。两处属于其他进行中的任务，本次 BTree 聚焦和全部 crate 测试通过，保留本文件待统一回归。
+- 红灯使用动态领取槽位 1，CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1；绿灯及补充检查使用动态领取槽位 2，CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2。每阶段退出 trap 均已移除自己的 owner 和锁目录，保留缓存。
+- Go 源码逐项对照：沿首/尾子树下降，最小子树先借位/合并；删除成功递减长度；根空时提升唯一子节点；Rust Option<T> 对应 Go (T, found)，无需 T: Default 或 Clone。
