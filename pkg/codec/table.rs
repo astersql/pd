@@ -2,11 +2,48 @@
 
 use crate::{
     DecodeBytesError, KEYSPACE_PREFIX_LEN, TXN_KEYSPACE_MODE_PREFIX, decode_bytes, decode_int,
-    parse_keyspace_prefix,
+    encode_int, parse_keyspace_prefix,
 };
 
 const TABLE_PREFIX: u8 = b't';
 const META_PREFIX: u8 = b'm';
+const RECORD_PREFIX: &[u8] = b"_r";
+const INDEX_PREFIX: &[u8] = b"_i";
+
+/// Generates a raw TiDB table key prefix for `table_id`.
+pub fn generate_table_key(table_id: i64) -> Vec<u8> {
+    encode_int(vec![TABLE_PREFIX], table_id)
+}
+
+fn append_record_key_prefix(mut key: Vec<u8>, table_id: i64) -> Vec<u8> {
+    key.push(TABLE_PREFIX);
+    let mut key = encode_int(key, table_id);
+    key.extend_from_slice(RECORD_PREFIX);
+    key
+}
+
+/// Generates the raw key prefix shared by all records in `table_id`.
+pub fn generate_record_key_prefix(table_id: i64) -> Vec<u8> {
+    append_record_key_prefix(Vec::with_capacity(1 + 8 + RECORD_PREFIX.len()), table_id)
+}
+
+/// Generates a raw TiDB row key for `row_id` in `table_id`.
+pub fn generate_row_key(table_id: i64, row_id: i64) -> Vec<u8> {
+    let key = append_record_key_prefix(
+        Vec::with_capacity(1 + 8 + RECORD_PREFIX.len() + 8),
+        table_id,
+    );
+    encode_int(key, row_id)
+}
+
+/// Generates a raw TiDB index key prefix for `index_id` in `table_id`.
+pub fn generate_index_key(table_id: i64, index_id: i64) -> Vec<u8> {
+    let mut key = Vec::with_capacity(1 + 8 + INDEX_PREFIX.len() + 8);
+    key.push(TABLE_PREFIX);
+    let mut key = encode_int(key, table_id);
+    key.extend_from_slice(INDEX_PREFIX);
+    encode_int(key, index_id)
+}
 
 /// Identifies a logical table, including an API v2 keyspace when present.
 ///
