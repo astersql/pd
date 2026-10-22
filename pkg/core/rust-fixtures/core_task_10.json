@@ -1,0 +1,155 @@
+{
+  "evidence": {
+    "go_tests_run": [
+      "TestRegionKey",
+      "TestRegionItem"
+    ],
+    "boundary_scope": "Only the first seven range cases are assertions executed by TestRegionItem. Remaining range cases are source-derived, not cross-language runtime differential tests.",
+    "metadata_source": "pkg/core/region.go RegionInfo.GetID/GetStartKey/GetEndKey/GetPeers/GetRegionEpoch return meta fields. TestNeedSync constructs Id=1000, a..z, ConfVer=100, Version=100 and peers. region_option.go SetRegionConfVer/SetRegionVersion accept uint64 and distinguish nil epoch. u64::MAX preservation and zero defaults follow unsigned field types, without arithmetic; absent epoch is represented as None. Owned cloning is the Rust value contract; no Go clone differential is claimed."
+  },
+  "ranges": [
+    {
+      "start": [
+        98
+      ],
+      "end": [],
+      "key": [
+        97
+      ],
+      "contains": false,
+      "source": "pkg/core/region.go RegionInfo.contain: bytes.Compare(key,start)>=0 && (len(end)==0 || bytes.Compare(key,end)<0); first 7 cases also asserted by TestRegionItem in region_tree_test.go; remaining cases derived from this expression (unsigned lexicographic bytes)."
+    },
+    {
+      "start": [
+        98
+      ],
+      "end": [],
+      "key": [
+        98
+      ],
+      "contains": true,
+      "source": "pkg/core/region.go RegionInfo.contain: bytes.Compare(key,start)>=0 && (len(end)==0 || bytes.Compare(key,end)<0); first 7 cases also asserted by TestRegionItem in region_tree_test.go; remaining cases derived from this expression (unsigned lexicographic bytes)."
+    },
+    {
+      "start": [
+        98
+      ],
+      "end": [],
+      "key": [
+        99
+      ],
+      "contains": true,
+      "source": "pkg/core/region.go RegionInfo.contain: bytes.Compare(key,start)>=0 && (len(end)==0 || bytes.Compare(key,end)<0); first 7 cases also asserted by TestRegionItem in region_tree_test.go; remaining cases derived from this expression (unsigned lexicographic bytes)."
+    },
+    {
+      "start": [
+        98
+      ],
+      "end": [
+        100
+      ],
+      "key": [
+        97
+      ],
+      "contains": false,
+      "source": "pkg/core/region.go RegionInfo.contain: bytes.Compare(key,start)>=0 && (len(end)==0 || bytes.Compare(key,end)<0); first 7 cases also asserted by TestRegionItem in region_tree_test.go; remaining cases derived from this expression (unsigned lexicographic bytes)."
+    },
+    {
+      "start": [
+        98
+      ],
+      "end": [
+        100
+      ],
+      "key": [
+        98
+      ],
+      "contains": true,
+      "source": "pkg/core/region.go RegionInfo.contain: bytes.Compare(key,start)>=0 && (len(end)==0 || bytes.Compare(key,end)<0); first 7 cases also asserted by TestRegionItem in region_tree_test.go; remaining cases derived from this expression (unsigned lexicographic bytes)."
+    },
+    {
+      "start": [
+        98
+      ],
+      "end": [
+        100
+      ],
+      "key": [
+        99
+      ],
+      "contains": true,
+      "source": "pkg/core/region.go RegionInfo.contain: bytes.Compare(key,start)>=0 && (len(end)==0 || bytes.Compare(key,end)<0); first 7 cases also asserted by TestRegionItem in region_tree_test.go; remaining cases derived from this expression (unsigned lexicographic bytes)."
+    },
+    {
+      "start": [
+        98
+      ],
+      "end": [
+        100
+      ],
+      "key": [
+        100
+      ],
+      "contains": false,
+      "source": "pkg/core/region.go RegionInfo.contain: bytes.Compare(key,start)>=0 && (len(end)==0 || bytes.Compare(key,end)<0); first 7 cases also asserted by TestRegionItem in region_tree_test.go; remaining cases derived from this expression (unsigned lexicographic bytes)."
+    },
+    {
+      "start": [],
+      "end": [],
+      "key": [],
+      "contains": true,
+      "source": "pkg/core/region.go RegionInfo.contain: bytes.Compare(key,start)>=0 && (len(end)==0 || bytes.Compare(key,end)<0); first 7 cases also asserted by TestRegionItem in region_tree_test.go; remaining cases derived from this expression (unsigned lexicographic bytes)."
+    },
+    {
+      "start": [],
+      "end": [],
+      "key": [
+        255
+      ],
+      "contains": true,
+      "source": "pkg/core/region.go RegionInfo.contain: bytes.Compare(key,start)>=0 && (len(end)==0 || bytes.Compare(key,end)<0); first 7 cases also asserted by TestRegionItem in region_tree_test.go; remaining cases derived from this expression (unsigned lexicographic bytes)."
+    },
+    {
+      "start": [
+        98
+      ],
+      "end": [
+        98
+      ],
+      "key": [
+        98
+      ],
+      "contains": false,
+      "source": "pkg/core/region.go RegionInfo.contain: bytes.Compare(key,start)>=0 && (len(end)==0 || bytes.Compare(key,end)<0); first 7 cases also asserted by TestRegionItem in region_tree_test.go; remaining cases derived from this expression (unsigned lexicographic bytes)."
+    },
+    {
+      "start": [
+        100
+      ],
+      "end": [
+        98
+      ],
+      "key": [
+        99
+      ],
+      "contains": false,
+      "source": "pkg/core/region.go RegionInfo.contain: bytes.Compare(key,start)>=0 && (len(end)==0 || bytes.Compare(key,end)<0); first 7 cases also asserted by TestRegionItem in region_tree_test.go; remaining cases derived from this expression (unsigned lexicographic bytes)."
+    },
+    {
+      "start": [
+        0,
+        128
+      ],
+      "end": [
+        0,
+        255
+      ],
+      "key": [
+        0,
+        129
+      ],
+      "contains": true,
+      "source": "pkg/core/region.go RegionInfo.contain: bytes.Compare(key,start)>=0 && (len(end)==0 || bytes.Compare(key,end)<0); first 7 cases also asserted by TestRegionItem in region_tree_test.go; remaining cases derived from this expression (unsigned lexicographic bytes)."
+    }
+  ]
+}

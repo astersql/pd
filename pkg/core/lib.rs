@@ -7,3 +7,10 @@ pub use peer::*;
 #[cfg(test)]
 #[path = "peer_test.rs"]
 mod peer_test;
+
+pub mod region_meta;
+pub use region_meta::*;
+
+#[cfg(test)]
+#[path = "region_meta_test.rs"]
+mod region_meta_test;
