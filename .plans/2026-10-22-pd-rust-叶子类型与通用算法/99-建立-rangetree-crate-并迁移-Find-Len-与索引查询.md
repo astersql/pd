@@ -2,7 +2,7 @@
 
 批次：【批次 26】依赖批次 23
 
-状态：未开始
+状态：已完成，待回归
 
 目的：Find 包含语义、Len、GetAt/GetWithIndex 与 btree rank 一致
 
@@ -68,3 +68,16 @@
 
 完成 `pkg/core/rangetree/lib.rs` 中的本任务行为和 `pkg/core/rangetree/range_tree_test.rs` 的独立测试；只在上述红绿证据、crate 回归和差异审查齐全后标记完成。
 
+
+## 本次执行证据
+
+- 前序 btree 任务 66–73 已完成提交（索引 fb7b92ae8、生命周期 4c6e0c61d），批次 23 的任务文件已移除。
+- Cargo 槽位 1；CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1；阶段结束已释放锁，保留缓存。
+- 红灯：cargo test --locked -p astersql-pd-rangetree find_len_and_index -- --nocapture，退出 101，RangeItem/RangeTree 未定义。
+- 绿灯：同命令退出 0，1 个有效测试；cargo test --locked -p astersql-pd-rangetree --lib 退出 0，1 个有效测试。
+- cargo fmt --all、cargo fmt --all -- --check、cargo metadata --format-version 1 --no-deps、cargo check --workspace --locked 均退出 0。
+- cargo tree --locked -p astersql-pd-rangetree 退出 0，只有 btree 依赖。
+- make gotest 指定 Go oracle 退出 2（Rewrite: command not found）；make failpoint-disable 退出 0 恢复。rangetree 和 btree 不使用 failpoint，随后 go test ./pkg/core/rangetree -run '^(TestRingPutItem)$' -count=1 退出 0，1 个测试。
+- git diff --check 退出 0。
+- cargo test --workspace --locked 退出 101：并行任务 pkg/ratelimit/concurrency_test.rs 引用了尚未实现的 acquire_token、release_token、get_waiting_tasks_num 等接口。本任务不修改其他会话正在开发的文件，保留此任务供统一回归。
+- Find 对照 Go：先取 comparator <= query 的最后项，再校验 start <= key 且 end 为空或 key < end；Len/GetAt/GetWithIndex 直接复用 canonical btree。from_items 仅装载已有不重叠区间，不提前迁移 Update/debris。

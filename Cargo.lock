@@ -173,6 +173,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "astersql-pd-rangetree"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-btree",
+]
+
+[[package]]
 name = "astersql-pd-ratelimit"
 version = "0.1.0"
 dependencies = [
