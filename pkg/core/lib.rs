@@ -142,3 +142,10 @@ pub use region_query::*;
 #[cfg(test)]
 #[path = "region_query_test.rs"]
 mod region_query_test;
+
+#[cfg(test)]
+#[path = "region_merge_policy_test.rs"]
+mod region_merge_policy_test;
+
+pub mod region_merge_policy;
+pub use region_merge_policy::*;

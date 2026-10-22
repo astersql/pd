@@ -1,0 +1,288 @@
+{
+  "evidence": "Go region.go unchanged since 0820f0b; TestNeedMerge has 5 rows; TestIsEmptyRegion has 6 rows. Oversized and signed boundaries are source-derived, not runtime differential evidence. Thresholds compare signed i64 directly without arithmetic; empty constants are 1 and 0.",
+  "cases": [
+    {
+      "name": "equal",
+      "size": 20,
+      "keys": 200000,
+      "size_limit": 20,
+      "keys_limit": 200000,
+      "empty": false,
+      "merge": true,
+      "oversized": true,
+      "source": "pkg/core/region_test.go:TestNeedMerge",
+      "derivation": {
+        "empty": "size <= 1 && keys == 0",
+        "merge": "size <= size_limit && keys <= keys_limit",
+        "oversized": "size >= size_limit || keys >= keys_limit"
+      }
+    },
+    {
+      "name": "below",
+      "size": 19,
+      "keys": 199999,
+      "size_limit": 20,
+      "keys_limit": 200000,
+      "empty": false,
+      "merge": true,
+      "oversized": false,
+      "source": "pkg/core/region_test.go:TestNeedMerge",
+      "derivation": {
+        "empty": "size <= 1 && keys == 0",
+        "merge": "size <= size_limit && keys <= keys_limit",
+        "oversized": "size >= size_limit || keys >= keys_limit"
+      }
+    },
+    {
+      "name": "size_equal",
+      "size": 20,
+      "keys": 199999,
+      "size_limit": 20,
+      "keys_limit": 200000,
+      "empty": false,
+      "merge": true,
+      "oversized": true,
+      "source": "pkg/core/region_test.go:TestNeedMerge",
+      "derivation": {
+        "empty": "size <= 1 && keys == 0",
+        "merge": "size <= size_limit && keys <= keys_limit",
+        "oversized": "size >= size_limit || keys >= keys_limit"
+      }
+    },
+    {
+      "name": "keys_above",
+      "size": 20,
+      "keys": 200001,
+      "size_limit": 20,
+      "keys_limit": 200000,
+      "empty": false,
+      "merge": false,
+      "oversized": true,
+      "source": "pkg/core/region_test.go:TestNeedMerge",
+      "derivation": {
+        "empty": "size <= 1 && keys == 0",
+        "merge": "size <= size_limit && keys <= keys_limit",
+        "oversized": "size >= size_limit || keys >= keys_limit"
+      }
+    },
+    {
+      "name": "both_above",
+      "size": 21,
+      "keys": 200001,
+      "size_limit": 20,
+      "keys_limit": 200000,
+      "empty": false,
+      "merge": false,
+      "oversized": true,
+      "source": "pkg/core/region_test.go:TestNeedMerge",
+      "derivation": {
+        "empty": "size <= 1 && keys == 0",
+        "merge": "size <= size_limit && keys <= keys_limit",
+        "oversized": "size >= size_limit || keys >= keys_limit"
+      }
+    },
+    {
+      "name": "size_above",
+      "size": 21,
+      "keys": 199999,
+      "size_limit": 20,
+      "keys_limit": 200000,
+      "empty": false,
+      "merge": false,
+      "oversized": true,
+      "source": "pkg/core/region.go:IsEmptyRegion/NeedMerge/IsOversized source-derived comparisons",
+      "derivation": {
+        "empty": "size <= 1 && keys == 0",
+        "merge": "size <= size_limit && keys <= keys_limit",
+        "oversized": "size >= size_limit || keys >= keys_limit"
+      }
+    },
+    {
+      "name": "keys_equal",
+      "size": 19,
+      "keys": 200000,
+      "size_limit": 20,
+      "keys_limit": 200000,
+      "empty": false,
+      "merge": true,
+      "oversized": true,
+      "source": "pkg/core/region.go:IsEmptyRegion/NeedMerge/IsOversized source-derived comparisons",
+      "derivation": {
+        "empty": "size <= 1 && keys == 0",
+        "merge": "size <= size_limit && keys <= keys_limit",
+        "oversized": "size >= size_limit || keys >= keys_limit"
+      }
+    },
+    {
+      "name": "empty_sentinel",
+      "size": 1,
+      "keys": 0,
+      "size_limit": 20,
+      "keys_limit": 200000,
+      "empty": true,
+      "merge": true,
+      "oversized": false,
+      "source": "pkg/core/region.go:IsEmptyRegion/NeedMerge/IsOversized source-derived comparisons; empty assertion: pkg/core/region_test.go:TestIsEmptyRegion",
+      "derivation": {
+        "empty": "size <= 1 && keys == 0",
+        "merge": "size <= size_limit && keys <= keys_limit",
+        "oversized": "size >= size_limit || keys >= keys_limit"
+      }
+    },
+    {
+      "name": "zero",
+      "size": 0,
+      "keys": 0,
+      "size_limit": 0,
+      "keys_limit": 0,
+      "empty": true,
+      "merge": true,
+      "oversized": true,
+      "source": "pkg/core/region.go:IsEmptyRegion/NeedMerge/IsOversized source-derived comparisons; empty assertion: pkg/core/region_test.go:TestIsEmptyRegion",
+      "derivation": {
+        "empty": "size <= 1 && keys == 0",
+        "merge": "size <= size_limit && keys <= keys_limit",
+        "oversized": "size >= size_limit || keys >= keys_limit"
+      }
+    },
+    {
+      "name": "nonempty_key",
+      "size": 1,
+      "keys": 1,
+      "size_limit": 20,
+      "keys_limit": 200000,
+      "empty": false,
+      "merge": true,
+      "oversized": false,
+      "source": "pkg/core/region.go:IsEmptyRegion/NeedMerge/IsOversized source-derived comparisons; empty assertion: pkg/core/region_test.go:TestIsEmptyRegion",
+      "derivation": {
+        "empty": "size <= 1 && keys == 0",
+        "merge": "size <= size_limit && keys <= keys_limit",
+        "oversized": "size >= size_limit || keys >= keys_limit"
+      }
+    },
+    {
+      "name": "two_keys",
+      "size": 1,
+      "keys": 2,
+      "size_limit": 20,
+      "keys_limit": 200000,
+      "empty": false,
+      "merge": true,
+      "oversized": false,
+      "source": "pkg/core/region.go:IsEmptyRegion/NeedMerge/IsOversized source-derived comparisons; empty assertion: pkg/core/region_test.go:TestIsEmptyRegion",
+      "derivation": {
+        "empty": "size <= 1 && keys == 0",
+        "merge": "size <= size_limit && keys <= keys_limit",
+        "oversized": "size >= size_limit || keys >= keys_limit"
+      }
+    },
+    {
+      "name": "large_with_key",
+      "size": 2,
+      "keys": 1,
+      "size_limit": 20,
+      "keys_limit": 200000,
+      "empty": false,
+      "merge": true,
+      "oversized": false,
+      "source": "pkg/core/region.go:IsEmptyRegion/NeedMerge/IsOversized source-derived comparisons; empty assertion: pkg/core/region_test.go:TestIsEmptyRegion",
+      "derivation": {
+        "empty": "size <= 1 && keys == 0",
+        "merge": "size <= size_limit && keys <= keys_limit",
+        "oversized": "size >= size_limit || keys >= keys_limit"
+      }
+    },
+    {
+      "name": "large_without_key",
+      "size": 2,
+      "keys": 0,
+      "size_limit": 20,
+      "keys_limit": 200000,
+      "empty": false,
+      "merge": true,
+      "oversized": false,
+      "source": "pkg/core/region.go:IsEmptyRegion/NeedMerge/IsOversized source-derived comparisons; empty assertion: pkg/core/region_test.go:TestIsEmptyRegion",
+      "derivation": {
+        "empty": "size <= 1 && keys == 0",
+        "merge": "size <= size_limit && keys <= keys_limit",
+        "oversized": "size >= size_limit || keys >= keys_limit"
+      }
+    },
+    {
+      "name": "negative",
+      "size": -1,
+      "keys": 0,
+      "size_limit": -1,
+      "keys_limit": 0,
+      "empty": true,
+      "merge": true,
+      "oversized": true,
+      "source": "pkg/core/region.go:IsEmptyRegion/NeedMerge/IsOversized source-derived comparisons",
+      "derivation": {
+        "empty": "size <= 1 && keys == 0",
+        "merge": "size <= size_limit && keys <= keys_limit",
+        "oversized": "size >= size_limit || keys >= keys_limit"
+      }
+    },
+    {
+      "name": "negative_keys",
+      "size": 1,
+      "keys": -1,
+      "size_limit": 0,
+      "keys_limit": 0,
+      "empty": false,
+      "merge": false,
+      "oversized": true,
+      "source": "pkg/core/region.go:IsEmptyRegion/NeedMerge/IsOversized source-derived comparisons",
+      "derivation": {
+        "empty": "size <= 1 && keys == 0",
+        "merge": "size <= size_limit && keys <= keys_limit",
+        "oversized": "size >= size_limit || keys >= keys_limit"
+      }
+    },
+    {
+      "name": "signed_min",
+      "size": -9223372036854775808,
+      "keys": -9223372036854775808,
+      "size_limit": -9223372036854775808,
+      "keys_limit": -9223372036854775808,
+      "empty": false,
+      "merge": true,
+      "oversized": true,
+      "source": "pkg/core/region.go:IsEmptyRegion/NeedMerge/IsOversized source-derived comparisons",
+      "derivation": {
+        "empty": "size <= 1 && keys == 0",
+        "merge": "size <= size_limit && keys <= keys_limit",
+        "oversized": "size >= size_limit || keys >= keys_limit"
+      }
+    },
+    {
+      "name": "signed_max",
+      "size": 9223372036854775807,
+      "keys": 9223372036854775807,
+      "size_limit": 9223372036854775807,
+      "keys_limit": 9223372036854775807,
+      "empty": false,
+      "merge": true,
+      "oversized": true,
+      "source": "pkg/core/region.go:IsEmptyRegion/NeedMerge/IsOversized source-derived comparisons",
+      "derivation": {
+        "empty": "size <= 1 && keys == 0",
+        "merge": "size <= size_limit && keys <= keys_limit",
+        "oversized": "size >= size_limit || keys >= keys_limit"
+      }
+    }
+  ],
+  "validation": {
+    "go_command": "go test ./pkg/core -run '^(TestNeedMerge|TestIsEmptyRegion)$' -count=1 -v",
+    "go_result": "exit 0; 2 tests, 5 merge rows and 6 empty rows; no failpoint rewriting (these tests do not use injection)",
+    "red_command": "cargo test --locked -p astersql-pd-core --lib core_task_32 -- --nocapture",
+    "red_result": "cargo exit 101; E0425 is_empty_region, E0599 need_merge/is_oversized missing; registered test bootstrap",
+    "green_result": "same command exit 0; 1 test, 17 scenarios; core --lib exit 0, 70 tests",
+    "cargo_slot": 1,
+    "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "workspace_result": "cargo test --workspace --locked exit 0; 325 passed across 74 test/doc-test suites; no failures",
+    "checks": "cargo metadata --format-version 1 --no-deps; cargo fmt --all -- --check; cargo check --workspace --locked: all exit 0"
+  }
+}
