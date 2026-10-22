@@ -1,0 +1,28 @@
+{
+  "size": 13,
+  "threshold_active": 9,
+  "sources": [
+    {
+      "scenario": "roles_updates_and_removal",
+      "go": "pkg/core/region.go:GetStoreRegionCount/GetStoreRegionSize/GetStoreWriteRate/GetStoreStats/GetAverageRegionSize/GetNotFromStorageRegionsCnt; pkg/core/region_tree.go:TotalSize/TotalWriteRate",
+      "existing_test": "pkg/core/region_tree_test.go:TestStoreRegionCount asserts leader/store peer/learner range counts equal root counts",
+      "derivation": "Two disjoint regions sizes 5+8=13; integer average 13/2=6; intervals 10 seconds yield (100/10,20/10) each. Witness and pending membership do not add to leader+follower+learner totals. Replacing size 5 by 10 gives 18; removing size 8 leaves 10; removing all gives zero.",
+      "evidence_boundary": "Aggregate expectations derived from read-only source, not a new Go oracle"
+    },
+    {
+      "scenario": "prepared_threshold_and_empty",
+      "go": "pkg/core/region.go:IsStorePrepared,CollectFactor=0.9,GetNotFromStorageRegionsCntByStore; pkg/core/region_tree.go:notFromStorageRegionsCount",
+      "existing_test": "TestStoreRegionCount covers membership counts, not readiness threshold",
+      "derivation": "8 >= 10*0.9 is false; 9 >= 10*0.9 is true; empty store 0>=0 is true. Storage replacement reduces active count back to 8.",
+      "evidence_boundary": "Readiness boundaries are source-derived and Rust-tested only"
+    }
+  ],
+  "go_validation": {
+    "command": "go test ./pkg/core -run '^(TestStoreRegionCount.*)$' -count=1 -v",
+    "exit_code": 0,
+    "tests": [
+      "TestStoreRegionCount"
+    ],
+    "note": "Direct read-only execution; no failpoint rewriting. This existing case requires no injected failpoint branch."
+  }
+}
