@@ -183,3 +183,59 @@ fn subtract_key_ranges() {
         vec![KeyRange::new([0], [128]), KeyRange::new([255], [])]
     );
 }
+
+#[test]
+fn delete_key_ranges() {
+    use crate::KeyRanges;
+    fn ranges(pairs: &[(&str, &str)]) -> Vec<KeyRange> {
+        pairs.iter().map(|(a, b)| KeyRange::new(a, b)).collect()
+    }
+    let cases: &[(&[(&str, &str)], (&str, &str), &[(&str, &str)])] = &[
+        (&[], ("", ""), &[]),
+        (
+            &[("a", "b"), ("c", "d")],
+            ("f", "g"),
+            &[("a", "b"), ("c", "d")],
+        ),
+        (&[("", "c"), ("e", "")], ("b", "d"), &[("", "b"), ("e", "")]),
+        (&[("", "")], ("b", "d"), &[("", "b"), ("d", "")]),
+        (&[("", "a"), ("b", "d")], ("b", "d"), &[("", "a")]),
+        (&[("b", "d")], ("a", "z"), &[]),
+        (&[("a", "z")], ("c", "g"), &[("a", "c"), ("g", "z")]),
+        (
+            &[("a", "c"), ("e", "g")],
+            ("c", "e"),
+            &[("a", "c"), ("e", "g")],
+        ),
+        (&[("", "")], ("", "c"), &[("c", "")]),
+        (&[("", "")], ("c", ""), &[("", "c")]),
+        (&[("", "")], ("", ""), &[]),
+        // Go compares end bytes lexically before applying its infinity rule.
+        (&[("a", "z")], ("c", ""), &[("a", "c"), ("", "z")]),
+        (&[("a", "z")], ("", ""), &[("", "z")]),
+        (
+            &[("e", "h"), ("a", "d")],
+            ("b", "f"),
+            &[("f", "h"), ("a", "b")],
+        ),
+        (&[("a", "z")], ("c", "c"), &[("a", "c"), ("c", "z")]),
+    ];
+    for &(input, base, expected) in cases {
+        let mut collection = KeyRanges::new(ranges(input));
+        let base = KeyRange::new(base.0, base.1);
+        let before = base.clone();
+        collection.delete(&base);
+        assert_eq!(
+            collection.ranges(),
+            ranges(expected),
+            "{input:?} delete {base:?}"
+        );
+        assert_eq!(base, before);
+    }
+    let mut collection = KeyRanges::new(vec![KeyRange::new([0], [])]);
+    collection.delete(&KeyRange::new([128], [255]));
+    assert_eq!(
+        collection.ranges(),
+        &[KeyRange::new([0], [128]), KeyRange::new([255], [])]
+    );
+}

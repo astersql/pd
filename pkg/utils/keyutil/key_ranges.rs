@@ -66,6 +66,35 @@ impl KeyRanges {
         result
     }
 
+    /// Deletes `base` from every range, preserving input order and Go boundary semantics.
+    /// Empty end bytes follow Go's lexical comparison before its infinity rule.
+    pub fn delete(&mut self, base: &KeyRange) {
+        let mut result = Vec::with_capacity(self.krs.len());
+        for range in self.krs.drain(..) {
+            if !range.over_lapped(base) {
+                result.push(range);
+                continue;
+            }
+            if range.start_key < base.start_key {
+                result.push(KeyRange::new(
+                    &range.start_key,
+                    min_end_key(&range.end_key, &base.start_key),
+                ));
+            }
+            if base.end_key < range.end_key
+                || (range.end_key.is_empty() && !base.end_key.is_empty())
+            {
+                let start = if range.start_key.is_empty() {
+                    &base.end_key
+                } else {
+                    max_start_key(&range.start_key, &base.end_key)
+                };
+                result.push(KeyRange::new(start, &range.end_key));
+            }
+        }
+        self.krs = result;
+    }
+
     fn join_adjacent(&mut self, symmetric: bool) {
         let mut merged: Vec<KeyRange> = Vec::with_capacity(self.krs.len());
         for range in self.krs.drain(..) {
