@@ -1,0 +1,83 @@
+{
+  "type_values": [
+    0,
+    1,
+    2,
+    3,
+    -1,
+    4,
+    9223372036854775807
+  ],
+  "names": [
+    "add-peer",
+    "remove-peer",
+    "send-snapshot",
+    "transfer-leader-in",
+    "",
+    "Add-Peer",
+    "add-peer ",
+    "unknown"
+  ],
+  "expected": {
+    "type_names": [
+      "add-peer",
+      "remove-peer",
+      "send-snapshot",
+      "transfer-leader-in",
+      "",
+      "",
+      ""
+    ],
+    "lookups": [
+      {
+        "value": 0,
+        "found": true
+      },
+      {
+        "value": 1,
+        "found": true
+      },
+      {
+        "value": 2,
+        "found": true
+      },
+      {
+        "value": 3,
+        "found": true
+      },
+      {
+        "value": 0,
+        "found": false
+      },
+      {
+        "value": 0,
+        "found": false
+      },
+      {
+        "value": 0,
+        "found": false
+      },
+      {
+        "value": 0,
+        "found": false
+      }
+    ],
+    "type_count": 4,
+    "region_influence": [
+      1000,
+      1000,
+      1000,
+      1000
+    ],
+    "small_region_influence": [
+      200,
+      200
+    ],
+    "small_region_threshold": 20,
+    "unlimited": 100000000,
+    "versions": [
+      "v1",
+      "v2"
+    ]
+  }
+}
