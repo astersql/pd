@@ -2,5 +2,9 @@
 #![forbid(unsafe_code)]
 mod rate_limiter;
 pub use rate_limiter::*;
+mod concurrency;
+#[cfg(test)]
+mod concurrency_test;
 #[cfg(test)]
 mod rate_limiter_test;
+pub use concurrency::ConcurrencyLimiter;
