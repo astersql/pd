@@ -7,4 +7,4 @@ mod concurrency;
 mod concurrency_test;
 #[cfg(test)]
 mod rate_limiter_test;
-pub use concurrency::ConcurrencyLimiter;
+pub use concurrency::{AcquireCancelled, ConcurrencyLimiter, TaskToken};
