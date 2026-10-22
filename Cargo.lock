@@ -56,13 +56,6 @@ name = "astersql-pd-codec"
 version = "0.1.0"
 
 [[package]]
-name = "astersql-pd-reflectutil"
-version = "0.1.0"
-dependencies = [
- "serde_json",
-]
-
-[[package]]
 name = "astersql-pd-compat-tests"
 version = "0.1.0"
 dependencies = [
@@ -103,10 +96,6 @@ name = "astersql-pd-mcs-constant"
 version = "0.1.0"
 
 [[package]]
-name = "astersql-pd-slice"
-version = "0.1.0"
-
-[[package]]
 name = "astersql-pd-member"
 version = "0.1.0"
 dependencies = [
@@ -140,6 +129,13 @@ dependencies = [
  "serde_json",
  "sha2",
  "slog",
+]
+
+[[package]]
+name = "astersql-pd-reflectutil"
+version = "0.1.0"
+dependencies = [
+ "serde_json",
 ]
 
 [[package]]
@@ -183,6 +179,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "astersql-pd-slice"
+version = "0.1.0"
+
+[[package]]
 name = "astersql-pd-storage"
 version = "0.1.0"
 dependencies = [
@@ -196,6 +196,13 @@ dependencies = [
 
 [[package]]
 name = "astersql-pd-syncutil"
+version = "0.1.0"
+dependencies = [
+ "tokio",
+]
+
+[[package]]
+name = "astersql-pd-timerutil"
 version = "0.1.0"
 dependencies = [
  "tokio",
