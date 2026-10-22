@@ -1,0 +1,49 @@
+{
+  "source": "pkg/core/metrics.go: regionHeartbeatProcessTracer.measure, resetCheckpoint, On*; unchanged from 0820f0b67b0e49b289b84fdf66b7b8fb178afe82",
+  "existing_tests": [
+    "TestRegionHeartbeatTracerToleratesNonMonotonicClock",
+    "TestRegionHeartbeatTracerRecordsEachStageIndependently"
+  ],
+  "evidence_boundary": "Existing Go tests assert nondecreasing sums and independent count +1 for all nine stages (positive intervals with 0.05s tolerance). Rust uses explicit clock for exact values. Zero elapsed, reset boundaries and recovery are source-derived, not cross-language executed differential cases.",
+  "derivation": "measure advances checkpoint even on regression, adds only positive elapsed seconds and always increments count; SaveCache begin/finish reset checkpoint without observation. Begin resets for reuse. No checkpoint or pool is shared between tracers.",
+  "stage_labels": [
+    "PreCheck",
+    "AsyncHotStatsDuration",
+    "RegionGuide",
+    "SaveCache_CheckOverlaps",
+    "SaveCache_InvalidRegion",
+    "SaveCache_SetRegion",
+    "SaveCache_UpdateSubTree",
+    "CollectRegionStats",
+    "Other"
+  ],
+  "normal": "Begin at 100ms; stages finish at 200,300,400,500,600,700,800,900,1000ms: each sum 0.1 and count 1. For each stage begin at current time, regress 1ms, then repeat at equal time: sum unchanged and count 3.",
+  "boundaries": [
+    {
+      "ms": 100,
+      "action": "save_begin"
+    },
+    {
+      "ms": 120,
+      "action": "overlaps"
+    },
+    {
+      "ms": 500,
+      "action": "save_end"
+    },
+    {
+      "ms": 490,
+      "action": "other"
+    },
+    {
+      "ms": 520,
+      "action": "other"
+    }
+  ],
+  "expected_boundaries": "overlaps sum .02 count 1; Other sum .03 count 2; untouched PreCheck count 0. Regression moves checkpoint to 490ms, so recovery measures 30ms.",
+  "expected": {
+    "positive_seconds": 0.1,
+    "overlaps_seconds": 0.02,
+    "other_seconds": 0.03
+  }
+}

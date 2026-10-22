@@ -35,3 +35,8 @@ pub fn router(services: Arc<dyn PdServices>, cancel: CancellationToken) -> axum:
     .into_axum_router()
     .merge(http::router(services))
 }
+
+pub mod core_trace;
+#[cfg(test)]
+#[path = "core_trace_test.rs"]
+mod core_trace_test;
