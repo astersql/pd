@@ -1,0 +1,9 @@
+[package]
+name = "astersql-pd-keyutil"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[lib]
+path = "util.rs"

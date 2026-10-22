@@ -2,7 +2,7 @@
 
 批次：【批次 18】依赖批次 17
 
-状态：未开始
+状态：已完成，待回归
 
 目的：Max/Min、start/end 特殊空值、Between 半开区间语义一致
 
@@ -68,3 +68,14 @@
 
 完成 `pkg/utils/keyutil/util.rs` 中的本任务行为和 `pkg/utils/keyutil/util_test.rs` 的独立测试；只在上述红绿证据、crate 回归和差异审查齐全后标记完成。
 
+
+## 本次验证证据（2026-10-22）
+
+- 批次 17 已有实现提交：errs 3ec3a6a1e、btree 247704616、balancer b4cf4d8a4；errs 前置聚焦审计/回归通过，工作区回归受并行任务影响。
+- 红测：`cargo test --locked -p astersql-pd-keyutil key_boundary_comparison -- --nocapture` 退出 101，缺少生产符号。实现后测试发现测试预期未覆盖第二参数为空的 MaxStartKey，按 Go 源码修正测试，再执行获得绿色证据。
+- Go oracle：util.go 和 util_test.go 与固定提交 42a0da684cf28f16a48c74c54575b711031f3c5d 逐字节相同；逐项核对 MaxKey/MinKey、MaxStartKey/MinEndKey、less 与 Between。Between 排除两个端点，MaxStartKey 空值最大，保留源码实际行为。没有启用 failpoints。
+- `cargo fmt --all`、`cargo fmt --all -- --check`、`cargo metadata --format-version 1 --no-deps`、`cargo tree --locked -p astersql-pd-keyutil`、`cargo check --workspace --locked` 均退出 0。keyutil 无第三方/协议/传输依赖，本任务比较无需 errs。
+- `cargo test --locked -p astersql-pd-keyutil key_boundary_comparison -- --nocapture` 退出 0，1 个有效测试；`cargo test --locked -p astersql-pd-keyutil --lib` 退出 0，1 个有效测试。覆盖 49 组键对、343 组区间组合、空边界、二进制键、相等输入借用身份和端点排除。
+- 各阶段动态领取槽位 2；CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2。阶段结束通过 EXIT trap 清理自己的锁，缓存保留。
+- `git diff --check` 退出 0。
+- 待回归：`cargo test --workspace --locked` 退出 101；并行工作中的 pkg/btree/btree_test.rs 引用尚未实现的 BTree::delete（5 个 E0599）。未修改或提交其他任务文件，保留本任务文件供统一回归。
