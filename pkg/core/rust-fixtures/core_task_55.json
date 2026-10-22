@@ -1,0 +1,63 @@
+{
+  "source": "pkg/core/region.go Rand{Leader,Follower,Learner,Witness,Pending}Regions; randomRegionMaxRetry=10; NeedTransferWitnessLeader; UpdateSubTree",
+  "existing_tests": "pkg/core/region_tree_test.go TestRandomRegion and TestRandomRegionDiscontinuous: empty=nil, one candidate repeated, fully contained ranges only",
+  "evidence_boundary": "Role routing, role replacement and witness leader cases derive from source branches, not a new Go oracle or a cross-language executed differential",
+  "region": {
+    "id": 55,
+    "start": "c",
+    "end": "f"
+  },
+  "roles": [
+    [
+      "leader",
+      1
+    ],
+    [
+      "follower",
+      2
+    ],
+    [
+      "learner",
+      3
+    ],
+    [
+      "witness",
+      2
+    ],
+    [
+      "pending",
+      3
+    ]
+  ],
+  "draw_count": 10,
+  "range_cases": [
+    [
+      "c",
+      "f",
+      10
+    ],
+    [
+      "c",
+      "e",
+      0
+    ],
+    [
+      "d",
+      "f",
+      0
+    ],
+    [
+      "g",
+      "x",
+      0
+    ],
+    [
+      "",
+      "",
+      10
+    ]
+  ],
+  "transition": "Replace peers by sole voter/store 4, leader 4, no pending; all old role queries empty, leader 4 returns region 55",
+  "witness_leader": "None region or missing leader=false; ordinary leader=false; leader.is_witness=true even if metadata peers omit leader",
+  "distinct_candidates": "Source-derived: add region 56 [f,z), leader/store 1, ordinary follower/store 2. Follower/store 2 has 55 and 56, witness/store 2 only 55, leader/store 2 empty. Alternating index selects alternating followers; reversed ranges [x,y),[f,z) only select 56."
+}

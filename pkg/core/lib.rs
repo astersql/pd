@@ -275,3 +275,9 @@ mod regions_range_stats;
 #[cfg(test)]
 #[path = "regions_range_stats_test.rs"]
 mod regions_range_stats_test;
+
+pub mod regions_random;
+pub use regions_random::*;
+#[cfg(test)]
+#[path = "regions_random_test.rs"]
+mod regions_random_test;
