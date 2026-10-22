@@ -98,3 +98,10 @@ pub use store_location::*;
 #[cfg(test)]
 #[path = "store_location_test.rs"]
 mod store_location_test;
+
+#[cfg(test)]
+#[path = "store_topology_test.rs"]
+mod store_topology_test;
+
+pub mod store_topology;
+pub use store_topology::*;

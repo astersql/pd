@@ -1,0 +1,311 @@
+{
+  "go_symbols": [
+    "GetStoreTopoWeight",
+    "buildTopology",
+    "updateTopology",
+    "getStoreLabelValue",
+    "StoreInfo.CompareLocation"
+  ],
+  "evidence": "Read-only Go source and existing assertions; derived numeric boundaries are not executed Go/Rust differential tests.",
+  "cases": [
+    {
+      "name": "partial",
+      "labels": [
+        "zone",
+        "rack"
+      ],
+      "stores": [
+        [
+          [
+            "zone",
+            "z1"
+          ],
+          [
+            "rack",
+            "r1"
+          ]
+        ],
+        [
+          [
+            "zone",
+            "z1"
+          ],
+          [
+            "rack",
+            "r2"
+          ]
+        ],
+        [
+          [
+            "zone",
+            "z2"
+          ],
+          [
+            "rack",
+            "r3"
+          ]
+        ],
+        [
+          [
+            "zone",
+            "z2"
+          ],
+          [
+            "rack",
+            "r4"
+          ]
+        ]
+      ],
+      "count": 3,
+      "expected": 0.25,
+      "source": "TestTopologyWeightWithPartialValidLabels: Equal(1.0/2/2)"
+    },
+    {
+      "name": "empty",
+      "labels": [
+        "zone"
+      ],
+      "stores": [
+        [
+          [
+            "zone",
+            ""
+          ]
+        ]
+      ],
+      "count": 3,
+      "expected": 1.0,
+      "source": "TestTopologyWeightWithEmptyStoreLabelValue checks preservation; updateTopology creates empty-key branch, divisor 1"
+    },
+    {
+      "name": "case_key",
+      "labels": [
+        "zone"
+      ],
+      "stores": [
+        [
+          [
+            "Zone",
+            "z1"
+          ]
+        ],
+        [
+          [
+            "zone",
+            "z2"
+          ]
+        ]
+      ],
+      "count": 2,
+      "expected": 0.5,
+      "source": "TestTopologyWeightUsesCaseSensitiveLabelKeys checks empty branch; buildTopology has two exact branches and exact count match"
+    },
+    {
+      "name": "case_value",
+      "labels": [
+        "zone"
+      ],
+      "stores": [
+        [
+          [
+            "zone",
+            "Z1"
+          ]
+        ],
+        [
+          [
+            "zone",
+            "z1"
+          ]
+        ]
+      ],
+      "count": 3,
+      "expected": 0.25,
+      "source": "updateTopology has two case-sensitive branches; CompareLocation EqualFold counts both in same location: 1/2/2"
+    },
+    {
+      "name": "no_eligible",
+      "labels": [
+        "zone"
+      ],
+      "stores": [
+        [
+          [
+            "zone",
+            "z1"
+          ]
+        ]
+      ],
+      "removed": true,
+      "count": 3,
+      "expected": 1.0,
+      "source": "TestTopologyWeightWithNoEligibleStores Equal(1.0)"
+    },
+    {
+      "name": "many",
+      "labels": [
+        "label-0",
+        "label-1",
+        "label-2",
+        "label-3",
+        "label-4",
+        "label-5",
+        "label-6",
+        "label-7",
+        "label-8",
+        "label-9",
+        "label-10",
+        "label-11",
+        "label-12",
+        "label-13",
+        "label-14",
+        "label-15",
+        "label-16"
+      ],
+      "stores": [
+        [
+          [
+            "label-0",
+            "value-0"
+          ],
+          [
+            "label-1",
+            "value-1"
+          ],
+          [
+            "label-2",
+            "value-2"
+          ],
+          [
+            "label-3",
+            "value-3"
+          ],
+          [
+            "label-4",
+            "value-4"
+          ],
+          [
+            "label-5",
+            "value-5"
+          ],
+          [
+            "label-6",
+            "value-6"
+          ],
+          [
+            "label-7",
+            "value-7"
+          ],
+          [
+            "label-8",
+            "value-8"
+          ],
+          [
+            "label-9",
+            "value-9"
+          ],
+          [
+            "label-10",
+            "value-10"
+          ],
+          [
+            "label-11",
+            "value-11"
+          ],
+          [
+            "label-12",
+            "value-12"
+          ],
+          [
+            "label-13",
+            "value-13"
+          ],
+          [
+            "label-14",
+            "value-14"
+          ],
+          [
+            "label-15",
+            "value-15"
+          ],
+          [
+            "label-16",
+            "value-16"
+          ]
+        ]
+      ],
+      "count": 3,
+      "expected": 1.0,
+      "source": "TestTopologyWeightWithManyLocationLabels checks no panic; each branch divisor is 1"
+    },
+    {
+      "name": "empty_labels",
+      "labels": [],
+      "stores": [
+        [],
+        []
+      ],
+      "count": 3,
+      "expected": 0.5,
+      "source": "buildTopology empty labels compares every distinct ID equal; GetStoreTopoWeight returns 1/2"
+    },
+    {
+      "name": "exact",
+      "labels": [
+        "dc"
+      ],
+      "stores": [
+        [
+          [
+            "dc",
+            "a"
+          ]
+        ],
+        [
+          [
+            "dc",
+            "a"
+          ]
+        ],
+        [
+          [
+            "dc",
+            "b"
+          ]
+        ],
+        [
+          [
+            "dc",
+            "c"
+          ]
+        ]
+      ],
+      "count": 3,
+      "expected": 0.16666666666666666,
+      "source": "TestTopologyWeight1 exact-count branch: 1/count/sameLocationStoreNum"
+    },
+    {
+      "name": "missing_path",
+      "labels": [
+        "zone"
+      ],
+      "stores": [
+        [
+          [
+            "zone",
+            "a"
+          ]
+        ]
+      ],
+      "target_labels": [
+        [
+          "zone",
+          "b"
+        ]
+      ],
+      "count": 3,
+      "expected": 1.0,
+      "source": "GetStoreTopoWeight missing map branch breaks; CompareLocation differs so sameLocationStoreNum=1"
+    }
+  ]
+}
