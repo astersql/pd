@@ -30,6 +30,7 @@ impl RegionInfo {
     /// Set replication state and state ID; state zero means UNKNOWN.
     pub fn set_replication_status(&mut self, state: i32, state_id: u64) {
         self.replication_status = (state, state_id);
+        self.replication_status_present = true;
     }
 }
 /// Decide follow-up work. Staleness validation belongs to the caller.
@@ -106,4 +107,19 @@ pub fn region_guide(region: &RegionInfo, origin: Option<&RegionInfo>) -> RegionG
         result.save_cache = true;
     }
     result
+}
+
+impl RegionInfo {
+    /// Whether a replication status was explicitly reported.
+    pub fn has_replication_status(&self) -> bool {
+        self.replication_status_present
+    }
+    /// Set the deprecated heartbeat CPU counter used by HTTP responses.
+    pub fn set_response_cpu_usage(&mut self, usage: u64) {
+        self.response_cpu_usage = usage;
+    }
+    /// Return the deprecated heartbeat CPU counter.
+    pub fn response_cpu_usage(&self) -> u64 {
+        self.response_cpu_usage
+    }
 }

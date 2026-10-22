@@ -1,0 +1,82 @@
+{
+  "sources": {
+    "empty": "region.go InitRegion(nil) returns nil; covertAPIRegionInfo(nil) marshals default repaired leader. All non-omitempty counters emitted.",
+    "full": "region.go InitRegion copies raw counters; HexRegionKeyStr uppercase; TestEasyJSONCompatibility asserts roundtrip for epoch, peers, counters, replication. Full values combine that example with source-derived max ID, binary keys, down/pending and buckets.",
+    "reuse": "InitRegion clears Buckets, only overwrites BucketVersion when >0.",
+    "replication": "fromPBReplicationStatus preserves present zero UNKNOWN; kvproto RegionReplicationState_name has 0 UNKNOWN, 1 SIMPLE_MAJORITY, 2 INTEGRITY_OVER_LABEL; unknown uses decimal.",
+    "evidence_boundary": "Only existing TestEasyJSONCompatibility executed in Go; other scenarios derived from read-only source, not runtime differential."
+  },
+  "empty": {
+    "id": 0,
+    "start_key": "",
+    "end_key": "",
+    "leader": {
+      "role_name": ""
+    },
+    "cpu_usage": 0,
+    "written_bytes": 0,
+    "read_bytes": 0,
+    "written_keys": 0,
+    "read_keys": 0,
+    "approximate_size": 0,
+    "approximate_keys": 0,
+    "approximate_kv_size": 0,
+    "approximate_columnar_kv_size": 0
+  },
+  "full": {
+    "id": 18446744073709551615,
+    "start_key": "00FF",
+    "end_key": "80",
+    "leader": {
+      "id": 101,
+      "store_id": 1,
+      "role_name": "Voter"
+    },
+    "cpu_usage": 77,
+    "written_bytes": 1000,
+    "read_bytes": 2000,
+    "written_keys": 100,
+    "read_keys": 200,
+    "approximate_size": 500,
+    "approximate_keys": 1000,
+    "approximate_kv_size": 450,
+    "approximate_columnar_kv_size": 50,
+    "epoch": {
+      "conf_ver": 1,
+      "version": 2
+    },
+    "peers": [
+      {
+        "id": 101,
+        "store_id": 1,
+        "role_name": "Voter"
+      }
+    ],
+    "down_peers": [
+      {
+        "peer": {
+          "id": 101,
+          "store_id": 1,
+          "role_name": "Voter"
+        },
+        "down_seconds": 9
+      }
+    ],
+    "pending_peers": [
+      {
+        "id": 101,
+        "store_id": 1,
+        "role_name": "Voter"
+      }
+    ],
+    "buckets": [
+      "",
+      "FF"
+    ],
+    "bucket_version": 7,
+    "replication_status": {
+      "state": "INTEGRITY_OVER_LABEL",
+      "state_id": 1
+    }
+  }
+}

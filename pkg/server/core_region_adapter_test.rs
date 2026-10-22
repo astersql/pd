@@ -85,6 +85,7 @@ fn core_task_61_heartbeat_fields() {
             }),
             leader: Some(peer),
             term: 19,
+            cpu_usage: 77,
             pending_peers: vec![metapb::Peer { id: 9, ..peer }, peer],
             down_peers: vec![pdpb::PeerStats {
                 peer: Some(peer),
@@ -123,6 +124,8 @@ fn core_task_61_heartbeat_fields() {
     )
     .unwrap();
     assert_eq!(r.term(), 19);
+    assert_eq!(r.response_cpu_usage(), 77);
+    assert!(r.has_replication_status());
     assert_eq!(r.learners().len(), 1);
     assert_eq!(r.witnesses().len(), 1);
     assert_eq!(r.leader().unwrap().id, 7);

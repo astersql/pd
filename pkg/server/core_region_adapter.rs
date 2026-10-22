@@ -131,6 +131,7 @@ pub fn region_from_heartbeat(
     if let Some(i) = p.interval {
         r.set_report_interval(i.start_timestamp, i.end_timestamp);
     }
+    r.set_response_cpu_usage(p.cpu_usage);
     if let Some(c) = p.cpu_stats {
         r.set_read_cpu_usage(c.unified_read);
     }

@@ -84,6 +84,8 @@ impl RegionInfo {
         let mut result = Self::new(copy.meta, copy.leader, copy.down_peers, copy.pending_peers);
         result.term = copy.term;
         result.replication_status = copy.replication_status;
+        result.replication_status_present = copy.replication_status_present;
+        result.response_cpu_usage = copy.response_cpu_usage;
         result.report_buckets = copy.report_buckets;
         result.bucket_meta = copy.bucket_meta;
         result.stats = stats;
