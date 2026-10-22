@@ -10,6 +10,6 @@ mod rate_limiter_test;
 pub use concurrency::{AcquireCancelled, ConcurrencyLimiter, TaskToken};
 
 mod limiter;
-pub use limiter::{Limiter, UpdateStatus};
+pub use limiter::{DoneFunc, Limiter, UpdateStatus};
 #[cfg(test)]
 mod limiter_test;

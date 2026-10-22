@@ -183,6 +183,7 @@ dependencies = [
 name = "astersql-pd-ratelimit"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-errs",
  "astersql-pd-syncutil",
  "thiserror 2.0.21",
  "tokio",

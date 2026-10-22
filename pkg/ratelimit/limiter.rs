@@ -1,7 +1,41 @@
 // Copyright 2026 AsterSQL.
 use crate::{ConcurrencyLimiter, RateLimiter};
+use astersql_pd_errs::{TypedError, catalog::ERR_RATE_LIMIT_EXCEEDED};
 use astersql_pd_syncutil::asynchronous::Mutex;
-use std::sync::Arc;
+use std::sync::{
+    Arc,
+    atomic::{AtomicBool, Ordering},
+};
+
+/// Explicit completion handle; clones release the original admission only once.
+/// Dropping a successful handle does not complete the admitted task.
+#[derive(Debug, Clone)]
+pub struct DoneFunc(Arc<Completion>);
+
+#[derive(Debug)]
+struct Completion {
+    concurrency: Arc<ConcurrencyLimiter>,
+    released: AtomicBool,
+}
+
+impl DoneFunc {
+    /// Releases this admission once, including across concurrent clones.
+    pub fn done(&self) {
+        if !self.0.released.swap(true, Ordering::AcqRel) {
+            self.0.concurrency.release();
+        }
+    }
+}
+
+// Return the concurrency slot if QPS rejects or the admission future is dropped.
+struct PendingAdmission(Option<DoneFunc>);
+impl Drop for PendingAdmission {
+    fn drop(&mut self) {
+        if let Some(done) = &self.0 {
+            done.done();
+        }
+    }
+}
 
 const EPS: f64 = 1e-8;
 
@@ -44,6 +78,29 @@ impl Limiter {
                 rate: None,
             }),
         }
+    }
+
+    /// Checks concurrency before QPS and returns an explicit completion handle.
+    /// Both rejection paths use the same stable PD domain error.
+    pub async fn allow(&self) -> Result<DoneFunc, TypedError> {
+        let (concurrency, rate) = {
+            let state = self.state.lock().await;
+            (state.concurrency.clone(), state.rate.clone())
+        };
+        let exceeded = || ERR_RATE_LIMIT_EXCEEDED.instantiate(std::iter::empty::<String>());
+        if !concurrency.allow() {
+            return Err(exceeded());
+        }
+        let mut pending = PendingAdmission(Some(DoneFunc(Arc::new(Completion {
+            concurrency,
+            released: AtomicBool::new(false),
+        }))));
+        if let Some(rate) = rate {
+            if !rate.allow().await {
+                return Err(exceeded());
+            }
+        }
+        Ok(pending.0.take().expect("admission has a completion handle"))
     }
 
     /// Returns the current concurrency limiter, retaining its lifetime.
