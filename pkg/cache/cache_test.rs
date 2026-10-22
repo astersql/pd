@@ -429,3 +429,67 @@ fn two_queue_behavior_ghost_capacity_and_ratios() {
     shared.put(1, Arc::clone(&value));
     assert!(Arc::ptr_eq(shared.get(1).unwrap(), &value));
 }
+
+#[test]
+fn priority_queue_query_remove() {
+    use super::{PriorityQueue, PriorityQueueItem};
+    struct Value(u64);
+    impl PriorityQueueItem for Value {
+        fn id(&self) -> u64 {
+            self.0
+        }
+    }
+    let mut q = PriorityQueue::<Value>::new(3);
+    assert!(q.get(99).is_none());
+    assert!(q.peek().is_none());
+    assert!(q.tail().is_none());
+    assert!(q.elems().is_empty());
+    q.remove(99);
+    assert_eq!(q.len(), 0);
+    for (priority, id) in [(3, 3), (1, 1), (2, 2)] {
+        assert!(q.put(priority, Value(id)));
+    }
+    assert_eq!(q.peek().unwrap().value.0, 1);
+    assert_eq!(q.tail().unwrap().value.0, 3);
+    let snapshot = q.elems();
+    assert_eq!(
+        snapshot.iter().map(|e| e.value.0).collect::<Vec<_>>(),
+        [1, 2, 3]
+    );
+    assert!(Arc::ptr_eq(&snapshot[0].value, &q.get(1).unwrap().value));
+    q.remove(99);
+    assert_eq!(q.len(), 3);
+    q.remove(2); // middle deletion
+    assert!(q.get(2).is_none());
+    assert_eq!(q.len(), 2);
+    q.remove(1);
+    assert_eq!(q.peek().unwrap().value.0, 3);
+    assert!(q.put(-1, Value(3)));
+    assert_eq!(q.get(3).unwrap().priority, -1);
+    assert_eq!(q.tail().unwrap().priority, -1);
+    q.remove(3);
+    q.remove(3);
+    assert!(q.is_empty());
+    assert!(q.peek().is_none());
+    assert!(q.tail().is_none());
+    assert!(q.elems().is_empty());
+    assert_eq!(snapshot[0].priority, 1);
+    assert!(q.put(0, Value(0)));
+    assert_eq!(q.peek().unwrap().value.0, 0);
+    q.remove(0);
+
+    // Go's priority-only tree comparison leaves displaced IDs queryable.
+    assert!(q.put(10, Value(1)));
+    assert!(q.put(10, Value(2)));
+    assert_eq!(q.len(), 1);
+    assert_eq!(q.get(1).unwrap().value.0, 1);
+    assert_eq!(q.get(2).unwrap().value.0, 2);
+    assert_eq!(q.peek().unwrap().value.0, 2);
+    q.remove(1);
+    assert!(q.is_empty());
+    assert!(q.get(1).is_none());
+    assert!(q.get(2).is_some());
+    assert!(q.peek().is_none());
+    q.remove(2);
+    assert!(q.get(2).is_none());
+}

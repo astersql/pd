@@ -85,6 +85,29 @@ impl<V: PriorityQueueItem> PriorityQueue<V> {
         true
     }
 
+    /// Finds an ID without changing queue order, including displaced tied IDs.
+    pub fn get(&self, id: u64) -> Option<&Entry<V>> {
+        self.items.get(&id)
+    }
+
+    /// Returns the highest precedence entry (the smallest numeric priority).
+    pub fn peek(&self) -> Option<&Entry<V>> {
+        self.ordered.first_key_value().map(|(_, entry)| entry)
+    }
+
+    /// Returns the lowest precedence entry (the largest numeric priority).
+    pub fn tail(&self) -> Option<&Entry<V>> {
+        self.ordered.last_key_value().map(|(_, entry)| entry)
+    }
+
+    /// Removes an ID and its priority's sorted entry, as in Go's priority-only tree.
+    /// Missing IDs have no effect; tied IDs may remain in the lookup map.
+    pub fn remove(&mut self, id: u64) {
+        if let Some(entry) = self.items.remove(&id) {
+            self.ordered.remove(&entry.priority);
+        }
+    }
+
     /// Counts sorted entries, matching Go even when priorities collide.
     pub fn len(&self) -> usize {
         self.ordered.len()
