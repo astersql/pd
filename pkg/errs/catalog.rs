@@ -628,3 +628,433 @@ pub const SERVICE_ERRORS: &[ErrorTemplate] = &[
     ERR_BYTES_TO_UINT64,
     ERR_MAX_WAITING_TASKS_EXCEEDED,
 ];
+
+/// ErrURLParse preserves the Go error code and message template.
+pub const ERR_URL_PARSE: ErrorTemplate =
+    ErrorTemplate::new("PD:url:ErrURLParse", "parse url error");
+
+/// ErrQueryUnescape preserves the Go error code and message template.
+pub const ERR_QUERY_UNESCAPE: ErrorTemplate = ErrorTemplate::new(
+    "PD:url:ErrQueryUnescape",
+    "inverse transformation of QueryEscape error",
+);
+
+/// ErrGRPCDial preserves the Go error code and message template.
+pub const ERR_GRPC_DIAL: ErrorTemplate = ErrorTemplate::new("PD:grpc:ErrGRPCDial", "dial error");
+
+/// ErrCloseGRPCConn preserves the Go error code and message template.
+pub const ERR_CLOSE_GRPC_CONN: ErrorTemplate =
+    ErrorTemplate::new("PD:grpc:ErrCloseGRPCConn", "close gRPC connection failed");
+
+/// ErrGRPCSend preserves the Go error code and message template.
+pub const ERR_GRPC_SEND: ErrorTemplate =
+    ErrorTemplate::new("PD:grpc:ErrGRPCSend", "send request error");
+
+/// ErrGRPCRecv preserves the Go error code and message template.
+pub const ERR_GRPC_RECV: ErrorTemplate =
+    ErrorTemplate::new("PD:grpc:ErrGRPCRecv", "receive response error");
+
+/// ErrGRPCCloseSend preserves the Go error code and message template.
+pub const ERR_GRPC_CLOSE_SEND: ErrorTemplate =
+    ErrorTemplate::new("PD:grpc:ErrGRPCCloseSend", "close send error");
+
+/// ErrGRPCCreateStream preserves the Go error code and message template.
+pub const ERR_GRPC_CREATE_STREAM: ErrorTemplate =
+    ErrorTemplate::new("PD:grpc:ErrGRPCCreateStream", "create stream error");
+
+/// ErrProtoUnmarshal preserves the Go error code and message template.
+pub const ERR_PROTO_UNMARSHAL: ErrorTemplate =
+    ErrorTemplate::new("PD:proto:ErrProtoUnmarshal", "failed to unmarshal proto");
+
+/// ErrProtoMarshal preserves the Go error code and message template.
+pub const ERR_PROTO_MARSHAL: ErrorTemplate =
+    ErrorTemplate::new("PD:proto:ErrProtoMarshal", "failed to marshal proto");
+
+/// ErrNewEtcdClient preserves the Go error code and message template.
+pub const ERR_NEW_ETCD_CLIENT: ErrorTemplate =
+    ErrorTemplate::new("PD:etcd:ErrNewEtcdClient", "new etcd client failed");
+
+/// ErrStartEtcd preserves the Go error code and message template.
+pub const ERR_START_ETCD: ErrorTemplate =
+    ErrorTemplate::new("PD:etcd:ErrStartEtcd", "start etcd failed");
+
+/// ErrEtcdURLMap preserves the Go error code and message template.
+pub const ERR_ETCD_URL_MAP: ErrorTemplate =
+    ErrorTemplate::new("PD:etcd:ErrEtcdURLMap", "etcd url map error");
+
+/// ErrEtcdGrantLease preserves the Go error code and message template.
+pub const ERR_ETCD_GRANT_LEASE: ErrorTemplate =
+    ErrorTemplate::new("PD:etcd:ErrEtcdGrantLease", "etcd lease failed");
+
+/// ErrEtcdTxnInternal preserves the Go error code and message template.
+pub const ERR_ETCD_TXN_INTERNAL: ErrorTemplate = ErrorTemplate::new(
+    "PD:etcd:ErrEtcdTxnInternal",
+    "internal etcd transaction error occurred",
+);
+
+/// ErrEtcdTxnConflict preserves the Go error code and message template.
+pub const ERR_ETCD_TXN_CONFLICT: ErrorTemplate = ErrorTemplate::new(
+    "PD:etcd:ErrEtcdTxnConflict",
+    "etcd transaction failed, conflicted and rolled back",
+);
+
+/// ErrEtcdTxnResponse preserves the Go error code and message template.
+pub const ERR_ETCD_TXN_RESPONSE: ErrorTemplate = ErrorTemplate::new(
+    "PD:etcd:ErrEtcdTxnResponse",
+    "etcd transaction returned unexpected response: %v",
+);
+
+/// ErrEtcdKVPut preserves the Go error code and message template.
+pub const ERR_ETCD_KV_PUT: ErrorTemplate =
+    ErrorTemplate::new("PD:etcd:ErrEtcdKVPut", "etcd KV put failed");
+
+/// ErrEtcdKVDelete preserves the Go error code and message template.
+pub const ERR_ETCD_KV_DELETE: ErrorTemplate =
+    ErrorTemplate::new("PD:etcd:ErrEtcdKVDelete", "etcd KV delete failed");
+
+/// ErrEtcdKVGet preserves the Go error code and message template.
+pub const ERR_ETCD_KV_GET: ErrorTemplate =
+    ErrorTemplate::new("PD:etcd:ErrEtcdKVGet", "etcd KV get failed");
+
+/// ErrEtcdKVGetResponse preserves the Go error code and message template.
+pub const ERR_ETCD_KV_GET_RESPONSE: ErrorTemplate = ErrorTemplate::new(
+    "PD:etcd:ErrEtcdKVGetResponse",
+    "etcd invalid get value response %v, must only one",
+);
+
+/// ErrEtcdGetCluster preserves the Go error code and message template.
+pub const ERR_ETCD_GET_CLUSTER: ErrorTemplate = ErrorTemplate::new(
+    "PD:etcd:ErrEtcdGetCluster",
+    "etcd get cluster from remote peer failed",
+);
+
+/// ErrEtcdMoveLeader preserves the Go error code and message template.
+pub const ERR_ETCD_MOVE_LEADER: ErrorTemplate =
+    ErrorTemplate::new("PD:etcd:ErrEtcdMoveLeader", "etcd move leader error");
+
+/// ErrEtcdWatcherCancel preserves the Go error code and message template.
+pub const ERR_ETCD_WATCHER_CANCEL: ErrorTemplate =
+    ErrorTemplate::new("PD:etcd:ErrEtcdWatcherCancel", "watcher canceled");
+
+/// ErrCloseEtcdClient preserves the Go error code and message template.
+pub const ERR_CLOSE_ETCD_CLIENT: ErrorTemplate =
+    ErrorTemplate::new("PD:etcd:ErrCloseEtcdClient", "close etcd client failed");
+
+/// ErrEtcdMemberList preserves the Go error code and message template.
+pub const ERR_ETCD_MEMBER_LIST: ErrorTemplate =
+    ErrorTemplate::new("PD:etcd:ErrEtcdMemberList", "etcd member list failed");
+
+/// ErrEtcdMemberRemove preserves the Go error code and message template.
+pub const ERR_ETCD_MEMBER_REMOVE: ErrorTemplate =
+    ErrorTemplate::new("PD:etcd:ErrEtcdMemberRemove", "etcd remove member failed");
+
+/// ErrDashboardStart preserves the Go error code and message template.
+pub const ERR_DASHBOARD_START: ErrorTemplate =
+    ErrorTemplate::new("PD:dashboard:ErrDashboardStart", "start dashboard failed");
+
+/// ErrDashboardStop preserves the Go error code and message template.
+pub const ERR_DASHBOARD_STOP: ErrorTemplate =
+    ErrorTemplate::new("PD:dashboard:ErrDashboardStop", "stop dashboard failed");
+
+/// ErrStrconvParseBool preserves the Go error code and message template.
+pub const ERR_STRCONV_PARSE_BOOL: ErrorTemplate =
+    ErrorTemplate::new("PD:strconv:ErrStrconvParseBool", "parse bool error");
+
+/// ErrStrconvParseInt preserves the Go error code and message template.
+pub const ERR_STRCONV_PARSE_INT: ErrorTemplate =
+    ErrorTemplate::new("PD:strconv:ErrStrconvParseInt", "parse int error");
+
+/// ErrStrconvParseUint preserves the Go error code and message template.
+pub const ERR_STRCONV_PARSE_UINT: ErrorTemplate =
+    ErrorTemplate::new("PD:strconv:ErrStrconvParseUint", "parse uint error");
+
+/// ErrStrconvParseFloat preserves the Go error code and message template.
+pub const ERR_STRCONV_PARSE_FLOAT: ErrorTemplate =
+    ErrorTemplate::new("PD:strconv:ErrStrconvParseFloat", "parse float error");
+
+/// ErrPrometheusPushMetrics preserves the Go error code and message template.
+pub const ERR_PROMETHEUS_PUSH_METRICS: ErrorTemplate = ErrorTemplate::new(
+    "PD:prometheus:ErrPrometheusPushMetrics",
+    "push metrics to gateway failed",
+);
+
+/// ErrPrometheusCreateClient preserves the Go error code and message template.
+pub const ERR_PROMETHEUS_CREATE_CLIENT: ErrorTemplate = ErrorTemplate::new(
+    "PD:prometheus:ErrPrometheusCreateClient",
+    "create client error",
+);
+
+/// ErrPrometheusQuery preserves the Go error code and message template.
+pub const ERR_PROMETHEUS_QUERY: ErrorTemplate =
+    ErrorTemplate::new("PD:prometheus:ErrPrometheusQuery", "query error");
+
+/// ErrSendRequest preserves the Go error code and message template.
+pub const ERR_SEND_REQUEST: ErrorTemplate =
+    ErrorTemplate::new("PD:http:ErrSendRequest", "send HTTP request failed");
+
+/// ErrWriteHTTPBody preserves the Go error code and message template.
+pub const ERR_WRITE_HTTP_BODY: ErrorTemplate =
+    ErrorTemplate::new("PD:http:ErrWriteHTTPBody", "write HTTP body failed");
+
+/// ErrNewHTTPRequest preserves the Go error code and message template.
+pub const ERR_NEW_HTTP_REQUEST: ErrorTemplate =
+    ErrorTemplate::new("PD:http:ErrNewHTTPRequest", "new HTTP request failed");
+
+/// ErrIORead preserves the Go error code and message template.
+pub const ERR_IO_READ: ErrorTemplate = ErrorTemplate::new("PD:ioutil:ErrIORead", "IO read error");
+
+/// ErrOSOpen preserves the Go error code and message template.
+pub const ERR_OS_OPEN: ErrorTemplate = ErrorTemplate::new("PD:os:ErrOSOpen", "open error");
+
+/// ErrReadDirName preserves the Go error code and message template.
+pub const ERR_READ_DIR_NAME: ErrorTemplate =
+    ErrorTemplate::new("PD:dir:ErrReadDirName", "read dir name error");
+
+/// ErrNetstatTCPSocks preserves the Go error code and message template.
+pub const ERR_NETSTAT_TCP_SOCKS: ErrorTemplate =
+    ErrorTemplate::new("PD:netstat:ErrNetstatTCPSocks", "TCP socks error");
+
+/// ErrHexDecodingString preserves the Go error code and message template.
+pub const ERR_HEX_DECODING_STRING: ErrorTemplate =
+    ErrorTemplate::new("PD:hex:ErrHexDecodingString", "decode string %s error");
+
+/// ErrFilePathAbs preserves the Go error code and message template.
+pub const ERR_FILE_PATH_ABS: ErrorTemplate = ErrorTemplate::new(
+    "PD:filepath:ErrFilePathAbs",
+    "failed to convert a path to absolute path",
+);
+
+/// ErrLoadPlugin preserves the Go error code and message template.
+pub const ERR_LOAD_PLUGIN: ErrorTemplate =
+    ErrorTemplate::new("PD:plugin:ErrLoadPlugin", "failed to load plugin");
+
+/// ErrLookupPluginFunc preserves the Go error code and message template.
+pub const ERR_LOOKUP_PLUGIN_FUNC: ErrorTemplate = ErrorTemplate::new(
+    "PD:plugin:ErrLookupPluginFunc",
+    "failed to lookup plugin function",
+);
+
+/// ErrJSONMarshal preserves the Go error code and message template.
+pub const ERR_JSON_MARSHAL: ErrorTemplate =
+    ErrorTemplate::new("PD:json:ErrJSONMarshal", "failed to marshal json");
+
+/// ErrJSONUnmarshal preserves the Go error code and message template.
+pub const ERR_JSON_UNMARSHAL: ErrorTemplate =
+    ErrorTemplate::new("PD:json:ErrJSONUnmarshal", "failed to unmarshal json");
+
+/// ErrLevelDBClose preserves the Go error code and message template.
+pub const ERR_LEVEL_DB_CLOSE: ErrorTemplate =
+    ErrorTemplate::new("PD:leveldb:ErrLevelDBClose", "close leveldb error");
+
+/// ErrLevelDBWrite preserves the Go error code and message template.
+pub const ERR_LEVEL_DB_WRITE: ErrorTemplate =
+    ErrorTemplate::new("PD:leveldb:ErrLevelDBWrite", "leveldb write error");
+
+/// ErrLevelDBOpen preserves the Go error code and message template.
+pub const ERR_LEVEL_DB_OPEN: ErrorTemplate =
+    ErrorTemplate::new("PD:leveldb:ErrLevelDBOpen", "leveldb open file error");
+
+/// ErrSemverNewVersion preserves the Go error code and message template.
+pub const ERR_SEMVER_NEW_VERSION: ErrorTemplate =
+    ErrorTemplate::new("PD:semver:ErrSemverNewVersion", "new version error");
+
+/// ErrInitLogger preserves the Go error code and message template.
+pub const ERR_INIT_LOGGER: ErrorTemplate =
+    ErrorTemplate::new("PD:log:ErrInitLogger", "init logger error");
+
+/// ErrEncryptionInvalidMethod preserves the Go error code and message template.
+pub const ERR_ENCRYPTION_INVALID_METHOD: ErrorTemplate = ErrorTemplate::new(
+    "PD:encryption:ErrEncryptionInvalidMethod",
+    "invalid encryption method",
+);
+
+/// ErrEncryptionInvalidConfig preserves the Go error code and message template.
+pub const ERR_ENCRYPTION_INVALID_CONFIG: ErrorTemplate =
+    ErrorTemplate::new("PD:encryption:ErrEncryptionInvalidConfig", "invalid config");
+
+/// ErrEncryptionGenerateIV preserves the Go error code and message template.
+pub const ERR_ENCRYPTION_GENERATE_IV: ErrorTemplate = ErrorTemplate::new(
+    "PD:encryption:ErrEncryptionGenerateIV",
+    "fail to generate iv",
+);
+
+/// ErrEncryptionGCMEncrypt preserves the Go error code and message template.
+pub const ERR_ENCRYPTION_GCM_ENCRYPT: ErrorTemplate = ErrorTemplate::new(
+    "PD:encryption:ErrEncryptionGCMEncrypt",
+    "GCM encryption fail",
+);
+
+/// ErrEncryptionGCMDecrypt preserves the Go error code and message template.
+pub const ERR_ENCRYPTION_GCM_DECRYPT: ErrorTemplate = ErrorTemplate::new(
+    "PD:encryption:ErrEncryptionGCMDecrypt",
+    "GCM decryption fail",
+);
+
+/// ErrEncryptionCTREncrypt preserves the Go error code and message template.
+pub const ERR_ENCRYPTION_CTR_ENCRYPT: ErrorTemplate = ErrorTemplate::new(
+    "PD:encryption:ErrEncryptionCTREncrypt",
+    "CTR encryption fail",
+);
+
+/// ErrEncryptionCTRDecrypt preserves the Go error code and message template.
+pub const ERR_ENCRYPTION_CTR_DECRYPT: ErrorTemplate = ErrorTemplate::new(
+    "PD:encryption:ErrEncryptionCTRDecrypt",
+    "CTR decryption fail",
+);
+
+/// ErrEncryptionEncryptRegion preserves the Go error code and message template.
+pub const ERR_ENCRYPTION_ENCRYPT_REGION: ErrorTemplate = ErrorTemplate::new(
+    "PD:encryption:ErrEncryptionEncryptRegion",
+    "encrypt region fail",
+);
+
+/// ErrEncryptionDecryptRegion preserves the Go error code and message template.
+pub const ERR_ENCRYPTION_DECRYPT_REGION: ErrorTemplate = ErrorTemplate::new(
+    "PD:encryption:ErrEncryptionDecryptRegion",
+    "decrypt region fail",
+);
+
+/// ErrEncryptionNewDataKey preserves the Go error code and message template.
+pub const ERR_ENCRYPTION_NEW_DATA_KEY: ErrorTemplate = ErrorTemplate::new(
+    "PD:encryption:ErrEncryptionNewDataKey",
+    "fail to generate data key",
+);
+
+/// ErrEncryptionNewMasterKey preserves the Go error code and message template.
+pub const ERR_ENCRYPTION_NEW_MASTER_KEY: ErrorTemplate = ErrorTemplate::new(
+    "PD:encryption:ErrEncryptionNewMasterKey",
+    "fail to get master key",
+);
+
+/// ErrEncryptionCurrentKeyNotFound preserves the Go error code and message template.
+pub const ERR_ENCRYPTION_CURRENT_KEY_NOT_FOUND: ErrorTemplate = ErrorTemplate::new(
+    "PD:encryption:ErrEncryptionCurrentKeyNotFound",
+    "current data key not found",
+);
+
+/// ErrEncryptionKeyNotFound preserves the Go error code and message template.
+pub const ERR_ENCRYPTION_KEY_NOT_FOUND: ErrorTemplate = ErrorTemplate::new(
+    "PD:encryption:ErrEncryptionKeyNotFound",
+    "data key not found",
+);
+
+/// ErrEncryptionKeysWatcher preserves the Go error code and message template.
+pub const ERR_ENCRYPTION_KEYS_WATCHER: ErrorTemplate = ErrorTemplate::new(
+    "PD:encryption:ErrEncryptionKeysWatcher",
+    "data key watcher error",
+);
+
+/// ErrEncryptionLoadKeys preserves the Go error code and message template.
+pub const ERR_ENCRYPTION_LOAD_KEYS: ErrorTemplate = ErrorTemplate::new(
+    "PD:encryption:ErrEncryptionLoadKeys",
+    "load data keys error",
+);
+
+/// ErrEncryptionRotateDataKey preserves the Go error code and message template.
+pub const ERR_ENCRYPTION_ROTATE_DATA_KEY: ErrorTemplate = ErrorTemplate::new(
+    "PD:encryption:ErrEncryptionRotateDataKey",
+    "failed to rotate data key",
+);
+
+/// ErrEncryptionSaveDataKeys preserves the Go error code and message template.
+pub const ERR_ENCRYPTION_SAVE_DATA_KEYS: ErrorTemplate = ErrorTemplate::new(
+    "PD:encryption:ErrEncryptionSaveDataKeys",
+    "failed to save data keys",
+);
+
+/// ErrEncryptionKMS preserves the Go error code and message template.
+pub const ERR_ENCRYPTION_KMS: ErrorTemplate =
+    ErrorTemplate::new("PD:ErrEncryptionKMS", "KMS error");
+
+/// ErrCryptoX509KeyPair preserves the Go error code and message template.
+pub const ERR_CRYPTO_X509_KEY_PAIR: ErrorTemplate =
+    ErrorTemplate::new("PD:crypto:ErrCryptoX509KeyPair", "x509 keypair error");
+
+/// ErrCryptoAppendCertsFromPEM preserves the Go error code and message template.
+pub const ERR_CRYPTO_APPEND_CERTS_FROM_PEM: ErrorTemplate = ErrorTemplate::new(
+    "PD:crypto:ErrCryptoAppendCertsFromPEM",
+    "cert pool append certs error",
+);
+
+/// ErrBindJSON preserves the Go error code and message template.
+pub const ERR_BIND_JSON: ErrorTemplate =
+    ErrorTemplate::new("PD:gin:ErrBindJSON", "bind JSON error");
+
+/// Storage, system and third-party wrappers in Go declaration order.
+pub const INFRASTRUCTURE_ERRORS: &[ErrorTemplate] = &[
+    ERR_URL_PARSE,
+    ERR_QUERY_UNESCAPE,
+    ERR_GRPC_DIAL,
+    ERR_CLOSE_GRPC_CONN,
+    ERR_GRPC_SEND,
+    ERR_GRPC_RECV,
+    ERR_GRPC_CLOSE_SEND,
+    ERR_GRPC_CREATE_STREAM,
+    ERR_PROTO_UNMARSHAL,
+    ERR_PROTO_MARSHAL,
+    ERR_NEW_ETCD_CLIENT,
+    ERR_START_ETCD,
+    ERR_ETCD_URL_MAP,
+    ERR_ETCD_GRANT_LEASE,
+    ERR_ETCD_TXN_INTERNAL,
+    ERR_ETCD_TXN_CONFLICT,
+    ERR_ETCD_TXN_RESPONSE,
+    ERR_ETCD_KV_PUT,
+    ERR_ETCD_KV_DELETE,
+    ERR_ETCD_KV_GET,
+    ERR_ETCD_KV_GET_RESPONSE,
+    ERR_ETCD_GET_CLUSTER,
+    ERR_ETCD_MOVE_LEADER,
+    ERR_ETCD_WATCHER_CANCEL,
+    ERR_CLOSE_ETCD_CLIENT,
+    ERR_ETCD_MEMBER_LIST,
+    ERR_ETCD_MEMBER_REMOVE,
+    ERR_DASHBOARD_START,
+    ERR_DASHBOARD_STOP,
+    ERR_STRCONV_PARSE_BOOL,
+    ERR_STRCONV_PARSE_INT,
+    ERR_STRCONV_PARSE_UINT,
+    ERR_STRCONV_PARSE_FLOAT,
+    ERR_PROMETHEUS_PUSH_METRICS,
+    ERR_PROMETHEUS_CREATE_CLIENT,
+    ERR_PROMETHEUS_QUERY,
+    ERR_SEND_REQUEST,
+    ERR_WRITE_HTTP_BODY,
+    ERR_NEW_HTTP_REQUEST,
+    ERR_IO_READ,
+    ERR_OS_OPEN,
+    ERR_READ_DIR_NAME,
+    ERR_NETSTAT_TCP_SOCKS,
+    ERR_HEX_DECODING_STRING,
+    ERR_FILE_PATH_ABS,
+    ERR_LOAD_PLUGIN,
+    ERR_LOOKUP_PLUGIN_FUNC,
+    ERR_JSON_MARSHAL,
+    ERR_JSON_UNMARSHAL,
+    ERR_LEVEL_DB_CLOSE,
+    ERR_LEVEL_DB_WRITE,
+    ERR_LEVEL_DB_OPEN,
+    ERR_SEMVER_NEW_VERSION,
+    ERR_INIT_LOGGER,
+    ERR_ENCRYPTION_INVALID_METHOD,
+    ERR_ENCRYPTION_INVALID_CONFIG,
+    ERR_ENCRYPTION_GENERATE_IV,
+    ERR_ENCRYPTION_GCM_ENCRYPT,
+    ERR_ENCRYPTION_GCM_DECRYPT,
+    ERR_ENCRYPTION_CTR_ENCRYPT,
+    ERR_ENCRYPTION_CTR_DECRYPT,
+    ERR_ENCRYPTION_ENCRYPT_REGION,
+    ERR_ENCRYPTION_DECRYPT_REGION,
+    ERR_ENCRYPTION_NEW_DATA_KEY,
+    ERR_ENCRYPTION_NEW_MASTER_KEY,
+    ERR_ENCRYPTION_CURRENT_KEY_NOT_FOUND,
+    ERR_ENCRYPTION_KEY_NOT_FOUND,
+    ERR_ENCRYPTION_KEYS_WATCHER,
+    ERR_ENCRYPTION_LOAD_KEYS,
+    ERR_ENCRYPTION_ROTATE_DATA_KEY,
+    ERR_ENCRYPTION_SAVE_DATA_KEYS,
+    ERR_ENCRYPTION_KMS,
+    ERR_CRYPTO_X509_KEY_PAIR,
+    ERR_CRYPTO_APPEND_CERTS_FROM_PEM,
+    ERR_BIND_JSON,
+];

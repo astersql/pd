@@ -149,3 +149,73 @@ fn catalog_service_domains() {
     assert_eq!(ERR_CLIENT_URL_EMPTY.code(), "PD:server:ErrClientEmpty");
     assert_eq!(ERR_CONFIG_ITEM.code(), "PD:server:ErrConfiguration");
 }
+
+#[test]
+fn catalog_infrastructure_domains() {
+    use crate::catalog::INFRASTRUCTURE_ERRORS;
+    use std::error::Error;
+
+    let oracle = include_str!("errno.go")
+        .split("// The third-party project error.")
+        .nth(1)
+        .unwrap()
+        .split("// unsafe recovery errors")
+        .next()
+        .unwrap();
+    let mut expected = std::collections::BTreeMap::new();
+    for line in oracle.lines() {
+        let Some((_, declaration)) = line.split_once(r#"= errors.Normalize(""#) else {
+            continue;
+        };
+        let (message, code) = declaration.split_once("\", errors.RFCCodeText(\"").unwrap();
+        assert!(
+            expected
+                .insert(code.strip_suffix("\"))").unwrap(), message)
+                .is_none()
+        );
+    }
+    assert_eq!(expected.len(), 75);
+    assert_eq!(INFRASTRUCTURE_ERRORS.len(), expected.len());
+    for definition in INFRASTRUCTURE_ERRORS {
+        assert_eq!(
+            Some(definition.template()),
+            expected.remove(definition.code())
+        );
+        let args = ["detail"];
+        let rendered = definition
+            .template()
+            .replace("%s", "detail")
+            .replace("%v", "detail");
+        let inner = crate::catalog::ERR_IO_READ.with_source(
+            std::iter::empty::<String>(),
+            std::io::Error::other("disk failure"),
+        );
+        let wrapped = definition.with_source(args, inner);
+        assert_eq!(
+            wrapped.to_string(),
+            format!(
+                "[{}]{rendered}: [PD:ioutil:ErrIORead]IO read error: disk failure",
+                definition.code()
+            )
+        );
+        let source = wrapped.source().unwrap();
+        assert!(source.downcast_ref::<crate::TypedError>().is_some());
+        assert_eq!(
+            source
+                .source()
+                .unwrap()
+                .downcast_ref::<std::io::Error>()
+                .unwrap()
+                .kind(),
+            std::io::ErrorKind::Other
+        );
+        assert!(source.source().unwrap().source().is_none());
+        assert_eq!(definition.instantiate(args), definition.instantiate(args));
+        assert_ne!(wrapped, definition.instantiate(args));
+    }
+    assert!(expected.is_empty());
+    assert_eq!(
+        crate::catalog::ERR_ENCRYPTION_KMS.code(),
+        "PD:ErrEncryptionKMS"
+    );
+}
