@@ -7,6 +7,7 @@ mod ema;
 mod hma;
 mod max_filter;
 mod median_filter;
+mod time_median;
 mod weight_allocator;
 mod wma;
 
@@ -15,6 +16,7 @@ pub use ema::Ema;
 pub use hma::Hma;
 pub use max_filter::MaxFilter;
 pub use median_filter::MedianFilter;
+pub use time_median::TimeMedian;
 pub use weight_allocator::WeightAllocator;
 pub use wma::Wma;
 

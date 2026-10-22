@@ -263,3 +263,64 @@ fn median_filter_empty_and_invalid_windows() {
     // Go retains records and uses wrapping uint64 subtraction on empty reads.
     assert_eq!(filter.get_instantaneous(), 7.0);
 }
+
+#[test]
+fn time_median_report_intervals() {
+    use crate::TimeMedian;
+    const SECOND: i64 = 1_000_000_000;
+    for report in [SECOND, SECOND / 2, 7] {
+        let mut average = TimeMedian::new(2, 3, report);
+        assert_eq!(average.get(), 0.0);
+        assert_eq!(average.get_instantaneous(), 0.0);
+        let scale = report as f64 / SECOND as f64;
+        for (rate, expected) in [
+            (2.0, 0.0),
+            (4.0, 3.0),
+            (8.0, 4.5),
+            (12.0, 6.0),
+            (16.0, 10.0),
+        ] {
+            average.add(rate * scale, report);
+            assert_close(average.get(), expected);
+            assert_close(average.get_instantaneous(), rate);
+        }
+    }
+    let mut average = TimeMedian::new(2, 3, SECOND);
+    average.add(2.0, SECOND / 2);
+    average.add(6.0, SECOND + SECOND / 2);
+    assert_close(average.get(), 4.0);
+    average.add(12.0, 3 * SECOND);
+    assert_close(average.get(), 4.0);
+}
+
+#[test]
+fn time_median_set_clone_and_zero_interval() {
+    use crate::TimeMedian;
+    const SECOND: i64 = 1_000_000_000;
+    let mut average = TimeMedian::new(2, 3, SECOND);
+    average.add(2.0, SECOND);
+    average.set(100.0);
+    assert_eq!(average.get(), 100.0);
+    assert_eq!(average.get_instantaneous(), 2.0);
+    let mut partial = average.clone();
+    partial.add(6.0, SECOND);
+    assert_close(partial.get(), 52.0);
+    assert_eq!(average.get(), 100.0);
+    average.add(4.0, SECOND);
+    assert_close(average.get(), 51.5);
+    let mut full = average.clone();
+    full.add(8.0, SECOND);
+    assert_close(full.get(), 6.0);
+    full.add(999.0, 0);
+    assert_close(full.get(), 6.0);
+    assert_close(full.get_instantaneous(), 8.0);
+    assert_close(average.get(), 51.5);
+    assert_close(average.get_instantaneous(), 4.0);
+    average.set(-10.0);
+    assert_eq!(average.get(), -10.0);
+    average.add(999.0, 0);
+    assert_close(average.get(), -3.5);
+    average.add(8.0, SECOND);
+    assert_close(average.get(), 3.0);
+    assert_close(full.get(), 6.0);
+}
