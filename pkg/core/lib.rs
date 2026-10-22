@@ -193,3 +193,8 @@ pub use region_tree::*;
 #[cfg(test)]
 #[path = "region_tree_test.rs"]
 mod region_tree_test;
+
+mod region_tree_update;
+#[cfg(test)]
+#[path = "region_tree_update_test.rs"]
+mod region_tree_update_test;

@@ -25,7 +25,7 @@ impl RegionItem {
     fn start_key(&self) -> &[u8] {
         &self.region.meta().key_range.start_key
     }
-    fn pivot(key: &[u8]) -> Self {
+    pub(crate) fn pivot(key: &[u8]) -> Self {
         Self::new(Arc::new(RegionInfo::new(
             RegionMeta {
                 key_range: KeyRange {

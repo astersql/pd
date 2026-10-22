@@ -1,0 +1,352 @@
+{
+  "basis": "Read-only current region_tree.go overlaps/update/remove/find and region_tree_test.go; no source diff since 0820f0b. Go TestRegionTreeSplitAndMerge executed: 1 pass. Additional exact scenarios are source-derived, not cross-language runtime differential.",
+  "cases": [
+    {
+      "name": "split merge and replacement",
+      "keys": [
+        "",
+        "a",
+        "b",
+        "c",
+        "d",
+        "z"
+      ],
+      "steps": [
+        {
+          "op": "update",
+          "region": [
+            1,
+            "",
+            ""
+          ],
+          "overlaps": [],
+          "search": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "op": "update",
+          "region": [
+            2,
+            "",
+            "c"
+          ],
+          "overlaps": [
+            1
+          ],
+          "search": [
+            2,
+            2,
+            2,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "op": "update",
+          "region": [
+            3,
+            "c",
+            ""
+          ],
+          "overlaps": [],
+          "search": [
+            2,
+            2,
+            2,
+            3,
+            3,
+            3
+          ]
+        },
+        {
+          "op": "update",
+          "region": [
+            4,
+            "b",
+            "d"
+          ],
+          "overlaps": [
+            2,
+            3
+          ],
+          "search": [
+            null,
+            null,
+            4,
+            4,
+            null,
+            null
+          ]
+        },
+        {
+          "op": "update",
+          "region": [
+            5,
+            "",
+            ""
+          ],
+          "overlaps": [
+            4
+          ],
+          "search": [
+            5,
+            5,
+            5,
+            5,
+            5,
+            5
+          ]
+        }
+      ],
+      "source": "TestRegionTreeSplitAndMerge/updateRegions checks start and interior after split/merge; TestRegionTree checks replacement removes entire overlaps and infinite tail. Exact small steps derived from overlaps/find half-open scan."
+    },
+    {
+      "name": "same ID range changes and gaps",
+      "keys": [
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f"
+      ],
+      "steps": [
+        {
+          "op": "update",
+          "region": [
+            1,
+            "a",
+            "c"
+          ],
+          "overlaps": [],
+          "search": [
+            1,
+            1,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "op": "update",
+          "region": [
+            1,
+            "b",
+            "d"
+          ],
+          "overlaps": [
+            1
+          ],
+          "search": [
+            null,
+            1,
+            1,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "op": "update",
+          "region": [
+            1,
+            "e",
+            "f"
+          ],
+          "overlaps": [],
+          "search": [
+            null,
+            1,
+            1,
+            null,
+            1,
+            null
+          ]
+        },
+        {
+          "op": "remove",
+          "region": [
+            1,
+            "b",
+            "d"
+          ],
+          "search": [
+            null,
+            null,
+            null,
+            null,
+            1,
+            null
+          ]
+        }
+      ],
+      "source": "regionTree.update deletes by start-key overlaps only, not ID: moving to disjoint range retains old entry; same ID overlap replaces whole old range. remove deletes exact start key after find/ID guard."
+    },
+    {
+      "name": "remove guards and touching boundaries",
+      "keys": [
+        "",
+        "a",
+        "b",
+        "c",
+        "d"
+      ],
+      "steps": [
+        {
+          "op": "remove",
+          "region": [
+            1,
+            "a",
+            "b"
+          ],
+          "search": [
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "op": "update",
+          "region": [
+            1,
+            "a",
+            "b"
+          ],
+          "overlaps": [],
+          "search": [
+            null,
+            1,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "op": "update",
+          "region": [
+            2,
+            "b",
+            "c"
+          ],
+          "overlaps": [],
+          "search": [
+            null,
+            1,
+            2,
+            null,
+            null
+          ]
+        },
+        {
+          "op": "remove",
+          "region": [
+            99,
+            "a",
+            "b"
+          ],
+          "search": [
+            null,
+            1,
+            2,
+            null,
+            null
+          ]
+        },
+        {
+          "op": "remove",
+          "region": [
+            2,
+            "c",
+            "d"
+          ],
+          "search": [
+            null,
+            1,
+            2,
+            null,
+            null
+          ]
+        },
+        {
+          "op": "remove",
+          "region": [
+            1,
+            "a",
+            "z"
+          ],
+          "search": [
+            null,
+            null,
+            2,
+            null,
+            null
+          ]
+        },
+        {
+          "op": "remove",
+          "region": [
+            2,
+            "b",
+            "c"
+          ],
+          "search": [
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ],
+      "source": "TestRegionTree wrong ID removal is no-op; TestRegionTreeStat missing removal no-op. remove finds by start/ID and deletes start key regardless of requested end; overlaps stops when end <= candidate start."
+    },
+    {
+      "name": "remove interior same ID does not delete start",
+      "keys": [
+        "a",
+        "b",
+        "c"
+      ],
+      "steps": [
+        {
+          "op": "update",
+          "region": [
+            7,
+            "a",
+            "c"
+          ],
+          "overlaps": [],
+          "search": [
+            7,
+            7,
+            null
+          ]
+        },
+        {
+          "op": "remove",
+          "region": [
+            7,
+            "b",
+            "c"
+          ],
+          "search": [
+            7,
+            7,
+            null
+          ]
+        }
+      ],
+      "source": "remove find succeeds for interior start, but BTree.Delete(item) compares start keys, so no key b is deleted; statistics excluded (task 41)."
+    }
+  ]
+}
