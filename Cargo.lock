@@ -56,10 +56,6 @@ name = "astersql-pd-codec"
 version = "0.1.0"
 
 [[package]]
-name = "astersql-pd-errs"
-version = "0.1.0"
-
-[[package]]
 name = "astersql-pd-compat-tests"
 version = "0.1.0"
 dependencies = [
@@ -77,6 +73,10 @@ name = "astersql-pd-core-constant"
 version = "0.1.0"
 
 [[package]]
+name = "astersql-pd-errs"
+version = "0.1.0"
+
+[[package]]
 name = "astersql-pd-id"
 version = "0.1.0"
 dependencies = [
@@ -85,6 +85,14 @@ dependencies = [
  "thiserror 2.0.21",
  "tokio",
  "tokio-util",
+]
+
+[[package]]
+name = "astersql-pd-jsonutil"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-reflectutil",
+ "serde_json",
 ]
 
 [[package]]
