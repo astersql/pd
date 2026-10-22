@@ -1,0 +1,9 @@
+[package]
+name = "astersql-pd-core-constant"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[lib]
+path = "kind.rs"

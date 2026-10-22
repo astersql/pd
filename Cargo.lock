@@ -65,6 +65,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "astersql-pd-core-constant"
+version = "0.1.0"
+
+[[package]]
 name = "astersql-pd-id"
 version = "0.1.0"
 dependencies = [
