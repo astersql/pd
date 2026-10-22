@@ -30,3 +30,22 @@ fn priority_and_resource_kind() {
     assert_eq!(kind.resource, ResourceKind::REGION);
     assert_eq!(kind.policy, SchedulePolicy::BY_SIZE);
 }
+
+#[test]
+fn schedule_policy_round_trip() {
+    assert_eq!(SchedulePolicy::BY_COUNT.as_i32(), 0);
+    assert_eq!(SchedulePolicy::BY_SIZE.as_i32(), 1);
+    assert_eq!(SchedulePolicy::BY_COUNT.to_string(), "count");
+    assert_eq!(SchedulePolicy::BY_SIZE.to_string(), "size");
+    assert_eq!(SchedulePolicy::from_i32(-1).to_string(), "unknown");
+
+    assert_eq!(string_to_schedule_policy("count"), SchedulePolicy::BY_COUNT);
+    assert_eq!(string_to_schedule_policy("size"), SchedulePolicy::BY_SIZE);
+
+    let panic = std::panic::catch_unwind(|| string_to_schedule_policy(" count "))
+        .expect_err("unknown schedule policies must panic like the Go oracle");
+    let message = panic
+        .downcast_ref::<String>()
+        .expect("the panic payload should preserve the invalid input");
+    assert_eq!(message, "invalid schedule policy:  count ");
+}

@@ -94,6 +94,19 @@ impl fmt::Display for SchedulePolicy {
     }
 }
 
+/// Converts a Go-compatible schedule policy string into its policy value.
+///
+/// # Panics
+///
+/// Panics when `input` is neither `"count"` nor `"size"`.
+pub fn string_to_schedule_policy(input: &str) -> SchedulePolicy {
+    match input {
+        "count" => SchedulePolicy::BY_COUNT,
+        "size" => SchedulePolicy::BY_SIZE,
+        _ => panic!("invalid schedule policy: {input}"),
+    }
+}
+
 /// A resource and the policy used to schedule it.
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub struct ScheduleKind {
