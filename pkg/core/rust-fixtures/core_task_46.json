@@ -1,0 +1,81 @@
+{
+  "source": "pkg/core/region.go CheckAndPutRootTree, CheckAndPutRegion, AtomicCheckAndPutRegion, check, setRegionLocked; unchanged from 0820f0b67b0e49b289b84fdf66b7b8fb178afe82",
+  "evidence": "TestSetRegionConcurrence asserts two concurrent equal writes succeed; fixture cases are source-derived, not executed Go differential cases. Same-range skips overlap discovery; stale returns error (legacy returns incoming); setRegionLocked removes origin before range update and returns evictions in key order. Adjacent half-open ranges do not overlap.",
+  "cases": [
+    {
+      "name": "same range replaces without overlaps",
+      "id": 1,
+      "start": "a",
+      "end": "m",
+      "version": 4,
+      "rejected": false,
+      "overlaps": [],
+      "len": 2,
+      "source_branch": "CheckAndPutRootTree/AtomicCheckAndPutRegion skip overlaps when origin range equals input; setRegionLocked returns nil overlaps; equal epoch accepted by check.",
+      "existing_go_test": "TestSetRegionConcurrence (only equal concurrent write acceptance asserted; this fixture scenario is source-derived)"
+    },
+    {
+      "name": "merge evicts both in key order",
+      "id": 3,
+      "start": "a",
+      "end": "z",
+      "version": 5,
+      "rejected": false,
+      "overlaps": [
+        1,
+        2
+      ],
+      "len": 1,
+      "source_branch": "check accepts version 5 over version 4; setRegionLocked removes overlapping IDs 1 and 2; regionTree.update returns key order.",
+      "existing_go_test": "TestSetRegionConcurrence (only equal concurrent write acceptance asserted; this fixture scenario is source-derived)"
+    },
+    {
+      "name": "stale same id",
+      "id": 1,
+      "start": "a",
+      "end": "m",
+      "version": 3,
+      "rejected": true,
+      "overlaps": [],
+      "source_branch": "check rejects incoming version 3 below same-ID origin version 4 before setRegionLocked; root and IDs remain unchanged.",
+      "existing_go_test": "TestSetRegionConcurrence (only equal concurrent write acceptance asserted; this fixture scenario is source-derived)"
+    },
+    {
+      "name": "stale overlap",
+      "id": 3,
+      "start": "a",
+      "end": "z",
+      "version": 3,
+      "rejected": true,
+      "overlaps": [],
+      "source_branch": "check rejects version 3 below overlapping version 4 before any mutation; CheckAndPutRegion returns incoming deletion candidate.",
+      "existing_go_test": "TestSetRegionConcurrence (only equal concurrent write acceptance asserted; this fixture scenario is source-derived)"
+    },
+    {
+      "name": "adjacent no candidates",
+      "id": 3,
+      "start": "z",
+      "end": "",
+      "version": 2,
+      "rejected": false,
+      "overlaps": [],
+      "len": 3,
+      "source_branch": "regionTree.overlaps uses half-open ranges, so [z,infinity) is adjacent to [m,z); new ID inserts with no eviction.",
+      "existing_go_test": "TestSetRegionConcurrence (only equal concurrent write acceptance asserted; this fixture scenario is source-derived)"
+    },
+    {
+      "name": "moved id excludes itself",
+      "id": 1,
+      "start": "m",
+      "end": "z",
+      "version": 5,
+      "rejected": false,
+      "overlaps": [
+        2
+      ],
+      "len": 1,
+      "source_branch": "setRegionLocked removes same-ID origin before update and excludes it from overlaps; [m,z) evicts only ID 2.",
+      "existing_go_test": "TestSetRegionConcurrence (only equal concurrent write acceptance asserted; this fixture scenario is source-derived)"
+    }
+  ]
+}

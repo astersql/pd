@@ -225,3 +225,8 @@ pub use region_stale::*;
 #[cfg(test)]
 #[path = "region_stale_test.rs"]
 mod region_stale_test;
+
+mod regions_atomic;
+#[cfg(test)]
+#[path = "regions_atomic_test.rs"]
+mod regions_atomic_test;
