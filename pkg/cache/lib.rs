@@ -1,6 +1,9 @@
 // Copyright 2026 AsterSQL.
 //! In-memory cache algorithms with caller-owned values.
 
+mod ttl;
+pub use ttl::{TTLString, TTLUint64, TtlCache, TtlDuration};
+
 mod fifo;
 pub use fifo::Fifo;
 
@@ -109,3 +112,7 @@ impl<V: Clone> Cache<V> {
         self.len() == 0
     }
 }
+
+#[cfg(test)]
+#[path = "ttl_test.rs"]
+mod ttl_test;

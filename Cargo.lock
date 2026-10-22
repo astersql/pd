@@ -65,6 +65,11 @@ dependencies = [
 [[package]]
 name = "astersql-pd-cache"
 version = "0.1.0"
+dependencies = [
+ "astersql-pd-typeutil",
+ "tokio",
+ "tokio-util",
+]
 
 [[package]]
 name = "astersql-pd-codec"
