@@ -195,6 +195,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "astersql-pd-syncutil"
+version = "0.1.0"
+dependencies = [
+ "tokio",
+]
+
+[[package]]
 name = "astersql-pd-tso"
 version = "0.1.0"
 dependencies = [
