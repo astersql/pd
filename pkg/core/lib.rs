@@ -241,3 +241,8 @@ mod regions_subtree_order;
 #[cfg(test)]
 #[path = "regions_subtree_order_test.rs"]
 mod regions_subtree_order_test;
+
+mod regions_reset;
+#[cfg(test)]
+#[path = "regions_reset_test.rs"]
+mod regions_reset_test;

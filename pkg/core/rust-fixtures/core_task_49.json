@@ -1,0 +1,66 @@
+{
+  "old_ref_after_reset": 2,
+  "sources": {
+    "reset": "pkg/core/region.go ResetRegionCache replaces trees/maps without decRef; old retained object therefore stays at 2. TestCntRefAfterResetRegionCache asserts new object 0 then 2; TestResetRegionCache asserts all maps empty. Old-object ref is source-derived, not Go runtime differential.",
+    "remove": "RemoveRegion removes only root and ID (2 -> 1); RemoveRegionFromSubTree removes overlap and roles (1 -> 0); RemoveRegionIfExist absent ID no-op. Source-derived branches.",
+    "flow": "TestCntRefAfterFlowOnlyUpdate and regionTree.updateStat transfer references; repeated payload update remains 2."
+  },
+  "input": {
+    "id": 1,
+    "start_key": "",
+    "end_key": "",
+    "peers": [
+      {
+        "id": 1,
+        "store": 1,
+        "role": "leader"
+      },
+      {
+        "id": 2,
+        "store": 2,
+        "role": "voter",
+        "witness": true
+      },
+      {
+        "id": 3,
+        "store": 3,
+        "role": "learner",
+        "pending": true
+      }
+    ]
+  },
+  "scenarios": [
+    {
+      "operation": "put -> remove root -> remove subtree twice",
+      "refs": [
+        2,
+        1,
+        0,
+        0
+      ],
+      "root_after_remove": 0,
+      "roles_after_remove": 0
+    },
+    {
+      "operation": "remove absent ID 99",
+      "refs_unchanged": 2
+    },
+    {
+      "operation": "reset twice -> insert fresh ID 1",
+      "old_refs": 2,
+      "fresh_refs_before": 0,
+      "fresh_refs_after": 2,
+      "root_after_reset": 0,
+      "roles_after_reset": 0
+    },
+    {
+      "operation": "flow replace written_bytes=100 -> repeat -> remove",
+      "old_refs": 0,
+      "new_refs": [
+        2,
+        2,
+        0
+      ]
+    }
+  ]
+}

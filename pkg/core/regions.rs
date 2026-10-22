@@ -9,7 +9,7 @@ use std::sync::Arc;
 pub struct RegionsInfo {
     pub(crate) root: RegionTree,
     pub(crate) subtrees: crate::regions_subtree::SubTrees,
-    regions: HashMap<u64, Arc<RegionInfo>>,
+    pub(crate) regions: HashMap<u64, Arc<RegionInfo>>,
 }
 impl Default for RegionsInfo {
     fn default() -> Self {

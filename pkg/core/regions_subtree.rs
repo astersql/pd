@@ -69,7 +69,7 @@ fn peers_equal(a: &RegionInfo, b: &RegionInfo) -> bool {
         && equal_peers(a.pending_peers(), b.pending_peers())
 }
 impl SubTrees {
-    fn remove(&mut self, region: &RegionInfo) {
+    pub(crate) fn remove(&mut self, region: &RegionInfo) {
         for tree in self.roles.values_mut() {
             tree.remove(region);
         }
