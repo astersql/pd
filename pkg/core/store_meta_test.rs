@@ -27,6 +27,7 @@ fn core_task_11_metadata_roundtrip() {
             version: s.version.clone(),
             deploy_path: s.deploy_path.clone(),
             start_timestamp: s.start_timestamp,
+            ..Default::default()
         };
         let store = StoreInfo::new(meta.clone());
         assert_eq!(store.meta(), Some(&meta), "{}", s.name);

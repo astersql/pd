@@ -4,6 +4,9 @@
 /// Store metadata preserves values without validating addresses or versions.
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub struct StoreMeta {
+    pub state: super::StoreState,
+    pub node_state: super::NodeState,
+    pub physically_destroyed: bool,
     pub id: u64,
     pub address: String,
     pub status_address: String,
@@ -17,7 +20,7 @@ pub struct StoreMeta {
 /// The zero value has zero weights; `new` initializes both weights to one.
 #[derive(Debug, Default)]
 pub struct StoreInfo {
-    meta: Option<StoreMeta>,
+    pub(crate) meta: Option<StoreMeta>,
     leader_weight: f64,
     region_weight: f64,
 }

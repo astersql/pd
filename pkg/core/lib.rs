@@ -21,3 +21,10 @@ pub use store_meta::*;
 #[cfg(test)]
 #[path = "store_meta_test.rs"]
 mod store_meta_test;
+
+#[cfg(test)]
+#[path = "store_state_test.rs"]
+mod store_state_test;
+
+pub mod store_state;
+pub use store_state::*;

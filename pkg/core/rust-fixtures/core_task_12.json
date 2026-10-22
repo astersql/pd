@@ -1,0 +1,91 @@
+{
+  "sources": {
+    "predicates": "pkg/core/store.go:257-280,333-335,354-355: node equality only; nil protobuf getter returns zero (Preparing/Up), physical flag defaults false. Exhaustive cross product includes inconsistent legacy state and unknown node.",
+    "transitions": "pkg/core/store_option.go:80-100: Up sets Serving, Offline requires flag and sets Removing, Tombstone sets Removed; Up/Tombstone preserve flag, unknown legacy state changes nothing.",
+    "existing_test": "pkg/core/store_test.go TestNewStore asserts regionScoreV2 inequalities only; no state assertions. These state expectations are source-derived, not a Go/Rust runtime differential.",
+    "baseline": "0820f0b67b0e49b289b84fdf66b7b8fb178afe82; no subsequent source diff"
+  },
+  "scenarios": [
+    {
+      "node": "preparing",
+      "expected": [
+        true,
+        true,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "node": "serving",
+      "expected": [
+        true,
+        false,
+        true,
+        false,
+        false
+      ]
+    },
+    {
+      "node": "removing",
+      "expected": [
+        false,
+        false,
+        false,
+        true,
+        false
+      ]
+    },
+    {
+      "node": "removed",
+      "expected": [
+        false,
+        false,
+        false,
+        false,
+        true
+      ]
+    },
+    {
+      "node": "unknown",
+      "expected": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    }
+  ],
+  "validation": {
+    "go": {
+      "command": "go test -mod=readonly ./pkg/core -run '^(TestNewStore.*)$' -count=1 -v",
+      "exit": 0,
+      "tests": 1,
+      "failpoint_rewriting": "not used; user requires Go files read-only"
+    },
+    "red": {
+      "command": "cargo test --locked -p astersql-pd-core --lib core_task_12 -- --nocapture",
+      "exit": 101,
+      "reason": "E0432/E0560/E0599: missing state types, metadata fields and predicates"
+    },
+    "green": {
+      "focused_tests": 4,
+      "core_tests": 13,
+      "workspace_passed": 268,
+      "workspace_failed": 0,
+      "commands": [
+        "cargo fmt --all",
+        "cargo test --locked -p astersql-pd-core --lib core_task_12 -- --nocapture",
+        "cargo test --locked -p astersql-pd-core --lib",
+        "cargo metadata --format-version 1 --no-deps",
+        "cargo fmt --all -- --check",
+        "cargo check --workspace --locked",
+        "cargo test --workspace --locked"
+      ],
+      "all_exit": 0
+    },
+    "slot": 1,
+    "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+  }
+}
