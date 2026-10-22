@@ -21,6 +21,7 @@ pub struct StoreMeta {
 /// The zero value has zero weights; `new` initializes both weights to one.
 #[derive(Debug, Default)]
 pub struct StoreInfo {
+    pub(crate) raw_stats: super::StoreStats,
     pub(crate) meta: Option<StoreMeta>,
     leader_weight: f64,
     region_weight: f64,
@@ -31,6 +32,7 @@ impl StoreInfo {
     pub fn new(meta: impl Into<Option<StoreMeta>>) -> Self {
         Self {
             meta: meta.into(),
+            raw_stats: super::StoreStats::default(),
             leader_weight: 1.0,
             region_weight: 1.0,
         }

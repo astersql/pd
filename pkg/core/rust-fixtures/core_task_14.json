@@ -1,0 +1,70 @@
+{
+  "go_baseline": "0820f0b67b0e49b289b84fdf66b7b8fb178afe82",
+  "dfs_source": "store_stats.go DFSStats: two independent uint64 fields, zero initialized; max/copy cases source-derived",
+  "cases": [
+    {
+      "name": "existing-Go-capacity",
+      "stats": {
+        "capacity": 214748364800,
+        "available": 161061273600,
+        "used_size": 53687091200,
+        "sending_snap_count": 0,
+        "receiving_snap_count": 0,
+        "bytes_written": 0,
+        "bytes_read": 0,
+        "keys_written": 0,
+        "keys_read": 0,
+        "is_busy": false
+      },
+      "go_source": "store_stats_test.go TestStoreStats: 200/150/50 GiB assertions; other fields protobuf defaults"
+    },
+    {
+      "name": "busy-and-counters",
+      "stats": {
+        "capacity": 100,
+        "available": 120,
+        "used_size": 30,
+        "sending_snap_count": 3,
+        "receiving_snap_count": 4,
+        "bytes_written": 5,
+        "bytes_read": 6,
+        "keys_written": 7,
+        "keys_read": 8,
+        "is_busy": true
+      },
+      "go_source": "store_stats.go getters forward fields unchanged; no capacity consistency validation. Source-derived, not executed Go differential."
+    },
+    {
+      "name": "unsigned-max",
+      "stats": {
+        "capacity": 18446744073709551615,
+        "available": 18446744073709551615,
+        "used_size": 18446744073709551615,
+        "sending_snap_count": 4294967295,
+        "receiving_snap_count": 4294967295,
+        "bytes_written": 18446744073709551615,
+        "bytes_read": 18446744073709551615,
+        "keys_written": 18446744073709551615,
+        "keys_read": 18446744073709551615,
+        "is_busy": true
+      },
+      "go_source": "store_stats.go uint64/uint32 direct getters; no arithmetic. Source-derived boundary."
+    },
+    {
+      "name": "reset-to-zero",
+      "stats": {
+        "capacity": 0,
+        "available": 0,
+        "used_size": 0,
+        "sending_snap_count": 0,
+        "receiving_snap_count": 0,
+        "bytes_written": 0,
+        "bytes_read": 0,
+        "keys_written": 0,
+        "keys_read": 0,
+        "is_busy": false
+      },
+      "go_source": "updateRawStats replaces pointer; zero protobuf fields return zero/false. Source-derived reset."
+    }
+  ]
+}

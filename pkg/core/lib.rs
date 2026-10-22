@@ -34,3 +34,9 @@ pub use store_labels::*;
 #[cfg(test)]
 #[path = "store_labels_test.rs"]
 mod store_labels_test;
+
+pub mod store_stats;
+pub use store_stats::*;
+#[cfg(test)]
+#[path = "store_stats_test.rs"]
+mod store_stats_test;
