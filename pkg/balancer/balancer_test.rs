@@ -55,3 +55,72 @@ fn concurrent_membership() {
     assert_eq!(balancer.len(), 100);
     assert_eq!(balancer.get_all(), (0..100).collect::<Vec<_>>());
 }
+
+#[test]
+fn round_robin_next() {
+    let numbers = RoundRobin::<u32>::new();
+    for _ in 0..3 {
+        assert_eq!(numbers.next(), 0);
+    }
+    for node in [7, 0, 42, 7] {
+        numbers.put(node);
+    }
+    for expected in [7, 0, 42, 7, 0, 42, 7] {
+        assert_eq!(numbers.next(), expected);
+    }
+    // Insertion and duplicate puts must not reset the selection cursor.
+    numbers.put(8);
+    numbers.put(7);
+    for expected in [8, 7, 0, 42, 8] {
+        assert_eq!(numbers.next(), expected);
+    }
+    let strings = RoundRobin::<String>::new();
+    assert_eq!(strings.next(), "");
+    strings.put("only".to_owned());
+    for _ in 0..3 {
+        assert_eq!(strings.next(), "only");
+    }
+    strings.put(String::new());
+    for expected in ["", "only", "", "only"] {
+        assert_eq!(strings.next(), expected);
+    }
+    assert_eq!(strings.get_all(), ["only", ""]);
+}
+
+#[test]
+fn round_robin_next_concurrent() {
+    let balancer = RoundRobin::<u32>::new();
+    for node in [7, 0, 42] {
+        balancer.put(node);
+    }
+    let barrier = std::sync::Barrier::new(8);
+    let counts = std::thread::scope(|scope| {
+        let handles: Vec<_> = (0..8)
+            .map(|_| {
+                scope.spawn(|| {
+                    barrier.wait();
+                    let mut counts = [0; 3];
+                    for _ in 0..300 {
+                        let index = match balancer.next() {
+                            7 => 0,
+                            0 => 1,
+                            42 => 2,
+                            node => panic!("unexpected node {node}"),
+                        };
+                        counts[index] += 1;
+                    }
+                    counts
+                })
+            })
+            .collect();
+        let mut totals = [0; 3];
+        for handle in handles {
+            for (total, count) in totals.iter_mut().zip(handle.join().unwrap()) {
+                *total += count;
+            }
+        }
+        totals
+    });
+    assert_eq!(counts, [800; 3]);
+    assert_eq!(balancer.next(), 7);
+}

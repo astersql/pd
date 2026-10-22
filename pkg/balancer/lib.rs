@@ -2,7 +2,12 @@
 
 #![forbid(unsafe_code)]
 
-use std::{collections::HashSet, fmt, hash::Hash};
+use std::{
+    collections::HashSet,
+    fmt,
+    hash::Hash,
+    sync::atomic::{AtomicU32, Ordering},
+};
 
 use astersql_pd_syncutil::blocking::RwLock;
 
@@ -34,7 +39,7 @@ mod sealed {
 }
 
 /// Supported Go balancer node types: uint32 and string.
-pub trait Node: sealed::Sealed + Clone + Eq + Hash + Send + Sync {}
+pub trait Node: sealed::Sealed + Clone + Default + Eq + Hash + Send + Sync {}
 impl Node for u32 {}
 impl Node for String {}
 
@@ -47,9 +52,10 @@ struct Membership<T> {
 /// Thread-safe insertion-ordered node collection for round-robin balancing.
 ///
 /// Node snapshots are independent copies. Locks preserve Rust poisoning semantics.
-/// Selection and deletion are introduced by subsequent migration tasks.
+/// Selection uses an atomic cursor; deletion is introduced by a subsequent task.
 pub struct RoundRobin<T: Node> {
     membership: RwLock<Membership<T>>,
+    next: AtomicU32,
 }
 
 impl<T: Node> Default for RoundRobin<T> {
@@ -66,7 +72,22 @@ impl<T: Node> RoundRobin<T> {
                 nodes: Vec::new(),
                 exists: HashSet::new(),
             }),
+            next: AtomicU32::new(0),
         }
+    }
+
+    /// Return the next node in insertion order, or the node type's default if empty.
+    ///
+    /// Empty selections do not advance the cursor. Membership stays read-locked
+    /// through selection, while the atomic cursor gives concurrent readers unique
+    /// positions. The lock, rather than the cursor, synchronizes node contents.
+    pub fn next(&self) -> T {
+        let membership = self.membership.read().expect("balancer lock poisoned");
+        if membership.nodes.is_empty() {
+            return T::default();
+        }
+        let next = self.next.fetch_add(1, Ordering::Relaxed);
+        membership.nodes[next as usize % membership.nodes.len()].clone()
     }
 
     /// Append a node only on its first insertion.
