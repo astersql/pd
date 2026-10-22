@@ -270,3 +270,8 @@ mod regions_stats_test;
 
 pub mod regions_stats;
 pub use regions_stats::*;
+
+mod regions_range_stats;
+#[cfg(test)]
+#[path = "regions_range_stats_test.rs"]
+mod regions_range_stats_test;

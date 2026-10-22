@@ -1,0 +1,108 @@
+{
+  "source": "pkg/core/region.go: GetRegionSizeByRange, GetStoreLeaderCountByRange, GetStorePeerCountByRange, GetStoreLearnerCountByRange, GetRegionCountByRange, GetAdjacentRegions, GetRangeHoles; region_tree.go:GetCountByRange",
+  "existing_test": "pkg/core/region_test.go:TestGetRegionSizeByRange asserts 100001 regions * 10 and prefix sums; region_tree_test.go:TestRegionTree exercises strict neighbors. Smaller and boundary cases below are source-derived, not executed Go differential cases.",
+  "regions": [
+    [
+      1,
+      "b",
+      "d",
+      10
+    ],
+    [
+      2,
+      "d",
+      "f",
+      20
+    ],
+    [
+      3,
+      "h",
+      "",
+      30
+    ]
+  ],
+  "sizes": [
+    [
+      "",
+      "",
+      60
+    ],
+    [
+      "c",
+      "e",
+      30
+    ],
+    [
+      "f",
+      "h",
+      0
+    ],
+    [
+      "i",
+      "",
+      30
+    ],
+    [
+      "d",
+      "d",
+      0
+    ],
+    [
+      "c",
+      "c",
+      10
+    ],
+    [
+      "z",
+      "a",
+      0
+    ]
+  ],
+  "count_cases": [
+    [
+      "",
+      "",
+      3
+    ],
+    [
+      "c",
+      "e",
+      2
+    ],
+    [
+      "f",
+      "h",
+      0
+    ],
+    [
+      "i",
+      "",
+      0
+    ],
+    [
+      "h",
+      "b",
+      -2
+    ]
+  ],
+  "holes": [
+    [
+      "",
+      "62"
+    ],
+    [
+      "66",
+      "68"
+    ]
+  ],
+  "derivation": "Size starts at containing-or-next region, sums full sizes until start >= nonempty end. Count delegates rank subtraction including literal empty-end predecessor comparison (tail query i..infinity counts zero). Holes compare consecutive end/start and uppercase-hex endpoints; last unbounded end adds no hole. Adjacent registry results require matching endpoints; empty tree has no holes.",
+  "batch_case": {
+    "input": "1001 sequential regions of size 10, keys formatted as 8-digit integers; final end unbounded",
+    "expected": [
+      10010,
+      10000,
+      100
+    ],
+    "source": "TestGetRegionSizeByRange prefix assertions and GetRegionSizeByRange loop with ScanRegionLimit=1000; 1001 forces the Go loop across a batch boundary. Rust uses one borrowed scan."
+  }
+}
