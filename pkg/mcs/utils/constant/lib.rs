@@ -35,5 +35,23 @@ pub const PRIMARY_TICK_INTERVAL: Duration = Duration::from_millis(50);
 /// Interval between leader checks.
 pub const LEADER_TICK_INTERVAL: Duration = Duration::from_millis(50);
 
+/// Root path for microservice data in etcd.
+pub const MICROSERVICE_ROOT_PATH: &str = "/ms";
+
+/// Service name of the PD server.
+pub const PD_SERVICE_NAME: &str = "pd";
+
+/// Service name of the TSO server.
+pub const TSO_SERVICE_NAME: &str = "tso";
+
+/// Service name of the resource manager server.
+pub const RESOURCE_MANAGER_SERVICE_NAME: &str = "resource_manager";
+
+/// Service name of the scheduling server.
+pub const SCHEDULING_SERVICE_NAME: &str = "scheduling";
+
+/// Service name of the router server.
+pub const ROUTER_SERVICE_NAME: &str = "router";
+
 #[cfg(test)]
 mod constant_test;

@@ -21,3 +21,13 @@ fn network_and_timing_defaults() {
     assert_eq!(PRIMARY_TICK_INTERVAL, Duration::from_millis(50));
     assert_eq!(LEADER_TICK_INTERVAL, Duration::from_millis(50));
 }
+
+#[test]
+fn service_names_and_root() {
+    assert_eq!(MICROSERVICE_ROOT_PATH, "/ms");
+    assert_eq!(PD_SERVICE_NAME, "pd");
+    assert_eq!(TSO_SERVICE_NAME, "tso");
+    assert_eq!(RESOURCE_MANAGER_SERVICE_NAME, "resource_manager");
+    assert_eq!(SCHEDULING_SERVICE_NAME, "scheduling");
+    assert_eq!(ROUTER_SERVICE_NAME, "router");
+}
