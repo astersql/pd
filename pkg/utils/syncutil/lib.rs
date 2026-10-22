@@ -3,8 +3,10 @@
 #![forbid(unsafe_code)]
 
 mod lock_group;
+mod ordered_single_flight;
 
 pub use lock_group::{LockGroup, LockGroupGuard};
+pub use ordered_single_flight::OrderedSingleFlight;
 
 /// Blocking locks backed directly by [`std::sync`].
 ///
@@ -46,3 +48,6 @@ mod lock_group_test;
 
 #[cfg(test)]
 mod mutex_test;
+
+#[cfg(test)]
+mod ordered_single_flight_test;
