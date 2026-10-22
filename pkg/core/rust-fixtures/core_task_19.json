@@ -1,0 +1,20 @@
+{
+  "feedback_error": 40.0,
+  "expected_low_capacity": 1200,
+  "evidence": [
+    "store.go NewStoreInfo: v1 rate zero; LimitVersion, IsAvailable use limiter and RegionInfluence[type]=1000; Feedback nil is a no-op",
+    "store_option.go ResetStoreLimit uses first supplied rate or zero; SetStoreLimit replaces handle; Clone shares existing limiter",
+    "storelimit/store_limit.go: v1 ignores feedback and priority, snapshot bypass; reset zero bypasses",
+    "storelimit/sliding_window.go NewSlidingWindows capacities 100/50/25/12, available minimum 10; Take(1000) fills each priority in turn; Reset is no-op",
+    "sliding_window.go Feedback: while full, error 40 gives 20*40+10*40=1200; used low=1000, so available again; empty feedback ignored",
+    "store.go IsAvailable indexes RegionInfluence before delegation, unknown type panics",
+    "Existing TestNewStore verifies region score only; all limiter scenarios above are read-only source derivations, not executed Go differential tests. Existing storelimit tests validate underlying rate and window behavior."
+  ],
+  "clock": "Tokio paused at t=0; no advance or refill",
+  "existing_test_assertions": {
+    "pkg/core/storelimit/limit_test.go::TestStoreLimit": "rate 15, consumed full bucket rejects, unchanged reset retains exhaustion, zero reset bypasses",
+    "pkg/core/storelimit/limit_test.go::TestSlidingWindow": "low exhaustion/ack recovery, higher priorities use first available window, non-snapshot bypass retains usage",
+    "pkg/core/storelimit/limit_test.go::TestWindow": "take may exceed capacity; minimum window size 10",
+    "pkg/core/storelimit/limit_test.go::TestFeedback": "feedback exercised by simulated queue; exact error=40 arithmetic above comes from source, not this timed test"
+  }
+}

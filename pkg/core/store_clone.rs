@@ -38,7 +38,7 @@ impl StoreInfo {
     /// The same limiter handle is retained by both kinds of store clone.
     /// A zero-value store has no limiter. Callers must release lock guards before
     /// using another handle to the same store's limiter.
-    pub fn limiter(&self) -> Option<&Arc<RwLock<astersql_pd_storelimit::StoreRateLimit>>> {
+    pub fn limiter(&self) -> Option<&Arc<RwLock<super::StoreLimiter>>> {
         self.limiter.as_ref()
     }
 }

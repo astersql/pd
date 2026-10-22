@@ -63,3 +63,9 @@ pub mod store_time;
 mod store_control_test;
 
 pub mod store_control;
+
+pub mod store_limit;
+pub use store_limit::*;
+#[cfg(test)]
+#[path = "store_limit_test.rs"]
+mod store_limit_test;

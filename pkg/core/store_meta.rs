@@ -27,8 +27,7 @@ pub struct StoreInfo {
     pub(crate) last_persist_unix_nanos: Option<i128>,
     pub(crate) last_awaken_unix_nanos: Option<i128>,
     pub(crate) stats: std::sync::Arc<std::sync::RwLock<super::store_clone::SharedStoreStats>>,
-    pub(crate) limiter:
-        Option<std::sync::Arc<std::sync::RwLock<astersql_pd_storelimit::StoreRateLimit>>>,
+    pub(crate) limiter: Option<std::sync::Arc<std::sync::RwLock<super::StoreLimiter>>>,
     pub(crate) meta: Option<std::sync::Arc<StoreMeta>>,
     pub(crate) leader_weight: f64,
     pub(crate) region_weight: f64,
@@ -49,7 +48,7 @@ impl StoreInfo {
                 },
             )),
             limiter: Some(std::sync::Arc::new(std::sync::RwLock::new(
-                astersql_pd_storelimit::StoreRateLimit::new(0.0),
+                super::StoreLimiter::V1(astersql_pd_storelimit::StoreRateLimit::new(0.0)),
             ))),
             leader_weight: 1.0,
             region_weight: 1.0,
