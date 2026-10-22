@@ -57,3 +57,9 @@ pub mod store_clone;
 mod store_time_test;
 
 pub mod store_time;
+
+#[cfg(test)]
+#[path = "store_control_test.rs"]
+mod store_control_test;
+
+pub mod store_control;

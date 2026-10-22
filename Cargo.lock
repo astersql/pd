@@ -92,6 +92,7 @@ dependencies = [
 name = "astersql-pd-core"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-core-constant",
  "astersql-pd-movingaverage",
  "astersql-pd-storelimit",
  "serde",

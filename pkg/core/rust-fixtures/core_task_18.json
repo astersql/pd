@@ -1,0 +1,247 @@
+{
+  "baseline": "0820f0b67b0e49b289b84fdf66b7b8fb178afe82; current source unchanged",
+  "existing_test": "TestNewStore: Less then Greater regionScoreV2 assertions; executed as smoke test only, no control assertions exist there.",
+  "evidence_boundary": "Control scenarios derived from Go source branches, not executed cross-language differential tests.",
+  "scenarios": [
+    {
+      "kind": "in",
+      "ops": [
+        1,
+        -1
+      ],
+      "expected": [
+        false,
+        true
+      ],
+      "source": "pkg/core/store_option.go: PauseLeaderTransfer/ResumeLeaderTransfer",
+      "derivation": "Signed counter starts at zero; Add(+1/-1); getter tests ==0 for direction, >0 for eviction."
+    },
+    {
+      "kind": "in",
+      "ops": [
+        1,
+        1,
+        -1,
+        -1
+      ],
+      "expected": [
+        false,
+        false,
+        false,
+        true
+      ],
+      "source": "pkg/core/store_option.go: PauseLeaderTransfer/ResumeLeaderTransfer",
+      "derivation": "Signed counter starts at zero; Add(+1/-1); getter tests ==0 for direction, >0 for eviction."
+    },
+    {
+      "kind": "in",
+      "ops": [
+        -1,
+        1,
+        1,
+        -1
+      ],
+      "expected": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "source": "pkg/core/store_option.go: PauseLeaderTransfer/ResumeLeaderTransfer",
+      "derivation": "Signed counter starts at zero; Add(+1/-1); getter tests ==0 for direction, >0 for eviction."
+    },
+    {
+      "kind": "out",
+      "ops": [
+        1,
+        -1
+      ],
+      "expected": [
+        false,
+        true
+      ],
+      "source": "pkg/core/store_option.go: PauseLeaderTransfer/ResumeLeaderTransfer",
+      "derivation": "Signed counter starts at zero; Add(+1/-1); getter tests ==0 for direction, >0 for eviction."
+    },
+    {
+      "kind": "out",
+      "ops": [
+        1,
+        1,
+        -1,
+        -1
+      ],
+      "expected": [
+        false,
+        false,
+        false,
+        true
+      ],
+      "source": "pkg/core/store_option.go: PauseLeaderTransfer/ResumeLeaderTransfer",
+      "derivation": "Signed counter starts at zero; Add(+1/-1); getter tests ==0 for direction, >0 for eviction."
+    },
+    {
+      "kind": "out",
+      "ops": [
+        -1,
+        1,
+        1,
+        -1
+      ],
+      "expected": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "source": "pkg/core/store_option.go: PauseLeaderTransfer/ResumeLeaderTransfer",
+      "derivation": "Signed counter starts at zero; Add(+1/-1); getter tests ==0 for direction, >0 for eviction."
+    },
+    {
+      "kind": "slow",
+      "ops": [
+        1,
+        -1
+      ],
+      "expected": [
+        true,
+        false
+      ],
+      "source": "pkg/core/store_option.go: SlowStoreEvicted/SlowStoreRecovered",
+      "derivation": "Signed counter starts at zero; Add(+1/-1); getter tests ==0 for direction, >0 for eviction."
+    },
+    {
+      "kind": "slow",
+      "ops": [
+        1,
+        1,
+        -1,
+        -1
+      ],
+      "expected": [
+        true,
+        true,
+        true,
+        false
+      ],
+      "source": "pkg/core/store_option.go: SlowStoreEvicted/SlowStoreRecovered",
+      "derivation": "Signed counter starts at zero; Add(+1/-1); getter tests ==0 for direction, >0 for eviction."
+    },
+    {
+      "kind": "slow",
+      "ops": [
+        -1,
+        1,
+        1,
+        -1
+      ],
+      "expected": [
+        false,
+        false,
+        true,
+        false
+      ],
+      "source": "pkg/core/store_option.go: SlowStoreEvicted/SlowStoreRecovered",
+      "derivation": "Signed counter starts at zero; Add(+1/-1); getter tests ==0 for direction, >0 for eviction."
+    },
+    {
+      "kind": "stopping",
+      "ops": [
+        1,
+        -1
+      ],
+      "expected": [
+        true,
+        false
+      ],
+      "source": "pkg/core/store_option.go: StoppingStoreEvicted/StoppingStoreRecovered",
+      "derivation": "Signed counter starts at zero; Add(+1/-1); getter tests ==0 for direction, >0 for eviction."
+    },
+    {
+      "kind": "stopping",
+      "ops": [
+        1,
+        1,
+        -1,
+        -1
+      ],
+      "expected": [
+        true,
+        true,
+        true,
+        false
+      ],
+      "source": "pkg/core/store_option.go: StoppingStoreEvicted/StoppingStoreRecovered",
+      "derivation": "Signed counter starts at zero; Add(+1/-1); getter tests ==0 for direction, >0 for eviction."
+    },
+    {
+      "kind": "stopping",
+      "ops": [
+        -1,
+        1,
+        1,
+        -1
+      ],
+      "expected": [
+        false,
+        false,
+        true,
+        false
+      ],
+      "source": "pkg/core/store_option.go: StoppingStoreEvicted/StoppingStoreRecovered",
+      "derivation": "Signed counter starts at zero; Add(+1/-1); getter tests ==0 for direction, >0 for eviction."
+    },
+    {
+      "kind": "trend",
+      "ops": [
+        1,
+        -1
+      ],
+      "expected": [
+        true,
+        false
+      ],
+      "source": "pkg/core/store_option.go: SlowTrendEvicted/SlowTrendRecovered",
+      "derivation": "Signed counter starts at zero; Add(+1/-1); getter tests ==0 for direction, >0 for eviction."
+    },
+    {
+      "kind": "trend",
+      "ops": [
+        1,
+        1,
+        -1,
+        -1
+      ],
+      "expected": [
+        true,
+        true,
+        true,
+        false
+      ],
+      "source": "pkg/core/store_option.go: SlowTrendEvicted/SlowTrendRecovered",
+      "derivation": "Signed counter starts at zero; Add(+1/-1); getter tests ==0 for direction, >0 for eviction."
+    },
+    {
+      "kind": "trend",
+      "ops": [
+        -1,
+        1,
+        1,
+        -1
+      ],
+      "expected": [
+        false,
+        false,
+        true,
+        false
+      ],
+      "source": "pkg/core/store_option.go: SlowTrendEvicted/SlowTrendRecovered",
+      "derivation": "Signed counter starts at zero; Add(+1/-1); getter tests ==0 for direction, >0 for eviction."
+    }
+  ],
+  "additional_sources": {
+    "invalid_direction": "pkg/core/store_option.go PauseLeaderTransfer/ResumeLeaderTransfer: switch has only In and Out cases; unknown directions do nothing.",
+    "clone": "pkg/core/store.go Clone/ShallowClone: Load/Store copy all five counters; copies are independent.",
+    "independence": "pkg/core/store.go AllowLeaderTransferIn/Out read only corresponding pause counters; eviction getters each read only their own counter. Eviction flags do not implicitly change these getters."
+  }
+}
