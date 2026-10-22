@@ -51,3 +51,59 @@ fn ema_behavior() {
         assert_close(fallback.get(), 1.3);
     }
 }
+
+#[test]
+fn wma_behavior() {
+    use crate::Wma;
+    let data = [1.0, 1.0, 1.0, 1.0, 5.0, 1.0, 1.0, 1.0];
+    let expected = [1.0, 1.0, 1.0, 1.0, 2.33333333, 2.06666667, 1.8, 1.533333333];
+    let mut wma = Wma::with_size(5);
+    assert_eq!(wma.get(), 0.0);
+    assert_eq!(wma.get_instantaneous(), 0.0);
+    for (value, expected) in data.into_iter().zip(expected) {
+        wma.add(value);
+        assert_eq!(wma.get_instantaneous(), value);
+        assert_close(wma.get(), expected);
+    }
+    wma.reset();
+    assert_eq!(wma.get(), 0.0);
+    assert_eq!(wma.get_instantaneous(), 0.0);
+    wma.add(7.0);
+    assert_eq!(wma.get(), 7.0);
+    wma.set(-3.0);
+    assert_eq!(wma.get(), -3.0);
+    assert_eq!(wma.get_instantaneous(), -3.0);
+    wma.add(6.0);
+    assert_close(wma.get(), 2.0);
+
+    for (mut average, size) in [
+        (Wma::new(), 10),
+        (Wma::default(), 10),
+        (Wma::with_size(0), 10),
+        (Wma::with_size(1), 10),
+        (Wma::with_size(-5), 10),
+        (Wma::with_size(2), 2),
+        (Wma::with_size(7), 7),
+    ] {
+        average.reset();
+        let mut history = Vec::new();
+        for i in 0..100 {
+            let value = ((i * 17) % 31) as f64 - 15.0;
+            average.add(value);
+            history.push(value);
+            let window = &history[history.len().saturating_sub(size)..];
+            let first_weight = size - window.len() + 1;
+            let numerator: f64 = window
+                .iter()
+                .enumerate()
+                .map(|(i, v)| *v * (first_weight + i) as f64)
+                .sum();
+            let denominator: usize = (first_weight..=size).sum();
+            assert_close(average.get(), numerator / denominator as f64);
+            assert_eq!(average.get_instantaneous(), value);
+        }
+        average.reset();
+        assert_eq!(average.get(), 0.0);
+        assert_eq!(average.get_instantaneous(), 0.0);
+    }
+}
