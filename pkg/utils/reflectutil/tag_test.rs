@@ -25,3 +25,20 @@ fn full_tag_by_child_tag() {
     );
     assert_eq!(find_json_full_tag_by_child_tag(&fields, "disable"), "");
 }
+
+#[test]
+fn same_fields_by_json() {
+    let fields = json!({
+        "name": "",
+        "action": {
+            "enable": false,
+        },
+    });
+
+    assert!(find_same_field_by_json(&fields, &json!({"name": "test2"})));
+    assert!(!find_same_field_by_json(
+        &fields,
+        &json!({"enable": "test2"})
+    ));
+    assert!(!find_same_field_by_json(&fields, &json!({"missing": null})));
+}
