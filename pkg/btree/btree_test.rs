@@ -389,3 +389,88 @@ fn descending_iteration() {
         }
     }
 }
+
+#[test]
+fn order_statistics() {
+    fn size(node: &Node<(i32, i32)>) -> usize {
+        let actual = node.items.len() + node.children.iter().map(size).sum::<usize>();
+        assert_eq!(node.size, actual);
+        actual
+    }
+    for degree in [2, 3, 8, 32] {
+        for descending in [false, true] {
+            let less = |a: &(i32, i32), b: &(i32, i32)| {
+                if descending { a.0 > b.0 } else { a.0 < b.0 }
+            };
+            let mut tree = BTree::new(degree, less);
+            let mut expected = std::collections::BTreeMap::new();
+            let check = |tree: &BTree<_, _>, expected: &std::collections::BTreeMap<i32, i32>| {
+                let mut values: Vec<_> = expected.iter().map(|(&k, &v)| (k, v)).collect();
+                if descending {
+                    values.reverse();
+                }
+                assert_eq!(tree.len(), values.len());
+                assert_eq!(tree.root.as_ref().map_or(0, size), values.len());
+                assert_eq!(tree.get_at(-1), None);
+                assert_eq!(tree.get_at(isize::MAX), None);
+                assert_eq!(tree.get_at(values.len() as isize), None);
+                for (index, value) in values.iter().enumerate() {
+                    assert_eq!(tree.get_at(index as isize), Some(value));
+                }
+                for key in -1..=513 {
+                    let rank = values.partition_point(|item| less(item, &(key, 0)));
+                    let item = values.get(rank).filter(|item| item.0 == key);
+                    assert_eq!(tree.get_with_index(&(key, 999)), (item, rank));
+                }
+            };
+            check(&tree, &expected);
+            for step in 0..256 {
+                let key = ((step * 157) % 256) * 2;
+                tree.replace_or_insert((key, step));
+                expected.insert(key, step);
+                check(&tree, &expected);
+            }
+            for key in (0..512).step_by(2) {
+                tree.replace_or_insert((key, -key));
+                expected.insert(key, -key);
+                check(&tree, &expected);
+            }
+            for step in 0..256 {
+                assert_eq!(tree.delete(&(513, 0)), None);
+                match step % 3 {
+                    0 => {
+                        let key = ((step * 157) % 256) * 2;
+                        assert_eq!(
+                            tree.delete(&(key, 0)),
+                            expected.remove(&key).map(|v| (key, v))
+                        );
+                    }
+                    mode => {
+                        let key = if (mode == 1) != descending {
+                            expected.first_key_value()
+                        } else {
+                            expected.last_key_value()
+                        }
+                        .map(|(&k, _)| k);
+                        let want = key.map(|k| (k, expected.remove(&k).unwrap()));
+                        let got = if mode == 1 {
+                            tree.delete_min()
+                        } else {
+                            tree.delete_max()
+                        };
+                        assert_eq!(got, want);
+                    }
+                }
+                check(&tree, &expected);
+            }
+            while let Some((&key, _)) = expected.first_key_value() {
+                tree.delete(&(key, 0));
+                expected.remove(&key);
+                check(&tree, &expected);
+            }
+            tree.replace_or_insert((42, 7));
+            expected.insert(42, 7);
+            check(&tree, &expected);
+        }
+    }
+}

@@ -6,6 +6,7 @@
 struct Node<T> {
     items: Vec<T>,
     children: Vec<Node<T>>,
+    size: usize,
 }
 
 impl<T> Node<T> {
@@ -13,7 +14,13 @@ impl<T> Node<T> {
         Self {
             items: Vec::new(),
             children: Vec::new(),
+            size: 0,
         }
+    }
+
+    // Recompute only this node from cached child sizes, never walk subtrees.
+    fn refresh_size(&mut self) {
+        self.size = self.items.len() + self.children.iter().map(|child| child.size).sum::<usize>();
     }
 
     fn find(&self, key: &T, less: &impl Fn(&T, &T) -> bool) -> (usize, bool) {
@@ -86,14 +93,16 @@ impl<T> Node<T> {
         } else {
             child.children.split_off(degree)
         };
+        child.refresh_size();
+        let mut right = Node {
+            items: right_items,
+            children: right_children,
+            size: 0,
+        };
+        right.refresh_size();
         self.items.insert(index, median);
-        self.children.insert(
-            index + 1,
-            Node {
-                items: right_items,
-                children: right_children,
-            },
-        );
+        self.children.insert(index + 1, right);
+        self.refresh_size();
     }
 
     // Grow a minimal child before descending, preferring the left sibling just
@@ -110,6 +119,8 @@ impl<T> Node<T> {
             if let Some(branch) = sibling.children.pop() {
                 child.children.insert(0, branch);
             }
+            sibling.refresh_size();
+            child.refresh_size();
         } else if index < self.items.len() && self.children[index + 1].items.len() >= degree {
             let (left, right) = self.children.split_at_mut(index + 1);
             let child = &mut left[index];
@@ -121,6 +132,8 @@ impl<T> Node<T> {
             if !sibling.children.is_empty() {
                 child.children.push(sibling.children.remove(0));
             }
+            sibling.refresh_size();
+            child.refresh_size();
         } else {
             let index = index.min(self.items.len() - 1);
             let separator = self.items.remove(index);
@@ -129,10 +142,18 @@ impl<T> Node<T> {
             left.items.push(separator);
             left.items.extend(right.items);
             left.children.extend(right.children);
+            left.refresh_size();
         }
+        self.refresh_size();
     }
 
     fn remove_min(&mut self, degree: usize) -> T {
+        let result = self.remove_min_inner(degree);
+        self.refresh_size();
+        result
+    }
+
+    fn remove_min_inner(&mut self, degree: usize) -> T {
         if self.children.is_empty() {
             return self.items.remove(0);
         }
@@ -144,6 +165,12 @@ impl<T> Node<T> {
     }
 
     fn remove_max(&mut self, degree: usize) -> T {
+        let result = self.remove_max_inner(degree);
+        self.refresh_size();
+        result
+    }
+
+    fn remove_max_inner(&mut self, degree: usize) -> T {
         if self.children.is_empty() {
             return self.items.pop().unwrap();
         }
@@ -156,6 +183,17 @@ impl<T> Node<T> {
     }
 
     fn remove(&mut self, key: &T, degree: usize, less: &impl Fn(&T, &T) -> bool) -> Option<T> {
+        let result = self.remove_inner(key, degree, less);
+        self.refresh_size();
+        result
+    }
+
+    fn remove_inner(
+        &mut self,
+        key: &T,
+        degree: usize,
+        less: &impl Fn(&T, &T) -> bool,
+    ) -> Option<T> {
         let (index, found) = self.find(key, less);
         if self.children.is_empty() {
             return found.then(|| self.items.remove(index));
@@ -174,6 +212,17 @@ impl<T> Node<T> {
     }
 
     fn insert(&mut self, item: T, degree: usize, less: &impl Fn(&T, &T) -> bool) -> Option<T> {
+        let result = self.insert_inner(item, degree, less);
+        self.refresh_size();
+        result
+    }
+
+    fn insert_inner(
+        &mut self,
+        item: T,
+        degree: usize,
+        less: &impl Fn(&T, &T) -> bool,
+    ) -> Option<T> {
         let (mut index, found) = self.find(&item, less);
         if found {
             return Some(std::mem::replace(&mut self.items[index], item));
@@ -362,6 +411,57 @@ impl<T, F: Fn(&T, &T) -> bool> BTree<T, F> {
             }
             current = current.children.get(index)?;
         }
+    }
+
+    /// Returns the item at zero-based comparator rank, or `None` out of bounds.
+    pub fn get_at(&self, index: isize) -> Option<&T> {
+        let mut index = usize::try_from(index).ok()?;
+        let mut node = self.root.as_ref()?;
+        if index >= node.size {
+            return None;
+        }
+        loop {
+            if node.children.is_empty() {
+                return node.items.get(index);
+            }
+            let mut child_index = 0;
+            while child_index < node.items.len() {
+                let size = node.children[child_index].size;
+                if index < size {
+                    break;
+                }
+                index -= size;
+                if index == 0 {
+                    return Some(&node.items[child_index]);
+                }
+                index -= 1;
+                child_index += 1;
+            }
+            node = &node.children[child_index];
+        }
+    }
+
+    /// Returns the equivalent item and its comparator rank. For an absent key,
+    /// returns `None` and the number of stored items strictly less than the key.
+    pub fn get_with_index(&self, key: &T) -> (Option<&T>, usize) {
+        let mut rank = 0;
+        let mut current = self.root.as_ref();
+        while let Some(node) = current {
+            let (index, found) = node.find(key, &self.less);
+            rank += index
+                + node
+                    .children
+                    .iter()
+                    .take(index)
+                    .map(|child| child.size)
+                    .sum::<usize>();
+            if found {
+                rank += node.children.get(index).map_or(0, |child| child.size);
+                return (Some(&node.items[index]), rank);
+            }
+            current = node.children.get(index);
+        }
+        (None, rank)
     }
 
     /// Returns the first item in comparator order, or `None` for an empty tree.
