@@ -1,6 +1,46 @@
 // Copyright 2026 AsterSQL.
 //! Byte-key comparisons matching Go keyutil, including its empty-boundary rules.
 
+use std::collections::HashMap;
+
+/// Builds a range identifier from lowercase hexadecimal bounds separated by a hyphen.
+pub fn build_key_range_key(start_key: &[u8], end_key: &[u8]) -> String {
+    const HEX: &[u8; 16] = b"0123456789abcdef";
+    let mut key = String::with_capacity((start_key.len() + end_key.len()) * 2 + 1);
+    for (i, bound) in [start_key, end_key].into_iter().enumerate() {
+        if i == 1 {
+            key.push('-');
+        }
+        for &byte in bound {
+            key.push(char::from(HEX[usize::from(byte >> 4)]));
+            key.push(char::from(HEX[usize::from(byte & 15)]));
+        }
+    }
+    key
+}
+
+/// Groups consecutive strings into owned start/end maps in input order.
+/// Returns None for no keys, preserving Go's nil result.
+///
+/// # Panics
+/// Panics when the number of keys is odd, matching Go's incomplete-pair panic.
+pub fn build_key_range_maps(keys: &[&str]) -> Option<Vec<HashMap<&'static str, String>>> {
+    assert!(keys.len().is_multiple_of(2), "incomplete key range pair");
+    if keys.is_empty() {
+        return None;
+    }
+    Some(
+        keys.chunks_exact(2)
+            .map(|pair| {
+                HashMap::from([
+                    ("start_key", pair[0].to_owned()),
+                    ("end_key", pair[1].to_owned()),
+                ])
+            })
+            .collect(),
+    )
+}
+
 /// Returns the lexicographically larger key, choosing `b` on equality.
 pub fn max_key<'a>(a: &'a [u8], b: &'a [u8]) -> &'a [u8] {
     if a > b { a } else { b }

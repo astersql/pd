@@ -50,3 +50,26 @@ fn key_boundary_comparison() {
     assert!(between(b"", b"", b"\xff"));
     assert!(!between(b"", b"", b""));
 }
+
+#[test]
+fn key_range_map_builders() {
+    assert_eq!(build_key_range_key(b"a", b"b"), "61-62");
+    assert_eq!(build_key_range_key(b"", b""), "-");
+    assert_eq!(build_key_range_key(&[0, 15, 128, 255], b""), "000f80ff-");
+    assert_eq!(build_key_range_key(b"", &[255]), "-ff");
+    assert!(build_key_range_maps(&[]).is_none());
+    let ranges = build_key_range_maps(&["", "74", "ab12", "cd12", "非十六进制", ""]).unwrap();
+    assert_eq!(ranges.len(), 3);
+    for (range, (start, end)) in
+        ranges
+            .iter()
+            .zip([("", "74"), ("ab12", "cd12"), ("非十六进制", "")])
+    {
+        assert_eq!(range.len(), 2);
+        assert_eq!(range["start_key"], start);
+        assert_eq!(range["end_key"], end);
+    }
+    for keys in [&["start"][..], &["a", "b", "c"][..]] {
+        assert!(std::panic::catch_unwind(|| build_key_range_maps(keys)).is_err());
+    }
+}
