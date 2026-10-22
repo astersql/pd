@@ -13,6 +13,8 @@ pub struct DownPeer {
 /// Region metadata and classified membership. Queries cannot invalidate classification.
 #[derive(Clone, Debug)]
 pub struct RegionInfo {
+    pub(crate) term: u64,
+    pub(crate) replication_status: (i32, u64),
     pub(crate) source: crate::RegionSource,
     pub(crate) report_buckets: Option<std::sync::Arc<crate::RegionBuckets>>,
     pub(crate) bucket_meta: Option<std::sync::Arc<crate::RegionBucketMeta>>,
@@ -56,6 +58,8 @@ impl RegionInfo {
         down_peers.sort_by_key(|p| p.peer.id);
         pending_peers.sort_by_key(|p| p.id);
         Self {
+            term: 0,
+            replication_status: (0, 0),
             source: crate::RegionSource::Storage,
             report_buckets: None,
             bucket_meta: None,

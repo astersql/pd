@@ -161,3 +161,10 @@ mod region_inherit_test;
 mod region_buckets_test;
 
 pub mod region_buckets;
+
+#[cfg(test)]
+#[path = "region_guide_test.rs"]
+mod region_guide_test;
+
+pub mod region_guide;
+pub use region_guide::*;

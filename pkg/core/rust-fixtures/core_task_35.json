@@ -1,0 +1,551 @@
+{
+  "go_source": "pkg/core/region.go; unchanged since 0820f0b67b0e49b289b84fdf66b7b8fb178afe82",
+  "go_tests": "TestNeedSync (10 table cases); TestRegionGuideLogicalStorageSizeChanged (3 subtests), read-only go test passed; remaining cases source-derived",
+  "cases": [
+    {
+      "name": "unchanged",
+      "expected": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "source": "GenerateRegionGuideFunc/SortedPeersEqual/SortedPeersStatsEqual; source-derived",
+      "input": "no mutation",
+      "expected_order": [
+        "saveKV",
+        "saveCache",
+        "needSync",
+        "retained"
+      ]
+    },
+    {
+      "name": "version",
+      "expected": [
+        1,
+        1,
+        0,
+        1
+      ],
+      "source": "GenerateRegionGuideFunc/SortedPeersEqual/SortedPeersStatsEqual; source-derived",
+      "input": "new version=2",
+      "expected_order": [
+        "saveKV",
+        "saveCache",
+        "needSync",
+        "retained"
+      ]
+    },
+    {
+      "name": "confver",
+      "expected": [
+        1,
+        1,
+        0,
+        1
+      ],
+      "source": "GenerateRegionGuideFunc/SortedPeersEqual/SortedPeersStatsEqual; source-derived",
+      "input": "new conf_ver=2",
+      "expected_order": [
+        "saveKV",
+        "saveCache",
+        "needSync",
+        "retained"
+      ]
+    },
+    {
+      "name": "stale_epoch",
+      "expected": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "source": "GenerateRegionGuideFunc/SortedPeersEqual/SortedPeersStatsEqual; source-derived",
+      "input": "new epoch=None (zero getters)",
+      "expected_order": [
+        "saveKV",
+        "saveCache",
+        "needSync",
+        "retained"
+      ]
+    },
+    {
+      "name": "leader",
+      "expected": [
+        0,
+        1,
+        1,
+        0
+      ],
+      "source": "TestNeedSync + GenerateRegionGuideFunc",
+      "input": "new leader=None",
+      "expected_order": [
+        "saveKV",
+        "saveCache",
+        "needSync",
+        "retained"
+      ]
+    },
+    {
+      "name": "leader_store_only",
+      "expected": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "source": "GenerateRegionGuideFunc/SortedPeersEqual/SortedPeersStatsEqual; source-derived",
+      "input": "new leader store=2, id stays 1",
+      "expected_order": [
+        "saveKV",
+        "saveCache",
+        "needSync",
+        "retained"
+      ]
+    },
+    {
+      "name": "peer_count",
+      "expected": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "source": "GenerateRegionGuideFunc/SortedPeersEqual/SortedPeersStatsEqual; source-derived",
+      "input": "new peers=[]",
+      "expected_order": [
+        "saveKV",
+        "saveCache",
+        "needSync",
+        "retained"
+      ]
+    },
+    {
+      "name": "peer_content",
+      "expected": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "source": "GenerateRegionGuideFunc/SortedPeersEqual/SortedPeersStatsEqual; source-derived",
+      "input": "new peer id=2, count unchanged",
+      "expected_order": [
+        "saveKV",
+        "saveCache",
+        "needSync",
+        "retained"
+      ]
+    },
+    {
+      "name": "bucket_increase",
+      "expected": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "source": "GenerateRegionGuideFunc/SortedPeersEqual/SortedPeersStatsEqual; source-derived",
+      "input": "new bucket version=1, written_bytes=100",
+      "expected_order": [
+        "saveKV",
+        "saveCache",
+        "needSync",
+        "retained"
+      ]
+    },
+    {
+      "name": "bucket_disable",
+      "expected": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "source": "GenerateRegionGuideFunc/SortedPeersEqual/SortedPeersStatsEqual; source-derived",
+      "input": "origin bucket=2, new=None",
+      "expected_order": [
+        "saveKV",
+        "saveCache",
+        "needSync",
+        "retained"
+      ]
+    },
+    {
+      "name": "bucket_decrease",
+      "expected": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "source": "GenerateRegionGuideFunc/SortedPeersEqual/SortedPeersStatsEqual; source-derived",
+      "input": "origin bucket=2, new bucket=1",
+      "expected_order": [
+        "saveKV",
+        "saveCache",
+        "needSync",
+        "retained"
+      ]
+    },
+    {
+      "name": "bucket_precedes_flow",
+      "expected": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "source": "GenerateRegionGuideFunc/SortedPeersEqual/SortedPeersStatsEqual; source-derived",
+      "input": "new bucket=1 and written_bytes=100; bucket early return suppresses flow sync",
+      "expected_order": [
+        "saveKV",
+        "saveCache",
+        "needSync",
+        "retained"
+      ]
+    },
+    {
+      "name": "epoch_leader_bucket",
+      "expected": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "source": "GenerateRegionGuideFunc/SortedPeersEqual/SortedPeersStatsEqual; source-derived",
+      "input": "new version=2, leader=None, bucket=1, written_bytes=100; prior flags retained",
+      "expected_order": [
+        "saveKV",
+        "saveCache",
+        "needSync",
+        "retained"
+      ]
+    },
+    {
+      "name": "write",
+      "expected": [
+        0,
+        1,
+        1,
+        0
+      ],
+      "source": "TestNeedSync + GenerateRegionGuideFunc",
+      "input": "new written_bytes=100",
+      "expected_order": [
+        "saveKV",
+        "saveCache",
+        "needSync",
+        "retained"
+      ]
+    },
+    {
+      "name": "read",
+      "expected": [
+        0,
+        1,
+        1,
+        0
+      ],
+      "source": "GenerateRegionGuideFunc/SortedPeersEqual/SortedPeersStatsEqual; source-derived",
+      "input": "new read_bytes=100",
+      "expected_order": [
+        "saveKV",
+        "saveCache",
+        "needSync",
+        "retained"
+      ]
+    },
+    {
+      "name": "rounded_same",
+      "expected": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "source": "TestNeedSync + GenerateRegionGuideFunc",
+      "input": "new written_bytes=250, origin=349, both round to 300",
+      "expected_order": [
+        "saveKV",
+        "saveCache",
+        "needSync",
+        "retained"
+      ]
+    },
+    {
+      "name": "divisor_decrease",
+      "expected": [
+        0,
+        1,
+        1,
+        0
+      ],
+      "source": "TestNeedSync + GenerateRegionGuideFunc",
+      "input": "new divisor=10, origin=100, both flows zero",
+      "expected_order": [
+        "saveKV",
+        "saveCache",
+        "needSync",
+        "retained"
+      ]
+    },
+    {
+      "name": "pending",
+      "expected": [
+        0,
+        1,
+        1,
+        0
+      ],
+      "source": "TestNeedSync + GenerateRegionGuideFunc",
+      "input": "new pending=[peer1]",
+      "expected_order": [
+        "saveKV",
+        "saveCache",
+        "needSync",
+        "retained"
+      ]
+    },
+    {
+      "name": "down",
+      "expected": [
+        0,
+        1,
+        1,
+        0
+      ],
+      "source": "TestNeedSync + GenerateRegionGuideFunc",
+      "input": "new down=[peer1,seconds=600]",
+      "expected_order": [
+        "saveKV",
+        "saveCache",
+        "needSync",
+        "retained"
+      ]
+    },
+    {
+      "name": "down_seconds",
+      "expected": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "source": "GenerateRegionGuideFunc/SortedPeersEqual/SortedPeersStatsEqual; source-derived",
+      "input": "origin down=[peer1,seconds=1], new seconds=600",
+      "expected_order": [
+        "saveKV",
+        "saveCache",
+        "needSync",
+        "retained"
+      ]
+    },
+    {
+      "name": "pending_role",
+      "expected": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "source": "GenerateRegionGuideFunc/SortedPeersEqual/SortedPeersStatsEqual; source-derived",
+      "input": "both pending=[peer1], new peer becomes witness",
+      "expected_order": [
+        "saveKV",
+        "saveCache",
+        "needSync",
+        "retained"
+      ]
+    },
+    {
+      "name": "size",
+      "expected": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "source": "GenerateRegionGuideFunc/SortedPeersEqual/SortedPeersStatsEqual; source-derived",
+      "input": "new approximate_size=1",
+      "expected_order": [
+        "saveKV",
+        "saveCache",
+        "needSync",
+        "retained"
+      ]
+    },
+    {
+      "name": "keys",
+      "expected": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "source": "GenerateRegionGuideFunc/SortedPeersEqual/SortedPeersStatsEqual; source-derived",
+      "input": "new approximate_keys=1",
+      "expected_order": [
+        "saveKV",
+        "saveCache",
+        "needSync",
+        "retained"
+      ]
+    },
+    {
+      "name": "kv",
+      "expected": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "source": "TestRegionGuideLogicalStorageSizeChanged + GenerateRegionGuideFunc",
+      "input": "new approximate_kv_size=1",
+      "expected_order": [
+        "saveKV",
+        "saveCache",
+        "needSync",
+        "retained"
+      ]
+    },
+    {
+      "name": "ia",
+      "expected": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "source": "TestRegionGuideLogicalStorageSizeChanged + GenerateRegionGuideFunc",
+      "input": "new approximate_ia_kv_size=1",
+      "expected_order": [
+        "saveKV",
+        "saveCache",
+        "needSync",
+        "retained"
+      ]
+    },
+    {
+      "name": "columnar",
+      "expected": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "source": "TestRegionGuideLogicalStorageSizeChanged + GenerateRegionGuideFunc",
+      "input": "new approximate_columnar_kv_size=1",
+      "expected_order": [
+        "saveKV",
+        "saveCache",
+        "needSync",
+        "retained"
+      ]
+    },
+    {
+      "name": "replication",
+      "expected": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "source": "GenerateRegionGuideFunc/SortedPeersEqual/SortedPeersStatsEqual; source-derived",
+      "input": "new state=1,id=0",
+      "expected_order": [
+        "saveKV",
+        "saveCache",
+        "needSync",
+        "retained"
+      ]
+    },
+    {
+      "name": "replication_id",
+      "expected": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "source": "GenerateRegionGuideFunc/SortedPeersEqual/SortedPeersStatsEqual; source-derived",
+      "input": "origin state=1,id=1; new state=1,id=2",
+      "expected_order": [
+        "saveKV",
+        "saveCache",
+        "needSync",
+        "retained"
+      ]
+    },
+    {
+      "name": "unknown_replication",
+      "expected": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "source": "GenerateRegionGuideFunc/SortedPeersEqual/SortedPeersStatsEqual; source-derived",
+      "input": "origin state=1,id=1; new state=0,id=2",
+      "expected_order": [
+        "saveKV",
+        "saveCache",
+        "needSync",
+        "retained"
+      ]
+    },
+    {
+      "name": "flashback",
+      "expected": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "source": "GenerateRegionGuideFunc/SortedPeersEqual/SortedPeersStatsEqual; source-derived",
+      "input": "new is_in_flashback=true",
+      "expected_order": [
+        "saveKV",
+        "saveCache",
+        "needSync",
+        "retained"
+      ]
+    },
+    {
+      "name": "flashback_ts",
+      "expected": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "source": "GenerateRegionGuideFunc/SortedPeersEqual/SortedPeersStatsEqual; source-derived",
+      "input": "new flashback_start_ts=1",
+      "expected_order": [
+        "saveKV",
+        "saveCache",
+        "needSync",
+        "retained"
+      ]
+    },
+    {
+      "name": "term",
+      "expected": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "source": "GenerateRegionGuideFunc/SortedPeersEqual/SortedPeersStatsEqual; source-derived",
+      "input": "new term=9; origin=0; no term branch in guide",
+      "expected_order": [
+        "saveKV",
+        "saveCache",
+        "needSync",
+        "retained"
+      ]
+    }
+  ],
+  "baseline_input": "Region id=0, epoch=(version=1,conf_ver=1), one voter id=1/store=1 and matching leader, divisor=100, all stats zero, no pending/down/buckets; clone as new region."
+}
