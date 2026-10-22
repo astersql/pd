@@ -6,8 +6,9 @@ mod number;
 
 pub use bytes::{DecodeBytesError, decode_bytes, encode_bytes};
 pub use keyspace::{
-    KEYSPACE_PREFIX_LEN, ParseKeyspacePrefixError, RAW_KEYSPACE_MODE_PREFIX,
-    TXN_KEYSPACE_MODE_PREFIX, make_keyspace_prefix, parse_keyspace_prefix,
+    DecodeKeyspaceKeyError, ENCODED_KEYSPACE_PREFIX_LEN, KEYSPACE_PREFIX_LEN,
+    ParseKeyspacePrefixError, RAW_KEYSPACE_MODE_PREFIX, TXN_KEYSPACE_MODE_PREFIX,
+    decode_keyspace_key, encode_keyspace_boundary, make_keyspace_prefix, parse_keyspace_prefix,
 };
 pub use number::{DecodeIntError, decode_int, encode_int};
 
