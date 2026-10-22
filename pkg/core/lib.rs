@@ -155,3 +155,9 @@ pub use region_inherit::*;
 #[cfg(test)]
 #[path = "region_inherit_test.rs"]
 mod region_inherit_test;
+
+#[cfg(test)]
+#[path = "region_buckets_test.rs"]
+mod region_buckets_test;
+
+pub mod region_buckets;

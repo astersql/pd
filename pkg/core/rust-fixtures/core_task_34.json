@@ -1,0 +1,16 @@
+{
+  "source": "pkg/core/region.go UpdateBuckets, CompareAndSetReportBuckets, GetBuckets; unchanged since 0820f0b67b0e49b289b84fdf66b7b8fb178afe82",
+  "existing_test": "TestGetBucketMeta: nil buckets, report version 1, UpdateBuckets to 2, heartbeat metadata version 1 overrides inherited reports. Read-only go test executed: 1 passed.",
+  "boundary_evidence": {
+    "identity_and_clear": "UpdateBuckets compares pointer identity, copies region_id/version/keys, accepts lower versions, nil clears unconditionally regardless of old pointer.",
+    "absent_and_zero": "CompareAndSetReportBuckets uses nil getter version 0; with absent old, CAS nil to nil succeeds; with old version 0, nil candidate compares equal and is ignored.",
+    "meta_priority_and_clone": "GetBuckets returns heartbeat metadata first, using owning region ID regardless of report version. Clone loads report pointer into independent slot.",
+    "competition": "UpdateBuckets CAS against one old pointer permits exactly one writer; CompareAndSetReportBuckets rejects <= old version, so serialized reports retain maximum. Rust exclusive mutable access serializes the check and replacement; contention test uses caller-owned Mutex. No failpoint or new Go oracle executed."
+  },
+  "versions": [
+    {"old": 2, "candidate": 1, "expected": 2, "source": "CompareAndSetReportBuckets reportVersion < old"},
+    {"old": 2, "candidate": 2, "expected": 2, "source": "CompareAndSetReportBuckets reportVersion == old"},
+    {"old": 2, "candidate": 3, "expected": 3, "source": "CompareAndSetReportBuckets CAS newer"},
+    {"old": 0, "candidate": 1, "expected": 1, "source": "CompareAndSetReportBuckets CAS newer; zero version allowed"}
+  ]
+}
