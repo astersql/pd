@@ -79,10 +79,33 @@ impl RegionStats {
     }
 }
 impl RegionInfo {
+    /// Witness replicas on a nonzero store consume no region size.
+    /// Unknown stores and store zero retain the whole region estimate, as in Go.
+    pub fn store_peer_approximate_size(&self, store: u64) -> i64 {
+        if store != 0 && self.get_store_peer(store).is_some_and(|p| p.is_witness) {
+            0
+        } else {
+            self.stats.approximate_size
+        }
+    }
+    /// Apply the same witness rule to the region key estimate.
+    pub fn store_peer_approximate_keys(&self, store: u64) -> i64 {
+        if store != 0 && self.get_store_peer(store).is_some_and(|p| p.is_witness) {
+            0
+        } else {
+            self.stats.approximate_keys
+        }
+    }
+
     /// Normalize and replace heartbeat statistics without altering membership.
     pub fn set_heartbeat_stats(&mut self, stats: RegionHeartbeatStats, divisor: u64) {
         self.stats = stats.normalize(divisor);
         self.source = crate::RegionSource::Heartbeat;
+    }
+    /// Modify raw domain statistics without heartbeat normalization or source changes.
+    /// Exclusive access prevents changing a snapshot while it is indexed/shared.
+    pub fn stats_mut(&mut self) -> &mut RegionStats {
+        &mut self.stats
     }
     /// Read the normalized heartbeat snapshot.
     pub fn stats(&self) -> &RegionStats {

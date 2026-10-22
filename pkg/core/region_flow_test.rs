@@ -101,3 +101,81 @@ fn core_task_30_invalid_flow_pairs() {
         0
     );
 }
+
+#[test]
+fn core_task_68_store_peer_statistics() {
+    // region.go:GetStorePeerApproximate{Size,Keys}; store ID zero bypasses witness.
+    let mut r = RegionInfo::new(
+        RegionMeta {
+            peers: vec![
+                Peer {
+                    id: 1,
+                    store_id: 1,
+                    is_witness: true,
+                    ..Default::default()
+                },
+                Peer {
+                    id: 2,
+                    store_id: 2,
+                    ..Default::default()
+                },
+                Peer {
+                    id: 3,
+                    store_id: 0,
+                    is_witness: true,
+                    ..Default::default()
+                },
+            ],
+            ..Default::default()
+        },
+        None,
+        vec![],
+        vec![],
+    );
+    r.set_heartbeat_stats(
+        RegionHeartbeatStats {
+            approximate_size: 7 * 1048576,
+            approximate_keys: 19,
+            ..Default::default()
+        },
+        0,
+    );
+    for (store, size, keys) in [(1, 0, 0), (2, 7, 19), (9, 7, 19), (0, 7, 19)] {
+        assert_eq!(r.store_peer_approximate_size(store), size);
+        assert_eq!(r.store_peer_approximate_keys(store), keys);
+    }
+    let copy = r.clone_with([RegionOption::RemoveStorePeer(1)]);
+    assert_eq!(copy.store_peer_approximate_size(1), 7);
+    assert_eq!(copy.store_peer_approximate_keys(1), 19);
+    assert_eq!(r.store_peer_approximate_size(1), 0);
+    assert_eq!(r.store_peer_approximate_keys(1), 0);
+}
+
+#[test]
+fn core_task_68_raw_stat_options_preserve_signed_values_and_source() {
+    // region_option.go:Set{WrittenBytes,WrittenKeys,ReadBytes,ReadKeys,
+    // ApproximateSize,ApproximateKvSize,ApproximateIAKvSize,ApproximateKeys}
+    // assign directly; unlike RegionFromHeartbeat they do not normalize.
+    let mut r = RegionInfo::new(RegionMeta::default(), None, vec![], vec![]);
+    let stats = r.stats_mut();
+    stats.written_bytes = u64::MAX;
+    stats.written_keys = 7;
+    stats.read_bytes = 9;
+    stats.read_keys = 11;
+    stats.approximate_size = -3;
+    stats.approximate_kv_size = -4;
+    stats.approximate_ia_kv_size = -5;
+    stats.approximate_keys = -6;
+    assert_eq!(r.stats().written_bytes, u64::MAX);
+    assert_eq!(r.stats().written_keys, 7);
+    assert_eq!(r.stats().read_bytes, 9);
+    assert_eq!(r.stats().read_keys, 11);
+    assert_eq!(r.store_peer_approximate_size(0), -3);
+    assert_eq!(r.stats().approximate_kv_size, -4);
+    assert_eq!(r.stats().approximate_ia_kv_size, -5);
+    assert_eq!(r.store_peer_approximate_keys(0), -6);
+    assert_eq!(r.source(), RegionSource::Storage);
+    let mut copy = r.clone_with([]);
+    copy.stats_mut().approximate_size = 4;
+    assert_eq!(r.stats().approximate_size, -3);
+}
