@@ -49,3 +49,27 @@ fn schedule_policy_round_trip() {
         .expect("the panic payload should preserve the invalid input");
     assert_eq!(message, "invalid schedule policy:  count ");
 }
+
+#[test]
+fn key_type_round_trip() {
+    assert_eq!(KeyType::TABLE.as_i32(), 0);
+    assert_eq!(KeyType::RAW.as_i32(), 1);
+    assert_eq!(KeyType::TXN.as_i32(), 2);
+    assert_eq!(KeyType::TABLE.to_string(), "table");
+    assert_eq!(KeyType::RAW.to_string(), "raw");
+    assert_eq!(KeyType::TXN.to_string(), "txn");
+    assert_eq!(KeyType::from_i32(-1).to_string(), "unknown");
+
+    assert_eq!(string_to_key_type("table"), KeyType::TABLE);
+    assert_eq!(string_to_key_type(" raw\n"), KeyType::RAW);
+    assert_eq!(string_to_key_type("\ttxn "), KeyType::TXN);
+    assert_eq!(string_to_key_type(""), KeyType::TABLE);
+    assert_eq!(string_to_key_type(" \n\t"), KeyType::TABLE);
+
+    let panic = std::panic::catch_unwind(|| string_to_key_type(" invalid "))
+        .expect_err("unknown key types must panic like the Go oracle");
+    let message = panic
+        .downcast_ref::<String>()
+        .expect("the panic payload should preserve the invalid input");
+    assert_eq!(message, "invalid key type:  invalid ");
+}

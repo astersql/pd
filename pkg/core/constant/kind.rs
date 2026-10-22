@@ -107,6 +107,52 @@ pub fn string_to_schedule_policy(input: &str) -> SchedulePolicy {
     }
 }
 
+/// The encoding used for keys in a keyspace.
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+#[repr(transparent)]
+pub struct KeyType(i32);
+
+impl KeyType {
+    pub const TABLE: Self = Self(0);
+    pub const RAW: Self = Self(1);
+    pub const TXN: Self = Self(2);
+
+    pub const fn from_i32(value: i32) -> Self {
+        Self(value)
+    }
+
+    pub const fn as_i32(self) -> i32 {
+        self.0
+    }
+}
+
+impl fmt::Display for KeyType {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        formatter.write_str(match *self {
+            Self::TABLE => "table",
+            Self::RAW => "raw",
+            Self::TXN => "txn",
+            _ => "unknown",
+        })
+    }
+}
+
+/// Converts a Go-compatible key type string into its key type value.
+///
+/// Empty or whitespace-only input selects [`KeyType::TABLE`], the Go default.
+///
+/// # Panics
+///
+/// Panics when the trimmed input is not `"table"`, `"raw"`, `"txn"`, or empty.
+pub fn string_to_key_type(input: &str) -> KeyType {
+    match input.trim() {
+        "table" | "" => KeyType::TABLE,
+        "raw" => KeyType::RAW,
+        "txn" => KeyType::TXN,
+        _ => panic!("invalid key type: {input}"),
+    }
+}
+
 /// A resource and the policy used to schedule it.
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub struct ScheduleKind {
