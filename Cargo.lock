@@ -119,6 +119,7 @@ version = "0.1.0"
 name = "astersql-pd-keyutil"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-errs",
  "serde",
  "serde_json",
 ]

@@ -11,3 +11,4 @@ path = "lib.rs"
 [dependencies]
 serde.workspace = true
 serde_json.workspace = true
+astersql-pd-errs.workspace = true

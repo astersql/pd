@@ -10,3 +10,9 @@ pub use util::*;
 #[cfg(test)]
 #[path = "key_range_test.rs"]
 mod key_range_test;
+
+#[cfg(test)]
+mod http_test;
+
+mod http;
+pub use http::{HttpKeyRangesError, decode_http_key_ranges};
