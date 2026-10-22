@@ -246,3 +246,9 @@ mod regions_reset;
 #[cfg(test)]
 #[path = "regions_reset_test.rs"]
 mod regions_reset_test;
+
+pub mod regions_query;
+pub use regions_query::*;
+#[cfg(test)]
+#[path = "regions_query_test.rs"]
+mod regions_query_test;

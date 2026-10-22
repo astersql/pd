@@ -1,0 +1,7 @@
+{
+ "source": "pkg/core/region.go QueryRegions, sortOutKeyIDMap, getRegionsByKeys/getRegionsByPrevKeys/getRegionsByIDs; batchSearchSize=128; unchanged since 0820f0b67b0e49b289b84fdf66b7b8fb178afe82",
+ "existing_test": "pkg/core/region_test.go TestQueryRegions: regions [a,b),[b,c),[d,e); mixed query maps keys [b,c] to [2,0], prev [a,b,c,d,e,f] to [0,1,0,0,0,0]; ID 4 maps to nil",
+ "keys": ["b","c"], "key_ids": [2,0],
+ "prev_keys": ["a","b","c","d","e","f"], "prev_ids": [0,1,0,0,0,0],
+ "derived": "Duplicates preserve vector positions, map deduplicates. ID 0 skipped. Missing IDs retained as nil. Empty queries yield empty collections. For lengths 127,128,129,257 each 128-sized batch appends in order; buckets included only when requested. These additional cases derive from source, not executed cross-language differential cases."
+}
