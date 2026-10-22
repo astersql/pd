@@ -1,0 +1,37 @@
+{
+  "average_with_missing_peer": 4,
+  "sources": {
+    "controls": "store.go StoresInfo.PauseLeaderTransfer through ResetStoreLimit; missing eviction/pause errors, missing recovery/reset no-op; clone counters; SlowTrendEvicted rejects duplicate",
+    "network": "store.go GetAvgNetworkSlowScore: registered peers 2=8 and 3=missing=1 => (8+1)/2=4; self and absent 99 ignored; TriggerNetworkSlowEvict increments, reset zero",
+    "existing_tests": "store_test.go TestPutStore and TestPutStoreSkipsPatchForRemovedStore assert replacement/current membership only. Control and network scenarios are source-derived, not executed Go differential tests."
+  },
+  "network_input": {
+    "store_id": 1,
+    "registered_ids": [
+      1,
+      2,
+      3
+    ],
+    "reported_scores": {
+      "1": 999,
+      "2": 8,
+      "99": 100
+    }
+  },
+  "controls": {
+    "id": 1,
+    "missing_id": 99,
+    "pause_twice_resume_once_allowed": false,
+    "resume_again_allowed": true,
+    "unmatched_resume_allowed": false,
+    "duplicate_trend_error": "SlowTrendEvicted(1)",
+    "limit_rates": [
+      3,
+      9
+    ],
+    "expected_first_rate": 3,
+    "empty_rates_expected": 0,
+    "trigger_count_after_two": 2,
+    "trigger_count_after_reset": 0
+  }
+}

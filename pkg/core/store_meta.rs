@@ -32,6 +32,7 @@ pub struct StoreInfo {
     pub(crate) leader_size: i64,
     pub(crate) region_size: i64,
 
+    pub(crate) network_slow_triggers: u64,
     pub(crate) control: [i64; 5],
     pub(crate) last_persist_unix_nanos: Option<i128>,
     pub(crate) last_awaken_unix_nanos: Option<i128>,
@@ -54,6 +55,7 @@ impl StoreInfo {
             pending_peer_count: 0,
             leader_size: 0,
             region_size: 0,
+            network_slow_triggers: 0,
             control: [0; 5],
             last_persist_unix_nanos: None,
             last_awaken_unix_nanos: None,

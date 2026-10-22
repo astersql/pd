@@ -8,7 +8,7 @@ use crate::{StoreInfo, StoreMeta};
 /// Thread-safe registry retaining immutable store handles for snapshots.
 #[derive(Default)]
 pub struct StoresInfo {
-    stores: RwLock<HashMap<u64, Arc<StoreInfo>>>,
+    pub(crate) stores: RwLock<HashMap<u64, Arc<StoreInfo>>>,
 }
 impl StoresInfo {
     pub fn new() -> Self {

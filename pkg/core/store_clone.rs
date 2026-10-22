@@ -32,6 +32,7 @@ impl StoreInfo {
             pending_peer_count: self.pending_peer_count,
             leader_size: self.leader_size,
             region_size: self.region_size,
+            network_slow_triggers: self.network_slow_triggers,
             control: self.control,
             last_persist_unix_nanos: self.last_persist_unix_nanos,
             last_awaken_unix_nanos: self.last_awaken_unix_nanos,
