@@ -123,3 +123,63 @@ fn sort_deduce_and_merge() {
     bytes.sort_and_deduce();
     assert_eq!(bytes.ranges(), &[KeyRange::new([0], [])]);
 }
+
+#[test]
+fn subtract_key_ranges() {
+    use crate::KeyRanges;
+    fn ranges(pairs: &[(&str, &str)]) -> Vec<KeyRange> {
+        pairs.iter().map(|(a, b)| KeyRange::new(a, b)).collect()
+    }
+    let cases: &[(&[(&str, &str)], (&str, &str), &[(&str, &str)])] = &[
+        (&[], ("", ""), &[]),
+        (&[], ("a", "z"), &[("a", "z")]),
+        (
+            &[("a", "d"), ("e", "f")],
+            ("", ""),
+            &[("", "a"), ("d", "e"), ("f", "")],
+        ),
+        (&[("a", "d"), ("e", "f")], ("g", "h"), &[("g", "h")]),
+        (
+            &[("a", "d"), ("e", "f")],
+            ("c", "g"),
+            &[("d", "e"), ("f", "g")],
+        ),
+        (
+            &[("b", "c"), ("e", "f")],
+            ("a", "g"),
+            &[("a", "b"), ("c", "e"), ("f", "g")],
+        ),
+        (&[("a", "z")], ("c", "g"), &[]),
+        (
+            &[("b", "c"), ("c", "d")],
+            ("a", "e"),
+            &[("a", "b"), ("d", "e")],
+        ),
+        (&[("a", "c"), ("e", "g")], ("c", "e"), &[("c", "e")]),
+        (&[("", "c")], ("", ""), &[("c", "")]),
+        (&[("c", "")], ("", ""), &[("", "c")]),
+        (&[("", "")], ("", ""), &[]),
+        // Empty cursor sorts before a finite end, preserving the Go tail fragment.
+        (&[("c", "")], ("a", "z"), &[("a", "c"), ("", "z")]),
+        (&[("a", "e"), ("c", "g")], ("b", "h"), &[("g", "h")]),
+        // Go compares empty bytes lexically before applying the unbounded-end rule.
+        (&[], ("", "c"), &[("", "c")]),
+        (&[("", "")], ("a", "z"), &[("", "z")]),
+    ];
+    for &(input, base, expected) in cases {
+        let collection = KeyRanges::new(ranges(input));
+        let before = collection.clone();
+        let base = KeyRange::new(base.0, base.1);
+        assert_eq!(
+            collection.subtract_key_ranges(&base),
+            ranges(expected),
+            "{input:?} - {base:?}"
+        );
+        assert_eq!(collection, before);
+    }
+    let collection = KeyRanges::new(vec![KeyRange::new([128], [255])]);
+    assert_eq!(
+        collection.subtract_key_ranges(&KeyRange::new([0], [])),
+        vec![KeyRange::new([0], [128]), KeyRange::new([255], [])]
+    );
+}

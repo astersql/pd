@@ -1,5 +1,5 @@
 // Copyright 2026 AsterSQL.
-use crate::KeyRange;
+use crate::{KeyRange, max_start_key, min_end_key};
 
 /// An owned collection of key ranges; callers may supply unsorted ranges.
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
@@ -30,6 +30,40 @@ impl KeyRanges {
     /// Preserves input order and leaves ordinary overlaps separate.
     pub fn merge(&mut self) {
         self.join_adjacent(false);
+    }
+
+    /// Returns the portions of `base` left by the supplied ranges in input order.
+    /// Callers normally supply monotonically increasing ranges, as in Go.
+    /// Empty bounds preserve Go's byte comparison and unbounded-end semantics;
+    /// in particular, an entirely empty base with no ranges yields no slices.
+    pub fn subtract_key_ranges(&self, base: &KeyRange) -> Vec<KeyRange> {
+        let mut result = Vec::new();
+        let mut start = base.start_key.as_slice();
+        // Go's less(..., right) first compares bytes, then treats empty b as infinity.
+        let before_end = |a: &[u8], b: &[u8]| a < b || (b.is_empty() && !a.is_empty());
+        for range in &self.krs {
+            if !base.over_lapped(range) {
+                continue;
+            }
+            if start < range.start_key.as_slice() {
+                result.push(KeyRange::new(
+                    start,
+                    min_end_key(&range.start_key, &base.end_key),
+                ));
+            }
+            start = if start.is_empty() {
+                &range.end_key
+            } else {
+                max_start_key(start, &range.end_key)
+            };
+            if !before_end(start, &base.end_key) {
+                break;
+            }
+        }
+        if before_end(start, &base.end_key) {
+            result.push(KeyRange::new(start, &base.end_key));
+        }
+        result
     }
 
     fn join_adjacent(&mut self, symmetric: bool) {
