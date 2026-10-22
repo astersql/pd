@@ -40,6 +40,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "astersql-pd-balancer"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-syncutil",
+]
+
+[[package]]
 name = "astersql-pd-cmd-pd-server"
 version = "0.1.0"
 dependencies = [

@@ -2,7 +2,7 @@
 
 批次：【批次 15】依赖批次 14
 
-状态：未开始
+状态：已完成，待回归
 
 目的：Policy 显示、工厂、Put/GetAll/Len 与插入顺序一致
 
@@ -68,3 +68,16 @@
 
 完成 `pkg/balancer/lib.rs` 中的本任务行为和 `pkg/balancer/balancer_test.rs` 的独立测试；只在上述红绿证据、crate 回归和差异审查齐全后标记完成。
 
+
+## 执行证据（2026-10-22）
+
+- 依赖：syncutil 已实现并提交；批次 14 的 jsonutil 实现提交 73c3348f9 已存在，任务 57 因其他并发工作区测试未完成而待回归。本任务不依赖其实现。
+- 建立 astersql-pd-balancer、workspace 连线和锁文件；实现 Policy 显示、所有策略回退工厂、u32/String 限定、线程安全 Put/GetAll/Len 与插入顺序。Next/Delete 保留后续任务。
+- Go oracle 源文件与固定提交 42a0da684cf28f16a48c74c54575b711031f3c5d 无差异，逐项核对 unknown/least 显示、工厂回退、去重、快照复制和插入顺序。
+- 红灯：cargo test --locked -p astersql-pd-balancer policy_and_membership -- --nocapture，退出 101，E0432 缺少 Policy/RoundRobin/gen_by_policy，0 个测试执行。此前离线命令更新仅新增本 crate 的 Cargo.lock 项。
+- 绿灯：cargo test --locked -p astersql-pd-balancer policy_and_membership -- --nocapture 退出 0，1 个有效测试；cargo test --locked -p astersql-pd-balancer --lib 退出 0，2 个有效测试，包括四线程真实并发插入/快照读取。
+- cargo fmt --all、cargo fmt --all -- --check、cargo metadata --format-version 1 --no-deps、cargo check --workspace --locked、cargo tree --locked -p astersql-pd-balancer 均退出 0；仅依赖 syncutil 和其已有 Tokio 依赖，没有 proto/tonic/axum/etcd-client。
+- Go oracle：make gotest GOTEST_ARGS='./pkg/balancer -run "^(TestBalancerPutAndDelete)$" -count=1' 退出 2，make 的 failpoint 工具调用报 /bin/bash: Error: command not found。make failpoint-disable 同样失败；改用 .tools/bin/failpoint-ctl disable pkg/balancer pkg/utils/syncutil 退出 0，确认这两个包没有注入点，go test ./pkg/balancer -run '^(TestBalancerPutAndDelete)$' -count=1 退出 0，1 个有效测试。
+- cargo test --workspace --locked 退出 101：其他并发任务的 pkg/movingaverage/moving_average_test.rs 缺少 MedianFilter，pkg/utils/typeutil/clone_test.rs 缺少 deep_clone_json；未改动这些在途任务。保留本任务待主题回归。
+- 所有 Cargo 命令使用动态领取的槽位 1；CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1；锁已释放、缓存保留。
+- git diff --check 退出 0；plan.md 未修改；无生成 failpoint 文件纳入提交。
