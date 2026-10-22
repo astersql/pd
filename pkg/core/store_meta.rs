@@ -15,12 +15,16 @@ pub struct StoreMeta {
     pub deploy_path: String,
     /// Signed seconds since the Unix epoch, matching Go's Store timestamp.
     pub start_timestamp: i64,
+    /// Last heartbeat as signed Unix nanoseconds, matching Go metadata.
+    pub last_heartbeat: i64,
 }
 
 /// Store metadata and scheduling weights.
 /// The zero value has zero weights; `new` initializes both weights to one.
 #[derive(Default)]
 pub struct StoreInfo {
+    pub(crate) last_persist_unix_nanos: Option<i128>,
+    pub(crate) last_awaken_unix_nanos: Option<i128>,
     pub(crate) stats: std::sync::Arc<std::sync::RwLock<super::store_clone::SharedStoreStats>>,
     pub(crate) limiter:
         Option<std::sync::Arc<std::sync::RwLock<astersql_pd_storelimit::StoreRateLimit>>>,
@@ -33,6 +37,8 @@ impl StoreInfo {
     /// Construct a store with default scheduling weights, even without metadata.
     pub fn new(meta: impl Into<Option<StoreMeta>>) -> Self {
         Self {
+            last_persist_unix_nanos: None,
+            last_awaken_unix_nanos: None,
             meta: meta.into().map(std::sync::Arc::new),
             stats: std::sync::Arc::new(std::sync::RwLock::new(
                 super::store_clone::SharedStoreStats {

@@ -51,3 +51,9 @@ mod store_stats_average_test;
 mod store_clone_test;
 
 pub mod store_clone;
+
+#[cfg(test)]
+#[path = "store_time_test.rs"]
+mod store_time_test;
+
+pub mod store_time;

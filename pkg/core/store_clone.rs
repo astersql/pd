@@ -24,6 +24,8 @@ impl StoreInfo {
     /// is read-only; setters detach as Go's StoreCreateOptions do.
     pub fn shallow_clone(&self) -> Self {
         Self {
+            last_persist_unix_nanos: self.last_persist_unix_nanos,
+            last_awaken_unix_nanos: self.last_awaken_unix_nanos,
             meta: self.meta.clone(),
             stats: Arc::clone(&self.stats),
             limiter: self.limiter.clone(),
