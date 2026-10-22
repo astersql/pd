@@ -68,5 +68,34 @@ where
     slice.windows(2).any(|pair| pair[0] == pair[1])
 }
 
+/// The error returned when a slice cannot be split into batches.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum SplitIntoBatchesError {
+    /// A batch must contain at least one item.
+    ZeroBatchSize,
+}
+
+impl std::fmt::Display for SplitIntoBatchesError {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::ZeroBatchSize => formatter.write_str("batch size must be greater than zero"),
+        }
+    }
+}
+
+impl std::error::Error for SplitIntoBatchesError {}
+
+/// Splits `slice` into ordered, borrowed batches of at most `batch_size` items.
+pub fn split_into_batches<T>(
+    slice: &[T],
+    batch_size: usize,
+) -> Result<Vec<&[T]>, SplitIntoBatchesError> {
+    if batch_size == 0 {
+        return Err(SplitIntoBatchesError::ZeroBatchSize);
+    }
+
+    Ok(slice.chunks(batch_size).collect())
+}
+
 #[cfg(test)]
 mod slice_test;

@@ -51,3 +51,26 @@ fn multiset_equal_and_sorted_duplicate() {
     assert!(has_dup_in_sorted(&[1, 1, 2]));
     assert!(has_dup_in_sorted(&[1, 2, 2]));
 }
+
+#[test]
+fn split_into_batches() {
+    let values = [1, 2, 2, 3, 4];
+
+    assert_eq!(
+        super::split_into_batches(&values, 2),
+        Ok(vec![&values[..2], &values[2..4], &values[4..]])
+    );
+    assert_eq!(
+        super::split_into_batches(&values, values.len()),
+        Ok(vec![values.as_slice()])
+    );
+    assert_eq!(
+        super::split_into_batches(&values, values.len() + 1),
+        Ok(vec![values.as_slice()])
+    );
+    assert_eq!(super::split_into_batches::<i32>(&[], 3), Ok(Vec::new()));
+    assert_eq!(
+        super::split_into_batches(&values, 0),
+        Err(SplitIntoBatchesError::ZeroBatchSize)
+    );
+}
