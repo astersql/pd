@@ -213,3 +213,9 @@ mod region_tree_random;
 #[cfg(test)]
 #[path = "region_tree_random_test.rs"]
 mod region_tree_random_test;
+
+pub mod regions;
+#[cfg(test)]
+#[path = "regions_test.rs"]
+mod regions_test;
+pub use regions::*;

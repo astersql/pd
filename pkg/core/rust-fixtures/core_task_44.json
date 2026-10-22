@@ -1,0 +1,142 @@
+{
+  "sources": {
+    "baseline": "0820f0b67b0e49b289b84fdf66b7b8fb178afe82; current region.go has no diff",
+    "map": "region_test.go TestRegionMap/checkMap: lookup, replacement and ID set equality",
+    "replacement": "region_test.go TestSetRegion: same-ID range expansion, overlap removal GetRegion(21/18)==nil, same-range size update; setRegionLocked removes old ID from tree before computing overlaps, same range returns no overlaps and false",
+    "boundaries": "region.go NewRegionsInfo/GetRegion/GetRegions and setRegionLocked; region_tree.go update: empty index misses, half-open adjacent ranges do not overlap, empty end is infinity. Zero ID is an ordinary map key. Snapshot ownership follows Go returned pointer slices; no new Go oracle was added.",
+    "evidence_limit": "Existing Go tests run separately; small cases below are source-derived Rust scenarios, not runtime cross-language differential outputs."
+  },
+  "steps": [
+    {
+      "region": [
+        1,
+        "a",
+        "c",
+        10
+      ],
+      "origin_size": null,
+      "overlaps": [],
+      "changed": true,
+      "ids": [
+        1
+      ],
+      "source": "setRegionLocked new ID branch; TestRegionMap insertion"
+    },
+    {
+      "region": [
+        2,
+        "c",
+        "e",
+        20
+      ],
+      "origin_size": null,
+      "overlaps": [],
+      "changed": true,
+      "ids": [
+        1,
+        2
+      ],
+      "source": "regionTree.update half-open adjacency; TestSetRegion initial adjacent insertion"
+    },
+    {
+      "region": [
+        1,
+        "a",
+        "c",
+        30
+      ],
+      "origin_size": 10,
+      "overlaps": [],
+      "changed": false,
+      "ids": [
+        1,
+        2
+      ],
+      "source": "setRegionLocked unchanged range early return; TestSetRegion statistical update"
+    },
+    {
+      "region": [
+        1,
+        "x",
+        "z",
+        40
+      ],
+      "origin_size": 30,
+      "overlaps": [],
+      "changed": true,
+      "ids": [
+        1,
+        2
+      ],
+      "source": "setRegionLocked changed range removes origin before update; disjoint movement derived from source"
+    },
+    {
+      "region": [
+        1,
+        "b",
+        "d",
+        50
+      ],
+      "origin_size": 40,
+      "overlaps": [
+        2
+      ],
+      "changed": true,
+      "ids": [
+        1
+      ],
+      "source": "setRegionLocked changed range excludes self and deletes overlap ID; TestSetRegion expansion"
+    },
+    {
+      "region": [
+        3,
+        "f",
+        "h",
+        60
+      ],
+      "origin_size": null,
+      "overlaps": [],
+      "changed": true,
+      "ids": [
+        1,
+        3
+      ],
+      "source": "setRegionLocked new ID/no overlap branch"
+    },
+    {
+      "region": [
+        4,
+        "b",
+        "",
+        70
+      ],
+      "origin_size": null,
+      "overlaps": [
+        1,
+        3
+      ],
+      "changed": true,
+      "ids": [
+        4
+      ],
+      "source": "regionTree.update empty end means infinity; TestSetRegion remove overlaps assertion"
+    },
+    {
+      "region": [
+        0,
+        "",
+        "",
+        80
+      ],
+      "origin_size": null,
+      "overlaps": [
+        4
+      ],
+      "changed": true,
+      "ids": [
+        0
+      ],
+      "source": "ordinary uint64 map key and full keyspace range; source-derived zero-ID boundary"
+    }
+  ]
+}
