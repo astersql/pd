@@ -23,6 +23,14 @@ pub struct StoreMeta {
 /// The zero value has zero weights; `new` initializes both weights to one.
 #[derive(Default)]
 pub struct StoreInfo {
+    pub(crate) leader_count: i64,
+    pub(crate) region_count: i64,
+    pub(crate) learner_count: i64,
+    pub(crate) witness_count: i64,
+    pub(crate) pending_peer_count: i64,
+    pub(crate) leader_size: i64,
+    pub(crate) region_size: i64,
+
     pub(crate) control: [i64; 5],
     pub(crate) last_persist_unix_nanos: Option<i128>,
     pub(crate) last_awaken_unix_nanos: Option<i128>,
@@ -37,6 +45,13 @@ impl StoreInfo {
     /// Construct a store with default scheduling weights, even without metadata.
     pub fn new(meta: impl Into<Option<StoreMeta>>) -> Self {
         Self {
+            leader_count: 0,
+            region_count: 0,
+            learner_count: 0,
+            witness_count: 0,
+            pending_peer_count: 0,
+            leader_size: 0,
+            region_size: 0,
             control: [0; 5],
             last_persist_unix_nanos: None,
             last_awaken_unix_nanos: None,

@@ -1,0 +1,58 @@
+{
+  "provenance": {
+    "source": "pkg/core/store.go:383-424,449-458,592-634; pkg/core/store_option.go:182-244; unchanged from 0820f0b67b0e49b289b84fdf66b7b8fb178afe82",
+    "existing_test": "TestRegionScore sets region size=1 and asserts RegionScore(v1) is not NaN; does not assert LeaderScore. All score cases are source-derived, not executed Go differential evidence.",
+    "derivation": "policy 0 uses signed count+delta; policy 1 uses signed size+delta; divide by math.Max(weight,1e-6); unknown policy returns 0. Signed overflow wraps before float conversion. ResourceCount casts negative signed count to uint64; ResourceWeight clamps only <=0, preserves NaN and tiny positive weights. Setters assign directly; Clone/ShallowClone copy scalar fields.",
+    "resource_case": "counts [3,9,2,4,5], sizes [30,90], weights [2,3] round-trip and copy; negative counts -1/-2 project to MAX/MAX-1; witness/unknown projection returns 0; zero defaults; IEEE NaN/infinity and signed extrema derive from source operations."
+  },
+  "scores": [
+    {
+      "count": 3,
+      "size": 30,
+      "weight": 2,
+      "policy": 0,
+      "delta": 1,
+      "expected": 2
+    },
+    {
+      "count": 3,
+      "size": 30,
+      "weight": 2,
+      "policy": 1,
+      "delta": -10,
+      "expected": 10
+    },
+    {
+      "count": 0,
+      "size": 0,
+      "weight": 0,
+      "policy": 0,
+      "delta": -1,
+      "expected": -1000000
+    },
+    {
+      "count": 3,
+      "size": 30,
+      "weight": 1e-09,
+      "policy": 0,
+      "delta": 0,
+      "expected": 3000000
+    },
+    {
+      "count": 3,
+      "size": 30,
+      "weight": -1,
+      "policy": 1,
+      "delta": 0,
+      "expected": 30000000
+    },
+    {
+      "count": 3,
+      "size": 30,
+      "weight": 2,
+      "policy": 99,
+      "delta": 0,
+      "expected": 0
+    }
+  ]
+}

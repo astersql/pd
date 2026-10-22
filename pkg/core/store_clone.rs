@@ -24,6 +24,13 @@ impl StoreInfo {
     /// is read-only; setters detach as Go's StoreCreateOptions do.
     pub fn shallow_clone(&self) -> Self {
         Self {
+            leader_count: self.leader_count,
+            region_count: self.region_count,
+            learner_count: self.learner_count,
+            witness_count: self.witness_count,
+            pending_peer_count: self.pending_peer_count,
+            leader_size: self.leader_size,
+            region_size: self.region_size,
             control: self.control,
             last_persist_unix_nanos: self.last_persist_unix_nanos,
             last_awaken_unix_nanos: self.last_awaken_unix_nanos,

@@ -69,3 +69,8 @@ pub use store_limit::*;
 #[cfg(test)]
 #[path = "store_limit_test.rs"]
 mod store_limit_test;
+
+pub mod store_resource;
+#[cfg(test)]
+#[path = "store_resource_test.rs"]
+mod store_resource_test;
