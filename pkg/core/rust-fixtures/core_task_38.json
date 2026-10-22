@@ -1,0 +1,65 @@
+{
+  "source": "pkg/core/region.go MergeRegions; unchanged since 0820f0b67b0e49b289b84fdf66b7b8fb178afe82",
+  "existing_test": "TestRegionTreeSplitAndMerge checks search(start), end-1 and end+1 after repeated split/merge; TestRegionInfo checks membership. Exact epoch and odd/nonadjacent cases below are source-derived, not executed Go differential fixtures.",
+  "derivation": "Each consecutive pair uses left ID/start/peers/leader, right end. Strict greater selects left epoch, otherwise right; increment chosen input version modulo uint64. Odd tail pairs with itself; missing epoch getters yield version zero and selected nil panics. New literal leaves other fields and classified peers zero.",
+  "cases": [
+    {
+      "name": "adjacent_left_newer",
+      "left_end": [
+        98
+      ],
+      "right_start": [
+        98
+      ],
+      "left_version": 9,
+      "right_version": 2,
+      "left_conf": 3,
+      "right_conf": 7,
+      "selected": 0,
+      "version": 10,
+      "conf": 3
+    },
+    {
+      "name": "gap_equal_selects_right",
+      "left_end": [
+        98
+      ],
+      "right_start": [
+        122
+      ],
+      "left_version": 9,
+      "right_version": 9,
+      "left_conf": 3,
+      "right_conf": 7,
+      "selected": 1,
+      "version": 10,
+      "conf": 7
+    },
+    {
+      "name": "reversed_right_overflow",
+      "left_end": [
+        122
+      ],
+      "right_start": [
+        97
+      ],
+      "left_version": 1,
+      "right_version": 18446744073709551615,
+      "left_conf": 3,
+      "right_conf": 7,
+      "selected": 1,
+      "version": 0,
+      "conf": 7
+    }
+  ],
+  "go_validation": {
+    "command": "go test ./pkg/core -run '^(TestRegionInfo.*|TestRegionTreeSplitAndMerge)$' -count=1 -v",
+    "exit_code": 0,
+    "passed": [
+      "TestRegionInfo",
+      "TestRegionTreeSplitAndMerge"
+    ],
+    "boundary": "Read-only existing tests without failpoint injection; exact epoch cases are source-derived. No new Go oracle or cross-language execution of JSON cases."
+  },
+  "ownership": "Rust returns owned snapshots; selected input epoch mutation is preserved, later Go pointer alias mutations are not shared across Rust values."
+}

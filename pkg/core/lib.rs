@@ -181,3 +181,9 @@ pub use region_split::*;
 #[cfg(test)]
 #[path = "region_split_test.rs"]
 mod region_split_test;
+
+pub mod region_merge;
+pub use region_merge::*;
+#[cfg(test)]
+#[path = "region_merge_test.rs"]
+mod region_merge_test;
