@@ -47,6 +47,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "astersql-pd-btree"
+version = "0.1.0"
+
+[[package]]
 name = "astersql-pd-cmd-pd-server"
 version = "0.1.0"
 dependencies = [

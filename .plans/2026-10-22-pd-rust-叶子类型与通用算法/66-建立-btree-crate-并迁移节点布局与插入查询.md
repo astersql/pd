@@ -2,7 +2,7 @@
 
 批次：【批次 16】依赖批次 14
 
-状态：未开始
+状态：已完成，待回归
 
 目的：degree 校验、ReplaceOrInsert、Get/Has/Len 和排序结果一致
 
@@ -68,3 +68,18 @@
 
 完成 `pkg/btree/lib.rs` 中的本任务行为和 `pkg/btree/btree_test.rs` 的独立测试；只在上述红绿证据、crate 回归和差异审查齐全后标记完成。
 
+
+## 执行证据（2026-10-22）
+
+- 本任务行为已实现：真实 B-tree 节点、分裂插入、等价替换、查询、长度；未提前公开后续任务 API。
+- 直接依赖 syncutil 已存在；批次 14 的无关 jsonutil 任务 57 尚未完成，按用户授权继续本任务范围。
+- 槽位：2；CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2。阶段结束释放自己的锁，保留缓存。
+- 新 crate 首次 --locked 因缺少 lock 条目退出 101；cargo generate-lockfile --offline 后保留仅本 crate 的锁文件增量。
+- 红：cargo test --locked -p astersql-pd-btree insert_get_and_len -- --nocapture，退出 101，缺少 BTree/Node。
+- 绿：同一聚焦命令退出 0，1 个有效测试；cargo test --locked -p astersql-pd-btree --lib 退出 0，4 个有效测试（包括 degree 0/1、四种 degree 的 1000 项插入/替换/排序、降序和平衡不变量）。
+- cargo fmt --all 和 cargo fmt --all -- --check 均退出 0。
+- cargo metadata --locked --format-version 1 --no-deps、cargo check --workspace --locked、cargo tree --locked -p astersql-pd-btree 均退出 0；依赖树只有本 crate。
+- make gotest GOTEST_ARGS='./pkg/btree -run "^(TestBTreeG)$" -count=1' 因 Makefile failpoint 命令输出执行错误退出 2；make failpoint-disable 完成清理。该包无 failpoint，按规则直接 go test ./pkg/btree -run '^(TestBTreeG)$' -count=1，退出 0，1 个 Go oracle 测试。
+- Go oracle 源及测试相对基准 42a0da684cf28f16a48c74c54575b711031f3c5d 无差异；逐项对照 degree 校验、strict weak ordering 等价、先分裂再插入及替换不增加长度。
+- git diff --check 退出 0。
+- 待回归：cargo test --workspace --locked 退出 101，其他任务的 pkg/errs/catalog_test.rs 引用尚未存在的 INFRASTRUCTURE_ERRORS、ERR_IO_READ、ERR_ENCRYPTION_KMS。与本任务改动无关，保留任务文件供之后回归；不修改其他任务文件或 plan.md。
