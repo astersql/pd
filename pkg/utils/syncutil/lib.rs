@@ -2,6 +2,10 @@
 
 #![forbid(unsafe_code)]
 
+mod lock_group;
+
+pub use lock_group::LockGroup;
+
 /// Blocking locks backed directly by [`std::sync`].
 ///
 /// These locks preserve Rust's poisoning contract when a thread panics while
@@ -36,6 +40,9 @@ pub mod blocking {
 pub mod asynchronous {
     pub use tokio::sync::{Mutex, RwLock};
 }
+
+#[cfg(test)]
+mod lock_group_test;
 
 #[cfg(test)]
 mod mutex_test;
