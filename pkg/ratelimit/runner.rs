@@ -28,6 +28,12 @@ pub enum RunnerError {
     MaxWaitingTasksExceeded,
 }
 impl RunnerError {
+    /// Returns the stable Go domain code for admission errors. Stopping is a
+    /// local lifecycle condition and has no corresponding Go domain code.
+    pub fn code(self) -> Option<&'static str> {
+        self.error_template().map(|template| template.code())
+    }
+
     /// Stable Go domain error for queue admission failures.
     pub fn error_template(self) -> Option<astersql_pd_errs::ErrorTemplate> {
         match self {

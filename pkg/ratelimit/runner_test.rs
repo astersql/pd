@@ -319,3 +319,187 @@ async fn runner_dedup_and_queue_unlimited_dispatches_without_completion() {
     assert_eq!(actual, (0..10).collect::<Vec<_>>());
     runner.stop().await;
 }
+
+// Queue age limits admission only: previously admitted tasks still execute.
+#[tokio::test(start_paused = true)]
+async fn runner_timeout_and_cancellation_age_boundary() {
+    use crate::RunnerError;
+    use std::time::Duration;
+
+    let limiter = Arc::new(ConcurrencyLimiter::new(1));
+    let held = limiter
+        .acquire_token(&CancellationToken::new())
+        .await
+        .unwrap();
+    let mut runner =
+        ConcurrentRunner::new(Some(limiter.clone())).with_queue_limits(Duration::from_secs(1), 3);
+    runner.start(&CancellationToken::new());
+    runner.run_task(|_| async {}).unwrap();
+    tokio::time::timeout(Duration::from_secs(5), async {
+        while limiter.get_waiting_tasks_num() != 1 {
+            tokio::task::yield_now().await;
+        }
+    })
+    .await
+    .unwrap();
+    runner.run_task(|_| async {}).unwrap(); // dispatch channel
+    let (done, completed) = oneshot::channel();
+    runner
+        .run_task(move |_| async move {
+            done.send(()).unwrap();
+        })
+        .unwrap();
+    tokio::time::advance(Duration::from_secs(1)).await;
+    runner.run_task(|_| async {}).unwrap(); // equality is admitted
+    tokio::time::advance(Duration::from_nanos(1)).await;
+    let age_error = runner.run_task(|_| async {}).unwrap_err();
+    assert_eq!(age_error, RunnerError::MaxWaitingTasksExceeded);
+    assert_eq!(
+        age_error.code(),
+        Some("PD:ratelimit:ErrMaxWaitingTasksExceeded")
+    );
+    runner
+        .run_task_with_id(1, "retained", true, |_| async {})
+        .unwrap();
+    let count_error = runner
+        .run_task_with_id(2, "retained", true, |_| async {})
+        .unwrap_err();
+    assert_eq!(count_error.code(), age_error.code());
+    assert_eq!(runner.pending_task_count(), 3);
+    limiter.release_token(&held);
+    tokio::time::timeout(Duration::from_secs(5), completed)
+        .await
+        .unwrap()
+        .unwrap();
+    runner.stop().await;
+    assert_eq!(limiter.get_running_tasks_num(), 0);
+    assert_eq!(limiter.get_waiting_tasks_num(), 0);
+}
+
+#[tokio::test(start_paused = true)]
+async fn runner_timeout_and_cancellation_burst_cleanup() {
+    use crate::RunnerError;
+    use std::time::Duration;
+
+    let parent = CancellationToken::new();
+    let limiter = Arc::new(ConcurrencyLimiter::new(4));
+    let mut runner = ConcurrentRunner::new(Some(limiter.clone()));
+    runner.start(&parent);
+    let captured = Arc::new(());
+    let weak = Arc::downgrade(&captured);
+    let (entered, mut started) = tokio::sync::mpsc::unbounded_channel();
+    let mut children = Vec::new();
+    for _ in 0..4 {
+        let entered = entered.clone();
+        let captured = captured.clone();
+        runner
+            .run_task(move |cancel| async move {
+                let _captured = captured;
+                entered.send(cancel.clone()).unwrap();
+                cancel.cancelled().await;
+            })
+            .unwrap();
+        // Handshake fills all four permits without relying on scheduler timing.
+        let child = tokio::time::timeout(Duration::from_secs(5), started.recv())
+            .await
+            .unwrap()
+            .unwrap();
+        assert!(!child.is_cancelled());
+        children.push(child);
+    }
+    let queued_calls = Arc::new(std::sync::atomic::AtomicUsize::new(0));
+    for _ in 0..2048 {
+        let queued_calls = queued_calls.clone();
+        let captured = captured.clone();
+        runner
+            .run_task(move |_| async move {
+                let _captured = captured;
+                queued_calls.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+            })
+            .unwrap();
+    }
+    drop(captured);
+    tokio::time::timeout(Duration::from_secs(5), async {
+        while limiter.get_waiting_tasks_num() != 1 {
+            tokio::task::yield_now().await;
+        }
+    })
+    .await
+    .unwrap();
+    assert!(runner.pending_task_count() > 0);
+    parent.cancel();
+    assert_eq!(runner.run_task(|_| async {}), Err(RunnerError::Stopped));
+    assert_eq!(RunnerError::Stopped.code(), None);
+    tokio::time::timeout(Duration::from_secs(5), runner.stop())
+        .await
+        .unwrap();
+    assert!(children.iter().all(CancellationToken::is_cancelled));
+    assert!(weak.upgrade().is_none());
+    assert_eq!(queued_calls.load(std::sync::atomic::Ordering::SeqCst), 0);
+    assert_eq!(runner.pending_task_count(), 0);
+    assert_eq!(limiter.get_running_tasks_num(), 0);
+    assert_eq!(limiter.get_waiting_tasks_num(), 0);
+    runner.stop().await;
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn runner_timeout_and_cancellation_concurrent_burst_drains() {
+    use std::{
+        sync::atomic::{AtomicUsize, Ordering},
+        time::Duration,
+    };
+    let limiter = Arc::new(ConcurrencyLimiter::new(4));
+    let mut runner = ConcurrentRunner::new(Some(limiter.clone()));
+    runner.start(&CancellationToken::new());
+    let runner = Arc::new(runner);
+    let active = Arc::new(AtomicUsize::new(0));
+    let peak = Arc::new(AtomicUsize::new(0));
+    let (done, mut completed) = tokio::sync::mpsc::unbounded_channel();
+    let barrier = Arc::new(tokio::sync::Barrier::new(8));
+    let mut producers = tokio::task::JoinSet::new();
+    for producer in 0..8 {
+        let runner = runner.clone();
+        let active = active.clone();
+        let peak = peak.clone();
+        let done = done.clone();
+        let barrier = barrier.clone();
+        producers.spawn(async move {
+            barrier.wait().await;
+            for offset in 0..256 {
+                let active = active.clone();
+                let peak = peak.clone();
+                let done = done.clone();
+                runner
+                    .run_task(move |_| async move {
+                        let running = active.fetch_add(1, Ordering::SeqCst) + 1;
+                        peak.fetch_max(running, Ordering::SeqCst);
+                        tokio::task::yield_now().await;
+                        active.fetch_sub(1, Ordering::SeqCst);
+                        done.send(producer * 256 + offset).unwrap();
+                    })
+                    .unwrap();
+            }
+        });
+    }
+    drop(done);
+    tokio::time::timeout(Duration::from_secs(10), async {
+        while let Some(result) = producers.join_next().await {
+            result.unwrap();
+        }
+        let mut ids = Vec::new();
+        while let Some(id) = completed.recv().await {
+            ids.push(id);
+        }
+        ids.sort_unstable();
+        assert_eq!(ids, (0..2048).collect::<Vec<_>>());
+    })
+    .await
+    .unwrap();
+    let mut runner = Arc::try_unwrap(runner).ok().unwrap();
+    runner.stop().await;
+    assert!((1..=4).contains(&peak.load(Ordering::SeqCst)));
+    assert_eq!(active.load(Ordering::SeqCst), 0);
+    assert_eq!(limiter.get_running_tasks_num(), 0);
+    assert_eq!(limiter.get_waiting_tasks_num(), 0);
+    assert_eq!(runner.pending_task_count(), 0);
+}
