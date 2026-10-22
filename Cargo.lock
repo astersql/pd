@@ -80,6 +80,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "astersql-pd-keyspace-constant"
+version = "0.1.0"
+
+[[package]]
 name = "astersql-pd-member"
 version = "0.1.0"
 dependencies = [
