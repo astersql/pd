@@ -557,3 +557,74 @@ pub const SCHEDULING_ERRORS: &[ErrorTemplate] = &[
     ERR_REGION_RULE_CONTENT,
     ERR_REGION_RULE_NOT_FOUND,
 ];
+
+/// ErrServiceRegistered preserves the Go error code and message template.
+pub const ERR_SERVICE_REGISTERED: ErrorTemplate = ErrorTemplate::new(
+    "PD:server:ErrServiceRegistered",
+    "service with path [%s] already registered",
+);
+
+/// ErrAPIInformationInvalid preserves the Go error code and message template.
+pub const ERR_API_INFORMATION_INVALID: ErrorTemplate = ErrorTemplate::new(
+    "PD:server:ErrAPIInformationInvalid",
+    "invalid api information, group %s version %s",
+);
+
+/// ErrClientURLEmpty preserves the Go error code and message template.
+pub const ERR_CLIENT_URL_EMPTY: ErrorTemplate =
+    ErrorTemplate::new("PD:server:ErrClientEmpty", "client url empty");
+
+/// ErrLeaderNil preserves the Go error code and message template.
+pub const ERR_LEADER_NIL: ErrorTemplate =
+    ErrorTemplate::new("PD:server:ErrLeaderNil", "leader is nil");
+
+/// ErrCancelStartEtcd preserves the Go error code and message template.
+pub const ERR_CANCEL_START_ETCD: ErrorTemplate =
+    ErrorTemplate::new("PD:server:ErrCancelStartEtcd", "etcd start canceled");
+
+/// ErrConfigItem preserves the Go error code and message template.
+pub const ERR_CONFIG_ITEM: ErrorTemplate = ErrorTemplate::new(
+    "PD:server:ErrConfiguration",
+    "cannot set invalid configuration",
+);
+
+/// ErrServerNotStarted preserves the Go error code and message template.
+pub const ERR_SERVER_NOT_STARTED: ErrorTemplate =
+    ErrorTemplate::new("PD:server:ErrServerNotStarted", "server not started");
+
+/// ErrRateLimitExceeded preserves the Go error code and message template.
+pub const ERR_RATE_LIMIT_EXCEEDED: ErrorTemplate =
+    ErrorTemplate::new("PD:server:ErrRateLimitExceeded", "rate limit exceeded");
+
+/// ErrLeaderFrequentlyChange preserves the Go error code and message template.
+pub const ERR_LEADER_FREQUENTLY_CHANGE: ErrorTemplate = ErrorTemplate::new(
+    "PD:server:ErrLeaderFrequentlyChange",
+    "leader %s frequently changed, leader-key is [%s]",
+);
+
+/// ErrBytesToUint64 preserves the Go error code and message template.
+pub const ERR_BYTES_TO_UINT64: ErrorTemplate = ErrorTemplate::new(
+    "PD:typeutil:ErrBytesToUint64",
+    "invalid data, must 8 bytes, but %d",
+);
+
+/// ErrMaxWaitingTasksExceeded preserves the Go error code and message template.
+pub const ERR_MAX_WAITING_TASKS_EXCEEDED: ErrorTemplate = ErrorTemplate::new(
+    "PD:ratelimit:ErrMaxWaitingTasksExceeded",
+    "max waiting tasks exceeded",
+);
+
+/// Server, API information, type conversion, and rate limit errors.
+pub const SERVICE_ERRORS: &[ErrorTemplate] = &[
+    ERR_SERVICE_REGISTERED,
+    ERR_API_INFORMATION_INVALID,
+    ERR_CLIENT_URL_EMPTY,
+    ERR_LEADER_NIL,
+    ERR_CANCEL_START_ETCD,
+    ERR_CONFIG_ITEM,
+    ERR_SERVER_NOT_STARTED,
+    ERR_RATE_LIMIT_EXCEEDED,
+    ERR_LEADER_FREQUENTLY_CHANGE,
+    ERR_BYTES_TO_UINT64,
+    ERR_MAX_WAITING_TASKS_EXCEEDED,
+];
