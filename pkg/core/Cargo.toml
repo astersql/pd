@@ -9,6 +9,7 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
+astersql-pd-storelimit.workspace = true
 astersql-pd-movingaverage.workspace = true
 
 [dev-dependencies]

@@ -25,56 +25,57 @@ pub struct StoreStats {
 }
 
 impl super::StoreInfo {
-    /// Read the current raw report; a new store starts with all-zero values.
-    pub fn store_stats(&self) -> &StoreStats {
-        &self.raw_stats
+    /// Snapshot the shared raw report; a new store starts with all-zero values.
+    pub fn store_stats(&self) -> StoreStats {
+        self.stats.read().unwrap().raw.clone()
     }
 
     /// Replace the entire report, including fields reset to zero.
     pub fn update_raw_stats(&mut self, stats: StoreStats) {
-        if let Some(average) = &mut self.avg_available {
+        let mut shared = self.stats.write().unwrap();
+        if let Some(average) = &mut shared.average {
             average.add(stats.available as f64);
         }
-        self.raw_stats = stats;
+        shared.raw = stats;
     }
 
     pub fn capacity(&self) -> u64 {
-        self.raw_stats.capacity
+        self.stats.read().unwrap().raw.capacity
     }
 
     pub fn available(&self) -> u64 {
-        self.raw_stats.available
+        self.stats.read().unwrap().raw.available
     }
 
     pub fn used_size(&self) -> u64 {
-        self.raw_stats.used_size
+        self.stats.read().unwrap().raw.used_size
     }
 
     pub fn is_busy(&self) -> bool {
-        self.raw_stats.is_busy
+        self.stats.read().unwrap().raw.is_busy
     }
 
     pub fn sending_snap_count(&self) -> u32 {
-        self.raw_stats.sending_snap_count
+        self.stats.read().unwrap().raw.sending_snap_count
     }
 
     pub fn receiving_snap_count(&self) -> u32 {
-        self.raw_stats.receiving_snap_count
+        self.stats.read().unwrap().raw.receiving_snap_count
     }
 
     pub fn bytes_written(&self) -> u64 {
-        self.raw_stats.bytes_written
+        self.stats.read().unwrap().raw.bytes_written
     }
 
     pub fn bytes_read(&self) -> u64 {
-        self.raw_stats.bytes_read
+        self.stats.read().unwrap().raw.bytes_read
     }
 
     pub fn keys_written(&self) -> u64 {
-        self.raw_stats.keys_written
+        self.stats.read().unwrap().raw.keys_written
     }
 
     pub fn keys_read(&self) -> u64 {
-        self.raw_stats.keys_read
+        self.stats.read().unwrap().raw.keys_read
     }
 }

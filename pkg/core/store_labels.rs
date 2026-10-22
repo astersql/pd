@@ -127,9 +127,7 @@ impl StoreInfo {
 
     /// Replace labels. Like SetStoreLabels, absent metadata is a programmer error.
     pub fn set_labels(&mut self, labels: Vec<StoreLabel>) {
-        self.meta
-            .as_mut()
-            .expect("store metadata must be present")
+        std::sync::Arc::make_mut(self.meta.as_mut().expect("store metadata must be present"))
             .labels = labels;
     }
 

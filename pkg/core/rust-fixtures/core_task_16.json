@@ -1,0 +1,32 @@
+{
+  "label": "z1",
+  "evidence_boundary": "Only TestCloneMetaStore is executed in Go; sharing scenarios are derived from read-only source, not runtime differential results.",
+  "scenarios": [
+    {
+      "name": "metadata_boundaries",
+      "source": "pkg/core/store.go StoreInfo.Clone and ShallowClone; pkg/core/store_option.go SetStoreLabels",
+      "existing_test": "TestCloneMetaStore: Equal Labels before mutation, NotEqual after changing Labels[0].Value",
+      "expected": "Clone owns distinct metadata; ShallowClone initially aliases; SetStoreLabels deep-clones metadata before replacement, leaving original zone=z1"
+    },
+    {
+      "name": "shared_stats_and_smoothing",
+      "source": "pkg/core/store.go Clone/ShallowClone copy s.storeStats; pkg/core/store_stats.go updateRawStats",
+      "expected": "After clone writes available=200/capacity=300 all handles observe it and the same HMA; shallow zero replacement resets raw values for all"
+    },
+    {
+      "name": "shared_limiter",
+      "source": "pkg/core/store.go NewStoreInfo, Clone, ShallowClone; pkg/core/store_option.go ResetStoreLimit",
+      "expected": "Both clones retain same limiter; resetting ADD_PEER rate to 7 is visible through original and shallow clone"
+    },
+    {
+      "name": "zero_value",
+      "source": "pkg/core/store.go Clone/ShallowClone field copies; pkg/core/store_stats.go GetAvgAvailable",
+      "expected": "Missing metadata and limiter stay absent, weights stay zero. Rust Default retains its preexisting valid empty stats holder (unlike literal Go StoreInfo{} with nil embedded stats); cloning shares that holder and leaves smoothing absent."
+    },
+    {
+      "name": "concurrent_stats",
+      "source": "pkg/core/store_stats.go updateRawStats/GetStoreStats/GetAvgAvailable lock the common storeStats mutex",
+      "expected": "Concurrent reads see complete raw snapshots; after joined writer adds 100 identical available=123 samples all clones observe raw=123 and HMA=123; no timing-dependent expected ordering."
+    }
+  ]
+}

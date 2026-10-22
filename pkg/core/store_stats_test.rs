@@ -6,7 +6,7 @@ fn core_task_14_raw_stats_fixture() {
     let fixture: serde_json::Value =
         serde_json::from_str(include_str!("rust-fixtures/core_task_14.json")).unwrap();
     let mut store = StoreInfo::new(None);
-    assert_eq!(store.store_stats(), &StoreStats::default());
+    assert_eq!(store.store_stats(), StoreStats::default());
     for case in fixture["cases"].as_array().unwrap() {
         let stats: StoreStatsInput = serde_json::from_value(case["stats"].clone()).unwrap();
         let raw = StoreStats {
@@ -22,7 +22,7 @@ fn core_task_14_raw_stats_fixture() {
             keys_read: stats.keys_read,
         };
         store.update_raw_stats(raw.clone());
-        assert_eq!(store.store_stats(), &raw, "{}", case["name"]);
+        assert_eq!(store.store_stats(), raw, "{}", case["name"]);
         assert_eq!(store.capacity(), raw.capacity);
         assert_eq!(store.available(), raw.available);
         assert_eq!(store.used_size(), raw.used_size);

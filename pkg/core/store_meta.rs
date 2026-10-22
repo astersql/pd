@@ -19,29 +19,37 @@ pub struct StoreMeta {
 
 /// Store metadata and scheduling weights.
 /// The zero value has zero weights; `new` initializes both weights to one.
-#[derive(Debug, Default)]
+#[derive(Default)]
 pub struct StoreInfo {
-    pub(crate) avg_available: Option<astersql_pd_movingaverage::Hma>,
-    pub(crate) raw_stats: super::StoreStats,
-    pub(crate) meta: Option<StoreMeta>,
-    leader_weight: f64,
-    region_weight: f64,
+    pub(crate) stats: std::sync::Arc<std::sync::RwLock<super::store_clone::SharedStoreStats>>,
+    pub(crate) limiter:
+        Option<std::sync::Arc<std::sync::RwLock<astersql_pd_storelimit::StoreRateLimit>>>,
+    pub(crate) meta: Option<std::sync::Arc<StoreMeta>>,
+    pub(crate) leader_weight: f64,
+    pub(crate) region_weight: f64,
 }
 
 impl StoreInfo {
     /// Construct a store with default scheduling weights, even without metadata.
     pub fn new(meta: impl Into<Option<StoreMeta>>) -> Self {
         Self {
-            meta: meta.into(),
-            avg_available: Some(astersql_pd_movingaverage::Hma::with_size(60.0)),
-            raw_stats: super::StoreStats::default(),
+            meta: meta.into().map(std::sync::Arc::new),
+            stats: std::sync::Arc::new(std::sync::RwLock::new(
+                super::store_clone::SharedStoreStats {
+                    average: Some(astersql_pd_movingaverage::Hma::with_size(60.0)),
+                    raw: super::StoreStats::default(),
+                },
+            )),
+            limiter: Some(std::sync::Arc::new(std::sync::RwLock::new(
+                astersql_pd_storelimit::StoreRateLimit::new(0.0),
+            ))),
             leader_weight: 1.0,
             region_weight: 1.0,
         }
     }
 
     pub fn meta(&self) -> Option<&StoreMeta> {
-        self.meta.as_ref()
+        self.meta.as_deref()
     }
 
     pub fn id(&self) -> u64 {
@@ -79,5 +87,16 @@ impl StoreInfo {
 
     pub fn region_weight(&self) -> f64 {
         self.region_weight
+    }
+}
+
+impl std::fmt::Debug for StoreInfo {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("StoreInfo")
+            .field("meta", &self.meta)
+            .field("stats", &self.stats)
+            .field("leader_weight", &self.leader_weight)
+            .field("region_weight", &self.region_weight)
+            .finish_non_exhaustive()
     }
 }

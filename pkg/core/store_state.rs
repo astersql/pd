@@ -63,7 +63,8 @@ impl StoreInfo {
     /// Panics for absent metadata, or Offline without a physical destruction flag,
     /// matching the source option's programmer-error contract.
     pub fn set_store_state(&mut self, state: StoreState, physically_destroyed: Option<bool>) {
-        let meta = self.meta.as_mut().expect("store metadata must be present");
+        let meta =
+            std::sync::Arc::make_mut(self.meta.as_mut().expect("store metadata must be present"));
         match state {
             StoreState::Up => {
                 meta.state = state;

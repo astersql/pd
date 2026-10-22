@@ -45,3 +45,9 @@ pub mod store_stats_average;
 #[cfg(test)]
 #[path = "store_stats_average_test.rs"]
 mod store_stats_average_test;
+
+#[cfg(test)]
+#[path = "store_clone_test.rs"]
+mod store_clone_test;
+
+pub mod store_clone;

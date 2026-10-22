@@ -12,8 +12,10 @@ impl super::StoreInfo {
     /// Smoothed available bytes, or raw bytes for a zero-value store without HMA.
     /// Capacity does not affect this value, including zero capacity.
     pub fn avg_available(&self) -> u64 {
-        self.avg_available
+        let shared = self.stats.read().unwrap();
+        shared
+            .average
             .as_ref()
-            .map_or_else(|| self.available(), |average| climp0(average.get()))
+            .map_or_else(|| shared.raw.available, |average| climp0(average.get()))
     }
 }
