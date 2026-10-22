@@ -1,0 +1,143 @@
+{
+  "go_test": "pkg/core/store_test.go TestRegionScore: capacity=512 MiB available=100 MiB used=0 size=1 ratios=.7/.9 asserts !NaN; numeric cases are source-derived, not executed Go differential",
+  "cases": [
+    {
+      "name": "high",
+      "capacity": 100,
+      "available": 60,
+      "used": 20,
+      "size": 40,
+      "delta": 0,
+      "weight": 1,
+      "expected": 40,
+      "source": "pkg/core/store.go:475-517",
+      "derivation": "amp=2; adjusted available=60 >=50; size+delta"
+    },
+    {
+      "name": "high equality positive delta",
+      "capacity": 100,
+      "available": 60,
+      "used": 20,
+      "size": 40,
+      "delta": 20,
+      "weight": 2,
+      "expected": 30,
+      "source": "pkg/core/store.go:475-517",
+      "derivation": "amp=2; adjusted=50; 60/2"
+    },
+    {
+      "name": "low equality",
+      "capacity": 100,
+      "available": 30,
+      "used": 20,
+      "size": 40,
+      "delta": 10,
+      "weight": 1,
+      "expected": 1073741799,
+      "source": "pkg/core/store.go:475-517",
+      "derivation": "amp=2; adjusted=25; 2^30-25"
+    },
+    {
+      "name": "low negative delta",
+      "capacity": 100,
+      "available": 10,
+      "used": 20,
+      "size": 40,
+      "delta": -10,
+      "weight": 2,
+      "expected": 536870904.5,
+      "source": "pkg/core/store.go:475-517",
+      "derivation": "adjusted=15; (2^30-15)/2"
+    },
+    {
+      "name": "transition",
+      "capacity": 100,
+      "available": 40,
+      "used": 20,
+      "size": 40,
+      "delta": 0,
+      "weight": 1,
+      "expected": 429496731.6,
+      "source": "pkg/core/store.go:475-517",
+      "derivation": "amp=2; x1=y1=20; x2=70; y2=1073741799; k=(y2-20)/50; score=20+k*20"
+    },
+    {
+      "name": "zero size amp fallback",
+      "capacity": 100,
+      "available": 60,
+      "used": 20,
+      "size": 0,
+      "delta": -1,
+      "weight": 1,
+      "expected": -1,
+      "source": "pkg/core/store.go:475-517",
+      "derivation": "size=0 => amp=1; high score=-1"
+    },
+    {
+      "name": "zero used amp fallback",
+      "capacity": 100,
+      "available": 60,
+      "used": 0,
+      "size": 10,
+      "delta": 0,
+      "weight": 0,
+      "expected": 10000000,
+      "source": "pkg/core/store.go:475-517",
+      "derivation": "used=0 => amp=1; high 10/1e-6"
+    },
+    {
+      "name": "negative weight clamp",
+      "capacity": 100,
+      "available": 60,
+      "used": 20,
+      "size": 40,
+      "delta": 0,
+      "weight": -2,
+      "expected": 40000000,
+      "source": "pkg/core/store.go:475-517",
+      "derivation": "high 40/1e-6"
+    },
+    {
+      "name": "tiny weight clamp",
+      "capacity": 100,
+      "available": 60,
+      "used": 20,
+      "size": 40,
+      "delta": 0,
+      "weight": 1e-09,
+      "expected": 40000000,
+      "source": "pkg/core/store.go:475-517",
+      "derivation": "high 40/1e-6"
+    },
+    {
+      "name": "overflow high addition",
+      "capacity": 100,
+      "available": 60,
+      "used": 0,
+      "size": 9223372036854775807,
+      "delta": 1,
+      "weight": 1,
+      "expected": -9223372036854775808,
+      "source": "pkg/core/store.go:475-517",
+      "derivation": "used=0; adjusted=59 high; Go int64 sum wraps"
+    },
+    {
+      "name": "empty stats high equality",
+      "capacity": 0,
+      "available": 0,
+      "used": 0,
+      "size": 0,
+      "delta": 0,
+      "weight": 1,
+      "expected": 0,
+      "source": "pkg/core/store.go:475-517",
+      "derivation": "capacity overridden below to zero; high comparison is first"
+    }
+  ],
+  "evidence": {
+    "baseline": "0820f0b67b0e49b289b84fdf66b7b8fb178afe82; current store.go has no diff",
+    "readonly_go_command": "go test ./pkg/core -run '^(TestRegionScore.*)$' -count=1 -v",
+    "go_result": "exit 0; TestRegionScore passed (1 test); no failpoint transformation used",
+    "special_cases": "store_score_v1_test.rs reproduces TestRegionScore !NaN assertion; NaN weight expectation follows store.go math.Max(regionWeight,minWeight). Fixture arithmetic uses Go maxScore=2^30 and minWeight=1e-6, bytes converted to MiB. Numeric cases are derived from source, not new Go oracle runs."
+  }
+}

@@ -74,3 +74,9 @@ pub mod store_resource;
 #[cfg(test)]
 #[path = "store_resource_test.rs"]
 mod store_resource_test;
+
+#[cfg(test)]
+#[path = "store_score_v1_test.rs"]
+mod store_score_v1_test;
+
+pub mod store_score_v1;
