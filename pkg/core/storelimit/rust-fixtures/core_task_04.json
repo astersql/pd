@@ -1,0 +1,328 @@
+[
+  {
+    "name": "same_rate_preserves_balance",
+    "rate": 1,
+    "operations": [
+      {
+        "action": "take",
+        "typ": 0,
+        "cost": 1000
+      },
+      {
+        "action": "reset",
+        "typ": 0,
+        "rate": 1
+      },
+      {
+        "action": "available",
+        "typ": 0,
+        "cost": 1
+      },
+      {
+        "action": "advance",
+        "ms": 500
+      },
+      {
+        "action": "take",
+        "typ": 0,
+        "cost": 500
+      },
+      {
+        "action": "available",
+        "typ": 0,
+        "cost": 1
+      }
+    ],
+    "expected": [
+      true,
+      false,
+      true,
+      false
+    ]
+  },
+  {
+    "name": "changed_rate_rebuilds_only_target",
+    "rate": 1,
+    "operations": [
+      {
+        "action": "take",
+        "typ": 0,
+        "cost": 1000
+      },
+      {
+        "action": "reset",
+        "typ": 0,
+        "rate": 2.5
+      },
+      {
+        "action": "take",
+        "typ": 0,
+        "cost": 2500
+      },
+      {
+        "action": "available",
+        "typ": 0,
+        "cost": 1
+      },
+      {
+        "action": "take",
+        "typ": 1,
+        "cost": 1000
+      },
+      {
+        "action": "reset",
+        "typ": 0,
+        "rate": 0.5
+      },
+      {
+        "action": "take",
+        "typ": 0,
+        "cost": 1000
+      },
+      {
+        "action": "advance",
+        "ms": 1000
+      },
+      {
+        "action": "take",
+        "typ": 0,
+        "cost": 500
+      },
+      {
+        "action": "available",
+        "typ": 0,
+        "cost": 1
+      },
+      {
+        "action": "available",
+        "typ": 1,
+        "cost": 1
+      }
+    ],
+    "expected": [
+      true,
+      true,
+      false,
+      true,
+      true,
+      true,
+      false,
+      true
+    ]
+  },
+  {
+    "name": "zero_initial_and_reset",
+    "rate": 0,
+    "operations": [
+      {
+        "action": "take",
+        "typ": 0,
+        "cost": 100000001
+      },
+      {
+        "action": "reset",
+        "typ": 0,
+        "rate": 1
+      },
+      {
+        "action": "take",
+        "typ": 0,
+        "cost": 1000
+      },
+      {
+        "action": "reset",
+        "typ": 0,
+        "rate": 0
+      },
+      {
+        "action": "take",
+        "typ": 0,
+        "cost": 100000001
+      },
+      {
+        "action": "advance",
+        "ms": 1000
+      },
+      {
+        "action": "reset",
+        "typ": 0,
+        "rate": 0
+      },
+      {
+        "action": "take",
+        "typ": 0,
+        "cost": 100000001
+      },
+      {
+        "action": "reset",
+        "typ": 0,
+        "rate": 1
+      },
+      {
+        "action": "take",
+        "typ": 0,
+        "cost": 1000
+      },
+      {
+        "action": "available",
+        "typ": 0,
+        "cost": 1
+      }
+    ],
+    "expected": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      false
+    ]
+  },
+  {
+    "name": "unlimited_threshold",
+    "rate": 100000000,
+    "operations": [
+      {
+        "action": "available",
+        "typ": 0,
+        "cost": 100000001
+      },
+      {
+        "action": "take",
+        "typ": 0,
+        "cost": 100000000
+      },
+      {
+        "action": "available",
+        "typ": 0,
+        "cost": 1
+      },
+      {
+        "action": "advance",
+        "ms": 500
+      },
+      {
+        "action": "take",
+        "typ": 0,
+        "cost": 50000000
+      },
+      {
+        "action": "available",
+        "typ": 0,
+        "cost": 1
+      },
+      {
+        "action": "reset",
+        "typ": 0,
+        "rate": 100000001
+      },
+      {
+        "action": "take",
+        "typ": 0,
+        "cost": 100000000
+      },
+      {
+        "action": "available",
+        "typ": 0,
+        "cost": 1
+      }
+    ],
+    "expected": [
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false
+    ]
+  },
+  {
+    "name": "refill_capacity_and_fractional_rate",
+    "rate": 0.5,
+    "operations": [
+      {
+        "action": "take",
+        "typ": 0,
+        "cost": 1000
+      },
+      {
+        "action": "advance",
+        "ms": 500
+      },
+      {
+        "action": "available",
+        "typ": 0,
+        "cost": 251
+      },
+      {
+        "action": "take",
+        "typ": 0,
+        "cost": 250
+      },
+      {
+        "action": "advance",
+        "ms": 10000
+      },
+      {
+        "action": "available",
+        "typ": 0,
+        "cost": 1001
+      },
+      {
+        "action": "take",
+        "typ": 0,
+        "cost": 1000
+      },
+      {
+        "action": "available",
+        "typ": 0,
+        "cost": 1
+      }
+    ],
+    "expected": [
+      true,
+      false,
+      true,
+      false,
+      true,
+      false
+    ]
+  },
+  {
+    "name": "snapshot_reset_is_noop",
+    "rate": 1,
+    "operations": [
+      {
+        "action": "reset",
+        "typ": 2,
+        "rate": 0
+      },
+      {
+        "action": "take",
+        "typ": 2,
+        "cost": 100000001
+      },
+      {
+        "action": "reset",
+        "typ": 0,
+        "rate": 2
+      },
+      {
+        "action": "take",
+        "typ": 0,
+        "cost": 2000
+      },
+      {
+        "action": "take",
+        "typ": 3,
+        "cost": 1000
+      }
+    ],
+    "expected": [
+      true,
+      true,
+      true
+    ]
+  }
+]

@@ -10,16 +10,16 @@ use crate::{INFLUENCE, STORE_LIMIT_TYPE_LEN, Type, UNLIMITED, VERSION_V1};
 /// Admission uses the caller's runtime and the leaf limiter's monotonic clock.
 /// Snapshot requests bypass the buckets; priority does not affect admission.
 pub struct StoreRateLimit {
-    limits: [Limit; STORE_LIMIT_TYPE_LEN],
+    pub(super) limits: [Limit; STORE_LIMIT_TYPE_LEN],
 }
 
-struct Limit {
+pub(super) struct Limit {
     rate_per_sec: f64,
     limiter: Option<RateLimiter>,
 }
 
 impl Limit {
-    fn new(rate_per_sec: f64) -> Self {
+    pub(super) fn new(rate_per_sec: f64) -> Self {
         let capacity = if rate_per_sec >= UNLIMITED {
             UNLIMITED as i64
         } else if rate_per_sec > 1.0 {

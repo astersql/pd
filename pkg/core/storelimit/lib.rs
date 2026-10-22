@@ -14,3 +14,9 @@ mod rate_limit_test;
 
 mod rate_limit;
 pub use rate_limit::StoreRateLimit;
+
+#[cfg(test)]
+#[path = "rate_reset_test.rs"]
+mod rate_reset_test;
+
+mod rate_reset;
