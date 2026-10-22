@@ -1,6 +1,9 @@
 // Copyright 2026 AsterSQL.
 //! In-memory cache algorithms with caller-owned values.
 
+mod fifo;
+pub use fifo::Fifo;
+
 mod lru;
 pub use lru::{Item, Lru};
 

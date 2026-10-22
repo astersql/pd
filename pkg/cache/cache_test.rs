@@ -158,3 +158,95 @@ fn thread_safe_cache_factory_concurrent_access() {
         });
     }
 }
+
+#[test]
+fn fifo_behavior() {
+    use super::Fifo;
+    let cache = Fifo::new(3);
+    assert!(cache.is_empty());
+    for key in 1..=4 {
+        cache.put(key, key.to_string());
+    }
+    assert_eq!(cache.len(), 3);
+    assert_eq!(
+        cache.elems().iter().map(|i| i.key).collect::<Vec<_>>(),
+        [2, 3, 4]
+    );
+    assert_eq!(
+        cache
+            .from_elems(3)
+            .iter()
+            .map(|i| i.key)
+            .collect::<Vec<_>>(),
+        [4]
+    );
+    assert!(cache.from_elems(u64::MAX).is_empty());
+    cache.remove();
+    assert_eq!(cache.elems()[0].key, 3);
+    cache.remove();
+    cache.remove();
+    assert!(cache.is_empty());
+    let cache = Fifo::new(0);
+    for key in [9, 2, 9, 0, u64::MAX] {
+        cache.put(key, Arc::new(key));
+    }
+    assert_eq!(cache.len(), 5);
+    assert_eq!(
+        cache
+            .from_elems(2)
+            .iter()
+            .map(|i| i.key)
+            .collect::<Vec<_>>(),
+        [9, 9, u64::MAX]
+    );
+    let mut snapshot = cache.elems();
+    snapshot[0].key = 123;
+    assert_eq!(cache.elems()[0].key, 9);
+    assert!(Arc::ptr_eq(&snapshot[0].value, &cache.elems()[0].value));
+    let one = Fifo::new(1);
+    one.put(1, 1);
+    one.put(1, 2);
+    assert_eq!(one.elems()[0].value, 2);
+    assert_eq!(one.len(), 1);
+}
+
+#[test]
+#[should_panic(expected = "empty FIFO")]
+fn fifo_behavior_empty_remove_panics() {
+    super::Fifo::<u64>::new(0).remove();
+}
+
+#[test]
+fn fifo_behavior_concurrent_insertion() {
+    let cache = super::Fifo::new(0);
+    let barrier = std::sync::Barrier::new(4);
+    std::thread::scope(|scope| {
+        for worker in 0..4 {
+            let cache = &cache;
+            let barrier = &barrier;
+            scope.spawn(move || {
+                barrier.wait();
+                for step in 0..100 {
+                    cache.put(worker * 100 + step, step);
+                    assert!(!cache.elems().is_empty());
+                }
+            });
+        }
+    });
+    assert_eq!(cache.len(), 400);
+    let items = cache.elems();
+    for worker in 0..4 {
+        assert_eq!(
+            items
+                .iter()
+                .filter(|item| item.key / 100 == worker)
+                .map(|item| item.value)
+                .collect::<Vec<_>>(),
+            (0..100).collect::<Vec<_>>()
+        );
+    }
+    for _ in 0..400 {
+        cache.remove();
+    }
+    assert!(cache.is_empty());
+}
