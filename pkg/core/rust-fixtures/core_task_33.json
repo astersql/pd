@@ -1,0 +1,137 @@
+[
+  {
+    "name": "no_origin_empty",
+    "origin": null,
+    "current": [
+      0,
+      0
+    ],
+    "expected": [
+      1,
+      0
+    ],
+    "source": "pkg/core/region.go RegionInfo.Inherit: TestInherit approximateSize/approximateKeys tables in pkg/core/region_test.go; existing Go test executed."
+  },
+  {
+    "name": "no_origin_nonempty",
+    "origin": null,
+    "current": [
+      2,
+      1
+    ],
+    "expected": [
+      2,
+      1
+    ],
+    "source": "pkg/core/region.go RegionInfo.Inherit: TestInherit approximateSize/approximateKeys tables in pkg/core/region_test.go; existing Go test executed."
+  },
+  {
+    "name": "inherit_pair",
+    "origin": [
+      10,
+      100
+    ],
+    "current": [
+      0,
+      0
+    ],
+    "expected": [
+      10,
+      100
+    ],
+    "source": "pkg/core/region.go RegionInfo.Inherit: TestInherit approximateSize/approximateKeys tables in pkg/core/region_test.go; existing Go test executed."
+  },
+  {
+    "name": "true_empty",
+    "origin": [
+      10,
+      100
+    ],
+    "current": [
+      1,
+      0
+    ],
+    "expected": [
+      1,
+      0
+    ],
+    "source": "pkg/core/region.go RegionInfo.Inherit: TestInherit approximateSize/approximateKeys tables in pkg/core/region_test.go; existing Go test executed."
+  },
+  {
+    "name": "keep_nonempty",
+    "origin": [
+      1,
+      50
+    ],
+    "current": [
+      1,
+      100
+    ],
+    "expected": [
+      1,
+      100
+    ],
+    "source": "pkg/core/region.go RegionInfo.Inherit: TestInherit approximateSize/approximateKeys tables in pkg/core/region_test.go; existing Go test executed."
+  },
+  {
+    "name": "overwrite_keys_when_zero_size",
+    "origin": [
+      5,
+      200
+    ],
+    "current": [
+      0,
+      7
+    ],
+    "expected": [
+      5,
+      200
+    ],
+    "source": "pkg/core/region.go RegionInfo.Inherit: source-derived boundary: size == 0 copies both fields when origin exists, otherwise changes size only; nonzero size never changes either field. No executed Go differential assertion for this exact input."
+  },
+  {
+    "name": "zero_origin",
+    "origin": [
+      0,
+      0
+    ],
+    "current": [
+      0,
+      3
+    ],
+    "expected": [
+      0,
+      0
+    ],
+    "source": "pkg/core/region.go RegionInfo.Inherit: source-derived boundary: size == 0 copies both fields when origin exists, otherwise changes size only; nonzero size never changes either field. No executed Go differential assertion for this exact input."
+  },
+  {
+    "name": "negative_size",
+    "origin": [
+      10,
+      100
+    ],
+    "current": [
+      -1,
+      0
+    ],
+    "expected": [
+      -1,
+      0
+    ],
+    "source": "pkg/core/region.go RegionInfo.Inherit: source-derived boundary: size == 0 copies both fields when origin exists, otherwise changes size only; nonzero size never changes either field. No executed Go differential assertion for this exact input."
+  },
+  {
+    "name": "no_origin_preserve_keys",
+    "origin": null,
+    "current": [
+      0,
+      7
+    ],
+    "expected": [
+      1,
+      7
+    ],
+    "source": "pkg/core/region.go RegionInfo.Inherit: source-derived boundary: size == 0 copies both fields when origin exists, otherwise changes size only; nonzero size never changes either field. No executed Go differential assertion for this exact input."
+  }
+]

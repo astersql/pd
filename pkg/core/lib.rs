@@ -149,3 +149,9 @@ mod region_merge_policy_test;
 
 pub mod region_merge_policy;
 pub use region_merge_policy::*;
+
+pub mod region_inherit;
+pub use region_inherit::*;
+#[cfg(test)]
+#[path = "region_inherit_test.rs"]
+mod region_inherit_test;

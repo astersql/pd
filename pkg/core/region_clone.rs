@@ -82,6 +82,8 @@ impl RegionInfo {
         }
         let stats = copy.stats.clone();
         let mut result = Self::new(copy.meta, copy.leader, copy.down_peers, copy.pending_peers);
+        result.report_buckets = copy.report_buckets;
+        result.bucket_meta = copy.bucket_meta;
         result.stats = stats;
         result.query_stats = copy.query_stats;
         result.report_interval = copy.report_interval;

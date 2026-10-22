@@ -82,6 +82,7 @@ impl RegionInfo {
     /// Normalize and replace heartbeat statistics without altering membership.
     pub fn set_heartbeat_stats(&mut self, stats: RegionHeartbeatStats, divisor: u64) {
         self.stats = stats.normalize(divisor);
+        self.source = crate::RegionSource::Heartbeat;
     }
     /// Read the normalized heartbeat snapshot.
     pub fn stats(&self) -> &RegionStats {
