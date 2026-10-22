@@ -1,0 +1,12 @@
+{
+  "source": "pkg/core/region.go: UpdateSubTree, preUpdateSubTreeLocked, updateSubTreeLocked, removeRegionFromSubTreeLocked; unchanged from 0820f0b67b0e49b289b84fdf66b7b8fb178afe82",
+  "existing_test": "TestShouldRemoveFromSubTree checks equal membership, leader changes, pending changes, learner changes and store changes; checkRegions asserts counts for all five roles",
+  "derivation": [
+    "Initial [a,m): voter 1 leader, witness voter 2 follower and witness, learner 3 learner and pending.",
+    "Replacement [m,z): voter 2 leader and pending, witness learner 4 learner and witness. Range change removes every old role before insertion.",
+    "When overlaps omitted and rangeChanged=true, overlapTree finds [a,m) for incoming [a,z); remove old leader even with no incoming peers.",
+    "Nil leader has protobuf ID zero: voter ID 1 becomes follower. Same-range same-peers replaces payload and transfers overlap reference, leaving old ref 0 and new root+overlap refs 2. Empty end is infinity."
+  ],
+  "evidence_boundary": "Extended cases are source-derived Rust assertions, not executed Go/Rust differential fixtures.",
+  "replacement": [["leader",2],["learner",4],["witness",4],["pending",2]]
+}

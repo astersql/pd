@@ -230,3 +230,9 @@ mod regions_atomic;
 #[cfg(test)]
 #[path = "regions_atomic_test.rs"]
 mod regions_atomic_test;
+
+pub mod regions_subtree;
+pub use regions_subtree::*;
+#[cfg(test)]
+#[path = "regions_subtree_test.rs"]
+mod regions_subtree_test;
