@@ -13,6 +13,7 @@ pub struct DownPeer {
 /// Region metadata and classified membership. Queries cannot invalidate classification.
 #[derive(Clone, Debug)]
 pub struct RegionInfo {
+    pub(crate) stats: crate::RegionStats,
     pub(crate) meta: RegionMeta,
     pub(crate) leader: Option<Peer>,
     voters: Vec<Peer>,
@@ -49,6 +50,7 @@ impl RegionInfo {
         down_peers.sort_by_key(|p| p.peer.id);
         pending_peers.sort_by_key(|p| p.id);
         Self {
+            stats: crate::RegionStats::default(),
             meta,
             leader,
             voters,

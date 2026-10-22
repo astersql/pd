@@ -1,0 +1,9 @@
+{
+ "sources": {
+  "rounding": "TestRegionRoundingFlow: flows 10,13,11807,252623,258623; GetRoundBytesRead/GetRoundBytesWritten integer half-up formula. Divisor zero and half ties derived from source.",
+  "sizes": "TestRegionFromHeartbeatIAKVSize asserts KV=100 MiB, IAKV=40 MiB and clone preservation; old heartbeat IAKV=0. RegionFromHeartbeat divides each size by 1048576, clamps positive approximate size to 1; columnar=3 MiB+1 ->3, keys u64::MAX -> int64 -1 are source-derived.",
+  "invalid": "RegionFromHeartbeat independently zeros read/write byte-key pairs when either >=1<<50; threshold-1 retained. No claim of executed Go differential for derived boundaries.",
+  "baseline": "0820f0b67b0e49b289b84fdf66b7b8fb178afe82; current region.go and region_option.go unchanged"
+ },
+ "rounding": [[10,1,10],[13,10,10],[11807,1000,12000],[252623,10000,250000],[258623,10000,260000],[15,10,20],[14,10,10],[13,0,13],[0,10,0]]
+}

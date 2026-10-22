@@ -5,6 +5,8 @@ use crate::{Peer, RegionInfo};
 /// Metadata and membership modifications, in caller-supplied order.
 #[derive(Clone, Debug)]
 pub enum RegionOption {
+    /// Set the decimal flow rounding precision.
+    FlowRoundByDigit(i64),
     StartKey(Vec<u8>),
     EndKey(Vec<u8>),
     Leader(Option<Peer>),
@@ -26,6 +28,9 @@ impl RegionInfo {
         let mut copy = self.clone();
         for option in options {
             match option {
+                RegionOption::FlowRoundByDigit(digit) => {
+                    copy.stats.flow_round_divisor = crate::flow_round_divisor_by_digit(digit)
+                }
                 RegionOption::StartKey(key) => copy.meta.key_range.start_key = key,
                 RegionOption::EndKey(key) => copy.meta.key_range.end_key = key,
                 RegionOption::Leader(leader) => copy.leader = leader,
@@ -75,6 +80,9 @@ impl RegionInfo {
                 }
             }
         }
-        Self::new(copy.meta, copy.leader, copy.down_peers, copy.pending_peers)
+        let stats = copy.stats.clone();
+        let mut result = Self::new(copy.meta, copy.leader, copy.down_peers, copy.pending_peers);
+        result.stats = stats;
+        result
     }
 }
