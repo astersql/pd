@@ -474,3 +474,107 @@ fn order_statistics() {
         }
     }
 }
+
+#[test]
+fn clone_clear_and_freelist() {
+    use std::sync::{Arc, Barrier};
+    let pool = Arc::new(FreeList::new(16));
+    let mut tree = BTree::with_free_list(3, |a: &i32, b: &i32| a < b, pool.clone());
+    for i in 0..512 {
+        tree.replace_or_insert(i);
+    }
+    let snapshot = tree.clone();
+    let barrier = Arc::new(Barrier::new(4));
+    let handles: Vec<_> = (0..4)
+        .map(|branch| {
+            let mut fork = tree.clone();
+            let barrier = barrier.clone();
+            std::thread::spawn(move || {
+                barrier.wait();
+                for i in 0..256 {
+                    assert_eq!(fork.delete(&i), Some(i));
+                }
+                for i in 512..768 {
+                    fork.replace_or_insert(i + branch * 1000);
+                }
+                assert_eq!(fork.len(), 512);
+                for i in 256..512 {
+                    assert_eq!(fork.get(&i), Some(&i));
+                }
+                for i in 512..768 {
+                    assert!(fork.has(&(i + branch * 1000)));
+                }
+                fork.clear(true);
+                fork.clear(true);
+                assert!(fork.is_empty());
+                fork.replace_or_insert(branch);
+                assert_eq!(fork.delete_min(), Some(branch));
+            })
+        })
+        .collect();
+    for handle in handles {
+        handle.join().unwrap();
+    }
+    for i in 0..512 {
+        assert_eq!(snapshot.get_at(i), Some(&(i as i32)));
+    }
+    tree.clear(true);
+    assert_eq!(snapshot.len(), 512);
+    assert!(pool.len() <= 16);
+    drop(snapshot);
+    let before = pool.len();
+    tree.clear(true);
+    assert_eq!(pool.len(), before);
+    for i in 0..128 {
+        tree.replace_or_insert(i);
+    }
+    tree.clear(false);
+    assert!(tree.is_empty());
+    assert!(pool.len() <= before);
+    for i in 0..128 {
+        tree.replace_or_insert(i);
+    }
+    tree.clear(true);
+    assert_eq!(pool.len(), 16);
+    let full = pool.len();
+    tree.clear(true);
+    assert_eq!(pool.len(), full);
+    let zero = Arc::new(FreeList::new(0));
+    let mut tree = BTree::with_free_list(2, |a: &i32, b: &i32| a < b, zero.clone());
+    tree.replace_or_insert(1);
+    tree.clear(true);
+    assert!(zero.is_empty());
+}
+
+#[test]
+fn clear_releases_payloads_and_reuses_empty_buffers() {
+    use std::sync::Arc;
+    let pool = Arc::new(FreeList::new(8));
+    let value = Arc::new(42);
+    let weak = Arc::downgrade(&value);
+    let mut tree = BTree::with_free_list(
+        2,
+        |a: &(i32, Arc<i32>), b: &(i32, Arc<i32>)| a.0 < b.0,
+        pool.clone(),
+    );
+    for key in 0..64 {
+        tree.replace_or_insert((key, value.clone()));
+    }
+    let references = Arc::strong_count(&value);
+    let mut snapshot = tree.clone();
+    assert_eq!(Arc::strong_count(&value), references, "clone is lazy");
+    drop(value);
+    tree.clear(true);
+    assert!(weak.upgrade().is_some());
+    snapshot.clear(true);
+    assert!(
+        weak.upgrade().is_none(),
+        "empty pooled nodes must not retain items"
+    );
+    assert_eq!(pool.len(), 8);
+    tree.replace_or_insert((99, Arc::new(99)));
+    assert_eq!(pool.len(), 7, "insertion consumes a retained buffer");
+    assert_eq!(tree.get_at(0).map(|item| item.0), Some(99));
+    tree.clear(false);
+    assert_eq!(pool.len(), 7, "clear(false) does not recycle nodes");
+}

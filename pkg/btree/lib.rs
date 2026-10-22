@@ -1,23 +1,101 @@
 // Copyright 2026 AsterSQL.
 //! In-memory B-tree with caller-defined strict weak ordering.
 //! Node layout, insertion, deletion and ordered traversal follow btree_generic.go.
-//! Copy-on-write and free-list APIs are introduced in later ports.
+//! Clones share nodes until mutation; free lists retain empty node buffers.
 
-struct Node<T> {
-    items: Vec<T>,
-    children: Vec<Node<T>>,
-    size: usize,
+use std::ops::{Deref, DerefMut};
+use std::sync::{Arc, Mutex, Weak};
+
+/// A bounded, thread-safe pool of empty B-tree node buffers.
+/// Trees with different degrees and comparators may share a pool.
+pub struct FreeList<T> {
+    nodes: Mutex<Vec<NodeData<T>>>,
+    capacity: usize,
 }
 
-impl<T> Node<T> {
-    fn empty() -> Self {
+impl<T> FreeList<T> {
+    /// Creates an empty pool retaining at most `capacity` nodes.
+    pub fn new(capacity: usize) -> Self {
         Self {
-            items: Vec::new(),
-            children: Vec::new(),
-            size: 0,
+            nodes: Mutex::new(Vec::new()),
+            capacity,
         }
     }
 
+    /// Returns the number of retained empty nodes.
+    pub fn len(&self) -> usize {
+        self.nodes.lock().unwrap().len()
+    }
+
+    /// Reports whether no empty nodes are retained.
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+}
+
+struct Node<T>(Arc<NodeData<T>>);
+
+impl<T> Clone for Node<T> {
+    fn clone(&self) -> Self {
+        Self(self.0.clone())
+    }
+}
+
+impl<T> Deref for Node<T> {
+    type Target = NodeData<T>;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl<T: Clone> DerefMut for Node<T> {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        Arc::make_mut(&mut self.0)
+    }
+}
+
+impl<T> Node<T> {
+    fn empty(pool: &Arc<FreeList<T>>) -> Self {
+        let mut data = pool
+            .nodes
+            .lock()
+            .unwrap()
+            .pop()
+            .unwrap_or_else(|| NodeData {
+                items: Vec::new(),
+                children: Vec::new(),
+                size: 0,
+                pool: Weak::new(),
+            });
+        data.pool = Arc::downgrade(pool);
+        Self(Arc::new(data))
+    }
+
+    // Shared nodes remain untouched. Only exclusively held buffers can be reused.
+    fn recycle(self, pool: &Arc<FreeList<T>>) {
+        if let Ok(mut data) = Arc::try_unwrap(self.0) {
+            for child in data.children.drain(..) {
+                child.recycle(pool);
+            }
+            data.items.clear();
+            data.size = 0;
+            let mut nodes = pool.nodes.lock().unwrap();
+            if nodes.len() < pool.capacity {
+                nodes.push(data);
+            }
+        }
+    }
+}
+
+#[derive(Clone)]
+struct NodeData<T> {
+    items: Vec<T>,
+    children: Vec<Node<T>>,
+    size: usize,
+    pool: Weak<FreeList<T>>,
+}
+
+impl<T: Clone> NodeData<T> {
     // Recompute only this node from cached child sizes, never walk subtrees.
     fn refresh_size(&mut self) {
         self.size = self.items.len() + self.children.iter().map(|child| child.size).sum::<usize>();
@@ -94,11 +172,9 @@ impl<T> Node<T> {
             child.children.split_off(degree)
         };
         child.refresh_size();
-        let mut right = Node {
-            items: right_items,
-            children: right_children,
-            size: 0,
-        };
+        let mut right = Node::empty(&self.pool.upgrade().expect("tree owns pool"));
+        right.items.extend(right_items);
+        right.children.extend(right_children);
         right.refresh_size();
         self.items.insert(index, median);
         self.children.insert(index + 1, right);
@@ -106,7 +182,7 @@ impl<T> Node<T> {
     }
 
     // Grow a minimal child before descending, preferring the left sibling just
-    // as Go growChildAndRemove does. Moving values avoids requiring T: Clone.
+    // as Go growChildAndRemove does. Exclusive nodes move values directly.
     fn grow_child(&mut self, index: usize, degree: usize) {
         if index > 0 && self.children[index - 1].items.len() >= degree {
             let (left, right) = self.children.split_at_mut(index);
@@ -137,12 +213,13 @@ impl<T> Node<T> {
         } else {
             let index = index.min(self.items.len() - 1);
             let separator = self.items.remove(index);
-            let right = self.children.remove(index + 1);
+            let mut right = self.children.remove(index + 1);
             let left = &mut self.children[index];
             left.items.push(separator);
-            left.items.extend(right.items);
-            left.children.extend(right.children);
+            left.items.append(&mut right.items);
+            left.children.append(&mut right.children);
             left.refresh_size();
+            right.recycle(&self.pool.upgrade().expect("tree owns pool"));
         }
         self.refresh_size();
     }
@@ -245,23 +322,41 @@ impl<T> Node<T> {
 
 /// An ordered tree storing one item per equivalence class of `less`.
 /// The comparator must define a strict weak ordering and remain stable.
+/// Items implement `Clone` so writes can detach shared nodes after cloning.
 pub struct BTree<T, F> {
     degree: usize,
     root: Option<Node<T>>,
     length: usize,
     less: F,
+    pool: Arc<FreeList<T>>,
 }
 
-impl<T, F: Fn(&T, &T) -> bool> BTree<T, F> {
+impl<T: Clone, F: Fn(&T, &T) -> bool> BTree<T, F> {
     /// Creates a tree; panics with `bad degree` for degrees below two or
     /// degrees whose maximum node size cannot be represented.
     pub fn new(degree: usize, less: F) -> Self {
+        Self::with_free_list(degree, less, Arc::new(FreeList::new(32)))
+    }
+
+    /// Creates a tree using a shared node pool.
+    pub fn with_free_list(degree: usize, less: F, pool: Arc<FreeList<T>>) -> Self {
         assert!(degree > 1 && degree <= usize::MAX / 2, "bad degree");
         Self {
             degree,
             root: None,
             length: 0,
             less,
+            pool,
+        }
+    }
+
+    /// Removes all items, optionally retaining uniquely owned empty nodes.
+    /// Shared clone nodes are never returned to the pool by this operation.
+    pub fn clear(&mut self, add_nodes_to_freelist: bool) {
+        let root = self.root.take();
+        self.length = 0;
+        if add_nodes_to_freelist && let Some(root) = root {
+            root.recycle(&self.pool);
         }
     }
 
@@ -273,15 +368,15 @@ impl<T, F: Fn(&T, &T) -> bool> BTree<T, F> {
             .is_some_and(|root| root.items.len() == 2 * self.degree - 1)
         {
             let old = self.root.take().unwrap();
-            let mut root = Node::empty();
+            let mut root = Node::empty(&self.pool);
             root.children.push(old);
             root.split_child(0, self.degree);
             self.root = Some(root);
         }
-        let previous =
-            self.root
-                .get_or_insert_with(Node::empty)
-                .insert(item, self.degree, &self.less);
+        let previous = self
+            .root
+            .get_or_insert_with(|| Node::empty(&self.pool))
+            .insert(item, self.degree, &self.less);
         if previous.is_none() {
             self.length += 1;
         }
@@ -297,6 +392,7 @@ impl<T, F: Fn(&T, &T) -> bool> BTree<T, F> {
         if self.root.as_ref().is_some_and(|root| root.items.is_empty()) {
             let mut root = self.root.take().unwrap();
             self.root = root.children.pop();
+            root.recycle(&self.pool);
         }
         removed
     }
@@ -320,6 +416,7 @@ impl<T, F: Fn(&T, &T) -> bool> BTree<T, F> {
         if self.root.as_ref().is_some_and(|root| root.items.is_empty()) {
             let mut root = self.root.take().unwrap();
             self.root = root.children.pop();
+            root.recycle(&self.pool);
         }
     }
 
@@ -495,6 +592,21 @@ impl<T, F: Fn(&T, &T) -> bool> BTree<T, F> {
     /// Reports whether the tree contains no items.
     pub fn is_empty(&self) -> bool {
         self.length == 0
+    }
+}
+
+/// Cloning shares the node hierarchy; mutations copy only visited shared nodes.
+/// Item cloning follows `T::clone`, so interior mutable item payloads remain the
+/// caller's responsibility, as with pointer-valued items in the Go tree.
+impl<T, F: Clone> Clone for BTree<T, F> {
+    fn clone(&self) -> Self {
+        Self {
+            degree: self.degree,
+            root: self.root.clone(),
+            length: self.length,
+            less: self.less.clone(),
+            pool: self.pool.clone(),
+        }
     }
 }
 
