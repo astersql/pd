@@ -1,7 +1,7 @@
 // Copyright 2026 AsterSQL.
 //! In-memory B-tree with caller-defined strict weak ordering.
-//! Node layout and top-down insertion follow btree_generic.go. Range traversal,
-//! deletion, copy-on-write and free-list APIs are introduced in later ports.
+//! Node layout, insertion and deletion follow btree_generic.go. Range traversal,
+//! copy-on-write and free-list APIs are introduced in later ports.
 
 struct Node<T> {
     items: Vec<T>,
@@ -41,6 +41,72 @@ impl<T> Node<T> {
                 children: right_children,
             },
         );
+    }
+
+    // Grow a minimal child before descending, preferring the left sibling just
+    // as Go growChildAndRemove does. Moving values avoids requiring T: Clone.
+    fn grow_child(&mut self, index: usize, degree: usize) {
+        if index > 0 && self.children[index - 1].items.len() >= degree {
+            let (left, right) = self.children.split_at_mut(index);
+            let sibling = &mut left[index - 1];
+            let child = &mut right[0];
+            let stolen = sibling.items.pop().unwrap();
+            child
+                .items
+                .insert(0, std::mem::replace(&mut self.items[index - 1], stolen));
+            if let Some(branch) = sibling.children.pop() {
+                child.children.insert(0, branch);
+            }
+        } else if index < self.items.len() && self.children[index + 1].items.len() >= degree {
+            let (left, right) = self.children.split_at_mut(index + 1);
+            let child = &mut left[index];
+            let sibling = &mut right[0];
+            let stolen = sibling.items.remove(0);
+            child
+                .items
+                .push(std::mem::replace(&mut self.items[index], stolen));
+            if !sibling.children.is_empty() {
+                child.children.push(sibling.children.remove(0));
+            }
+        } else {
+            let index = index.min(self.items.len() - 1);
+            let separator = self.items.remove(index);
+            let right = self.children.remove(index + 1);
+            let left = &mut self.children[index];
+            left.items.push(separator);
+            left.items.extend(right.items);
+            left.children.extend(right.children);
+        }
+    }
+
+    fn remove_max(&mut self, degree: usize) -> T {
+        if self.children.is_empty() {
+            return self.items.pop().unwrap();
+        }
+        let index = self.items.len();
+        if self.children[index].items.len() < degree {
+            self.grow_child(index, degree);
+            return self.remove_max(degree);
+        }
+        self.children[index].remove_max(degree)
+    }
+
+    fn remove(&mut self, key: &T, degree: usize, less: &impl Fn(&T, &T) -> bool) -> Option<T> {
+        let (index, found) = self.find(key, less);
+        if self.children.is_empty() {
+            return found.then(|| self.items.remove(index));
+        }
+        if self.children[index].items.len() < degree {
+            self.grow_child(index, degree);
+            // Rotations and merges may move the requested item; search again.
+            return self.remove(key, degree, less);
+        }
+        if found {
+            let predecessor = self.children[index].remove_max(degree);
+            Some(std::mem::replace(&mut self.items[index], predecessor))
+        } else {
+            self.children[index].remove(key, degree, less)
+        }
     }
 
     fn insert(&mut self, item: T, degree: usize, less: &impl Fn(&T, &T) -> bool) -> Option<T> {
@@ -107,6 +173,19 @@ impl<T, F: Fn(&T, &T) -> bool> BTree<T, F> {
             self.length += 1;
         }
         previous
+    }
+
+    /// Removes and returns the stored item equivalent to `key`, if present.
+    pub fn delete(&mut self, key: &T) -> Option<T> {
+        let removed = self.root.as_mut()?.remove(key, self.degree, &self.less);
+        if removed.is_some() {
+            self.length -= 1;
+        }
+        if self.root.as_ref().is_some_and(|root| root.items.is_empty()) {
+            let mut root = self.root.take().unwrap();
+            self.root = root.children.pop();
+        }
+        removed
     }
 
     /// Returns the stored item equivalent to `key`.

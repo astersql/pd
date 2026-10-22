@@ -135,3 +135,80 @@ fn split_replace_min_max() {
         }
     }
 }
+
+#[test]
+fn delete_and_rebalance() {
+    fn validate(
+        node: &Node<(i32, i32)>,
+        degree: usize,
+        root: bool,
+        out: &mut Vec<(i32, i32)>,
+    ) -> usize {
+        assert!(node.items.len() < 2 * degree);
+        assert!(node.items.len() >= if root { 1 } else { degree - 1 });
+        if node.children.is_empty() {
+            out.extend(&node.items);
+            return 0;
+        }
+        assert_eq!(node.children.len(), node.items.len() + 1);
+        let mut height = None;
+        for (i, child) in node.children.iter().enumerate() {
+            let h = validate(child, degree, false, out);
+            assert_eq!(*height.get_or_insert(h), h);
+            if let Some(item) = node.items.get(i) {
+                out.push(*item);
+            }
+        }
+        height.unwrap() + 1
+    }
+    for degree in [2, 3, 8, 32] {
+        for descending in [false, true] {
+            for order in [0, 1, 2] {
+                let mut tree = BTree::new(
+                    degree,
+                    |a: &(i32, i32), b: &(i32, i32)| {
+                        if descending { a.0 > b.0 } else { a.0 < b.0 }
+                    },
+                );
+                assert_eq!(tree.delete(&(0, 99)), None);
+                let mut expected = std::collections::BTreeMap::new();
+                for key in (0..512).map(|i| (i * 317) % 512) {
+                    tree.replace_or_insert((key, -key - 1));
+                    expected.insert(key, -key - 1);
+                }
+                for i in 0..512 {
+                    let key = match order {
+                        0 => i,
+                        1 => 511 - i,
+                        _ => (i * 317) % 512,
+                    };
+                    assert_eq!(tree.delete(&(key, 99)), Some((key, -key - 1)));
+                    expected.remove(&key);
+                    assert_eq!(tree.delete(&(key, 99)), None);
+                    assert_eq!(tree.delete(&(1024, 0)), None);
+                    assert_eq!(tree.len(), expected.len());
+                    assert_eq!(tree.is_empty(), expected.is_empty());
+                    assert_eq!(tree.get(&(key, 0)), None);
+                    let mut values = Vec::new();
+                    if let Some(root) = &tree.root {
+                        validate(root, degree, true, &mut values);
+                    }
+                    let mut want: Vec<_> = expected.iter().map(|(&k, &v)| (k, v)).collect();
+                    if descending {
+                        want.reverse();
+                    }
+                    assert_eq!(values, want);
+                    assert_eq!(tree.min(), want.first());
+                    assert_eq!(tree.max(), want.last());
+                    for item in &want {
+                        assert_eq!(tree.get(&(item.0, 0)), Some(item));
+                    }
+                }
+                assert!(tree.root.is_none());
+                assert_eq!(tree.replace_or_insert((42, 7)), None);
+                assert_eq!(tree.delete(&(42, 99)), Some((42, 7)));
+                assert!(tree.is_empty());
+            }
+        }
+    }
+}
