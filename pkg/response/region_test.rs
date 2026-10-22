@@ -136,3 +136,31 @@ fn core_task_64_zero_epoch_signed_and_clone() {
         marshal_region_info_json(Some(&r.clone_with([]))).unwrap()
     );
 }
+
+#[test]
+fn core_task_68_single_region_cancellation() {
+    // response/region.go checks ctx.Done() before conversion, even for absent input.
+    use crate::{
+        RegionListCancellation, RegionListError, marshal_region_info_json_with_cancellation,
+    };
+    for reason in [
+        RegionListCancellation::Cancelled,
+        RegionListCancellation::DeadlineExceeded,
+    ] {
+        let region = astersql_pd_core::RegionInfo::new(Default::default(), None, vec![], vec![]);
+        assert!(
+            matches!(marshal_region_info_json_with_cancellation(Some(&region), || Some(reason)), Err(RegionListError::Cancelled(r)) if r == reason)
+        );
+        assert!(
+            matches!(marshal_region_info_json_with_cancellation(None, || Some(reason)), Err(RegionListError::Cancelled(r)) if r == reason)
+        );
+        assert_eq!(
+            marshal_region_info_json_with_cancellation(None, || None).unwrap(),
+            crate::marshal_region_info_json(None).unwrap()
+        );
+        assert_eq!(
+            marshal_region_info_json_with_cancellation(Some(&region), || None).unwrap(),
+            crate::marshal_region_info_json(Some(&region)).unwrap()
+        );
+    }
+}

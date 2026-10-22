@@ -132,3 +132,14 @@ pub fn init_region<'a>(
 pub fn marshal_region_info_json(region: Option<&CoreRegion>) -> Result<Vec<u8>, serde_json::Error> {
     serde_json::to_vec(&new_api_region_info(region).unwrap_or_default())
 }
+
+/// Check host cancellation before any conversion, matching Go's single-region entry.
+pub fn marshal_region_info_json_with_cancellation(
+    region: Option<&CoreRegion>,
+    mut cancellation: impl FnMut() -> Option<crate::RegionListCancellation>,
+) -> Result<Vec<u8>, crate::RegionListError> {
+    if let Some(reason) = cancellation() {
+        return Err(crate::RegionListError::Cancelled(reason));
+    }
+    marshal_region_info_json(region).map_err(crate::RegionListError::Encoding)
+}

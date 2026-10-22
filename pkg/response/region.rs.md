@@ -31,3 +31,8 @@ heartbeat 适配器读取 cpu_usage，区别于 unified_read。取消语义留�
 - `cargo check --workspace --locked`：退出 0。
 - `cargo test --workspace --locked`：退出 0，76 个 target 汇总 428 passed，1 个既有 ignored。
 - `git diff --check`：退出 0；Go 文件和 Go 模块配置无差异。
+
+任务 68 补齐 `marshal_region_info_json_with_cancellation`：对应只读 Go
+`MarshalRegionInfoJSON` 在转换前检查 ctx.Done，None 输入也先检查取消。
+独立 `core_task_68_single_region_cancellation` 先缺入口失败（101），再通过；
+覆盖取消、超时及无取消时复用原 JSON 结果。该证据为源码推导和 Rust 运行。
