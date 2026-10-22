@@ -1,0 +1,13 @@
+{
+  "regions": [[1,"a","c"],[2,"e","g"],[3,"g","i"],[4,"z",""]],
+  "scans": [["",[1,2,3,4]],["b",[1,2,3,4]],["c",[2,3,4]],["d",[2,3,4]],["g",[3,4]],["i",[4]],["zz",[4]]],
+  "counts": [["a","a",0],["a","b",1],["a","c",1],["a","d",1],["a","e",1],["a","f",2],["a","g",2],["a","h",3],["a","",4],["b","g",2],["c","g",1],["d","g",1],["","",4],["zz","",0],["z","",1],["g","a",-2]],
+  "provenance": {
+    "baseline": "0820f0b67b0e49b289b84fdf66b7b8fb178afe82; current region_tree.go has no differences",
+    "regions": "TestStoreRegionCount supplies [a,c), [e,g), [g,i); fourth [z,infinity) added from TestRandomRegionDiscontinuous unbounded-region case",
+    "scans": "region_tree.go scanRange uses find(containment), then AscendGreaterOrEqual; c/d skip preceding a,c; zz is contained by z,infinity. These are source-derived expectations, not executed cross-language differential fixtures.",
+    "counts": "region_tree.go GetCountByRange: start lower-bound rank minus one only if previous end > start; end lower-bound rank or length for empty end. TestStoreRegionCount compares a->a,b,c,d,e,f,g,h,empty to ScanRegions; fourth region adds one only to unbounded end. b,g=2; c/d,g=1; g,a=0-2=-2. zz,empty=4-4=0 because empty prior end compares less than zz; z,empty=4-3=1. Extra cases source-derived.",
+    "stop": "scanRange directly returns callback bool to AscendGreaterOrEqual: false stops including the visited entry; source-derived",
+    "empty": "scanRanges length==0 returns nil; Rust uses empty Vec. Empty tree has no callback and rank difference 0; source-derived"
+  }
+}

@@ -203,3 +203,8 @@ mod region_tree_stats;
 #[cfg(test)]
 #[path = "region_tree_stats_test.rs"]
 mod region_tree_stats_test;
+
+mod region_tree_scan;
+#[cfg(test)]
+#[path = "region_tree_scan_test.rs"]
+mod region_tree_scan_test;
