@@ -123,3 +123,10 @@ pub use region::*;
 #[cfg(test)]
 #[path = "region_test.rs"]
 mod region_test;
+
+#[cfg(test)]
+#[path = "region_clone_test.rs"]
+mod region_clone_test;
+
+pub mod region_clone;
+pub use region_clone::*;

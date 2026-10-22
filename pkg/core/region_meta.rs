@@ -36,4 +36,8 @@ pub struct RegionMeta {
     pub key_range: KeyRange,
     pub epoch: Option<RegionEpoch>,
     pub peers: Vec<Peer>,
+    /// Whether TiKV reports an active flashback.
+    pub is_in_flashback: bool,
+    /// Flashback start timestamp, retained even when flashback is inactive.
+    pub flashback_start_ts: u64,
 }

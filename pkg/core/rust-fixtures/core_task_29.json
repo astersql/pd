@@ -1,0 +1,106 @@
+{
+  "underflow": 18446744073709551615,
+  "sources": {
+    "snapshot": "region.go RegionInfo.Clone deep clones meta, leader, down/pending peers before ordered options and classification; region_test.go TestSortedEqual clone assertions and TestRegionKey clone start/end assertions",
+    "peers": "region_option.go SetPeers, WithAddPeer, WithRemoveStorePeer, WithReplacePeerStore, WithReplaceLeaderStore: remove all store matches, replace all matches, leader chooses first non-learner; no candidate preserves leader. Source-derived boundary cases, not executed Go differential scenarios.",
+    "epoch": "region_option.go WithIncVersion/WithIncConfVer create absent epoch with selected field 1; WithDecVersion/WithDecConfVer leave absent epoch unchanged; Go uint64 arithmetic wraps zero to 18446744073709551615 and max to zero. Source-derived.",
+    "flashback": "region_option.go WithFlashback writes boolean and timestamp independently of prior state. Source-derived true/42 then false/0."
+  },
+  "scenarios": [
+    {
+      "input": {
+        "start_key": [],
+        "end_key": [],
+        "epoch": null,
+        "leader_store": 10
+      },
+      "options": {
+        "start_key": [
+          0,
+          255
+        ],
+        "end_key": [
+          9
+        ],
+        "leader": null,
+        "flashback": [
+          true,
+          42
+        ],
+        "increment": [
+          "version",
+          "conf_ver"
+        ]
+      },
+      "expected": {
+        "start_key": [
+          0,
+          255
+        ],
+        "end_key": [
+          9
+        ],
+        "epoch": [
+          1,
+          1
+        ],
+        "leader": null,
+        "flashback": [
+          true,
+          42
+        ]
+      },
+      "original_unchanged": true
+    },
+    {
+      "input": {
+        "peer_store": 10
+      },
+      "options": [
+        "add learner 2/store20/witness",
+        "replace store10 with30",
+        "leader store20"
+      ],
+      "expected": {
+        "peer_store": 30,
+        "leader_store": 10,
+        "learners": [
+          2
+        ],
+        "witnesses": [
+          2
+        ]
+      }
+    },
+    {
+      "input": {
+        "epoch": null
+      },
+      "options": [
+        "decrement version",
+        "decrement conf_ver"
+      ],
+      "expected": {
+        "epoch": null
+      }
+    },
+    {
+      "input": {
+        "epoch": [
+          0,
+          0
+        ]
+      },
+      "options": [
+        "decrement version",
+        "decrement conf_ver"
+      ],
+      "expected": {
+        "epoch": [
+          18446744073709551615,
+          18446744073709551615
+        ]
+      }
+    }
+  ]
+}

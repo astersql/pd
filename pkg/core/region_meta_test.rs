@@ -47,6 +47,7 @@ fn core_task_10_owned_metadata_and_u64_boundaries() {
             id: u64::MAX,
             ..Default::default()
         }],
+        ..Default::default()
     };
     let mut copy = meta.clone();
     copy.key_range.start_key[0] = 1;
