@@ -80,3 +80,9 @@ mod store_resource_test;
 mod store_score_v1_test;
 
 pub mod store_score_v1;
+
+#[cfg(test)]
+#[path = "store_score_v2_test.rs"]
+mod store_score_v2_test;
+
+pub mod store_score_v2;
