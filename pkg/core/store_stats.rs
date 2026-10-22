@@ -50,6 +50,17 @@ pub struct StoreStats {
 }
 
 impl super::StoreInfo {
+    /// Replace statistics with an independent raw-only holder, as SetNewStoreStats.
+    /// Later reports bypass smoothing and do not alter older shared snapshots.
+    pub fn set_new_store_stats(&mut self, stats: StoreStats) {
+        self.stats = std::sync::Arc::new(std::sync::RwLock::new(
+            super::store_clone::SharedStoreStats {
+                raw: stats,
+                average: None,
+            },
+        ));
+    }
+
     /// Snapshot the shared raw report; a new store starts with all-zero values.
     pub fn store_stats(&self) -> StoreStats {
         self.stats.read().unwrap().raw.clone()

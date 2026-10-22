@@ -64,3 +64,26 @@ fn core_task_14_dfs_owned_counters() {
     assert_eq!(copy.written_bytes, u64::MAX);
     assert_eq!(copy.write_requests, 7);
 }
+
+#[test]
+fn core_task_68_new_store_stats_detaches_smoothing() {
+    // store_option.go:SetNewStoreStats allocates a fresh raw-only statistics holder.
+    let mut store = StoreInfo::new(None);
+    store.update_raw_stats(StoreStats {
+        available: 100,
+        ..Default::default()
+    });
+    let mut copy = store.shallow_clone();
+    copy.set_new_store_stats(StoreStats {
+        available: 7,
+        ..Default::default()
+    });
+    assert_eq!(copy.avg_available(), 7);
+    assert_eq!(store.available(), 100);
+    copy.update_raw_stats(StoreStats {
+        available: 13,
+        ..Default::default()
+    });
+    assert_eq!(copy.avg_available(), 13);
+    assert_eq!(store.avg_available(), 100);
+}
