@@ -20,6 +20,4 @@ pub use controller::{Controller, ControllerDone, ControllerOption};
 mod controller_test;
 
 mod runner;
-pub use runner::{ConcurrentRunner, RunnerStopped, SyncRunner};
-#[cfg(test)]
-mod runner_test;
+pub use runner::{ConcurrentRunner, RunnerError, SyncRunner};
