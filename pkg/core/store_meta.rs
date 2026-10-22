@@ -4,6 +4,9 @@
 /// Store metadata preserves values without validating addresses or versions.
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub struct StoreMeta {
+    pub peer_address: String,
+    pub git_hash: String,
+    pub txn_protocol_version_range: Option<TxnProtocolVersionRange>,
     pub labels: Vec<super::StoreLabel>,
     pub state: super::StoreState,
     pub node_state: super::NodeState,
@@ -125,4 +128,11 @@ impl std::fmt::Debug for StoreInfo {
             .field("region_weight", &self.region_weight)
             .finish_non_exhaustive()
     }
+}
+
+/// Reported inclusive transaction protocol bounds; presence is preserved.
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
+pub struct TxnProtocolVersionRange {
+    pub min: u32,
+    pub max: u32,
 }

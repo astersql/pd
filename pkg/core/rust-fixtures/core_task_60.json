@@ -1,0 +1,80 @@
+{
+  "sources": {
+    "baseline": "0820f0b67b0e49b289b84fdf66b7b8fb178afe82",
+    "proto": "f8ad079c8e9812ed5900b0c12b5f1d97171464c4",
+    "store": "pkg/core/store.go NewStoreInfo preserves metadata; GetMeta returns it; factory.go StoreFactory yields zero value",
+    "stats": "pkg/core/store_stats.go newStoreStats initializes zero report; updateRawStats replaces raw report; CloneStoreStats deep-clones all fields",
+    "existing_tests": "TestCloneMetaStore asserts label equality and clone independence; TestNewStore asserts regionScoreV2 order only (executed 1 test); full field/unknown/absence expectations are source-derived, not executed Go differential tests",
+    "full_fields": "Rust full tests assign each pinned protocol field a distinct nonzero value; preserving raw reports requires identical fields, nested presence, order and map entries; invalid txn range is preserved, validation belongs to consumers"
+  },
+  "states": [
+    [
+      0,
+      0
+    ],
+    [
+      1,
+      1
+    ],
+    [
+      2,
+      2
+    ],
+    [
+      2,
+      3
+    ],
+    [
+      -73,
+      -73
+    ],
+    [
+      2147483647,
+      -2147483648
+    ]
+  ],
+  "cases": [
+    {
+      "name": "defaults_and_presence",
+      "input": {
+        "metadata": null,
+        "stats": null
+      },
+      "expected": "Absent input stays None. Present zero report/metadata stays present with zero fields.",
+      "source": "factory.go StoreFactory/StoreStatsFactory; store_stats.go newStoreStats; Go protobuf pointer presence semantics"
+    },
+    {
+      "name": "full_store",
+      "input": "All 14 pinned Store fields populated in core_task_60_full_store; each scalar uses its numbered field value and each nested value is independently asserted.",
+      "expected": "Every known field preserved, including label order and optional txn range.",
+      "source": "store.go NewStoreInfo/GetMeta; store_test.go TestCloneMetaStore label equality; pinned metapb.proto Store"
+    },
+    {
+      "name": "full_store_stats",
+      "input": "All 32 pinned StoreStats fields plus all nested fields populated in core_task_60_full_store_stats.",
+      "expected": "Every known field unchanged, including nested optional values and repeated entries.",
+      "source": "store_stats.go updateRawStats/GetStoreStats/CloneStoreStats; pinned pdpb.proto StoreStats and nested messages"
+    },
+    {
+      "name": "limits_and_presence",
+      "input": {
+        "capacity": 0,
+        "available": 18446744073709551615,
+        "region_count": 4294967295,
+        "damaged_regions_id": [
+          18446744073709551615,
+          0,
+          18446744073709551615
+        ],
+        "txn_range": {
+          "min": 9,
+          "max": 0
+        },
+        "timestamp_min": -9223372036854775808,
+        "timestamp_max": 9223372036854775807
+      },
+      "expected": "No validation/clamping in metadata/raw report storage. Invalid range and inconsistent capacities retained; None differs from Some(default); duplicate record keys and region IDs retain order; infinities and signed zero retained.",
+      "source": "store.go NewStoreInfo stores supplied meta; store_stats.go updateRawStats assigns rawStats without filtering; no existing Go assertion for these boundaries (source-derived)"
+    }
+  ]
+}

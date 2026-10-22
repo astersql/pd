@@ -40,3 +40,8 @@ pub mod core_trace;
 #[cfg(test)]
 #[path = "core_trace_test.rs"]
 mod core_trace_test;
+
+pub mod core_store_adapter;
+#[cfg(test)]
+#[path = "core_store_adapter_test.rs"]
+mod core_store_adapter_test;

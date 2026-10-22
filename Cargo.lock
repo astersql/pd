@@ -241,6 +241,7 @@ dependencies = [
 name = "astersql-pd-server"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-core",
  "astersql-pd-proto",
  "astersql-pd-runtime",
  "astersql-pd-storage",
