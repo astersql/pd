@@ -1,0 +1,698 @@
+{
+  "engine": [
+    {
+      "name": "missing",
+      "labels": [],
+      "flags": [
+        true,
+        false,
+        false
+      ],
+      "valid": true,
+      "engine": "tikv",
+      "source": "pkg/core/store_test.go:TestStoreInfoIsTiFlash assertions",
+      "derivation": "Engine returns tikv iff IsTiKV, else tiflash; ValidateStoreEngineKey accepts empty/tikv/tiflash/tiflash_compute"
+    },
+    {
+      "name": "tikv",
+      "labels": [
+        [
+          "engine",
+          "tikv"
+        ]
+      ],
+      "flags": [
+        true,
+        false,
+        false
+      ],
+      "valid": true,
+      "engine": "tikv",
+      "source": "pkg/core/store_test.go:TestStoreInfoIsTiFlash assertions",
+      "derivation": "Engine returns tikv iff IsTiKV, else tiflash; ValidateStoreEngineKey accepts empty/tikv/tiflash/tiflash_compute"
+    },
+    {
+      "name": "write",
+      "labels": [
+        [
+          "engine",
+          "tiflash"
+        ]
+      ],
+      "flags": [
+        false,
+        true,
+        false
+      ],
+      "valid": true,
+      "engine": "tiflash",
+      "source": "pkg/core/store_test.go:TestStoreInfoIsTiFlash assertions",
+      "derivation": "Engine returns tikv iff IsTiKV, else tiflash; ValidateStoreEngineKey accepts empty/tikv/tiflash/tiflash_compute"
+    },
+    {
+      "name": "compute",
+      "labels": [
+        [
+          "engine",
+          "tiflash_compute"
+        ]
+      ],
+      "flags": [
+        false,
+        false,
+        true
+      ],
+      "valid": true,
+      "engine": "tiflash",
+      "source": "pkg/core/store_test.go:TestStoreInfoIsTiFlash assertions",
+      "derivation": "Engine returns tikv iff IsTiKV, else tiflash; ValidateStoreEngineKey accepts empty/tikv/tiflash/tiflash_compute"
+    },
+    {
+      "name": "write-extra",
+      "labels": [
+        [
+          "engine",
+          "tiflash"
+        ],
+        [
+          "zone",
+          "z1"
+        ]
+      ],
+      "flags": [
+        false,
+        true,
+        false
+      ],
+      "valid": true,
+      "engine": "tiflash",
+      "source": "pkg/core/store_test.go:TestStoreInfoIsTiFlash assertions",
+      "derivation": "Engine returns tikv iff IsTiKV, else tiflash; ValidateStoreEngineKey accepts empty/tikv/tiflash/tiflash_compute"
+    },
+    {
+      "name": "compute-extra",
+      "labels": [
+        [
+          "engine",
+          "tiflash_compute"
+        ],
+        [
+          "zone",
+          "z2"
+        ]
+      ],
+      "flags": [
+        false,
+        false,
+        true
+      ],
+      "valid": true,
+      "engine": "tiflash",
+      "source": "pkg/core/store_test.go:TestStoreInfoIsTiFlash assertions",
+      "derivation": "Engine returns tikv iff IsTiKV, else tiflash; ValidateStoreEngineKey accepts empty/tikv/tiflash/tiflash_compute"
+    },
+    {
+      "name": "unknown",
+      "labels": [
+        [
+          "engine",
+          "unknown_engine"
+        ]
+      ],
+      "flags": [
+        false,
+        false,
+        false
+      ],
+      "valid": false,
+      "engine": "tiflash",
+      "source": "pkg/core/store_test.go:TestStoreInfoIsTiFlash assertions",
+      "derivation": "Engine returns tikv iff IsTiKV, else tiflash; ValidateStoreEngineKey accepts empty/tikv/tiflash/tiflash_compute"
+    },
+    {
+      "name": "value-case",
+      "labels": [
+        [
+          "engine",
+          "TiFlash"
+        ]
+      ],
+      "flags": [
+        false,
+        false,
+        false
+      ],
+      "valid": false,
+      "engine": "tiflash",
+      "source": "pkg/core/store_test.go:TestStoreInfoIsTiFlash assertions",
+      "derivation": "Engine returns tikv iff IsTiKV, else tiflash; ValidateStoreEngineKey accepts empty/tikv/tiflash/tiflash_compute"
+    },
+    {
+      "name": "empty",
+      "labels": [
+        [
+          "engine",
+          ""
+        ]
+      ],
+      "flags": [
+        true,
+        false,
+        false
+      ],
+      "valid": true,
+      "engine": "tikv",
+      "source": "pkg/core/store_test.go:TestStoreInfoIsTiFlash assertions",
+      "derivation": "Engine returns tikv iff IsTiKV, else tiflash; ValidateStoreEngineKey accepts empty/tikv/tiflash/tiflash_compute"
+    },
+    {
+      "name": "key-case",
+      "labels": [
+        [
+          "Engine",
+          "tiflash"
+        ]
+      ],
+      "flags": [
+        true,
+        false,
+        false
+      ],
+      "valid": true,
+      "engine": "tikv",
+      "source": "Source-derived: getStoreLabelValue exact key and first-match return; IsTiKV accepts empty",
+      "derivation": "Engine returns tikv iff IsTiKV, else tiflash; ValidateStoreEngineKey accepts empty/tikv/tiflash/tiflash_compute"
+    },
+    {
+      "name": "duplicate-first",
+      "labels": [
+        [
+          "engine",
+          ""
+        ],
+        [
+          "engine",
+          "tiflash"
+        ]
+      ],
+      "flags": [
+        true,
+        false,
+        false
+      ],
+      "valid": true,
+      "engine": "tikv",
+      "source": "Source-derived: getStoreLabelValue exact key and first-match return; IsTiKV accepts empty",
+      "derivation": "Engine returns tikv iff IsTiKV, else tiflash; ValidateStoreEngineKey accepts empty/tikv/tiflash/tiflash_compute"
+    }
+  ],
+  "merge": [
+    {
+      "name": "duplicates-case-empty",
+      "origin": [
+        [
+          "Zone",
+          "a"
+        ],
+        [
+          "zone",
+          "b"
+        ],
+        [
+          "empty",
+          ""
+        ]
+      ],
+      "updates": [
+        [
+          "ZONE",
+          "c"
+        ],
+        [
+          "rack",
+          "r"
+        ],
+        [
+          "RACK",
+          "x"
+        ],
+        [
+          "Zone",
+          ""
+        ]
+      ],
+      "expected": [
+        [
+          "zone",
+          "b"
+        ],
+        [
+          "rack",
+          "x"
+        ]
+      ],
+      "source": "Source-derived: pkg/core/store.go MergeLabels clones origin, EqualFold updates first match, appends absent key, filters empty values only after all updates; no existing merge assertions in store_test.go"
+    },
+    {
+      "name": "unicode-simple-fold",
+      "origin": [
+        [
+          "K",
+          "a"
+        ],
+        [
+          "Σ",
+          "a"
+        ],
+        [
+          "ſ",
+          "a"
+        ]
+      ],
+      "updates": [
+        [
+          "k",
+          "b"
+        ],
+        [
+          "ς",
+          "b"
+        ],
+        [
+          "S",
+          "b"
+        ]
+      ],
+      "expected": [
+        [
+          "K",
+          "b"
+        ],
+        [
+          "Σ",
+          "b"
+        ],
+        [
+          "ſ",
+          "b"
+        ]
+      ],
+      "source": "Source-derived: pkg/core/store.go MergeLabels clones origin, EqualFold updates first match, appends absent key, filters empty values only after all updates; no existing merge assertions in store_test.go"
+    },
+    {
+      "name": "empty-key-and-reinsert",
+      "origin": [],
+      "updates": [
+        [
+          "",
+          "x"
+        ],
+        [
+          "rack",
+          ""
+        ],
+        [
+          "RACK",
+          "new"
+        ]
+      ],
+      "expected": [
+        [
+          "",
+          "x"
+        ],
+        [
+          "rack",
+          "new"
+        ]
+      ],
+      "source": "Source-derived: pkg/core/store.go MergeLabels clones origin, EqualFold updates first match, appends absent key, filters empty values only after all updates; no existing merge assertions in store_test.go"
+    },
+    {
+      "name": "empty-input",
+      "origin": [],
+      "updates": [],
+      "expected": [],
+      "source": "Source-derived: pkg/core/store.go MergeLabels clones origin, EqualFold updates first match, appends absent key, filters empty values only after all updates; no existing merge assertions in store_test.go"
+    }
+  ],
+  "additional_sources": [
+    "store_labels_test::core_task_13_lookup_and_absent_meta: StoreInfo.GetLabelValue uses EqualFold first match; getStoreLabelValue exact match; protobuf nil GetLabels yields empty; SetStoreLabels replaces metadata labels.",
+    "store_labels_test::core_task_13_unicode_and_error_escaping: strings.EqualFold delegates to unicode.SimpleFold; Go unicode caseOrbit covers Greek symbol variants, micro sign, sigma, long s, Kelvin and sharp s; no full folding, dotted/dotless I distinct. ValidateStoreEngineKey uses errors.Errorf %q; strconv quote.go appendEscapedRune defines control escapes. These are source-derived, not executed Go scenarios."
+  ],
+  "simple_fold_orbits": [
+    [
+      "K",
+      "k"
+    ],
+    [
+      "S",
+      "s"
+    ],
+    [
+      "k",
+      "K"
+    ],
+    [
+      "s",
+      "ſ"
+    ],
+    [
+      "µ",
+      "Μ"
+    ],
+    [
+      "Å",
+      "å"
+    ],
+    [
+      "ß",
+      "ẞ"
+    ],
+    [
+      "å",
+      "Å"
+    ],
+    [
+      "İ",
+      "İ"
+    ],
+    [
+      "ı",
+      "ı"
+    ],
+    [
+      "ſ",
+      "S"
+    ],
+    [
+      "Ǆ",
+      "ǅ"
+    ],
+    [
+      "ǅ",
+      "ǆ"
+    ],
+    [
+      "ǆ",
+      "Ǆ"
+    ],
+    [
+      "Ǉ",
+      "ǈ"
+    ],
+    [
+      "ǈ",
+      "ǉ"
+    ],
+    [
+      "ǉ",
+      "Ǉ"
+    ],
+    [
+      "Ǌ",
+      "ǋ"
+    ],
+    [
+      "ǋ",
+      "ǌ"
+    ],
+    [
+      "ǌ",
+      "Ǌ"
+    ],
+    [
+      "Ǳ",
+      "ǲ"
+    ],
+    [
+      "ǲ",
+      "ǳ"
+    ],
+    [
+      "ǳ",
+      "Ǳ"
+    ],
+    [
+      "ͅ",
+      "Ι"
+    ],
+    [
+      "Β",
+      "β"
+    ],
+    [
+      "Ε",
+      "ε"
+    ],
+    [
+      "Θ",
+      "θ"
+    ],
+    [
+      "Ι",
+      "ι"
+    ],
+    [
+      "Κ",
+      "κ"
+    ],
+    [
+      "Μ",
+      "μ"
+    ],
+    [
+      "Π",
+      "π"
+    ],
+    [
+      "Ρ",
+      "ρ"
+    ],
+    [
+      "Σ",
+      "ς"
+    ],
+    [
+      "Φ",
+      "φ"
+    ],
+    [
+      "Ω",
+      "ω"
+    ],
+    [
+      "β",
+      "ϐ"
+    ],
+    [
+      "ε",
+      "ϵ"
+    ],
+    [
+      "θ",
+      "ϑ"
+    ],
+    [
+      "ι",
+      "ι"
+    ],
+    [
+      "κ",
+      "ϰ"
+    ],
+    [
+      "μ",
+      "µ"
+    ],
+    [
+      "π",
+      "ϖ"
+    ],
+    [
+      "ρ",
+      "ϱ"
+    ],
+    [
+      "ς",
+      "σ"
+    ],
+    [
+      "σ",
+      "Σ"
+    ],
+    [
+      "φ",
+      "ϕ"
+    ],
+    [
+      "ω",
+      "Ω"
+    ],
+    [
+      "ϐ",
+      "Β"
+    ],
+    [
+      "ϑ",
+      "ϴ"
+    ],
+    [
+      "ϕ",
+      "Φ"
+    ],
+    [
+      "ϖ",
+      "Π"
+    ],
+    [
+      "ϰ",
+      "Κ"
+    ],
+    [
+      "ϱ",
+      "Ρ"
+    ],
+    [
+      "ϴ",
+      "Θ"
+    ],
+    [
+      "ϵ",
+      "Ε"
+    ],
+    [
+      "В",
+      "в"
+    ],
+    [
+      "Д",
+      "д"
+    ],
+    [
+      "О",
+      "о"
+    ],
+    [
+      "С",
+      "с"
+    ],
+    [
+      "Т",
+      "т"
+    ],
+    [
+      "Ъ",
+      "ъ"
+    ],
+    [
+      "в",
+      "ᲀ"
+    ],
+    [
+      "д",
+      "ᲁ"
+    ],
+    [
+      "о",
+      "ᲂ"
+    ],
+    [
+      "с",
+      "ᲃ"
+    ],
+    [
+      "т",
+      "ᲄ"
+    ],
+    [
+      "ъ",
+      "ᲆ"
+    ],
+    [
+      "Ѣ",
+      "ѣ"
+    ],
+    [
+      "ѣ",
+      "ᲇ"
+    ],
+    [
+      "ᲀ",
+      "В"
+    ],
+    [
+      "ᲁ",
+      "Д"
+    ],
+    [
+      "ᲂ",
+      "О"
+    ],
+    [
+      "ᲃ",
+      "С"
+    ],
+    [
+      "ᲄ",
+      "ᲅ"
+    ],
+    [
+      "ᲅ",
+      "Т"
+    ],
+    [
+      "ᲆ",
+      "Ъ"
+    ],
+    [
+      "ᲇ",
+      "Ѣ"
+    ],
+    [
+      "ᲈ",
+      "Ꙋ"
+    ],
+    [
+      "Ṡ",
+      "ṡ"
+    ],
+    [
+      "ṡ",
+      "ẛ"
+    ],
+    [
+      "ẛ",
+      "Ṡ"
+    ],
+    [
+      "ẞ",
+      "ß"
+    ],
+    [
+      "ι",
+      "ͅ"
+    ],
+    [
+      "Ω",
+      "Ω"
+    ],
+    [
+      "K",
+      "K"
+    ],
+    [
+      "Å",
+      "Å"
+    ],
+    [
+      "Ꙋ",
+      "ꙋ"
+    ],
+    [
+      "ꙋ",
+      "ᲈ"
+    ]
+  ],
+  "simple_fold_source": "Read-only Go toolchain src/unicode/tables.go caseOrbit, used by strings.EqualFold through unicode.SimpleFold; source-derived, not executed Go differential"
+}

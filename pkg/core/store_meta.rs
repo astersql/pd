@@ -4,6 +4,7 @@
 /// Store metadata preserves values without validating addresses or versions.
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub struct StoreMeta {
+    pub labels: Vec<super::StoreLabel>,
     pub state: super::StoreState,
     pub node_state: super::NodeState,
     pub physically_destroyed: bool,

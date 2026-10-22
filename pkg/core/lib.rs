@@ -28,3 +28,9 @@ mod store_state_test;
 
 pub mod store_state;
 pub use store_state::*;
+
+pub mod store_labels;
+pub use store_labels::*;
+#[cfg(test)]
+#[path = "store_labels_test.rs"]
+mod store_labels_test;
