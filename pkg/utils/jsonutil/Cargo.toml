@@ -11,3 +11,4 @@ path = "lib.rs"
 [dependencies]
 serde_json.workspace = true
 astersql-pd-reflectutil.workspace = true
+serde.workspace = true

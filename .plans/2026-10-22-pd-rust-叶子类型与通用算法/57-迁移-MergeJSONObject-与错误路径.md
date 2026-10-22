@@ -2,7 +2,7 @@
 
 批次：【批次 14】依赖批次 13
 
-状态：未开始
+状态：已完成，待回归
 
 目的：对象合并、嵌套字段、非对象输入与序列化失败返回明确错误
 
@@ -67,3 +67,16 @@
 
 完成 `pkg/utils/jsonutil/lib.rs` 中的本任务行为和 `pkg/utils/jsonutil/jsonutil_test.rs` 的独立测试；只在上述红绿证据、crate 回归和差异审查齐全后标记完成。
 
+
+## 执行证据（2026-10-22）
+
+- 前置 jsonutil AddKeyValue 提交 d10dd1f6f 已存在；reflectutil 字段契约已实现。
+- 实际槽位 3；CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-3；验证结束已释放锁、保留缓存。
+- 红灯：cargo test --locked -p astersql-pd-jsonutil merge_json_object -- --nocapture，退出 101，E0425 缺少 merge_json_object，0 个测试执行。新增 serde 依赖后先更新锁文件；无关版本变动已恢复。
+- 绿灯：同一聚焦命令退出 0，3 个有效测试通过；cargo test --locked -p astersql-pd-jsonutil --lib 退出 0，5 个测试通过。
+- cargo fmt --all、cargo fmt --all -- --check、cargo metadata --format-version 1 --no-deps、cargo check --workspace --locked、cargo tree --locked -p astersql-pd-jsonutil 均退出 0。依赖仅 reflectutil、serde、serde_json 及其叶子依赖。
+- Go oracle：本包无 failpoint，go test ./pkg/utils/jsonutil -run '^TestJSONUtil$' -count=1 退出 0，1 个测试通过；与固定提交 42a0da6 的 MergeJSONObject 逐项对照。
+- 覆盖嵌套部分更新、未知字段忽略、同值 found、空对象、null、非对象输入/目的地、畸形 JSON、尾随输入及真实 Serialize 错误传播。
+- 边界：沿用 reflectutil 的序列化字段模型；Go 忽略 marshal 错误，本任务显式返回；Rust 在失败时保留目的地，Go 类型错误可能部分更新，已在 API 文档明确。
+- git diff --check 退出 0。
+- 待回归：cargo test --workspace --locked 退出 101，其他并发迁移的 pkg/utils/typeutil/time_test.rs 缺少 TimeOptional，pkg/movingaverage/moving_average_test.rs 缺少 Hma。生产 workspace check 已通过；不覆盖正在进行的其他任务，保留本任务供整体验证。

@@ -92,6 +92,7 @@ name = "astersql-pd-jsonutil"
 version = "0.1.0"
 dependencies = [
  "astersql-pd-reflectutil",
+ "serde",
  "serde_json",
 ]
 
