@@ -1,0 +1,8 @@
+{
+ "sources": {"baseline":"0820f0b67b0e49b289b84fdf66b7b8fb178afe82; current region_tree.go unchanged", "search":"region_tree.go find/search; region.go contain; TestRegionTree asserts empty, a, b, c, d on [a,b),[c,d)", "prev":"region_tree.go searchPrev requires containing region and previous.end == current.start; TestRegionTree asserts gap c -> nil and continuous b -> A, c -> B", "batch":"searchByKeys/searchByPrevKeys map each key independently, preserving nils, duplicates and order; source-derived extension, no Go batch assertion claimed", "adjacent":"getAdjacentItem skips equal start keys, chooses strict predecessor/successor even for absent pivot; TestRegionTree adjacency A/B/absent C/D", "binary":"regionItem.Less uses bytes.Compare; contain uses unsigned half-open comparison and empty end infinity; TestRegionItem covers ASCII; binary and all-key extensions source-derived"},
+ "cases": [
+ {"name":"empty", "regions":[],"keys":["","a"],"search":[null,null],"prev":[null,null]},
+ {"name":"gap", "regions":[[1,"a","b"],[3,"c","d"]],"keys":["","a","b","c","d","cc","c"],"search":[null,1,null,3,null,3,3],"prev":[null,null,null,null,null,null,null]},
+ {"name":"continuous", "regions":[[4,"d",""],[1,"a","b"],[2,"b","c"],[3,"c","d"]],"keys":["c","b","a","d","z","c"],"search":[3,2,1,4,4,3],"prev":[2,1,null,3,3,2]}
+ ]
+}
