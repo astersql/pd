@@ -1,0 +1,94 @@
+{
+  "existing_test": "pkg/response/region_test.go TestEasyJSONCompatibility checks peer/region JSON only; no Store state assertions",
+  "heartbeat": 100000000000,
+  "cases": [
+    {
+      "name": "healthy",
+      "state": 0,
+      "elapsed": 0,
+      "maxdown": 60000000000,
+      "expected": "Up",
+      "source": "pkg/response/store.go BuildStoreInfo: legacy Up guard; strict DownTime > MaxStoreDownTime then IsDisconnected. pkg/core/store.go DownTime and IsDisconnected: elapsed > 20s. Derived from source, not a Go runtime differential."
+    },
+    {
+      "name": "disconnect_equal",
+      "state": 0,
+      "elapsed": 20000000000,
+      "maxdown": 60000000000,
+      "expected": "Up",
+      "source": "pkg/response/store.go BuildStoreInfo: legacy Up guard; strict DownTime > MaxStoreDownTime then IsDisconnected. pkg/core/store.go DownTime and IsDisconnected: elapsed > 20s. Derived from source, not a Go runtime differential."
+    },
+    {
+      "name": "disconnect_above",
+      "state": 0,
+      "elapsed": 20000000001,
+      "maxdown": 60000000000,
+      "expected": "Disconnected",
+      "source": "pkg/response/store.go BuildStoreInfo: legacy Up guard; strict DownTime > MaxStoreDownTime then IsDisconnected. pkg/core/store.go DownTime and IsDisconnected: elapsed > 20s. Derived from source, not a Go runtime differential."
+    },
+    {
+      "name": "down_equal",
+      "state": 0,
+      "elapsed": 60000000000,
+      "maxdown": 60000000000,
+      "expected": "Disconnected",
+      "source": "pkg/response/store.go BuildStoreInfo: legacy Up guard; strict DownTime > MaxStoreDownTime then IsDisconnected. pkg/core/store.go DownTime and IsDisconnected: elapsed > 20s. Derived from source, not a Go runtime differential."
+    },
+    {
+      "name": "down_above",
+      "state": 0,
+      "elapsed": 60000000001,
+      "maxdown": 60000000000,
+      "expected": "Down",
+      "source": "pkg/response/store.go BuildStoreInfo: legacy Up guard; strict DownTime > MaxStoreDownTime then IsDisconnected. pkg/core/store.go DownTime and IsDisconnected: elapsed > 20s. Derived from source, not a Go runtime differential."
+    },
+    {
+      "name": "down_before_disconnect",
+      "state": 0,
+      "elapsed": 11,
+      "maxdown": 10,
+      "expected": "Down",
+      "source": "pkg/response/store.go BuildStoreInfo: legacy Up guard; strict DownTime > MaxStoreDownTime then IsDisconnected. pkg/core/store.go DownTime and IsDisconnected: elapsed > 20s. Derived from source, not a Go runtime differential."
+    },
+    {
+      "name": "future",
+      "state": 0,
+      "elapsed": -1,
+      "maxdown": 0,
+      "expected": "Up",
+      "source": "pkg/response/store.go BuildStoreInfo: legacy Up guard; strict DownTime > MaxStoreDownTime then IsDisconnected. pkg/core/store.go DownTime and IsDisconnected: elapsed > 20s. Derived from source, not a Go runtime differential."
+    },
+    {
+      "name": "negative_threshold",
+      "state": 0,
+      "elapsed": 0,
+      "maxdown": -1,
+      "expected": "Down",
+      "source": "pkg/response/store.go BuildStoreInfo: legacy Up guard; strict DownTime > MaxStoreDownTime then IsDisconnected. pkg/core/store.go DownTime and IsDisconnected: elapsed > 20s. Derived from source, not a Go runtime differential."
+    },
+    {
+      "name": "offline",
+      "state": 1,
+      "elapsed": 100000000000,
+      "maxdown": 0,
+      "expected": "Offline",
+      "source": "pkg/response/store.go BuildStoreInfo: legacy Up guard; strict DownTime > MaxStoreDownTime then IsDisconnected. pkg/core/store.go DownTime and IsDisconnected: elapsed > 20s. Derived from source, not a Go runtime differential."
+    },
+    {
+      "name": "tombstone",
+      "state": 2,
+      "elapsed": 100000000000,
+      "maxdown": 0,
+      "expected": "Tombstone",
+      "source": "pkg/response/store.go BuildStoreInfo: legacy Up guard; strict DownTime > MaxStoreDownTime then IsDisconnected. pkg/core/store.go DownTime and IsDisconnected: elapsed > 20s. Derived from source, not a Go runtime differential."
+    },
+    {
+      "name": "unknown",
+      "state": 99,
+      "elapsed": 100000000000,
+      "maxdown": 0,
+      "expected": "99",
+      "source": "pkg/response/store.go BuildStoreInfo: legacy Up guard; strict DownTime > MaxStoreDownTime then IsDisconnected. pkg/core/store.go DownTime and IsDisconnected: elapsed > 20s. Derived from source, not a Go runtime differential."
+    }
+  ]
+}

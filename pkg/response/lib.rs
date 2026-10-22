@@ -21,3 +21,9 @@ pub use store::*;
 #[cfg(test)]
 #[path = "store_test.rs"]
 mod store_test;
+
+pub mod store_state;
+pub use store_state::*;
+#[cfg(test)]
+#[path = "store_state_test.rs"]
+mod store_state_test;
