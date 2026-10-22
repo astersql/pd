@@ -54,3 +54,72 @@ fn key_range_codec_and_overlap() {
         assert_eq!(b.is_adjacent(&a), adjacent);
     }
 }
+
+// Expected values follow keyrange.go, including preservation of non-adjacent overlaps.
+#[test]
+fn sort_deduce_and_merge() {
+    use crate::KeyRanges;
+    fn ranges(pairs: &[(&str, &str)]) -> Vec<KeyRange> {
+        pairs.iter().map(|(a, b)| KeyRange::new(a, b)).collect()
+    }
+    let cases: &[(&[(&str, &str)], &[(&str, &str)], &[(&str, &str)])] = &[
+        (&[], &[], &[]),
+        (&[("a", "b")], &[("a", "b")], &[("a", "b")]),
+        (
+            &[("c", "d"), ("a", "b")],
+            &[("a", "b"), ("c", "d")],
+            &[("c", "d"), ("a", "b")],
+        ),
+        (
+            &[("b", "c"), ("a", "b"), ("c", "d")],
+            &[("a", "d")],
+            &[("b", "c"), ("a", "b"), ("c", "d")],
+        ),
+        (
+            &[("a", "c"), ("b", "d")],
+            &[("a", "c"), ("b", "d")],
+            &[("a", "c"), ("b", "d")],
+        ),
+        (
+            &[("a", "c"), ("a", "c")],
+            &[("a", "c"), ("a", "c")],
+            &[("a", "c"), ("a", "c")],
+        ),
+        (
+            &[("", "b"), ("b", "c"), ("c", "")],
+            &[("", "")],
+            &[("", "")],
+        ),
+        (
+            &[("a", ""), ("b", "c")],
+            &[("a", ""), ("b", "c")],
+            &[("a", ""), ("b", "c")],
+        ),
+        // IsAdjacent also compares the reverse boundaries, including empty bytes.
+        (
+            &[("", "a"), ("z", "")],
+            &[("", "")],
+            &[("", "a"), ("z", "")],
+        ),
+        (
+            &[("a", "c"), ("c", "d"), ("f", "g")],
+            &[("a", "d"), ("f", "g")],
+            &[("a", "d"), ("f", "g")],
+        ),
+    ];
+    for &(input, sorted, merged) in cases {
+        let mut collection = KeyRanges::new(ranges(input));
+        collection.sort_and_deduce();
+        assert_eq!(collection.ranges(), ranges(sorted), "sort {input:?}");
+        let mut collection = KeyRanges::new(ranges(input));
+        collection.merge();
+        assert_eq!(collection.ranges(), ranges(merged), "merge {input:?}");
+    }
+    let mut bytes = KeyRanges::new(vec![
+        KeyRange::new([255], []),
+        KeyRange::new([0], [128]),
+        KeyRange::new([128], [255]),
+    ]);
+    bytes.sort_and_deduce();
+    assert_eq!(bytes.ranges(), &[KeyRange::new([0], [])]);
+}

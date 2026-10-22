@@ -2,6 +2,8 @@
 //! Byte-key utilities preserving Go keyutil contracts.
 mod key_range;
 pub use key_range::KeyRange;
+mod key_ranges;
+pub use key_ranges::KeyRanges;
 mod util;
 pub use util::*;
 
