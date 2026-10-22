@@ -1,5 +1,5 @@
 // Copyright 2026 AsterSQL.
-//! Queries over non-overlapping half-open byte-key ranges.
+//! Queries and updates over non-overlapping half-open byte-key ranges.
 
 use astersql_pd_btree::BTree;
 
@@ -16,14 +16,50 @@ pub trait RangeItem: Clone {
 /// A range index backed by the canonical order-statistics B-tree.
 pub struct RangeTree<T> {
     tree: BTree<T, fn(&T, &T) -> bool>,
+    factory: Box<DebrisFactory<T>>,
 }
 
+/// Produces remaining pieces of an old range when a new range covers it.
+pub type DebrisFactory<T> = dyn FnMut(&[u8], &[u8], &T) -> Vec<T>;
+
 impl<T: RangeItem> RangeTree<T> {
-    /// Creates an empty tree. Panics when `degree` is less than two.
+    /// Creates an empty tree whose updates discard overlapping ranges entirely.
+    /// Panics when `degree` is less than two.
     pub fn new(degree: usize) -> Self {
+        Self::with_factory(degree, |_, _, _| Vec::new())
+    }
+
+    /// Creates an empty tree with a factory for preserving old range fragments.
+    /// The factory receives the new start/end and each overlapping old item.
+    /// Panics when `degree` is less than two.
+    pub fn with_factory(
+        degree: usize,
+        factory: impl FnMut(&[u8], &[u8], &T) -> Vec<T> + 'static,
+    ) -> Self {
         Self {
             tree: BTree::new(degree, T::less),
+            factory: Box::new(factory),
         }
+    }
+
+    /// Replaces overlaps, retaining valid factory fragments, then inserts `item`.
+    /// Returns the original overlaps in ascending start-key order. Fragments
+    /// must have start < end, or a nonempty start with an unbounded empty end.
+    /// The factory is responsible for keeping fragments outside the new range.
+    pub fn update(&mut self, item: T) -> Vec<T> {
+        let overlaps = self.get_overlaps(&item);
+        for old in &overlaps {
+            self.tree.delete(old);
+            for child in (self.factory)(item.start_key(), item.end_key(), old) {
+                if child.start_key() < child.end_key()
+                    || (!child.start_key().is_empty() && child.end_key().is_empty())
+                {
+                    self.tree.replace_or_insert(child);
+                }
+            }
+        }
+        self.tree.replace_or_insert(item);
+        overlaps
     }
 
     /// Builds an index from already non-overlapping ranges.

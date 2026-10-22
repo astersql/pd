@@ -103,3 +103,112 @@ fn overlap_query() {
         );
     }
 }
+
+fn debris(start: &[u8], end: &[u8], old: &Item) -> Vec<Item> {
+    let mut pieces = Vec::new();
+    if old.start_key() < start {
+        pieces.push(item(old.start_key(), start));
+    }
+    if !end.is_empty() && (old.end_key().is_empty() || end < old.end_key()) {
+        pieces.push(item(end, old.end_key()));
+    }
+    pieces
+}
+
+fn contents(tree: &RangeTree<Item>) -> Vec<Item> {
+    (0..tree.len())
+        .map(|i| tree.get_at(i as isize).unwrap().clone())
+        .collect()
+}
+
+#[test]
+fn update_with_debris() {
+    let mut tree = RangeTree::with_factory(2, debris);
+    assert!(tree.update(item(b"002", b"100")).is_empty());
+    assert!(tree.update(item(b"100", b"200")).is_empty());
+    for (new, overlaps, expected) in [
+        (
+            item(b"010", b"090"),
+            vec![item(b"002", b"100")],
+            vec![
+                item(b"002", b"010"),
+                item(b"010", b"090"),
+                item(b"090", b"100"),
+                item(b"100", b"200"),
+            ],
+        ),
+        (
+            item(b"001", b"080"),
+            vec![item(b"002", b"010"), item(b"010", b"090")],
+            vec![
+                item(b"001", b"080"),
+                item(b"080", b"090"),
+                item(b"090", b"100"),
+                item(b"100", b"200"),
+            ],
+        ),
+        (
+            item(b"001", b"120"),
+            vec![
+                item(b"001", b"080"),
+                item(b"080", b"090"),
+                item(b"090", b"100"),
+                item(b"100", b"200"),
+            ],
+            vec![item(b"001", b"120"), item(b"120", b"200")],
+        ),
+    ] {
+        assert_eq!(tree.update(new), overlaps);
+        assert_eq!(contents(&tree), expected);
+    }
+}
+
+#[test]
+fn update_with_debris_unbounded_and_many_overlaps() {
+    let mut tree = RangeTree::with_factory(2, debris);
+    tree.update(item(b"", b""));
+    assert_eq!(tree.update(item(b"b", b"d")), vec![item(b"", b"")]);
+    assert_eq!(
+        contents(&tree),
+        vec![item(b"", b"b"), item(b"b", b"d"), item(b"d", b"")]
+    );
+    assert_eq!(
+        tree.update(item(b"c", b"")),
+        vec![item(b"b", b"d"), item(b"d", b"")]
+    );
+    assert_eq!(
+        contents(&tree),
+        vec![item(b"", b"b"), item(b"b", b"c"), item(b"c", b"")]
+    );
+    let previous = contents(&tree);
+    assert_eq!(tree.update(item(b"", b"")), previous);
+    assert_eq!(contents(&tree), vec![item(b"", b"")]);
+
+    let mut tree = RangeTree::with_factory(2, debris);
+    for i in 1..100u8 {
+        tree.update(item(&[i], &[i + 1]));
+    }
+    let previous = contents(&tree);
+    assert_eq!(tree.update(item(&[0], &[101])), previous);
+    assert_eq!(contents(&tree), vec![item(&[0], &[101])]);
+}
+
+#[test]
+fn update_with_debris_filters_invalid_children_and_inserts_new_last() {
+    let mut tree = RangeTree::with_factory(2, |_: &[u8], _: &[u8], _: &Item| {
+        vec![
+            item(b"a", b"a"),
+            item(b"z", b"a"),
+            item(b"", b""),
+            item(b"", b"b"),
+            item(b"z", b""),
+            item(b"b", b"c"),
+        ]
+    });
+    tree.update(item(b"a", b"y"));
+    assert_eq!(tree.update(item(b"b", b"x")), vec![item(b"a", b"y")]);
+    assert_eq!(
+        contents(&tree),
+        vec![item(b"", b"b"), item(b"b", b"x"), item(b"z", b"")]
+    );
+}
