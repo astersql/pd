@@ -13,3 +13,8 @@ mod limiter;
 pub use limiter::{DoneFunc, Limiter, UpdateStatus};
 #[cfg(test)]
 mod limiter_test;
+
+mod controller;
+pub use controller::{Controller, ControllerDone, ControllerOption};
+#[cfg(test)]
+mod controller_test;
