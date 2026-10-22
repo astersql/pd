@@ -75,6 +75,7 @@ async fn singleflight_coalesce_and_order() {
         assert_eq!(follower.await.unwrap(), Ok(102));
     }
     assert_eq!(executions.load(Ordering::SeqCst), 2);
+    assert_eq!(flight.exec_count(), 2);
 }
 
 // Polling once registers a waiter without relying on scheduler timing.
@@ -192,4 +193,100 @@ async fn singleflight_cancellation_noncooperative_execution_keeps_order() {
     register(next.as_mut()).await;
     release_tx.send(()).unwrap();
     assert_eq!(next.await, Ok(2));
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn singleflight_randomized() {
+    tokio::time::timeout(std::time::Duration::from_secs(20), async {
+        // Count completed failures too, but never count an execution still in flight.
+        let flight = OrderedSingleFlight::<usize, ()>::new();
+        let (started_tx, started_rx) = oneshot::channel();
+        let (finish_tx, finish_rx) = oneshot::channel();
+        let mut call = Box::pin(flight.call(move || async move {
+            started_tx.send(()).unwrap();
+            finish_rx.await.unwrap();
+            Err(())
+        }));
+        register(call.as_mut()).await;
+        started_rx.await.unwrap();
+        assert_eq!(flight.exec_count(), 0);
+        finish_tx.send(()).unwrap();
+        assert_eq!(call.await, Err(()));
+        assert_eq!(flight.exec_count(), 1);
+
+        for seed in 1..=8_u64 {
+            let flight = Arc::new(OrderedSingleFlight::<usize, ()>::new());
+            let executions = Arc::new(AtomicUsize::new(0));
+            let active = Arc::new(AtomicUsize::new(0));
+            let clock = Arc::new(AtomicUsize::new(0));
+            let start = Arc::new(Barrier::new(11));
+            assert_eq!(flight.exec_count(), 0);
+            let mut callers = Vec::new();
+            for worker in 0..10 {
+                let (flight, executions, active, clock, start) = (
+                    flight.clone(),
+                    executions.clone(),
+                    active.clone(),
+                    clock.clone(),
+                    start.clone(),
+                );
+                callers.push(tokio::spawn(async move {
+                    let mut random = seed * 31 + worker;
+                    start.wait().await;
+                    for _ in 0..100 {
+                        random = random.wrapping_mul(6364136223846793005).wrapping_add(1);
+                        let before = clock.fetch_add(1, Ordering::SeqCst);
+                        let (runs, running, sequence) =
+                            (executions.clone(), active.clone(), clock.clone());
+                        let witness = Arc::new(());
+                        let released = Arc::downgrade(&witness);
+                        let mut call =
+                            Box::pin(flight.call_cancellable(move |cancel| async move {
+                                let _witness = witness;
+                                assert_eq!(running.fetch_add(1, Ordering::SeqCst), 0);
+                                let value = sequence.fetch_add(1, Ordering::SeqCst);
+                                for _ in 0..(random % 7 + 1) {
+                                    tokio::task::yield_now().await;
+                                }
+                                let result = if random % 3 == 0 && cancel.is_cancelled() {
+                                    Err(())
+                                } else {
+                                    Ok(value)
+                                };
+                                runs.fetch_add(1, Ordering::SeqCst);
+                                assert_eq!(running.fetch_sub(1, Ordering::SeqCst), 1);
+                                result
+                            }));
+                        if random % 10 == 0 {
+                            register(call.as_mut()).await;
+                            drop(call);
+                        } else {
+                            let value = call.await.unwrap();
+                            assert!(value >= before);
+                            assert!(value <= clock.load(Ordering::SeqCst));
+                        }
+                        // Each operation capture must eventually be released, including coalesced calls.
+                        while released.upgrade().is_some() {
+                            tokio::task::yield_now().await;
+                        }
+                    }
+                }));
+            }
+            start.wait().await;
+            for caller in callers {
+                caller.await.unwrap();
+            }
+            // A final ordered call drains even executions whose last waiter was cancelled.
+            assert_eq!(
+                flight.call(|| async { Ok(usize::MAX) }).await,
+                Ok(usize::MAX)
+            );
+            assert_eq!(active.load(Ordering::SeqCst), 0);
+            assert_eq!(flight.exec_count(), executions.load(Ordering::SeqCst) + 1);
+            assert!(flight.exec_count() > 1);
+            assert!(Arc::try_unwrap(flight).is_ok());
+        }
+    })
+    .await
+    .expect("randomized callers or executions leaked or deadlocked");
 }

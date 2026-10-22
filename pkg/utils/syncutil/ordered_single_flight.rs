@@ -2,7 +2,10 @@
 
 use std::{
     future::Future,
-    sync::{Arc, Mutex},
+    sync::{
+        Arc, Mutex,
+        atomic::{AtomicUsize, Ordering},
+    },
 };
 
 use tokio::sync::{Semaphore, watch};
@@ -118,6 +121,7 @@ struct State<T, E> {
 pub struct OrderedSingleFlight<T, E> {
     state: Mutex<State<T, E>>,
     token: Arc<Semaphore>,
+    exec_counter: Arc<AtomicUsize>,
 }
 
 impl<T, E> OrderedSingleFlight<T, E>
@@ -130,7 +134,13 @@ where
         Self {
             state: Mutex::new(State { pending: None }),
             token: Arc::new(Semaphore::new(1)),
+            exec_counter: Arc::new(AtomicUsize::new(0)),
         }
+    }
+
+    /// Returns the accumulated number of completed inner executions.
+    pub fn exec_count(&self) -> usize {
+        self.exec_counter.load(Ordering::SeqCst)
     }
 
     /// Runs `operation`, or shares the result of the pending execution.
@@ -195,8 +205,10 @@ where
         }
 
         let executing_task = Arc::clone(&task);
+        let exec_counter = Arc::clone(&self.exec_counter);
         tokio::spawn(async move {
             let result = operation(executing_task.cancellation.clone()).await;
+            exec_counter.fetch_add(1, Ordering::SeqCst);
             executing_task.finish(result);
             drop(permit);
         });
