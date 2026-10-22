@@ -116,3 +116,9 @@ mod policy_test;
 
 mod policy;
 pub use policy::RollingPolicy;
+
+#[cfg(test)]
+mod counter_test;
+
+mod counter;
+pub use counter::{RollingCounter, RollingCounterOpts};
