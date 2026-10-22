@@ -1,0 +1,184 @@
+[
+  {
+    "action": "take",
+    "token": 100,
+    "typ": 2,
+    "level": 0,
+    "result": true,
+    "used": [
+      100,
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "action": "take",
+    "token": 50,
+    "typ": 2,
+    "level": 1,
+    "result": true,
+    "used": [
+      100,
+      50,
+      0,
+      0
+    ]
+  },
+  {
+    "action": "take",
+    "token": 25,
+    "typ": 2,
+    "level": 2,
+    "result": true,
+    "used": [
+      100,
+      50,
+      25,
+      0
+    ]
+  },
+  {
+    "action": "take",
+    "token": 12,
+    "typ": 2,
+    "level": 3,
+    "result": true,
+    "used": [
+      100,
+      50,
+      25,
+      12
+    ]
+  },
+  {
+    "action": "take",
+    "token": 1,
+    "typ": 2,
+    "level": 3,
+    "result": false,
+    "used": [
+      100,
+      50,
+      25,
+      12
+    ]
+  },
+  {
+    "action": "available",
+    "token": 0,
+    "typ": 2,
+    "level": 3,
+    "result": false,
+    "used": [
+      100,
+      50,
+      25,
+      12
+    ]
+  },
+  {
+    "action": "ack",
+    "token": 20,
+    "typ": 2,
+    "level": 0,
+    "result": false,
+    "used": [
+      100,
+      50,
+      17,
+      0
+    ]
+  },
+  {
+    "action": "available",
+    "token": 999,
+    "typ": 2,
+    "level": 3,
+    "result": true,
+    "used": [
+      100,
+      50,
+      17,
+      0
+    ]
+  },
+  {
+    "action": "take",
+    "token": 999,
+    "typ": 0,
+    "level": 3,
+    "result": true,
+    "used": [
+      100,
+      50,
+      17,
+      0
+    ]
+  },
+  {
+    "action": "ack",
+    "token": 999,
+    "typ": 1,
+    "level": 0,
+    "result": false,
+    "used": [
+      100,
+      50,
+      17,
+      0
+    ]
+  },
+  {
+    "action": "ack",
+    "token": 999,
+    "typ": 2,
+    "level": 0,
+    "result": false,
+    "used": [
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "action": "take",
+    "token": 91,
+    "typ": 2,
+    "level": 0,
+    "result": true,
+    "used": [
+      91,
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "action": "available",
+    "token": 0,
+    "typ": 2,
+    "level": 0,
+    "result": false,
+    "used": [
+      91,
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "action": "available",
+    "token": 0,
+    "typ": 2,
+    "level": 1,
+    "result": true,
+    "used": [
+      91,
+      0,
+      0,
+      0
+    ]
+  }
+]

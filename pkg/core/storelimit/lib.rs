@@ -27,3 +27,10 @@ mod window_test;
 
 mod window;
 pub use window::Window;
+
+#[cfg(test)]
+#[path = "sliding_windows_test.rs"]
+mod sliding_windows_test;
+
+mod sliding_windows;
+pub use sliding_windows::SlidingWindows;
