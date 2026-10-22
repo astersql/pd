@@ -117,3 +117,34 @@ fn core_task_46_shared_owners_preserve_newest_version() {
         33
     );
 }
+
+#[test]
+fn core_task_68_combined_put_updates_roles_but_root_only_does_not() {
+    let mut regions = RegionsInfo::new();
+    let peer = crate::Peer {
+        id: 1,
+        store_id: 7,
+        ..Default::default()
+    };
+    let region = Arc::new(RegionInfo::new(
+        crate::RegionMeta {
+            id: 1,
+            peers: vec![peer.clone()],
+            ..Default::default()
+        },
+        Some(peer),
+        vec![],
+        vec![],
+    ));
+    regions.atomic_check_and_put_region(region.clone()).unwrap();
+    assert_eq!(regions.store_role_count(7, crate::RegionRole::Leader), 1);
+    regions.reset_region_cache();
+    regions.check_and_put_region(region.clone());
+    assert_eq!(regions.store_role_count(7, crate::RegionRole::Leader), 1);
+    regions.reset_region_cache();
+    regions.put_region(region.clone());
+    assert_eq!(regions.store_role_count(7, crate::RegionRole::Leader), 1);
+    regions.reset_region_cache();
+    regions.check_and_put_root_tree(region).unwrap();
+    assert_eq!(regions.store_role_count(7, crate::RegionRole::Leader), 0);
+}

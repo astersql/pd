@@ -4,6 +4,13 @@ use crate::{RegionInfo, RegionsInfo, StaleRegionError};
 use std::sync::Arc;
 
 impl RegionsInfo {
+    /// Commit root and store-role indexes without a staleness check.
+    pub fn put_region(&mut self, region: Arc<RegionInfo>) -> Vec<Arc<RegionInfo>> {
+        let (origin, overlaps, changed) = self.set_region(region.clone());
+        self.update_sub_tree(region, origin.as_deref(), &overlaps, changed);
+        overlaps
+    }
+
     /// Checks the current root and commits without releasing exclusive access.
     /// Returns evicted regions in key order, excluding the same-ID origin.
     pub fn check_and_put_root_tree(
@@ -14,19 +21,19 @@ impl RegionsInfo {
         Ok(self.set_region(region).1)
     }
 
-    /// Atomically validates and writes the root indexes.
-    /// Store-role subtree maintenance is a separate domain operation.
+    /// Validate and commit both root and store-role indexes under exclusive access.
     pub fn atomic_check_and_put_region(
         &mut self,
         region: Arc<RegionInfo>,
     ) -> Result<Vec<Arc<RegionInfo>>, StaleRegionError> {
-        self.check_and_put_root_tree(region)
+        self.pre_check_put_region(&region).2?;
+        Ok(self.put_region(region))
     }
 
     /// Returns evictions on success or the incoming region on stale rejection,
     /// matching the legacy Go entry point's deletion-candidate contract.
     pub fn check_and_put_region(&mut self, region: Arc<RegionInfo>) -> Vec<Arc<RegionInfo>> {
-        self.check_and_put_root_tree(region.clone())
+        self.atomic_check_and_put_region(region.clone())
             .unwrap_or_else(|_| vec![region])
     }
 }
