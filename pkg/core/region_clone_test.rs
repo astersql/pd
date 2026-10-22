@@ -111,3 +111,72 @@ fn core_task_29_epoch_boundaries() {
     let wrapped = zero.clone_with([RegionOption::IncVersion, RegionOption::IncConfVer]);
     assert_eq!(wrapped.meta().epoch, Some(RegionEpoch::default()));
 }
+
+#[test]
+fn core_task_68_clone_option_coverage() {
+    let peer = |id, store_id| Peer {
+        id,
+        store_id,
+        ..Default::default()
+    };
+    let r = RegionInfo::new(
+        RegionMeta {
+            peers: vec![peer(1, 10), peer(2, 20)],
+            ..Default::default()
+        },
+        None,
+        vec![],
+        vec![],
+    );
+    let copy = r.clone_with([
+        RegionOption::RegionId(9),
+        RegionOption::PeerIds(vec![7]), // mismatch is ignored
+        RegionOption::PeerIds(vec![3, 4]),
+        RegionOption::Witnesses(vec![3]),
+        RegionOption::Learners(vec![peer(4, 21)]),
+        RegionOption::Role(3, PeerRole::IncomingVoter),
+        RegionOption::ConfVer(5),
+        RegionOption::Version(8),
+        RegionOption::DownPeers(vec![crate::DownPeer {
+            peer: peer(4, 21),
+            down_seconds: 7,
+        }]),
+        RegionOption::PendingPeers(vec![peer(4, 21), peer(3, 10)]),
+    ]);
+    assert_eq!(copy.meta().id, 9);
+    assert_eq!(
+        copy.meta().epoch,
+        Some(crate::RegionEpoch {
+            conf_ver: 5,
+            version: 8
+        })
+    );
+    assert_eq!(copy.witnesses()[0].id, 3);
+    assert_eq!(copy.voters()[0].role, PeerRole::IncomingVoter);
+    assert_eq!(
+        (copy.learners()[0].id, copy.learners()[0].store_id),
+        (4, 21)
+    );
+    assert!(!copy.learners()[0].is_witness);
+    assert_eq!(copy.pending_peers()[0].id, 3);
+    assert_eq!(copy.down_peers()[0].down_seconds, 7);
+    assert_eq!(r.meta().id, 0);
+    assert_eq!(r.meta().peers[0].id, 1);
+    assert!(r.meta().epoch.is_none());
+    assert_eq!(
+        r.clone_with([RegionOption::ConfVer(5)])
+            .meta()
+            .epoch
+            .unwrap()
+            .version,
+        1
+    );
+    assert_eq!(
+        r.clone_with([RegionOption::Version(8)])
+            .meta()
+            .epoch
+            .unwrap()
+            .conf_ver,
+        1
+    );
+}
