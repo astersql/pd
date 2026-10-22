@@ -56,6 +56,10 @@ name = "astersql-pd-codec"
 version = "0.1.0"
 
 [[package]]
+name = "astersql-pd-errs"
+version = "0.1.0"
+
+[[package]]
 name = "astersql-pd-compat-tests"
 version = "0.1.0"
 dependencies = [
