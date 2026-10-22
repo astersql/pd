@@ -116,6 +116,11 @@ impl<V> Lru<V> {
         self.index.is_empty()
     }
 
+    pub(crate) fn oldest_key(&self) -> Option<u64> {
+        self.back
+            .map(|slot| self.nodes[slot].as_ref().unwrap().item.key)
+    }
+
     fn promote(&mut self, slot: usize) {
         if self.front != Some(slot) {
             self.detach(slot);
