@@ -124,3 +124,66 @@ fn round_robin_next_concurrent() {
     assert_eq!(counts, [800; 3]);
     assert_eq!(balancer.next(), 7);
 }
+
+#[test]
+fn delete_duplicate_and_concurrency() {
+    let balancer = RoundRobin::<u32>::new();
+    balancer.delete(99);
+    for node in [10, 20, 30, 40, 20] {
+        balancer.put(node);
+    }
+    assert_eq!(balancer.len(), 4);
+    assert_eq!(balancer.next(), 10);
+    balancer.delete(10);
+    assert_eq!(balancer.get_all(), [20, 30, 40]);
+    assert_eq!(balancer.next(), 30);
+    balancer.delete(40);
+    balancer.delete(40);
+    assert_eq!(balancer.next(), 20);
+    balancer.delete(20);
+    balancer.delete(30);
+    assert!(balancer.is_empty());
+    assert_eq!(balancer.next(), 0);
+    balancer.put(50);
+    balancer.put(60);
+    assert_eq!(balancer.next(), 60);
+    let strings = RoundRobin::<String>::new();
+    for node in ["", "a", "b", "a"] {
+        strings.put(node.to_owned());
+    }
+    let snapshot = strings.get_all();
+    strings.delete(String::new());
+    strings.delete("a".to_owned());
+    strings.put("a".to_owned());
+    assert_eq!(strings.get_all(), ["b", "a"]);
+    assert_eq!(snapshot, ["", "a", "b"]);
+    assert_eq!(strings.next(), "b");
+    let concurrent = RoundRobin::<u32>::new();
+    concurrent.put(1);
+    let barrier = std::sync::Barrier::new(8);
+    std::thread::scope(|scope| {
+        for worker in 0..8 {
+            let concurrent = &concurrent;
+            let barrier = &barrier;
+            scope.spawn(move || {
+                barrier.wait();
+                for iteration in 0..1000 {
+                    let node = 2 + (iteration + worker) % 16;
+                    concurrent.put(node);
+                    concurrent.put(node);
+                    assert!((1..=17).contains(&concurrent.next()));
+                    let snapshot = concurrent.get_all();
+                    let unique: std::collections::HashSet<_> = snapshot.iter().collect();
+                    assert_eq!(snapshot.len(), unique.len());
+                    assert!(snapshot.contains(&1));
+                    assert!((1..=17).contains(&concurrent.len()));
+                    concurrent.delete(node);
+                    concurrent.delete(node);
+                }
+            });
+        }
+    });
+    assert_eq!(concurrent.get_all(), [1]);
+    assert_eq!(concurrent.len(), 1);
+    assert_eq!(concurrent.next(), 1);
+}

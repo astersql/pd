@@ -52,7 +52,7 @@ struct Membership<T> {
 /// Thread-safe insertion-ordered node collection for round-robin balancing.
 ///
 /// Node snapshots are independent copies. Locks preserve Rust poisoning semantics.
-/// Selection uses an atomic cursor; deletion is introduced by a subsequent task.
+/// Selection uses an atomic cursor that membership changes do not reset.
 pub struct RoundRobin<T: Node> {
     membership: RwLock<Membership<T>>,
     next: AtomicU32,
@@ -95,6 +95,19 @@ impl<T: Node> RoundRobin<T> {
         let mut membership = self.membership.write().expect("balancer lock poisoned");
         if membership.exists.insert(node.clone()) {
             membership.nodes.push(node);
+        }
+    }
+
+    /// Remove a node if present, preserving survivor order and the selection cursor.
+    pub fn delete(&self, node: T) {
+        let mut membership = self.membership.write().expect("balancer lock poisoned");
+        if membership.exists.remove(&node) {
+            let index = membership
+                .nodes
+                .iter()
+                .position(|value| value == &node)
+                .expect("membership set and nodes disagree");
+            membership.nodes.remove(index);
         }
     }
 
