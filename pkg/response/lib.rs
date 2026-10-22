@@ -10,3 +10,8 @@ pub use region::*;
 #[cfg(test)]
 #[path = "region_test.rs"]
 mod region_test;
+pub mod regions;
+pub use regions::*;
+#[cfg(test)]
+#[path = "regions_test.rs"]
+mod regions_test;

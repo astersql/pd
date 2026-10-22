@@ -1,0 +1,7 @@
+{
+  "source": "region.go MarshalRegionsInfoJSON (unchanged since 0820f0b67b0e49b289b84fdf66b7b8fb178afe82): count=len, sequential loop, reused RegionInfo, cancellation before each item returns nil and ctx.Err. InitRegion nil leaves reused response; zero bucket version retains prior version.",
+  "existing_test": "TestEasyJSONCompatibility asserts standard/easyjson roundtrip for RegionInfo; it does not exercise list or cancellation. These boundaries are source-derived Rust checks, not executed Go differential cases.",
+  "empty": {"count": 0, "regions": []},
+  "ids": [7, 2, 7, 7],
+  "cancellation": "Empty list never checks context; nonempty list checks before each conversion. Cancellation or deadline discards partial output. Numeric/string response fields have no reachable serialization failure; errors exposed separately from bytes."
+}
