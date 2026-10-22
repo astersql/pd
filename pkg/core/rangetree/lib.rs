@@ -103,6 +103,32 @@ impl<T: RangeItem> RangeTree<T> {
         overlaps
     }
 
+    /// Removes the comparator-equivalent item and returns its stored value.
+    /// A start key merely contained in a range does not remove that range.
+    pub fn remove(&mut self, item: &T) -> Option<T> {
+        self.tree.delete(item)
+    }
+
+    /// Scans from the range containing `start`, or the first later range.
+    /// Stops immediately when `visit` returns false; the query end is ignored.
+    pub fn scan_range(&self, start: &T, visit: impl FnMut(&T) -> bool) {
+        let pivot = self.find(start).unwrap_or(start);
+        self.tree.ascend_greater_or_equal(pivot, visit);
+    }
+
+    /// Returns the previous and next items, skipping items with the query start.
+    /// For an absent start key, returns its immediate surrounding items even
+    /// when the query lies inside the previous range.
+    pub fn get_adjacent_item(&self, item: &T) -> (Option<&T>, Option<&T>) {
+        let (exact, rank) = self.tree.get_with_index(item);
+        let prev = rank
+            .checked_sub(1)
+            .and_then(|i| self.tree.get_at(i as isize));
+        let next_rank = rank + usize::from(exact.is_some());
+        let next = self.tree.get_at(next_rank as isize);
+        (prev, next)
+    }
+
     /// Returns the number of indexed ranges.
     pub fn len(&self) -> usize {
         self.tree.len()
