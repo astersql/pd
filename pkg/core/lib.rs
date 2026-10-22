@@ -236,3 +236,8 @@ pub use regions_subtree::*;
 #[cfg(test)]
 #[path = "regions_subtree_test.rs"]
 mod regions_subtree_test;
+
+mod regions_subtree_order;
+#[cfg(test)]
+#[path = "regions_subtree_order_test.rs"]
+mod regions_subtree_order_test;

@@ -1,0 +1,10 @@
+{
+  "after_replay": [1, 1],
+  "sources": [
+    {"scenario":"equal epoch pending replay and repair", "input":"root pending then clear, subtree clear then pending then root refresh", "expected":"refs [1,1] after replay; [2,0] after refresh; pending removed", "go":"region_test.go TestUpdateRegionEventualConsistency; region.go CheckAndPutSubTree"},
+    {"scenario":"missing root", "input":"unknown or evicted ID", "expected":"no insertion", "go":"TestCheckAndPutSubTree; CheckAndPutSubTree nil branch"},
+    {"scenario":"stale metadata", "input":"version 99 or conf_ver 99 against 100; term 4 against 5", "expected":"drop; term zero accepted; bounded epoch 1/1 recreation accepted", "go":"preUpdateSubTreeLocked stale predicate; source-derived Rust coverage, no Go differential claim"},
+    {"scenario":"overlap", "input":"new ID same range", "expected":"old roles removed and references transferred", "go":"updateSubTreeLocked rangeChanged overlap recheck; source-derived Rust coverage"},
+    {"scenario":"delayed subtree", "input":"pause after root old, commit new root and subtree, resume old subtree", "expected":"root refresh repairs stale pending", "go":"UpdateSubTree failpoint return site; TestSetRegionConcurrence; deterministic Rust barriers replace skipped subtree scheduling"}
+  ]
+}

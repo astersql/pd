@@ -16,7 +16,7 @@ pub enum RegionRole {
 
 #[derive(Default)]
 pub(crate) struct SubTrees {
-    regions: HashMap<u64, Arc<RegionInfo>>,
+    pub(crate) regions: HashMap<u64, Arc<RegionInfo>>,
     overlap: Option<RegionTree>,
     roles: HashMap<(RegionRole, u64), RegionTree>,
 }
