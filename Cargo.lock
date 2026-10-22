@@ -169,6 +169,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "astersql-pd-ratelimit"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-syncutil",
+ "thiserror 2.0.21",
+ "tokio",
+ "tokio-util",
+]
+
+[[package]]
 name = "astersql-pd-reflectutil"
 version = "0.1.0"
 dependencies = [
