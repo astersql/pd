@@ -267,3 +267,64 @@ fn delete_min_max() {
         }
     }
 }
+
+#[test]
+fn ascending_iteration() {
+    for degree in [2, 3, 8] {
+        for descending in [false, true] {
+            let less = |a: &(i32, String), b: &(i32, String)| {
+                if descending { a.0 > b.0 } else { a.0 < b.0 }
+            };
+            let mut tree = BTree::new(degree, less);
+            tree.ascend(|_| panic!("empty tree visited"));
+            tree.ascend_range(&(0, String::new()), &(10, String::new()), |_| {
+                panic!("empty range visited")
+            });
+            tree.ascend_less_than(&(0, String::new()), |_| panic!("empty tree visited"));
+            tree.ascend_greater_or_equal(&(0, String::new()), |_| panic!("empty tree visited"));
+            for key in (0..128).map(|i| ((i * 37) % 128) * 2) {
+                tree.replace_or_insert((key, format!("value-{key}")));
+            }
+            let mut ordered: Vec<_> = (0..128)
+                .map(|i| (i * 2, format!("value-{}", i * 2)))
+                .collect();
+            if descending {
+                ordered.reverse();
+            }
+            for lower in [-1, 0, 1, 62, 63, 64, 253, 254, 255] {
+                for upper in [-1, 0, 1, 62, 63, 64, 253, 254, 255] {
+                    let lower = (lower, String::new());
+                    let upper = (upper, String::new());
+                    for mode in 0..4 {
+                        let want: Vec<_> = ordered
+                            .iter()
+                            .filter(|item| {
+                                (mode == 0 || mode == 2 || !less(item, &lower))
+                                    && (mode == 0 || mode == 3 || less(item, &upper))
+                            })
+                            .cloned()
+                            .collect();
+                        for limit in [1, 3, 17, 256] {
+                            let mut got = Vec::new();
+                            let mut visit = |item: &(i32, String)| {
+                                got.push(item.clone());
+                                got.len() < limit
+                            };
+                            match mode {
+                                0 => tree.ascend(&mut visit),
+                                1 => tree.ascend_range(&lower, &upper, &mut visit),
+                                2 => tree.ascend_less_than(&upper, &mut visit),
+                                _ => tree.ascend_greater_or_equal(&lower, &mut visit),
+                            }
+                            assert_eq!(
+                                got,
+                                want.iter().take(limit).cloned().collect::<Vec<_>>(),
+                                "degree={degree} descending={descending} lower={lower:?} upper={upper:?} mode={mode} limit={limit}"
+                            );
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

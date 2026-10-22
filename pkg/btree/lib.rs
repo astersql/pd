@@ -1,7 +1,7 @@
 // Copyright 2026 AsterSQL.
 //! In-memory B-tree with caller-defined strict weak ordering.
-//! Node layout, insertion and deletion follow btree_generic.go. Range traversal,
-//! copy-on-write and free-list APIs are introduced in later ports.
+//! Node layout, insertion, deletion and ascending traversal follow btree_generic.go.
+//! Copy-on-write and free-list APIs are introduced in later ports.
 
 struct Node<T> {
     items: Vec<T>,
@@ -22,6 +22,32 @@ impl<T> Node<T> {
             index,
             index < self.items.len() && !less(key, &self.items[index]),
         )
+    }
+
+    // Seek the inclusive lower bound in each node, then propagate callback or
+    // exclusive-upper-bound termination through every ancestor.
+    fn ascend(
+        &self,
+        start: Option<&T>,
+        stop: Option<&T>,
+        less: &impl Fn(&T, &T) -> bool,
+        visit: &mut impl FnMut(&T) -> bool,
+    ) -> bool {
+        let index = start.map_or(0, |key| self.find(key, less).0);
+        for i in index..self.items.len() {
+            if let Some(child) = self.children.get(i)
+                && !child.ascend(start, stop, less, visit)
+            {
+                return false;
+            }
+            let item = &self.items[i];
+            if stop.is_some_and(|bound| !less(item, bound)) || !visit(item) {
+                return false;
+            }
+        }
+        self.children
+            .last()
+            .is_none_or(|child| child.ascend(start, stop, less, visit))
     }
 
     fn split_child(&mut self, index: usize, degree: usize) {
@@ -218,6 +244,45 @@ impl<T, F: Fn(&T, &T) -> bool> BTree<T, F> {
         if self.root.as_ref().is_some_and(|root| root.items.is_empty()) {
             let mut root = self.root.take().unwrap();
             self.root = root.children.pop();
+        }
+    }
+
+    /// Visits all items in comparator order, stopping when `visit` returns false.
+    pub fn ascend(&self, mut visit: impl FnMut(&T) -> bool) {
+        self.ascend_bounds(None, None, &mut visit);
+    }
+
+    /// Visits items in comparator order within `[greater_or_equal, less_than)`.
+    /// Returning false from `visit` stops traversal immediately.
+    pub fn ascend_range(
+        &self,
+        greater_or_equal: &T,
+        less_than: &T,
+        mut visit: impl FnMut(&T) -> bool,
+    ) {
+        self.ascend_bounds(Some(greater_or_equal), Some(less_than), &mut visit);
+    }
+
+    /// Visits items strictly less than `pivot` according to the comparator.
+    /// Returning false from `visit` stops traversal immediately.
+    pub fn ascend_less_than(&self, pivot: &T, mut visit: impl FnMut(&T) -> bool) {
+        self.ascend_bounds(None, Some(pivot), &mut visit);
+    }
+
+    /// Visits items greater than or equivalent to `pivot` in comparator order.
+    /// Returning false from `visit` stops traversal immediately.
+    pub fn ascend_greater_or_equal(&self, pivot: &T, mut visit: impl FnMut(&T) -> bool) {
+        self.ascend_bounds(Some(pivot), None, &mut visit);
+    }
+
+    fn ascend_bounds(
+        &self,
+        start: Option<&T>,
+        stop: Option<&T>,
+        visit: &mut impl FnMut(&T) -> bool,
+    ) {
+        if let Some(root) = &self.root {
+            root.ascend(start, stop, &self.less, visit);
         }
     }
 
