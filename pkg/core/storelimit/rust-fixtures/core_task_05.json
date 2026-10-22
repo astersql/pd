@@ -1,0 +1,224 @@
+[
+  {
+    "name": "minimum_and_overshoot",
+    "capacity": -1,
+    "operations": [
+      [
+        "take",
+        11
+      ],
+      [
+        "take",
+        1
+      ],
+      [
+        "ack",
+        5
+      ],
+      [
+        "ack",
+        20
+      ],
+      [
+        "ack",
+        3
+      ]
+    ],
+    "expected": [
+      {
+        "capacity": 10,
+        "used": 11,
+        "count": 1,
+        "available": false,
+        "result": 1
+      },
+      {
+        "capacity": 10,
+        "used": 11,
+        "count": 1,
+        "available": false,
+        "result": 0
+      },
+      {
+        "capacity": 10,
+        "used": 6,
+        "count": 0,
+        "available": false,
+        "result": 0
+      },
+      {
+        "capacity": 10,
+        "used": 0,
+        "count": 18446744073709551615,
+        "available": true,
+        "result": 14
+      },
+      {
+        "capacity": 10,
+        "used": 0,
+        "count": 18446744073709551615,
+        "available": true,
+        "result": 3
+      }
+    ]
+  },
+  {
+    "name": "reset_preserves_used",
+    "capacity": 30,
+    "operations": [
+      [
+        "take",
+        20
+      ],
+      [
+        "reset",
+        0
+      ],
+      [
+        "take",
+        1
+      ],
+      [
+        "reset",
+        40
+      ],
+      [
+        "take",
+        25
+      ],
+      [
+        "take",
+        1
+      ],
+      [
+        "ack",
+        45
+      ]
+    ],
+    "expected": [
+      {
+        "capacity": 30,
+        "used": 20,
+        "count": 1,
+        "available": true,
+        "result": 1
+      },
+      {
+        "capacity": 10,
+        "used": 20,
+        "count": 1,
+        "available": false,
+        "result": 0
+      },
+      {
+        "capacity": 10,
+        "used": 20,
+        "count": 1,
+        "available": false,
+        "result": 0
+      },
+      {
+        "capacity": 40,
+        "used": 20,
+        "count": 1,
+        "available": true,
+        "result": 0
+      },
+      {
+        "capacity": 40,
+        "used": 45,
+        "count": 2,
+        "available": false,
+        "result": 1
+      },
+      {
+        "capacity": 40,
+        "used": 45,
+        "count": 2,
+        "available": false,
+        "result": 0
+      },
+      {
+        "capacity": 40,
+        "used": 0,
+        "count": 1,
+        "available": true,
+        "result": 0
+      }
+    ]
+  },
+  {
+    "name": "boundary",
+    "capacity": 20,
+    "operations": [
+      [
+        "take",
+        10
+      ],
+      [
+        "take",
+        10
+      ],
+      [
+        "take",
+        1
+      ],
+      [
+        "ack",
+        10
+      ],
+      [
+        "take",
+        30
+      ],
+      [
+        "ack",
+        50
+      ]
+    ],
+    "expected": [
+      {
+        "capacity": 20,
+        "used": 10,
+        "count": 1,
+        "available": true,
+        "result": 1
+      },
+      {
+        "capacity": 20,
+        "used": 20,
+        "count": 2,
+        "available": false,
+        "result": 1
+      },
+      {
+        "capacity": 20,
+        "used": 20,
+        "count": 2,
+        "available": false,
+        "result": 0
+      },
+      {
+        "capacity": 20,
+        "used": 10,
+        "count": 1,
+        "available": true,
+        "result": 0
+      },
+      {
+        "capacity": 20,
+        "used": 40,
+        "count": 2,
+        "available": false,
+        "result": 1
+      },
+      {
+        "capacity": 20,
+        "used": 0,
+        "count": 1,
+        "available": true,
+        "result": 10
+      }
+    ]
+  }
+]

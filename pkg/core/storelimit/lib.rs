@@ -20,3 +20,10 @@ pub use rate_limit::StoreRateLimit;
 mod rate_reset_test;
 
 mod rate_reset;
+
+#[cfg(test)]
+#[path = "window_test.rs"]
+mod window_test;
+
+mod window;
+pub use window::Window;
