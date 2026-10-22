@@ -13,6 +13,12 @@ use tokio_util::sync::CancellationToken;
 pub enum ControllerOption {
     AllowList,
     Concurrency(u64),
+    Qps(f64, i64),
+    Dimensions {
+        qps: f64,
+        burst: i64,
+        concurrency: u64,
+    },
     Init,
 }
 
@@ -37,6 +43,7 @@ struct State {
 pub struct Controller {
     state: Mutex<State>,
     cancellation: CancellationToken,
+    metrics: Option<(String, prometheus::GaugeVec)>,
 }
 impl Controller {
     /// Creates an empty controller with a child of the caller's cancellation.
@@ -44,8 +51,57 @@ impl Controller {
         Self {
             state: Mutex::new(State::default()),
             cancellation: parent.child_token(),
+            metrics: None,
         }
     }
+    /// Registers the caller's gauge with labels ordered as API type and label.
+    /// The host runs and joins `run_metrics` on its existing runtime.
+    pub fn with_metrics(
+        parent: &CancellationToken,
+        api_type: impl Into<String>,
+        registry: &prometheus::Registry,
+        gauge: prometheus::GaugeVec,
+    ) -> Result<Self, prometheus::Error> {
+        // Reject an incompatible gauge before changing the registry.
+        use prometheus::core::Collector;
+        let labels = gauge.desc()[0].variable_labels.len();
+        if labels != 2 {
+            return Err(prometheus::Error::InconsistentCardinality {
+                expect: 2,
+                got: labels,
+            });
+        }
+        registry.register(Box::new(gauge.clone()))?;
+        let mut controller = Self::new(parent);
+        controller.metrics = Some((api_type.into(), gauge));
+        Ok(controller)
+    }
+
+    /// Collects configured concurrency every 15 seconds until close or cancellation.
+    /// No task is spawned internally; the host owns and joins this future.
+    pub async fn run_metrics(&self) {
+        let Some((api_type, gauge)) = &self.metrics else {
+            return;
+        };
+        let period = std::time::Duration::from_secs(15);
+        let mut interval = tokio::time::interval_at(tokio::time::Instant::now() + period, period);
+        interval.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Skip);
+        loop {
+            tokio::select! {
+                biased;
+                _ = self.cancellation.cancelled() => return,
+                _ = interval.tick() => {
+                    let limiters: Vec<_> = self.state.lock().await.limiters.iter()
+                        .map(|(label, limiter)| (label.clone(), limiter.clone())).collect();
+                    for (label, limiter) in limiters {
+                        let (limit, _) = limiter.concurrency_status().await;
+                        gauge.with_label_values(&[api_type, &label]).set(limit as f64);
+                    }
+                }
+            }
+        }
+    }
+
     /// Cancels background work, preserving admission and configuration behavior.
     pub fn close(&self) {
         self.cancellation.cancel();
@@ -76,6 +132,17 @@ impl Controller {
             status |= match option {
                 ControllerOption::Concurrency(limit) => {
                     limiter.update_concurrency_config(*limit).await as u32
+                }
+                ControllerOption::Qps(limit, burst) => {
+                    limiter.update_qps_config(*limit, *burst).await as u32
+                }
+                ControllerOption::Dimensions {
+                    qps,
+                    burst,
+                    concurrency,
+                } => {
+                    let qps = limiter.update_qps_config(*qps, *burst).await as u32;
+                    qps | limiter.update_concurrency_config(*concurrency).await as u32
                 }
                 ControllerOption::Init => 2,
                 ControllerOption::AllowList => unreachable!(),

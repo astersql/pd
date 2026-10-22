@@ -87,3 +87,104 @@ async fn controller_labels_and_allowlist_parallel() {
     assert_eq!(c.concurrency_status("a").await, (3, 0));
     assert_eq!(c.concurrency_status("b").await, (5, 0));
 }
+
+#[tokio::test(start_paused = true)]
+async fn controller_qps_and_metrics() {
+    use prometheus::{GaugeVec, Opts, Registry};
+    use std::{sync::Arc, time::Duration};
+    let registry = Registry::new();
+    let gauge = GaugeVec::new(
+        Opts::new("test_concurrency", "configured limit"),
+        &["type", "label"],
+    )
+    .unwrap();
+    let c = Arc::new(
+        Controller::with_metrics(&CancellationToken::new(), "grpc", &registry, gauge).unwrap(),
+    );
+    assert_eq!(
+        c.update(
+            "a",
+            &[O::Dimensions {
+                qps: 1.0,
+                burst: 2,
+                concurrency: 1
+            }]
+        )
+        .await,
+        4
+    );
+    assert_eq!(c.qps_status("a").await, (1.0, 2));
+    let first = c.allow("a").await.unwrap();
+    assert!(c.allow("a").await.is_err()); // concurrency rejection consumes no QPS
+    first.done();
+    c.allow("a").await.unwrap().done();
+    assert!(c.allow("a").await.is_err()); // QPS rollback releases concurrency
+    assert_eq!(c.concurrency_status("a").await, (1, 0));
+    tokio::time::advance(Duration::from_secs(1)).await;
+    c.allow("a").await.unwrap().done();
+    assert_eq!(c.update("a", &[O::Qps(1.0, 2)]).await, 2);
+    assert_eq!(c.update("free", &[O::AllowList, O::Qps(1.0, 1)]).await, 16);
+    assert_eq!(c.qps_status("free").await, (0.0, 0));
+    c.update("qps", &[O::Qps(2.0, 2)]).await;
+    c.update("init", &[O::Init]).await;
+    let runner = {
+        let c = c.clone();
+        tokio::spawn(async move { c.run_metrics().await })
+    };
+    tokio::task::yield_now().await;
+    assert!(registry.gather().is_empty());
+    tokio::time::advance(Duration::from_secs(15)).await;
+    tokio::task::yield_now().await;
+    let families = registry.gather();
+    assert_eq!(families.len(), 1);
+    let metrics = families[0].get_metric();
+    assert_eq!(metrics.len(), 3); // allow-list-only entry has no limiter
+    for metric in metrics {
+        let labels = metric.get_label();
+        assert!(
+            labels
+                .iter()
+                .any(|l| l.name() == "type" && l.value() == "grpc")
+        );
+        let label = labels.iter().find(|l| l.name() == "label").unwrap().value();
+        assert_eq!(
+            metric.get_gauge().get_value(),
+            if label == "a" { 1.0 } else { 0.0 }
+        );
+    }
+    assert_eq!(c.update("a", &[O::Qps(0.0, 0)]).await, 4);
+    assert_eq!(c.update("a", &[O::Concurrency(0)]).await, 8);
+    tokio::time::advance(Duration::from_secs(15)).await;
+    tokio::task::yield_now().await;
+    assert!(
+        registry.gather()[0]
+            .get_metric()
+            .iter()
+            .all(|m| m.get_gauge().get_value() == 0.0)
+    );
+    assert_eq!(c.update("qps", &[O::Qps(0.0, 0)]).await, 8);
+    assert_eq!(c.qps_status("qps").await, (0.0, 0));
+    let duplicate = GaugeVec::new(
+        Opts::new("test_concurrency", "configured limit"),
+        &["type", "label"],
+    )
+    .unwrap();
+    assert!(
+        Controller::with_metrics(&CancellationToken::new(), "grpc", &registry, duplicate).is_err()
+    );
+    let invalid = GaugeVec::new(Opts::new("invalid", "invalid"), &["only_one"]).unwrap();
+    assert!(
+        Controller::with_metrics(&CancellationToken::new(), "grpc", &registry, invalid).is_err()
+    );
+    assert_eq!(registry.gather().len(), 1);
+    c.close();
+    runner.await.unwrap();
+    c.update("a", &[O::Concurrency(9)]).await;
+    tokio::time::advance(Duration::from_secs(30)).await;
+    assert!(
+        registry.gather()[0]
+            .get_metric()
+            .iter()
+            .all(|m| m.get_gauge().get_value() == 0.0)
+    );
+}

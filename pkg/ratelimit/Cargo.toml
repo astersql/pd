@@ -12,3 +12,4 @@ astersql-pd-syncutil.workspace = true
 tokio.workspace = true
 tokio-util.workspace = true
 thiserror.workspace = true
+prometheus.workspace = true
