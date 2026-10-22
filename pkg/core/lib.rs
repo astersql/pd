@@ -219,3 +219,9 @@ pub mod regions;
 #[path = "regions_test.rs"]
 mod regions_test;
 pub use regions::*;
+
+pub mod region_stale;
+pub use region_stale::*;
+#[cfg(test)]
+#[path = "region_stale_test.rs"]
+mod region_stale_test;

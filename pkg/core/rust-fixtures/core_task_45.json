@@ -1,0 +1,480 @@
+{
+  "evidence": {
+    "baseline": "0820f0b67b0e49b289b84fdf66b7b8fb178afe82",
+    "existing_tests": "TestSetRegion and TestSetRegionConcurrence verify indexes; no direct stale/ValidRegion assertions in these tests",
+    "derivation": "overlaps compare only version in key order before origin; origin compares nonzero term, version and conf_ver; local (1,1) bypasses stale check; ValidRegion searches start key and compares both epoch fields without bypass; nil epoch getters are zero"
+  },
+  "cases": [
+    {
+      "name": "empty",
+      "stored": [],
+      "incoming": [
+        1,
+        "a",
+        "m",
+        5,
+        5,
+        8
+      ],
+      "origin": null,
+      "overlaps": [],
+      "stale": null,
+      "valid": "not_found",
+      "source": "pkg/core/region.go: check, isRegionRecreated, GetRelevantRegions, ValidRegion; source-derived, not executed Go differential"
+    },
+    {
+      "name": "equal",
+      "stored": [
+        [
+          1,
+          "a",
+          "m",
+          5,
+          5,
+          8
+        ]
+      ],
+      "incoming": [
+        1,
+        "a",
+        "m",
+        5,
+        5,
+        8
+      ],
+      "origin": 1,
+      "overlaps": [],
+      "stale": null,
+      "valid": "ok",
+      "source": "pkg/core/region.go: check, isRegionRecreated, GetRelevantRegions, ValidRegion; source-derived, not executed Go differential"
+    },
+    {
+      "name": "version",
+      "stored": [
+        [
+          1,
+          "a",
+          "m",
+          5,
+          5,
+          8
+        ]
+      ],
+      "incoming": [
+        1,
+        "a",
+        "m",
+        4,
+        6,
+        9
+      ],
+      "origin": 1,
+      "overlaps": [],
+      "stale": 1,
+      "valid": "invalid_epoch",
+      "source": "pkg/core/region.go: check, isRegionRecreated, GetRelevantRegions, ValidRegion; source-derived, not executed Go differential"
+    },
+    {
+      "name": "conf",
+      "stored": [
+        [
+          1,
+          "a",
+          "m",
+          5,
+          5,
+          8
+        ]
+      ],
+      "incoming": [
+        1,
+        "a",
+        "m",
+        6,
+        4,
+        9
+      ],
+      "origin": 1,
+      "overlaps": [],
+      "stale": 1,
+      "valid": "invalid_epoch",
+      "source": "pkg/core/region.go: check, isRegionRecreated, GetRelevantRegions, ValidRegion; source-derived, not executed Go differential"
+    },
+    {
+      "name": "term",
+      "stored": [
+        [
+          1,
+          "a",
+          "m",
+          5,
+          5,
+          8
+        ]
+      ],
+      "incoming": [
+        1,
+        "a",
+        "m",
+        6,
+        6,
+        7
+      ],
+      "origin": 1,
+      "overlaps": [],
+      "stale": 1,
+      "valid": "ok",
+      "source": "pkg/core/region.go: check, isRegionRecreated, GetRelevantRegions, ValidRegion; source-derived, not executed Go differential"
+    },
+    {
+      "name": "zero_term",
+      "stored": [
+        [
+          1,
+          "a",
+          "m",
+          5,
+          5,
+          8
+        ]
+      ],
+      "incoming": [
+        1,
+        "a",
+        "m",
+        5,
+        5,
+        0
+      ],
+      "origin": 1,
+      "overlaps": [],
+      "stale": null,
+      "valid": "ok",
+      "source": "pkg/core/region.go: check, isRegionRecreated, GetRelevantRegions, ValidRegion; source-derived, not executed Go differential"
+    },
+    {
+      "name": "recreated",
+      "stored": [
+        [
+          1,
+          "a",
+          "m",
+          5,
+          5,
+          8
+        ]
+      ],
+      "incoming": [
+        1,
+        "a",
+        "m",
+        1,
+        1,
+        1
+      ],
+      "origin": 1,
+      "overlaps": [],
+      "stale": null,
+      "valid": "invalid_epoch",
+      "source": "pkg/core/region.go: check, isRegionRecreated, GetRelevantRegions, ValidRegion; source-derived, not executed Go differential"
+    },
+    {
+      "name": "absent_epoch",
+      "stored": [
+        [
+          1,
+          "a",
+          "m",
+          5,
+          5,
+          8
+        ]
+      ],
+      "incoming": [
+        1,
+        "a",
+        "m",
+        null,
+        null,
+        0
+      ],
+      "origin": 1,
+      "overlaps": [],
+      "stale": 1,
+      "valid": "invalid_epoch",
+      "source": "pkg/core/region.go: check, isRegionRecreated, GetRelevantRegions, ValidRegion; source-derived, not executed Go differential"
+    },
+    {
+      "name": "overlap_version",
+      "stored": [
+        [
+          1,
+          "a",
+          "m",
+          5,
+          5,
+          8
+        ],
+        [
+          2,
+          "m",
+          "z",
+          7,
+          9,
+          20
+        ]
+      ],
+      "incoming": [
+        3,
+        "b",
+        "y",
+        6,
+        0,
+        0
+      ],
+      "origin": null,
+      "overlaps": [
+        1,
+        2
+      ],
+      "stale": 2,
+      "valid": "invalid_epoch",
+      "source": "pkg/core/region.go: check, isRegionRecreated, GetRelevantRegions, ValidRegion; source-derived, not executed Go differential"
+    },
+    {
+      "name": "overlap_ignores_conf_term",
+      "stored": [
+        [
+          1,
+          "a",
+          "m",
+          5,
+          5,
+          8
+        ],
+        [
+          2,
+          "m",
+          "z",
+          7,
+          9,
+          20
+        ]
+      ],
+      "incoming": [
+        3,
+        "b",
+        "y",
+        7,
+        0,
+        1
+      ],
+      "origin": null,
+      "overlaps": [
+        1,
+        2
+      ],
+      "stale": null,
+      "valid": "invalid_epoch",
+      "source": "pkg/core/region.go: check, isRegionRecreated, GetRelevantRegions, ValidRegion; source-derived, not executed Go differential"
+    },
+    {
+      "name": "overlap_recreated",
+      "stored": [
+        [
+          1,
+          "a",
+          "m",
+          5,
+          5,
+          8
+        ],
+        [
+          2,
+          "m",
+          "z",
+          7,
+          9,
+          20
+        ]
+      ],
+      "incoming": [
+        3,
+        "b",
+        "y",
+        1,
+        1,
+        1
+      ],
+      "origin": null,
+      "overlaps": [
+        1,
+        2
+      ],
+      "stale": null,
+      "valid": "invalid_epoch",
+      "source": "pkg/core/region.go: check, isRegionRecreated, GetRelevantRegions, ValidRegion; source-derived, not executed Go differential"
+    },
+    {
+      "name": "full_range_not_recreated",
+      "stored": [
+        [
+          1,
+          "a",
+          "m",
+          5,
+          5,
+          8
+        ],
+        [
+          2,
+          "m",
+          "z",
+          7,
+          9,
+          20
+        ]
+      ],
+      "incoming": [
+        3,
+        "",
+        "",
+        1,
+        1,
+        0
+      ],
+      "origin": null,
+      "overlaps": [
+        1,
+        2
+      ],
+      "stale": 1,
+      "valid": "not_found",
+      "source": "pkg/core/region.go: check, isRegionRecreated, GetRelevantRegions, ValidRegion; source-derived, not executed Go differential"
+    },
+    {
+      "name": "changed_range_self_overlap",
+      "stored": [
+        [
+          1,
+          "a",
+          "m",
+          5,
+          5,
+          8
+        ]
+      ],
+      "incoming": [
+        1,
+        "b",
+        "z",
+        5,
+        5,
+        8
+      ],
+      "origin": 1,
+      "overlaps": [
+        1
+      ],
+      "stale": null,
+      "valid": "ok",
+      "source": "pkg/core/region.go: check, isRegionRecreated, GetRelevantRegions, ValidRegion; source-derived, not executed Go differential"
+    },
+    {
+      "name": "start_boundary",
+      "stored": [
+        [
+          1,
+          "a",
+          "m",
+          5,
+          5,
+          8
+        ],
+        [
+          2,
+          "m",
+          "z",
+          7,
+          9,
+          20
+        ]
+      ],
+      "incoming": [
+        3,
+        "m",
+        "z",
+        7,
+        9,
+        0
+      ],
+      "origin": null,
+      "overlaps": [
+        2
+      ],
+      "stale": null,
+      "valid": "ok",
+      "source": "pkg/core/region.go: check, isRegionRecreated, GetRelevantRegions, ValidRegion; source-derived, not executed Go differential"
+    },
+    {
+      "name": "end_boundary",
+      "stored": [
+        [
+          1,
+          "a",
+          "m",
+          5,
+          5,
+          8
+        ],
+        [
+          2,
+          "m",
+          "z",
+          7,
+          9,
+          20
+        ]
+      ],
+      "incoming": [
+        3,
+        "z",
+        "",
+        0,
+        0,
+        0
+      ],
+      "origin": null,
+      "overlaps": [],
+      "stale": null,
+      "valid": "not_found",
+      "source": "pkg/core/region.go: check, isRegionRecreated, GetRelevantRegions, ValidRegion; source-derived, not executed Go differential"
+    },
+    {
+      "name": "full_range_origin",
+      "stored": [
+        [
+          1,
+          "",
+          "",
+          5,
+          5,
+          8
+        ]
+      ],
+      "incoming": [
+        1,
+        "",
+        "",
+        1,
+        1,
+        1
+      ],
+      "origin": 1,
+      "overlaps": [],
+      "stale": 1,
+      "valid": "invalid_epoch",
+      "source": "pkg/core/region.go: check, isRegionRecreated, GetRelevantRegions, ValidRegion; source-derived, not executed Go differential"
+    }
+  ]
+}
