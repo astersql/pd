@@ -2,7 +2,7 @@
 
 批次：【批次 18】依赖批次 17
 
-状态：未开始
+状态：已完成，待回归
 
 目的：Set/Clear/Clone/IsFull/instantaneous 及不稳定 interval 行为一致
 
@@ -67,3 +67,14 @@
 
 完成 `pkg/movingaverage/avg_over_time.rs` 中的本任务行为和 `pkg/movingaverage/avg_over_time_test.rs` 的独立测试；只在上述红绿证据、crate 回归和差异审查齐全后标记完成。
 
+
+## 本次验证证据（2026-10-22）
+
+- 前置任务 47 已提交为 `f049c18c2`，窗口实现及测试在场，前置任务文件已移除。
+- 红：`cargo test --locked -p astersql-pd-movingaverage avg_over_time_state -- --nocapture` 退出 101，缺失 set/clear/clone/get_interval_sum/get_instantaneous。
+- 绿：同命令退出 0，2 项行为测试通过；`cargo test --locked -p astersql-pd-movingaverage --lib` 退出 0，15 项通过。
+- `cargo fmt --all`、`cargo fmt --all -- --check`、`cargo metadata --format-version 1 --no-deps`、`cargo check --workspace --locked`、`cargo tree --locked -p astersql-pd-movingaverage`、`git diff --check` 均退出 0；该 crate 无第三方依赖。
+- Go oracle：`make gotest GOTEST_ARGS='./pkg/movingaverage -run "^(TestChange|TestUnstableInterval)$$" -count=1'` 退出 0，2 项通过，自动禁用 failpoint。原命令单个 `$` 被 Make 展开导致退出 2，改为 `$$` 后通过。
+- 额外 `cargo test --workspace --locked` 退出 101：并行 BTree 测试调用尚未实现的 `delete`（pkg/btree/btree_test.rs），与本次变更无关。保留本任务文件供工作区回归，未修改其他任务的生产代码。
+- 槽位 1；`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。所有 Cargo 命令使用该路径，完成后释放自己的锁并保留缓存。
+- 实现按 Go 源码对照 Clear/Set/Clone/IsFull/瞬时值，测试覆盖 Set 后继续 Add、非空队列克隆独立性、变化间隔、零间隔忽略、负间隔及非正窗口 NaN。

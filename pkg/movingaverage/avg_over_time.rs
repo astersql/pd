@@ -2,7 +2,7 @@
 
 use std::collections::VecDeque;
 
-#[derive(Debug, Default)]
+#[derive(Clone, Debug, Default)]
 struct DeltaWithInterval {
     delta: f64,
     interval: i64,
@@ -10,7 +10,7 @@ struct DeltaWithInterval {
 
 /// Tracks the change rate over a trailing window, returning zero until full.
 /// Intervals use signed nanoseconds, matching Go's time.Duration.
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct AvgOverTime {
     queue: VecDeque<DeltaWithInterval>,
     margin: DeltaWithInterval,
@@ -57,6 +57,42 @@ impl AvgOverTime {
             * (seconds(self.interval_sum) - seconds(self.avg_interval))
             / seconds(self.margin.interval);
         (self.delta_sum - margin_delta) / seconds(self.avg_interval)
+    }
+
+    /// Clears samples while retaining the configured window.
+    pub fn clear(&mut self) {
+        self.queue.clear();
+        self.margin = DeltaWithInterval::default();
+        self.delta_sum = 0.0;
+        self.interval_sum = 0;
+    }
+
+    /// Seeds the average with a full window at the given rate.
+    pub fn set(&mut self, avg: f64) {
+        self.clear();
+        self.margin = DeltaWithInterval {
+            delta: avg * seconds(self.avg_interval),
+            interval: self.avg_interval,
+        };
+        self.delta_sum = self.margin.delta;
+        self.interval_sum = self.avg_interval;
+        self.queue.push_back(self.margin.clone());
+    }
+
+    /// Returns the retained interval sum in signed nanoseconds.
+    pub fn get_interval_sum(&self) -> i64 {
+        self.interval_sum
+    }
+
+    /// Returns the latest sample's rate, even before the window is full.
+    pub fn get_instantaneous(&self) -> f64 {
+        if let Some(data) = self.queue.back() {
+            return data.delta / seconds(data.interval);
+        }
+        if self.margin.interval != 0 {
+            return self.margin.delta / seconds(self.margin.interval);
+        }
+        self.margin.delta
     }
 
     /// Returns whether samples cover the entire configured window.
