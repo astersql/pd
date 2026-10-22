@@ -1,0 +1,12 @@
+{
+ "sources": {
+ "sizes": "pkg/core/region_test.go TestRegionFromHeartbeatIAKVSize: KV=100 MiB, IA=40 MiB, clone preserves IA; absent IA=0. pkg/core/region.go RegionFromHeartbeat: approximate size bytes/1048576, positive sub-MiB clamped to 1, columnar truncation, uint64 keys cast to int64. Boundary cases are source-derived, not executed Go differential.",
+ "membership": "pkg/core/region.go RegionFromHeartbeat and classifyVoterAndLearner: preserve leader, roles, witness, sort down and pending peers by ID; factory.go RegionFactory/RegionPeerFactory preserve protobuf values. Unknown enum values remain raw wire integers.",
+ "reports": "RegionFromHeartbeat copies term, queryStats, interval, bucketMeta, replicationStatus and cpuStats; rejects read/write pairs independently at ImpossibleFlowSize=1<<50. TestRegionWriteRate asserts bytes=10 and keys=3 over interval=5 produce rates 2 and 0.6; GetLoads/GetWriteRate define query, unified-read CPU and interval calculation. Missing region/down-peer message is an adapter error instead of Go nil dereference. These expectations are source-derived."
+ },
+ "sizes":[
+ {"bytes":0,"mib":0,"ia_bytes":0,"ia_mib":0},
+ {"bytes":1,"mib":1,"ia_bytes":41943040,"ia_mib":40},
+ {"bytes":2097153,"mib":2,"ia_bytes":1048575,"ia_mib":0}
+ ]
+}

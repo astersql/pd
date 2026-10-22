@@ -29,6 +29,13 @@ impl KeyRange {
     }
 }
 
+/// Encryption key identity and IV, retained without decrypting range keys.
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
+pub struct RegionEncryptionMeta {
+    pub key_id: u64,
+    pub iv: Vec<u8>,
+}
+
 /// Owned region metadata. An absent epoch remains distinct from a zero epoch.
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub struct RegionMeta {
@@ -36,6 +43,7 @@ pub struct RegionMeta {
     pub key_range: KeyRange,
     pub epoch: Option<RegionEpoch>,
     pub peers: Vec<Peer>,
+    pub encryption_meta: Option<RegionEncryptionMeta>,
     /// Whether TiKV reports an active flashback.
     pub is_in_flashback: bool,
     /// Flashback start timestamp, retained even when flashback is inactive.

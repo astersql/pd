@@ -45,6 +45,10 @@ impl RegionInfo {
     pub fn report_buckets(&self) -> Option<&Arc<RegionBuckets>> {
         self.report_buckets.as_ref()
     }
+    /// Replace heartbeat bucket metadata with an owned immutable snapshot.
+    pub fn set_bucket_meta(&mut self, meta: Option<RegionBucketMeta>) {
+        self.bucket_meta = meta.map(Arc::new);
+    }
     /// Return effective buckets, preferring heartbeat metadata.
     pub fn buckets(&self) -> Option<RegionBuckets> {
         if let Some(meta) = &self.bucket_meta {

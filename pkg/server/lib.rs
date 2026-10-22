@@ -45,3 +45,8 @@ pub mod core_store_adapter;
 #[cfg(test)]
 #[path = "core_store_adapter_test.rs"]
 mod core_store_adapter_test;
+
+pub mod core_region_adapter;
+#[cfg(test)]
+#[path = "core_region_adapter_test.rs"]
+mod core_region_adapter_test;

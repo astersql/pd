@@ -23,6 +23,10 @@ impl RegionInfo {
     pub fn term(&self) -> u64 {
         self.term
     }
+    /// Return the reported replication state and state ID.
+    pub fn replication_status(&self) -> (i32, u64) {
+        self.replication_status
+    }
     /// Set replication state and state ID; state zero means UNKNOWN.
     pub fn set_replication_status(&mut self, state: i32, state_id: u64) {
         self.replication_status = (state, state_id);
