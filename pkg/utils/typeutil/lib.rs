@@ -1,5 +1,6 @@
 // Copyright 2026 AsterSQL.
 
+mod clone;
 mod comparison;
 mod conversion;
 mod duration;
@@ -7,6 +8,7 @@ mod size;
 mod string_slice;
 mod time;
 
+pub use clone::deep_clone_json;
 pub use comparison::*;
 pub use conversion::*;
 pub use duration::*;
@@ -31,3 +33,6 @@ mod string_slice_test;
 
 #[cfg(test)]
 mod time_test;
+
+#[cfg(test)]
+mod clone_test;
