@@ -1,0 +1,26 @@
+{
+  "source": "pkg/response/store.go BuildStoreInfo, StoreStatus, StoresInfo; unchanged from 0820f0b67b0e49b289b84fdf66b7b8fb178afe82",
+  "existing_test": "TestEasyJSONCompatibility tests Region standard/easyjson roundtrip, not Store. All Store cases below are source-derived, not executed Go differential cases.",
+  "cases": {
+    "defaults": "newStoreStats creates a nonnil zero report; BuildStoreInfo retains required zeros and weights=1; start time and heartbeat time.Unix(0,0) both emit epoch, uptime=0 omitted. Zero metadata fields omitted by metapb tags.",
+    "full": "BuildStoreInfo copies counters/trend/network map and uses LeaderScore(BY_COUNT,0)=6/2=3; RegionScore delegated to existing core. ByteSize.MarshalJSON uses docker go-units binary %.4g: 1024=1KiB,512=512B,256=256B. time.Unix(1,0) start and heartbeat 3661000000001ns yield uptime 3660000000001ns = 1h1m0.000000001s.",
+    "boundaries": "GetLastHeartbeatTS time.Unix(0,-1) normalizes to 1969-12-31T23:59:59.999999999Z; start=-1s yields uptime=999999999ns. Negative uptime clamped to zero and omitted. StoresInfo nil slice=null, allocated empty slice=[], nullable entries preserved.",
+    "metadata_errors": "metapb.Store and StoreLabel JSON tags omit zero scalar members and preserve present empty txn range/label; pause flags invert AllowLeaderTransfer*. encoding/json rejects NaN; time.Time.MarshalJSON rejects years outside [0,9999]. All source-derived.",
+    "config_calendar": "StringToSchedulePolicy(size) selects leader size:12/2=6, unknown policy panics in Go and Rust. Unix 951782400 is leap day 2000-02-29 UTC."
+  },
+  "default_status": {
+    "capacity": "0B",
+    "available": "0B",
+    "used_size": "0B",
+    "leader_count": 0,
+    "leader_weight": 1.0,
+    "leader_score": 0.0,
+    "leader_size": 0,
+    "region_count": 0,
+    "region_weight": 1.0,
+    "region_score": 0.0,
+    "region_size": 0,
+    "start_ts": "1970-01-01T00:00:00Z",
+    "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+  }
+}

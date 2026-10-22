@@ -15,3 +15,9 @@ pub use regions::*;
 #[cfg(test)]
 #[path = "regions_test.rs"]
 mod regions_test;
+
+pub mod store;
+pub use store::*;
+#[cfg(test)]
+#[path = "store_test.rs"]
+mod store_test;
