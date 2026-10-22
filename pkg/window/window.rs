@@ -104,3 +104,9 @@ impl Window {
 
 #[cfg(test)]
 mod window_test;
+
+#[cfg(test)]
+mod reduce_test;
+
+mod reduce;
+pub use reduce::{Iterator, avg, count, max, min, sum};
