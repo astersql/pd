@@ -60,3 +60,41 @@ fn core_task_11_absent_metadata_and_zero_value() {
     assert_eq!(zero.region_weight(), 0.0);
     assert_eq!(StoreMeta::default().start_timestamp, 0);
 }
+
+#[test]
+fn core_task_68_store_metadata_options_detach_and_preserve_identity() {
+    let original = StoreInfo::new(StoreMeta {
+        id: 7,
+        last_heartbeat: 99,
+        ..Default::default()
+    });
+    let mut copy = original.shallow_clone();
+    copy.edit_meta(|m| {
+        m.address = "store".into();
+        m.status_address = "status".into();
+        m.peer_address = "peer".into();
+        m.version = "v".into();
+        m.git_hash = "hash".into();
+        m.deploy_path = "path".into();
+        m.start_timestamp = -1;
+    });
+    assert_eq!(original.address(), "");
+    assert_eq!(copy.address(), "store");
+    assert_eq!(copy.start_time_unix_seconds(), -1);
+    copy.set_store_meta(&StoreMeta {
+        id: 88,
+        last_heartbeat: 111,
+        address: "new".into(),
+        node_state: crate::NodeState::Removing,
+        ..Default::default()
+    });
+    assert_eq!(copy.id(), 7);
+    assert_eq!(copy.last_heartbeat_unix_nanos(), 99);
+    assert_eq!(copy.address(), "new");
+    assert_eq!(copy.node_state(), crate::NodeState::Removing);
+    copy.set_network_slow_triggers(u64::MAX);
+    assert_eq!(copy.network_slow_triggers(), u64::MAX);
+    assert_eq!(original.network_slow_triggers(), 0);
+    assert_eq!(copy.clone().network_slow_triggers(), u64::MAX);
+    assert_eq!(original.id(), 7);
+}

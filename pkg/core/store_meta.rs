@@ -77,6 +77,32 @@ impl StoreInfo {
         }
     }
 
+    /// Apply metadata options to a detached snapshot, preserving other store state.
+    /// As with Go metadata options, absent metadata is a programmer error.
+    pub fn edit_meta(&mut self, edit: impl FnOnce(&mut StoreMeta)) {
+        edit(std::sync::Arc::make_mut(
+            self.meta.as_mut().expect("store metadata must be present"),
+        ));
+    }
+
+    /// Apply Go SetStoreMeta's selected fields, preserving ID, heartbeat and
+    /// transaction protocol bounds from the current store.
+    pub fn set_store_meta(&mut self, incoming: &StoreMeta) {
+        self.edit_meta(|meta| {
+            meta.version = incoming.version.clone();
+            meta.git_hash = incoming.git_hash.clone();
+            meta.address = incoming.address.clone();
+            meta.status_address = incoming.status_address.clone();
+            meta.peer_address = incoming.peer_address.clone();
+            meta.start_timestamp = incoming.start_timestamp;
+            meta.deploy_path = incoming.deploy_path.clone();
+            meta.state = incoming.state;
+            meta.labels = incoming.labels.clone();
+            meta.node_state = incoming.node_state;
+            meta.physically_destroyed = incoming.physically_destroyed;
+        });
+    }
+
     pub fn meta(&self) -> Option<&StoreMeta> {
         self.meta.as_deref()
     }
@@ -108,6 +134,11 @@ impl StoreInfo {
     /// Start time as signed Unix seconds. Zero denotes 1970-01-01T00:00:00Z.
     pub fn start_time_unix_seconds(&self) -> i64 {
         self.meta.as_ref().map_or(0, |meta| meta.start_timestamp)
+    }
+
+    /// Set the network-slow eviction counter without normalizing it.
+    pub fn set_network_slow_triggers(&mut self, count: u64) {
+        self.network_slow_triggers = count;
     }
 
     pub fn leader_weight(&self) -> f64 {
