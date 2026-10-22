@@ -1058,3 +1058,461 @@ pub const INFRASTRUCTURE_ERRORS: &[ErrorTemplate] = &[
     ERR_CRYPTO_APPEND_CERTS_FROM_PEM,
     ERR_BIND_JSON,
 ];
+
+/// Complete domain catalog, grouped by the original Go package sections.
+/// RFC codes and templates are domain data even when their names mention a
+/// transport or logger. Conversion to statuses or log fields belongs outside
+/// this crate; adapters consume `TypedError` and its standard source chain.
+pub const DOMAIN_ERROR_GROUPS: &[&[ErrorTemplate]] = &[
+    ADDITIONAL_DOMAIN_ERRORS,
+    FOUNDATION_ERRORS,
+    SCHEDULING_ERRORS,
+    SERVICE_ERRORS,
+    INFRASTRUCTURE_ERRORS,
+];
+
+/// Go exports owned by the server transport adapter, not RFC domain errors.
+/// The adapter must preserve the Go gRPC code and message (including dynamic
+/// causes and cluster IDs). This list records ownership, not a status conversion
+/// implementation; no tonic or protobuf types enter the domain API.
+pub const SERVER_TRANSPORT_ERRORS: &[&str] = &[
+    "ErrStreamClosed",
+    "ErrUnknown",
+    "ErrForwardTSOTimeout",
+    "ErrTSOProxyRecvFromClientTimeout",
+    "ErrSendHeartbeatTimeout",
+    "ErrNotFoundTSOAddr",
+    "ErrNotFoundSchedulingAddr",
+    "ErrNotFoundService",
+    "ErrMaxCountTSOProxyRoutinesExceeded",
+    "ErrGRPCRateLimitExceeded",
+    "ErrMismatchClusterID",
+    "ErrNotLeader",
+    "ErrNotStarted",
+    "ErrEtcdNotStarted",
+    "ErrFollowerHandlingNotAllowed",
+];
+
+/// Go exports owned by the logging adapter. ZapError's nil/skip behavior,
+/// "error" field and optional cause wrapping belong there; the domain exposes
+/// Display and Error::source without depending on a concrete logging backend.
+pub const LOG_ADAPTER_EXPORTS: &[&str] = &["ZapError"];
+
+/// ErrSchedulerExisted preserves the Go RFC code and message template.
+pub const ERR_SCHEDULER_EXISTED: ErrorTemplate =
+    ErrorTemplate::new("PD:scheduler:ErrSchedulerExisted", "scheduler existed");
+
+/// ErrSchedulerDuplicated preserves the Go RFC code and message template.
+pub const ERR_SCHEDULER_DUPLICATED: ErrorTemplate = ErrorTemplate::new(
+    "PD:scheduler:ErrSchedulerDuplicated",
+    "scheduler duplicated",
+);
+
+/// ErrSchedulerNotFound preserves the Go RFC code and message template.
+pub const ERR_SCHEDULER_NOT_FOUND: ErrorTemplate =
+    ErrorTemplate::new("PD:scheduler:ErrSchedulerNotFound", "scheduler not found");
+
+/// ErrScheduleConfigNotExist preserves the Go RFC code and message template.
+pub const ERR_SCHEDULE_CONFIG_NOT_EXIST: ErrorTemplate = ErrorTemplate::new(
+    "PD:scheduler:ErrScheduleConfigNotExist",
+    "the config does not exist",
+);
+
+/// ErrSchedulerConfig preserves the Go RFC code and message template.
+pub const ERR_SCHEDULER_CONFIG: ErrorTemplate = ErrorTemplate::new(
+    "PD:scheduler:ErrSchedulerConfig",
+    "wrong scheduler config %s",
+);
+
+/// ErrCacheOverflow preserves the Go RFC code and message template.
+pub const ERR_CACHE_OVERFLOW: ErrorTemplate =
+    ErrorTemplate::new("PD:scheduler:ErrCacheOverflow", "cache overflow");
+
+/// ErrInternalGrowth preserves the Go RFC code and message template.
+pub const ERR_INTERNAL_GROWTH: ErrorTemplate = ErrorTemplate::new(
+    "PD:scheduler:ErrInternalGrowth",
+    "unknown interval growth type error",
+);
+
+/// ErrSchedulerCreateFuncNotRegistered preserves the Go RFC code and message template.
+pub const ERR_SCHEDULER_CREATE_FUNC_NOT_REGISTERED: ErrorTemplate = ErrorTemplate::new(
+    "PD:scheduler:ErrSchedulerCreateFuncNotRegistered",
+    "create func is not registered",
+);
+
+/// ErrSchedulerTiKVSplitDisabled preserves the Go RFC code and message template.
+pub const ERR_SCHEDULER_TI_KVSPLIT_DISABLED: ErrorTemplate = ErrorTemplate::new(
+    "PD:scheduler:ErrSchedulerTiKVSplitDisabled",
+    "tikv split region disabled",
+);
+
+/// ErrNoStoreToBeSelected preserves the Go RFC code and message template.
+pub const ERR_NO_STORE_TO_BE_SELECTED: ErrorTemplate = ErrorTemplate::new(
+    "PD:scheduler:ErrNoStoreToBeSelected",
+    "no store to be selected",
+);
+
+/// ErrEmptyRegion preserves the Go RFC code and message template.
+pub const ERR_EMPTY_REGION: ErrorTemplate =
+    ErrorTemplate::new("PD:scatter:ErrEmptyRegion", "empty region");
+
+/// ErrDiagnosticDisabled preserves the Go RFC code and message template.
+pub const ERR_DIAGNOSTIC_DISABLED: ErrorTemplate = ErrorTemplate::new(
+    "PD:diagnostic:ErrDiagnosticDisabled",
+    "diagnostic is disabled",
+);
+
+/// ErrSchedulerUndiagnosable preserves the Go RFC code and message template.
+pub const ERR_SCHEDULER_UNDIAGNOSABLE: ErrorTemplate = ErrorTemplate::new(
+    "PD:diagnostic:ErrSchedulerUndiagnosable",
+    "%v hasn't supported diagnostic",
+);
+
+/// ErrNoDiagnosticResult preserves the Go RFC code and message template.
+pub const ERR_NO_DIAGNOSTIC_RESULT: ErrorTemplate = ErrorTemplate::new(
+    "PD:diagnostic:ErrNoDiagnosticResult",
+    "%v has no diagnostic result",
+);
+
+/// ErrDiagnosticLoadPlan preserves the Go RFC code and message template.
+pub const ERR_DIAGNOSTIC_LOAD_PLAN: ErrorTemplate =
+    ErrorTemplate::new("PD:diagnostic:ErrDiagnosticLoadPlan", "load plan failed");
+
+/// ErrRuleContent preserves the Go RFC code and message template.
+pub const ERR_RULE_CONTENT: ErrorTemplate =
+    ErrorTemplate::new("PD:placement:ErrRuleContent", "invalid rule content, %s");
+
+/// ErrLoadRule preserves the Go RFC code and message template.
+pub const ERR_LOAD_RULE: ErrorTemplate =
+    ErrorTemplate::new("PD:placement:ErrLoadRule", "load rule failed");
+
+/// ErrLoadRuleGroup preserves the Go RFC code and message template.
+pub const ERR_LOAD_RULE_GROUP: ErrorTemplate =
+    ErrorTemplate::new("PD:placement:ErrLoadRuleGroup", "load rule group failed");
+
+/// ErrBuildRuleList preserves the Go RFC code and message template.
+pub const ERR_BUILD_RULE_LIST: ErrorTemplate = ErrorTemplate::new(
+    "PD:placement:ErrBuildRuleList",
+    "build rule list failed, %s",
+);
+
+/// ErrPlacementDisabled preserves the Go RFC code and message template.
+pub const ERR_PLACEMENT_DISABLED: ErrorTemplate = ErrorTemplate::new(
+    "PD:placement:ErrPlacementDisabled",
+    "placement rules feature is disabled",
+);
+
+/// ErrKeyFormat preserves the Go RFC code and message template.
+pub const ERR_KEY_FORMAT: ErrorTemplate = ErrorTemplate::new(
+    "PD:placement:ErrKeyFormat",
+    "key should be in hex format, %s",
+);
+
+/// ErrRuleNotFound preserves the Go RFC code and message template.
+pub const ERR_RULE_NOT_FOUND: ErrorTemplate =
+    ErrorTemplate::new("PD:placement:ErrRuleNotFound", "rule not found");
+
+/// ErrNotBootstrapped preserves the Go RFC code and message template.
+pub const ERR_NOT_BOOTSTRAPPED: ErrorTemplate = ErrorTemplate::new(
+    "PD:cluster:ErrNotBootstrapped",
+    "TiKV cluster not bootstrapped, please start TiKV first",
+);
+
+/// ErrStoreIsUp preserves the Go RFC code and message template.
+pub const ERR_STORE_IS_UP: ErrorTemplate = ErrorTemplate::new(
+    "PD:cluster:ErrStoreIsUp",
+    "store is still up, please remove store gracefully",
+);
+
+/// ErrInvalidStoreID preserves the Go RFC code and message template.
+pub const ERR_INVALID_STORE_ID: ErrorTemplate = ErrorTemplate::new(
+    "PD:cluster:ErrInvalidStoreID",
+    "invalid store id %d, not found",
+);
+
+/// ErrSchedulingIsHalted preserves the Go RFC code and message template.
+pub const ERR_SCHEDULING_IS_HALTED: ErrorTemplate =
+    ErrorTemplate::new("PD:cluster:ErrSchedulingIsHalted", "scheduling is halted");
+
+/// ErrFeatureNotExisted preserves the Go RFC code and message template.
+pub const ERR_FEATURE_NOT_EXISTED: ErrorTemplate =
+    ErrorTemplate::new("PD:versioninfo:ErrFeatureNotExisted", "feature not existed");
+
+/// ErrRedirect preserves the Go RFC code and message template.
+pub const ERR_REDIRECT: ErrorTemplate =
+    ErrorTemplate::new("PD:apiutil:ErrRedirect", "redirect failed");
+
+/// ErrOptionNotExist preserves the Go RFC code and message template.
+pub const ERR_OPTION_NOT_EXIST: ErrorTemplate = ErrorTemplate::new(
+    "PD:apiutil:ErrOptionNotExist",
+    "the option %s does not exist",
+);
+
+/// ErrOptionTypeInvalid preserves the Go RFC code and message template.
+pub const ERR_OPTION_TYPE_INVALID: ErrorTemplate = ErrorTemplate::new(
+    "PD:apiutil:ErrOptionTypeInvalid",
+    "the type of option %s is invalid",
+);
+
+/// ErrRedirectNoLeader preserves the Go RFC code and message template.
+pub const ERR_REDIRECT_NO_LEADER: ErrorTemplate =
+    ErrorTemplate::new("PD:apiutil:ErrRedirectNoLeader", "redirect finds no leader");
+
+/// ErrRedirectToNotLeader preserves the Go RFC code and message template.
+pub const ERR_REDIRECT_TO_NOT_LEADER: ErrorTemplate = ErrorTemplate::new(
+    "PD:apiutil:ErrRedirectToNotLeader",
+    "redirect to not leader",
+);
+
+/// ErrRedirectToNotPrimary preserves the Go RFC code and message template.
+pub const ERR_REDIRECT_TO_NOT_PRIMARY: ErrorTemplate = ErrorTemplate::new(
+    "PD:apiutil:ErrRedirectToNotPrimary",
+    "redirect to not primary",
+);
+
+/// ErrSecurityConfig preserves the Go RFC code and message template.
+pub const ERR_SECURITY_CONFIG: ErrorTemplate =
+    ErrorTemplate::new("PD:grpcutil:ErrSecurityConfig", "security config error: %s");
+
+/// ErrTLSConfig preserves the Go RFC code and message template.
+pub const ERR_TLSCONFIG: ErrorTemplate =
+    ErrorTemplate::new("PD:grpcutil:ErrTLSConfig", "TLS config error");
+
+/// ErrInitFileLog preserves the Go RFC code and message template.
+pub const ERR_INIT_FILE_LOG: ErrorTemplate =
+    ErrorTemplate::new("PD:logutil:ErrInitFileLog", "init file log error, %s");
+
+/// ErrNoCPUControllerDetected preserves the Go RFC code and message template.
+pub const ERR_NO_CPUCONTROLLER_DETECTED: ErrorTemplate = ErrorTemplate::new(
+    "PD:cgroup:ErrNoCPUControllerDetected",
+    "no cpu controller detected",
+);
+
+/// ErrUnsafeRecoveryIsRunning preserves the Go RFC code and message template.
+pub const ERR_UNSAFE_RECOVERY_IS_RUNNING: ErrorTemplate = ErrorTemplate::new(
+    "PD:unsaferecovery:ErrUnsafeRecoveryIsRunning",
+    "unsafe recovery is running",
+);
+
+/// ErrUnsafeRecoveryInvalidInput preserves the Go RFC code and message template.
+pub const ERR_UNSAFE_RECOVERY_INVALID_INPUT: ErrorTemplate = ErrorTemplate::new(
+    "PD:unsaferecovery:ErrUnsafeRecoveryInvalidInput",
+    "invalid input %s",
+);
+
+/// ErrProgressWrongStatus preserves the Go RFC code and message template.
+pub const ERR_PROGRESS_WRONG_STATUS: ErrorTemplate = ErrorTemplate::new(
+    "PD:progress:ErrProgressWrongStatus",
+    "progress status is wrong",
+);
+
+/// ErrProgressNotFound preserves the Go RFC code and message template.
+pub const ERR_PROGRESS_NOT_FOUND: ErrorTemplate = ErrorTemplate::new(
+    "PD:progress:ErrProgressNotFound",
+    "no progress found for %s",
+);
+
+/// ErrKeyspaceNotExists preserves the Go RFC code and message template.
+pub const ERR_KEYSPACE_NOT_EXISTS: ErrorTemplate = ErrorTemplate::new(
+    "PD:resourcemanager:ErrKeyspaceNotExists",
+    "the keyspace does not exist with id %d",
+);
+
+/// ErrKeyspaceNotExistsByName preserves the Go RFC code and message template.
+pub const ERR_KEYSPACE_NOT_EXISTS_BY_NAME: ErrorTemplate = ErrorTemplate::new(
+    "PD:resourcemanager:ErrKeyspaceNotExistsByName",
+    "keyspace not found with name: %s",
+);
+
+/// ErrResourceGroupNotExists preserves the Go RFC code and message template.
+pub const ERR_RESOURCE_GROUP_NOT_EXISTS: ErrorTemplate = ErrorTemplate::new(
+    "PD:resourcemanager:ErrGroupNotExists",
+    "the %s resource group does not exist",
+);
+
+/// ErrDeleteReservedGroup preserves the Go RFC code and message template.
+pub const ERR_DELETE_RESERVED_GROUP: ErrorTemplate = ErrorTemplate::new(
+    "PD:resourcemanager:ErrDeleteReservedGroup",
+    "cannot delete reserved group",
+);
+
+/// ErrInvalidGroup preserves the Go RFC code and message template.
+pub const ERR_INVALID_GROUP: ErrorTemplate = ErrorTemplate::new(
+    "PD:resourcemanager:ErrInvalidGroup",
+    "invalid group settings, please check %s",
+);
+
+/// ErrNotFoundSchedulingPrimary preserves the Go RFC code and message template.
+pub const ERR_NOT_FOUND_SCHEDULING_PRIMARY: ErrorTemplate = ErrorTemplate::new(
+    "PD:mcs:ErrNotFoundSchedulingPrimary",
+    "cannot find scheduling primary",
+);
+
+/// ErrSchedulingServer preserves the Go RFC code and message template.
+pub const ERR_SCHEDULING_SERVER: ErrorTemplate =
+    ErrorTemplate::new("PD:mcs:ErrSchedulingServer", "scheduling server meets %v");
+
+/// ErrGCOnInvalidKeyspace preserves the Go RFC code and message template.
+pub const ERR_GCON_INVALID_KEYSPACE: ErrorTemplate = ErrorTemplate::new(
+    "PD:gc:ErrGCOnInvalidKeyspace",
+    "trying to manage GC in keyspace %v (id: %v) where keyspace level GC is not enabled",
+);
+
+/// ErrDecreasingGCSafePoint preserves the Go RFC code and message template.
+pub const ERR_DECREASING_GCSAFE_POINT: ErrorTemplate = ErrorTemplate::new(
+    "PD:gc:ErrDecreasingGCSafePoint",
+    "trying to update GC safe point to a smaller value, current value: %v, given: %v",
+);
+
+/// ErrGCSafePointExceedsTxnSafePoint preserves the Go RFC code and message template.
+pub const ERR_GCSAFE_POINT_EXCEEDS_TXN_SAFE_POINT: ErrorTemplate = ErrorTemplate::new(
+    "PD:gc:ErrGCSafePointExceedsTxnSafePoint",
+    "trying to update GC safe point to a too large value that exceeds the txn safe point, current value: %v, given: %v, current txn safe point: %v",
+);
+
+/// ErrDecreasingTxnSafePoint preserves the Go RFC code and message template.
+pub const ERR_DECREASING_TXN_SAFE_POINT: ErrorTemplate = ErrorTemplate::new(
+    "PD:gc:ErrDecreasingTxnSafePoint",
+    "trying to update txn safe point to a smaller value, current value: %v, given: %v",
+);
+
+/// ErrGCBarrierTSBehindTxnSafePoint preserves the Go RFC code and message template.
+pub const ERR_GCBARRIER_TSBEHIND_TXN_SAFE_POINT: ErrorTemplate = ErrorTemplate::new(
+    "PD:gc:ErrGCBarrierTSBehindTxnSafePoint",
+    "trying to set a GC barrier on ts %d which is already behind the txn safe point %d",
+);
+
+/// ErrReservedGCBarrierID preserves the Go RFC code and message template.
+pub const ERR_RESERVED_GCBARRIER_ID: ErrorTemplate = ErrorTemplate::new(
+    "PD:gc:ErrReservedGCBarrierID",
+    "trying to set a GC barrier with a barrier ID that is reserved: %v",
+);
+
+/// ErrGlobalGCBarrierTSBehindTxnSafePoint preserves the Go RFC code and message template.
+pub const ERR_GLOBAL_GCBARRIER_TSBEHIND_TXN_SAFE_POINT: ErrorTemplate = ErrorTemplate::new(
+    "PD:gc:ErrGlobalGCBarrierTSBehindTxnSafePoint",
+    "trying to set a global GC barrier on ts %d which is already behind the txn safe point %d of keyspace %s",
+);
+
+/// ErrIDExhausted preserves the Go RFC code and message template.
+pub const ERR_IDEXHAUSTED: ErrorTemplate =
+    ErrorTemplate::new("PD:idalloc:ErrIDExhausted", "id exhausted");
+
+/// ErrAffinityGroupNotFound preserves the Go RFC code and message template.
+pub const ERR_AFFINITY_GROUP_NOT_FOUND: ErrorTemplate = ErrorTemplate::new(
+    "PD:affinity:ErrAffinityGroupNotFound",
+    "affinity group %s not found",
+);
+
+/// ErrAffinityGroupExist preserves the Go RFC code and message template.
+pub const ERR_AFFINITY_GROUP_EXIST: ErrorTemplate = ErrorTemplate::new(
+    "PD:affinity:ErrAffinityGroupExist",
+    "affinity group %s already exists",
+);
+
+/// ErrAffinityGroupConflict preserves the Go RFC code and message template.
+pub const ERR_AFFINITY_GROUP_CONFLICT: ErrorTemplate = ErrorTemplate::new(
+    "PD:affinity:ErrAffinityGroupConflict",
+    "affinity group %s cannot appear in both add and remove operations in the same request",
+);
+
+/// ErrAffinityInternal preserves the Go RFC code and message template.
+pub const ERR_AFFINITY_INTERNAL: ErrorTemplate =
+    ErrorTemplate::new("PD:affinity:ErrAffinityInternal", "affinity internal error");
+
+/// ErrAffinityGroupContent preserves the Go RFC code and message template.
+pub const ERR_AFFINITY_GROUP_CONTENT: ErrorTemplate = ErrorTemplate::new(
+    "PD:affinity:ErrAffinityGroupContent",
+    "invalid affinity group content, %s",
+);
+
+/// ErrInvalidLabelRuleFormat preserves the Go RFC code and message template.
+pub const ERR_INVALID_LABEL_RULE_FORMAT: ErrorTemplate = ErrorTemplate::new(
+    "PD:affinity:ErrInvalidLabelRuleFormat",
+    "invalid label rule data format %s",
+);
+
+/// ErrEmptyRequest preserves the Go RFC code and message template.
+pub const ERR_EMPTY_REQUEST: ErrorTemplate =
+    ErrorTemplate::new("PD:affinity:ErrEmptyRequest", "%s");
+
+/// ErrInvalidGroupID preserves the Go RFC code and message template.
+pub const ERR_INVALID_GROUP_ID: ErrorTemplate = ErrorTemplate::new(
+    "PD:affinity:ErrInvalidGroupID",
+    "invalid group id %s: should contain only letters (a-z, A-Z), numbers (0-9), hyphens (-) and underscores (_), and be 1-64 characters long",
+);
+
+/// ErrInvalidKeyFormat preserves the Go RFC code and message template.
+pub const ERR_INVALID_KEY_FORMAT: ErrorTemplate = ErrorTemplate::new(
+    "PD:affinity:ErrInvalidKeyFormat",
+    "invalid hex %s key '%s' for group '%s'",
+);
+
+/// Remaining Go domains discovered by the complete catalog audit.
+pub const ADDITIONAL_DOMAIN_ERRORS: &[ErrorTemplate] = &[
+    ERR_SCHEDULER_EXISTED,
+    ERR_SCHEDULER_DUPLICATED,
+    ERR_SCHEDULER_NOT_FOUND,
+    ERR_SCHEDULE_CONFIG_NOT_EXIST,
+    ERR_SCHEDULER_CONFIG,
+    ERR_CACHE_OVERFLOW,
+    ERR_INTERNAL_GROWTH,
+    ERR_SCHEDULER_CREATE_FUNC_NOT_REGISTERED,
+    ERR_SCHEDULER_TI_KVSPLIT_DISABLED,
+    ERR_NO_STORE_TO_BE_SELECTED,
+    ERR_EMPTY_REGION,
+    ERR_DIAGNOSTIC_DISABLED,
+    ERR_SCHEDULER_UNDIAGNOSABLE,
+    ERR_NO_DIAGNOSTIC_RESULT,
+    ERR_DIAGNOSTIC_LOAD_PLAN,
+    ERR_RULE_CONTENT,
+    ERR_LOAD_RULE,
+    ERR_LOAD_RULE_GROUP,
+    ERR_BUILD_RULE_LIST,
+    ERR_PLACEMENT_DISABLED,
+    ERR_KEY_FORMAT,
+    ERR_RULE_NOT_FOUND,
+    ERR_NOT_BOOTSTRAPPED,
+    ERR_STORE_IS_UP,
+    ERR_INVALID_STORE_ID,
+    ERR_SCHEDULING_IS_HALTED,
+    ERR_FEATURE_NOT_EXISTED,
+    ERR_REDIRECT,
+    ERR_OPTION_NOT_EXIST,
+    ERR_OPTION_TYPE_INVALID,
+    ERR_REDIRECT_NO_LEADER,
+    ERR_REDIRECT_TO_NOT_LEADER,
+    ERR_REDIRECT_TO_NOT_PRIMARY,
+    ERR_SECURITY_CONFIG,
+    ERR_TLSCONFIG,
+    ERR_INIT_FILE_LOG,
+    ERR_NO_CPUCONTROLLER_DETECTED,
+    ERR_UNSAFE_RECOVERY_IS_RUNNING,
+    ERR_UNSAFE_RECOVERY_INVALID_INPUT,
+    ERR_PROGRESS_WRONG_STATUS,
+    ERR_PROGRESS_NOT_FOUND,
+    ERR_KEYSPACE_NOT_EXISTS,
+    ERR_KEYSPACE_NOT_EXISTS_BY_NAME,
+    ERR_RESOURCE_GROUP_NOT_EXISTS,
+    ERR_DELETE_RESERVED_GROUP,
+    ERR_INVALID_GROUP,
+    ERR_NOT_FOUND_SCHEDULING_PRIMARY,
+    ERR_SCHEDULING_SERVER,
+    ERR_GCON_INVALID_KEYSPACE,
+    ERR_DECREASING_GCSAFE_POINT,
+    ERR_GCSAFE_POINT_EXCEEDS_TXN_SAFE_POINT,
+    ERR_DECREASING_TXN_SAFE_POINT,
+    ERR_GCBARRIER_TSBEHIND_TXN_SAFE_POINT,
+    ERR_RESERVED_GCBARRIER_ID,
+    ERR_GLOBAL_GCBARRIER_TSBEHIND_TXN_SAFE_POINT,
+    ERR_IDEXHAUSTED,
+    ERR_AFFINITY_GROUP_NOT_FOUND,
+    ERR_AFFINITY_GROUP_EXIST,
+    ERR_AFFINITY_GROUP_CONFLICT,
+    ERR_AFFINITY_INTERNAL,
+    ERR_AFFINITY_GROUP_CONTENT,
+    ERR_INVALID_LABEL_RULE_FORMAT,
+    ERR_EMPTY_REQUEST,
+    ERR_INVALID_GROUP_ID,
+    ERR_INVALID_KEY_FORMAT,
+];

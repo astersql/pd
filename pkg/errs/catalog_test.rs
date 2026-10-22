@@ -219,3 +219,57 @@ fn catalog_infrastructure_domains() {
         "PD:ErrEncryptionKMS"
     );
 }
+
+#[test]
+fn catalog_completeness() {
+    use crate::catalog::{DOMAIN_ERROR_GROUPS, LOG_ADAPTER_EXPORTS, SERVER_TRANSPORT_ERRORS};
+    use std::collections::BTreeMap;
+    let mut expected = BTreeMap::new();
+    let mut transport = Vec::new();
+    for line in include_str!("errno.go").lines() {
+        let line = line.trim();
+        if line.starts_with("Err") {
+            let (name, value) = line.split_once(" = ").unwrap_or_else(|| {
+                let (name, value) = line.split_once('=').unwrap();
+                (name.trim(), value.trim())
+            });
+            let name = name.trim();
+            if let Some(value) = value.strip_prefix("errors.Normalize(\"") {
+                let (message, code) = value.split_once("\", errors.RFCCodeText(\"").unwrap();
+                assert!(
+                    expected
+                        .insert(code.strip_suffix("\"))").unwrap(), message)
+                        .is_none()
+                );
+            } else {
+                assert!(
+                    value.starts_with("status.Error(") || value.starts_with("func("),
+                    "unclassified {name}"
+                );
+                transport.push(name);
+            }
+        }
+    }
+    assert_eq!(transport, SERVER_TRANSPORT_ERRORS);
+    assert_eq!(transport.len(), 15);
+    let count = expected.len();
+    for group in DOMAIN_ERROR_GROUPS {
+        for error in *group {
+            assert_eq!(
+                expected.remove(error.code()),
+                Some(error.template()),
+                "{}",
+                error.code()
+            );
+        }
+    }
+    assert!(expected.is_empty(), "missing: {expected:?}");
+    assert_eq!(count, 239);
+    assert_eq!(LOG_ADAPTER_EXPORTS, &["ZapError"]);
+    assert!(include_str!("errs.go").contains("func ZapError("));
+    println!(
+        "audited {count} domain errors, {} transport errors, {} log adapter",
+        transport.len(),
+        LOG_ADAPTER_EXPORTS.len()
+    );
+}
