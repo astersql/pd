@@ -263,8 +263,11 @@ dependencies = [
 name = "astersql-pd-storelimit"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-core-constant",
+ "astersql-pd-ratelimit",
  "serde",
  "serde_json",
+ "tokio",
 ]
 
 [[package]]

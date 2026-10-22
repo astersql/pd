@@ -8,6 +8,11 @@ license.workspace = true
 [lib]
 path = "lib.rs"
 
+[dependencies]
+astersql-pd-ratelimit.workspace = true
+astersql-pd-core-constant.workspace = true
+
 [dev-dependencies]
+tokio.workspace = true
 serde = { workspace = true, features = ["derive"] }
 serde_json.workspace = true
