@@ -67,3 +67,39 @@ fn find_len_and_index() {
         assert!(many.find(&item(&[i * 2 + 1], b"")).is_none());
     }
 }
+
+#[test]
+fn overlap_query() {
+    let empty = RangeTree::<Item>::new(2);
+    assert!(empty.get_overlaps(&item(b"", b"")).is_empty());
+    let items = vec![
+        item(b"b", b"d"),
+        item(b"d", b"f"),
+        item(b"h", b"j"),
+        item(b"m", b""),
+    ];
+    let tree = RangeTree::from_items(2, items.iter().rev().cloned());
+    for (start, end, indices) in [
+        (b"".as_slice(), b"b".as_slice(), vec![]),
+        (b"a", b"c", vec![0]),
+        (b"c", b"e", vec![0, 1]),
+        (b"d", b"h", vec![1]),
+        (b"f", b"h", vec![]),
+        (b"g", b"n", vec![2, 3]),
+        (b"c", b"m", vec![0, 1, 2]),
+        (b"", b"", vec![0, 1, 2, 3]),
+        (b"e", b"", vec![1, 2, 3]),
+        (b"z", b"", vec![3]),
+        // Preserve Go scan semantics for equal/reversed bounds as well.
+        (b"c", b"c", vec![0]),
+        (b"d", b"d", vec![]),
+        (b"e", b"c", vec![]),
+    ] {
+        let expected: Vec<_> = indices.into_iter().map(|i| items[i].clone()).collect();
+        assert_eq!(
+            tree.get_overlaps(&item(start, end)),
+            expected,
+            "{start:?}..{end:?}"
+        );
+    }
+}

@@ -50,6 +50,23 @@ impl<T: RangeItem> RangeTree<T> {
         .then_some(candidate)
     }
 
+    /// Returns overlaps in ascending start-key order, with an empty end unbounded.
+    /// Scanning includes the range containing the query's start, if any, and
+    /// stops before a range whose start is at or beyond the query's end.
+    pub fn get_overlaps(&self, item: &T) -> Vec<T> {
+        let pivot = self.find(item).unwrap_or(item);
+        let end = item.end_key();
+        let mut overlaps = Vec::new();
+        self.tree.ascend_greater_or_equal(pivot, |candidate| {
+            if !end.is_empty() && end <= candidate.start_key() {
+                return false;
+            }
+            overlaps.push(candidate.clone());
+            true
+        });
+        overlaps
+    }
+
     /// Returns the number of indexed ranges.
     pub fn len(&self) -> usize {
         self.tree.len()
