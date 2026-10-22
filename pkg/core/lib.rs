@@ -92,3 +92,9 @@ pub mod store_score_v2;
 mod store_health_test;
 
 pub mod store_health;
+
+pub mod store_location;
+pub use store_location::*;
+#[cfg(test)]
+#[path = "store_location_test.rs"]
+mod store_location_test;

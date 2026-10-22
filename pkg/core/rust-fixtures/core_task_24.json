@@ -1,0 +1,111 @@
+{
+  "source": "pkg/core/store.go:CompareLocation, DistinctScore; unchanged since 0820f0b67b0e49b289b84fdf66b7b8fb178afe82",
+  "evidence": "TestDistinctScore in pkg/core/store_test.go asserts 27 incremental grid scores and unlabeled score 0. Additional boundaries below are source-derived, not executed Go differential cases.",
+  "derivation": "Skip empty/missing values; EqualFold compares keys and values; first differing index i adds 100^(3-i-1). Same ID skipped; empty stores/labels sum zero.",
+  "cases": [
+    {
+      "name": "zone",
+      "left": {
+        "zone": "z1"
+      },
+      "right": {
+        "zone": "z2"
+      },
+      "index": 0,
+      "score": 10000
+    },
+    {
+      "name": "rack",
+      "left": {
+        "zone": "z1",
+        "rack": "r1"
+      },
+      "right": {
+        "zone": "z1",
+        "rack": "r2"
+      },
+      "index": 1,
+      "score": 100
+    },
+    {
+      "name": "host",
+      "left": {
+        "host": "h1"
+      },
+      "right": {
+        "host": "h2"
+      },
+      "index": 2,
+      "score": 1
+    },
+    {
+      "name": "same",
+      "left": {
+        "zone": "z1"
+      },
+      "right": {
+        "zone": "z1"
+      },
+      "index": null,
+      "score": 0
+    },
+    {
+      "name": "missing",
+      "left": {},
+      "right": {
+        "zone": "z2"
+      },
+      "index": null,
+      "score": 0
+    },
+    {
+      "name": "missing_then_different",
+      "left": {
+        "rack": "r1"
+      },
+      "right": {
+        "zone": "z2",
+        "rack": "r2"
+      },
+      "index": 1,
+      "score": 100
+    },
+    {
+      "name": "empty",
+      "left": {
+        "zone": ""
+      },
+      "right": {
+        "zone": "z2"
+      },
+      "index": null,
+      "score": 0
+    },
+    {
+      "name": "fold",
+      "left": {
+        "ZONE": "Σ"
+      },
+      "right": {
+        "zone": "ς"
+      },
+      "index": null,
+      "score": 0
+    },
+    {
+      "name": "first_difference",
+      "left": {
+        "zone": "a",
+        "rack": "a",
+        "host": "a"
+      },
+      "right": {
+        "zone": "b",
+        "rack": "b",
+        "host": "b"
+      },
+      "index": 0,
+      "score": 10000
+    }
+  ]
+}
