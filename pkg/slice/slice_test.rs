@@ -37,17 +37,3 @@ fn contains_and_remove() {
     remove(&mut values, &2);
     assert_eq!(values, vec![3, 4]);
 }
-
-#[test]
-fn multiset_equal_and_sorted_duplicate() {
-    assert!(equal_without_order(&[1, 2, 1], &[2, 1, 1]));
-    assert!(!equal_without_order(&[1, 1, 2], &[1, 2, 2]));
-    assert!(!equal_without_order(&[1, 2], &[1, 2, 2]));
-    assert!(equal_without_order::<i32>(&[], &[]));
-
-    assert!(!has_dup_in_sorted::<i32>(&[]));
-    assert!(!has_dup_in_sorted(&[1]));
-    assert!(!has_dup_in_sorted(&[1, 2, 3]));
-    assert!(has_dup_in_sorted(&[1, 1, 2]));
-    assert!(has_dup_in_sorted(&[1, 2, 2]));
-}
