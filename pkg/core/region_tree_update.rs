@@ -29,8 +29,16 @@ impl RegionTree {
     /// must explicitly remove its old entry.
     pub fn update(&mut self, region: Arc<RegionInfo>) -> Vec<Arc<RegionInfo>> {
         let overlaps = self.overlaps(&region);
+        self.add_stat(&region, 1);
         for old in &overlaps {
+            self.add_stat(old, -1);
+            if self.count_ref {
+                old.dec_ref();
+            }
             self.tree.delete(&RegionItem::new(old.clone()));
+        }
+        if self.count_ref {
+            region.inc_ref();
         }
         self.tree.replace_or_insert(RegionItem::new(region));
         overlaps
@@ -40,10 +48,20 @@ impl RegionTree {
     /// same ID. The supplied end key does not participate in deletion.
     pub fn remove(&mut self, region: &RegionInfo) {
         let start = &region.meta().key_range.start_key;
-        if self
+        if let Some(old) = self
             .search(start)
-            .is_some_and(|old| old.meta().id == region.meta().id)
+            .filter(|old| old.meta().id == region.meta().id)
         {
+            self.total_size = self.total_size.wrapping_sub(old.stats.approximate_size);
+            let rates = old.write_rate();
+            self.total_rates.0 -= rates.0;
+            self.total_rates.1 -= rates.1;
+            if !region.loaded_from_storage() {
+                self.not_from_storage -= 1;
+            }
+            if self.count_ref {
+                old.dec_ref();
+            }
             self.tree.delete(&RegionItem::pivot(start));
         }
     }

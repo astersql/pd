@@ -198,3 +198,8 @@ mod region_tree_update;
 #[cfg(test)]
 #[path = "region_tree_update_test.rs"]
 mod region_tree_update_test;
+
+mod region_tree_stats;
+#[cfg(test)]
+#[path = "region_tree_stats_test.rs"]
+mod region_tree_stats_test;

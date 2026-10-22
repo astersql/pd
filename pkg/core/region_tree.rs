@@ -44,11 +44,19 @@ type RegionIndex = BTree<RegionItem, fn(&RegionItem, &RegionItem) -> bool>;
 /// Readable region index. Overlap-aware mutations are implemented separately.
 pub struct RegionTree {
     pub(crate) tree: RegionIndex,
+    pub(crate) total_size: i64,
+    pub(crate) total_rates: (f64, f64),
+    pub(crate) not_from_storage: i64,
+    pub(crate) count_ref: bool,
 }
 impl Default for RegionTree {
     fn default() -> Self {
         Self {
             tree: BTree::new(64, RegionItem::less),
+            total_size: 0,
+            total_rates: (0., 0.),
+            not_from_storage: 0,
+            count_ref: false,
         }
     }
 }
@@ -62,7 +70,7 @@ impl RegionTree {
     pub fn from_regions(regions: impl IntoIterator<Item = Arc<RegionInfo>>) -> Self {
         let mut result = Self::new();
         for region in regions {
-            result.tree.replace_or_insert(RegionItem::new(region));
+            result.update(region);
         }
         result
     }

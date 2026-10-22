@@ -1,0 +1,16 @@
+{
+  "sizes": [
+    1,
+    4,
+    6,
+    5
+  ],
+  "provenance": {
+    "size": "region_tree_test.go TestRegionTreeStat: 0 -> 1 -> 4 -> 6 -> 5; removal uses stored size",
+    "rates": "region_tree.go update/updateStat/remove and region.go GetWriteRate: 30/3=10 bytes, 6/3=2 keys; replacement subtracts old",
+    "refs": "region_tree.go updateRef and countRef branches; region.go IncRef/DecRef/GetRef and Clone reset business counter; source derived, not executed differential",
+    "source": "region_tree.go updateStat: Storage -> Heartbeat adds 1, reverse subtracts 1; source derived",
+    "missing": "region_tree.go remove returns before accounting on ID mismatch or missing item; TestRegionTree",
+    "multi_overlap": "region_tree.go update subtracts each overlapping region; TestRegionTreeMerge asserts 1+3 replaced by 5. Rust extra scenario: 1+5 replaced by 9, all old refs drop to zero."
+  }
+}

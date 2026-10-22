@@ -13,6 +13,7 @@ pub struct DownPeer {
 /// Region metadata and classified membership. Queries cannot invalidate classification.
 #[derive(Clone, Debug)]
 pub struct RegionInfo {
+    pub(crate) business_ref: crate::region_tree_stats::BusinessRef,
     pub(crate) term: u64,
     pub(crate) replication_status: (i32, u64),
     pub(crate) source: crate::RegionSource,
@@ -58,6 +59,7 @@ impl RegionInfo {
         down_peers.sort_by_key(|p| p.peer.id);
         pending_peers.sort_by_key(|p| p.id);
         Self {
+            business_ref: Default::default(),
             term: 0,
             replication_status: (0, 0),
             source: crate::RegionSource::Storage,
