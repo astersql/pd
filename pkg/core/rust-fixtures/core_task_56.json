@@ -1,0 +1,433 @@
+{
+  "go_baseline": "0820f0b67b0e49b289b84fdf66b7b8fb178afe82",
+  "sources": {
+    "store_queries": "pkg/core/store.go:820-875; intersect unique role store IDs with registered non-nil stores. Nil leader getter yields ID 0.",
+    "membership": "pkg/core/region.go:GetStoreIDs/GetFollowers/GetNonWitnessVoters and classifyVoterAndLearner. Non-Learner roles are voters. Followers exclude leader peer ID; witnesses excluded only from non-witness voters.",
+    "existing_test": "pkg/core/region_tree_test.go:TestRegionInfo asserts stores {0,1,2}, followers {1,2} with leader 0. Executed read-only; wrappers and edge cases are source-derived, not executed Go differential coverage.",
+    "case_derivation": "roles_unknown_duplicate: learner stores 3,7 excluded from voters; witness 2 excluded only from non_witness; duplicate store 4 deduplicated; absent store 8 filtered. empty_registry: all lookups absent. absent_leader: all voters are followers, ID 0 absent. nil_leader_zero: nil getter resolves registered 0. unknown_leader: peer 99 excludes no member but store 99 absent. outside_membership: leader lookup independent of membership. witness_leader: peer 12 excluded from followers, witness excluded from non_witness. Handles follow registry replacement/removal, matching store.go PutStore/DeleteStore."
+  },
+  "cases": [
+    {
+      "name": "roles_unknown_duplicate",
+      "stores": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "peers": [
+        [
+          11,
+          1,
+          "voter",
+          false
+        ],
+        [
+          12,
+          2,
+          "voter",
+          true
+        ],
+        [
+          13,
+          3,
+          "learner",
+          false
+        ],
+        [
+          14,
+          4,
+          "incoming",
+          false
+        ],
+        [
+          15,
+          5,
+          "demoting",
+          false
+        ],
+        [
+          16,
+          6,
+          "unknown",
+          false
+        ],
+        [
+          17,
+          7,
+          "learner",
+          true
+        ],
+        [
+          18,
+          8,
+          "voter",
+          false
+        ],
+        [
+          19,
+          4,
+          "voter",
+          false
+        ]
+      ],
+      "leader": [
+        11,
+        1
+      ],
+      "region": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "followers": [
+        2,
+        4,
+        5,
+        6
+      ],
+      "non_witness": [
+        1,
+        4,
+        5,
+        6
+      ],
+      "leader_store": 1
+    },
+    {
+      "name": "empty_registry",
+      "stores": [],
+      "peers": [
+        [
+          11,
+          1,
+          "voter",
+          false
+        ],
+        [
+          12,
+          2,
+          "voter",
+          true
+        ],
+        [
+          13,
+          3,
+          "learner",
+          false
+        ],
+        [
+          14,
+          4,
+          "incoming",
+          false
+        ],
+        [
+          15,
+          5,
+          "demoting",
+          false
+        ],
+        [
+          16,
+          6,
+          "unknown",
+          false
+        ],
+        [
+          17,
+          7,
+          "learner",
+          true
+        ],
+        [
+          18,
+          8,
+          "voter",
+          false
+        ],
+        [
+          19,
+          4,
+          "voter",
+          false
+        ]
+      ],
+      "leader": [
+        11,
+        1
+      ],
+      "region": [],
+      "followers": [],
+      "non_witness": [],
+      "leader_store": null
+    },
+    {
+      "name": "absent_leader",
+      "stores": [
+        1,
+        2
+      ],
+      "peers": [
+        [
+          11,
+          1,
+          "voter",
+          false
+        ],
+        [
+          12,
+          2,
+          "voter",
+          true
+        ],
+        [
+          13,
+          3,
+          "learner",
+          false
+        ],
+        [
+          14,
+          4,
+          "incoming",
+          false
+        ],
+        [
+          15,
+          5,
+          "demoting",
+          false
+        ],
+        [
+          16,
+          6,
+          "unknown",
+          false
+        ],
+        [
+          17,
+          7,
+          "learner",
+          true
+        ],
+        [
+          18,
+          8,
+          "voter",
+          false
+        ],
+        [
+          19,
+          4,
+          "voter",
+          false
+        ]
+      ],
+      "leader": null,
+      "region": [
+        1,
+        2
+      ],
+      "followers": [
+        1,
+        2
+      ],
+      "non_witness": [
+        1
+      ],
+      "leader_store": null
+    },
+    {
+      "name": "nil_leader_zero",
+      "stores": [
+        0
+      ],
+      "peers": [],
+      "leader": null,
+      "region": [],
+      "followers": [],
+      "non_witness": [],
+      "leader_store": 0
+    },
+    {
+      "name": "unknown_leader",
+      "stores": [
+        1,
+        2
+      ],
+      "peers": [
+        [
+          11,
+          1,
+          "voter",
+          false
+        ],
+        [
+          12,
+          2,
+          "voter",
+          true
+        ],
+        [
+          13,
+          3,
+          "learner",
+          false
+        ],
+        [
+          14,
+          4,
+          "incoming",
+          false
+        ],
+        [
+          15,
+          5,
+          "demoting",
+          false
+        ],
+        [
+          16,
+          6,
+          "unknown",
+          false
+        ],
+        [
+          17,
+          7,
+          "learner",
+          true
+        ],
+        [
+          18,
+          8,
+          "voter",
+          false
+        ],
+        [
+          19,
+          4,
+          "voter",
+          false
+        ]
+      ],
+      "leader": [
+        99,
+        99
+      ],
+      "region": [
+        1,
+        2
+      ],
+      "followers": [
+        1,
+        2
+      ],
+      "non_witness": [
+        1
+      ],
+      "leader_store": null
+    },
+    {
+      "name": "outside_membership",
+      "stores": [
+        99
+      ],
+      "peers": [],
+      "leader": [
+        99,
+        99
+      ],
+      "region": [],
+      "followers": [],
+      "non_witness": [],
+      "leader_store": 99
+    },
+    {
+      "name": "witness_leader",
+      "stores": [
+        1,
+        2
+      ],
+      "peers": [
+        [
+          11,
+          1,
+          "voter",
+          false
+        ],
+        [
+          12,
+          2,
+          "voter",
+          true
+        ],
+        [
+          13,
+          3,
+          "learner",
+          false
+        ],
+        [
+          14,
+          4,
+          "incoming",
+          false
+        ],
+        [
+          15,
+          5,
+          "demoting",
+          false
+        ],
+        [
+          16,
+          6,
+          "unknown",
+          false
+        ],
+        [
+          17,
+          7,
+          "learner",
+          true
+        ],
+        [
+          18,
+          8,
+          "voter",
+          false
+        ],
+        [
+          19,
+          4,
+          "voter",
+          false
+        ]
+      ],
+      "leader": [
+        12,
+        2
+      ],
+      "region": [
+        1,
+        2
+      ],
+      "followers": [
+        1
+      ],
+      "non_witness": [
+        1
+      ],
+      "leader_store": 2
+    }
+  ]
+}

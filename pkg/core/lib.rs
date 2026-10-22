@@ -281,3 +281,9 @@ pub use regions_random::*;
 #[cfg(test)]
 #[path = "regions_random_test.rs"]
 mod regions_random_test;
+
+#[cfg(test)]
+#[path = "stores_region_test.rs"]
+mod stores_region_test;
+
+pub mod stores_region;
