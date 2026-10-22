@@ -153,6 +153,34 @@ pub fn string_to_key_type(input: &str) -> KeyType {
     }
 }
 
+/// The direction of a scheduling operation.
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+#[repr(transparent)]
+pub struct Direction(i32);
+
+impl Direction {
+    pub const IN: Self = Self(0);
+    pub const OUT: Self = Self(1);
+
+    pub const fn from_i32(value: i32) -> Self {
+        Self(value)
+    }
+
+    pub const fn as_i32(self) -> i32 {
+        self.0
+    }
+}
+
+impl fmt::Display for Direction {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        formatter.write_str(match *self {
+            Self::IN => "in",
+            Self::OUT => "out",
+            _ => "unknown",
+        })
+    }
+}
+
 /// A resource and the policy used to schedule it.
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub struct ScheduleKind {

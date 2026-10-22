@@ -73,3 +73,13 @@ fn key_type_round_trip() {
         .expect("the panic payload should preserve the invalid input");
     assert_eq!(message, "invalid key type:  invalid ");
 }
+
+#[test]
+fn direction_display() {
+    assert_eq!(Direction::IN.as_i32(), 0);
+    assert_eq!(Direction::OUT.as_i32(), 1);
+    assert_eq!(Direction::IN.to_string(), "in");
+    assert_eq!(Direction::OUT.to_string(), "out");
+    assert_eq!(Direction::from_i32(-1).to_string(), "unknown");
+    assert_eq!(Direction::from_i32(2).to_string(), "unknown");
+}
