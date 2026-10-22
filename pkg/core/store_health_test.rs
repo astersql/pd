@@ -71,3 +71,19 @@ fn core_task_23_resolved() {
         }
     }
 }
+
+#[test]
+fn core_task_68_witness_score_delta_and_wrapping() {
+    // store.go:WitnessScore: signed integer addition precedes float conversion.
+    let mut store = StoreInfo::new(None);
+    for (count, delta, expected) in [
+        (0, 0, 0.0),
+        (4, -2, 2.0),
+        (0, -1, -1.0),
+        (i64::MAX, 1, i64::MIN as f64),
+        (i64::MIN, -1, i64::MAX as f64),
+    ] {
+        store.set_witness_count(count);
+        assert_eq!(store.witness_score(delta), expected);
+    }
+}

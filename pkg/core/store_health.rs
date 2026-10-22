@@ -1,6 +1,11 @@
 // Copyright 2026 AsterSQL.
 //! Space and slow-heartbeat predicates, independent of transport.
 impl super::StoreInfo {
+    /// Return the witness count plus delta, preserving Go signed wrapping.
+    pub fn witness_score(&self, delta: i64) -> f64 {
+        self.witness_count().wrapping_add(delta) as f64
+    }
+
     pub fn storage_size(&self) -> u64 {
         self.used_size()
     }
