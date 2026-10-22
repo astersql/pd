@@ -1,0 +1,73 @@
+{
+  "source_commit": "0820f0b67b0e49b289b84fdf66b7b8fb178afe82; current store.go unchanged",
+  "evidence": {
+    "space": "store.go StorageSize/AvailableRatio/IsLowSpace; first four cases reproduce TestLowSpaceRatio assertions; others derive strict <100, >8GiB and ratio <1-0.8 branches. No new Go oracle.",
+    "slow": "store.go GetSlowScore/GetNetworkSlowScores/IsSlow: copied map, threshold >=80 OR trend eviction; Rust tests cover 0,79,80,MAX and recovery. Existing TestGetAvgNetworkSlowScore is registry scope, not executed here.",
+    "resolved": "store.go GetMinResolvedTS/IsAvailableForMinResolvedTS, store_option.go SetMinResolvedTS; Rust matrix derives !Removed && IsTiKV && leaders!=0; no matching Go assertion claimed."
+  },
+  "space": [
+    {
+      "capacity": 137438953472,
+      "available": 17179869184,
+      "regions": 0,
+      "low": false,
+      "ratio": 0.125
+    },
+    {
+      "capacity": 137438953472,
+      "available": 17179869184,
+      "regions": 101,
+      "low": true,
+      "ratio": 0.125
+    },
+    {
+      "capacity": 137438953472,
+      "available": 34359738368,
+      "regions": 101,
+      "low": false,
+      "ratio": 0.25
+    },
+    {
+      "capacity": 0,
+      "available": 34359738368,
+      "regions": 101,
+      "low": false,
+      "ratio": 0
+    },
+    {
+      "capacity": 68719476736,
+      "available": 8589934592,
+      "regions": 99,
+      "low": true,
+      "ratio": 0.125
+    },
+    {
+      "capacity": 137438953472,
+      "available": 17179869184,
+      "regions": 100,
+      "low": true,
+      "ratio": 0.125
+    },
+    {
+      "capacity": 4,
+      "available": 1,
+      "regions": 100,
+      "low": false,
+      "ratio": 0.25
+    },
+    {
+      "capacity": 4,
+      "available": 8,
+      "regions": 100,
+      "low": false,
+      "ratio": 2.0
+    },
+    {
+      "capacity": 0,
+      "available": 0,
+      "regions": 0,
+      "low": false,
+      "ratio": 0
+    }
+  ]
+}

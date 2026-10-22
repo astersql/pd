@@ -20,6 +20,7 @@ fn core_task_14_raw_stats_fixture() {
             bytes_read: stats.bytes_read,
             keys_written: stats.keys_written,
             keys_read: stats.keys_read,
+            ..Default::default()
         };
         store.update_raw_stats(raw.clone());
         assert_eq!(store.store_stats(), raw, "{}", case["name"]);

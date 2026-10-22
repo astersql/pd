@@ -12,6 +12,8 @@ pub struct DFSStats {
 /// including inconsistent capacity/available reports and unsigned maxima.
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub struct StoreStats {
+    pub slow_score: u64,
+    pub network_slow_scores: std::collections::HashMap<u64, u64>,
     pub capacity: u64,
     pub available: u64,
     pub used_size: u64,

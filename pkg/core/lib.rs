@@ -86,3 +86,9 @@ pub mod store_score_v1;
 mod store_score_v2_test;
 
 pub mod store_score_v2;
+
+#[cfg(test)]
+#[path = "store_health_test.rs"]
+mod store_health_test;
+
+pub mod store_health;
