@@ -1,0 +1,117 @@
+{
+  "sources": {
+    "rates": "pkg/core/region_test.go TestRegionWriteRate: (10,3) with intervals 0,1,5,500; additional 3,300,301 and reversed endpoints derived from region.go GetWriteRate unsigned subtraction and inclusive [3,300] branch",
+    "queries": "region.go GetReadQueryNum/GetWriteQueryNum; region_option.go mergeQueryStat/resetReadQuery/resetWriteQuery: wrapping uint64 sums, GC excluded from query counts and preserved by resets. No existing direct assertions; source-derived Rust coverage only.",
+    "loads": "region.go GetLoads/GetWriteLoads: eight counters in read bytes/keys/query, write bytes/keys/query, read CPU, reserved zero order; source-derived Rust coverage only"
+  },
+  "rates": [
+    [
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      5,
+      2,
+      0.6
+    ],
+    [
+      0,
+      500,
+      0,
+      0
+    ],
+    [
+      0,
+      3,
+      3.3333333333333335,
+      1
+    ],
+    [
+      0,
+      300,
+      0.03333333333333333,
+      0.01
+    ],
+    [
+      0,
+      301,
+      0,
+      0
+    ],
+    [
+      10,
+      5,
+      0,
+      0
+    ],
+    [
+      18446744073709551615,
+      4,
+      2,
+      0.6
+    ]
+  ],
+  "query_scenario": {
+    "input": {
+      "gc": 11,
+      "get": 18446744073709551615,
+      "scan": 2,
+      "coprocessor": 3,
+      "put": 4,
+      "delete": 5,
+      "delete_range": 6,
+      "acquire_pessimistic_lock": 7,
+      "commit": 8,
+      "prewrite": 9,
+      "rollback": 10
+    },
+    "expected_read": 4,
+    "expected_write": 49,
+    "merge": {
+      "get": 1,
+      "gc": 2
+    },
+    "expected_get_after_merge": 0,
+    "expected_gc_after_resets": 13
+  },
+  "loads_scenario": {
+    "input": {
+      "read_bytes": 8,
+      "read_keys": 9,
+      "written_bytes": 10,
+      "written_keys": 3,
+      "get": 2,
+      "put": 4,
+      "read_cpu": 7
+    },
+    "expected": [
+      8,
+      9,
+      2,
+      10,
+      3,
+      4,
+      7,
+      0
+    ],
+    "expected_write": [
+      0,
+      0,
+      0,
+      10,
+      3,
+      4,
+      0,
+      0
+    ]
+  }
+}

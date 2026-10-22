@@ -83,6 +83,9 @@ impl RegionInfo {
         let stats = copy.stats.clone();
         let mut result = Self::new(copy.meta, copy.leader, copy.down_peers, copy.pending_peers);
         result.stats = stats;
+        result.query_stats = copy.query_stats;
+        result.report_interval = copy.report_interval;
+        result.read_cpu_usage = copy.read_cpu_usage;
         result
     }
 }
