@@ -1,0 +1,171 @@
+{
+  "source": {
+    "symbols": [
+      "pkg/core/region.go:RegionsInfo.ScanRegions",
+      "pkg/core/region.go:RegionsInfo.ScanRegionWithIterator",
+      "pkg/core/region_tree.go:regionTree.scanRange"
+    ],
+    "existing_tests": "TestScanRegion (scanRegion helper): a..c contiguous, c..e hole, g..h containing, m..infinity; TestScanRegionLimit tests BatchScanRegions, not direct ScanRegions.",
+    "derivation": "All expected IDs are derived from current ScanRegions source: scan starts at containing or next region; stops if nonempty end <= region.start, or positive limit reached. Nonpositive limits unbounded. Equal/reversed bounds follow literal start-key check (e..e includes containing d..f). Iterator forwards scanRange and stops after callback false. These cases are source-derived, not executed Go differential cases.",
+    "regions": [
+      [
+        1,
+        "a",
+        "b"
+      ],
+      [
+        2,
+        "b",
+        "c"
+      ],
+      [
+        3,
+        "d",
+        "f"
+      ],
+      [
+        4,
+        "f",
+        "i"
+      ],
+      [
+        6,
+        "l",
+        ""
+      ]
+    ]
+  },
+  "cases": [
+    {
+      "start": "a",
+      "end": "c",
+      "limit": 0,
+      "ids": [
+        1,
+        2
+      ],
+      "expected_source": "region.go:2135-2150 ScanRegions; region_tree.go scanRange: containing-or-next start, stop before region.start >= nonempty end, append until positive limit; IDs selected from source.regions in key order",
+      "existing_test_relation": "TestScanRegion exercises analogous scanRegion helper bounds and holes; this direct ScanRegions case is source-derived, not a Go runtime differential"
+    },
+    {
+      "start": "a",
+      "end": "e",
+      "limit": -1,
+      "ids": [
+        1,
+        2,
+        3
+      ],
+      "expected_source": "region.go:2135-2150 ScanRegions; region_tree.go scanRange: containing-or-next start, stop before region.start >= nonempty end, append until positive limit; IDs selected from source.regions in key order",
+      "existing_test_relation": "TestScanRegion exercises analogous scanRegion helper bounds and holes; this direct ScanRegions case is source-derived, not a Go runtime differential"
+    },
+    {
+      "start": "c",
+      "end": "e",
+      "limit": 0,
+      "ids": [
+        3
+      ],
+      "expected_source": "region.go:2135-2150 ScanRegions; region_tree.go scanRange: containing-or-next start, stop before region.start >= nonempty end, append until positive limit; IDs selected from source.regions in key order",
+      "existing_test_relation": "TestScanRegion exercises analogous scanRegion helper bounds and holes; this direct ScanRegions case is source-derived, not a Go runtime differential"
+    },
+    {
+      "start": "e",
+      "end": "h",
+      "limit": 9,
+      "ids": [
+        3,
+        4
+      ],
+      "expected_source": "region.go:2135-2150 ScanRegions; region_tree.go scanRange: containing-or-next start, stop before region.start >= nonempty end, append until positive limit; IDs selected from source.regions in key order",
+      "existing_test_relation": "TestScanRegion exercises analogous scanRegion helper bounds and holes; this direct ScanRegions case is source-derived, not a Go runtime differential"
+    },
+    {
+      "start": "a",
+      "end": "d",
+      "limit": 9,
+      "ids": [
+        1,
+        2
+      ],
+      "expected_source": "region.go:2135-2150 ScanRegions; region_tree.go scanRange: containing-or-next start, stop before region.start >= nonempty end, append until positive limit; IDs selected from source.regions in key order",
+      "existing_test_relation": "TestScanRegion exercises analogous scanRegion helper bounds and holes; this direct ScanRegions case is source-derived, not a Go runtime differential"
+    },
+    {
+      "start": "m",
+      "end": "",
+      "limit": 0,
+      "ids": [
+        6
+      ],
+      "expected_source": "region.go:2135-2150 ScanRegions; region_tree.go scanRange: containing-or-next start, stop before region.start >= nonempty end, append until positive limit; IDs selected from source.regions in key order",
+      "existing_test_relation": "TestScanRegion exercises analogous scanRegion helper bounds and holes; this direct ScanRegions case is source-derived, not a Go runtime differential"
+    },
+    {
+      "start": "",
+      "end": "",
+      "limit": -2,
+      "ids": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "expected_source": "region.go:2135-2150 ScanRegions; region_tree.go scanRange: containing-or-next start, stop before region.start >= nonempty end, append until positive limit; IDs selected from source.regions in key order",
+      "existing_test_relation": "TestScanRegion exercises analogous scanRegion helper bounds and holes; this direct ScanRegions case is source-derived, not a Go runtime differential"
+    },
+    {
+      "start": "a",
+      "end": "",
+      "limit": 1,
+      "ids": [
+        1
+      ],
+      "expected_source": "region.go:2135-2150 ScanRegions; region_tree.go scanRange: containing-or-next start, stop before region.start >= nonempty end, append until positive limit; IDs selected from source.regions in key order",
+      "existing_test_relation": "TestScanRegion exercises analogous scanRegion helper bounds and holes; this direct ScanRegions case is source-derived, not a Go runtime differential"
+    },
+    {
+      "start": "c",
+      "end": "d",
+      "limit": 0,
+      "ids": [],
+      "expected_source": "region.go:2135-2150 ScanRegions; region_tree.go scanRange: containing-or-next start, stop before region.start >= nonempty end, append until positive limit; IDs selected from source.regions in key order",
+      "existing_test_relation": "TestScanRegion exercises analogous scanRegion helper bounds and holes; this direct ScanRegions case is source-derived, not a Go runtime differential"
+    },
+    {
+      "start": "i",
+      "end": "k",
+      "limit": 0,
+      "ids": [],
+      "expected_source": "region.go:2135-2150 ScanRegions; region_tree.go scanRange: containing-or-next start, stop before region.start >= nonempty end, append until positive limit; IDs selected from source.regions in key order",
+      "existing_test_relation": "TestScanRegion exercises analogous scanRegion helper bounds and holes; this direct ScanRegions case is source-derived, not a Go runtime differential"
+    },
+    {
+      "start": "a",
+      "end": "a",
+      "limit": 0,
+      "ids": [],
+      "expected_source": "region.go:2135-2150 ScanRegions; region_tree.go scanRange: containing-or-next start, stop before region.start >= nonempty end, append until positive limit; IDs selected from source.regions in key order",
+      "existing_test_relation": "TestScanRegion exercises analogous scanRegion helper bounds and holes; this direct ScanRegions case is source-derived, not a Go runtime differential"
+    },
+    {
+      "start": "e",
+      "end": "d",
+      "limit": 0,
+      "ids": [],
+      "expected_source": "region.go:2135-2150 ScanRegions; region_tree.go scanRange: containing-or-next start, stop before region.start >= nonempty end, append until positive limit; IDs selected from source.regions in key order",
+      "existing_test_relation": "TestScanRegion exercises analogous scanRegion helper bounds and holes; this direct ScanRegions case is source-derived, not a Go runtime differential"
+    },
+    {
+      "start": "e",
+      "end": "e",
+      "limit": 0,
+      "ids": [
+        3
+      ],
+      "expected_source": "region.go:2135-2150 ScanRegions; region_tree.go scanRange: containing-or-next start, stop before region.start >= nonempty end, append until positive limit; IDs selected from source.regions in key order",
+      "existing_test_relation": "TestScanRegion exercises analogous scanRegion helper bounds and holes; this direct ScanRegions case is source-derived, not a Go runtime differential"
+    }
+  ]
+}

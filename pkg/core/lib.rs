@@ -252,3 +252,8 @@ pub use regions_query::*;
 #[cfg(test)]
 #[path = "regions_query_test.rs"]
 mod regions_query_test;
+
+mod regions_scan;
+#[cfg(test)]
+#[path = "regions_scan_test.rs"]
+mod regions_scan_test;
