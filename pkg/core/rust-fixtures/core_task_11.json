@@ -1,0 +1,37 @@
+{
+  "evidence": {
+    "baseline": "0820f0b67b0e49b289b84fdf66b7b8fb178afe82",
+    "source": "pkg/core/store.go NewStoreInfo, GetID, GetAddress, GetStatusAddress, GetVersion, GetStartTime, GetLeaderWeight, GetRegionWeight; pkg/core/store_option.go SetStoreDeployPath, SetStoreStartTime",
+    "existing_test": "pkg/core/store_test.go TestNewStore asserts regionScoreV2 ordering only; it does not assert these metadata/default scenarios",
+    "derivation": "Getters forward metapb fields; nil protobuf getters return zero. GetStartTime uses time.Unix(start_timestamp,0), so zero is Unix epoch, not Go zero time. NewStoreInfo weights are 1.0; uninitialized StoreInfo weights are zero. DeployPath is preserved by SetStoreDeployPath/GetMeta. All scenarios below are source-derived, not executed Go/Rust differential evidence. No address/version/path validation is applied."
+  },
+  "scenarios": [
+    {
+      "name": "normal",
+      "id": 1,
+      "address": "127.0.0.1:20160",
+      "status_address": "127.0.0.1:20180",
+      "version": "v8.5.0",
+      "deploy_path": "/tikv",
+      "start_timestamp": 1700000000
+    },
+    {
+      "name": "zero",
+      "id": 0,
+      "address": "",
+      "status_address": "",
+      "version": "",
+      "deploy_path": "",
+      "start_timestamp": 0
+    },
+    {
+      "name": "unvalidated-boundary",
+      "id": 18446744073709551615,
+      "address": "invalid address",
+      "status_address": "状态",
+      "version": "not-semver",
+      "deploy_path": "../data",
+      "start_timestamp": -1
+    }
+  ]
+}

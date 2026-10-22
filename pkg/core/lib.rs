@@ -14,3 +14,10 @@ pub use region_meta::*;
 #[cfg(test)]
 #[path = "region_meta_test.rs"]
 mod region_meta_test;
+
+pub mod store_meta;
+pub use store_meta::*;
+
+#[cfg(test)]
+#[path = "store_meta_test.rs"]
+mod store_meta_test;
