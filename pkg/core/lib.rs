@@ -293,3 +293,8 @@ pub use basic_cluster::*;
 #[cfg(test)]
 #[path = "basic_cluster_test.rs"]
 mod basic_cluster_test;
+
+pub mod basic_cluster_rates;
+#[cfg(test)]
+#[path = "basic_cluster_rates_test.rs"]
+mod basic_cluster_rates_test;

@@ -1,0 +1,145 @@
+{
+  "empty": {
+    "leader": [],
+    "all": []
+  },
+  "missing_index": {
+    "leader": [
+      [
+        7,
+        0.0,
+        0.0
+      ]
+    ],
+    "all": [
+      [
+        7,
+        0.0,
+        0.0
+      ]
+    ]
+  },
+  "populated": {
+    "leader": [
+      [
+        1,
+        20.0,
+        4.0
+      ],
+      [
+        2,
+        10.0,
+        2.0
+      ],
+      [
+        3,
+        0.0,
+        0.0
+      ],
+      [
+        7,
+        0.0,
+        0.0
+      ]
+    ],
+    "all": [
+      [
+        1,
+        30.0,
+        6.0
+      ],
+      [
+        2,
+        30.0,
+        6.0
+      ],
+      [
+        3,
+        30.0,
+        6.0
+      ],
+      [
+        7,
+        0.0,
+        0.0
+      ]
+    ]
+  },
+  "deleted_store": {
+    "leader": [
+      [
+        2,
+        10.0,
+        2.0
+      ],
+      [
+        3,
+        0.0,
+        0.0
+      ],
+      [
+        7,
+        0.0,
+        0.0
+      ]
+    ],
+    "all": [
+      [
+        2,
+        30.0,
+        6.0
+      ],
+      [
+        3,
+        30.0,
+        6.0
+      ],
+      [
+        7,
+        0.0,
+        0.0
+      ]
+    ]
+  },
+  "deleted_regions": {
+    "leader": [
+      [
+        2,
+        0.0,
+        0.0
+      ],
+      [
+        3,
+        0.0,
+        0.0
+      ],
+      [
+        7,
+        0.0,
+        0.0
+      ]
+    ],
+    "all": [
+      [
+        2,
+        0.0,
+        0.0
+      ],
+      [
+        3,
+        0.0,
+        0.0
+      ],
+      [
+        7,
+        0.0,
+        0.0
+      ]
+    ]
+  },
+  "sources": {
+    "existing_test": "region_test.go TestRegionWriteRate asserts bytes/interval and keys/interval for 5 seconds; no BasicCluster array assertions are claimed as Go execution coverage.",
+    "derived": "basic_cluster.go getWriteRate iterates registered stores, skips Removed, appends matching id/bytes/keys. region.go GetStoreLeaderWriteRate and GetStoreWriteRate sum leader vs leader+follower+learner trees; nil TotalWriteRate returns zero. For regions (100,20)/5 and (50,10)/5: rates (20,4), (10,2). Store 1 leads first; store 2 leads second; store 3 learns both. Store 4 removed, store 7 has no index. Unregistered 99 omitted even with region. Deleting store omits its row, deleting regions zeroes remaining rates. Rows sorted only for comparison because Go map order unspecified.",
+    "baseline": "0820f0b67b0e49b289b84fdf66b7b8fb178afe82; git diff baseline -- pkg/core/basic_cluster.go empty"
+  }
+}
