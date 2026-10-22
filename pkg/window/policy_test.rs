@@ -58,3 +58,27 @@ fn rolling_policy_rotation() {
     policy.add(2.0);
     check(1, &[(&[], 0), (&[2.0], 1), (&[], 0)]);
 }
+
+#[test]
+fn rolling_policy_reduce_expiry() {
+    let start = Instant::now();
+    let now = Arc::new(Mutex::new(start));
+    let clock = Arc::clone(&now);
+    let policy = RollingPolicy::with_clock(Window::new(3), Duration::from_millis(100), move || {
+        *clock.lock().unwrap()
+    });
+    assert!(policy.reduce(crate::avg).is_nan());
+    policy.add(2.5);
+    *now.lock().unwrap() = start + Duration::from_millis(100);
+    policy.add(4.5);
+    assert_eq!(policy.reduce(crate::sum), 7.0);
+    *now.lock().unwrap() = start + Duration::from_millis(300);
+    assert_eq!(policy.reduce(crate::sum), 4.5);
+    *now.lock().unwrap() = start + Duration::from_millis(400);
+    assert_eq!(
+        policy.reduce(|_| panic!("expired reducer must not run")),
+        0.0
+    );
+    *now.lock().unwrap() = start + Duration::from_millis(100);
+    assert_eq!(policy.reduce(crate::sum), 7.0); // Reading never rotates or clears buckets.
+}

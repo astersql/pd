@@ -4,6 +4,17 @@
 
 use std::{error::Error, fmt};
 
+/// Text identifying a request sent to a member that is not the leader.
+pub const NOT_LEADER_ERR: &str = "is not leader";
+
+/// Text identifying a keyspace group not served by the receiving node.
+pub const NOT_SERVED_ERR: &str = "is not served";
+
+/// Tests the displayed error for the case-sensitive Go leader-change marker.
+pub fn is_leader_changed(error: Option<&dyn Error>) -> bool {
+    error.is_some_and(|error| error.to_string().contains(NOT_LEADER_ERR))
+}
+
 /// Stable PD domain error catalog.
 pub mod catalog;
 

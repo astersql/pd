@@ -239,3 +239,21 @@ fn delete_key_ranges() {
         &[KeyRange::new([0], [128]), KeyRange::new([255], [])]
     );
 }
+
+#[test]
+fn key_ranges_collection_lifecycle() {
+    use crate::KeyRanges;
+    let mut ranges = KeyRanges::with_capacity(2);
+    assert!(ranges.is_empty());
+    ranges.append([0, 255], [128]);
+    ranges.append(b"b", []);
+    assert_eq!(
+        ranges.ranges(),
+        &[KeyRange::new([0, 255], [128]), KeyRange::new(b"b", [])]
+    );
+    ranges.clean();
+    assert!(ranges.is_empty());
+    ranges.clean();
+    ranges.append([], b"z");
+    assert_eq!(ranges.ranges(), &[KeyRange::new([], b"z")]);
+}

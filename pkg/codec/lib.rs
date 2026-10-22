@@ -9,7 +9,8 @@ pub use bytes::{DecodeBytesError, decode_bytes, encode_bytes};
 pub use keyspace::{
     DecodeKeyspaceKeyError, ENCODED_KEYSPACE_PREFIX_LEN, KEYSPACE_PREFIX_LEN,
     ParseKeyspacePrefixError, RAW_KEYSPACE_MODE_PREFIX, TXN_KEYSPACE_MODE_PREFIX,
-    decode_keyspace_key, encode_keyspace_boundary, make_keyspace_prefix, parse_keyspace_prefix,
+    decode_keyspace_key, encode_keyspace_boundary, keyspace_modes, make_keyspace_prefix,
+    parse_keyspace_prefix,
 };
 pub use number::{DecodeIntError, decode_int, encode_int};
 pub use table::{

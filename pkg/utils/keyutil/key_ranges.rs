@@ -13,6 +13,28 @@ impl KeyRanges {
         Self { krs: ranges }
     }
 
+    /// Creates an empty collection with space for the hinted number of ranges.
+    pub fn with_capacity(capacity: usize) -> Self {
+        Self {
+            krs: Vec::with_capacity(capacity),
+        }
+    }
+
+    /// Drops all ranges while retaining the collection allocation for reuse.
+    pub fn clean(&mut self) {
+        self.krs.clear();
+    }
+
+    /// Reports whether the collection contains no ranges.
+    pub fn is_empty(&self) -> bool {
+        self.krs.is_empty()
+    }
+
+    /// Appends owned copies of byte boundaries in their supplied order.
+    pub fn append(&mut self, start_key: impl AsRef<[u8]>, end_key: impl AsRef<[u8]>) {
+        self.krs.push(KeyRange::new(start_key, end_key));
+    }
+
     /// Borrows the ranges in their current order.
     pub fn ranges(&self) -> &[KeyRange] {
         &self.krs

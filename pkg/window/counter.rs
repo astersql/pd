@@ -41,18 +41,7 @@ impl<C: Fn() -> Instant + Send + Sync> RollingCounter<C> {
     /// Returns zero without calling the reducer when the whole window expired.
     /// The callback must not write to this counter while holding the read lock.
     pub fn reduce(&self, f: impl FnOnce(Iterator<'_>) -> f64) -> f64 {
-        let state = self
-            .policy
-            .state
-            .read()
-            .expect("rolling policy lock poisoned");
-        let span = self.policy.timespan(&state);
-        let size = state.window.size();
-        if span >= size as u128 {
-            return 0.0;
-        }
-        let offset = (state.offset + span as usize + 1) % size;
-        f(state.window.iterator(offset, size - span as usize))
+        self.policy.reduce(f)
     }
 
     /// Averages bucket samples; an initial empty window yields NaN.

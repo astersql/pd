@@ -69,3 +69,12 @@ fn encoded_keyspace_boundary() {
         Err(DecodeKeyspaceKeyError::InvalidMarker(0xfa))
     );
 }
+
+#[test]
+fn supported_keyspace_modes() {
+    assert_eq!(crate::keyspace_modes(), [b'r', b'x']);
+    let mut modes = crate::keyspace_modes();
+    modes[0] = b'?';
+    assert_eq!(crate::keyspace_modes(), [b'r', b'x']);
+    assert_eq!(modes, [b'?', b'x']);
+}

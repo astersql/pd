@@ -138,3 +138,8 @@ pub fn parse_keyspace_prefix(key: &[u8]) -> Result<(u8, u32), ParseKeyspacePrefi
     let id = u32::from_be_bytes([0, key[1], key[2], key[3]]);
     Ok((mode, id))
 }
+
+/// Returns the supported raw and transactional modes in Go oracle order.
+pub const fn keyspace_modes() -> [u8; 2] {
+    [RAW_KEYSPACE_MODE_PREFIX, TXN_KEYSPACE_MODE_PREFIX]
+}

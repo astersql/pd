@@ -55,3 +55,22 @@ fn typed_error_core() {
         NOT_FOUND.with_source(["balance-region"], SourceError("request canceled"))
     );
 }
+
+#[test]
+fn leader_changed_classification() {
+    use super::{NOT_LEADER_ERR, NOT_SERVED_ERR, is_leader_changed};
+    assert_eq!(NOT_LEADER_ERR, "is not leader");
+    assert_eq!(NOT_SERVED_ERR, "is not served");
+    assert!(!is_leader_changed(None));
+    for (text, expected) in [
+        ("", false),
+        ("is not served", false),
+        ("IS NOT LEADER", false),
+        ("member is not leader: retry", true),
+    ] {
+        assert_eq!(is_leader_changed(Some(&SourceError(text))), expected);
+    }
+    let wrapped = ErrorTemplate::new("PD:test", "request failed")
+        .with_source([] as [&str; 0], SourceError(NOT_LEADER_ERR));
+    assert!(is_leader_changed(Some(&wrapped)));
+}

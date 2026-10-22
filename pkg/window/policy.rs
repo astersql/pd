@@ -62,6 +62,20 @@ impl<C: Fn() -> Instant + Send + Sync> RollingPolicy<C> {
         }
     }
 
+    /// Reduces unexpired buckets in chronological order under a shared lock.
+    /// Returns zero without calling the reducer when the whole window expired.
+    /// The callback must not write to this policy while holding the read lock.
+    pub fn reduce(&self, f: impl FnOnce(crate::Iterator<'_>) -> f64) -> f64 {
+        let state = self.state.read().expect("rolling policy lock poisoned");
+        let span = self.timespan(&state);
+        let size = state.window.size();
+        if span >= size as u128 {
+            return 0.0;
+        }
+        let offset = (state.offset + span as usize + 1) % size;
+        f(state.window.iterator(offset, size - span as usize))
+    }
+
     /// Adds to the current bucket, clearing expired buckets before writing.
     pub fn add(&self, value: f64) {
         let mut state = self.state.write().expect("rolling policy lock poisoned");
