@@ -107,3 +107,77 @@ fn wma_behavior() {
         assert_eq!(average.get_instantaneous(), 0.0);
     }
 }
+
+#[test]
+fn hma_behavior() {
+    use crate::Hma;
+    let data = [1.0, 1.0, 1.0, 1.0, 5.0, 1.0, 1.0, 1.0];
+    let expected = [1.0, 1.0, 1.0, 1.0, 3.6666667, 3.4, 1.0, 0.3777778];
+    let mut hma = Hma::with_size(5.0);
+    assert_eq!(hma.get(), 0.0);
+    assert_eq!(hma.get_instantaneous(), 0.0);
+    for _ in 0..3 {
+        for (value, expected) in data.into_iter().zip(expected) {
+            hma.add(value);
+            assert_close(hma.get(), expected);
+            assert_eq!(hma.get_instantaneous(), value);
+        }
+        hma.reset();
+        assert_eq!(hma.get(), 0.0);
+        assert_eq!(hma.get_instantaneous(), 0.0);
+    }
+    hma.add(100.0);
+    hma.set(data[0]);
+    assert_close(hma.get(), expected[0]);
+    assert_eq!(hma.get_instantaneous(), data[0]);
+    for (value, expected) in data[1..].iter().zip(&expected[1..]) {
+        hma.add(*value);
+        assert_close(hma.get(), *expected);
+    }
+
+    // Direct weighted sums independently check Wma's running recurrence.
+    fn weighted(history: &[f64], size: usize) -> f64 {
+        let size = if size <= 1 { 10 } else { size };
+        let window = &history[history.len().saturating_sub(size)..];
+        let first = size - window.len() + 1;
+        let sum: f64 = window
+            .iter()
+            .enumerate()
+            .map(|(i, value)| value * (first + i) as f64)
+            .sum();
+        sum / (first..=size).sum::<usize>() as f64
+    }
+    for (mut hma, size) in [
+        (Hma::new(), 10),
+        (Hma::default(), 10),
+        (Hma::with_size(-3.0), 10),
+        (Hma::with_size(0.0), 10),
+        (Hma::with_size(1.0), 10),
+        (Hma::with_size(f64::NAN), 10),
+        (Hma::with_size(1.9), 1),
+        (Hma::with_size(2.0), 2),
+        (Hma::with_size(3.0), 3),
+        (Hma::with_size(5.9), 5),
+        (Hma::with_size(16.0), 16),
+    ] {
+        let mut history = Vec::new();
+        let mut combined = Vec::new();
+        for i in 0..100 {
+            let value = ((i * 17) % 31) as f64 - 15.0;
+            history.push(value);
+            combined.push(2.0 * weighted(&history, size / 2) - weighted(&history, size));
+            hma.add(value);
+            assert_close(
+                hma.get(),
+                weighted(&combined, (size as f64).sqrt() as usize),
+            );
+            assert_eq!(hma.get_instantaneous(), value);
+        }
+        hma.set(-7.0);
+        assert_close(hma.get(), -7.0);
+        assert_eq!(hma.get_instantaneous(), -7.0);
+        hma.reset();
+        assert_eq!(hma.get(), 0.0);
+        assert_eq!(hma.get_instantaneous(), 0.0);
+    }
+}
