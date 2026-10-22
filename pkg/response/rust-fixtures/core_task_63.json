@@ -1,0 +1,79 @@
+{
+  "sources": {
+    "normal": "region_test.go TestPeer and TestPeerStats: four expected maps",
+    "boundaries": "region.go fromPeer(nil); setDefaultIfNil; region_easyjson.go Encode4 zero omissions; unknown enum String decimal; Encode3 down_seconds omission. Source-derived, not executed Go differential.",
+    "nil": "region.go fromPeer/setDefaultIfNil; server/api/region_test.go TestRegionsInfoMarshal covers nil peer after repair; only TestPeer and TestPeerStats executed here. PDPeerStats::default models repaired DTO, not fromPeerStats(nil), which panics in Go.",
+    "stats": "region_test.go TestPeerStats expected maps; region_easyjson.go Encode3 always emits peer, omits down_seconds=0; u64::MAX decimal emission from Uint64 (source-derived)."
+  },
+  "cases": [
+    {
+      "role": 0,
+      "id": 1,
+      "store_id": 10,
+      "witness": false,
+      "expected": {
+        "id": 1,
+        "store_id": 10,
+        "role_name": "Voter"
+      }
+    },
+    {
+      "role": 1,
+      "id": 2,
+      "store_id": 20,
+      "witness": false,
+      "expected": {
+        "id": 2,
+        "store_id": 20,
+        "role_name": "Learner",
+        "role": 1,
+        "is_learner": true
+      }
+    },
+    {
+      "role": 2,
+      "id": 3,
+      "store_id": 30,
+      "witness": false,
+      "expected": {
+        "id": 3,
+        "store_id": 30,
+        "role_name": "IncomingVoter",
+        "role": 2
+      }
+    },
+    {
+      "role": 3,
+      "id": 4,
+      "store_id": 40,
+      "witness": false,
+      "expected": {
+        "id": 4,
+        "store_id": 40,
+        "role_name": "DemotingVoter",
+        "role": 3
+      }
+    },
+    {
+      "role": 0,
+      "id": 0,
+      "store_id": 0,
+      "witness": false,
+      "expected": {
+        "role_name": "Voter"
+      }
+    },
+    {
+      "role": -7,
+      "id": 18446744073709551615,
+      "store_id": 0,
+      "witness": true,
+      "expected": {
+        "role_name": "-7",
+        "role": -7,
+        "id": 18446744073709551615,
+        "is_witness": true
+      }
+    }
+  ]
+}

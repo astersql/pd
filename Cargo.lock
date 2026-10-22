@@ -217,6 +217,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "astersql-pd-response"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-core",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "astersql-pd-runtime"
 version = "0.1.0"
 dependencies = [
