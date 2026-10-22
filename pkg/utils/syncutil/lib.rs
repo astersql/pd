@@ -6,7 +6,7 @@ mod lock_group;
 mod ordered_single_flight;
 
 pub use lock_group::{LockGroup, LockGroupGuard};
-pub use ordered_single_flight::OrderedSingleFlight;
+pub use ordered_single_flight::{ExecutionCancellation, OrderedSingleFlight};
 
 /// Blocking locks backed directly by [`std::sync`].
 ///

@@ -5,12 +5,14 @@ mod conversion;
 mod duration;
 mod size;
 mod string_slice;
+mod time;
 
 pub use comparison::*;
 pub use conversion::*;
 pub use duration::*;
 pub use size::*;
 pub use string_slice::*;
+pub use time::*;
 
 #[cfg(test)]
 mod comparison_test;
@@ -26,3 +28,6 @@ mod size_test;
 
 #[cfg(test)]
 mod string_slice_test;
+
+#[cfg(test)]
+mod time_test;

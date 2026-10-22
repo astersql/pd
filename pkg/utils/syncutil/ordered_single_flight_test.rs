@@ -76,3 +76,120 @@ async fn singleflight_coalesce_and_order() {
     }
     assert_eq!(executions.load(Ordering::SeqCst), 2);
 }
+
+// Polling once registers a waiter without relying on scheduler timing.
+async fn register<F: std::future::Future>(call: std::pin::Pin<&mut F>) {
+    let mut call = call;
+    std::future::poll_fn(|cx| {
+        assert!(call.as_mut().poll(cx).is_pending());
+        std::task::Poll::Ready(())
+    })
+    .await;
+}
+
+#[tokio::test]
+async fn singleflight_cancellation_shared_waiters() {
+    for cancel_executor in [false, true] {
+        let flight = OrderedSingleFlight::<usize, ()>::new();
+        let (release_tx, release_rx) = oneshot::channel();
+        let first = flight.call(|| async {
+            release_rx.await.unwrap();
+            Ok(1)
+        });
+        tokio::pin!(first);
+        register(first.as_mut()).await;
+
+        let (started_tx, started_rx) = oneshot::channel();
+        let (finish_tx, finish_rx) = oneshot::channel();
+        let mut second = Box::pin(flight.call_cancellable(move |cancel| async move {
+            started_tx.send(cancel.clone()).unwrap();
+            finish_rx.await.unwrap();
+            assert!(!cancel.is_cancelled());
+            Ok(2)
+        }));
+        register(second.as_mut()).await;
+        let mut third = Box::pin(flight.call(|| async { Ok(99) }));
+        register(third.as_mut()).await;
+        release_tx.send(()).unwrap();
+        assert_eq!(first.await, Ok(1));
+        register(second.as_mut()).await;
+        let cancel = started_rx.await.unwrap();
+        if cancel_executor {
+            drop(second);
+            assert!(!cancel.is_cancelled());
+            finish_tx.send(()).unwrap();
+            assert_eq!(third.await, Ok(2));
+        } else {
+            drop(third);
+            assert!(!cancel.is_cancelled());
+            finish_tx.send(()).unwrap();
+            assert_eq!(second.await, Ok(2));
+        }
+        cancel.cancelled().await;
+    }
+}
+
+#[tokio::test]
+async fn singleflight_cancellation_last_waiter() {
+    let flight = OrderedSingleFlight::<usize, ()>::new();
+    let (started_tx, started_rx) = oneshot::channel();
+    let (cancelled_tx, cancelled_rx) = oneshot::channel();
+    let mut call = Box::pin(flight.call_cancellable(move |cancel| async move {
+        started_tx.send(()).unwrap();
+        cancel.cancelled().await;
+        cancelled_tx.send(()).unwrap();
+        Err(())
+    }));
+    register(call.as_mut()).await;
+    started_rx.await.unwrap();
+    drop(call);
+    tokio::time::timeout(std::time::Duration::from_secs(5), cancelled_rx)
+        .await
+        .unwrap()
+        .unwrap();
+    assert_eq!(flight.call(|| async { Ok(3) }).await, Ok(3));
+}
+
+#[tokio::test]
+async fn singleflight_cancellation_pending_can_be_reused() {
+    let flight = OrderedSingleFlight::<usize, ()>::new();
+    let (release_tx, release_rx) = oneshot::channel();
+    let first = flight.call(|| async {
+        release_rx.await.unwrap();
+        Ok(1)
+    });
+    tokio::pin!(first);
+    register(first.as_mut()).await;
+    let mut abandoned = Box::pin(flight.call(|| async { Ok(99) }));
+    register(abandoned.as_mut()).await;
+    drop(abandoned);
+    let next = flight.call_cancellable(|cancel| async move {
+        assert!(!cancel.is_cancelled());
+        Ok(2)
+    });
+    tokio::pin!(next);
+    register(next.as_mut()).await;
+    release_tx.send(()).unwrap();
+    assert_eq!(first.await, Ok(1));
+    assert_eq!(next.await, Ok(2));
+}
+
+#[tokio::test]
+async fn singleflight_cancellation_noncooperative_execution_keeps_order() {
+    let flight = OrderedSingleFlight::<usize, ()>::new();
+    let (started_tx, started_rx) = oneshot::channel();
+    let (release_tx, release_rx) = oneshot::channel();
+    let mut first = Box::pin(flight.call(|| async {
+        started_tx.send(()).unwrap();
+        release_rx.await.unwrap();
+        Ok(1)
+    }));
+    register(first.as_mut()).await;
+    started_rx.await.unwrap();
+    drop(first);
+    let next = flight.call(|| async { Ok(2) });
+    tokio::pin!(next);
+    register(next.as_mut()).await;
+    release_tx.send(()).unwrap();
+    assert_eq!(next.await, Ok(2));
+}
