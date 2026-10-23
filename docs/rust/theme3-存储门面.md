@@ -382,3 +382,116 @@ Rust 修改后先 cargo fmt --all，未格式化其他任务 Rust 文件。
 审查生产接口、最小字段/连线、独立测试及本节证据；无依赖、其他 Rust 文件、
 只读 plan.md 或来源主题变更。保留用户既有观测工具计划修改与前序编号任务删除，
 排除本次提交。状态：已完成；批次 57 的行为与验证证据满足。
+
+## 任务 5：回归门面契约与依赖方向（批次 58）
+
+日期：2026-10-23（Asia/Shanghai）。状态：已完成。
+
+### 准入、验收边界与 Go 证据
+
+核验批次 57 提交 `07147a8a6`、本文任务 4 的双后端结果和 workspace
+610 passed / 0 failed / 1 既有 ignored，以及生命周期实现与测试实物，准入满足。
+`storage.go`、`storage_test.go` 相对规划基准
+`5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异。
+本任务是已有实现的独立回归关口，无生产变更，TDD 红灯不适用。
+
+检查 TestMain、8 个相关既有 Storage 测试、相邻 helper 和 Memory/LevelDB 调用链，
+以及 endpoint TestGCStateJSONUtil / etcd 测试装配：选中用例无需注入，仅写编译缓存、
+临时 LevelDB/etcd 数据，不写 Go 或模块文件。实际运行：
+
+```text
+GOARCH=arm64 CGO_ENABLED=0 GOFLAGS=-mod=readonly go test -mod=readonly ./pkg/storage -run '^(TestBasic|TestLoadStores|TestStoreWeight|TestTryGetLocalRegionStorage|TestLoadRegions|TestLoadRegionsToCache|TestTrySwitchRegionStorage|TestRegionStorage)$' -count=1 -v
+GOARCH=arm64 CGO_ENABLED=0 GOFLAGS=-mod=readonly go test -mod=readonly ./pkg/storage/endpoint -run '^TestGCStateJSONUtil$' -count=1 -v
+```
+
+均退出 0，分别 8 和 1 个顶层测试通过；日志 `/tmp/pd58-go.log`、
+`/tmp/pd58-go-json.log`。覆盖元数据 CRUD、store 加载/权重、区域扫描、普通门面
+重复加载、区域源选择/获取、Flush 后可见及 Close、JSON 字节断言。
+
+条件命令 `go test -mod=readonly ./pkg/storage -count=1` 未执行，整包含
+TestLoadRegionsExceedRangeLimit（withRangeLimit）、TestRegionReload（slowLoadRegion）、
+TestSaveTimestampWithTimeout（slowTxn）等需源码注入的用例；不启停 failpoint，
+不将筛选运行声称为整包通过。验收边界是门面映射及双后端回归，
+本任务复用已有后端故障行为，不重新移植这些机制。
+
+核查 `docs/rust/theme3-存储键值.md` 批次 19 回归关口：其同样记录整包条件未满足，
+复用历史 `/tmp/pd-task9-go.log` 的 KV 4.186s / storage 28.756s 通过输出并完成
+真实双后端回归。该历史日志明确包含恢复 failpoint 提示，但无 -v，不能补造计数，
+也不当作本轮运行差分。检查 `/tmp/pd-meta25-{storage,arm64,arm64-debug}.test`
+已有二进制；arm64 二进制 nm 检查无 failpoint.Eval 证据，未确认其注入版本/来源，
+因此不拿它裸跑故障测试或充当故障路径证据。未生成任何 Go 工具或注入产物。
+
+三个未运行 Go 故障场景逐项核验：
+
+- 范围限制属于 endpoint/KV：本轮 workspace 实际执行 region_scan_memory /
+  region_scan_etcd，对 10001 个区域跨真实 10000 页边界；etcd_adaptive_and_io_failure
+  用 220 个 24KB start key 构造超过 4MiB 的真实响应并验证缩页恢复，未模拟核心结果。
+  门面区域路由的双后端 contract 则验证 load_regions 委托正确源。
+- 超时重载的门面相关契约是错误传播、加载状态保留及重试：region_load_once 两后端
+  实际验证预先取消无回调、状态未加载、换 token 重试；坏区域导致中途错误/游标 2，
+  修复后只交付区域 2。endpoint region_scan 两后端在首回调取消后仍交付当前页
+  1..10000，游标 10001，重试仅补 10001；不宣称复现 Go 的 5 秒延迟注入。
+- slowTxn 时间戳超时属于既有 endpoint/KV，不由 facade 另行实现：本轮 workspace
+  实际命中 timestamp_fenced_save_memory_races / etcd_races 的取消错误与真实未写入
+  终态，及 txn_cancel 的真实 etcd 代理故障测试。门面共用同一个 store，不复制
+  timestamp 或事务算法；当前验收无需新增 Go 超时差分工具。
+
+### 映射、字节与实际故障覆盖
+
+现有独立测试全部由 lib.rs 显式注册；沿用 facade_memory / facade_etcd、
+region_switch_memory / region_switch_etcd、region_load_once_memory /
+region_load_once_etcd、region_lifecycle_memory / region_lifecycle_etcd，
+不强造 facade_regression 名称或新模块。
+
+Go Storage 的 kv.Base 映射到 Storage::base()；其余嵌入接口通过 endpoint() /
+endpoint_mut() 访问 canonical StorageEndpoint：ServiceMiddlewareStorage→
+config_endpoint；ConfigStorage→config_endpoint/scheduler_endpoint；MetaStorage→
+cluster_meta/store_meta/store_weights 与 facade 区域路由；RuleStorage→rule_endpoint；
+ReplicationStatusStorage→replication_endpoint；GCStateStorage→gc_* 模块；
+MinResolvedTSStorage/ExternalTSStorage→timestamp_values；KeyspaceStorage→keyspace_meta；
+ResourceGroupStorage→resource_settings/resource_states；TSOStorage→timestamp_window/
+timestamp_fenced_save；KeyspaceGroupStorage→keyspace_group_store；
+MetaServiceGroupStorage→meta_service_group；MaintenanceStorage→maintenance_*；
+AffinityStorage→affinity_endpoint。配置持久化不等于完整业务 Config 移植；
+本地生产数据库、加密、hot-region history、durability 不计入完成范围。
+
+metadata 核对生产依赖 storage→endpoint→kv，无反向依赖；仅 kv 定义 MetaStore，
+storage 重导出，facade 使用宿主 Arc；协议编码留在 endpoint 适配器。
+复用既有 Go 字节证据：facade JSON int64(1)→hex 31；region_switch_test 从
+pkg/proto/wire-fixtures.json 的 Go region_heartbeat 输出提取 Region
+{Id:99,StartKey:[0,1],EndKey:[255]}，hex 0863120200011a01ff，与实际保存字节比较。
+不新增 codec，不将 Rust 结果反抄为期望或宣称新的 Go 运行差分。
+
+本轮加载故障测试实际覆盖：先交付区域 1，区域 2 坏 protobuf 导致错误且保留
+未加载状态/游标 2；修复存储后仅交付区域 2 并完成加载。预先取消 token 后
+扫描返回 Cancelled、无 callback，使用新 token 可重试。生命周期关闭文件后
+再次 Flush/Close 返回原始 BrokenPipe，文件句柄为空，内容保持
+`default/local/close`，默认 KV 和区域 endpoint 仍可用。
+本门面故事未新增网络断连或 lease 到期测试，不声称 Go 故障场景已完成差分。
+
+### 槽位与本轮验证
+
+脚本 `/tmp/pd58-cargo.sh` 从仓库根按序以原子 mkdir 动态领取 **槽位 1**，
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录 plan=storage-facade、task=5、batch=58、session=facade-regression、
+PID=28105；EXIT/INT/TERM 清理自己的 owner/锁。
+fixture 既有 Go build/启动链已审查，继承 GOARCH=arm64、CGO_ENABLED=0、
+GOFLAGS=-mod=readonly；只写槽位产物及隔离数据目录。全部子进程结束后锁已释放，
+缓存保留。无 Rust 修改，仅格式检查，无格式化写入。
+
+| 确切命令 | 退出码与有效测试数 |
+| --- | --- |
+| `cargo test --locked -p astersql-pd-storage -- --nocapture` | 0；lib 17 + etcd_contract 10 = 27 passed / 0 failed / 0 ignored；doc 0 |
+| `cargo metadata --format-version 1 --no-deps` | 0 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0 |
+| `cargo test --workspace --locked` | 0；83 target，610 passed / 0 failed / 1 既有 ignored |
+| 上述筛选 Go storage / endpoint 命令 | 均 0；分别 8 / 1 个顶层测试 |
+| `git diff --check`、`git diff --cached --check` | 均 0 |
+
+Cargo 日志为 `/tmp/pd58-{focused,metadata,fmt,check,workspace}.log`，
+汇总 `/tmp/pd58-results.log`，实际槽位 `/tmp/pd58-slot.log`。
+开始/结束 1101 个 Go/模块路径及 SHA-256 完全一致，相关 Git 状态为空，无新增文件。
+仅本节证据文档提交；任务状态更正为已完成并按执行流程删除任务文件。
+未修改 Rust、Cargo、只读 plan.md 或来源主题；保留其他任务的计划修改及编号文件删除，
+排除本次提交。完成范围限于已准入的存储门面，不宣称整个 Go 存储包或来源史诗完成。
