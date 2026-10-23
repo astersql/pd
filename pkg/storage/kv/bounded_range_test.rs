@@ -1,8 +1,6 @@
 // Copyright 2026 AsterSQL.
+use crate::fixture;
 use crate::*;
-#[allow(dead_code)]
-#[path = "etcd_fixture_test.rs"]
-mod fixture;
 
 async fn bounded_range_contract(store: &dyn MetaStore) {
     let keys: &[&[u8]] = &[b"a", b"a\0", b"aa", b"b", b"ba", b"c", b"\xff", b"\xff\xff"];

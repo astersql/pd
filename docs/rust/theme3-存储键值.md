@@ -452,3 +452,81 @@ ignore。workspace 仅输出已有 RegionHeartbeatRequest.cpu_usage deprecated �
 没有新断连/到期行为；完整基线仍实际运行现有 watch/lease/fencing/重启测试。
 已审查本任务生产、独立测试、注册和证据差异；plan.md、来源主题、Go、manifest/lock
 均保持原样。编号任务文件按完成流程清理，证据保留在本文和实现提交中。
+
+## 任务 4：基础单键读写（批次 11）
+
+日期：2026-10-23（Asia/Shanghai）。依赖批次 10 已核验：提交 `2cfb05af8`
+包含唯一 Read 的有界/精确读取、双后端测试及本文任务 3 的完整验证证据，准入满足。
+已读 ADR-001、porting-guide、根 AGENTS 与 Copilot 指令；无更深 AGENTS。
+`kv.go`、`etcd_kv.go` 对规划基准 `5d5948052a9ee9e3fa7a09145fe2916a2912c223`
+无差异。本轮仅实现 Base 单键行为，未修改总计划或来源主题。
+
+### Go 依据与实现
+
+`etcd_kv.go::Load` 使用精确 EtcdKVGet，缺失返回空字符串，多条响应报错；
+`Save` 通过无条件事务 OpPut 覆盖单键、不绑定 lease；`Remove` 使用单键 OpDelete，
+允许删除缺失键。`kv_test.go::testReadWrite` 在三个 Go 后端共同断言缺失、写读、删除、
+重复删除；覆盖/空值/精确前缀及字节透明性来自上述源码推导和本轮真实 etcd 测试，
+不声称这些新增 Rust 场景都已经由 Go 测试逐项运行差分。
+
+本轮先运行 `make gotest GOTEST_ARGS='./pkg/storage/kv ./pkg/storage -count=1'`，
+退出 0，两包通过（4.102s、28.079s）；输出未列 Go 测试总数。
+随后 `make failpoint-disable` 退出 0，确认无 Go 差异及生成 failpoint binding 文件。
+Go failpoint 窗口结束后才开始 Rust 编辑与 Cargo 阶段。
+
+新增 `base_kv.rs::Base::{new,load,save,remove}`，借用 canonical `dyn MetaStore`。
+Load 复用 `Read::range(key, empty_end, Linearizable)` 点读，保留缺失与存在空值的
+Base 返回语义；Save/Remove 各提交一个无条件 Mutation，传递既有 StoreError 分类。
+异常多条点读响应或无条件事务返回 false 防御性归类 Backend；不新增错误分类、
+重试、后台任务或运行时。底层存在空值仍保留 Entry，未混淆其事务比较语义。
+没有编码转换，没有新增字节 codec/oracle、依赖、manifest 或 lock 变更。
+
+### 测试驱动证据
+
+独立 `base_kv_test.rs` 在 lib.rs 显式注册，两个入口 `base_kv_memory` 与
+`base_kv_etcd` 共用完整断言和现有唯一 etcd fixture。
+最小可编译实现先复用旧 prefix 读取，聚焦命令实际退出 101：0 passed / 2 failed。
+两个后端均在只有 `key/adjacent=neighbor` 时断言 Load(`key`) 返回空值失败，
+实际返回 neighbor。这是相邻键误读的真实状态红灯。改为精确读取后，相同测试原断言
+未削弱，2 passed / 0 failed / 0 ignored，退出 0。
+
+共用断言覆盖：缺失读/删、同前缀邻键不能命中、精确写读、覆盖、存在空值及实际 Entry、
+无 lease、精确删除/重复删除/邻键保留、非 UTF-8 与 NUL 字节往返、空键三操作的
+InvalidArgument。字节预期直接来自输入，属于透明性测试，不是编码跨语言差分。
+没有新增断连或到期故事；原有 watch/lease/fencing/重启由 workspace 基线回归。
+
+### 验证与 Cargo 资源
+
+两个阶段均通过原子 mkdir 动态取得实际槽位 **1**，
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+占用记录含计划、任务、会话和持有 PID（红灯 28660，绿灯及基线 28809）。
+Cargo 及 fixture 子进程继承此绝对路径。包装器正常/失败退出等待子进程结束后清理
+owner 与自己的锁；最终阶段处理中断信号，终止并等待子进程组后再释放槽位。
+保留槽位缓存，不清理他人锁或构建目录。
+
+首次 workspace 回归退出 101：旧 `bounded_range_etcd` 在 header revision 断言上
+收到 3、预期 2，而 Base 两入口均通过。排查发现两个 lib 测试模块分别用 path
+引入相同 fixture 源码，形成独立 NEXT 静态计数器；同一 PID 的目录名发生碰撞，
+实际复用对方数据目录/ready 文件。这是本次新增入口触发的测试装配问题。
+最小修复在 lib.rs 注册一次共享 fixture；Base 与 bounded_range 测试引用同一模块，
+后者只改 fixture import，生产逻辑与原有断言均未改动。不复制 helper 或修改 fixture。
+最终验证阶段重新动态领取槽位 1，持有 PID 31013，路径同上。
+
+最终状态：已完成。最终阶段所有命令退出 0，自己的锁已释放，槽位缓存保留。
+
+| 确切命令 | 退出码 | 有效测试数/结果 |
+| --- | --- | --- |
+| `cargo fmt --all`（各次 Rust 修改后） | 0 | 无无关 Rust 格式变更 |
+| `cargo test --locked -p astersql-pd-storage-kv --lib base_kv -- --nocapture`（红灯） | 101 | 0 passed / 2 failed，双后端相邻键误读 |
+| 同上（首次绿灯及最终阶段） | 0 | 每次 2 passed / 0 failed / 0 ignored |
+| `cargo metadata --format-version 1 --no-deps` | 0 | canonical crate 注册正常 |
+| `cargo fmt --all -- --check` | 0 | 通过 |
+| `cargo check --workspace --locked` | 0 | 通过 |
+| `cargo test --workspace --locked`（最终） | 0 | 483 passed / 0 failed / 1 既有 ignored，含 2 doc-tests |
+| `git diff --check` | 0 | 通过 |
+| `git diff --cached --check` | 0 | 暂存审查通过 |
+
+既有 ignored 为需独立兼容流程的 `tso_processes`；没有新增 ignore。
+仅有既有 RegionHeartbeatRequest.cpu_usage deprecated 警告。
+已审查新增 Base、共用断言、模块注册、最小 fixture import 修复及本文证据。
+Go、manifest/lock、plan.md 和来源主题未改动；原有其他计划修改未纳入提交。
