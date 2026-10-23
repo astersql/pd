@@ -132,3 +132,8 @@ mod gc_safepoint_read_test;
 mod gc_barrier_read;
 #[cfg(test)]
 mod gc_barrier_read_test;
+
+mod gc_state_txn;
+pub use gc_state_txn::{GCStateTxnError, GCStateWriteBatch};
+#[cfg(test)]
+mod gc_state_txn_test;

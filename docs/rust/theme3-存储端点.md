@@ -4516,3 +4516,99 @@ GOARCH=arm64、CGO_ENABLED=0、GOFLAGS=-mod=readonly，只编译已有 fixture �
 无 manifest/Cargo.lock 或其他 Rust 格式化差异。保留并排除既有观测工具任务修改
 和任务 19/23/24/25/26/27/28/29 删除。
 状态：已完成；批次 49 屏障读取故事与所需验证证据均已满足。
+
+## 任务 31：安全点写事务（批次 50）
+
+### 准入与只读 Go 依据
+
+依赖批次 49 的提交 `2746f93c0`、上节双后端红绿灯及完整基线已核验，
+不是仅凭任务 30 文件删除判定完成。`gc_states.go` 相对规划基准
+`5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异。
+本轮只实现不带 barrier 的安全点批写和 revision，不修改总计划或来源主题。
+
+Go 依据为 `GCStateProvider.RunInGCStateTransaction`、
+`GCStateWriteBatch.SetGCSafePoint/SetTxnSafePoint`：先读全局 revision；缺失或
+空值使用 NotExists，非空值以十进制 uint64 解析、比较原始字节。先执行回调，
+回调错误丢弃所有 buffered ops。空批次仍检查 revision，但不递增；非空批次
+将安全点和下一 revision 原子写入。uint64 加法溢出回绕，不加单调性检查；
+冲突直接报错，不重试回调。后端错误及响应数量异常与冲突区分。
+
+复核既有 TestMain、newEtcdStorageEndpoint、NewTestEtcdCluster 和 fixture 的
+调用链，仅写编译产物、隔离 etcd 数据及临时目录；所选测试无需 failpoint 注入，
+未运行任何启停 failpoint、生成器、Go 格式化或模块修改命令：
+
+```text
+GOARCH=arm64 CGO_ENABLED=0 GOFLAGS=-mod=readonly go test -mod=readonly ./pkg/storage/endpoint -run '^(TestGCStateTransactionACID|TestGCSafePoint|TestTxnSafePoint|TestDataPhysicalRepresentation)$' -count=1 -v
+```
+
+退出 0，4 个顶层测试通过，日志 `/tmp/pd31-go.log`。其中实际运行的
+TestDataPhysicalRepresentation 在真实 etcd 写入后逐字节检查如下独立 Go 输出，
+Rust 双后端用同样四个输入对比持久化字节，而不是将 Rust 输出用作预期：
+
+| 输入 | Go 持久化字节 |
+| --- | --- |
+| unified GC=456139133457530880 | `654882009e40000` |
+| keyspace 1111 GC=456139133457530881 | `{"keyspace_id":1111,"safe_point":456139133457530881}` |
+| unified txn=456139133457530882 | `456139133457530882` |
+| keyspace 2222 txn=456139133457530883 | `456139133457530883` |
+| 非空初始事务 revision | `1` |
+
+其他边界断言按 Go 源码建立，不声称逐输入运行差分。整包 Go oracle 未执行：
+storage 的 failpoint 测试依赖源码注入，违反 Go 只读约束；上述运行覆盖当前故事。
+
+### 实现、行为红绿灯和故障终态
+
+canonical endpoint 新增 `gc_state_txn.rs`：`GCStateWriteBatch` 仅缓冲安全点写，
+`StorageEndpoint.run_in_gc_state_transaction` 复用唯一 MetaStore 的 Base/RawTxn。
+异步回调可使用真实读取，原始回调错误由泛型 `GCStateTxnError::Callback` 保留，
+revision 语法、冲突、后端及响应计数错误可区分。数值 JSON 编码无字符串字段，
+与 Go 字节顺序一致。独立 `gc_state_txn_test.rs` 在 lib.rs 显式注册。
+
+先让可编译实现提交安全点但漏写 revision，实际聚焦红灯退出 101：
+0 passed / 2 failed / 0 ignored；memory 和 etcd 都在 revision 断言得到空字节，
+期望 `1`。补上同事务 revision 写入后，同一两个契约测试退出 0；
+随后增加独立纯值编码入口，最终 3 passed / 0 failed / 0 ignored。
+日志 `/tmp/pd31-red.log`、`/tmp/pd31-green.log`、`/tmp/pd31-green-final.log`。
+
+双后端共用断言覆盖缺失 revision 的只读事务、四种 Go 编码、同一次提交的
+全部 Entry.mod_revision 相等、回调期间 buffered 写不可见、空批次不修改数据、
+回调错误完整回滚、真实嵌套事务导致写/只读外层冲突、原始 revision 前导零、
+非法/越界 revision 在回调前拒绝、已存在空值导致 NotExists 冲突、uint64
+溢出回绕、null/0 空间的最大值和下降到零。未模拟核心事务结果。
+
+最终 etcd 用同 WAL 重启后核验安全点及 revision；另用新的独立 fixture，
+避免复用单次 acknowledgement 文件。先成功提交 revision=1，回调开始后停止
+etcd 并等待 stopped，在提交处得到真实后端错误；随后 start 等待 restarted，
+GC 仍为 0、revision 仍为 1。最后 drop fixture 等待进程终止，revision 读取
+失败且回调未执行。全故障序列耗时 3.420058917s，终态后端关闭，无部分写入。
+无 barrier 到期测试，因为本任务不实现 barrier。
+
+### Cargo 槽位与基线
+
+每阶段 `/tmp/pd31-cargo.sh` 在仓库根原子 mkdir 动态领取首个可用槽位，
+实际均为 **槽位 1**，
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录 plan=storage-endpoint/task=31/batch=50/session=gc-state-txn/PID；
+红灯 PID=86598、首次绿灯 PID=86898、最终绿灯 PID=87148、基线 PID=87276。
+EXIT/INT/TERM trap 在所有 Cargo/fixture 子进程结束后释放自己的 owner 和锁，
+保留编译缓存；fixture 继承相同 target 和只读 GOFLAGS，仅编译已有 Go 工具。
+
+| 命令 | 退出码与有效结果 |
+| --- | --- |
+| `cargo fmt --all` | 0；每次 Rust 修改后执行，未波及其他 Rust 文件 |
+| `cargo test --locked -p astersql-pd-storage-endpoint --lib gc_state_txn -- --nocapture`（红灯） | 101；0 passed / 2 failed；两后端 revision 空字节 != `1` |
+| 同一聚焦命令（最终绿灯） | 0；3 passed / 0 failed / 0 ignored |
+| `cargo metadata --format-version 1 --no-deps` | 0；canonical target 不变 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；既有 cpu_usage 弃用警告 |
+| `cargo test --workspace --locked` | 0；83 target，591 passed / 0 failed / 1 既有 ignored；endpoint 92 passed |
+| 上述只读 Go 测试 | 0；4 个顶层测试通过 |
+| `git diff --check`、`git diff --cached --check` | 0 |
+
+基线日志 `/tmp/pd31-baseline.log`，metadata `/tmp/pd31-metadata.json`。
+所有 Cargo 与 fixture 子进程结束，slot-1 owner/锁已释放，缓存保留。
+开始/结束全部 1101 个受跟踪 Go/模块文件路径及 SHA-256 相同，Go/模块 Git 状态
+为空，无新增 Go 文件。已审查新生产/独立测试文件、lib.rs 注册及本节证据；
+无 manifest/Cargo.lock 或其他 Rust 格式化差异。原有观测工具任务修改和
+任务 19/23/24/25/26/27/28/29/30 删除均保留并排除提交。
+状态：已完成；批次 50 安全点写事务故事与所需验证证据均已满足。
