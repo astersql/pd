@@ -10,6 +10,7 @@ path = "lib.rs"
 
 [dependencies]
 astersql-pd-storage-kv.workspace = true
+astersql-pd-storage-endpoint.workspace = true
 
 [dev-dependencies]
 tokio.workspace = true
