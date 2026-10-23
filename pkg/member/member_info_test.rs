@@ -5,7 +5,7 @@ use std::sync::Arc;
 use tokio_util::sync::CancellationToken;
 #[allow(dead_code)]
 #[path = "../storage/kv/etcd_fixture_test.rs"]
-mod fixture;
+pub(super) mod fixture;
 
 async fn behavior(store: Arc<dyn MetaStore>) {
     let cancel = CancellationToken::new();

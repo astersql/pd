@@ -308,3 +308,90 @@ Cargo.lock 仅增加 member 对 workspace 已有 keypath 和 thiserror 2.0.21 �
 `target/rust-slot-locks/slot-1.lock`，保留 `target/rust-slot-1` 缓存。
 没有修改总计划、来源主题、Go/模块、TSO 或其他任务的源码；
 工作树原有编号任务状态修改/删除保留且排除提交。没有新增 ignored 测试。
+
+## 任务 3：领导优先级存储（批次 69）
+
+日期：2026-10-23（Asia/Shanghai）。前置批次 68 准入依据为提交 `77ec16854`
+和上文任务 2 的 633 passed / 0 failed / 1 既有 ignored 完整回归证据，
+并已检查实际 `MemberInfo` 产物、模块注册、测试及提交。前序编号文件删除不作为完成依据。
+`pkg/member/member.go`、`pkg/member/election.go` 相对规划基准
+`5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异。
+
+Go 依据：`Member.SetMemberLeaderPriority`（400–411）通过 LeaderTxn 写入
+`strconv.Itoa(priority)`；`DeleteMemberLeaderPriority`（414–425）在键缺失时
+同样执行带比较的事务；比较失败报 txn conflict，IO 错误另行包装。
+`GetMemberLeaderPriority`（428–441）直接读取，缺失返回 0，现存空值不是缺失，
+按 `strconv.ParseInt(value, 10, 32)` 解析；负数、前导正负号与十进制前导零有效，
+非法和越界值报 parse 错误。Go `Leadership.LeaderTxn`（293–303）使用 leader value
+比较；本任务复用 Rust canonical `Leadership::transact` 既有 value/lease/revision
+三重 fencing，不修改选主实现。相邻 Go `TestLeaderPriority`
+（`tests/server/member/member_test.go:137`）将当前 leader 设置为 -1 并观察转让，
+这里只读复用源码，不迁移转让算法或声明运行了该集成测试。
+`pkg/member` 涉及 failpoints，未运行 `go test -mod=readonly ./pkg/member -count=1`，
+未执行任何 failpoint 启停或 Go 改写命令。
+
+十进制输出复用本机已有 Go 1.24.3 标准库测试表，未编写 Go oracle。
+只读审查 `/usr/local/go/src/strconv/itoa_test.go` 的 `itob64tests` / `TestItoa`
+（逐一调用 FormatInt、AppendInt 和十进制 Itoa，并与表内输出比较），
+以及 `atoi_test.go` 的 `parseInt32Tests` / `TestParseInt32`
+（逐一调用 ParseInt(input,10,32) 并比较值与错误）。执行下表命令获得真实断言通过证据；
+这是标准库编码/解析运行证据，不是 PD Go 包运行差分，也不是 Go 1.26 全包验收。
+Rust 双后端测试逐字节比较以下既有 Go 表中输出，预期没有从 Rust 运行结果倒填：
+
+| Go 输入 | Go 测试验证的十进制输出 | Rust 读取结果 |
+| --- | --- | --- |
+| `0`、`1`、`-1` | `0`、`1`、`-1` | 对应 i32 |
+| `2147483647`、`-2147483648` | `2147483647`、`-2147483648` | i32 边界有效 |
+| `2147483648`、`-2147483649` | `2147483648`、`-2147483649` | InvalidPriority |
+| `9223372036854775807`、`-9223372036854775808` | 同输入十进制字符串 | InvalidPriority |
+
+实现 [leader_priority.rs](../../pkg/member/leader_priority.rs) 的 `LeaderPriority`：
+`get_member_leader_priority` / `set_member_leader_priority` /
+`delete_member_leader_priority`。读取不要求 leadership；写入接受 i64，保留 Go 64 位 int
+可写出超出 i32 读取范围的行为。复用 `ClusterPaths` 与唯一 MetaStore，值不绑定 lease；
+Conflict 与 Store 错误分开，解析错误统一为 InvalidPriority。写入要求 term 来自同一
+store/cluster，取消沿用宿主令牌和 canonical election 令牌，不创建 runtime 或后台任务。
+
+[leader_priority_test.rs](../../pkg/member/leader_priority_test.rs) 在 lib.rs 显式注册。
+`leader_priority_memory` / `leader_priority_etcd` 使用同一行为函数，覆盖缺失默认、
+正常读写删除、空值/非法文本/非 UTF-8、前导符号/零、i32 边界和 i64 写入文本、
+相邻 prefix 排除、成员和集群隔离、错误 store/cluster 任期拒绝、预取消及终态不变。
+两后端均先撤销旧任期，再以相同 leader value 重新选主，验证旧 term 的 Put、Delete、
+删除缺失键均报 Conflict，新任期可写；撤销新任期后优先级仍保留且可直接读取。
+`leader_priority_etcd_io_failure` 在 -1 写入确认后停止真实 etcd，再分别执行读/写/删，
+均返回 Store(Unavailable)；同 WAL 重启后 -1 保留，最后清理任期。没有模拟核心事务。
+
+首次 workspace 回归暴露新旧测试各自 path-include 同一 fixture helper 的注册冲突：
+同一进程内两份 NEXT 计数器均从零开始，选择相同目录，真实 etcd 报
+`panic: failed to create WAL`，已有 member_info IO 测试随后返回 Store(Unavailable)。
+在本 crate 内做最小测试连线修复：[member_info_test.rs](../../pkg/member/member_info_test.rs)
+仅将 fixture 模块可见性改为 `pub(super)`，新测试直接复用该模块及其唯一计数器；
+未修改既有测试函数、断言、共享 fixture 实现或 Go 文件，也未复制 fixture helper。
+
+所有 Cargo 阶段均在根目录依次原子尝试槽位，实际领取 **1**：
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+红灯 PID 75182，首次绿灯 PID 75374，首次 workspace PID 75491；最终阶段 PID 77082。
+每阶段 wrapper 在锁 owner 中记录计划、任务、会话和 PID，子进程继承绝对 target 目录及
+`GOFLAGS=-mod=readonly`。既有 fixture 只读构建现有 Go 源码，写入仅在 target 缓存；
+所有阶段退出/失败/中断都有 trap，待 Cargo/fixture 子进程结束后清理自己的锁并保留缓存。
+无新增依赖，无 Cargo manifest/lock 变化。
+
+| 本轮命令（仓库根目录，除显式环境覆盖外） | 退出码及有效测试数 |
+| --- | --- |
+| `GOTOOLCHAIN=local GOROOT=/usr/local/go GO111MODULE=off go test strconv -run '^(TestItoa\|TestParseInt32\|ExampleItoa)$' -count=1 -v` | 0；3 passed，已有标准库，零仓库 Go 写入，无 failpoints。 |
+| `cargo fmt --all` | 0；格式差异仅本任务 Rust 产物。 |
+| `cargo test --locked -p astersql-pd-member --lib leader_priority -- --nocapture`（红） | 101；1 passed / 2 failed / 0 ignored，两后端真实缺失键返回 InvalidPriority 与预期 0 不符；不是缺符号或环境失败。 |
+| 同一聚焦命令（绿） | 0；同一 3 tests 全通过，未削弱断言，仅将缺失分支修正为 Ok(0)。 |
+| `cargo metadata --format-version 1 --no-deps` | 0。 |
+| `cargo fmt --all -- --check` | 0。 |
+| `cargo check --workspace --locked` | 0；保留既有 server deprecated 字段警告。 |
+| `cargo test --workspace --locked`（首次） | 101；292 passed / 1 failed / 1 既有 ignored 后停止；上述 fixture 注册冲突已在本任务范围内修复。 |
+| 同一聚焦命令（fixture 连线修复后） | 0；3 passed / 0 failed / 0 ignored。 |
+| `cargo test --workspace --locked`（完整复跑） | 0；636 passed / 0 failed / 1 既有 ignored，85 个 target 结果；本任务 3 个测试及原 member_info 4 个测试均通过。 |
+| Go/模块开始与结束路径及 SHA-256 对照 | 0；1101 个文件完全一致，相关 Git 状态为空。 |
+| Markdown 相对链接、`git diff --check`、`git diff --cached --check` | 0；审查本任务 5 个文件，无总计划/来源主题/Go/模块/Cargo 变化。 |
+
+状态：已完成。最终阶段在连线修复后先执行 `cargo fmt --all`，再运行同一聚焦命令、
+metadata、fmt check、workspace check 和完整 workspace test，均退出 0。
+全部 Cargo/fixture 子进程退出后，自己的 slot-1 owner 与锁目录已清理，缓存保留。
+原有其他编号任务的状态修改/删除保持原样并排除提交；本编号任务按完成流程删除。

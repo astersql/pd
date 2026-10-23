@@ -11,3 +11,8 @@ mod member_info;
 pub use member_info::*;
 #[cfg(test)]
 mod member_info_test;
+
+mod leader_priority;
+pub use leader_priority::*;
+#[cfg(test)]
+mod leader_priority_test;
