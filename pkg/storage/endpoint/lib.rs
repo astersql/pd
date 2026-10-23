@@ -148,3 +148,8 @@ pub use gc_batch_read::{
 };
 #[cfg(test)]
 mod gc_batch_read_test;
+
+mod batch_ops;
+pub use batch_ops::{MAX_BATCH_OPS, run_batch_op_in_txn};
+#[cfg(test)]
+mod batch_ops_test;

@@ -4817,3 +4817,95 @@ PID=98993。EXIT/INT/TERM trap 在 Cargo/fixture 子进程结束后释放自己�
 本节证据；根 manifest/Cargo.lock 无差异，没有格式化其他任务的在途变更。
 原有观测工具计划修改及任务 19/23/24/25/26/27/28/29/30/31/32 删除均保留并排除提交。
 状态：已完成；批次 52 批量安全点读取故事及所需验证证据均已满足。
+
+## 任务 34：事务批操作边界（批次 53）
+
+### 准入与只读 Go 依据
+
+核验批次 52 提交 `eee35c979` 及任务 33 节的双后端、行为红绿灯和完整
+workspace 基线后准入。`pkg/storage/endpoint/util.go` 相对规划基准
+`5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异；plan.md 与来源主题计划只读。
+
+Go `RunBatchOpInTxn` 以 `etcdutil.MaxEtcdTxnOps=120` 个回调为一组，按输入
+顺序调用 `TxnStorage.RunInTxn`；限制的是回调数，不是每个回调缓冲的写入数。
+空输入不调用存储（即使 context 已取消）；首个回调错误停止当前批，不提交
+缓冲写入；事务错误停止后批，之前成功批保留。无跨批原子性或自动重试。
+Go `memoryKV.RunInTxn` / `etcdKVBase.RunInTxnWithConditions` 均先执行回调，
+成功后才 commit；预取消不跳过回调，回调错误优先于提交前的 context 错误。
+这些边界是源码依据，不冒充新增的 Go 边界测试运行差分。
+
+已检查既有 TestMain、选中用例、事务实现、fixture 和 etcd 启动调用链：不需
+failpoint 注入，仅写临时 etcd 数据与编译产物。实际只读命令：
+
+```text
+GOARCH=arm64 CGO_ENABLED=0 GOFLAGS=-mod=readonly go test -mod=readonly ./pkg/storage/kv -run '^(TestEtcd|TestMemKV)$' -count=1 -v
+GOARCH=arm64 CGO_ENABLED=0 GOFLAGS=-mod=readonly go test -mod=readonly ./pkg/schedule/affinity -run '^TestLoadRegionLabelIgnoreUnknownGroup$' -count=1 -v
+```
+
+均退出 0，分别 2 和 1 个顶层测试通过，日志 `/tmp/pd34-go.log`、
+`/tmp/pd34-go-batch.log`。前者运行真实内存/etcd 事务及错误/冲突断言；后者
+实际调用 Go `RunBatchOpInTxn` 并校验持久化后的业务状态。整包 endpoint/storage
+oracle 未执行，其中 failpoint 用例需要注入，与本任务 Go 只读约束冲突。
+没有新增 Go 工具、编码器或持久化格式；本故事只传递原始键值，不需要新增
+codec 字节 oracle，未将 Rust 输出作为 Go 编码预期。
+
+### 实现与行为验证
+
+新增 canonical `batch_ops.rs` 的 `run_batch_op_in_txn` 与 `MAX_BATCH_OPS`，
+在 `lib.rs` 导出并显式注册独立 `batch_ops_test.rs`。Rust 以 item 切片及异步
+operation dispatcher 表达有序回调，复用 KV 的 `Base.run_in_txn`、`CallbackTxn`
+和 `CallbackTxnError`；不创建第二套事务实现、runtime 或后端。按 120 项分组，
+回调错误保持原值，冲突与存储错误保持类别；回调完成后检查取消。oneshot
+只标记提交边界，使取消不会丢弃正在执行的用户回调。提交发出后取消等待
+返回 `StoreError::Unavailable`，遵守既有 KV 的未知提交终态语义，不自动重试。
+
+最小可编译接口直接返回成功时，指定聚焦命令真实退出 101：1 passed / 2 failed；
+内存与 etcd 均在 `seen=[]`、期望 `[0]` 的行为断言失败，日志
+`/tmp/pd34-red.log`。实现后原测试 3 passed；追加真实故障验证后的最终同一
+聚焦命令 4 passed / 0 failed / 0 ignored，日志 `/tmp/pd34-green-final.log`。
+未削弱或忽略原断言。
+
+双后端共用合同覆盖 0/1/119/120/121/240/241 项；逐项顺序、最终字节值、每批
+相同 revision 及提交数；在 0/119/120/121/240 回调失败时只保留前整批；
+预取消、取消后的空输入、回调错误优先、第二批内取消；真实并发写入导致
+读取条件冲突，当前批回滚且第三批未运行。纯值入口固定 Go 批大小 120。
+
+真实 etcd 断连顺序：提交第一批 120 键；在回调 120 中 stop 并等待 stopped；
+第二批的 120 个回调完成后提交返回 Store 错误；start 等待 restarted；同 WAL
+终态恰好保留第一批的 120 键及原值。最终聚焦耗时 1.800292792s。
+
+另一真实 TCP 代理只阻挡外部响应：预热后发出第一批提交，收到真实 etcd
+响应到达 gate 的通知；直接线性一致读确认已有 120 键；再取消，18.625µs 内
+返回 Unavailable；回调数保持 120，后一批未执行。关闭并 join 代理后直接后端
+仍有 120 键，证明取消不能被解释为回滚。fixture drop 关闭并等待 etcd 进程。
+本任务无 lease/TTL 到期行为。
+
+### Cargo 槽位与基线
+
+每阶段 `/tmp/pd34-cargo.sh` 从仓库根依次原子 mkdir 动态领取共享槽位，实际
+均为 **槽位 1**，绝对
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录 plan=storage-endpoint/task=34/batch=53/session=batch-ops/PID；
+红灯 PID=2586、最终聚焦 PID=3263、基线 PID=3485。EXIT/INT/TERM 清理自己
+的 owner/锁；所有 Cargo/fixture/代理子进程结束后释放，缓存保留。fixture
+继承同一绝对 target 与上述只读 Go 环境，不改 Go 源码或模块。
+
+| 命令 | 退出码与有效结果 |
+| --- | --- |
+| `cargo fmt --all` | 0；每次 Rust 修改后运行，未格式化其他任务文件 |
+| `cargo test --locked -p astersql-pd-storage-endpoint --lib batch_ops -- --nocapture`（红灯） | 101；1 passed / 2 failed / 0 ignored |
+| 同一聚焦命令（最终绿灯） | 0；4 passed / 0 failed / 0 ignored |
+| `cargo metadata --format-version 1 --no-deps` | 0；canonical target 不变 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；仅既有 cpu_usage 弃用警告 |
+| `cargo test --workspace --locked` | 0；83 target，602 passed / 0 failed / 1 既有 ignored；endpoint 103 passed |
+| 上述只读 Go 命令 | 均 0；2 + 1 个顶层测试通过 |
+| `git diff --check`、`git diff --cached --check` | 0 |
+
+基线日志 `/tmp/pd34-baseline.log`，metadata `/tmp/pd34-metadata.json`。
+全部 Cargo、fixture 与代理进程结束，slot-1 owner/锁已释放，保留编译缓存。
+开始/结束全部 1101 个受跟踪 Go/模块文件的路径及 SHA-256 完全一致，无新增
+Go/模块文件，Git 状态也无这类差异。已审查 batch_ops.rs、独立测试、lib.rs
+注册与本节证据；无依赖、manifest 或 Cargo.lock 变更，未格式化其他 Rust 文件。
+原有观测工具计划修改与任务 19/23/24/25/26/27/28/29/30/31/32/33 删除均保留，
+排除本次提交。状态：已完成；批次 53 事务批操作边界及所需验证证据均已满足。
