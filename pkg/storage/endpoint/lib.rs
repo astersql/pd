@@ -123,3 +123,8 @@ mod gc_barrier_value;
 pub use gc_barrier_value::{BarrierTime, GCBarrier, GlobalGCBarrier, ServiceSafePoint};
 #[cfg(test)]
 mod gc_barrier_value_test;
+
+mod gc_safepoint_read;
+pub use gc_safepoint_read::SafePointReadError;
+#[cfg(test)]
+mod gc_safepoint_read_test;

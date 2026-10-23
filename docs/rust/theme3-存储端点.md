@@ -4324,3 +4324,98 @@ GOARCH=arm64、CGO_ENABLED=0、GOFLAGS=-mod=readonly，仅构建已有源文件�
 或其他 Rust 格式化差异。总计划及来源主题只读；既有观测工具计划修改及任务
 19/23/24/25/26/27 删除保留并排除提交。
 状态：已完成；批次 47 的纯值编码与所需验证证据均已满足。
+
+## 任务 29：安全点读取（批次 48）
+
+### 准入与 Go 只读证据
+
+依赖批次 47 的提交 `9fc5f80c3`、上节值编码红绿灯及完整基线均已核验，
+不以任务 28 文件删除替代准入。`gc_states.go` 相对规划基准
+`5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异。
+本任务仅实现 StorageEndpoint 的 `load_gc_safe_point`、`load_txn_safe_point`，
+不包含写入、推进策略、屏障读取或 GC 事务。无 manifest/依赖/锁文件变更。
+
+只读源码依据：`LoadGCSafePoint`、`decodeUnifiedGCSafePoint`、
+`decodeKeyspaceGCSafePoint`、`LoadTxnSafePoint`、`decodeTxnSafePoint`。
+统一空间为 u32::MAX，GC 按无前缀十六进制读取；所有实际键空间（包括 0）
+按 JSON 读取 safe_point，冗余 keyspace_id 仅校验类型，不要求与路径一致；
+Txn 按十进制读取。缺失/空值为 0，保留完整 u64 范围，语法/范围/JSON/
+后端错误分型，不承诺 Go 堆栈错误文本或错误时的部分返回值。
+
+审查现有 TestMain（goleak/WaitForEtcdConnections）、所选测试及 etcd helper，
+不需要 failpoint，不写 Go 源码。实际命令：
+
+```text
+GOARCH=arm64 CGO_ENABLED=0 GOFLAGS=-mod=readonly go test -mod=readonly ./pkg/storage/endpoint -run '^(TestGCSafePoint|TestTxnSafePoint|TestDataPhysicalRepresentation)$' -count=1 -v
+```
+
+退出 0，3 个顶层测试通过，日志 `/tmp/pd29-go.log`。前两项验证 0、1、2、233、
+2333、23333333333、u64::MAX 在 null/0/1000 空间的真实 etcd 编码和读取；
+第三项实际写入并逐字节断言以下已有 fixture，随后通过 Go 读取并断言数值，
+Rust 在两个后端复用相同字节与期望：
+
+| 空间/类型 | Go 已运行的物理字节 | 数值 |
+| --- | --- | --- |
+| null GC | `654882009e40000` | 456139133457530880 |
+| 1111 GC | `{"keyspace_id":1111,"safe_point":456139133457530881}` | 456139133457530881 |
+| null Txn | `456139133457530882` | 456139133457530882 |
+| 2222 Txn | `456139133457530883` | 456139133457530883 |
+
+上述是已有 Go 测试真实运行的持久化字节断言，不是新写 Go oracle，
+也不以 Rust 输出生成期望。整包 `go test -mod=readonly ./pkg/storage/endpoint
+./pkg/storage -count=1` 未运行：storage 的 failpoint 测试需要注入，受 Go 只读
+约束禁止；不以所选测试冒充整包通过。JSON 额外边界及非法值依据 Go 的
+json.Unmarshal/strconv.ParseUint 源码语义推导，未声称这些额外输入有运行差分。
+
+### 实现与行为验证
+
+新增 `gc_safepoint_read.rs`，复用 canonical MetaStore/Base 与 ClusterPaths；
+SafePointReadError 区分 ParseUint、JsonUnmarshal、Store。JSON visitor 保留
+ASCII 大小写字段、重复字段后值覆盖、null 不覆盖已有标量、未知字段忽略，
+检查冗余 keyspace_id 的 u32 范围；拒绝错误结构、错误类型、负数、溢出及尾随垃圾。
+纯值解析经同一双后端契约覆盖，无额外 crate 或平行存储层。
+
+独立 `gc_safepoint_read_test.rs` 在 lib.rs 显式注册；两个入口
+`gc_safepoint_read_memory` / `gc_safepoint_read_etcd` 共用全部存储断言。
+覆盖真实 Go 字节、缺失/空值、默认键空间、u64::MAX、前导零/大写 hex、
+禁止符号/空白/前缀/下划线/非 ASCII/溢出、JSON 边界及读取不改变值或 revision。
+
+首版可编译实现暂以十进制读统一 GC，聚焦命令真实失败：
+Go 字节 `654882009e40000` 返回 ParseUint，两个后端均在首个数值断言失败；
+只修正该 radix 为 16 后同一测试通过，未削弱/忽略任何断言。
+红灯日志 `/tmp/pd29-red.log`，绿灯 `/tmp/pd29-green.log`。
+
+etcd 时序：持久化空间 0 GC=99，stop 等待 stopped，再 start 等待 restarted，
+重新连接后读到 99，证明同 WAL 恢复。然后 drop fixture 等待进程退出，
+才调用 GC 和 Txn 读取；两者均返回 Store 错误，绿灯中两次检查耗时
+52.459458ms，终态为后端已关闭、无伪造默认 0。无到期策略或墙钟推进。
+
+### Cargo 槽位与基线
+
+每阶段 `/tmp/pd29-cargo.sh` 从仓库根原子 mkdir 动态领取首个可用槽位，
+实际红灯/绿灯/基线均为 **槽位 1**，PID 分别 75293、75654、76575。
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 含 plan=storage-endpoint/task=29/batch=48/session=gc-safepoint-read/PID；
+EXIT/INT/TERM trap 清理自己的锁。fixture 子进程继承同一 target 及
+GOARCH=arm64、CGO_ENABLED=0、GOFLAGS=-mod=readonly，调用链仅构建已有 Go
+fixture、创建独立数据目录，无 failpoint、生成器或 Go 源码写入。
+
+| 命令 | 退出码与有效结果 |
+| --- | --- |
+| `cargo fmt --all` | 0；红绿灯前各运行，未波及其他 Rust 文件 |
+| `cargo test --locked -p astersql-pd-storage-endpoint --lib gc_safepoint_read -- --nocapture`（红灯） | 101；0 passed / 2 failed / 0 ignored；两个后端均命中真实 hex 解码错误 |
+| 同一聚焦命令（绿灯） | 0；2 passed / 0 failed / 0 ignored |
+| `cargo metadata --format-version 1 --no-deps` | 0；canonical target 无变更 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；既有 cpu_usage 弃用警告 |
+| `cargo test --workspace --locked` | 0；83 target，585 passed / 0 failed / 1 既有 ignored；endpoint 86 passed |
+| 上述只读 Go 测试 | 0；3 个顶层测试通过 |
+| `git diff --check`、`git diff --cached --check` | 0 |
+
+基线日志 `/tmp/pd29-baseline.log`，metadata `/tmp/pd29-metadata.json`。
+所有 Cargo 与 fixture 进程结束后 slot-1 owner/锁已释放，编译缓存保留。
+开始/结束全部 1101 个 Go/模块文件路径和 SHA-256 相同，无新增/删除/改名或
+内容差异；Go/模块 Git 状态为空。已审查两个新 Rust 文件、lib.rs 注册及本节
+证据，无依赖或其他 Rust 格式化差异。总计划与来源主题只读；原有观测工具
+任务修改和任务 19/23/24/25/26/27/28 删除保留并排除提交。
+状态：已完成；批次 48 安全点读取故事与所需验证证据均已满足。
