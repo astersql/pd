@@ -1,5 +1,12 @@
 # 任务 8: 迁移控制面服务与 MCS
 
+## Go 只读硬约束
+
+- Go 仅供只读参考。禁止新增、修改、删除、重命名任何 `.go` 文件（含生产代码、测试、oracle、生成文件及临时目录中的 Go 工具）；`go.mod`、`go.sum`、`go.work`、`go.work.sum` 同样只读。所有新增实现与测试使用 Rust，必要的非 Go 验证脚本和证据文档须在任务范围内。
+- 禁止通过生成器、格式化、依赖整理、failpoint 注入或构建脚本间接改写 Go；不得运行会改写 Go 的 make 测试入口、failpoint 启停命令、`go generate`、`go mod tidy` 或 Go 格式化写入命令。不得以“只增加测试/工具”“临时修改后还原”或扩大任务范围绕过约束。
+- Go oracle 仅复用已有只读源码、测试、fixtures、已保存输出或已有二进制；运行已有 Go 工具/测试前，必须确认整个调用链不写上述文件且不需要 failpoint 注入。需要 failpoint 的测试不得直接裸跑来替代验证；无法只读取得必要运行证据时，记录具体缺口并按任务阻塞规则处理，不降低验收标准，不将源码推导冒充运行差分。
+- 开始与结束时核对上述文件的 Git 状态及内容，保留用户已有变更；本任务不得产生任何 Go 文件或 Go 模块文件差异。本约束优先于计划、执行技能或验证要求中任何相冲突的写入指令。
+
 批次：【批次 8】依赖批次 7
 
 状态：未开始
@@ -29,7 +36,7 @@
 - 迁移源：`pkg/mcs/scheduling/`
 - 迁移源：`pkg/utils/tsoutil/`
 - 修改：`Cargo.toml`
-- 测试：对应 Go 测试、`tests/integrations/mcs/` 和新增 Rust 服务测试
+- 测试：只读参考对应 Go 测试、`tests/integrations/mcs/` 和新增 Rust 服务测试
 
 ## 上下文
 
@@ -53,9 +60,9 @@
 ## 验证计划
 
 - 测试驱动开发说明：每个业务包和服务单独定义失败测试；主题层验证服务发现、跨服务协议、选主切换和独立/嵌入双模式。
-- Go oracle：`make gotest GOTEST_ARGS='./pkg/keyspace/... ./pkg/gc ./pkg/replication ./pkg/encryption ./pkg/unsaferecovery ./pkg/mcs/... ./pkg/utils/tsoutil -count=1'`
+- Go oracle：`go test -mod=readonly ./pkg/keyspace/... ./pkg/gc ./pkg/replication ./pkg/encryption ./pkg/unsaferecovery ./pkg/mcs/... ./pkg/utils/tsoutil -count=1`；只读候选命令，须先确认不会改写 Go 或模块文件且不需要 failpoint 注入，否则不运行并记录必要证据缺口。
 - Rust 回归：`cargo fmt --all -- --check && cargo test --workspace --locked`
-- 集成验证：`make -C tests/integrations gotest GOTEST_ARGS='./mcs/... -count=1'`
+- 集成验证：`(cd tests/integrations && go test -mod=readonly ./mcs/... -count=1)`；只读候选命令，须先确认不会改写 Go 或模块文件且不需要 failpoint 注入，否则不运行并记录必要证据缺口。
 - 模拟策略：真实 MetaStore、listener 和服务发现；KMS 只在清晰凭据边界使用官方测试替身并验证脱敏。
 
 ## 步骤

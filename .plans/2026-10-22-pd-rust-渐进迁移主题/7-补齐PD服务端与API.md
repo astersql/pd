@@ -1,5 +1,12 @@
 # 任务 7: 补齐 PD 服务端与 API
 
+## Go 只读硬约束
+
+- Go 仅供只读参考。禁止新增、修改、删除、重命名任何 `.go` 文件（含生产代码、测试、oracle、生成文件及临时目录中的 Go 工具）；`go.mod`、`go.sum`、`go.work`、`go.work.sum` 同样只读。所有新增实现与测试使用 Rust，必要的非 Go 验证脚本和证据文档须在任务范围内。
+- 禁止通过生成器、格式化、依赖整理、failpoint 注入或构建脚本间接改写 Go；不得运行会改写 Go 的 make 测试入口、failpoint 启停命令、`go generate`、`go mod tidy` 或 Go 格式化写入命令。不得以“只增加测试/工具”“临时修改后还原”或扩大任务范围绕过约束。
+- Go oracle 仅复用已有只读源码、测试、fixtures、已保存输出或已有二进制；运行已有 Go 工具/测试前，必须确认整个调用链不写上述文件且不需要 failpoint 注入。需要 failpoint 的测试不得直接裸跑来替代验证；无法只读取得必要运行证据时，记录具体缺口并按任务阻塞规则处理，不降低验收标准，不将源码推导冒充运行差分。
+- 开始与结束时核对上述文件的 Git 状态及内容，保留用户已有变更；本任务不得产生任何 Go 文件或 Go 模块文件差异。本约束优先于计划、执行技能或验证要求中任何相冲突的写入指令。
+
 批次：【批次 7】依赖批次 6
 
 状态：未开始
@@ -56,8 +63,8 @@
 
 ## 验证计划
 
-- 测试驱动开发说明：每个 RPC/API/生命周期子计划先补 Go/Rust 双实现失败场景；主题层验证 Go client、同端口路由、滚动重启和关闭。
-- Go oracle：`make gotest GOTEST_ARGS='./server/... ./cmd/pd-server ./pkg/basicserver ./pkg/utils/apiutil/... ./pkg/utils/grpcutil ./pkg/utils/logutil ./pkg/utils/memberutil ./pkg/utils/metricutil ./pkg/utils/netutil ./pkg/utils/requestutil ./pkg/utils/tempurl -count=1'`
+- 测试驱动开发说明：每个 RPC/API/生命周期子计划先在 Rust 或非 Go 验证脚本中补双实现失败场景，Go 端仅复用已有只读接口；主题层验证 Go client、同端口路由、滚动重启和关闭。
+- Go oracle：`go test -mod=readonly ./server/... ./cmd/pd-server ./pkg/basicserver ./pkg/utils/apiutil/... ./pkg/utils/grpcutil ./pkg/utils/logutil ./pkg/utils/memberutil ./pkg/utils/metricutil ./pkg/utils/netutil ./pkg/utils/requestutil ./pkg/utils/tempurl -count=1`；只读候选命令，须先确认不会改写 Go 或模块文件且不需要 failpoint 注入，否则不运行并记录必要证据缺口。
 - Rust server：`cargo test --locked -p astersql-pd-server -p astersql-pd-runtime -p astersql-pd-cmd-pd-server -- --nocapture`
 - 兼容回归：`cargo test --locked -p astersql-pd-compat-tests -- --nocapture`
 - 静态检查：`cargo fmt --all -- --check && cargo check --workspace --locked`

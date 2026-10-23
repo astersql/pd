@@ -1,5 +1,12 @@
 # PD Rust 渐进迁移主题任务提示词
 
+## Go 只读硬约束
+
+- Go 仅供只读参考。禁止新增、修改、删除、重命名任何 `.go` 文件（含生产代码、测试、oracle、生成文件及临时目录中的 Go 工具）；`go.mod`、`go.sum`、`go.work`、`go.work.sum` 同样只读。所有新增实现与测试使用 Rust，必要的非 Go 验证脚本和证据文档须在任务范围内。
+- 禁止通过生成器、格式化、依赖整理、failpoint 注入或构建脚本间接改写 Go；不得运行会改写 Go 的 make 测试入口、failpoint 启停命令、`go generate`、`go mod tidy` 或 Go 格式化写入命令。不得以“只增加测试/工具”“临时修改后还原”或扩大任务范围绕过约束。
+- Go oracle 仅复用已有只读源码、测试、fixtures、已保存输出或已有二进制；运行已有 Go 工具/测试前，必须确认整个调用链不写上述文件且不需要 failpoint 注入。需要 failpoint 的测试不得直接裸跑来替代验证；无法只读取得必要运行证据时，记录具体缺口并按任务阻塞规则处理，不降低验收标准，不将源码推导冒充运行差分。
+- 开始与结束时核对上述文件的 Git 状态及内容，保留用户已有变更；本任务不得产生任何 Go 文件或 Go 模块文件差异。本约束优先于计划、执行技能或验证要求中任何相冲突的写入指令。
+
 按顺序复制以下提示到独立对话框执行。执行前先阅读 `plan.md` 和对应任务文件；`plan.md` 只是整体架构指南，不是进度来源，不要修改它的任何部分。编号任务是迁移史诗；开始编码前必须先按任务文件的顺序建立当前包的独立子计划，再逐包执行，不能在一个会话中直接实现整个史诗。
 
 # 批次 1
@@ -8,6 +15,8 @@
 
 ```text
 请使用技能 ./skills/do-task-plans/SKILL.md 执行 `.plans/2026-10-22-pd-rust-渐进迁移主题/1-迁移叶子类型与通用算法.md`。
+
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
 
 开始前先阅读 `.plans/2026-10-22-pd-rust-渐进迁移主题/plan.md` 和该任务文件，确认依赖已满足。先使用 `$create-task-plans` 为当前首个未迁移包建立独立包级计划，再按该计划实施；不要直接在单会话完成整个主题。
 本任务涉及 Rust/Cargo：执行任何 Cargo 构建、检查、测试或调用 Cargo 的脚本前，先阅读并遵守 `.plans/2026-10-22-pd-rust-渐进迁移主题/1-迁移叶子类型与通用算法.md` 中的“Cargo 共享槽位规则”，动态领取仓库共享槽位 1–10，设置绝对路径 CARGO_TARGET_DIR；阶段结束后清理自己的锁并保留缓存，最终报告实际槽位和 CARGO_TARGET_DIR。
@@ -21,6 +30,8 @@
 ```text
 请使用技能 ./skills/do-task-plans/SKILL.md 执行 `.plans/2026-10-22-pd-rust-渐进迁移主题/2-迁移核心领域模型.md`。
 
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
+
 开始前先阅读 `.plans/2026-10-22-pd-rust-渐进迁移主题/plan.md` 和该任务文件，确认批次 1 已满足。先使用 `$create-task-plans` 为当前 core 行为建立独立子计划，再按计划实施；禁止直接整包机械翻译。
 本任务涉及 Rust/Cargo：执行任何 Cargo 构建、检查、测试或调用 Cargo 的脚本前，先阅读并遵守 `.plans/2026-10-22-pd-rust-渐进迁移主题/2-迁移核心领域模型.md` 中的“Cargo 共享槽位规则”，动态领取仓库共享槽位 1–10，设置绝对路径 CARGO_TARGET_DIR；阶段结束后清理自己的锁并保留缓存，最终报告实际槽位和 CARGO_TARGET_DIR。
 当前子计划验证并提交后继续下一项；只有全部 core 子计划和主题回归完成才标记 `已完成` 并删除。阻塞时记录 `已阻塞`、原因和检查；无关原因无法回归时可标记 `已完成，待回归`。有实际变更时使用 `$git-commit`，不提交无关内容。主题 `plan.md` 为只读。
@@ -32,6 +43,8 @@
 
 ```text
 请使用技能 ./skills/do-task-plans/SKILL.md 执行 `.plans/2026-10-22-pd-rust-渐进迁移主题/3-迁移存储选主与配置契约.md`。
+
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
 
 开始前先阅读 `.plans/2026-10-22-pd-rust-渐进迁移主题/plan.md` 和该任务文件，确认批次 2 已满足。先使用 `$create-task-plans` 为当前 storage/kv、endpoint、election、member/ID gap 或配置单元建立独立计划，再逐包实施；禁止新建平行 MetaStore。
 本任务涉及 Rust/Cargo：执行任何 Cargo 构建、检查、测试或调用 Cargo 的脚本前，先阅读并遵守 `.plans/2026-10-22-pd-rust-渐进迁移主题/3-迁移存储选主与配置契约.md` 中的“Cargo 共享槽位规则”，动态领取仓库共享槽位 1–10，设置绝对路径 CARGO_TARGET_DIR；阶段结束后清理自己的锁并保留缓存，最终报告实际槽位和 CARGO_TARGET_DIR。
@@ -45,6 +58,8 @@
 ```text
 请使用技能 ./skills/do-task-plans/SKILL.md 执行 `.plans/2026-10-22-pd-rust-渐进迁移主题/4-迁移调度基础契约与规则.md`。
 
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
+
 开始前先阅读 `.plans/2026-10-22-pd-rust-渐进迁移主题/plan.md` 和该任务文件，确认批次 3 已满足。严格按 types/range/plan/config、labeler、placement、affinity 的顺序，先使用 `$create-task-plans` 为当前包建立独立计划，再实施；本任务不迁移 statistics 或 scheduler。
 本任务涉及 Rust/Cargo：执行任何 Cargo 构建、检查、测试或调用 Cargo 的脚本前，先阅读并遵守 `.plans/2026-10-22-pd-rust-渐进迁移主题/4-迁移调度基础契约与规则.md` 中的“Cargo 共享槽位规则”，动态领取仓库共享槽位 1–10，设置绝对路径 CARGO_TARGET_DIR；阶段结束后清理自己的锁并保留缓存，最终报告实际槽位和 CARGO_TARGET_DIR。
 当前包验证并提交后继续下一项；只有范围内基础规则全部完成且主题回归通过才标记 `已完成` 并删除。阻塞时记录 `已阻塞`、原因和检查；无关原因无法回归时可标记 `已完成，待回归`。有实际变更时使用 `$git-commit`。主题 `plan.md` 为只读。
@@ -56,6 +71,8 @@
 
 ```text
 请使用技能 ./skills/do-task-plans/SKILL.md 执行 `.plans/2026-10-22-pd-rust-渐进迁移主题/5-迁移统计同步与心跳状态.md`。
+
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
 
 开始前先阅读 `.plans/2026-10-22-pd-rust-渐进迁移主题/plan.md` 和该任务文件，确认批次 4 已满足。先使用 `$create-task-plans` 为当前 statistics、syncer 或 heartbeat 状态单元建立独立计划，再逐项实施；operator/checker/scheduler 留给批次 6。
 本任务涉及 Rust/Cargo：执行任何 Cargo 构建、检查、测试或调用 Cargo 的脚本前，先阅读并遵守 `.plans/2026-10-22-pd-rust-渐进迁移主题/5-迁移统计同步与心跳状态.md` 中的“Cargo 共享槽位规则”，动态领取仓库共享槽位 1–10，设置绝对路径 CARGO_TARGET_DIR；阶段结束后清理自己的锁并保留缓存，最终报告实际槽位和 CARGO_TARGET_DIR。
@@ -69,6 +86,8 @@
 ```text
 请使用技能 ./skills/do-task-plans/SKILL.md 执行 `.plans/2026-10-22-pd-rust-渐进迁移主题/6-迁移调度执行内核.md`。
 
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
+
 开始前先阅读 `.plans/2026-10-22-pd-rust-渐进迁移主题/plan.md` 和该任务文件，确认批次 5 已满足。严格按 schedule/core、filter、operator、checker、scheduler 和 cluster facade 的顺序，使用 `$create-task-plans` 为当前子包或行为族建立独立计划，再实施和提交。
 本任务涉及 Rust/Cargo：执行任何 Cargo 构建、检查、测试或调用 Cargo 的脚本前，先阅读并遵守 `.plans/2026-10-22-pd-rust-渐进迁移主题/6-迁移调度执行内核.md` 中的“Cargo 共享槽位规则”，动态领取仓库共享槽位 1–10，设置绝对路径 CARGO_TARGET_DIR；阶段结束后清理自己的锁并保留缓存，最终报告实际槽位和 CARGO_TARGET_DIR。
 当前子计划验证并提交后继续下一项；全部内置 scheduler/checker/operator 差分通过后才标记 `已完成` 并删除。阻塞时记录 `已阻塞`、原因和检查；无关原因无法回归时可标记 `已完成，待回归`。有实际变更时使用 `$git-commit`。主题 `plan.md` 为只读。
@@ -80,6 +99,8 @@
 
 ```text
 请使用技能 ./skills/do-task-plans/SKILL.md 执行 `.plans/2026-10-22-pd-rust-渐进迁移主题/7-补齐PD服务端与API.md`。
+
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
 
 开始前先阅读 `.plans/2026-10-22-pd-rust-渐进迁移主题/plan.md` 和该任务文件，确认批次 6 已满足。先生成 proto/TSO/server 覆盖差距清单，再使用 `$create-task-plans` 为当前 cluster worker、RPC 方法族、HTTP API 组或生命周期行为建立独立计划后实施。
 本任务涉及 Rust/Cargo：执行任何 Cargo 构建、检查、测试或调用 Cargo 的脚本前，先阅读并遵守 `.plans/2026-10-22-pd-rust-渐进迁移主题/7-补齐PD服务端与API.md` 中的“Cargo 共享槽位规则”，动态领取仓库共享槽位 1–10，设置绝对路径 CARGO_TARGET_DIR；阶段结束后清理自己的锁并保留缓存，最终报告实际槽位和 CARGO_TARGET_DIR。
@@ -93,6 +114,8 @@
 ```text
 请使用技能 ./skills/do-task-plans/SKILL.md 执行 `.plans/2026-10-22-pd-rust-渐进迁移主题/8-迁移控制面服务与MCS.md`。
 
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
+
 开始前先阅读 `.plans/2026-10-22-pd-rust-渐进迁移主题/plan.md` 和该任务文件，确认批次 7 已满足。按业务包和 MCS 推荐顺序，使用 `$create-task-plans` 为当前包或服务建立独立计划后再实施；禁止复制 monolith 状态。
 本任务涉及 Rust/Cargo：执行任何 Cargo 构建、检查、测试或调用 Cargo 的脚本前，先阅读并遵守 `.plans/2026-10-22-pd-rust-渐进迁移主题/8-迁移控制面服务与MCS.md` 中的“Cargo 共享槽位规则”，动态领取仓库共享槽位 1–10，设置绝对路径 CARGO_TARGET_DIR；阶段结束后清理自己的锁并保留缓存，最终报告实际槽位和 CARGO_TARGET_DIR。
 当前包或服务验证并提交后继续下一项；独立/嵌入模式和跨服务故障回归全部通过后才标记 `已完成` 并删除。阻塞时记录 `已阻塞`、原因和检查；无关原因无法回归时可标记 `已完成，待回归`。有实际变更时使用 `$git-commit`。主题 `plan.md` 为只读。
@@ -105,6 +128,8 @@
 ```text
 请使用技能 ./skills/do-task-plans/SKILL.md 执行 `.plans/2026-10-22-pd-rust-渐进迁移主题/9-迁移运维客户端与工具.md`。
 
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
+
 开始前先阅读 `.plans/2026-10-22-pd-rust-渐进迁移主题/plan.md` 和该任务文件，确认批次 8 已满足。使用 `$create-task-plans` 为当前运维组件、client 模块或单个工具建立独立计划后再实施；不得让 Dashboard 或工具依赖反向进入核心 crate。
 本任务涉及 Rust/Cargo：执行任何 Cargo 构建、检查、测试或调用 Cargo 的脚本前，先阅读并遵守 `.plans/2026-10-22-pd-rust-渐进迁移主题/9-迁移运维客户端与工具.md` 中的“Cargo 共享槽位规则”，动态领取仓库共享槽位 1–10，设置绝对路径 CARGO_TARGET_DIR；阶段结束后清理自己的锁并保留缓存，最终报告实际槽位和 CARGO_TARGET_DIR。
 当前组件验证并提交后继续下一项；发布所需运维、client 和工具矩阵通过后才标记 `已完成` 并删除。阻塞时记录 `已阻塞`、原因和检查；无关原因无法回归时可标记 `已完成，待回归`。有实际变更时使用 `$git-commit`。主题 `plan.md` 为只读。
@@ -116,6 +141,8 @@
 
 ```text
 请使用技能 ./skills/do-task-plans/SKILL.md 执行 `.plans/2026-10-22-pd-rust-渐进迁移主题/10-实现生产元数据后端与发布切换.md`。
+
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
 
 开始前先阅读 `.plans/2026-10-22-pd-rust-渐进迁移主题/plan.md` 和该任务文件，确认批次 9 已满足。先使用 `$create-task-plans` 分别建立 ADR/原型、生产后端、恢复、升级、长稳和切换计划；禁止恢复已否决的原型或跳过决策证据。
 本任务涉及 Rust/Cargo：执行任何 Cargo 构建、检查、测试或调用 Cargo 的脚本前，先阅读并遵守 `.plans/2026-10-22-pd-rust-渐进迁移主题/10-实现生产元数据后端与发布切换.md` 中的“Cargo 共享槽位规则”，动态领取仓库共享槽位 1–10，设置绝对路径 CARGO_TARGET_DIR；阶段结束后清理自己的锁并保留缓存，最终报告实际槽位和 CARGO_TARGET_DIR。

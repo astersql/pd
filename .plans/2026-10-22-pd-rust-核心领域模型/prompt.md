@@ -1,5 +1,12 @@
 # PD Rust 核心领域模型任务提示词
 
+## Go 只读硬约束
+
+- Go 仅供只读参考。禁止新增、修改、删除、重命名任何 `.go` 文件（含生产代码、测试、oracle、生成文件及临时目录中的 Go 工具）；`go.mod`、`go.sum`、`go.work`、`go.work.sum` 同样只读。所有新增实现与测试使用 Rust，必要的非 Go 验证脚本和证据文档须在任务范围内。
+- 禁止通过生成器、格式化、依赖整理、failpoint 注入或构建脚本间接改写 Go；不得运行会改写 Go 的 make 测试入口、failpoint 启停命令、`go generate`、`go mod tidy` 或 Go 格式化写入命令。不得以“只增加测试/工具”“临时修改后还原”或扩大任务范围绕过约束。
+- Go oracle 仅复用已有只读源码、测试、fixtures、已保存输出或已有二进制；运行已有 Go 工具/测试前，必须确认整个调用链不写上述文件且不需要 failpoint 注入。需要 failpoint 的测试不得直接裸跑来替代验证；无法只读取得必要运行证据时，记录具体缺口并按任务阻塞规则处理，不降低验收标准，不将源码推导冒充运行差分。
+- 开始与结束时核对上述文件的 Git 状态及内容，保留用户已有变更；本任务不得产生任何 Go 文件或 Go 模块文件差异。本约束优先于计划、执行技能或验证要求中任何相冲突的写入指令。
+
 按顺序复制以下提示到独立对话框执行。执行前先阅读 `plan.md` 和对应任务文件；`plan.md` 只是整体架构指南，不是进度来源，不要修改它的任何部分。
 
 全局约束：Go 源码、测试和模块配置均只读；禁止新增、修改、删除 `.go` 文件，包括 oracle 测试。只运行已有 Go 测试，Rust fixture 的预期须记录 Go 源码和已有测试来源。
@@ -13,6 +20,8 @@
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/1-固定-storelimit-覆盖契约.md`。
 
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
+
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 1，依赖批次：无，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
 任务获得所需验证证据后，标记为 `已完成`，若有实际代码、测试、配置或文档变更，使用技能 `$git-commit` 提交该任务的变更；若只有编号任务文件本身的状态更新或删除，则无需提交。在最终回复中报告完成证据并删除该任务文件；如果被阻塞，首先要尽可能突破阻塞，缺少依赖就修复依赖，也可以在不改动 Go 源码、测试及模块配置的前提下超出任务范围修改，如果实在无法突破，只在任务文件中更新为 `已阻塞` 并记录具体原因和已运行的检查；如果因为无关本次修改的原因导致无法运行验证，可以解除 `已阻塞`，修改状态为 `已完成，待回归`，若有实际代码、测试、配置或文档变更，使用技能 `$git-commit` 提交该任务的变更；若只有编号任务文件本身的状态更新，则无需提交。保留任务文件供回归验证。
@@ -25,6 +34,8 @@
 
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/2-建立-storelimit-crate-与类型映射.md`。
+
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
 
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 2，依赖批次 1，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
@@ -41,6 +52,8 @@
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/3-迁移-v1-令牌消耗.md`。
 
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
+
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 3，依赖批次 2，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
 本任务涉及 Rust/Cargo：执行任何 Cargo 构建、检查、测试或调用 Cargo 的脚本前，先阅读并遵守 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/3-迁移-v1-令牌消耗.md` 中的“Cargo 共享槽位规则”，动态领取仓库共享槽位 1–10，设置绝对路径 CARGO_TARGET_DIR；阶段结束后清理自己的锁并保留缓存，最终报告实际槽位和 CARGO_TARGET_DIR。
@@ -55,6 +68,8 @@
 
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/4-迁移-v1-重置与补充.md`。
+
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
 
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 4，依赖批次 3，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
@@ -71,6 +86,8 @@
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/5-迁移单个快照窗口.md`。
 
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
+
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 5，依赖批次 4，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
 本任务涉及 Rust/Cargo：执行任何 Cargo 构建、检查、测试或调用 Cargo 的脚本前，先阅读并遵守 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/5-迁移单个快照窗口.md` 中的“Cargo 共享槽位规则”，动态领取仓库共享槽位 1–10，设置绝对路径 CARGO_TARGET_DIR；阶段结束后清理自己的锁并保留缓存，最终报告实际槽位和 CARGO_TARGET_DIR。
@@ -85,6 +102,8 @@
 
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/6-迁移优先级快照窗口.md`。
+
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
 
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 6，依赖批次 5，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
@@ -101,6 +120,8 @@
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/7-迁移窗口反馈调容.md`。
 
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
+
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 7，依赖批次 6，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
 本任务涉及 Rust/Cargo：执行任何 Cargo 构建、检查、测试或调用 Cargo 的脚本前，先阅读并遵守 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/7-迁移窗口反馈调容.md` 中的“Cargo 共享槽位规则”，动态领取仓库共享槽位 1–10，设置绝对路径 CARGO_TARGET_DIR；阶段结束后清理自己的锁并保留缓存，最终报告实际槽位和 CARGO_TARGET_DIR。
@@ -116,6 +137,8 @@
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/8-固定-core-覆盖与边界契约.md`。
 
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
+
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 8，依赖批次 7，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
 任务获得所需验证证据后，标记为 `已完成`，若有实际代码、测试、配置或文档变更，使用技能 `$git-commit` 提交该任务的变更；若只有编号任务文件本身的状态更新或删除，则无需提交。在最终回复中报告完成证据并删除该任务文件；如果被阻塞，首先要尽可能突破阻塞，缺少依赖就修复依赖，也可以在不改动 Go 源码、测试及模块配置的前提下超出任务范围修改，如果实在无法突破，只在任务文件中更新为 `已阻塞` 并记录具体原因和已运行的检查；如果因为无关本次修改的原因导致无法运行验证，可以解除 `已阻塞`，修改状态为 `已完成，待回归`，若有实际代码、测试、配置或文档变更，使用技能 `$git-commit` 提交该任务的变更；若只有编号任务文件本身的状态更新，则无需提交。保留任务文件供回归验证。
@@ -128,6 +151,8 @@
 
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/9-建立-core-crate-与-peer-角色.md`。
+
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
 
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 9，依赖批次 8，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
@@ -144,6 +169,8 @@
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/10-迁移键区间与-epoch-值.md`。
 
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
+
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 10，依赖批次 9，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
 本任务涉及 Rust/Cargo：执行任何 Cargo 构建、检查、测试或调用 Cargo 的脚本前，先阅读并遵守 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/10-迁移键区间与-epoch-值.md` 中的“Cargo 共享槽位规则”，动态领取仓库共享槽位 1–10，设置绝对路径 CARGO_TARGET_DIR；阶段结束后清理自己的锁并保留缓存，最终报告实际槽位和 CARGO_TARGET_DIR。
@@ -158,6 +185,8 @@
 
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/11-迁移-Store-元信息与默认值.md`。
+
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
 
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 11，依赖批次 10，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
@@ -174,6 +203,8 @@
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/12-迁移-Store-状态判断.md`。
 
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
+
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 12，依赖批次 11，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
 本任务涉及 Rust/Cargo：执行任何 Cargo 构建、检查、测试或调用 Cargo 的脚本前，先阅读并遵守 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/12-迁移-Store-状态判断.md` 中的“Cargo 共享槽位规则”，动态领取仓库共享槽位 1–10，设置绝对路径 CARGO_TARGET_DIR；阶段结束后清理自己的锁并保留缓存，最终报告实际槽位和 CARGO_TARGET_DIR。
@@ -188,6 +219,8 @@
 
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/13-迁移-Store-label-与引擎识别.md`。
+
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
 
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 13，依赖批次 12，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
@@ -204,6 +237,8 @@
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/14-迁移-Store-原始统计.md`。
 
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
+
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 14，依赖批次 13，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
 本任务涉及 Rust/Cargo：执行任何 Cargo 构建、检查、测试或调用 Cargo 的脚本前，先阅读并遵守 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/14-迁移-Store-原始统计.md` 中的“Cargo 共享槽位规则”，动态领取仓库共享槽位 1–10，设置绝对路径 CARGO_TARGET_DIR；阶段结束后清理自己的锁并保留缓存，最终报告实际槽位和 CARGO_TARGET_DIR。
@@ -218,6 +253,8 @@
 
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/15-迁移-Store-统计平滑.md`。
+
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
 
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 15，依赖批次 14，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
@@ -234,6 +271,8 @@
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/16-迁移-Store-clone-共享语义.md`。
 
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
+
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 16，依赖批次 15，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
 本任务涉及 Rust/Cargo：执行任何 Cargo 构建、检查、测试或调用 Cargo 的脚本前，先阅读并遵守 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/16-迁移-Store-clone-共享语义.md` 中的“Cargo 共享槽位规则”，动态领取仓库共享槽位 1–10，设置绝对路径 CARGO_TARGET_DIR；阶段结束后清理自己的锁并保留缓存，最终报告实际槽位和 CARGO_TARGET_DIR。
@@ -248,6 +287,8 @@
 
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/17-迁移-Store-时间状态.md`。
+
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
 
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 17，依赖批次 16，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
@@ -264,6 +305,8 @@
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/18-迁移-leader-迁移控制.md`。
 
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
+
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 18，依赖批次 17，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
 本任务涉及 Rust/Cargo：执行任何 Cargo 构建、检查、测试或调用 Cargo 的脚本前，先阅读并遵守 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/18-迁移-leader-迁移控制.md` 中的“Cargo 共享槽位规则”，动态领取仓库共享槽位 1–10，设置绝对路径 CARGO_TARGET_DIR；阶段结束后清理自己的锁并保留缓存，最终报告实际槽位和 CARGO_TARGET_DIR。
@@ -278,6 +321,8 @@
 
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/19-迁移-Store-limit-装配.md`。
+
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
 
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 19，依赖批次 18，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
@@ -294,6 +339,8 @@
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/20-迁移-Store-资源计数与-leader-score.md`。
 
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
+
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 20，依赖批次 19，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
 本任务涉及 Rust/Cargo：执行任何 Cargo 构建、检查、测试或调用 Cargo 的脚本前，先阅读并遵守 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/20-迁移-Store-资源计数与-leader-score.md` 中的“Cargo 共享槽位规则”，动态领取仓库共享槽位 1–10，设置绝对路径 CARGO_TARGET_DIR；阶段结束后清理自己的锁并保留缓存，最终报告实际槽位和 CARGO_TARGET_DIR。
@@ -308,6 +355,8 @@
 
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/21-迁移-region-score-v1.md`。
+
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
 
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 21，依赖批次 20，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
@@ -324,6 +373,8 @@
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/22-迁移-region-score-v2.md`。
 
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
+
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 22，依赖批次 21，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
 本任务涉及 Rust/Cargo：执行任何 Cargo 构建、检查、测试或调用 Cargo 的脚本前，先阅读并遵守 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/22-迁移-region-score-v2.md` 中的“Cargo 共享槽位规则”，动态领取仓库共享槽位 1–10，设置绝对路径 CARGO_TARGET_DIR；阶段结束后清理自己的锁并保留缓存，最终报告实际槽位和 CARGO_TARGET_DIR。
@@ -338,6 +389,8 @@
 
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/23-迁移-Store-空间与慢速统计.md`。
+
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
 
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 23，依赖批次 22，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
@@ -354,6 +407,8 @@
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/24-迁移位置比较与隔离得分.md`。
 
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
+
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 24，依赖批次 23，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
 本任务涉及 Rust/Cargo：执行任何 Cargo 构建、检查、测试或调用 Cargo 的脚本前，先阅读并遵守 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/24-迁移位置比较与隔离得分.md` 中的“Cargo 共享槽位规则”，动态领取仓库共享槽位 1–10，设置绝对路径 CARGO_TARGET_DIR；阶段结束后清理自己的锁并保留缓存，最终报告实际槽位和 CARGO_TARGET_DIR。
@@ -368,6 +423,8 @@
 
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/25-迁移拓扑权重.md`。
+
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
 
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 25，依赖批次 24，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
@@ -384,6 +441,8 @@
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/26-迁移-StoresInfo-注册表.md`。
 
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
+
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 26，依赖批次 25，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
 本任务涉及 Rust/Cargo：执行任何 Cargo 构建、检查、测试或调用 Cargo 的脚本前，先阅读并遵守 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/26-迁移-StoresInfo-注册表.md` 中的“Cargo 共享槽位规则”，动态领取仓库共享槽位 1–10，设置绝对路径 CARGO_TARGET_DIR；阶段结束后清理自己的锁并保留缓存，最终报告实际槽位和 CARGO_TARGET_DIR。
@@ -398,6 +457,8 @@
 
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/27-迁移-StoresInfo-控制操作.md`。
+
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
 
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 27，依赖批次 26，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
@@ -414,6 +475,8 @@
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/28-迁移-RegionInfo-构造与-peer-查询.md`。
 
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
+
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 28，依赖批次 27，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
 本任务涉及 Rust/Cargo：执行任何 Cargo 构建、检查、测试或调用 Cargo 的脚本前，先阅读并遵守 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/28-迁移-RegionInfo-构造与-peer-查询.md` 中的“Cargo 共享槽位规则”，动态领取仓库共享槽位 1–10，设置绝对路径 CARGO_TARGET_DIR；阶段结束后清理自己的锁并保留缓存，最终报告实际槽位和 CARGO_TARGET_DIR。
@@ -428,6 +491,8 @@
 
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/29-迁移-Region-clone-与修改选项.md`。
+
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
 
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 29，依赖批次 28，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
@@ -444,6 +509,8 @@
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/30-迁移-Region-统计与流量取整.md`。
 
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
+
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 30，依赖批次 29，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
 本任务涉及 Rust/Cargo：执行任何 Cargo 构建、检查、测试或调用 Cargo 的脚本前，先阅读并遵守 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/30-迁移-Region-统计与流量取整.md` 中的“Cargo 共享槽位规则”，动态领取仓库共享槽位 1–10，设置绝对路径 CARGO_TARGET_DIR；阶段结束后清理自己的锁并保留缓存，最终报告实际槽位和 CARGO_TARGET_DIR。
@@ -458,6 +525,8 @@
 
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/31-迁移-Region-query-loads.md`。
+
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
 
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 31，依赖批次 30，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
@@ -474,6 +543,8 @@
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/32-迁移-Region-合并资格.md`。
 
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
+
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 32，依赖批次 31，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
 本任务涉及 Rust/Cargo：执行任何 Cargo 构建、检查、测试或调用 Cargo 的脚本前，先阅读并遵守 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/32-迁移-Region-合并资格.md` 中的“Cargo 共享槽位规则”，动态领取仓库共享槽位 1–10，设置绝对路径 CARGO_TARGET_DIR；阶段结束后清理自己的锁并保留缓存，最终报告实际槽位和 CARGO_TARGET_DIR。
@@ -488,6 +559,8 @@
 
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/33-迁移-Region-Inherit.md`。
+
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
 
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 33，依赖批次 32，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
@@ -504,6 +577,8 @@
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/34-迁移-bucket-版本更新.md`。
 
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
+
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 34，依赖批次 33，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
 本任务涉及 Rust/Cargo：执行任何 Cargo 构建、检查、测试或调用 Cargo 的脚本前，先阅读并遵守 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/34-迁移-bucket-版本更新.md` 中的“Cargo 共享槽位规则”，动态领取仓库共享槽位 1–10，设置绝对路径 CARGO_TARGET_DIR；阶段结束后清理自己的锁并保留缓存，最终报告实际槽位和 CARGO_TARGET_DIR。
@@ -518,6 +593,8 @@
 
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/35-迁移-Region-guide-同步判定.md`。
+
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
 
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 35，依赖批次 34，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
@@ -534,6 +611,8 @@
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/36-迁移-Region-诊断与-codec-rule.md`。
 
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
+
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 36，依赖批次 35，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
 本任务涉及 Rust/Cargo：执行任何 Cargo 构建、检查、测试或调用 Cargo 的脚本前，先阅读并遵守 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/36-迁移-Region-诊断与-codec-rule.md` 中的“Cargo 共享槽位规则”，动态领取仓库共享槽位 1–10，设置绝对路径 CARGO_TARGET_DIR；阶段结束后清理自己的锁并保留缓存，最终报告实际槽位和 CARGO_TARGET_DIR。
@@ -548,6 +627,8 @@
 
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/37-迁移-Region-split-辅助行为.md`。
+
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
 
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 37，依赖批次 36，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
@@ -564,6 +645,8 @@
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/38-迁移-Region-merge-辅助行为.md`。
 
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
+
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 38，依赖批次 37，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
 本任务涉及 Rust/Cargo：执行任何 Cargo 构建、检查、测试或调用 Cargo 的脚本前，先阅读并遵守 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/38-迁移-Region-merge-辅助行为.md` 中的“Cargo 共享槽位规则”，动态领取仓库共享槽位 1–10，设置绝对路径 CARGO_TARGET_DIR；阶段结束后清理自己的锁并保留缓存，最终报告实际槽位和 CARGO_TARGET_DIR。
@@ -578,6 +661,8 @@
 
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/39-迁移-RegionTree-查找与相邻项.md`。
+
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
 
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 39，依赖批次 38，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
@@ -594,6 +679,8 @@
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/40-迁移-RegionTree-overlap-更新删除.md`。
 
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
+
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 40，依赖批次 39，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
 本任务涉及 Rust/Cargo：执行任何 Cargo 构建、检查、测试或调用 Cargo 的脚本前，先阅读并遵守 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/40-迁移-RegionTree-overlap-更新删除.md` 中的“Cargo 共享槽位规则”，动态领取仓库共享槽位 1–10，设置绝对路径 CARGO_TARGET_DIR；阶段结束后清理自己的锁并保留缓存，最终报告实际槽位和 CARGO_TARGET_DIR。
@@ -608,6 +695,8 @@
 
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/41-迁移-RegionTree-统计增量.md`。
+
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
 
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 41，依赖批次 40，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
@@ -624,6 +713,8 @@
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/42-迁移-RegionTree-扫描计数.md`。
 
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
+
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 42，依赖批次 41，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
 本任务涉及 Rust/Cargo：执行任何 Cargo 构建、检查、测试或调用 Cargo 的脚本前，先阅读并遵守 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/42-迁移-RegionTree-扫描计数.md` 中的“Cargo 共享槽位规则”，动态领取仓库共享槽位 1–10，设置绝对路径 CARGO_TARGET_DIR；阶段结束后清理自己的锁并保留缓存，最终报告实际槽位和 CARGO_TARGET_DIR。
@@ -638,6 +729,8 @@
 
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/43-迁移-RegionTree-随机选择.md`。
+
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
 
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 43，依赖批次 42，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
@@ -654,6 +747,8 @@
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/44-迁移-RegionsInfo-ID-与-root-索引.md`。
 
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
+
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 44，依赖批次 43，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
 本任务涉及 Rust/Cargo：执行任何 Cargo 构建、检查、测试或调用 Cargo 的脚本前，先阅读并遵守 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/44-迁移-RegionsInfo-ID-与-root-索引.md` 中的“Cargo 共享槽位规则”，动态领取仓库共享槽位 1–10，设置绝对路径 CARGO_TARGET_DIR；阶段结束后清理自己的锁并保留缓存，最终报告实际槽位和 CARGO_TARGET_DIR。
@@ -668,6 +763,8 @@
 
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/45-迁移-epoch-term-陈旧校验.md`。
+
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
 
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 45，依赖批次 44，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
@@ -684,6 +781,8 @@
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/46-迁移-root-原子校验与写入.md`。
 
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
+
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 46，依赖批次 45，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
 本任务涉及 Rust/Cargo：执行任何 Cargo 构建、检查、测试或调用 Cargo 的脚本前，先阅读并遵守 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/46-迁移-root-原子校验与写入.md` 中的“Cargo 共享槽位规则”，动态领取仓库共享槽位 1–10，设置绝对路径 CARGO_TARGET_DIR；阶段结束后清理自己的锁并保留缓存，最终报告实际槽位和 CARGO_TARGET_DIR。
@@ -698,6 +797,8 @@
 
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/47-迁移角色子树更新.md`。
+
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
 
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 47，依赖批次 46，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
@@ -714,6 +815,8 @@
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/48-迁移子树乱序收敛.md`。
 
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
+
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 48，依赖批次 47，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
 本任务涉及 Rust/Cargo：执行任何 Cargo 构建、检查、测试或调用 Cargo 的脚本前，先阅读并遵守 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/48-迁移子树乱序收敛.md` 中的“Cargo 共享槽位规则”，动态领取仓库共享槽位 1–10，设置绝对路径 CARGO_TARGET_DIR；阶段结束后清理自己的锁并保留缓存，最终报告实际槽位和 CARGO_TARGET_DIR。
@@ -728,6 +831,8 @@
 
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/49-迁移-Region-移除与缓存重置.md`。
+
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
 
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 49，依赖批次 48，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
@@ -744,6 +849,8 @@
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/50-迁移-Region-批量查询.md`。
 
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
+
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 50，依赖批次 49，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
 本任务涉及 Rust/Cargo：执行任何 Cargo 构建、检查、测试或调用 Cargo 的脚本前，先阅读并遵守 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/50-迁移-Region-批量查询.md` 中的“Cargo 共享槽位规则”，动态领取仓库共享槽位 1–10，设置绝对路径 CARGO_TARGET_DIR；阶段结束后清理自己的锁并保留缓存，最终报告实际槽位和 CARGO_TARGET_DIR。
@@ -758,6 +865,8 @@
 
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/51-迁移-Region-扫描-limit.md`。
+
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
 
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 51，依赖批次 50，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
@@ -774,6 +883,8 @@
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/52-迁移-Region-多范围扫描.md`。
 
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
+
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 52，依赖批次 51，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
 本任务涉及 Rust/Cargo：执行任何 Cargo 构建、检查、测试或调用 Cargo 的脚本前，先阅读并遵守 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/52-迁移-Region-多范围扫描.md` 中的“Cargo 共享槽位规则”，动态领取仓库共享槽位 1–10，设置绝对路径 CARGO_TARGET_DIR；阶段结束后清理自己的锁并保留缓存，最终报告实际槽位和 CARGO_TARGET_DIR。
@@ -788,6 +899,8 @@
 
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/53-迁移-RegionsInfo-汇总与就绪.md`。
+
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
 
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 53，依赖批次 52，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
@@ -804,6 +917,8 @@
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/54-迁移范围汇总与空洞.md`。
 
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
+
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 54，依赖批次 53，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
 本任务涉及 Rust/Cargo：执行任何 Cargo 构建、检查、测试或调用 Cargo 的脚本前，先阅读并遵守 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/54-迁移范围汇总与空洞.md` 中的“Cargo 共享槽位规则”，动态领取仓库共享槽位 1–10，设置绝对路径 CARGO_TARGET_DIR；阶段结束后清理自己的锁并保留缓存，最终报告实际槽位和 CARGO_TARGET_DIR。
@@ -818,6 +933,8 @@
 
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/55-迁移按角色随机取-Region.md`。
+
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
 
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 55，依赖批次 54，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
@@ -834,6 +951,8 @@
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/56-迁移-Store-Region-关系查询.md`。
 
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
+
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 56，依赖批次 55，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
 本任务涉及 Rust/Cargo：执行任何 Cargo 构建、检查、测试或调用 Cargo 的脚本前，先阅读并遵守 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/56-迁移-Store-Region-关系查询.md` 中的“Cargo 共享槽位规则”，动态领取仓库共享槽位 1–10，设置绝对路径 CARGO_TARGET_DIR；阶段结束后清理自己的锁并保留缓存，最终报告实际槽位和 CARGO_TARGET_DIR。
@@ -848,6 +967,8 @@
 
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/57-迁移-BasicCluster-状态汇总.md`。
+
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
 
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 57，依赖批次 56，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
@@ -864,6 +985,8 @@
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/58-迁移-BasicCluster-写入速率.md`。
 
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
+
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 58，依赖批次 57，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
 本任务涉及 Rust/Cargo：执行任何 Cargo 构建、检查、测试或调用 Cargo 的脚本前，先阅读并遵守 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/58-迁移-BasicCluster-写入速率.md` 中的“Cargo 共享槽位规则”，动态领取仓库共享槽位 1–10，设置绝对路径 CARGO_TARGET_DIR；阶段结束后清理自己的锁并保留缓存，最终报告实际槽位和 CARGO_TARGET_DIR。
@@ -878,6 +1001,8 @@
 
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/59-迁移-heartbeat-阶段追踪.md`。
+
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
 
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 59，依赖批次 58，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
@@ -894,6 +1019,8 @@
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/60-迁移-Store-proto-转换.md`。
 
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
+
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 60，依赖批次 59，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
 本任务涉及 Rust/Cargo：执行任何 Cargo 构建、检查、测试或调用 Cargo 的脚本前，先阅读并遵守 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/60-迁移-Store-proto-转换.md` 中的“Cargo 共享槽位规则”，动态领取仓库共享槽位 1–10，设置绝对路径 CARGO_TARGET_DIR；阶段结束后清理自己的锁并保留缓存，最终报告实际槽位和 CARGO_TARGET_DIR。
@@ -908,6 +1035,8 @@
 
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/61-迁移-Region-proto-转换.md`。
+
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
 
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 61，依赖批次 60，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
@@ -924,6 +1053,8 @@
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/62-固定-response-覆盖与错误边界.md`。
 
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
+
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 62，依赖批次 61，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
 任务获得所需验证证据后，标记为 `已完成`，若有实际代码、测试、配置或文档变更，使用技能 `$git-commit` 提交该任务的变更；若只有编号任务文件本身的状态更新或删除，则无需提交。在最终回复中报告完成证据并删除该任务文件；如果被阻塞，首先要尽可能突破阻塞，缺少依赖就修复依赖，也可以在不改动 Go 源码、测试及模块配置的前提下超出任务范围修改，如果实在无法突破，只在任务文件中更新为 `已阻塞` 并记录具体原因和已运行的检查；如果因为无关本次修改的原因导致无法运行验证，可以解除 `已阻塞`，修改状态为 `已完成，待回归`，若有实际代码、测试、配置或文档变更，使用技能 `$git-commit` 提交该任务的变更；若只有编号任务文件本身的状态更新，则无需提交。保留任务文件供回归验证。
@@ -936,6 +1067,8 @@
 
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/63-建立-response-crate-与-peer-JSON.md`。
+
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
 
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 63，依赖批次 62，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
@@ -952,6 +1085,8 @@
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/64-迁移单-Region-响应.md`。
 
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
+
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 64，依赖批次 63，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
 本任务涉及 Rust/Cargo：执行任何 Cargo 构建、检查、测试或调用 Cargo 的脚本前，先阅读并遵守 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/64-迁移单-Region-响应.md` 中的“Cargo 共享槽位规则”，动态领取仓库共享槽位 1–10，设置绝对路径 CARGO_TARGET_DIR；阶段结束后清理自己的锁并保留缓存，最终报告实际槽位和 CARGO_TARGET_DIR。
@@ -966,6 +1101,8 @@
 
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/65-迁移-Region-列表与取消.md`。
+
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
 
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 65，依赖批次 64，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
@@ -982,6 +1119,8 @@
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/66-迁移-Store-响应字段.md`。
 
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
+
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 66，依赖批次 65，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
 本任务涉及 Rust/Cargo：执行任何 Cargo 构建、检查、测试或调用 Cargo 的脚本前，先阅读并遵守 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/66-迁移-Store-响应字段.md` 中的“Cargo 共享槽位规则”，动态领取仓库共享槽位 1–10，设置绝对路径 CARGO_TARGET_DIR；阶段结束后清理自己的锁并保留缓存，最终报告实际槽位和 CARGO_TARGET_DIR。
@@ -996,6 +1135,8 @@
 
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/67-迁移-Store-响应状态名.md`。
+
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
 
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 67，依赖批次 66，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
@@ -1012,6 +1153,8 @@
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/68-核对领域公开能力覆盖.md`。
 
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
+
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 68，依赖批次 67，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
 任务获得所需验证证据后，标记为 `已完成`，若有实际代码、测试、配置或文档变更，使用技能 `$git-commit` 提交该任务的变更；若只有编号任务文件本身的状态更新或删除，则无需提交。在最终回复中报告完成证据并删除该任务文件；如果被阻塞，首先要尽可能突破阻塞，缺少依赖就修复依赖，也可以在不改动 Go 源码、测试及模块配置的前提下超出任务范围修改，如果实在无法突破，只在任务文件中更新为 `已阻塞` 并记录具体原因和已运行的检查；如果因为无关本次修改的原因导致无法运行验证，可以解除 `已阻塞`，修改状态为 `已完成，待回归`，若有实际代码、测试、配置或文档变更，使用技能 `$git-commit` 提交该任务的变更；若只有编号任务文件本身的状态更新，则无需提交。保留任务文件供回归验证。
@@ -1024,6 +1167,8 @@
 
 ```text
 请使用技能 /Users/xiangmin/.codex/skills/do-task-plans/SKILL.md 执行 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/69-执行主题回归与关闭来源任务.md`。
+
+Go 只读：禁止新增、修改、删除或重命名任何 `.go` 文件（含测试、oracle、生成文件和临时工具），Go 模块文件同样只读；禁止通过 failpoint、生成器、格式化或依赖命令间接改写。仅复用已有只读 Go 证据，缺少必要证据时记录阻塞，不得为验证而编写 Go。
 
 开始前先阅读 `/Users/Shared/work/dir/data/codes/pd/.plans/2026-10-22-pd-rust-核心领域模型/plan.md` 和该任务文件，确认当前为批次 69，依赖批次 68，依赖已满足。按任务文件中的测试驱动开发/验证计划实施，尽可能只处理该任务范围，遇到阻塞可以扩大任务范围，但不合并独立行为或跳过验证；Go 源码、测试及模块配置均只读，不得新增、修改、删除 `.go` 文件，包括 oracle 测试。
 
