@@ -1,11 +1,12 @@
 // Copyright 2026 AsterSQL.
 
 use astersql_pd_configutil::ConfigMetaData;
-use astersql_pd_typeutil::ByteSize;
+use astersql_pd_typeutil::{ByteSize, Duration};
 use serde::{Deserialize, Serialize};
+use std::collections::BTreeMap;
 
 /// The basic scalar projection of Go Config, before Adjust. This is not a full Config.
-/// Duration, map and nested configuration fields remain owned by later tasks.
+/// Only base durations and labels are included; nested configuration remains separate.
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(default)]
 pub struct ConfigScalars {
@@ -53,6 +54,15 @@ pub struct ConfigScalars {
     pub pre_vote: bool,
     #[serde(rename = "max-request-bytes")]
     pub max_request_bytes: u64,
+    #[serde(rename = "tick-interval")]
+    pub tick_interval: Duration,
+    #[serde(rename = "election-interval")]
+    pub election_interval: Duration,
+    #[serde(skip)]
+    pub heartbeat_stream_bind_interval: Duration,
+    #[serde(skip)]
+    pub leader_priority_check_interval: Duration,
+    pub labels: Option<BTreeMap<String, String>>,
 }
 
 /// Decoded scalar values and input presence before any default adjustment.
@@ -64,7 +74,7 @@ pub struct DecodedScalars {
 
 /// Decodes the scalar projection of a JSON object without applying defaults.
 /// Unknown fields are exposed as undecoded metadata and are never passed through.
-/// JSON null leaves primitive scalars at zero; ByteSize rejects null like Go.
+/// JSON null leaves primitive scalars at zero; ByteSize and Duration reject it like Go.
 pub fn decode_json_scalars(input: &str) -> Result<DecodedScalars, serde_json::Error> {
     let value: serde_json::Value = serde_json::from_str(input)?;
     let Some(object) = value.as_object() else {
@@ -84,6 +94,9 @@ pub fn decode_toml_scalars(input: &str) -> Result<DecodedScalars, toml::de::Erro
 
 // JSON tag, TOML tag (or untagged Go field name), Go field name.
 const FIELDS: &[(&str, &str, &str)] = &[
+    ("tick-interval", "tick-interval", "TickInterval"),
+    ("election-interval", "election-interval", "ElectionInterval"),
+    ("labels", "labels", "Labels"),
     ("client-urls", "client-urls", "ClientUrls"),
     ("peer-urls", "peer-urls", "PeerUrls"),
     (
@@ -165,7 +178,12 @@ fn decode_object(
     for (key, value) in object {
         collect_paths(value, vec![key.clone()], &mut paths);
         if let Some(name) = field_name(key, toml) {
-            if !value.is_null() || name == "quota-backend-bytes" {
+            if !value.is_null()
+                || matches!(
+                    name,
+                    "quota-backend-bytes" | "tick-interval" | "election-interval"
+                )
+            {
                 selected.insert(name.to_owned(), value.clone());
             }
         } else {
@@ -174,7 +192,22 @@ fn decode_object(
             undecoded.push(key.clone());
         }
     }
-    let values = serde_json::from_value(serde_json::Value::Object(selected))?;
+    let mut values: ConfigScalars = serde_json::from_value(serde_json::Value::Object(selected))?;
+    if toml {
+        for (key, value) in object {
+            let field = if key.eq_ignore_ascii_case("HeartbeatStreamBindInterval") {
+                Some(&mut values.heartbeat_stream_bind_interval)
+            } else if key.eq_ignore_ascii_case("LeaderPriorityCheckInterval") {
+                Some(&mut values.leader_priority_check_interval)
+            } else {
+                None
+            };
+            if let Some(field) = field {
+                *field = serde_json::from_value(value.clone())?;
+                undecoded.retain(|unknown| unknown != key);
+            }
+        }
+    }
     Ok(DecodedScalars {
         values,
         metadata: ConfigMetaData::from_defined_paths(paths).with_undecoded_keys(undecoded),

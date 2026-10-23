@@ -11,3 +11,9 @@ pub use config_urls::*;
 
 #[cfg(test)]
 mod config_urls_test;
+
+mod config_defaults;
+pub use config_defaults::*;
+
+#[cfg(test)]
+mod config_defaults_test;

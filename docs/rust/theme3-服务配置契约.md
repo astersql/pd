@@ -778,3 +778,89 @@ owner 记录计划/任务/会话/PID，EXIT/INT/TERM 覆盖锁清理；所有子
 SHA-256 与任务开始完全一致，Go/模块 Git 状态为空；plan.md 指纹不变。
 只有本任务 Rust、最小依赖连线及本文证据发生变化，未格式化无关 Rust 文件。
 槽位 1 的 owner 与锁已释放，编译缓存保留；原有其他任务文件删除不纳入提交。
+
+## 批次 86：基础标量默认值
+
+日期：2026-10-24（Asia/Shanghai）。核验前置批次 85 提交 `a9648256f`、
+canonical `astersql-pd-server-config` 的 URL 实现与四项独立测试，以及上一节
+679 passed / 0 failed / 1 ignored 的 workspace 证据，准入满足。
+`config.go` 相对规划基准 `5d5948052a9ee9e3fa7a09145fe2916a2912c223`
+无差异。已读根 AGENTS.md、Copilot、ADR-001、移植指南、执行技能；server/docs
+没有更深 AGENTS.md。本任务仅默认值纯值投影，不涉及完整 Config 的 Validate、
+外部嵌套配置、TSO 归一化、启动或存储装配。
+
+### Go 依据与实现
+
+`server/config/config.go::Config.Adjust`（358–465）和常量（177–223）：
+
+- 空 name 取 `pd-<hostname>`，空 data-dir 取 `default.<name>` 后由
+  `configutil.AdjustPath` 做 filepath.Abs/Clean；Rust 的
+  `ConfigDefaultsContext` 由宿主提供已成功解析的 hostname 与绝对 cwd，库内
+  不读取宿主状态、不访问文件系统。hostname/cwd 错误由宿主处理，不用虚构值掩盖。
+  edition 不参与本任务字段默认值。路径按宿主路径语法做词法清理，不解析符号链接。
+- ClientUrls/PeerUrls 空值分别取 2379/2380 loopback URL，空 advertise 值继承；
+  空 InitialCluster 逐个分割 advertise-peer-urls，原样保留空项/空白，拼为
+  `name=url`。已有 initial cluster、state、token 保留；空 state/token 取 new/pd-cluster。
+- LeaderLease 仅零取 5，负数保留；AutoCompactionMode/Retention 空取 periodic/1h；
+  Labels 的 nil 变空 map，已有 map 保留。
+- quota、max request **仅缺失 metadata 时无条件**取 8GiB、150MiB；显式零值保留。
+  prevote/gateway 缺失置 true，显式 false 保留。metadata 按字面 key 区分大小写；
+  Go gateway 无 TOML tag，`EnableGRPCGateway=false` 不代表 metadata 中定义了
+  `enable-grpc-gateway`，因此仍被 Adjust 设 true。
+- Tick/Election 的非正 duration 分别取 500ms/3s；HeartbeatStreamBindInterval、
+  LeaderPriorityCheckInterval 的非正值取 1min；正数（包括 1ns/i64::MAX）保留。
+  后两字段只接受原有 Go TOML 字段名，JSON 隐藏。
+- 相邻 `config_test.go::TestAdjust` 固定空 name、lease=0、显式 max request
+  20000000 与缺失 prevote=true；`TestValidation` 固定 quota/max request 默认。
+  本轮只读运行现有整个 Go 配置测试包。源码还确认 TestMain 仅 goleak/etcd 连接清理，
+  测试没有 failpoint.Enable；persist_options 的注入点不是这些测试的必要条件。
+  未启停 failpoint、未新增 Go oracle。额外边界（负 lease、字面 metadata、duration
+  极值、路径清理）明确来自源码推导，不冒充新增 Go 运行差分。
+
+`ConfigScalars::adjust_base_defaults` 位于 config_defaults.rs；在现有 canonical
+ConfigScalars 原位增加本任务所属的四项 duration 和 labels，未创建平行 Config。
+JSON/TOML 解码扩展仍位于 config_decode.rs；Duration null 按
+`pkg/utils/typeutil/duration.go::UnmarshalJSON` 的 strconv.Unquote 错误语义拒绝。
+原 `config_decode_go_json_bytes` 测试自动纳入新 JSON 字段 tick-interval、
+election-interval、labels：复用上文 batch84 两份**真实已有 Go 输出**，逐字段
+比较 JSON 值及原始 wire bytes，没有手抄 Rust 输出充当 Go fixture。
+config_defaults_test.rs 独立测试在 lib.rs 显式注册，纯值任务无需 MemoryStore/etcd 入口。
+无新增依赖，Cargo.toml/Cargo.lock 不变。
+
+### 本轮验证
+
+Cargo 每阶段通过原子 mkdir 动态领取共享槽位 **1**，
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 写入计划、任务、会话及持有 shell PID；EXIT/INT/TERM 清理自己的记录与锁，
+阶段内子进程全部结束后释放，保留缓存。所有 Cargo 子进程继承该绝对路径；
+workspace 测试继承 `GOFLAGS=-mod=readonly`。已复核既有 etcd fixture 调用链：
+只读构建现有 Go 源码，二进制及隔离数据目录写入槽位，不写 Go/模块文件。
+
+初始 6 项独立测试在最小可编译接口下执行指定聚焦命令，得到真实行为红灯
+**0 passed / 6 failed / 0 ignored，退出 101**；失败来自实际默认值/保留值/
+时长/地址断言，不是缺符号或环境错误。最小实现后同样 6 项全部通过，退出 0。
+随后补充第 7 项 TOML duration/labels、隐藏 JSON 字段和 Duration null 边界，
+原六项断言未削弱，最终按修改后的源码重新运行完整基线。
+
+补充测试首次编译误将 `check_undecoded()` 的 Option 当作 Result 使用
+（E0599，退出 101）；修正为 `is_none()` 后重新格式化及验证。这是辅助编译
+记录，不计作行为红灯。初版完整 workspace 为 685 passed / 0 failed /
+1 既有 ignored；最终源码含第七项测试，以下记录采用最终重跑结果。
+
+| 确切命令 | 最终退出码与有效证据 |
+| --- | --- |
+| `cargo fmt --all` | 0；只改本任务 Rust 文件 |
+| `cargo test --locked -p astersql-pd-server-config --lib config_defaults -- --nocapture` | 0；7 passed / 0 failed / 0 ignored |
+| `go test -mod=readonly ./server/config -count=1` | 0；现有配置包通过，1.164s |
+| `cargo metadata --format-version 1 --no-deps` | 0 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；只有既有 core_region_adapter.rs:134 deprecated cpu_usage 警告 |
+| `cargo test --workspace --locked` | 0；686 passed / 0 failed / 1 既有 ignored，含真实 etcd 回归；配置 crate 16 项全部通过 |
+| `git diff --check` | 0 |
+
+本轮状态：**已完成**。最终全量回归后重新比较 1101 个 Go/模块文件的路径集合与
+SHA-256，完全一致；Go/模块 Git 状态为空。只读 plan.md 的 SHA-256 仍为
+`c7968f95a13d0d216ced3adafaca3140ad6ef959ff693c613cb903b231a6f777`。
+已审查默认值实现、七项测试、canonical 解码连线与本文差异，无无关 Rust 格式化、
+无依赖变更。共享槽位 1 的 owner 与锁已清理，缓存保留。其他任务文件的已有删除
+不纳入提交；本任务完成不代表完整 Config 或来源主题已完成。
