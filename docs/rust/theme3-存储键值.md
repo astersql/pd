@@ -1182,3 +1182,85 @@ watch/lease/fencing、WAL 重启及消费者契约。
 退出 0、无输出。已审查 canonical builder、事务适配器最小分类/解码提取、
 独立测试、模块注册及本文；无依赖/manifest/lock 改动。
 编号任务文件按完成流程删除；其他会话的在途计划修改不纳入本提交。
+
+## 任务 12：原有元数据契约回归（批次 19）
+
+日期：2026-10-23（Asia/Shanghai）。前置批次 18 已通过提交
+`e5059a2be4cfaeebf6c6bf44c96fa8ef6aa35eb0`、本文任务 11 节及实物核验：
+取消分类、独立 txn_cancel 测试及其 lib.rs 注册均存在；历史最终 workspace
+499 passed / 0 failed / 1 既有 ignored。准入满足，不以任务文件删除代替证据。
+本任务为独立回归关口，不新增生产功能，TDD 红灯不适用。
+
+### Go 只读依据
+
+核对 `kv.go`、`etcd_kv.go`、`mem_kv.go`、`levedb_kv.go`、`kv_test.go`
+以及 storage 的 `storage_test.go`、`region_storage_test.go`、
+`storage_tso_test.go`：相对规划基准 `5d5948052a9ee9e3fa7a09145fe2916a2912c223`
+无差异。RawTxn 六比较、Then/Else、单键及范围有序响应、callback/revision 冲突和
+错误分类沿用前序已固定的 Go 函数与测试断言，不从名称推导新契约。
+
+复用已有只读日志 `/tmp/pd-task9-go.log`：历史 KV 4.186s、storage 28.756s
+均通过；没有 -v 输出，不能补造有效测试数。这是历史基线证据，本轮未运行 Go 测试，
+也不声称本轮 Go/Rust 运行差分。指定命令
+`go test -mod=readonly ./pkg/storage/kv ./pkg/storage -count=1` 的准入条件不满足：
+`TestLoadRegionsExceedRangeLimit`、`TestRegionReload`、`TestSaveTimestampWithTimeout`
+需要 failpoint 注入，裸跑会缺失故障路径，注入则违反只读约束。现有源码、测试及历史
+通过输出可复用；不新增 Go oracle、不执行 make/failpoint/tidy/生成命令。
+本任务没有编码变更，不需要新增字节输出。
+
+已审查共享 fixture 的完整调用链：既有 `etcd_fixture_test.rs` 只以
+`go build -o <所持槽位产物> ./scripts/rust-etcd-fixture` 构建已有 helper；继承
+`GOFLAGS=-mod=readonly`，helper 的 ready/stop/start 文件、WAL 和日志只写槽位下
+隔离目录，不改 Go 或模块文件。没有新建 helper 或第二套 MetaStore。
+
+### 实际覆盖与故障时序
+
+canonical `astersql-pd-storage-kv` 默认 features 的整包命令实际执行 40 项：
+30 项单元测试和 10 项真实 etcd 集成测试，零失败、零忽略。
+原有 `meta_store_test.rs` 与 `etcd_store_test.rs` 各 9 项继续复用同一
+`contract_test.rs`：原子 CAS/revision、快照分页/历史读、watch 重放、压缩恢复、
+lease 到期、续租撤销、选主 fencing、非法请求原子性、watch 取消。
+复用现有入口，不为回归强造 kv_regression 命名或占位模块。
+
+- 两后端实际运行 bounded_range、base_kv、callback_txn、revision_txn、
+  raw_compare、raw_branches、raw_get、raw_range、txn_cancel；另含范围纯值、
+  畸形响应及传输错误分类。所有前序事务测试均已注册并被整包运行命中。
+- watch 从指定 revision 重放、同事务批次顺序、断续恢复及压缩恢复仍满足共享断言。
+  两后端压缩实测 old=2、boundary=3、recovered=4。
+- lease 到期先绑定 key，再从提交 revision+1 观察 Delete；终态 key 缺失，
+  ttl/keep_alive 返回 LeaseNotFound，过期 lease 的混合事务整体拒绝。
+  两后端本轮删除 revision 均为 3；续租跨越原到期时刻后 key 仍存在，撤销后删除。
+- fencing 共享断言实际并发竞争两个 lease，只有一个成功；撤销后新持有者成功，
+  同名旧持有者写入被拒绝，终态 data 为新持有者的 two。
+- `disconnect_restart_resume_and_cancel` 先写并消费 revision 3 的 lease 事件，
+  停止 etcd 后观察 watch/read Unavailable，并验证离线取消；等待 3s 后在同 WAL
+  重启，观察已持久化数据及 revision 4 的新提交，恢复事件均大于 3。
+  最终 lease 已到期、绑定 key 删除、keep_alive 为 LeaseNotFound。
+- 提交取消/丢回复继续由 txn_cancel 的真实 etcd 代理测试覆盖：先直连观察提交，
+  再取消或断 TCP，返回 Unavailable；终态已提交键值/revision 保留，无重放。
+  workspace 还运行 member/ID 的真实 etcd 行为、自然到期、身份恢复和 WAL 重启。
+
+### 资源与本轮验证
+
+原子 `mkdir target/rust-slot-locks/slot-1.lock` 动态领取实际槽位 **1**；
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`，
+owner 记录本计划、任务 12、会话和持有 PID **11253**。所有 Cargo、测试及 fixture
+继承该绝对路径；包装器在正常、失败和中断路径等待自己的子进程结束后释放 owner/锁，
+保留缓存。没有并行修改 workspace，也未修改 Rust/manifest/Cargo.lock。
+
+| 确切命令 | 退出码 | 有效测试数/结果 |
+| --- | --- | --- |
+| `cargo test --locked -p astersql-pd-storage-kv -- --nocapture` | 0 | 40 passed / 0 failed / 0 ignored；doc-tests 0 不作行为证据 |
+| `cargo metadata --format-version 1 --no-deps` | 0 | workspace 注册正常 |
+| `cargo fmt --all -- --check` | 0 | 通过 |
+| `cargo check --workspace --locked` | 0 | 通过 |
+| `cargo test --workspace --locked` | 0 | 499 passed / 0 failed / 1 既有 ignored，含 2 doc-tests |
+| `git diff --check` | 0 | 通过 |
+| `git diff --cached --check` | 0 | 本任务提交前审查通过 |
+
+状态：已完成。全部 Cargo/fixture 子进程已退出，自己的槽位锁已释放，缓存保留。
+唯一 ignored 为既有独立兼容流程 tso_processes，本任务未新增或跳过测试。
+本轮 1101 个已跟踪 Go/模块文件与开始时 SHA-256 逐项一致，未跟踪同范围文件为 0；
+Go/模块 Git 差异为空。已审查共享断言注册、全部事务测试、fixture、消费者运行结果
+以及本文新增节；仅新增本任务证据，其他会话在途计划变更保持原样。
+编号任务按完成流程删除；plan.md 与来源主题只读，不纳入提交。
