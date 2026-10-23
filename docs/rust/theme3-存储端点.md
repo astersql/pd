@@ -3847,3 +3847,135 @@ owner 包含 plan=storage-endpoint task=24 batch=43 session=keyspace-group-store
 审查新增存储实现、共享 contract、模块注册和本节证据，无 manifest/lock 或其他
 Rust 文件格式化差异；总计划和来源主题保持只读。保留原有观测工具计划修改、
 任务 19/23 删除，不纳入提交。状态：已完成；批次 43 的键空间组存储故事完成。
+
+## 任务 25：元服务组状态（批次 44）
+
+### 准入与只读 Go 运行证据
+
+依赖批次 43 的 `75d205432` 与上节完成证据满足准入。
+`meta_service_group.go`、`storage/meta_service_group_test.go` 相对规划基准
+`5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异。Go 符号
+SaveMetaServiceGroupStatus 使用 json.Marshal；LoadMetaServiceGroupStatus
+遍历请求 map 的键、忽略地址，缺失/空字节返回新零状态，JSON 解码或存储错误
+丢弃整个结果；RemoveMetaServiceGroupStatus 在调用方事务删除状态路径。
+
+审查所选测试、TestMain、memoryKV/memTxn 和服务构建路径，不需 failpoint，
+不写 Go/模块文件。实际命令与结果：
+
+```text
+GOFLAGS=-mod=readonly go test -mod=readonly -tags without_dashboard ./pkg/storage -run '^TestMetaServiceGroupStorage$' -count=1 -v
+```
+
+退出 0，1 passed / 0 failed，1.104s；覆盖更新、批量读取及缺失归零。
+整包 `go test -mod=readonly ./pkg/storage/endpoint ./pkg/storage -count=1` 未执行：
+其中区域、时间戳测试需要 failpoint 注入。未以裸跑替代这些测试。
+
+```text
+GOARCH=arm64 CGO_ENABLED=0 GOFLAGS=-mod=readonly go test -mod=readonly -tags without_dashboard ./pkg/keyspace -run '^TestMetaServiceGroupTestSuite$/^TestUpdateGroupsSafelyUsesAuthoritativeCount$' -count=1 -v
+```
+
+退出 0，1 个实际子测试 passed，0 failed，包耗时 0.033s。该测试的 memoryKV
+manager 先保存 assignment_count=3，再移除组并验证持久化计数归零；选中的
+SetupTest/TestMain 与子测试无 failpoint 依赖。
+
+### 实际 Go 字节和删除重加
+
+新增 Go oracle 被禁止，因此使用当前源码的既有服务入口，无源码修改：
+
+```text
+GOARCH=arm64 CGO_ENABLED=0 GOFLAGS=-mod=readonly go build -mod=readonly -tags without_dashboard -o /tmp/pd-meta25-server ./cmd/pd-server
+python3 /tmp/pd-meta25-service-capture.py
+```
+
+均退出 0。Python 以随机 loopback client/peer 端口和独立临时数据目录启动该
+服务，配置 keyspace.wait-region-split=false、group1 的地址为本服务 etcd。
+通过已有 `/pd/api/v1/members` 获取 cluster_id，按已有 pdpb BootstrapRequest
+字段发起 `/pdpb.PD/Bootstrap`（store=1、region=2、peer=3/store=1，等同
+`tests/cluster.go:BootstrapCluster` 的最小数据），HTTP/2 200、grpc-status=0。
+随后调用现有 `/pd/api/v2/meta-service-groups/group1/status` PATCH，分别输入
+`{"enabled":true}` / `{"enabled":false}`；只读 `/v3/kv/range` 获取 Go
+SaveMetaServiceGroupStatus 实际持久化字节，不向存储注入期望 JSON。
+
+最终运行 cluster_id=7699749496096157541，路径
+`/pd/7699749496096157541/meta_service_groups/group1/status`：
+
+| 采集时间（启动后） | mod revision | 原始字节（UTF-8） | 原始 base64 |
+| --- | --- | --- | --- |
+| 1.746041s | 16 | `{"assignment_count":0,"enabled":true}` | `eyJhc3NpZ25tZW50X2NvdW50IjowLCJlbmFibGVkIjp0cnVlfQ==` |
+| 1.751949s | 17 | `{"assignment_count":0,"enabled":false}` | `eyJhc3NpZ25tZW50X2NvdW50IjowLCJlbmFibGVkIjpmYWxzZX0=` |
+
+1.757790s 再次 enable（revision=18），随后 PATCH groups `{"group1":null}`：
+组列表为空且 range 不再含状态键；PATCH groups 加回原地址后返回
+assignment_count=0、enabled=false，range 仍无旧状态键，证明重新装载缺失状态
+为零而非继承 enabled=true。服务 SIGTERM 正常退出 0，临时数据未写入仓库。
+原始输出 `/tmp/pd-meta25-go-wire.json`、
+`/tmp/pd-meta25-service-capture-final.log`。测试固定上述 Go 原始字节，并在
+memory/etcd 保存结果和纯值编码中逐字节比较。负值、null、坏 JSON、字段大小写
+等额外边界来自 Go 源码/encoding-json 契约，不宣称逐项取得跨语言运行差分。
+
+现有 x86_64 Delve 在 arm64 宿主报 Rosetta 错误；原生 LLDB/已校验 Homebrew
+预编译 arm64 Delve 也未完成 debugserver 启动，没有从这些调试尝试取得字节，
+未修改系统调试权限。最终证据完全来自上述实际服务与只读 etcd 观察。
+
+### Rust 实现与红绿灯
+
+canonical `meta_service_group.rs` 定义 MetaServiceGroupStatus（i64 计数及 bool），
+为既有 StorageEndpoint 增加 save/load/remove_meta_service_group_status；复用
+ClusterPaths 和 caller CallbackTxn，不新增存储后端或业务分组算法。
+解码允许顶层/字段 null、缺失字段、未知字段、大小写和重复字段，保留 Go 零值；
+保存 None 对应 Go nil 指针的 JSON null。错误复用 EndpointError 分类。
+独立 `meta_service_group_test.rs` 在 lib.rs 显式注册，无 manifest/依赖改动。
+
+先写可编译接口（删除尚未产生效果）及真实断言，fmt 后运行：
+
+```text
+cargo test --locked -p astersql-pd-storage-endpoint --lib meta_service_group -- --nocapture
+```
+
+原生 fixture 红灯退出 101：1 passed / 2 failed / 0 ignored；memory 和 etcd
+均在 `deleted group must not retain its status` 断言失败。最小修复调用
+CallbackTxn.remove，保持原断言，补充回滚、未提交写不可见、缺失/空/null、
+批量坏 JSON、计数负值/溢出、字段类型错误、nil 保存、缺失键并发创建冲突、
+集群隔离、字面 ID、幂等删除和读取/提交后端错误。fmt 后同一命令退出 0：
+3 passed / 0 failed / 0 ignored。
+
+最终聚焦 etcd：计数99/enabled=true 保存完成后计时，stop 确认后复用原 WAL
+start；1.534791167s 时新连接读取恢复值成功。关闭 fixture 后，1.585425584s
+时读取返回 callback backend 错误、删除提交返回 backend 错误，未模拟事务结果。
+
+### 槽位、仓库基线与审查
+
+每阶段均按仓库规则原子 mkdir 动态领取，owner 记录 task=25、batch=44、
+meta-service-group 会话及 shell PID，EXIT/INT/TERM trap 负责阶段结束清理。
+首次阶段领取槽位 1，PID=33072，
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+该阶段 memory 已产生行为红灯，但 x86_64 Go etcd fixture PID=33220 启动后
+处于内核 U 等待，SIGTERM/SIGKILL/SIGCONT 不能使其退出，原测试等待其退出。
+未将此阶段算作有效双后端证据，也未提前释放仍被该子进程使用的 slot-1 锁；
+原 shell 的 trap 保持等待、退出时清理，不删除活跃占用记录或编译缓存。
+另外首次 x86_64 keyspace 测试 PID=31857 同样启动等待，已发送终止信号；
+它不是成功证据，成功证据来自上述完整通过的 arm64 窄测试。
+
+切换 Go fixture 环境为 `GOARCH=arm64 CGO_ENABLED=0 GOFLAGS=-mod=readonly`，
+不改共享 helper 或 Go 文件。有效红灯、绿灯和仓库基线分别动态领取槽位 **2**，
+PID=33397、33745、33943，全部使用：
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2`。
+三个原生阶段及其 fixture 全部结束，slot-2 owner/锁已清理，缓存保留。
+
+| 验证命令 | 退出码、有效结果 |
+| --- | --- |
+| `cargo fmt --all` | 0；仅本任务新 Rust 文件发生格式化 |
+| `cargo test --locked -p astersql-pd-storage-endpoint --lib meta_service_group -- --nocapture`（原生红灯） | 101；1 passed / 2 failed / 0 ignored；两个后端删除残留断言失败 |
+| 同一聚焦命令（修复后） | 0；3 passed / 0 failed / 0 ignored |
+| `cargo metadata --format-version 1 --no-deps` | 0；canonical target 不变 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；仅已有 cpu_usage 弃用警告 |
+| `cargo test --workspace --locked` | 0；83 target，571 passed / 0 failed / 1 既有 ignored；endpoint 72 passed |
+| `git diff --check`、`git diff --cached --check` | 0 |
+
+所有 1101 个受跟踪 Go/模块文件 SHA-256 与任务开始一致，Go/模块 Git 状态
+无新增差异。未执行 Go 生成器/格式化/依赖整理或 failpoint 启停。审查内容仅为
+canonical 实现、独立测试、lib.rs 注册和本节证据，无 Cargo.toml/Cargo.lock
+或其他 Rust 格式化差异。总计划与来源主题只读；原有其他任务计划修改、任务
+19/23/24 删除不纳入实现提交。批次 44 的行为和验证证据已满足；异常 x86_64
+进程的延迟退出及 slot-1 的待清理占用如上明确保留，不宣称已经释放。

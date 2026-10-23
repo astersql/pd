@@ -104,3 +104,8 @@ mod keyspace_group_store;
 pub use keyspace_group_store::KeyspaceGroupStoreError;
 #[cfg(test)]
 mod keyspace_group_store_test;
+
+mod meta_service_group;
+pub use meta_service_group::MetaServiceGroupStatus;
+#[cfg(test)]
+mod meta_service_group_test;
