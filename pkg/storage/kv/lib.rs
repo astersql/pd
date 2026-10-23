@@ -37,3 +37,8 @@ mod raw_compare;
 pub use raw_compare::{RawTxnCmpType, RawTxnCondition};
 #[cfg(test)]
 mod raw_compare_test;
+
+mod raw_branches;
+pub use raw_branches::RawTxn;
+#[cfg(test)]
+mod raw_branches_test;

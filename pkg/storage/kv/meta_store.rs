@@ -210,13 +210,21 @@ pub trait MetaWatch: Send {
 }
 
 /// Minimal PD metadata contract. Futures may be dropped to cancel requests.
-/// Writes are atomic, compare failure is not an error and consumes no revision.
+/// Writes are atomic; compare failure is not an error. A selected write branch
+/// consumes one revision if it changes state; empty branches consume none.
 /// Never blindly retry Unavailable mutations: the commit may already have happened.
 /// Lease-attached create-if-absent plus Value/Lease comparisons fences leadership.
 #[async_trait]
 pub trait MetaStore: Send + Sync {
     async fn read(&self, request: Read) -> Result<Snapshot>;
     async fn transact(&self, compares: Vec<Compare>, writes: Vec<Mutation>) -> Result<Commit>;
+    /// Evaluate comparisons and commit exactly one write branch atomically.
+    async fn transact_branches(
+        &self,
+        compares: Vec<Compare>,
+        then_writes: Vec<Mutation>,
+        else_writes: Vec<Mutation>,
+    ) -> Result<Commit>;
     async fn watch(&self, prefix: Vec<u8>, start_revision: Revision) -> Result<Box<dyn MetaWatch>>;
     async fn grant(&self, ttl_seconds: i64) -> Result<Lease>;
     async fn keep_alive(&self, lease: LeaseId) -> Result<Lease>;

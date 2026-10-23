@@ -763,3 +763,79 @@ owner 含计划、任务、会话与持有 PID：红灯 49492、绿灯 49698、w
 workspace 实际回归原有 watch/lease/fencing、断连/WAL 重启和消费者测试。
 已审查生产、独立测试、注册与本文差异；其他计划在途修改不纳入提交。
 编号任务文件按完成流程删除，证据保留于本文及实现提交。
+
+## 任务 8：实现事务分支写入（批次 15）
+
+日期：2026-10-23（Asia/Shanghai）。依赖批次 14 已核验：提交 `8e4373536`
+包含六比较的 canonical 实现及独立双后端测试，本文任务 7 记录 workspace
+489 passed / 0 failed / 1 既有 ignored；准入满足。已读取只读 plan.md、任务文件、
+ADR-001、porting-guide、根 AGENTS 与 Copilot 指令；无更深 AGENTS。
+`etcd_kv.go` 相对规划基准 `5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异。
+
+### Go 依据与实现范围
+
+`rawTxnWrapper::{If,Then,Else,Commit}` 把条件和两分支委托给同一 etcd 事务；
+Succeeded=false 仍是成功响应，执行 Else；Put/Delete 不请求 previous value。
+`kv_test.go::testRawTxn` 的首个 NotExists 案例执行 Then 的两次 put；NotEqual
+案例执行 Else put；Exists 案例混合 delete/overwrite，均断言未选分支没有写入。
+本轮先串行运行 `make gotest GOTEST_ARGS='./pkg/storage/kv ./pkg/storage -count=1'`，
+退出 0（KV 3.718s、storage 30.204s，非 -v 输出未列测试数），随后显式
+`make failpoint-disable` 退出 0。Go 窗口结束后才编辑和运行 Rust；无 Go 差异或
+生成 failpoint 文件。revision、空分支、请求/lease 错误原子性为 Go 委托的 etcd
+事务语义及本轮真实双后端验证，不冒充逐输入 Go/Rust 运行差分。本任务没有 codec。
+
+新增 `raw_branches.rs::RawTxn`，使用 canonical `dyn MetaStore`，消费自身提交，
+when/and_then/or_else 分别缓存条件和两分支。新增唯一 MetaStore 方法
+`transact_branches`；两个现有后端原位扩展，原 transact 委托它并传入空 Else。
+MemoryStore 在同一锁内比较、选支、检查所选写入的 lease、应用写入和分配 revision；
+EtcdMetaStore 使用同一个 Txn 的 when/and_then/or_else。两分支均先验证请求，
+不先读后比较、不补发第二事务、不添加依赖、运行时或第二套存储接口。
+lib.rs 显式注册生产与独立测试；读操作及有序响应解码留给任务 9–10。
+
+### 测试驱动与行为证据
+
+最小可编译入口先委托旧 transact（忽略 Else），同一聚焦命令真实退出 101：
+0 passed / 2 failed。两个后端均在 Else 分支期望 revision=10、实际=9，
+不是缺符号或环境错误。实现后原断言不削弱，聚焦退出 0：2 passed / 0 failed；
+补充 lease 错误断言后再次聚焦仍为 2 passed / 0 failed / 0 ignored。
+
+`raw_branches_memory` / `raw_branches_etcd` 复用同一断言和 canonical fixture：
+
+- 分别命中 Then/Else，多个 put/delete 同 revision，未选分支完全不写；Else 写入
+  即使 Succeeded=false 仍分配一个 revision；缺失 delete 可与真实变更同批提交。
+- builder 构造后先外部删除条件键，再提交，实际选择 Else；空条件执行 Then。
+  空分支只返回条件结果而不增加 revision。值包含空值和非 UTF-8 字节。
+- 任一分支非法空键（包括未选分支）返回 InvalidArgument，整批 Entry/revision 不变。
+  选中分支中已撤销 lease 返回 LeaseNotFound，前面的合法 put/delete 也不落地。
+- token 在 commit_with_cancel 前取消，Then/Else 两种条件均返回 Cancelled，
+  完整 Entry/revision 不变。此测试只证明提交前取消；进行中取消/断连结果不确定性
+  属任务 11，不新增保证。取消若发生在 RPC 已发送后，底层原子事务仍可能整批提交，
+  API 注释保留 outcome unknown/禁止盲重试约束。没有新增断连或到期故事。
+
+### Cargo 共享槽位与验证
+
+各阶段均通过原子 mkdir 动态领取实际槽位 **1**，绝对路径为
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录计划、任务、会话及持有 PID：红灯 55497、首次绿灯 55715、
+补充测试及 workspace 基线 56008。包装器等待 Cargo/fixture 退出后清理自己的 owner
+和锁；中断处理终止并等待子进程组再释放，保留槽位缓存，不清理他人资源。
+
+最终状态：已完成。所有 Cargo/fixture 子进程已结束，自己的槽位锁已释放，缓存保留。
+
+| 确切命令 | 退出码 | 有效测试数/结果 |
+| --- | --- | --- |
+| `cargo fmt --all`（每次 Rust 修改后） | 0 | 无无关 Rust 格式变更 |
+| `cargo test --locked -p astersql-pd-storage-kv --lib raw_branches -- --nocapture`（红灯） | 101 | 0 passed / 2 failed，Else 未写入 |
+| 同上（首次绿灯、补充 lease 检查后） | 0 | 每次 2 passed / 0 failed / 0 ignored |
+| `cargo metadata --format-version 1 --no-deps` | 0 | canonical crate 注册正常 |
+| `cargo fmt --all -- --check` | 0 | 通过 |
+| `cargo check --workspace --locked` | 0 | 通过 |
+| `cargo test --workspace --locked` | 0 | 491 passed / 0 failed / 1 既有 ignored，含 2 doc-tests |
+| `git diff --check` | 0 | 通过 |
+| `git diff --cached --check` | 0 | 本任务暂存审查通过 |
+
+既有 ignored 为独立兼容流程的 `tso_processes`，未新增 ignore；仅出现既有
+RegionHeartbeatRequest.cpu_usage deprecated 警告。workspace 实际回归原有
+watch/lease/fencing、断连/WAL 重启和消费者测试。已审查 builder、两个后端最小扩展、
+独立共用断言、注册和本文证据；未修改依赖、manifest/lock、Go、只读计划或来源主题。
+其他计划在途修改未纳入提交。编号任务文件按完成流程删除，证据保留于本文和实现提交。

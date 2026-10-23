@@ -129,7 +129,16 @@ impl MetaStore for MemoryStore {
         })
     }
     async fn transact(&self, compares: Vec<Compare>, writes: Vec<Mutation>) -> Result<Commit> {
-        validate_txn(&compares, &writes)?;
+        self.transact_branches(compares, writes, vec![]).await
+    }
+    async fn transact_branches(
+        &self,
+        compares: Vec<Compare>,
+        then_writes: Vec<Mutation>,
+        else_writes: Vec<Mutation>,
+    ) -> Result<Commit> {
+        validate_txn(&compares, &then_writes)?;
+        validate_txn(&compares, &else_writes)?;
         let mut s = self.state();
         let succeeded = compares.iter().all(|c| match c {
             Compare::CreateRevision(k, rev) => {
@@ -144,12 +153,7 @@ impl MetaStore for MemoryStore {
             Compare::NotExists(k) => !s.keys.contains_key(k),
             Compare::Lease(k, id) => s.keys.get(k).and_then(|e| e.lease).unwrap_or(0) == *id,
         });
-        if !succeeded {
-            return Ok(Commit {
-                succeeded,
-                revision: s.revision,
-            });
-        }
+        let writes = if succeeded { then_writes } else { else_writes };
         for w in &writes {
             if let Mutation::Put {
                 lease: Some(id), ..

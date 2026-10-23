@@ -145,7 +145,16 @@ impl MetaStore for EtcdMetaStore {
         })
     }
     async fn transact(&self, compares: Vec<Compare>, writes: Vec<Mutation>) -> Result<Commit> {
-        validate_txn(&compares, &writes)?;
+        self.transact_branches(compares, writes, vec![]).await
+    }
+    async fn transact_branches(
+        &self,
+        compares: Vec<Compare>,
+        then_writes: Vec<Mutation>,
+        else_writes: Vec<Mutation>,
+    ) -> Result<Commit> {
+        validate_txn(&compares, &then_writes)?;
+        validate_txn(&compares, &else_writes)?;
         let compares: Vec<_> = compares
             .into_iter()
             .map(|c| match c {
@@ -172,18 +181,27 @@ impl MetaStore for EtcdMetaStore {
                 Compare::Lease(k, id) => etcd_client::Compare::lease(k, CompareOp::Equal, id),
             })
             .collect();
-        let writes: Vec<_> = writes
-            .into_iter()
-            .map(|w| match w {
-                Mutation::Put { key, value, lease } => {
-                    TxnOp::put(key, value, lease.map(|id| PutOptions::new().with_lease(id)))
-                }
-                Mutation::Delete { key } => TxnOp::delete(key, None),
-            })
-            .collect();
+        let operations = |writes: Vec<Mutation>| -> Vec<TxnOp> {
+            writes
+                .into_iter()
+                .map(|w| match w {
+                    Mutation::Put { key, value, lease } => {
+                        TxnOp::put(key, value, lease.map(|id| PutOptions::new().with_lease(id)))
+                    }
+                    Mutation::Delete { key } => TxnOp::delete(key, None),
+                })
+                .collect()
+        };
         let mut client = self.client.clone();
         let response = self
-            .bounded(client.txn(Txn::new().when(compares).and_then(writes)))
+            .bounded(
+                client.txn(
+                    Txn::new()
+                        .when(compares)
+                        .and_then(operations(then_writes))
+                        .or_else(operations(else_writes)),
+                ),
+            )
             .await?;
         Ok(Commit {
             succeeded: response.succeeded(),
