@@ -1443,3 +1443,152 @@ SHA-256，均与任务开始一致，Go/模块 Git 状态为空。只读 plan.md
 已审查值类型、独立测试、lib.rs 注册及本文差异；无依赖或 Cargo.lock 变更，
 未格式化其他任务文件。全部 Cargo/fixture 子进程结束后槽位 1 已释放，
 缓存保留。既有其他任务文件删除不纳入本任务提交。
+
+## 批次 95：中间件配置值
+
+日期：2026-10-24（Asia/Shanghai）。前置批次 94 由提交 `c43225808`、
+DashboardConfig、五项独立测试及本文 730 passed / 0 failed / 1 ignored
+workspace 证据核验完成，批次 95 准入满足。已读执行技能、根 AGENTS.md、
+Copilot、ADR-001、依赖基线及移植指南；server/docs 无更深 AGENTS.md。
+指定 middleware Go 来源、DimensionConfig 和相邻 config_test.go 相对规划基准
+`5d5948052a9ee9e3fa7a09145fe2916a2912c223` 均无差异。
+
+### Go 依据与实现边界
+
+- `server/config/service_middleware_config.go::NewServiceMiddlewareConfig`：三个
+  开关默认 true、两个 map 均已分配；结构零值则为 false 和 nil map。
+  `ServiceMiddlewareConfig.Clone` 是浅结构复制，两个 map 共享；AuditConfig.Clone
+  复制布尔。RateLimitConfig/GRPCRateLimitConfig.Clone 各分配 map 并按值复制元素，
+  原 nil map 的子配置 clone 变为空 map，顶层 clone 保留 nil。
+- `pkg/ratelimit/limiter.go::DimensionConfig`：QPS 为 f64、QPSBurst 为 Go int
+  （本轮 64 位目标映射 i64），ConcurrencyLimit 为 u64；无 JSON tag，编码为
+  QPS/QPSBurst/ConcurrencyLimit。现有 canonical ratelimit 通过
+  ControllerOption::Dimensions 接受这些标量，没有另一个 DimensionConfig 值类型；
+  本轮只新增 middleware 配置值，不创建 limiter/controller 或迁移运行算法。
+- `server/config/config_test.go::TestRateLimitClone` 现有断言覆盖 HTTP/gRPC
+  子配置 clone 的 map 独立性。已复核 TestMain 仅 goleak/WaitForEtcdConnections，
+  该包测试无 failpoint.Enable 或生成器调用，两处 Inject 属于持久化路径，配置值
+  测试不依赖注入。只读运行整个 Go 配置包通过，未启停 failpoint 或编写 Go oracle。
+- Go 1.26.8 标准库 `encoding/json/encode.go::floatEncoder.encode`：拒绝 NaN/Inf，
+  [1e-6, 1e21) 用最短定点表示，其他非零值用科学表示及正指数加号；零、负零、
+  整数不加 .0。本轮对应边界测试来自只读源码推导，区别于下列实测输出。
+
+canonical crate 新增 middleware_config.rs 中的 AuditConfig、RateLimitConfig、
+GRPCRateLimitConfig、ServiceMiddlewareConfig、MiddlewareDimensionConfig 和
+MiddlewareLimiterMap；六项独立 middleware_config_* 测试在 lib.rs 显式注册。
+Arc/RwLock map handle 保留顶层共享及子配置复制语义；子配置 clone 保留 Go 的
+nil→allocated-empty 行为。JSON 保留字段名、声明顺序、字符串布尔和 nil-map null；
+新值解码覆盖布尔 null/quoted null 及原始标量 null，不声称原地更新或重复键语义。
+只启用已有锁定 serde_json 的 raw_value 依赖能力来保留 QPS 数字拼写，无新依赖、
+workspace manifest 或 Cargo.lock 变化，无额外 crate features。纯配置无需存储
+双后端入口；不实现持久化热更新、审计输出、限流算法、启动或新配置选项。
+
+### 真实 Go JSON 输出
+
+复用仓库既有 `bin/pd-server`（SHA-256 与批次 84 一致：
+`b9baaf7b6160a6ea1e3e3dc72ae059f317b0066838b676680105daceed297bdc`），
+其构建 Git hash 为 None，不能声称来自当前 HEAD。只读复核 GET middleware
+接口通过 render.JSON 输出 GetServiceMiddlewareConfig；本轮未构建或改写该二进制。
+Python TemporaryDirectory 中写 input.toml，name=middleware-oracle、独立 data-dir、
+client/peer 分别使用 socket 领取的随机 loopback 端口；日志级别 error。Popen 运行
+绝对二进制路径，cwd 为临时目录；轮询 GET `/pd/api/v1/service-middleware/config`。
+第一份输出为初始配置；第二次独立实例先分别 POST：
+
+```json
+{"type":"path","path":"/pd/api/v1/health","method":"GET","qps":2.5,"concurrency":200}
+{"label":"GetMembers","qps":0.5,"concurrency":300}
+```
+
+路径分别是 `/pd/api/v1/service-middleware/config/rate-limit` 和
+`/pd/api/v1/service-middleware/config/grpc-rate-limit`；均返回 HTTP 200 和
+updated 文本。随后 GET 返回下列第二份原始响应，未反序列化后重编码。
+两次临时进程 terminate 后 wait，均退出 0；临时目录已清理。不验证服务启动契约。
+测试直接从本文截取这两份原始字节，与 Rust to_string_pretty 加 HTTP 末尾换行
+比较；第二份再解码核对真实 HTTP/gRPC 维度值。字节证据限于这些输入，其他
+数值边界及 clone 用例为 Rust 行为断言，不冒充额外 Go 运行差分。
+
+默认输出：
+
+<!-- batch95-go-middleware -->
+
+```json
+{
+  "audit": {
+    "enable-audit": "true"
+  },
+  "rate-limit": {
+    "enable-rate-limit": "true",
+    "limiter-config": {}
+  },
+  "grpc-rate-limit": {
+    "enable-grpc-rate-limit": "true",
+    "grpc-limiter-config": {}
+  }
+}
+```
+
+非空 map 输出：
+
+<!-- batch95-go-populated -->
+
+```json
+{
+  "audit": {
+    "enable-audit": "true"
+  },
+  "rate-limit": {
+    "enable-rate-limit": "true",
+    "limiter-config": {
+      "GetHealthStatus": {
+        "QPS": 2.5,
+        "QPSBurst": 2,
+        "ConcurrencyLimit": 200
+      }
+    }
+  },
+  "grpc-rate-limit": {
+    "enable-grpc-rate-limit": "true",
+    "grpc-limiter-config": {
+      "GetMembers": {
+        "QPS": 0.5,
+        "QPSBurst": 1,
+        "ConcurrencyLimit": 300
+      }
+    }
+  }
+}
+```
+
+### 本轮验证
+
+所有 Cargo 阶段均通过原子 mkdir 动态领取共享槽位 **1**，
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录计划、任务、会话 pd95 和持有 shell PID；EXIT/INT/TERM 清理自己的
+owner 与锁。全部 Cargo/fixture 子进程退出后才释放，保留缓存。子进程继承绝对
+路径及 GOFLAGS=-mod=readonly；已审查既有 etcd fixture 的 go build 仅只读编译
+现有 Go，二进制及隔离数据在槽位。proto 使用已有锁定缓存，本轮未重建 proto。
+
+先新增可编译的空构造函数及四项测试，红灯 **2 passed / 2 failed / 0 ignored，
+退出 101**，命中默认 true/已分配 map 和真实 Go 字节；最小实现后同组绿灯。
+增加真实非空 map 字节用例后五项通过。复核发现 QPS 数字拼写问题，再新增
+第六项边界断言，实际红灯 **5 passed / 1 failed，退出 101**：QPS 0.0 与 Go 0
+不符；实现保留 Go 数字拼写后同组六项全部通过，没有忽略或削弱断言。
+
+| 确切命令 | 退出码与有效证据 |
+| --- | --- |
+| `cargo fmt --all` | 0；各 Rust 修改阶段先格式化，只有本任务 Rust 文件变化 |
+| `cargo test --locked -p astersql-pd-server-config --lib middleware_config -- --nocapture` | 初始红灯 101：2 passed / 2 failed；数字红灯 101：5 passed / 1 failed；最终绿灯 0：6 passed / 0 failed / 0 ignored |
+| `go test -mod=readonly ./server/config -count=1` | 0；已有配置包通过，1.130s |
+| `cargo check --workspace` | 0；启用依赖 raw_value 后同步检查，无 Cargo.lock 差异 |
+| `cargo metadata --format-version 1 --no-deps` | 0 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；仅既有 core_region_adapter.rs:134 cpu_usage deprecated 警告 |
+| `cargo test --workspace --locked` | 0；最终 736 passed / 0 failed / 1 既有 ignored，含真实 etcd；配置 crate 66 项通过 |
+| `git diff --check` | 0 |
+
+本轮状态：**已完成**。开始/结束 1101 个 Go/模块文件的路径集合与 SHA-256
+完全相同，Go/模块 Git 状态为空。只读 plan.md 指纹保持
+`c7968f95a13d0d216ced3adafaca3140ad6ef959ff693c613cb903b231a6f777`。
+已审查实现、独立测试、lib.rs 注册、依赖 feature 和本文差异；没有新增依赖、
+Cargo.lock 或无关 Rust 格式化变更。所有 Cargo/fixture 子进程已结束，槽位 1 的
+owner 与锁已释放，缓存保留。既有其他编号任务文件删除不纳入本任务提交。

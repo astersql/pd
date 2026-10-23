@@ -63,3 +63,9 @@ pub use dashboard_config::*;
 
 #[cfg(test)]
 mod dashboard_config_test;
+
+mod middleware_config;
+pub use middleware_config::*;
+
+#[cfg(test)]
+mod middleware_config_test;

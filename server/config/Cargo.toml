@@ -12,6 +12,6 @@ path = "lib.rs"
 astersql-pd-configutil.workspace = true
 astersql-pd-typeutil.workspace = true
 serde = { workspace = true, features = ["derive"] }
-serde_json.workspace = true
+serde_json = { workspace = true, features = ["raw_value"] }
 toml.workspace = true
 astersql-pd-errs.workspace = true
