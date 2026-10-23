@@ -1780,3 +1780,65 @@ TOML NaN 校验/保留、JSON 类型、词法路径、semver 及未知项。14 �
 已审查本次 canonical 值实现、独立测试、原始 Go fixtures、只读捕获脚本、manifest/
 lock 和本文证据；已有其他编号任务删除不纳入本次提交。批次 97 的外部纯值准入
 已满足；不据此宣称完整 Go scheduler/SDK/加密运行时或来源主题已迁移完成。
+
+## 批次 98：运行配置差分回归
+
+日期：2026-10-24（Asia/Shanghai）。状态：**已完成**。批次 97 准入依据为
+提交 `4502d3ae0`、上节完成证据、canonical 拥有包及已注册的装配测试；未以
+任务 15 文件已删除作为准入依据。当前相关 Go 配置源码与规划基准
+`5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异。
+
+本轮先运行原有配置测试 **78 passed / 0 failed / 0 ignored** 和 workspace
+**762 passed / 0 failed / 1 既有 ignored**，再核对验收覆盖。既有完整 fixtures
+主要覆盖 TOML 解码与 Adjust 后的 JSON，缺少完整 JSON 快照解码入口的逐份回归；
+因此仅在既有 [nested_config_test.rs](../../server/config/nested_config_test.rs)
+增加 `nested_config_go_full_json_decode`，复用原 target，不新增生产功能或占位模块。
+该测试直接从五份既有 Go 原始日志用 RawValue 提取完整 config，调用
+`decode_json_config`，不再 Adjust，逐字段比较 JSON 输出并断言实际命中五份快照。
+测试首次执行即通过，没有生产缺陷复现或修改断言掩盖失败的情况。
+
+| 覆盖项 | 本轮实际执行的证据与 Go 依据 |
+| --- | --- |
+| 完整默认、显式零/false、嵌套装配 | `nested_config_go_captured_values_and_errors` 的 missing/cased/unknown/explicit/limits 五份 TOML→Adjust→JSON 全字段比较；Go `Config.Adjust`、`TestAdjust`、`TestValidation`。 |
+| 完整 JSON 解码 | 新增 `nested_config_go_full_json_decode` 对同五份原始 Go JSON 快照逐字段比较；保留 null、空 map、duration 字符串，未为比较归一化这些值。 |
+| JSON 编码字节 | `nested_config_go_raw_nested_bytes` 本轮重新执行 35 次外部嵌套原始 JSON 字节比较；各已有 `*_go_bytes` / `*_existing_go_json_bytes` 测试继续核对本包字段。 |
+| 错误与先后顺序 | 12 份既有 Go config-check 错误、`nested_config_error_precedence`、`nested_config_order_reload_presence_and_no_side_effects`；提前失败后的后续配置保持未调整状态。redact 仍仅剥离已单独保存的 Go TOML 文件位置前缀。 |
+| 未知项警告 | `nested_config_go_captured_values_and_errors`、`nested_config_paths_semver_and_warnings`；比较真实 config-check 消息，不把运行时日志混作 WarningMsgs。 |
+| 废弃字段 | 五项 `deprecated_config_test` 及 explicit fixture 的 store-balance-rate/disable flag 迁移；依据 Go `Config.Parse`、`migrateConfigurationFromFile`、`TestMigrateFlags`、`TestLegacyDisableRawKVRegionSplitConfigDoesNotPanic`。 |
+| 固定宿主值与 edition | defaults 测试固定 hostname=host-a、cwd=/work/pd；装配 helper 固定 host、/tmp。Go fixtures 显式固定 name 和绝对 data-dir，不改写路径预期。Dashboard 当前 Go 默认 telemetry=false（`initByLDFlags` 不将其改为 true），宿主默认 true/false 与 presence 组合由 `dashboard_config_presence_and_host_defaults` 验证。 |
+| null/空集合、duration 与格式差异 | 完整快照保留 labels={}、label-property=null、scheduler args=null、TLS nil/bytes；已有 scalar/keyspace/middleware/TSO/PDServer/replication 测试覆盖 nil/empty、原生 TOML bool/数组与 JSON 字符串格式及 duration 边界。源码推导的额外边界不冒充新增 Go 运行差分。 |
+
+本轮仅复用已提交 [nested_config_go.json](../../server/config/fixtures/nested_config_go.json)
+及本文既有 Go 原始编码证据，没有重新生成 fixtures；已核对现有 bin/pd-server
+SHA-256 与 fixture 记录一致。五份成功输入和 12 份错误输入、来源符号及 Go 输出
+保留在批次 97 证据中。Go 测试执行前检查本包测试、TestMain 和调用路径：没有
+依赖 failpoint 注入的测试；测试只读源码，临时日志不是 Go 源文件。未运行任何
+failpoint 启停、生成、格式化或 Go 模块写入命令。
+
+两轮 Cargo 阶段均原子动态领取共享槽位 **1**，owner 记录计划、任务、pd98
+会话与持有 shell PID；设置
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`，
+子进程继承 `GOFLAGS=-mod=readonly`。为防 proto build.rs 重建时解压出 Go 源文件，
+临时 PATH 包装器拒绝 `go mod` 命令；本轮复用已有 proto 缓存，未触发该拒绝。
+真实 etcd fixture 只编译既有 Go 源码到所持槽位，输入/数据均在槽位内，没有
+生成或改写 Go 源文件。所有 Cargo/fixture 子进程结束后已释放自己的 owner/锁，
+保留缓存。未修改依赖、manifest 或 Cargo.lock。
+
+| 确切命令 | 退出码与有效结果 |
+| --- | --- |
+| `go test -mod=readonly ./server/config -count=1 -json` | 0；27 个顶层测试通过，含子测试 106 项通过、0 失败、0 跳过，包耗时 1.194s。 |
+| `go test -mod=readonly ./server/config -count=1` | 0；最终按计划原命令复验，包通过，1.149s。 |
+| `cargo fmt --all` | 0；Rust 测试修改后执行，无其他 Rust 文件变化。 |
+| `cargo test --locked -p astersql-pd-server-config -- --nocapture` | 初始 0：78 passed；最终 0：79 passed / 0 failed / 0 ignored，含新增完整 JSON 用例。 |
+| `cargo metadata --format-version 1 --no-deps` | 0；最终版本已执行。 |
+| `cargo fmt --all -- --check` | 0。 |
+| `cargo check --workspace --locked` | 0；仅既有 core_region_adapter.rs 的 cpu_usage deprecated 警告。 |
+| `cargo test --workspace --locked` | 最终 0；763 passed / 0 failed / 1 既有 ignored，包含真实 etcd。既有 ignored 为范围外 `tso_processes`，不计入本任务验收。 |
+| `git diff --check` | 0。 |
+
+本任务为纯配置值回归，没有新增存储、断连或到期行为，不强造后端入口。
+外部 etcd 仍为过渡事实，本关口不代表服务启动、Go embedded etcd 生产替代或来源
+主题闭环。开始/结束 **1101 个 Go/模块文件的路径与 SHA-256 完全一致**，对应 Git
+状态为空；只读 plan.md SHA-256 保持
+`c7968f95a13d0d216ced3adafaca3140ad6ef959ff693c613cb903b231a6f777`。
+本轮审查与提交仅涉及上述独立 Rust 测试和本节证据；原有编号任务删除不纳入提交。

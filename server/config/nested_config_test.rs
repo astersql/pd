@@ -81,6 +81,36 @@ fn nested_config_go_captured_values_and_errors() {
 }
 
 #[test]
+fn nested_config_go_full_json_decode() {
+    use serde_json::value::RawValue;
+    use std::collections::BTreeMap;
+
+    let fixtures: serde_json::Value =
+        serde_json::from_str(include_str!("fixtures/nested_config_go.json")).unwrap();
+    let mut compared = 0;
+    for case in fixtures["cases"].as_array().unwrap() {
+        let Some(expected) = case.get("config") else {
+            continue;
+        };
+        let name = case["name"].as_str().unwrap();
+        let log: BTreeMap<String, Box<RawValue>> =
+            serde_json::from_str(case["log"].as_str().unwrap()).unwrap();
+        // Decode the original Go bytes, without Adjust or TOML metadata: JSON
+        // snapshots already contain defaults and must retain nulls and durations.
+        let decoded = decode_json_config(log["config"].get())
+            .unwrap_or_else(|error| panic!("{name}: {error}"));
+        assert_eq!(
+            serde_json::to_value(&decoded.values).unwrap(),
+            *expected,
+            "{name}"
+        );
+        assert!(decoded.values.warning_msgs.is_empty(), "{name}");
+        compared += 1;
+    }
+    assert_eq!(compared, 5, "all successful Go snapshots must be exercised");
+}
+
+#[test]
 fn nested_config_go_raw_nested_bytes() {
     use serde_json::value::RawValue;
     use std::collections::BTreeMap;
