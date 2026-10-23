@@ -1087,3 +1087,98 @@ Go/模块文件相对任务开始时逐文件 SHA-256 校验一致，未跟踪 G
 退出 0。已审查两个后端原位扩展、canonical 操作枚举/验证、builder 注释、
 测试注册、独立双后端断言及本文；Cargo.toml/Cargo.lock 均无改动。
 编号任务按完成流程删除；其余会话已有计划变更保持原样、不纳入提交。
+
+## 任务 11：事务取消与错误分类（批次 18）
+
+日期：2026-10-23（Asia/Shanghai）。准入核验：批次 17 提交 `684f71f79`
+包含 canonical 范围操作、两个后端及独立 raw_range_test；本文任务 10 记录聚焦
+2 passed、workspace 495 passed / 0 failed / 1 既有 ignored。前置文件删除之外，
+已核验提交与实物，准入满足。只读 plan.md、来源主题和全部 Go/模块文件。
+
+### Go 依据及边界
+
+只读核对 `etcd_kv.go::NewSlowLogTxnWithContext/SlowLogTxn.Commit`：提交继承
+caller ctx 和 10s timeout，Commit 返回底层错误并释放 cancel，不重跑事务。
+`kv_test.go::TestRawTxnWithContext` 的预取消和 interceptor 已开始后取消均断言
+context.Canceled；它只演示取消错误传播，不能证明服务端没有提交。
+`rawTxnWrapper.Commit` 与 `TestRawTxnWithContextInvalidResponse` 固定 Then/Else
+实际分支的缺项、多项、响应类型不匹配为 ErrEtcdTxnResponse；未知操作/比较的 Go
+panic 不移植到 Rust，Rust 使用封闭枚举，并将非法键、重复写等请求归 InvalidArgument。
+相关两个 Go 来源相对规划基准无差异。
+
+复用既有只读输出 `/tmp/pd-task9-go.log`：历史
+`make gotest GOTEST_ARGS='./pkg/storage/kv ./pkg/storage -count=1'` 退出 0，
+KV 4.186s、storage 28.756s；未使用 -v，不能补造测试数。
+指定相邻 storage 测试使用 failpoint，本轮不执行其 make/go test 或注入命令；
+历史日志不冒充本轮 Go/Rust 运行差分。新增网络故障断言由 Rust 对真实 etcd 的
+提交状态证明；没有新编码转换，无需新 Go 字节输出。现有 fixture 构建链已审查，
+仅 go build 已有 helper 至所持槽位，继承 GOFLAGS=-mod=readonly，不写 Go/模块。
+
+### 实现与测试驱动
+
+原位扩展 `raw_branches.rs::RawTxn::commit_with_cancel`：初次轮询时已取消返回
+Cancelled，不轮询后端；开始轮询提交后取消返回 Unavailable，表示提交结果可能未知。
+已完成结果优先返回，不因同时取消把确定结果改成未知。取消丢弃在途 future，不创建
+后台重试；drop 不能撤销已完成的服务端写入。`txn_cancel.rs::dispatched_error`
+将 etcd 事务返回的传输 Cancelled 也保守归为 Unavailable，覆盖直接 MetaStore、
+Base/callback 和 RawTxn 调用；保留非法请求、权限、lease、Backend 等现有分类。
+Malformed response 同样不能据此推断写入未提交，本任务不提供自动重试 API。
+
+`etcd_store.rs::decode_raw` 原位提取已有解码逻辑，以便在响应边界验证真实响应；
+不新增另一套事务、MetaStore、runtime 或依赖。`lib.rs` 显式注册独立
+`txn_cancel_test.rs`，测试命名均命中 txn_cancel 过滤器。
+
+先只提取原样解码入口并加入测试，聚焦实际退出 101：2 passed / 1 failed。
+失败为真实 etcd 已提交、响应被扣住后取消，得到 Cancelled、预期 Unavailable；
+不是缺符号或环境错误。修复后相同三项测试 3 passed / 0 failed；补充错误状态码
+矩阵及直接 MetaStore 分类后，最终聚焦 4 passed / 0 failed，没有削弱断言或 ignore。
+
+- txn_cancel_memory / txn_cancel_etcd 共用断言：预取消不写且 revision 不变，
+  两分支非法键/重复写整体拒绝，无部分写入；compare false 是成功 false，正常提交
+  是成功 true 且 revision 增一。
+- TCP 代理先完成 HTTP/2 warmup，再扣住服务端响应并继续转发请求；通过直连客户端
+  观察目标 key 已写入且 revision 增一，之后才取消 caller 或关闭 TCP。两种情况最终
+  返回 Unavailable；直连终态键值与 revision 均保持已观察提交，无事务重放。
+  网络时序由实际提交观察同步，无 sleep；3s/4s 仅为失败上界。正常路径关闭代理、
+  join 工作任务后结束；异常路径取消并 abort 代理，fixture Drop 关闭并等待 etcd。
+- txn_cancel_malformed_response 从真实 etcd 取得 Then/Else 响应与 Put 响应，
+  在解码边界制造缺项、多项、Get/Put 类型不匹配；六种情况均为 Backend，原响应
+  仍返回真实 value。不伪造核心事务结果或声称覆盖所有 protobuf 畸形组合。
+- txn_cancel_error_categories 覆盖 Cancelled/DeadlineExceeded/Unavailable/Unknown、
+  InvalidArgument、PermissionDenied/Unauthenticated、NotFound 和 Internal 的稳定分类；
+  只在传输状态边界构造错误，不模拟核心存储结果。
+
+### Cargo 资源与验证
+
+每阶段原子 mkdir 动态领取实际槽位 **1**，绝对路径统一为
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录计划、任务、会话与 PID：红灯 3036，首次绿灯 3277，首次基线 3524，
+最终基线 5811。Cargo、fixture/helper 全部继承该路径；阶段完成清理自己的 owner
+和锁，保留缓存。最终包装器以 finally 清理正常/失败路径，SIGINT/SIGTERM 转入清理，
+终止并等待自己的子进程组后释放槽位，不清理其他会话资源。
+
+状态：已完成。最终代码的确切验证如下；全部 Cargo/fixture/helper 已结束，
+自己的槽位锁已释放，缓存保留。
+
+| 确切命令 | 退出码 | 有效测试数/结果 |
+| --- | --- | --- |
+| `cargo fmt --all`（各次 Rust 修改后） | 0 | 仅本任务 Rust 文件变化 |
+| `cargo test --locked -p astersql-pd-storage-kv --lib txn_cancel -- --nocapture`（红灯） | 101 | 2 passed / 1 failed，提交后取消分类断言失败 |
+| 同上（首次绿灯） | 0 | 3 passed / 0 failed / 0 ignored |
+| 同上（最终代码） | 0 | 4 passed / 0 failed / 0 ignored |
+| `cargo metadata --format-version 1 --no-deps > /tmp/pd-task11-metadata.json` | 0 | canonical 注册正常 |
+| `cargo fmt --all -- --check` | 0 | 通过 |
+| `cargo check --workspace --locked` | 0 | 通过 |
+| `cargo test --workspace --locked`（最终代码） | 0 | 499 passed / 0 failed / 1 既有 ignored，含 2 doc-tests |
+| `git diff --check` | 0 | 通过 |
+| `git diff --cached --check` | 0 | 本任务暂存审查通过 |
+
+既有 ignored 为独立兼容流程 tso_processes，未新增 ignore；只出现既有
+RegionHeartbeatRequest.cpu_usage deprecated 警告。workspace 覆盖既有
+watch/lease/fencing、WAL 重启及消费者契约。
+最终逐文件 SHA-256 核验 1101 个已跟踪 Go/模块文件与任务开始时一致，
+`git ls-files --others --exclude-standard` 对同范围返回空；
+`git diff --exit-code -- '*.go' go.mod go.sum go.work go.work.sum '**/go.mod' '**/go.sum' '**/go.work' '**/go.work.sum'`
+退出 0、无输出。已审查 canonical builder、事务适配器最小分类/解码提取、
+独立测试、模块注册及本文；无依赖/manifest/lock 改动。
+编号任务文件按完成流程删除；其他会话的在途计划修改不纳入本提交。

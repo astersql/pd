@@ -39,7 +39,7 @@ impl EtcdMetaStore {
             .map_err(map_error)
     }
 }
-fn map_error(error: etcd_client::Error) -> StoreError {
+pub(crate) fn map_error(error: etcd_client::Error) -> StoreError {
     use etcd_client::Error;
     use tonic::Code;
     match error {
@@ -235,46 +235,19 @@ impl MetaStore for EtcdMetaStore {
                         .or_else(operations(else_ops.clone())),
                 ),
             )
-            .await?;
+            .await
+            .map_err(crate::txn_cancel::dispatched_error)?;
         let ops = if response.succeeded() {
             then_ops
         } else {
             else_ops
         };
-        let rpc_items = response.op_responses();
-        if rpc_items.len() != ops.len() {
-            return Err(StoreError::Backend);
-        }
-        let mut responses = Vec::with_capacity(ops.len());
-        for (op, response) in ops.iter().zip(rpc_items) {
-            let item = match (op, response) {
-                (
-                    RawTxnOp::Get(_) | RawTxnOp::GetRange { .. },
-                    etcd_client::TxnOpResponse::Get(r),
-                ) => RawTxnResponseItem {
-                    key_value_pairs: r
-                        .kvs()
-                        .iter()
-                        .map(|kv| KeyValuePair {
-                            key: kv.key().to_vec(),
-                            value: kv.value().to_vec(),
-                        })
-                        .collect(),
-                },
-                (RawTxnOp::Write(Mutation::Put { .. }), etcd_client::TxnOpResponse::Put(_))
-                | (
-                    RawTxnOp::Write(Mutation::Delete { .. }),
-                    etcd_client::TxnOpResponse::Delete(_),
-                ) => RawTxnResponseItem::default(),
-                _ => return Err(StoreError::Backend),
-            };
-            responses.push(item);
-        }
-        Ok(RawTxnResponse {
-            succeeded: response.succeeded(),
-            revision: revision(response.header())?,
-            responses,
-        })
+        decode_raw(
+            response.succeeded(),
+            revision(response.header())?,
+            &ops,
+            response.op_responses(),
+        )
     }
 
     async fn watch(&self, prefix: Vec<u8>, start_revision: Revision) -> Result<Box<dyn MetaWatch>> {
@@ -427,4 +400,44 @@ impl MetaWatch for EtcdWatch {
             result = self.receive() => result,
         }
     }
+}
+
+/// Validate the selected branch's response before exposing domain results.
+pub(crate) fn decode_raw(
+    succeeded: bool,
+    revision: Revision,
+    ops: &[RawTxnOp],
+    rpc_items: Vec<etcd_client::TxnOpResponse>,
+) -> Result<RawTxnResponse> {
+    if rpc_items.len() != ops.len() {
+        return Err(StoreError::Backend);
+    }
+    let mut responses = Vec::with_capacity(ops.len());
+    for (op, response) in ops.iter().zip(rpc_items) {
+        let item = match (op, response) {
+            (RawTxnOp::Get(_) | RawTxnOp::GetRange { .. }, etcd_client::TxnOpResponse::Get(r)) => {
+                RawTxnResponseItem {
+                    key_value_pairs: r
+                        .kvs()
+                        .iter()
+                        .map(|kv| KeyValuePair {
+                            key: kv.key().to_vec(),
+                            value: kv.value().to_vec(),
+                        })
+                        .collect(),
+                }
+            }
+            (RawTxnOp::Write(Mutation::Put { .. }), etcd_client::TxnOpResponse::Put(_))
+            | (RawTxnOp::Write(Mutation::Delete { .. }), etcd_client::TxnOpResponse::Delete(_)) => {
+                RawTxnResponseItem::default()
+            }
+            _ => return Err(StoreError::Backend),
+        };
+        responses.push(item);
+    }
+    Ok(RawTxnResponse {
+        succeeded,
+        revision,
+        responses,
+    })
 }

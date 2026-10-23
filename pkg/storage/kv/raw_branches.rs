@@ -46,13 +46,17 @@ impl<'a> RawTxn<'a> {
             .transact_raw(self.conditions, self.then_writes, self.else_writes)
             .await
     }
-    /// Pre-cancellation never dispatches. Once dispatched, an unavailable/cancelled
-    /// transport outcome may be unknown; callers must not blindly retry writes.
+    /// Pre-cancellation returns Cancelled without dispatching. Once polled, cancellation
+    /// returns Unavailable: the commit may have happened, so never blindly retry writes.
+    /// Dropping the commit future stops waiting; it cannot roll back a backend commit.
     pub async fn commit_with_cancel(self, cancel: &CancellationToken) -> Result<RawTxnResponse> {
+        if cancel.is_cancelled() {
+            return Err(StoreError::Cancelled);
+        }
         tokio::select! {
             biased;
-            _ = cancel.cancelled() => Err(StoreError::Cancelled),
             result = self.commit() => result,
+            _ = cancel.cancelled() => Err(StoreError::Unavailable),
         }
     }
 }
