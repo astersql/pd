@@ -154,10 +154,7 @@ impl StorageEndpoint {
         match state {
             LoadState::Missing | LoadState::Empty => Ok(None),
             LoadState::Value(bytes) => {
-                let result = WireRegion::decode(bytes.as_slice())
-                    .map_err(EndpointError::ProtoUnmarshal)
-                    .map_err(RegionMetaError::from)
-                    .and_then(RegionMeta::try_from);
+                let result = decode_region(&bytes);
                 result.map(Some).map_err(|source| RegionLoadError {
                     found: true,
                     source,
@@ -194,4 +191,11 @@ impl StorageEndpoint {
             .map_err(EndpointError::from)?;
         Ok(())
     }
+}
+
+pub(super) fn decode_region(bytes: &[u8]) -> Result<RegionMeta, RegionMetaError> {
+    WireRegion::decode(bytes)
+        .map_err(EndpointError::ProtoUnmarshal)
+        .map_err(RegionMetaError::from)
+        .and_then(RegionMeta::try_from)
 }

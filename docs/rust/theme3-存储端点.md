@@ -2267,3 +2267,85 @@ proto build.rs，也未运行 failpoint、Go 生成器、格式化或依赖整�
 审查仅 region_meta.rs、独立测试、lib 注册、本证据节及编号任务文件清理。
 用户已有其他计划改动保持原样。Cargo/fixture 子进程全部结束，共享锁已释放，
 缓存保留。批次 26 当前 Region 单键验证故事已完成；不包含范围分页或加密引擎。
+
+## 批次 27：区域分页恢复（任务 8，2026-10-23）
+
+### 准入与 Go 依据
+
+批次 26 提交 `8536a8ec8`、region_meta 产物和本文对应证据齐全：聚焦
+2 passed、workspace 515 passed / 0 failed / 1 既有 ignored，据此准入。
+已读 ADR-001、porting-guide、Copilot、canonical endpoint/core 与 Go 相邻测试；
+无更深 AGENTS.md。meta.go 对规划基准 `5d5948052a9ee9e3fa7a09145fe2916a2912c223`
+无变化。总纲和来源主题计划保持只读。
+
+Go `StorageEndpoint.LoadRegions`：初始 limit=10000，读取失败依次减为
+5000/2500/1250/625/312/156，下一次降到 78 时返回最后的读取错误；
+所有重试保留 start cursor。每次成功读取后检查 ctx，再逐条 Unmarshal、Decrypt；
+空字节在 range 中解码为零值 Region，与点读不同。cursor=metadata.ID+1 在回调和
+重叠删除之前更新，使用 uint64 回绕。回调生成 Storage 来源、无 leader 的 RegionInfo；
+只删除回调返回项。取消不打断已交付页；坏 wire/解密失败不推进当前项游标，
+删除失败保留已推进游标。end=RegionPath(MaxUint64)，最大 ID 键不参与范围。
+游标属于 endpoint，重复调用延续恢复进度；新 endpoint 从零开始。
+
+已审查 `TestLoadRegions`、其 TestMain/WaitForEtcdConnections、memory backend、
+MemoryKV range 和回调调用链；所选测试不启用或依赖 failpoint，不写 Go 源码/模块。
+实际命令 `GOFLAGS=-mod=readonly go test -mod=readonly ./pkg/storage -run '^TestLoadRegions$' -count=1 -v`
+退出 0，1 passed，固定 10 个区域恢复相等。`TestRegionReload` 与
+`TestLoadRegionsExceedRangeLimit` 依赖注入，本轮不执行，不声称取得其运行差分。
+整包 oracle 同样未裸跑；取消/缩页语义依据源码和 Rust 真实后端验证分别标明。
+字节证据复用前序实际 Go 输出及已有 wire-fixtures.json 的 region_heartbeat
+原始子消息 `0863120200011a01ff`，测试从原 JSON 字节切出后直接写入后端并恢复，
+没有以 Rust 重编码结果构造预期。其他 ID wire 是依据 protobuf schema 的测试输入，
+不声称新增 Go 字节运行差分。
+
+### 实现与行为验证
+
+新增 canonical `region_scan.rs::{load_regions,next_region_id,RegionScanError}`，
+endpoint 仅增加一个实例游标字段；用 `&mut self` 保证扫描状态独占。
+region_meta 内部共享 decode_region，复用现有 codec 和显式加密拒绝。
+保持领域 RegionInfo 边界、宿主取消令牌，无新依赖/feature/runtime/全局状态。
+独立 region_scan_test.rs 在 lib.rs 显式注册。
+
+`region_scan_memory` / `region_scan_etcd` 共用同一真实存储 contract：Go 字节读取、
+空 wire 零值、10001 条跨 100 和 10000 边界、回调取消后完成整页、下页取消不交付、
+恢复游标继续、重叠区域物理删除、MAX 排除、坏 wire 失败后修复续读、预先取消。
+
+`region_scan_etcd_adaptive_and_io_failure` 保存 220 条各含 24000 字节 start key
+的真实区域。直接发 limit=10000 的真实读确认超过 4 MiB 响应导致错误，再使用
+load_regions 自动缩页，完整恢复 ID 1..220 与全部长 key，终态 cursor=221。
+未模拟核心存储结果。另一 cluster 保存 ID=1，扫描回调内关闭并等待真实 fixture
+进程，然后返回该区域作为 overlap：删除返回 Store 错误，cursor 已为 2。
+随后对已关闭服务扫描，所有缩页重试仍失败，返回 Store 错误且 cursor=2、无回调。
+故障发生于实际交付之后、删除之前；fixture 子进程退出后才进行失败读取断言。
+
+第一次接口编译错误（Mutation::put 参数借用）仅作辅助修正，不计行为红灯。
+修复测试接口后，最小空扫描实现执行
+`cargo test --locked -p astersql-pd-storage-endpoint --lib region_scan -- --nocapture`：
+退出 101，0 passed / 2 failed / 0 ignored，4.77s；两后端均在实际交付条数
+actual=0、expected=1 断言失败。真实实现后相同命令退出 0，2 passed，3.55s。
+加入真实超限与断连场景后同命令退出 0，3 passed / 0 failed / 0 ignored，5.73s，
+未削弱原断言。每次 Rust 修改后先 `cargo fmt --all`，均退出 0。
+
+### 共享槽位及最终基线
+
+每阶段从仓库根依次原子 mkdir 动态领取首个空槽，实际均为 **1**；
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录计划、task=8、batch=27、session=region-scan 和持有 shell PID；
+包装器 EXIT/INT/TERM trap 清理自己的 owner/锁。所有 Cargo 与 fixture 子进程
+同步结束才释放，缓存保留；子进程继承绝对 target 和 GOFLAGS=-mod=readonly。
+复用 proto 缓存，没有触发会解压 Go 源码的 proto build.rs；fixture 仅编译已有
+Go 工具，未运行生成器、failpoint、Go 格式化或依赖整理。
+
+| 最终命令 | 退出码与有效结果 |
+| --- | --- |
+| `cargo metadata --format-version 1 --no-deps` | 0；canonical endpoint 保持注册 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；仅既有 server cpu_usage 弃用警告 |
+| `cargo test --workspace --locked` | 0；83 个 target 汇总含 doc-tests，518 passed / 0 failed / 1 既有 ignored；endpoint 19 passed |
+| `git diff --check`、`git diff --cached --check` | 0 |
+
+核对开始时记录的 1101 个已跟踪 Go/模块文件 SHA-256，全相同；Go Git 差异为空，
+未跟踪 Go/模块文件为 0。Cargo manifest/lock 无变化；workspace fmt 未改其他 Rust。
+已审查仅本任务 region_scan 实现/测试、endpoint 实例游标、内部 decode 复用、模块
+注册及本证据节，用户已有其他计划变更保留。全部 Cargo/fixture 子进程结束，
+共享锁已释放，缓存保留。批次 27 当前分页恢复验证故事已完成。

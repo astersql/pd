@@ -29,3 +29,8 @@ mod region_meta;
 pub use region_meta::{RegionLoadError, RegionMetaError};
 #[cfg(test)]
 mod region_meta_test;
+
+mod region_scan;
+pub use region_scan::RegionScanError;
+#[cfg(test)]
+mod region_scan_test;

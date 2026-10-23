@@ -29,11 +29,15 @@ pub enum LoadState {
 /// Shared store with caller-supplied absolute keys; no global cluster state.
 pub struct StorageEndpoint {
     pub(crate) store: Arc<dyn MetaStore>,
+    pub(crate) next_region_id: u64,
 }
 impl StorageEndpoint {
     /// Use the canonical MetaStore supplied by the host.
     pub fn new(store: Arc<dyn MetaStore>) -> Self {
-        Self { store }
+        Self {
+            store,
+            next_region_id: 0,
+        }
     }
     /// Preserve physical presence; Go-compatible typed helpers collapse empty and missing.
     pub async fn load(&self, key: &[u8]) -> Result<LoadState, EndpointError> {
