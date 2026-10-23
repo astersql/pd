@@ -530,3 +530,85 @@ owner 与自己的锁；最终阶段处理中断信号，终止并等待子进�
 仅有既有 RegionHeartbeatRequest.cpu_usage deprecated 警告。
 已审查新增 Base、共用断言、模块注册、最小 fixture import 修复及本文证据。
 Go、manifest/lock、plan.md 和来源主题未改动；原有其他计划修改未纳入提交。
+
+## 任务 5：回调事务提交（批次 12）
+
+日期：2026-10-23（Asia/Shanghai）。依赖批次 11 准入已核验：提交
+`fcd4f83cc` 包含 Base 单键读写、两个后端测试入口及本文任务 4 的完整证据；
+其最终 workspace 为 483 passed / 0 failed / 1 既有 ignored。
+本轮已读取只读 plan.md、任务文件、ADR-001、porting-guide、根 AGENTS 与
+Copilot 指令；无更深 AGENTS。`etcd_kv.go` 相对规划基准
+`5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异。
+
+### Go 依据与实现边界
+
+`etcd_kv.go::RunInTxnWithConditions` 先调用回调，错误原样返回且不提交；
+Save/Remove 只追加操作。`loadValue(false)` 对缺失键追加 CreateRevision=0，
+对存在键追加 Value=读到的字节；`LoadRange` 只保护实际返回的键值。
+`commit` 将所有条件与写入一次提交，compare 失败返回 ErrEtcdTxnConflict。
+这不是快照隔离：读直接访问后端，不读本事务暂存写；同值改写可以通过，范围新增键、
+空范围和 limit 外的键不受保护。未添加 Go 未保证的幻读保护或 revision 保护。
+
+本轮先串行执行 `make gotest GOTEST_ARGS='./pkg/storage/kv ./pkg/storage -count=1'`，
+退出 0：KV 包 3.595s、storage 包 27.800s；输出未列测试总数。
+实际运行覆盖 `TestEtcd` 调用的 `testSaveMultiple`、`testLoadConflict`、
+`testRunInTxnWithConditions` 等相邻断言。随后 `make failpoint-disable` 退出 0，
+无 Go 源码差异或生成 failpoint 文件。Go 窗口结束后才编辑 Rust、运行 Cargo。
+上述额外边界来自明确的 Go 源码推导和 Rust 双后端实测，不冒充逐场景 Go/Rust 运行差分。
+本任务无 codec，不创建字节编码 oracle，不修改 Go、依赖、manifest 或 Cargo.lock。
+
+新增 `callback_txn.rs::CallbackTxn`，复用唯一 `dyn MetaStore`；为 Base 增加
+`run_in_txn` 与 `run_in_txn_with_conditions`。异步回调返回成功值后才调用一次
+MetaStore::transact，失败丢弃缓冲区；无自动重试。`CallbackTxnError<E>` 保留
+原始回调错误 E，分别表示 Callback(E)、Store(StoreError) 和 Conflict。
+CallbackTxn 提供 save/remove/load/load_range，读写使用字节及领域类型。
+Base 的 store 字段仅扩大到 crate 内可见，以便原位扩展；lib.rs 显式重导出 API
+并注册独立测试；未增加 MetaStore 副本、后台任务或私有 runtime。
+
+### 测试驱动与行为证据
+
+`callback_txn_test.rs` 的 `callback_txn_memory` / `callback_txn_etcd` 共用完整断言，
+etcd 使用 canonical fixture，不复制 helper。最小可编译接口最初只执行回调而未提交；
+聚焦命令真实退出 101，0 passed / 2 failed：成功回调后读取 `new` 得到空字节，
+预期 `committed`。这是状态断言红灯，不是缺符号或环境错误。
+补上原子提交后，同一测试未削弱断言，退出 0：2 passed / 0 failed / 0 ignored。
+
+双后端断言覆盖：
+
+- 回调错误保留 sentinel，暂存 put/delete 均不写入，revision 和完整 Entry 不变；
+  点读/范围读看不到缓冲 put/delete。
+- 成功回调返回原值，多键 put/delete 一次提交，写入具有相同的新 revision。
+- 读值后发生外部改写，或缺失键被外部写入空值，提交返回 Conflict；
+  缓冲写与删除均不生效，失败不额外消耗 revision。
+- 同值改写仍允许提交；范围已返回项变化会冲突，limit 外改写、新增幻读和空范围插入
+  仍允许提交。交错通过回调内直接等待外部 Base 写入完成后再返回来确定，无时间猜测。
+- 附加比较失败不写入，成功才提交；无效写请求作为 Store(InvalidArgument) 返回，
+  批次中的合法写也不落地；读错误经回调返回时保持 Callback(InvalidArgument)。
+
+### Cargo 共享槽位与验证
+
+每个阶段通过原子 mkdir 动态领取槽位 **1**；绝对路径均为
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录计划、任务、会话标识和实际持有 PID：首次格式化 37082、红灯 37119、
+实现后格式化 37336、绿灯 37349、workspace 基线 38008。
+包装器处理正常/失败/中断退出，等待 Cargo 与 fixture 子进程结束再移除自己的 owner
+及锁目录；处理中断时终止并等待进程组。不清理他人锁，保留编译缓存。
+
+最终状态：已完成。所有基线命令退出 0，自己的槽位锁已释放、缓存保留。
+
+| 确切命令 | 退出码 | 有效测试数/结果 |
+| --- | --- | --- |
+| `cargo fmt --all`（每次 Rust 修改后） | 0 | 无无关 Rust 格式变更 |
+| `cargo test --locked -p astersql-pd-storage-kv --lib callback_txn -- --nocapture`（红灯） | 101 | 0 passed / 2 failed，成功回调后未提交 |
+| 同上（绿灯） | 0 | 2 passed / 0 failed / 0 ignored |
+| `cargo metadata --format-version 1 --no-deps` | 0 | canonical crate 注册正常 |
+| `cargo fmt --all -- --check` | 0 | 通过 |
+| `cargo check --workspace --locked` | 0 | 通过 |
+| `cargo test --workspace --locked` | 0 | 485 passed / 0 failed / 1 既有 ignored，含 2 doc-tests |
+| `git diff --check` | 0 | 通过 |
+| `git diff --cached --check` | 0 | 本任务暂存审查通过 |
+
+既有 ignored 仍为独立兼容流程的 `tso_processes`，未新增 ignore。
+仅出现既有 RegionHeartbeatRequest.cpu_usage deprecated 警告。
+已审查生产 API、两个后端共用断言、Base 最小连线和本文证据；未修改只读计划或来源主题，
+其他计划中的在途修改未纳入本任务提交。

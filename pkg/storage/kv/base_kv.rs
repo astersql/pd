@@ -3,7 +3,7 @@ use crate::{Consistency, MetaStore, Mutation, Read, Result, StoreError};
 
 /// Backend-neutral Go Base single-key operations over the canonical MetaStore.
 pub struct Base<'a> {
-    store: &'a dyn MetaStore,
+    pub(crate) store: &'a dyn MetaStore,
 }
 
 impl<'a> Base<'a> {

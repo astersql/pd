@@ -4,6 +4,8 @@
 extern crate self as astersql_pd_storage_kv;
 mod base_kv;
 pub use base_kv::Base;
+mod callback_txn;
+pub use callback_txn::{CallbackTxn, CallbackTxnError};
 mod etcd_store;
 mod memory_store;
 mod meta_store;
@@ -18,6 +20,9 @@ mod bounded_range_test;
 
 #[cfg(test)]
 mod base_kv_test;
+
+#[cfg(test)]
+mod callback_txn_test;
 
 #[cfg(test)]
 #[allow(dead_code)]
