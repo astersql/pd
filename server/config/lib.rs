@@ -69,3 +69,9 @@ pub use middleware_config::*;
 
 #[cfg(test)]
 mod middleware_config_test;
+
+mod deprecated_config;
+pub use deprecated_config::*;
+
+#[cfg(test)]
+mod deprecated_config_test;

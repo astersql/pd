@@ -1592,3 +1592,77 @@ owner 与锁。全部 Cargo/fixture 子进程退出后才释放，保留缓存�
 已审查实现、独立测试、lib.rs 注册、依赖 feature 和本文差异；没有新增依赖、
 Cargo.lock 或无关 Rust 格式化变更。所有 Cargo/fixture 子进程已结束，槽位 1 的
 owner 与锁已释放，缓存保留。既有其他编号任务文件删除不纳入本任务提交。
+
+## 批次 96：废弃字段调整
+
+日期：2026-10-24（Asia/Shanghai）。前置批次 95 由提交 `35703735b`、
+Middleware 配置值及六项独立测试、本文 736 passed / 0 failed / 1 ignored
+workspace 证据核验满足准入。已读执行技能、根 AGENTS.md、Copilot、ADR-001、
+依赖基线及移植指南；server/docs 无更深 AGENTS.md。config.go/config_test.go
+相对规划基准 `5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异。
+
+### Go 依据与边界
+
+- `server/config/config.go:280–312::Config.Parse`：只在已读取配置文件的分支
+  处理旧日志字段。非空 log-file/log-level 总是按声明顺序追加原文警告；仅当
+  目的 filename/level 为空时回填旧值，现代值优先，旧字段本身保留。
+  `schedule.disable-raft-learner` 只看 presence，即使 false 也追加第三条警告。
+- `config.go:603–613::migrateConfigurationFromFile`：metadata 根为 pd-server，
+  只要 trace-region-flow 存在（包括 false），即返回
+  `config item flow-round-by-digit and trace-region-flow(deprecated) are conflict`；
+  不要求新字段存在，不转换成数值。该检查在 PDServer.adjust 默认/钳位后、
+  Validate 前执行；既有 Rust adjust_defaults 和 validate 继续保持独立操作。
+- `config.go::KeyspaceConfig` 已无 disable-raw-kv-region-split；
+  `config_test.go::TestLegacyDisableRawKVRegionSplitConfigDoesNotPanic` 覆盖 JSON
+  解码及 TOML 解码后 Adjust 均不 panic/不报错。Rust 复用现有 canonical
+  KeyspaceConfig 的未知字段忽略行为，无第二份配置结构或历史数据迁移。
+- 复核 Go TestMain 仅 goleak/WaitForEtcdConnections；包测试无 failpoint.Enable
+  或生成器调用，两处 Inject 属于持久化路径，配置值测试不依赖注入。只读运行
+  整个包通过；未启停 failpoint、未新增 Go 测试或 oracle。新日志组合/迁移冲突
+  断言来自上述源码，明确区别于 Go 包现有用例运行证据，不冒充新增运行差分。
+
+canonical 新增 deprecated_config.rs 中的
+`ConfigScalars::adjust_deprecated_from_file` 和 `migrate_configuration_from_file`。
+前者只抽取已解码文件后的兼容值处理，由宿主传入已有日志目的字符串和警告列表，
+不实现文件发现、CLI、log.Config 或服务启动；无文件分支不得调用此接口。
+后者接受 pd-server 根 metadata，保留原错误文本。没有新增配置选项或依赖。
+五项独立 deprecated_config_* 测试在 lib.rs 显式注册，覆盖 32 种旧/新日志值和
+learner presence 组合、追加顺序与已有警告保留、false presence、迁移新键有无、
+metadata 根隔离，以及 JSON/TOML 旧 raw KV split 未知值忽略。纯配置无需后端入口。
+
+字节证据直接从本文 batch84-missing / batch84-explicit-zero 两份已有真实 Go
+原始日志截取完整 keyspace token，与加入旧 split 字段后调整的 Rust 结果逐字
+比较，并核验两份原始日志均省略空旧日志字段。Go 这两份输入没有旧 split 键，
+因此这里是已有默认编码输出与 Rust 忽略行为的组合验证；不声称额外 Go 输入
+已取得字节差分。忽略 true 的实际 Go 行为另由上述既有 Go 测试运行确认。
+
+### 本轮验证
+
+红灯、绿灯及基线阶段分别通过原子 mkdir 动态领取共享槽位 **1**，
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录计划、任务、会话 pd96 和 shell PID；EXIT/INT/TERM 清理自己的记录和
+锁，等待 Cargo/fixture 子进程结束才释放并保留缓存。所有子进程继承绝对路径及
+`GOFLAGS=-mod=readonly`。已复核既有 etcd fixture 只读编译现有 Go，产物和数据
+位于槽位；proto 构建使用已有锁定缓存，本轮未重建 proto。
+
+先新增可编译空兼容接口及四项测试，真实红灯 **1 passed / 3 failed / 0 ignored，
+退出 101**，命中缺失警告和迁移冲突；最小实现后同组绿灯 **4 passed / 0 failed**，
+未削弱断言。随后增加第五项已有 Go 原始字节验证，最终聚焦五项全部通过。
+
+| 确切命令 | 退出码与有效证据 |
+| --- | --- |
+| `cargo fmt --all` | 0；各 Rust 修改后先格式化，仅本任务 Rust 文件变化 |
+| `cargo test --locked -p astersql-pd-server-config --lib deprecated_config -- --nocapture` | 红灯 101：1 passed / 3 failed；同组绿灯 0：4 passed；最终绿灯 0：5 passed / 0 failed / 0 ignored |
+| `go test -mod=readonly ./server/config -count=1` | 0；已有配置包通过，1.107s |
+| `cargo metadata --format-version 1 --no-deps` | 0 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；仅既有 core_region_adapter.rs:134 cpu_usage deprecated 警告 |
+| `cargo test --workspace --locked` | 0；741 passed / 0 failed / 1 既有 ignored，含真实 etcd；配置 crate 71 项通过 |
+| `git diff --check` | 0 |
+
+本轮状态：**已完成**。开始/结束 1101 个 Go/模块文件的路径集合及 SHA-256
+完全相同，Go/模块 Git 状态为空。只读 plan.md 指纹保持
+`c7968f95a13d0d216ced3adafaca3140ad6ef959ff693c613cb903b231a6f777`。
+已审查两个接口、五项独立测试、lib.rs 注册及本文差异，无 Cargo.toml 或
+Cargo.lock 变更，无其他 Rust 格式化改动。全部 Cargo/fixture 子进程已结束，
+槽位 1 owner 及锁已释放，缓存保留；原有其他编号任务删除不纳入本任务提交。
