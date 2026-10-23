@@ -16,7 +16,7 @@ astersql-pd-keypath.workspace = true
 tokio.workspace = true
 tokio-util.workspace = true
 serde = { workspace = true, features = ["derive"] }
-serde_json.workspace = true
+serde_json = { workspace = true, features = ["float_roundtrip"] }
 prost.workspace = true
 thiserror.workspace = true
 

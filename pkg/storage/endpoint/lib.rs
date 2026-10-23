@@ -77,3 +77,7 @@ mod resource_settings_test;
 mod resource_states;
 #[cfg(test)]
 mod resource_states_test;
+
+mod service_limits;
+#[cfg(test)]
+mod service_limits_test;

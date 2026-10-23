@@ -3226,3 +3226,94 @@ EXIT/INT/TERM trap 清理自己的 owner 和锁；全部同步 Cargo/fixture 子
 注册和本节证据；Cargo manifests/lock 未改，无其他任务 Rust 文件变化，用户已有计划
 变更保留。全部 Cargo/fixture 子进程已结束，自己的锁已清理，槽位缓存保留。
 状态：已完成；批次 37 的资源组状态及 controller 存储故事完成。
+
+## 任务 19：服务限额存储（批次 38，2026-10-23）
+
+### 准入、只读 Go 与编码证据
+
+已核验批次 37 提交 `361ea30c3`、resource_states 实物及本文任务 18 的
+3 个聚焦测试和 workspace 549 passed / 0 failed / 1 既有 ignored 证据，准入满足。
+已读执行技能、计划、ADR-001、porting-guide、Copilot；无更深 AGENTS.md。
+Go `resource_group.go` 相对规划基准 `5d5948052a9ee9e3fa7a09145fe2916a2912c223`
+无差异。`LoadServiceLimit` 缺失/空值返回 0，非空值再经 loadJSON 二次读取；
+JSON null 为 0，非法形状/数值返回解码错误；保存允许负数，拒绝 NaN/Inf。
+`LoadServiceLimits` 每页 100 条，按物理键序列举；非法十进制 u32 后缀和非法 JSON
+跳过，补零 ID 可解析，null 回调为 0，空值跳过。Null ID 也使用十进制路径。
+错误分类保留 JsonMarshal、JsonUnmarshal、Store，不实现限流器或业务配置。
+
+整包 `go test -mod=readonly ./pkg/storage/endpoint ./pkg/storage -count=1`
+未执行：包内包含依赖 failpoint 注入的区域/时间戳测试，不能在 Go 只读约束下启用；
+没有裸跑替代或声称整包 Go 运行通过。只读执行现有 Go 1.26.8 标准库测试：
+`GOFLAGS=-mod=readonly go test encoding/json -run '^(TestUnmarshal|TestMarshalFloat|TestUnsupportedValues|TestNumberIsValid)$' -count=1 -v`
+退出 0，4 个顶层测试通过。调用链为标准库现有测试，无生成器/failpoint/Go 写入。
+TestUnmarshal 的 decode_test.go:880–889 golden=true 用例实际调用 Marshal 并比较
+输出与输入字节；复用以下真实运行字节，不新增 Go oracle，不从 Rust 输出生成预期：
+
+| float64 输入 | Go Marshal 实际字节 |
+| --- | --- |
+| 0.000001 / -0.000001 | `0.000001` / `-0.000001` |
+| 1e-7 / -1e-7 | `1e-7` / `-1e-7` |
+| 1e20 / -1e20 | `100000000000000000000` / `-100000000000000000000` |
+| 1e21 / -1e21 | `1e+21` / `-1e+21` |
+| 999999999999999900000.0 | `999999999999999900000` |
+| 9007199254740992.0 | `9007199254740992` |
+
+两个真实后端实际保存上述输入、读取物理字节并逐字节比较，再验证数值读取。
+额外零/负零/普通小数及故障断言为 Go 源码依据后的 Rust 行为验证，明确区别于
+上述 Go golden 运行差分。TestMarshalFloat 运行验证 Go 自身格式/往返约束；
+TestUnsupportedValues 和 TestNumberIsValid 运行验证非有限值拒绝与数字语法。
+
+### 实现、红灯与绿灯
+
+canonical `service_limits.rs` 扩展 StorageEndpoint 的 load_service_limit、
+save_service_limit、load_service_limits，复用 Base、keypath、load_json 及分页 helper。
+保存使用 shortest JSON 数字并对齐 Go 的固定/指数阈值、指数正号和整数无 `.0`；
+非有限值在 IO 前返回 JsonMarshal，保留旧值。保留点读的两次读取语义。
+现有 serde_json 依赖仅启用 `float_roundtrip`：默认解析会把
+999999999999999900000 舍入成 1e21，真实 golden 往返断言已复现此差异。
+不新增依赖版本或 target；根 manifest 和 Cargo.lock 无变化。
+
+独立 `service_limits_test.rs` 显式注册，service_limits_memory / service_limits_etcd
+共用真实存储 contract：Go 浮点 golden 字节、缺失/空/null、负零、合法负数和小数、
+覆盖、多 keyspace（含 u32::MAX）、坏 JSON/形状/UTF-8/溢出/尾随数据、非有限值拒绝
+且旧值不变；205 个合法 keyspace 加补零 ID 跨页列举，坏键/坏值跳过、相邻前缀和
+controller/states 隔离。etcd stop/stopped → start/restarted，同 WAL 重启后列表一致。
+随后清理限额前缀并写入 201 条合法数据，在第 100 个回调内 Drop fixture，等待退出，
+下一页真实 IO 返回 Store 错误且交付恰为 100；之后点读与保存也返回 Store 错误。
+无模拟核心事务、无到期场景、无新增 runtime/lease。
+
+最小可编译实现先运行 `cargo fmt --all`，聚焦命令
+`cargo test --locked -p astersql-pd-storage-endpoint --lib service_limits -- --nocapture`
+红灯退出 101，0 passed / 2 failed，4.71s：两个后端均实际写入 `1e-6`，预期
+Go 字节 `0.000001`。对齐格式后同一测试退出 101：读回 1e21，预期
+9.999999999999999e20。启用精确往返后 Memory 通过；etcd 的断连测试暴露
+坏键也占分页项，100 个有效回调时已进入第二页，停服后本页剩余回调仍交付（196）。
+据此将断连阶段隔离为 201 条合法记录，未削弱正常 contract 的坏键/分页断言。
+最终先 fmt、同一聚焦命令退出 0，2 passed / 0 failed / 0 ignored，9.27s。
+
+### 槽位与最终验证
+
+每阶段从仓库根按 1–10 原子 mkdir 动态领取，实际均槽位 **1**，
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录 task=19/batch=38/session=service-limits，持有 shell PID 为
+544（初始红灯）、843（格式修复）、1122（精确往返/依赖检查）、1476（最终聚焦）、
+1643（workspace 基线）。EXIT/INT/TERM trap 清理自己 owner/锁；全部同步 Cargo 和
+fixture 子进程结束后释放，保留缓存。GOFLAGS=-mod=readonly；fixture 只读构建已有
+main.go；proto build.rs 未重新执行，不解压生成 Go 源码。
+启用依赖功能后先 `cargo check --workspace` 退出 0，Cargo.lock 无变化，再执行 locked 验证。
+
+| 最终命令 | 退出码与结果 |
+| --- | --- |
+| `cargo fmt --all` | 0；只格式化本任务 Rust 文件 |
+| `cargo test --locked -p astersql-pd-storage-endpoint --lib service_limits -- --nocapture` | 0；2 passed / 0 failed / 0 ignored，9.27s |
+| `cargo metadata --format-version 1 --no-deps` | 0；canonical target 不变 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；仅既有 cpu_usage 弃用警告 |
+| `cargo test --workspace --locked` | 0；83 个 target 含 doc-tests，551 passed / 0 failed / 1 既有 ignored；endpoint 52 passed |
+| `git diff --check`、`git diff --cached --check` | 0 |
+
+开始/结束全部 1101 个 Go/模块文件 SHA-256 快照一致，无增删及内容变化，Go Git 差异为空。
+已审查两个新增 Rust 文件、lib 显式注册、Cargo 精确往返 feature 及本节证据；根
+Cargo.toml/Cargo.lock 无变化，无其他任务 Rust 文件变化。总计划和来源主题保持只读，
+用户既有变更保留。全部 Cargo/fixture 子进程结束，自己的槽位锁已释放，缓存保留。
+状态：已完成；批次 38 的服务限额存储验证故事完成。
