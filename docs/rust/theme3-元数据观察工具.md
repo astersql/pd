@@ -209,3 +209,95 @@ snapshot→revision+1→watch、压缩重新 snapshot，
 - `git diff --check`：退出 0；审查仅新增本证据文档及本编号任务收尾，不包含代码变更。
 - Go/模块开始与结束路径及 SHA-256 检查：1101 个文件完全一致，相关 Git 状态为空。
   未运行 Go/Cargo 测试，未取得或声称新的跨语言运行证据。
+
+## 任务 2：一致分页快照（批次 75）
+
+日期：2026-10-24（Asia/Shanghai）。前置批次 74 提交 `3a3fbabbf` 为本轮
+HEAD，已核验上节消费者、选项、Go 测试断言及 KV 能力清单；不是以任务文件删除准入。
+`git diff 5d5948052a9ee9e3fa7a09145fe2916a2912c223 -- pkg/utils/etcdutil/etcdutil.go`
+退出 0、无差异。没有修改只读 plan.md、来源史诗或其他任务实现。
+
+### 实现与 Go 依据
+
+新增 canonical [etcdutil crate](../../pkg/utils/etcdutil/Cargo.toml)，
+[SnapshotLoader::load](../../pkg/utils/etcdutil/snapshot_loader.rs) 仅依赖唯一
+kv::MetaStore，返回完整 `LoadedSnapshot { revision, next_revision, entries }`。
+首页 header 选定 revision，后页固定请求该 revision，忽略更晚 header；原始 prefix
+不变，limit+1 的末项作 inclusive cursor，batch=0 不限量，支持精确键及空前缀。
+读取失败或取消时丢弃本地暂存，调用者仅在成功返回后发布，无私有 runtime 或后台任务。
+
+只读 Go 依据为 `LoopWatcher.load` (:797–952)、`buildLoadingOpts` (:979–1001)，
+以及 `TestWatcherConsistentLoadUsesSingleRevision` (:928)、
+`TestWatcherAtomicLoadCallbacksDiscardIncompleteLoad` (:980)、
+`TestWatcherLoadCancelsInFlightRequest` (:522)、`TestWatcherLoadLimit` (:807)。
+Go 的 atomic 模式通过跳过 post 防止发布不完整 staging；此 Rust 接口用只返回完整结果
+表达该保证，取消明确返回 `StoreError::Cancelled`，不复制 Go 的 `(0,nil)` 退出值。
+`Entry` 原样保留，无新增 codec，故本任务没有新字节编码差分要求或伪造 Go 编码输出。
+
+本接口显式只提供一致快照，不声称实现 Go 默认 latest-page 加载、pre/put/post callback
+生命周期、资源耗尽自适应 batch 或完整 LoopWatcher。加载控制、watch 和压缩后的恢复
+仍由后续任务负责；本任务的压缩处理是返回原始 Compacted，绝不发布半个结果或自行换 revision。
+
+`go test -mod=readonly ./pkg/utils/etcdutil -count=1` 未运行：整包测试明确启用
+`fastTick`、`meetEtcdError`、`updateClient`、`watchChanBlock` failpoint，须改写源码才能
+得到有效整包证据；用户禁止该操作。以上为已有源码/断言证据，不是本轮 Go 测试通过
+或 Go/Rust 运行差分。复用现有 `etcd_fixture_test.rs` 的 fixture 源码与
+`scripts/rust-etcd-fixture`：只编译已有 Go 工具、`GOFLAGS=-mod=readonly`，只向槽位写
+二进制、etcd WAL 与 readiness 文件，不新增/改写 Go 或模块文件，不启停 failpoint。
+
+### 行为红灯与绿灯
+
+[独立测试](../../pkg/utils/etcdutil/snapshot_loader_test.rs) 在
+[lib.rs](../../pkg/utils/etcdutil/lib.rs) 显式注册。`snapshot_loader_memory` 与
+`snapshot_loader_etcd` 共用同一真实存储断言；窄 GateStore 仅挂起真实读取响应的 IO
+完成，不模拟事务、revision 或快照内容。
+
+- 实际红灯：最小可编译接口只读第一页，命令
+  `cargo test --locked -p astersql-pd-etcdutil --lib snapshot_loader -- --nocapture`
+  退出 101，1 passed / 2 failed。两个后端均在完整 key 集断言失败：只得到 `/scan/a`，
+  应为 `/scan/a`、`/scan/a\0`、`/scan/b`、`/scan/c`，不是缺符号或环境失败。
+  原有 values 占位检查在绿灯前强化为真实空存储/非法参数断言，没有削弱上述失败断言。
+- 相同聚焦命令绿灯：退出 0，3 passed / 0 failed / 0 ignored；真实 etcd 3.5.15。
+- batch=1/2/3/4/5/0 均完整、字节序稳定，无重复或漏键；相邻 `/scan0/outside` 不进入范围。
+- 首页读出后暂挂响应，在真实事务中修改已读 a、未读 b、删除 c、插入 d；释放后仍得到
+  全部四个 old 值，revision 和 next_revision 仍为首页 header 及其 +1。
+- 压缩时序：首页响应暂挂 → 新写入 e → compact 新 revision → 释放响应 → 下一页
+  固定历史读返回 Compacted；终态为 Err，无 LoadedSnapshot。
+- 取消时序：真实响应暂挂 → cancel → 未释放 IO，1s 上限内返回 Cancelled；分别覆盖
+  batch=1 和 batch=0（单页最终响应），另验证预先取消。终态均无快照。
+- 空范围返回零项、精确键排除其 NUL 后缀邻键、空前缀读全库六项；非法批量及空精确键
+  返回 InvalidArgument；空库无限量返回空快照与有效 next_revision。
+
+### 验证命令与资源
+
+所有 Cargo 阶段原子动态领取槽位 **1**，
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`，
+锁内记录任务/会话/PID，阶段退出 finally 删除自己的 owner 并 rmdir 释放，缓存保留。
+`GOFLAGS=-mod=readonly` 传给全部子进程。未分配私有 target。
+
+新增 crate 后先 `cargo fmt --all`（0），`cargo check -p astersql-pd-etcdutil`（0）
+同步锁文件，仅新增本 crate 与四个已有依赖的引用，无依赖版本变化；随后已运行
+`cargo check --workspace`（0）复核锁文件。所有 Rust 修改先格式化再验证。
+
+workspace 检查/测试外包 `sandbox-exec -f /tmp/pd-b75-go-readonly.sb`，允许常规操作，
+禁止写 `.go` 和 Go 模块文件，并禁止执行 proto build script（会解压 Go 源码）；本轮
+复用已有协议生成缓存。因此验证不会因冷缓存触发被禁止的 Go 生成写入。
+
+| 命令（均在仓库根） | 退出码 / 有效结果 |
+| --- | --- |
+| `cargo metadata --format-version 1 --no-deps` | 0，workspace 包含唯一 etcdutil member |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace` | 0，锁文件仅有上述新 crate 引用 |
+| `cargo check --workspace --locked` | 0，仅既有 server cpu_usage deprecated warning |
+| `cargo test --locked -p astersql-pd-etcdutil --lib snapshot_loader -- --nocapture` | 0，3 passed / 0 failed / 0 ignored |
+| `cargo test --workspace --locked` | 0，87 个测试/文档 target 合计 646 passed / 0 failed / 1 既有 ignored |
+| `git diff --check` | 0 |
+
+Markdown 40 个相对链接全部有效。审查根 manifest、锁文件、crate、生产/测试及本文差异，
+没有 Rust 格式化溢出到其他任务文件。已有其他任务文件删除/配置盘点修改均未纳入提交。
+Go/模块文件开始与结束路径集合及 SHA-256：1101 个文件完全一致；相关 Git 状态为空。
+所有 Cargo/fixture 已结束，自己的 slot-1 owner/锁已清理，编译缓存保留。
+
+状态：**已完成**。完成范围仅为一致分页快照；未宣称完成 watch、加载控制、TTL helper
+或整个 Go etcdutil 包迁移。本轮 Go 证据仍为只读源码与断言，真实运行后端为现有 embedded
+etcd fixture，不将其冒称运行 Go LoopWatcher 的差分。

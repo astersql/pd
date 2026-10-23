@@ -122,6 +122,16 @@ name = "astersql-pd-errs"
 version = "0.1.0"
 
 [[package]]
+name = "astersql-pd-etcdutil"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-storage-kv",
+ "async-trait",
+ "tokio",
+ "tokio-util",
+]
+
+[[package]]
 name = "astersql-pd-id"
 version = "0.1.0"
 dependencies = [
