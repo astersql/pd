@@ -117,7 +117,7 @@ impl StorageEndpoint {
         self.load_rule_prefix(paths.region_label_path_prefix().as_bytes(), callback)
             .await
     }
-    async fn load_rule_prefix(
+    pub(super) async fn load_rule_prefix(
         &self,
         prefix: &[u8],
         mut callback: impl FnMut(&[u8], &[u8]),

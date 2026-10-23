@@ -46,3 +46,7 @@ mod scheduler_endpoint_test;
 mod rule_endpoint;
 #[cfg(test)]
 mod rule_endpoint_test;
+
+mod affinity_endpoint;
+#[cfg(test)]
+mod affinity_endpoint_test;

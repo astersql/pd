@@ -2631,3 +2631,92 @@ workspace fmt 未改动其他 Rust 文件。已审查仅本任务 rule_endpoint 
 lib 注册、本证据节和编号任务清理；用户已有其他计划变更保留。
 所有 Cargo/fixture 子进程已结束，共享槽位锁已释放，缓存保留。
 批次 30 当前规则存储验证故事已完成。
+
+## 批次 31：亲和组端点（任务 12，2026-10-23）
+
+### 准入和只读 Go 证据
+
+批次 30 提交 `ca5e49594`、rule_endpoint 产物和本文完成记录齐全：
+聚焦 3 passed，workspace 526 passed / 0 failed / 1 既有 ignored，满足准入。
+已读 do-task-plans、ADR-001、porting-guide、Copilot 和 canonical endpoint/kv；
+`rg --files --hidden -g AGENTS.md pkg docs .plans` 未发现更深指令。
+`affinity.go` 相对规划基准 `5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无变化。
+总计划和来源主题保持只读。
+
+Go `affinity.go` 的 SaveAffinityGroup 经 `util.go::saveJSONInTxn` 先 JSON 编码、
+成功才缓存 put；DeleteAffinityGroup 仅缓存精确 group ID 删除，复用调用者事务。
+LoadAffinityGroup 缺失/空值返回空 string，读取不解码 JSON。
+LoadAllAffinityGroups 复用 loadRangeByPrefix，100 项分页、去前缀、字节排序，
+满页从最后 key+NUL 续读；后页失败保留已经调用的回调，不固定快照 revision。
+`pkg/schedule/affinity/manager_test.go::TestBasicGroupOperations` 已有创建 group1、
+更新 peers、删除并断言不存在的源码证据；本任务不迁移 affinity 算法。
+这些是静态源码和既有断言依据，不冒充本轮 Go affinity 运行差分。
+
+编码复用 endpoint_codec_test.rs / rule_endpoint_test.rs 和批次 21/30 已保存的
+真实 Go encoding/json ExampleMarshal 输出，输入 ColorGroup{ID:1, Name:"Reds",
+Colors:["Crimson","Red","Ruby","Maroon"]}，输出
+`{"ID":1,"Name":"Reds","Colors":["Crimson","Red","Ruby","Maroon"]}`。
+Rust 独立纯值测试和两个真实后端的保存/读取均与该固定字节比较；标量 `1` 也复用
+批次 30 的既有 Go JSON 证据。没有从 Rust 结果生成预期。
+ClusterPaths::affinity_group_path / affinity_groups_prefix 复用已有 Go keypath 输出。
+泛型持久化模型仍须提供 Go 兼容字段、nullable 和自定义序列化，未宣称任意 Serde
+模型与 Go encoding/json 自动同构。
+
+本轮没有运行 Go 测试；完整命令
+`go test -mod=readonly ./pkg/storage/endpoint ./pkg/storage -count=1` 涉及
+TestLoadRegionsExceedRangeLimit 等 failpoint 测试，与只读约束冲突。必要字节证据
+已由上述保存输出提供。审查既有 etcd fixture 调用链：只读构建现有 main.go，
+随机 loopback 端口，独立数据/WAL 目录，状态文件均位于共享 Cargo 槽位。
+
+### 实现和测试驱动证据
+
+新增 affinity_endpoint.rs，在 StorageEndpoint 提供 load_affinity_group、
+save_affinity_group、delete_affinity_group、load_all_affinity_groups；
+事务复用已有 run_in_txn / CallbackTxn。仅将 rule_endpoint.rs 既有分页 helper
+可见性调整为 pub(super)，供当前模块复用，不复制分页器或事务引擎。
+lib.rs 显式注册独立 affinity_endpoint_test.rs；无新增依赖、feature 或 runtime。
+
+affinity_endpoint_memory / affinity_endpoint_etcd 共用同一 contract，覆盖：缺失、空值、
+提交前不可见、保存 Go 编码字节、相邻 group1/group10 精确删除、重复删除、
+编码错误撤销此前缓存的写删、真实并发修改触发 compare conflict 且无部分提交、
+跨 cluster / 相邻前缀 / rules 前缀隔离，以及 205 项跨三页列举。
+分页包含空 ID、g098+NUL、未清理路径和非法 UTF-8 后缀；无效 JSON、非法 UTF-8、
+NUL 和空值保持原始字节，单键坏 JSON 也原样返回。
+etcd 入口另行验证同 WAL stop/stopped → start/restarted 后对象字节恢复。
+随后在列举第 100 项回调内 drop fixture 并等待真实 etcd 退出，第二页返回 Store 错误，
+终态恰好交付 100 项；断连后单键读取和事务提交也返回真实 Store 错误。
+没有模拟核心事务结果。
+
+最小可编译接口先将列举实现为空，保存/读取/删除连接真实后端。
+运行 `cargo fmt --all`（退出 0）后执行
+`cargo test --locked -p astersql-pd-storage-endpoint --lib affinity_endpoint -- --nocapture`：
+退出 **101**，1 passed / 2 failed / 0 ignored，3.93s；两个后端都在成功提交后
+列举 [] 而非 group1/group10 的真实状态断言失败。
+接入既有分页器、再次 `cargo fmt --all`（退出 0）后，同一命令退出 **0**：
+3 passed / 0 failed / 0 ignored，5.20s；原红灯断言保留，未忽略测试或削弱断言。
+
+### 共享槽位和仓库基线
+
+三个 Cargo 阶段从仓库根按 1–10 顺序用原子 mkdir 动态领取首个空槽，实际均为 **1**。
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录 plan=storage-endpoint、task=12、batch=31、session=affinity-endpoint 及
+shell PID（75047、75202、75352）。EXIT/INT/TERM trap 清理自己的记录和锁，
+Cargo/fixture 子进程同步结束后释放，保留编译缓存。
+所有子进程继承绝对 target 和 GOFLAGS=-mod=readonly；复用 proto 构建缓存，
+未触发会解压 Go 文件的 build.rs。
+
+| 最终命令 | 退出码与有效结果 |
+| --- | --- |
+| `cargo test --locked -p astersql-pd-storage-endpoint --lib affinity_endpoint -- --nocapture` | 0；3 passed / 0 failed / 0 ignored，5.20s |
+| `cargo metadata --format-version 1 --no-deps` | 0；canonical endpoint target 保持注册 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；仅既有 server cpu_usage 弃用警告 |
+| `cargo test --workspace --locked` | 0；83 个 target 含 doc-tests，529 passed / 0 failed / 1 既有 ignored；endpoint 30 passed |
+| `git diff --check`、`git diff --cached --check` | 0 |
+
+最终核对任务开始快照中的 1101 个已跟踪 Go/模块文件 SHA-256 全部未变化，
+Go Git 差异为空，未跟踪 Go/模块文件为 0。未运行 Go 生成器、failpoint 启停、
+Go 格式化或依赖整理。Cargo manifest/lock 无变化，workspace fmt 未修改其他 Rust 文件。
+审查仅本任务 affinity 模块、独立测试、lib 注册、分页 helper 最小可见性连线及本证据节；
+用户已有其他计划变更保留。所有 Cargo/fixture 子进程已结束，共享锁已释放，缓存保留。
+状态：已完成；批次 31 的亲和组文档存储验证故事完成。
