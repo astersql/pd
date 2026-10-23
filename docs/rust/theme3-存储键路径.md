@@ -700,3 +700,79 @@ EXIT/INT/TERM 清理在本阶段 Cargo 和子进程结束后删除自身 owner �
 没有依赖、features、manifest/lock、Go 生产、只读计划或来源主题变更；
 无关元数据观测任务的编号文件变更保留原样，不纳入提交。
 本结论仅覆盖键空间与时间路径，不代表完整 Go 包或 TSO 服务已迁移。
+
+## 任务 7：注册、恢复标记与维护路径（已完成）
+
+日期：2026-10-23（Asia/Shanghai）。准入核验：批次 6 提交 `79a433ff3`
+及上节 Go/Rust 差分和 workspace 457 passed 记录完整，实际 canonical 模块及测试
+注册均存在。当前 HEAD 为该提交。`absolute_key_path.go`、`maintenance.go`
+相对规划基准 `5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异；
+本轮仅根 AGENTS.md，已读 Copilot、ADR-001、移植指南与任务槽位契约。
+
+### 实现与 Go 依据
+
+[registry_marker_paths.rs](../../pkg/utils/keypath/registry_marker_paths.rs)
+在已有 `ClusterPaths` 增加 `registry_path`、`service_path`、`recovering_mark_path`、
+`pitr_restore_mode_mark_path`、`maintenance_task_path`、`maintenance_task_path_prefix`。
+[lib.rs](../../pkg/utils/keypath/lib.rs) 显式注册生产模块及独立
+[registry_marker_paths_test.rs](../../pkg/utils/keypath/registry_marker_paths_test.rs)。
+
+Go `absolute_key_path.go::{RegistryPath,ServicePath,RecoveringMarkPath,
+PitrRestoreModeMarkPath}` 与 `maintenance.go::{MaintenanceTaskPath,
+MaintenanceTaskPathPrefix}` 为直接格式化依据：
+
+- 注册键 `/ms/C/S/registry/A`，服务前缀 `/ms/C/S/registry/` 保留尾 slash。
+- 恢复标记 `/pd/C/cluster/markers/snapshot-recovering` 与
+  `/pd/C/cluster/markers/pitr-restore-mode` 不同，均无尾 slash。
+- 维护任务 `/pd/C/maintenance/T`，prefix 等于空 T，保留尾 slash。
+- 名称和地址原样插入，不清理、不转义、不校验；空串、`..`、重复 slash、Unicode
+  均保留。已有 `prefix` 保持 Go `path.Dir` 清理行为，本任务只扩展测试，不重复实现。
+- cluster 显式传入，无全局 ID，无业务存储或服务启动；纯值无需 MemoryStore/etcd 入口。
+
+### Go oracle 与红绿证据
+
+先串行运行 `make gotest GOTEST_ARGS='./pkg/utils/keypath -count=1'`，退出 **0**，
+包耗时 0.249s；2 个顶层测试，包含资源组 8 子场景、region 1000 个随机 ID 断言。
+make 完成 failpoint disable 后才编辑及运行 Cargo；检查无生成 failpoint 文件及
+Go 生产差异。原有测试没有直接覆盖注册/标记/维护函数，新增窄场景
+[registry_marker_paths.go](../../scripts/rust-theme3-oracle/registry_marker_paths.go)，
+`main.go` 仅增加分发。
+
+`go run ./scripts/rust-theme3-oracle registry_marker_paths` 退出 **0**，真实输出
+**186** 条 TSV，作为 Rust 测试的 `GO_ORACLE` 固定预期。输入 cluster 为
+`0,42,u64::MAX`；name 为 `空串,tso,scheduling,a/b,/a//../b/,.,..,维护`；
+addr 为 `空串,127.0.0.1:2379,http://[::1]:2380/a/../,/a//../b/,服务`；
+另有 9 条 prefix 输入，完整保留在 Go 场景及 Rust fixture 中。
+Rust 调用实际 API 并逐条 `as_bytes()` 断言，再输出实际 ORACLE 行。
+Python 对 Go TSV 与去掉 `ORACLE\t` 标记的 Rust stdout 排序比对，退出 **0**，
+**186/186 字节相等**。另一个测试验证尾 slash、空地址/任务、服务前缀边界、
+cluster 隔离、原样地址后缀、标记之间不同。
+
+可编译最小实现先缺少 service registry 尾 slash；同一聚焦命令退出 **101**，
+**0 passed / 2 failed**，字节断言实际 `/ms/0//registry`，
+Go 期望 `/ms/0//registry/`，边界测试也捕获该缺失。
+补上尾 slash 后不修改测试断言，**2 passed / 0 failed / 0 ignored**。
+
+### 验证与共享槽位
+
+红灯与绿灯/基线两个阶段均从 1–10 以原子 mkdir 动态领取，实际均为 **槽位 1**。
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录计划、任务、会话与阶段、PID：红灯 **5565**，绿灯 **5676**。
+阶段脚本以 EXIT/INT/TERM trap 在同步 Cargo/子进程结束后清理自己的 owner/锁；
+两阶段已退出，锁目录为空，编译缓存保留，所有 Cargo 子进程继承绝对 target 路径。
+
+| 确切命令 | 退出码及有效结果 |
+| --- | --- |
+| `cargo fmt --all`（红灯、绿灯各一次） | 均 0，无无关格式差异 |
+| `cargo test --locked -p astersql-pd-keypath --lib registry_marker_paths -- --nocapture`（红灯） | 101；0 passed / 2 failed |
+| 同一聚焦命令（绿灯） | 0；2 passed / 0 failed / 0 ignored；186 条字节断言 |
+| `cargo metadata --format-version 1 --no-deps` | 0 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；仅既有 server 废弃字段警告 |
+| `cargo test --workspace --locked` | 0；459 passed / 0 failed / 1 ignored；78 个结果段，含 2 个 compile-fail doctest；ignored 为既有 TSO 单独二进制测试 |
+| `git diff --check` | 0 |
+
+已审查本任务生产、独立测试、Go 场景与分发、证据文档和任务清理差异。
+未改依赖、features、manifest/lock、Go 生产、只读 plan.md 或来源主题；
+无关元数据观测任务编号文件变更保留，不纳入本任务提交。
+本结论仅覆盖本批次路径兼容性，不声明完整 Go 包或服务发现/恢复业务已迁移。

@@ -29,3 +29,8 @@ pub use keyspace_time_paths::*;
 
 #[cfg(test)]
 mod keyspace_time_paths_test;
+
+mod registry_marker_paths;
+
+#[cfg(test)]
+mod registry_marker_paths_test;

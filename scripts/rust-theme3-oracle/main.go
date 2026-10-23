@@ -9,6 +9,8 @@ func main() {
 		panic("usage: rust-theme3-oracle <scenario>")
 	}
 	switch os.Args[1] {
+	case "registry_marker_paths":
+		registryMarkerPaths()
 	case "keyspace_time_paths":
 		keyspaceTimePaths()
 	case "cluster_paths":
