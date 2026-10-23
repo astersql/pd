@@ -54,3 +54,8 @@ mod affinity_endpoint_test;
 mod replication_endpoint;
 #[cfg(test)]
 mod replication_endpoint_test;
+
+mod timestamp_values;
+pub use timestamp_values::TimestampValueError;
+#[cfg(test)]
+mod timestamp_values_test;

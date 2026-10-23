@@ -2802,3 +2802,85 @@ Cargo manifest/lock 无变化，workspace fmt 未修改其他 Rust 文件。
 审查范围仅 replication_endpoint.rs、独立测试、lib.rs 注册及本证据节；
 用户已有其他计划变更保留。所有 Cargo/fixture 子进程结束，共享锁已释放，缓存保留。
 状态：已完成；批次 32 的按 mode 隔离复制状态 JSON 验证故事完成。
+
+## 批次 33：时间戳数值端点（任务 14，2026-10-23）
+
+### 准入和只读 Go 依据
+
+批次 32 提交 `f0adad162`、replication_endpoint 产物及本文证据齐全：聚焦
+3 passed，workspace 532 passed / 0 failed / 1 既有 ignored，满足准入。
+已读 do-task-plans、ADR-001、porting-guide、Copilot 和 canonical endpoint/kv。
+`rg --files --hidden -g AGENTS.md pkg docs .plans` 无更深指令。两个 Go 源文件
+相对规划基准 `5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异。
+总计划和来源主题只读。
+
+min_resolved_ts.go / external_timestamp.go 均使用 strconv.FormatUint(value,16)
+保存无前导零的小写十六进制，使用 ParseUint(value,16,64) 读取；缺失/空值为 0，
+非法或溢出返回 ErrStrconvParseUint，后端错误传播。接受大写和前导零，拒绝符号、
+0x 前缀、下划线和空白；HTTP 包装 struct 的 JSON 字段不属于持久化格式。
+没有因任务上下文的 JSON 描述改用 JSON 编码。
+
+复用 Go 1.26.8 已有标准库测试/示例，不新增或改写 Go oracle：
+
+| 只读命令 | 退出码与有效结果 |
+| --- | --- |
+| `GOFLAGS=-mod=readonly go test strconv -run '^ExampleFormatUint$' -count=1 -v` | 0；1 Example passed，输入 42 的实际 stdout 含 `string, 42`、`string, 2a` |
+| `GOFLAGS=-mod=readonly go test internal/strconv -run '^(TestItoa\|TestUitoa\|TestParseUint64Base)$' -count=1 -v` | 0；3 tests passed；TestItoa 实际比较 16→`10`、MAX_I64→`7fffffffffffffff`，TestUitoa 覆盖 u64 上界 |
+| `GOFLAGS=-mod=readonly go test fmt -run '^TestSprintf$' -count=1 -v` | 0；1 test passed；既有 uint64(MAX) 的 `%#v` 字节为 `0xffffffffffffffff` |
+
+Rust 保存与纯值测试比较上述固定字节；fmt 的最大值证据仅移除显式 `0x` 前缀，
+不称作 FormatUint(MAX,16) 的新增运行输出。2^53+1 和 2^63 等额外值的预期为
+源码推导的边界断言，和上述实际 Go 字节证据明确区分，不由 Rust 输出生成预期。
+标准库选定用例无生成器、Go 源写入或 failpoint 需求。完整计划 Go oracle
+`go test -mod=readonly ./pkg/storage/endpoint ./pkg/storage -count=1` 未运行，
+因为整包包含需注入的 failpoint 测试；没有声称 Go 整包通过。
+复用既有 etcd fixture，只读 build 现有 main.go，GOFLAGS=-mod=readonly，
+随机 loopback 端口、独立数据目录；proto build.rs 使用既有缓存，未触发解压 Go 文件。
+
+### 实现和测试驱动证据
+
+新增 canonical timestamp_values.rs，提供 StorageEndpoint::{load_min_resolved_ts,
+save_min_resolved_ts,load_external_ts,save_external_ts}；复用 ClusterPaths 与 Base，
+不新增依赖、runtime、feature 或全局 cluster ID。TimestampValueError 区分 ParseUint
+和真实 Store 错误。两个端点各读写精确键且不附 lease，显式校验 ASCII hex 后
+按 u64 解码，避免 Rust parser 接受 `+1` 的差异。
+lib.rs 显式注册独立 timestamp_values_test.rs。
+
+timestamp_values_memory / timestamp_values_etcd 共用真实后端 contract：缺失、空值、
+零、16、42、MAX_I64、2^53+1、2^63、MAX_U64 的精确字节和往返；大写、前导零、
+十六进制 `10` 的含义；非法 JSON/符号/前缀/空白/下划线/溢出/非 UTF-8/NUL，
+读失败保留原始字节；两个端点和 cluster 之间隔离。etcd 成功保存后执行
+stop/stopped → start/restarted，同 WAL 恢复后分别读到 42 与 MAX_U64；随后
+Drop fixture 并等待进程退出，再执行两个 load/save，四个请求均返回真实 Store 错误。
+没有模拟核心存储或事务结果。
+
+最小可编译接口先真实保存/读取、解码返回 0。`cargo fmt --all` 退出 0 后运行
+`cargo test --locked -p astersql-pd-storage-endpoint --lib timestamp_values -- --nocapture`：
+退出 **101**，1 passed / 2 failed / 0 ignored（4.53s），两个后端都在保存 16 后
+读到 0 而预期 16 的真实状态断言失败。实现解码后再次 `cargo fmt --all`，同一命令
+退出 **0**，3 passed / 0 failed / 0 ignored（4.60s）。原红灯断言保留，未忽略测试。
+
+### 共享槽位和最终基线
+
+各 Cargo 阶段从根目录按 1–10 原子 mkdir 动态领取，实际槽位 **1**，
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录 plan=storage-endpoint、task=14、batch=33、session=timestamp-values 与
+shell PID（81809、81967、82132、83582）；EXIT/INT/TERM trap 覆盖清理，
+同步等待 Cargo/fixture 子进程结束后释放自己的 owner/锁，保留缓存。
+
+| 最终命令 | 退出码与有效结果 |
+| --- | --- |
+| `cargo test --locked -p astersql-pd-storage-endpoint --lib timestamp_values -- --nocapture` | 0；3 passed / 0 failed / 0 ignored，6.43s |
+| `cargo metadata --format-version 1 --no-deps` | 0；canonical endpoint target 保持注册 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；仅既有 server cpu_usage 弃用警告 |
+| `cargo test --workspace --locked` | 0；83 个 target 含 doc-tests，535 passed / 0 failed / 1 既有 ignored；endpoint 36 passed |
+| `git diff --check`、`git diff --cached --check` | 0 |
+
+最终核对开始快照中 1101 个 Go/模块文件 SHA-256 全部未变化，Go Git 差异为空，
+未跟踪 Go/模块文件为 0。未运行生成器、failpoint 启停、Go 格式化或依赖整理。
+Cargo manifest/lock 无变化，workspace fmt 未修改其他 Rust 文件。基线后仅补充
+测试注释的 Go 字节来源，并重跑 fmt、fmt check 和全部 3 个聚焦测试成功。
+审查范围仅 timestamp_values 实现、独立测试、lib.rs 注册及本证据节；
+用户已有其他计划变更保留。所有 Cargo/fixture 子进程结束，共享锁已释放，缓存保留。
+状态：已完成；批次 33 的时间戳数值持久化验证故事完成。
