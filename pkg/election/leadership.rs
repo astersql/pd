@@ -30,14 +30,16 @@ async fn cancellable<T>(
 
 /// A single immutable election term. Value, lease and revision fence ABA/re-election.
 pub struct Leadership {
-    store: Arc<dyn MetaStore>,
+    pub(crate) store: Arc<dyn MetaStore>,
     cancel: CancellationToken,
     cluster_id: u64,
     key: Vec<u8>,
     value: Vec<u8>,
-    lease: LeaseId,
+    pub(crate) lease: LeaseId,
     revision: Revision,
-    expiry: LeaseExpiry,
+    pub(crate) expiry: LeaseExpiry,
+    pub(crate) timeout: std::time::Duration,
+    pub(crate) keep_cancel: CancellationToken,
 }
 impl Leadership {
     /// Attempt one election using the existing PD leader path and opaque value.
@@ -117,12 +119,14 @@ impl Leadership {
             Ok(commit) if commit.succeeded => Ok(Leadership {
                 store: store.clone(),
                 cancel: cancel.clone(),
+                keep_cancel: cancel.child_token(),
                 cluster_id,
                 key,
                 value: value.clone(),
                 lease: lease.id,
                 revision: commit.revision,
                 expiry,
+                timeout: std::time::Duration::from_secs(ttl_seconds as u64),
             }),
             other => {
                 // Revoke our own lease even for an uncertain commit; TTL bounds cleanup if unavailable.
@@ -205,6 +209,7 @@ impl Leadership {
     }
     /// Cleanup remains possible after cancellation. Only this term's lease is revoked.
     pub async fn resign(&self) -> Result<()> {
+        self.keep_cancel.cancel();
         self.expiry.close();
         match self.store.revoke(self.lease).await {
             Ok(()) | Err(StoreError::LeaseNotFound) => Ok(()),

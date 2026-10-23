@@ -417,3 +417,85 @@ TTL 边界断言失败。此前一次测试编译错误（Unavailable 是 unit v
 根 Cargo.toml、Cargo.lock、crate manifest、只读 plan.md 与来源主题均无本任务差异。
 既有其他任务状态变更/删除保留并排除提交。本节不代表后续自动续租、watch、reset
 或启动装配任务已经完成。
+
+## 任务 5：实现受控续租循环（批次 63）
+
+日期：2026-10-23（Asia/Shanghai）。前置批次 62 的提交 `f974de0c9`、
+上节完成证据及 `lease_expiry.rs` / 独立测试实物均已核验，准入满足。
+规划基准 `5d5948052a9ee9e3fa7a09145fe2916a2912c223` 至当前 HEAD 的
+`lease.go`、`leadership.go` 无差异。总计划和来源主题保持只读。
+
+### Go 依据与实现边界
+
+只读依据是 `Lease.KeepAlive` / `keepAliveWorker`：立即发出请求，按配置租期
+三分之一调度，单请求超时和无有效响应超时均为配置租期；非正 TTL 和请求错误
+不刷新成功响应计时器；期限采用请求调度起点加响应 TTL，并保留最大值。
+取消后不应用响应。`Leadership.Keep` 捕获旧 lease；`Reset` 先 detach、取消，
+再在锁外关闭捕获的旧 lease，不能覆盖其后发布的新任期。
+
+已阅读 `TestLeaseKeepAlive`、`TestResetDoesNotClearNewLeadership`、
+`TestKeepDoesNotRestartLeaseDuringReset` 的断言。后两者需要 failpoint；
+因此没有执行计划的整包 `go test -mod=readonly ./pkg/election ./pkg/member ./pkg/id -count=1`，
+没有启停 failpoint，没有新增 Go oracle。这里复用前序只读证据和源码推导，
+不宣称本轮获得 Go 故障测试运行或跨语言运行差分。本任务没有 codec 变更。
+
+[lease_keep.rs](../../pkg/election/lease_keep.rs) 给 canonical 不可变任期增加
+`Leadership::keep`、`LeaseKeep` 和 `LeaseKeepExit`。宿主传入 Tokio Handle，
+句柄保存取消令牌和 join 句柄；Drop 请求停止，join 等待所有在途请求取消并回收。
+请求使用真实后端和现有任期 fencing；错误/无效 TTL 不延长成功响应计时器；
+丢失所有权后退出。`LeaseExpiry` 继续负责单调期限和关闭后拒绝迟到响应。
+`leadership.rs` 仅增加配置租期、每任期续租取消令牌及必要的模块内字段可见性；
+`resign` 在任何可能阻塞的撤租 IO 前取消旧任期续租、清空期限。
+没有引入可变选主管理器、观察逻辑或启动装配，完整 reset 管理器仍归后续任务。
+
+### 测试与发生时序
+
+独立 [lease_keep_test.rs](../../pkg/election/lease_keep_test.rs) 在 lib.rs 显式注册，
+`lease_keep_memory` / `lease_keep_etcd` 运行同一个行为函数。核心事务不模拟；
+GateStore 仅在外部 IO 边界暂扣真实成功响应、注入 Unavailable/无效 TTL、暂停撤租。
+响应暂扣同步点位于真实后端成功续租之后；计数守卫用于确认 join 后没有在途 IO。
+
+- 配置租期 1 秒，实际运行 1.4 秒后仍未本地过期且后端 fencing 有效，证明持续续租。
+- 暂扣真实成功响应后取消、join，确认在途 IO 为零；丢弃句柄同样最终释放任务和请求。
+- 暂停旧任期 revoke 后，旧任期已本地过期，旧循环及迟到 Keep 都返回 Cancelled。
+  用真实事务移除旧键并发布新任期，再放行旧 revoke；新任期仍可 validate 且未过期。
+- 暂扣响应、Unavailable、无效 TTL 分别使循环在连续 1 秒无有效响应后返回 TimedOut；
+  join 后请求已回收。Unavailable 场景继续等待实际 grant 响应 TTL 加 30ms，
+  确认本地过期，再等待真实后端删除到期键，终态为 NotLeader。
+- etcd 对 1 秒请求可能授予更长 TTL；本地自然过期断言使用实际 grant 响应 TTL，
+  不使用已递减的 ttl 查询结果，也不把循环配置超时等同于响应 TTL。
+  调整前两次 etcd 自然过期断言失败已定位为测试计时基准错误，未修改生产语义。
+- 真实 etcd 在 grant 后 stop，随后启动续租，连续 1 秒无响应后 TimedOut；
+  再等 1.1 秒确认本地保守期限已过期。沿用同 WAL restart 后 resign 完成撤租。
+- 删除真实 leader key 后循环返回 NotLeader；父取消令牌取消后当前和迟到循环均退出。
+
+初始可编译最小接口没有发出续租；行为红灯实际运行 2 个后端测试，均在
+“立即续租到达真实后端”的同步断言失败（退出 101，0 passed / 2 failed）。
+实现后同一断言通过，再收紧成功响应同步点并补充 Drop/超时回收断言；没有忽略测试。
+fixture 复用既有源码、随机 loopback 端口与独立目录，仅构建已有 Go fixture，
+继承 `GOFLAGS=-mod=readonly`，不运行生成器或修改 Go。
+
+### 验证结果
+
+状态：已完成。最终基线全部通过，所有 Cargo/fixture 子进程已退出，自己的槽位锁已释放。
+每阶段从 1–10 原子 mkdir 动态领取槽位，实际均为 **1**；
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+占用记录包含计划、任务、会话和 Python 持有进程 PID。退出、失败与中断处理
+在子进程组退出后移除自己的记录及锁，保留构建缓存。
+
+| 确切命令 | 退出码 | 有效结果 |
+| --- | --- | --- |
+| `cargo fmt --all`（Rust 修改后） | 0 | 仅本任务 Rust 文件差异 |
+| `cargo test --locked -p astersql-pd-election --lib lease_keep -- --nocapture`（红灯） | 101 | 0 passed / 2 failed，未发出续租 |
+| `cargo test --locked -p astersql-pd-election --lib lease_keep -- --nocapture`（最终绿灯） | 0 | 2 passed / 0 failed / 0 ignored，12.54 秒 |
+| `cargo metadata --format-version 1 --no-deps` | 0 | workspace 结构和依赖不变 |
+| `cargo fmt --all -- --check` | 0 | workspace 格式通过 |
+| `cargo check --workspace --locked` | 0 | workspace 编译检查通过 |
+| `cargo test --workspace --locked`（最终） | 0 | 619 passed / 0 failed / 1 既有 ignored |
+| `git diff --check`、`git diff --cached --check` | 0 | 已审查实现、独立测试、模块注册及本节证据 |
+
+零测试 target 不计有效用例，既有 ignored 不作为本任务证据。开始与最终核对
+1101 个 Go/模块文件路径和 SHA-256 完全一致，相关 Git 状态为空。
+根 Cargo.toml、Cargo.lock、crate manifest、只读总计划及来源主题没有本任务差异。
+其他任务已有的状态修改和删除保留、排除提交。本任务不代表完整 reset 管理器、
+watch、指标迁移或服务装配已经完成。
