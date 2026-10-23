@@ -600,3 +600,89 @@ watch_control_etcd 运行同一组断言，etcd 3.5.15；另有暂停时钟的�
 
 状态：**已完成**。只完成本任务的初次加载结果通知、强制加载、重试和取消控制；
 未将其视为整个 Go 包、完整 LoopWatcher 或服务装配已迁移。
+
+## 任务 6：限时键写入（批次 79）
+
+日期：2026-10-24（Asia/Shanghai）。前置批次 78 提交 `6ebc196f7` 为本轮起点，
+已核验上节观察加载控制的双后端红绿灯、653 项 workspace 通过证据、
+ControlledWatch / WatchControl 实现及显式测试注册。准入满足，未以编号文件删除
+作为完成依据。只读 `etcdutil.go` 相对规划基准 `5d5948052` 无差异。
+
+### 实现、Go 依据及边界
+
+新增 [put_with_ttl / TtlPutError](../../pkg/utils/etcdutil/ttl_put.rs)，仅使用唯一
+kv::MetaStore：Grant 专用 lease → 一次带 lease 的原字节 Put → 成功返回 Lease。
+宿主通过既有 MetaStore::keep_alive / revoke 续租或撤销，不创建后台任务或 runtime。
+Grant 失败返回原错误、无已知 lease；Put 失败后尝试撤销专用 lease，LeaseNotFound
+表示已清理。保留原始 cause、lease ID 和独立 cleanup_error，不用清理错误覆盖写错误。
+未知提交绝不自动重试写入，撤销补偿也会删除实际已提交的该 lease 绑定键。
+
+只读 Go 依据：`EtcdKVPutWithTTL`（etcdutil.go:275–284）先 Grant 再 WithLease Put，
+Grant 失败返回 0/error，Put 失败返回已授 lease ID/error，**没有撤销**。
+`TestEtcdKVPutWithTTL`（etcdutil_test.go:136–163）以 TTL=2/4 验证 3 秒后第一键消失、
+第二键仍存在，5 秒后均消失。Rust 失败清理是本任务要求的安全强化，不声称 Go 有此行为。
+TTL 范围和 StoreError 使用已有 MetaStore 契约，不新增配置、codec 或协议类型；
+字节值原样传递，测试的 `[0,255,42]` 是原始输入，不是声称来自 Go 的编码输出。
+
+`go test -mod=readonly ./pkg/utils/etcdutil -count=1` 未执行：整包包含 fastTick、
+updateClient 等需源码注入的测试，与只读约束冲突。本轮复用已有源码/测试断言及
+前置证据，不宣称新的 Go 运行结果或跨语言运行差分。现有 Rust etcd fixture helper
+只读 `go build` 编译已有 scripts/rust-etcd-fixture/main.go，WAL/ready 写入所持槽位；
+未执行 Go 测试、生成器、failpoint、格式化或模块整理。
+
+边界：清理请求无法发出时，后端仍可能保留有效 lease，错误明确携带 ID 交宿主恢复，
+其 TTL 仍限制寿命；测试验证恢复后键和 lease 均消失，不宣称网络不可用时能保证远端
+即时撤销。必须 await helper 完成；直接 drop future 不能执行异步清理，宿主不可将
+future 取消误当成清理完成。Grant 响应丢失时可能没有可知 ID，同样由 TTL 限制寿命。
+
+### 行为红绿灯与故障时序
+
+[独立测试](../../pkg/utils/etcdutil/ttl_put_test.rs) 在
+[lib.rs](../../pkg/utils/etcdutil/lib.rs) 显式注册。ttl_put_memory / ttl_put_etcd
+共用 run，后端为真实 MemoryStore / etcd 3.5.15。LossyStore 只丢弃真实 IO 响应
+或拒绝撤销 IO 发出；不模拟核心事务、lease 或 revision 结果。
+
+- 红灯：可编译入口只 Grant/Put，无失败清理；两后端均在
+  `failed Put must revoke its granted lease` 失败，实际 Ok(29)、预期 LeaseNotFound。
+  聚焦命令退出 101，**0 passed / 2 failed / 0 ignored**。
+- 绿灯保留原断言，加入最小撤销逻辑后，同一命令退出 0，
+  **2 passed / 0 failed / 0 ignored**；追加实际 revision 防盲重试断言后仍全部通过。
+- Grant(30) → 空键 Put 真实 InvalidArgument → revoke → TTL 返回 LeaseNotFound。
+  TTL=0 返回 InvalidArgument、无已知 lease、无键。
+- 真实 Put 提交 → 丢弃成功响应、返回 Unavailable → revoke 补偿 → 键不存在且
+  lease 不存在。真实 revision 只增加 2，证明一次 Put 加一次 Delete，没有写重试。
+- Put 成功响应丢失 → revoke 成功响应也丢失 → 两错误均保留、ID 正确；终态键/lease
+  已不存在。另一次撤销请求在 IO 发出前失败 → 确认真实有效 lease/键仍在 → 宿主用
+  错误携带的 ID 撤销 → 键不存在、TTL 返回 LeaseNotFound。
+- TTL=1 写入原始字节 → 读取确认 lease 绑定和值 → 从 Put revision+1 创建 watch →
+  最多 8 秒轮询至键消失 → 最多 4 秒收到真实 Delete，revision 大于原 Put →
+  lease 不存在。TTL=3 的键在 2 秒时 keep_alive，再等 2 秒仍存在（越过原到期时刻），
+  显式 revoke 后键消失、再次 keep_alive 返回 LeaseNotFound。
+
+### 验证资源与结果
+
+所有阶段原子 mkdir 从共享槽位 1–10 动态领取，实际均为 **槽位 1**：
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+锁内记录计划、任务、会话与持有 shell PID，EXIT/INT/TERM 清理自己的 owner/锁，
+全部 Cargo 和 fixture 子进程结束后释放，保留缓存。子进程继承 `GOFLAGS=-mod=readonly`
+并使用 `/tmp/pd-b75-go-readonly.sb` 拒绝写 Go/模块文件及执行会解压 Go 源码的 proto
+build script，复用已有生成缓存。未修改依赖、Cargo manifests、Cargo.lock 或只读计划。
+
+| 命令（仓库根目录，继承上述槽位环境） | 退出码 / 有效结果 |
+| --- | --- |
+| `cargo fmt --all` | 0，每次 Rust 修改后先运行，无其他源码格式化差异 |
+| `cargo test --locked -p astersql-pd-etcdutil --lib ttl_put -- --nocapture`（红灯） | 101，0 passed / 2 failed / 0 ignored |
+| 同一聚焦命令（最终绿灯） | 0，2 passed / 0 failed / 0 ignored，Memory + etcd |
+| `cargo metadata --format-version 1 --no-deps` | 0 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0，仅既有 server cpu_usage deprecated warning |
+| `cargo test --workspace --locked` | 0，87 个测试/文档 target 合计 655 passed / 0 failed / 1 既有 ignored |
+| `git diff --check` | 0 |
+
+52 个 Markdown 相对链接均有效。已审查本任务生产/测试、lib 注册及本文；其他任务
+既有编号文件删除与配置盘点修改均保留，不纳入提交。全部 Cargo/fixture 子进程已结束，
+自己的 slot-1 owner/锁已释放，缓存保留。Go/模块文件路径集合及 SHA-256 开始/结束
+共 2816 项完全一致（含已有 target 中 Go 源码），相关 Git 状态为空。
+
+状态：**已完成**。仅实现本任务的专用 lease 绑定写入、到期删除及可观测失败清理；
+续租/撤销复用已有契约，未扩大到客户端、集群管理或服务装配。

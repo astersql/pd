@@ -23,3 +23,8 @@ mod watch_control;
 pub use watch_control::{ControlledWatch, WatchControl};
 #[cfg(test)]
 mod watch_control_test;
+
+mod ttl_put;
+pub use ttl_put::{TtlPutError, put_with_ttl};
+#[cfg(test)]
+mod ttl_put_test;
