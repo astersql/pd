@@ -3979,3 +3979,107 @@ canonical 实现、独立测试、lib.rs 注册和本节证据，无 Cargo.toml/
 或其他 Rust 格式化差异。总计划与来源主题只读；原有其他任务计划修改、任务
 19/23/24 删除不纳入实现提交。批次 44 的行为和验证证据已满足；异常 x86_64
 进程的延迟退出及 slot-1 的待清理占用如上明确保留，不宣称已经释放。
+
+## 任务 26：维护任务原子启动（批次 45）
+
+### 准入、Go 依据与实际运行差分
+
+前置批次 44 的提交 `7629888a7` 及上节双后端/仓库基线证据满足准入。
+`pkg/storage/endpoint/maintenance.go` 相对规划基准
+`5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异。
+Go TryStartMaintenanceTaskAtomic 在 RawTxn 中对全局 maintenance_lock 作
+NotExists 比较，成功分支同时写入 `type/id` 锁及 JSON 任务；失败分支在同一
+事务读取 `[prefix,prefix+0xff)` 的前 100 项，跳过锁键和解码失败项，返回唯一
+任务；多于一个可解码任务报 `multiple maintenance tasks running simultaneously:
+found N tasks`。因此不同 task type 也互斥；空锁值仍表示锁存在；无有效任务
+返回 false/nil。JSON null 可解码为零值任务，仍计入任务数。
+
+相邻 `tests/server/apiv2/handlers/maintenance_test.go` 的
+TestMaintenanceAPIAtomicOperations 以十路 PUT 断言 1 个成功、9 个冲突。
+整包命令 `go test -mod=readonly ./pkg/storage/endpoint ./pkg/storage -count=1`
+未执行：storage 的区域/时间戳测试依赖 failpoint；未启停注入或以裸跑替代。
+本轮真实 Go 运行证据来自复用批次 44 已构建的 `/tmp/pd-meta25-server`，
+并非新写 Go oracle。`go version -m` 确认 Go 1.26.8、arm64、without_dashboard、
+CGO_ENABLED=0，vcs revision=75d205432；该版本至当前相关 maintenance Go 无差异。
+Python 驱动现有 HTTP/gRPC/etcd API，服务随机 loopback 双端口、独立临时目录，
+最小 Bootstrap 成功后执行维护 PUT。实际命令：
+
+```text
+python3 /tmp/pd-maint26-capture.py
+python3 /tmp/pd-maint26-race.py
+```
+
+均退出 0，两个服务最终 SIGTERM 退出 0。首次输入 type=upgrade、id=task-26、
+description 为 `维护 <>& `、U+2028、` end`，服务 timestamp=1792738044，
+cluster_id=7699751272391652495。只读 `/v3/kv/range` 取得实际 Go 保存字节：
+
+```json
+{"type":"upgrade","id":"task-26","start_timestamp":1792738044,"description":"维护 \u003c\u003e\u0026 \u2028 end"}
+```
+
+锁字节 `upgrade/task-26`；相同/不同 type 的后续 PUT 均返回 HTTP 409，
+existing_task 均为原任务。第二次隔离服务删除初始任务后用 barrier 同时发十个
+concurrent/task-N PUT，得到 **1 个 HTTP 200 / 9 个 HTTP 409**，九个冲突的
+existing_task 完全一致（胜者 task-7）。原始输出/字节保存在
+`/tmp/pd-maint26-go-race.log`、`/tmp/pd-maint26-go-wire.json`。
+Rust 测试固定首次 Go 原始字节，两个后端实际保存值与其逐字节比较，未用 Rust
+生成预期。坏 JSON/null/计数上限等额外边界依据 Go 源码，不宣称逐项运行差分。
+
+### Rust 实现与测试驱动证据
+
+canonical `maintenance_start.rs` 增加 MaintenanceTask、MaintenanceStartError、
+MAINTENANCE_LOCK_NAME 和 StorageEndpoint.try_start_maintenance_task_atomic；
+复用 RawTxn、ClusterPaths、宿主 MetaStore，不创建运行时或全局 cluster ID。
+JSON 保持字段顺序、HTML/行分隔符转义；冲突解码保留 Go 零值、null、字段大小写、
+重复字段和未知字段语义。独立 `maintenance_start_test.rs` 在 lib.rs 显式注册。
+未迁移删除、加载、HTTP handler 或业务算法，无 manifest/依赖/锁文件改动。
+
+先写可编译的事务成功/冲突分支及真实测试，暂缺 NotExists 条件；fmt 后执行：
+
+```text
+cargo test --locked -p astersql-pd-storage-endpoint --lib maintenance_start -- --nocapture
+```
+
+实际红灯退出 101：1 passed / 2 failed / 0 ignored，memory 和 etcd 都在
+`one atomic winner` 断言失败，实际 10 个胜者、期望 1。加上唯一必要的
+RawTxn NotExists 锁比较，保持测试断言不变，fmt 后同命令退出 0：
+**3 passed / 0 failed / 0 ignored**。首次 fmt 因原始字节字符串含非 ASCII
+而退出 1，修正为 UTF-8 字符串的 as_bytes 后重跑；该解析错误不算行为红灯。
+
+共享 contract 验证十路并发唯一胜者/九个冲突、返回相同持有者、锁和任务同一
+mod revision、重复 ID、不同 type 的全局互斥、集群隔离、真实 Go JSON 字节、
+空锁、坏 JSON 和类型/数值错误跳过、null/零值、有效任务多条时的准确错误，
+以及冲突范围 100 项限制。没有模拟核心事务结果。
+最终聚焦 etcd：先启动并持久化，再 stop 确认退出并用同 WAL start，
+1.727176958s 时冲突仍返回原持有者；关闭 fixture 后，1.785006708s 时新启动
+返回后端错误，未误报成功。
+
+### 槽位、基线与只读检查
+
+每阶段按原子 mkdir 从槽位 1–10 动态领取，均得到槽位 **2**，
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2`。
+owner 记录 task=26、batch=45、session=maintenance-start 和 shell PID：
+首次解析修正前 38112、行为红灯 38207、绿灯 38411、仓库基线 38570。
+EXIT/INT/TERM trap 清理本阶段 owner 和锁；环境
+`GOARCH=arm64 CGO_ENABLED=0 GOFLAGS=-mod=readonly` 传给已有 fixture helper，
+审查其仅构建既有 Go 源为槽位内二进制，不运行生成器或写 Go/模块文件。
+保留既有 slot-1 占用记录，未删除他人锁、进程或缓存。
+
+| 最终命令 | 退出码与有效结果 |
+| --- | --- |
+| `cargo fmt --all` | 0；仅本任务 Rust 文件格式化 |
+| `cargo test --locked -p astersql-pd-storage-endpoint --lib maintenance_start -- --nocapture`（红灯） | 101；1 passed / 2 failed / 0 ignored，两个后端唯一胜者断言失败 |
+| 同一聚焦命令（绿灯） | 0；3 passed / 0 failed / 0 ignored |
+| `cargo metadata --format-version 1 --no-deps` | 0；canonical target 不变 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；仅既有 cpu_usage 弃用警告 |
+| `cargo test --workspace --locked` | 0；83 target，574 passed / 0 failed / 1 既有 ignored；endpoint 75 passed |
+| `git diff --check`、`git diff --cached --check` | 0 |
+
+所有 Cargo 和本阶段 fixture 子进程已结束，自己的 slot-2 owner/锁已清理，
+编译缓存保留。开始/结束 1101 个受跟踪 Go/模块文件 SHA-256 完全相同，
+Go/模块 Git 状态为空，无本任务新增/删除/重命名的 Go 文件；未启停 failpoint，
+未运行 Go 生成/格式化/依赖整理命令。审查仅有本任务生产实现、独立测试、
+lib.rs 注册和本节证据，无 Cargo.toml/Cargo.lock 或其他 Rust 格式化差异。
+总计划和来源主题保持只读，原有观测工具计划修改及任务 19/23/24/25 删除
+均保留并排除提交。状态：已完成；批次 45 的维护任务原子启动故事已获验证。
