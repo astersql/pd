@@ -128,3 +128,7 @@ mod gc_safepoint_read;
 pub use gc_safepoint_read::SafePointReadError;
 #[cfg(test)]
 mod gc_safepoint_read_test;
+
+mod gc_barrier_read;
+#[cfg(test)]
+mod gc_barrier_read_test;

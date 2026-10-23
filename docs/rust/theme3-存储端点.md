@@ -4419,3 +4419,100 @@ fixture、创建独立数据目录，无 failpoint、生成器或 Go 源码写�
 证据，无依赖或其他 Rust 格式化差异。总计划与来源主题只读；原有观测工具
 任务修改和任务 19/23/24/25/26/27/28 删除保留并排除提交。
 状态：已完成；批次 48 安全点读取故事与所需验证证据均已满足。
+
+## 任务 30：回收屏障读取（批次 49）
+
+### 准入与 Go 只读依据
+
+依赖批次 48 的提交 `499a82913`、上节安全点读取的双后端红绿灯与完整基线
+均已核验。`gc_states.go` 相对规划基准
+`5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异。任务 29 已删除，
+不以删除代替上述证据。本轮仅增加屏障和任务指定的兼容读取，不增加写事务、
+GC 策略或新依赖，不修改总计划及来源主题。
+
+Go 依据为 `GCStateProvider.LoadGCBarrier/LoadAllGCBarriers`、
+`LoadGlobalGCBarrier/LoadAllGlobalGCBarriers`、
+`CompatibleLoadAllServiceGCSafePoints/CompatibleLoadTiDBMinStartTS`，以及
+`endpoint.go` 的 `loadJSON/loadJSONByPrefix`：
+
+- 普通屏障从 ServiceSafePoint 转换；全局屏障用独立 schema。单键缺失、空值和
+  JSON null 返回 nil；范围里的 null 保留 nil 元素，空字节则是 JSON 错误。
+- 范围读取是一次无上限的前缀读，按物理键排序；不去除 reserved/expired 屏障，
+  使用值内 ID，不用路径 ID 覆盖它，也不强制冗余 keyspace_id 匹配路径。
+- 兼容 SSP 读取返回完整物理键与对应值；无项时两个空集合。Rust 集合用 Vec，
+  元素用 Option 保留 Go 指针 null；物理键用 Vec<u8> 保留 Go string 任意字节。
+- min start TS 用十进制 ParseUint 语义，返回去前缀标识与最小值；相等保留
+  首个键，空集合返回空标识与 0；坏值使整体读取失败。
+
+审查既有 TestMain、所选测试、newEtcdStorageEndpoint、NewTestEtcdCluster 与
+fixture 调用链，仅写隔离 etcd 数据/编译产物，不需 failpoint 或 Go 源码写入：
+
+```text
+GOARCH=arm64 CGO_ENABLED=0 GOFLAGS=-mod=readonly go test -mod=readonly ./pkg/storage/endpoint -run '^(TestGCBarrier|TestGlobalGCBarrier|TestGCStateJSONUtil|TestTiDBMinStartTS|TestDataPhysicalRepresentation)$' -count=1 -v
+```
+
+退出 0，5 个顶层测试通过，日志 `/tmp/pd30-go.log`。复用
+TestDataPhysicalRepresentation 实际写入并逐字节断言的 SSP：
+`{"service_id":"gc_worker","expired_at":9223372036854775807,"safe_point":456139133457530884}`。
+全局字节复用批次 47 已保存的真实 Go 二进制输出
+`/tmp/pd-gc28-go-wire.json`：id=`屏障 <>& U+2028 end3600`，
+barrier_ts=18446744073709551614，expiration_time=1792742540，HTML/分隔符转义
+原样保留于测试 GLOBAL 常量。Rust 读取后重新编码与这些独立字节逐一相等。
+其他 null/错误/边界断言依据 Go 源码，未冒充逐输入的运行差分。
+整包 Go oracle 未运行：storage 的 failpoint 测试需源码注入，违反只读约束；
+上述 5 项验证实际读取故事，不声称整个 Go storage 已通过。
+
+### 实现与行为验证
+
+canonical endpoint 增加 `gc_barrier_read.rs`，StorageEndpoint 暴露六个对应读取
+方法，复用已有 codec、ClusterPaths 和唯一 MetaStore。JSON/后端错误继续使用
+EndpointError；min start TS 使用已有 SafePointReadError。无 runtime 或平行存储层。
+独立 `gc_barrier_read_test.rs` 在 lib.rs 显式注册。
+
+先用可编译的前缀上限 100 实现运行聚焦测试，真实红灯退出 101：
+0 passed / 2 failed / 0 ignored。memory/etcd 均在
+`barrier prefix must not truncate at 100` 断言得到 100，期望 207。
+删除该上限后同一双后端测试通过，未削弱/忽略断言；另补充纯值 Go 字节与
+严格到期边界测试，最终同一过滤命令 3 passed / 0 failed / 0 ignored。
+日志 `/tmp/pd30-red.log`、`/tmp/pd30-green.log`。
+
+双后端共享契约覆盖 null/0/1000 空间、缺失、空字节、JSON null、空对象、
+坏 JSON/字段类型/整数溢出、SSP 完整键/冗余空间、207 个普通/全局屏障、
+嵌套 ID、值内 ID、reserved ID、不筛过期项、min start TS 十进制最小值/同值
+排序/非法值及读前后完整存储条目（包含 revision）不变。纯值入口复核两个
+Go 字节 fixture；到期时序为 1792742540s 仍存活，+1ns 已过期。
+
+最终聚焦 etcd：写普通和全局屏障，stop 等待 stopped，再 start 等待 restarted，
+同 WAL 恢复后两个点读成功，耗时 1.086468666s。随后 drop fixture 等待服务
+进程结束，再调用全部六种读取，均返回后端错误；累计 1.141135916s 时全部
+断言完成。终态为后端关闭，无伪造缺失或空集合。读取本身不应用到期清理策略。
+
+### Cargo 槽位与仓库基线
+
+每阶段 `/tmp/pd30-cargo.sh` 在仓库根原子 mkdir 动态领取首个可用槽位，
+实际均为 **槽位 1**；红灯 PID=81584，首次双后端绿灯 PID=81770，
+最终三测试绿灯 PID=81945，完整基线 PID=82087。
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录 plan=storage-endpoint/task=30/batch=49/session=gc-barrier-read/PID；
+EXIT/INT/TERM trap 释放自己的 owner/锁。fixture 继承同一 target 及
+GOARCH=arm64、CGO_ENABLED=0、GOFLAGS=-mod=readonly，只编译已有 fixture 源码。
+
+| 命令 | 退出码与有效结果 |
+| --- | --- |
+| `cargo fmt --all` | 0；每次 Rust 修改后执行，未波及其他 Rust 文件 |
+| `cargo test --locked -p astersql-pd-storage-endpoint --lib gc_barrier_read -- --nocapture`（红灯） | 101；0 passed / 2 failed / 0 ignored；两个后端实际截断 207 为 100 |
+| 同一聚焦命令（最终绿灯） | 0；3 passed / 0 failed / 0 ignored |
+| `cargo metadata --format-version 1 --no-deps` | 0；canonical target 不变 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；既有 cpu_usage 弃用警告 |
+| `cargo test --workspace --locked` | 0；83 target，588 passed / 0 failed / 1 既有 ignored；endpoint 89 passed |
+| 上述只读 Go 测试 | 0；5 个顶层测试通过 |
+| `git diff --check`、`git diff --cached --check` | 0 |
+
+完整基线日志 `/tmp/pd30-baseline.log`，metadata `/tmp/pd30-metadata.json`。
+所有 Cargo 与 fixture 子进程结束后 slot-1 owner/锁已释放，缓存保留。
+开始/结束全部 1101 个受跟踪 Go/模块文件路径及 SHA-256 相同，Go/模块 Git 状态
+为空，无新增 Go 文件。已审查两个新 Rust 文件、lib.rs 注册及本节证据；
+无 manifest/Cargo.lock 或其他 Rust 格式化差异。保留并排除既有观测工具任务修改
+和任务 19/23/24/25/26/27/28/29 删除。
+状态：已完成；批次 49 屏障读取故事与所需验证证据均已满足。
