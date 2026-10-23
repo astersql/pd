@@ -288,3 +288,97 @@ owner 记录 plan=storage-facade/task=3/batch=56/session=region-load-once/PID；
 已审查实现、独立测试、模块注册与本节证据；无其他 Rust、manifest、锁文件、
 plan.md 或来源主题变更。保留用户原有观测工具计划修改及前序编号任务删除，
 排除本次提交。状态：已完成；批次 56 的行为与验证证据满足。
+
+## 任务 4：区域刷新关闭传播（批次 57）
+
+日期：2026-10-23（Asia/Shanghai）。
+
+### 准入与 Go 依据
+
+核验批次 56 提交 `edcb7c7c3`、本文件任务 3 及 canonical Storage 的加载状态实物：
+双后端 2 passed、workspace 608 passed / 0 failed / 1 既有 ignored，准入满足。
+阅读执行技能、只读 plan.md、ADR-001、porting-guide、仓库及 Copilot 说明；无更深
+AGENTS.md。storage.go、region_storage.go 相对规划基准
+`5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异。
+
+Go `coreStorage.Flush` / `Close` 无条件转发给非 nil regionStorage，不读取
+useRegionStorage，不关闭默认 Storage，不缓存关闭状态、不吞掉错误，也不额外先
+Flush 再 Close。`RegionStorage.Flush` / `Close` 直接返回 backend 结果；
+`endpoint.StorageEndpoint.Flush` / `Close` 为 nil 返回的空操作。
+因此重复调用的成败由注入资源决定，门面不能自行实现幂等成功或错误重映射。
+
+检查已有 TestMain、TestRegionStorage、TestTryGetLocalRegionStorage 及其 endpoint、
+LevelDB、测试辅助调用链；选中用例无需 failpoint 注入，仅写临时 LevelDB 目录与
+编译缓存。实际运行：
+
+```text
+GOARCH=arm64 CGO_ENABLED=0 GOFLAGS=-mod=readonly go test -mod=readonly ./pkg/storage -run '^(TestRegionStorage|TestTryGetLocalRegionStorage)$' -count=1 -v
+```
+
+退出 0，2 个顶层测试通过（`/tmp/pd57-go.log`）。TestRegionStorage 包含真实批量
+保存后 Flush 才能扫描到两条区域的断言及 Close 成功；此处只复用既有测试，不新增
+Go oracle。整包 `go test -mod=readonly ./pkg/storage -count=1` 未运行，因其中
+TestRegionReload、TestLoadRegionsExceedRangeLimit 等要求注入；不启停 failpoint，
+不将选中测试与源码推导冒称整包或逐场景跨语言运行差分。本任务无 codec 变更，
+不新增字节编码预期，既有 codec 比较由 workspace 基线回归。
+
+### 实现与行为红绿灯
+
+`region_lifecycle.rs` 原位扩展 canonical Storage，新增宿主 IO 边界
+`RegionLifecycle`、保留原始类型的 `RegionLifecycleError` 和
+`Storage::new_core_with_lifecycle` / `flush` / `close`。
+同步生命周期方法与 Go 对齐，不创建 runtime、线程或后台任务；每次调用直接返回
+宿主结果。普通 facade 和已有 new_core 的 StorageEndpoint 保持 Go 空操作语义。
+facade.rs 仅添加可选 Arc 生命周期字段及初始化；region_switch.rs 在重新装配
+new_core 时清除原附加资源的生命周期，防止新 endpoint 误用旧资源；lib.rs 注册
+模块并重导出接口。无依赖、manifest、Cargo.lock 或 endpoint crate 变更。
+
+独立 region_lifecycle_test.rs 显式注册，region_lifecycle_memory 与
+region_lifecycle_etcd 共用 contract。内存入口使用两个独立 MemoryStore；etcd
+入口使用两个真实外部 etcd。复用已有 fixture，审查 Go build/启动链不生成源码、
+不写模块文件，继承 GOFLAGS=-mod=readonly；随机 loopback 端口、独立数据目录，
+EOF/Drop 关闭并等待进程退出。
+
+仅生命周期外部 IO 边界使用窄 FileLifecycle 实现：待刷字节经真实 File 写入，
+Close 释放文件句柄，不模拟任何 MetaStore 操作或事务结果，也不以调用次数验收。
+覆盖默认源选择时仍刷新附加资源、切换后刷新、重复刷新、不选本地时关闭附加
+资源及尾部刷新、关闭后两种选择下重复 Flush/Close 的 BrokenPipe 原始 io::Error
+类型及消息传播、默认 KV 和两个区域 endpoint 仍可用、普通 facade/普通 core 的
+重复空操作、替换 endpoint 后清除旧生命周期。关闭成功后再调用发生文件已关闭
+错误，门面继续转发，终态文件句柄为空、文件内容保持 default/local/close，未
+清除区域源或加载状态。无网络断连、lease 或时钟到期场景。
+
+最小可编译接口先返回成功但不委托：聚焦命令退出 101，两后端均在真实文件内容
+断言失败，实际 []，期望 b"default"，0 passed / 2 failed / 0 ignored
+（`/tmp/pd57-red.log`）。实现直接委托后，同一测试没有修改、削弱或忽略，
+聚焦命令退出 0，2 passed / 0 failed / 0 ignored（`/tmp/pd57-green.log`）。
+
+### Cargo 槽位与验证
+
+每阶段 `/tmp/pd57-cargo.sh` 从根目录依次原子 mkdir 动态领取，实际均为
+**槽位 1**，绝对路径
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录 plan=storage-facade/task=4/batch=57/session=region-lifecycle/PID；
+红灯 PID=24942、绿灯 PID=25114、完整基线 PID=25248。设置 EXIT/INT/TERM 清理
+自己的 owner/锁，等待全部 Cargo 与 fixture 子进程结束再释放，保留缓存。
+Rust 修改后先 cargo fmt --all，未格式化其他任务 Rust 文件。
+
+完整基线日志 `/tmp/pd57-baseline.log`，metadata `/tmp/pd57-metadata.json`。
+
+| 确切命令 | 退出码与有效测试数 |
+| --- | --- |
+| `cargo fmt --all` | 0；红灯及生产修改后均先执行 |
+| `cargo test --locked -p astersql-pd-storage --lib region_lifecycle -- --nocapture`（红灯） | 101；0 passed / 2 failed / 0 ignored |
+| 同一聚焦命令（绿灯） | 0；2 passed / 0 failed / 0 ignored |
+| `cargo metadata --format-version 1 --no-deps` | 0 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；仅既有 cpu_usage 弃用警告 |
+| `cargo test --workspace --locked` | 0；83 target，610 passed / 0 failed / 1 既有 ignored |
+| 上述只读 Go 命令 | 0；2 个顶层测试通过 |
+| `git diff --check`、`git diff --cached --check` | 均 0 |
+
+全部 Cargo 与 fixture 子进程结束，自己的 slot-1 owner/锁已释放，缓存保留。
+开始/结束 1101 个 Go/模块文件路径与 SHA-256 完全一致，Go/模块 Git 状态为空。
+审查生产接口、最小字段/连线、独立测试及本节证据；无依赖、其他 Rust 文件、
+只读 plan.md 或来源主题变更。保留用户既有观测工具计划修改与前序编号任务删除，
+排除本次提交。状态：已完成；批次 57 的行为与验证证据满足。

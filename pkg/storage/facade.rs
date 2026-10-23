@@ -8,6 +8,7 @@ use astersql_pd_storage_kv::{Base, MetaStore};
 pub struct Storage {
     store: Arc<dyn MetaStore>,
     endpoint: StorageEndpoint,
+    pub(crate) region_lifecycle: Option<Arc<dyn crate::RegionLifecycle>>,
     pub(crate) region_storage: Option<StorageEndpoint>,
     pub(crate) use_region_storage: AtomicBool,
     pub(crate) region_loaded: crate::region_load_once::RegionSource,
@@ -20,6 +21,7 @@ impl Storage {
             endpoint: StorageEndpoint::new(store.clone()),
             store,
             region_storage: None,
+            region_lifecycle: None,
             use_region_storage: AtomicBool::new(false),
             region_loaded: crate::region_load_once::RegionSource::Unloaded,
         }

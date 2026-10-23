@@ -22,3 +22,8 @@ mod etcd_fixture;
 mod region_load_once;
 #[cfg(test)]
 mod region_load_once_test;
+
+mod region_lifecycle;
+pub use region_lifecycle::{RegionLifecycle, RegionLifecycleError};
+#[cfg(test)]
+mod region_lifecycle_test;
