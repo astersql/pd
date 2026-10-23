@@ -864,3 +864,67 @@ SHA-256，完全一致；Go/模块 Git 状态为空。只读 plan.md 的 SHA-256
 已审查默认值实现、七项测试、canonical 解码连线与本文差异，无无关 Rust 格式化、
 无依赖变更。共享槽位 1 的 owner 与锁已清理，缓存保留。其他任务文件的已有删除
 不纳入提交；本任务完成不代表完整 Config 或来源主题已完成。
+
+## 批次 87：时间戳配置归一化
+
+日期：2026-10-24（Asia/Shanghai）。前置批次 86 经提交 `fae54ad30`、
+ConfigScalars 既有实现和本文上一节 686 passed / 0 failed / 1 ignored
+证据核验，准入满足。`server/config/config.go` 相对规划基准
+`5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异。只适用根 AGENTS.md；
+已读执行技能、Copilot、ADR-001、移植指南；plan.md 和来源主题保持只读。
+
+### Go 依据与实现边界
+
+- `config.go` 常量（229–238）及 `Config.Adjust`（409–419）、
+  `pkg/utils/configutil/configutil.go::AdjustInt/AdjustDuration`：proxy 并发数
+  仅零取 5000，负数保留无限语义；接收超时非正取 1h；保存间隔非正取
+  固定 5s，与用户自定义 LeaderLease 无关；物理更新间隔先对非正值取
+  50ms，再钳制到闭区间 [1ms,10s]，合法正值保留。
+- 相邻 `config_test.go::TestAdjust` 的默认值、500ns→1ms、15s→10s
+  断言本轮通过现有只读 Go 包测试复核。负时长、i64 极值、自定义 lease
+  和 proxy 负数边界为源码推导，不冒充新增 Go 运行差分。
+- 已复核现有 Go TestMain 的 goleak/WaitForEtcdConnections 包装和配置测试：
+  不要求 failpoint 注入，不调用生成器。运行 `go test -mod=readonly`，
+  未新增、改写 Go oracle，未启停 failpoint。
+
+`config_tso.rs::ConfigScalars::adjust_tso_defaults` 只调整上述四项纯值，
+不安装日志、不启动服务、不调整其他字段。沿用既有 canonical ConfigScalars，
+在 `config_decode.rs` 原位补齐三项 TSO Duration 的 JSON/TOML tag、解码及
+null 错误语义，这是同一配置类型的必要连线，不创建平行配置实现。
+五项独立 `config_tso_*` 测试置于 config_tso_test.rs 并在 lib.rs 显式注册，
+覆盖默认值、负值、上下限及相邻值、合法值、幂等、lease 独立性、JSON/TOML
+输入和 duration 类型错误。纯值任务无需 MemoryStore/etcd 测试入口。
+无新增依赖，Cargo.toml/Cargo.lock 不变，无无关 Rust 格式化。
+
+扩展字段自动纳入既有 `config_decode_go_json_bytes` 的逐字段值及原始 wire
+bytes 比对，复用本文 batch84-missing / batch84-explicit-zero 两份**真实已有
+Go JSON 输出**，未手抄 Rust 输出作为预期。该既有测试本轮 workspace 回归通过。
+
+### 本轮验证
+
+红灯、绿灯各阶段均通过原子 mkdir 动态取得共享槽位 **1**，
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录计划、任务、会话与持有 shell PID，EXIT/INT/TERM 清理自己的锁；
+所有 Cargo 和 fixture 子进程结束后释放，缓存保留。所有子进程继承该绝对路径
+及 `GOFLAGS=-mod=readonly`；已复核既有 etcd fixture 调用链仅构建既有 Go
+源码，二进制及隔离数据目录写入槽位，不改 Go/模块。
+
+先补齐可编译字段和空调整接口，运行以下聚焦命令得到真实行为红灯
+**0 passed / 5 failed / 0 ignored，退出 101**，失败来自实际时长/并发数断言。
+最小实现后相同五项测试不削弱断言、不忽略用例，全部通过。
+
+| 确切命令 | 退出码与有效证据 |
+| --- | --- |
+| `cargo fmt --all` | 0；红灯与绿灯阶段均先格式化 |
+| `cargo test --locked -p astersql-pd-server-config --lib config_tso -- --nocapture` | 红灯 101，0 passed / 5 failed；绿灯 0，5 passed / 0 failed / 0 ignored |
+| `go test -mod=readonly ./server/config -count=1` | 0；现有配置包通过，1.161s |
+| `cargo metadata --format-version 1 --no-deps` | 0 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；仅既有 core_region_adapter.rs:134 deprecated cpu_usage 警告 |
+| `cargo test --workspace --locked` | 0；691 passed / 0 failed / 1 既有 ignored，含真实 etcd 回归；配置 crate 21 项全部通过 |
+| `git diff --check` | 0 |
+
+本轮状态：**已完成**。完成后复核 1101 个 Go/模块文件路径集合及 SHA-256
+与起点完全一致，Go/模块 Git 状态为空；只读 plan.md 指纹不变。
+已审查四个 Rust 文件及本文差异，无依赖变更、无无关实现变更。
+槽位 1 owner 与锁已释放，缓存保留；其他任务文件已有删除不纳入提交。

@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 
 /// The basic scalar projection of Go Config, before Adjust. This is not a full Config.
-/// Only base durations and labels are included; nested configuration remains separate.
+/// Base and TSO durations are included; nested configuration remains separate.
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(default)]
 pub struct ConfigScalars {
@@ -42,6 +42,12 @@ pub struct ConfigScalars {
     pub log_level_deprecated: String,
     #[serde(rename = "max-concurrent-tso-proxy-streamings")]
     pub max_concurrent_tso_proxy_streamings: i64,
+    #[serde(rename = "tso-proxy-recv-from-client-timeout")]
+    pub tso_proxy_recv_from_client_timeout: Duration,
+    #[serde(rename = "tso-save-interval")]
+    pub tso_save_interval: Duration,
+    #[serde(rename = "tso-update-physical-interval")]
+    pub tso_update_physical_interval: Duration,
     #[serde(rename = "enable-local-tso")]
     pub enable_local_tso: bool,
     #[serde(rename = "quota-backend-bytes")]
@@ -94,6 +100,17 @@ pub fn decode_toml_scalars(input: &str) -> Result<DecodedScalars, toml::de::Erro
 
 // JSON tag, TOML tag (or untagged Go field name), Go field name.
 const FIELDS: &[(&str, &str, &str)] = &[
+    (
+        "tso-proxy-recv-from-client-timeout",
+        "tso-proxy-recv-from-client-timeout",
+        "TSOProxyRecvFromClientTimeout",
+    ),
+    ("tso-save-interval", "tso-save-interval", "TSOSaveInterval"),
+    (
+        "tso-update-physical-interval",
+        "tso-update-physical-interval",
+        "TSOUpdatePhysicalInterval",
+    ),
     ("tick-interval", "tick-interval", "TickInterval"),
     ("election-interval", "election-interval", "ElectionInterval"),
     ("labels", "labels", "Labels"),
@@ -181,7 +198,12 @@ fn decode_object(
             if !value.is_null()
                 || matches!(
                     name,
-                    "quota-backend-bytes" | "tick-interval" | "election-interval"
+                    "quota-backend-bytes"
+                        | "tick-interval"
+                        | "election-interval"
+                        | "tso-proxy-recv-from-client-timeout"
+                        | "tso-save-interval"
+                        | "tso-update-physical-interval"
                 )
             {
                 selected.insert(name.to_owned(), value.clone());

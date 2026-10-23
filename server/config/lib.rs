@@ -17,3 +17,8 @@ pub use config_defaults::*;
 
 #[cfg(test)]
 mod config_defaults_test;
+
+mod config_tso;
+
+#[cfg(test)]
+mod config_tso_test;
