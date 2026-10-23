@@ -57,52 +57,64 @@ impl Allocator {
     }
     /// Return one globally unique ID after validating the term at a linearization point.
     pub async fn alloc(&self) -> Result<u64, AllocatorError> {
-        tokio::select! {biased; _=self.cancel.cancelled()=>Err(AllocatorError::Cancelled), result=self.allocate()=>result}
+        self.alloc_count(1).await.map(|(last, _)| last)
     }
-    async fn allocate(&self) -> Result<u64, AllocatorError> {
-        let mut window = self.window.lock().await;
-        self.leader.validate().await?;
-        if window.next == window.end {
-            loop {
-                let snapshot = self
-                    .store
-                    .read(Read::prefix(&self.key, Consistency::Linearizable))
-                    .await?;
-                let entry = snapshot.entries.iter().find(|e| e.key == self.key);
-                let base = match entry {
-                    Some(e) => u64::from_be_bytes(
-                        e.value
-                            .as_slice()
-                            .try_into()
-                            .map_err(|_| AllocatorError::CorruptBoundary)?,
-                    ),
-                    None => 0,
-                };
-                if base == u64::MAX {
-                    return Err(AllocatorError::Exhausted);
-                }
-                let end = base.saturating_add(self.step);
-                let compare = match entry {
-                    Some(e) => Compare::ModRevision(self.key.clone(), e.mod_revision),
-                    None => Compare::CreateRevision(self.key.clone(), 0),
-                };
-                // Never retry transport errors: a failed response may hide a committed reservation.
-                let commit = self
-                    .leader
-                    .transact(
-                        vec![compare],
-                        vec![Mutation::put(&self.key, &end.to_be_bytes())],
-                    )
-                    .await?;
-                if commit.succeeded {
-                    window.next = base;
-                    window.end = end;
-                    break;
-                }
-                tokio::task::yield_now().await;
-            }
+    /// Return the last ID and requested count, holding the window lock for the batch.
+    ///
+    /// Zero count reads the current local base without storage or term validation.
+    /// Errors preserve any IDs already consumed and reservations already committed.
+    pub async fn alloc_count(&self, count: u32) -> Result<(u64, u32), AllocatorError> {
+        if count == 0 {
+            return Ok((self.window.lock().await.next, 0));
         }
-        window.next += 1;
-        Ok(window.next)
+        tokio::select! {biased; _=self.cancel.cancelled()=>Err(AllocatorError::Cancelled), result=self.allocate(count)=>result}
+    }
+    async fn allocate(&self, count: u32) -> Result<(u64, u32), AllocatorError> {
+        let mut window = self.window.lock().await;
+        for _ in 0..count {
+            self.leader.validate().await?;
+            if window.next == window.end {
+                loop {
+                    let snapshot = self
+                        .store
+                        .read(Read::prefix(&self.key, Consistency::Linearizable))
+                        .await?;
+                    let entry = snapshot.entries.iter().find(|e| e.key == self.key);
+                    let base = match entry {
+                        Some(e) => u64::from_be_bytes(
+                            e.value
+                                .as_slice()
+                                .try_into()
+                                .map_err(|_| AllocatorError::CorruptBoundary)?,
+                        ),
+                        None => 0,
+                    };
+                    if base == u64::MAX {
+                        return Err(AllocatorError::Exhausted);
+                    }
+                    let end = base.saturating_add(self.step);
+                    let compare = match entry {
+                        Some(e) => Compare::ModRevision(self.key.clone(), e.mod_revision),
+                        None => Compare::CreateRevision(self.key.clone(), 0),
+                    };
+                    // Never retry transport errors: a failed response may hide a committed reservation.
+                    let commit = self
+                        .leader
+                        .transact(
+                            vec![compare],
+                            vec![Mutation::put(&self.key, &end.to_be_bytes())],
+                        )
+                        .await?;
+                    if commit.succeeded {
+                        window.next = base;
+                        window.end = end;
+                        break;
+                    }
+                    tokio::task::yield_now().await;
+                }
+            }
+            window.next += 1;
+        }
+        Ok((window.next, count))
     }
 }

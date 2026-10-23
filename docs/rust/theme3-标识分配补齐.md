@@ -228,3 +228,85 @@ pkg/id/allocator_namespace.rs / pkg/id/allocator_namespace_test.rs # 拟建，�
 | `tests/server/id/id_test.go` | `acdd90c4685e08ce8ae887bf0cb326a1161a56955ee63f9939151a8e45bfb566` |
 | `tests/testutil.go` | `663d6691781ec6e1d2fa52822fc1c49d7a87988c89519d4cb606407c1d5f58df` |
 | `tools/pd-ctl/tests/keyspace/keyspace_group_test.go` | `d57ca1990bfc6eb045e80af9f5b7029466957107c0f59d90084e98fe180c57e0` |
+
+
+## 任务 2：多个标识请求（批次 71）
+
+日期：2026-10-23（Asia/Shanghai）。准入：批次 70 的提交 `6dde3875b`
+及上文盘点已核验，批次 69 的产物/证据链完整。当前 Go `id.go`、
+`id_test.go` 相对规划基准无差异。只扩展 canonical
+[allocator.rs](../../pkg/id/allocator.rs) 的 `Allocator::alloc_count(u32)`；
+`alloc()` 委托 count=1，既有调用方接口保留。
+新增 [allocate_count_test.rs](../../pkg/id/allocate_count_test.rs)，
+在 [lib.rs](../../pkg/id/lib.rs) 显式注册。无依赖、manifest、锁文件变化。
+
+### Go 依据与兼容范围
+
+只读 oracle 为 `pkg/id/id.go` 的 `Alloc`（113–133）：持锁逐次消费，
+返回最后一个 ID 和请求数量，count=0 返回当前 base，失败保留已消费状态。
+相邻 `TestMultipleAllocator` 与 `TestIDAllocationEndValue` 的断言已只读复核；
+它们没有 count>1 覆盖，批量 Go 服务测试及偏一枚举限制见上文。
+`pkg/utils/etcdutil/etcdutil.go` 调用链包含 failpoint 注入点，因此本轮未运行
+`go test -mod=readonly ./pkg/id -count=1`，也未启停 failpoint；
+上述 Go 期望明确为源码依据，不是新增 Go 运行输出或跨语言运行差分。
+本任务不改变 key/value 编码或新增 codec，原有八字节大端适配原样复用，
+测试对持久边界解码后比较数值，不将 Rust 字节输出冒充 Go 编码证据。
+
+批量请求在同一把 window 锁内跨窗口逐个分配，成功 `Ok((last, count))`，
+失败只返回已有 `AllocatorError`，不暴露成功批次或回滚先前消费。
+count=0 即使取消、旧任期或耗尽仍只读取本地 base。
+非零请求逐 ID 保留现有 Rust term validation；预留仍经同一 Leadership
+事务 fencing，传输错误仍直接上返，不盲目重试不确定提交。
+保留既有 saturating u64 上界保护；与 Go 溢出及缓存 term 校验的差异见批次 70。
+SetBase、namespace 与服务层 count 装配仍留给各自任务。
+
+### 同一断言的后端覆盖
+
+`allocate_count_memory` 与 `allocate_count_etcd` 共用真实存储断言：
+
+- 新建 count=0 返回 (0,0)，不创建 ID 边界；step=3 请求 5 返回 (5,5)，
+  持久边界 6；随后 count=0 返回 (5,0)，单值接口返回 6。
+- 16 个 worker 各 10 次请求 5（跨 step=3 窗口），由每个返回末尾值展开
+  本实例连续区间，精确覆盖 7..=806，共 800 个不同 ID，无交错重叠。
+- 边界 MAX-2、step=1 请求 3：前两次消费至 MAX 后返回 Exhausted；
+  count=0 返回 (MAX,0)，持久边界 MAX，后续非零仍耗尽，无回绕。
+- 本地 808/end=810 后将持久值写成非法字节，请求 3 先消费 809/810，
+  下次预留返回 CorruptBoundary；count=0 证明本地仍为 810。
+  恢复边界 810 后下一次返回 811，未重用失败前消费值。
+- revoke 旧 leader 后非零批次返回 NotLeader，零请求仍为 (811,0)；
+  新任期 allocator 从持久边界 813 后返回 (815,2)。取消后非零返回
+  Cancelled，零请求仍为 (815,0)。未使用模拟核心事务。
+
+etcd 入口复用 canonical KV fixture（随机 loopback 端口、独立数据目录）。
+已审查其 Go fixture 只读取既有源文件，`go build` 输出二进制到当前槽位，
+不注入 failpoint 或生成源码；所有验证继承 `GOFLAGS=-mod=readonly`。
+workspace 使用既有 proto 构建缓存，本轮没有运行协议生成或新增 Go 文件。
+
+### TDD 与验证记录
+
+初始最小可编译接口逐次调用原 alloc，但 count=0 固定返回 0；
+同一组测试在两个真实后端均因实际 (0,0) != 期望 (5,0) 失败，
+不是缺符号/环境失败。修复后同一测试与断言全部保留通过。
+
+本阶段动态按顺序领取槽位 **1**，锁 owner 记录本任务、会话与存活持有 PID。
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+锁由持有进程退出 trap 清理；结束时等待所有 Cargo/fixture 子进程后释放，
+保留编译缓存。所有命令在仓库根执行，继承该绝对路径与上述 GOFLAGS。
+
+| 命令 | 退出码与有效测试数 |
+| --- | --- |
+| `cargo fmt --all`（红灯接口及最终实现后各一次） | 0；审查无其他 Rust 文件格式差异。 |
+| `cargo test --locked -p astersql-pd-id --lib allocate_count -- --nocapture`（红灯） | 101；0 passed / 2 failed，均为零请求返回 base 断言。 |
+| 同上（绿灯） | 0；2 passed / 0 failed / 0 ignored。 |
+| `cargo metadata --format-version 1 --no-deps` | 0；非行为检查。 |
+| `cargo fmt --all -- --check` | 0；非行为检查。 |
+| `cargo check --workspace --locked` | 0；非行为检查。 |
+| `cargo test --workspace --locked` | 0；638 passed / 0 failed / 1 既有 ignored（含 doc tests；非零行为测试实际执行）。 |
+| `git diff --check`、证据链接检查 | 0；相对链接均存在。 |
+| Go/模块开始结束 SHA-256 与路径检查 | 0；1101 个文件完全一致，相关 Git 状态为空。 |
+
+状态：已完成。实际槽位 1 已在所有验证及 fixture 子进程结束后释放，
+保留槽位缓存；红灯失败遗留的本任务独立 etcd 数据目录已清理。
+已审查全部提交差异，只包含 allocator、显式测试注册、独立测试及本节证据；
+仓库原有其他计划的状态修改/删除均排除。编译仅有既有 deprecated 字段及
+复用 fixture 未使用 command 方法的告警，不影响行为验证。
