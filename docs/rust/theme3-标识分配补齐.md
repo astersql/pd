@@ -310,3 +310,98 @@ workspace 使用既有 proto 构建缓存，本轮没有运行协议生成或新
 已审查全部提交差异，只包含 allocator、显式测试注册、独立测试及本节证据；
 仓库原有其他计划的状态修改/删除均排除。编译仅有既有 deprecated 字段及
 复用 fixture 未使用 command 方法的告警，不影响行为验证。
+
+## 任务 3：SetBase 兼容行为（批次 72）
+
+日期：2026-10-24（Asia/Shanghai）。前置批次 71 已核验提交
+`7f31711a7d0cc22df2b7fd7052bcb0da53996ddb` 与上节保存的红绿灯、双后端及
+workspace 证据；当前 Go `id.go`、`id_test.go` 相对规划基准无变化。
+
+### 原目的差异与本轮裁决
+
+首轮因“不允许重用已经分配的 ID”与真实 Go SetBase 契约冲突而阻塞。
+本轮继续执行指示已明确裁定采用 **Go 兼容行为**，不增加 Go 没有的下降拒绝或忽略
+策略，不再因同一选择停止。只读 plan.md 与来源主题保持原样。
+因此本任务完成的是 SetBase 兼容范围，**不能将完成解释为 SetBase 保证不重用 ID**。
+显式降低或并发覆盖持久边界可能重用 ID；普通分配路径的既有唯一性证据仍保留。
+
+Go 依据为 [id.go](../../pkg/id/id.go):136–150 的 `SetBase` 与 :160–232 的
+`rebaseLocked(false)`：持锁、拒绝 `newBase >= effectiveEnd`，先修改本地 end；
+不读旧持久边界，不作 allocator CAS；成功后更新 base/end，失败不恢复预写的 end。
+全局上界是 u64::MAX，加减按 Go uint64 回绕。相邻 `id_test.go` 的
+`TestIDAllocationEndValue` 验证上界附近成功与耗尽，但没有下降唯一性断言。
+本节 Go 行为与数值均是只读源码依据，**不是新取得的 Go 运行输出或运行差分**。
+etcdutil 读路径含 failpoint 注入点，本轮不运行
+`go test -mod=readonly ./pkg/id -count=1`，不启停 failpoint、不运行 make 或生成器。
+
+### 实现与双后端断言
+
+在 canonical [allocator.rs](../../pkg/id/allocator.rs) 原位增加
+`Allocator::set_base(u64)`，不建立平行 allocator。持有同一 window 锁，原有
+Leadership 事务仍验证 leader value、lease、revision；失去任期返回现有
+`MemberError::NotLeader`，传输错误直接返回，不重试不确定提交；保留宿主取消令牌。
+这延续既有 Rust fencing/领域错误表示，并未退回 Go 仅 leader value 的弱比较。
+成功持久写不附 lease，旧持久边界不参与比较。文档明确显式重置可能复用 ID。
+新增分配前 MAX 耗尽检查，使 SetBase 回绕窗口仍能在最后一个 ID 后停止；
+普通预留路径继续使用原有 saturating_add，不改变其已有保护。
+未增加 Rebase、namespace、配置、依赖、manifest、锁文件或新 codec；继续复用
+已有八字节大端适配，断言解码后的数值，没有把 Rust 字节输出伪装成 Go 编码证据。
+
+[allocator_base_test.rs](../../pkg/id/allocator_base_test.rs) 在
+[lib.rs](../../pkg/id/lib.rs) 显式注册，`allocator_base_memory` 与
+`allocator_base_etcd` 共用同一真实存储断言：
+
+- step=10：先分配 1，SetBase(100) 后 base=100、持久边界=110，下一 ID=101；
+  SetBase(0) 后下一 ID 再次为 1，明确证明 Go 兼容复用；相等 base=1 仍预留至 11。
+- SetBase(9) 后请求 12，跨窗口返回 (21,12)，边界=29；SetBase(MAX) 返回
+  Exhausted，不修改 base=21 或持久边界=29。
+- 即使旧边界为非法字节，SetBase(200) 仍覆盖为 210，下一 ID=201，证明无旧边界读。
+- 八个独立实例并发 SetBase(1000+i*100)，全部成功且各自保留请求 base；
+  最后持久边界属于 1010..1710（间隔 100）。重建从最终边界之后预留。
+- 先 revoke 旧任期，再 SetBase(400) 返回 NotLeader；原 base=201 和持久值不变。
+  新任期从持久值继续；取消后的 SetBase 返回 Cancelled，base 与持久值不变。
+- SetBase(MAX-1)、step=10 持久值按 Go 回绕为 8，本地 base=MAX-1；分配 MAX
+  后严格耗尽。SetBase(MAX-10) 持久值=MAX，最后十个 ID 可分配且之后耗尽。
+- etcd 入口完成共同断言、结束任期与连接后，stop/start 同一 WAL，重新 bootstrap
+  和 campaign，下一 ID 严格为重启前持久边界+1。
+
+fixture 复用 canonical KV helper。首次完整回归暴露两个测试模块各自注册 helper，
+各自 NEXT=0 导致同进程数据目录碰撞（`etcd fixture exited`，退出 101；ID lib
+5 passed / 1 failed）。最小修复仅将 [allocate_count_test.rs](../../pkg/id/allocate_count_test.rs)
+的既有 fixture 模块改为 `pub(super)`，新测试复用该模块；不复制 helper、不改变
+count 行为。同一组新断言完整保留后重跑。fixture 的既有 Go build 仅输出槽位二进制，
+设置 `GOFLAGS=-mod=readonly`，不写 Go 源码或模块，不注入 failpoint；协议生成沿用缓存。
+
+### TDD 与验证
+
+先加入最小可编译的 SetBase 空实现，再运行同一双后端测试：两者均实际断言
+本地 base 为 (1,0)，而期望为 (100,0)，退出 101，0 passed / 2 failed。
+这是真实行为红灯，不是缺符号或环境错误。实现后聚焦两项全部通过，未削弱断言。
+
+动态领取槽位 **1**，持有进程 PID 33792，锁 owner 包含计划、批次、任务与会话。
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+全部 Cargo 与 fixture 子进程继承该绝对路径和 GOFLAGS，未通过 target-dir 绕过。
+持有 shell 以 EXIT/INT/TERM trap 覆盖退出清理，缓存保留。
+
+| 命令 | 退出码与有效测试数 |
+| --- | --- |
+| `cargo fmt --all`（红灯接口、实现后及 fixture 连线修复后） | 各 0；无其他 Rust 文件格式差异。 |
+| `cargo test --locked -p astersql-pd-id --lib allocator_base -- --nocapture`（红灯） | 101；0 passed / 2 failed，均为 (1,0) != (100,0)。 |
+| 同上（实现后及 fixture 连线修复后） | 各 0；2 passed / 0 failed / 0 ignored。 |
+| `cargo metadata --format-version 1 --no-deps` | 0；非行为检查。 |
+| `cargo fmt --all -- --check` | 0；非行为检查。 |
+| `cargo check --workspace --locked` | 0；非行为检查。 |
+| `cargo test --workspace --locked`（fixture 修复后最终回归） | 0；640 passed / 0 failed / 1 既有 ignored，85 个 test result 汇总（含 doc tests）。 |
+| `git diff --check`、证据 Markdown 相对链接检查 | 0；40 个链接全部存在。 |
+| Go/模块开始结束 SHA-256、路径与相关 Git 状态核对 | 0；1101 个源码/模块文件完全一致，Git 状态为空。 |
+| 完整回归前后缓存目录 Go/模块 SHA-256、路径核对 | 0；1715 个既有缓存文件完全一致，未重新生成协议源。 |
+
+源码/模块路径与内容聚合 SHA-256 为
+`9f6ad60faf639efdb04a6f4afa02f259bb4fa4e92c555c4d9520303212c6c84c`。
+所有 Cargo、fixture 及其子进程已结束，shell jobs 为空，槽位 1 的自有 owner 与锁已由
+退出 trap 清除；保留缓存。仅清理本轮红灯与装配失败的两个已结束进程的数据目录。
+已审查实现、独立测试、显式注册、fixture 可见性和本节证据；不包含其他计划的修改。
+基线保留既有 deprecated 字段告警，无验证失败。
+
+状态：已完成（本轮裁定的 Go SetBase 兼容范围）。编号任务完成后删除，
+不修改总计划或来源主题，不宣称整包或服务配置契约已完成。

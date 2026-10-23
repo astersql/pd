@@ -7,4 +7,6 @@ extern crate self as astersql_pd_id;
 #[cfg(test)]
 mod allocate_count_test;
 #[cfg(test)]
+mod allocator_base_test;
+#[cfg(test)]
 mod allocator_test;

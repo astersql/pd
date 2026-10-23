@@ -26,7 +26,8 @@ struct Window {
     next: u64,
     end: u64,
 }
-/// Each instance owns a disjoint reserved window. Unused IDs are abandoned on restart.
+/// Ordinary reservations own disjoint windows; unused IDs are abandoned on restart.
+/// Explicit `set_base` can overwrite reservations and reuse IDs, matching Go SetBase.
 pub struct Allocator {
     store: Arc<dyn MetaStore>,
     leader: Arc<Leadership>,
@@ -55,9 +56,37 @@ impl Allocator {
             window: Mutex::new(Window::default()),
         })
     }
-    /// Return one globally unique ID after validating the term at a linearization point.
+    /// Return the next ID after validating the term at a linearization point.
     pub async fn alloc(&self) -> Result<u64, AllocatorError> {
         self.alloc_count(1).await.map(|(last, _)| last)
+    }
+    /// Reset the base and persist a new window, matching Go SetBase.
+    ///
+    /// Lower and equal bases are allowed. The previous durable boundary is neither
+    /// read nor compared, so callers must coordinate resets to avoid reusing IDs.
+    /// A failed write retains the old base and the requested end, as in Go;
+    /// transport errors are returned without retrying an uncertain commit.
+    pub async fn set_base(&self, new_base: u64) -> Result<(), AllocatorError> {
+        let reset = async {
+            let mut window = self.window.lock().await;
+            if new_base == u64::MAX {
+                return Err(AllocatorError::Exhausted);
+            }
+            window.end = new_base;
+            // Go uint64 addition wraps here, unlike ordinary Rust reservations.
+            let end = new_base.wrapping_add(self.step);
+            let commit = self
+                .leader
+                .transact(vec![], vec![Mutation::put(&self.key, &end.to_be_bytes())])
+                .await?;
+            if !commit.succeeded {
+                return Err(AllocatorError::Member(MemberError::NotLeader));
+            }
+            window.next = end.wrapping_sub(self.step);
+            window.end = end;
+            Ok(())
+        };
+        tokio::select! {biased; _=self.cancel.cancelled()=>Err(AllocatorError::Cancelled), result=reset=>result}
     }
     /// Return the last ID and requested count, holding the window lock for the batch.
     ///
@@ -73,6 +102,9 @@ impl Allocator {
         let mut window = self.window.lock().await;
         for _ in 0..count {
             self.leader.validate().await?;
+            if window.next == u64::MAX {
+                return Err(AllocatorError::Exhausted);
+            }
             if window.next == window.end {
                 loop {
                     let snapshot = self

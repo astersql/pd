@@ -5,7 +5,7 @@ use astersql_pd_storage_kv::*;
 use std::{collections::BTreeSet, sync::Arc};
 use tokio_util::sync::CancellationToken;
 #[path = "../storage/kv/etcd_fixture_test.rs"]
-mod fixture;
+pub(super) mod fixture;
 
 async fn behavior(store: Arc<dyn MetaStore>) {
     let cancel = CancellationToken::new();
