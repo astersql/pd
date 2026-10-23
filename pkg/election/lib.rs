@@ -23,3 +23,8 @@ mod lease_keep_test;
 mod leader_delete;
 #[cfg(test)]
 mod leader_delete_test;
+
+mod leader_watch;
+pub use leader_watch::*;
+#[cfg(test)]
+mod leader_watch_test;

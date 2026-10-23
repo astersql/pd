@@ -571,3 +571,80 @@ lib.rs 显式注册生产模块和独立测试；manifest/依赖/锁文件均无
 根 Cargo.toml、Cargo.lock、crate manifest、只读总计划和来源主题无本任务差异。
 保留并排除其他任务已有的状态修改与任务删除。本任务不宣称完成 watch、
 完整 reset 管理器、指标或启动装配。
+
+## 任务 7：实现领导键观察（批次 65）
+
+日期：2026-10-23（Asia/Shanghai）。批次 64 提交 `3d1455c99` 的
+canonical revision 删除实现、独立双后端测试和上节 621 passed / 0 failed /
+1 既有 ignored 证据均已核验，准入满足。已阅读只读总计划、本任务、
+ADR-001、移植指南与仓库规则，无更深 AGENTS.md。
+规划基准 `5d5948052a9ee9e3fa7a09145fe2916a2912c223` 至开始 HEAD，
+`leadership.go`、`leadership_test.go` 无差异。
+
+### Go 依据与边界
+
+重新阅读 `Leadership.Watch`：从给定 revision inclusive 观察 exact key，
+删除即退出，非删除事件后从下一 revision 恢复；progress 不推进事件游标；
+父 context 取消退出，临时不健康重试，连续不健康约 60 秒退出。
+`TestExitWatch` / `checkExitWatch` 涵盖删除、客户端/服务端关闭等情形，
+相邻 progress 测试覆盖响应停滞；这些 Go 测试依赖 `fastTick`、`delayWatcher`、
+`watchChanBlock` 等 failpoint。本轮复用既有只读盘点证据和源码断言，
+未运行 `go test -mod=readonly ./pkg/election ./pkg/member ./pkg/id -count=1`，
+没有启停 failpoint，也没有新增 Go oracle，不宣称 Go/Rust 运行差分。
+本任务仅处理 opaque key/value 和事件，不涉及 codec，无新增 Go 编码输出需求。
+
+### 实现与 TDD
+
+[leader_watch.rs](../../pkg/election/leader_watch.rs) 的 `LeaderWatch::new` / `next`
+复用原 MetaStore / MetaWatch；不另建连接、后台任务或 runtime。
+从指定正 revision 开始，过滤相邻前缀键，缓冲同批事件并从 batch revision + 1
+恢复。删除事件交付一次后终止，后续返回 NotLeader；取消优先且终止整个观察，
+释放流和缓冲。Unavailable 保留原 MetaWatch 重试，100ms 退避可取消；
+静默流每 10 秒重建并通过原后端线性读检查健康，连续观测到不健康达 60 秒终止。
+健康空闲不误报丢失领导。Compacted 及其他非暂时错误明确返回并关闭观察；
+按任务 1 的归属，快照间隙与压缩后快照重建留给任务 8，不能静默跳过丢失历史。
+仅在 lib.rs 注册生产与独立测试模块，未改变依赖、Cargo.lock 或 Go 文件。
+
+[leader_watch_test.rs](../../pkg/election/leader_watch_test.rs) 的
+`leader_watch_memory` / `leader_watch_etcd` 共用真实状态断言：inclusive replay、
+排除旧 revision、同批事件顺序、邻键 Put/Delete 过滤、无重复事件、空闲时取消、
+取消终止、删除终止且忽略随后新领导、显式 Compacted 与非法参数。
+可编译最小接口最初直接返回 NotLeader；两个后端均在期望真实历史 Put 的断言失败：
+退出 101，0 passed / 2 failed。实现后原断言通过，再增加 IO 故障与时钟断言，
+没有削弱原断言或忽略测试。
+
+两后端均只在 MetaWatch IO 边界注入一次 Unavailable，随后读取真实后端事件，
+确认重试后收到新 revision，空闲期间无重放；核心事务和事件不使用 mock。
+真实 etcd 另在收到初始 Put 后 stop，运行观察至少 250ms 并确认仍等待，
+沿用同 WAL start，再写入新值：观察交付新 revision，无旧事件重放；
+最终真实删除键，观察交付精确删除 revision 并终止。
+`leader_watch_unhealthy_timeout` 用暂停的 Tokio 单调时钟和持续 IO Unavailable，
+断言经过至少 60 秒、少于 61 秒后终止，后端真实键仍存在。
+`leader_watch_healthy_idle_reopen` 在健康后端空闲 80 秒后取消，确认没有错误超时，
+终态为 Cancelled 且观察资源已释放。以上虚拟时钟不影响真实 etcd 重启测试。
+fixture 沿用已有 helper、随机 loopback 端口与独立目录；只构建现有 Go fixture，
+继承 `GOFLAGS=-mod=readonly`，无生成器、格式化或 Go 源码写入。
+
+### 本轮验证与完成证据
+
+状态：已完成。各构建阶段均从 1–10 依次原子 mkdir 领取共享槽位，实际均为 **1**；
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+锁内记录计划、任务、会话及 Python 持有进程 PID；正常、失败和中断清理覆盖
+Cargo/fixture 子进程组。最终所有进程退出，自己的锁已释放，缓存保留。
+
+| 确切命令 | 退出码 | 有效结果 |
+| --- | --- | --- |
+| `cargo fmt --all`（每轮 Rust 修改后） | 0 | 仅本任务 Rust 文件差异 |
+| `cargo test --locked -p astersql-pd-election --lib leader_watch -- --nocapture`（红灯） | 101 | 0 passed / 2 failed，真实历史事件断言失败 |
+| 同上（最终绿灯） | 0 | 4 passed / 0 failed / 0 ignored，6.53 秒 |
+| `cargo metadata --format-version 1 --no-deps > /tmp/pd-watch-metadata.json` | 0 | workspace 结构无变化 |
+| `cargo fmt --all -- --check` | 0 | workspace 格式通过 |
+| `cargo check --workspace --locked` | 0 | workspace 检查通过 |
+| `cargo test --workspace --locked` | 0 | 625 passed / 0 failed / 1 既有 ignored |
+| `git diff --check`、`git diff --cached --check` | 0 | 本任务差异及暂存内容已审查 |
+
+零测试 target 不计有效用例，既有 ignored 不充当本任务证据。开始与最终核对
+1101 个 Go/模块文件路径及 SHA-256 完全一致，相关 Git 状态为空。
+相对文档链接有效；根 Cargo.toml、Cargo.lock、crate manifest、只读总计划和
+来源主题无本任务差异。其他任务已有状态修改及删除保留并排除提交。
+本节不宣称完成压缩快照恢复、reset 管理器、指标迁移或启动装配。
