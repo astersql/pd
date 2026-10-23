@@ -7,6 +7,12 @@ use crate::*;
 pub enum RawTxnOp {
     Write(Mutation),
     Get(Vec<u8>),
+    /// Ordered range with Go RawTxn end/limit semantics.
+    GetRange {
+        key: Vec<u8>,
+        end: Vec<u8>,
+        limit: usize,
+    },
 }
 impl From<Mutation> for RawTxnOp {
     fn from(value: Mutation) -> Self {
@@ -39,11 +45,16 @@ pub(crate) fn validate_raw(compares: &[Compare], ops: &[RawTxnOp]) -> Result<()>
     {
         return Err(StoreError::InvalidArgument);
     }
+    for op in ops {
+        if let RawTxnOp::GetRange { key, end, limit } = op {
+            crate::raw_range::request(key, end, *limit).validate()?;
+        }
+    }
     let writes: Vec<_> = ops
         .iter()
         .filter_map(|op| match op {
             RawTxnOp::Write(w) => Some(w.clone()),
-            RawTxnOp::Get(_) => None,
+            RawTxnOp::Get(_) | RawTxnOp::GetRange { .. } => None,
         })
         .collect();
     crate::meta_store::validate_txn(compares, &writes)

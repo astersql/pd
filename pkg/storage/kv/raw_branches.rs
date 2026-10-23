@@ -3,7 +3,7 @@ use crate::*;
 use tokio_util::sync::CancellationToken;
 
 /// A single-use RawTxn builder over the canonical metadata backend.
-/// Branches contain point operations; comparisons run at the commit point.
+/// Branches contain ordered operations; comparisons run at the commit point.
 pub struct RawTxn<'a> {
     store: &'a dyn MetaStore,
     conditions: Vec<Compare>,
@@ -31,12 +31,12 @@ impl<'a> RawTxn<'a> {
         self.else_writes = writes.into_iter().map(Into::into).collect();
         self
     }
-    /// Set the ordered success branch, including point reads.
+    /// Set the ordered success branch, including point and range reads.
     pub fn then_ops(mut self, ops: Vec<RawTxnOp>) -> Self {
         self.then_writes = ops;
         self
     }
-    /// Set the ordered failure branch, including point reads.
+    /// Set the ordered failure branch, including point and range reads.
     pub fn else_ops(mut self, ops: Vec<RawTxnOp>) -> Self {
         self.else_writes = ops;
         self

@@ -1015,3 +1015,75 @@ revision、watch/lease/fencing、断连与 WAL 重启契约。
 退出 0、无输出；相应 `git ls-files --others --exclude-standard` 无未跟踪 Go/模块文件。
 已审查有序响应、两个后端原位扩展、builder 最小连线、独立双后端断言及本文；
 本任务没有 Go/模块变更，不修改依赖、只读计划或来源主题。编号任务按完成流程删除。
+
+## 任务 10：事务内范围结果（批次 17）
+
+日期：2026-10-23（Asia/Shanghai）。批次 16 提交 `8f1304ce7` 的生产、独立
+双后端测试及本文任务 9 证据已核验：聚焦 2 passed，workspace 493 passed /
+0 failed / 1 既有 ignored，准入满足。只读 plan.md、来源主题及全部 Go/模块文件。
+
+### Go 依据与实现
+
+只读核对 `etcd_kv.go::convertOps`：RawTxnOpGetRange 在 EndKey 恰为单 NUL
+时使用 WithPrefix，否则 WithRange，附 WithLimit；空 end 是点选，普通含 NUL
+终点仍为排他上界。`rawTxnWrapper::Commit` 按实际选中分支解码，范围与点读
+均取服务端 ResponseRange，保留操作顺序，写操作保留空项。
+`kv_test.go::testRawTxn` 的 Else 分支实际断言 `[txn-k1,txn-k2\0)` 返回
+`[(txn-k1,v1),(txn-k2,v2)]`，后接 Put 空项；源码相对规划基准无差异。
+
+复用已有只读历史输出 `/tmp/pd-task9-go.log`：当时
+`make gotest GOTEST_ARGS='./pkg/storage/kv ./pkg/storage -count=1'` 退出 0，
+KV 4.186s、storage 28.756s，无 -v 测试数。这是历史运行证据，本轮不执行该
+命令：相邻 storage 测试需要 failpoint，Go 只读约束禁止注入。边界矩阵期望来自
+Go 源码/既有断言与本轮真实 etcd 共用断言，不宣称逐输入 Go/Rust 运行差分。
+本任务不涉及编码转换，没有新增 codec 或手抄 Rust 输出作为 Go fixture。
+既有 etcd fixture 已审查，仅构建已有 helper 并在槽位运行，继承
+`GOFLAGS=-mod=readonly`，不写 Go 或模块文件。
+
+在 canonical RawTxnOp 原位新增 GetRange；`raw_range::request` 复用唯一
+Read::range 的 sentinel/边界语义和 limit 校验。唯一 MemoryStore::transact_raw
+在现有事务锁内有序扫描当前键树；EtcdMetaStore::transact_raw 将范围操作映射为
+同一原生 Txn 内的 GetOptions，不另发查询。沿用实际分支数量/类型检查及响应模型，
+不建立平行存储实现，不改依赖、manifest、lock 或 runtime。
+
+### 测试驱动与资源
+
+`lib.rs` 显式注册独立 `raw_range_test.rs`；raw_range_memory/raw_range_etcd
+共享完整断言。先接入可编译的最小入口（memory 返回空范围项、etcd 暂按点读），
+运行同一聚焦命令，两个后端真实响应内容断言失败：0 passed / 2 failed，退出 101。
+实现后同一测试未削弱断言或 ignore，2 passed / 0 failed，退出 0。
+
+覆盖 Then/Else、范围/点读/写入混排、未选分支排除、半开边界、升序、limit=0/2、
+等界/反向/缺失区间、单 NUL 前缀、普通含 NUL 终点、空终点点选、全表和全 FF
+前缀、空值与非 UTF-8 字节。构造 builder 后修改条件及读取值，断言提交时状态；
+不对同键读写未定义行为新增承诺。读写事务只增一个 revision，只读事务不增；
+两个分支的非法空 start/超大 limit 均整体拒绝，无部分写入且 Entry/revision 不变。
+不新增断连/到期故事、核心结果 mock 或 sleep。
+
+三个阶段均原子 mkdir 动态领取槽位 **1**：
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+占用记录含计划、任务、会话、PID：红灯 96679，绿灯 96897，基线 97047。
+包装器等待 Cargo/fixture 完成，失败与信号路径等待自己的进程组后移除 owner/锁，
+保留编译缓存。
+
+状态：已完成。实际命令与结果如下，全部 Cargo/fixture 已退出，自己的槽位锁
+已释放，缓存保留。未新增 ignore；唯一既有 ignored 为兼容流程 tso_processes，
+只出现既有 RegionHeartbeatRequest.cpu_usage deprecated 警告。
+
+| 确切命令 | 退出码 | 有效测试数/结果 |
+| --- | --- | --- |
+| `cargo fmt --all`（红灯前、实现后） | 0 | 无无关 Rust 格式变更 |
+| `cargo test --locked -p astersql-pd-storage-kv --lib raw_range -- --nocapture`（红灯） | 101 | 0 passed / 2 failed，真实范围响应断言 |
+| 同上（绿灯） | 0 | 2 passed / 0 failed / 0 ignored |
+| `cargo metadata --format-version 1 --no-deps` | 0 | workspace 注册正常 |
+| `cargo fmt --all -- --check` | 0 | 通过 |
+| `cargo check --workspace --locked` | 0 | 通过 |
+| `cargo test --workspace --locked` | 0 | 495 passed / 0 failed / 1 既有 ignored，含 2 doc-tests |
+| `git diff --check` | 0 | 通过 |
+| `git diff --cached --check` | 0 | 提交前审查通过 |
+
+Go/模块文件相对任务开始时逐文件 SHA-256 校验一致，未跟踪 Go/模块文件为 0；
+`git diff --exit-code -- '*.go' go.mod go.sum go.work go.work.sum '**/go.mod' '**/go.sum' '**/go.work' '**/go.work.sum'`
+退出 0。已审查两个后端原位扩展、canonical 操作枚举/验证、builder 注释、
+测试注册、独立双后端断言及本文；Cargo.toml/Cargo.lock 均无改动。
+编号任务按完成流程删除；其余会话已有计划变更保持原样、不纳入提交。

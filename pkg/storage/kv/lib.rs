@@ -47,3 +47,7 @@ mod raw_get;
 pub use raw_get::{KeyValuePair, RawTxnOp, RawTxnResponse, RawTxnResponseItem};
 #[cfg(test)]
 mod raw_get_test;
+
+mod raw_range;
+#[cfg(test)]
+mod raw_range_test;

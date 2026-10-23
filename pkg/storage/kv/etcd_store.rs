@@ -203,6 +203,21 @@ impl MetaStore for EtcdMetaStore {
             ops.into_iter()
                 .map(|op| match op {
                     RawTxnOp::Get(key) => TxnOp::get(key, None),
+                    RawTxnOp::GetRange { key, end, limit } => {
+                        let read = crate::raw_range::request(&key, &end, limit);
+                        let start = read.start.unwrap_or_else(|| {
+                            if read.prefix.is_empty() {
+                                vec![0]
+                            } else {
+                                read.prefix.clone()
+                            }
+                        });
+                        let end = read.end.unwrap_or_else(|| prefix_end(&read.prefix));
+                        TxnOp::get(
+                            start,
+                            Some(GetOptions::new().with_range(end).with_limit(limit as i64)),
+                        )
+                    }
                     RawTxnOp::Write(Mutation::Put { key, value, lease }) => {
                         TxnOp::put(key, value, lease.map(|id| PutOptions::new().with_lease(id)))
                     }
@@ -233,7 +248,10 @@ impl MetaStore for EtcdMetaStore {
         let mut responses = Vec::with_capacity(ops.len());
         for (op, response) in ops.iter().zip(rpc_items) {
             let item = match (op, response) {
-                (RawTxnOp::Get(_), etcd_client::TxnOpResponse::Get(r)) => RawTxnResponseItem {
+                (
+                    RawTxnOp::Get(_) | RawTxnOp::GetRange { .. },
+                    etcd_client::TxnOpResponse::Get(r),
+                ) => RawTxnResponseItem {
                     key_value_pairs: r
                         .kvs()
                         .iter()

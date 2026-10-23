@@ -176,7 +176,7 @@ impl MetaStore for MemoryStore {
             .iter()
             .filter_map(|op| match op {
                 RawTxnOp::Write(w) => Some(w),
-                RawTxnOp::Get(_) => None,
+                RawTxnOp::Get(_) | RawTxnOp::GetRange { .. } => None,
             })
             .collect();
         for w in &writes {
@@ -206,6 +206,25 @@ impl MetaStore for MemoryStore {
                             value: entry.value.clone(),
                         });
                     }
+                }
+                RawTxnOp::GetRange { key, end, limit } => {
+                    let read = crate::raw_range::request(&key, &end, limit);
+                    let start = read.start.as_ref().unwrap_or(&read.prefix);
+                    item.key_value_pairs = s
+                        .keys
+                        .range(start.clone()..)
+                        .map(|(_, entry)| entry)
+                        .take_while(|entry| match &read.end {
+                            Some(end) if end.is_empty() => entry.key == *start,
+                            Some(end) => entry.key < *end,
+                            None => entry.key.starts_with(&read.prefix),
+                        })
+                        .take(if limit == 0 { usize::MAX } else { limit })
+                        .map(|entry| KeyValuePair {
+                            key: entry.key.clone(),
+                            value: entry.value.clone(),
+                        })
+                        .collect();
                 }
                 RawTxnOp::Write(w) => match w {
                     Mutation::Put { key, value, lease } => {
