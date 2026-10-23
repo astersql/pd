@@ -2884,3 +2884,84 @@ Cargo manifest/lock 无变化，workspace fmt 未修改其他 Rust 文件。基�
 审查范围仅 timestamp_values 实现、独立测试、lib.rs 注册及本证据节；
 用户已有其他计划变更保留。所有 Cargo/fixture 子进程结束，共享锁已释放，缓存保留。
 状态：已完成；批次 33 的时间戳数值持久化验证故事完成。
+
+## 任务 15：时间窗口读取与删除（批次 34，2026-10-23）
+
+### 准入及只读 Go 依据
+
+核验前序提交 `7886c592a` 与任务 14 证据：聚焦 3 passed、workspace
+535 passed / 0 failed / 1 既有 ignored，metadata/fmt/check 退出 0，批次 33 满足准入。
+已读执行技能、根规则、Copilot 规则、ADR-001、移植指南、只读总计划与本任务；
+`rg --files -g AGENTS.md pkg docs .plans` 未发现更深规则。
+只读 Go `tso.go`、typeutil 的 time.go/conversion.go 相对规划基准
+`5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异。
+
+源码依据：`LoadTimestamp` 使用 TimestampPath(groupID)，缺失/空字符串返回
+Go ZeroTime，非空交给 ParseTimestamp，错误原样返回；ParseTimestamp 严格读取
+8 字节大端 uint64，再按 int64 转换为 time.Unix(0,nano)。`DeleteTimestamp`
+在 caller context 控制的 RunInTxn 回调中 Remove 精确键，不读旧值、不删邻居。
+`TestSaveLoadTimestamp` 和 `TestTimestampTxn` 是现有保存/加载及旧值保护静态断言，
+本任务不涉及 SaveTimestamp。完整 Go oracle 包含需注入的 TestSaveTimestampWithTimeout，
+没有执行 `go test -mod=readonly ./pkg/storage/endpoint ./pkg/storage -count=1`，
+没有注入 failpoint 或将静态断言冒充本轮运行差分。
+
+编码复用本文件任务 3 保存的真实 Go 运行证据：
+`GOFLAGS=-mod=readonly go test -mod=readonly ./pkg/utils/typeutil -run
+'^(TestBytesToUint64|TestUint64ToBytes)$' -count=1 -v`，当时退出 0、2 passed，
+1000 的实际输出为 hex `00000000000003e8`。本轮两个后端直接写入这些 Go 字节，
+读取预期 Unix epoch 后 1000 纳秒；纯值测试另比对已有 Rust u64_to_bytes 输出。
+其余正负 i64 边界来自 Go 源码推导，没有声称额外 Go 编码运行输出。
+
+### 实现与测试驱动证据
+
+canonical timestamp_window.rs 扩展 StorageEndpoint::{load_timestamp,delete_timestamp}，
+读取返回 Option<SystemTime>：None 显式映射 Go 零时间（year 1），Some(UNIX_EPOCH)
+表示实际编码的八字节零，二者不混同。复用 canonical typeutil::parse_timestamp、
+ClusterPaths 和 Base/CallbackTxn；唯一依赖变化为 endpoint 引用已存在的 workspace
+astersql-pd-typeutil，Cargo.lock 仅增加该依赖边，没有下载新依赖或创建平行 codec。
+TimestampWindowError 保留 Decode/Store/Conflict 分类；删除使用 caller CancellationToken，
+预取消返回 Cancelled，已开始操作取消返回 Unavailable，不宣称取消证明回滚。
+未迁移受保护保存、选主或业务算法。
+
+lib.rs 显式注册独立 timestamp_window_test.rs；timestamp_window_memory /
+timestamp_window_etcd 共用同一真实存储 contract：组 0、1、10、100000、u32::MAX，
+缺失、空字节、Go 1000 字节、编码 0/1/i64::MAX/i64::MIN/-1、坏长度 1/2/7/9/16，
+坏值读取不修改原字节；默认/非默认精确路径、跨 cluster/相邻 group/子路径隔离，
+预取消删除保留原值、成功删除、重复删除缺失键。纯值入口 timestamp_window_go_bytes。
+etcd contract 完成后 stop/stopped → start/restarted，同 WAL 恢复后检查组 1 仍缺失、
+组 0 仍为 1000ns；随后 Drop fixture 并等待进程退出，再 load/delete 都返回真实
+Store 错误。没有模拟核心事务或存储结果。无到期场景，本任务未添加 lease。
+
+最小可编译读取接口取得真实 bytes 后返回 None，先 `cargo fmt --all`（退出 0），
+因新增已有 crate 依赖先 `cargo check --workspace`（退出 0）同步锁文件。
+`cargo test --locked -p astersql-pd-storage-endpoint --lib timestamp_window -- --nocapture`
+实际红灯退出 **101**，1 passed / 2 failed / 0 ignored，4.33s；两个后端均在 Go
+1000 字节读回断言返回 None、预期 Some(epoch+1000ns) 时失败。
+接入已有解码器后先 fmt，同一命令退出 **0**，3 passed / 0 failed / 0 ignored，4.97s。
+原红灯断言保留，未降低断言或忽略测试。
+
+### 共享槽位与最终验证
+
+两个 Cargo 阶段均从根目录依次原子 mkdir 动态领取到槽位 **1**：
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录 plan=storage-endpoint/task=15/batch=34/session=timestamp-window，
+持有 shell PID 为 85118、85307。EXIT/INT/TERM 清理自己的 owner/锁，
+等待同步 Cargo 与 fixture 子进程结束再释放，保留编译缓存。GOFLAGS=-mod=readonly；
+已有 fixture 只读 build 既有 main.go，数据/日志/二进制均在槽位中；
+proto 使用既有编译缓存，未运行其解压 Go 文件的 build.rs。
+
+| 最终命令 | 退出码与有效结果 |
+| --- | --- |
+| `cargo test --locked -p astersql-pd-storage-endpoint --lib timestamp_window -- --nocapture` | 0；3 passed / 0 failed / 0 ignored，4.97s |
+| `cargo metadata --format-version 1 --no-deps` | 0；canonical endpoint target 注册不变 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；仅既有 server cpu_usage 弃用警告 |
+| `cargo test --workspace --locked` | 0；83 个 target 含 doc-tests，538 passed / 0 failed / 1 既有 ignored；endpoint 39 passed |
+| `git diff --check`、`git diff --cached --check` | 0 |
+
+开始/结束 SHA-256 快照的 1101 个 Go/模块文件完全一致，Go Git 差异为空，
+未新增 Go/模块文件。没有运行 failpoint、生成器、Go 格式化或依赖整理。
+workspace fmt 未修改其他 Rust 文件。已审查全部实现、测试、模块注册、
+manifest、唯一 lock 边及本证据节；用户既有计划修改保留。
+所有 Cargo/fixture 子进程已结束，自己的锁已释放，槽位缓存保留。
+状态：已完成；批次 34 时间窗口读取与删除验证故事完成。
