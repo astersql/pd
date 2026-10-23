@@ -4187,3 +4187,140 @@ helper 及 scripts/rust-etcd-fixture/main.go 调用链，仅编译既有 Go 源�
 证据，无 manifest/Cargo.lock 或其他 Rust 格式化差异。总计划及来源主题只读；
 原有观测工具计划修改、任务 19/23/24/25/26 删除保留且排除提交。
 状态：已完成；批次 46 的维护任务原子删除故事与所需验证证据均已满足。
+
+## 任务 28：回收屏障值编码（批次 47）
+
+### 准入、范围和只读 Go 依据
+
+依赖批次 46 的提交 `22a07395d` 及上节维护任务原子删除的红绿灯、双后端和
+完整基线已核验。`pkg/storage/endpoint/gc_states.go` 相对规划基准
+`5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异。
+本任务只增加纯值模型与 codec；GC 存储读写、事务、调度算法和服务装配留在后续任务。
+按任务的纯值例外，不增加人为的 memory/etcd 入口；既有跨后端契约仍运行于完整基线。
+
+Go 源码符号 `ServiceSafePoint.MarshalJSON/UnmarshalJSON`、`NewGCBarrier`、
+`gcBarrierFromServiceSafePoint`、`GCBarrier.ToServiceSafePoint/IsExpired`、
+`NewGlobalGCBarrier/IsExpired` 和 `typeutil.TimeOptional.MarshalJSON/UnmarshalJSON`
+固定这些行为：
+
+- 普通屏障借用 ServiceSafePoint 的 `service_id/expired_at/safe_point`；null keyspace
+  为 u32::MAX，写时省略 `keyspace_id`，读缺失/null 也指该空间，显式 0 不省略。
+  Go struct 零值 KeyspaceID 则仍是 0，不能用解码默认值替换构造默认值。
+- 普通永久期限写 i64::MAX，读 expired_at<=0 或 ==i64::MAX 为无期限；
+  global 使用独立 `barrier_id/barrier_ts/expiration_time`，无期限写 0，
+  TimeOptional 同样将非正数及 i64::MAX 解为无期限。
+- 两个构造函数向上取整秒并回写传入的时间；过期严格比较 now>expiration。
+  Global 直接赋入的亚秒值在内存中保留精度，编码仅取 floor Unix 秒。
+- JSON 字段按 Go 定义顺序，数值保留 i64/u64/u32 边界；读取忽略未知字段，接受
+  大小写字段、标量 null 和重复字段，类型或范围错误返回 JsonUnmarshal。
+  不声称 serde 错误文本与 Go 堆栈文本完全相同。
+
+审查现有 endpoint TestMain（goleak/WaitForEtcdConnections）、所选测试及其
+etcd fixture 调用链，无源码写入或所需 failpoint；据此只读运行：
+
+```text
+GOARCH=arm64 CGO_ENABLED=0 GOFLAGS=-mod=readonly go test -mod=readonly ./pkg/storage/endpoint -run '^(TestGCBarriersConversions|TestGlobalGCBarriersMarshalling|TestGCBarrierExpiring|TestDataPhysicalRepresentation)$' -count=1 -v
+```
+
+退出 0，4 个顶层测试全部通过。最后一项通过真实 etcd 逐字节断言现有 SSP 物理
+表示，包括永久期限与 keyspace 3333；前几项确认输入时间修改、转换、序列化及
+严格到期边界。记录 `/tmp/pd28-go-tests.log`。整包
+`go test -mod=readonly ./pkg/storage/endpoint ./pkg/storage -count=1` 未运行，
+storage 相关测试依赖 failpoint 注入，禁止改写源码；不以所选测试冒充整包通过。
+
+### 实际 Go 编码输出
+
+复用批次 44 已有 `/tmp/pd-meta25-server`（Go 1.26.8/arm64、without_dashboard、
+CGO_ENABLED=0、revision=75d205432）。该版本至当前 gc_states.go、
+server/gc_service.go、pkg/gc/gc_state_manager.go 无差异。
+Python 只构造协议请求、驱动已有二进制并通过 etcd HTTP range 读取原始 value，
+不新增/修改任何 Go oracle，不将 Rust 输出作为预期：
+
+```text
+python3 /tmp/pd-gc28-capture.py > /tmp/pd-gc28-go.log 2>&1
+```
+
+最终退出 0，Bootstrap 及创建 keyspace `gc28`（id=1，keyspace_level）成功，
+cluster_id=7699755116932086859；8 次 gRPC SetGCBarrier/SetGlobalGCBarrier
+实际成功，8 项 value 原样保存在 `/tmp/pd-gc28-go-wire.json`，并固定到独立 Rust
+测试的 GO_WIRE。服务 SIGTERM 退出 0，随机 loopback 端口、隔离数据目录。
+初次探测未创建 keyspace 1，实际返回 KeyspaceNotFound，采集项数断言退出 1；
+通过正常 API 创建所需空间后重跑，最终 8 项齐全，不忽略该错误或合成输出。
+
+请求 barrier_ts=18446744073709551614；id 的共同前缀为 `屏障 <>& U+2028 end`，
+普通后缀为 scope（None/0/1）+TTL，全局后缀为 TTL；TTL 取 3600 与
+9223372036854775807。有限到期值实际为 1792742540；默认空间 0 经 Go 服务
+按配置重定向到 unified/null keyspace，因此两组输出省略 keyspace_id；显式独立
+空间 1 输出该字段。Rust 的 keyspace 0 不省略规则另按 Go 源码和现有值测试覆盖，
+不声称此次重定向请求取得了 keyspace_id=0 的物理字节。
+
+代表性原始字节（其余 5 项也固定在 GO_WIRE）：
+
+```json
+{"service_id":"屏障 \u003c\u003e\u0026 \u2028 endNone9223372036854775807","expired_at":9223372036854775807,"safe_point":18446744073709551614}
+{"service_id":"屏障 \u003c\u003e\u0026 \u2028 end13600","expired_at":1792742540,"safe_point":18446744073709551614,"keyspace_id":1}
+{"barrier_id":"屏障 \u003c\u003e\u0026 \u2028 end3600","barrier_ts":18446744073709551614,"expiration_time":1792742540}
+```
+
+### 实现、红绿灯与覆盖
+
+`gc_barrier_value.rs` 新增 GCBarrier、GlobalGCBarrier、ServiceSafePoint，
+在 canonical endpoint crate 内由 lib.rs 重导出。BarrierTime 用 i128 Unix 纳秒
+保留精度和 signed-second 范围，不依赖平台时钟/时区/私有 runtime。构造函数
+接收 Option<&mut BarrierTime>，对应 Go 指针的回写语义。Global 秒数 codec
+复用 canonical typeutil::TimeOptional；to_json 提供 Go HTML/JS 分隔符转义，
+from_json 复用 EndpointError::JsonUnmarshal。未改依赖或 Cargo.lock。
+
+独立 `gc_barrier_value_test.rs` 显式注册，6 个测试全部由 gc_barrier_value 过滤命中：
+8 组真实 Go 字节、转换与往返、零空间/省略空间、永久期限边界、完整整数范围、
+构造回写、负 epoch、整秒/1ns/1ms/999ms/999999999ns 精度、null/重复/未知字段、
+错误类型/溢出与转义。额外边界按 Go 源码推导断言，与实际运行字节差分分开记录。
+
+确定性到期时序：expiration=1234.000000000s，now=1233.999999999s 时存活，
+now=1234.000000000s 时仍存活，now=1234.000000001s 时过期；终态 expired=true。
+普通和全局共用此时序，永久屏障全程存活。另验证直接赋入全局亚秒到期值直到
+编码前保持 1ns 精度。这里无需墙钟等待或存储断连注入。
+
+先以可编译的截断秒实现运行同一组测试，构造时间和 Go 实际字节断言失败；
+随后只将截断改为向上取整，未削弱断言、忽略测试或改变预期：
+
+```text
+cargo test --locked -p astersql-pd-storage-endpoint --lib gc_barrier_value -- --nocapture
+```
+
+红灯退出 101，4 passed / 2 failed / 0 ignored；首个构造失败输入为负 epoch 的
+-2s+1ns，得到 -2s，期望 -1s；字节相关失败得到 1792742539s，Go 期望
+1792742540s。修复后绿灯退出 0，6 passed / 0 failed / 0 ignored。
+记录 `/tmp/pd28-red.log` 和 `/tmp/pd28-green.log`。每次 Rust 修改后先执行
+cargo fmt --all，均退出 0，格式化未波及其他任务。
+
+### Cargo 槽位、最终基线与审查
+
+每个阶段通过 `/tmp/pd28-cargo.sh` 在仓库根原子 mkdir 动态领取首个空闲共享槽位，
+实际红灯、绿灯、完整基线均为槽位 **1**，持有 shell PID 分别为
+45690、45906、46756。绝对路径：
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录 plan=storage-endpoint/task=28/batch=47/session=gc-barrier-value/PID，
+EXIT/INT/TERM trap 清理自己的 owner/锁。所有 Cargo 和 fixture 子进程结束后
+slot-1 锁已释放，缓存保留，未触碰其他锁。fixture 的现有 Go build 继承
+GOARCH=arm64、CGO_ENABLED=0、GOFLAGS=-mod=readonly，仅构建已有源文件及写入
+槽位数据，无 failpoint、生成器、Go 格式化或依赖整理。
+
+| 最终命令 | 退出码与有效结果 |
+| --- | --- |
+| `cargo fmt --all` | 0；红、绿灯前各执行一次 |
+| `cargo test --locked -p astersql-pd-storage-endpoint --lib gc_barrier_value -- --nocapture`（红灯） | 101；4 passed / 2 failed / 0 ignored |
+| 同一聚焦命令（绿灯） | 0；6 passed / 0 failed / 0 ignored；8 组 Go 字节逐一相等 |
+| `cargo metadata --format-version 1 --no-deps` | 0；canonical target 不变 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；只有既有 cpu_usage 弃用警告 |
+| `cargo test --workspace --locked` | 0；83 target，583 passed / 0 failed / 1 既有 ignored；endpoint 84 passed |
+| 上述所选只读 Go 测试 | 0；4 个顶层测试通过 |
+| `git diff --check`、`git diff --cached --check` | 0 |
+
+完整基线输出 `/tmp/pd28-baseline.log`，metadata 输出 `/tmp/pd28-metadata.json`。
+开始/结束 1101 个 Go/模块文件路径集合及 SHA-256 完全相同，无新增 Go 文件或模块
+差异。审查了两个新 Rust 文件、lib.rs 注册和本节证据；无 manifest/Cargo.lock
+或其他 Rust 格式化差异。总计划及来源主题只读；既有观测工具计划修改及任务
+19/23/24/25/26/27 删除保留并排除提交。
+状态：已完成；批次 47 的纯值编码与所需验证证据均已满足。

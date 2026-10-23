@@ -118,3 +118,8 @@ mod maintenance_start_test;
 mod maintenance_delete;
 #[cfg(test)]
 mod maintenance_delete_test;
+
+mod gc_barrier_value;
+pub use gc_barrier_value::{BarrierTime, GCBarrier, GlobalGCBarrier, ServiceSafePoint};
+#[cfg(test)]
+mod gc_barrier_value_test;
