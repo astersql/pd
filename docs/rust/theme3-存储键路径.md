@@ -479,3 +479,75 @@ EXIT/INT/TERM trap 清理，各阶段所有子进程结束后释放自己的锁�
 审查：本轮仅生产/独立测试模块、Go oracle 场景及分发、本文和任务清理。
 无 Go 生产、依赖、manifest/lock 或只读计划变化；其他会话的元数据观测任务状态
 保留原样，不纳入提交。任务 3 已完成，本结论限于配置/成员/选主键值构造。
+
+## 任务 4：垃圾回收键（2026-10-23）
+
+准入：批次 3 提交 `626433162`、前节 451 项 workspace 通过及红绿灯证据已核验；
+canonical crate、独立测试注册均存在。相对规划基准 `5d5948052`，
+`gc_states.go` 与 `absolute_key_path.go` 无 Go 差异；仓库只有根 AGENTS.md。
+总计划与来源主题只读，本轮无新依赖、features、manifest 或 Cargo.lock 变更。
+
+### 实现与 Go 依据
+
+[gc_paths.rs](../../pkg/utils/keypath/gc_paths.rs) 在既有 `ClusterPaths` 上实现
+`gc_states.go` 全部 14 个构造函数对应的 snake_case 方法：revision、GC/txn
+safe point、barrier/global barrier、legacy service safe point、TiDB min-start-TS
+以及 v2 safe point 的键与前缀。`lib.rs` 重导出并显式注册独立
+[gc_paths_test.rs](../../pkg/utils/keypath/gc_paths_test.rs)。
+`NULL_KEYSPACE_ID` 为 u32 最大值（Go `pkg/keyspace/constant/constant.go`），
+`GC_WORKER_SERVICE_SAFE_POINT_ID` / `NATIVE_BR_SERVICE_SAFE_POINT_ID` 分别为
+`gc_worker` / `native_br`（Go `absolute_key_path.go`）。
+
+- NullKeyspaceID 走 unified schema，默认 keyspace 0 走 keyspace schema，不能混同。
+- v2 接口始终使用 keyspace schema，包括输入 NullKeyspaceID；keyspace ID 最小
+  8 位十进制，超宽不截断。Txn/min-start-TS 使用不补零十进制且不含 cluster ID。
+- Legacy service safe point 与 unified barrier 共用精确键；所有前缀保留尾斜杠。
+- ID 原样插入，不清理/转义空串、嵌套 slash、重复 slash、`..` 或 Unicode。
+  这些函数是纯字符串构造器，无错误返回、存储副作用或 GC 算法，故无需双后端入口。
+
+### 真实 Go 差分与测试驱动
+
+首先串行执行 `make gotest GOTEST_ARGS='./pkg/utils/keypath -count=1'`，
+退出 **0**，2 个顶层测试（其中资源组解析含 8 个子场景，Region 含 1000 随机 ID
+断言），包输出 `ok ... 0.234s`。make 完成 failpoint disable 后才开始编辑/Cargo；
+检查无 Go 生产变更与生成 failpoint 文件。
+
+新增本轮 [gc_paths.go](../../scripts/rust-theme3-oracle/gc_paths.go) 场景，
+`main.go` 只新增分发。`go run ./scripts/rust-theme3-oracle gc_paths` 退出 **0**，
+真实产生 **372** 条 TSV，原样固定于独立 Rust 测试的 `GO_ORACLE`。
+输入 cluster `[0, 42, u64::MAX]`，keyspace
+`[0, 1, 99999999, 100000000, u32::MAX - 1, u32::MAX]`，barrier/service ID
+`["", "gc_worker", "native_br", "nested/id", "/a//../b/", "屏障"]`。
+每个 cluster 124 条输出，所有 14 方法均覆盖。Rust 调用真实公开方法逐条
+`as_bytes()` 断言，再将 stdout ORACLE 行与 Go TSV 排序逐行比较：
+**372/372 完全相等**，Python 比较退出 **0**，无归一化。这是本轮实际运行差分。
+另一个测试验证服务常量、独立集群上下文、null/default/v2 区分及 legacy 别名。
+
+红灯先使用缺少 8 位补零的最小实现，同一聚焦命令退出 **101**：
+**1 passed / 1 failed**。实际字节断言 `/pd/0/keyspaces/gc_safe_point/0`
+不等于 Go `/pd/0/keyspaces/gc_safe_point/00000000`，不是缺符号/环境失败。
+补齐 GC 与 service safe point 的 `:08` 后，同一测试与断言不变，绿灯退出 **0**：
+**2 passed / 0 failed / 0 ignored**。
+
+### Cargo 槽位与仓库验证
+
+两个阶段从 1–10 顺序原子 mkdir 动态领取，均获得 **槽位 1**，
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+锁 owner 记录计划/任务/会话、阶段与持有 shell PID：红灯 **92114**，绿灯 **92201**。
+阶段脚本设 EXIT/INT/TERM 清理；Cargo/fixture 子进程全部结束后释放自己的锁，
+保留缓存。最终 `target/rust-slot-locks` 为空。
+
+| 确切命令 | 退出码与有效结果 |
+| --- | --- |
+| `cargo fmt --all`（红灯、绿灯阶段各一次） | 均 0，无无关 Rust 格式差异 |
+| `cargo test --locked -p astersql-pd-keypath --lib gc_paths -- --nocapture`（红灯） | 101；1 passed / 1 failed，缺少 8 位补零 |
+| 同一聚焦命令（绿灯） | 0；2 passed / 0 failed / 0 ignored；372 项 Go 字节断言 |
+| `cargo metadata --format-version 1 --no-deps` | 0 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0，仅既有 server 废弃字段警告 |
+| `cargo test --workspace --locked` | 0；**453 passed / 0 failed / 1 ignored**，78 个测试结果段，含 2 个 syncutil compile-fail doctest；ignored 为既有需单独二进制的 TSO 测试 |
+| `git diff --check` | 0 |
+
+已审查生产/独立测试、Go 场景/分发和本文差异；无修改 Go 生产、依赖或只读计划。
+其他会话元数据观测任务状态变更保留原样且不纳入提交。任务 4 已完成，结论仅限
+GC 键路径构造，不表示 GC 业务或整个 Go keypath 包已迁移。
