@@ -39,3 +39,9 @@ pub use pd_server_validate::*;
 
 #[cfg(test)]
 mod pd_server_validate_test;
+
+mod keyspace_config;
+pub use keyspace_config::*;
+
+#[cfg(test)]
+mod keyspace_config_test;

@@ -1154,3 +1154,79 @@ SHA-256，与任务开始完全一致；Go/模块 Git 状态为空。只读 plan
 审查新增生产校验、独立测试、lib.rs 注册及本文差异，无依赖/锁文件变更，
 无无关 Rust 格式化。槽位 1 的 owner 和锁已释放，编译缓存保留。
 其他编号任务文件的既有删除不纳入本任务提交。
+
+## 批次 91：键空间配置值
+
+日期：2026-10-24（Asia/Shanghai）。前置批次 90 经提交 `3beb2ffae`、
+canonical PDServerConfig 校验、五项独立测试及本文 707 passed / 0 failed /
+1 ignored 完整回归证据核验，准入满足。已读执行技能、根 AGENTS.md、Copilot、
+ADR-001 和移植指南；server/docs 无更深 AGENTS.md。config.go/config_test.go
+相对规划基准 `5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异。
+
+### Go 依据与实现边界
+
+- `server/config/config.go:906–944::KeyspaceConfig/adjust/Validate` 和常量
+  254–257：缺失 wait-region-split 无条件取 true，缺失 timeout/interval
+  无条件取 30s/50ms；显式 false、零值、负值保留。Validate 独立检查
+  interval 闭区间 [1ms,100ms]，随后要求 interval 严格小于 timeout，
+  不因 wait-region-split=false 而跳过。错误原文和检查顺序保持一致。
+- `config.go:947–984::IsValidMetaServiceGroupID/AdjustMetaServiceGroups`：
+  独立 ID 判断仅拒绝 `/`，空 ID 本身返回 true；调整时先 TrimSpace ID，
+  依次拒绝空 ID、slash、空白地址、裁剪后的重复 ID。地址不要求是 URL。
+  先构造新映射，全部成功后才替换，因此失败保留原映射；scalar 默认已先应用，
+  不因映射失败回滚。Go map 遍历无固定顺序；Rust 使用 BTreeMap 确定遍历，
+  多个非法组并存时不承诺 Go 本就不稳定的组间首错选择。
+- `config.go:986–1033::Clone/GetPreAlloc/GetMetaServiceGroups/SetMetaServiceGroups`：
+  clone 深拷贝两项集合，保留 nil；getters 返回独立副本且 nil 取空集合；
+  setter 只替换值，不调整/校验。Rust 使用所有权与 Clone，无共享可变映射。
+- 现有 `config_test.go::TestAdjustMetaServiceGroups` 七个子场景覆盖裁剪、
+  多组、空 ID、空地址、重复、slash 和其他特殊字符。本轮只读运行整个配置包，
+  复核 TestMain 仅 goleak/WaitForEtcdConnections，配置测试无需 failpoint
+  注入，也没有生成器调用。未新增 Go oracle 或启停 failpoint。
+  split 边界、i64 极值、Unicode 空白、失败终态和 clone 的新增断言为源码推导，
+  明确不冒充新增跨语言运行差分。
+
+canonical crate 新增 `keyspace_config.rs::KeyspaceConfig`、adjust、validate、
+两项组工具函数和 decode_toml_keyspace；后者接受无外层 keyspace header 的
+原生 TOML 表，并保留 presence。Option<Vec>/Option<BTreeMap> 保留 nil 与空
+集合区别，Duration 复用已有值类型。六项独立 keyspace_config_* 测试位于
+keyspace_config_test.rs，在 lib.rs 显式注册。不执行 split，不迁移 keyspace
+业务、启动或热更新。纯值任务无需 MemoryStore/etcd 双入口，无新增依赖或
+Cargo.lock 变更，无无关 Rust 格式化。
+
+编码证据复用本文 batch84-missing / batch84-explicit-zero 已有真实 Go 日志：
+测试直接截取 keyspace 原始 JSON token，与默认调整后的整个 Rust 结构字节
+逐字比较，并反序列化回同值；两份日志的 keyspace 默认值相同。
+该字节证据限于这两份已有输入；额外 TOML/非空映射测试只根据只读源码断言值，
+不将 Rust 生成值充当 Go 编码输出，也不宣称已证明任意输入的 JSON 字节等价。
+
+### 本轮验证
+
+红灯、绿灯与完整基线阶段均以原子 mkdir 动态取得共享槽位 **1**，
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录计划、任务、会话和持有 shell PID；EXIT/INT/TERM 清理自己的记录与锁，
+所有 Cargo/fixture 子进程结束后释放，保留缓存。子进程继承绝对路径与
+`GOFLAGS=-mod=readonly`。已复核既有 etcd fixture 仅只读构建已有 Go，二进制
+及隔离数据位于槽位；proto 构建读取已锁定模块缓存，不改仓库 Go/模块文件。
+
+先新增可编译空调整/校验接口和六项测试，指定聚焦命令得到真实行为红灯
+**1 passed / 5 failed / 0 ignored，退出 101**，分别命中默认值、split 时长、
+ID/映射与原始 Go 字节断言。最小实现后同一组六项不削弱断言全部通过。
+
+| 确切命令 | 退出码与有效证据 |
+| --- | --- |
+| `cargo fmt --all` | 0；红灯、绿灯阶段先格式化，仅本任务 Rust 文件变更 |
+| `cargo test --locked -p astersql-pd-server-config --lib keyspace_config -- --nocapture` | 红灯 101：1 passed / 5 failed；绿灯 0：6 passed / 0 failed / 0 ignored |
+| `go test -mod=readonly ./server/config -count=1` | 0；现有配置包通过，1.182s |
+| `cargo metadata --format-version 1 --no-deps` | 0 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；仅既有 core_region_adapter.rs:134 cpu_usage deprecated 警告 |
+| `cargo test --workspace --locked` | 0；713 passed / 0 failed / 1 既有 ignored，含真实 etcd；配置 crate 43 项通过 |
+| `git diff --check` | 0 |
+
+本轮状态：**已完成**。完整回归后再次核对 1101 个 Go/模块文件的路径集合及
+SHA-256，与任务开始完全一致，Go/模块 Git 状态为空。只读 plan.md 指纹仍为
+`c7968f95a13d0d216ced3adafaca3140ad6ef959ff693c613cb903b231a6f777`。
+已审查生产值类型、独立测试、lib.rs 注册及本文差异，无依赖变更、无无关 Rust
+格式化。槽位 1 的 owner 与锁已释放，保留缓存；其他编号任务文件已有删除
+不纳入本任务提交。
