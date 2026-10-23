@@ -23,3 +23,9 @@ pub use rule_resource_paths::*;
 
 #[cfg(test)]
 mod rule_resource_paths_test;
+
+mod keyspace_time_paths;
+pub use keyspace_time_paths::*;
+
+#[cfg(test)]
+mod keyspace_time_paths_test;

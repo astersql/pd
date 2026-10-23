@@ -622,3 +622,81 @@ owner 记录计划/任务/会话/阶段及持有 shell PID：红灯 **96060**、
 
 已审查全部本任务生产、独立测试、Go 场景/分发和文档差异；无关元数据观测任务的
 编号文件改动保留原样且不纳入提交。本结论仅覆盖本任务键路径，不代表整个 Go 包迁移完成。
+
+## 任务 6：键空间与时间路径（已完成）
+
+日期：2026-10-23（Asia/Shanghai）。准入核验：前序提交 `b54240084`、
+上节批次 5 的 455 项 workspace 测试、157 条 Go 差分与红绿灯证据已存在；
+对应生产模块及独立测试已注册。当前 `absolute_key_path.go` 相对规划基准
+`5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异，仅根 AGENTS.md 适用。
+已读 ADR-001、porting guide、依赖基线及 Copilot failpoint 规则。
+
+### 实现与 Go 依据
+
+[keyspace_time_paths.rs](../../pkg/utils/keypath/keyspace_time_paths.rs) 在既有
+`ClusterPaths` 上新增 `keyspace_meta_prefix/path`、`keyspace_id_path`、
+`keyspace_group_id_prefix/path`、`timestamp_path`、`min_resolved_ts_path`、
+`external_timestamp_path`、`meta_service_group_status_path` 九个方法。
+[lib.rs](../../pkg/utils/keypath/lib.rs) 重导出模块并显式注册独立
+[keyspace_time_paths_test.rs](../../pkg/utils/keypath/keyspace_time_paths_test.rs)。
+
+Go 来源 `absolute_key_path.go` 的同名公开函数及 schema：
+
+- KeyspaceMeta 最小 8 位、GroupID 最小 5 位十进制补零，超宽 u32 不截断。
+  两个 prefix 均保留尾 slash；name/group 字符串不清理路径、不转义。
+- TimestampPath 的 group 0（`constant.DefaultKeyspaceGroupID`）使用
+  `/pd/C/timestamp`，其他 group 使用 `/ms/C/tso/GGGGG/gta/timestamp`。
+- MinResolvedTS 与 ExternalTimestamp 分别位于 `/pd/C/raft/min_resolved_ts`
+  与 `/pd/C/raft/external_timestamp`；MetaServiceGroupStatus 保留原始 group 字符串。
+- `GetCompiledKeyspaceGroupIDRegexp` 的 `tso/keyspace_groups/membership/(\d{5})$`
+  以无依赖函数 `keyspace_group_id_from_path` 返回借用捕获，语义为未锚定开头、
+  精确五位 ASCII 数字、严格结束。不额外验证 cluster，六位及更宽 group 虽可构造
+  但不被 matcher 接受；不把此限制错误地加入构造 API。没有新的解析错误类型。
+- 只实现纯值路径，无业务存储、TSO 算法或全局 cluster ID；无需 MemoryStore/etcd 测试。
+
+### 真实 Go 差分与测试驱动
+
+先串行运行 `make gotest GOTEST_ARGS='./pkg/utils/keypath -count=1'`，退出 **0**，
+包耗时 0.242s；2 个顶层测试、资源组 8 子场景、region 1000 个随机 ID 断言通过。
+make 已完成 failpoint disable，随后才编辑和运行 Cargo；检查无生成 failpoint 文件
+或 Go 生产差异。原有 Go 测试没有直接覆盖本任务路径，故新增真实 Go 场景
+[keyspace_time_paths.go](../../scripts/rust-theme3-oracle/keyspace_time_paths.go)，
+`main.go` 只增加分发。命令 `go run ./scripts/rust-theme3-oracle keyspace_time_paths`
+退出 **0**，输出 **137** 条；输出作为独立 Rust 测试的 `GO_ORACLE` 固定字节。
+
+输入：cluster `0,42,u64::MAX`；ID `0,1,42,99999,100000,16777215,99999999,
+100000000,u32::MAX`；字符串 `空串,group,a/b,/a//../b/,键空间`；另有 14 个 matcher
+输入，完整保存在 Go 场景与 Rust fixture，覆盖无 cluster 前缀、任意前导字符、重复
+membership 段、4/5/6/10 位、Unicode 数字、符号、非法字符和尾 slash。
+Rust 测试调用真实 API，逐项 `as_bytes()` 断言并输出实际 `ORACLE` 行；Python
+将真实 Go TSV 与 Rust stdout 排序比对，退出 **0**，**137/137 完全相等**。
+第二项测试验证集群/键空间/group 隔离、前缀关系、固定宽度范围内排序及捕获反解。
+
+红灯使用可编译的最小实现但缺 group 0 分支，聚焦命令退出 **101**，
+**1 passed / 1 failed**：输入 group 0、cluster 0，实际
+`/ms/0/tso/00000/gta/timestamp` 与 Go `/pd/0/timestamp` 的字节断言失败。
+补上默认 group 分支后同一测试不改断言，**2 passed / 0 failed / 0 ignored**。
+
+### 验证与共享槽位
+
+红灯与绿灯/基线阶段分别从槽位 1 开始用原子 mkdir 动态领取，实际均为 **1**，
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+锁 owner 记录计划、任务、会话、阶段与 shell PID（红灯 **1578**、绿灯 **1670**）；
+EXIT/INT/TERM 清理在本阶段 Cargo 和子进程结束后删除自身 owner 并 rmdir。
+两个阶段均已释放，锁目录为空，编译缓存保留。所有 Cargo 子进程继承同一绝对路径。
+
+| 确切命令 | 退出码与有效结果 |
+| --- | --- |
+| `cargo fmt --all`（红灯、绿灯阶段各一次） | 均 0，无无关格式差异 |
+| `cargo test --locked -p astersql-pd-keypath --lib keyspace_time_paths -- --nocapture`（红灯） | 101；1 passed / 1 failed |
+| 同一聚焦命令（绿灯） | 0；2 passed / 0 failed / 0 ignored；137 条 Go 字节断言 |
+| `cargo metadata --format-version 1 --no-deps` | 0 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；仅既有 server 废弃字段警告 |
+| `cargo test --workspace --locked` | 0；457 passed / 0 failed / 1 ignored，78 个结果段，含 2 个 compile-fail doctest；ignored 为既有 TSO 单独二进制测试 |
+| `git diff --check` | 0 |
+
+已审查本任务全部生产/测试、Go 场景及分发、证据文档和任务清理差异。
+没有依赖、features、manifest/lock、Go 生产、只读计划或来源主题变更；
+无关元数据观测任务的编号文件变更保留原样，不纳入提交。
+本结论仅覆盖键空间与时间路径，不代表完整 Go 包或 TSO 服务已迁移。
