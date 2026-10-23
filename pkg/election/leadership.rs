@@ -1,4 +1,5 @@
 // Copyright 2026 AsterSQL.
+use crate::{LeaseClock, LeaseExpiry, MonotonicLeaseClock};
 use astersql_pd_storage_kv::*;
 use std::{future::Future, sync::Arc};
 use tokio_util::sync::CancellationToken;
@@ -36,6 +37,7 @@ pub struct Leadership {
     value: Vec<u8>,
     lease: LeaseId,
     revision: Revision,
+    expiry: LeaseExpiry,
 }
 impl Leadership {
     /// Attempt one election using the existing PD leader path and opaque value.
@@ -68,9 +70,36 @@ impl Leadership {
         key: Vec<u8>,
         value: Vec<u8>,
         ttl_seconds: i64,
-        mut compares: Vec<Compare>,
+        compares: Vec<Compare>,
     ) -> Result<Self> {
+        Self::campaign_with_key_and_clock(
+            store,
+            cancel,
+            cluster_id,
+            key,
+            value,
+            ttl_seconds,
+            compares,
+            Arc::new(MonotonicLeaseClock),
+        )
+        .await
+    }
+
+    /// Campaign with an injected monotonic clock for local expiry accounting.
+    pub async fn campaign_with_key_and_clock(
+        store: Arc<dyn MetaStore>,
+        cancel: CancellationToken,
+        cluster_id: u64,
+        key: Vec<u8>,
+        value: Vec<u8>,
+        ttl_seconds: i64,
+        mut compares: Vec<Compare>,
+        clock: Arc<dyn LeaseClock>,
+    ) -> Result<Self> {
+        let expiry = LeaseExpiry::new(clock);
+        let start = expiry.request_start();
         let lease = cancellable(&cancel, store.grant(ttl_seconds)).await?;
+        expiry.granted(start, lease.ttl_seconds);
         compares.push(Compare::CreateRevision(key.clone(), 0));
         let result = cancellable(
             &cancel,
@@ -93,6 +122,7 @@ impl Leadership {
                 value: value.clone(),
                 lease: lease.id,
                 revision: commit.revision,
+                expiry,
             }),
             other => {
                 // Revoke our own lease even for an uncertain commit; TTL bounds cleanup if unavailable.
@@ -103,6 +133,11 @@ impl Leadership {
                 }
             }
         }
+    }
+
+    /// Local safety check; backend ownership is checked separately by validate.
+    pub fn is_expired(&self) -> bool {
+        self.expiry.is_expired()
     }
 
     pub fn lease_id(&self) -> LeaseId {
@@ -158,16 +193,19 @@ impl Leadership {
     /// Caller schedules explicit renewals on its shared runtime.
     pub async fn renew(&self) -> Result<()> {
         self.validate().await?;
+        let start = self.expiry.request_start();
         match cancellable(&self.cancel, self.store.keep_alive(self.lease)).await {
             Err(ElectionError::Store(StoreError::LeaseNotFound)) => Err(ElectionError::NotLeader),
             result => {
-                result?;
+                let lease = result?;
+                self.expiry.renewed(start, lease.ttl_seconds);
                 self.validate().await
             }
         }
     }
     /// Cleanup remains possible after cancellation. Only this term's lease is revoked.
     pub async fn resign(&self) -> Result<()> {
+        self.expiry.close();
         match self.store.revoke(self.lease).await {
             Ok(()) | Err(StoreError::LeaseNotFound) => Ok(()),
             Err(e) => Err(e.into()),

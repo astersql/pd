@@ -9,3 +9,8 @@ mod campaign_key_test;
 mod etcd_fixture;
 #[cfg(test)]
 mod leadership_test;
+
+mod lease_expiry;
+pub use lease_expiry::*;
+#[cfg(test)]
+mod lease_expiry_test;

@@ -334,3 +334,86 @@ owner 记录计划、任务、会话及持有 Python 进程 PID；包装器正�
 1101 个 Go/模块文件路径和 SHA-256 完全一致，相关 Git 状态为空。
 只读 plan.md、来源主题无本任务差异；既有其他任务状态修改/删除均保留并排除提交。
 本节仅覆盖指定键及附加比较，不表示 lease/watch/reset 后续批次完成。
+
+## 任务 4：实现租约保守过期判断（批次 62）
+
+日期：2026-10-23（Asia/Shanghai）。已核验前置批次 61 提交 `3885a20c1`、
+上节完成证据及指定键选主实物，准入满足。Go `lease.go`、`lease_test.go`
+自规划基准 `5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异。
+
+### 行为与只读依据
+
+- Go `Lease.Grant` 从请求前 `time.Now()` 加响应 TTL 计算期限；`IsExpired`
+  使用严格 `After`；`loadExpireTime` 对 nil/未初始化取 ZeroTime。
+  `keepAliveWorker` 在请求调度前计时，非正 TTL/错误不更新；`KeepAlive`
+  只应用递增期限；`Close` 在远程 revoke 前清空本地期限。
+  `TestLoadExpireTime`、`TestLease`、`TestLeaseKeepAlive` 的源码断言作为只读依据。
+  计划整包 Go 命令含需 failpoint 的相邻测试，因此未运行
+  `go test -mod=readonly ./pkg/election ./pkg/member ./pkg/id -count=1`，
+  未启停 failpoint；这里没有本轮 Go 运行差分，也没有将源码推导冒充运行结果。
+- [lease_expiry.rs](../../pkg/election/lease_expiry.rs) 实现单调时钟期限；
+  [leadership.rs](../../pkg/election/leadership.rs) 在现有 canonical 任期的 grant、
+  显式 renew、resign 路径接入。`Leadership::is_expired` 是无远程 IO 的本地判断，
+  `validate` 继续承担后端 ownership fencing，二者语义分别对应 Go Check 和事务比较。
+  `campaign_with_key_and_clock` 允许宿主注入单调时钟，原有入口默认使用 `Instant`。
+  不添加私有 runtime、续租循环、配置、依赖或平行任期实现。
+- 期限保留纳秒精度，按后端响应的整数 TTL 秒计算，不使用请求 TTL 或剩余 TTL
+  的向下取整值；相等仍有效，晚 1ns 过期。续租取既有期限与新期限的最大值；
+  非正/溢出 TTL 不延长。未 grant/close 为过期，close 后晚到响应不能复活，
+  fresh grant 可以初始化新期限。锁内更新与清空串行，不在锁内进行存储 IO。
+- 生产计时接口仅返回 `std::time::Instant`，完全不读取 `SystemTime`/墙钟，
+  系统墙钟校正无法改变期限；没有修改宿主系统时钟。测试注入单调时间推进，
+  不以长 sleep 证明到期。此项为时钟类型/调用路径审查与单调边界测试的证据，
+  不宣称运行了操作系统改时实验。
+
+### 测试时序与 TDD
+
+[lease_expiry_test.rs](../../pkg/election/lease_expiry_test.rs) 在 lib 显式注册，
+`lease_expiry_boundaries` 验证未初始化、grant、纳秒/相等边界、乱序续租、非法 TTL、
+close 后晚到响应及 fresh grant。`lease_expiry_memory` / `lease_expiry_etcd`
+复用相同后端断言；IO 包装器仅延迟/丢弃响应，全部事务委托真实 MemoryStore/etcd。
+
+双后端时序：grant 请求起点 → 后端真实 grant → 注入 2s 响应延迟 → 到达
+请求起点 + 响应 TTL 时有效 → 再推进 1ns 即过期；此时后端 lease/key 仍存在，
+远程 validate 成功。显式 renew 同样扣除 2s 延迟，随后响应失败不延长期限；
+成功响应若延迟 100s，返回时本地已经过期。另以请求 TTL=1、真实响应 TTL
+验证后端取整与严格相等边界，再测试整个 grant 响应晚于期限。最终撤租后
+TTL 查询为 LeaseNotFound，本地保持过期。
+
+etcd 附加真实故障：grant 30s → fixture stop 并确认 stopped → renew 失败 →
+单调时钟推进 31s → 本地过期；断连时 resign 返回错误但本地仍过期 →
+同 WAL restart 并确认 restarted → resign 成功清理。fixture 随机 loopback 端口与
+独立数据目录，沿用已有只读 Go fixture；仅 `go build` 已有源码，继承
+`GOFLAGS=-mod=readonly`，不运行生成器或 failpoint。任务无 codec，无新增字节编码。
+
+可编译最小接口最初将期限设为响应时刻；行为红灯实际执行 3 个测试，退出 101，
+0 passed / 3 failed：纯值在 fractional seconds 断言失败，两个后端在应有效的
+TTL 边界断言失败。此前一次测试编译错误（Unavailable 是 unit variant）已修复，
+不计作行为红灯。实现请求起点 + TTL 与最大期限后，同一组原始断言全部转绿；
+再补充真实断连、TTL 取整及慢 grant 场景，未削弱/忽略原断言。
+
+### 本轮验证
+
+每阶段依次原子 mkdir 动态领取共享槽位，实际均为 **1**；
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+锁 owner 记录计划、任务、会话与持有 Python PID；正常/失败及中断处理均等待
+该阶段子进程组退出后释放自己的记录和锁，保留缓存。
+
+状态：已完成。全部阶段 Cargo、fixture 子进程已退出，自己的锁已释放。
+
+| 确切命令 | 退出码 | 有效结果 |
+| --- | --- | --- |
+| `cargo fmt --all`（Rust 修改后） | 0 | 仅本任务 Rust 文件被格式化 |
+| `cargo test --locked -p astersql-pd-election --lib lease_expiry -- --nocapture`（行为红灯） | 101 | 0 passed / 3 failed，真实期限断言失败 |
+| `cargo test --locked -p astersql-pd-election --lib lease_expiry -- --nocapture`（最终绿灯） | 0 | 3 passed / 0 failed / 0 ignored，纯值及两个真实后端入口 |
+| `cargo metadata --format-version 1 --no-deps` | 0 | crate/依赖/默认 feature 不变 |
+| `cargo fmt --all -- --check` | 0 | workspace 格式通过 |
+| `cargo check --workspace --locked` | 0 | workspace 检查通过 |
+| `cargo test --workspace --locked` | 0 | 617 passed / 0 failed / 1 既有 ignored |
+| `git diff --check`、`git diff --cached --check` | 0 | 实现、测试、模块注册及本节证据已审查 |
+
+零测试 target 不计入有效测试数，既有 ignored 不作为本任务证据。开始/结束
+1101 个 Go/模块文件路径及 SHA-256 完全相同，相关 Git 状态为空。
+根 Cargo.toml、Cargo.lock、crate manifest、只读 plan.md 与来源主题均无本任务差异。
+既有其他任务状态变更/删除保留并排除提交。本节不代表后续自动续租、watch、reset
+或启动装配任务已经完成。
