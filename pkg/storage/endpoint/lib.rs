@@ -38,3 +38,7 @@ mod region_scan_test;
 mod config_endpoint;
 #[cfg(test)]
 mod config_endpoint_test;
+
+mod scheduler_endpoint;
+#[cfg(test)]
+mod scheduler_endpoint_test;

@@ -2449,3 +2449,90 @@ GOFLAGS=-mod=readonly。复用 proto 缓存，未触发会解压 Go 文件的 pr
 Rust 文件。审查范围为 config_endpoint.rs、独立测试、lib 注册、本证据节及编号
 任务文件清理；用户已有其他计划变更保留。共享槽位锁已释放，缓存保留。
 批次 28 的配置持久化验证故事已完成。
+
+## 批次 29：调度器原始配置端点（任务 10，2026-10-23）
+
+### 准入和 Go 依据
+
+批次 28 提交 `0dc4f5a30` 的 config_endpoint.rs、独立测试和本文证据齐全：
+聚焦 3 passed，workspace 521 passed / 0 failed / 1 既有 ignored。
+已读 ADR-001、porting-guide、执行技能、Copilot 与 canonical endpoint crate；
+`rg --files --hidden -g AGENTS.md pkg docs .plans` 未发现更深指令。
+config.go 相对规划基准 `5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无变化。
+计划总纲和来源主题只读，本任务不迁移调度器类型、算法或配置校验。
+
+Go `LoadSchedulerConfig` / `SaveSchedulerConfig` / `RemoveSchedulerConfig`
+委托 Base 单键读写删；Save 仅将 []byte 转为 string，不进行 JSON 编解码。
+缺失与空配置都读取为空；重复删除成功；覆盖无 lease。`LoadAllSchedulerConfigs`
+在 SchedulerConfigPathPrefix（尾斜线）到 GetPrefixRangeEnd 之间仅执行一次
+LoadRange，limit 是 meta.go 的 MinKVRangeLimit=100，不做分页。
+Go memoryKV 的 BTree 和 etcd 的默认范围读均按原始键字节升序，TrimPrefix
+只移除前缀，不清理 scheduler 名称里的斜线/父目录。以上是源码依据，
+不声称获得了新增 scheduler Go 测试的运行差分。
+
+只读重跑的相邻现有测试：
+
+| 命令 | 退出码、有效结果 |
+| --- | --- |
+| `GOFLAGS=-mod=readonly go test -mod=readonly ./pkg/storage -run '^TestBasic$' -count=1 -v` | 0；1 顶层测试 passed |
+| `GOFLAGS=-mod=readonly go test -mod=readonly ./pkg/storage/endpoint -run '^TestGCStateJSONUtil$' -count=1 -v` | 0；1 顶层测试 passed，真实 etcd |
+
+复核上述 TestMain、WaitForEtcdConnections、选定测试及既有 fixture 调用链，
+无源码写入、生成器或 failpoint 注入需求。完整计划 Go 命令
+`go test -mod=readonly ./pkg/storage/endpoint ./pkg/storage -count=1` 未执行：
+其中 TestLoadRegionsExceedRangeLimit 等需要 failpoint 注入，与 Go 只读约束冲突。
+本任务没有编码器，输入原始 bytes 就是应存储的 bytes，不要求新的 JSON/protobuf
+输出。测试直接比对物理存储字节，含无效 JSON、非法 UTF-8、NUL、空串；不把
+Rust 生成结果当作 Go 编码预期。已有 keypath 的 Go oracle 输出涵盖空名、
+nested/name、/a//../b/ 和 Unicode 名称，本任务复用其 canonical 路径函数。
+
+### 实现和测试驱动证据
+
+scheduler_endpoint.rs 在 StorageEndpoint 上新增 load_scheduler_config、
+save_scheduler_config、remove_scheduler_config、load_all_scheduler_configs。
+单键操作复用 Base，列举使用 canonical MetaStore 线性一致前缀读、limit=100，
+返回 `(name_bytes, config_bytes)` 配对，避免 Go string 转 UTF-8 引入数据修复。
+名称输入沿用 ClusterPaths 的 &str 契约；列举也保留外部直接写入的非法 UTF-8 名称。
+后端错误保持 EndpointError::Store；无新增 runtime、依赖、feature 或锁文件变化。
+独立 scheduler_endpoint_test.rs 由 lib.rs 显式注册。
+
+scheduler_endpoint_memory / scheduler_endpoint_etcd 共享同一断言：缺失、空配置、
+空名称、原始字节、覆盖、删除/重复删除、名称原样保留、跨 cluster 和相邻前缀
+隔离、去前缀与稳定排序，以及 101 项只列出前 100 项（第 101 项仍可单独读取）。
+额外直接写入非法 UTF-8 后缀的物理键，验证列举不丢失字节。
+etcd 入口验证非空、空配置和已删除项在 stop/stopped → start/restarted 同 WAL
+重启后的终态；随后 drop fixture 等待服务器实际退出，再逐一调用四个操作，
+全部返回真实 Store 错误，没有模拟核心存储或事务结果。
+
+TDD 最小可编译接口先将列举实现为返回空列表，保存/读取/删除已连接真实后端。
+`cargo fmt --all` 退出 0 后运行
+`cargo test --locked -p astersql-pd-storage-endpoint --lib scheduler_endpoint -- --nocapture`
+退出 **101**：0 passed / 2 failed / 0 ignored（4.22s）。两个入口都在实际保存成功后
+列举为 []、预期五组有序名称/原始字节的状态断言失败。补齐范围读后，相同命令
+退出 **0**：2 passed / 0 failed / 0 ignored（5.12s）。追加名称边界断言后先重新
+`cargo fmt --all`，同一聚焦命令退出 **0**：2 passed / 0 failed / 0 ignored（5.64s）。
+原红灯断言保留，未忽略测试或削弱验收。
+
+### 槽位和仓库基线
+
+三个 Cargo 阶段均从仓库根按 1–10 顺序用原子 mkdir 动态领取第一个空闲槽位，
+实际均为 **1**，`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+锁 owner 记录 plan=storage-endpoint、task=10、batch=29、session=scheduler-endpoint
+和持有 shell PID（68385、68591、68731）；EXIT/INT/TERM trap 清理自己的 owner/锁，
+同步等待 Cargo 和 fixture 子进程后释放，缓存保留。所有子进程继承绝对 target 和
+GOFLAGS=-mod=readonly。复用 proto 构建缓存，未触发会解压 Go 文件的 build.rs。
+
+| 最终命令 | 退出码与有效结果 |
+| --- | --- |
+| `cargo metadata --format-version 1 --no-deps` | 0；canonical endpoint target 保持注册 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；仅既有 server cpu_usage 弃用警告 |
+| `cargo test --workspace --locked` | 0；83 个 target 汇总含 doc-tests，523 passed / 0 failed / 1 既有 ignored；endpoint 24 passed |
+| `git diff --check`、`git diff --cached --check` | 0 |
+
+最终核对开始时 1101 个已跟踪 Go/模块文件 SHA-256 全部未变化，Go Git 差异和
+未跟踪 Go/模块文件均为空。未运行 Go 生成器、格式化、依赖整理或 failpoint
+启停；Cargo manifest/lock 无变化，workspace fmt 未修改其他 Rust 文件。
+审查范围仅 scheduler_endpoint.rs、scheduler_endpoint_test.rs、lib.rs 注册、
+本证据节与编号任务清理；用户已有其他计划变更保留。共享锁释放，缓存保留。
+批次 29 的调度器原始配置持久化验证故事已完成。
