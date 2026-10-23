@@ -34,3 +34,7 @@ mod region_scan;
 pub use region_scan::RegionScanError;
 #[cfg(test)]
 mod region_scan_test;
+
+mod config_endpoint;
+#[cfg(test)]
+mod config_endpoint_test;

@@ -2349,3 +2349,103 @@ Go 工具，未运行生成器、failpoint、Go 格式化或依赖整理。
 已审查仅本任务 region_scan 实现/测试、endpoint 实例游标、内部 decode 复用、模块
 注册及本证据节，用户已有其他计划变更保留。全部 Cargo/fixture 子进程结束，
 共享锁已释放，缓存保留。批次 27 当前分页恢复验证故事已完成。
+
+## 批次 28：普通与中间件配置端点（任务 9，2026-10-23）
+
+### 准入、Go 依据与范围
+
+批次 27 提交 `ac0b6f3d4`、region_scan 产物及本文对应完成证据齐全：聚焦
+3 passed、workspace 518 passed / 0 failed / 1 既有 ignored，满足本批准入。
+已读执行技能、ADR-001、porting-guide、Copilot 和 canonical endpoint；
+`rg --files -g AGENTS.md pkg docs` 无更深指令。config.go/service_middleware.go
+对规划基准 `5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异。
+计划总纲和来源主题保持只读。
+
+Go `LoadConfig` / `LoadServiceMiddlewareConfig` 各自单次 Load：缺失或空字节
+返回 false，后端错误直接返回；非空值调用 encoding/json.Unmarshal，成功 true，
+坏 JSON 返回 false + ErrJSONUnmarshal。Save 方法复用 saveJSON，先编码，成功后
+覆盖单键，不附 lease；编码失败不得覆盖旧字节。路径为 /pd/C/config 和
+/pd/C/service_middleware，复用现有 ClusterPaths，隔离 cluster 与两个配置种类。
+这些语义依据源码；没有将源码推导冒充新增 Go 场景的运行差分。
+
+本任务只提供泛型持久化适配，配置 schema 由调用者提供；不迁移完整 Config、
+嵌套调度类型、server/config 默认值/校验或 PersistOptions。Rust API 返回
+Result<Option<T>>：None 对应 Go found=false，Some(model) 对应 found=true。
+它解码一个新模型，并不模拟 Go 对已有非零对象的原地修改；JSON null 使用
+T::default（模型须提供 Go 零值），Option<T> 则为 Some(None)。字段缺省、nullable、
+大小写兼容和自定义编码仍由具体 schema adapter 负责，不能据此宣称任意 Serde
+类型与任意 Go 类型天然同构。测试 ColorGroup 的对象解码显式要求 map，因为
+Serde 的 struct derive 默认也接受 positional array，而 Go struct 不接受数组。
+未使用 raw JSON 透传冒充完整配置类型迁移。
+
+### 只读 Go 字节证据
+
+复用批次 21 已保存的 Go 1.26.8 encoding/json ExampleMarshal 真实输出：
+输入 ColorGroup{ID:1, Name:"Reds", Colors:["Crimson","Red","Ruby","Maroon"]}，
+输出精确字节为
+`{"ID":1,"Name":"Reds","Colors":["Crimson","Red","Ruby","Maroon"]}`。
+该示例直接调用与端点一致的 encoding/json.Marshal；本轮重新执行既有测试，
+由 Go runner 核对真实 stdout 与 Output。两个后端都比较 Rust 保存的物理 bytes，
+再将上述 Go bytes 独立写入后读取，预期不由 Rust 编码器生成。
+
+复用并重新执行既有 TestGCStateJSONUtil，其真实 etcd 写入断言包括 `1`、
+`"str"`、`null`；本任务两个后端均再次比较这些标量字节。已审查 TestMain、
+WaitForEtcdConnections、etcd 测试生命周期及选定测试，无源码写入或 failpoint
+注入需求。既有 fixture 仅 build 已有 Go 源码并在槽位内输出二进制和临时数据。
+
+| 只读 Go 命令 | 退出码、有效结果 |
+| --- | --- |
+| `GOFLAGS=-mod=readonly go test encoding/json -run '^ExampleMarshal$' -count=1 -v` | 0；1 Example passed |
+| `GOFLAGS=-mod=readonly go test -mod=readonly ./pkg/storage/endpoint -run '^TestGCStateJSONUtil$' -count=1 -v` | 0；1 顶层测试 passed |
+
+未执行计划列出的完整 `go test -mod=readonly ./pkg/storage/endpoint ./pkg/storage -count=1`：
+整包包含需要 failpoint 注入的 TestLoadRegionsExceedRangeLimit 等场景，与本轮 Go
+只读约束冲突。仅复用/重跑上述不依赖注入的既有证据，不声称 Go 整包通过。
+
+### 实现和 TDD
+
+canonical config_endpoint.rs 增加 load_config/save_config 及
+load_service_middleware_config/save_service_middleware_config，复用 load/save_json
+和 EndpointError，错误保持 Store/JsonMarshal/JsonUnmarshal 分类。独立
+config_endpoint_test.rs 在 lib.rs 显式注册，无依赖、feature、manifest、lock 或
+runtime 变更。
+
+config_endpoint_memory / config_endpoint_etcd 共享同一 contract：缺失、空字节、
+Go 对象字节双向读取、覆盖、编码失败保留旧值、坏 JSON/错误形状/非法 UTF-8、
+缺省字段、非空 null 的 found 状态、nullable 类型、标量字节及跨 cluster/配置种类隔离。
+config_endpoint_go_bytes 为单独纯值编码断言。真实 etcd 额外验证两个配置在
+stop/stopped → start/restarted 同 WAL 重启后的恢复；随后 drop fixture 等待子进程
+退出，再进行两个端点各自的读/写，四项均为真实 Store 错误，无模拟事务结果。
+
+最小可编译的 load 接口先返回 None，同一聚焦命令
+`cargo test --locked -p astersql-pd-storage-endpoint --lib config_endpoint -- --nocapture`
+退出 **101**，1 passed / 2 failed / 0 ignored，4.55s；两个后端在实际保存成功后
+读取为 None、预期 Some(Config{ID:1,...}) 的状态断言失败。实现后第二次运行发现
+测试 schema 的 derive 将 [] 当默认 struct 接受，退出 101，1 passed / 2 failed；
+保留原断言，修正该测试 schema 的对象解码，不削弱错误预期。最终相同命令退出
+**0**，3 passed / 0 failed / 0 ignored，4.43s。每次 Rust 修改后先运行
+`cargo fmt --all`，均退出 0。
+
+### 槽位与最终验证
+
+所有 Cargo 阶段均从仓库根依次用原子 mkdir 动态领取首个空闲槽位，实际均为
+**1**，`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录 plan=storage-endpoint、task=9、batch=28、session=config-endpoint 和
+持有 shell PID；EXIT/INT/TERM trap 清理自己的 owner/锁，所有 Cargo 与 fixture
+子进程同步结束后才释放。保留编译缓存，子进程继承绝对 target 和
+GOFLAGS=-mod=readonly。复用 proto 缓存，未触发会解压 Go 文件的 proto build.rs；
+未运行 failpoint 启停、Go 生成器、格式化或依赖整理。
+
+| 最终命令 | 退出码与有效结果 |
+| --- | --- |
+| `cargo metadata --format-version 1 --no-deps` | 0；canonical endpoint target 保持注册 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；仅既有 server cpu_usage 弃用警告 |
+| `cargo test --workspace --locked` | 0；83 个 target 汇总含 doc-tests，521 passed / 0 failed / 1 既有 ignored；endpoint 22 passed |
+| `git diff --check`、`git diff --cached --check` | 0 |
+
+最终复核开始时 1101 个已跟踪 Go/模块文件 SHA-256 均未变化；Go Git 差异为空，
+未跟踪 Go/模块文件为 0。Cargo manifest/lock 无变化，workspace fmt 未修改其他
+Rust 文件。审查范围为 config_endpoint.rs、独立测试、lib 注册、本证据节及编号
+任务文件清理；用户已有其他计划变更保留。共享槽位锁已释放，缓存保留。
+批次 28 的配置持久化验证故事已完成。
