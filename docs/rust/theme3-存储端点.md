@@ -4705,3 +4705,115 @@ fixture 继承同一 target、GOARCH=arm64、CGO_ENABLED=0、GOFLAGS=-mod=readon
 注册及本节证据；manifest/Cargo.lock 无差异，未格式化其他任务文件。
 原有观测工具任务修改及任务 19/23/24/25/26/27/28/29/30/31 删除均保留并排除提交。
 状态：已完成；批次 51 屏障写事务故事与所需验证证据均已满足。
+
+## 任务 33：批量安全点读取（批次 52）
+
+### 准入与 Go 证据
+
+已核验批次 51 提交 `2b4c7edeb` 及任务 32 节的完整红绿灯、双后端、
+故障恢复及 workspace 基线证据。`gc_state_batch.go` 与对应测试相对规划基准
+`5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异；不是根据任务文件缺失
+判定前置完成。plan.md 和来源主题计划保持只读。
+
+Go `GCStateProvider.LoadGCSafePointPairs` 的顺序为：空输入直接返回；超过
+60 项拒绝（MaxEtcdTxnOps=120，每空间两个 get）；重复 ID 拒绝；检查 context；
+一次不带 compare/failure 分支的原子事务读取全部 txn/GC 键。先校验整批成功、
+响应数量及每项 point key/cardinality，再逐行解码。缺失/空值为零；txn 解码
+失败后跳过该行 GC；GC 解码失败保留已解析的 txn 值。统一 GC 使用十六进制，
+keyspace GC 使用 JSON，txn 使用十进制。JSON 中冗余 keyspace_id 不用作路径。
+
+检查既有 TestMain、newEtcdStorageEndpoint、newGCBatchTestStorage、
+NewTestEtcdCluster 及 Rust fixture 的调用链：所选测试不需要 failpoint 注入，
+只写临时 etcd 数据和编译产物，不改 Go 源码/模块。实际只读执行：
+
+```text
+GOARCH=arm64 CGO_ENABLED=0 GOFLAGS=-mod=readonly go test -mod=readonly ./pkg/storage/endpoint -run '^(TestLoadGCSafePointPairs.*|TestDataPhysicalRepresentation)$' -count=1 -v
+```
+
+退出 0，6 个顶层测试通过：TestLoadGCSafePointPairs、BatchBounds、Unsupported、
+Context、InvalidResponse 和 TestDataPhysicalRepresentation。
+日志 `/tmp/pd33-go.log`。整包 endpoint/storage oracle 未执行：其中 failpoint
+测试需要源码注入，与 Go 只读冲突；上述实际运行覆盖当前故事。
+
+复用实际运行的 Go TestDataPhysicalRepresentation 所写入并逐字节断言的值：
+
+| Go 输入 | 实际持久化字节 | Rust 批量读取结果 |
+| --- | --- | --- |
+| unified GC=456139133457530880 | `654882009e40000` | 456139133457530880 |
+| keyspace 1111 GC=456139133457530881 | `{"keyspace_id":1111,"safe_point":456139133457530881}` | 456139133457530881 |
+| unified txn=456139133457530882 | `456139133457530882` | 456139133457530882 |
+| keyspace 2222 txn=456139133457530883 | `456139133457530883` | 456139133457530883 |
+
+双后端将这些独立 Go 字节作为输入；最后一行的十进制字节复用到空间 1111，
+不声称 Go 额外写入了该空间的 txn。其余成功/非法值来自现有 Go 批量测试及
+源码断言。额外 txn 溢出字段语义来自 decodeTxnSafePoint 和当前 Go 1.26.8
+`internal/strconv.ParseUint` 的源码：溢出同时返回 u64::MAX 和错误；该额外
+输入的字段值是源码推导，不冒充 Go 运行差分。没有编写或修改 Go oracle。
+
+### 实现与行为红绿灯
+
+canonical endpoint 新增 `gc_batch_read.rs`：
+`StorageEndpoint.load_gc_safe_point_pairs(paths, ids, cancel)` 返回按输入顺序的
+GCSafePointReadResult；逐项 SafePointReadError 与整批 GCSafePointBatchError
+分层。只调用一次 RawTxn.commit，以 2*N 个 point get 取得一个原子快照；
+空/非法输入在后端访问前返回。取消仅中止读取等待，不重试。完整响应通过
+校验后才解码任何行。
+
+`gc_safepoint_read.rs` 最小提取现有 canonical 解码函数供单项/批量共用，
+十进制解析保留 Go 的溢出数值与错误并存语义；单项 API 仍只返回错误。
+没有新依赖、manifest、Cargo.lock、target、runtime 或第二套存储抽象。
+新独立 gc_batch_read_test.rs 在 lib.rs 显式注册。
+
+最小可编译接口返回空结果时，指定聚焦命令实际退出 101：0 passed / 2 failed，
+memory/etcd 都在真实结果长度 0 != 8 处失败，日志 `/tmp/pd33-red.log`。
+实现后原断言通过；新增溢出兼容性断言再次实际退出 101：2 passed / 2 failed，
+两个后端均得到 `(0,0)`，期望 `(u64::MAX,0)`，日志
+`/tmp/pd33-overflow-red.log`。修复共享十进制解码后，同一聚焦入口最终退出 0：
+4 passed / 0 failed / 0 ignored，日志 `/tmp/pd33-green-final.log`。
+
+双后端共用合同覆盖：乱序/缺失/空/null 与零空间、冗余 JSON keyspace_id、
+u64::MAX、txn 语法/溢出及 GC JSON/hex 错误隔离、错误行字段值、60 项成功、
+61 项拒绝、重复 ID 拒绝、空输入、预取消及取消后的空输入。读取前后完整
+Entry 和 revision 相等。真实 writer 用原子事务更新两个空间的四个字段，
+40 代写入与 80 次批读交错，读到的四字段始终同代，终态全部为 40。
+响应纯函数测试覆盖失败标志、缺项/多项、错 key、多 key；即使前项已有解码
+错误，后项结构异常仍使整批失败，不伪造后端事务结果。
+
+真实 etcd 断连时序：先写 `(txn=84,GC=42)`；stop 等待 stopped；批读返回
+整批 Store 错误，空输入和重复输入仍在本地返回；start 等待 restarted 后同 WAL
+读回 `(84,42)`。最终聚焦耗时 1.253572542s，fixture drop 关闭并等待进程退出。
+另一独立真实 TCP 代理先透传预热并验证同一值，再阻挡真实 etcd 的响应；
+收到响应到达 gate 的通知后取消读取，319.792µs 内得到 Cancelled，关闭代理并
+join，直接后端核验完整 Entry/revision 不变。代理仅控制外部 IO，不替代事务。
+无到期行为，本任务不处理 lease/TTL 或 GC 调度。
+
+### Cargo 槽位与最终基线
+
+每阶段 `/tmp/pd33-cargo.sh` 在仓库根依次原子 mkdir 动态领取共享槽位。
+实际均为 **槽位 1**，
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 包含 plan=storage-endpoint/task=33/batch=52/session=gc-batch-read/PID；
+初始红灯 PID=94856、溢出红灯 PID=98472、最终绿灯 PID=98684、最终基线
+PID=98993。EXIT/INT/TERM trap 在 Cargo/fixture 子进程结束后释放自己的 owner
+和锁，保留缓存；fixture 继承同一绝对 target 及只读 Go 环境。
+
+| 命令 | 退出码与有效结果 |
+| --- | --- |
+| `cargo fmt --all` | 0；每次 Rust 修改后执行，未波及其他任务文件 |
+| `cargo test --locked -p astersql-pd-storage-endpoint --lib gc_batch_read -- --nocapture`（初始红灯） | 101；0 passed / 2 failed |
+| 同一聚焦命令（溢出红灯） | 101；2 passed / 2 failed |
+| 同一聚焦命令（最终绿灯） | 0；4 passed / 0 failed / 0 ignored |
+| `cargo metadata --format-version 1 --no-deps` | 0；canonical target 不变 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；仅既有 cpu_usage 弃用警告 |
+| `cargo test --workspace --locked` | 0；83 target，598 passed / 0 failed / 1 既有 ignored；endpoint 99 passed |
+| 上述只读 Go 测试 | 0；6 个顶层测试通过 |
+| `git diff --check`、`git diff --cached --check` | 0 |
+
+最终基线日志 `/tmp/pd33-baseline-final.log`，metadata `/tmp/pd33-metadata.json`。
+全部 Cargo、fixture 和代理子进程结束，自己的 slot-1 owner/锁已释放，缓存保留。
+开始/结束 1101 个受跟踪 Go/模块文件路径及 SHA-256 完全一致，Go/模块 Git 状态
+为空，无新增 Go 文件。已审查两个新 Rust 文件、共享解码提取、lib.rs 注册与
+本节证据；根 manifest/Cargo.lock 无差异，没有格式化其他任务的在途变更。
+原有观测工具计划修改及任务 19/23/24/25/26/27/28/29/30/31/32 删除均保留并排除提交。
+状态：已完成；批次 52 批量安全点读取故事及所需验证证据均已满足。

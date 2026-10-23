@@ -28,15 +28,7 @@ impl StorageEndpoint {
         let raw = Base::new(self.store.as_ref())
             .load(paths.gc_safe_point_path(keyspace_id).as_bytes())
             .await?;
-        if raw.is_empty() {
-            return Ok(0);
-        }
-        if keyspace_id == NULL_KEYSPACE_ID {
-            return parse_uint(&raw, 16);
-        }
-        serde_json::from_slice::<KeyspaceSafePoint>(&raw)
-            .map(|v| v.0)
-            .map_err(SafePointReadError::JsonUnmarshal)
+        decode_gc_safe_point(&raw, keyspace_id)
     }
     /// Loads a decimal transaction safe point without advancing it.
     pub async fn load_txn_safe_point(
@@ -47,11 +39,47 @@ impl StorageEndpoint {
         let raw = Base::new(self.store.as_ref())
             .load(paths.txn_safe_point_path(keyspace_id).as_bytes())
             .await?;
-        if raw.is_empty() {
-            return Ok(0);
-        }
-        parse_uint(&raw, 10)
+        decode_txn_safe_point(&raw)
     }
+}
+
+pub(super) fn decode_txn_safe_point(raw: &[u8]) -> Result<u64, SafePointReadError> {
+    let (value, err) = decode_txn_safe_point_parts(raw);
+    match err {
+        Some(err) => Err(err),
+        None => Ok(value),
+    }
+}
+
+// Go returns the saturated ParseUint value together with an overflow error.
+// The batch API exposes both; the scalar API returns only the error.
+pub(super) fn decode_txn_safe_point_parts(raw: &[u8]) -> (u64, Option<SafePointReadError>) {
+    let mut value = 0u64;
+    for &digit in raw {
+        if !digit.is_ascii_digit() {
+            return (0, Some(SafePointReadError::ParseUint));
+        }
+        match value
+            .checked_mul(10)
+            .and_then(|v| v.checked_add(u64::from(digit - b'0')))
+        {
+            Some(next) => value = next,
+            None => return (u64::MAX, Some(SafePointReadError::ParseUint)),
+        }
+    }
+    (value, None)
+}
+
+pub(super) fn decode_gc_safe_point(raw: &[u8], id: u32) -> Result<u64, SafePointReadError> {
+    if raw.is_empty() {
+        return Ok(0);
+    }
+    if id == NULL_KEYSPACE_ID {
+        return parse_uint(raw, 16);
+    }
+    serde_json::from_slice::<KeyspaceSafePoint>(raw)
+        .map(|v| v.0)
+        .map_err(SafePointReadError::JsonUnmarshal)
 }
 
 fn parse_uint(raw: &[u8], radix: u32) -> Result<u64, SafePointReadError> {

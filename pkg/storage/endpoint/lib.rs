@@ -141,3 +141,10 @@ mod gc_state_txn_test;
 mod gc_barrier_txn;
 #[cfg(test)]
 mod gc_barrier_txn_test;
+
+mod gc_batch_read;
+pub use gc_batch_read::{
+    GCSafePointBatchError, GCSafePointReadResult, MAX_GC_SAFE_POINT_BATCH_SIZE,
+};
+#[cfg(test)]
+mod gc_batch_read_test;
