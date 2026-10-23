@@ -1,5 +1,5 @@
 // Copyright 2026 AsterSQL.
-use crate::meta_store::validate_txn;
+use crate::raw_get::validate_raw;
 use crate::*;
 use async_trait::async_trait;
 use etcd_client::{
@@ -153,8 +153,26 @@ impl MetaStore for EtcdMetaStore {
         then_writes: Vec<Mutation>,
         else_writes: Vec<Mutation>,
     ) -> Result<Commit> {
-        validate_txn(&compares, &then_writes)?;
-        validate_txn(&compares, &else_writes)?;
+        let response = self
+            .transact_raw(
+                compares,
+                then_writes.into_iter().map(Into::into).collect(),
+                else_writes.into_iter().map(Into::into).collect(),
+            )
+            .await?;
+        Ok(Commit {
+            succeeded: response.succeeded,
+            revision: response.revision,
+        })
+    }
+    async fn transact_raw(
+        &self,
+        compares: Vec<Compare>,
+        then_ops: Vec<RawTxnOp>,
+        else_ops: Vec<RawTxnOp>,
+    ) -> Result<RawTxnResponse> {
+        validate_raw(&compares, &then_ops)?;
+        validate_raw(&compares, &else_ops)?;
         let compares: Vec<_> = compares
             .into_iter()
             .map(|c| match c {
@@ -181,14 +199,14 @@ impl MetaStore for EtcdMetaStore {
                 Compare::Lease(k, id) => etcd_client::Compare::lease(k, CompareOp::Equal, id),
             })
             .collect();
-        let operations = |writes: Vec<Mutation>| -> Vec<TxnOp> {
-            writes
-                .into_iter()
-                .map(|w| match w {
-                    Mutation::Put { key, value, lease } => {
+        let operations = |ops: Vec<RawTxnOp>| -> Vec<TxnOp> {
+            ops.into_iter()
+                .map(|op| match op {
+                    RawTxnOp::Get(key) => TxnOp::get(key, None),
+                    RawTxnOp::Write(Mutation::Put { key, value, lease }) => {
                         TxnOp::put(key, value, lease.map(|id| PutOptions::new().with_lease(id)))
                     }
-                    Mutation::Delete { key } => TxnOp::delete(key, None),
+                    RawTxnOp::Write(Mutation::Delete { key }) => TxnOp::delete(key, None),
                 })
                 .collect()
         };
@@ -198,16 +216,49 @@ impl MetaStore for EtcdMetaStore {
                 client.txn(
                     Txn::new()
                         .when(compares)
-                        .and_then(operations(then_writes))
-                        .or_else(operations(else_writes)),
+                        .and_then(operations(then_ops.clone()))
+                        .or_else(operations(else_ops.clone())),
                 ),
             )
             .await?;
-        Ok(Commit {
+        let ops = if response.succeeded() {
+            then_ops
+        } else {
+            else_ops
+        };
+        let rpc_items = response.op_responses();
+        if rpc_items.len() != ops.len() {
+            return Err(StoreError::Backend);
+        }
+        let mut responses = Vec::with_capacity(ops.len());
+        for (op, response) in ops.iter().zip(rpc_items) {
+            let item = match (op, response) {
+                (RawTxnOp::Get(_), etcd_client::TxnOpResponse::Get(r)) => RawTxnResponseItem {
+                    key_value_pairs: r
+                        .kvs()
+                        .iter()
+                        .map(|kv| KeyValuePair {
+                            key: kv.key().to_vec(),
+                            value: kv.value().to_vec(),
+                        })
+                        .collect(),
+                },
+                (RawTxnOp::Write(Mutation::Put { .. }), etcd_client::TxnOpResponse::Put(_))
+                | (
+                    RawTxnOp::Write(Mutation::Delete { .. }),
+                    etcd_client::TxnOpResponse::Delete(_),
+                ) => RawTxnResponseItem::default(),
+                _ => return Err(StoreError::Backend),
+            };
+            responses.push(item);
+        }
+        Ok(RawTxnResponse {
             succeeded: response.succeeded(),
             revision: revision(response.header())?,
+            responses,
         })
     }
+
     async fn watch(&self, prefix: Vec<u8>, start_revision: Revision) -> Result<Box<dyn MetaWatch>> {
         if start_revision <= 0 {
             return Err(StoreError::InvalidArgument);

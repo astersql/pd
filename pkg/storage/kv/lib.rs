@@ -42,3 +42,8 @@ mod raw_branches;
 pub use raw_branches::RawTxn;
 #[cfg(test)]
 mod raw_branches_test;
+
+mod raw_get;
+pub use raw_get::{KeyValuePair, RawTxnOp, RawTxnResponse, RawTxnResponseItem};
+#[cfg(test)]
+mod raw_get_test;

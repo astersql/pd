@@ -225,6 +225,13 @@ pub trait MetaStore: Send + Sync {
         then_writes: Vec<Mutation>,
         else_writes: Vec<Mutation>,
     ) -> Result<Commit>;
+    /// Execute reads and writes in one backend transaction, preserving operation order.
+    async fn transact_raw(
+        &self,
+        compares: Vec<Compare>,
+        then_ops: Vec<crate::RawTxnOp>,
+        else_ops: Vec<crate::RawTxnOp>,
+    ) -> Result<crate::RawTxnResponse>;
     async fn watch(&self, prefix: Vec<u8>, start_revision: Revision) -> Result<Box<dyn MetaWatch>>;
     async fn grant(&self, ttl_seconds: i64) -> Result<Lease>;
     async fn keep_alive(&self, lease: LeaseId) -> Result<Lease>;

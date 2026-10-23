@@ -1,6 +1,6 @@
 // Copyright 2026 AsterSQL.
 //! In-memory contract model, not a durable production backend. No worker tasks.
-use crate::meta_store::validate_txn;
+use crate::raw_get::validate_raw;
 use crate::*;
 use async_trait::async_trait;
 use std::{
@@ -137,8 +137,26 @@ impl MetaStore for MemoryStore {
         then_writes: Vec<Mutation>,
         else_writes: Vec<Mutation>,
     ) -> Result<Commit> {
-        validate_txn(&compares, &then_writes)?;
-        validate_txn(&compares, &else_writes)?;
+        let response = self
+            .transact_raw(
+                compares,
+                then_writes.into_iter().map(Into::into).collect(),
+                else_writes.into_iter().map(Into::into).collect(),
+            )
+            .await?;
+        Ok(Commit {
+            succeeded: response.succeeded,
+            revision: response.revision,
+        })
+    }
+    async fn transact_raw(
+        &self,
+        compares: Vec<Compare>,
+        then_ops: Vec<RawTxnOp>,
+        else_ops: Vec<RawTxnOp>,
+    ) -> Result<RawTxnResponse> {
+        validate_raw(&compares, &then_ops)?;
+        validate_raw(&compares, &else_ops)?;
         let mut s = self.state();
         let succeeded = compares.iter().all(|c| match c {
             Compare::CreateRevision(k, rev) => {
@@ -153,7 +171,14 @@ impl MetaStore for MemoryStore {
             Compare::NotExists(k) => !s.keys.contains_key(k),
             Compare::Lease(k, id) => s.keys.get(k).and_then(|e| e.lease).unwrap_or(0) == *id,
         });
-        let writes = if succeeded { then_writes } else { else_writes };
+        let ops = if succeeded { then_ops } else { else_ops };
+        let writes: Vec<_> = ops
+            .iter()
+            .filter_map(|op| match op {
+                RawTxnOp::Write(w) => Some(w),
+                RawTxnOp::Get(_) => None,
+            })
+            .collect();
         for w in &writes {
             if let Mutation::Put {
                 lease: Some(id), ..
@@ -169,8 +194,20 @@ impl MetaStore for MemoryStore {
             .any(|w| matches!(w, Mutation::Put { .. }) || s.keys.contains_key(w.key()));
         if changes {
             s.revision += 1;
-            for w in writes {
-                match w {
+        }
+        let mut responses = Vec::with_capacity(ops.len());
+        for op in ops {
+            let mut item = RawTxnResponseItem::default();
+            match op {
+                RawTxnOp::Get(key) => {
+                    if let Some(entry) = s.keys.get(&key) {
+                        item.key_value_pairs.push(KeyValuePair {
+                            key,
+                            value: entry.value.clone(),
+                        });
+                    }
+                }
+                RawTxnOp::Write(w) => match w {
                     Mutation::Put { key, value, lease } => {
                         let create_revision =
                             s.keys.get(&key).map_or(s.revision, |e| e.create_revision);
@@ -190,16 +227,21 @@ impl MetaStore for MemoryStore {
                             s.events.push(Event::Delete { key, revision });
                         }
                     }
-                }
+                },
             }
+            responses.push(item);
+        }
+        if changes {
             s.save();
             self.changed.notify_waiters();
         }
-        Ok(Commit {
+        Ok(RawTxnResponse {
             succeeded,
             revision: s.revision,
+            responses,
         })
     }
+
     async fn watch(&self, prefix: Vec<u8>, start_revision: Revision) -> Result<Box<dyn MetaWatch>> {
         if start_revision <= 0 {
             return Err(StoreError::InvalidArgument);
