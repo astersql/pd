@@ -551,3 +551,74 @@ safe point、barrier/global barrier、legacy service safe point、TiDB min-start
 已审查生产/独立测试、Go 场景/分发和本文差异；无修改 Go 生产、依赖或只读计划。
 其他会话元数据观测任务状态变更保留原样且不纳入提交。任务 4 已完成，结论仅限
 GC 键路径构造，不表示 GC 业务或整个 Go keypath 包已迁移。
+
+## 任务 5：规则、affinity 与资源组键（已完成）
+
+日期：2026-10-23（Asia/Shanghai）。准入已核验：批次 4 提交 `01b5b8f40`、
+上节 453 项 workspace 通过证据、GC 生产模块及独立测试注册均存在。
+Go `rule.go`、`resource_group.go`、`affinity.go` 相对规划基准 `5d5948052`
+无差异，schema 由 `absolute_key_path.go` 核验；仅根 AGENTS.md 适用。
+未修改只读总计划、来源主题、Go 生产、依赖、features 或 Cargo.lock。
+
+### 实现与边界
+
+[rule_resource_paths.rs](../../pkg/utils/keypath/rule_resource_paths.rs) 原位扩展
+canonical `astersql-pd-keypath`，在显式 `ClusterPaths` 上新增规则、规则组、
+region label、affinity 的 9 个键/前缀方法；资源组相对路径采用 10 个自由函数，
+另有 `parse_keyspace_resource_group_path` 和类型化 `ResourceGroupPathError`。
+[lib.rs](../../pkg/utils/keypath/lib.rs) 重导出并注册独立
+[rule_resource_paths_test.rs](../../pkg/utils/keypath/rule_resource_paths_test.rs)。
+
+Go 依据为三个来源文件全部公开函数与 resource_group_test.go 的 8 个解析场景：
+
+- `RuleCommonPathPrefix` 为 `/pd/C/rule`，不带尾 slash，同时命中 rules/rule_group；
+  各专用前缀保留尾 slash，独立集群上下文不串读。
+- 资源组键不含 cluster 或前导 slash；NullKeyspaceID 选择 legacy settings/states，
+  keyspace 0 与其他 ID 使用不补零十进制；service limit 对 Null 仍保留十进制 ID。
+- parser 输入是移除 settings/states 前缀后的 `ID/name`，首段为无符号十进制 u32，
+  保留 nested slash、`..`、Unicode 和空尾。无 slash 与非法 ID 分别返回 Go 原始错误文本；
+  不接受完整路径、符号、空白、非 ASCII 数字、下划线、十六进制或溢出。
+- 仅纯值键路径行为，不新增业务算法、JSON、存储或 watch；无需 MemoryStore/etcd 专属入口。
+
+### Go oracle、红绿灯和验证
+
+先串行运行 `make gotest GOTEST_ARGS='./pkg/utils/keypath -count=1'`，退出 **0**，
+2 个顶层测试通过，解析器 8 子场景与 region 1000 随机 ID 断言；包输出 0.240s。
+make 完成 failpoint disable 后才编辑/运行 Cargo；未留下生成 failpoint 文件。
+新增 [rule_resource_paths.go](../../scripts/rust-theme3-oracle/rule_resource_paths.go)，
+`main.go` 只增加分发。`go run ./scripts/rust-theme3-oracle rule_resource_paths`
+退出 **0**，输出 **157** 行，按相同字节固定到 Rust 测试 `GO_ORACLE`（转义字符串保留 TSV 空字段，避免源码尾随空白）。
+
+构造输入为 cluster `[0,42,u64::MAX]`，name
+`["","group","a/b","/a//../b/","规则"]`，keyspace `[0,1,42,u32::MAX-1,u32::MAX]`，
+资源组同类 name（Unicode 为 `资源`）。解析输入 20 项完整保存在 Go 场景与 Rust fixture，
+含原有 8 场景、`123/`、`123//x`、`00042/资源`、`+1/x`、`-1/x`、` 1/x`、
+`１/x`、`/x`、`1_0/x`、`0x1/x`、`1/a/../b` 和完整路径反例。
+所有返回键、解析 ID/组名与错误文本调用真实 Rust API 逐字节断言，无归一化；
+Python 对照 Go TSV 与通过断言后的 Rust ORACLE 行，**157/157 相等**，退出 **0**。
+另一个测试验证共同 watch prefix、跨 cluster/keyspace 隔离、32 次设置/状态路径反解及错误类型。
+
+红灯阶段最小实现错误地给共同前缀增加尾 slash，同一聚焦命令退出 **101**，
+**0 passed / 2 failed**：实际 `/pd/0/rule/` 与 Go `/pd/0/rule` 字节不等，
+且规则键不满足共同前缀断言。不是编译、缺符号或环境失败。
+仅移除共同前缀多出的 slash 后，原测试和断言不变：**2 passed / 0 failed / 0 ignored**。
+
+红灯、绿灯及 fixture 空白修正复验三个 Cargo 阶段依次原子 mkdir 动态领取槽位，实际均为 **1**，
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录计划/任务/会话/阶段及持有 shell PID：红灯 **96060**、绿灯 **96179**、最终复验 **97589**。
+阶段设置 EXIT/INT/TERM 清理，在 Cargo 及 fixture 子进程结束后删除自身 owner 并 rmdir，
+缓存保留；最终锁目录为空。所有 Cargo 及子进程继承上述绝对路径。
+
+| 确切命令 | 退出码与有效结果 |
+| --- | --- |
+| `cargo fmt --all`（红灯、绿灯及最终复验各一次） | 均 0，无无关格式差异 |
+| `cargo test --locked -p astersql-pd-keypath --lib rule_resource_paths -- --nocapture`（红灯） | 101；0 passed / 2 failed |
+| 同一聚焦命令（绿灯） | 0；2 passed / 0 failed / 0 ignored；157 条 Go 输出断言 |
+| `cargo metadata --format-version 1 --no-deps` | 0 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；仅既有 server 废弃字段警告 |
+| `cargo test --workspace --locked` | 0；**455 passed / 0 failed / 1 ignored**，78 个结果段，含 2 个 compile-fail doctest；ignored 为既有 TSO 单独二进制测试 |
+| `git diff --check` | 0 |
+
+已审查全部本任务生产、独立测试、Go 场景/分发和文档差异；无关元数据观测任务的
+编号文件改动保留原样且不纳入提交。本结论仅覆盖本任务键路径，不代表整个 Go 包迁移完成。

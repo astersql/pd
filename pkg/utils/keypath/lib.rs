@@ -17,3 +17,9 @@ pub use gc_paths::*;
 
 #[cfg(test)]
 mod gc_paths_test;
+
+mod rule_resource_paths;
+pub use rule_resource_paths::*;
+
+#[cfg(test)]
+mod rule_resource_paths_test;

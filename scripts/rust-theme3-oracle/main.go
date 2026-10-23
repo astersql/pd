@@ -11,6 +11,8 @@ func main() {
 	switch os.Args[1] {
 	case "cluster_paths":
 		clusterPaths()
+	case "rule_resource_paths":
+		ruleResourcePaths()
 	case "gc_paths":
 		gcPaths()
 	case "member_config_paths":
