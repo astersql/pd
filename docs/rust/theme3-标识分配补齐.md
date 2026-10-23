@@ -405,3 +405,89 @@ count 行为。同一组新断言完整保留后重跑。fixture 的既有 Go bu
 
 状态：已完成（本轮裁定的 Go SetBase 兼容范围）。编号任务完成后删除，
 不修改总计划或来源主题，不宣称整包或服务配置契约已完成。
+
+## 任务 4：键空间分配命名空间（批次 73）
+
+日期：2026-10-24（Asia/Shanghai）。批次 72 准入已核验：提交
+`264a516f213201f81d7fbff7a9429248b2169a81` 的实现与本文件任务 3 的
+红绿灯、双后端、640 passed / 0 failed / 1 ignored 回归证据均存在。
+本轮 `pkg/id/id.go`、`id_test.go` 相对规划基准无差异，不以编号文件删除推断完成。
+
+### Go 依据与实现边界
+
+只读依据：[id.go](../../pkg/id/id.go) 的 `NewAllocator`、`Alloc`、
+`SetBase`、`rebaseLocked`，以及
+[constant.go](../../pkg/keyspace/constant/constant.go)。KeyspaceLabel 选择
+集群级 `/pd/{cluster}/keyspaces/alloc_id`；两个 kernel 模式共享该持久键，
+普通上界 16777215，NextGen 上界 16776190，全局为 u64::MAX。
+这不是每个 keyspace 各自一套 allocator。字段、边界及错误流程均按源码核验。
+Go 测试未在本轮运行：etcdutil 读路径含 failpoint，遵守只读约束，
+不执行整包 Go 测试、make、注入、生成器或依赖整理，也不把源码推导称为运行差分。
+
+在 canonical [allocator.rs](../../pkg/id/allocator.rs) 原位扩展
+`Allocator::with_namespace`、`effective_end`；独立领域类型
+[AllocatorNamespace](../../pkg/id/allocator_namespace.rs) 提供 Global、Keyspace、
+KeyspaceNextGen。原 `Allocator::new` 继续构造全局分配器；无新依赖、feature、
+manifest、锁文件、配置或第二套 allocator。宿主显式选择模式，不引入全局环境。
+原有 store identity、取消、事务 CAS、leader value/lease/revision fencing 和
+不确定提交不重试行为保持原样，持久边界不绑定 lease。
+
+普通预留使用 saturating_add 后截断上界，保留旧持久 base，拒绝已达或超过
+上界的边界。与既有 Rust 安全语义一致；不复制 Go 在截断后 `end-step`
+可能回退并重用 ID 的普通预留问题。SetBase 则延续批次 72 的显式 Go 兼容裁决：
+拒绝 newBase>=effectiveEnd，按 uint64 回绕加 step 后截断，再以 end-step
+回绕计算 base；降低和截断均可能重用 ID，不宣称显式重置保证唯一性。
+
+### 已保存 Go 字节与真实后端断言
+
+- 路径复用 [cluster_paths_test.rs](../../pkg/utils/keypath/cluster_paths_test.rs)
+  的历史真实 `GO_ORACLE`：cluster=42 的 `alloc` 与 `keyspace_alloc` 两行，
+  原命令为 `go run ./scripts/rust-theme3-oracle cluster_paths`，历史退出 0。
+- 值复用 [存储端点任务 3](theme3-存储端点.md) 保存的真实运行证据：
+  `GOFLAGS=-mod=readonly go test -mod=readonly ./pkg/utils/typeutil -run
+  '^(TestBytesToUint64|TestUint64ToBytes)$' -count=1 -v`，历史退出 0、2 passed。
+  输入 1000、来源 `Uint64ToBytes`、输出 hex `00000000000003e8`。
+  本轮两个后端首次全局与 keyspace 预留均实际存储后逐字节比较此独立 Go 输出。
+  其他数值边界来自只读源码；未新增 Go 工具或手抄 Rust 输出作为 Go 预期。
+
+[allocator_namespace_test.rs](../../pkg/id/allocator_namespace_test.rs) 在
+[lib.rs](../../pkg/id/lib.rs) 显式注册，三个测试均以 `allocator_namespace_` 开头。
+纯值入口核对两种键和三个上界；memory/etcd 共用同一行为断言：
+全局/keyspace 各自从 1 开始、step=0 默认预留 1000、重建跨窗口批量分配、
+两个 kernel 模式共用 keyspace 持久边界、全局缓存及持久边界独立；
+两模式最后两个 ID、截断、耗尽、重建耗尽、SetBase 上界拒绝与截断/降低兼容。
+先 revoke 旧 lease，再尝试三个实例的缓存分配及 SetBase，均返回 NotLeader，
+持久边界保持 global=1000/keyspace=1006；新任期分别续分配为 1001/1007。
+真实 etcd 共同断言结束并释放连接后 stop/start 同一 WAL，重新 bootstrap/campaign，
+两命名空间分别从重启前持久边界 1003/1009 的下一 ID 继续。无断连/到期注入。
+fixture 复用已有唯一 helper 模块，仅只读 build 已有 Go 源码并输出槽位二进制，
+设置 GOFLAGS=-mod=readonly，不注入 failpoint；协议构建复用已有缓存。
+
+### TDD 与验证记录
+
+最小可编译构造入口先忽略 namespace，调用原全局构造函数；同一组断言红灯：
+两个后端 keyspace 首次实际返回 1001，期望 1，准确证明持久键串用。
+实现后相同测试与断言完整保留，3 passed / 0 failed / 0 ignored。
+
+动态按顺序领取槽位 **1**，持有 shell PID **40914**，owner 记录计划、任务、批次与会话。
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+全部 Cargo、fixture 及其子进程继承该绝对路径与 GOFLAGS；EXIT/INT/TERM trap
+负责释放自有锁，所有子进程结束后才释放，保留编译缓存。
+
+| 命令 | 退出码与有效测试数 |
+| --- | --- |
+| `cargo fmt --all`（红灯接口及实现后各一次） | 各 0；无其他 Rust 文件格式差异。 |
+| `cargo test --locked -p astersql-pd-id --lib allocator_namespace -- --nocapture`（红灯） | 101；1 passed / 2 failed；两个后端均为 1001 != 1。 |
+| 同上（绿灯） | 0；3 passed / 0 failed / 0 ignored。 |
+| `cargo metadata --format-version 1 --no-deps` | 0；非行为检查。 |
+| `cargo fmt --all -- --check` | 0；非行为检查。 |
+| `cargo check --workspace --locked` | 0；非行为检查。 |
+| `cargo test --workspace --locked` | 0；643 passed / 0 failed / 1 既有 ignored，85 个 test result 汇总（含 doc tests）。 |
+| `git diff --check`、证据 Markdown 相对链接核验 | 0；48 个相对链接均存在。 |
+| 源码 Go/模块路径与 SHA-256 前后核验 | 0；1101 个文件完全一致，相关 Git 状态为空。 |
+| 完整回归前后缓存 Go/模块路径与 SHA-256 核验 | 0；1715 个既有缓存文件完全一致，未重新生成协议源。 |
+
+状态：已完成。所有 Cargo、fixture 及子进程结束，持有 shell 的 jobs 为空，
+退出 trap 已释放槽位 1 的自有 owner/锁，保留缓存。
+审查范围仅 allocator 原位扩展、namespace 类型、独立测试、显式注册与本节证据；
+未修改总计划、来源主题、Go 或模块文件。workspace 保留既有 deprecated 字段告警。

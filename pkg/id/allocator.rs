@@ -34,27 +34,46 @@ pub struct Allocator {
     cancel: CancellationToken,
     key: Vec<u8>,
     step: u64,
+    effective_end: u64,
     window: Mutex<Window>,
 }
 impl Allocator {
-    pub fn new(
+    /// Construct an allocator with an explicit scope and keyspace kernel mode.
+    pub fn with_namespace(
         store: Arc<dyn MetaStore>,
         leader: Arc<Leadership>,
         cancel: CancellationToken,
         step: u64,
+        namespace: crate::AllocatorNamespace,
     ) -> Result<Self, AllocatorError> {
         if !leader.uses_store(&store) {
             return Err(AllocatorError::StoreMismatch);
         }
-        let key = format!("/pd/{}/alloc_id", leader.cluster_id()).into_bytes();
+        let key = namespace.key(leader.cluster_id());
         Ok(Self {
             store,
             leader,
             cancel,
             key,
             step: if step == 0 { DEFAULT_ALLOC_STEP } else { step },
+            effective_end: namespace.effective_end(),
             window: Mutex::new(Window::default()),
         })
+    }
+    /// Construct the existing global allocator.
+    pub fn new(
+        store: Arc<dyn MetaStore>,
+        leader: Arc<Leadership>,
+        cancel: CancellationToken,
+        step: u64,
+    ) -> Result<Self, AllocatorError> {
+        Self::with_namespace(
+            store,
+            leader,
+            cancel,
+            step,
+            crate::AllocatorNamespace::Global,
+        )
     }
     /// Return the next ID after validating the term at a linearization point.
     pub async fn alloc(&self) -> Result<u64, AllocatorError> {
@@ -69,12 +88,12 @@ impl Allocator {
     pub async fn set_base(&self, new_base: u64) -> Result<(), AllocatorError> {
         let reset = async {
             let mut window = self.window.lock().await;
-            if new_base == u64::MAX {
+            if new_base >= self.effective_end {
                 return Err(AllocatorError::Exhausted);
             }
             window.end = new_base;
             // Go uint64 addition wraps here, unlike ordinary Rust reservations.
-            let end = new_base.wrapping_add(self.step);
+            let end = new_base.wrapping_add(self.step).min(self.effective_end);
             let commit = self
                 .leader
                 .transact(vec![], vec![Mutation::put(&self.key, &end.to_be_bytes())])
@@ -102,7 +121,7 @@ impl Allocator {
         let mut window = self.window.lock().await;
         for _ in 0..count {
             self.leader.validate().await?;
-            if window.next == u64::MAX {
+            if window.next >= self.effective_end {
                 return Err(AllocatorError::Exhausted);
             }
             if window.next == window.end {
@@ -121,10 +140,10 @@ impl Allocator {
                         ),
                         None => 0,
                     };
-                    if base == u64::MAX {
+                    if base >= self.effective_end {
                         return Err(AllocatorError::Exhausted);
                     }
-                    let end = base.saturating_add(self.step);
+                    let end = base.saturating_add(self.step).min(self.effective_end);
                     let compare = match entry {
                         Some(e) => Compare::ModRevision(self.key.clone(), e.mod_revision),
                         None => Compare::CreateRevision(self.key.clone(), 0),
