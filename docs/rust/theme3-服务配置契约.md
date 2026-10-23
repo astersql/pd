@@ -1230,3 +1230,76 @@ SHA-256，与任务开始完全一致，Go/模块 Git 状态为空。只读 plan
 已审查生产值类型、独立测试、lib.rs 注册及本文差异，无依赖变更、无无关 Rust
 格式化。槽位 1 的 owner 与锁已释放，保留缓存；其他编号任务文件已有删除
 不纳入本任务提交。
+
+## 批次 92：复制模式配置值
+
+日期：2026-10-24（Asia/Shanghai）。前置批次 91 经提交 `e5e0795cc`、
+canonical KeyspaceConfig、六项独立测试和本文 713 passed / 0 failed /
+1 ignored 完整回归证据确认完成，批次 92 准入满足。已读执行技能、根
+AGENTS.md、Copilot、ADR-001 和移植指南；server/docs 无更深 AGENTS.md。
+config.go/config_test.go 相对规划基准
+`5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异。
+
+### Go 依据与实现边界
+
+- `server/config/config.go:815–842::ReplicationModeConfig/Clone/adjust/NormalizeReplicationMode`：
+  Normalize 先转小写、下划线转连字符，只接受 majority/dr-auto-sync，不裁剪空白；
+  非法值返回空。adjust 在模式字段缺失或非法时覆盖为 majority，合法输入的原文
+  保留，并无条件调整 DR 子配置。Clone 按值复制，无共享可变集合。
+- `config.go:845–861::DRAutoSyncReplicationConfig/adjust` 及常量 227：
+  wait-store-timeout 仅在 metadata 缺失时无条件取 60s；显式零值、负值和非零值
+  保留，不调整 wait-recover-timeout、副本数、label、primary/dr 或 split 开关。
+  两项 duration 复用 canonical Duration；Go int 按当前 64 位目标映射为 i64。
+  JSON 字段顺序/命名保留，pause-region-split 使用 JSON 字符串布尔值。
+- `config_test.go::TestReplicationMode` 实测 DR 模式、zone/zone1/zone2、2/1 副本、
+  120s 等待与空配置 majority；`TestClone` 实测调整后 clone 相等。本轮只读运行
+  整个配置包，复核 TestMain 仅 goleak/WaitForEtcdConnections，现有配置测试无
+  failpoint.Enable 和生成器调用；已有 failpoint 注入仅在持久化路径，不是这些
+  测试的依赖。未注入或启停 failpoint，也未创建 Go oracle。
+  新增大小写、空白、非法模式、i64 边界和 clone 独立性断言来自只读源码推导，
+  明确不冒充新增跨语言运行差分。
+
+canonical crate 新增 `replication_config.rs::ReplicationModeConfig`、
+`DRAutoSyncReplicationConfig`、两项 adjust、`normalize_replication_mode` 和
+`decode_toml_replication_mode`。TOML helper 接受不含外层 replication-mode header
+的内部表，保留嵌套字段 presence，区分 TOML 原生布尔与 JSON 字符串布尔。
+六项独立 replication_config_* 测试位于 replication_config_test.rs，在 lib.rs
+显式注册。不实现 sc.ReplicationConfig、复制业务、启动或热更新。纯配置值任务
+无需后端双入口，无新增依赖、Cargo.lock 变更或无关 Rust 格式化。
+
+编码证据复用本文 batch84-missing / batch84-explicit-zero 两份已有原始 Go
+配置日志；测试从原始行截取整个 replication-mode JSON token，与调整后的
+Rust 整体字节逐字比较，并反序列化回同值。两份 Go 输入均未设置复制模式，
+编码证据限于这两份默认配置；其他非默认编码测试为 Rust roundtrip/源码断言，
+不宣称任意输入的跨语言 JSON 字节等价。未将 Rust 输出手抄为 Go 预期。
+
+### 本轮验证
+
+红灯、绿灯与基线阶段分别以原子 mkdir 动态领取共享槽位 **1**，
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录计划、任务、会话和持有 shell PID；EXIT/INT/TERM 处理清理自己的
+owner 和锁，子进程全部结束后才释放，保留缓存。所有 Cargo 子进程继承该绝对
+路径与 `GOFLAGS=-mod=readonly`。已复核既有 etcd fixture 只读构建已有 Go，
+其二进制及数据位于槽位；proto 构建读取已锁定缓存，本轮未重建 proto。
+
+先增加可编译的空调整/归一化接口及六项测试，指定聚焦命令得到真实红灯
+**1 passed / 5 failed / 0 ignored，退出 101**，命中模式、缺失默认、DR 等待、
+clone 的默认值及原始 Go JSON 字节断言。最小实现后保持同组六项断言，全部通过。
+
+| 确切命令 | 退出码与有效证据 |
+| --- | --- |
+| `cargo fmt --all` | 0；红灯/绿灯阶段先格式化，仅本任务 Rust 文件变化 |
+| `cargo test --locked -p astersql-pd-server-config --lib replication_config -- --nocapture` | 红灯 101：1 passed / 5 failed；绿灯 0：6 passed / 0 failed / 0 ignored |
+| `go test -mod=readonly ./server/config -count=1` | 0；已有配置包通过，1.163s |
+| `cargo metadata --format-version 1 --no-deps` | 0 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；仅既有 core_region_adapter.rs:134 cpu_usage deprecated 警告 |
+| `cargo test --workspace --locked` | 0；719 passed / 0 failed / 1 既有 ignored，含真实 etcd；配置 crate 49 项通过 |
+| `git diff --check` | 0 |
+
+本轮状态：**已完成**。完整回归后核对 1101 个 Go/模块文件的路径集合和
+SHA-256 与任务开始完全一致，Go/模块 Git 状态为空。只读 plan.md 指纹保持
+`c7968f95a13d0d216ced3adafaca3140ad6ef959ff693c613cb903b231a6f777`。
+已审查生产值类型、独立测试、lib.rs 注册及本文差异，未改依赖和锁文件。
+全部 Cargo/fixture 子进程结束后槽位 1 的 owner 与锁已释放，缓存保留；
+其他编号任务文件已有删除不纳入本任务提交。

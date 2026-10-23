@@ -45,3 +45,9 @@ pub use keyspace_config::*;
 
 #[cfg(test)]
 mod keyspace_config_test;
+
+mod replication_config;
+pub use replication_config::*;
+
+#[cfg(test)]
+mod replication_config_test;
