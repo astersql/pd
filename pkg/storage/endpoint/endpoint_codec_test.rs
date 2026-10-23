@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 #[path = "../kv/etcd_fixture_test.rs"]
 #[allow(dead_code)]
-mod fixture;
+pub(super) mod fixture;
 
 #[derive(Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]

@@ -26,7 +26,7 @@ pub enum LoadState {
 }
 /// Shared store with caller-supplied absolute keys; no global cluster state.
 pub struct StorageEndpoint {
-    store: Arc<dyn MetaStore>,
+    pub(crate) store: Arc<dyn MetaStore>,
 }
 impl StorageEndpoint {
     /// Use the canonical MetaStore supplied by the host.

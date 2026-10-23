@@ -6,3 +6,8 @@ pub use endpoint_codec::protobuf;
 pub use endpoint_codec::{EndpointError, LoadState, StorageEndpoint};
 #[cfg(test)]
 mod endpoint_codec_test;
+
+mod cluster_id;
+pub use cluster_id::{ClusterIdError, cluster_id_candidate};
+#[cfg(test)]
+mod cluster_id_test;

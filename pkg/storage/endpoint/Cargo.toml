@@ -10,6 +10,9 @@ path = "lib.rs"
 
 [dependencies]
 astersql-pd-storage-kv.workspace = true
+astersql-pd-keypath.workspace = true
+tokio.workspace = true
+tokio-util.workspace = true
 serde = { workspace = true, features = ["derive"] }
 serde_json.workspace = true
 prost.workspace = true
@@ -17,4 +20,3 @@ thiserror.workspace = true
 
 [dev-dependencies]
 astersql-pd-proto.workspace = true
-tokio.workspace = true

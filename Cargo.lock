@@ -292,6 +292,7 @@ dependencies = [
 name = "astersql-pd-storage-endpoint"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-keypath",
  "astersql-pd-proto",
  "astersql-pd-storage-kv",
  "prost",
@@ -299,6 +300,7 @@ dependencies = [
  "serde_json",
  "thiserror 2.0.21",
  "tokio",
+ "tokio-util",
 ]
 
 [[package]]

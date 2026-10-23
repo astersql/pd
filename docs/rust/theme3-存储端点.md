@@ -1701,3 +1701,108 @@ CallerComponent=pd；真实 Go 编码 hex 为
 Go/模块文件。Git Go 差异为空。只审查并提交 endpoint crate、最小 manifest/lock
 连线、本证据节和编号任务清理；不修改只读 plan.md、来源主题及其他在途计划。
 共享槽位锁已释放，缓存保留。批次 21 本验证故事已完成，不表示后续业务端点完成。
+
+## 任务 3：集群标识初始化（批次 22，2026-10-23）
+
+### 准入、Go 依据和兼容边界
+
+批次 21 提交 `b3104ff54` 及前节红绿灯/502 项 workspace 通过证据已核验；
+canonical endpoint crate 和共享 fixture 存在。本轮只实现 cluster ID 初始化和
+MCS 只读等待。`cluster_id.go`、`cluster_id_test.go` 相对规划基准
+`5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异。
+
+只读 Go 依据：`getClusterIDFromEtcd` 缺失返回 0，非空/空损坏值交由
+`typeutil.BytesToUint64` 检查严格 8 字节；`InitClusterID` 先廉价读取非零 ID，
+否则 `initOrGetClusterID` 使用 CreateRevision == 0 / Put / Else Get 原子事务。
+失败分支要求一个响应、一个键值；竞争失败者解析同事务读取的胜出值，不重试写入。
+已有零值仍占用键，因此候选不能覆写它。候选计算为 uint64 秒左移 32 位加随机
+uint32，溢出保持 Go uint64 语义。时间和随机输入由 Rust 宿主提供。
+
+`InitClusterIDForMs` 只读取，缺失/零/坏值/读错误均重试，间隔来自
+`constant.RetryInterval`（500ms）。Go 使用全局 keypath 缓存且取消分支的命名 err
+被内层 err 遮蔽，可能返回 nil；Rust 遵循本任务的无全局 ID、等待支持取消边界，
+返回读取到的 u64 或 canonical `StoreError::Cancelled`，并可中断在途读。
+这是显式的 Rust 取消结果，不宣称复现 Go 的 nil 返回或进程全局缓存副作用。
+库不建立 runtime、后台任务或独立 MetaStore，调用方可丢弃初始化 future。
+
+### 真实 Go 运行和字节证据
+
+已审查现有 `TestInitClusterID` / TestMain / NewTestEtcdCluster / 连接清理入口；
+目标测试不启用也不依赖 failpoint 注入。etcdutil 的可选注入站点不属于本测试
+所需行为。只执行既有测试，未写 Go oracle；GOFLAGS 与命令均固定 readonly。
+以下命令退出 0：
+
+- `GOFLAGS=-mod=readonly go test -mod=readonly ./pkg/storage/endpoint -run
+  '^TestInitClusterID$' -count=1 -v`：1 项通过，真实 etcd 验证从缺失到非零、重复
+  初始化相同 ID、读取一致。未运行完整 endpoint/storage oracle：storage 相邻
+  测试要求 failpoint，完整命令不符合本任务只读条件；不把所选单测当整包通过。
+- `GOFLAGS=-mod=readonly go test -mod=readonly ./pkg/utils/typeutil -run
+  '^(TestBytesToUint64|TestUint64ToBytes)$' -count=1 -v`：2 项通过。
+  既有 `conversion_test.go` 实际调用与 cluster ID 相同的编码函数并精确断言
+  输入 1000 输出 hex `00000000000003e8`，反向解码为 1000。
+  Rust 两后端保存后与该 Go 输出比较，未以 Rust 生成值充当 Go 预期。
+  候选溢出、错误长度和 MCS 的 Go 依据为源码推导，未伪称额外 Go 运行差分。
+
+### 实现与 TDD
+
+- `cluster_id.rs` 扩展 canonical `StorageEndpoint`：`get_cluster_id`、
+  `init_cluster_id`、`wait_cluster_id`；`cluster_id_candidate` 为纯值计算。
+  `ClusterIdError` 区分存储错误、错误长度、事务响应冲突。复用现有
+  `CLUSTER_ID_PATH`、MetaStore 原子 raw transaction 与大端字节，无 protobuf
+  泄漏或新依赖版本。manifest/lock 仅引用既有 keypath / tokio / tokio-util。
+- 独立 `cluster_id_test.rs` 在 lib.rs 显式注册，MemoryStore 与真实 etcd 共用
+  contract：缺失、Go 字节、读取、重复初始化不改变 entry revision、坏长度
+  0/1/7/9、CAS 失败分支解码及不覆写坏值、既有零值和新建零候选、16 个初始化者
+  同时竞争。并发阶段直接进入生产 CAS helper，确保竞争者确实提交条件事务，
+  所有返回同一候选且持久化相同值；公开初始化入口另验证读及创建路径。
+- MCS：缺失等待先轮询 30ms；写入坏值、零值分别轮询 550ms 仍不完成；写入 Go
+  字节后 2 秒内得到 1000。只读等待不生成 ID；空键等待后取消在 200ms 内返回
+  Cancelled 且键仍缺失；已有 ID 时预取消也返回 Cancelled。
+- 真实断连时序：先保存 1000，fixture `stop` 确认停服，再轮询等待读 30ms 证明
+  仍在途，取消后 200ms 内结束；同 WAL `start` 确认重启后 ID 与 Go 字节未变。
+  无模拟核心事务、忽略测试或断连后盲目重试写。
+- 初始可编译接口仅返回候选而未持久化。红灯命令
+  `cargo test --locked -p astersql-pd-storage-endpoint --lib cluster_id -- --nocapture`
+  退出 101：1 passed / 2 failed / 0 ignored；两个后端均在真实持久化字节断言
+  失败，实际 `[]`，预期 `[0,0,0,0,0,0,3,232]`。
+- 实现后同命令退出 0：原 3 项全部通过；保留原断言并补充实际 CAS 分支和断连
+  取消检查后最终同命令退出 0，4 passed / 0 failed / 0 ignored。
+
+首轮 workspace 回归发现测试装配问题（退出 101）：endpoint 的 7 项中 6 passed /
+1 failed，失败在共享 fixture 启动阶段 `etcd fixture exited`，不是业务断言。
+新旧测试模块分别 `#[path]` 引入同一个 helper，产生两套进程内 NEXT 计数器；
+目录公式只有 PID 和 NEXT，因而同进程都从 `etcd-contract-<pid>-0` 开始。
+另一个 fixture 的正常清理也会删除该目录。修复仅将现有 codec 测试的 fixture
+模块可见性改为 `pub(super)`，新测试直接复用该模块，保持单一 BINARY/NEXT 和
+原 helper 生命周期；没有复制或修改 kv helper、Go fixture 源码或其他业务行为。
+
+### 最终验证与共享槽位
+
+所有 Cargo 阶段从仓库根用原子 mkdir 依次动态领取首个可用锁，本轮均为槽位
+**1**，`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+锁内记录计划、任务、会话和 shell PID；EXIT/INT/TERM trap 负责清理自己的 owner
+与锁目录，阶段等待 Cargo 和 fixture 全部退出后释放，保留缓存。fixture 构建继承
+GOFLAGS=-mod=readonly，仅构建既有 Go 源；运行仅写槽位内隔离目录。
+
+下表是修复 fixture 模块复用之后的完整最终阶段；各命令退出码均为 **0**：
+
+| 命令 | 有效结果 |
+| --- | --- |
+| `cargo fmt --all` | Rust 修改后先格式化；未改动其他 Rust 文件 |
+| `cargo test --locked -p astersql-pd-storage-endpoint --lib cluster_id -- --nocapture` | 4 passed / 0 failed / 0 ignored，包含两个后端与断连取消 |
+| `cargo metadata --format-version 1 --no-deps` | canonical endpoint lib target 已注册 |
+| `cargo fmt --all -- --check` | 格式通过 |
+| `cargo check --workspace --locked` | workspace 检查通过；仅既有 server cpu_usage 弃用警告 |
+| `cargo test --workspace --locked` | 506 passed / 0 failed / 1 既有 ignored，含 doc-tests；endpoint 7 项全通过 |
+| `git diff --check`、`git diff --cached --check` | 差异审查通过 |
+
+初增依赖引用时 `cargo check --workspace` 退出 0，同步锁后已审查只新增两个既有
+本地/已锁依赖引用；后续检查与测试全部使用 --locked。开始与结束逐项 SHA-256
+核对 1101 个 Go/模块文件，全部相同；Go Git 差异为空，未跟踪 Go/模块文件为 0。
+无 failpoint、Go 生成、Go 格式化、依赖整理或 Go 模块修改。
+
+审查范围为新 cluster_id 实现/独立测试、codec store 的 crate 内可见性、现有
+测试 fixture 的父模块可见性、lib 注册、endpoint manifest/lock、当前证据节和
+任务文件清理。来源 plan.md、来源史诗及其他在途计划保持开始时原样。
+槽位锁已释放，缓存保留。批次 22 此验证故事已完成，不扩大为服务启动或整个
+endpoint Go 包迁移完成。
