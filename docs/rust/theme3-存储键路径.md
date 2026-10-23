@@ -270,8 +270,9 @@ keypath 自身不读写、不创建事务、不 watch、不申请 lease；只有
 
 ## 已有 Rust 能力、硬编码及缺口
 
-当前 `pkg/utils/keypath/` 无 Rust 文件、Cargo.toml 或 crate 注册；
-`astersql-pd-keypath` 及任务 2–7 所列 `*_paths.rs`/`*_test.rs` 均为拟建。
+在任务 1 的 `d36a252c` 基准快照中，`pkg/utils/keypath/` 无 Rust 文件、Cargo.toml
+或 crate 注册；当时 `astersql-pd-keypath` 及任务 2–7 所列文件均为拟建。
+此为历史盘点，非当前状态；回退后复验时已有 canonical crate、13 个 Rust 文件及测试注册。
 现有 Rust 键 schema 硬编码位置如下；HTTP `/pd/api/v1/*` 是路由，不算存储键。
 
 | 当前源码 | 硬编码键与已有测试 | 后续责任 |
@@ -288,7 +289,8 @@ keypath 自身不读写、不创建事务、不 watch、不申请 lease；只有
 scan、watch replay/cancel/compaction、lease expiry/renew/revoke、fencing 等底座。
 这些不含 Go keypath 全集，不能据此宣称 endpoint/schema 等价。
 工厂 `pkg/runtime/node.rs` 接收同一个 MetaStore，装配 Member→Allocator→Oracle；
-不引入第二套 MetaStore 或私有运行时。当前 storage crate 尚非 kv 下沉后布局。
+不引入第二套 MetaStore 或私有运行时。任务 1 当时的 storage crate 尚非 kv 下沉后布局；这是历史快照。
+回退后复验时已存在 `astersql-pd-storage-kv`，storage facade 重导出该 crate。
 本轮没有 Rust 新测试、没有新增测试运行数，也没有声称现有测试刚刚通过。
 
 ## Go 断言与未覆盖原因
@@ -303,9 +305,9 @@ scan、watch replay/cancel/compaction、lease expiry/renew/revoke、fencing 等�
 - `pkg/storage/endpoint/cluster_id_test.go` 检查 cluster ID 初始化与重复读取；
   `gc_states_test.go`、`gc_state_batch_test.go`、`tso_keyspace_group_test.go` 是相邻
   业务测试。对应生产包其他行为由调用方测试覆盖，不等于 keypath 值全集已测试。
-- task 2–7 实施时须按各任务执行 Go oracle 和 Rust 红绿；当前缺 crate/纯值测试、
-  无全量实际跨语言字节差分，原因是本任务明确为文档盘点。缺口全部归上述任务或
-  上层领域主题，不在本轮用编译、mock 或历史测试结果代替。
+- 任务 1 当时缺 crate/纯值测试与全量运行差分，已分配到任务 2–7 或上层主题。
+  这是 `d36a252c` 时的覆盖快照；后续实现与本次复验见各节。旧任务允许新增
+  Go oracle 的流程已被用户 Go 完全只读要求覆盖，只能复用历史输出和只读依据。
 
 ## 本轮验证
 
@@ -359,7 +361,7 @@ rg -n '^(func |type |pub |    pub )' pkg/utils/keypath/absolute_key_path.go pkg/
   例如 `/pd/0/raft/s/00000000000000000000`、
   `/pd/42/raft/r/09999999999999999999`、
   `/pd/18446744073709551615/raft/r/18446744073709551615`。
-- 18 条解析输入及结果完整保存在上述 Go 工具和 Rust oracle 常量。
+- 18 条解析输入及结果保存在历史提交中的 Go 工具和现有 Rust oracle 常量。
   覆盖空串/全零、裸数字/前导零、u64 最大值/溢出、正负号/空格/下划线/
   Unicode/非法尾字符、当前与其他集群完整键。先剥当前 prefix，再去全部前导零；
   零值构造有效但反解为空串而失败；裸 `123` 成功、错误集群完整键失败。
@@ -591,7 +593,7 @@ make 完成 failpoint disable 后才编辑/运行 Cargo；未留下生成 failpo
 
 构造输入为 cluster `[0,42,u64::MAX]`，name
 `["","group","a/b","/a//../b/","规则"]`，keyspace `[0,1,42,u32::MAX-1,u32::MAX]`，
-资源组同类 name（Unicode 为 `资源`）。解析输入 20 项完整保存在 Go 场景与 Rust fixture，
+资源组同类 name（Unicode 为 `资源`）。解析输入 20 项完整保存在历史提交中的 Go 场景与现有 Rust fixture，
 含原有 8 场景、`123/`、`123//x`、`00042/资源`、`+1/x`、`-1/x`、` 1/x`、
 `１/x`、`/x`、`1_0/x`、`0x1/x`、`1/a/../b` 和完整路径反例。
 所有返回键、解析 ID/组名与错误文本调用真实 Rust API 逐字节断言，无归一化；
@@ -666,7 +668,7 @@ make 已完成 failpoint disable，随后才编辑和运行 Cargo；检查无生
 
 输入：cluster `0,42,u64::MAX`；ID `0,1,42,99999,100000,16777215,99999999,
 100000000,u32::MAX`；字符串 `空串,group,a/b,/a//../b/,键空间`；另有 14 个 matcher
-输入，完整保存在 Go 场景与 Rust fixture，覆盖无 cluster 前缀、任意前导字符、重复
+输入，完整保存在历史提交中的 Go 场景与现有 Rust fixture，覆盖无 cluster 前缀、任意前导字符、重复
 membership 段、4/5/6/10 位、Unicode 数字、符号、非法字符和尾 slash。
 Rust 测试调用真实 API，逐项 `as_bytes()` 断言并输出实际 `ORACLE` 行；Python
 将真实 Go TSV 与 Rust stdout 排序比对，退出 **0**，**137/137 完全相等**。
@@ -742,7 +744,7 @@ Go 生产差异。原有测试没有直接覆盖注册/标记/维护函数，新
 **186** 条 TSV，作为 Rust 测试的 `GO_ORACLE` 固定预期。输入 cluster 为
 `0,42,u64::MAX`；name 为 `空串,tso,scheduling,a/b,/a//../b/,.,..,维护`；
 addr 为 `空串,127.0.0.1:2379,http://[::1]:2380/a/../,/a//../b/,服务`；
-另有 9 条 prefix 输入，完整保留在 Go 场景及 Rust fixture 中。
+另有 9 条 prefix 输入，完整保留在历史提交中的 Go 场景及现有 Rust fixture 中。
 Rust 调用实际 API 并逐条 `as_bytes()` 断言，再输出实际 ORACLE 行。
 Python 对 Go TSV 与去掉 `ORACLE\t` 标记的 Rust stdout 排序比对，退出 **0**，
 **186/186 字节相等**。另一个测试验证尾 slash、空地址/任务、服务前缀边界、
@@ -837,3 +839,61 @@ Go 回退验收：`git diff --exit-code d36a252c3157c8aeba5a4ff273f2b82d59f4d808
 `git ls-files --others --exclude-standard -- '*.go'` 输出为空。
 这证明工作区/暂存树均与本轮基准一致，未暂存和未跟踪 Go 差异为零。
 任务 2 已完成本次复验；其余已完成任务的逐项复验由各自会话继续记录。
+
+## Go 回退后批次 1–7 复验汇总（2026-10-23）
+
+统一 Go 回退提交为 `08aeb510df5a2493964ffadbc7c3f67ead80011e`，
+Go 比较基准为 `d36a252c3157c8aeba5a4ff273f2b82d59f4d808`。
+下表记录各原会话已经完成并由主会话提供的结果，本次文档整理没有重跑测试。
+复验时 HEAD 均为该回退提交，Rust 测试针对当时工作树，包含任务 16 保留的未提交
+Rust 变更；不代表纯 HEAD checkout 的验证，也不作为任务 16 完成证据。
+本次复验未运行 Go oracle、未生成 Go 工具、未启停 failpoint。
+历史 fixture 属于以前真实 Go 输出的冻结记录，当前 Rust 对其通过不等于本次重新运行 Go 差分。
+
+### 批次 1：清单与只读来源
+
+原会话使用 Python 标准库校验，退出 0：12 个 Go 文件哈希与原盘点一致，
+76 个公开 func/type 声明完整，任务 1 的来源路径和全证据文档 Markdown 链接有效。
+重新读取了 Go 的 cluster ID、store 反解、资源组解析及当前 Rust manifest/模块注册。
+以下命令均退出 0：
+
+```sh
+rg -n '^(func |type |pub |    pub )' pkg/utils/keypath/absolute_key_path.go pkg/utils/keypath
+git diff --check -- docs/rust/theme3-存储键路径.md pkg/utils/keypath
+git diff --exit-code d36a252c3157c8aeba5a4ff273f2b82d59f4d808 -- '*.go'
+git diff --cached --exit-code d36a252c3157c8aeba5a4ff273f2b82d59f4d808 -- '*.go'
+```
+
+未跟踪 Go 文件扫描为空；文档任务有效测试数为 0（不适用），没有运行 Go/Cargo，
+未领取槽位、未恢复已删除任务文件。原盘点中的“尚无 Rust/未下沉”已在上文明示历史快照。
+已删除 oracle 的引用均为历史文本或 `git show` 溯源，不作为当前工作树工具链接。
+
+### 批次 2–7：原会话实际运行结果
+
+表中聚焦命令的公共部分为：
+`cargo test --locked -p astersql-pd-keypath --lib FILTER -- --nocapture`，
+将 FILTER 替换为各行过滤器即为原会话确切命令。所有聚焦运行退出码均为 0。
+
+| 批次 / FILTER | 有效测试结果 | 历史输出与只读依据 | 实际动态槽位 |
+| --- | --- | --- | --- |
+| 2 / `cluster_paths` | 3 passed / 0 failed / 0 ignored | 70 条冻结输出，来源提交 `6c1de2263`；详见上一节 | 1 |
+| 3 / `member_config_paths` | 2 passed / 0 failed / 0 ignored | 263 条 fixture 与 `626433162` 一致；已核验现有 Go 格式和分支 | 1 |
+| 4 / `gc_paths` | 2 passed / 0 failed / 0 ignored | Rust 输出 372/372 匹配；fixture 与 `01b5b8f40` 一致；14 个方法分支、补零、尾 slash 和原样 ID 已核验 | 1 |
+| 5 / `rule_resource_paths` | 2 passed / 0 failed / 0 ignored | 157 条 fixture 与 `b54240084` 一致；Go 构造、prefix、Null 分支和解析错误已核验 | 1（PID 79378） |
+| 6 / `keyspace_time_paths` | 2 passed / 0 failed / 0 ignored | 137 条历史 fixture 与当前只读 Go 规则一致，未重新生成输出 | 3 |
+| 7 / `registry_marker_paths` | 2 passed / 0 failed / 0 ignored | fixture 与原提交一致，Rust 输出 186/186 匹配；177 条格式化路径与 Go schema 核对，另 9 条为 path.Dir 边界 | 1（PID 79280） |
+
+槽位 1 的绝对目录为 `/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`，
+槽位 3 为 `/Users/Shared/work/dir/data/codes/pd/target/rust-slot-3`；各原会话均通过原子
+mkdir 动态领取，设置对应绝对 `CARGO_TARGET_DIR`，结束后释放自己的锁并保留缓存。
+批次 6 释放后的槽位被其他复验领取，不应清理其他持有者的锁。
+批次 7 另运行 `cargo fmt -p astersql-pd-keypath -- --check`，退出 0。
+
+任务 2 在回退后完成公共基线：`cargo metadata --format-version 1 --no-deps`、
+`cargo fmt --all -- --check`、`cargo check --workspace --locked` 均退出 0；
+`cargo test --workspace --locked` 退出 0，491 passed / 0 failed / 1 既有 ignored。
+这是任务 2 原会话证据，由主会话确认，不是本文整理时新执行。
+
+各原会话的 Go 与模块文件检查均报告相对基准零差异，无未跟踪 Go 文件；
+范围内 `git diff --check` 均退出 0。只读复验阶段没有编辑源码、测试、文档或计划，
+没有提交、恢复旧 oracle 或任务文件。本节仅整理该轮证据，本次文档提交不包含其他会话变更。
