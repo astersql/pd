@@ -289,6 +289,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "astersql-pd-storage-endpoint"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-proto",
+ "astersql-pd-storage-kv",
+ "prost",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.21",
+ "tokio",
+]
+
+[[package]]
 name = "astersql-pd-storage-kv"
 version = "0.1.0"
 dependencies = [

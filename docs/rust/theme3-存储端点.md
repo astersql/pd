@@ -1596,3 +1596,108 @@ Go 文件只读，未运行 go list 或构建脚本。
 本轮为文档事实清单，TDD/测试运行不适用；无 Cargo 槽位、无有效测试数量可报告。
 批次 20 的文件、公开符号、值类型、key/value、事务、watch/lease、加密和缺口归属均已盘点；
 仅该盘点完成，不表示任何后续实现或来源史诗完成。其他在途计划变更不纳入本提交。
+
+## 任务 2：端点编码基础（批次 21，2026-10-23）
+
+批次 20 提交 `b79e49d0a15fd0aae9a0053c9c16ecf52aad8e66` 的盘点及批次 19
+准入已核验；来源 endpoint.go / util.go 相对规划基准无差异。以下为本轮实现与运行
+证据，不改变上文任务 1 的历史审计结论。新 canonical crate 为
+`astersql-pd-storage-endpoint`，默认 features，无新增 crate feature、外部依赖版本
+或平行 MetaStore。根 manifest 仅注册该 member / workspace dependency，锁文件
+仅增加该本地 package 及既有依赖引用。
+
+### 实现与覆盖边界
+
+- `pkg/storage/endpoint/endpoint_codec.rs`：StorageEndpoint 持有宿主传入的
+  Arc<dyn MetaStore>，每次接收显式绝对 key，无全局 cluster ID 或私有 runtime。
+  load 返回 Missing / Empty / Value，保留物理存在状态；load_json 将缺失/空字节
+  返回 T::default，顶层 JSON null 同样返回默认值；坏数据为 JsonUnmarshal。
+  save_json 先编码再保存，编码错误不覆写旧值，存储失败保留 StoreError。
+- `protobuf` 是公开的持久化协议适配模块，prost 只在该边界；save 编码到 bytes
+  再写，load 对缺失/空值返回 None，坏非空数据为 ProtoUnmarshal。领域 endpoint
+  的 JSON / load API 不暴露生成 protobuf 类型。两类写入均使用 canonical Base，
+  无 lease，不另建事务后端。
+- `endpoint_codec_test.rs` 在 lib.rs 显式注册；endpoint_codec_memory 与
+  endpoint_codec_etcd 共用 contract。真实 etcd 复用 ../kv/etcd_fixture_test.rs，
+  fixture 使用随机 loopback 端口、独立目录、EOF 退出并等待子进程。
+- 字节比对覆盖 ColorGroup、整数 1、字符串 str、null 与 RequestHeader。
+  JSON 是显式 Serde 持久化模型，字段命名/空指针等 Go schema 映射仍由各业务模型
+  适配；本任务不宣称任意 Go 类型与任意 Rust 类型（例如 bytes、浮点、自定义
+  MarshalJSON）天然同构。完整业务 schema 的字节验证仍归各后续端点任务。
+  prefix 分页、条件事务、业务算法、加密及服务启动不在此单键 load/save 验证故事内。
+
+### 只读 Go 运行证据与精确输出
+
+最初未找到端点 JSON 保存输出，因此记录过阻塞；继续只读排查后复用工具链的既有
+示例与端点现有测试，未新增、修改或生成仓库 Go oracle。Go 1.26.8 标准库
+encoding/json/example_test.go 的 ExampleMarshal 定义输入
+ColorGroup{ID:1, Name:"Reds", Colors:["Crimson","Red","Ruby","Maroon"]}，直接
+调用与 saveJSONInTxn 相同的 encoding/json.Marshal，并将返回 bytes 写至 stdout。
+Go 示例测试框架实际核对 Output 后通过，而非仅抄源码推导预期。精确内容为：
+
+```json
+{"ID":1,"Name":"Reds","Colors":["Crimson","Red","Ruby","Maroon"]}
+```
+
+工具链示例文件 SHA-256：
+`2745c3eac5bf5aac2d0913f65cb1535edd6358530d72ce99bd8df206c559e54e`。
+已读示例和标准库测试入口，未发现 TestMain/生成执行；标准 go test 不运行
+`go generate`，指定 Example 只执行既有函数，无 failpoint 或源码写入。
+
+`TestGCStateJSONUtil` 现有测试经真实 etcd 写入并精确断言字节 `1`、`2`、
+`"str"`、`0`、`null`，本轮实际通过；测试源包含读取 loadJSON、nullable 值断言。
+其 ServiceSafePoint 场景只用 JSONEq，因此不把该 struct 场景当逐字节证据。
+已审查该测试、TestMain、newEtcdStorageEndpoint、etcdutil/testutil 生命周期，
+没有需要注入的 failpoint；GOFLAGS=-mod=readonly，输出仅临时 etcd 数据及测试缓存。
+`TestUnmarshalNulls` 实际证明 Go null 不修改原始标量；本 helper 从零值开始，因此
+对应 Rust 默认值。未执行完整 storage 包的 failpoint 测试，不以所选单测冒充整包通过。
+
+protobuf 复用 `pkg/proto/wire-fixtures.json` 的 request_header，来源
+`scripts/rust-proto-oracle/main.go`：ClusterId=42、SenderId=7、CallerId=oracle、
+CallerComponent=pd；真实 Go 编码 hex 为
+`082a10071a066f7261636c6522027064`。两个后端均比较 Rust 保存 bytes 与此既有输出，
+再解码并比较所有字段；不要求新生成 Go oracle。
+
+### TDD 与验证
+
+- 失败命令 `cargo test --locked -p astersql-pd-storage-endpoint --lib endpoint_codec
+  -- --nocapture`：退出 101，1 passed / 2 failed / 0 ignored。最小可编译接口将所有
+  读视为 Missing；MemoryStore、etcd 均在写入空 bytes 后的 Empty 状态断言失败。
+  初次编译缺少 serde derive 的辅助错误已修复，不将编译错误算作行为红灯。
+- 审查追加顶层 null 标量断言后，同一命令再次退出 101，1 passed / 2 failed；
+  两后端实际报 JsonUnmarshal(invalid type: null, expected i64)。随后修复默认值处理，
+  未削弱或忽略原断言。
+- 最终聚焦命令同上：退出 0，3 passed / 0 failed / 0 ignored；MemoryStore 与真实
+  etcd 的完整 contract 均通过，纯值字节测试也被 endpoint_codec 过滤命中。
+- `GOFLAGS=-mod=readonly go test encoding/json -run '^ExampleMarshal$' -count=1 -v`：
+  退出 0，1 个 Example 通过。
+- `GOFLAGS=-mod=readonly go test encoding/json -run '^TestUnmarshalNulls$' -count=1 -v`：
+  退出 0，1 个测试通过。
+- `GOFLAGS=-mod=readonly go test -mod=readonly ./pkg/storage/endpoint
+  -run '^TestGCStateJSONUtil$' -count=1 -v`：退出 0，1 个顶层测试通过。
+- 初增 crate 后 `cargo fmt --all`、`cargo check --workspace`：退出 0，同步锁文件，
+  审查仅新增本地 package；后续均用 --locked。Rust 修改后先 fmt 再行为验证。
+- 首轮 metadata / fmt-check / workspace check / workspace test 退出 0；workspace
+  汇总 502 passed / 0 failed / 1 既有 ignored。null 修正后重新运行最终基线，见下方。
+
+所有 Cargo 阶段在仓库根原子 mkdir 动态领取最先空闲的共享槽位；本轮实际全部领取
+槽位 **1**，`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+锁内记录计划/任务/会话和执行 shell PID，以 EXIT/INT/TERM trap 清理自己的 owner
+与锁目录，等待 Cargo 及 fixture 子进程退出后释放；缓存保留。所有 fixture Go build
+继承 GOFLAGS=-mod=readonly；已审查既有 fixture 只构建已有源码，运行只写槽位数据。
+未使用固定编号分配、--target-dir、failpoint 或 Go 生成/格式化/依赖整理入口。
+
+最终基线（null 修正之后，各命令退出 0）：
+
+| 命令 | 有效结果 |
+| --- | --- |
+| `cargo metadata --format-version 1 --no-deps` | endpoint target 已注册 |
+| `cargo fmt --all -- --check` | 格式通过 |
+| `cargo check --workspace --locked` | 全 workspace 编译检查通过 |
+| `cargo test --workspace --locked` | 502 passed / 0 failed / 1 既有 ignored（含 doc-tests） |
+| `git diff --check` | 通过 |
+
+最终逐项 SHA-256 对照任务开始的 1101 个 Go/模块文件，内容全部相同；无未跟踪
+Go/模块文件。Git Go 差异为空。只审查并提交 endpoint crate、最小 manifest/lock
+连线、本证据节和编号任务清理；不修改只读 plan.md、来源主题及其他在途计划。
+共享槽位锁已释放，缓存保留。批次 21 本验证故事已完成，不表示后续业务端点完成。
