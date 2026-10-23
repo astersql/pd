@@ -928,3 +928,87 @@ owner 记录计划、任务、会话与持有 shell PID，EXIT/INT/TERM 清理�
 与起点完全一致，Go/模块 Git 状态为空；只读 plan.md 指纹不变。
 已审查四个 Rust 文件及本文差异，无依赖变更、无无关实现变更。
 槽位 1 owner 与锁已释放，缓存保留；其他任务文件已有删除不纳入提交。
+
+## 批次 88：服务配置默认值
+
+日期：2026-10-24（Asia/Shanghai）。前置批次 87 已由提交 `2a0e49d1b`、
+config_tso.rs 与五项独立测试及本文 691 passed / 0 failed / 1 ignored
+证据核验。`server/config/config.go` 相对规划基准
+`5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异。
+已读根 AGENTS.md、Copilot、ADR-001、移植指南和 do-task-plans 技能；
+server/docs 无更深 AGENTS.md，plan.md 和来源主题保持只读。
+
+### Go 依据与实现边界
+
+`config.go::PDServerConfig`（509–541）、`adjust`（544–600）、常量
+（207–225、243–251）以及 configutil.go::AdjustInt/AdjustFloat64/AdjustDuration：
+
+- 两项 GC 并发数仅缺失且零时取 4，已有非零值原样保留；此任务不做范围校验。
+- max-gap-reset-ts 总是对非正时长取 24h；min-resolved-ts-persistence-interval
+  仅缺失且非正时取 1s，显式零/负数保留。正时长不改变。
+- use-region-storage / enable-gogc-tuner 缺失无条件置 true；key-type、
+  dashboard-address、runtime-services 缺失无条件取 table / auto / 空列表。
+  显式 false、空字符串及已定义列表保留；metadata 由调用者传入 pd-server 子视图。
+- flow-round-by-digit 缺失且零取 3，负数/正数保留。
+- server-memory-limit、server-memory-limit-gc-trigger、gc-tuner-threshold
+  缺失且零分别取 0 / 0.7 / 0.6，随后总是钳位 [0,0.99] / [0.5,0.99] /
+  [0,0.9]；NaN 比较为 false，调整后仍为 NaN；正负无穷钳位至端点。
+- metric-storage、block-safe-point-v1 没有默认调整，保留输入/零值。
+- JSON 的三个 bool 使用带引号字符串，runtime-services 复用既有 StringSlice
+  的逗号字符串编码，两个 duration 复用既有 Duration。浮点正零按 Go 输出 `0`，
+  JSON 非有限浮点报错。Rust Clone 复制 runtime-services 列表。
+
+在 canonical `astersql-pd-server-config` 新增 pd_server_defaults.rs，公开
+PDServerConfig、adjust_defaults 与 decode_toml_pd_server。后者接受不含外层
+pd-server header 的原生 TOML 表，保留字段 presence、布尔和字符串数组元素边界。
+本任务仅实现 adjust 的纯值阶段，不伪装 Go 的最终 Validate 或废弃字段迁移；
+这些行为分别留给后续 T7/T8/T14。不启动本地 region 引擎、GC tuner 或服务。
+没有新增依赖或 Cargo.lock 变更。纯值任务不需要 MemoryStore/etcd 双入口。
+
+JSON 字节证据复用本文 batch84-missing / batch84-explicit-zero 两份真实 Go 日志：
+测试直接截取原始 `pd-server` JSON token，与 Rust **整个结构的序列化字节**及所有
+15 个字段值比较；同时反序列化这些 Go 输出并核对默认调整幂等。
+未手抄 Rust 结果为 Go 预期。额外 TOML、显式零、保留值、负数、NaN/无穷等
+边界为只读源码推导，不冒充新增 Go 运行差分；本任务未新增 TOML 编码器。
+
+重新审查 server/config 现有 TestMain：仅 goleak 与 WaitForEtcdConnections，
+配置测试不要求 failpoint 注入。只读运行整个已有配置包，覆盖 TestPDServerConfig、
+TestGCConcurrencyConfig 等原有断言。没有新增 Go oracle、启停 failpoint 或运行生成器。
+
+### 本轮验证
+
+每阶段以原子 mkdir 动态领取共享槽位 **1**，
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录计划、任务、会话和持有 shell PID；EXIT/INT/TERM 清理自己的记录与锁，
+所有子进程退出后释放并保留缓存。workspace 测试继承 `GOFLAGS=-mod=readonly`；
+复核既有 etcd fixture 仅只读构建已有 Go 源码，产物及隔离数据目录位于槽位内。
+
+初始可编译接口运行指定聚焦命令，**1 passed / 4 failed / 0 ignored，退出 101**；
+四个失败来自默认值、显式零下 duration、缺失覆盖及浮点钳位的真实断言。
+实现后相同五项不削弱断言全部通过；补充 TOML 和 float 边界后共七项通过。
+补充入口阶段一次辅助编译因序列化错误类型推断 E0790 退出 101；最终入口不包含
+该辅助编码器，重新格式化及所有基线通过；此编译失败不计作行为红灯。
+
+第一轮七项与完整 workspace 回归均通过（698 passed / 0 failed / 1 ignored）。
+随后审查发现 TOML NaN/inf 经 JSON 中间值会变 null；在既有第七项追加
+真实断言后重跑同一聚焦命令，得到 **6 passed / 1 failed，退出 101**，
+错误为 `invalid type: null, expected f64`。改为在转换前保留 TOML 原生浮点，
+同一断言通过，NaN 保留、正负无穷按 Go adjust 钳位；最终完整基线重新运行。
+
+| 确切命令 | 最终退出码与有效证据 |
+| --- | --- |
+| `cargo fmt --all` | 0；仅本任务 Rust 文件发生格式化变更 |
+| `cargo test --locked -p astersql-pd-server-config --lib pd_server_defaults -- --nocapture` | 0；7 passed / 0 failed / 0 ignored |
+| `go test -mod=readonly ./server/config -count=1` | 0；已有配置包通过，1.181s |
+| `cargo metadata --format-version 1 --no-deps` | 0 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；仅既有 core_region_adapter.rs:134 cpu_usage deprecated 警告 |
+| `cargo test --workspace --locked` | 0；698 passed / 0 failed / 1 既有 ignored，含真实 etcd 回归；配置 crate 28 项通过 |
+| `git diff --check` | 0 |
+
+本轮状态：**已完成**。最终比较 1101 个 Go/模块文件路径集合与 SHA-256，
+与任务开始完全一致，Go/模块 Git 状态为空。只读 plan.md 指纹仍为
+`c7968f95a13d0d216ced3adafaca3140ad6ef959ff693c613cb903b231a6f777`。
+已审查两个新 Rust 文件、lib.rs 的显式注册和本文证据差异；无依赖变更，
+无无关 Rust 文件改动。槽位 1 的 owner 和锁已释放，缓存保留。
+其他编号任务文件已有删除不纳入本任务提交。
