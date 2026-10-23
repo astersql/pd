@@ -1372,3 +1372,74 @@ SHA-256 与任务开始完全一致，Go/模块 Git 状态为空。只读 plan.m
 已审查生产值类型、独立测试、lib.rs 注册及本文差异，无依赖或锁文件修改。
 全部 Cargo/fixture 子进程结束后槽位 1 owner 与锁已释放，保留缓存；
 其他任务文件原有删除不纳入本任务提交。
+
+## 批次 94：仪表盘配置值
+
+日期：2026-10-24（Asia/Shanghai）。前置批次 93 由提交 `37177be4a`、
+canonical MicroserviceConfig、六项独立测试及本文 725 passed / 0 failed /
+1 ignored workspace 回归证据核验完成。已读执行技能、根 AGENTS.md、Copilot、
+ADR-001 和移植指南；server/docs 无更深 AGENTS.md。config.go/config_test.go
+相对基准 `5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异。
+
+### Go 依据与边界
+
+- `server/config/config.go:779–813::DashboardConfig/adjust`：五个字符串、四个
+  原生布尔字段按声明顺序编码，均无 omitempty。仅 enable-telemetry 在 metadata
+  缺失时应用 defaultEnableTelemetry，其他字段原样保留；无校验错误。
+- `config.go:264–277::defaultEnableTelemetry/initByLDFlags`：当前初始默认值为
+  false，非 Community 版将默认值设为 false；Community 分支不会自动开启。
+  `config_test.go:853::TestDashboardConfig` 手动将默认值设为 true 后验证
+  Community 保留 true、Enterprise 变 false，并核验三条 TLS 路径。
+- 本轮复核已有 TestMain（goleak/WaitForEtcdConnections）及该包测试，无
+  failpoint.Enable 或生成器调用；两处持久化路径 Inject 不属于配置值测试依赖。
+  确认只读后运行整个 Go 包，未启停 failpoint，未创建或改写 Go oracle。
+
+canonical crate 新增 `dashboard_config.rs::DashboardConfig`、`adjust`、
+`adjust_with_telemetry_default` 和 `decode_toml_dashboard`。常规调整路径遵循
+当前 Go 的 false；宿主可传入已确定的 telemetry 默认值复现既有 Go 测试，
+无需全局 edition 状态。metadata 以 dashboard 表为根，显式 false 和 true 保留。
+TLS 路径、public-path-prefix、temp-dir 仅保留字符串，不访问路径、不构造 TLS。
+JSON null 对新值的原始标量解码为零值；不宣称原地更新或重复键语义已覆盖。
+未迁移 ToTiDBTLSConfig、Dashboard 服务启动、PDServerConfig 地址校验。
+
+五项独立 `dashboard_config_` 测试通过 lib.rs 显式注册，覆盖 8 种
+presence/value/宿主默认组合、幂等、默认 false、嵌套 metadata、空 TOML、
+自定义 TLS 路径和 public prefix、所有字段 TOML/JSON roundtrip、clone 独立性、
+九个字段的错误类型及 JSON null。纯配置值无需存储后端入口。
+
+编码预期直接截取本文 batch84-missing / batch84-explicit-zero 的既有真实 Go
+日志中的完整 dashboard 原始 JSON token，与 Rust 默认调整结果逐字节比较，
+并解码回同值；没有重写预期或将 Rust 输出当作 Go 输出。两份 Go 输出只覆盖
+默认 dashboard，其他自定义值用例来自源码与已有 Go 断言，属 Rust 行为测试和
+roundtrip，不冒充额外 Go 运行字节差分。
+
+### 本轮验证
+
+红灯、绿灯和基线阶段分别通过原子 mkdir 动态领取共享槽位 **1**，
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录计划、任务、会话和 shell PID，EXIT/INT/TERM 清理自己的锁。
+所有 Cargo 子进程继承上述绝对路径和 `GOFLAGS=-mod=readonly`。已审查
+etcd fixture：只读构建已有 Go，二进制和数据均在槽位；proto 生成使用既有
+锁定缓存，本轮没有重建 proto。全部子进程结束后释放锁并保留缓存。
+
+先新增可编译的空调整接口及五项测试，得到实际行为红灯 **3 passed /
+2 failed / 0 ignored，退出 101**，命中缺失 telemetry 默认值及嵌套 metadata。
+最小实现后同组五项测试不削弱断言，全部通过。
+
+| 确切命令 | 退出码与有效证据 |
+| --- | --- |
+| `cargo fmt --all` | 0；红灯/绿灯阶段仅本任务 Rust 文件变化 |
+| `cargo test --locked -p astersql-pd-server-config --lib dashboard_config -- --nocapture` | 红灯 101：3 passed / 2 failed；绿灯 0：5 passed / 0 failed / 0 ignored |
+| `go test -mod=readonly ./server/config -count=1` | 0；已有配置包通过，1.140s |
+| `cargo metadata --format-version 1 --no-deps` | 0 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；仅既有 core_region_adapter.rs:134 cpu_usage deprecated 警告 |
+| `cargo test --workspace --locked` | 0；730 passed / 0 failed / 1 既有 ignored，含真实 etcd；配置 crate 60 项通过 |
+| `git diff --check` | 0 |
+
+本轮状态：**已完成**。完整回归结束后核对 1101 个 Go/模块文件的路径集合与
+SHA-256，均与任务开始一致，Go/模块 Git 状态为空。只读 plan.md 指纹仍为
+`c7968f95a13d0d216ced3adafaca3140ad6ef959ff693c613cb903b231a6f777`。
+已审查值类型、独立测试、lib.rs 注册及本文差异；无依赖或 Cargo.lock 变更，
+未格式化其他任务文件。全部 Cargo/fixture 子进程结束后槽位 1 已释放，
+缓存保留。既有其他任务文件删除不纳入本任务提交。

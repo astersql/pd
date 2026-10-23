@@ -57,3 +57,9 @@ pub use microservice_config::*;
 
 #[cfg(test)]
 mod microservice_config_test;
+
+mod dashboard_config;
+pub use dashboard_config::*;
+
+#[cfg(test)]
+mod dashboard_config_test;
