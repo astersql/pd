@@ -171,7 +171,9 @@ name = "astersql-pd-member"
 version = "0.1.0"
 dependencies = [
  "astersql-pd-election",
+ "astersql-pd-keypath",
  "astersql-pd-storage-kv",
+ "thiserror 2.0.21",
  "tokio",
  "tokio-util",
 ]

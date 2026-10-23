@@ -248,3 +248,63 @@ pkg/member/leader_priority_test.rs        # 拟建，任务 3，显式注册
 总计划、来源主题、Go/模块、Rust/Cargo、前序证据均保持只读；
 其他任务已有状态修改与删除保留并排除提交。本轮完成的是盘点，
 不表示任务 2/3、服务主题或 embedded etcd 生产替代已完成。
+
+## 任务 2：成员发布信息（批次 68）
+
+日期：2026-10-23（Asia/Shanghai）。准入依据：批次 67 提交 `2306b1d02`，
+以及上文完整盘点；前置文档删除不作为完成依据。当前 Go `pkg/member/member.go`
+相对规划基准仍无差异。复核 `GetMemberDeployPath` / `SetMemberDeployPath`
+（445–474）、`GetMemberBinaryVersion`（477–487）、`GetMemberGitHash`
+（490–500）、`SetMemberBinaryVersion`（503–514）、`SetMemberGitHash`（517–528）。
+三个 getter 缺失报 no value；setter 单 Put、无比较、无 lease，原始值不做解释。
+相邻 Go member 源码有 `skipCampaignLeaderCheck` / `staleEtcdLeaderView`
+failpoint；未执行 `go test -mod=readonly ./pkg/member -count=1` 或任何 failpoint 命令。
+本轮 Go 依据为只读源码和批次 67 的既有证据，没有声称新增 Go 运行差分。
+
+实现 [member_info.rs](../../pkg/member/member_info.rs) 的 `MemberInfo`：六个独立
+读写接口，复用 `ClusterPaths` 与唯一的 `MetaStore`，不依赖 identity bootstrap
+或 leadership。exact key 线性读，缺失返回 `MemberInfoError::NoValue`，现存空值有效；
+存储错误保留类型，事务不成功映射为带字段的 SaveFailed，取消优先。
+使用字节承载 Go string，保留非 UTF-8/NUL；本任务不新增 codec，不编码 protobuf，
+也不从 Rust 结果倒填 Go fixture。路径已有真实 Go capture 位于
+[member_config_paths_test.rs](../../pkg/utils/keypath/member_config_paths_test.rs)。
+Go 直接保存字符串的结论来自源码，不冒充新增运行编码证据。
+部署目录由宿主先解析当前 executable 再提供，解析失败由宿主返回且不调用写接口；
+领域库不自行读取进程环境，也不新增服务启动装配。
+
+独立 [member_info_test.rs](../../pkg/member/member_info_test.rs) 在 lib.rs 显式注册。
+`member_info_memory` / `member_info_etcd` 使用同一行为函数，覆盖三个字段的
+缺失/空值、原始值、路径与无 lease、相邻 prefix 排除、覆盖、成员与集群隔离，
+以及预取消后的全部六接口与最终存储不变。
+`member_info_etcd_io_failure_and_cancellation` 在三字段写入确认后停止 etcd，
+验证三个 setter 与 getter 返回 Unavailable，再以同 WAL 重启验证三个旧值均保留。
+`member_info_pending_io_cancel` 使用真实 loopback TCP 接收端抑制 HTTP/2 回复：
+读请求已轮询并等待 50ms 后取消，500ms 内终止；随后关闭并等待 TCP 任务。
+最初用已断开的 etcd 连接验证在途取消会立即返回 Unavailable，未能构造在途阶段；
+因此改为受控网络 IO 边界，没有模拟 MetaStore 事务结果。
+
+共享槽位动态原子领取：槽位 **1**，持有 shell PID **69377**；
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+所有 Cargo 与 fixture 子进程继承此绝对路径；Go fixture 仅构建既有源码，
+设置 `GOFLAGS=-mod=readonly`，不运行 generator、Go 格式化或 failpoint 注入。
+Cargo.lock 仅增加 member 对 workspace 已有 keypath 和 thiserror 2.0.21 的引用。
+
+| 本轮命令（仓库根目录） | 退出码及证据 |
+| --- | --- |
+| `cargo fmt --all` | 0；仅格式化本任务 Rust 文件，无其他 Rust 差异。 |
+| `cargo check --workspace` | 0；同步上述两条既有依赖引用，未新增依赖版本。 |
+| `cargo test --locked -p astersql-pd-member --lib member_info -- --nocapture`（红） | 101；4 个有效测试，2 passed / 2 failed。两后端均因缺失键实际 `Ok([])` 与 `Err(NoValue)` 断言不符失败；不是缺符号或环境失败。 |
+| 同一聚焦命令（绿） | 0；同一 4 个测试全部 passed / 0 failed / 0 ignored；仅修改 load 将缺失与空值区分，未削弱测试。 |
+| `cargo metadata --format-version 1 --no-deps` | 0。 |
+| `cargo fmt --all -- --check` | 0。 |
+| `cargo check --workspace --locked` | 0；保留既有 server deprecated 字段警告。 |
+| `cargo test --workspace --locked`（首次） | 101；已执行 610 passed / 1 failed / 1 既有 ignored 后停止。失败为既有 `astersql-pd-tso --test etcd_behavior` 的 `real_etcd_behavior`，`pkg/tso/oracle_test.rs:32` bootstrap 返回 `Store(Unavailable)`；TSO/fixture 源码无本任务差异。本任务 4 个测试在该轮全部通过。 |
+| `cargo test --locked -p astersql-pd-tso --test etcd_behavior real_etcd_behavior -- --exact --nocapture` | 0；1 passed / 0 failed；不修改无关代码，复跑确认该目标可通过。 |
+| `cargo test --workspace --locked`（完整复跑） | 0；633 passed / 0 failed / 1 既有 ignored（含 doc-test 汇总为 85 个 target 结果，行为有效测试数为 633）；没有跳过失败 target 或削弱断言。 |
+| Go/模块文件开始与结束的路径及 SHA-256 对照 | 0；1101 个文件完全一致，相关 Git 差异为空。 |
+| Markdown 相对链接校验、`git diff --check`、`git diff --cached --check` | 0；仅审查/提交本任务实现、测试、最小依赖连线及本文追加段落。 |
+
+状态：已完成。全部 Cargo/fixture/TCP 子进程结束后，已清理 PID 69377 持有的
+`target/rust-slot-locks/slot-1.lock`，保留 `target/rust-slot-1` 缓存。
+没有修改总计划、来源主题、Go/模块、TSO 或其他任务的源码；
+工作树原有编号任务状态修改/删除保留且排除提交。没有新增 ignored 测试。

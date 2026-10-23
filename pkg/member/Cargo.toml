@@ -7,6 +7,8 @@ license.workspace = true
 [lib]
 path = "lib.rs"
 [dependencies]
+astersql-pd-keypath.workspace = true
+thiserror.workspace = true
 astersql-pd-storage-kv.workspace = true
 astersql-pd-election.workspace = true
 tokio.workspace = true

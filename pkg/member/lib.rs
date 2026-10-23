@@ -6,3 +6,8 @@ pub use member::*;
 extern crate self as astersql_pd_member;
 #[cfg(test)]
 mod member_test;
+
+mod member_info;
+pub use member_info::*;
+#[cfg(test)]
+mod member_info_test;
