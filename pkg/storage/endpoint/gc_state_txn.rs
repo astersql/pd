@@ -9,8 +9,8 @@ use crate::StorageEndpoint;
 
 /// Buffered GC writes; no writes reach storage until the callback succeeds.
 pub struct GCStateWriteBatch<'a> {
-    paths: &'a ClusterPaths,
-    ops: Vec<RawTxnOp>,
+    pub(super) paths: &'a ClusterPaths,
+    pub(super) ops: Vec<RawTxnOp>,
 }
 
 impl<'a> GCStateWriteBatch<'a> {

@@ -4612,3 +4612,96 @@ EXIT/INT/TERM trap 在所有 Cargo/fixture 子进程结束后释放自己的 own
 无 manifest/Cargo.lock 或其他 Rust 格式化差异。原有观测工具任务修改和
 任务 19/23/24/25/26/27/28/29/30 删除均保留并排除提交。
 状态：已完成；批次 50 安全点写事务故事与所需验证证据均已满足。
+
+## 任务 32：屏障写事务（批次 51）
+
+### 准入与 Go 证据
+
+依赖批次 50 提交 `faba4715a` 和上节完整红绿灯、双后端及 workspace 基线
+均已核验；不是根据任务 31 文件缺失判定完成。`gc_states.go` 相对规划基准
+`5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异。
+
+Go `GCStateWriteBatch.SetGlobalGCBarrier/DeleteGlobalGCBarrier/SetGCBarrier/
+DeleteGCBarrier` 只向同一 ops 缓冲追加 put/delete。普通屏障先转成 SSP；全局
+屏障直接 JSON。两者与安全点共享 `RunInGCStateTransaction` 的原始 revision
+比较和提交；回调错误或 revision 冲突不提交任何 buffered op，不自动重试。
+删除缺失键仍算非空写批次并递增 revision；期限只作持久化字段，不附 lease，
+也不进行业务过期清理。未扩展 GC manager 或调度算法。
+
+复核既有 TestMain、newEtcdStorageEndpoint、NewTestEtcdCluster 以及 fixture
+调用链：所选测试不依赖 failpoint，源码不写入，仅写临时 etcd 数据与构建产物。
+未执行 failpoint 启停、生成器、Go 格式化或依赖改写命令。只读执行：
+
+```text
+GOARCH=arm64 CGO_ENABLED=0 GOFLAGS=-mod=readonly go test -mod=readonly ./pkg/storage/endpoint -run '^(TestGCStateTransactionACID|TestGCBarrier|TestGlobalGCBarrier|TestGCBarrierExpiring|TestDataPhysicalRepresentation)$' -count=1 -v
+```
+
+退出 0，5 个顶层测试通过，日志 `/tmp/pd32-go.log`。完整 endpoint/storage
+Go oracle 未执行，因为 storage 的 failpoint 测试需要源码注入，违反只读约束；
+上述实际运行及已有独立编码输出覆盖本故事，不声称整包 Go 验证通过。
+
+复用任务 28 的真实 Go 二进制输出 `/tmp/pd-gc28-go-wire.json`，该输出的
+采集命令、输入、版本、键及来源符号见任务 28 节。全部八项原始 value 原样
+固定到新测试的 GO_WIRE，已用 Python 逐项确认与保存输出完全一致。
+输入包括全局/普通、null/1 空间、HTML 与 U+2028 转义、u64::MAX-1 TS、
+有限期限 1792742540 和无限期限（全局 0、SSP MaxInt64）。双后端经新 batch
+API 写入后逐字节比较这些 Go 输出。安全点混写同时复用实际 Go
+TestDataPhysicalRepresentation 检查的 JSON 与十进制字节。其他边界来自
+只读源码断言，未冒充额外跨语言运行差分。
+
+### 实现和行为验证
+
+`gc_barrier_txn.rs` 在 canonical `GCStateWriteBatch` 上增加四个增删方法，
+复用现有路径、编码器及唯一事务入口；序列化成功后才追加 op。
+`gc_state_txn.rs` 仅将 paths/ops 可见性放宽到父模块，供同一 crate 的扩展使用。
+独立 `gc_barrier_txn_test.rs` 在 lib.rs 显式注册，没有新增依赖或 Cargo target。
+
+最小可编译接口尚未缓冲屏障时，同一聚焦命令实际红灯：1 passed / 2 failed，
+memory/etcd 均在种入屏障后读取仍为空的真实状态断言失败，退出 101。
+补齐四个 buffered op 后绿灯：3 passed / 0 failed / 0 ignored，退出 0。
+日志 `/tmp/pd32-red.log`、`/tmp/pd32-green.log`。编写测试和生产代码期间的
+类型/API 编译错误已修复，不用它们代替上述行为红灯。
+
+双后端共用断言覆盖：全局及 null/0/1 屏障增删与 GC/txn safe point 同批写入；
+原始 Go 字节；回调内写入不可见；提交后全部存留 entry 的 mod_revision 相等；
+无 lease；回调错误完整回滚；嵌套真实事务造成 revision 冲突且仅内层生效；
+过期及保留 ID gc_worker 仍持久化可读；删除缺失键仍递增 revision。
+到期测试使用明确 instant=1 的过期值，在 instant=2 判定 expired，存储不清理，
+不使用机器时间或模拟核心事务结果。
+
+真实 etcd 故障时序：成功完成合同（revision=5）后读取 revision，在回调中缓冲
+普通/全局屏障删除、新屏障写入和安全点更新，再 stop 并等待 stopped；提交得到
+真实后端错误。随后 start 并等待 restarted，同 WAL 完整快照（包括值、revision、
+lease 与过期屏障）与停止前相等。序列耗时 1.607547625s，最终 fixture drop
+关闭并等待进程退出，没有部分提交。
+
+### Cargo 槽位与仓库基线
+
+每阶段 `/tmp/pd32-cargo.sh` 从仓库根原子 mkdir 动态领取首个可用槽位，
+实际均为 **槽位 1**，
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录 plan=storage-endpoint/task=32/batch=51/session=gc-barrier-txn/PID；
+行为红灯 PID=91140、最终绿灯 PID=91387、基线 PID=91549。
+EXIT/INT/TERM trap 在 Cargo/fixture 子进程结束后释放自己的 owner/锁，保留缓存。
+fixture 继承同一 target、GOARCH=arm64、CGO_ENABLED=0、GOFLAGS=-mod=readonly，
+只编译已有 Go fixture，不产生 Go 源码或模块修改。
+
+| 命令 | 退出码与有效结果 |
+| --- | --- |
+| `cargo fmt --all` | 0；每次 Rust 修改后执行，未波及其他 Rust 文件 |
+| `cargo test --locked -p astersql-pd-storage-endpoint --lib gc_barrier_txn -- --nocapture`（行为红灯） | 101；1 passed / 2 failed / 0 ignored |
+| 同一聚焦命令（绿灯） | 0；3 passed / 0 failed / 0 ignored |
+| `cargo metadata --format-version 1 --no-deps` | 0；canonical target 不变 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；既有 cpu_usage 弃用警告 |
+| `cargo test --workspace --locked` | 0；83 target，594 passed / 0 failed / 1 既有 ignored；endpoint 95 passed |
+| 上述只读 Go 测试 | 0；5 个顶层测试通过 |
+| `git diff --check`、`git diff --cached --check` | 0 |
+
+基线日志 `/tmp/pd32-baseline.log`，metadata `/tmp/pd32-metadata.json`。
+全部 Cargo 与 fixture 子进程已结束，slot-1 owner/锁已释放，缓存保留。
+开始/结束全部 1101 个受跟踪 Go/模块文件路径及 SHA-256 相同，Go/模块 Git 状态
+为空，无新增 Go 文件。已审查两个新 Rust 文件、gc_state_txn.rs 可见性、lib.rs
+注册及本节证据；manifest/Cargo.lock 无差异，未格式化其他任务文件。
+原有观测工具任务修改及任务 19/23/24/25/26/27/28/29/30/31 删除均保留并排除提交。
+状态：已完成；批次 51 屏障写事务故事与所需验证证据均已满足。

@@ -137,3 +137,7 @@ mod gc_state_txn;
 pub use gc_state_txn::{GCStateTxnError, GCStateWriteBatch};
 #[cfg(test)]
 mod gc_state_txn_test;
+
+mod gc_barrier_txn;
+#[cfg(test)]
+mod gc_barrier_txn_test;
