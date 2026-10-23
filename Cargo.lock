@@ -90,6 +90,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "astersql-pd-configutil"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-typeutil",
+]
+
+[[package]]
 name = "astersql-pd-core"
 version = "0.1.0"
 dependencies = [
