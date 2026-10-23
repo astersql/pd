@@ -13,3 +13,8 @@ mod snapshot_watch;
 pub use snapshot_watch::SnapshotWatch;
 #[cfg(test)]
 mod snapshot_watch_test;
+
+mod watch_reconcile;
+pub use watch_reconcile::ReconciledWatch;
+#[cfg(test)]
+mod watch_reconcile_test;

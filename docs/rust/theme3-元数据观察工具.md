@@ -406,3 +406,100 @@ LossyStore 只在 IO 边界丢弃一次真实 watch 返回，所有事务、revi
 
 状态：**已完成**。仅完成从一致快照 revision+1 接续、确认后推进、失败重试与取消；
 未将此视作整个 LoopWatcher 或整个 Go 包迁移完成。
+
+## 任务 4：压缩重载与删除对账（批次 77）
+
+日期：2026-10-24（Asia/Shanghai）。前置批次 76 提交 `8abf85766` 为本轮起点，
+已核验上节双后端红绿灯、648 项 workspace 通过证据、SnapshotWatch 及独立测试注册。
+前置满足；未以编号文件删除作为准入。主 Go 文件相对规划基准 `5d5948052` 无差异。
+
+### 实现、Go 依据与边界
+
+在唯一 canonical crate 增加 [ReconciledWatch](../../pkg/utils/etcdutil/watch_reconcile.rs)，
+以现有 SnapshotWatch / SnapshotLoader 和唯一 kv::MetaStore 完成恢复，未复制扫描或
+观察实现。原 SnapshotWatch 默认仍返回 Compacted；新入口显式选择删除对账。
+
+- 初始完整快照的键集合成为账本，宿主先发布该快照再调用 apply_next。
+- 实时批次发布成功后才更新账本；回调失败保留原 pending 批次和游标。
+- 后端 Compacted 后读取完整一致快照，构造所有快照 Put 加旧账本缺失键的 Delete。
+  合成 Delete 只有 key 和快照 revision，不伪造旧值或真实删除发生 revision。
+- 同步批次回调成功后才替换账本、游标和新观察对象。读取/发布失败保留旧状态，
+  下次 apply_next 重试完整重载；成功删除随账本替换被移除，重复压缩不重复删除。
+- 回调自身返回的 Compacted 原样传播，保留 pending，不能误判成后端压缩而跳过批次。
+- 取消为终态，包括全量读取在途取消；没有私有 runtime、后台任务或全局状态。
+
+只读 Go 依据：`reloadAfterCompaction` / `reloadWithRetry` (:754–795)、
+`load` (:797–952)、`reconcileLoadedKeys` (:954–977)、
+`SetReconcileDeletedKeys` (:1110–1114)。相邻只读测试依据：
+`TestWatcherReloadsAndReconcilesAfterCompaction` (:1183)、
+`TestWatcherRetriesReconciliationAfterPostCallbackFailure` (:1682)、
+`TestWatcherCommitsPartialReconciliationProgress` (:1738)、
+`TestWatcherRetriesWatchDeleteAfterPostCallbackFailure` (:1793)。
+Go 非原子回调可提交部分成功项；本接口要求宿主按完整批次原子发布，失败时无副作用，
+与已采用的 Rust snapshot/watch 发布边界一致，不声称支持 Go 分拆回调的部分提交模式。
+重试错误返回宿主，由宿主控制重试间隔；不在此新增自动退避、custom reload、
+ForceLoad/WaitLoad 或消费方业务装配。
+
+`go test -mod=readonly ./pkg/utils/etcdutil -count=1` 未运行：整包及压缩恢复测试需要
+updateClient、fastTick 等 failpoint 源码注入，与 Go 只读硬约束冲突。复用现有源码、
+测试断言和前置保存证据；不宣称本轮执行 Go LoopWatcher 或获得 Go/Rust 运行差分。
+没有新 codec，Entry/Event 原字节传递，不存在新增编码输出或手抄 Rust 字节预期。
+真实 etcd fixture 继续复用已有 helper 和 Go 工具，只读 `go build`，
+所有子进程继承 `GOFLAGS=-mod=readonly` 和拒绝 Go/模块写入的 sandbox profile。
+
+### 行为红绿灯与故障时序
+
+[独立测试](../../pkg/utils/etcdutil/watch_reconcile_test.rs) 在
+[lib.rs](../../pkg/utils/etcdutil/lib.rs) 显式注册。watch_reconcile_memory /
+watch_reconcile_etcd 共用同一 run，后端为 MemoryStore / etcd 3.5.15。
+窄 IO 包装只延迟或丢弃真实读取响应、关闭观察 IO；事务、revision、范围和压缩均来自
+真实后端，不模拟核心事务结果。
+
+- 红灯：可编译入口未生成缺失键 Delete。指定聚焦命令退出 101，
+  **0 passed / 2 failed / 0 ignored**；两后端均在 `reload must reconcile the absent key`
+  断言失败，实际删除数 0、预期 1。不是符号缺失或环境失败。
+- 同一命令最终绿灯：退出 0，**2 passed / 0 failed / 0 ignored**，保留原红灯断言，
+  并增加读取失败、实时账本、精确键和在途取消断言。
+- 时序：初始 a=old/b=gone → 删除 b、更新 a、增加 c/e → compact 严格超过旧 watch
+  起点 → 丢失重载第二页真实 IO 响应 → Unavailable、未调用发布且游标/缓存不变 →
+  再次重载、staging 后发布返回 Backend → 游标/缓存仍不变 → 再次成功发布，
+  b 删除恰好一次，a/c/e 与新快照一致，游标为快照 revision+1。
+  第一版 IO 测试只放两项，limit+1 足以一次读完，未命中第二页；已增加第三个真实键
+  固定分页前提，未削弱断言或更改生产扫描逻辑。
+- 再次压缩重载后，非幂等 sink 没有再次删除 b。实时新增 d、删除 c 均成功发布并
+  更新账本；随后删除 a/d/e、压缩、受控 IO 断开旧 stream → Unavailable →
+  重建发现 Compacted → 空快照仅补发三个 Delete。总成功删除数 5，终态缓存为空。
+- 精确 /exact/a 删除后压缩，邻键 /exact/a-neighbor 仍存在；恢复批次仅含目标键
+  Delete，batch 和合成事件 revision 均为真实快照 header。
+- 在途取消：/cancel/a 初始加载 → 删除并压缩 → 真实重载响应到达后挂起 → Notify
+  确认到达 → cancel → 2s 内 await 宿主 JoinHandle 成功；未调用发布、游标不变，
+  新 token 也不能复活观察对象。原始观察对象亦覆盖预先取消和终态拒绝。
+
+### 验证命令与资源
+
+所有 Cargo 阶段通过原子 mkdir 从共享 1–10 动态领取，实际均为 **槽位 1**，
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+锁内记录计划、任务、会话和持有 shell PID；EXIT/INT/TERM 清理自己的 owner/锁，
+待 Cargo/fixture 子进程结束后释放，保留缓存。全部子进程继承绝对 target、
+`GOFLAGS=-mod=readonly`，并使用 `/tmp/pd-b75-go-readonly.sb` 保护：拒绝写
+`.go`/Go 模块文件，拒绝执行会解压 Go 源码的 proto build script，复用已有生成缓存。
+未修改依赖、manifest、Cargo.lock 或只读 plan.md。
+
+| 命令（仓库根目录，继承上述槽位环境） | 退出码 / 有效结果 |
+| --- | --- |
+| `cargo fmt --all` | 0，每次 Rust 修改后先执行，无其他任务格式化差异 |
+| `cargo test --locked -p astersql-pd-etcdutil --lib watch_reconcile -- --nocapture`（红灯） | 101，0 passed / 2 failed / 0 ignored，缺失键删除数断言失败 |
+| 同一聚焦命令（最终绿灯） | 0，2 passed / 0 failed / 0 ignored，Memory + etcd |
+| `cargo metadata --format-version 1 --no-deps` | 0 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0，仅既有 server cpu_usage deprecated warning |
+| `cargo test --workspace --locked` | 0，87 个测试/文档 target 合计 650 passed / 0 failed / 1 既有 ignored |
+| `git diff --check` | 0 |
+
+46 个 Markdown 相对链接均有效。已审查本任务生产/测试、lib 注册和本文差异；
+其他任务既有编号文件删除及配置盘点修改均保留且不纳入提交。所有 Cargo/fixture 进程
+已结束，自己的 slot-1 owner/锁已释放，缓存保留。Go/模块文件路径集合与 SHA-256
+开始/结束共 2816 项完全一致（含已有 target 中 Go 源码），相关 Git 状态为空。
+
+状态：**已完成**。范围仅为压缩后完整快照恢复、缺失键删除及成功发布后的账本提交；
+未宣称整个 Go LoopWatcher、custom reload 或加载控制已迁移完成。
