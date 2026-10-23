@@ -10,3 +10,6 @@ pub use memory_store::MemoryStore;
 pub use meta_store::*;
 #[cfg(test)]
 mod meta_store_test;
+
+#[cfg(test)]
+mod bounded_range_test;

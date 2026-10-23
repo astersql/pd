@@ -372,3 +372,83 @@ watch/read 返回 Unavailable，取消 down-endpoint watch 返回 Cancelled；�
 异步完成顺序一致）；共享断言/fixture 各一份；所有文件差异已审查，plan.md、来源主题、
 Go 与无关观测任务文件不纳入提交。全部子进程结束，slot-1.lock 已释放，缓存保留。
 任务编号文件按完成流程删除，证据保留于本文及本任务实现提交。
+
+## 任务 3：有界范围读取（批次 10）
+
+日期：2026-10-23（Asia/Shanghai）。状态：已完成。
+准入：提交 `56097c4f1` 的唯一 `astersql-pd-storage-kv`、storage 重导出、共享
+fixture 和本文任务 2 的双后端/消费者证据均已核验，批次 9 满足。
+读取本任务、只读 plan.md、ADR-001、移植指南、根 AGENTS.md 与 Copilot 指令；
+仓库没有更深层 AGENTS.md。无关观测任务文件的既有改动不纳入本任务。
+`etcd_kv.go` 相对规划基准 `5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异。
+
+### Go 依据与行为边界
+
+`etcdKVBase::LoadRange` 对普通上界调用 `clientv3.WithRange(endKey)`，
+起点包含、终点排除，WithLimit(0) 不限；只有上界恰为单字节 NUL 才改用 WithPrefix，
+此时空起点表示全表。`kv_test.go::testRange` 固定全表、任意区间、正 limit、
+不存在的起点与跨 prefix 范围，且主动跳过 Go 内存后端的 NUL 上界场景。
+本任务两个 Rust 后端统一采用 Go etcd 的选择语义。
+
+本地固定 Go etcd client v3.5.15 的 `op.go::{WithRange,WithPrefix,getPrefix}`
+也经核对：空 end 保持点读；空 prefix 变成 `[NUL,NUL)` 全表请求；全 FF prefix
+使用 NUL 表示没有有限上界。普通含 NUL 的 end（如 `a\x00`）仍是普通排除上界。
+空/反向区间、空 end、非法空起点的额外 Rust 断言结合来源推导及真实 etcd 运行验证；
+不把这些额外场景声称为 Go 测试已逐项执行的跨语言差分。
+没有编码变化，未创建字节 oracle。
+
+实际先运行 `make gotest GOTEST_ARGS='./pkg/storage/kv ./pkg/storage -count=1'`，
+退出 0，两个包均通过（KV 3.780s、storage 27.680s；命令未启用 -v，输出未列用例总数）。
+随后 `make failpoint-disable` 退出 0。Rust 编辑与验证阶段无 Go 文件差异，
+没有生成 failpoint binding 文件留在工作区。
+
+### 唯一实现与测试驱动证据
+
+原位扩展 `meta_store.rs::Read`，新增可选排除上界 `end` 和 `Read::range`，
+保留既有 prefix、start、revision、consistency、limit 行为，不创建平行请求或 Base 实现。
+range 构造器规范化 NUL prefix sentinel；空 end 表示精确点读。
+校验拒绝空 bounded start、混用非空 prefix 与 bounded end、非法 revision 和溢出 limit。
+`etcd_store.rs::read` 将边界和 limit 直接下推 etcd；
+`memory_store.rs::read` 从 BTree 范围起点定位，在上界停止，只收集 limit 项并探测 more，
+不再扫描/克隆整个键表后截断。默认 features、manifest 与 Cargo.lock 均未修改。
+
+独立 `bounded_range_test.rs` 在 lib.rs 显式注册，并复用唯一 etcd fixture。
+最小可编译接口先沿用旧 prefix 选择，运行计划指定聚焦命令：
+内存和真实 etcd 都在 `[a,c)` 的键集合断言失败，实际只返回 `a,a\x00,aa`，
+预期还包含 `b,ba`。真实状态红灯为 0 passed / 2 failed，退出 101；
+不是缺符号或环境失败。修复后相同两个测试和原断言均通过。
+后续增加请求构造值测试与请求校验、prefix 分页回归，最终聚焦 3 passed。
+
+每个后端共用 13 个选择场景 × 2 种 consistency：起点包含、终点排除、跨 prefix、
+起点不存在、零 limit、正 limit、more、刚好 limit、相等/反向区间、空结果、
+NUL prefix、空 prefix 全表、全 FF prefix、普通含 NUL 上界、空 end 存在/缺失点读。
+逐项断言升序 keys、value 对齐、header revision、mod_revision 与 more；
+另验证历史 revision 的旧值/边界、原 prefix 分页及五种非法请求。
+
+### 确切验证与槽位
+
+红灯、首次绿灯、最终完整阶段均动态从 1–10 原子 mkdir 领取实际槽位 **1**，
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录计划、任务、会话标识及持有 Python PID（最终阶段 23133）；
+每阶段 Cargo 和 fixture 全部继承绝对路径。包装器在正常/失败/中断路径等待子进程结束，
+中断时终止并等待子进程组，然后删除自己的 owner 并 rmdir；未修改其他锁/缓存。
+全部阶段完成后确认锁目录为空，槽位编译缓存保留。
+
+| 确切命令 | 退出码 | 有效测试数/结果 |
+| --- | --- | --- |
+| `cargo fmt --all`（红灯前、修复后、最终阶段） | 0 | 无无关 Rust 格式变化 |
+| `cargo test --locked -p astersql-pd-storage-kv --lib bounded_range -- --nocapture`（红灯） | 101 | 0 passed / 2 failed，双后端相同键集合断言 |
+| 同上（首次绿灯） | 0 | 2 passed / 0 failed / 0 ignored |
+| 同上（最终） | 0 | 3 passed / 0 failed / 0 ignored；两个后端入口均命中 |
+| `cargo metadata --format-version 1 --no-deps` | 0 | workspace 注册正常，输出定向到临时文件审查 |
+| `cargo fmt --all -- --check` | 0 | 通过 |
+| `cargo check --workspace --locked` | 0 | 通过 |
+| `cargo test --workspace --locked` | 0 | 481 passed / 0 failed / 1 既有 ignored（479 单元/集成 + 2 doc-tests） |
+| `git diff --check` | 0 | 通过 |
+| `git diff --cached --check` | 0 | 暂存后通过 |
+
+既有 ignored 为 `tso_processes`（需要独立 Go/Rust 进程与兼容脚本）；本任务未新增
+ignore。workspace 仅输出已有 RegionHeartbeatRequest.cpu_usage deprecated 警告。
+没有新断连/到期行为；完整基线仍实际运行现有 watch/lease/fencing/重启测试。
+已审查本任务生产、独立测试、注册和证据差异；plan.md、来源主题、Go、manifest/lock
+均保持原样。编号任务文件按完成流程清理，证据保留在本文和实现提交中。

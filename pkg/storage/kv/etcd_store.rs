@@ -117,9 +117,8 @@ impl MetaStore for EtcdMetaStore {
                     r.prefix.clone()
                 }
             });
-        let mut options = GetOptions::new()
-            .with_range(prefix_end(&r.prefix))
-            .with_limit(r.limit as i64);
+        let end = r.end.clone().unwrap_or_else(|| prefix_end(&r.prefix));
+        let mut options = GetOptions::new().with_range(end).with_limit(r.limit as i64);
         if r.consistency == Consistency::Serializable {
             options = options.with_serializable();
         }

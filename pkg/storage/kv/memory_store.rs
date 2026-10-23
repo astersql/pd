@@ -107,17 +107,21 @@ impl MetaStore for MemoryStore {
             .next_back()
             .ok_or(StoreError::Backend)?
             .1;
-        let mut entries: Vec<_> = keys
-            .values()
-            .filter(|e| {
-                e.key.starts_with(&r.prefix) && r.start.as_ref().is_none_or(|start| e.key >= *start)
-            })
-            .cloned()
-            .collect();
-        let more = r.limit > 0 && entries.len() > r.limit;
-        if r.limit > 0 {
-            entries.truncate(r.limit);
-        }
+        let start = r.start.as_ref().unwrap_or(&r.prefix);
+        let mut selected = keys
+            .range(start.clone()..)
+            .map(|(_, entry)| entry)
+            .take_while(|e| match &r.end {
+                Some(end) if end.is_empty() => e.key == *start,
+                Some(end) => e.key < *end,
+                None => e.key.starts_with(&r.prefix),
+            });
+        let entries = if r.limit == 0 {
+            selected.by_ref().cloned().collect()
+        } else {
+            selected.by_ref().take(r.limit).cloned().collect()
+        };
+        let more = selected.next().is_some();
         Ok(Snapshot {
             revision: s.revision,
             entries,

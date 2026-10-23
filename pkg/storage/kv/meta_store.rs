@@ -36,21 +36,40 @@ pub enum Consistency {
     Serializable,
 }
 
-/// Byte-ordered prefix scan, optionally pinned to a revision. None means latest.
+/// Byte-ordered prefix or bounded read, optionally pinned to a revision. None means latest.
 /// `start` is inclusive within the prefix; `limit == 0` is unlimited.
 #[derive(Debug, Clone)]
 pub struct Read {
     pub prefix: Vec<u8>,
     pub start: Option<Vec<u8>>,
+    /// Exclusive upper bound for a bounded read; empty means a point read at start.
+    /// Bounded reads require an empty prefix and a nonempty start.
+    /// Use `Read::range` to translate Go Base's NUL prefix sentinel.
+    pub end: Option<Vec<u8>>,
     pub limit: usize,
     pub revision: Option<Revision>,
     pub consistency: Consistency,
 }
 impl Read {
+    /// Read Go Base's `[start, end)` selection in byte order.
+    /// An end of exactly one NUL byte selects the start prefix (empty start: all keys).
+    /// An empty end selects exactly start, matching Go's WithRange(empty) behavior.
+    pub fn range(start: &[u8], end: &[u8], consistency: Consistency) -> Self {
+        if end == [0] {
+            return Self::prefix(start, consistency);
+        }
+        Self {
+            start: Some(start.to_vec()),
+            end: Some(end.to_vec()),
+            ..Self::prefix(b"", consistency)
+        }
+    }
+
     pub fn prefix(prefix: &[u8], consistency: Consistency) -> Self {
         Self {
             prefix: prefix.to_vec(),
             start: None,
+            end: None,
             limit: 0,
             revision: None,
             consistency,
@@ -62,6 +81,8 @@ impl Read {
                 .start
                 .as_ref()
                 .is_some_and(|s| !s.starts_with(&self.prefix))
+            || (self.end.is_some()
+                && (!self.prefix.is_empty() || self.start.as_ref().is_none_or(|s| s.is_empty())))
             || self.limit > i64::MAX as usize
         {
             return Err(StoreError::InvalidArgument);
