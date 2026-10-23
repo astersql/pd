@@ -134,6 +134,10 @@ name = "astersql-pd-kerneltype"
 version = "0.1.0"
 
 [[package]]
+name = "astersql-pd-keypath"
+version = "0.1.0"
+
+[[package]]
 name = "astersql-pd-keyspace-constant"
 version = "0.1.0"
 

@@ -325,3 +325,79 @@ rg -n '^(func |type |pub |    pub )' pkg/utils/keypath/absolute_key_path.go pkg/
 
 已审查差异只有本证据文档和任务状态/清理；未修改 Go/Rust、manifest、锁文件、
 只读 plan.md 或来源主题。其他会话的元数据观测任务状态保留原样、不纳入提交。
+
+## 任务 2：集群与元数据键（2026-10-23）
+
+准入：批次 1 提交 `cf27d67306a0a9c4182a68825e0247b70d6fdd65` 已存在，
+前文盘点及 core 基线证据齐全；`git diff 5d5948052 -- pkg/utils/keypath`
+为空。无更深层 AGENTS.md。只读总计划与来源主题未修改。
+
+新增 canonical crate `astersql-pd-keypath`，默认 features，无第三方依赖。
+`ClusterPaths::new(u64)` 保存显式、不可变集群上下文，`cluster_id()` 取回 ID；
+不引入 Go 全局 setter/resetter。`CLUSTER_ID_PATH` 固定 `/pd/cluster_id`。
+本轮方法：`cluster_path`、`cluster_bootstrap_time_path`、`alloc_id_path`、
+`keyspace_alloc_id_path`、`store_path_prefix`、`store_path`、`region_path`、
+`extract_store_id_from_path`。配置/选主、GC、规则、其他键空间路径留给后续任务。
+纯值路径无存储行为，因此本任务无需 MemoryStore/etcd 两个后端入口。
+
+### Go 依据及实际差分
+
+- 来源：`absolute_key_path.go` 的 `ClusterIDPath`、`AllocIDPath`、
+  `KeyspaceAllocIDPath`、`ClusterPath`、`ClusterBootstrapTimePath`、
+  `StorePath`、`StorePathPrefix`、`ExtractStoreIDFromPath`、`RegionPath`；
+  `cluster_id.go` 的默认 0 行为。
+- 已有测试：`TestRegionPath` 对 1000 个随机 uint64 比较 `%020d`；
+  相邻 `TestParseKeyspaceResourceGroupPath` 的 8 个子场景也随包测试通过。
+- 真实 Go 输出工具：[cluster_paths.go](../../scripts/rust-theme3-oracle/cluster_paths.go)，
+  [main.go](../../scripts/rust-theme3-oracle/main.go) 仅分发。
+  `go run ./scripts/rust-theme3-oracle cluster_paths`（退出 0）输出 70 条 TSV。
+  原样保存在独立 [cluster_paths_test.rs](../../pkg/utils/keypath/cluster_paths_test.rs)
+  的 `GO_ORACLE` 常量，Rust 逐条调用真实函数断言字节/错误类别，并输出已核对记录。
+- cluster 输入 `[0, 42, 18446744073709551615]`；store/region 输入
+  `[0, 1, 42, 9999999999999999999, 10000000000000000000, 18446744073709551615]`。
+  52 条路径记录：固定键 1 条、每个 cluster 的非 ID 路径 5 条、store/region 各 6 条。
+  例如 `/pd/0/raft/s/00000000000000000000`、
+  `/pd/42/raft/r/09999999999999999999`、
+  `/pd/18446744073709551615/raft/r/18446744073709551615`。
+- 18 条解析输入及结果完整保存在上述 Go 工具和 Rust oracle 常量。
+  覆盖空串/全零、裸数字/前导零、u64 最大值/溢出、正负号/空格/下划线/
+  Unicode/非法尾字符、当前与其他集群完整键。先剥当前 prefix，再去全部前导零；
+  零值构造有效但反解为空串而失败；裸 `123` 成功、错误集群完整键失败。
+  `18446744073709551616x` 在非法尾字符之前先溢出，返回 range。
+  Rust `StoreIdError` 保留 syntax/range 类别及底层错误短语，通过 `Result`
+  表达失败，不复刻 Go 的 `NumError` 包装文本或失败时应忽略的部分数值。
+- 将 Go TSV 和 Rust 测试 stdout 中 `ORACLE` 行排序逐行比较，70/70 完全一致；
+  键路径比较用 `as_bytes()`，没有归一化。这是本轮实际运行差分，非仅源码推导。
+
+### 测试驱动与验证
+
+每次 Cargo 阶段原子 `mkdir target/rust-slot-locks/slot-N.lock` 从 1–10 领取，
+两阶段均实际获得槽位 **1**，
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+锁内记录计划、任务、会话及阶段 shell PID（84452 / 84613）；使用 EXIT/INT/TERM
+清理，全部 Cargo/fixture 子进程结束后释放锁，缓存保留。
+
+- `make gotest GOTEST_ARGS='./pkg/utils/keypath -count=1'`：退出 0，
+  2 个顶层测试（其中资源组测试 8 个子场景），包输出 `ok ... 0.242s`；
+  make 已完成 failpoint 禁用，后续检查无 Go 生产差异或生成 failpoint 文件。
+- `cargo fmt --all`：退出 0；新增 crate 后 `cargo check --workspace`：退出 0，
+  Cargo.lock 仅新增无依赖的 keypath 包条目。
+- 红灯：`cargo test --locked -p astersql-pd-keypath --lib cluster_paths -- --nocapture`：
+  退出 **101**，1 passed / 2 failed。最小实现尚未补零，实际断言
+  `/pd/0/raft/s/0` 不等于 `/pd/0/raft/s/00000000000000000000`，
+  隔离测试也因 `/pd/1/raft/s/42` 不等于 20 位键失败。无缺符号/环境错误替代红灯。
+- 补齐 store/region 的 `:020` 后 `cargo fmt --all`：退出 0；
+  **同一命令、同一断言**绿灯：退出 **0**，3 passed / 0 failed / 0 ignored，
+  其中 52 条路径断言、18 条解析断言和独立集群上下文断言全部通过。
+- `cargo metadata --format-version 1 --no-deps`：退出 0，包含新 keypath crate。
+- `cargo fmt --all -- --check`：退出 0。
+- `cargo check --workspace --locked`：退出 0；仅有既有 server 字段废弃警告。
+- `cargo test --workspace --locked`：退出 0，**449 passed / 0 failed / 1 ignored**，
+  包含 2 个 syncutil compile-fail doctest；既有 ignored 是需单独二进制的
+  `tests/rust-compat/tso_test.rs` 测试，本任务未新增 ignored。
+- `git diff --check`：退出 0。审查确认无 Go 生产文件变化、无无关 Rust 格式化差异；
+  仅 workspace 注册、必要锁文件条目、本轮 crate/测试、Go oracle 及本文证据。
+  槽位锁目录最终为空，保留 `target/rust-slot-1` 缓存。
+
+结论：任务 2 已完成；独立测试显式注册于 `pkg/utils/keypath/lib.rs`。
+本结论仅覆盖本轮键路径行为，不代表整个 Go keypath 包已迁移。
