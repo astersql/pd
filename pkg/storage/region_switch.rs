@@ -15,6 +15,7 @@ impl Storage {
     /// The injected endpoint does not imply a production local persistence backend.
     pub fn new_core(mut default: Self, region_storage: StorageEndpoint) -> Self {
         default.region_storage = Some(region_storage);
+        default.region_loaded = crate::region_load_once::RegionSource::Unloaded;
         default.use_region_storage.store(false, Ordering::SeqCst);
         default
     }

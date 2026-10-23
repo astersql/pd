@@ -194,3 +194,97 @@ Cargo.lock 仅新增 core/keypath 两条依赖边。Rust 修改后先 cargo fmt 
 已审查上述实现、测试、注册、manifest、lock 与本节证据。plan.md、根 manifest
 及来源主题均未修改。保留用户既有观测工具计划修改与前序任务文件删除，
 不包含在本任务提交中。批次 55 的行为与验证证据满足。
+
+## 任务 3：区域只加载一次（批次 56）
+
+日期：2026-10-23（Asia/Shanghai）。
+
+### 准入与只读 Go 依据
+
+核验批次 55 提交 `59c710558`、本文件任务 2 的证据与 canonical Storage：
+区域切换双后端 2 passed、workspace 606 passed / 0 failed / 1 既有 ignored，
+依赖准入满足。已阅读执行技能、只读 plan.md、ADR-001、porting-guide 与仓库
+说明；无更深 AGENTS.md。storage.go、storage_test.go 相对规划基准
+`5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异。
+
+Go `TryLoadRegionsOnce` 在非 core 时直接委托 LoadRegions；core 的状态是
+unloaded/fromEtcd/fromLeveldb。默认源每次扫描，成功才覆盖为 fromEtcd；本地源
+仅在 unloaded 时扫描，成功改为 fromLeveldb。任一来源的失败均保留原状态，
+切换本身不重置状态。因此默认先成功再切本地时，跳过本地扫描，且
+`AreRegionsLoaded` 返回 false；切回默认又返回 true。源码中的 mutex 保护
+加载和状态读取；Rust 复用现有扫描接口的独占 &mut self，跨 await 保持借用，
+安全调用方不能同时扫描、切换或查询，无需新增 runtime 或异步锁依赖。
+
+检查 TestMain、TestLoadRegionsToCache、TestLoadRegions、TestTrySwitchRegionStorage
+及 memory/endpoint 调用链后，确认所选用例无需 failpoint 注入，仅写编译缓存。
+实际运行：
+
+```text
+GOARCH=arm64 CGO_ENABLED=0 GOFLAGS=-mod=readonly go test -mod=readonly ./pkg/storage -run '^(TestLoadRegionsToCache|TestLoadRegions|TestTrySwitchRegionStorage)$' -count=1 -v
+```
+
+退出 0，3 个顶层测试通过（`/tmp/pd56-go.log`）。整包指定 Go oracle 未运行：
+TestRegionReload、TestLoadRegionsExceedRangeLimit 等依赖注入，不能在 Go 只读
+条件下执行。未启停 failpoint，未把上述源码规则或选中用例冒称完整 Go 运行差分。
+本任务没有编码实现变更；复用 endpoint 的既有 region codec、既有 Go fixtures
+及任务 2 的真实 Go Region 字节证据；完整基线同时回归既有编码比较测试。
+
+### 实现、失败时序与红绿灯
+
+新增 `region_load_once.rs`，在 canonical Storage 上提供
+`try_load_regions_once` / `are_regions_loaded` 与私有三态 RegionSource。
+facade.rs 只增加状态字段和初始化，region_switch.rs 的 new_core 重置状态为
+Unloaded（对应 Go 新 core）；切换与直接 load_regions 均不修改加载状态。
+Go AreRegionsLoaded 对非 core 的类型断言会 panic，Rust 同样明确 core 前置条件。
+无 manifest、Cargo.lock、依赖或 codec 变更。
+
+独立 region_load_once_test.rs 在 lib.rs 显式注册，两个测试入口使用同一 contract。
+region_load_once_memory 使用两个独立 MemoryStore；region_load_once_etcd 使用
+两个真实 etcd fixture，默认和注入源的数据完全独立。复用已有 fixture helper，
+随机 loopback 端口、独立目录、EOF/Drop 关闭等待；审查其 Go build 及启动路径
+不生成或改写 Go/模块文件，继承 -mod=readonly。
+
+六组路径隔离场景覆盖：初始未加载、本地成功后跳过新增区域及已取消调用、默认
+重复增量扫描、两方向切换及来源查询、默认先成功抑制本地首次扫描、失败状态
+保留、首次取消可重试、普通 facade 重复委托、空扫描成功、直接扫描不设置状态。
+错误时序：本地先交付 ID=1，再遇到 ID=2 的坏 protobuf [255]；返回 Region 错误，
+状态仍未加载、游标=2；修复真实存储中的 ID=2 后只回调 ID=2 并标记本地成功。
+取消时序：调用前取消 token，真实读完成后 endpoint 返回 Cancelled，无 callback；
+未加载状态保留，换用新 token 可成功。已有本地/默认成功后的默认取消保留原
+来源。无网络断连、lease 或时钟到期场景，本故事无需这些故障。
+
+最小可编译接口先直接委托扫描且状态恒未加载：聚焦命令退出 101，两个后端均在
+成功交付本地区域后 `storage.are_regions_loaded()` 的真实状态断言失败，
+0 passed / 2 failed / 0 ignored（`/tmp/pd56-red.log`）。实现状态迁移和跳过规则后，
+同一测试未削弱断言、未忽略，退出 0，2 passed / 0 failed / 0 ignored
+（`/tmp/pd56-green.log`）。
+
+### Cargo 槽位与最终验证
+
+所有 Cargo 阶段均由 `/tmp/pd56-cargo.sh` 从根目录按顺序原子 mkdir 动态领取，
+实际为 **槽位 1**，绝对路径
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录 plan=storage-facade/task=3/batch=56/session=region-load-once/PID；
+红灯 PID=19912、绿灯 PID=20118、最终基线 PID=20263。
+设置 EXIT/INT/TERM 清理自己的 owner/锁；所有 Cargo 与 fixture 子进程退出后
+释放锁，保留缓存。Rust 修改后先 cargo fmt --all，未改动其他任务 Rust 文件。
+
+最终基线日志 `/tmp/pd56-baseline.log`，metadata `/tmp/pd56-metadata.json`。
+
+| 确切命令 | 退出码与有效测试数 |
+| --- | --- |
+| `cargo fmt --all` | 0；分别在红灯和生产修改后先执行 |
+| `cargo test --locked -p astersql-pd-storage --lib region_load_once -- --nocapture`（红灯） | 101；0 passed / 2 failed / 0 ignored |
+| 同一聚焦命令（绿灯） | 0；2 passed / 0 failed / 0 ignored |
+| `cargo metadata --format-version 1 --no-deps` | 0 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；仅既有 cpu_usage 弃用警告 |
+| `cargo test --workspace --locked` | 0；83 target，608 passed / 0 failed / 1 既有 ignored |
+| 上述只读 Go 命令 | 0；3 个顶层测试通过 |
+| `git diff --check`、`git diff --cached --check` | 均 0 |
+
+全部 Cargo 与 fixture 进程退出，自己的 slot-1 owner/锁已释放，缓存保留。
+开始/结束 1101 个 Go/模块文件路径与 SHA-256 完全一致，Go/模块 Git 状态为空。
+已审查实现、独立测试、模块注册与本节证据；无其他 Rust、manifest、锁文件、
+plan.md 或来源主题变更。保留用户原有观测工具计划修改及前序编号任务删除，
+排除本次提交。状态：已完成；批次 56 的行为与验证证据满足。

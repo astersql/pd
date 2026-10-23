@@ -10,6 +10,7 @@ pub struct Storage {
     endpoint: StorageEndpoint,
     pub(crate) region_storage: Option<StorageEndpoint>,
     pub(crate) use_region_storage: AtomicBool,
+    pub(crate) region_loaded: crate::region_load_once::RegionSource,
 }
 
 impl Storage {
@@ -20,6 +21,7 @@ impl Storage {
             store,
             region_storage: None,
             use_region_storage: AtomicBool::new(false),
+            region_loaded: crate::region_load_once::RegionSource::Unloaded,
         }
     }
 

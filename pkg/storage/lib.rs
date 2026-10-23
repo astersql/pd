@@ -18,3 +18,7 @@ mod region_switch_test;
 #[path = "kv/etcd_fixture_test.rs"]
 #[allow(dead_code)]
 mod etcd_fixture;
+
+mod region_load_once;
+#[cfg(test)]
+mod region_load_once_test;
