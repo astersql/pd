@@ -11,3 +11,8 @@ mod cluster_id;
 pub use cluster_id::{ClusterIdError, cluster_id_candidate};
 #[cfg(test)]
 mod cluster_id_test;
+
+mod cluster_meta;
+pub use cluster_meta::Cluster;
+#[cfg(test)]
+mod cluster_meta_test;

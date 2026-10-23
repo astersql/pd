@@ -1806,3 +1806,132 @@ GOFLAGS=-mod=readonly，仅构建既有 Go 源；运行仅写槽位内隔离目�
 任务文件清理。来源 plan.md、来源史诗及其他在途计划保持开始时原样。
 槽位锁已释放，缓存保留。批次 22 此验证故事已完成，不扩大为服务启动或整个
 endpoint Go 包迁移完成。
+
+
+## 任务 4：集群元信息持久化（批次 23，2026-10-23）
+
+### 准入、Go 行为与阻塞恢复
+
+已核验批次 22 提交 `d874d1d3c44ef4f098d051e7e889ae799d9ce61f`、
+前节聚焦 4 passed / workspace 506 passed、canonical endpoint 与 fixture 实物。
+`meta.go` 相对规划基准 `5d5948052a9ee9e3fa7a09145fe2916a2912c223`
+无差异；来源 plan.md、来源主题及其他计划不修改。
+
+Go `StorageEndpoint.LoadMeta/SaveMeta` 通过 `keypath.ClusterPath` 读写
+`metapb.Cluster`，`util.go` 的 loadProto 对缺失和空值返回 false，对损坏非空值
+返回 false 与 ErrProtoUnmarshal；saveProto 使用 gogo proto.Marshal。
+固定依赖 kvproto `v0.0.0-20261016101550-f8ad079c8e98` 的
+`pkg/metapb/metapb.pb.go::Cluster` 定义 Id uint64 field 1、MaxPeerCount uint32
+field 2；Unmarshal 检查 wire type、截断和溢出并跳过未知字段。这些边界是只读
+源码依据，未冒充逐项 Go 运行差分。
+
+初查现有 wire fixtures、rust-proto-oracle 固定映射和 kvproto 自身四个测试文件，
+均无 Cluster 编码断言/输出，因此曾保留任务阻塞。恢复检查找到既有
+`tests/server/cluster/cluster_test.go::TestLoadClusterInfo`：向真实 etcd 保存
+`metapb.Cluster{Id:123}`（MaxPeerCount 为 0），然后重新 LoadClusterInfo 并断言
+meta/stores/regions。通过正常 etcd HTTP gateway 观察其输出，已补齐所需真实字节。
+
+### 只读 Go 运行及真实编码输出
+
+先审查所选 TestBasic / TestLoadClusterInfo、TestMain/goleak、NewTestCluster、
+config Generate、NewTestServer、RunInitialServers、默认 etcd storage、
+SaveMeta/saveProto、etcdKVBase.Save、Destroy 调用链。所选场景不启用也不依赖
+failpoint，运行只创建并清理临时 etcd/region 数据目录及日志，不写 Go/模块文件；
+只执行现有测试，无 Go 工具新增、调试注入、生成器或 failpoint 启停。
+整包 oracle 包含需注入的其他测试，未执行，所选测试不等于整包通过。
+
+- `GOFLAGS=-mod=readonly go test -mod=readonly ./pkg/storage -run '^TestBasic$'
+  -count=1 -v`：退出 0，1 passed，Cluster 缺失、保存、读取和相等断言通过；该测试
+  没有输出字节，不单独作为字节证据。
+- `GOFLAGS=-mod=readonly go test -mod=readonly ./tests/server/cluster -run
+  '^TestLoadClusterInfo$' -count=1 -v`：退出 1，0 有效测试；Dashboard 缺少生成的
+  assets/vfsgen 类型。未生成 Go 资产，改用仓库已有 without_dashboard 标签。
+- `GOFLAGS=-mod=readonly go test -mod=readonly -tags without_dashboard
+  ./tests/server/cluster -run '^TestLoadClusterInfo$' -count=1 -v`：退出 0，
+  1 passed / 0 failed；单测 3.37s，包汇总 5.647s。
+
+该命令由 Python subprocess 执行；观察线程从本次 stdout 发现随机 loopback URL，
+每次调用仅 POST `/v3/kv/range`，body 为
+`{"key":"L3BkLw==","range_end":"L3BkMA=="}`（`/pd/` 到 `/pd0`）。
+按 `/pd/[0-9]+/raft` 过滤返回 key，base64 解码 value 并保留原始响应；
+线程每轮间隔 2ms、请求超时 150ms，测试退出后停止并 join，没有修改服务或数据。
+从 subprocess 启动（含编译）起 12.1962s 读取到：
+
+```json
+{
+  "elapsed_seconds": 12.1962,
+  "endpoint": "http://127.0.0.1:50371",
+  "key": "/pd/7699712222286792390/raft",
+  "value_hex": "087b",
+  "raw_kv": {
+    "key": "L3BkLzc2OTk3MTIyMjIyODY3OTIzOTAvcmFmdA==",
+    "create_revision": "12",
+    "mod_revision": "12",
+    "version": "1",
+    "value": "CHs="
+  },
+  "header": {
+    "cluster_id": "3193401415776971262",
+    "member_id": "14230389871356479017",
+    "revision": "12",
+    "raft_term": "2"
+  }
+}
+```
+
+输入来自上述既有 SaveMeta 调用；实际原始 value base64 `CHs=`、hex **087b**，
+create/mod revision 均为 12，version 1。这是本轮真实 Go 编码输出，
+不从 Rust 编码或 protobuf 字段号推导。Rust 两后端保存后直接与该字节比较，
+并独立写入该 Go 输出验证读取。
+
+### Rust 实现、TDD 与行为范围
+
+`cluster_meta.rs` 在 canonical endpoint crate 扩展 `load_meta` / `save_meta`，
+公开领域 `Cluster { id, max_peer_count }`；内部 WireCluster 与已有 protobuf codec
+完成转换，生成协议消息不进入公开接口。路径复用调用者传入的 ClusterPaths，
+不引入全局 ID、第二套 MetaStore、依赖版本或配置开关。存储错误与 protobuf 错误
+沿用 EndpointError。全零 Cluster 保存为空 wire，随后读为 None，保持 Go 空值语义；
+不强制 meta.id 与 key 的 cluster ID 相等（现有 Go 测试也允许不同）。
+
+独立 `cluster_meta_test.rs` 在 lib.rs 显式注册。MemoryStore 与真实 etcd 共用 contract，
+覆盖缺失、空值、真实 Go 字节双向读取、完整字段往返、u64/u32 最大值、ID 为零但
+peer count 非零、路径隔离、未知字段、坏 tag/截断/错误 wire type、覆盖写与全零值。
+额外字段和畸形输入基于上述 Go 源码，未声称新增 Go 编码样本。
+真实 etcd 最后再保存 123，收到 stop/stopped 确认后 start/restarted 同 WAL 重启，
+重新连接并验证领域值和物理字节仍为 Go 输出，无进程或 fixture 遗留。
+
+初始 save_meta 为可编译但不写入的最小接口。Rust 修改后先 `cargo fmt --all`：
+
+- 红灯 `cargo test --locked -p astersql-pd-storage-endpoint --lib cluster_meta
+  -- --nocapture`：退出 101，0 passed / 2 failed / 0 ignored；两个后端均在真实
+  byte 断言失败，实际 `[]`、预期 `[8,123]`，不是缺符号或环境失败。
+- 最小保存实现后，同命令退出 0，2 passed / 0 failed / 0 ignored，原断言未削弱。
+
+### 最终验证、共享槽位与差异核验
+
+每个 Cargo 阶段从仓库根以 mkdir 原子动态领取第一个可用槽位，本轮三阶段均
+实际领取 **1**：
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+锁 owner 记录计划、任务/批次、会话 cluster-meta-recovery 与 shell PID；
+EXIT/INT/TERM trap 清理本人的 owner 与锁目录。命令同步等待所有 Cargo/fixture
+子进程退出后释放锁，缓存保留，无其他锁或缓存修改。所有子进程继承
+GOFLAGS=-mod=readonly；现有 fixture Go build 只构建既有源码。proto 构建脚本
+有解压 Go 源码路径，本轮复用已有槽位构建产物，未触发该脚本，不新增该类文件。
+
+Rust 实现完成后的最终阶段命令及结果：
+
+| 命令 | 退出码与有效结果 |
+| --- | --- |
+| `cargo fmt --all` | 0；仅本任务 Rust 文件变化 |
+| `cargo test --locked -p astersql-pd-storage-endpoint --lib cluster_meta -- --nocapture` | 0；2 passed / 0 failed / 0 ignored，两个后端均命中 |
+| `cargo metadata --format-version 1 --no-deps` | 0；canonical endpoint lib 已注册 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；只有既有 server cpu_usage 弃用警告 |
+| `cargo test --workspace --locked` | 0；508 passed / 0 failed / 1 既有 ignored，含 doc-tests；endpoint 9 项全通过 |
+| `git diff --check`、`git diff --cached --check` | 0 |
+
+任务开始/恢复前与最终对照 1101 个已跟踪 Go/模块文件 SHA-256，全相同；Go Git
+差异为空，未跟踪 Go/模块文件 0。未运行 failpoint、Go 生成器/格式化/依赖整理。
+manifest、Cargo.lock 无修改，workspace 格式化未改动其他 Rust 文件。
+审查仅 cluster_meta.rs、cluster_meta_test.rs、lib 注册、本证据节及任务文件清理。
+批次 23 当前验证故事已完成；不扩大为整个 endpoint 包或服务启动完成。
