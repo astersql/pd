@@ -47,12 +47,35 @@ impl Leadership {
         value: Vec<u8>,
         ttl_seconds: i64,
     ) -> Result<Self> {
+        Self::campaign_with_key(
+            store,
+            cancel,
+            cluster_id,
+            format!("/pd/{cluster_id}/leader").into_bytes(),
+            value,
+            ttl_seconds,
+            vec![],
+        )
+        .await
+    }
+
+    /// Attempt election at an explicit key, subject to additional atomic comparisons.
+    /// A failed attempt revokes only its own lease, leaving existing leaders untouched.
+    pub async fn campaign_with_key(
+        store: Arc<dyn MetaStore>,
+        cancel: CancellationToken,
+        cluster_id: u64,
+        key: Vec<u8>,
+        value: Vec<u8>,
+        ttl_seconds: i64,
+        mut compares: Vec<Compare>,
+    ) -> Result<Self> {
         let lease = cancellable(&cancel, store.grant(ttl_seconds)).await?;
-        let key = format!("/pd/{cluster_id}/leader").into_bytes();
+        compares.push(Compare::CreateRevision(key.clone(), 0));
         let result = cancellable(
             &cancel,
             store.transact(
-                vec![Compare::CreateRevision(key.clone(), 0)],
+                compares,
                 vec![Mutation::Put {
                     key: key.clone(),
                     value: value.clone(),

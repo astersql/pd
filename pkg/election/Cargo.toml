@@ -11,3 +11,5 @@ astersql-pd-storage-kv.workspace = true
 thiserror.workspace = true
 tokio.workspace = true
 tokio-util.workspace = true
+[dev-dependencies]
+async-trait.workspace = true

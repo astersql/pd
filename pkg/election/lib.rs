@@ -3,6 +3,8 @@
 mod leadership;
 pub use leadership::*;
 #[cfg(test)]
+mod campaign_key_test;
+#[cfg(test)]
 #[path = "../storage/kv/etcd_fixture_test.rs"]
 mod etcd_fixture;
 #[cfg(test)]

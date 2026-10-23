@@ -266,3 +266,71 @@ owner 与锁，信号处理等待该阶段子进程退出后释放。全部阶�
 开始/结束核对 1101 个 Go/模块文件路径与 SHA-256 完全一致，Go/模块 Git 状态为空。
 只读 plan.md 和来源史诗无差异；工作区既有其他任务状态修改/删除均保留并排除提交。
 此证据仅证明任期提取与兼容导出，不代表后续 lease/watch/reset 任务完成。
+
+## 任务 3：支持指定键选主（批次 61）
+
+日期：2026-10-23（Asia/Shanghai）。前置批次 60 的提交 `9a68e3b32`、上节
+完成证据、canonical election crate 及 member 兼容导出已核验，准入满足。
+Go `pkg/election/leadership.go` 自规划基准
+`5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异，仍为上节固定 blob。
+本任务原位扩展 [leadership.rs](../../pkg/election/leadership.rs)，不建立第二套 term。
+
+### 行为、Go 依据与边界
+
+- 新增 `Leadership::campaign_with_key(store, cancel, cluster_id, key, value,
+  ttl_seconds, compares)`；原 `Leadership::campaign` 委托它，继续使用
+  `/pd/{cluster_id}/leader`。member 原调用路径与 API 不变。
+- Go `NewLeadership` 保存调用方 leaderKey；`Campaign` 先 grant，再将调用方
+  cmps 与 `CreateRevision(leaderKey)=0` 组合，原子写 opaque value 并绑定 lease。
+  事务错误/比较冲突关闭本次 lease。Rust 保留同一顺序与既有错误分类：比较失败
+  `Contended`，后端错误 `Store`；所有事务失败分支继续尝试撤销自己的 lease。
+  后端不可用导致 revoke 失败仍依赖 TTL，这与原路径一致，本任务没有扩大故障恢复范围。
+- Go `TestLeadership` 的同键两候选断言及 `Campaign` 事务是只读源码依据，
+  不冒充本轮 Go 运行差分。整包 Go 命令包含依赖 failpoint 的 election 测试，
+  因 Go 只读约束没有运行 `go test -mod=readonly ./pkg/election ./pkg/member
+  ./pkg/id -count=1`，没有启停 failpoint。此任务无 codec/协议转换：二进制 value
+  只作 opaque 字节原样存取，不声称其为 Go Member 编码，不需要新增 Go 编码输出。
+- [campaign_key_test.rs](../../pkg/election/campaign_key_test.rs) 在 lib 显式注册，
+  `campaign_key_memory` / `campaign_key_etcd` 共用全部断言：同一 store、同一 cluster
+  的相邻键 `/election/a`、`/election/ab` 独立成功，value/lease/revision 精确保存；
+  自身 leader key 禁写；同键冲突不影响既有任期；附加条件失败不占键且真实 lease
+  已不存在，条件改变后可成功；无效比较的后端错误也撤销本次 lease；两个并发候选
+  恰有一个成功；默认路径可同时选主；退出一个任期不影响其他键，最终所有已 grant
+  lease 的 TTL 查询都返回 LeaseNotFound。
+- RecordingStore 仅记录真实 grant 的 ID，所有事务、读、watch 和 lease 操作原样
+  委托真实 MemoryStore/EtcdMetaStore，不模拟核心事务结果。测试专用 async-trait
+  复用 workspace 已锁版本；Cargo.lock 只增加 election 的这一个既有依赖名。
+  生产依赖、根 manifest 无变化。共享 etcd fixture 沿用随机 loopback 端口、独立数据
+  目录，调用链已读，仅 `go build` 现有只读源码及运行 etcd，继承
+  `GOFLAGS=-mod=readonly`，不生成/改写 Go。本任务没有断连或到期场景。
+
+### TDD 与验证记录
+
+初始可编译的最小入口保留固定 key、忽略附加比较，未预先实现目标行为；
+第一次聚焦验证退出 101：两个后端均在第二个不同 key 选举的 unwrap 处收到
+Contended（0 passed / 2 failed）。仅接通 key 后第二次退出 101：两个后端均在
+附加条件失败应返回 Contended 的真实断言失败（0 passed / 2 failed）。
+随后将调用方 compares 追加 CreateRevision=0，原测试不改断言、不忽略场景，获得绿灯。
+
+状态：已完成。每阶段均依次原子 mkdir 动态领取共享槽位，实际均为 **1**；
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录计划、任务、会话及持有 Python 进程 PID；包装器正常/失败退出均释放自己的锁，
+信号处理等待子进程组退出后释放。全部 Cargo 与 fixture 进程已结束，锁已释放，保留缓存。
+
+| 确切命令 | 退出码 | 有效结果 |
+| --- | --- | --- |
+| `cargo fmt --all`（每次 Rust 修改后） | 0 | 只涉及本任务 Rust 文件 |
+| `cargo check --workspace`（同步测试依赖 lock） | 0 | lock 仅增加已锁 async-trait 依赖关联 |
+| `cargo test --locked -p astersql-pd-election --lib campaign_key -- --nocapture`（固定 key 红灯） | 101 | 0 passed / 2 failed，第二个不同键选举错误冲突 |
+| `cargo test --locked -p astersql-pd-election --lib campaign_key -- --nocapture`（附加比较红灯） | 101 | 0 passed / 2 failed，条件不满足却选举成功 |
+| `cargo test --locked -p astersql-pd-election --lib campaign_key -- --nocapture`（最终绿灯） | 0 | 2 passed / 0 failed / 0 ignored |
+| `cargo metadata --format-version 1 --no-deps` | 0 | 默认 feature，生产依赖方向不变 |
+| `cargo fmt --all -- --check` | 0 | workspace 格式检查通过 |
+| `cargo check --workspace --locked` | 0 | workspace 编译通过 |
+| `cargo test --workspace --locked` | 0 | 614 passed / 0 failed / 1 既有 ignored，含 member/ID/TSO 原回归及本任务两个后端入口 |
+| `git diff --check`、`git diff --cached --check` | 0 | 实现/测试/依赖/证据差异已审查 |
+
+零测试 target 不计入有效场景，既有 ignored 不作为本任务验收证据。开始/结束的
+1101 个 Go/模块文件路径和 SHA-256 完全一致，相关 Git 状态为空。
+只读 plan.md、来源主题无本任务差异；既有其他任务状态修改/删除均保留并排除提交。
+本节仅覆盖指定键及附加比较，不表示 lease/watch/reset 后续批次完成。
