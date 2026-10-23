@@ -3317,3 +3317,143 @@ main.go；proto build.rs 未重新执行，不解压生成 Go 源码。
 Cargo.toml/Cargo.lock 无变化，无其他任务 Rust 文件变化。总计划和来源主题保持只读，
 用户既有变更保留。全部 Cargo/fixture 子进程结束，自己的槽位锁已释放，缓存保留。
 状态：已完成；批次 38 的服务限额存储验证故事完成。
+
+## 任务 20：键空间元信息事务（批次 39，2026-10-23）
+
+### 准入、只读 Go 与阻塞恢复
+
+核验批次 38 提交 `e55477873021158d7d25be9353a8843106f5f129`、service_limits
+实物及任务 19 的 2 个聚焦测试、workspace 551 passed / 0 failed / 1 既有 ignored。
+已读计划、执行技能、ADR-001、porting-guide、Copilot，无更深 pkg AGENTS.md。
+`pkg/storage/endpoint/keyspace.go` 相对规划基准
+`5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异。
+Go SaveKeyspaceMeta 使用 gogo protobuf；LoadKeyspaceMeta 优先 RevisionTxn，空值为 nil、
+坏编码包装 ErrProtoUnmarshal；范围读空记录解码为默认消息，坏编码原样返回错误。
+名称索引保存任意 u32 十进制，读取仅接受 uint24；缺失/空值与 present ID=0 不混淆。
+保存元信息和名字是独立 API，只有放入同一 caller transaction 才共同提交；
+RemoveKeyspace 依次缓冲两个删除，不擅自校验名称或业务状态。
+
+初查 oracle 和 wire-fixtures 缺少 KeyspaceMeta 输出，一度记录阻塞；按已有任务 4/5
+正常 etcd gateway 观察机制恢复。没有新增/修改 Go、调试注入或扩大业务迁移范围。
+选定既有 `tests/server/keyspace` TestKeyspaceTestSuite/TestLoadKeyspaceByIDGRPC：
+TestMain/goleak、SetupTest/NewTestCluster(3)、config Generate、NewTestServer、
+RunInitialServers、BootstrapCluster/Manager.Bootstrap、CreateKeyspace、
+assignGroupAndSaveKeyspace/saveNewKeyspace、UpdateKeyspaceStateByID、
+SaveKeyspaceMeta、etcdTxn.RunInTxn/Commit、TearDownTest/Destroy 的正常调用链
+只创建/删除临时数据及日志，无 Go/模块写入；WaitRegionSplit=false 使用正常 split
+流程，不依赖 skipSplitRegion。所选测试不调用 failpoint；同包 TestProtectedKeyspace
+及 pkg/keyspace suite 的 failpoint 场景未运行。
+
+### 真实 Go 输出与命令
+
+- `GOFLAGS=-mod=readonly go test -mod=readonly -tags without_dashboard ./tests/server/keyspace -run '^TestKeyspaceTestSuite$/^TestLoadKeyspaceByIDGRPC$' -count=1 -v`：退出 0，1 有效子测试通过；suite 16.37s、包 18.580s。
+- `GOFLAGS=-mod=readonly go test -mod=readonly ./pkg/storage -run '^(TestSaveLoadKeyspace|TestLoadRangeKeyspaces|TestEncodeSpaceID)$' -count=1 -v`：退出 0，3 passed，包 1.091s。已审查 storage TestMain、memory backend、memTxn 正常调用链，无 failpoint 依赖或源文件写入。
+- 整包 `go test -mod=readonly ./pkg/storage/endpoint ./pkg/storage -count=1` 未执行：其他 storage/region/tso 测试依赖注入，不能在只读约束下启用；所选测试通过不等于整包 Go 通过。
+
+观察复用 `/tmp/pd-store-capture.py` 的非 Go 机制，本轮脚本 `/tmp/pd-keyspace-capture.py`
+仅把测试选择和 key 过滤改为 KeyspaceMeta；Python subprocess 启动上述现成测试，
+线程从 stdout 收集随机 loopback URL，每轮间隔 2ms、HTTP 超时 150ms，只 POST
+`/v3/kv/range`，body `{"key":"L3BkLw==","range_end":"L3BkMA=="}`。
+按 `/pd/[0-9]+/keyspaces/meta/[0-9]+` 筛选并保留不同 value 的原始响应；
+测试退出后停止并 join，共捕获 10 个不同键/值，未写 etcd、未注入/修改服务。
+本轮日志 `/tmp/pd-keyspace-go-test.log`、原始捕获 `/tmp/pd-keyspace-go-wire.json`。
+下面永久保留实际样本，验收不依赖临时文件存续：
+
+```json
+{
+  "elapsed_seconds": 14.8765,
+  "endpoint": "http://127.0.0.1:56230",
+  "key": "/pd/7699735465849444685/keyspaces/meta/00000004",
+  "value_hex": "120f677270635f6c6f61645f62795f6964180128013a240a0a656e6372797074696f6e1216746573742d656e6372797074696f6e2d636f6e6669670804",
+  "raw_kv": {
+    "key": "L3BkLzc2OTk3MzU0NjU4NDk0NDQ2ODUva2V5c3BhY2VzL21ldGEvMDAwMDAwMDQ=",
+    "create_revision": "32",
+    "mod_revision": "35",
+    "version": "3",
+    "value": "Eg9ncnBjX2xvYWRfYnlfaWQYASgBOiQKCmVuY3J5cHRpb24SFnRlc3QtZW5jcnlwdGlvbi1jb25maWcIBA=="
+  },
+  "header": {
+    "cluster_id": "3281421159021715958",
+    "member_id": "14166846337732229432",
+    "revision": "35",
+    "raft_term": "2"
+  }
+}
+```
+
+输入来自上述现有测试：legacy ID=4、Name="grpc_load_by_id"、
+Config={"encryption":"test-encryption-config"}、CreateTime=0；创建时 DISABLED，
+自动启用后调用 UpdateKeyspaceStateByID(id, DISABLED, 1)。在 subprocess 启动后
+14.8765s 读取到最终 DISABLED、CreatedAt=0、StateChangedAt=1 的实际字节，
+create/mod revision=32/35、version=3。Rust 两个后端保存同一领域输入后逐字节比较
+该 Go 输出，再独立写入 Go 字节验证解码。不是由 Rust 或字段号推导的预期。
+单项 config 的字节可精确比较；多项 protobuf map 在 Go/Rust 均无遍历顺序保证，
+多项 config 只比较领域值，未声称任意 map 顺序都逐字节相同。
+
+### 实现与测试驱动证据
+
+canonical `keyspace_meta.rs` 扩展 StorageEndpoint 的 save/load_keyspace_meta、
+save/load_keyspace_id、remove_keyspace、load_range_keyspace。公开领域 Keyspace、
+KeyspaceIdentity、KeyspaceMetaError；内部复用同源 keyspacepb/apipb 编解码，
+没有在领域接口暴露协议类型。支持 oneof 缺失、legacy ID（含 0）、V3 scoped identity；
+GetId 同 Go，非 legacy identity 的物理 ID 为 0；保留未知 enum 数值和 int64 时间。
+同源 codec 分别编码普通字段和 oneof 后拼接，对齐 gogo 的 oneof 后置顺序。
+现有 proto 从 dev-dependency 移至 production dependency，无新版本/target，
+Cargo.lock 和根 manifest 不变；构建复用已有 proto 产物，未重新执行会解压 Go
+源码的 build.rs。Vec 编码不引入可触发的容量 encode 错误；存储、点读包装解码、
+范围原始解码、uint24 解析分别保留错误类别。
+
+使用 canonical Base/CallbackTxn，不引入第二套事务。metadata 点读以 modification
+revision 保护，名字按 value 保护；保存/删除只缓冲，由 caller 成功提交，不自动重试。
+独立 keyspace_meta_test.rs 在 lib.rs 显式注册，keyspace_meta_values、
+keyspace_meta_memory、keyspace_meta_etcd 共 3 个入口。两个后端共用同一 contract：
+Go 实际字节双向比较、事务前写入不可见、元信息/索引同 revision、callback 回滚、
+双键删除/重复删除、缺失/空/ID=0、十进制 uint24 边界和坏语法、u32::MAX 保存、
+205 条完整范围/有限范围/空范围、坏 protobuf/未知字段、元信息相同字节重写冲突、
+名称并发更新冲突时双键不被部分删除、默认消息空编码、oneof/未知 enum/极值时间及
+多项 config 往返、cluster 路径隔离。
+
+初始可编译实现只删除元信息。先 `cargo fmt --all` 和 `cargo check --workspace`
+均退出 0，聚焦
+`cargo test --locked -p astersql-pd-storage-endpoint --lib keyspace_meta -- --nocapture`
+实际红灯退出 101，1 passed / 2 failed / 0 ignored，4.12s；两个后端同一断言均发现
+删除后名称索引仍存在。补齐第二个删除后，205 条范围读的 205 个比较条件导致
+canonical 128 操作限制返回 Store(InvalidArgument)：保留完整结果断言，显式验证
+超限提交失败，将有限范围提交单独验证，没有绕过事务限制或降低结果断言。
+etcd 重启阶段旧 client 首次读 Unavailable，改为同现有 fixture 模式重连后验证恢复。
+细分点读包装错误与范围原始错误后补齐 mapping 并保留两种错误断言。
+最终先 fmt，同一聚焦命令退出 0，3 passed / 0 failed / 0 ignored，5.98s。
+
+etcd contract 后单独提交 ID=0 元信息/名称，stop/stopped → start/restarted，同 WAL
+重启、重新连接后两值一致；随后 Drop fixture 等待进程退出，再执行点读得到真实
+Store 错误、缓冲双删除在提交得到真实 Store 错误。无模拟核心事务、无 lease/到期
+场景或后台遗留任务。
+
+### 槽位与最终基线
+
+每阶段从仓库根按 1–10 顺序原子 mkdir 动态领取，实际均槽位 **1**，
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录 plan=storage-endpoint/task=20/batch=39/session=keyspace-meta、shell PID。
+`/tmp/pd-keyspace-cargo.sh` 的 EXIT/INT/TERM trap 只清理自己的 owner/lock，
+同步 Cargo/fixture 子进程均结束后释放，保留缓存。GOFLAGS=-mod=readonly，fixture
+只读构建现有 main.go，不启用 failpoint/生成器；proto build.rs 未重新执行。
+manifest 的 dependency 归属变化后先 check --workspace，确认 lock 无差异后再 locked。
+
+阶段 shell PID：6739（红灯）、6933（删除修复）、7175（范围限制）、7392（重连/错误分类）、
+7567（最终聚焦）、7732（workspace 基线）。全部阶段已结束，自己的 slot-1.lock 已清理。
+
+| 最终命令 | 退出码与结果 |
+| --- | --- |
+| `cargo fmt --all` | 0；仅本任务新增 Rust 文件发生格式化变化 |
+| `cargo test --locked -p astersql-pd-storage-endpoint --lib keyspace_meta -- --nocapture` | 0；3 passed / 0 failed / 0 ignored，5.98s |
+| `cargo metadata --format-version 1 --no-deps` | 0；canonical target 注册不变 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；仅既有 server cpu_usage 弃用警告 |
+| `cargo test --workspace --locked` | 0；83 个 target 含 doc-tests，554 passed / 0 failed / 1 既有 ignored；endpoint 55 passed |
+| `git diff --check`、`git diff --cached --check` | 0 |
+
+开始/结束 1101 个 Go/模块文件 SHA-256 快照一致，无新增、删除或内容差异，Go Git 状态为空。
+未运行 failpoint 启停、Go 生成/格式化或依赖整理。已审查新增领域/适配器、独立测试、
+模块注册、proto 依赖归属及本节证据。根 manifest、Cargo.lock、来源主题/plan.md 未改；
+用户原有计划修改及任务 19 删除保留，不混入本任务提交。全部 Cargo/fixture 子进程已结束，
+槽位缓存保留。状态：已完成；批次 39 的键空间元信息及名称索引事务故事完成。

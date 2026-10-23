@@ -19,7 +19,7 @@ serde = { workspace = true, features = ["derive"] }
 serde_json = { workspace = true, features = ["float_roundtrip"] }
 prost.workspace = true
 thiserror.workspace = true
+astersql-pd-proto.workspace = true
 
 [dev-dependencies]
 async-trait.workspace = true
-astersql-pd-proto.workspace = true

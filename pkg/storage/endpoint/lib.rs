@@ -81,3 +81,8 @@ mod resource_states_test;
 mod service_limits;
 #[cfg(test)]
 mod service_limits_test;
+
+mod keyspace_meta;
+pub use keyspace_meta::{Keyspace, KeyspaceIdentity, KeyspaceMetaError};
+#[cfg(test)]
+mod keyspace_meta_test;
