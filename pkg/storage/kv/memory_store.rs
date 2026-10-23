@@ -136,9 +136,12 @@ impl MetaStore for MemoryStore {
                 s.keys.get(k).map_or(0, |e| e.create_revision) == *rev
             }
             Compare::ModRevision(k, rev) => s.keys.get(k).map_or(0, |e| e.mod_revision) == *rev,
-            Compare::Value(k, value) => {
-                s.keys.get(k).map_or(&[][..], |e| e.value.as_slice()) == value
-            }
+            Compare::Value(k, value) => s.keys.get(k).is_some_and(|e| e.value == *value),
+            Compare::ValueNotEqual(k, value) => s.keys.get(k).is_some_and(|e| e.value != *value),
+            Compare::ValueLess(k, value) => s.keys.get(k).is_some_and(|e| e.value < *value),
+            Compare::ValueGreater(k, value) => s.keys.get(k).is_some_and(|e| e.value > *value),
+            Compare::Exists(k) => s.keys.contains_key(k),
+            Compare::NotExists(k) => !s.keys.contains_key(k),
             Compare::Lease(k, id) => s.keys.get(k).and_then(|e| e.lease).unwrap_or(0) == *id,
         });
         if !succeeded {

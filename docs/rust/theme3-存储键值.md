@@ -688,3 +688,78 @@ workspace 实际通过既有 watch/lease/fencing、断连/WAL 重启与消费者
 已审查新增方法、共用点读分支、独立测试、模块注册与本文差异；未修改 Go、依赖、
 manifest/lock、只读 plan.md 和来源主题，未纳入其他计划的既有修改。
 编号任务文件按完成流程删除，证据保留于本文和本任务提交。
+
+## 任务 7：扩展原子条件运算（批次 14）
+
+日期：2026-10-23（Asia/Shanghai）。依赖批次 13 已核验：提交 `f14d6cb7c`
+含 canonical revision 读实现、双后端独立测试及本文任务 6 完整证据，最终
+workspace 487 passed / 0 failed / 1 既有 ignored；准入满足。
+已读只读 plan.md、任务文件、ADR-001、porting-guide、根 AGENTS 与 Copilot 指令；
+无更深 AGENTS。`kv.go`、`etcd_kv.go` 相对规划基准
+`5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异。
+
+### Go 依据与实现边界
+
+`rawTxnWrapper::If` 将 Equal/NotEqual/Less/Greater 映射为 etcd Value 的
+`=/!=/</>`；Exists 为 CreateRevision>0，NotExists 为 CreateRevision=0，
+后两者忽略 Value。所有条件交由一次 etcd 事务 AND 求值。
+`kv_test.go::testRawTxn` 明确断言六比较、删除后四种值比较均为 false、存在性及
+多条件 AND。TestEtcd 实际运行该 helper。
+
+本轮先串行运行 `make gotest GOTEST_ARGS='./pkg/storage/kv ./pkg/storage -count=1'`，
+退出 0：KV 4.574s、storage 27.430s；未启用 -v，输出未列 Go 测试总数。
+随后 `make failpoint-disable` 退出 0；无 Go 源码差异和生成 binding 文件。
+Go failpoint 窗口结束后才编辑 Rust 和运行 Cargo。空值/二进制扩展矩阵的依据为
+Go 源码委托的 etcd 值比较及本轮真实 etcd 实测，不冒充逐输入 Go/Rust 运行差分。
+本任务没有 codec，不创建编码 oracle。
+
+新增 `raw_compare.rs::{RawTxnCmpType,RawTxnCondition}` 及其到唯一 `Compare` 的转换；
+原位扩展 `Compare`、请求键校验、MemoryStore 锁内求值和 EtcdMetaStore 协议映射。
+保留已有 Value 等值接口，内存实现改为缺失时 false，与真实 etcd 一致。
+不存在的键对四种值比较全部 false（包括空 operand）；存在空值仍参与字节比较。
+不新建存储接口、RawTxn builder、分支/响应实现、后台任务或运行时；
+不修改 Go、依赖、manifest、Cargo.lock、只读计划和来源主题。
+
+### 测试驱动与行为证据
+
+`lib.rs` 显式注册独立 `raw_compare_test.rs`，入口 `raw_compare_memory` /
+`raw_compare_etcd` 共用全部断言并复用 canonical fixture。
+最小可编译转换先全部委托旧 Value 比较；真实行为红灯退出 101：0 passed / 2 failed。
+内存在 actual=None、operand=[]、Equal 上实际 true/预期 false；
+etcd 在同一缺失状态 NotExists 上实际 false/预期 true。不是编译或环境错误。
+补齐映射及内存求值后，同一测试原断言未削弱，退出 0：2 passed / 0 failed / 0 ignored。
+
+每个后端覆盖 4 种状态（缺失、存在空值、v1、非 UTF-8/NUL 值）×7 种 operand×6
+比较，共 168 组。每组带 put/delete，成功时只分配一个 revision，失败时完整 Entry
+集合和 header revision 不变。另覆盖构造条件后外部值变更/创建空值/删除，再提交，
+六种比较均使用最终状态；比较-only 不增 revision；多条件 AND、空条件和空键错误。
+交错为构造条件→等待 Base 外部写完成→transact，无 sleep 或核心事务 mock。
+本任务不新增断连/到期故事，相关既有测试由完整 workspace 回归。
+
+### Cargo 共享槽位与验证
+
+三个阶段均原子 mkdir 动态领取实际槽位 **1**，绝对路径均为
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 含计划、任务、会话与持有 PID：红灯 49492、绿灯 49698、workspace 49840。
+所有 Cargo/fixture 子进程继承此设置；包装器正常/失败等待子进程结束，处理中断时
+终止并等待子进程组，随后移除自己的 owner 并 rmdir 释放锁，保留缓存。
+
+最终状态：已完成。三个阶段已结束，自己的锁已释放，槽位缓存保留。
+
+| 确切命令 | 退出码 | 有效测试数/结果 |
+| --- | --- | --- |
+| `cargo fmt --all`（红灯前、实现后） | 0 | 无无关 Rust 格式变化 |
+| `cargo test --locked -p astersql-pd-storage-kv --lib raw_compare -- --nocapture`（红灯） | 101 | 0 passed / 2 failed，真实状态断言 |
+| 同上（绿灯） | 0 | 2 passed / 0 failed / 0 ignored |
+| `cargo metadata --format-version 1 --no-deps` | 0 | canonical workspace 注册正常 |
+| `cargo fmt --all -- --check` | 0 | 通过 |
+| `cargo check --workspace --locked` | 0 | 通过 |
+| `cargo test --workspace --locked` | 0 | 489 passed / 0 failed / 1 既有 ignored，含 2 doc-tests |
+| `git diff --check` | 0 | 通过 |
+| `git diff --cached --check` | 0 | 本任务暂存审查通过 |
+
+既有 ignored 为独立兼容流程的 `tso_processes`，未新增 ignore。
+仅出现既有 RegionHeartbeatRequest.cpu_usage deprecated 警告。
+workspace 实际回归原有 watch/lease/fencing、断连/WAL 重启和消费者测试。
+已审查生产、独立测试、注册与本文差异；其他计划在途修改不纳入提交。
+编号任务文件按完成流程删除，证据保留于本文及实现提交。

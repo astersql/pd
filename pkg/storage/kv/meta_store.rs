@@ -109,7 +109,13 @@ pub struct Snapshot {
 pub enum Compare {
     CreateRevision(Vec<u8>, Revision),
     ModRevision(Vec<u8>, Revision),
+    /// Value comparisons are false for missing keys, including empty operands.
     Value(Vec<u8>, Vec<u8>),
+    ValueNotEqual(Vec<u8>, Vec<u8>),
+    ValueLess(Vec<u8>, Vec<u8>),
+    ValueGreater(Vec<u8>, Vec<u8>),
+    Exists(Vec<u8>),
+    NotExists(Vec<u8>),
     Lease(Vec<u8>, LeaseId),
 }
 #[derive(Debug, Clone)]
@@ -148,6 +154,11 @@ pub(crate) fn validate_txn(compares: &[Compare], writes: &[Mutation]) -> Result<
             Compare::CreateRevision(k, _)
             | Compare::ModRevision(k, _)
             | Compare::Value(k, _)
+            | Compare::ValueNotEqual(k, _)
+            | Compare::ValueLess(k, _)
+            | Compare::ValueGreater(k, _)
+            | Compare::Exists(k)
+            | Compare::NotExists(k)
             | Compare::Lease(k, _) => k.is_empty(),
         })
     {

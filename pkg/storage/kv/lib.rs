@@ -32,3 +32,8 @@ mod fixture;
 
 #[cfg(test)]
 mod revision_txn_test;
+
+mod raw_compare;
+pub use raw_compare::{RawTxnCmpType, RawTxnCondition};
+#[cfg(test)]
+mod raw_compare_test;

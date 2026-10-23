@@ -156,6 +156,19 @@ impl MetaStore for EtcdMetaStore {
                     etcd_client::Compare::mod_revision(k, CompareOp::Equal, r)
                 }
                 Compare::Value(k, v) => etcd_client::Compare::value(k, CompareOp::Equal, v),
+                Compare::ValueNotEqual(k, v) => {
+                    etcd_client::Compare::value(k, CompareOp::NotEqual, v)
+                }
+                Compare::ValueLess(k, v) => etcd_client::Compare::value(k, CompareOp::Less, v),
+                Compare::ValueGreater(k, v) => {
+                    etcd_client::Compare::value(k, CompareOp::Greater, v)
+                }
+                Compare::Exists(k) => {
+                    etcd_client::Compare::create_revision(k, CompareOp::Greater, 0)
+                }
+                Compare::NotExists(k) => {
+                    etcd_client::Compare::create_revision(k, CompareOp::Equal, 0)
+                }
                 Compare::Lease(k, id) => etcd_client::Compare::lease(k, CompareOp::Equal, id),
             })
             .collect();
