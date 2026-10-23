@@ -9,6 +9,7 @@ use std::{collections::BTreeSet, sync::Arc};
 pub struct ConfigMetaData {
     defined: Arc<BTreeSet<Vec<String>>>,
     path: Vec<String>,
+    pub(super) undecoded: Arc<Vec<String>>,
 }
 
 impl ConfigMetaData {
@@ -34,6 +35,7 @@ impl ConfigMetaData {
         Self {
             defined: Arc::new(defined),
             path: Vec::new(),
+            undecoded: Arc::default(),
         }
     }
 
@@ -56,6 +58,7 @@ impl ConfigMetaData {
         Self {
             defined: Arc::clone(&self.defined),
             path: new_path,
+            undecoded: Arc::clone(&self.undecoded),
         }
     }
 }

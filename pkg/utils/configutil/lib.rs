@@ -10,3 +10,8 @@ mod config_adjust_test;
 
 #[cfg(test)]
 mod config_metadata_test;
+
+mod config_unknown;
+
+#[cfg(test)]
+mod config_unknown_test;
