@@ -69,3 +69,7 @@ mod timestamp_fenced_save;
 pub use timestamp_fenced_save::TimestampSaveError;
 #[cfg(test)]
 mod timestamp_fenced_save_test;
+
+mod resource_settings;
+#[cfg(test)]
+mod resource_settings_test;

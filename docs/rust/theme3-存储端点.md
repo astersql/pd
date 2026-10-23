@@ -3052,3 +3052,87 @@ Go Git 差异为空。没有运行 failpoint、生成器、Go 格式化或依赖
 已审查实现、独立测试、显式注册、dev 依赖和唯一 lock 边及本证据节；
 总计划及来源主题未修改，用户已有其他计划变更保留。所有 Cargo/fixture 子进程结束，
 自己的占用记录/锁已释放。状态：已完成；批次 35 的受保护保存验证故事完成。
+
+## 任务 17：资源组设置文档（批次 36，2026-10-23）
+
+### 准入与 Go 只读依据
+
+已核验批次 35 提交 `97c720bd5`、timestamp_fenced_save 产物与本文任务 16
+证据：聚焦 5 passed，workspace 543 passed / 0 failed / 1 既有 ignored，基线退出 0。
+已读 do-task-plans、根规则、Copilot、ADR-001、porting-guide、只读总计划和任务文件；
+`rg --files --hidden pkg docs .plans -g AGENTS.md` 未发现更深规则。
+`resource_group.go` 相对规划基准 `5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异。
+
+Go `SaveResourceGroupSetting` 接受任意 proto.Message，经 saveProto 存储编码字节；
+`DeleteResourceGroupSetting` 精确删除同一键。NullKeyspaceID=u32::MAX 使用 legacy
+`resource_group/settings/name`，默认 keyspace=0 使用 `resource_group/keyspace/settings/0/name`。
+`LoadResourceGroupSettings` 先 legacy 后 keyspace；legacy 回调 ID 为 Null；keyspace
+解析相对 ID/name，坏 ID/缺分隔符跳过，名字可含斜线或为空。loadRangeByPrefix
+以 100 条分页，按实际键字节顺序，下一页从末键加 NUL 开始；后页失败保留已交付回调。
+列举不解码 protobuf，原样传递空值、损坏字节。路径不依赖 cluster ID。
+既有 `pkg/storage/storage_resource_group_test.go::TestResourceGroupStorage` 静态断言
+Null/default/1/2 名称保存、列举、删除与清空；不把该源码断言计为本轮运行。
+完整 `go test -mod=readonly ./pkg/storage/endpoint ./pkg/storage -count=1` 未执行：
+包含 TestLoadRegionsExceedRangeLimit、TestSaveTimestampWithTimeout 等需注入 failpoint
+场景，遵守 Go 只读约束，不注入、不裸跑替代。
+
+编码复用已有 `pkg/proto/wire-fixtures.json` 的 request_header：真实 Go
+`scripts/rust-proto-oracle/main.go` gogo/protobuf 输出，输入 ClusterId=42、SenderId=7、
+CallerId=oracle、CallerComponent=pd，hex=`082a10071a066f7261636c6522027064`。
+本文任务 2/7 已保存该只读工具成功运行证据。本轮 Rust prost 编码同一输入并比较这些
+Go 字节，两后端实际保存再读回逐字节比较；未新增 Go 编码工具或用 Rust 输出构造预期。
+Go 接口接受任意 proto.Message，故该消息是有效的存储输入；本任务不迁移 ResourceGroup
+业务模型或声称覆盖其全部字段编码。
+
+### 实现、红灯与绿灯
+
+canonical `resource_settings.rs` 实现 StorageEndpoint 的
+save_resource_group_setting、delete_resource_group_setting、load_resource_group_settings。
+保存接收序列化边界提供的 opaque wire bytes，领域 API 不暴露协议类型；复用 canonical
+keypath、Base 和 load_rule_prefix，不增加依赖、Cargo target 或第二套存储。
+列举先 legacy 后 keyspace，仅数值 ID 部分做 UTF-8 解析并复用 keypath parser，
+名字和值保留原始字节，包括非 UTF-8。非法 keyspace 路径跳过，存储错误分类保留。
+不迁移 states/controller/service limits、资源调度算法或 runtime。
+
+`lib.rs` 显式注册独立 `resource_settings_test.rs`。resource_settings_memory /
+resource_settings_etcd 共用真实存储 contract：Null/0/1/u32::MAX-1 精确路径、Go wire
+字节、覆盖、重复删除、空值/损坏 wire 原样返回；legacy/keyspace 各超过 200 条记录，
+分页包含 NUL、空名称、嵌套斜线、非 UTF-8 名称；非法 ID、溢出、加号、空 ID、缺分隔符
+跳过；前缀相邻项和 states 隔离；补零 ID 解析且物理键排序；删除不影响相邻记录。
+resource_settings_go_bytes 也由聚焦过滤命中。etcd 完成 contract 后 stop/stopped →
+start/restarted，同 WAL 恢复后全部列举结果一致。随后在第 100 个 legacy 回调内 Drop
+fixture 并等待子进程退出，下一页实际 IO 返回 Store 错误，交付数恰为 100；后续 save /
+delete 均返回真实 Store 错误。无模拟核心事务、无到期场景、无新增 lease。
+
+最小可编译实现已实际保存/删除，但只枚举 legacy。先 `cargo fmt --all` 退出 0，
+`cargo test --locked -p astersql-pd-storage-endpoint --lib resource_settings -- --nocapture`
+红灯退出 **101**，1 passed / 2 failed / 0 ignored，5.32s；memory 与 etcd 在预期四个
+keyspace 的列举断言均只返回 legacy 一条时失败。补齐 keyspace 列举后先 fmt，同一命令
+绿灯退出 **0**，3 passed / 0 failed / 0 ignored，7.80s。随后移除解析中的临时分配，
+保留全部红灯断言，再 fmt 与同一聚焦命令退出 **0**，3 passed，6.99s。
+
+### 槽位和最终验证
+
+三个阶段从仓库根按 1–10 原子 mkdir 动态领取，实际均为槽位 **1**，
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录 plan=storage-endpoint/task=17/batch=36/session=resource-settings，
+持有 shell PID：91557（红灯）、91771（绿灯）、91929（最终验证）。
+EXIT/INT/TERM 清理自己的 owner/锁，所有同步 Cargo 和 fixture 子进程结束后释放锁，
+缓存保留。GOFLAGS=-mod=readonly；既有 fixture 只读编译已有 main.go，
+proto 复用既有缓存，未执行会解压 Go 源码的 proto build.rs。
+
+| 最终命令 | 退出码与有效结果 |
+| --- | --- |
+| `cargo fmt --all` | 0；仅本任务 Rust 文件格式化变化 |
+| `cargo test --locked -p astersql-pd-storage-endpoint --lib resource_settings -- --nocapture` | 0；3 passed / 0 failed / 0 ignored，6.99s |
+| `cargo metadata --format-version 1 --no-deps` | 0；canonical endpoint target 未变 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；仅既有 server cpu_usage 弃用警告 |
+| `cargo test --workspace --locked` | 0；83 个 target 含 doc-tests，546 passed / 0 failed / 1 既有 ignored；endpoint 47 passed |
+| `git diff --check`、`git diff --cached --check` | 0 |
+
+开始/结束 1101 个 Go/模块文件 SHA-256 快照完全一致，无增删、无内容变化，
+Go Git 差异为空。未执行 failpoint、生成器、Go 格式化或依赖整理。已审查生产实现、
+独立测试、显式注册和本节证据；Cargo manifests/lock 无变化，未格式化其他任务文件。
+总计划和来源主题未修改，用户既有计划修改保留。所有 Cargo/fixture 子进程已结束，
+自己的共享锁已释放，缓存保留。状态：已完成；批次 36 的设置存储验证故事完成。
