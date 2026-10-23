@@ -3529,3 +3529,99 @@ Go Git 状态为空。未运行 failpoint、生成器、Go 格式化或依赖整
 生产 Rust、总计划和来源主题无变化。已审查新增回归测试、显式模块注册与本节证据，
 保留用户已有无关计划修改及任务 19 删除，不混入提交。全部 Cargo/fixture 子进程已
 结束，自己的槽位锁已释放，缓存保留。状态：已完成；批次 40 范围查询核验完成。
+
+## 任务 22：键空间组基础值（批次 41，2026-10-23）
+
+### 准入与只读 Go 证据
+
+已核验批次 40 提交 `bd488dddb`、canonical `keyspace_meta.rs` 范围 API、
+独立 keyspace_scan 两个后端入口及本文件任务 21 的 workspace 556 passed /
+0 failed / 1 既有 ignored 证据，准入满足。已读执行技能、ADR-001、porting-guide、
+根 AGENTS.md 与 Copilot；pkg 下无更深 AGENTS.md。计划及来源主题只读。
+`tso_keyspace_group.go` 与同名 Go 测试相对规划基准无差异。
+
+Go `StringUserKind` 对 exact lowercase basic/standard/enterprise 分别返回 0/1/2，
+其他输入回 Basic；`IsUserKindValid` 不接受大小写变体、空白或空输入。
+`UserKind.String` 对其他整数（含 Count=3）返回 `unknown UserKind`。
+成员字段为 address 字符串与 priority 有符号 int，均不 omitempty；比较委托
+`typeutil.EqualBaseURLs`，其 TrimScheme **顺序**去掉 https://、http:// 各一次。
+故 https://http://host 与 host 等价；http://https://host 与 host 不等价。
+现有 Rust typeutil 的 or_else 只移除一个前缀，不能直接用于精确复刻该边缘行为；
+本任务仅在成员方法中实现 Go 两步规则，不改范围外的 typeutil。
+
+审查现有 `TestKeyspaceGroupReconcileWatcherTracksExternalChanges`、TestMain、
+etcdutil.NewTestEtcdCluster 与 Bootstrap/watcher 调用链：该选择不启用或依赖
+failpoint，不生成/写入 Go 或模块文件；etcd 数据仅在 t.TempDir。
+运行 `GOFLAGS=-mod=readonly go test -mod=readonly -tags without_dashboard ./pkg/keyspace -run '^TestKeyspaceGroupReconcileWatcherTracksExternalChanges$' -count=1 -v`
+退出 0，1 passed / 0 failed，包耗时 1.770s（测试 0.47s）。
+Python 只读观察子进程日志中 loopback etcd URL，通过 v3 range 捕获 Go 已写值；
+无新增 Go oracle。输入为现有 initialGroup：ID=1、Standard、
+Members=[{Address:"http://initial-tso",Priority:0}]、Keyspaces=[41]。
+进程启动后 7.363s 在 `/pd/0/tso/keyspace_groups/membership/00001` 捕获
+create/mod revision=2、version=1、raft_term=2，实际原始值：
+
+```json
+{"id":1,"user-kind":"standard","members":[{"address":"http://initial-tso","priority":0}],"keyspaces":[41]}
+```
+
+Go 原始 base64：
+
+```text
+eyJpZCI6MSwidXNlci1raW5kIjoic3RhbmRhcmQiLCJtZW1iZXJzIjpbeyJhZGRyZXNzIjoiaHR0cDovL2luaXRpYWwtdHNvIiwicHJpb3JpdHkiOjB9XSwia2V5c3BhY2VzIjpbNDFdfQ==
+```
+
+独立测试直接截取该原始 JSON 的成员对象并逐字节比较 Rust 编码，再由同一 Go
+字节反向解码；没有从 Rust 结果生成预期。捕获的其余组与 split-state 不作为
+本任务实现或验收。整包 `go test -mod=readonly ./pkg/storage/endpoint ./pkg/storage -count=1`
+未执行：其中时间戳/区域测试需要 failpoint 注入；选择上述无 failpoint 场景替代
+本任务必要 JSON 运行证据，不冒充整包通过。其他枚举/畸形输入/地址边界断言为
+Go 源码及标准 encoding/json 契约依据，未宣称逐项新增 Go 运行差分。
+
+### 实现、红灯与绿灯
+
+新增 canonical `keyspace_group_value.rs`，公开 UserKind 数值新类型（可表示未知值）、
+BASIC/STANDARD/ENTERPRISE/COUNT、from_name/is_valid/Display；以及成员领域类型
+KeyspaceGroupMember、is_address_equivalent。成员序列化保留 address/priority 字段与
+顺序；自定义反序列化处理缺省、null、ASCII 字段名大小写、未知字段和顺序重复字段。
+priority 使用 i64 对齐本次 64 位 Go 基准；非法类型、浮点及溢出拒绝。
+没有存储操作、状态算法、配置选项或依赖变化；组值和拆合并状态留给任务 23/24。
+
+独立 `keyspace_group_value_test.rs` 在 lib.rs 显式注册，共 3 个纯值入口；
+本任务无后端操作，无需人为增加 memory/etcd 空壳入口。
+先最小可编译接口与真实断言，再运行 fmt 和
+`cargo test --locked -p astersql-pd-storage-endpoint --lib keyspace_group_value -- --nocapture`：
+实际退出 101，2 passed / 1 failed / 0 ignored，http 与 https 地址等价断言失败，
+不是符号、构建或环境失败。随后补齐两步 scheme 行为；核对源码时将嵌套前缀用例
+预期修正为 Go 顺序语义，并补充反向嵌套断言、null 与字段名大小写断言。
+未删除或削弱原始失败断言。先 fmt，再同一聚焦命令退出 0，3 passed / 0 failed /
+0 ignored，0.00s；覆盖三个合法值、默认/非法/大小写、未知枚举、数值编码、
+双向地址等价/端口/路径/大小写/非 HTTP scheme/嵌套 scheme、Go 成员字节双向比较、
+空对象/null/重复字段、负 priority 边界和畸形 JSON。
+
+### 共享槽位与验证
+
+各阶段从仓库根依次原子 mkdir 动态领取，均实际槽位 **1**：
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录 plan=storage-endpoint task=22 batch=41 session=keyspace-group-value 与
+shell PID（红灯 14850、绿灯 15069）。`/tmp/pd-task22-cargo.sh` 用 EXIT/INT/TERM
+trap 清理自己的 owner/lock；Cargo 与同步 fixture 子进程结束后释放，保留缓存。
+所有子进程继承 GOFLAGS=-mod=readonly；proto 使用已有缓存，未重新运行会解压
+Go 源码的 build.rs。无 Cargo manifest/lock/feature 变化。
+
+最终基线阶段 PID=15186，全部子进程已退出、slot-1.lock 已释放，缓存保留。
+
+| 最终命令 | 退出码与有效结果 |
+| --- | --- |
+| `cargo fmt --all` | 0；仅本任务 Rust 文件被格式化 |
+| `cargo test --locked -p astersql-pd-storage-endpoint --lib keyspace_group_value -- --nocapture` | 0；3 passed / 0 failed / 0 ignored |
+| `cargo metadata --format-version 1 --no-deps` | 0；canonical target 不变 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；仅既有 cpu_usage 弃用警告 |
+| `cargo test --workspace --locked` | 0；83 个 target 含 doc-tests，559 passed / 0 failed / 1 既有 ignored；endpoint 60 passed |
+| `git diff --check`、`git diff --cached --check` | 0 |
+
+开始/结束 1101 个 Go/模块文件 SHA-256 快照相同，Go Git 状态为空，无新增/删除。
+未启停 failpoint、运行 Go 生成器/格式化/依赖整理；Go 模块、manifest/lock、plan.md
+及来源主题保持不变。已审查生产值、独立测试、模块注册及本节证据；用户原有计划修改
+和任务 19 删除保留，不混入提交。没有外部长期进程或任务槽位锁遗留。
+状态：已完成；批次 41 的 UserKind 与成员基础值故事完成。

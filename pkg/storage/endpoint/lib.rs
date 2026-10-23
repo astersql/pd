@@ -89,3 +89,8 @@ mod keyspace_meta_test;
 
 #[cfg(test)]
 mod keyspace_scan_test;
+
+mod keyspace_group_value;
+pub use keyspace_group_value::{KeyspaceGroupMember, UserKind};
+#[cfg(test)]
+mod keyspace_group_value_test;
