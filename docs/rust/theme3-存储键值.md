@@ -612,3 +612,79 @@ owner 记录计划、任务、会话标识和实际持有 PID：首次格式化 
 仅出现既有 RegionHeartbeatRequest.cpu_usage deprecated 警告。
 已审查生产 API、两个后端共用断言、Base 最小连线和本文证据；未修改只读计划或来源主题，
 其他计划中的在途修改未纳入本任务提交。
+
+## 任务 6：修订号保护读（批次 13）
+
+日期：2026-10-23（Asia/Shanghai）。依赖批次 12 已核验：提交 `c0cf5d626`
+包含 canonical CallbackTxn、独立双后端测试及本文任务 5 的完整证据，最终
+workspace 485 passed / 0 failed / 1 既有 ignored；准入满足。
+本轮读取只读 plan.md、任务文件、ADR-001、porting-guide、根 AGENTS.md 和
+Copilot 指令；仓库无更深 AGENTS.md。`etcd_kv.go` 相对规划基准
+`5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异。
+
+### Go 依据与实现
+
+`etcdTxn::LoadWithRevision` 调用 `loadValue(key,true)`：缺失键返回空字节并附加
+CreateRevision=0，存在键返回其原值并附加 ModRevision=读取的 mod revision。
+普通 Load 使用 Value 比较，因此同值改写仍可提交；revision 读会冲突且整批不写。
+`kv_test.go::testRevisionLoadConflict` 先读取 value，再外部写回相同 value，断言
+ErrEtcdTxnConflict 和 resultKey 未创建；TestEtcd 实际调用此断言。
+
+本轮先运行 `make gotest GOTEST_ARGS='./pkg/storage/kv ./pkg/storage -count=1'`，
+退出 0，两包通过（KV 3.671s、storage 28.806s；未启用 -v，输出未列测试总数）。
+随后 `make failpoint-disable` 退出 0，无 Go 差异或生成 failpoint binding 文件。
+Go 窗口结束后才编辑 Rust、运行 Cargo。其余边界来自明确 Go 源码推导及本轮
+双后端实测，不冒充逐场景 Go/Rust 运行差分。没有 codec，不创建字节 oracle。
+
+新增 `revision_txn.rs::CallbackTxn::load_with_revision`，在现有 canonical 事务上
+扩展方法，不新建第二种事务或 MetaStore。`callback_txn.rs` 只抽取共享的
+`load_value` 点读路径，按调用模式附加 ModRevision 或 Value，缺失条件和错误
+处理共用。revision 条件只携带 key/revision，不携带 value；仍返回原始字节。
+lib.rs 显式注册生产和独立测试模块，无依赖、manifest 或 Cargo.lock 变化。
+
+### 测试驱动与边界证据
+
+独立 `revision_txn_test.rs` 的 `revision_txn_memory` / `revision_txn_etcd` 共用
+同一断言，复用唯一 etcd fixture。最小可编译方法先委托普通 load；测试最初有
+Snapshot 不支持 PartialEq 的编译错误，改为分别断言 entries/revision 后再运行。
+该编译错误不计行为红灯。真正红灯为两个后端均实际返回 Ok(())、预期 Conflict，
+聚焦命令退出 101，0 passed / 2 failed；原因为同值改写未被 revision 读检测。
+修复后同一测试、原断言未削弱，退出 0：2 passed / 0 failed / 0 ignored。
+
+oneshot 屏障和 tokio::join! 固定顺序：事务读完成，外部同值写入完成，才允许
+回调结束和提交，不使用 sleep 或核心事务 mock。普通读允许提交，revision 读拒绝；
+断言被拒批次的 put/delete 均未生效，并且冲突不额外分配 revision。
+其他共用断言覆盖值变化、删除、删除后同值重建、缺失到空值/非空值创建；每例冲突后
+完整 Entry 集合及 header revision 等于外部写入后的快照。稳定值、空值、256 KiB
+二进制值及缺失读可成功提交；附加比较仍参与原子提交；读看不到缓冲写；空 key 的
+InvalidArgument 保留为 Callback 错误，缓冲写不提交。没有新增断连/到期行为。
+
+### Cargo 资源与验证
+
+各阶段依次通过原子 mkdir 动态领取实际槽位 **1**，绝对路径均为
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录计划、任务、会话和持有进程 PID；格式化 PID 为 43612、43732、43901，
+最终聚焦 PID 43899，workspace 阶段 PID 44056。所有 Cargo 及 fixture 子进程继承
+绝对路径。包装器正常/失败时等待子进程完成，处理中断时终止并等待子进程组，再删除
+自己的 owner、rmdir 释放锁；不清理他人锁，保留槽位缓存。
+
+最终状态：已完成。全部 Cargo/fixture 已结束，slot-1.lock 已释放，缓存保留。
+
+| 确切命令 | 退出码 | 有效测试数/结果 |
+| --- | --- | --- |
+| `cargo fmt --all`（每次 Rust 修改后） | 0 | 无无关 Rust 格式变更 |
+| `cargo test --locked -p astersql-pd-storage-kv --lib revision_txn -- --nocapture`（行为红灯） | 101 | 0 passed / 2 failed，同值改写未冲突 |
+| 同上（修复后绿灯） | 0 | 2 passed / 0 failed / 0 ignored |
+| `cargo metadata --format-version 1 --no-deps` | 0 | canonical kv 注册正常 |
+| `cargo fmt --all -- --check` | 0 | 通过 |
+| `cargo check --workspace --locked` | 0 | 通过 |
+| `cargo test --workspace --locked` | 0 | 487 passed / 0 failed / 1 既有 ignored，含 2 doc-tests |
+| `git diff --check` | 0 | 通过 |
+| `git diff --cached --check` | 0 | 本任务暂存审查通过 |
+
+既有 ignored 仍为 `tso_processes`，需要独立 Go/Rust 进程兼容流程，未新增 ignore。
+workspace 实际通过既有 watch/lease/fencing、断连/WAL 重启与消费者测试；
+仅输出既有 RegionHeartbeatRequest.cpu_usage deprecated 警告。
+已审查新增方法、共用点读分支、独立测试、模块注册与本文差异；未修改 Go、依赖、
+manifest/lock、只读 plan.md 和来源主题，未纳入其他计划的既有修改。
+编号任务文件按完成流程删除，证据保留于本文和本任务提交。

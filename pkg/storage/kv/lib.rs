@@ -9,6 +9,7 @@ pub use callback_txn::{CallbackTxn, CallbackTxnError};
 mod etcd_store;
 mod memory_store;
 mod meta_store;
+mod revision_txn;
 pub use etcd_store::EtcdMetaStore;
 pub use memory_store::MemoryStore;
 pub use meta_store::*;
@@ -28,3 +29,6 @@ mod callback_txn_test;
 #[allow(dead_code)]
 #[path = "etcd_fixture_test.rs"]
 mod fixture;
+
+#[cfg(test)]
+mod revision_txn_test;

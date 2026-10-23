@@ -78,6 +78,10 @@ impl CallbackTxn<'_> {
 
     /// Guard an existing value by bytes; guard a missing key by create revision zero.
     pub async fn load(&mut self, key: &[u8]) -> Result<Vec<u8>> {
+        self.load_value(key, false).await
+    }
+
+    pub(crate) async fn load_value(&mut self, key: &[u8], revision: bool) -> Result<Vec<u8>> {
         let snapshot = self
             .store
             .read(Read::range(key, b"", Consistency::Linearizable))
@@ -89,7 +93,12 @@ impl CallbackTxn<'_> {
                 Ok(vec![])
             }
             [entry] => {
-                self.protect(entry);
+                if revision {
+                    self.conditions
+                        .push(Compare::ModRevision(entry.key.clone(), entry.mod_revision));
+                } else {
+                    self.protect(entry);
+                }
                 Ok(entry.value.clone())
             }
             _ => Err(StoreError::Backend),
