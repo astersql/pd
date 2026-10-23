@@ -8,3 +8,8 @@ pub use snapshot_loader::{LoadedSnapshot, SnapshotLoader};
 mod fixture;
 #[cfg(test)]
 mod snapshot_loader_test;
+
+mod snapshot_watch;
+pub use snapshot_watch::SnapshotWatch;
+#[cfg(test)]
+mod snapshot_watch_test;

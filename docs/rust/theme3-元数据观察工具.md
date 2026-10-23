@@ -301,3 +301,108 @@ Go/模块文件开始与结束路径集合及 SHA-256：1101 个文件完全一�
 状态：**已完成**。完成范围仅为一致分页快照；未宣称完成 watch、加载控制、TTL helper
 或整个 Go etcdutil 包迁移。本轮 Go 证据仍为只读源码与断言，真实运行后端为现有 embedded
 etcd fixture，不将其冒称运行 Go LoopWatcher 的差分。
+
+## 任务 3：快照接续观察（批次 76）
+
+日期：2026-10-24（Asia/Shanghai）。批次 75 提交
+`8bc87f2f0` 为本轮起点和当前祖先，已核验上一节的红绿灯、646 项 workspace
+通过证据、canonical `SnapshotLoader`、独立测试和显式注册；准入满足。
+本轮没有修改只读 `plan.md`、来源主题、Go 文件或 Go 模块文件。
+主 Go 来源相对规划基准 `5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异。
+
+### 实现与语义边界
+
+[SnapshotWatch::load / apply_next](../../pkg/utils/etcdutil/snapshot_watch.rs)
+原位扩展唯一 `astersql-pd-etcdutil` crate，复用 `SnapshotLoader` 与唯一
+`kv::MetaStore`。`load` 返回完整快照及观察对象，宿主先发布快照，再调用
+`apply_next`；首次 watch 延迟到调用时，仍从快照的 `next_revision=revision+1`
+开始，保留建流间隙的写入。
+
+- 批次回调成功后才推进确认游标；回调错误原样返回并保留完整 pending 批次，
+  下次调用重试相同 events/revision，不与期间到来的新写混合。
+- IO 的 Unavailable 返回宿主并关闭旧 stream；下次调用在最后确认位置重建。
+  宿主决定重试间隔；库不创建后台任务、runtime、全局状态或新的配置选项。
+- exact key 使用原始 key 的 prefix stream 并严格过滤相邻键；无匹配事件的批次
+  只推进已观察位置，不调用发布回调。prefix key 原样保留。
+- 取消终止观察并释放 stream/pending；使用新 token 也不能复活已取消的对象。
+  宿主拥有的 Tokio task 在测试中明确 cancel 并 await JoinHandle。
+- Compacted 原样返回且不推进，要求调用方新建快照；压缩重载、删除对账、
+  ForceLoad/WaitLoad 与加载控制仍由后续任务负责。
+
+只读 Go 依据：`StartWatchLoop` (:483–517)、`watch` (:560–752)、
+`load` (:797–952)、`SetRetryOnPostEventError` (:1098–1104)。已补读相邻测试
+`TestWatcherConsistentLoadUsesSingleRevision` (:928)、
+`TestWatcherDoesNotAdvanceAfterLivePostCallbackFailure` (:1444)、
+`TestWatcherRetriesLivePostCallbackFailure` (:1552) 与断流测试的 failpoint 位置。
+Go 开启 post retry 时从未推进 revision 重建，Rust 保留已收到的 pending 批次以稳定
+重试内容；本接口选择此明确的可靠发布语义，不复刻 Go 默认吞掉 callback error
+后推进、custom reload、pre/put/delete/post 分拆回调及 progress timer。
+MetaStore 负责协议/stream 的适配，本任务没有新增 codec；Entry/Event 字节原样传递，
+无新编码差分或手抄 Go 字节预期。
+
+`go test -mod=readonly ./pkg/utils/etcdutil -count=1` 未执行：整包测试需要
+fastTick/meetEtcdError/updateClient/watchChanBlock 等 failpoint 源码注入，违反
+Go 只读限制。复用上述已有源码/测试断言和批次 75 的已保存证据；不宣称本轮运行
+Go LoopWatcher 或获得跨语言运行差分。真实 etcd 运行继续复用已有 Go fixture，
+其 `go build -o <slot>/rust-etcd-fixture-<pid> ./scripts/rust-etcd-fixture`
+只读现有源码；`GOFLAGS=-mod=readonly`，未执行生成器或 failpoint 命令。
+
+### 行为红灯、绿灯与故障时序
+
+[独立测试](../../pkg/utils/etcdutil/snapshot_watch_test.rs) 在
+[lib.rs](../../pkg/utils/etcdutil/lib.rs) 显式注册。
+`snapshot_watch_memory` / `snapshot_watch_etcd` 使用完全相同的 `run` 断言。
+LossyStore 只在 IO 边界丢弃一次真实 watch 返回，所有事务、revision、历史回放和
+快照均来自 MemoryStore / etcd，没有模拟核心结果。
+
+- 红灯：最小可编译实现提前推进游标、丢弃失败回调批次；聚焦命令退出 101，
+  **0 passed / 2 failed / 0 ignored**。两后端均命中
+  `callback failure must not acknowledge a batch`，实际 4、预期 3。
+- 绿灯：同一聚焦命令退出 0，**2 passed / 0 failed / 0 ignored**。
+  保留红灯断言，增加确定性的在途取消及真实 TCP 断开/重启断言。
+- 接续：快照含 a=old → watch 尚未创建时真实事务同时更新 a/新增 b=new →
+  首次回调收到同一 revision 的两个 Put，失败返回 Backend，游标仍为原始 +1 →
+  再写 Delete b → 重试收到完整相同 Put 批次 → 成功后才推进。
+- IO 丢包：真实 Delete 批次已由 backend 返回 → 窄 IO 包装丢弃响应并返回
+  Unavailable → 旧 stream 数量归零、游标不变 → 新 stream 从确认位置重建 →
+  同一 Delete 的 key/revision 完整回放，随后游标推进。最终没有漏事件。
+- 取消：宿主 task 已进入空闲 `MetaWatch::next`，通过 Notify 证实到达 → cancel →
+  2s 上限内 await JoinHandle 成功，stream 数量归零；新 token 仍返回 Cancelled。
+- exact：先写 a-neighbor，再写 a=exact，只收到精确 a 的一次 Put；drop 后无活跃 stream。
+- 压缩：加载快照 → 两次写入，使 compact revision 严格大于 watch start → compact →
+  apply_next 返回 Compacted、未发布且游标未推进。首次尝试只 compact 到 start，
+  Memory 返回错误而 etcd 仍能读到边界事件，导致 1 passed / 1 failed；修正测试前提
+  为严格落后压缩边界后，两后端均通过，未改变生产压缩行为或削弱回调断言。
+- 真实断连（etcd 3.5.15）：/restart/a=before 已确认 → fixture stop 并等待 stopped →
+  5s 上限内返回 Unavailable、游标不变 → 同 WAL start 并等待 restarted → 新 client
+  只写一次 a=after → 原观察对象在宿主重试循环中于 10s 上限内收到该 Put 的真实
+  revision，推进到 +1 → cancel 后终态 Cancelled。fixture EOF 关闭、wait 回收子进程。
+
+### 验证资源与结果
+
+每个 Cargo 阶段均通过原子 mkdir 从 1–10 动态领取，实际均为 **槽位 1**：
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+锁内记录计划、任务、会话和持有 shell PID；EXIT/INT/TERM 清理自己的 owner/锁，
+子进程结束后才释放，保留缓存。所有 Cargo 和 fixture 子进程继承绝对 target 与
+`GOFLAGS=-mod=readonly`。沿用只读 sandbox profile，拒绝写任何 `.go`/模块文件及
+执行会解压 Go 源码的 proto build script；本轮复用已有协议生成缓存。
+没有修改依赖、manifest 或 Cargo.lock。
+
+| 命令（仓库根目录，继承上述槽位环境） | 退出码 / 有效结果 |
+| --- | --- |
+| `cargo fmt --all` | 0，每次 Rust 修改后先执行，未格式化溢出到其他文件 |
+| `cargo test --locked -p astersql-pd-etcdutil --lib snapshot_watch -- --nocapture`（红灯） | 101，0 passed / 2 failed / 0 ignored，真实游标断言失败 |
+| 同一聚焦命令（最终绿灯） | 0，2 passed / 0 failed / 0 ignored，Memory + etcd |
+| `cargo metadata --format-version 1 --no-deps` | 0，唯一 canonical etcdutil member |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0，仅既有 server cpu_usage deprecated warning |
+| `cargo test --workspace --locked` | 0，87 个测试/文档 target 合计 648 passed / 0 failed / 1 既有 ignored |
+| `git diff --check` | 0 |
+
+43 个 Markdown 相对链接全部有效。审查范围仅 lib.rs、生产/独立测试和本文，
+其余任务的既有编号文件删除及配置盘点修改未纳入。所有 Cargo/fixture 进程已结束，
+自己的 slot-1 owner 和锁已释放，缓存保留。Go/模块文件路径集合和 SHA-256
+开始/结束共 2816 项完全一致（包含已有 target 中的 Go 源码），相关 Git 状态为空。
+
+状态：**已完成**。仅完成从一致快照 revision+1 接续、确认后推进、失败重试与取消；
+未将此视作整个 LoopWatcher 或整个 Go 包迁移完成。
