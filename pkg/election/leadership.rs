@@ -33,7 +33,7 @@ pub struct Leadership {
     pub(crate) store: Arc<dyn MetaStore>,
     cancel: CancellationToken,
     cluster_id: u64,
-    key: Vec<u8>,
+    pub(crate) key: Vec<u8>,
     value: Vec<u8>,
     pub(crate) lease: LeaseId,
     revision: Revision,

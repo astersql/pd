@@ -19,3 +19,7 @@ mod lease_keep;
 pub use lease_keep::*;
 #[cfg(test)]
 mod lease_keep_test;
+
+mod leader_delete;
+#[cfg(test)]
+mod leader_delete_test;

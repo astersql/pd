@@ -499,3 +499,75 @@ fixture 复用既有源码、随机 loopback 端口与独立目录，仅构建�
 根 Cargo.toml、Cargo.lock、crate manifest、只读总计划及来源主题没有本任务差异。
 其他任务已有的状态修改和删除保留、排除提交。本任务不代表完整 reset 管理器、
 watch、指标迁移或服务装配已经完成。
+
+## 任务 6：按修订号删除领导键（批次 64）
+
+日期：2026-10-23（Asia/Shanghai）。状态：已完成。
+批次 63 提交 `b0505b085` 的 canonical 续租实现、独立测试、模块注册及上节
+619 passed / 0 failed / 1 既有 ignored 完成证据均已核验；准入满足。
+已阅读只读总计划、本任务、ADR-001、移植指南和仓库规则；无更深 AGENTS.md。
+规划基准 `5d5948052a9ee9e3fa7a09145fe2916a2912c223` 至开始 HEAD 的
+`leadership.go`、`leadership_test.go` 无差异。
+
+### Go 依据与实现
+
+只读依据：`Leadership.DeleteLeaderKeyByRevision` / `removeLeaderKey`：
+原子比较指定键的 ModRevision，成功分支删除，失败分支读取同一键。
+失败分支键已不存在也成功并 Reset；键仍存在则事务冲突且不 Reset。
+`TestDeleteLeaderKeyByRevisionDoesNotDeleteChangedLeader` 的源码断言为
+旧 revision 不能删除异值新领导、正确 revision 删除、缺失键可重复清理。
+复用前序只读盘点证据并重新阅读上述源码，不宣称本轮 Go 运行差分。
+整包 election/member/id 测试包含 failpoint 依赖，因此未运行计划列出的
+`go test -mod=readonly ./pkg/election ./pkg/member ./pkg/id -count=1`，
+没有启停 failpoint 或新增 Go oracle。本任务不涉及 codec，无新增编码输出需求。
+
+[leader_delete.rs](../../pkg/election/leader_delete.rs) 在 canonical Leadership 上增加
+`delete_leader_key_by_revision`，复用 MetaStore::transact_raw 的原子分支，
+不使用先读后删。存活键冲突返回既有 ElectionError::Contended，事务存储错误
+保留 StoreError；异常失败分支响应返回 StoreError::Backend，避免误清理租约。
+成功或已缺失才调用已有 resign，停止旧任期续租、关闭本地期限、撤销旧租约。
+该清理与 resign 一样允许在父取消后执行；不会因 caller cancel 跳过清理。
+沿用 Rust resign 撤租错误传播契约（Go Reset/Close 的错误处理不完全相同），
+没有新建可变管理器或提前实现任务 8。leadership.rs 仅放宽 key 的 crate 内可见性，
+lib.rs 显式注册生产模块和独立测试；manifest/依赖/锁文件均无需变更。
+
+### TDD 与跨后端断言
+
+[leader_delete_test.rs](../../pkg/election/leader_delete_test.rs) 的
+`leader_delete_memory` / `leader_delete_etcd` 运行同一真实状态断言：
+同值新租约、同租约同值新 revision、异值新 revision 都拒绝旧 revision 删除；
+冲突后键内容、租约、本地未关闭状态保留；精确观测 revision 删除成功并撤租；
+非匹配 revision 的已缺失键幂等成功，revision=0 重复清理也成功；
+相邻前缀键保留；再次 campaign 后旧任期不能误删新领导。
+核心事务无 mock。etcd fixture 复用已有源码，随机 loopback 端口和独立目录，
+只运行已有 fixture 的 `go build`，继承 `GOFLAGS=-mod=readonly`；不执行生成器。
+
+最小可编译接口最初直接 resign，没有 revision 比较；两个后端都在
+“同值新租约后，旧 revision 必须返回 Contended”的真实断言失败。
+红灯退出 101，0 passed / 2 failed。实现原子比较后原断言绿灯，再补充异值替换断言；
+最终聚焦测试退出 0，2 passed / 0 failed / 0 ignored，3.33 秒。
+
+### 本轮验证
+
+每阶段原子 mkdir 动态领取槽位，实际均为 **1**；
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+锁内记录计划、任务、会话标识及 Python 持有进程 PID；退出/失败/中断路径
+等待 Cargo/fixture 子进程组结束后释放自己的锁，保留构建缓存。
+
+| 确切命令 | 退出码 | 有效结果 |
+| --- | --- | --- |
+| `cargo fmt --all`（每次 Rust 修改后） | 0 | 仅本任务 Rust 文件差异 |
+| `cargo test --locked -p astersql-pd-election --lib leader_delete -- --nocapture`（红灯） | 101 | 0 passed / 2 failed，真实冲突断言失败 |
+| 同上（最终绿灯） | 0 | 2 passed / 0 failed / 0 ignored |
+| `cargo metadata --format-version 1 --no-deps` | 0 | workspace 结构无变更 |
+| `cargo fmt --all -- --check` | 0 | workspace 格式通过 |
+| `cargo check --workspace --locked` | 0 | workspace 检查通过 |
+| `cargo test --workspace --locked` | 0 | 621 passed / 0 failed / 1 既有 ignored |
+| `git diff --check`、`git diff --cached --check` | 0 | 差异与暂存内容检查通过 |
+
+所有 Cargo/fixture 子进程已结束，自己的槽位锁已释放；零测试 target 不计有效用例。
+1101 个 Go/模块文件开始与最终 SHA-256 完全一致，相关 Git 状态为空。
+已审查实现、测试、模块注册和本节差异，相对文档链接有效。
+根 Cargo.toml、Cargo.lock、crate manifest、只读总计划和来源主题无本任务差异。
+保留并排除其他任务已有的状态修改与任务删除。本任务不宣称完成 watch、
+完整 reset 管理器、指标或启动装配。
