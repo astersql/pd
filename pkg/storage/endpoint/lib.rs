@@ -42,3 +42,7 @@ mod config_endpoint_test;
 mod scheduler_endpoint;
 #[cfg(test)]
 mod scheduler_endpoint_test;
+
+mod rule_endpoint;
+#[cfg(test)]
+mod rule_endpoint_test;
