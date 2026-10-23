@@ -16,3 +16,7 @@ mod cluster_meta;
 pub use cluster_meta::Cluster;
 #[cfg(test)]
 mod cluster_meta_test;
+
+mod store_meta;
+#[cfg(test)]
+mod store_meta_test;
