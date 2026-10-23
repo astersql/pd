@@ -2965,3 +2965,90 @@ workspace fmt 未修改其他 Rust 文件。已审查全部实现、测试、模
 manifest、唯一 lock 边及本证据节；用户既有计划修改保留。
 所有 Cargo/fixture 子进程已结束，自己的锁已释放，槽位缓存保留。
 状态：已完成；批次 34 时间窗口读取与删除验证故事完成。
+
+## 任务 16：时间窗口受保护写入（批次 35，2026-10-23）
+
+### 准入及只读 Go 依据
+
+核验批次 34 提交 `222d3a016`、timestamp_window 产物及本文证据：聚焦
+3 passed、workspace 538 passed / 0 failed / 1 既有 ignored，基线均退出 0，满足准入。
+已读 do-task-plans、根规则、Copilot、ADR-001、porting-guide 和只读计划；
+`rg --files --hidden -g AGENTS.md pkg docs .plans` 未发现更深规则。
+`tso.go` 相对规划基准 `5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异。
+
+Go SaveTimestamp：未授予（空预期领导值）返回 NotLeader；在 RunInTxn 内读取领导值，
+不匹配返回 NotLeader；再读取时间戳，非空必须成功解码，使用
+SubRealTimeByWallClock(ts, previousTS) <= 0 拒绝相等/倒退；以 UnixNano 转 uint64
+的八字节大端编码保存。etcdTxn 的读取值保护与领导值保护一起原子提交，失败不重试。
+既有 TestTimestampTxn 静态断言倒退不改旧值，TestSaveTimestampWithLeaderCheck
+静态断言未授予、空/缺失领导值都不写入，重新恢复领导值可继续保存。
+完整 Go oracle `go test -mod=readonly ./pkg/storage/endpoint ./pkg/storage -count=1`
+未运行：包含 TestSaveTimestampWithTimeout 等需注入 failpoint 的测试，遵守只读约束，
+不执行注入，也没有将这些源码断言冒充本轮 Go 运行差分。
+
+编码复用本文任务 3 保存的真实 Go TestUint64ToBytes 运行证据：
+`GOFLAGS=-mod=readonly go test -mod=readonly ./pkg/utils/typeutil -run
+'^(TestBytesToUint64|TestUint64ToBytes)$' -count=1 -v`，当时退出 0、2 passed，
+输入 1000 的实际字节为 `00000000000003e8`。本轮 Rust 两个后端实际保存 time=epoch+1000ns
+后逐字节比较该输出；其余正负边界来自源码推导，未声称新增 Go 运行输出。
+既有 etcd fixture 的 Go build 不调用生成器、不改 Go 源，GOFLAGS=-mod=readonly，
+只读编译现有 main.go；proto 复用缓存，没有运行其解压 Go 文件的 build.rs。
+
+### 实现及测试驱动证据
+
+canonical timestamp_fenced_save.rs 新增 StorageEndpoint::save_timestamp 和
+TimestampSaveError。接收后端中立 Compare 列表，宿主负责提供已授予 term 的比较条件，
+可附 lease/revision 条件；不依赖 member/election，未创建 runtime 或第二套 codec。
+无条件列表或空的预期 Value 拒绝为 NotLeader。复用 Base::run_in_txn_with_conditions
+与 CallbackTxn::load，将全部 term 条件、时间戳旧值保护及新值写入同一真实事务。
+使用已有 typeutil 的 Go wrapping wall-clock 差值和 u64 大端编码，缺失/空值可首次保存。
+解码/存储/非递增分别保留错误类别。泛型 Compare 的提交失败统一为 Conflict
+（可能是领导条件失效或旧时间戳冲突，无法从后端失败结果区分），没有伪造 election 错误。
+预取消为 Cancelled，操作中取消为 Unavailable，明确保留提交结果未知的语义。
+
+显式注册独立 timestamp_fenced_save_test.rs。memory / etcd 共用 contract：
+默认组、非默认组和 u32::MAX；首次保存、Go 精确字节、相等/倒退不修改旧值、递增成功；
+空条件/空预期值、领导变更/空值/缺失、附加条件失败；损坏时间戳错误保留原字节；
+空值首次保存负时间，再增加到 epoch，重复 epoch 拒绝；预取消无写入。
+etcd contract 保存后 stop/stopped → start/restarted，同 WAL 恢复读到 1001ns；
+Drop fixture 等待真实进程退出，随后 save 返回 Store 错误。
+
+memory_races / etcd_races 共用真实存储竞争断言。DispatchGate 只暂停事务 IO
+派发，转发所有真实读取及提交，不模拟核心事务结果：已有值/缺失/空值三种初态，
+两次 save 均读完后同时释放提交，恰好一个成功、另一个 Conflict，终态 2000ns；
+另一 save 读完后将领导值改为 term-2 再释放，旧 term Conflict，终态仍 2000ns；
+lease-bound 领导键在读完后 revoke，再释放提交，Conflict，终态仍 2000ns；
+最后在提交派发前取消，返回 Unavailable，门控请求被丢弃，真实后端终态仍 2000ns。
+本任务使用明确 revoke 而非自然到期；没有宣称计时到期证据。所有 future 同步 join，
+没有后台遗留任务。测试只新增已有 workspace async-trait 的 dev 依赖，lock 仅多一条依赖边。
+
+最小可编译实现仅真实保存，不做单调保护；先 `cargo fmt --all` 退出 0，执行
+`cargo test --locked -p astersql-pd-storage-endpoint --lib timestamp_fenced_save -- --nocapture`
+红灯退出 **101**：1 passed / 2 failed / 0 ignored，5.47s；memory 和 etcd 都在相等时间
+应返回 NotIncreasing 的真实断言失败。接入事务保护后先 fmt，再
+`cargo check --workspace` 退出 0 同步唯一 lock 边；同一聚焦命令绿灯退出 **0**：
+5 passed / 0 failed / 0 ignored，5.15s。保留原红灯断言并增加两个真实后端竞争入口。
+
+### 共享槽位及最终验证
+
+各阶段从根目录按 1–10 原子 mkdir 动态领取，实际均为槽位 **1**，
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录 plan=storage-endpoint/task=16/batch=35/session=timestamp-fenced-save，
+持有 shell PID 为 88123（红灯）、88380（实现后绿灯）、88629（最终验证）。
+EXIT/INT/TERM 清理自己的 owner/锁；同步 Cargo 和 fixture 全部结束后才释放，缓存保留。
+
+| 最终命令 | 退出码与有效结果 |
+| --- | --- |
+| `cargo fmt --all` | 0；未修改其他任务 Rust 文件 |
+| `cargo test --locked -p astersql-pd-storage-endpoint --lib timestamp_fenced_save -- --nocapture` | 0；5 passed / 0 failed / 0 ignored，5.18s |
+| `cargo metadata --format-version 1 --no-deps` | 0；canonical endpoint target 注册不变 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；仅既有 server cpu_usage 弃用警告 |
+| `cargo test --workspace --locked` | 0；83 个 target 含 doc-tests，543 passed / 0 failed / 1 既有 ignored；endpoint 44 passed |
+| `git diff --check`、`git diff --cached --check` | 0 |
+
+开始/结束的 1101 个 Go/模块文件 SHA-256 快照完全一致，无增删、无内容变化，
+Go Git 差异为空。没有运行 failpoint、生成器、Go 格式化或依赖整理。
+已审查实现、独立测试、显式注册、dev 依赖和唯一 lock 边及本证据节；
+总计划及来源主题未修改，用户已有其他计划变更保留。所有 Cargo/fixture 子进程结束，
+自己的占用记录/锁已释放。状态：已完成；批次 35 的受保护保存验证故事完成。

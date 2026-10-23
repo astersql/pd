@@ -297,6 +297,7 @@ dependencies = [
  "astersql-pd-proto",
  "astersql-pd-storage-kv",
  "astersql-pd-typeutil",
+ "async-trait",
  "prost",
  "serde",
  "serde_json",

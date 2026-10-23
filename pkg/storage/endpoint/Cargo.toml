@@ -21,4 +21,5 @@ prost.workspace = true
 thiserror.workspace = true
 
 [dev-dependencies]
+async-trait.workspace = true
 astersql-pd-proto.workspace = true
