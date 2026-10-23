@@ -283,6 +283,8 @@ version = "0.1.0"
 name = "astersql-pd-storage"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-core",
+ "astersql-pd-keypath",
  "astersql-pd-storage-endpoint",
  "astersql-pd-storage-kv",
  "tokio",

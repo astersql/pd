@@ -11,10 +11,12 @@ path = "lib.rs"
 [dependencies]
 astersql-pd-storage-kv.workspace = true
 astersql-pd-storage-endpoint.workspace = true
+astersql-pd-core.workspace = true
+astersql-pd-keypath.workspace = true
+tokio-util.workspace = true
 
 [dev-dependencies]
 tokio.workspace = true
-tokio-util.workspace = true
 
 [[test]]
 name = "etcd_contract"

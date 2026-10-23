@@ -1,5 +1,5 @@
 // Copyright 2026 AsterSQL.
-use std::sync::Arc;
+use std::sync::{Arc, atomic::AtomicBool};
 
 use astersql_pd_storage_endpoint::StorageEndpoint;
 use astersql_pd_storage_kv::{Base, MetaStore};
@@ -8,6 +8,8 @@ use astersql_pd_storage_kv::{Base, MetaStore};
 pub struct Storage {
     store: Arc<dyn MetaStore>,
     endpoint: StorageEndpoint,
+    pub(crate) region_storage: Option<StorageEndpoint>,
+    pub(crate) use_region_storage: AtomicBool,
 }
 
 impl Storage {
@@ -16,6 +18,8 @@ impl Storage {
         Self {
             endpoint: StorageEndpoint::new(store.clone()),
             store,
+            region_storage: None,
+            use_region_storage: AtomicBool::new(false),
         }
     }
 

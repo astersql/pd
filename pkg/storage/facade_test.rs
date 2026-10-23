@@ -3,9 +3,7 @@ use super::*;
 use astersql_pd_storage_endpoint::{EndpointError, LoadState};
 use std::sync::Arc;
 
-#[path = "kv/etcd_fixture_test.rs"]
-#[allow(dead_code)]
-mod fixture;
+use super::etcd_fixture as fixture;
 
 async fn contract(store: Arc<dyn MetaStore>) {
     let mut storage = Storage::new(store.clone());
