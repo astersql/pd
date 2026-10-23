@@ -51,3 +51,9 @@ pub use replication_config::*;
 
 #[cfg(test)]
 mod replication_config_test;
+
+mod microservice_config;
+pub use microservice_config::*;
+
+#[cfg(test)]
+mod microservice_config_test;

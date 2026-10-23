@@ -1303,3 +1303,72 @@ SHA-256 与任务开始完全一致，Go/模块 Git 状态为空。只读 plan.m
 已审查生产值类型、独立测试、lib.rs 注册及本文差异，未改依赖和锁文件。
 全部 Cargo/fixture 子进程结束后槽位 1 的 owner 与锁已释放，缓存保留；
 其他编号任务文件已有删除不纳入本任务提交。
+
+## 批次 93：微服务开关值
+
+日期：2026-10-24（Asia/Shanghai）。前置批次 92 由提交 `dd04a624e`、
+canonical ReplicationModeConfig、六项独立测试和本文 719 passed / 0 failed /
+1 ignored workspace 回归证据核验完成，批次 93 准入满足。已读执行技能、根
+AGENTS.md、Copilot、ADR-001 和移植指南；server/docs 无更深 AGENTS.md。
+config.go/config_test.go 相对基准 `5d5948052a9ee9e3fa7a09145fe2916a2912c223`
+无差异。
+
+### Go 依据与实现边界
+
+- `server/config/config.go:259–261,863–904::MicroserviceConfig/adjust/Clone/Is*Enabled`：
+  scheduling fallback、TSO dynamic switching、resource manager fallback 默认分别
+  为 true、false、true；只有 metadata 缺失才覆盖当前字段，显式 false/true 均保留。
+  三个 getter 直接读字段；Clone 是值复制。没有校验错误或运行服务的副作用。
+- 本轮复核 `config_test.go::TestMain/TestConfigClone` 和相邻配置测试；TestMain
+  仅 goleak/WaitForEtcdConnections，测试无 failpoint.Enable 或生成器调用。
+  包中两处 failpoint.Inject 属于持久化路径，现有配置测试不依赖其注入。
+  只读执行整个 Go 配置包通过，未启停 failpoint、未新增 Go oracle。
+  当前包没有微服务专用 Go 测试；新增组合断言来自上述源码，明确不冒充新 Go
+  场景运行差分。Go 1.26.8 标准库 encoding/json/decode.go::literalStore 的
+  null/布尔分支确认字符串布尔字段接受 true/false 字符串及 null/"null"；
+  Rust 新值解码遵循这些语义，不宣称原地更新已有结构或重复键语义已覆盖。
+
+canonical crate 新增 `microservice_config.rs::MicroserviceConfig`、presence-sensitive
+`adjust`、三个 getter、`decode_toml_microservice`；独立测试在
+microservice_config_test.rs，通过 lib.rs 显式注册。TOML helper 输入为内部表，
+保留字段存在性并接受原生布尔值；JSON 使用 Go 的字符串布尔字段及声明顺序。
+测试穷举 8 种 presence × 8 种开关值、幂等调整、嵌套 metadata、8 种 clone/getter
+值、错误类型和 JSON roundtrip。纯配置值无需存储后端双入口；不启动 MCS、不做
+热更新，不新增依赖、不改 Cargo.lock、不格式化其他任务文件。
+
+编码证据复用本文 batch84-missing / batch84-explicit-zero 两份已有真实 Go JSON
+日志：直接截取整个 micro-service 原始 token，与默认调整后的 Rust 字节逐字比较，
+再解码回同值。两份 Go 输入均缺失微服务字段，字节证据限于该默认配置；其他
+组合是源码推导和 Rust roundtrip，不宣称全部输入已获得 Go 运行字节差分。
+
+### 本轮验证
+
+红灯/绿灯/基线阶段分别通过原子 mkdir 动态领取共享槽位 **1**，
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录计划、任务、会话和持有 shell PID；EXIT/INT/TERM 清理自己的 owner
+和锁，全部 Cargo/fixture 子进程结束后才释放，保留缓存。子进程继承该绝对路径
+及 `GOFLAGS=-mod=readonly`；已审查既有 etcd fixture 只读构建已有 Go，二进制
+和隔离数据位于槽位；proto 构建使用已锁定缓存，本轮未重新生成 proto。
+
+先增加可编译空 adjust 接口与六项测试，实际行为红灯 **2 passed / 4 failed /
+0 ignored，退出 101**，命中缺失默认、TOML presence、嵌套 metadata 和原始 Go
+字节断言。实现最小调整逻辑后，同组六项不削弱断言全部通过；随后按标准库
+源码补充 quoted null 解码边界并重新运行验证。
+
+| 确切命令 | 退出码与有效证据 |
+| --- | --- |
+| `cargo fmt --all` | 0；红灯、绿灯及最终阶段仅本任务 Rust 文件变化 |
+| `cargo test --locked -p astersql-pd-server-config --lib microservice_config -- --nocapture` | 红灯 101：2 passed / 4 failed；最终绿灯 0：6 passed / 0 failed / 0 ignored |
+| `go test -mod=readonly ./server/config -count=1` | 0；已有配置包通过，1.136s |
+| `cargo metadata --format-version 1 --no-deps` | 0 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；仅既有 core_region_adapter.rs:134 cpu_usage deprecated 警告 |
+| `cargo test --workspace --locked` | 0；最终代码 725 passed / 0 failed / 1 既有 ignored，含真实 etcd；配置 crate 55 项通过 |
+| `git diff --check` | 0 |
+
+本轮状态：**已完成**。最终回归后核对 1101 个 Go/模块文件的路径集合及
+SHA-256 与任务开始完全一致，Go/模块 Git 状态为空。只读 plan.md 指纹仍为
+`c7968f95a13d0d216ced3adafaca3140ad6ef959ff693c613cb903b231a6f777`。
+已审查生产值类型、独立测试、lib.rs 注册及本文差异，无依赖或锁文件修改。
+全部 Cargo/fixture 子进程结束后槽位 1 owner 与锁已释放，保留缓存；
+其他任务文件原有删除不纳入本任务提交。
