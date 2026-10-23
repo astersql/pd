@@ -179,3 +179,11 @@ impl StorageEndpoint {
         Ok(())
     }
 }
+
+// Range loading must decode even empty values as the zero Store.
+pub(crate) fn decode_store(bytes: &[u8]) -> Result<StoreMeta, EndpointError> {
+    use prost::Message;
+    WireStore::decode(bytes)
+        .map(Into::into)
+        .map_err(EndpointError::ProtoUnmarshal)
+}

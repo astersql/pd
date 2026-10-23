@@ -6,6 +6,8 @@ use std::sync::Arc;
 /// Codec failures remain distinct from backend failures.
 #[derive(Debug, thiserror::Error)]
 pub enum EndpointError {
+    #[error("parse float error")]
+    ParseFloat,
     #[error(transparent)]
     Store(#[from] StoreError),
     #[error("json marshal: {0}")]

@@ -2066,3 +2066,108 @@ trap 清理自己的 owner/锁，全部同步 Cargo 和 fixture 子进程退出�
 审查差异仅 store_meta.rs、独立测试、lib 注册、endpoint core 依赖和单项 lock 更新、
 本证据节及任务文件清理；已有其他计划改动保持原样。Cargo 槽位锁已释放，缓存保留。
 批次 24 当前验证故事已完成，不将其扩大为 LoadStores、权重 API 或整包迁移完成。
+
+## 批次 25：存储节点权重与分页加载（任务 6）
+
+准入：前序批次 24 提交 `c9312be15` 与本文对应证据完整，单 Store
+读写/完整字段适配已验证；前序任务文件已在该提交删除。当前 meta.go
+相对规划基准 `5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异。
+无更深层 AGENTS.md，已遵守 ADR-001、porting-guide 及 Go 只读硬约束。
+本批次不修改任何计划总纲、来源主题、Go 源码或模块文件。
+
+### Go 依据与实际只读验证
+
+`pkg/storage/endpoint/meta.go` 的 SaveStoreWeight 以
+`strconv.FormatFloat(value, 'f', -1, 64)` 编码，先保存 leader，再保存 region；
+第一次失败即返回，第二次失败保留第一次写入。LoadStores 使用 `[StorePath(0),
+StorePath(MaxUint64))`、100 条一页，下一页起点是最后解码的 metadata ID + 1。
+每条直接 Unmarshal（空 protobuf 得零值 Store），Offline -> Removing，
+Tombstone -> Removed，其他状态保留；再顺序读取 leader/region，空值或缺失均为 1，
+非法浮点返回 parse float 错误，之前已交付的回调保留。
+
+已审查 `storage_test.go` TestMain、mustSaveStores、TestLoadStores、
+TestStoreWeight、newMemoryBackend、MemoryKV Save/LoadRange 和 endpoint 调用链：
+所选测试不启用、不依赖 failpoint，不运行生成/格式化/依赖整理，不写 Go 文件。
+整包包含 failpoint 用例，未将所选测试声称为整包 oracle。
+
+| 确切命令 | 退出码、有效结果 |
+| --- | --- |
+| `GOFLAGS=-mod=readonly go test -mod=readonly ./pkg/storage -run '^(TestLoadStores\|TestStoreWeight)$' -count=1 -v` | 0；2 passed；10 个 Store 加载、3 个 Store 默认和显式权重断言 |
+| `GOFLAGS=-mod=readonly go test strconv -run '^(TestFtoa\|TestAtof)$' -count=1 -v` | 0；Go 1.26.8 仅命中 TestAtof，1 passed；没有把未命中 Ftoa 算作成功 |
+| `GOFLAGS=-mod=readonly go test internal/strconv -run '^(TestFtoa\|TestAtof)$' -count=1 -v` | 0；Go 1.26.8 数值测试位于 internal/strconv，2 passed |
+
+编码依据复用批次 24 实测 Go Store ID=0..9 protobuf 字节；本任务没有新增协议
+schema。权重编码使用已存在的 Go 1.26.8
+`src/internal/strconv/ftoa_test.go` TestFtoa 真实执行结果：原测试逐项比较
+FormatFloat 与已有字符串，再独立执行 Rust 保存后的物理字节断言：
+
+| Go 输入 float64 | Go format/precision | Go 实际输出，与 Rust 比对一致 |
+| --- | --- | --- |
+| `1e23` | `'f', -1` | `100000000000000000000000` |
+| `below1e23 = 99999999999999974834176` | `'f', -1` | `99999999999999970000000` |
+| `above1e23 = 100000000000000008388608` | `'f', -1` | `100000000000000010000000` |
+| `498484681984085570` | `'f', -1` | `498484681984085570` |
+
+Go TestStoreWeight 的实际断言确认 2/3、0.2/0.3 和默认 1 的数值；
+小数物理字节、负零/NaN/Inf 和更多 hex/下溢/舍入边界的 Rust 断言亦已执行。
+没有把源码推导或 Rust 自产值称作额外 Go 动态输出。
+另在 `/tmp` 运行既有 Go 1.24.3 stdlib 的
+`GOTOOLCHAIN=local GO111MODULE=off go test strconv -run '^(TestFtoa|TestAtof)$' -count=1 -v`
+退出 0，2 passed，仅作辅助；最初在仓库运行该旧版本被 go.mod 的版本门拒绝，
+未改模块、未据此降低验收，最终采用上述当前 1.26.8 internal/strconv 证据。
+
+### 实现、红灯与绿灯
+
+canonical StorageEndpoint 新增 `load_stores`、`save_store_weight`；
+复用 core::StoreInfo/StoreMeta 和既有 wire 转换。store_meta.rs 仅增加 crate 内
+`decode_store` 供 range 读取复用（保持 point-read 空值语义）；EndpointError
+增加 ParseFloat 分类，存储错误与 protobuf 错误保持原分类。
+默认权重不持久化，范围排除 MAX ID，回调逐条生效，不收集全部结果才交付。
+保存是两次独立事务；两后端均断言 region revision = leader revision + 1。
+浮点遵循 Go 对无符号 NaN、带符号 Inf/Infinity、Go 数字下划线、hex p 指数、
+溢出错误/下溢零的规则；hex 构建有效位后一次 ties-to-even 舍入，含 subnormal。
+未新增依赖、feature、crate、全局状态或 runtime。
+
+独立 `store_weights_test.rs` 在 lib.rs 显式注册；memory/etcd 入口执行同一 contract，
+逆序插入有间隔的 205 个 Store，跨三页有序加载，验证 MAX 排除、状态映射、
+原 metadata 不变、默认/显式权重、空值、错误前回调、region 非法值、畸形 protobuf、
+空 protobuf 和 cluster 隔离。额外 float_boundaries 覆盖正常/次正规、舍入、
+巨大指数零、非法语法和真实 Go 固定小数输出。
+
+真实 etcd 还使用测试内 TCP 代理：leader 请求完整转发并收到提交响应；
+后续 region 请求到达代理时，在完整键名被识别且该请求尚未完整转发之前关闭连接。
+代理保留监听、不允许重连到上游，500ms 客户端期限后保存返回 Store 错误；
+oneshot 确认故障边界确实被到达。取消并 join 代理后，直连同一 etcd 确认终态
+leader=`2.5`、region 缺失。未模拟事务结果、未替换核心存储。
+
+- 修改 Rust 后首先 `cargo fmt --all`，退出 0。
+- 最小可编译空加载接口的红灯：
+  `cargo test --locked -p astersql-pd-storage-endpoint --lib store_weights -- --nocapture`
+  退出 101；0 passed / 2 failed / 0 ignored；两个真实后端均在条数断言
+  actual=0、expected=205 失败，5.95s，非编译/环境错误。
+- 最小实现同一命令绿灯：退出 0，2 passed / 0 failed / 0 ignored，6.72s。
+- 扩充浮点边界与 TCP 部分写入后，先格式化，再执行同一聚焦命令：
+  退出 0；3 passed / 0 failed / 0 ignored，4.86s；原断言未削弱。
+
+### 最终验证、共享槽位与差异审查
+
+所有 Cargo 阶段均从仓库根依次原子 mkdir 动态领取第一个可用槽位，实际均为 **1**；
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+锁 owner 记录计划、task=6、batch=25、session=store-weights 与持有 shell PID；
+验证包装器设置绝对路径及 GOFLAGS=-mod=readonly，EXIT/INT/TERM trap 清理自己的锁。
+同步等待 Cargo、fixture 与代理子进程全部结束再释放，缓存保留。复用 proto 构建缓存，
+没有运行解压/生成 Go 源码的 proto build.rs，也没有改动任何 Cargo manifest/lock。
+
+| 最终命令 | 退出码与有效结果 |
+| --- | --- |
+| `cargo metadata --format-version 1 --no-deps` | 0；canonical endpoint target 保持注册 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；仅既有 server cpu_usage 弃用警告 |
+| `cargo test --workspace --locked` | 0；513 passed / 0 failed / 1 既有 ignored，含 doc-tests；endpoint 14 passed |
+| `git diff --check`、`git diff --cached --check` | 0 |
+
+最终核对开始时记录的 1101 个已跟踪 Go/模块文件 SHA-256，全相同；Go Git 差异为空，
+未跟踪 Go/模块文件为 0。workspace fmt 未修改本任务外 Rust 文件。
+审查范围仅 store_weights.rs/独立测试、lib 注册、现有 store_meta 的内部解码复用、
+EndpointError 分类、本证据节及任务文件清理；用户已有其他计划修改保持原样。
+共享槽位锁已释放，缓存保留。批次 25 当前验证故事已完成。

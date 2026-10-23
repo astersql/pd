@@ -20,3 +20,7 @@ mod cluster_meta_test;
 mod store_meta;
 #[cfg(test)]
 mod store_meta_test;
+
+mod store_weights;
+#[cfg(test)]
+mod store_weights_test;
