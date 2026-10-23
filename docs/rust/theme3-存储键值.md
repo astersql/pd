@@ -6,6 +6,10 @@
 本轮只读取源码、测试断言及装配，不运行 Go/Cargo，不生成 oracle，不改变运行行为。
 以下“事实”为当前源码结构，“推导”为函数体可观察行为，“既有断言”不等于本轮运行结果。
 
+> 历史快照范围：本文任务 1 的盘点结论固定于上述审计 HEAD；“当前没有 Rust”、
+> “拟建”“尚无 callback/Else”等只描述当时基线。任务 2–8 后续实现及 Go 回退后的
+> 只读复验见对应任务节和文末记录，不能把初始缺口当作当前实现状态。
+
 ## 准入与来源
 
 批次 8 依赖批次 7。前序提交 `feff860d0` 同时包含生产模块、独立测试、Go oracle
@@ -31,7 +35,7 @@
 
 相邻 Go 文件为 `pkg/storage/kv/kv_test.go` 与 `metrics.go`；辅助依据为
 `pkg/utils/etcdutil/etcdutil.go::{EtcdKVGet,EtcdKVGetWithContext}`、
-`pkg/storage/endpoint/endpoint.go` 与各 backend 工厂。KV 包当前没有 Rust 文件或 Cargo.toml。
+`pkg/storage/endpoint/endpoint.go` 与各 backend 工厂。在当时基准快照中，KV 包没有 Rust 文件或 Cargo.toml；现已由任务 2 下沉。
 
 ## 公开契约与符号覆盖
 
@@ -93,10 +97,11 @@ Rust 现有 MetaStore 用 Vec<u8>，业务编码与 schema 属 endpoint/keypath 
 | NotExists | CreateRevision `=0`；缺失 true，存在 false，删除后 true；忽略 Value | 7 |
 
 既有 Go 断言特别要求：缺失键对非空 v1 的 Equal/NotEqual/Less/Greater **全部 false**。
-现有 Rust MemoryStore 的 Value 等值使用缺失 `[]` 作为默认值，而 EtcdMetaStore 直接委托
+当时基准快照中的 Rust MemoryStore 的 Value 等值使用缺失 `[]` 作为默认值，而 EtcdMetaStore 直接委托
 etcd Value compare；这使“缺失 == 空值”存在跨后端兼容风险，既有 cas 测试未覆盖。
 这不是本轮复现实验：7 必须新增缺失/空值/删除后的真实 etcd 与 memory 同一断言，
-不可仅扩展枚举后沿用默认空值语义。缺失与空值的其他组合本轮未获得运行证据。
+不可仅扩展枚举后沿用默认空值语义。缺失与空值的其他组合在任务 1 未获得运行证据；
+该差异随后由任务 7 修正，当前 memory 实现通过 is_some_and 区分缺失与空值。
 未知 CmpType 在 Go wrapper panic；非法枚举/请求的 Rust 分类归 11，不泄漏 Go panic。
 
 | 操作/分支 | 真实行为与结果 | 归属 |
@@ -119,10 +124,10 @@ compare 只有 CreateRevision/ModRevision/Value/Lease 的等值；6 复用已有
 
 ## 现有 Rust 能力、测试和装配
 
-canonical 为 `pkg/storage/Cargo.toml` 的 `astersql-pd-storage`，`lib.rs` 重导出
+当时基准快照的 canonical 为 `pkg/storage/Cargo.toml` 的 `astersql-pd-storage`，`lib.rs` 重导出
 meta_store、MemoryStore、EtcdMetaStore。生产在 `meta_store.rs/memory_store.rs/etcd_store.rs`。
 只有这一套公开 MetaStore；独立 `pkg/storage/raft-prototype` 为 durability 原型，不是生产后端。
-拟建（当前不存在）：`pkg/storage/kv/Cargo.toml`、`pkg/storage/kv/lib.rs` 与
+任务 1 当时拟建（现已由任务 2 创建）：`pkg/storage/kv/Cargo.toml`、`pkg/storage/kv/lib.rs` 与
 `astersql-pd-storage-kv`；仅任务 2 移动唯一实现、修改 root manifest/lock 并保留 storage re-export。
 
 既有领域类型穷举：Revision/LeaseId/Result、StoreError、Consistency、Read（prefix/start/limit/
@@ -168,7 +173,9 @@ testRunInTxnWithConditions、testRawTxn 和 canceled point read。Raw context �
 错误回滚、stale read、幻读与值保护，6 同值改写/缺失键 revision，7 六比较及缺失空值，
 8 Else 与批次 revision/原子性，9–10 两分支按序结果，11 提交前取消、断连不确定结果/
 非法请求/畸形响应，12 原有 watch/lease/fencing/重启/消费者回归。每项均有编号归属；
-本轮未运行的 Go 测试不能升级为 oracle 已通过。后续遵循 make gotest 的 failpoint 窗口。
+任务 1 未运行的 Go 测试不能升级为 oracle 已通过。原计划的 make gotest/failpoint
+窗口要求现已被 Go 只读硬约束覆盖：本文旧命令仅作历史记录，不得重新执行会改写 Go
+的 make、failpoint 启停、生成或格式化命令。
 
 遥测边界：`metrics.go` 的 pd_txn_txns_count、pd_txn_handle_txns_duration_seconds
 带 result=success/failed；SlowLogTxn 以 err 是否非 nil 分类（compare false 且无 err 计 success），
@@ -839,3 +846,86 @@ RegionHeartbeatRequest.cpu_usage deprecated 警告。workspace 实际回归原�
 watch/lease/fencing、断连/WAL 重启和消费者测试。已审查 builder、两个后端最小扩展、
 独立共用断言、注册和本文证据；未修改依赖、manifest/lock、Go、只读计划或来源主题。
 其他计划在途修改未纳入提交。编号任务文件按完成流程删除，证据保留于本文和实现提交。
+
+
+## Go 回退后的统一只读复验记录（2026-10-23）
+
+统一 Go 回退提交为 `08aeb510df5a2493964ffadbc7c3f67ead80011e`，本节各会话复验时
+HEAD 均为该提交；Go 比较基准为 `d36a252c3157c8aeba5a4ff273f2b82d59f4d808`。
+下表来自各原任务会话的已完成复验报告，由主会话转交汇总，本次编辑没有重新运行测试。
+Rust 测试针对当时**当前工作树**，包含任务 16 保留的未提交 Rust 改动
+（`kv/lib.rs`、`meta_store.rs`、`raw_branches.rs`、新增 `raw_get.rs`），不能声称纯 HEAD
+验证通过，也不能据此将任务 16 标为完成。新实现已停止推进。
+
+用户要求 Go 完全只读。统一删除的 `scripts/rust-theme3-oracle/*.go` 只保留历史来源，
+本节不提供指向已删除工具的活链接；如需审计，可只读查看历史对象
+`git show feff860d03e07f97846a957edf0f263613312d98:scripts/rust-theme3-oracle/registry_marker_paths.go`。
+该命令是历史源码定位方式，不是本轮 Go oracle 执行证据。前置键路径文档已将所有工具
+标为“历史工具，现已移除”。保留的 Go 输出 fixture 仍是历史真实输出，本轮没有生成
+新 Go 输出、运行 Go 测试/oracle、启停 failpoint 或在仓库外另建 Go 工具。
+
+### 原批次 8：文档盘点复验
+
+本会话只读复核四个指定来源全文与 SHA-256、公开符号、反向依赖和链接：
+
+- 原任务符号扫描 `rg -n '^(func |type |pub |    pub )' pkg/storage/kv/kv.go pkg/storage/kv/etcd_kv.go pkg/storage/kv/mem_kv.go pkg/storage/kv/levedb_kv.go`
+  退出 0，命中 75 项声明；全部公开类型/方法有清单。
+- Python 只读核对退出 0：四个哈希仍与本文初始表一致，67 个直接消费文件
+  （38 生产、29 测试）和 4 个 Markdown 链接完整；原编号文件仍已删除。
+- `git diff --check` 退出 0。
+- `git diff --exit-code d36a252c3157c8aeba5a4ff273f2b82d59f4d808 -- '*.go' go.mod go.sum go.work go.work.sum`
+  退出 0、无输出；`git ls-files --others --exclude-standard -- '*.go' go.mod go.sum go.work go.work.sum`
+  退出 0、无输出，无未跟踪 Go/模块文件。
+- `git cat-file -e feff860d03e07f97846a957edf0f263613312d98:scripts/rust-theme3-oracle/registry_marker_paths.go`
+  退出 0，确认历史来源仍可审计；当前目录可能为空目录，但旧工具 Go 文件数为 0。
+
+该批次为纯文档任务，运行测试数 0（不适用），未调用 Go/Cargo，槽位不适用。
+只读复验没有编辑或提交文件；本节及历史措辞订正是随后明确授权的文档更新。
+
+初始 Rust 结构描述是历史快照：七个原 storage 根下的实现/测试文件已移动到
+`pkg/storage/kv/`，canonical 为 `astersql-pd-storage-kv`，storage 保留 re-export。
+当前已有有界 Read、Base、CallbackTxn、revision 读、六比较及分支写入；它们的
+独立运行证据分别列于下表。任务 1 的“无 Rust/未下沉/缺失当空值”等不能作为当前事实。
+
+### 原批次 9–15：其他原会话转交的聚焦结果
+
+所有下表命令均退出 **0**，无 failed、无 ignored。slot-N 的实际绝对目录统一为
+`/Users/Shared/work/dir/data/codes/pd/target/rust-slot-N`；每个会话动态原子领取槽位，
+全部 Cargo/fixture 子进程结束后已释放自己的锁并保留缓存。
+
+| 原批次/任务 | 确切命令 | 有效测试数 | 实际槽位 / CARGO_TARGET_DIR |
+| --- | --- | --- | --- |
+| 9 / 唯一 MetaStore 下沉 | `cargo test --locked -p astersql-pd-storage -p astersql-pd-member -p astersql-pd-id -p astersql-pd-tso -- --nocapture` | 45 passed | 1 / `/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1` |
+| 9 / canonical KV 回归 | `cargo test --locked -p astersql-pd-storage-kv -- --nocapture` | 32 passed | 1 / `/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1` |
+| 10 / 有界范围 | `cargo test --locked -p astersql-pd-storage-kv --lib bounded_range -- --nocapture` | 3 passed；memory/etcd 各 26 次范围及历史读取断言 | 3 / `/Users/Shared/work/dir/data/codes/pd/target/rust-slot-3` |
+| 11 / Base CRUD | `cargo test --locked -p astersql-pd-storage-kv --lib base_kv -- --nocapture` | 2 passed，memory/真实 etcd | 2 / `/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2` |
+| 12 / 回调事务 | `cargo test --locked -p astersql-pd-storage-kv --lib callback_txn -- --nocapture` | 2 passed，memory/真实 etcd | 2 / `/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2` |
+| 13 / revision 读 | `cargo test --locked -p astersql-pd-storage-kv --lib revision_txn -- --nocapture` | 2 passed，memory/真实 etcd | 1 / `/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1` |
+| 14 / 六比较 | `cargo test --locked -p astersql-pd-storage-kv --lib raw_compare -- --nocapture` | 2 passed，memory/真实 etcd | 1 / `/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1` |
+| 15 / 分支写入 | `cargo test --locked -p astersql-pd-storage-kv --lib raw_branches -- --nocapture` | 2 passed，memory/真实 etcd | 2 / `/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2` |
+
+批次 9 核实唯一实现、storage 重导出和共享测试注册；45+32 项包含既有双后端契约、
+断连恢复、lease/fencing。批次 11 另报告 `cargo fmt --all -- --check` 与范围内
+`git diff --check` 均退出 0。批次 15 的原测试文件与实现提交一致，但被测生产代码
+含上述任务 16 在途改动，故结果只证明该工作树上的原分支断言通过。
+
+Go 零差异核验的原会话准确命令和结果如下，均无输出、退出 0：
+
+| 原批次 | 核验命令 |
+| --- | --- |
+| 9 | `git diff --exit-code d36a252c3157c8aeba5a4ff273f2b82d59f4d808 -- '*.go' go.mod go.sum go.work go.work.sum`；测试前后 Go/模块内容哈希相同 |
+| 10 | `git diff --exit-code d36a252c3157c8aeba5a4ff273f2b82d59f4d808 HEAD -- '*.go' go.mod go.sum go.work go.work.sum`；HEAD 到工作树同范围检查亦为 0 |
+| 11 | 会话报告源码与模块相对基准零差异，无新增 Go 文件；未转交更详细命令，不补造 |
+| 12、14 | `git diff --exit-code d36a252c3157c8aeba5a4ff273f2b82d59f4d808 -- '*.go'` |
+| 13 | `git diff --exit-code d36a252c3157c8aeba5a4ff273f2b82d59f4d808 -- '*.go' go.mod go.sum go.work go.work.sum '**/go.mod' '**/go.sum'` |
+| 15 | `git diff --quiet d36a252c3157c8aeba5a4ff273f2b82d59f4d808 -- '*.go'` |
+
+各会话均报告没有未跟踪 Go 文件，没有运行 Go oracle/failpoint、修改文件、提交或恢复
+已删除任务。未单列模块文件的聚焦报告不替代统一的全 Go/模块检查。旧 make gotest
+命令只保留首次实现的历史结果；当前只读约束下不能重跑。
+
+主会话另转交：原任务 2 已在 Go 回退后完成 workspace 基线，
+`cargo test --workspace --locked` 为 **491 passed / 0 failed / 1 既有 ignored**；
+`cargo metadata --format-version 1 --no-deps`、`cargo fmt --all -- --check`、
+`cargo check --workspace --locked` 均退出 0。本会话未重跑，也不据此宣称纯 HEAD 结果；
+完整基线的资源记录由该执行会话保留，不为未转交的槽位信息编造数值。
