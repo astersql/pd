@@ -114,3 +114,7 @@ mod maintenance_start;
 pub use maintenance_start::{MAINTENANCE_LOCK_NAME, MaintenanceStartError, MaintenanceTask};
 #[cfg(test)]
 mod maintenance_start_test;
+
+mod maintenance_delete;
+#[cfg(test)]
+mod maintenance_delete_test;
