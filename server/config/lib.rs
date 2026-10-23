@@ -33,3 +33,9 @@ mod pd_server_gc;
 
 #[cfg(test)]
 mod pd_server_gc_test;
+
+mod pd_server_validate;
+pub use pd_server_validate::*;
+
+#[cfg(test)]
+mod pd_server_validate_test;

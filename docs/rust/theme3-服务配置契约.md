@@ -1083,3 +1083,74 @@ SHA-256，与起点完全一致，Go/模块 Git 状态为空。只读 plan.md �
 已审查生产校验、四项独立测试、模块注册与本文差异，无无关 Rust 格式化、
 无依赖变更。槽位 1 的 owner 与锁已释放，缓存保留。其他编号任务文件的
 已有删除不纳入本任务提交。
+
+## 批次 90：其余服务配置校验
+
+日期：2026-10-24（Asia/Shanghai）。前置批次 89 经提交 `3ca7a9ea2`、
+canonical GC 校验、四项独立测试和本文 702 passed / 0 failed / 1 ignored
+回归证据核验，准入满足。仅根 AGENTS.md 适用；已读 Copilot、ADR-001、
+移植指南和 do-task-plans 技能。config.go/config_test.go 相对规划基准
+`5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异。
+
+### Go 依据与实现边界
+
+`server/config/config.go:622–653::PDServerConfig.Validate` 按以下顺序返回
+第一个错误：已有 GC 并发检查；dashboard-address 为 auto/none 时通过，否则
+调用 ValidateURLWithScheme；key-type 必须为 table/raw/txn；
+flow-round-by-digit 不得为负；三项浮点必须分别在闭区间 [0,0.99]、
+[0.5,0.99]、[0,0.9] 内。范围检查使用直接比较，因此 NaN 通过，无穷拒绝。
+Validate 不调整、钳位或修改配置；其他字段不增加校验。
+
+错误保留字段名及 Go 原文。flow 错误的 RFC code 为
+`PD:server:ErrConfiguration`，消息为
+`flow round by digit cannot be negative number`；只读核对 Go 锁定依赖
+pingcap/errors 的 normalize.go::GenWithStack，确认其替换消息、保留 code，
+而不是使用 catalog 的默认消息 `cannot set invalid configuration`。
+其余范围/GC/key 错误为普通错误，dashboard 复用既有 URL 错误。
+
+`config_test.go::TestPDServerConfig` 覆盖 http loopback、auto、none、缺失默认、
+无 scheme 地址及 foo；`util_test.go::TestValidateURLWithScheme` 为既有 URL
+校验器提供相邻断言。本轮复核 TestMain 仅 goleak/WaitForEtcdConnections，
+整个配置包没有要求注入 failpoint 的测试或生成器调用，安全只读运行现有包。
+没有新增 Go oracle、启停 failpoint 或修改 Go。其余边界、错误优先级及
+NaN/无穷/相邻浮点测试来自源码推导，明确不冒充新增 Go 跨语言运行差分。
+
+在 canonical crate 增加 `pd_server_validate.rs::PDServerConfig::validate`，
+串接已有 GC 与 URL 校验；公开 PDServerValidationError 区分普通、URL 和
+带稳定 code 的错误。五项独立 pd_server_validate_* 测试由 lib.rs 显式注册，
+覆盖逐项错误、合法边界、浮点相邻值、NaN/无穷、所有分支优先级及
+decode/adjust/validate 的纯值组合。未实现废弃字段迁移、热更新或启动装配。
+纯配置任务无需 MemoryStore/etcd 双入口；没有新增依赖或编码实现，
+不需要新的 Go 编码字节证据。既有 Go JSON 字节差分由 workspace 回归复用。
+
+### 本轮验证
+
+各阶段均以原子 mkdir 动态领取共享槽位 **1**，
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录计划、任务、会话和 shell PID，EXIT/INT/TERM 清理自己的记录与锁。
+子进程全部退出后释放锁，保留缓存；Cargo/fixture 继承绝对路径及
+`GOFLAGS=-mod=readonly`。已只读复核 fixture 仅构建现有 Go，产物和隔离数据
+位于槽位；proto 构建读取已锁定依赖和缓存，本轮未重建 proto。
+
+先新增可编译空校验接口和五项测试，指定过滤命令得到 **0 passed /
+5 failed / 0 ignored，退出 101**，均为非法配置被错误接受的真实断言失败。
+最小实现后同组五项 **5 passed / 0 failed / 0 ignored，退出 0**；错误类型
+由临时通用 Error 收窄为公开枚举，保留原断言并匹配 flow 的 TypedError code。
+
+| 确切命令 | 退出码与有效证据 |
+| --- | --- |
+| `cargo fmt --all` | 0；仅本任务 Rust 文件发生格式化变更 |
+| `cargo test --locked -p astersql-pd-server-config --lib pd_server_validate -- --nocapture` | 红灯 101：0 passed / 5 failed；绿灯 0：5 passed / 0 failed / 0 ignored |
+| `go test -mod=readonly ./server/config -count=1` | 0；已有配置包通过，1.191s |
+| `cargo metadata --format-version 1 --no-deps` | 0 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；仅既有 core_region_adapter.rs:134 cpu_usage deprecated 警告 |
+| `cargo test --workspace --locked` | 0；707 passed / 0 failed / 1 既有 ignored，含真实 etcd；配置 crate 37 项通过 |
+| `git diff --check` | 0 |
+
+本轮状态：**已完成**。完整回归后再次核对 1101 个 Go/模块文件的路径集合及
+SHA-256，与任务开始完全一致；Go/模块 Git 状态为空。只读 plan.md 指纹仍为
+`c7968f95a13d0d216ced3adafaca3140ad6ef959ff693c613cb903b231a6f777`。
+审查新增生产校验、独立测试、lib.rs 注册及本文差异，无依赖/锁文件变更，
+无无关 Rust 格式化。槽位 1 的 owner 和锁已释放，编译缓存保留。
+其他编号任务文件的既有删除不纳入本任务提交。
