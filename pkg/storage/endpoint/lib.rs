@@ -94,3 +94,8 @@ mod keyspace_group_value;
 pub use keyspace_group_value::{KeyspaceGroupMember, UserKind};
 #[cfg(test)]
 mod keyspace_group_value_test;
+
+mod keyspace_group_state;
+pub use keyspace_group_state::{KeyspaceGroup, MergeState, OptionalKeyspaceGroupState, SplitState};
+#[cfg(test)]
+mod keyspace_group_state_test;

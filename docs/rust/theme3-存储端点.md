@@ -3625,3 +3625,117 @@ Go 源码的 build.rs。无 Cargo manifest/lock/feature 变化。
 及来源主题保持不变。已审查生产值、独立测试、模块注册及本节证据；用户原有计划修改
 和任务 19 删除保留，不混入提交。没有外部长期进程或任务槽位锁遗留。
 状态：已完成；批次 41 的 UserKind 与成员基础值故事完成。
+
+## 任务 23：键空间组拆合并值（批次 42，2026-10-23）
+
+### 准入与 Go 依据
+
+已核验批次 41 提交 `57db896e9`、canonical `keyspace_group_value.rs`、独立
+3 个基础值测试及本文件任务 22 的 workspace 559 passed / 0 failed / 1 既有
+ignored 证据，准入满足。已读执行技能、ADR-001、porting-guide、根 AGENTS.md
+及 Copilot 规则，pkg 下无更深 AGENTS.md。`tso_keyspace_group.go` 和同名测试
+相对规划基准 `5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异。
+
+Go `KeyspaceGroup.IsSplitting/IsMerging` 对 nil 接收者或 nil 状态返回 false；
+非 nil 状态即为转换中，不要求状态内容非零。拆分源为 SplitSource 等于自身 ID，
+拆分目标为不等；SplitSource 无状态返回 0。合并源为 MergeList 含自身 ID，
+合并目标为不含；nil/空列表仍为合并目标。列表顺序和重复项不改变 membership。
+状态之间没有互斥验证。Go JSON 字段为 split-state/merge-state，nil 指针
+omitempty；split-source 为 uint32；merge-list 是允许 nil 的 []uint32。
+成员与 keyspaces nil 编码为 null，lookup table 的 `json:"-"` 不参与持久化。
+
+审查现有 `TestKeyspaceGroupTestSuite/TestKeyspaceGroupSplit`、
+`TestKeyspaceGroupTestSuite/TestKeyspaceGroupMerge`、SetupTest/TearDownTest、
+TestMain 和相应调用链：这两个选择使用真实 MemoryKV，未启用或依赖 failpoint，
+不生成/改写 Go 或模块文件。运行：
+
+```text
+GOFLAGS=-mod=readonly go test -mod=readonly -tags without_dashboard ./pkg/keyspace -run '^TestKeyspaceGroupTestSuite$/^TestKeyspaceGroup(Split|Merge)$' -count=1 -v
+```
+
+退出 0；2 个行为子测试 passed / 0 failed，包耗时 1.312s。Split 覆盖源/目标、
+拆分完成后的状态；Merge 先完成拆分，将 2/3 两个源组并入 1，断言源组删除、
+目标 IsMerging 为 true、完成后为 false。这是已有 Go 行为运行证据；其他 nil、
+空/重复列表及 JSON 边界依据 Go 源码和 encoding/json 契约，未冒充逐项运行差分。
+整包 `go test -mod=readonly ./pkg/storage/endpoint ./pkg/storage -count=1` 未执行：
+其中时间戳/区域测试需要 failpoint 注入，与 Go 只读约束冲突；本任务使用上述
+不需要注入的既有测试及已保存真实编码输出。
+
+JSON 字节直接复用任务 22 保存的只读 Go 输出 `/tmp/pd-task22-go-wire.json`，
+来源 `TestKeyspaceGroupReconcileWatcherTracksExternalChanges` 在
+`/pd/0/tso/keyspace_groups/membership/00002` 的第二次保存：ID=2、Enterprise、
+SplitSource=2、Members=[{Address:"http://tso-2",Priority:0}]、Keyspaces=[42,43]。
+采集于该次测试启动后 7.3911s，create revision=4、mod revision=5、version=2，
+raft_term=2；原始 Go 值为：
+
+```json
+{"id":2,"user-kind":"enterprise","split-state":{"split-source":2},"members":[{"address":"http://tso-2","priority":0}],"keyspaces":[42,43]}
+```
+
+原始 base64：
+
+```text
+eyJpZCI6MiwidXNlci1raW5kIjoiZW50ZXJwcmlzZSIsInNwbGl0LXN0YXRlIjp7InNwbGl0LXNvdXJjZSI6Mn0sIm1lbWJlcnMiOlt7ImFkZHJlc3MiOiJodHRwOi8vdHNvLTIiLCJwcmlvcml0eSI6MH1dLCJrZXlzcGFjZXMiOls0Miw0M119
+```
+
+独立 Rust 测试直接使用上述实际字节解码、查询并重新编码逐字节比对；插入本地
+lookup table 后输出仍相同。额外 merge/null/重复字段字符串预期来自 Go 字段和
+encoding/json 契约，不是另一次 Go 字节采样，也没有从 Rust 结果反向生成预期。
+
+### 实现与测试驱动证据
+
+新增 canonical `keyspace_group_state.rs`，公开 KeyspaceGroup、SplitState、MergeState，
+实现与 Go 对应的七个状态查询；OptionalKeyspaceGroupState 为 Option<&KeyspaceGroup>
+提供 nil 安全查询。组值复用现有 KeyspaceGroupMember；字段保持 Go 顺序与命名，
+可空列表保留 nil/空区别，忽略本地 lookup table。自定义反序列化保留缺省、null、
+ASCII 大小写字段、顺序重复字段；重复状态对象复用原有状态，null 清除指针；
+数字数组中的 null 保留 Go 零值。拒绝非法类型、负数、浮点 ID 与 uint32 溢出。
+本任务没有存储方法、实际拆合并算法、启动装配、依赖或 feature 变更。
+
+独立 `keyspace_group_state_test.rs` 在 lib.rs 显式注册；纯值行为没有人为构造
+memory/etcd 空壳测试。先最小可编译接口与真实断言，执行 fmt 后运行：
+
+```text
+cargo test --locked -p astersql-pd-storage-endpoint --lib keyspace_group_state -- --nocapture
+```
+
+实际红灯退出 101，2 passed / 3 failed / 0 ignored：split_roles、merge_roles、
+go_split_json 的源角色断言失败，而非符号缺失、编译或环境错误。随后实现源角色
+判定，保留全部原始断言并补充重复状态/null 数组回归；先 fmt 再运行同一命令，
+最终退出 0，6 passed / 0 failed / 0 ignored。覆盖 nil/无状态、ID 0/1/u32::MAX、
+source/target、多个源组、空/重复列表、同时拆合并、真实 Go JSON 字节往返、
+omitempty、字段/列表 null、重复对象合并及清除、非法数值和类型。
+
+### 槽位与仓库基线
+
+各阶段从仓库根依次原子 mkdir 动态领取，均为实际槽位 **1**：
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录 plan=storage-endpoint task=23 batch=42 session=keyspace-group-state 与
+持有 shell PID。红灯 PID=18363，最终聚焦绿灯 PID=18936。
+`/tmp/pd-task23-cargo.sh` 用 EXIT/INT/TERM trap 处理退出清理；所有 Cargo 和 fixture
+子进程继承绝对槽位路径与 GOFLAGS=-mod=readonly，proto 使用已有缓存，未重跑
+会解压 Go 源码的 build.rs。
+
+首轮基线 PID=19033 在 workspace 测试中因会话中断终止，不能计为通过。恢复后
+检查持有 PID 已退出，且无 Cargo、槽位二进制、fixture 或 etcd 子进程，再清理
+自己的遗留 owner/lock，重新动态领取槽位并完整重跑基线。
+
+最终基线 PID=22422，退出 0；83 个 target（含 doc-tests）共 565 passed /
+0 failed / 1 既有 ignored，endpoint 66 passed / 0 failed / 0 ignored。
+
+| 最终命令 | 退出码与结果 |
+| --- | --- |
+| `cargo fmt --all` | 0；仅本任务 Rust 文件被格式化 |
+| `cargo test --locked -p astersql-pd-storage-endpoint --lib keyspace_group_state -- --nocapture` | 0；6 passed / 0 failed / 0 ignored |
+| `cargo metadata --format-version 1 --no-deps` | 0；canonical target 不变 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；仅既有 cpu_usage 弃用警告 |
+| `cargo test --workspace --locked` | 0；565 passed / 0 failed / 1 既有 ignored |
+| `git diff --check`、`git diff --cached --check` | 0 |
+
+开始/结束 1101 个 Go/模块文件 SHA-256 快照完全相同，无新增/删除或内容差异，
+Go Git 状态为空。未启停 failpoint，未运行 Go 生成器、格式化或依赖整理；
+Cargo manifests/lock、总计划及来源主题均未改变。已审查 canonical 状态值、
+独立测试、显式模块注册和本节证据；保留用户原有无关计划修改与任务 19 删除，
+不混入本任务提交。最终 Cargo/fixture 子进程全部结束，自己的槽位锁已释放，
+缓存保留。状态：已完成；批次 42 的拆合并状态查询故事完成。
