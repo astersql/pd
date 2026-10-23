@@ -28,3 +28,8 @@ mod leader_watch;
 pub use leader_watch::*;
 #[cfg(test)]
 mod leader_watch_test;
+
+mod watch_reset;
+pub use watch_reset::*;
+#[cfg(test)]
+mod watch_reset_test;

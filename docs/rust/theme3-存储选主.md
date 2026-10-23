@@ -648,3 +648,92 @@ Cargo/fixture 子进程组。最终所有进程退出，自己的锁已释放，
 相对文档链接有效；根 Cargo.toml、Cargo.lock、crate manifest、只读总计划和
 来源主题无本任务差异。其他任务已有状态修改及删除保留并排除提交。
 本节不宣称完成压缩快照恢复、reset 管理器、指标迁移或启动装配。
+
+## 任务 8：观察压缩恢复与 reset 竞态（批次 66）
+
+日期：2026-10-23（Asia/Shanghai）。批次 65 提交 `657a76829` 的 canonical
+LeaderWatch、独立测试及上节 625 passed / 0 failed / 1 既有 ignored
+证据已核验，准入满足。已阅读只读总计划、任务、ADR-001、移植指南及仓库
+规则，无更深 AGENTS.md。规划基准至开始 HEAD 的 `leadership.go`、
+`leadership_test.go` 无差异。
+
+### Go 依据与行为边界
+
+只读 `Leadership.Reset`：锁内捕获并摘除旧 lease、取消旧 keep、清空旧 value，
+锁外只关闭捕获的 lease；关闭返回后不能覆盖新 Campaign 发布的 lease/value。
+`TestResetDoesNotClearNewLeadership` 以相同值和不同值重选，断言旧 reset 返回后
+新 lease、Check、LeaderTxn 写入和值仍有效；`TestKeepDoesNotRestartLeaseDuringReset`
+验证阻塞清理时 lease 已摘除，晚到 Keep 不能重启旧 lease。
+这些测试需要 `afterRevokeLease` / `beforeRevokeLease` failpoint，整包
+`go test -mod=readonly ./pkg/election ./pkg/member ./pkg/id -count=1` 未运行；
+复用前序只读盘点证据并重新核对源码，不宣称本轮 Go/Rust 运行差分。
+未启停 failpoint、未新增 Go oracle。本任务无 codec，不需要新编码输出。
+
+Go `Leadership.Watch` 收到 CompactRevision 后从压缩边界重开，删除后退出；
+本任务按 MetaStore 契约和计划要求显式增加快照恢复：压缩后线性读取 exact key，
+交付替换快照并从快照 header revision + 1 观察。该恢复不是重建已丢失历史，
+也不把 Go 的边界重试源码描述成已有快照实现。
+
+### 实现和测试驱动证据
+
+[watch_reset.rs](../../pkg/election/watch_reset.rs) 增加 `LeaderObserver::next` /
+`LeaderUpdate`，复用 canonical LeaderWatch 和 MetaStore，不复制底层 watch、
+连接或 runtime。首次及压缩后均返回权威快照（包括键缺失），后续交付事件；
+snapshot 与 watch 之间的写入通过 revision + 1 replay 衔接。删除终止，
+取消优先且永久终止；读取 IO 错误保留原 StoreError，不盲目跳过压缩历史。
+
+同文件的 `LeadershipSlot` 只保存不可变 Arc<Leadership> 的发布状态。
+`reset` 比较捕获任期的 Arc 身份，在锁内仅摘除匹配任期，锁外调用原 resign，
+await 后不再写发布状态。旧 reset 即使晚到或重复执行也只清理自己的租约，
+不触碰替换任期的本地期限或续租取消令牌。宿主只发布相同选主键的成功 campaign；
+没有增加服务装配、全局状态或自动选主循环。lib.rs 显式注册生产与独立测试模块；
+manifest、依赖和 Cargo.lock 均不变。
+
+[watch_reset_test.rs](../../pkg/election/watch_reset_test.rs) 的
+`watch_reset_memory` / `watch_reset_etcd` 共用断言：exact-key 快照排除相邻键、
+快照返回后且 watch 建立前写入仍可交付、未读替换及删除被压缩后恢复为空快照、
+再次压缩后返回新领导快照、恢复快照后的间隙写入不丢失、不重复交付、删除终止、
+取消永久终止。etcd 在已有流上可以交付已排队事件，且可能重放压缩边界本身，
+因此用明确的快照/watch 边界、严格越过起始 revision 的压缩固定历史丢失场景；
+没有靠 sleep 假定 compaction 已使已建立流失效。
+
+`watch_reset_race_memory` / `watch_reset_race_etcd` 在 revoke IO 边界用 Notify
+屏障暂停旧 reset，断言旧发布已摘除且本地期限关闭；通过真实后端删除旧键并
+campaign 同值新任期，发布并启动新 keep 后才解除屏障。旧清理完成后新发布的
+Arc 身份、lease、validate、renew 和 keep 存活状态均保留；重复旧 reset 仍安全。
+最终 reset 新任期，断言发布为空、本地期限关闭、keep 取消并 join、真实键缺失。
+核心事务和 watch 结果无 mock；暂停发生在真实 revoke 前，旧键删除和重选也都
+使用真实存储操作。fixture 复用已有 helper，随机 loopback 端口和独立目录；
+仅 `go build` 既有 fixture，继承 `GOFLAGS=-mod=readonly`，没有生成器或 Go 写入。
+
+可编译初始接口直接传播 Compacted，reset 在 await 后清空发布；实际红灯
+0 passed / 4 failed，退出 101，两后端均命中 Compacted 及新发布丢失断言。
+调整 etcd 确定性屏障后重新运行红灯，仍为相同 4 项失败。最小实现后保持原
+断言并补强摘除时序与重复压缩边界，最终聚焦绿灯 4 passed / 0 failed /
+0 ignored，退出 0，3.51 秒。
+
+### 本轮验证
+
+各阶段从 1–10 依次原子 mkdir 动态领取，实际均为 **1**；
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+锁记录计划、任务、会话与 Python 持有进程 PID；正常/失败/中断处理均等待
+Cargo/fixture 子进程结束后释放自己的锁，保留构建缓存。
+
+状态：已完成。最终全部 Cargo/fixture 子进程已退出，自己的锁已释放。
+
+| 确切命令 | 退出码 | 有效结果 |
+| --- | --- | --- |
+| `cargo fmt --all`（每轮 Rust 修改后） | 0 | 仅本任务 Rust 文件变化 |
+| `cargo test --locked -p astersql-pd-election --lib watch_reset -- --nocapture`（确定性红灯） | 101 | 0 passed / 4 failed，压缩错误及新发布丢失 |
+| 同上（最终绿灯） | 0 | 4 passed / 0 failed / 0 ignored，3.51 秒 |
+| `cargo metadata --format-version 1 --no-deps > /tmp/pd-watch-reset-metadata.json` | 0 | workspace 结构无变更 |
+| `cargo fmt --all -- --check` | 0 | workspace 格式通过 |
+| `cargo check --workspace --locked` | 0 | workspace 检查通过 |
+| `cargo test --workspace --locked` | 0 | 629 passed / 0 failed / 1 既有 ignored |
+| `git diff --check`、`git diff --cached --check` | 0 | 已审查本任务实现、测试、注册及证据 |
+
+零测试 target 和既有 ignored 不计本任务有效用例。开始与最终核对 1101 个
+Go/模块文件路径及 SHA-256 完全一致，相关 Git 状态为空。文档相对链接有效。
+根 Cargo.toml、Cargo.lock、crate manifest、只读总计划和来源主题无本任务差异。
+其他任务已有状态修改和删除保留并排除提交；本任务不代表完整选主服务、
+指标或启动装配已完成。
