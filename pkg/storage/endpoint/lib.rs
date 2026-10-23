@@ -86,3 +86,6 @@ mod keyspace_meta;
 pub use keyspace_meta::{Keyspace, KeyspaceIdentity, KeyspaceMetaError};
 #[cfg(test)]
 mod keyspace_meta_test;
+
+#[cfg(test)]
+mod keyspace_scan_test;

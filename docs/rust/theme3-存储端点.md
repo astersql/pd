@@ -3457,3 +3457,75 @@ manifest 的 dependency 归属变化后先 check --workspace，确认 lock 无�
 模块注册、proto 依赖归属及本节证据。根 manifest、Cargo.lock、来源主题/plan.md 未改；
 用户原有计划修改及任务 19 删除保留，不混入本任务提交。全部 Cargo/fixture 子进程已结束，
 槽位缓存保留。状态：已完成；批次 39 的键空间元信息及名称索引事务故事完成。
+
+## 任务 21：键空间范围查询回归核验（批次 40，2026-10-23）
+
+### 准入、实现归属与 Go 依据
+
+已核验批次 39 提交 `63a8b2a60`、canonical `keyspace_meta.rs` 与任务 20 的
+3 个聚焦测试和 workspace 554 passed / 0 failed / 1 既有 ignored 证据。
+`StorageEndpoint::load_range_keyspace` 已由该提交实现；本任务没有新增生产行为，
+没有建立平行 keyspace_scan 生产模块。依据本轮补充执行指令，以既有实现核验及
+独立回归验收，新行为 TDD 红灯不适用。初轮探测曾因没有红灯记录阻塞，明确适用性后
+恢复执行；没有人为破坏正确实现或用编译/环境失败冒充行为红灯。
+
+已读执行技能、ADR-001、porting-guide、根 AGENTS.md 与 Copilot；无更深 AGENTS.md。
+plan.md 与来源主题保持只读。Go `pkg/storage/endpoint/keyspace.go` 相对规划基准
+`5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异。
+Go LoadRangeKeyspace 用 KeyspaceMetaPath(startID) 包含起点，metadata 前缀的排他
+上界与一次 txn.LoadRange，limit=0 不限量；按物理键序解码，空范围为空集合，空值为
+默认消息，坏 protobuf 原样返回错误，名称索引不在范围内。KeyspaceMetaPath 的
+`%08d` 为最小宽度，超过八位的 ID 仍按物理字节排序，不能改成数值排序；因此
+ID+1 续页并非整个 uint32 域上的通用物理游标。本轮只固定 Go 语义，不修改该设计。
+
+复用任务 20 已保存的只读 Go TestLoadRangeKeyspaces / TestEncodeSpaceID 实际通过
+证据，及 TestLoadKeyspaceByIDGRPC 在 etcd revision=35 捕获的真实 protobuf 字节。
+已有 keyspace_meta_memory / keyspace_meta_etcd 在本轮 workspace 验证中继续运行，
+保留双向 Go 字节比较、205 条零 limit、空范围、空值默认消息、坏 protobuf 等断言；
+本轮不重复相同 codec/异常测试。宽 ID 排序的新断言依据 Go 路径及范围源码，属于
+源码依据后的 Rust 回归，未宣称新增 Go 运行差分。整包 Go oracle 仍未运行，其中
+其他区域/时间戳用例需要 failpoint 注入，不能在只读约束下启用。
+
+### 新增覆盖与实际结果
+
+新增独立 `keyspace_scan_test.rs` 并在 lib.rs 显式注册，两个入口
+keyspace_scan_memory / keyspace_scan_etcd 共用真实后端 contract，直接复用既有
+生产 API。逆序保存 205 条连续记录加 u32::MAX，验证起点 0、起点 100/limit=2、
+204/limit=0、最大 ID 包含、缺失起点向后查找；每页 31 条分七个独立事务完整读取
+206 条，验证顺序及无遗漏/重复，保持每页低于 canonical 事务操作限制。
+名称索引、相邻 metadata 前缀和其他 cluster 填入坏 protobuf，范围读仍成功并隔离。
+增加 99_999_999 与 100_000_000 后验证物理顺序为
+100_000_000 → 4_294_967_295 → 99_999_999；从 u32::MAX 起点还会包含后者。
+
+真实 etcd contract 后 stop/stopped → start/restarted，同 WAL 重启并重新连接，
+最大 ID 起点范围读仍返回同一结果；随后 Drop fixture 等待服务退出，再范围读得到
+真实 Store 错误。没有模拟核心事务，没有 lease/到期场景或新增后台任务。
+先 `cargo fmt --all` 退出 0，再聚焦运行
+`cargo test --locked -p astersql-pd-storage-endpoint --lib keyspace_scan -- --nocapture`，
+退出 0，2 passed / 0 failed / 0 ignored，6.97s。
+
+### 共享槽位与最终基线
+
+两个阶段均从仓库根按 1–10 原子 mkdir 动态领取，实际槽位 **1**，
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 为 plan=storage-endpoint task=21 batch=40 session=keyspace-scan，shell PID
+11712（聚焦）、11882（基线）；初轮探测 PID=10664，2 passed、5.94s。
+`/tmp/pd-task21-cargo.sh` 以 EXIT/INT/TERM trap 清理自己的 owner/lock；
+同步 Cargo/fixture 子进程全部结束后释放，保留缓存。GOFLAGS=-mod=readonly；
+fixture 只读构建已有 main.go，proto 使用缓存，没有重新执行会解压 Go 的 build.rs。
+
+| 最终命令 | 退出码与有效结果 |
+| --- | --- |
+| `cargo fmt --all` | 0；仅本任务新增测试文件被格式化 |
+| `cargo test --locked -p astersql-pd-storage-endpoint --lib keyspace_scan -- --nocapture` | 0；2 passed / 0 failed / 0 ignored，6.97s |
+| `cargo metadata --format-version 1 --no-deps` | 0；canonical target 不变 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；仅既有 cpu_usage 弃用警告 |
+| `cargo test --workspace --locked` | 0；83 个 target 含 doc-tests，556 passed / 0 failed / 1 既有 ignored；endpoint 57 passed |
+| `git diff --check`、`git diff --cached --check` | 0 |
+
+开始/结束 1101 个 Go/模块文件 SHA-256 快照完全一致，无新增、删除或内容差异，
+Go Git 状态为空。未运行 failpoint、生成器、Go 格式化或依赖整理；manifest/lock、
+生产 Rust、总计划和来源主题无变化。已审查新增回归测试、显式模块注册与本节证据，
+保留用户已有无关计划修改及任务 19 删除，不混入提交。全部 Cargo/fixture 子进程已
+结束，自己的槽位锁已释放，缓存保留。状态：已完成；批次 40 范围查询核验完成。
