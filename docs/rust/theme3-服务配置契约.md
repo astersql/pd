@@ -548,3 +548,147 @@ rg -n '^(func |type |pub |    pub )' server/config/config.go server/config/servi
 审查仅新增本文，任务完成后删除编号文件；其他会话遗留的计划删除保持原样且不纳入提交。
 本任务完成不放宽T15外部准入，也不关闭来源主题。后续依赖可据本文与本次提交核验
 批次83完成，不能据此认定T2–T16实现已完成。
+
+
+## 批次 84：基础标量序列化入口
+
+真实 Go 输出取自仓库既有 `bin/pd-server`，SHA-256
+`b9baaf7b6160a6ea1e3e3dc72ae059f317b0066838b676680105daceed297bdc`。
+`go version -m bin/pd-server`：Go 构建、without_dashboard、darwin/amd64，
+`--version` 的 Git hash 为 None，故仅将此二进制作为带哈希的既有 oracle，
+不声称来自当前 HEAD。只读源码确认对应日志位于 server/server.go:268
+`CreateServer` 的 `zap.Reflect("config", cfg)`。临时 TOML 经 Config.Parse/Adjust
+后打印真实 JSON；这是调整后的标量编码证据，原始 presence 根据输入键取得，
+不把已调整的零值当作原始输入。临时地址采用 loopback 端口 0；取得日志后，3 秒超时触发 terminate，
+进程经取消启动清理并退出 1（不是配置检查失败）；
+子进程已等待结束并删除临时目录，不验证服务启动，不写 Go/模块，不启停 failpoint。
+缺失与显式零值的 Adjust 结果只作 oracle 差异说明，本任务不实现 Adjust。
+
+运行方式：Python tempfile.TemporaryDirectory 内写以下 input.toml，
+`subprocess.Popen([absolute_binary, "--config", absolute_input], cwd=tempdir,
+stdout=PIPE, stderr=STDOUT)`，communicate(timeout=3)，超时 terminate 并等待，
+再超时 kill 并等待；保留 message=PD config 的原始 JSON 行，无重编码。
+二进制配置检查入口只输出检查结果；进一步检查发现日志入口可取得编码证据，
+因此最初的证据缺口已解除。
+
+### Go oracle missing
+
+输入 TOML（临时绝对 data-dir 原样保留用于来源核验）：
+
+<!-- batch84-input-missing -->
+
+```toml
+name = "codec-oracle"
+data-dir = "/var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/pd-config84-lba0c113/data"
+client-urls = "http://127.0.0.1:0"
+peer-urls = "http://127.0.0.1:0"
+[log]
+format = "json"
+```
+
+原始 Go JSON 日志（退出 1）：
+
+<!-- batch84-missing -->
+
+```json
+{"level":"INFO","time":"2026/10/24 01:27:12.830 +08:00","caller":"server.go:268","message":"PD config","enable-keyspace-group":false,"config":{"client-urls":"http://127.0.0.1:0","peer-urls":"http://127.0.0.1:0","advertise-client-urls":"http://127.0.0.1:0","advertise-peer-urls":"http://127.0.0.1:0","name":"codec-oracle","data-dir":"/var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/pd-config84-lba0c113/data","force-new-cluster":false,"enable-grpc-gateway":true,"initial-cluster":"codec-oracle=http://127.0.0.1:0","initial-cluster-state":"new","initial-cluster-token":"pd-cluster","join":"","lease":5,"log":{"level":"info","format":"json","disable-timestamp":false,"file":{"filename":"","max-size":0,"max-days":0,"max-backups":0},"development":false,"disable-caller":false,"disable-stacktrace":false,"disable-error-verbose":true,"sampling":null,"error-output-path":""},"max-concurrent-tso-proxy-streamings":5000,"tso-proxy-recv-from-client-timeout":"1h0m0s","tso-save-interval":"5s","tso-update-physical-interval":"50ms","enable-local-tso":false,"metric":{"job":"codec-oracle","address":"","interval":"15s"},"schedule":{"max-snapshot-count":64,"max-pending-peer-count":64,"max-merge-region-size":54,"max-merge-region-keys":0,"split-merge-interval":"1h0m0s","switch-witness-interval":"1h0m0s","enable-one-way-merge":"false","enable-cross-table-merge":"true","patrol-region-interval":"10ms","max-store-down-time":"30m0s","max-store-preparing-time":"48h0m0s","leader-schedule-limit":4,"leader-schedule-policy":"count","region-schedule-limit":2048,"witness-schedule-limit":4,"replica-schedule-limit":64,"merge-schedule-limit":8,"hot-region-schedule-limit":4,"affinity-schedule-limit":0,"split-scatter-schedule-limit":4,"hot-region-cache-hits-threshold":3,"default-store-limit":{"add-peer":15,"remove-peer":15,"transfer-leader-in":100000000},"store-limit":{},"tolerant-size-ratio":0,"low-space-ratio":0.8,"high-space-ratio":0.7,"region-score-formula-version":"v2","scheduler-max-waiting-operator":5,"enable-remove-down-replica":"true","enable-replace-offline-replica":"true","enable-make-up-replica":"true","enable-remove-extra-replica":"true","enable-location-replacement":"true","enable-debug-metrics":"false","enable-joint-consensus":"true","enable-tikv-split-region":"true","enable-heartbeat-breakdown-metrics":"true","enable-heartbeat-concurrent-runner":"true","schedulers-v2":[{"type":"balance-region","args":null,"disable":false,"args-payload":""},{"type":"balance-leader","args":null,"disable":false,"args-payload":""},{"type":"hot-region","args":null,"disable":false,"args-payload":""},{"type":"evict-slow-store","args":null,"disable":false,"args-payload":""},{"type":"evict-stopping-store","args":null,"disable":false,"args-payload":""}],"hot-regions-write-interval":"10m0s","hot-regions-reserved-days":7,"max-movable-hot-peer-size":512,"enable-diagnostic":"true","enable-witness":"false","slow-store-evicting-affected-store-ratio-threshold":0.3,"store-limit-version":"v1","patrol-region-worker-count":1,"max-affinity-merge-region-size":256},"replication":{"max-replicas":3,"location-labels":"","strictly-match-label":"false","enable-placement-rules":"true","enable-placement-rules-cache":"false","isolation-level":""},"pd-server":{"use-region-storage":"true","max-gap-reset-ts":"24h0m0s","key-type":"table","runtime-services":"","metric-storage":"","dashboard-address":"auto","flow-round-by-digit":3,"min-resolved-ts-persistence-interval":"1s","server-memory-limit":0,"server-memory-limit-gc-trigger":0.7,"enable-gogc-tuner":"true","gc-tuner-threshold":0.6,"block-safe-point-v1":"false","gc-keyspace-index-load-concurrency":4,"gc-state-cache-warmup-concurrency":4},"cluster-version":"0.0.0","labels":{},"quota-backend-bytes":"8GiB","auto-compaction-mode":"periodic","auto-compaction-retention-v2":"1h","tick-interval":"500ms","election-interval":"3s","enable-prevote":true,"max-request-bytes":157286400,"security":{"cacert-path":"","cert-path":"","key-path":"","cert-allowed-cn":null,"SSLCABytes":null,"SSLCertBytes":null,"SSLKEYBytes":null,"redact-info-log":false,"encryption":{"data-encryption-method":"plaintext","data-key-rotation-period":"168h0m0s","master-key":{"type":"plaintext","key-id":"","region":"","endpoint":"","path":""}}},"label-property":null,"dashboard":{"tidb-cacert-path":"","tidb-cert-path":"","tidb-key-path":"","public-path-prefix":"","temp-dir":"","internal-proxy":false,"enable-telemetry":false,"enable-experimental":false,"disable-custom-prom-addr":false},"replication-mode":{"replication-mode":"majority","dr-auto-sync":{"label-key":"","primary":"","dr":"","primary-replicas":0,"dr-replicas":0,"wait-store-timeout":"1m0s","wait-recover-timeout":"0s","pause-region-split":"false"}},"keyspace":{"pre-alloc":null,"wait-region-split":true,"wait-region-split-timeout":"30s","check-region-split-interval":"50ms","meta-service-groups":null},"micro-service":{"enable-scheduling-fallback":"true","enable-tso-dynamic-switching":"false","enable-resource-manager-fallback":"true"},"controller":{"degraded-mode-wait-duration":"0s","ltb-max-wait-duration":"30s","ltb-token-rpc-max-delay":"1s","request-unit":{"read-base-cost":0.125,"read-per-batch-base-cost":0.5,"read-cost-per-byte":0.0000152587890625,"write-base-cost":1,"write-per-batch-base-cost":1,"write-cost-per-byte":0.0009765625,"read-cpu-ms-cost":0.3333333333333333},"enable-controller-trace-log":"false","push-metrics-address":"","push-metrics-interval":"0s"},"metering":{}}}
+```
+
+### Go oracle explicit-zero
+
+输入 TOML（临时绝对 data-dir 原样保留用于来源核验）：
+
+<!-- batch84-input-explicit-zero -->
+
+```toml
+name = "codec-oracle"
+data-dir = "/var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/pd-config84-koo493hj/data"
+client-urls = "http://127.0.0.1:0"
+peer-urls = "http://127.0.0.1:0"
+EnableGRPCGateway = false
+enable-prevote = false
+max-request-bytes = 0
+quota-backend-bytes = "0B"
+auto-compaction-retention = "2h"
+max-concurrent-tso-proxy-streamings = -1
+lease = -1
+[log]
+format = "json"
+```
+
+原始 Go JSON 日志（退出 1）：
+
+<!-- batch84-explicit-zero -->
+
+```json
+{"level":"INFO","time":"2026/10/24 01:27:15.716 +08:00","caller":"server.go:268","message":"PD config","enable-keyspace-group":false,"config":{"client-urls":"http://127.0.0.1:0","peer-urls":"http://127.0.0.1:0","advertise-client-urls":"http://127.0.0.1:0","advertise-peer-urls":"http://127.0.0.1:0","name":"codec-oracle","data-dir":"/var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/pd-config84-koo493hj/data","force-new-cluster":false,"enable-grpc-gateway":true,"initial-cluster":"codec-oracle=http://127.0.0.1:0","initial-cluster-state":"new","initial-cluster-token":"pd-cluster","join":"","lease":-1,"log":{"level":"info","format":"json","disable-timestamp":false,"file":{"filename":"","max-size":0,"max-days":0,"max-backups":0},"development":false,"disable-caller":false,"disable-stacktrace":false,"disable-error-verbose":true,"sampling":null,"error-output-path":""},"max-concurrent-tso-proxy-streamings":-1,"tso-proxy-recv-from-client-timeout":"1h0m0s","tso-save-interval":"5s","tso-update-physical-interval":"50ms","enable-local-tso":false,"metric":{"job":"codec-oracle","address":"","interval":"15s"},"schedule":{"max-snapshot-count":64,"max-pending-peer-count":64,"max-merge-region-size":54,"max-merge-region-keys":0,"split-merge-interval":"1h0m0s","switch-witness-interval":"1h0m0s","enable-one-way-merge":"false","enable-cross-table-merge":"true","patrol-region-interval":"10ms","max-store-down-time":"30m0s","max-store-preparing-time":"48h0m0s","leader-schedule-limit":4,"leader-schedule-policy":"count","region-schedule-limit":2048,"witness-schedule-limit":4,"replica-schedule-limit":64,"merge-schedule-limit":8,"hot-region-schedule-limit":4,"affinity-schedule-limit":0,"split-scatter-schedule-limit":4,"hot-region-cache-hits-threshold":3,"default-store-limit":{"add-peer":15,"remove-peer":15,"transfer-leader-in":100000000},"store-limit":{},"tolerant-size-ratio":0,"low-space-ratio":0.8,"high-space-ratio":0.7,"region-score-formula-version":"v2","scheduler-max-waiting-operator":5,"enable-remove-down-replica":"true","enable-replace-offline-replica":"true","enable-make-up-replica":"true","enable-remove-extra-replica":"true","enable-location-replacement":"true","enable-debug-metrics":"false","enable-joint-consensus":"true","enable-tikv-split-region":"true","enable-heartbeat-breakdown-metrics":"true","enable-heartbeat-concurrent-runner":"true","schedulers-v2":[{"type":"balance-region","args":null,"disable":false,"args-payload":""},{"type":"balance-leader","args":null,"disable":false,"args-payload":""},{"type":"hot-region","args":null,"disable":false,"args-payload":""},{"type":"evict-slow-store","args":null,"disable":false,"args-payload":""},{"type":"evict-stopping-store","args":null,"disable":false,"args-payload":""}],"hot-regions-write-interval":"10m0s","hot-regions-reserved-days":7,"max-movable-hot-peer-size":512,"enable-diagnostic":"true","enable-witness":"false","slow-store-evicting-affected-store-ratio-threshold":0.3,"store-limit-version":"v1","patrol-region-worker-count":1,"max-affinity-merge-region-size":256},"replication":{"max-replicas":3,"location-labels":"","strictly-match-label":"false","enable-placement-rules":"true","enable-placement-rules-cache":"false","isolation-level":""},"pd-server":{"use-region-storage":"true","max-gap-reset-ts":"24h0m0s","key-type":"table","runtime-services":"","metric-storage":"","dashboard-address":"auto","flow-round-by-digit":3,"min-resolved-ts-persistence-interval":"1s","server-memory-limit":0,"server-memory-limit-gc-trigger":0.7,"enable-gogc-tuner":"true","gc-tuner-threshold":0.6,"block-safe-point-v1":"false","gc-keyspace-index-load-concurrency":4,"gc-state-cache-warmup-concurrency":4},"cluster-version":"0.0.0","labels":{},"quota-backend-bytes":"0B","auto-compaction-mode":"periodic","auto-compaction-retention-v2":"2h","tick-interval":"500ms","election-interval":"3s","enable-prevote":false,"max-request-bytes":0,"security":{"cacert-path":"","cert-path":"","key-path":"","cert-allowed-cn":null,"SSLCABytes":null,"SSLCertBytes":null,"SSLKEYBytes":null,"redact-info-log":false,"encryption":{"data-encryption-method":"plaintext","data-key-rotation-period":"168h0m0s","master-key":{"type":"plaintext","key-id":"","region":"","endpoint":"","path":""}}},"label-property":null,"dashboard":{"tidb-cacert-path":"","tidb-cert-path":"","tidb-key-path":"","public-path-prefix":"","temp-dir":"","internal-proxy":false,"enable-telemetry":false,"enable-experimental":false,"disable-custom-prom-addr":false},"replication-mode":{"replication-mode":"majority","dr-auto-sync":{"label-key":"","primary":"","dr":"","primary-replicas":0,"dr-replicas":0,"wait-store-timeout":"1m0s","wait-recover-timeout":"0s","pause-region-split":"false"}},"keyspace":{"pre-alloc":null,"wait-region-split":true,"wait-region-split-timeout":"30s","check-region-split-interval":"50ms","meta-service-groups":null},"micro-service":{"enable-scheduling-fallback":"true","enable-tso-dynamic-switching":"false","enable-resource-manager-fallback":"true"},"controller":{"degraded-mode-wait-duration":"0s","ltb-max-wait-duration":"30s","ltb-token-rpc-max-delay":"1s","request-unit":{"read-base-cost":0.125,"read-per-batch-base-cost":0.5,"read-cost-per-byte":0.0000152587890625,"write-base-cost":1,"write-per-batch-base-cost":1,"write-cost-per-byte":0.0009765625,"read-cpu-ms-cost":0.3333333333333333},"enable-controller-trace-log":"false","push-metrics-address":"","push-metrics-interval":"0s"},"metering":{}}}
+```
+
+### 实现与证据边界
+
+canonical crate `astersql-pd-server-config`（server/config/Cargo.toml、lib.rs）新增
+`ConfigScalars`、`DecodedScalars`、`decode_json_scalars`、`decode_toml_scalars`，
+22 个基础字段：四类 URL、name/data-dir、force-new-cluster/enable-grpc-gateway、
+initial-cluster/state/token、join、lease、log-file/log-level、TSO proxy 并发、
+enable-local-tso、quota-backend-bytes、auto-compaction-mode/retention、prevote、
+max-request-bytes。复用 ByteSize 和 ConfigMetaData；默认是解码前 Go 零值，
+不调用 Adjust、不预填默认值。原始键的存在性独立于 false/0/空串，普通标量 null 保持零值；
+ByteSize 自定义解码依据 size.go::UnmarshalJSON 拒绝 null，
+TOML 的 EnableGRPCGateway/ForceNewCluster 无显式 tag，retention 的 TOML 与
+JSON `-v2` 分别映射；JSON 使用原公开 tag，废弃空字符串保持 omitempty。
+JSON 接受对象，类型错误返回 serde_json::Error；TOML 语法/类型错误返回
+ toml::de::Error，不承诺错误文本逐字等同 Go。新增入口明确是标量投影，
+未知及尚未实现的嵌套字段报告 undecoded，不储存透传 JSON、不提供完整 Config
+校验；Duration、maps、外部嵌套装配及 TOML 输出编码仍不在本任务实现范围。
+
+注意 Go 的真实细节：Config 中 EnableGRPCGateway 无 TOML tag，而 Adjust
+在 config.go:462 检查 `enable-grpc-gateway`。因此第二组原始输入
+`EnableGRPCGateway=false` 的解码值为 false，但已调整日志为 true；测试
+分别断言这两个阶段，未把它误解为解码器应填 true。其他已显式给出的
+prevote/max-request-bytes/quota/retention/lease/proxy 并发直接与 Go 日志比对。
+Go JSON fixture 字节测试按字段从原始日志截取 token，比较 Rust 序列化字节，
+不是将 Rust 结果复制为预期，也不将字段顺序差异当成完整 JSON 文本一致。
+
+TOML 依赖在 workspace 集中精确锁定 `=0.9.8`，默认 features；官方
+[crate 文档](https://docs.rs/toml/0.9.8/toml/)确认 serde 1.0 兼容，
+[官方 manifest](https://docs.rs/crate/toml/0.9.8/source/Cargo.toml)声明
+rust-version=1.76，可被现有 Rust 1.99 工具链消费。锁文件仅增加本 crate、
+toml 与所需 serde_spanned/toml_datetime/toml_parser/toml_writer/winnow，
+未升级已有 package 的版本。
+
+### 本轮验证
+
+所有 Cargo 阶段通过原子 mkdir 动态领取槽位 **1**，
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`，
+每阶段 owner 文件记录计划/任务/会话/PID，阶段末 EXIT trap 删除 owner 并 rmdir；
+缓存保留。命令从仓库根执行，没有 --target-dir 覆盖。workspace 测试继承
+`GOFLAGS=-mod=readonly`；已审查既有 etcd_fixture_test.rs 的 Go build 和
+scripts/rust-etcd-fixture/main.go：只构建已有 Go 工具，产物写在所持槽位、
+fixture 数据写独立目录，无 generator/failpoint 注入或源码写入。
+
+| 检查（确切命令） | 退出码与有效证据 |
+| --- | --- |
+| `cargo fmt --all` | 0，仅本任务 Rust 文件格式化 |
+| `cargo check --workspace` | 0，同步新增依赖的 Cargo.lock 后审查，无既有依赖版本变化 |
+| 首次辅助编译 `cargo test --locked -p astersql-pd-server-config --lib config_decode -- --nocapture` | 101，修正测试误用 Option::unwrap_err；不计行为红灯 |
+| 行为红灯：`cargo test --locked -p astersql-pd-server-config --lib config_decode -- --nocapture` | 101，0 passed / 4 failed；真实断言分别命中 presence、TOML tag、JSON 非对象校验、Go 字节场景的 presence |
+| 绿灯：相同聚焦命令 | 0，原四项全绿；补充 Go TOML 输入对照后最终 5 passed / 0 failed / 0 ignored |
+| `go test -mod=readonly ./server/config -count=1` | 0，包通过，1.122s；只读审查所有该包测试未调用 failpoint，TestMain 仅包装测试与 goleak/etcd 连接清理，安全复用已有测试，未新增 Go oracle |
+| `cargo metadata --format-version 1 --no-deps` | 0，新 canonical crate 在 workspace 中，无额外 features |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；既有 core_region_adapter.rs:134 的 deprecated cpu_usage 警告保留 |
+| `cargo test --workspace --locked` | 0，675 passed / 0 failed / 1 既有 ignored；包括真实 etcd 场景，所有子进程结束后释放槽位 |
+| `git diff --check` | 0 |
+
+本任务五个独立测试在 config_decode_test.rs，lib.rs 显式注册；新增入口均被
+聚焦过滤命中。开始/结束 1101 个 Go/模块文件的路径集合与 SHA-256 相同，
+Go/模块 Git 状态为空，plan.md 指纹不变；无 Go 文件或模块差异。任务 2
+范围完成，后续默认值/URL 校验/完整嵌套装配仍需各自验收，不关闭来源主题。
+
+最终源码审查补充 ByteSize 的自定义 null 分支：已有 size.go::UnmarshalJSON
+调用 strconv.Unquote，因此 quota-backend-bytes:null 必须报错，不能像普通
+标量一样忽略。原五项中的类型错误测试补充此断言，聚焦命令实际红灯
+4 passed / 1 failed（退出101），修正后以同一断言运行全部最终基线。
+最终重跑结果：聚焦命令 5 passed / 0 failed / 0 ignored，metadata、fmt check、
+workspace check 均退出 0，workspace test 退出 0（675 passed / 0 failed /
+1 既有 ignored）；槽位 1 锁已释放，缓存保留。Go/模块及只读计划指纹再次一致。
