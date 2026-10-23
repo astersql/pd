@@ -1,8 +1,11 @@
 // Copyright 2026 AsterSQL.
 use super::*;
 
-// Captured from: go run ./scripts/rust-theme3-oracle cluster_paths
+// Historical capture: go run ./scripts/rust-theme3-oracle cluster_paths.
+// Tool source and this unchanged fixture are preserved in commit 6c1de2263.
+// The tool was later removed to restore the Go-read-only baseline.
 // Go keypath sources at cf27d6730; no normalization of key bytes.
+// These tests consume the frozen capture and do not execute a Go oracle.
 const GO_ORACLE: &str = r#"ORACLE	cluster_id	/pd/cluster_id
 ORACLE	0	cluster	/pd/0/raft
 ORACLE	0	bootstrap	/pd/0/raft/status/raft_bootstrap_time
