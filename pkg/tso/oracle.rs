@@ -1,6 +1,6 @@
 // Copyright 2026 AsterSQL.
 use astersql_pd_member::{Leadership, MemberError};
-use astersql_pd_storage::{Compare, Consistency, MetaStore, Mutation, Read, StoreError};
+use astersql_pd_storage_kv::{Compare, Consistency, MetaStore, Mutation, Read, StoreError};
 use std::{
     sync::Arc,
     time::{SystemTime, UNIX_EPOCH},

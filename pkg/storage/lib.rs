@@ -1,12 +1,6 @@
 // Copyright 2026 AsterSQL.
-//! Backend-neutral PD metadata semantics. Etcd is a transitional adapter.
+//! Compatibility facade for the canonical metadata implementation in storage-kv.
+pub use astersql_pd_storage_kv::*;
 #[cfg(test)]
-extern crate self as astersql_pd_storage;
-mod etcd_store;
-mod memory_store;
-mod meta_store;
-pub use etcd_store::EtcdMetaStore;
-pub use memory_store::MemoryStore;
-pub use meta_store::*;
-#[cfg(test)]
+#[path = "kv/meta_store_test.rs"]
 mod meta_store_test;

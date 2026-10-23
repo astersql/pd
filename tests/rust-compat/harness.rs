@@ -10,7 +10,7 @@ use std::{
     time::{Duration, Instant},
 };
 #[allow(dead_code)]
-#[path = "../../pkg/storage/etcd_fixture_test.rs"]
+#[path = "../../pkg/storage/kv/etcd_fixture_test.rs"]
 mod fixture;
 static NEXT: AtomicU64 = AtomicU64::new(0);
 pub struct Server {

@@ -9,13 +9,12 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
-async-trait.workspace = true
-thiserror.workspace = true
-etcd-client.workspace = true
+astersql-pd-storage-kv.workspace = true
+
+[dev-dependencies]
 tokio.workspace = true
 tokio-util.workspace = true
-tonic.workspace = true
 
 [[test]]
 name = "etcd_contract"
-path = "etcd_store_test.rs"
+path = "kv/etcd_store_test.rs"

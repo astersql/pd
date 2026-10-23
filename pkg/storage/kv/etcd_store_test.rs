@@ -1,5 +1,5 @@
 // Copyright 2026 AsterSQL.
-use astersql_pd_storage::*;
+use astersql_pd_storage_kv::*;
 use std::time::Duration;
 use tokio_util::sync::CancellationToken;
 #[path = "contract_test.rs"]

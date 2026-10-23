@@ -1,7 +1,7 @@
 // Copyright 2026 AsterSQL.
 use astersql_pd_id::*;
 use astersql_pd_member::*;
-use astersql_pd_storage::*;
+use astersql_pd_storage_kv::*;
 use std::{collections::BTreeSet, sync::Arc};
 use tokio_util::sync::CancellationToken;
 

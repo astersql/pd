@@ -4,7 +4,7 @@ use astersql_pd_proto::pdpb::{self, pd_client::PdClient};
 use std::{sync::Arc, time::Duration};
 use tokio_util::sync::CancellationToken;
 #[allow(dead_code)]
-#[path = "../storage/etcd_fixture_test.rs"]
+#[path = "../storage/kv/etcd_fixture_test.rs"]
 mod fixture;
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]

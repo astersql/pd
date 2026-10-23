@@ -1,6 +1,6 @@
 // Copyright 2026 AsterSQL.
 //! Shared observable contract, run against both backends without network mocks.
-use astersql_pd_storage::*;
+use astersql_pd_storage_kv::*;
 use std::time::Duration;
 use tokio_util::sync::CancellationToken;
 

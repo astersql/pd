@@ -1,5 +1,5 @@
 // Copyright 2026 AsterSQL.
-#[path = "../storage/etcd_fixture_test.rs"]
+#[path = "../storage/kv/etcd_fixture_test.rs"]
 mod fixture;
 #[path = "member_test.rs"]
 mod scenario;

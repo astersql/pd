@@ -1,5 +1,5 @@
 // Copyright 2026 AsterSQL.
-use astersql_pd_storage::EtcdMetaStore;
+use astersql_pd_storage_kv::EtcdMetaStore;
 use std::{
     io::Write,
     path::PathBuf,
@@ -19,7 +19,11 @@ impl Fixture {
     pub fn start() -> Self {
         static BINARY: OnceLock<PathBuf> = OnceLock::new();
         static NEXT: AtomicUsize = AtomicUsize::new(0);
-        let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..");
+        let manifest = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        let root = manifest
+            .ancestors()
+            .find(|root| root.join("scripts/rust-etcd-fixture").is_dir())
+            .expect("repository fixture source");
         let target = PathBuf::from(
             std::env::var_os("CARGO_TARGET_DIR")
                 .expect("claim Cargo shared slot and set absolute CARGO_TARGET_DIR first"),

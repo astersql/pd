@@ -1,5 +1,5 @@
 // Copyright 2026 AsterSQL.
-#[path = "../storage/etcd_fixture_test.rs"]
+#[path = "../storage/kv/etcd_fixture_test.rs"]
 mod fixture;
 #[path = "oracle_test.rs"]
 mod oracle_test;
@@ -25,7 +25,7 @@ async fn real_etcd_boundaries() {
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn real_etcd_wal_restart_and_outage() {
     use astersql_pd_member::Member;
-    use astersql_pd_storage::*;
+    use astersql_pd_storage_kv::*;
     use astersql_pd_tso::*;
     use std::sync::{Arc, atomic::AtomicU64};
     use tokio_util::sync::CancellationToken;
@@ -87,7 +87,7 @@ async fn real_etcd_wal_restart_and_outage() {
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn real_etcd_natural_lease_expiry() {
     use astersql_pd_member::{Member, MemberError};
-    use astersql_pd_storage::MetaStore;
+    use astersql_pd_storage_kv::MetaStore;
     use astersql_pd_tso::*;
     use std::sync::{Arc, atomic::AtomicU64};
     use tokio_util::sync::CancellationToken;
@@ -135,7 +135,7 @@ async fn real_etcd_natural_lease_expiry() {
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn real_etcd_oracle_process_restart() {
     use astersql_pd_member::Member;
-    use astersql_pd_storage::*;
+    use astersql_pd_storage_kv::*;
     use astersql_pd_tso::*;
     use std::{
         io::Write,

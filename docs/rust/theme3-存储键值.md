@@ -275,3 +275,100 @@ rg -n '^(func |type |pub |    pub )' pkg/storage/kv/kv.go pkg/storage/kv/etcd_kv
 与代码没有本任务差异，无关元数据观测编号文件的既有改动不纳入提交。
 本任务明确禁止 Go/Cargo 测试，故有效运行测试数不适用、未领取 Cargo 槽位；
 未运行测试是文档任务边界，不是待回归实现，也不据此宣称缺口已补齐。
+
+## 任务 2：唯一 MetaStore 下沉（批次 9）
+
+日期：2026-10-23（Asia/Shanghai）。状态：已完成。准入：批次 8 的提交 `1e37a3529`
+及本文任务 1 的实际产物已核验；前序编号文件删除不单独视为完成证据。
+本轮从 `1e37a3529` 开始，四个 Go KV 来源相对规划基准仍无差异。
+只读本计划 plan.md 与来源主题，未修改其内容。
+
+### 归属、类型与行为
+
+唯一 canonical crate 改为 `astersql-pd-storage-kv`，无额外 feature。
+`meta_store.rs`、`memory_store.rs`、`etcd_store.rs` 从 storage 移到 kv，
+与迁移前 `git show HEAD:pkg/storage/<文件>` 的字节完全相同。
+kv/lib.rs 注册这三个模块并导出原 API；storage/lib.rs 使用
+`pub use astersql_pd_storage_kv::*`，没有 wrapper、平行 trait 或第二套实现。
+因此 Revision、LeaseId、Result、StoreError、Consistency、Read、Entry、Snapshot、
+Compare、Mutation、Commit、Lease、Event、WatchBatch、MetaWatch、MetaStore、
+MemoryStore、EtcdMetaStore 均仍是同一份定义，公开字段、方法与错误变体未变。
+原有 crate 内 validate_txn 路径无需改写，模块整体移动后仍有效。
+
+member/ID/TSO 的生产与测试直接消费 kv；runtime 等原 storage 消费方继续通过重导出，
+其真实装配把 storage::MetaStore 对象交给消费 kv::MetaStore 的 member/ID/TSO，
+由编译和现有行为测试共同核对类型身份。当前尚无 endpoint Rust crate，本任务没有
+提前创建它；本步依赖为 storage → kv，后续 endpoint 实现时形成 storage → endpoint → kv。
+kv 不依赖 storage。未增加事务 API、引擎、协议暴露或业务算法。
+
+四个测试/fixture 文件一并移到 kv，契约断言仍只有一份：
+`contract_test.rs` 的九个函数由两个 crate 的内存测试和 etcd_contract target 复用；
+storage 保留原 meta_store_test 模块和 etcd_contract target 的名称及测试名称，
+只调整显式 path。新 kv crate 使用相同注册，未新增虚构的行为缺陷或空测试。
+本任务采用计划允许的 refactor 既有入口，无需人为改名 metastore_move_*。
+共享 fixture 的类型 import 改为 kv，按消费者 manifest 的祖先定位原 fixture 源目录；
+member/ID/TSO/runtime/server/命令行/兼容 harness 的 path 与依赖同步调整。
+未改 Go fixture、随机 loopback 端口、独立目录、同 WAL 重启和 Drop 清理生命周期。
+兼容 harness 是库的公开模块，因此其 kv 依赖为普通依赖，其余新增 fixture 依赖为 dev 依赖。
+Cargo.lock 只新增本地 kv 包并调整上述依赖边，没有第三方版本变化。
+
+### Go 依据与本轮运行
+
+读取 `kv_test.go::TestEtcd/TestMemKV/testReadWrite/testRange/testSaveMultiple`：
+缺失/删除 Load 为空，Save 后可读原值，重复删除成功；范围按字节排序，正 limit 截断；
+etcd 特殊 NUL 上界与内存差异保持原样。TestEtcd 还验证 stale read/revision 冲突、
+附加条件、RawTxn 比较及响应和预取消 Load。错误契约与尚未补齐能力仍由任务 1 表格负责；
+本任务不把 Go Base 与现有 Rust MetaStore 声称为逐项等价。
+
+实际运行 `make gotest GOTEST_ARGS='./pkg/storage/kv -run TestEtcd\|TestMemKV -count=1 -v'`，
+退出 0，TestEtcd/TestMemKV 两个顶层测试通过；之后 `make failpoint-disable` 退出 0。
+首次筛选用了尾部 `$`，被 make 展开导致 shell 引号不完整，退出 2，测试未执行；
+关闭 failpoint 后修正筛选并成功重跑。最终无 Go 文件差异、无生成 failpoint binding 文件。
+本任务不改变编码，未创建字节 oracle，也不声称完成跨语言字节差分。
+
+### Cargo 验证与共享槽位
+
+迁移前阶段、首次格式检查、依赖修复检查及最终完整阶段均依次原子 mkdir 领取实际槽位 1，
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+锁目录为 target/rust-slot-locks/slot-1.lock，owner 记录计划、任务、会话和持有 Python PID；
+所有 Cargo/fixture 继承上述绝对路径。每阶段等待子进程结束后删除自己的 owner 并 rmdir，
+保留缓存；未清理其他锁或缓存。最终阶段的中断处理先终止并等待子进程组，再释放锁。
+
+确切命令与结果：
+
+| 命令 | 退出码 | 有效测试数/结果 |
+| --- | --- | --- |
+| `cargo test --locked -p astersql-pd-storage -p astersql-pd-member -p astersql-pd-id -p astersql-pd-tso -- --nocapture`（迁移前） | 0 | 45 passed / 0 failed / 0 ignored |
+| `cargo fmt --all`（最终修复后） | 0 | 格式化完成，无无关 Rust 格式变更 |
+| `cargo check --workspace`（同步锁文件，最终修复后） | 0 | 已审查仅本任务依赖变化 |
+| `cargo test --locked -p astersql-pd-storage -p astersql-pd-member -p astersql-pd-id -p astersql-pd-tso -- --nocapture`（迁移后） | 0 | 45 passed / 0 failed / 0 ignored，名称及重复次数与迁移前一致 |
+| `cargo test --locked -p astersql-pd-storage-kv -- --nocapture` | 0 | 19 passed / 0 failed / 0 ignored |
+| `cargo metadata --format-version 1 --no-deps` | 0 | workspace 注册正确 |
+| `cargo fmt --all -- --check` | 0 | 通过 |
+| `cargo check --workspace --locked` | 0 | 通过 |
+| `cargo test --workspace --locked` | 0 | 478 passed / 0 failed / 1 既有 ignored |
+| `git diff --check` | 0 | 通过 |
+| `git diff --cached --check` | 0 | 暂存后通过 |
+
+聚焦测试构成：ID 2+5、member 2+5、storage 9+10、TSO 3+9，共 45。
+新 kv 复用 9 memory + 9 etcd + 1 fault；零测试 doc-test 不计入有效测试数。
+首次格式化发现四个额外 fixture 消费者仍引用旧路径（退出 1）；补齐其 path 后，
+首次 workspace check 发现兼容 harness 的普通库模块缺少 kv 普通依赖（退出 101）；
+调整依赖类别后全部聚焦检查通过。这些是本任务迁移路径遗漏，均已在范围内修复。
+
+workspace 中唯一既有 ignored 为兼容套件的 `tso_processes`，其要求独立 Go/Rust
+进程二进制与 scripts/run-pd-compat.sh；未将该测试计入 478 个通过场景。
+本任务所需双后端契约、消费者、WAL 重启与故障入口均实际执行，无新增 ignore。
+
+故障测试时序：写入 revision 2，lease 写入 revision 3 并由 watch 观察后停 etcd；
+watch/read 返回 Unavailable，取消 down-endpoint watch 返回 Cancelled；等待 3 秒，
+同 WAL 重启并写入 revision 4，原 watch 从 revision 3 后续读观察到新提交；
+最终等待 lease TTL 返回 LeaseNotFound、绑定键消失且 keep_alive 返回 LeaseNotFound。
+迁移前、迁移后及新 kv 三次均打印 resumed after 3 / persisted commit 4 / lease expired；
+故障中的 lease ID 为随机值，不按字面比对。自然到期、续租、撤销及 fencing 的共享断言
+也在两后端实际通过。
+
+最终检查：生产三文件逐字节一致；迁移前后 45 个测试名称的多重集合一致（不要求
+异步完成顺序一致）；共享断言/fixture 各一份；所有文件差异已审查，plan.md、来源主题、
+Go 与无关观测任务文件不纳入提交。全部子进程结束，slot-1.lock 已释放，缓存保留。
+任务编号文件按完成流程删除，证据保留于本文及本任务实现提交。

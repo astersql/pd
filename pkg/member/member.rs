@@ -1,5 +1,5 @@
 // Copyright 2026 AsterSQL.
-use astersql_pd_storage::*;
+use astersql_pd_storage_kv::*;
 use std::{future::Future, sync::Arc};
 use tokio_util::sync::CancellationToken;
 
@@ -22,7 +22,7 @@ pub type Result<T> = std::result::Result<T, MemberError>;
 
 async fn cancellable<T>(
     cancel: &CancellationToken,
-    f: impl Future<Output = astersql_pd_storage::Result<T>>,
+    f: impl Future<Output = astersql_pd_storage_kv::Result<T>>,
 ) -> Result<T> {
     tokio::select! { biased; _ = cancel.cancelled() => Err(MemberError::Cancelled), result = f => Ok(result?) }
 }

@@ -1,5 +1,5 @@
 // Copyright 2026 AsterSQL.
-#[path = "../storage/etcd_fixture_test.rs"]
+#[path = "../storage/kv/etcd_fixture_test.rs"]
 mod fixture;
 #[path = "allocator_test.rs"]
 mod scenario;
@@ -18,7 +18,7 @@ async fn real_etcd_boundaries() {
 async fn real_etcd_wal_restart() {
     use astersql_pd_id::Allocator;
     use astersql_pd_member::Member;
-    use astersql_pd_storage::*;
+    use astersql_pd_storage_kv::*;
     use std::sync::Arc;
     use tokio_util::sync::CancellationToken;
     let mut fixture = fixture::Fixture::start();

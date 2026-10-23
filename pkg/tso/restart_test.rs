@@ -1,7 +1,7 @@
 // Copyright 2026 AsterSQL.
 use crate::oracle_test::{ManualClock, boundary};
 use astersql_pd_member::Member;
-use astersql_pd_storage::*;
+use astersql_pd_storage_kv::*;
 use astersql_pd_tso::*;
 use std::sync::{Arc, atomic::AtomicU64};
 use tokio_util::sync::CancellationToken;

@@ -22,6 +22,7 @@ prost.workspace = true
 astersql-pd-proto.workspace = true
 axum.workspace = true
 [dev-dependencies]
+astersql-pd-storage-kv.workspace = true
 serde_json.workspace = true
 tonic.workspace = true
 tokio-stream.workspace = true
