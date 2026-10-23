@@ -28,7 +28,7 @@ pub async fn behavior(store: Arc<dyn MetaStore>) {
         Member::bootstrap(store.clone(), cancel.clone(), 42, 7, b"changed".to_vec()).await,
         Err(MemberError::IdentityConflict)
     ));
-    let leader = member.campaign(5).await.unwrap();
+    let leader: astersql_pd_election::Leadership = member.campaign(5).await.unwrap();
     assert!(matches!(
         again.campaign(5).await,
         Err(MemberError::Contended)

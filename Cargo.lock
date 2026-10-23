@@ -107,6 +107,16 @@ name = "astersql-pd-core-constant"
 version = "0.1.0"
 
 [[package]]
+name = "astersql-pd-election"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-storage-kv",
+ "thiserror 2.0.21",
+ "tokio",
+ "tokio-util",
+]
+
+[[package]]
 name = "astersql-pd-errs"
 version = "0.1.0"
 
@@ -159,8 +169,8 @@ version = "0.1.0"
 name = "astersql-pd-member"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-election",
  "astersql-pd-storage-kv",
- "thiserror 2.0.21",
  "tokio",
  "tokio-util",
 ]

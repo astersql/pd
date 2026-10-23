@@ -188,3 +188,81 @@ watch_reset.rs,watch_reset_test.rs}` 仅为编号任务产物，不是已存在�
 没有代码/测试/配置/模块变化。开始与结束 1101 个 Go/模块文件路径和 SHA-256 完全一致，
 相关 Git 状态为空。未修改只读 plan.md 或来源主题；保留工作区既有的其他任务状态修改
 及前序任务删除，并从本次提交排除。
+
+## 任务 2：提取唯一领导任期（批次 60）
+
+日期：2026-10-23（Asia/Shanghai）。前置批次 59 由提交 `197ab0e4d` 和上节
+源码/依赖/测试清单核验；Go leadership/lease 自规划基准
+`5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无变化。本任务为归属重构，
+按任务约定不编造失败行为作为 TDD 红灯。
+
+### 唯一实现、API 与行为
+
+- [election crate](../../pkg/election/Cargo.toml) 生产依赖仅为 canonical
+  storage-kv、thiserror、tokio、tokio-util，无 member、storage facade 或协议依赖，
+  没有额外 feature。[leadership.rs](../../pkg/election/leadership.rs) 为唯一
+  `Leadership` 定义，保留原 store/cancel/cluster_id/key/value/lease/revision 字段。
+- 原 `Member::campaign(ttl_seconds)` 仍返回同一 `Leadership`；其事务实现移到
+  `Leadership::campaign(store, cancel, cluster_id, value, ttl_seconds)`，路径仍为
+  `/pd/{cluster_id}/leader`，grant、CreateRevision=0、冲突/错误撤销自身 lease 的
+  顺序不变。Member 身份 bootstrap 仍留在 [member.rs](../../pkg/member/member.rs)。
+- `lease_id/revision/cluster_id/uses_store/validate/transact/renew/resign` 签名和
+  行为不变；将错误名归一后，原 `lease_id` 起的全部方法与旧实现逐字一致。
+  [member 导出](../../pkg/member/lib.rs) 保留 `Leadership`、`MemberError`、`Result`；
+  基础错误唯一归属 election 的 `ElectionError`，member 将其别名导出为
+  `MemberError`，保留全部 variant、StoreError 转换和错误文本。保留 IdentityConflict
+  variant 以维持旧 member API，election 不依赖身份注册实现。
+- [原 member 场景](../../pkg/member/member_test.rs) 增加 canonical 类型赋值，
+  编译确认 member 返回值与 election 类型相同。原 member、ID、TSO 场景均保留，
+  没有需要移动的私有字段测试。Cargo.lock 仅增加本地 election 包，并将 member
+  的 thiserror 直接依赖换为 election；没有新增外部依赖版本。
+
+[独立 election 测试](../../pkg/election/leadership_test.rs) 显式注册到 lib，
+`leadership_move_memory` 与 `leadership_move_etcd` 调用同一真实行为断言：
+单赢家、key/value/lease/mod_revision 快照、store 身份、续租、成功的受保护写入、
+调用方 compare 冲突、自身 leader key 写/删拒绝、同值同 lease 的 revision 更新后
+旧任期拒写、同值新 lease 重选、旧任期幂等 resign 不伤新任期、换 value 后失效、
+取消优先，以及取消后仍能 resign 并最终清空 leader key；拒绝写的应用 key 保持缺失。
+真实 etcd 使用既有共享 fixture，随机 loopback 端口、独立目录和真实事务，不 mock
+核心事务结果。自然到期行为继续由原 member memory/etcd expiry 场景覆盖：
+每 50ms 验证、10s 截止，失效后 renew 返回 NotLeader，新任期 revision 增长且旧写
+未落盘；本任务不改动到期机制，也不引入断连逻辑。
+
+### Go 只读证据与编码边界
+
+仅复用上节固定 blob 的 Go `LeadershipTerm/Comparisons/CaptureTerm`、
+`Campaign/LeaderTxn`、`Reset` 和相邻测试断言作为源码依据：Go term 比较 value+lease，
+既有 Rust 另有 mod_revision，提取完整保留。没有运行需 failpoint 的 Go election
+测试，没有获得本轮 Go 故障运行差分，也没有将源码推导称为运行结果。
+本任务无 codec 或协议转换，value 仍是调用方提供的原始 Vec<u8>；双后端读取断言
+确认 opaque value 原样存储，不声称该测试数据是 pdpb.Member 编码。任务不新增编码，
+不手抄 Rust 输出作为 Go 字节预期；既有协议编码证据仍见 proto fixtures，协议层不迁入
+选主核心。现有 Rust fixture 的调用链已读：`go build -o <slot binary>
+./scripts/rust-etcd-fixture` 只编译已有 Go 文件，运行后只写槽位内 etcd 数据，
+无生成器/failpoint；后续命令额外继承 `GOFLAGS=-mod=readonly`。
+
+### 本轮验证与完成证据
+
+状态：已完成。每个 Cargo 阶段均从 1–10 依次原子 mkdir 动态领取，实际都领取
+槽位 **1**；`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+锁内记录计划、任务、会话及持有 Python 进程 PID；包装进程在正常/失败退出清理自己的
+owner 与锁，信号处理等待该阶段子进程退出后释放。全部阶段已结束、自己的锁已释放，
+保留缓存。没有通过 target-dir 绕过槽位或并行修改 workspace。
+
+| 确切命令 | 退出码 | 有效结果 |
+| --- | --- | --- |
+| `cargo test --locked -p astersql-pd-storage -p astersql-pd-member -p astersql-pd-id -p astersql-pd-tso -- --nocapture`（迁移前） | 0 | 53 passed / 0 failed / 0 ignored；storage 27、member 7、id 7、tso 12 |
+| `cargo test --locked -p astersql-pd-storage -p astersql-pd-member -p astersql-pd-id -p astersql-pd-tso -- --nocapture`（迁移后） | 0 | 同样 53 passed，测试名称及重复计数逐项对应 |
+| `cargo test --locked -p astersql-pd-election -- --nocapture` | 0 | 2 passed：leadership_move_memory、leadership_move_etcd |
+| `cargo fmt --all`（Rust 修改后） | 0 | 仅格式化本任务 Rust 新增/修改文件 |
+| `cargo check --workspace`（新增 crate 同步 lock） | 0 | lock diff 仅本任务两处依赖归属 |
+| `cargo metadata --format-version 1 --no-deps` | 0 | election 注册、依赖方向及 member 导出审查通过 |
+| `cargo fmt --all -- --check` | 0 | 格式检查通过 |
+| `cargo check --workspace --locked` | 0 | workspace 编译通过 |
+| `cargo test --workspace --locked` | 0 | 612 passed / 0 failed / 1 既有 ignored；新增两个后端入口均通过 |
+| `git diff --check`、`git diff --cached --check` | 0 | 已审查实现、测试、manifest、lock 和本节证据差异 |
+
+零测试 doc targets 未计入有效测试数，既有 ignored 不作为本任务验收场景。
+开始/结束核对 1101 个 Go/模块文件路径与 SHA-256 完全一致，Go/模块 Git 状态为空。
+只读 plan.md 和来源史诗无差异；工作区既有其他任务状态修改/删除均保留并排除提交。
+此证据仅证明任期提取与兼容导出，不代表后续 lease/watch/reset 任务完成。

@@ -1,5 +1,5 @@
 // Copyright 2026 AsterSQL.
-//! Persistent member identity and explicitly renewed, fenced leadership.
+//! Persistent member identity and canonical election leadership re-exports.
 mod member;
 pub use member::*;
 #[cfg(test)]
