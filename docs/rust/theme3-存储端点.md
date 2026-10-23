@@ -2171,3 +2171,99 @@ leader=`2.5`、region 缺失。未模拟事务结果、未替换核心存储。
 审查范围仅 store_weights.rs/独立测试、lib 注册、现有 store_meta 的内部解码复用、
 EndpointError 分类、本证据节及任务文件清理；用户已有其他计划修改保持原样。
 共享槽位锁已释放，缓存保留。批次 25 当前验证故事已完成。
+
+## 批次 26：单个区域元信息（任务 7，2026-10-23）
+
+### 准入和只读 Go 证据
+
+前序批次 25 提交 `cf930e6de`、store_weights 产物及本文证据齐全：
+聚焦 3 passed，workspace 513 passed / 0 failed / 1 既有 ignored。
+据此准入批次 26。meta.go 相对规划基准
+`5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异；无更深层
+AGENTS.md，已读 ADR-001、porting-guide、Copilot 与 canonical core/endpoint。
+本任务保持计划总纲和来源主题只读。
+
+Go `meta.go::{LoadRegion,SaveRegion,DeleteRegion}` 使用 RegionPath(id)。
+LoadRegion 缺失/空值返回 false，无后端错误时无错误；非空坏 protobuf 返回
+**true + ErrProtoUnmarshal**，解码成功后调用 DecryptRegion。
+SaveRegion 先 EncryptRegion，再 Marshal 和 Save；DeleteRegion 只 Remove
+传入 metadata 的 ID 对应键。`encryption/region_crypter.go` 明确拒绝已经有
+EncryptionMeta 的保存输入，无 manager 时不加密；读取有 EncryptionMeta 而无
+manager 时返回解密错误，空的非 nil metadata 也不例外。
+固定 kvproto `v0.0.0-20261016101550-f8ad079c8e98` 的 metapb.pb.go 为字段依据：
+Region 字段 1–8，epoch conf/version，peer 的 id/store/role/witness；
+未知 role 数值保留、未知字段跳过，默认 epoch 缺失与显式零值不同。
+
+已审查 TestMain、WaitForEtcdConnections、TestBasic、memory backend、
+MemoryKV 点读/保存/删除及 encryption 调用链。所选 TestBasic 不执行 range
+failpoint、不启用或依赖注入；现有 rust-proto-oracle 仅构造消息、调用 gogo
+proto.Marshal 并输出 stdout，不修改源码或模块文件。因此执行：
+
+| 只读命令 | 退出码与结果 |
+| --- | --- |
+| `GOFLAGS=-mod=readonly go test -mod=readonly ./pkg/storage -run '^TestBasic$' -count=1 -v` | 0；1 passed；Region 缺失、保存、读取相等、删除后缺失 |
+| `GOFLAGS=-mod=readonly go run -mod=readonly ./scripts/rust-proto-oracle` | 0；7 个真实序列化样本，与已有 wire-fixtures.json 一致 |
+
+整包 oracle 有依赖 failpoint 的场景，本任务未裸跑整包，也不声称整包 Go 通过。
+本轮复用已有 Go 工具，没有编写、生成或修改 Go 文件。
+
+### 实际 Go 字节和 Rust 实现
+
+Go 工具既有 `region_heartbeat` 输入中 Region 为
+`metapb.Region{Id:99,StartKey:[]byte{0,1},EndKey:[]byte{255}}`。
+本轮 stdout 实际完整 hex：
+`0a10082a10071a066f7261636c652202706412090863120200011a01ff1a040803100430d209`。
+其 field 2 长度为 9，原始子消息 hex **0863120200011a01ff**。
+Rust 测试直接从已有 JSON fixture 的原始字节切出该子消息，检查外围 tag/length，
+保存后逐字节比较，并独立写入这些 Go 字节验证读取；没有用 Rust 重编码值
+构造预期。其他完整字段和畸形输入依据 Go schema/源码，不冒称额外 Go 运行差分。
+
+canonical endpoint 新增 region_meta.rs 的 load_region、save_region、delete_region，
+公开接口复用 core::RegionMeta；内部 wire adapter 隔离 protobuf，并完整映射字段。
+RegionLoadError 保留 found 和 source：后端读错 false，坏非空 wire/加密 metadata
+错误 true。RegionMetaError 区分 endpoint codec/后端错误与明确的加密拒绝。
+保存拒绝带加密 metadata 输入，且在写入前返回，原物理字节保留。
+不新增依赖、manifest、lock、feature、runtime 或全局 cluster ID。
+
+独立 region_meta_test.rs 在 lib.rs 显式注册；region_meta_memory / region_meta_etcd
+共用真实后端 contract，覆盖缺失/空值、Go 字节双向读取、完整字段往返、u64 边界、
+全部 peer role 与未知负值/最大值、重复及零值 peer、epoch 缺失/显式零、原始二进制
+反向范围、flashback、未知字段、畸形 wire/嵌套消息、空及非空加密元信息拒绝、
+拒绝保存不改数据、覆盖写、幂等删除及其他 ID/cluster 隔离、全零 metadata。
+etcd 额外保存完整值，在 stop/stopped、start/restarted 确认后重连，同 WAL 读取并
+删除；随后 drop fixture 完成关闭并等待子进程，再发点读触发真实后端失败，
+断言 found=false、Store 错误，不模拟存储返回结果。
+
+### TDD 和共享槽位
+
+先用可编译的空保存接口运行同一行为测试。每次 Rust 修改后先 `cargo fmt --all`，
+退出 0；第一次聚焦命令
+`cargo test --locked -p astersql-pd-storage-endpoint --lib region_meta -- --nocapture`
+退出 **101**，0 passed / 2 failed / 0 ignored，4.77s；两个后端物理字节断言
+实际 `[]`，预期 `[8,99,18,2,0,1,26,1,255]`，非缺符号或环境红灯。
+最小真实保存实现后原断言未削弱，同命令退出 **0**，2 passed / 0 failed /
+0 ignored，5.19s；包含真实重启与断连终态。
+
+每个 Cargo 阶段从仓库根依次原子 mkdir 动态领取第一个空闲共享槽位，实际均为
+**1**，`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录计划、task=7、batch=26、session=01a16709-region-meta 与 shell PID；
+包装器 EXIT/INT/TERM trap 清理自己的 owner 和锁，所有 Cargo/fixture 子进程
+同步结束后才释放，保留缓存。所有子进程继承该路径和 GOFLAGS=-mod=readonly。
+既有 fixture 仅 build 既有 Go 源码；本轮复用 proto 缓存，未触发会解压 Go 源码的
+proto build.rs，也未运行 failpoint、Go 生成器、格式化或依赖整理。
+
+### 最终验证和差异审查
+
+| 最终命令 | 退出码、有效结果 |
+| --- | --- |
+| `cargo metadata --format-version 1 --no-deps` | 0；endpoint canonical lib 注册保持一致 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；仅既有 server cpu_usage 弃用警告 |
+| `cargo test --workspace --locked` | 0；515 passed / 0 failed / 1 既有 ignored，83 个 target 汇总含 doc-tests；endpoint 16 passed |
+| `git diff --check`、`git diff --cached --check` | 0 |
+
+最终核对开始时记录的 1101 个已跟踪 Go/模块文件 SHA-256 全相同，Go Git 差异为空，
+未跟踪 Go/模块文件 0；Cargo manifest/lock 无变化，workspace fmt 未改其他 Rust。
+审查仅 region_meta.rs、独立测试、lib 注册、本证据节及编号任务文件清理。
+用户已有其他计划改动保持原样。Cargo/fixture 子进程全部结束，共享锁已释放，
+缓存保留。批次 26 当前 Region 单键验证故事已完成；不包含范围分页或加密引擎。

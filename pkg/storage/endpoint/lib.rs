@@ -24,3 +24,8 @@ mod store_meta_test;
 mod store_weights;
 #[cfg(test)]
 mod store_weights_test;
+
+mod region_meta;
+pub use region_meta::{RegionLoadError, RegionMetaError};
+#[cfg(test)]
+mod region_meta_test;
