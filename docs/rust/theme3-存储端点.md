@@ -3136,3 +3136,93 @@ Go Git 差异为空。未执行 failpoint、生成器、Go 格式化或依赖整
 独立测试、显式注册和本节证据；Cargo manifests/lock 无变化，未格式化其他任务文件。
 总计划和来源主题未修改，用户既有计划修改保留。所有 Cargo/fixture 子进程已结束，
 自己的共享锁已释放，缓存保留。状态：已完成；批次 36 的设置存储验证故事完成。
+
+
+## 任务 18：资源组状态文档（批次 37，2026-10-23）
+
+### 准入与 Go 只读证据
+
+核验批次 36 提交 `49f8f0a72`、resource_settings 实物和本文任务 17 证据：
+聚焦 3 passed，workspace 546 passed / 0 failed / 1 既有 ignored，基线退出 0。
+已读执行技能、根规则、Copilot、ADR-001、porting-guide、总计划和编号任务；
+`rg --files --hidden pkg docs .plans -g AGENTS.md` 未发现更深规则。
+`resource_group.go` 相对规划基准 `5d5948052a9ee9e3fa7a09145fe2916a2912c223`
+没有差异。来源主题和总计划保持只读。
+
+Go SaveResourceGroupStates 调用 saveJSON；DeleteResourceGroupStates 精确删键；
+LoadResourceGroupStates 先 legacy 后 keyspace，复用每页 100 条的 loadRangeByPrefix，
+无 JSON 解码，故空值、坏 JSON、非 UTF-8 值原样交付。NullKeyspaceID=u32::MAX
+走 `resource_group/states/name`，其他 ID 走 `resource_group/keyspace/states/id/name`；
+keyspace 解析失败跳过。Go SaveControllerConfig 同样 saveJSON，LoadControllerConfig
+直接 Load `resource_group/controller`，缺失/空值均返回空字符串，坏 JSON 不报解码错误。
+现有 TestResourceGroupStorage 源码断言资源组状态保存 nil、遍历和删除，不据此声称
+controller 字节有专项 Go 运行覆盖。整包命令
+`go test -mod=readonly ./pkg/storage/endpoint ./pkg/storage -count=1` 未运行：包含需要
+failpoint 注入的区域/时间戳测试；未注入、未裸跑替代，也未声称 Go 整包通过。
+
+真实 JSON 字节复用本文批次 21、28、30 已保存并运行核验的 Go 1.26.8
+`encoding/json::ExampleMarshal`：输入 ColorGroup{ID:1, Name:"Reds",
+Colors:["Crimson","Red","Ruby","Maroon"]}，输出为
+`{"ID":1,"Name":"Reds","Colors":["Crimson","Red","Ruby","Maroon"]}`。
+该示例直接调用与 saveJSON 相同的 encoding/json.Marshal；两个 Go 接口接受 any，
+因此此输入可用于状态和 controller 的存储编码。两个真实后端均保存 Rust 对应模型并
+逐字节比较上述实际 Go 输出。额外 null/标量复用既有 TestGCStateJSONUtil 字节断言；
+路径/故障/原样读取边界属于源码推导后的 Rust 运行验证，不冒充新增 Go 运行差分。
+未新增 Go oracle；任意业务 schema 的专用字段、JSON 转义及自定义编码仍由调用方
+提供兼容模型，本任务未迁移资源管理业务模型或完整 controller 配置服务。
+
+### 实现与测试驱动验证
+
+canonical `resource_states.rs` 扩展 StorageEndpoint：save_resource_group_states、
+delete_resource_group_states、load_resource_group_states、save_controller_config、
+load_controller_config。复用 canonical keypath、Base、save_json、load_rule_prefix，
+没有新增依赖、target、全局状态或 runtime。controller 返回 Vec<u8> 表达 Go string
+允许任意字节的语义；状态回调也保留名称/值原始字节，仅解析数字 ID。
+错误保留 JsonMarshal/Store 分类；编码失败在 IO 前返回，旧值不变。
+
+独立 `resource_states_test.rs` 在 lib.rs 显式注册。resource_states_memory /
+resource_states_etcd 共用同一真实存储 contract，另有 resource_states_go_bytes。
+覆盖 Null/0/1/u32::MAX-1 keyspace、空列表、Go 精确 JSON、覆盖为 null、重复删除、
+编码失败不写入；legacy/keyspace 各超过 200 条，分页含 NUL 续页、空/嵌套名称、
+非 UTF-8 名称和值、坏 JSON 原样返回；非法/溢出/加号/缺失 ID 跳过，补零 ID 按
+物理键排序；settings/相邻前缀/其他 keyspace 隔离，删除保留邻键。
+controller 验证缺失、空、坏 JSON、空白保留、null、非 UTF-8 原样读取、精确保存
+和序列化错误不覆盖；状态操作不影响 controller。
+
+etcd contract 后 stop/stopped → start/restarted，同 WAL 恢复后列举结果和
+controller Go 字节保持。随后在第 100 个 legacy 回调内 Drop fixture，等待进程退出，
+下一页真实 IO 返回 Store 错误，已交付条数恰为 100；后续状态保存/删除和 controller
+读/写均返回真实 Store 错误。不模拟核心事务，无 lease/到期场景或后台遗留任务。
+
+初始最小可编译实现实际保存/删除、读写 controller，但只列举 legacy。
+先 `cargo fmt --all` 退出 0；运行
+`cargo test --locked -p astersql-pd-storage-endpoint --lib resource_states -- --nocapture`
+红灯退出 **101**，1 passed / 2 failed / 0 ignored，4.54s；两个后端同一断言预期四个
+keyspace 却仅收到 legacy 一条。补齐 keyspace 列举后先 fmt，同一聚焦命令退出 **0**，
+3 passed / 0 failed / 0 ignored，7.46s；原断言全部保留。
+
+### 共享槽位与最终基线
+
+三个阶段均从仓库根按 1–10 原子 mkdir 动态领取，实际槽位 **1**，
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录 plan=storage-endpoint/task=18/batch=37/session=resource-states，
+持有 shell PID 为 94800（红灯）、95034（绿灯）、95196（最终基线）。
+EXIT/INT/TERM trap 清理自己的 owner 和锁；全部同步 Cargo/fixture 子进程结束后释放，
+保留编译缓存。GOFLAGS=-mod=readonly；既有 fixture 只读编译现有 main.go，
+不运行生成器；proto 复用既有缓存，未运行解压 Go 源码的 build.rs。
+
+| 最终命令 | 退出码与有效结果 |
+| --- | --- |
+| `cargo fmt --all` | 0；仅本任务 Rust 文件发生格式化变化 |
+| `cargo test --locked -p astersql-pd-storage-endpoint --lib resource_states -- --nocapture` | 0；3 passed / 0 failed / 0 ignored，7.46s |
+| `cargo metadata --format-version 1 --no-deps` | 0；canonical target 注册不变 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；仅既有 server cpu_usage 弃用警告 |
+| `cargo test --workspace --locked` | 0；83 个 target 含 doc-tests，549 passed / 0 failed / 1 既有 ignored；endpoint 50 passed |
+| `git diff --check`、`git diff --cached --check` | 0 |
+
+开始/结束 1101 个 Go/模块文件 SHA-256 快照完全一致，无新增或删除，Go Git 差异为空。
+未执行 failpoint、生成器、Go 格式化或依赖整理。已审查生产实现、独立测试、lib 显式
+注册和本节证据；Cargo manifests/lock 未改，无其他任务 Rust 文件变化，用户已有计划
+变更保留。全部 Cargo/fixture 子进程已结束，自己的锁已清理，槽位缓存保留。
+状态：已完成；批次 37 的资源组状态及 controller 存储故事完成。

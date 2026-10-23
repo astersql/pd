@@ -73,3 +73,7 @@ mod timestamp_fenced_save_test;
 mod resource_settings;
 #[cfg(test)]
 mod resource_settings_test;
+
+mod resource_states;
+#[cfg(test)]
+mod resource_states_test;
