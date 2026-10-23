@@ -3739,3 +3739,111 @@ Cargo manifests/lock、总计划及来源主题均未改变。已审查 canonica
 独立测试、显式模块注册和本节证据；保留用户原有无关计划修改与任务 19 删除，
 不混入本任务提交。最终 Cargo/fixture 子进程全部结束，自己的槽位锁已释放，
 缓存保留。状态：已完成；批次 42 的拆合并状态查询故事完成。
+
+
+## 任务 24：键空间组事务存储（批次 43，2026-10-23）
+
+### 准入与只读 Go 依据
+
+核验批次 42 提交 `85ff492ba`、canonical KeyspaceGroup/SplitState/MergeState、
+独立 6 个状态测试及上节 workspace 565 passed / 0 failed / 1 既有 ignored
+证据，准入满足。读取执行技能、ADR-001、porting-guide、根 AGENTS.md、Copilot
+规则，pkg/docs/scripts 下无更深 AGENTS.md。Go `tso_keyspace_group.go` 及同名
+测试相对规划基准 `5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异。
+
+Go 来源符号：LoadKeyspaceGroup 优先 RevisionTxn.LoadWithRevision，空/缺失返回
+nil，JSON null 解码为新分配的零值组；SaveKeyspaceGroup/saveJSONInTxn 在调用方
+事务保存 JSON；DeleteKeyspaceGroup 拒绝 ID=0，错误码
+`PD:keyspace:ErrModifyDefaultKeyspaceGroup`；LoadKeyspaceGroups 从 %05d 的物理
+起点到 membership prefix end，按键顺序、起点包含、0 limit 不限量，坏 JSON
+返回错误且不返回部分结果。范围读不在 caller txn 中，不为每条记录增加事务比较。
+keyspace lookup table 不持久化，装载时不会在此 endpoint 自动重建。
+
+审查既有 TestLoadKeyspaceGroupRevisionComparisonKeepsRequestBounded、TestMain、
+etcdutil.NewTestEtcdCluster 与 KV 调用链，所选测试无 failpoint 依赖；运行命令不
+生成或修改 Go/模块文件。实际运行：
+
+```text
+GOFLAGS=-mod=readonly go test -mod=readonly -tags without_dashboard ./pkg/storage/endpoint -run '^TestLoadKeyspaceGroupRevisionComparisonKeepsRequestBounded$' -count=1 -v
+```
+
+退出 0；1 passed / 0 failed，包耗时 1.470s。真实 Go etcd 设置 6 KiB request
+limit，保存 1000 个 keyspaces 后读取并写回成功，证实使用 revision 而非大值比较。
+整包 `go test -mod=readonly ./pkg/storage/endpoint ./pkg/storage -count=1` 未执行：
+storage 时间戳和区域用例依赖 failpoint 注入，与只读硬约束冲突；复用上述已审查
+的窄测试和任务 22/23 已保存运行证据，不以裸跑替代。
+
+编码直接复用任务 22 保存的 `/tmp/pd-task22-go-wire.json`：
+TestKeyspaceGroupReconcileWatcherTracksExternalChanges 在启动后 7.3911s 写入
+membership/00002，create revision=4、mod revision=5、version=2。真实输入为
+ID=2、Enterprise、SplitSource=2、成员 http://tso-2/priority=0、keyspaces=[42,43]；
+原始输出（亦见任务 23 base64）为：
+
+```json
+{"id":2,"user-kind":"enterprise","split-state":{"split-source":2},"members":[{"address":"http://tso-2","priority":0}],"keyspaces":[42,43]}
+```
+
+独立测试将真实字节固定为 GO_JSON；两个后端实际保存后的字节均逐字节比较，
+点读、反序列化及重新编码也比较同一字节。本地 lookup table 不落盘。
+其他 HTML/行分隔符转义、坏 JSON、null、极端 ID 等断言来源于 Go 源码及
+encoding/json 契约，不宣称这些边界另外取得了逐项 Go 运行差分。
+
+### 实现与测试驱动证据
+
+新增 canonical `keyspace_group_store.rs`，为 StorageEndpoint 增加
+load_keyspace_group、save_keyspace_group、delete_keyspace_group、load_keyspace_groups，
+复用 KeyspaceGroup、ClusterPaths、CallbackTxn 与 canonical MetaStore。
+KeyspaceGroupStoreError 保留 JSON/backend 错误和默认组保护错误的区分。
+存储 JSON 保留 Go 字段顺序、null/omitempty 与 HTML/U+2028/U+2029 转义；
+生产实现未引入协议领域耦合、依赖、运行时或业务拆合并算法。
+
+独立 `keyspace_group_store_test.rs` 在 lib.rs 显式注册，3 个有效入口：真实值
+字节测试，以及 memory/etcd 共用 contract。覆盖缺失/空值/null、坏 JSON、
+集群隔离、事务缓冲不可见、同 revision 原子写、覆盖写/删除回滚、默认组保护、
+缺失键并发创建冲突、同字节重写的 revision 冲突、删除幂等、范围起点/limit、
+空范围、不解码 limit 之后的坏值、五位以上 ID 物理字典序、205 条不限量范围读、
+Go 大值读写路径、转义编码和 lookup table 排除。
+
+先加入可编译接口与独立断言，运行 fmt 后执行：
+
+```text
+cargo test --locked -p astersql-pd-storage-endpoint --lib keyspace_group_store -- --nocapture
+```
+
+实际红灯退出 101；1 passed / 2 failed / 0 ignored。memory 与 etcd 均在默认组
+删除保护的真实错误断言失败，不是编译或环境错误。加入 ID=0 删除保护后保持
+原始断言不变，补强回滚、并发和范围边界，先 fmt 再运行同一命令，最终退出 0；
+3 passed / 0 failed / 0 ignored。
+
+最终聚焦 etcd 日志：保存组 7 后开始计时，stop 确认停止，start 复用同数据目录/WAL；
+1.113452s 时新连接读取组 7 成功；随后 drop fixture 完整退出，1.173127792s 时
+点读返回 callback backend 错误、删除返回 commit backend 错误，范围读亦返回
+backend 错误。没有将事务核心结果替换成 mock。
+
+### 共享槽位与验证
+
+各阶段从仓库根原子 mkdir 动态领取，实际均为槽位 **1**：
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 包含 plan=storage-endpoint task=24 batch=43 session=keyspace-group-store 与
+持有 shell PID：红灯 25644，最终聚焦绿灯 26047，基线 26207。
+`/tmp/pd-store24-cargo.sh` 为 EXIT/INT/TERM 安排锁清理；子进程均继承绝对槽位
+和 GOFLAGS=-mod=readonly。etcd helper 只编译既有 Go fixture、写隔离运行数据，
+不写 Go/模块文件；proto build.rs 使用现有缓存，本次日志没有重新执行 proto 构建。
+
+
+| 最终命令 | 退出码与结果 |
+| --- | --- |
+| `cargo fmt --all` | 0；只格式化本任务 Rust 文件 |
+| `cargo test --locked -p astersql-pd-storage-endpoint --lib keyspace_group_store -- --nocapture` | 0；3 passed / 0 failed / 0 ignored |
+| `cargo metadata --format-version 1 --no-deps` | 0；canonical target 不变 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；仅既有 cpu_usage 弃用警告 |
+| `cargo test --workspace --locked` | 0；83 个 target，568 passed / 0 failed / 1 既有 ignored；endpoint 69 passed |
+| `git diff --check`、`git diff --cached --check` | 0 |
+
+开始/结束 1101 个受版本管理的 Go/模块文件 SHA-256 完全相同，Go Git 状态为空，
+无本任务新增/删除/重命名文件；未启停 failpoint、未运行 Go 生成器/格式化/整理依赖。
+所有 Cargo/fixture 子进程已经结束，自己的 owner/slot lock 已清理，缓存保留。
+审查新增存储实现、共享 contract、模块注册和本节证据，无 manifest/lock 或其他
+Rust 文件格式化差异；总计划和来源主题保持只读。保留原有观测工具计划修改、
+任务 19/23 删除，不纳入提交。状态：已完成；批次 43 的键空间组存储故事完成。

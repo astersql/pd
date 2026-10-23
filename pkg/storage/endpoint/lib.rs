@@ -99,3 +99,8 @@ mod keyspace_group_state;
 pub use keyspace_group_state::{KeyspaceGroup, MergeState, OptionalKeyspaceGroupState, SplitState};
 #[cfg(test)]
 mod keyspace_group_state_test;
+
+mod keyspace_group_store;
+pub use keyspace_group_store::KeyspaceGroupStoreError;
+#[cfg(test)]
+mod keyspace_group_store_test;
