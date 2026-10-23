@@ -503,3 +503,100 @@ watch_reconcile_etcd 共用同一 run，后端为 MemoryStore / etcd 3.5.15。
 
 状态：**已完成**。范围仅为压缩后完整快照恢复、缺失键删除及成功发布后的账本提交；
 未宣称整个 Go LoopWatcher、custom reload 或加载控制已迁移完成。
+
+## 任务 5：观察加载控制（批次 78）
+
+日期：2026-10-24（Asia/Shanghai）。前置批次 77 的提交 `9cd4a7302` 为本轮起点，
+已核验上节压缩恢复/删除对账的双后端红绿灯、650 项 workspace 通过证据及原位
+ReconciledWatch 和测试注册。准入满足，未以编号文件删除作为完成依据。
+`etcdutil.go` 相对规划基准 `5d5948052` 无差异。
+
+### 行为与 Go 依据
+
+新增 [ControlledWatch / WatchControl](../../pkg/utils/etcdutil/watch_control.rs)，
+原位复用唯一 MetaStore、ReconciledWatch 和 SnapshotLoader。宿主先调用 initialize，
+再循环 apply_next；宿主负责启动、重试观察错误、取消和 await，不创建私有 runtime
+或后台任务。全量 snapshot 回调必须原子替换发布状态，实时回调按既有整批契约发布。
+
+- initialize 默认至多三次初始读取/发布尝试，失败间隔 1s；成功发布先于初次结果通知。
+  最终失败将同一个 StoreError 返回初始化调用方和 WaitLoad；重复 initialize 返回保存
+  的结果，不再发布或发送结果。失败后没有可用初始快照，apply_next 返回初始错误，
+  不自动以 revision 0 启动观察。
+- WaitLoad 为容量 1 的一次性初始结果，后续调用不会得到重复成功，ForceLoad 不补充
+  该结果。等待者有独立取消令牌，取消不消费尚未取得的初始结果；宿主释放 worker 后
+  channel 关闭返回 Unavailable。这些显式取消/关闭结果是 Rust 生命周期边界。
+- ForceLoad 无完成返回值，构造时记录时间，首秒抑制，之后 1s 限流、单槽非阻塞合并。
+  等待实时事件时也可被 force 通知唤醒；服务请求的 apply_next 返回全量发布结果。
+  失败保留旧观察对象/游标；成功完整替换快照并从 snapshot revision+1 接续。
+- 取消为观察终态，包括强制全量读取在途取消；后续新令牌不能复活对象。
+
+只读 Go 符号：`NewLoopWatcher` (:451–480)、`initFromEtcd` (:519–558)、
+`watch` 的 forceLoadCh 分支 (:614–625)、`ForceLoad` / `WaitLoad` (:1004–1033)。
+相邻只读断言：`TestLoadNoExistedKey`（空数据也成功）、
+`TestInitialLoadFailsWhenContextCanceled` (:502)、`TestWatcherBreak` 的 force 修复缓存
+场景 (:1177)。保留 Go 的默认重试次数、通知一次及限流合并语义；不声称迁移所有
+setter、initialLoadRetryFn/custom reload、分拆回调副作用或整个 LoopWatcher。
+Go 在最后一次失败后仍等待 ticker、并继续以失败返回 revision 观察；Rust 明确返回
+初始化错误，由宿主决定恢复，未把此安全边界说成完全相同的后台循环。
+
+`go test -mod=readonly ./pkg/utils/etcdutil -count=1` 未运行：整包、加载临时失败和
+观察重连测试需要 loadTemporaryFail/updateClient 等 failpoint 注入，违反 Go 只读硬约束。
+复用只读源码/断言与既有证据，不宣称本轮 Go 运行或跨语言运行差分。
+无新 codec；Entry/Event 保持原字节，无新增 Go 编码输出要求。
+现有 etcd fixture helper 的调用链已审查：只读 `go build` 编译已有 main.go，
+数据/WAL/ready 写入槽位，未运行 Go 测试、生成器、依赖整理或 failpoint 命令。
+
+### 测试、故障时序与红绿灯
+
+[独立测试](../../pkg/utils/etcdutil/watch_control_test.rs) 在
+[lib.rs](../../pkg/utils/etcdutil/lib.rs) 显式注册。watch_control_memory /
+watch_control_etcd 运行同一组断言，etcd 3.5.15；另有暂停时钟的首秒限流测试。
+窄 IO 包装只丢弃或挂起真实 read 响应；不模拟核心事务、快照或 revision。
+
+- 可编译最小入口只尝试一次初始化：首次真实快照发布回调返回 Backend 后，两个后端
+  都在 `initial publication must retry before reporting completion` 断言失败。
+  聚焦红灯退出 101，**1 passed / 2 failed / 0 ignored**。
+- 补全三次尝试后，同一原始断言保留；最终聚焦绿灯退出 0，
+  **3 passed / 0 failed / 0 ignored**。
+- 初始 a=initial → 首次发布返回 Backend → 第二次成功 → WaitLoad 成功一次；
+  强制请求连发并合并 → 全量发布 Backend → 真实事务 a=live → 原观察位置仍收到 Put；
+  再 force 成功替换为 live，next revision 为真实提交 revision+1。
+  第二个 WaitLoad 持续未完成，直到取消等待令牌后返回 Cancelled，并 await 宿主任务。
+- 空快照三次发布失败：前两次 Backend，最后 Unavailable；initialize 与 WaitLoad
+  都返回最后的 Unavailable。另一空快照在首次失败的 Notify 屏障后取消，初始化和
+  等待结果都是 Cancelled。取消等待者不吞掉随后成功的空快照结果。
+- 真实读取响应先丢失一次 → 初始化自动重试 → 只发布一次完整 live 快照。
+  随后 force 全量读取的真实响应到达并挂起 → Notify 确认在途 → cancel →
+  宿主任务在 8s 超时界限内完成；没有发布，后续新令牌仍返回 Cancelled。
+- 时钟边界独立测试暂停 Tokio 时间，构造后立即 force 不触发加载，advance 1s
+  后 force 才唤醒；双后端的限流/合并用内部时间边界传入逻辑时刻，不用定时睡眠
+  判断事件发生。初始重试仍使用生产固定 1s 间隔。
+
+### 验证资源与结果
+
+每阶段通过原子 mkdir 从共享槽位 1–10 动态领取，本轮均实际取得 **槽位 1**：
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+锁内记录计划、任务、会话及持有 shell PID；EXIT/INT/TERM 负责自己的锁清理，
+全部 Cargo/fixture 子进程结束后才释放，缓存保留。所有子进程继承绝对 target 与
+`GOFLAGS=-mod=readonly`，使用 `/tmp/pd-b75-go-readonly.sb` 拒绝写 `.go`/Go 模块
+文件及执行会解压 Go 源码的 proto build script，复用前置协议生成缓存。
+没有修改依赖、Cargo manifests、Cargo.lock、只读 plan.md 或来源主题。
+
+| 命令（仓库根目录，继承上述槽位） | 退出码 / 有效结果 |
+| --- | --- |
+| `cargo fmt --all` | 0，每次 Rust 修改后先运行，无其他源码格式化差异 |
+| `cargo test --locked -p astersql-pd-etcdutil --lib watch_control -- --nocapture`（红灯） | 101，1 passed / 2 failed / 0 ignored |
+| 同一聚焦命令（最终绿灯） | 0，3 passed / 0 failed / 0 ignored |
+| `cargo metadata --format-version 1 --no-deps` | 0 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0，仅既有 server cpu_usage deprecated warning |
+| `cargo test --workspace --locked` | 0，87 个测试/文档 target 合计 653 passed / 0 failed / 1 既有 ignored |
+| `git diff --check` | 0 |
+
+49 个 Markdown 相对链接有效。已审查生产、独立测试、lib 注册及本文差异；
+未包含其他任务的既有编号文件删除或配置盘点变更。所有 Cargo/fixture 子进程已结束，
+自己的 slot-1 owner/锁已释放，缓存保留。开始/结束的 Go/模块路径集合及 SHA-256
+共 2816 项完全一致（含已有 target 中 Go 源码），相关 Git 状态为空。
+
+状态：**已完成**。只完成本任务的初次加载结果通知、强制加载、重试和取消控制；
+未将其视为整个 Go 包、完整 LoopWatcher 或服务装配已迁移。

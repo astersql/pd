@@ -18,3 +18,8 @@ mod watch_reconcile;
 pub use watch_reconcile::ReconciledWatch;
 #[cfg(test)]
 mod watch_reconcile_test;
+
+mod watch_control;
+pub use watch_control::{ControlledWatch, WatchControl};
+#[cfg(test)]
+mod watch_control_test;
