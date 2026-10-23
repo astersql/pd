@@ -310,6 +310,7 @@ name = "astersql-pd-server-config"
 version = "0.1.0"
 dependencies = [
  "astersql-pd-configutil",
+ "astersql-pd-errs",
  "astersql-pd-typeutil",
  "serde",
  "serde_json",

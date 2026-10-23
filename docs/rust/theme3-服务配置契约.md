@@ -692,3 +692,89 @@ Go/模块 Git 状态为空，plan.md 指纹不变；无 Go 文件或模块差异
 最终重跑结果：聚焦命令 5 passed / 0 failed / 0 ignored，metadata、fmt check、
 workspace check 均退出 0，workspace test 退出 0（675 passed / 0 failed /
 1 既有 ignored）；槽位 1 锁已释放，缓存保留。Go/模块及只读计划指纹再次一致。
+
+## 批次 85：连接地址值校验
+
+日期：2026-10-24（Asia/Shanghai）。前置批次 84 已由提交 `375a3aab4`
+及本文上一节核验：canonical crate、五项独立测试、675 passed / 0 failed /
+1 既有 ignored 的 workspace 证据齐备。本轮三份 Go 来源相对规划基准
+`5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无变化；没有因前序任务文件
+被删除而推定完成。适用根 AGENTS.md，无更深规则；已读 Copilot、ADR-001、
+移植指南与执行技能，plan.md 和来源主题只读。
+
+### Go 依据与实现边界
+
+- `server/config/util.go::ValidateURLWithScheme` 调用 `url.ParseRequestURI`，
+  然后同时要求 Scheme、Host 非空，否则返回 `<raw> has no scheme`。
+  `util_test.go::TestValidateURLWithScheme` 的 14 个表项原样映射到 Rust 测试，
+  包括空串、相对地址、空 host、HTTP/HTTPS、路径、IPv6、重复端口。
+- `util.go::parseUrls` 使用 `strings.Split(s, ",")`，逐项 `url.Parse`，
+  不 trim、不限制 HTTP(S)，不强制每项有 scheme/host，首个失败包装
+  `errs.ErrURLParse`（`PD:url:ErrURLParse`）。因此 `""`、`,`, `foo`、
+  `/foo`、`http://`、`mailto:pd@example.com` 等可解析值不能被擅自拒绝。
+- `config.go::Adjust` 的 join 分支只在非空时调用 parseUrls，错误保留
+  `failed to parse join addr:<raw>, err:<cause>`；
+  `Config.Validate` 禁止 join 与 initial-cluster 同时非空，保留其错误文本。
+  `config_test.go::TestBadFormatJoinAddr` 和 `TestJoinAddr` 的六组输入
+  （单项、多项、mixed schemes、service endpoints、坏首项/坏第二项）均覆盖。
+- 额外边界来自本机 Go **1.26.8** 标准库 `net/url/url.go` 的 `parse`、
+  `parseHost`、`unescape`、`getScheme`、`validUserinfo` 以及
+  `encoding_table.go`：HTTP(S) 严格拒绝未括起的多冒号 host，非 HTTP
+  scheme 保留最后冒号为端口的规则；端口仅检查数字，不做 u16 范围限制；
+  IPv6/zone、host/userinfo 字符、path/fragment 的百分号转义与控制字符均校验。
+  query 不检查百分号转义，opaque URI 不按 path 解码。
+- `ParseRequestURI` 不拆 fragment，`http://pd/path#%zz` 中 `%zz` 是无效路径
+  转义，必须报错。初始附加测试把它误列为成功，本轮源码复核后移到失败表，
+  保留该断言并非移除场景；`http://pd/path?q=%zz` 仍成功。
+  原四测试红灯全部来自真实缺失校验；该附加预期修正另行列出，不冒充实现红灯。
+
+新增 `config_urls.rs` 公开 `validate_url_with_scheme`、`validate_url_list`、
+`ConfigScalars::validate_join` 和 `ConfigUrlError`，仅校验纯值，不构造 URL
+传输对象、不调整默认值、不连接网络、不调用完整 Config.Validate 的文件系统逻辑。
+`validate_url_list` 是 Go parseUrls 的**校验投影**，不是返回完整 Go URL 字段的
+替代 API。错误保留 typed cause、PD 稳定错误码、join 包装及缺 scheme/冲突文本；
+底层诊断不承诺所有非法 IPv6/netip 错误及控制字符引用逐字等同 Go。
+复用已有 `astersql-pd-errs`，Cargo.lock 仅在 server-config 的依赖列表加一行，
+未新增或升级第三方包。`config_urls_test.rs` 的四项独立测试在 lib.rs 显式注册，
+均由 config_urls 过滤命中。纯值任务无需 MemoryStore/etcd 双入口。
+
+现有 Go 配置测试没有 failpoint 调用，TestMain 只包装 goleak 与 etcd 连接清理；
+复用批次 84 的调用链审查后重新运行整个包，未启停 failpoint、未新增 Go oracle。
+上述原始表项同时有本轮 Go/Rust 测试运行证据；额外标准库边界明确是**源码推导**，
+没有将其冒充新增 Go 运行差分。本任务没有编码输出，故无需新字节 fixture。
+
+Go 来源 SHA-256：
+
+| 文件 | SHA-256 |
+| --- | --- |
+| util.go | `503276291dee3b7811b0dad72b7a1b95e3a8cc76a79fd3b208ec952072c139fc` |
+| util_test.go | `c9d87606ed8d565288206e89058375e227da65036810bfa53d67373b91b039d0` |
+| config_test.go | `705c57ffdbd953a5e9c274a1fe7cc31db8b6ebdbf31e4493f798242a245a847f` |
+
+### 本轮验证
+
+所有 Cargo 阶段从仓库根通过原子 mkdir 动态领取槽位 **1**，
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录计划/任务/会话/PID，EXIT/INT/TERM 覆盖锁清理；所有子进程完成后
+释放自己的锁并保留缓存，没有改动其他锁。workspace 测试继承
+`GOFLAGS=-mod=readonly`，复核既有 `pkg/storage/kv/etcd_fixture_test.rs` 和
+`scripts/rust-etcd-fixture/main.go`，只构建现有 Go fixture 到槽位并写隔离数据目录。
+
+| 确切命令 | 退出码与有效证据 |
+| --- | --- |
+| `cargo fmt --all` | 0，仅格式化本任务 Rust 文件 |
+| 行为红灯：`cargo test --locked -p astersql-pd-server-config --lib config_urls -- --nocapture` | 101；0 passed / 4 failed / 0 ignored，缺失校验触发真实断言 |
+| `cargo check --workspace` | 0；同步已存在 errs 依赖后审查锁文件 |
+| 首次实现聚焦检查（相同命令） | 101；3 passed / 1 failed，定位上述附加 RequestURI 预期错误 |
+| 最终绿灯：相同聚焦命令 | 0；4 passed / 0 failed / 0 ignored |
+| `go test -mod=readonly ./server/config -count=1` | 0；包通过，1.159s；包括现有 URL/join 表项 |
+| `cargo metadata --format-version 1 --no-deps` | 0 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；既有 core_region_adapter.rs:134 deprecated cpu_usage 警告 |
+| `cargo test --workspace --locked` | 0；679 passed / 0 failed / 1 既有 ignored，包含真实 etcd 回归 |
+| `git diff --check` | 0 |
+
+本轮状态：**已完成**。全量测试完成后复核 1101 个 Go/模块文件路径集合及
+SHA-256 与任务开始完全一致，Go/模块 Git 状态为空；plan.md 指纹不变。
+只有本任务 Rust、最小依赖连线及本文证据发生变化，未格式化无关 Rust 文件。
+槽位 1 的 owner 与锁已释放，编译缓存保留；原有其他任务文件删除不纳入提交。

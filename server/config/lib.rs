@@ -5,3 +5,9 @@ pub use config_decode::*;
 
 #[cfg(test)]
 mod config_decode_test;
+
+mod config_urls;
+pub use config_urls::*;
+
+#[cfg(test)]
+mod config_urls_test;
