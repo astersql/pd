@@ -15,3 +15,6 @@ mod config_unknown;
 
 #[cfg(test)]
 mod config_unknown_test;
+
+mod security_config;
+pub use security_config::*;

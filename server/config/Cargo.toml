@@ -15,3 +15,8 @@ serde = { workspace = true, features = ["derive"] }
 serde_json = { workspace = true, features = ["raw_value"] }
 toml.workspace = true
 astersql-pd-errs.workspace = true
+astersql-pd-schedule-config.workspace = true
+astersql-pd-rm-server.workspace = true
+astersql-pd-logutil.workspace = true
+astersql-pd-metricutil.workspace = true
+astersql-pd-metering-config.workspace = true

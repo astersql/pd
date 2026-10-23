@@ -10,3 +10,7 @@ path = "lib.rs"
 
 [dependencies]
 astersql-pd-typeutil.workspace = true
+serde = { workspace = true, features = ["derive"] }
+astersql-pd-encryption.workspace = true
+astersql-pd-logutil.workspace = true
+astersql-pd-grpcutil.workspace = true

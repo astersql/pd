@@ -93,7 +93,11 @@ dependencies = [
 name = "astersql-pd-configutil"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-encryption",
+ "astersql-pd-grpcutil",
+ "astersql-pd-logutil",
  "astersql-pd-typeutil",
+ "serde",
 ]
 
 [[package]]
@@ -125,6 +129,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "astersql-pd-encryption"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-errs",
+ "astersql-pd-typeutil",
+ "serde",
+]
+
+[[package]]
 name = "astersql-pd-errs"
 version = "0.1.0"
 
@@ -136,6 +149,15 @@ dependencies = [
  "async-trait",
  "tokio",
  "tokio-util",
+]
+
+[[package]]
+name = "astersql-pd-grpcutil"
+version = "0.1.0"
+dependencies = [
+ "base64",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]
@@ -180,6 +202,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "astersql-pd-logutil"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "astersql-pd-mcs-constant"
 version = "0.1.0"
 
@@ -193,6 +223,22 @@ dependencies = [
  "thiserror 2.0.21",
  "tokio",
  "tokio-util",
+]
+
+[[package]]
+name = "astersql-pd-metering-config"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "astersql-pd-metricutil"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-typeutil",
+ "serde",
 ]
 
 [[package]]
@@ -263,6 +309,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "astersql-pd-rm-server"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-configutil",
+ "astersql-pd-typeutil",
+ "serde",
+ "serde_json",
+ "toml",
+]
+
+[[package]]
 name = "astersql-pd-runtime"
 version = "0.1.0"
 dependencies = [
@@ -282,6 +339,17 @@ dependencies = [
  "tokio-stream",
  "tokio-util",
  "tonic",
+]
+
+[[package]]
+name = "astersql-pd-schedule-config"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-configutil",
+ "astersql-pd-typeutil",
+ "serde",
+ "serde_json",
+ "toml",
 ]
 
 [[package]]
@@ -311,6 +379,11 @@ version = "0.1.0"
 dependencies = [
  "astersql-pd-configutil",
  "astersql-pd-errs",
+ "astersql-pd-logutil",
+ "astersql-pd-metering-config",
+ "astersql-pd-metricutil",
+ "astersql-pd-rm-server",
+ "astersql-pd-schedule-config",
  "astersql-pd-typeutil",
  "serde",
  "serde_json",

@@ -1,5 +1,5 @@
 // Copyright 2026 AsterSQL.
-//! Pure server configuration scalars. Full nested Config assembly is not implemented.
+//! Pure server configuration values and nested assembly, independent of service startup.
 mod config_decode;
 pub use config_decode::*;
 
@@ -75,3 +75,8 @@ pub use deprecated_config::*;
 
 #[cfg(test)]
 mod deprecated_config_test;
+
+mod nested_config;
+pub use nested_config::*;
+#[cfg(test)]
+mod nested_config_test;

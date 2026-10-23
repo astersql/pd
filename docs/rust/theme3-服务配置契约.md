@@ -1666,3 +1666,117 @@ owner 记录计划、任务、会话 pd96 和 shell PID；EXIT/INT/TERM 清理�
 已审查两个接口、五项独立测试、lib.rs 注册及本文差异，无 Cargo.toml 或
 Cargo.lock 变更，无其他 Rust 格式化改动。全部 Cargo/fixture 子进程已结束，
 槽位 1 owner 及锁已释放，缓存保留；原有其他编号任务删除不纳入本任务提交。
+
+
+## 批次 97：外部嵌套配置纯值装配
+
+日期：2026-10-24（Asia/Shanghai）。前置批次 96 已核验：提交 `6edd06355`
+中的 deprecated_config 两接口、五项测试和本证据文档的红绿灯及 741 项
+workspace 通过记录一致。按本轮补充授权，外部拥有包缺口纳入本任务必要范围；
+只补纯配置值与 codec，不迁移完整调度、加密运行时、服务启动或 PersistOptions。
+只读 plan.md 和来源主题计划不作变更。
+
+### 实现与 Go 依据
+
+| canonical crate / 文件 | 本次真实值契约与 Go 来源 |
+| --- | --- |
+| `astersql-pd-schedule-config`：[lib.rs](../../pkg/schedule/config/lib.rs) | ScheduleConfig / ReplicationConfig、StoreLimitConfig、SchedulerConfig；`pkg/schedule/config/config.go` 的 Adjust / Validate / parseDeprecatedFlag / 新 JSON snapshot 的 store-limit 继承，以及 util.go 的 ASCII label grammar。包含 reloading、presence、五对废弃 flags、有限非负限速、比例/worker/policy 校验；不实现调度算法或持久化 patch API。 |
+| `astersql-pd-rm-server`：[lib.rs](../../pkg/mcs/resourcemanager/server/lib.rs) | `pkg/mcs/resourcemanager/server/config.go` 的 ControllerConfig / RequestUnitConfig / RUVersionPolicy；成本与 duration 的 presence 默认、无效 push interval 清空地址、policy 查询/校验/clone。Adjust 按 Go 不自动验证 RU policy；测试不启用故障注入分支。 |
+| `astersql-pd-encryption`：[lib.rs](../../pkg/encryption/lib.rs) | `pkg/encryption/config.go` 的 Config.Adjust/GetMethod/GetMasterKeyMeta；四种方法、rotation、plaintext/KMS/file 元数据及 RFC 错误码/消息/先后顺序。领域枚举不暴露 protobuf；不读取 key 或连接 KMS。 |
+| `astersql-pd-logutil`：[lib.rs](../../pkg/utils/logutil/lib.rs) | go.mod 固定的 `pingcap/log v1.1.1-0.20221110025148-ca232912c9f3` Config / FileLogConfig，以及本地 logutil.RedactInfoLogType；file/sampling 全部可序列化值、PD 默认和 redaction bool/MARKER。 |
+| `astersql-pd-metricutil`：[lib.rs](../../pkg/utils/metricutil/lib.rs) | `pkg/utils/metricutil/metricutil.go` MetricConfig 与 Config.Adjust 的 15s/name 默认，保留 address 与显式 job。 |
+| `astersql-pd-grpcutil`：[lib.rs](../../pkg/utils/grpcutil/lib.rs)；已有 configutil 的 [security_config.rs](../../pkg/utils/configutil/security_config.rs) | grpcutil.TLSConfig 的证书路径、CN nil/empty、三组真实字节/base64 与 SecurityConfig 的 flatten/redact/encryption；不加载证书、不创建 TLS transport。 |
+| `astersql-pd-metering-config`：[lib.rs](../../pkg/metering/config/lib.rs) | 对固定 `metering_sdk v0.0.0-20260814062708-9e3b68cd9adf/config` 的纯值适配；所有 common/AWS/OSS/COS/Azure/localfs 字段及 omitempty，不复制 SDK 存储运行时。该外部模块的适配在 pkg/metering/config 唯一实现。 |
+| `astersql-pd-server-config`：[nested_config.rs](../../server/config/nested_config.rs) | 类型化 Config 全部纯值、StoreLabel、coreos/semver 编码值，decode_json_config / decode_toml_config、Config::validate / adjust。按 Go Config.Adjust 的调用顺序装配上述拥有包及既有 PDServer/Keyspace/Dashboard/ReplicationMode/Microservice；hostname、绝对 cwd 与 scheduling defaults 由宿主传入，不建立全局状态。 |
+
+七个新增拥有包各自在 lib.rs 显式注册独立 config_test.rs；装配的独立
+nested_config_test.rs 显式注册在 server/config/lib.rs。其余已有生产文件仅将
+clean_path 设为 crate 可见，复用同一 lexical path 实现。根 workspace 和
+Cargo.lock 只增加本次本地 crates 与必要边；base64 精确复用锁内 `=0.22.1`，
+未升级第三方依赖。所有可用 Rust 生产源码有 AsterSQL 版权标记。
+
+TOML decoder 委托 canonical 拥有包处理 flags/arrays/成本与非有限浮点；根
+metadata 保留原始字面大小写，因此字段匹配可忽略大小写而 IsDefined 仍按 Go
+区分大小写。JSON 的 quoted bool 与 TOML 原生 bool 区分，slice nil/empty、
+omitempty、TLS bytes 和 store-limit 的省略/null 继承均有独立断言。调度全局
+默认由显式 ScheduleDefaults 快照替代，migration 更新宿主快照并供下一配置复用。
+
+### 只读 Go 运行差分
+
+新增 [rust-nested-config-oracle.py](../../scripts/rust-nested-config-oracle.py)
+仅运行已有 bin/pd-server；已检查 Parse/Adjust/config-check/PD config 日志路径，
+不运行生成器、failpoint 启停、Go 格式化或模块整理。输入配置、输出日志与进程
+均限制于临时目录及本轮进程，捕获后 terminate/wait，超时 kill/wait；捕获发生在
+PD config 日志到达时，不把启动或健康状态作为配置值验收。
+
+`python3 scripts/rust-nested-config-oracle.py` 退出 0，生成本次提交的
+[Go 原始 fixtures](../../server/config/fixtures/nested_config_go.json)：5 组成功配置
+（missing、cased、unknown、explicit、limits）和 12 组错误输出。fixtures 保留
+原始 TOML、PD 日志、config-check 输出、退出码及二进制 SHA-256。`checkout_head`
+是捕获时仓库提交，不冒充二进制内嵌版本：已有二进制的 Git Commit Hash 为 None；
+其固定模块版本已用 `go version -m bin/pd-server` 对照根 go.mod。
+
+五份完整 JSON 比较所有字段值；根对象字段顺序不作为语义差异。每份另外从原始
+Go 日志以 RawValue 抽取 log/metric/schedule/replication/security/controller/metering，
+与 Rust 序列化直接逐字比较，共 **35 次原始嵌套 JSON 字节比较**，不以 Rust 输出
+生成预期。默认、显式零/false、废弃限速迁移、KMS/file 值、RU 成本、TLS bytes、
+AWS/localfs 及 nil/omitempty 均由真实 Go 输出支撑。其余 validator 分支和 flags
+真值表依据前述 Go 源码独立断言，明确不声称每个 Rust 边界用例都有新增 Go 输入。
+
+12 份错误覆盖整数键 store-limit / RU overrides 的 Go TOML 拒绝、空间比例、worker、
+负限速、废弃 flag 冲突、isolation、三种 encryption 错误、redact 和日志目录关系。
+Go config-check 的这些错误输出退出码实际均为 0，fixture 如实保留，不将退出 0
+当作成功配置。redact 比较稳定消息后缀，Go TOML 文件位置前缀单独保留。运行时
+push interval 警告日志保留原文，但与 Config.WarningMsgs 的未知项警告分开；
+仅 config-check 的配置检查消息参与 WarningMsgs 断言，日志时间不参与比较。
+
+本轮另运行既有只读 Go 测试，均退出 0：
+
+- `go test -mod=readonly ./server/config -count=1`：包通过，1.082s。
+- `go test -mod=readonly ./pkg/encryption -run '^TestAdjust' -count=1`：包通过，1.119s。
+- `go test -mod=readonly ./pkg/mcs/resourcemanager/server -run '^TestControllerConfig$' -count=1`：包通过，1.514s。
+
+已先核对这些选中测试及 TestMain；不需要 failpoint 注入，不运行需要注入的其他
+manager 测试，也不新增 Go oracle。Go 现有实现、测试、模块和工具源码保持只读。
+
+### TDD 与验证
+
+每次 Cargo 阶段均通过原子 mkdir 动态领取共享槽位 **1**：
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录计划、任务、pd97 会话与持有 shell PID；正常/失败/信号退出有清理，
+所有 Cargo/fixture 子进程继承绝对槽位及 `GOFLAGS=-mod=readonly`。缓存保留。
+既有 etcd fixture 只读编译已有 scripts/rust-etcd-fixture，不注入或生成源码；
+proto 构建复用既有锁定缓存，本轮日志未出现 proto 重建/解压 Go 来源。
+
+先建立可编译类型/装配接口与两个真实状态测试，聚焦红灯 **0 passed / 2 failed，
+退出 101**：max_snapshot_count 仍为 0，以及错误空间比例未拒绝。最小实现后
+同组 **2 passed / 0 failed**，再增加差分、原始字节与状态次序等用例，最终聚焦
+**7 passed / 0 failed / 0 ignored**。期间新增 Go config-check 全输出的对照曾因
+把运行时 push 警告混入 WarningMsgs 失败，随后保留原日志并只提取明确的检查消息；
+没有削弱字段值、字节、错误文本或未知项警告断言。
+
+7 项装配测试覆盖错误优先级、提前返回时未调整的后续字段、reloading、presence、
+TOML NaN 校验/保留、JSON 类型、词法路径、semver 及未知项。14 项拥有包独立测试
+补充五对 flags 的 80 种组合、所有 Schedule.Validate 分支、深复制和 RU policy
+查询/校验、四种加密方法/三种主密钥类型、redaction、TLS 和 metering 编码值。
+纯值任务无存储事务、断连/到期或后端测试入口要求；workspace 仍运行既有真实 etcd。
+
+| 确切命令 | 退出码与有效证据 |
+| --- | --- |
+| `cargo fmt --all` | 0；各轮 Rust 修改后执行，无其他任务的 Rust 格式化变化 |
+| `cargo check --workspace` | 0；仅同步本次本地依赖边到 Cargo.lock，无第三方版本变化 |
+| `cargo test --locked -p astersql-pd-server-config --lib nested_config -- --nocapture` | 初始红灯 101：0 passed / 2 failed；同组绿灯 0：2 passed；最终 0：7 passed / 0 failed / 0 ignored |
+| `cargo test --locked -p astersql-pd-schedule-config -p astersql-pd-rm-server -p astersql-pd-encryption -p astersql-pd-logutil -p astersql-pd-metricutil -p astersql-pd-grpcutil -p astersql-pd-metering-config` | 0；14 passed / 0 failed / 0 ignored，最终 workspace 亦重新运行 |
+| `cargo metadata --format-version 1 --no-deps` | 0；本地 canonical crates 已连线 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；仅既有 core_region_adapter.rs 的 cpu_usage deprecated 警告 |
+| `cargo test --workspace --locked` | 0；762 passed / 0 failed / 1 既有 ignored，含真实 etcd；配置 crate 78 项通过 |
+| `git diff --check` | 0 |
+
+本轮状态：**已完成**。开始/结束 1101 个 Go/模块文件的路径集合和 SHA-256
+完全相同，Go/模块 Git 状态为空；只读 plan.md SHA-256 保持
+`c7968f95a13d0d216ced3adafaca3140ad6ef959ff693c613cb903b231a6f777`。
+所有 Cargo/fixture 子进程已结束，槽位 1 的 owner 与锁已释放，缓存保留。
+已审查本次 canonical 值实现、独立测试、原始 Go fixtures、只读捕获脚本、manifest/
+lock 和本文证据；已有其他编号任务删除不纳入本次提交。批次 97 的外部纯值准入
+已满足；不据此宣称完整 Go scheduler/SDK/加密运行时或来源主题已迁移完成。

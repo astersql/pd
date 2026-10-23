@@ -1,0 +1,1326 @@
+{
+  "binary_sha256": "b9baaf7b6160a6ea1e3e3dc72ae059f317b0066838b676680105daceed297bdc",
+  "checkout_head": "6edd063556be2d887a4a44c6f070ce32e80675d3",
+  "cases": [
+    {
+      "name": "missing",
+      "toml": "name=\"nested-oracle\"\nclient-urls=\"http://127.0.0.1:0\"\npeer-urls=\"http://127.0.0.1:0\"\ndata-dir=\"/var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/pd97-oracle-o1r5iizq/data\"\n[log]\nformat=\"json\"\n",
+      "log": "{\"level\":\"INFO\",\"time\":\"2026/10/24 03:22:22.884 +08:00\",\"caller\":\"server.go:268\",\"message\":\"PD config\",\"enable-keyspace-group\":false,\"config\":{\"client-urls\":\"http://127.0.0.1:0\",\"peer-urls\":\"http://127.0.0.1:0\",\"advertise-client-urls\":\"http://127.0.0.1:0\",\"advertise-peer-urls\":\"http://127.0.0.1:0\",\"name\":\"nested-oracle\",\"data-dir\":\"/var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/pd97-oracle-o1r5iizq/data\",\"force-new-cluster\":false,\"enable-grpc-gateway\":true,\"initial-cluster\":\"nested-oracle=http://127.0.0.1:0\",\"initial-cluster-state\":\"new\",\"initial-cluster-token\":\"pd-cluster\",\"join\":\"\",\"lease\":5,\"log\":{\"level\":\"info\",\"format\":\"json\",\"disable-timestamp\":false,\"file\":{\"filename\":\"\",\"max-size\":0,\"max-days\":0,\"max-backups\":0},\"development\":false,\"disable-caller\":false,\"disable-stacktrace\":false,\"disable-error-verbose\":true,\"sampling\":null,\"error-output-path\":\"\"},\"max-concurrent-tso-proxy-streamings\":5000,\"tso-proxy-recv-from-client-timeout\":\"1h0m0s\",\"tso-save-interval\":\"5s\",\"tso-update-physical-interval\":\"50ms\",\"enable-local-tso\":false,\"metric\":{\"job\":\"nested-oracle\",\"address\":\"\",\"interval\":\"15s\"},\"schedule\":{\"max-snapshot-count\":64,\"max-pending-peer-count\":64,\"max-merge-region-size\":54,\"max-merge-region-keys\":0,\"split-merge-interval\":\"1h0m0s\",\"switch-witness-interval\":\"1h0m0s\",\"enable-one-way-merge\":\"false\",\"enable-cross-table-merge\":\"true\",\"patrol-region-interval\":\"10ms\",\"max-store-down-time\":\"30m0s\",\"max-store-preparing-time\":\"48h0m0s\",\"leader-schedule-limit\":4,\"leader-schedule-policy\":\"count\",\"region-schedule-limit\":2048,\"witness-schedule-limit\":4,\"replica-schedule-limit\":64,\"merge-schedule-limit\":8,\"hot-region-schedule-limit\":4,\"affinity-schedule-limit\":0,\"split-scatter-schedule-limit\":4,\"hot-region-cache-hits-threshold\":3,\"default-store-limit\":{\"add-peer\":15,\"remove-peer\":15,\"transfer-leader-in\":100000000},\"store-limit\":{},\"tolerant-size-ratio\":0,\"low-space-ratio\":0.8,\"high-space-ratio\":0.7,\"region-score-formula-version\":\"v2\",\"scheduler-max-waiting-operator\":5,\"enable-remove-down-replica\":\"true\",\"enable-replace-offline-replica\":\"true\",\"enable-make-up-replica\":\"true\",\"enable-remove-extra-replica\":\"true\",\"enable-location-replacement\":\"true\",\"enable-debug-metrics\":\"false\",\"enable-joint-consensus\":\"true\",\"enable-tikv-split-region\":\"true\",\"enable-heartbeat-breakdown-metrics\":\"true\",\"enable-heartbeat-concurrent-runner\":\"true\",\"schedulers-v2\":[{\"type\":\"balance-region\",\"args\":null,\"disable\":false,\"args-payload\":\"\"},{\"type\":\"balance-leader\",\"args\":null,\"disable\":false,\"args-payload\":\"\"},{\"type\":\"hot-region\",\"args\":null,\"disable\":false,\"args-payload\":\"\"},{\"type\":\"evict-slow-store\",\"args\":null,\"disable\":false,\"args-payload\":\"\"},{\"type\":\"evict-stopping-store\",\"args\":null,\"disable\":false,\"args-payload\":\"\"}],\"hot-regions-write-interval\":\"10m0s\",\"hot-regions-reserved-days\":7,\"max-movable-hot-peer-size\":512,\"enable-diagnostic\":\"true\",\"enable-witness\":\"false\",\"slow-store-evicting-affected-store-ratio-threshold\":0.3,\"store-limit-version\":\"v1\",\"patrol-region-worker-count\":1,\"max-affinity-merge-region-size\":256},\"replication\":{\"max-replicas\":3,\"location-labels\":\"\",\"strictly-match-label\":\"false\",\"enable-placement-rules\":\"true\",\"enable-placement-rules-cache\":\"false\",\"isolation-level\":\"\"},\"pd-server\":{\"use-region-storage\":\"true\",\"max-gap-reset-ts\":\"24h0m0s\",\"key-type\":\"table\",\"runtime-services\":\"\",\"metric-storage\":\"\",\"dashboard-address\":\"auto\",\"flow-round-by-digit\":3,\"min-resolved-ts-persistence-interval\":\"1s\",\"server-memory-limit\":0,\"server-memory-limit-gc-trigger\":0.7,\"enable-gogc-tuner\":\"true\",\"gc-tuner-threshold\":0.6,\"block-safe-point-v1\":\"false\",\"gc-keyspace-index-load-concurrency\":4,\"gc-state-cache-warmup-concurrency\":4},\"cluster-version\":\"0.0.0\",\"labels\":{},\"quota-backend-bytes\":\"8GiB\",\"auto-compaction-mode\":\"periodic\",\"auto-compaction-retention-v2\":\"1h\",\"tick-interval\":\"500ms\",\"election-interval\":\"3s\",\"enable-prevote\":true,\"max-request-bytes\":157286400,\"security\":{\"cacert-path\":\"\",\"cert-path\":\"\",\"key-path\":\"\",\"cert-allowed-cn\":null,\"SSLCABytes\":null,\"SSLCertBytes\":null,\"SSLKEYBytes\":null,\"redact-info-log\":false,\"encryption\":{\"data-encryption-method\":\"plaintext\",\"data-key-rotation-period\":\"168h0m0s\",\"master-key\":{\"type\":\"plaintext\",\"key-id\":\"\",\"region\":\"\",\"endpoint\":\"\",\"path\":\"\"}}},\"label-property\":null,\"dashboard\":{\"tidb-cacert-path\":\"\",\"tidb-cert-path\":\"\",\"tidb-key-path\":\"\",\"public-path-prefix\":\"\",\"temp-dir\":\"\",\"internal-proxy\":false,\"enable-telemetry\":false,\"enable-experimental\":false,\"disable-custom-prom-addr\":false},\"replication-mode\":{\"replication-mode\":\"majority\",\"dr-auto-sync\":{\"label-key\":\"\",\"primary\":\"\",\"dr\":\"\",\"primary-replicas\":0,\"dr-replicas\":0,\"wait-store-timeout\":\"1m0s\",\"wait-recover-timeout\":\"0s\",\"pause-region-split\":\"false\"}},\"keyspace\":{\"pre-alloc\":null,\"wait-region-split\":true,\"wait-region-split-timeout\":\"30s\",\"check-region-split-interval\":\"50ms\",\"meta-service-groups\":null},\"micro-service\":{\"enable-scheduling-fallback\":\"true\",\"enable-tso-dynamic-switching\":\"false\",\"enable-resource-manager-fallback\":\"true\"},\"controller\":{\"degraded-mode-wait-duration\":\"0s\",\"ltb-max-wait-duration\":\"30s\",\"ltb-token-rpc-max-delay\":\"1s\",\"request-unit\":{\"read-base-cost\":0.125,\"read-per-batch-base-cost\":0.5,\"read-cost-per-byte\":0.0000152587890625,\"write-base-cost\":1,\"write-per-batch-base-cost\":1,\"write-cost-per-byte\":0.0009765625,\"read-cpu-ms-cost\":0.3333333333333333},\"enable-controller-trace-log\":\"false\",\"push-metrics-address\":\"\",\"push-metrics-interval\":\"0s\"},\"metering\":{}}}",
+      "config": {
+        "client-urls": "http://127.0.0.1:0",
+        "peer-urls": "http://127.0.0.1:0",
+        "advertise-client-urls": "http://127.0.0.1:0",
+        "advertise-peer-urls": "http://127.0.0.1:0",
+        "name": "nested-oracle",
+        "data-dir": "/var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/pd97-oracle-o1r5iizq/data",
+        "force-new-cluster": false,
+        "enable-grpc-gateway": true,
+        "initial-cluster": "nested-oracle=http://127.0.0.1:0",
+        "initial-cluster-state": "new",
+        "initial-cluster-token": "pd-cluster",
+        "join": "",
+        "lease": 5,
+        "log": {
+          "level": "info",
+          "format": "json",
+          "disable-timestamp": false,
+          "file": {
+            "filename": "",
+            "max-size": 0,
+            "max-days": 0,
+            "max-backups": 0
+          },
+          "development": false,
+          "disable-caller": false,
+          "disable-stacktrace": false,
+          "disable-error-verbose": true,
+          "sampling": null,
+          "error-output-path": ""
+        },
+        "max-concurrent-tso-proxy-streamings": 5000,
+        "tso-proxy-recv-from-client-timeout": "1h0m0s",
+        "tso-save-interval": "5s",
+        "tso-update-physical-interval": "50ms",
+        "enable-local-tso": false,
+        "metric": {
+          "job": "nested-oracle",
+          "address": "",
+          "interval": "15s"
+        },
+        "schedule": {
+          "max-snapshot-count": 64,
+          "max-pending-peer-count": 64,
+          "max-merge-region-size": 54,
+          "max-merge-region-keys": 0,
+          "split-merge-interval": "1h0m0s",
+          "switch-witness-interval": "1h0m0s",
+          "enable-one-way-merge": "false",
+          "enable-cross-table-merge": "true",
+          "patrol-region-interval": "10ms",
+          "max-store-down-time": "30m0s",
+          "max-store-preparing-time": "48h0m0s",
+          "leader-schedule-limit": 4,
+          "leader-schedule-policy": "count",
+          "region-schedule-limit": 2048,
+          "witness-schedule-limit": 4,
+          "replica-schedule-limit": 64,
+          "merge-schedule-limit": 8,
+          "hot-region-schedule-limit": 4,
+          "affinity-schedule-limit": 0,
+          "split-scatter-schedule-limit": 4,
+          "hot-region-cache-hits-threshold": 3,
+          "default-store-limit": {
+            "add-peer": 15,
+            "remove-peer": 15,
+            "transfer-leader-in": 100000000
+          },
+          "store-limit": {},
+          "tolerant-size-ratio": 0,
+          "low-space-ratio": 0.8,
+          "high-space-ratio": 0.7,
+          "region-score-formula-version": "v2",
+          "scheduler-max-waiting-operator": 5,
+          "enable-remove-down-replica": "true",
+          "enable-replace-offline-replica": "true",
+          "enable-make-up-replica": "true",
+          "enable-remove-extra-replica": "true",
+          "enable-location-replacement": "true",
+          "enable-debug-metrics": "false",
+          "enable-joint-consensus": "true",
+          "enable-tikv-split-region": "true",
+          "enable-heartbeat-breakdown-metrics": "true",
+          "enable-heartbeat-concurrent-runner": "true",
+          "schedulers-v2": [
+            {
+              "type": "balance-region",
+              "args": null,
+              "disable": false,
+              "args-payload": ""
+            },
+            {
+              "type": "balance-leader",
+              "args": null,
+              "disable": false,
+              "args-payload": ""
+            },
+            {
+              "type": "hot-region",
+              "args": null,
+              "disable": false,
+              "args-payload": ""
+            },
+            {
+              "type": "evict-slow-store",
+              "args": null,
+              "disable": false,
+              "args-payload": ""
+            },
+            {
+              "type": "evict-stopping-store",
+              "args": null,
+              "disable": false,
+              "args-payload": ""
+            }
+          ],
+          "hot-regions-write-interval": "10m0s",
+          "hot-regions-reserved-days": 7,
+          "max-movable-hot-peer-size": 512,
+          "enable-diagnostic": "true",
+          "enable-witness": "false",
+          "slow-store-evicting-affected-store-ratio-threshold": 0.3,
+          "store-limit-version": "v1",
+          "patrol-region-worker-count": 1,
+          "max-affinity-merge-region-size": 256
+        },
+        "replication": {
+          "max-replicas": 3,
+          "location-labels": "",
+          "strictly-match-label": "false",
+          "enable-placement-rules": "true",
+          "enable-placement-rules-cache": "false",
+          "isolation-level": ""
+        },
+        "pd-server": {
+          "use-region-storage": "true",
+          "max-gap-reset-ts": "24h0m0s",
+          "key-type": "table",
+          "runtime-services": "",
+          "metric-storage": "",
+          "dashboard-address": "auto",
+          "flow-round-by-digit": 3,
+          "min-resolved-ts-persistence-interval": "1s",
+          "server-memory-limit": 0,
+          "server-memory-limit-gc-trigger": 0.7,
+          "enable-gogc-tuner": "true",
+          "gc-tuner-threshold": 0.6,
+          "block-safe-point-v1": "false",
+          "gc-keyspace-index-load-concurrency": 4,
+          "gc-state-cache-warmup-concurrency": 4
+        },
+        "cluster-version": "0.0.0",
+        "labels": {},
+        "quota-backend-bytes": "8GiB",
+        "auto-compaction-mode": "periodic",
+        "auto-compaction-retention-v2": "1h",
+        "tick-interval": "500ms",
+        "election-interval": "3s",
+        "enable-prevote": true,
+        "max-request-bytes": 157286400,
+        "security": {
+          "cacert-path": "",
+          "cert-path": "",
+          "key-path": "",
+          "cert-allowed-cn": null,
+          "SSLCABytes": null,
+          "SSLCertBytes": null,
+          "SSLKEYBytes": null,
+          "redact-info-log": false,
+          "encryption": {
+            "data-encryption-method": "plaintext",
+            "data-key-rotation-period": "168h0m0s",
+            "master-key": {
+              "type": "plaintext",
+              "key-id": "",
+              "region": "",
+              "endpoint": "",
+              "path": ""
+            }
+          }
+        },
+        "label-property": null,
+        "dashboard": {
+          "tidb-cacert-path": "",
+          "tidb-cert-path": "",
+          "tidb-key-path": "",
+          "public-path-prefix": "",
+          "temp-dir": "",
+          "internal-proxy": false,
+          "enable-telemetry": false,
+          "enable-experimental": false,
+          "disable-custom-prom-addr": false
+        },
+        "replication-mode": {
+          "replication-mode": "majority",
+          "dr-auto-sync": {
+            "label-key": "",
+            "primary": "",
+            "dr": "",
+            "primary-replicas": 0,
+            "dr-replicas": 0,
+            "wait-store-timeout": "1m0s",
+            "wait-recover-timeout": "0s",
+            "pause-region-split": "false"
+          }
+        },
+        "keyspace": {
+          "pre-alloc": null,
+          "wait-region-split": true,
+          "wait-region-split-timeout": "30s",
+          "check-region-split-interval": "50ms",
+          "meta-service-groups": null
+        },
+        "micro-service": {
+          "enable-scheduling-fallback": "true",
+          "enable-tso-dynamic-switching": "false",
+          "enable-resource-manager-fallback": "true"
+        },
+        "controller": {
+          "degraded-mode-wait-duration": "0s",
+          "ltb-max-wait-duration": "30s",
+          "ltb-token-rpc-max-delay": "1s",
+          "request-unit": {
+            "read-base-cost": 0.125,
+            "read-per-batch-base-cost": 0.5,
+            "read-cost-per-byte": 1.52587890625e-05,
+            "write-base-cost": 1,
+            "write-per-batch-base-cost": 1,
+            "write-cost-per-byte": 0.0009765625,
+            "read-cpu-ms-cost": 0.3333333333333333
+          },
+          "enable-controller-trace-log": "false",
+          "push-metrics-address": "",
+          "push-metrics-interval": "0s"
+        },
+        "metering": {}
+      },
+      "check_output": "config check successful",
+      "check_messages": [
+        "config check successful"
+      ]
+    },
+    {
+      "name": "cased",
+      "toml": "name=\"nested-oracle\"\nclient-urls=\"http://127.0.0.1:0\"\npeer-urls=\"http://127.0.0.1:0\"\ndata-dir=\"/var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/pd97-oracle-ptjea0dg/data\"\n[log]\nformat=\"json\"\n[SCHEDULE]\nMAX-SNAPSHOT-COUNT=0\nENABLE-JOINT-CONSENSUS=false\n",
+      "log": "{\"level\":\"INFO\",\"time\":\"2026/10/24 03:22:23.023 +08:00\",\"caller\":\"server.go:268\",\"message\":\"PD config\",\"enable-keyspace-group\":false,\"config\":{\"client-urls\":\"http://127.0.0.1:0\",\"peer-urls\":\"http://127.0.0.1:0\",\"advertise-client-urls\":\"http://127.0.0.1:0\",\"advertise-peer-urls\":\"http://127.0.0.1:0\",\"name\":\"nested-oracle\",\"data-dir\":\"/var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/pd97-oracle-ptjea0dg/data\",\"force-new-cluster\":false,\"enable-grpc-gateway\":true,\"initial-cluster\":\"nested-oracle=http://127.0.0.1:0\",\"initial-cluster-state\":\"new\",\"initial-cluster-token\":\"pd-cluster\",\"join\":\"\",\"lease\":5,\"log\":{\"level\":\"info\",\"format\":\"json\",\"disable-timestamp\":false,\"file\":{\"filename\":\"\",\"max-size\":0,\"max-days\":0,\"max-backups\":0},\"development\":false,\"disable-caller\":false,\"disable-stacktrace\":false,\"disable-error-verbose\":true,\"sampling\":null,\"error-output-path\":\"\"},\"max-concurrent-tso-proxy-streamings\":5000,\"tso-proxy-recv-from-client-timeout\":\"1h0m0s\",\"tso-save-interval\":\"5s\",\"tso-update-physical-interval\":\"50ms\",\"enable-local-tso\":false,\"metric\":{\"job\":\"nested-oracle\",\"address\":\"\",\"interval\":\"15s\"},\"schedule\":{\"max-snapshot-count\":64,\"max-pending-peer-count\":64,\"max-merge-region-size\":54,\"max-merge-region-keys\":0,\"split-merge-interval\":\"1h0m0s\",\"switch-witness-interval\":\"1h0m0s\",\"enable-one-way-merge\":\"false\",\"enable-cross-table-merge\":\"true\",\"patrol-region-interval\":\"10ms\",\"max-store-down-time\":\"30m0s\",\"max-store-preparing-time\":\"48h0m0s\",\"leader-schedule-limit\":4,\"leader-schedule-policy\":\"count\",\"region-schedule-limit\":2048,\"witness-schedule-limit\":4,\"replica-schedule-limit\":64,\"merge-schedule-limit\":8,\"hot-region-schedule-limit\":4,\"affinity-schedule-limit\":0,\"split-scatter-schedule-limit\":4,\"hot-region-cache-hits-threshold\":3,\"default-store-limit\":{\"add-peer\":15,\"remove-peer\":15,\"transfer-leader-in\":100000000},\"store-limit\":{},\"tolerant-size-ratio\":0,\"low-space-ratio\":0.8,\"high-space-ratio\":0.7,\"region-score-formula-version\":\"v2\",\"scheduler-max-waiting-operator\":5,\"enable-remove-down-replica\":\"true\",\"enable-replace-offline-replica\":\"true\",\"enable-make-up-replica\":\"true\",\"enable-remove-extra-replica\":\"true\",\"enable-location-replacement\":\"true\",\"enable-debug-metrics\":\"false\",\"enable-joint-consensus\":\"true\",\"enable-tikv-split-region\":\"true\",\"enable-heartbeat-breakdown-metrics\":\"true\",\"enable-heartbeat-concurrent-runner\":\"true\",\"schedulers-v2\":[{\"type\":\"balance-region\",\"args\":null,\"disable\":false,\"args-payload\":\"\"},{\"type\":\"balance-leader\",\"args\":null,\"disable\":false,\"args-payload\":\"\"},{\"type\":\"hot-region\",\"args\":null,\"disable\":false,\"args-payload\":\"\"},{\"type\":\"evict-slow-store\",\"args\":null,\"disable\":false,\"args-payload\":\"\"},{\"type\":\"evict-stopping-store\",\"args\":null,\"disable\":false,\"args-payload\":\"\"}],\"hot-regions-write-interval\":\"10m0s\",\"hot-regions-reserved-days\":7,\"max-movable-hot-peer-size\":512,\"enable-diagnostic\":\"true\",\"enable-witness\":\"false\",\"slow-store-evicting-affected-store-ratio-threshold\":0.3,\"store-limit-version\":\"v1\",\"patrol-region-worker-count\":1,\"max-affinity-merge-region-size\":256},\"replication\":{\"max-replicas\":3,\"location-labels\":\"\",\"strictly-match-label\":\"false\",\"enable-placement-rules\":\"true\",\"enable-placement-rules-cache\":\"false\",\"isolation-level\":\"\"},\"pd-server\":{\"use-region-storage\":\"true\",\"max-gap-reset-ts\":\"24h0m0s\",\"key-type\":\"table\",\"runtime-services\":\"\",\"metric-storage\":\"\",\"dashboard-address\":\"auto\",\"flow-round-by-digit\":3,\"min-resolved-ts-persistence-interval\":\"1s\",\"server-memory-limit\":0,\"server-memory-limit-gc-trigger\":0.7,\"enable-gogc-tuner\":\"true\",\"gc-tuner-threshold\":0.6,\"block-safe-point-v1\":\"false\",\"gc-keyspace-index-load-concurrency\":4,\"gc-state-cache-warmup-concurrency\":4},\"cluster-version\":\"0.0.0\",\"labels\":{},\"quota-backend-bytes\":\"8GiB\",\"auto-compaction-mode\":\"periodic\",\"auto-compaction-retention-v2\":\"1h\",\"tick-interval\":\"500ms\",\"election-interval\":\"3s\",\"enable-prevote\":true,\"max-request-bytes\":157286400,\"security\":{\"cacert-path\":\"\",\"cert-path\":\"\",\"key-path\":\"\",\"cert-allowed-cn\":null,\"SSLCABytes\":null,\"SSLCertBytes\":null,\"SSLKEYBytes\":null,\"redact-info-log\":false,\"encryption\":{\"data-encryption-method\":\"plaintext\",\"data-key-rotation-period\":\"168h0m0s\",\"master-key\":{\"type\":\"plaintext\",\"key-id\":\"\",\"region\":\"\",\"endpoint\":\"\",\"path\":\"\"}}},\"label-property\":null,\"dashboard\":{\"tidb-cacert-path\":\"\",\"tidb-cert-path\":\"\",\"tidb-key-path\":\"\",\"public-path-prefix\":\"\",\"temp-dir\":\"\",\"internal-proxy\":false,\"enable-telemetry\":false,\"enable-experimental\":false,\"disable-custom-prom-addr\":false},\"replication-mode\":{\"replication-mode\":\"majority\",\"dr-auto-sync\":{\"label-key\":\"\",\"primary\":\"\",\"dr\":\"\",\"primary-replicas\":0,\"dr-replicas\":0,\"wait-store-timeout\":\"1m0s\",\"wait-recover-timeout\":\"0s\",\"pause-region-split\":\"false\"}},\"keyspace\":{\"pre-alloc\":null,\"wait-region-split\":true,\"wait-region-split-timeout\":\"30s\",\"check-region-split-interval\":\"50ms\",\"meta-service-groups\":null},\"micro-service\":{\"enable-scheduling-fallback\":\"true\",\"enable-tso-dynamic-switching\":\"false\",\"enable-resource-manager-fallback\":\"true\"},\"controller\":{\"degraded-mode-wait-duration\":\"0s\",\"ltb-max-wait-duration\":\"30s\",\"ltb-token-rpc-max-delay\":\"1s\",\"request-unit\":{\"read-base-cost\":0.125,\"read-per-batch-base-cost\":0.5,\"read-cost-per-byte\":0.0000152587890625,\"write-base-cost\":1,\"write-per-batch-base-cost\":1,\"write-cost-per-byte\":0.0009765625,\"read-cpu-ms-cost\":0.3333333333333333},\"enable-controller-trace-log\":\"false\",\"push-metrics-address\":\"\",\"push-metrics-interval\":\"0s\"},\"metering\":{}}}",
+      "config": {
+        "client-urls": "http://127.0.0.1:0",
+        "peer-urls": "http://127.0.0.1:0",
+        "advertise-client-urls": "http://127.0.0.1:0",
+        "advertise-peer-urls": "http://127.0.0.1:0",
+        "name": "nested-oracle",
+        "data-dir": "/var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/pd97-oracle-ptjea0dg/data",
+        "force-new-cluster": false,
+        "enable-grpc-gateway": true,
+        "initial-cluster": "nested-oracle=http://127.0.0.1:0",
+        "initial-cluster-state": "new",
+        "initial-cluster-token": "pd-cluster",
+        "join": "",
+        "lease": 5,
+        "log": {
+          "level": "info",
+          "format": "json",
+          "disable-timestamp": false,
+          "file": {
+            "filename": "",
+            "max-size": 0,
+            "max-days": 0,
+            "max-backups": 0
+          },
+          "development": false,
+          "disable-caller": false,
+          "disable-stacktrace": false,
+          "disable-error-verbose": true,
+          "sampling": null,
+          "error-output-path": ""
+        },
+        "max-concurrent-tso-proxy-streamings": 5000,
+        "tso-proxy-recv-from-client-timeout": "1h0m0s",
+        "tso-save-interval": "5s",
+        "tso-update-physical-interval": "50ms",
+        "enable-local-tso": false,
+        "metric": {
+          "job": "nested-oracle",
+          "address": "",
+          "interval": "15s"
+        },
+        "schedule": {
+          "max-snapshot-count": 64,
+          "max-pending-peer-count": 64,
+          "max-merge-region-size": 54,
+          "max-merge-region-keys": 0,
+          "split-merge-interval": "1h0m0s",
+          "switch-witness-interval": "1h0m0s",
+          "enable-one-way-merge": "false",
+          "enable-cross-table-merge": "true",
+          "patrol-region-interval": "10ms",
+          "max-store-down-time": "30m0s",
+          "max-store-preparing-time": "48h0m0s",
+          "leader-schedule-limit": 4,
+          "leader-schedule-policy": "count",
+          "region-schedule-limit": 2048,
+          "witness-schedule-limit": 4,
+          "replica-schedule-limit": 64,
+          "merge-schedule-limit": 8,
+          "hot-region-schedule-limit": 4,
+          "affinity-schedule-limit": 0,
+          "split-scatter-schedule-limit": 4,
+          "hot-region-cache-hits-threshold": 3,
+          "default-store-limit": {
+            "add-peer": 15,
+            "remove-peer": 15,
+            "transfer-leader-in": 100000000
+          },
+          "store-limit": {},
+          "tolerant-size-ratio": 0,
+          "low-space-ratio": 0.8,
+          "high-space-ratio": 0.7,
+          "region-score-formula-version": "v2",
+          "scheduler-max-waiting-operator": 5,
+          "enable-remove-down-replica": "true",
+          "enable-replace-offline-replica": "true",
+          "enable-make-up-replica": "true",
+          "enable-remove-extra-replica": "true",
+          "enable-location-replacement": "true",
+          "enable-debug-metrics": "false",
+          "enable-joint-consensus": "true",
+          "enable-tikv-split-region": "true",
+          "enable-heartbeat-breakdown-metrics": "true",
+          "enable-heartbeat-concurrent-runner": "true",
+          "schedulers-v2": [
+            {
+              "type": "balance-region",
+              "args": null,
+              "disable": false,
+              "args-payload": ""
+            },
+            {
+              "type": "balance-leader",
+              "args": null,
+              "disable": false,
+              "args-payload": ""
+            },
+            {
+              "type": "hot-region",
+              "args": null,
+              "disable": false,
+              "args-payload": ""
+            },
+            {
+              "type": "evict-slow-store",
+              "args": null,
+              "disable": false,
+              "args-payload": ""
+            },
+            {
+              "type": "evict-stopping-store",
+              "args": null,
+              "disable": false,
+              "args-payload": ""
+            }
+          ],
+          "hot-regions-write-interval": "10m0s",
+          "hot-regions-reserved-days": 7,
+          "max-movable-hot-peer-size": 512,
+          "enable-diagnostic": "true",
+          "enable-witness": "false",
+          "slow-store-evicting-affected-store-ratio-threshold": 0.3,
+          "store-limit-version": "v1",
+          "patrol-region-worker-count": 1,
+          "max-affinity-merge-region-size": 256
+        },
+        "replication": {
+          "max-replicas": 3,
+          "location-labels": "",
+          "strictly-match-label": "false",
+          "enable-placement-rules": "true",
+          "enable-placement-rules-cache": "false",
+          "isolation-level": ""
+        },
+        "pd-server": {
+          "use-region-storage": "true",
+          "max-gap-reset-ts": "24h0m0s",
+          "key-type": "table",
+          "runtime-services": "",
+          "metric-storage": "",
+          "dashboard-address": "auto",
+          "flow-round-by-digit": 3,
+          "min-resolved-ts-persistence-interval": "1s",
+          "server-memory-limit": 0,
+          "server-memory-limit-gc-trigger": 0.7,
+          "enable-gogc-tuner": "true",
+          "gc-tuner-threshold": 0.6,
+          "block-safe-point-v1": "false",
+          "gc-keyspace-index-load-concurrency": 4,
+          "gc-state-cache-warmup-concurrency": 4
+        },
+        "cluster-version": "0.0.0",
+        "labels": {},
+        "quota-backend-bytes": "8GiB",
+        "auto-compaction-mode": "periodic",
+        "auto-compaction-retention-v2": "1h",
+        "tick-interval": "500ms",
+        "election-interval": "3s",
+        "enable-prevote": true,
+        "max-request-bytes": 157286400,
+        "security": {
+          "cacert-path": "",
+          "cert-path": "",
+          "key-path": "",
+          "cert-allowed-cn": null,
+          "SSLCABytes": null,
+          "SSLCertBytes": null,
+          "SSLKEYBytes": null,
+          "redact-info-log": false,
+          "encryption": {
+            "data-encryption-method": "plaintext",
+            "data-key-rotation-period": "168h0m0s",
+            "master-key": {
+              "type": "plaintext",
+              "key-id": "",
+              "region": "",
+              "endpoint": "",
+              "path": ""
+            }
+          }
+        },
+        "label-property": null,
+        "dashboard": {
+          "tidb-cacert-path": "",
+          "tidb-cert-path": "",
+          "tidb-key-path": "",
+          "public-path-prefix": "",
+          "temp-dir": "",
+          "internal-proxy": false,
+          "enable-telemetry": false,
+          "enable-experimental": false,
+          "disable-custom-prom-addr": false
+        },
+        "replication-mode": {
+          "replication-mode": "majority",
+          "dr-auto-sync": {
+            "label-key": "",
+            "primary": "",
+            "dr": "",
+            "primary-replicas": 0,
+            "dr-replicas": 0,
+            "wait-store-timeout": "1m0s",
+            "wait-recover-timeout": "0s",
+            "pause-region-split": "false"
+          }
+        },
+        "keyspace": {
+          "pre-alloc": null,
+          "wait-region-split": true,
+          "wait-region-split-timeout": "30s",
+          "check-region-split-interval": "50ms",
+          "meta-service-groups": null
+        },
+        "micro-service": {
+          "enable-scheduling-fallback": "true",
+          "enable-tso-dynamic-switching": "false",
+          "enable-resource-manager-fallback": "true"
+        },
+        "controller": {
+          "degraded-mode-wait-duration": "0s",
+          "ltb-max-wait-duration": "30s",
+          "ltb-token-rpc-max-delay": "1s",
+          "request-unit": {
+            "read-base-cost": 0.125,
+            "read-per-batch-base-cost": 0.5,
+            "read-cost-per-byte": 1.52587890625e-05,
+            "write-base-cost": 1,
+            "write-per-batch-base-cost": 1,
+            "write-cost-per-byte": 0.0009765625,
+            "read-cpu-ms-cost": 0.3333333333333333
+          },
+          "enable-controller-trace-log": "false",
+          "push-metrics-address": "",
+          "push-metrics-interval": "0s"
+        },
+        "metering": {}
+      },
+      "check_output": "config check successful",
+      "check_messages": [
+        "config check successful"
+      ]
+    },
+    {
+      "name": "unknown",
+      "toml": "name=\"nested-oracle\"\nclient-urls=\"http://127.0.0.1:0\"\npeer-urls=\"http://127.0.0.1:0\"\ndata-dir=\"/var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/pd97-oracle-6mu809a7/data\"\n[log]\nformat=\"json\"\n[schedule]\nunknown-field=false\n",
+      "log": "{\"level\":\"INFO\",\"time\":\"2026/10/24 03:22:23.161 +08:00\",\"caller\":\"server.go:268\",\"message\":\"PD config\",\"enable-keyspace-group\":false,\"config\":{\"client-urls\":\"http://127.0.0.1:0\",\"peer-urls\":\"http://127.0.0.1:0\",\"advertise-client-urls\":\"http://127.0.0.1:0\",\"advertise-peer-urls\":\"http://127.0.0.1:0\",\"name\":\"nested-oracle\",\"data-dir\":\"/var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/pd97-oracle-6mu809a7/data\",\"force-new-cluster\":false,\"enable-grpc-gateway\":true,\"initial-cluster\":\"nested-oracle=http://127.0.0.1:0\",\"initial-cluster-state\":\"new\",\"initial-cluster-token\":\"pd-cluster\",\"join\":\"\",\"lease\":5,\"log\":{\"level\":\"info\",\"format\":\"json\",\"disable-timestamp\":false,\"file\":{\"filename\":\"\",\"max-size\":0,\"max-days\":0,\"max-backups\":0},\"development\":false,\"disable-caller\":false,\"disable-stacktrace\":false,\"disable-error-verbose\":true,\"sampling\":null,\"error-output-path\":\"\"},\"max-concurrent-tso-proxy-streamings\":5000,\"tso-proxy-recv-from-client-timeout\":\"1h0m0s\",\"tso-save-interval\":\"5s\",\"tso-update-physical-interval\":\"50ms\",\"enable-local-tso\":false,\"metric\":{\"job\":\"nested-oracle\",\"address\":\"\",\"interval\":\"15s\"},\"schedule\":{\"max-snapshot-count\":64,\"max-pending-peer-count\":64,\"max-merge-region-size\":54,\"max-merge-region-keys\":0,\"split-merge-interval\":\"1h0m0s\",\"switch-witness-interval\":\"1h0m0s\",\"enable-one-way-merge\":\"false\",\"enable-cross-table-merge\":\"true\",\"patrol-region-interval\":\"10ms\",\"max-store-down-time\":\"30m0s\",\"max-store-preparing-time\":\"48h0m0s\",\"leader-schedule-limit\":4,\"leader-schedule-policy\":\"count\",\"region-schedule-limit\":2048,\"witness-schedule-limit\":4,\"replica-schedule-limit\":64,\"merge-schedule-limit\":8,\"hot-region-schedule-limit\":4,\"affinity-schedule-limit\":0,\"split-scatter-schedule-limit\":4,\"hot-region-cache-hits-threshold\":3,\"default-store-limit\":{\"add-peer\":15,\"remove-peer\":15,\"transfer-leader-in\":100000000},\"store-limit\":{},\"tolerant-size-ratio\":0,\"low-space-ratio\":0.8,\"high-space-ratio\":0.7,\"region-score-formula-version\":\"v2\",\"scheduler-max-waiting-operator\":5,\"enable-remove-down-replica\":\"true\",\"enable-replace-offline-replica\":\"true\",\"enable-make-up-replica\":\"true\",\"enable-remove-extra-replica\":\"true\",\"enable-location-replacement\":\"true\",\"enable-debug-metrics\":\"false\",\"enable-joint-consensus\":\"true\",\"enable-tikv-split-region\":\"true\",\"enable-heartbeat-breakdown-metrics\":\"true\",\"enable-heartbeat-concurrent-runner\":\"true\",\"schedulers-v2\":[{\"type\":\"balance-region\",\"args\":null,\"disable\":false,\"args-payload\":\"\"},{\"type\":\"balance-leader\",\"args\":null,\"disable\":false,\"args-payload\":\"\"},{\"type\":\"hot-region\",\"args\":null,\"disable\":false,\"args-payload\":\"\"},{\"type\":\"evict-slow-store\",\"args\":null,\"disable\":false,\"args-payload\":\"\"},{\"type\":\"evict-stopping-store\",\"args\":null,\"disable\":false,\"args-payload\":\"\"}],\"hot-regions-write-interval\":\"10m0s\",\"hot-regions-reserved-days\":7,\"max-movable-hot-peer-size\":512,\"enable-diagnostic\":\"true\",\"enable-witness\":\"false\",\"slow-store-evicting-affected-store-ratio-threshold\":0.3,\"store-limit-version\":\"v1\",\"patrol-region-worker-count\":1,\"max-affinity-merge-region-size\":256},\"replication\":{\"max-replicas\":3,\"location-labels\":\"\",\"strictly-match-label\":\"false\",\"enable-placement-rules\":\"true\",\"enable-placement-rules-cache\":\"false\",\"isolation-level\":\"\"},\"pd-server\":{\"use-region-storage\":\"true\",\"max-gap-reset-ts\":\"24h0m0s\",\"key-type\":\"table\",\"runtime-services\":\"\",\"metric-storage\":\"\",\"dashboard-address\":\"auto\",\"flow-round-by-digit\":3,\"min-resolved-ts-persistence-interval\":\"1s\",\"server-memory-limit\":0,\"server-memory-limit-gc-trigger\":0.7,\"enable-gogc-tuner\":\"true\",\"gc-tuner-threshold\":0.6,\"block-safe-point-v1\":\"false\",\"gc-keyspace-index-load-concurrency\":4,\"gc-state-cache-warmup-concurrency\":4},\"cluster-version\":\"0.0.0\",\"labels\":{},\"quota-backend-bytes\":\"8GiB\",\"auto-compaction-mode\":\"periodic\",\"auto-compaction-retention-v2\":\"1h\",\"tick-interval\":\"500ms\",\"election-interval\":\"3s\",\"enable-prevote\":true,\"max-request-bytes\":157286400,\"security\":{\"cacert-path\":\"\",\"cert-path\":\"\",\"key-path\":\"\",\"cert-allowed-cn\":null,\"SSLCABytes\":null,\"SSLCertBytes\":null,\"SSLKEYBytes\":null,\"redact-info-log\":false,\"encryption\":{\"data-encryption-method\":\"plaintext\",\"data-key-rotation-period\":\"168h0m0s\",\"master-key\":{\"type\":\"plaintext\",\"key-id\":\"\",\"region\":\"\",\"endpoint\":\"\",\"path\":\"\"}}},\"label-property\":null,\"dashboard\":{\"tidb-cacert-path\":\"\",\"tidb-cert-path\":\"\",\"tidb-key-path\":\"\",\"public-path-prefix\":\"\",\"temp-dir\":\"\",\"internal-proxy\":false,\"enable-telemetry\":false,\"enable-experimental\":false,\"disable-custom-prom-addr\":false},\"replication-mode\":{\"replication-mode\":\"majority\",\"dr-auto-sync\":{\"label-key\":\"\",\"primary\":\"\",\"dr\":\"\",\"primary-replicas\":0,\"dr-replicas\":0,\"wait-store-timeout\":\"1m0s\",\"wait-recover-timeout\":\"0s\",\"pause-region-split\":\"false\"}},\"keyspace\":{\"pre-alloc\":null,\"wait-region-split\":true,\"wait-region-split-timeout\":\"30s\",\"check-region-split-interval\":\"50ms\",\"meta-service-groups\":null},\"micro-service\":{\"enable-scheduling-fallback\":\"true\",\"enable-tso-dynamic-switching\":\"false\",\"enable-resource-manager-fallback\":\"true\"},\"controller\":{\"degraded-mode-wait-duration\":\"0s\",\"ltb-max-wait-duration\":\"30s\",\"ltb-token-rpc-max-delay\":\"1s\",\"request-unit\":{\"read-base-cost\":0.125,\"read-per-batch-base-cost\":0.5,\"read-cost-per-byte\":0.0000152587890625,\"write-base-cost\":1,\"write-per-batch-base-cost\":1,\"write-cost-per-byte\":0.0009765625,\"read-cpu-ms-cost\":0.3333333333333333},\"enable-controller-trace-log\":\"false\",\"push-metrics-address\":\"\",\"push-metrics-interval\":\"0s\"},\"metering\":{}}}",
+      "config": {
+        "client-urls": "http://127.0.0.1:0",
+        "peer-urls": "http://127.0.0.1:0",
+        "advertise-client-urls": "http://127.0.0.1:0",
+        "advertise-peer-urls": "http://127.0.0.1:0",
+        "name": "nested-oracle",
+        "data-dir": "/var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/pd97-oracle-6mu809a7/data",
+        "force-new-cluster": false,
+        "enable-grpc-gateway": true,
+        "initial-cluster": "nested-oracle=http://127.0.0.1:0",
+        "initial-cluster-state": "new",
+        "initial-cluster-token": "pd-cluster",
+        "join": "",
+        "lease": 5,
+        "log": {
+          "level": "info",
+          "format": "json",
+          "disable-timestamp": false,
+          "file": {
+            "filename": "",
+            "max-size": 0,
+            "max-days": 0,
+            "max-backups": 0
+          },
+          "development": false,
+          "disable-caller": false,
+          "disable-stacktrace": false,
+          "disable-error-verbose": true,
+          "sampling": null,
+          "error-output-path": ""
+        },
+        "max-concurrent-tso-proxy-streamings": 5000,
+        "tso-proxy-recv-from-client-timeout": "1h0m0s",
+        "tso-save-interval": "5s",
+        "tso-update-physical-interval": "50ms",
+        "enable-local-tso": false,
+        "metric": {
+          "job": "nested-oracle",
+          "address": "",
+          "interval": "15s"
+        },
+        "schedule": {
+          "max-snapshot-count": 64,
+          "max-pending-peer-count": 64,
+          "max-merge-region-size": 54,
+          "max-merge-region-keys": 0,
+          "split-merge-interval": "1h0m0s",
+          "switch-witness-interval": "1h0m0s",
+          "enable-one-way-merge": "false",
+          "enable-cross-table-merge": "true",
+          "patrol-region-interval": "10ms",
+          "max-store-down-time": "30m0s",
+          "max-store-preparing-time": "48h0m0s",
+          "leader-schedule-limit": 4,
+          "leader-schedule-policy": "count",
+          "region-schedule-limit": 2048,
+          "witness-schedule-limit": 4,
+          "replica-schedule-limit": 64,
+          "merge-schedule-limit": 8,
+          "hot-region-schedule-limit": 4,
+          "affinity-schedule-limit": 0,
+          "split-scatter-schedule-limit": 4,
+          "hot-region-cache-hits-threshold": 3,
+          "default-store-limit": {
+            "add-peer": 15,
+            "remove-peer": 15,
+            "transfer-leader-in": 100000000
+          },
+          "store-limit": {},
+          "tolerant-size-ratio": 0,
+          "low-space-ratio": 0.8,
+          "high-space-ratio": 0.7,
+          "region-score-formula-version": "v2",
+          "scheduler-max-waiting-operator": 5,
+          "enable-remove-down-replica": "true",
+          "enable-replace-offline-replica": "true",
+          "enable-make-up-replica": "true",
+          "enable-remove-extra-replica": "true",
+          "enable-location-replacement": "true",
+          "enable-debug-metrics": "false",
+          "enable-joint-consensus": "true",
+          "enable-tikv-split-region": "true",
+          "enable-heartbeat-breakdown-metrics": "true",
+          "enable-heartbeat-concurrent-runner": "true",
+          "schedulers-v2": [
+            {
+              "type": "balance-region",
+              "args": null,
+              "disable": false,
+              "args-payload": ""
+            },
+            {
+              "type": "balance-leader",
+              "args": null,
+              "disable": false,
+              "args-payload": ""
+            },
+            {
+              "type": "hot-region",
+              "args": null,
+              "disable": false,
+              "args-payload": ""
+            },
+            {
+              "type": "evict-slow-store",
+              "args": null,
+              "disable": false,
+              "args-payload": ""
+            },
+            {
+              "type": "evict-stopping-store",
+              "args": null,
+              "disable": false,
+              "args-payload": ""
+            }
+          ],
+          "hot-regions-write-interval": "10m0s",
+          "hot-regions-reserved-days": 7,
+          "max-movable-hot-peer-size": 512,
+          "enable-diagnostic": "true",
+          "enable-witness": "false",
+          "slow-store-evicting-affected-store-ratio-threshold": 0.3,
+          "store-limit-version": "v1",
+          "patrol-region-worker-count": 1,
+          "max-affinity-merge-region-size": 256
+        },
+        "replication": {
+          "max-replicas": 3,
+          "location-labels": "",
+          "strictly-match-label": "false",
+          "enable-placement-rules": "true",
+          "enable-placement-rules-cache": "false",
+          "isolation-level": ""
+        },
+        "pd-server": {
+          "use-region-storage": "true",
+          "max-gap-reset-ts": "24h0m0s",
+          "key-type": "table",
+          "runtime-services": "",
+          "metric-storage": "",
+          "dashboard-address": "auto",
+          "flow-round-by-digit": 3,
+          "min-resolved-ts-persistence-interval": "1s",
+          "server-memory-limit": 0,
+          "server-memory-limit-gc-trigger": 0.7,
+          "enable-gogc-tuner": "true",
+          "gc-tuner-threshold": 0.6,
+          "block-safe-point-v1": "false",
+          "gc-keyspace-index-load-concurrency": 4,
+          "gc-state-cache-warmup-concurrency": 4
+        },
+        "cluster-version": "0.0.0",
+        "labels": {},
+        "quota-backend-bytes": "8GiB",
+        "auto-compaction-mode": "periodic",
+        "auto-compaction-retention-v2": "1h",
+        "tick-interval": "500ms",
+        "election-interval": "3s",
+        "enable-prevote": true,
+        "max-request-bytes": 157286400,
+        "security": {
+          "cacert-path": "",
+          "cert-path": "",
+          "key-path": "",
+          "cert-allowed-cn": null,
+          "SSLCABytes": null,
+          "SSLCertBytes": null,
+          "SSLKEYBytes": null,
+          "redact-info-log": false,
+          "encryption": {
+            "data-encryption-method": "plaintext",
+            "data-key-rotation-period": "168h0m0s",
+            "master-key": {
+              "type": "plaintext",
+              "key-id": "",
+              "region": "",
+              "endpoint": "",
+              "path": ""
+            }
+          }
+        },
+        "label-property": null,
+        "dashboard": {
+          "tidb-cacert-path": "",
+          "tidb-cert-path": "",
+          "tidb-key-path": "",
+          "public-path-prefix": "",
+          "temp-dir": "",
+          "internal-proxy": false,
+          "enable-telemetry": false,
+          "enable-experimental": false,
+          "disable-custom-prom-addr": false
+        },
+        "replication-mode": {
+          "replication-mode": "majority",
+          "dr-auto-sync": {
+            "label-key": "",
+            "primary": "",
+            "dr": "",
+            "primary-replicas": 0,
+            "dr-replicas": 0,
+            "wait-store-timeout": "1m0s",
+            "wait-recover-timeout": "0s",
+            "pause-region-split": "false"
+          }
+        },
+        "keyspace": {
+          "pre-alloc": null,
+          "wait-region-split": true,
+          "wait-region-split-timeout": "30s",
+          "check-region-split-interval": "50ms",
+          "meta-service-groups": null
+        },
+        "micro-service": {
+          "enable-scheduling-fallback": "true",
+          "enable-tso-dynamic-switching": "false",
+          "enable-resource-manager-fallback": "true"
+        },
+        "controller": {
+          "degraded-mode-wait-duration": "0s",
+          "ltb-max-wait-duration": "30s",
+          "ltb-token-rpc-max-delay": "1s",
+          "request-unit": {
+            "read-base-cost": 0.125,
+            "read-per-batch-base-cost": 0.5,
+            "read-cost-per-byte": 1.52587890625e-05,
+            "write-base-cost": 1,
+            "write-per-batch-base-cost": 1,
+            "write-cost-per-byte": 0.0009765625,
+            "read-cpu-ms-cost": 0.3333333333333333
+          },
+          "enable-controller-trace-log": "false",
+          "push-metrics-address": "",
+          "push-metrics-interval": "0s"
+        },
+        "metering": {}
+      },
+      "check_output": "Config contains undefined item: schedule.unknown-field",
+      "check_messages": [
+        "Config contains undefined item: schedule.unknown-field"
+      ]
+    },
+    {
+      "name": "explicit",
+      "toml": "name=\"nested-oracle\"\nclient-urls=\"http://127.0.0.1:0\"\npeer-urls=\"http://127.0.0.1:0\"\ndata-dir=\"/var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/pd97-oracle-2f7xa_2x/data\"\n[log]\nformat=\"json\"\n[schedule]\nmax-snapshot-count = 0\nmax-pending-peer-count = 3\nmax-store-preparing-time = \"0s\"\nenable-joint-consensus = false\nenable-cross-table-merge = false\nregion-score-formula-version = \"v1\"\nstore-balance-rate = 7.5\ndisable-remove-down-replica = true\n[replication]\nmax-replicas = 0\nlocation-labels = [\"zone\", \"$rack/a\"]\nisolation-level = \"zone\"\nenable-placement-rules = false\n[controller]\nltb-max-wait-duration = \"0s\"\nltb-token-rpc-max-delay = \"-1s\"\npush-metrics-address = \"http://metrics.invalid\"\npush-metrics-interval = \"0s\"\nenable-controller-trace-log = true\n[controller.request-unit]\nread-base-cost = 0.0\nwrite-base-cost = -2.0\n[controller.ru-version-policy]\ndefault = 2\n[security]\nredact-info-log = \"marker\"\ncert-allowed-cn = [\"PD\"]\nSSLCABytes = [97, 98, 99]\n[security.encryption]\ndata-encryption-method = \"aes256-ctr\"\ndata-key-rotation-period = \"2h\"\n[security.encryption.master-key]\ntype = \"kms\"\nkey-id = \"fixture-key\"\nregion = \"fixture-region\"\nendpoint = \"http://kms.invalid\"\n[metric]\njob = \"fixture-job\"\naddress = \"http://metrics.invalid\"\ninterval = \"-1s\"\n[metering]\ntype = \"s3\"\nregion = \"fixture-region\"\nbucket = \"fixture-bucket\"\n[metering.aws]\ns3-force-path-style = true\nassume-role-arn = \"fixture-role\"\n",
+      "log": "{\"level\":\"INFO\",\"time\":\"2026/10/24 03:22:23.293 +08:00\",\"caller\":\"server.go:268\",\"message\":\"PD config\",\"enable-keyspace-group\":false,\"config\":{\"client-urls\":\"http://127.0.0.1:0\",\"peer-urls\":\"http://127.0.0.1:0\",\"advertise-client-urls\":\"http://127.0.0.1:0\",\"advertise-peer-urls\":\"http://127.0.0.1:0\",\"name\":\"nested-oracle\",\"data-dir\":\"/var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/pd97-oracle-2f7xa_2x/data\",\"force-new-cluster\":false,\"enable-grpc-gateway\":true,\"initial-cluster\":\"nested-oracle=http://127.0.0.1:0\",\"initial-cluster-state\":\"new\",\"initial-cluster-token\":\"pd-cluster\",\"join\":\"\",\"lease\":5,\"log\":{\"level\":\"info\",\"format\":\"json\",\"disable-timestamp\":false,\"file\":{\"filename\":\"\",\"max-size\":0,\"max-days\":0,\"max-backups\":0},\"development\":false,\"disable-caller\":false,\"disable-stacktrace\":false,\"disable-error-verbose\":true,\"sampling\":null,\"error-output-path\":\"\"},\"max-concurrent-tso-proxy-streamings\":5000,\"tso-proxy-recv-from-client-timeout\":\"1h0m0s\",\"tso-save-interval\":\"5s\",\"tso-update-physical-interval\":\"50ms\",\"enable-local-tso\":false,\"metric\":{\"job\":\"fixture-job\",\"address\":\"http://metrics.invalid\",\"interval\":\"15s\"},\"schedule\":{\"max-snapshot-count\":0,\"max-pending-peer-count\":3,\"max-merge-region-size\":54,\"max-merge-region-keys\":0,\"split-merge-interval\":\"1h0m0s\",\"switch-witness-interval\":\"1h0m0s\",\"enable-one-way-merge\":\"false\",\"enable-cross-table-merge\":\"false\",\"patrol-region-interval\":\"10ms\",\"max-store-down-time\":\"30m0s\",\"max-store-preparing-time\":\"0s\",\"leader-schedule-limit\":4,\"leader-schedule-policy\":\"count\",\"region-schedule-limit\":2048,\"witness-schedule-limit\":4,\"replica-schedule-limit\":64,\"merge-schedule-limit\":8,\"hot-region-schedule-limit\":4,\"affinity-schedule-limit\":0,\"split-scatter-schedule-limit\":4,\"hot-region-cache-hits-threshold\":3,\"default-store-limit\":{\"add-peer\":7.5,\"remove-peer\":7.5,\"transfer-leader-in\":100000000},\"store-limit\":{},\"tolerant-size-ratio\":0,\"low-space-ratio\":0.8,\"high-space-ratio\":0.7,\"region-score-formula-version\":\"v1\",\"scheduler-max-waiting-operator\":5,\"enable-remove-down-replica\":\"false\",\"enable-replace-offline-replica\":\"true\",\"enable-make-up-replica\":\"true\",\"enable-remove-extra-replica\":\"true\",\"enable-location-replacement\":\"true\",\"enable-debug-metrics\":\"false\",\"enable-joint-consensus\":\"false\",\"enable-tikv-split-region\":\"true\",\"enable-heartbeat-breakdown-metrics\":\"true\",\"enable-heartbeat-concurrent-runner\":\"true\",\"schedulers-v2\":[{\"type\":\"balance-region\",\"args\":null,\"disable\":false,\"args-payload\":\"\"},{\"type\":\"balance-leader\",\"args\":null,\"disable\":false,\"args-payload\":\"\"},{\"type\":\"hot-region\",\"args\":null,\"disable\":false,\"args-payload\":\"\"},{\"type\":\"evict-slow-store\",\"args\":null,\"disable\":false,\"args-payload\":\"\"},{\"type\":\"evict-stopping-store\",\"args\":null,\"disable\":false,\"args-payload\":\"\"}],\"hot-regions-write-interval\":\"10m0s\",\"hot-regions-reserved-days\":7,\"max-movable-hot-peer-size\":512,\"enable-diagnostic\":\"true\",\"enable-witness\":\"false\",\"slow-store-evicting-affected-store-ratio-threshold\":0.3,\"store-limit-version\":\"v1\",\"patrol-region-worker-count\":1,\"max-affinity-merge-region-size\":256},\"replication\":{\"max-replicas\":3,\"location-labels\":\"zone,$rack/a\",\"strictly-match-label\":\"false\",\"enable-placement-rules\":\"false\",\"enable-placement-rules-cache\":\"false\",\"isolation-level\":\"zone\"},\"pd-server\":{\"use-region-storage\":\"true\",\"max-gap-reset-ts\":\"24h0m0s\",\"key-type\":\"table\",\"runtime-services\":\"\",\"metric-storage\":\"\",\"dashboard-address\":\"auto\",\"flow-round-by-digit\":3,\"min-resolved-ts-persistence-interval\":\"1s\",\"server-memory-limit\":0,\"server-memory-limit-gc-trigger\":0.7,\"enable-gogc-tuner\":\"true\",\"gc-tuner-threshold\":0.6,\"block-safe-point-v1\":\"false\",\"gc-keyspace-index-load-concurrency\":4,\"gc-state-cache-warmup-concurrency\":4},\"cluster-version\":\"0.0.0\",\"labels\":{},\"quota-backend-bytes\":\"8GiB\",\"auto-compaction-mode\":\"periodic\",\"auto-compaction-retention-v2\":\"1h\",\"tick-interval\":\"500ms\",\"election-interval\":\"3s\",\"enable-prevote\":true,\"max-request-bytes\":157286400,\"security\":{\"cacert-path\":\"\",\"cert-path\":\"\",\"key-path\":\"\",\"cert-allowed-cn\":[\"PD\"],\"SSLCABytes\":\"YWJj\",\"SSLCertBytes\":null,\"SSLKEYBytes\":null,\"redact-info-log\":\"MARKER\",\"encryption\":{\"data-encryption-method\":\"aes256-ctr\",\"data-key-rotation-period\":\"2h0m0s\",\"master-key\":{\"type\":\"kms\",\"key-id\":\"fixture-key\",\"region\":\"fixture-region\",\"endpoint\":\"http://kms.invalid\",\"path\":\"\"}}},\"label-property\":null,\"dashboard\":{\"tidb-cacert-path\":\"\",\"tidb-cert-path\":\"\",\"tidb-key-path\":\"\",\"public-path-prefix\":\"\",\"temp-dir\":\"\",\"internal-proxy\":false,\"enable-telemetry\":false,\"enable-experimental\":false,\"disable-custom-prom-addr\":false},\"replication-mode\":{\"replication-mode\":\"majority\",\"dr-auto-sync\":{\"label-key\":\"\",\"primary\":\"\",\"dr\":\"\",\"primary-replicas\":0,\"dr-replicas\":0,\"wait-store-timeout\":\"1m0s\",\"wait-recover-timeout\":\"0s\",\"pause-region-split\":\"false\"}},\"keyspace\":{\"pre-alloc\":null,\"wait-region-split\":true,\"wait-region-split-timeout\":\"30s\",\"check-region-split-interval\":\"50ms\",\"meta-service-groups\":null},\"micro-service\":{\"enable-scheduling-fallback\":\"true\",\"enable-tso-dynamic-switching\":\"false\",\"enable-resource-manager-fallback\":\"true\"},\"controller\":{\"degraded-mode-wait-duration\":\"0s\",\"ltb-max-wait-duration\":\"0s\",\"ltb-token-rpc-max-delay\":\"-1s\",\"request-unit\":{\"read-base-cost\":0,\"read-per-batch-base-cost\":0.5,\"read-cost-per-byte\":0.0000152587890625,\"write-base-cost\":-2,\"write-per-batch-base-cost\":1,\"write-cost-per-byte\":0.0009765625,\"read-cpu-ms-cost\":0.3333333333333333},\"enable-controller-trace-log\":\"true\",\"push-metrics-address\":\"\",\"push-metrics-interval\":\"0s\",\"ru-version-policy\":{\"default\":2}},\"metering\":{\"type\":\"s3\",\"region\":\"fixture-region\",\"bucket\":\"fixture-bucket\",\"aws\":{\"assume-role-arn\":\"fixture-role\",\"s3-force-path-style\":true}}}}",
+      "config": {
+        "client-urls": "http://127.0.0.1:0",
+        "peer-urls": "http://127.0.0.1:0",
+        "advertise-client-urls": "http://127.0.0.1:0",
+        "advertise-peer-urls": "http://127.0.0.1:0",
+        "name": "nested-oracle",
+        "data-dir": "/var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/pd97-oracle-2f7xa_2x/data",
+        "force-new-cluster": false,
+        "enable-grpc-gateway": true,
+        "initial-cluster": "nested-oracle=http://127.0.0.1:0",
+        "initial-cluster-state": "new",
+        "initial-cluster-token": "pd-cluster",
+        "join": "",
+        "lease": 5,
+        "log": {
+          "level": "info",
+          "format": "json",
+          "disable-timestamp": false,
+          "file": {
+            "filename": "",
+            "max-size": 0,
+            "max-days": 0,
+            "max-backups": 0
+          },
+          "development": false,
+          "disable-caller": false,
+          "disable-stacktrace": false,
+          "disable-error-verbose": true,
+          "sampling": null,
+          "error-output-path": ""
+        },
+        "max-concurrent-tso-proxy-streamings": 5000,
+        "tso-proxy-recv-from-client-timeout": "1h0m0s",
+        "tso-save-interval": "5s",
+        "tso-update-physical-interval": "50ms",
+        "enable-local-tso": false,
+        "metric": {
+          "job": "fixture-job",
+          "address": "http://metrics.invalid",
+          "interval": "15s"
+        },
+        "schedule": {
+          "max-snapshot-count": 0,
+          "max-pending-peer-count": 3,
+          "max-merge-region-size": 54,
+          "max-merge-region-keys": 0,
+          "split-merge-interval": "1h0m0s",
+          "switch-witness-interval": "1h0m0s",
+          "enable-one-way-merge": "false",
+          "enable-cross-table-merge": "false",
+          "patrol-region-interval": "10ms",
+          "max-store-down-time": "30m0s",
+          "max-store-preparing-time": "0s",
+          "leader-schedule-limit": 4,
+          "leader-schedule-policy": "count",
+          "region-schedule-limit": 2048,
+          "witness-schedule-limit": 4,
+          "replica-schedule-limit": 64,
+          "merge-schedule-limit": 8,
+          "hot-region-schedule-limit": 4,
+          "affinity-schedule-limit": 0,
+          "split-scatter-schedule-limit": 4,
+          "hot-region-cache-hits-threshold": 3,
+          "default-store-limit": {
+            "add-peer": 7.5,
+            "remove-peer": 7.5,
+            "transfer-leader-in": 100000000
+          },
+          "store-limit": {},
+          "tolerant-size-ratio": 0,
+          "low-space-ratio": 0.8,
+          "high-space-ratio": 0.7,
+          "region-score-formula-version": "v1",
+          "scheduler-max-waiting-operator": 5,
+          "enable-remove-down-replica": "false",
+          "enable-replace-offline-replica": "true",
+          "enable-make-up-replica": "true",
+          "enable-remove-extra-replica": "true",
+          "enable-location-replacement": "true",
+          "enable-debug-metrics": "false",
+          "enable-joint-consensus": "false",
+          "enable-tikv-split-region": "true",
+          "enable-heartbeat-breakdown-metrics": "true",
+          "enable-heartbeat-concurrent-runner": "true",
+          "schedulers-v2": [
+            {
+              "type": "balance-region",
+              "args": null,
+              "disable": false,
+              "args-payload": ""
+            },
+            {
+              "type": "balance-leader",
+              "args": null,
+              "disable": false,
+              "args-payload": ""
+            },
+            {
+              "type": "hot-region",
+              "args": null,
+              "disable": false,
+              "args-payload": ""
+            },
+            {
+              "type": "evict-slow-store",
+              "args": null,
+              "disable": false,
+              "args-payload": ""
+            },
+            {
+              "type": "evict-stopping-store",
+              "args": null,
+              "disable": false,
+              "args-payload": ""
+            }
+          ],
+          "hot-regions-write-interval": "10m0s",
+          "hot-regions-reserved-days": 7,
+          "max-movable-hot-peer-size": 512,
+          "enable-diagnostic": "true",
+          "enable-witness": "false",
+          "slow-store-evicting-affected-store-ratio-threshold": 0.3,
+          "store-limit-version": "v1",
+          "patrol-region-worker-count": 1,
+          "max-affinity-merge-region-size": 256
+        },
+        "replication": {
+          "max-replicas": 3,
+          "location-labels": "zone,$rack/a",
+          "strictly-match-label": "false",
+          "enable-placement-rules": "false",
+          "enable-placement-rules-cache": "false",
+          "isolation-level": "zone"
+        },
+        "pd-server": {
+          "use-region-storage": "true",
+          "max-gap-reset-ts": "24h0m0s",
+          "key-type": "table",
+          "runtime-services": "",
+          "metric-storage": "",
+          "dashboard-address": "auto",
+          "flow-round-by-digit": 3,
+          "min-resolved-ts-persistence-interval": "1s",
+          "server-memory-limit": 0,
+          "server-memory-limit-gc-trigger": 0.7,
+          "enable-gogc-tuner": "true",
+          "gc-tuner-threshold": 0.6,
+          "block-safe-point-v1": "false",
+          "gc-keyspace-index-load-concurrency": 4,
+          "gc-state-cache-warmup-concurrency": 4
+        },
+        "cluster-version": "0.0.0",
+        "labels": {},
+        "quota-backend-bytes": "8GiB",
+        "auto-compaction-mode": "periodic",
+        "auto-compaction-retention-v2": "1h",
+        "tick-interval": "500ms",
+        "election-interval": "3s",
+        "enable-prevote": true,
+        "max-request-bytes": 157286400,
+        "security": {
+          "cacert-path": "",
+          "cert-path": "",
+          "key-path": "",
+          "cert-allowed-cn": [
+            "PD"
+          ],
+          "SSLCABytes": "YWJj",
+          "SSLCertBytes": null,
+          "SSLKEYBytes": null,
+          "redact-info-log": "MARKER",
+          "encryption": {
+            "data-encryption-method": "aes256-ctr",
+            "data-key-rotation-period": "2h0m0s",
+            "master-key": {
+              "type": "kms",
+              "key-id": "fixture-key",
+              "region": "fixture-region",
+              "endpoint": "http://kms.invalid",
+              "path": ""
+            }
+          }
+        },
+        "label-property": null,
+        "dashboard": {
+          "tidb-cacert-path": "",
+          "tidb-cert-path": "",
+          "tidb-key-path": "",
+          "public-path-prefix": "",
+          "temp-dir": "",
+          "internal-proxy": false,
+          "enable-telemetry": false,
+          "enable-experimental": false,
+          "disable-custom-prom-addr": false
+        },
+        "replication-mode": {
+          "replication-mode": "majority",
+          "dr-auto-sync": {
+            "label-key": "",
+            "primary": "",
+            "dr": "",
+            "primary-replicas": 0,
+            "dr-replicas": 0,
+            "wait-store-timeout": "1m0s",
+            "wait-recover-timeout": "0s",
+            "pause-region-split": "false"
+          }
+        },
+        "keyspace": {
+          "pre-alloc": null,
+          "wait-region-split": true,
+          "wait-region-split-timeout": "30s",
+          "check-region-split-interval": "50ms",
+          "meta-service-groups": null
+        },
+        "micro-service": {
+          "enable-scheduling-fallback": "true",
+          "enable-tso-dynamic-switching": "false",
+          "enable-resource-manager-fallback": "true"
+        },
+        "controller": {
+          "degraded-mode-wait-duration": "0s",
+          "ltb-max-wait-duration": "0s",
+          "ltb-token-rpc-max-delay": "-1s",
+          "request-unit": {
+            "read-base-cost": 0,
+            "read-per-batch-base-cost": 0.5,
+            "read-cost-per-byte": 1.52587890625e-05,
+            "write-base-cost": -2,
+            "write-per-batch-base-cost": 1,
+            "write-cost-per-byte": 0.0009765625,
+            "read-cpu-ms-cost": 0.3333333333333333
+          },
+          "enable-controller-trace-log": "true",
+          "push-metrics-address": "",
+          "push-metrics-interval": "0s",
+          "ru-version-policy": {
+            "default": 2
+          }
+        },
+        "metering": {
+          "type": "s3",
+          "region": "fixture-region",
+          "bucket": "fixture-bucket",
+          "aws": {
+            "assume-role-arn": "fixture-role",
+            "s3-force-path-style": true
+          }
+        }
+      },
+      "check_output": "[2026/10/24 03:22:23.358 +08:00] [WARN] [config.go:209] [\"push-metrics-address is set but push-metrics-interval is invalid, metrics push disabled\"]\nconfig check successful",
+      "check_messages": [
+        "config check successful"
+      ]
+    },
+    {
+      "name": "limits",
+      "toml": "name=\"nested-oracle\"\nclient-urls=\"http://127.0.0.1:0\"\npeer-urls=\"http://127.0.0.1:0\"\ndata-dir=\"/var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/pd97-oracle-smbm8dzg/data\"\n[log]\nformat=\"json\"\n[schedule.default-store-limit]\nadd-peer = 0.0\nremove-peer = 2.0\ntransfer-leader-in = 0.0\n[security.encryption]\ndata-encryption-method = \"aes128-ctr\"\n[security.encryption.master-key]\ntype = \"file\"\npath = \"/fixture/key\"\n[controller]\npush-metrics-address = \"http://metrics.invalid\"\npush-metrics-interval = \"3s\"\n[controller.request-unit]\nread-cost-per-byte = -1.0\n[metering.localfs]\nbase-path = \"/fixture/metering\"\ncreate-dirs = false\npermissions = \"0700\"\n",
+      "log": "{\"level\":\"INFO\",\"time\":\"2026/10/24 03:22:23.424 +08:00\",\"caller\":\"server.go:268\",\"message\":\"PD config\",\"enable-keyspace-group\":false,\"config\":{\"client-urls\":\"http://127.0.0.1:0\",\"peer-urls\":\"http://127.0.0.1:0\",\"advertise-client-urls\":\"http://127.0.0.1:0\",\"advertise-peer-urls\":\"http://127.0.0.1:0\",\"name\":\"nested-oracle\",\"data-dir\":\"/var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/pd97-oracle-smbm8dzg/data\",\"force-new-cluster\":false,\"enable-grpc-gateway\":true,\"initial-cluster\":\"nested-oracle=http://127.0.0.1:0\",\"initial-cluster-state\":\"new\",\"initial-cluster-token\":\"pd-cluster\",\"join\":\"\",\"lease\":5,\"log\":{\"level\":\"info\",\"format\":\"json\",\"disable-timestamp\":false,\"file\":{\"filename\":\"\",\"max-size\":0,\"max-days\":0,\"max-backups\":0},\"development\":false,\"disable-caller\":false,\"disable-stacktrace\":false,\"disable-error-verbose\":true,\"sampling\":null,\"error-output-path\":\"\"},\"max-concurrent-tso-proxy-streamings\":5000,\"tso-proxy-recv-from-client-timeout\":\"1h0m0s\",\"tso-save-interval\":\"5s\",\"tso-update-physical-interval\":\"50ms\",\"enable-local-tso\":false,\"metric\":{\"job\":\"nested-oracle\",\"address\":\"\",\"interval\":\"15s\"},\"schedule\":{\"max-snapshot-count\":64,\"max-pending-peer-count\":64,\"max-merge-region-size\":54,\"max-merge-region-keys\":0,\"split-merge-interval\":\"1h0m0s\",\"switch-witness-interval\":\"1h0m0s\",\"enable-one-way-merge\":\"false\",\"enable-cross-table-merge\":\"true\",\"patrol-region-interval\":\"10ms\",\"max-store-down-time\":\"30m0s\",\"max-store-preparing-time\":\"48h0m0s\",\"leader-schedule-limit\":4,\"leader-schedule-policy\":\"count\",\"region-schedule-limit\":2048,\"witness-schedule-limit\":4,\"replica-schedule-limit\":64,\"merge-schedule-limit\":8,\"hot-region-schedule-limit\":4,\"affinity-schedule-limit\":0,\"split-scatter-schedule-limit\":4,\"hot-region-cache-hits-threshold\":3,\"default-store-limit\":{\"add-peer\":0,\"remove-peer\":2,\"transfer-leader-in\":0},\"store-limit\":{},\"tolerant-size-ratio\":0,\"low-space-ratio\":0.8,\"high-space-ratio\":0.7,\"region-score-formula-version\":\"v2\",\"scheduler-max-waiting-operator\":5,\"enable-remove-down-replica\":\"true\",\"enable-replace-offline-replica\":\"true\",\"enable-make-up-replica\":\"true\",\"enable-remove-extra-replica\":\"true\",\"enable-location-replacement\":\"true\",\"enable-debug-metrics\":\"false\",\"enable-joint-consensus\":\"true\",\"enable-tikv-split-region\":\"true\",\"enable-heartbeat-breakdown-metrics\":\"true\",\"enable-heartbeat-concurrent-runner\":\"true\",\"schedulers-v2\":[{\"type\":\"balance-region\",\"args\":null,\"disable\":false,\"args-payload\":\"\"},{\"type\":\"balance-leader\",\"args\":null,\"disable\":false,\"args-payload\":\"\"},{\"type\":\"hot-region\",\"args\":null,\"disable\":false,\"args-payload\":\"\"},{\"type\":\"evict-slow-store\",\"args\":null,\"disable\":false,\"args-payload\":\"\"},{\"type\":\"evict-stopping-store\",\"args\":null,\"disable\":false,\"args-payload\":\"\"}],\"hot-regions-write-interval\":\"10m0s\",\"hot-regions-reserved-days\":7,\"max-movable-hot-peer-size\":512,\"enable-diagnostic\":\"true\",\"enable-witness\":\"false\",\"slow-store-evicting-affected-store-ratio-threshold\":0.3,\"store-limit-version\":\"v1\",\"patrol-region-worker-count\":1,\"max-affinity-merge-region-size\":256},\"replication\":{\"max-replicas\":3,\"location-labels\":\"\",\"strictly-match-label\":\"false\",\"enable-placement-rules\":\"true\",\"enable-placement-rules-cache\":\"false\",\"isolation-level\":\"\"},\"pd-server\":{\"use-region-storage\":\"true\",\"max-gap-reset-ts\":\"24h0m0s\",\"key-type\":\"table\",\"runtime-services\":\"\",\"metric-storage\":\"\",\"dashboard-address\":\"auto\",\"flow-round-by-digit\":3,\"min-resolved-ts-persistence-interval\":\"1s\",\"server-memory-limit\":0,\"server-memory-limit-gc-trigger\":0.7,\"enable-gogc-tuner\":\"true\",\"gc-tuner-threshold\":0.6,\"block-safe-point-v1\":\"false\",\"gc-keyspace-index-load-concurrency\":4,\"gc-state-cache-warmup-concurrency\":4},\"cluster-version\":\"0.0.0\",\"labels\":{},\"quota-backend-bytes\":\"8GiB\",\"auto-compaction-mode\":\"periodic\",\"auto-compaction-retention-v2\":\"1h\",\"tick-interval\":\"500ms\",\"election-interval\":\"3s\",\"enable-prevote\":true,\"max-request-bytes\":157286400,\"security\":{\"cacert-path\":\"\",\"cert-path\":\"\",\"key-path\":\"\",\"cert-allowed-cn\":null,\"SSLCABytes\":null,\"SSLCertBytes\":null,\"SSLKEYBytes\":null,\"redact-info-log\":false,\"encryption\":{\"data-encryption-method\":\"aes128-ctr\",\"data-key-rotation-period\":\"168h0m0s\",\"master-key\":{\"type\":\"file\",\"key-id\":\"\",\"region\":\"\",\"endpoint\":\"\",\"path\":\"/fixture/key\"}}},\"label-property\":null,\"dashboard\":{\"tidb-cacert-path\":\"\",\"tidb-cert-path\":\"\",\"tidb-key-path\":\"\",\"public-path-prefix\":\"\",\"temp-dir\":\"\",\"internal-proxy\":false,\"enable-telemetry\":false,\"enable-experimental\":false,\"disable-custom-prom-addr\":false},\"replication-mode\":{\"replication-mode\":\"majority\",\"dr-auto-sync\":{\"label-key\":\"\",\"primary\":\"\",\"dr\":\"\",\"primary-replicas\":0,\"dr-replicas\":0,\"wait-store-timeout\":\"1m0s\",\"wait-recover-timeout\":\"0s\",\"pause-region-split\":\"false\"}},\"keyspace\":{\"pre-alloc\":null,\"wait-region-split\":true,\"wait-region-split-timeout\":\"30s\",\"check-region-split-interval\":\"50ms\",\"meta-service-groups\":null},\"micro-service\":{\"enable-scheduling-fallback\":\"true\",\"enable-tso-dynamic-switching\":\"false\",\"enable-resource-manager-fallback\":\"true\"},\"controller\":{\"degraded-mode-wait-duration\":\"0s\",\"ltb-max-wait-duration\":\"30s\",\"ltb-token-rpc-max-delay\":\"1s\",\"request-unit\":{\"read-base-cost\":0.125,\"read-per-batch-base-cost\":0.5,\"read-cost-per-byte\":-1,\"write-base-cost\":1,\"write-per-batch-base-cost\":1,\"write-cost-per-byte\":0.0009765625,\"read-cpu-ms-cost\":0.3333333333333333},\"enable-controller-trace-log\":\"false\",\"push-metrics-address\":\"http://metrics.invalid\",\"push-metrics-interval\":\"3s\"},\"metering\":{\"localfs\":{\"base-path\":\"/fixture/metering\",\"permissions\":\"0700\"}}}}",
+      "config": {
+        "client-urls": "http://127.0.0.1:0",
+        "peer-urls": "http://127.0.0.1:0",
+        "advertise-client-urls": "http://127.0.0.1:0",
+        "advertise-peer-urls": "http://127.0.0.1:0",
+        "name": "nested-oracle",
+        "data-dir": "/var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/pd97-oracle-smbm8dzg/data",
+        "force-new-cluster": false,
+        "enable-grpc-gateway": true,
+        "initial-cluster": "nested-oracle=http://127.0.0.1:0",
+        "initial-cluster-state": "new",
+        "initial-cluster-token": "pd-cluster",
+        "join": "",
+        "lease": 5,
+        "log": {
+          "level": "info",
+          "format": "json",
+          "disable-timestamp": false,
+          "file": {
+            "filename": "",
+            "max-size": 0,
+            "max-days": 0,
+            "max-backups": 0
+          },
+          "development": false,
+          "disable-caller": false,
+          "disable-stacktrace": false,
+          "disable-error-verbose": true,
+          "sampling": null,
+          "error-output-path": ""
+        },
+        "max-concurrent-tso-proxy-streamings": 5000,
+        "tso-proxy-recv-from-client-timeout": "1h0m0s",
+        "tso-save-interval": "5s",
+        "tso-update-physical-interval": "50ms",
+        "enable-local-tso": false,
+        "metric": {
+          "job": "nested-oracle",
+          "address": "",
+          "interval": "15s"
+        },
+        "schedule": {
+          "max-snapshot-count": 64,
+          "max-pending-peer-count": 64,
+          "max-merge-region-size": 54,
+          "max-merge-region-keys": 0,
+          "split-merge-interval": "1h0m0s",
+          "switch-witness-interval": "1h0m0s",
+          "enable-one-way-merge": "false",
+          "enable-cross-table-merge": "true",
+          "patrol-region-interval": "10ms",
+          "max-store-down-time": "30m0s",
+          "max-store-preparing-time": "48h0m0s",
+          "leader-schedule-limit": 4,
+          "leader-schedule-policy": "count",
+          "region-schedule-limit": 2048,
+          "witness-schedule-limit": 4,
+          "replica-schedule-limit": 64,
+          "merge-schedule-limit": 8,
+          "hot-region-schedule-limit": 4,
+          "affinity-schedule-limit": 0,
+          "split-scatter-schedule-limit": 4,
+          "hot-region-cache-hits-threshold": 3,
+          "default-store-limit": {
+            "add-peer": 0,
+            "remove-peer": 2,
+            "transfer-leader-in": 0
+          },
+          "store-limit": {},
+          "tolerant-size-ratio": 0,
+          "low-space-ratio": 0.8,
+          "high-space-ratio": 0.7,
+          "region-score-formula-version": "v2",
+          "scheduler-max-waiting-operator": 5,
+          "enable-remove-down-replica": "true",
+          "enable-replace-offline-replica": "true",
+          "enable-make-up-replica": "true",
+          "enable-remove-extra-replica": "true",
+          "enable-location-replacement": "true",
+          "enable-debug-metrics": "false",
+          "enable-joint-consensus": "true",
+          "enable-tikv-split-region": "true",
+          "enable-heartbeat-breakdown-metrics": "true",
+          "enable-heartbeat-concurrent-runner": "true",
+          "schedulers-v2": [
+            {
+              "type": "balance-region",
+              "args": null,
+              "disable": false,
+              "args-payload": ""
+            },
+            {
+              "type": "balance-leader",
+              "args": null,
+              "disable": false,
+              "args-payload": ""
+            },
+            {
+              "type": "hot-region",
+              "args": null,
+              "disable": false,
+              "args-payload": ""
+            },
+            {
+              "type": "evict-slow-store",
+              "args": null,
+              "disable": false,
+              "args-payload": ""
+            },
+            {
+              "type": "evict-stopping-store",
+              "args": null,
+              "disable": false,
+              "args-payload": ""
+            }
+          ],
+          "hot-regions-write-interval": "10m0s",
+          "hot-regions-reserved-days": 7,
+          "max-movable-hot-peer-size": 512,
+          "enable-diagnostic": "true",
+          "enable-witness": "false",
+          "slow-store-evicting-affected-store-ratio-threshold": 0.3,
+          "store-limit-version": "v1",
+          "patrol-region-worker-count": 1,
+          "max-affinity-merge-region-size": 256
+        },
+        "replication": {
+          "max-replicas": 3,
+          "location-labels": "",
+          "strictly-match-label": "false",
+          "enable-placement-rules": "true",
+          "enable-placement-rules-cache": "false",
+          "isolation-level": ""
+        },
+        "pd-server": {
+          "use-region-storage": "true",
+          "max-gap-reset-ts": "24h0m0s",
+          "key-type": "table",
+          "runtime-services": "",
+          "metric-storage": "",
+          "dashboard-address": "auto",
+          "flow-round-by-digit": 3,
+          "min-resolved-ts-persistence-interval": "1s",
+          "server-memory-limit": 0,
+          "server-memory-limit-gc-trigger": 0.7,
+          "enable-gogc-tuner": "true",
+          "gc-tuner-threshold": 0.6,
+          "block-safe-point-v1": "false",
+          "gc-keyspace-index-load-concurrency": 4,
+          "gc-state-cache-warmup-concurrency": 4
+        },
+        "cluster-version": "0.0.0",
+        "labels": {},
+        "quota-backend-bytes": "8GiB",
+        "auto-compaction-mode": "periodic",
+        "auto-compaction-retention-v2": "1h",
+        "tick-interval": "500ms",
+        "election-interval": "3s",
+        "enable-prevote": true,
+        "max-request-bytes": 157286400,
+        "security": {
+          "cacert-path": "",
+          "cert-path": "",
+          "key-path": "",
+          "cert-allowed-cn": null,
+          "SSLCABytes": null,
+          "SSLCertBytes": null,
+          "SSLKEYBytes": null,
+          "redact-info-log": false,
+          "encryption": {
+            "data-encryption-method": "aes128-ctr",
+            "data-key-rotation-period": "168h0m0s",
+            "master-key": {
+              "type": "file",
+              "key-id": "",
+              "region": "",
+              "endpoint": "",
+              "path": "/fixture/key"
+            }
+          }
+        },
+        "label-property": null,
+        "dashboard": {
+          "tidb-cacert-path": "",
+          "tidb-cert-path": "",
+          "tidb-key-path": "",
+          "public-path-prefix": "",
+          "temp-dir": "",
+          "internal-proxy": false,
+          "enable-telemetry": false,
+          "enable-experimental": false,
+          "disable-custom-prom-addr": false
+        },
+        "replication-mode": {
+          "replication-mode": "majority",
+          "dr-auto-sync": {
+            "label-key": "",
+            "primary": "",
+            "dr": "",
+            "primary-replicas": 0,
+            "dr-replicas": 0,
+            "wait-store-timeout": "1m0s",
+            "wait-recover-timeout": "0s",
+            "pause-region-split": "false"
+          }
+        },
+        "keyspace": {
+          "pre-alloc": null,
+          "wait-region-split": true,
+          "wait-region-split-timeout": "30s",
+          "check-region-split-interval": "50ms",
+          "meta-service-groups": null
+        },
+        "micro-service": {
+          "enable-scheduling-fallback": "true",
+          "enable-tso-dynamic-switching": "false",
+          "enable-resource-manager-fallback": "true"
+        },
+        "controller": {
+          "degraded-mode-wait-duration": "0s",
+          "ltb-max-wait-duration": "30s",
+          "ltb-token-rpc-max-delay": "1s",
+          "request-unit": {
+            "read-base-cost": 0.125,
+            "read-per-batch-base-cost": 0.5,
+            "read-cost-per-byte": -1,
+            "write-base-cost": 1,
+            "write-per-batch-base-cost": 1,
+            "write-cost-per-byte": 0.0009765625,
+            "read-cpu-ms-cost": 0.3333333333333333
+          },
+          "enable-controller-trace-log": "false",
+          "push-metrics-address": "http://metrics.invalid",
+          "push-metrics-interval": "3s"
+        },
+        "metering": {
+          "localfs": {
+            "base-path": "/fixture/metering",
+            "permissions": "0700"
+          }
+        }
+      },
+      "check_output": "config check successful",
+      "check_messages": [
+        "config check successful"
+      ]
+    },
+    {
+      "name": "store-map",
+      "toml": "name=\"nested-oracle\"\nclient-urls=\"http://127.0.0.1:0\"\npeer-urls=\"http://127.0.0.1:0\"\ndata-dir=\"/var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/pd97-oracle-lc4107ly/data\"\n[log]\nformat=\"json\"\n[schedule.store-limit.9]\nadd-peer=3.0\n",
+      "exit_code": 0,
+      "output": "toml: cannot decode to a map with non-string key type (uint64 in \"map[uint64]config.StoreLimitConfig\")\n"
+    },
+    {
+      "name": "ru-map",
+      "toml": "name=\"nested-oracle\"\nclient-urls=\"http://127.0.0.1:0\"\npeer-urls=\"http://127.0.0.1:0\"\ndata-dir=\"/var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/pd97-oracle-2_vxsz70/data\"\n[log]\nformat=\"json\"\n[controller.ru-version-policy.overrides]\n\"42\"=3\n",
+      "exit_code": 0,
+      "output": "toml: cannot decode to a map with non-string key type (uint32 in \"map[uint32]int32\")\n"
+    },
+    {
+      "name": "space",
+      "toml": "name=\"nested-oracle\"\nclient-urls=\"http://127.0.0.1:0\"\npeer-urls=\"http://127.0.0.1:0\"\ndata-dir=\"/var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/pd97-oracle-nfs9igwi/data\"\n[log]\nformat=\"json\"\n[schedule]\nlow-space-ratio=0.2\nhigh-space-ratio=0.8\n",
+      "exit_code": 0,
+      "output": "low-space-ratio should be larger than high-space-ratio\n"
+    },
+    {
+      "name": "worker",
+      "toml": "name=\"nested-oracle\"\nclient-urls=\"http://127.0.0.1:0\"\npeer-urls=\"http://127.0.0.1:0\"\ndata-dir=\"/var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/pd97-oracle-kcqmjtt2/data\"\n[log]\nformat=\"json\"\n[schedule]\npatrol-region-worker-count=9\n",
+      "exit_code": 0,
+      "output": "patrol-region-worker-count should be between 1 and 8\n"
+    },
+    {
+      "name": "negative-limit",
+      "toml": "name=\"nested-oracle\"\nclient-urls=\"http://127.0.0.1:0\"\npeer-urls=\"http://127.0.0.1:0\"\ndata-dir=\"/var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/pd97-oracle-45qk5rto/data\"\n[log]\nformat=\"json\"\n[schedule.default-store-limit]\nadd-peer=-1.0\n",
+      "exit_code": 0,
+      "output": "default-store-limit.add-peer should be finite and non-negative\n"
+    },
+    {
+      "name": "flag-conflict",
+      "toml": "name=\"nested-oracle\"\nclient-urls=\"http://127.0.0.1:0\"\npeer-urls=\"http://127.0.0.1:0\"\ndata-dir=\"/var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/pd97-oracle-vv2uopvw/data\"\n[log]\nformat=\"json\"\n[schedule]\ndisable-remove-down-replica=true\nenable-remove-down-replica=true\n",
+      "exit_code": 0,
+      "output": "config item enable-remove-down-replica and disable-remove-down-replica(deprecated) are conflict\n"
+    },
+    {
+      "name": "isolation",
+      "toml": "name=\"nested-oracle\"\nclient-urls=\"http://127.0.0.1:0\"\npeer-urls=\"http://127.0.0.1:0\"\ndata-dir=\"/var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/pd97-oracle-bhimiood/data\"\n[log]\nformat=\"json\"\n[replication]\nisolation-level=\"zone\"\n",
+      "exit_code": 0,
+      "output": "isolation-level must be one of location-labels or empty\n"
+    },
+    {
+      "name": "encryption-method",
+      "toml": "name=\"nested-oracle\"\nclient-urls=\"http://127.0.0.1:0\"\npeer-urls=\"http://127.0.0.1:0\"\ndata-dir=\"/var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/pd97-oracle-10qxqal5/data\"\n[log]\nformat=\"json\"\n[security.encryption]\ndata-encryption-method=\"bad\"\n",
+      "exit_code": 0,
+      "output": "[PD:encryption:ErrEncryptionInvalidMethod]unknown method\n"
+    },
+    {
+      "name": "encryption-period",
+      "toml": "name=\"nested-oracle\"\nclient-urls=\"http://127.0.0.1:0\"\npeer-urls=\"http://127.0.0.1:0\"\ndata-dir=\"/var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/pd97-oracle-6g85908r/data\"\n[log]\nformat=\"json\"\n[security.encryption]\ndata-key-rotation-period=\"-1s\"\n",
+      "exit_code": 0,
+      "output": "[PD:encryption:ErrEncryptionInvalidConfig]negative data-key-rotation-period -1000000000\n"
+    },
+    {
+      "name": "encryption-master",
+      "toml": "name=\"nested-oracle\"\nclient-urls=\"http://127.0.0.1:0\"\npeer-urls=\"http://127.0.0.1:0\"\ndata-dir=\"/var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/pd97-oracle-4olf3fkt/data\"\n[log]\nformat=\"json\"\n[security.encryption.master-key]\ntype=\"bad\"\n",
+      "exit_code": 0,
+      "output": "[PD:encryption:ErrEncryptionInvalidConfig]unrecognized encryption master key type: bad\n"
+    },
+    {
+      "name": "redact",
+      "toml": "name=\"nested-oracle\"\nclient-urls=\"http://127.0.0.1:0\"\npeer-urls=\"http://127.0.0.1:0\"\ndata-dir=\"/var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/pd97-oracle-3z4zhvxk/data\"\n[log]\nformat=\"json\"\n[security]\nredact-info-log=\"invalid\"\n",
+      "exit_code": 0,
+      "output": "toml: line 8 (last key \"security.redact-info-log\"): the \"redact-info-log\" value is invalid; it should be either false, true, or \"MARKER\"\n"
+    },
+    {
+      "name": "log-data-dir",
+      "toml": "name=\"nested-oracle\"\nclient-urls=\"http://127.0.0.1:0\"\npeer-urls=\"http://127.0.0.1:0\"\ndata-dir=\"/fixture/data\"\n[log]\nformat=\"json\"\n[log.file]\nfilename=\"/fixture/data/sub/pd.log\"\n",
+      "exit_code": 0,
+      "output": "log directory shouldn't be the subdirectory of data directory\n"
+    }
+  ]
+}

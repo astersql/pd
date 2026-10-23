@@ -71,7 +71,7 @@ impl ConfigScalars {
 }
 
 // Lexical filepath.Abs/Clean on the host path syntax; never resolves symlinks.
-fn clean_path(cwd: &Path, value: &str) -> String {
+pub(crate) fn clean_path(cwd: &Path, value: &str) -> String {
     let path = cwd.join(value);
     let mut clean = PathBuf::new();
     for part in path.components() {
