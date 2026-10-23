@@ -2720,3 +2720,85 @@ Go 格式化或依赖整理。Cargo manifest/lock 无变化，workspace fmt 未�
 审查仅本任务 affinity 模块、独立测试、lib 注册、分页 helper 最小可见性连线及本证据节；
 用户已有其他计划变更保留。所有 Cargo/fixture 子进程已结束，共享锁已释放，缓存保留。
 状态：已完成；批次 31 的亲和组文档存储验证故事完成。
+
+## 批次 32：复制模式状态端点（任务 13，2026-10-23）
+
+### 准入和只读 Go 依据
+
+批次 31 提交 `b4d012165`、affinity_endpoint 产物和本文完成记录齐全：
+聚焦 3 passed，workspace 529 passed / 0 failed / 1 既有 ignored，满足准入。
+已读 do-task-plans、ADR-001、porting-guide、Copilot 和 canonical endpoint/kv；
+`rg --files --hidden -g AGENTS.md pkg docs .plans` 无更深指令。
+`replication_status.go` 相对规划基准
+`5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异。总计划及来源主题只读。
+
+Go `LoadReplicationStatus` 精确读取 `ReplicationModePath(mode)`；缺失或空 string
+返回 false，存储错误直接传播；非空值 json.Unmarshal，坏 JSON 包装为
+ErrJSONUnmarshal，成功返回 true。`SaveReplicationStatus` 经 util.go::saveJSON /
+saveJSONInTxn 先 json.Marshal，编码失败不写，成功覆盖单键且不附 lease。
+keypath 的格式为 `/pd/{cluster_id}/replication_mode/{mode}`，不清理 mode。
+Rust 返回新模型的 Option 表达 found，不修改调用者已有结构；模型负责 Go 字段映射、
+nullable 和自定义编码，与既有 config adapter 契约一致，不实现复制模式状态机。
+
+字节证据复用批次 21/30 保存且经 Go runner 核验的 encoding/json ExampleMarshal：
+输入 ColorGroup{ID:1, Name:"Reds", Colors:["Crimson","Red","Ruby","Maroon"]}，
+输出 `{"ID":1,"Name":"Reds","Colors":["Crimson","Red","Ruby","Maroon"]}`。
+独立纯值测试和两后端保存/读取均与这些固定字节比较；`1`、`null` 复用已保存的
+TestGCStateJSONUtil 输出，null 默认值依据既有 Go TestUnmarshalNulls 证据。
+mode 路径复用 member_config_paths_test.rs 已保存 Go 输出。
+没有用 Rust 编码结果生成预期，没有将源码依据称作本轮 Go 运行差分。
+
+本轮没有执行完整 Go oracle
+`go test -mod=readonly ./pkg/storage/endpoint ./pkg/storage -count=1`：整包包含需要
+failpoint 注入的测试，与只读约束冲突；必要编码证据由上述保存输出提供。
+审查复用 etcd fixture：只读 build 现有 main.go、GOFLAGS=-mod=readonly，
+随机 loopback 端口，独立数据目录，同 WAL 重启，无 Go 写入或 failpoint 启停。
+proto build.rs 会解压含 Go 文件的归档；本轮复用已有编译缓存，未触发该脚本。
+
+### 实现和测试驱动证据
+
+新增 canonical replication_endpoint.rs，提供
+StorageEndpoint::{load_replication_status,save_replication_status}，复用 ClusterPaths、
+load、save_json 和既有 EndpointError。lib.rs 显式注册独立 replication_endpoint_test.rs。
+无新增依赖、feature、runtime、全局状态或第二套 MetaStore。
+
+replication_endpoint_memory / replication_endpoint_etcd 共用 contract：缺失、空值、
+JSON 往返及 Go 字节、编码错误保留旧值、无效 JSON/错误字段类型/尾随数据、
+非空 null 的 found/default 语义、标量，以及多 mode、跨 cluster 隔离。
+mode 包含空名称、嵌套路径、未清理路径、中文和 NUL；覆盖一个 mode 后另一模式保持原值。
+etcd 入口在保存结束后 stop/stopped → start/restarted，同 WAL 恢复后两个 mode
+分别为原对象与 7。随后 drop fixture 并等待服务器退出，再执行读取和保存，
+均返回真实 Store 错误；不模拟核心存储或事务结果。
+
+最小可编译接口先真实保存并读取后返回 None。
+`cargo fmt --all` 退出 0 后执行
+`cargo test --locked -p astersql-pd-storage-endpoint --lib replication_endpoint -- --nocapture`：
+退出 **101**，1 passed / 2 failed / 0 ignored（4.03s），两个后端在保存成功后
+读取 None 而预期 Some(ColorGroup) 的真实状态断言失败。
+实现解码后重新 `cargo fmt --all`（退出 0），相同命令退出 **0**：
+3 passed / 0 failed / 0 ignored（5.30s）。原红灯断言保留，未忽略或削弱测试。
+
+### 共享槽位和仓库基线
+
+三个 Cargo 阶段从仓库根按 1–10 顺序通过原子 mkdir 领取首个空槽，实际均为 **1**，
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录 plan=storage-endpoint、task=13、batch=32、session=replication-endpoint
+和持有 shell PID（78280、78435、78580）。EXIT/INT/TERM trap 清理自己的 owner/锁，
+同步等待 Cargo 和 fixture 子进程结束才释放，缓存保留；子进程继承绝对 target 和
+GOFLAGS=-mod=readonly。
+
+| 最终命令 | 退出码与有效结果 |
+| --- | --- |
+| `cargo test --locked -p astersql-pd-storage-endpoint --lib replication_endpoint -- --nocapture` | 0；3 passed / 0 failed / 0 ignored，5.30s |
+| `cargo metadata --format-version 1 --no-deps` | 0；canonical endpoint target 保持注册 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；仅既有 server cpu_usage 弃用警告 |
+| `cargo test --workspace --locked` | 0；83 个 target 含 doc-tests，532 passed / 0 failed / 1 既有 ignored；endpoint 33 passed |
+| `git diff --check`、`git diff --cached --check` | 0 |
+
+最终核对开始快照中 1101 个 Go/模块文件 SHA-256 全部未变化，Go Git 差异为空，
+未跟踪 Go/模块文件为 0。未运行生成器、failpoint 启停、Go 格式化或依赖整理。
+Cargo manifest/lock 无变化，workspace fmt 未修改其他 Rust 文件。
+审查范围仅 replication_endpoint.rs、独立测试、lib.rs 注册及本证据节；
+用户已有其他计划变更保留。所有 Cargo/fixture 子进程结束，共享锁已释放，缓存保留。
+状态：已完成；批次 32 的按 mode 隔离复制状态 JSON 验证故事完成。

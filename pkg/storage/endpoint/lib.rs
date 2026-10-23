@@ -50,3 +50,7 @@ mod rule_endpoint_test;
 mod affinity_endpoint;
 #[cfg(test)]
 mod affinity_endpoint_test;
+
+mod replication_endpoint;
+#[cfg(test)]
+mod replication_endpoint_test;
