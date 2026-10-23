@@ -1012,3 +1012,74 @@ owner 记录计划、任务、会话和持有 shell PID；EXIT/INT/TERM 清理�
 已审查两个新 Rust 文件、lib.rs 的显式注册和本文证据差异；无依赖变更，
 无无关 Rust 文件改动。槽位 1 的 owner 和锁已释放，缓存保留。
 其他编号任务文件已有删除不纳入本任务提交。
+
+## 批次 89：回收并发参数校验
+
+日期：2026-10-24（Asia/Shanghai）。前置批次 88 经提交 `9968b0892`、
+canonical PDServerConfig、七项默认值测试及本文 698 passed / 0 failed /
+1 ignored 完整回归证据核验，准入满足。只适用根 AGENTS.md；已读 Copilot、
+ADR-001、移植指南和 do-task-plans 技能。config.go/config_test.go 相对规划
+基准 `5d5948052a9ee9e3fa7a09145fe2916a2912c223` 无差异。
+
+### Go 依据与实现边界
+
+- `server/config/config.go:655–663` 的 validateGCConcurrency：两字段合法闭区间
+  均为 [1,16]，索引加载先于状态预热校验；错误原文分别为
+  `gc-keyspace-index-load-concurrency must be between 1 and 16` 和
+  `gc-state-cache-warmup-concurrency must be between 1 and 16`。
+  Validate 在 dashboard/key-type 等其他检查之前调用该校验。
+- `config_test.go::TestGCConcurrencyConfig` 固定默认 4/4、两字段各自的
+  -1/0/1/2/4/16/17/128/MaxInt 输入及有效值 JSON 字段保留。
+- TestGCConcurrencyConfigReload 固定缺失字段取 4、1/2 和 16/16；
+  TestGCConcurrencyConfigReloadRejectsInvalid 固定两字段的 -1/0/17/128/
+  MaxInt 拒绝且旧配置保留。persist_options.go:887–913 的 Reload 先默认化
+  再加载，GC 校验成功后才发布配置。
+- 本轮只读运行现有整个 Go 配置包，覆盖上述测试。已复核 TestMain 仅 goleak
+  与 WaitForEtcdConnections；现有测试不要求 failpoint 注入，没有生成器调用。
+  未新增 Go oracle、未启停 failpoint。i64::MIN、256 种合法组合及错误优先级
+  的额外断言来自源码推导，明确不冒充新增 Go 运行差分。
+
+`pd_server_gc.rs::PDServerConfig::validate_gc_concurrency` 在既有 canonical
+类型上提供无副作用的独立校验，返回与 Go 一致的字段错误文本，不做默认调整。
+本任务不装配完整 Validate，不迁移 PersistOptions/Reload 或存储；reload 测试
+只验证解码、字段 presence、默认调整和真实校验构成的候选值契约，测试局部状态
+检查拒绝候选值后保留旧值，不声称实现了生产热重载。纯值任务无需 MemoryStore/
+etcd 双入口。四项独立 pd_server_gc_* 测试在 lib.rs 显式注册。
+
+无新增依赖、无 Cargo.lock/Cargo.toml 变更，也没有新增编码实现。有效值的 JSON
+字段断言复用现有编码器；完整 workspace 同时回归既有
+config_decode_go_json_bytes 与 pd_server_defaults 的真实 Go JSON 字节比较，
+预期来自本文保存的 batch84-missing / batch84-explicit-zero 原始输出，未手抄
+Rust 结果充当 Go 预期。
+
+### 本轮验证
+
+红灯与绿灯阶段均通过原子 mkdir 动态领取共享槽位 **1**，
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录计划、任务、会话及 shell PID；EXIT/INT/TERM 清理自己的记录与锁，
+所有 Cargo 与 fixture 子进程结束后释放，保留缓存。所有子进程继承该绝对路径
+与 `GOFLAGS=-mod=readonly`。复核既有 etcd fixture 只读构建现有 Go，产物和
+隔离数据目录写入槽位；proto 构建入口读取已锁定模块及缓存，不写仓库 Go/模块。
+
+先以可编译空校验接口运行指定聚焦命令，得到真实行为红灯 **1 passed /
+3 failed / 0 ignored，退出 101**，分别命中非法范围、错误顺序及非法候选值
+发布后的终态断言。最小实现后同一四项测试不削弱断言全部通过，并补充合法
+reload 候选值的确切数值断言。
+
+| 确切命令 | 退出码与有效证据 |
+| --- | --- |
+| `cargo fmt --all` | 0；仅本任务 Rust 文件 |
+| `cargo test --locked -p astersql-pd-server-config --lib pd_server_gc -- --nocapture` | 红灯 101：1 passed / 3 failed；绿灯 0：4 passed / 0 failed / 0 ignored |
+| `go test -mod=readonly ./server/config -count=1` | 0；已有配置包通过，1.188s |
+| `cargo metadata --format-version 1 --no-deps` | 0 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；仅既有 core_region_adapter.rs:134 cpu_usage deprecated 警告 |
+| `cargo test --workspace --locked` | 0；702 passed / 0 failed / 1 既有 ignored，含真实 etcd；配置 crate 32 项通过 |
+| `git diff --check` | 0 |
+
+本轮状态：**已完成**。完整回归结束后核对 1101 个 Go/模块文件路径集合及
+SHA-256，与起点完全一致，Go/模块 Git 状态为空。只读 plan.md 指纹仍为
+`c7968f95a13d0d216ced3adafaca3140ad6ef959ff693c613cb903b231a6f777`。
+已审查生产校验、四项独立测试、模块注册与本文差异，无无关 Rust 格式化、
+无依赖变更。槽位 1 的 owner 与锁已释放，缓存保留。其他编号任务文件的
+已有删除不纳入本任务提交。

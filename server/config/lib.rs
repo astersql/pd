@@ -28,3 +28,8 @@ pub use pd_server_defaults::*;
 
 #[cfg(test)]
 mod pd_server_defaults_test;
+
+mod pd_server_gc;
+
+#[cfg(test)]
+mod pd_server_gc_test;
