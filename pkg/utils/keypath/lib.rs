@@ -5,3 +5,9 @@ pub use cluster_paths::*;
 
 #[cfg(test)]
 mod cluster_paths_test;
+
+mod member_config_paths;
+pub use member_config_paths::*;
+
+#[cfg(test)]
+mod member_config_paths_test;

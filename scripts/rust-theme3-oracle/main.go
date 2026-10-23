@@ -5,8 +5,15 @@ package main
 import "os"
 
 func main() {
-	if len(os.Args) != 2 || os.Args[1] != "cluster_paths" {
-		panic("usage: rust-theme3-oracle cluster_paths")
+	if len(os.Args) != 2 {
+		panic("usage: rust-theme3-oracle <scenario>")
 	}
-	clusterPaths()
+	switch os.Args[1] {
+	case "cluster_paths":
+		clusterPaths()
+	case "member_config_paths":
+		memberConfigPaths()
+	default:
+		panic("unknown scenario")
+	}
 }

@@ -401,3 +401,81 @@ rg -n '^(func |type |pub |    pub )' pkg/utils/keypath/absolute_key_path.go pkg/
 
 结论：任务 2 已完成；独立测试显式注册于 `pkg/utils/keypath/lib.rs`。
 本结论仅覆盖本轮键路径行为，不代表整个 Go keypath 包已迁移。
+
+## 任务 3：配置与成员键（2026-10-23）
+
+准入：批次 2 提交 `6c1de2263` 及前节完整红绿灯、449 项 workspace
+通过证据已核验，canonical `astersql-pd-keypath` 存在。相对规划基准
+`5d5948052a9ee9e3fa7a09145fe2916a2912c223`，本任务涉及的 Go keypath
+源码无差异；仅根 AGENTS.md，无更深覆盖。总计划和来源主题保持只读。
+
+### 实现与 Go 依据
+
+在 canonical crate 新增 [member_config_paths.rs](../../pkg/utils/keypath/member_config_paths.rs)，
+独立 [member_config_paths_test.rs](../../pkg/utils/keypath/member_config_paths_test.rs)
+已在 `lib.rs` 显式注册。复用 `ClusterPaths` 显式不可变集群上下文，无全局 ID、
+新依赖、features、Cargo manifest/lock 变更或服务/存储算法。
+
+- `config.go`：`ConfigPath`、`SchedulerConfigPathPrefix`、`SchedulerConfigPath`。
+- `member.go`：`MemberBinaryDeployPath`、`MemberGitHashPath`、`MemberBinaryVersionPath`。
+- `election.go`：`ElectionPath`、`ExpectedPrimaryPath`、`MemberLeaderPriorityPath`。
+- `absolute_key_path.go`：`MsParam`、`Prefix`、`ServiceMiddlewarePath`、
+  `StoreLeaderWeightPath`、`StoreRegionWeightPath`、`ReplicationModePath` 及 schema。
+  Rust 对应 snake_case 公开函数/方法；`MsParam` 用 String/u32 保留字段含义。
+- 真实实现是 `path.Dir`（不是任务描述中的 Join）；Rust `prefix` 仅按 `/`
+  分段，清理父目录中的空段、`.`、`..`，保留相对上溯并限制绝对路径上溯到根。
+  其余构造器直接格式化，空名称、嵌套名称、斜杠和 `..` 不清理、不验证。
+- `election_path(None)` 或空服务名返回 PD leader；精确 `tso` 名称才采用
+  TSO schema：组 0 用 `00000`，其他组最小宽度 5、超宽不截断。
+  其他服务忽略 group。`expected_primary_path(&MsParam)` 要求有效引用，
+  在类型层排除 Go nil 解引用 panic；空服务名仍返回 `/ms/C//primary/expected_primary`，
+  不误用 election 的 PD leader 分支。
+- 成员 ID 为普通十进制，store weight ID 为最小 20 位十进制；priority 是键名，
+  本任务不迁移优先级值/选举行为。纯键路径无存储副作用，无需强造双后端入口。
+
+### 真实 Go 输出与跨语言差分
+
+新增场景 [member_config_paths.go](../../scripts/rust-theme3-oracle/member_config_paths.go)，
+`main.go` 只新增分发。`go run ./scripts/rust-theme3-oracle member_config_paths`
+退出 **0**，产生 **263** 条 TSV，原样固定在独立测试 `GO_ORACLE` 常量中。
+Rust 调用真实公开函数，逐条 `as_bytes()` 断言并输出实际值；将 Go TSV 与
+Rust stdout 的 ORACLE 行排序比较，**263/263 完全一致**，比较脚本退出 0。
+没有忽略或归一化结果，以下输入完整保留在工具与测试中：
+
+- cluster `[0, 42, u64::MAX]`；名称 `""`、`balance-region`、`nested/name`、
+  `/a//../b/`、`调度`；成员/store ID `[0, 1, u64::MAX]`。
+- service `""`、`tso`、`scheduling`、`tso/`、`/x//../y/`，分别组合 group
+  `[0, 1, 99999, 100000, u32::MAX]`；每个 cluster 额外覆盖 nil election。
+- 每个 cluster 82 条键输出（合计 246），另有 17 条 Prefix 输入，包含空路径、
+  根/重复 slash、尾 slash、`.`/`..`、相对上溯、绝对越根、反斜杠和 Unicode。
+  例如 Prefix(`a/../b`) 为 `.`，Prefix(`a/..`) 为 `a`；
+  非清理构造器保留 `/pd/42/scheduler_config//a//../b/`。
+
+### 测试驱动及验证记录
+
+Go oracle 首先串行执行：
+`make gotest GOTEST_ARGS='./pkg/utils/keypath -count=1'`，退出 **0**，
+2 个顶层测试（`TestRegionPath` 比较 1000 个随机 ID，资源组测试含 8 个子场景），
+包输出 `ok ... 0.237s`。等待 make 完成 failpoint disable 后才编辑和运行 Rust；
+检查无生成 failpoint 文件，无 Go 生产变更。
+
+两个 Cargo 阶段均从 1–10 顺序原子 mkdir 动态获得 **槽位 1**，
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+owner 记录计划/任务/会话和 shell PID（红灯 **88339**，绿灯/基线 **88435**）；
+EXIT/INT/TERM trap 清理，各阶段所有子进程结束后释放自己的锁并保留缓存。
+最终 `target/rust-slot-locks` 为空。
+
+| 命令 | 退出码与有效结果 |
+| --- | --- |
+| `cargo fmt --all`（红灯、绿灯阶段各一次） | 均 0，无其他 Rust 文件格式变化 |
+| `cargo test --locked -p astersql-pd-keypath --lib member_config_paths -- --nocapture`（红灯） | **101**；1 passed / 1 failed。真实断言：TSO group 1 实际 `/ms/0/tso/keyspace_groups/election/1/primary`，Go 期望 `/ms/0/tso/keyspace_groups/election/00001/primary`；不是编译或环境失败 |
+| 同一聚焦命令（修复最小 5 位补零后） | **0**；**2 passed / 0 failed / 0 ignored**；263 条 Go 字节断言及独立集群上下文断言通过，测试未削弱 |
+| `cargo metadata --format-version 1 --no-deps` | 0；canonical crate 存在，无新增依赖 |
+| `cargo fmt --all -- --check` | 0 |
+| `cargo check --workspace --locked` | 0；仅既有 server 废弃字段警告 |
+| `cargo test --workspace --locked` | **0**；**451 passed / 0 failed / 1 ignored**，含两个 syncutil compile-fail doctest；既有 ignored 为需单独二进制的 TSO 测试，本轮未新增 ignored |
+| `git diff --check` | 0 |
+
+审查：本轮仅生产/独立测试模块、Go oracle 场景及分发、本文和任务清理。
+无 Go 生产、依赖、manifest/lock 或只读计划变化；其他会话的元数据观测任务状态
+保留原样，不纳入提交。任务 3 已完成，本结论限于配置/成员/选主键值构造。
