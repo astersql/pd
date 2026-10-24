@@ -1,0 +1,57 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-statistics v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.59s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics-62613012d5c00a6d)
+
+running 6 tests
+
+thread 'region_totals_test::state_task_14_region_totals_go_api_distribution' (157335182) panicked at pkg/statistics/region_totals_test.rs:106:5:
+assertion `left == right` failed
+  left: (0, 0, 0, 0, 0)
+ right: (4, 1, 351, 291, 220)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'region_totals_test::state_task_14_region_totals_empty_uses_keys' (157335181) panicked at pkg/statistics/region_totals_test.rs:96:5:
+assertion `left == right` failed
+  left: (0, 0, 0, 0)
+ right: (3, 1, 4, 1)
+
+thread 'region_totals_test::state_task_14_region_totals_ia_cap_and_nil_leader' (157335184) panicked at pkg/statistics/region_totals_test.rs:70:5:
+assertion `left == right` failed
+  left: 0
+ right: 40
+
+thread 'region_totals_test::state_task_14_region_totals_go_api_hot_filter' (157335183) panicked at pkg/statistics/region_totals_test.rs:182:5:
+assertion `left == right` failed
+  left: (0, 0, 0, 0)
+ right: (4, 351, 291, 220)
+
+thread 'region_totals_test::state_task_14_region_totals_accumulation_and_wrapping' (157335180) panicked at pkg/statistics/region_totals_test.rs:262:5:
+assertion `left == right` failed
+  left: 0
+ right: 2
+
+thread 'region_totals_test::state_task_14_region_totals_witness_tiflash_and_no_leader' (157335185) panicked at pkg/statistics/region_totals_test.rs:243:5:
+assertion `left == right` failed
+  left: {}
+ right: {1: 1, 2: 1}
+test region_totals_test::state_task_14_region_totals_empty_uses_keys ... FAILED
+test region_totals_test::state_task_14_region_totals_ia_cap_and_nil_leader ... FAILED
+test region_totals_test::state_task_14_region_totals_go_api_hot_filter ... FAILED
+test region_totals_test::state_task_14_region_totals_go_api_distribution ... FAILED
+test region_totals_test::state_task_14_region_totals_witness_tiflash_and_no_leader ... FAILED
+test region_totals_test::state_task_14_region_totals_accumulation_and_wrapping ... FAILED
+
+failures:
+
+failures:
+    region_totals_test::state_task_14_region_totals_accumulation_and_wrapping
+    region_totals_test::state_task_14_region_totals_empty_uses_keys
+    region_totals_test::state_task_14_region_totals_go_api_distribution
+    region_totals_test::state_task_14_region_totals_go_api_hot_filter
+    region_totals_test::state_task_14_region_totals_ia_cap_and_nil_leader
+    region_totals_test::state_task_14_region_totals_witness_tiflash_and_no_leader
+
+test result: FAILED. 0 passed; 6 failed; 0 ignored; 0 measured; 26 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-statistics --lib`

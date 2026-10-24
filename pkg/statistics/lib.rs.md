@@ -19,3 +19,7 @@ HistoryLoads 及默认采样配置；store_history_test 显式登记。
 已加入[负载预测值代数](load_values.rs.md)：Influence、RegionKindLoads、
 StoreSummaryInfo、summary_store_infos、StoreLoad、StoreLoadPred、min_load和max_load；
 load_values_test显式登记。复用Loads、HistoryLoads与StoreKindLoads，不重复类型实现。
+
+已加入[区域汇总与过滤](region_totals.rs.md)：RegionStats、get_region_stats、
+RegionStatInformer、HotPeerSnapshot、GetRegionStatsOption与with_store_map_option；
+region_totals_test显式登记。热点领域输入是已求值快照，完整窗口在后续任务扩展。

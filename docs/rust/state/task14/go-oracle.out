@@ -1,0 +1,6 @@
+=== RUN   TestRegionStatsObserveIAKVSize
+--- PASS: TestRegionStatsObserveIAKVSize (0.00s)
+=== RUN   TestRegionStatsEmptyCountUsesKeys
+--- PASS: TestRegionStatsEmptyCountUsesKeys (0.00s)
+PASS
+ok  	github.com/tikv/pd/pkg/statistics	0.029s

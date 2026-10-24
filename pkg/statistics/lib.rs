@@ -35,3 +35,11 @@ pub use load_values::{
 };
 #[cfg(test)]
 mod load_values_test;
+
+mod region_totals;
+pub use region_totals::{
+    GetRegionStatsOption, HotPeerSnapshot, RegionStatInformer, RegionStats, get_region_stats,
+    with_store_map_option,
+};
+#[cfg(test)]
+mod region_totals_test;
