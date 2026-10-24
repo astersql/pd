@@ -42,3 +42,9 @@ pub use full_catchup::{CatchUpFrame, FullCatchUpError};
 #[cfg(test)]
 #[path = "full_catchup_test.rs"]
 mod full_catchup_test;
+
+mod downstream;
+pub use downstream::{DownstreamError, DownstreamSender, DownstreamTask, Downstreams};
+#[cfg(test)]
+#[path = "downstream_test.rs"]
+mod downstream_test;

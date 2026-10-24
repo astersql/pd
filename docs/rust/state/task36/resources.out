@@ -1,0 +1,8 @@
+Oracle phase: exit 0; slot 1 released.
+Red phase: exit 101; slot 1 released.
+Initial green phase: exit 0; slot 1 released.
+Final validation phase: exit 0; all child processes waited; slot 1 released.
+CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+Cache retained.
+All task workers canceled/joined or errored/joined. Blocked I/O dropped; active Send count zero.
+Etcd fixture drops stdin, waits for exit, and removes test data directories.

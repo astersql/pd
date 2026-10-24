@@ -14,6 +14,13 @@ pub struct SyncFrame {
     records: Vec<Arc<RegionInfo>>,
 }
 impl SyncFrame {
+    pub(crate) fn from_records(start_index: HistoryIndex, records: Vec<Arc<RegionInfo>>) -> Self {
+        Self {
+            start_index,
+            records,
+        }
+    }
+
     /// Empty acknowledgement at the host's successfully sent index.
     pub fn keepalive(sent_index: HistoryIndex) -> Self {
         Self {

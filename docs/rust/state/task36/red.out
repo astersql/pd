@@ -1,0 +1,46 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-syncer v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/syncer)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.21s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_syncer-f6c36878c994325f)
+
+running 5 tests
+
+thread 'downstream_test::state_task_36_downstream_removes_only_failed' (158227075) panicked at pkg/syncer/downstream_test.rs:125:5:
+assertion `left == right` failed
+  left: ["pd2", "pd3"]
+ right: ["pd3"]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'downstream_test::state_task_36_downstream_keepalive_after_pending_records' (158227074) panicked at pkg/syncer/downstream_test.rs:213:5:
+assertion `left == right` failed
+  left: []
+ right: [(10, [1, 2])]
+
+thread 'downstream_test::state_task_36_downstream_independent_indexes' (158227073) panicked at pkg/syncer/downstream_test.rs:103:5:
+assertion `left == right` failed
+  left: []
+ right: [(10, [1, 2])]
+
+thread 'downstream_test::state_task_36_downstream_append_and_other_stream_progress_when_busy' (158227071) panicked at pkg/syncer/downstream_test.rs:148:10:
+slow sender must enter Send: Elapsed(())
+test downstream_test::state_task_36_downstream_keepalive_after_pending_records ... FAILED
+test downstream_test::state_task_36_downstream_removes_only_failed ... FAILED
+test downstream_test::state_task_36_downstream_independent_indexes ... FAILED
+test downstream_test::state_task_36_downstream_append_and_other_stream_progress_when_busy ... FAILED
+
+thread 'downstream_test::state_task_36_downstream_drain_serially_and_batch' (158227072) panicked at pkg/syncer/downstream_test.rs:188:10:
+drain must enter Send: Elapsed(())
+test downstream_test::state_task_36_downstream_drain_serially_and_batch ... FAILED
+
+failures:
+
+failures:
+    downstream_test::state_task_36_downstream_append_and_other_stream_progress_when_busy
+    downstream_test::state_task_36_downstream_drain_serially_and_batch
+    downstream_test::state_task_36_downstream_independent_indexes
+    downstream_test::state_task_36_downstream_keepalive_after_pending_records
+    downstream_test::state_task_36_downstream_removes_only_failed
+
+test result: FAILED. 0 passed; 5 failed; 0 ignored; 0 measured; 43 filtered out; finished in 2.01s
+
+error: test failed, to rerun pass `-p astersql-pd-syncer --lib`

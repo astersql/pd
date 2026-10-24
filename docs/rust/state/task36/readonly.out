@@ -1,0 +1,6 @@
+Go/module file inventory and SHA256 unchanged: 1101 files
+Aggregate inventory SHA256 (JSON sorted keys): ae4ea1307f6a0074d7d6b706be224a1d139607a343ed2b2c6ea9068395425bd4
+Go/module Git status unchanged: ''
+All plan.md SHA256 unchanged: 29 files
+Repeated after all workspace tests: identical inventory, hashes, Git status and plans.
+Markdown links resolve; git diff --check exit 0.

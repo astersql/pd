@@ -12,6 +12,7 @@
 `SyncFrame` 持有完整不可变 `Arc<RegionInfo>`，保持字段与记录顺序；快照在覆盖、重置后仍有效。
 协议的meta/stat/leader/buckets转换由server适配层完成。本模块无protobuf、网络、后台任务和存储I/O。
 不推进下游游标；宿主只能在成功发送后确认帧end，失败/取消时保留最后成功确认索引。
+同crate的下游drain在核对完整历史区间后通过内部 `from_records` 复用帧类型。
 `SyncFrame::keepalive` 只接受宿主已确认的发送索引，不能将history.next当成未发送记录的确认。
 
 真实领域行为与Go运行基准见[task-33](../../docs/rust/state/task-33.md)。

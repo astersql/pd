@@ -1,0 +1,16 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-syncer v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/syncer)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.76s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_syncer-f6c36878c994325f)
+
+running 8 tests
+test downstream_test::state_task_36_downstream_history_gap_and_future_index ... ok
+test downstream_test::state_task_36_downstream_drain_serially_and_batch ... ok
+test downstream_test::state_task_36_downstream_removes_only_failed ... ok
+test downstream_test::state_task_36_downstream_independent_indexes ... ok
+test downstream_test::state_task_36_downstream_cancel_blocked_send_and_rebind ... ok
+test downstream_test::state_task_36_downstream_send_failure_preserves_last_success ... ok
+test downstream_test::state_task_36_downstream_keepalive_after_pending_records ... ok
+test downstream_test::state_task_36_downstream_append_and_other_stream_progress_when_busy ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 43 filtered out; finished in 0.01s
