@@ -1,0 +1,7 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+8781f08225e2b8b746217d79fe78e3ff072369cc8ae8941cc8d616a8a77986d9  /Users/Shared/work/dir/data/codes/pd/target/rust-slot-2/cluster-oracle41.test
+=== RUN   TestStoreMutationsRejectTombstoneStore
+--- PASS: TestStoreMutationsRejectTombstoneStore (0.00s)
+=== RUN   TestFilterUnhealthyStore
+--- PASS: TestFilterUnhealthyStore (0.00s)
+PASS

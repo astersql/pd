@@ -1,10 +1,7 @@
 // Copyright 2026 AsterSQL.
 //! Store reports compose canonical core state and statistics without scheduling.
-use std::collections::BTreeSet;
-
 use astersql_pd_core::{BasicCluster, NodeState, PeerStat, StoreStats};
-use astersql_pd_statistics::{HotStat, HotTask, region_read_cpu_usage};
-use astersql_pd_statistics_utils::RWType;
+use astersql_pd_statistics::{HotStat, region_read_cpu_usage};
 
 /// Unknown store; preserves the Go heartbeat handler's error text.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -31,64 +28,7 @@ pub fn handle_store_heartbeat(
     stats: &StoreStats,
     now_unix_nanos: i64,
 ) -> Result<NodeState, StoreNotFound> {
-    let store_id = stats.store_id;
-    let store = cluster
-        .stores
-        .get_store(store_id)
-        .ok_or(StoreNotFound(store_id))?;
-    let state = store.node_state();
-    if store.is_removed() {
-        if let Some(hot) = statistics {
-            hot.stores_stats
-                .filter_unhealthy_store(&cluster.stores, now_unix_nanos as i128);
-        }
-        return Ok(state);
-    }
-
-    let mut next = store.as_ref().clone();
-    next.update_raw_stats(stats.clone());
-    next.set_last_heartbeat_unix_nanos(now_unix_nanos);
-    let slow = next.is_slow();
-    cluster.stores.put_store(std::sync::Arc::new(next));
-
-    let Some(hot) = statistics else {
-        return Ok(state);
-    };
-    hot.stores_stats.observe(store_id, stats);
-    hot.stores_stats
-        .filter_unhealthy_store(&cluster.stores, now_unix_nanos as i128);
-    hot.slow_stat.observe_slow_store_status(store_id, slow);
-    let interval = stats
-        .interval
-        .as_ref()
-        .map_or(0, |i| i.end_timestamp.wrapping_sub(i.start_timestamp));
-    let mut reported = BTreeSet::new();
-    for peer in &stats.peer_stats {
-        reported.insert(peer.region_id);
-        let Some(region) = cluster.regions.get_region(peer.region_id) else {
-            continue;
-        };
-        if !region.meta().peers.iter().any(|p| p.store_id == store_id) {
-            continue;
-        }
-        let loads = peer_loads(peer, interval);
-        // Queue rejection deliberately does not reject the heartbeat itself.
-        let _ = hot.hot_cache.submit(
-            RWType::READ,
-            HotTask::read_peer(&region, store_id, loads, interval),
-            now_unix_nanos,
-        );
-    }
-    let _ = hot.hot_cache.submit(
-        RWType::READ,
-        HotTask::Cold {
-            store: store_id,
-            reported,
-            interval,
-        },
-        now_unix_nanos,
-    );
-    Ok(state)
+    super::removed_store::handle_checked(cluster, statistics, stats, now_unix_nanos, || {})
 }
 
 /// Capture cumulative read inputs before the canonical cache divides by seconds.

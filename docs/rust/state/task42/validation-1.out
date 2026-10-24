@@ -1,0 +1,11 @@
+   Compiling astersql-pd-cluster v0.1.0 (/Users/Shared/work/dir/data/codes/pd/server/cluster)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.27s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_cluster-2e5fab8b58718585)
+
+running 4 tests
+test removed_store_test::state_task_42_removed_store_commit_preserves_current_metadata ... ok
+test removed_store_test::state_task_42_removed_store_routine_noop ... ok
+test removed_store_test::state_task_42_removed_store_between_check_and_commit ... ok
+test removed_store_test::state_task_42_removed_store_deleted_between_check_and_commit ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 8 filtered out; finished in 0.00s

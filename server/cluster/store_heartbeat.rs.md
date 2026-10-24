@@ -4,7 +4,8 @@
 可选宿主 HotStat、原始 StoreStats 和 Unix 纳秒时钟。独占借用使成员/region修改与报告串行。
 未知store返回类型化StoreNotFound，文本保留 `store N not found`；不注册store。
 Removed store成功且不更新raw stats、时间或热点；组合统计时仍清理不健康rolling条目。
-其他store克隆core元数据、共享raw stats/smoothing holder，替换整份report并更新时间。
+其他store通过[removed_store](removed_store.rs)在注册表锁下复查最新状态，
+克隆当前core元数据、共享raw stats/smoothing holder，替换整份report并更新时间。
 旧元数据快照的lastHeartbeat保持原值，raw stats按Go SetStoreStats共享语义可见。
 
 statistics=None选择独立调度服务路径；Some时复用StoresStats观察和健康清理、SlowStat状态。

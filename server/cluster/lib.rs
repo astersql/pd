@@ -7,3 +7,7 @@ pub use store_heartbeat::{StoreNotFound, handle_store_heartbeat};
 
 #[cfg(test)]
 mod store_heartbeat_test;
+
+mod removed_store;
+#[cfg(test)]
+mod removed_store_test;

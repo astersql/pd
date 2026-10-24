@@ -1,0 +1,37 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+   Compiling astersql-pd-cluster v0.1.0 (/Users/Shared/work/dir/data/codes/pd/server/cluster)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.91s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_cluster-2e5fab8b58718585)
+
+running 4 tests
+
+thread 'removed_store_test::state_task_42_removed_store_commit_preserves_current_metadata' (158440092) panicked at server/cluster/removed_store_test.rs:165:5:
+assertion `left == right` failed
+  left: Serving
+ right: Removing
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test removed_store_test::state_task_42_removed_store_commit_preserves_current_metadata ... FAILED
+
+thread 'removed_store_test::state_task_42_removed_store_deleted_between_check_and_commit' (158440093) panicked at server/cluster/removed_store_test.rs:122:5:
+assertion `left == right` failed: late report changed shared raw holder
+  left: StoreStats { store_id: 1, region_count: 0, start_time: 0, applying_snap_count: 0, interval: Some(TimeInterval { start_timestamp: 0, end_timestamp: 10 }), cpu_usages: [], read_io_rates: [], write_io_rates: [], op_latencies: [], peer_stats: [PeerStat { region_id: 1, read_keys: 10000000, read_bytes: 10000000, query_stats: None, written_keys: 0, written_bytes: 0, cpu_stats: None }], query_stats: None, damaged_regions_id: [], is_apply_busy: false, snapshot_stats: [], slow_trend: None, is_grpc_paused: false, total_memory: 0, used_memory: 0, dfs: [], is_stopping: false, slow_score: 0, network_slow_scores: {}, capacity: 999, available: 0, used_size: 0, is_busy: false, sending_snap_count: 0, receiving_snap_count: 0, bytes_written: 0, bytes_read: 0, keys_written: 0, keys_read: 0 }
+ right: StoreStats { store_id: 0, region_count: 0, start_time: 0, applying_snap_count: 0, interval: None, cpu_usages: [], read_io_rates: [], write_io_rates: [], op_latencies: [], peer_stats: [], query_stats: None, damaged_regions_id: [], is_apply_busy: false, snapshot_stats: [], slow_trend: None, is_grpc_paused: false, total_memory: 0, used_memory: 0, dfs: [], is_stopping: false, slow_score: 0, network_slow_scores: {}, capacity: 0, available: 0, used_size: 0, is_busy: false, sending_snap_count: 0, receiving_snap_count: 0, bytes_written: 0, bytes_read: 0, keys_written: 0, keys_read: 0 }
+
+thread 'removed_store_test::state_task_42_removed_store_between_check_and_commit' (158440091) panicked at server/cluster/removed_store_test.rs:122:5:
+assertion `left == right` failed: late report changed shared raw holder
+  left: StoreStats { store_id: 1, region_count: 0, start_time: 0, applying_snap_count: 0, interval: Some(TimeInterval { start_timestamp: 0, end_timestamp: 10 }), cpu_usages: [], read_io_rates: [], write_io_rates: [], op_latencies: [], peer_stats: [PeerStat { region_id: 1, read_keys: 10000000, read_bytes: 10000000, query_stats: None, written_keys: 0, written_bytes: 0, cpu_stats: None }], query_stats: None, damaged_regions_id: [], is_apply_busy: false, snapshot_stats: [], slow_trend: None, is_grpc_paused: false, total_memory: 0, used_memory: 0, dfs: [], is_stopping: false, slow_score: 0, network_slow_scores: {}, capacity: 999, available: 0, used_size: 0, is_busy: false, sending_snap_count: 0, receiving_snap_count: 0, bytes_written: 0, bytes_read: 0, keys_written: 0, keys_read: 0 }
+ right: StoreStats { store_id: 0, region_count: 0, start_time: 0, applying_snap_count: 0, interval: None, cpu_usages: [], read_io_rates: [], write_io_rates: [], op_latencies: [], peer_stats: [], query_stats: None, damaged_regions_id: [], is_apply_busy: false, snapshot_stats: [], slow_trend: None, is_grpc_paused: false, total_memory: 0, used_memory: 0, dfs: [], is_stopping: false, slow_score: 0, network_slow_scores: {}, capacity: 0, available: 0, used_size: 0, is_busy: false, sending_snap_count: 0, receiving_snap_count: 0, bytes_written: 0, bytes_read: 0, keys_written: 0, keys_read: 0 }
+test removed_store_test::state_task_42_removed_store_routine_noop ... ok
+test removed_store_test::state_task_42_removed_store_deleted_between_check_and_commit ... FAILED
+test removed_store_test::state_task_42_removed_store_between_check_and_commit ... FAILED
+
+failures:
+
+failures:
+    removed_store_test::state_task_42_removed_store_between_check_and_commit
+    removed_store_test::state_task_42_removed_store_commit_preserves_current_metadata
+    removed_store_test::state_task_42_removed_store_deleted_between_check_and_commit
+
+test result: FAILED. 1 passed; 3 failed; 0 ignored; 0 measured; 8 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-cluster --lib`
