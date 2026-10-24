@@ -11,7 +11,7 @@ use astersql_pd_storage_endpoint::{EndpointError, StorageEndpoint};
 use astersql_pd_storage_kv::{Base, MemoryStore, MetaStore};
 use std::sync::Arc;
 #[path = "../../storage/kv/etcd_fixture_test.rs"]
-mod fixture;
+pub(super) mod fixture;
 
 async fn seed(store: Arc<dyn MetaStore>) -> (Arc<dyn MetaStore>, ClusterPaths) {
     let ep = StorageEndpoint::new(store.clone());

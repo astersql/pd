@@ -351,6 +351,7 @@ dependencies = [
  "astersql-pd-schedule-labeler",
  "astersql-pd-storage-endpoint",
  "astersql-pd-storage-kv",
+ "async-trait",
  "serde",
  "serde_json",
  "thiserror 2.0.21",

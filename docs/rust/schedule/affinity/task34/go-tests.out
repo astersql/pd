@@ -1,0 +1,35 @@
+=== RUN   TestLabelRuleIntegration
+[2026/10/24 20:33:19.819 +08:00] [INFO] [labeler.go:65] ["new region labeler created"] [label-rules-count=0]
+[2026/10/24 20:33:19.820 +08:00] [INFO] [txn.go:756] ["rebuilt group-label mapping"] [total-groups=0] [total-ranges=0]
+[2026/10/24 20:33:19.820 +08:00] [INFO] [policy.go:158] ["affinity manager availability check loop started"] [interval=10s]
+[2026/10/24 20:33:19.820 +08:00] [INFO] [manager.go:137] ["affinity manager initialized"] [group-count=0]
+[2026/10/24 20:33:19.821 +08:00] [INFO] [txn.go:200] ["affinity group added"] [group="{\"id\":\"group_no_label\",\"create_timestamp\":1792845199}"]
+[2026/10/24 20:33:19.823 +08:00] [INFO] [txn.go:284] ["affinity group deleted"] [group-id=group_no_label]
+--- PASS: TestLabelRuleIntegration (0.01s)
+[2026/10/24 20:33:19.825 +08:00] [INFO] [policy.go:151] ["affinity manager availability check loop stopped"]
+[2026/10/24 20:33:19.825 +08:00] [INFO] [labeler.go:81] ["region labeler GC stopped"]
+=== RUN   TestDeleteAffinityGroupsForceMissing
+[2026/10/24 20:33:19.825 +08:00] [INFO] [labeler.go:65] ["new region labeler created"] [label-rules-count=0]
+[2026/10/24 20:33:19.825 +08:00] [INFO] [txn.go:756] ["rebuilt group-label mapping"] [total-groups=0] [total-ranges=0]
+[2026/10/24 20:33:19.825 +08:00] [INFO] [policy.go:158] ["affinity manager availability check loop started"] [interval=10s]
+[2026/10/24 20:33:19.825 +08:00] [INFO] [manager.go:137] ["affinity manager initialized"] [group-count=0]
+[2026/10/24 20:33:19.826 +08:00] [INFO] [txn.go:200] ["affinity group added"] [group="{\"id\":\"with-range\",\"create_timestamp\":1792845199}"]
+[2026/10/24 20:33:19.826 +08:00] [INFO] [txn.go:284] ["affinity group deleted"] [group-id=missing-group]
+[2026/10/24 20:33:19.826 +08:00] [INFO] [txn.go:284] ["affinity group deleted"] [group-id=with-range]
+--- PASS: TestDeleteAffinityGroupsForceMissing (0.00s)
+=== RUN   TestNewGroupOverlapWithExistingGroup
+[2026/10/24 20:33:19.827 +08:00] [INFO] [policy.go:151] ["affinity manager availability check loop stopped"]
+[2026/10/24 20:33:19.827 +08:00] [INFO] [labeler.go:81] ["region labeler GC stopped"]
+[2026/10/24 20:33:19.827 +08:00] [INFO] [labeler.go:65] ["new region labeler created"] [label-rules-count=0]
+[2026/10/24 20:33:19.827 +08:00] [INFO] [txn.go:756] ["rebuilt group-label mapping"] [total-groups=0] [total-ranges=0]
+[2026/10/24 20:33:19.827 +08:00] [INFO] [policy.go:158] ["affinity manager availability check loop started"] [interval=10s]
+[2026/10/24 20:33:19.827 +08:00] [INFO] [manager.go:137] ["affinity manager initialized"] [group-count=0]
+[2026/10/24 20:33:19.827 +08:00] [INFO] [txn.go:200] ["affinity group added"] [group="{\"id\":\"groupA\",\"create_timestamp\":1792845199}"]
+[2026/10/24 20:33:19.828 +08:00] [INFO] [txn.go:200] ["affinity group added"] [group="{\"id\":\"groupC\",\"create_timestamp\":1792845199}"]
+[2026/10/24 20:33:19.829 +08:00] [INFO] [txn.go:200] ["affinity group added"] [group="{\"id\":\"groupD\",\"create_timestamp\":1792845199}"]
+[2026/10/24 20:33:19.829 +08:00] [INFO] [txn.go:200] ["affinity group added"] [group="{\"id\":\"groupE\",\"create_timestamp\":1792845199}"]
+--- PASS: TestNewGroupOverlapWithExistingGroup (0.00s)
+[2026/10/24 20:33:19.829 +08:00] [INFO] [labeler.go:81] ["region labeler GC stopped"]
+[2026/10/24 20:33:19.829 +08:00] [INFO] [policy.go:151] ["affinity manager availability check loop stopped"]
+PASS
+ok  	github.com/tikv/pd/pkg/schedule/affinity	1.104s
