@@ -1,0 +1,44 @@
+{
+  "cargo fmt --all": {
+    "exit_code": 0,
+    "passed": 0,
+    "failed": 0,
+    "ignored": 0
+  },
+  "cargo metadata --format-version 1 --no-deps": {
+    "exit_code": 0,
+    "passed": 0,
+    "failed": 0,
+    "ignored": 0
+  },
+  "cargo fmt --all -- --check": {
+    "exit_code": 0,
+    "passed": 0,
+    "failed": 0,
+    "ignored": 0
+  },
+  "cargo test -p astersql-pd-statistics --locked --lib state_task_18_hot_peer -- --nocapture": {
+    "exit_code": 0,
+    "passed": 5,
+    "failed": 0,
+    "ignored": 0
+  },
+  "cargo test -p astersql-pd-statistics --locked": {
+    "exit_code": 0,
+    "passed": 51,
+    "failed": 0,
+    "ignored": 0
+  },
+  "cargo check --workspace --locked": {
+    "exit_code": 0,
+    "passed": 0,
+    "failed": 0,
+    "ignored": 0
+  },
+  "cargo test --workspace --locked": {
+    "exit_code": 0,
+    "passed": 1066,
+    "failed": 0,
+    "ignored": 1
+  }
+}

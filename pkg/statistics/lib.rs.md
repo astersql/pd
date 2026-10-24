@@ -34,3 +34,7 @@ RegionInfoProvider、RegionAnomalyDurations与PlacementRulesRequired；region_cl
 已加入[标签隔离状态统计](label_statistics.rs.md)：get_region_label_isolation、
 is_region_label_isolation_satisfied与LabelStatistics；label_statistics_test显式登记。
 复用core标签比较，覆盖Unicode/缺失值、重复观察与延迟defunct清理；宿主消费独立计数快照。
+
+已加入[热点单副本窗口](hot_peer.rs.md)：DimStat、HotPeerStat和显式hot_peer_test。
+复用真实TimeMedian和utils动作/方向/TopN，宿主传入时间；支持nil滚动负载回退、CPU last-average、
+窗口克隆隔离及Go兼容去噪快照。完整热点缓存生命周期由后续任务扩展。

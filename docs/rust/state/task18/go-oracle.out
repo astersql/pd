@@ -1,0 +1,12 @@
+=== RUN   TestUpdateHotPeerStat
+--- PASS: TestUpdateHotPeerStat (0.00s)
+=== RUN   TestHotPeerStatIsHotUsesCPULastAverage
+--- PASS: TestHotPeerStatIsHotUsesCPULastAverage (0.00s)
+=== RUN   TestCoolDownTransferLeader
+--- PASS: TestCoolDownTransferLeader (0.00s)
+=== RUN   TestHotPeerStatGetLoadBounds
+--- PASS: TestHotPeerStatGetLoadBounds (0.00s)
+=== RUN   TestHotPeerStatIsHotSkipsNilRollingLoads
+--- PASS: TestHotPeerStatIsHotSkipsNilRollingLoads (0.00s)
+PASS
+ok  	github.com/tikv/pd/pkg/statistics	0.029s

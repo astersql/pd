@@ -1,0 +1,57 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-statistics v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics)
+warning: field `last_delta` is never read
+ --> pkg/statistics/hot_peer.rs:8:5
+  |
+5 | pub struct DimStat {
+  |            ------- field in this struct
+...
+8 |     last_delta: f64,
+  |     ^^^^^^^^^^
+  |
+  = note: `DimStat` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `astersql-pd-statistics` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.79s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics-19f9aca67fa98079)
+
+running 5 tests
+
+thread 'hot_peer_test::state_task_18_hot_peer_cpu_last_average' (157488266) panicked at pkg/statistics/hot_peer_test.rs:48:5:
+assertion failed: cpu.is_last_average_hot(10.0)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'hot_peer_test::state_task_18_hot_peer_window_full_clear_and_clone' (157488268) panicked at pkg/statistics/hot_peer_test.rs:89:5:
+assertion failed: dim.is_full(10 * SECOND)
+
+thread 'hot_peer_test::state_task_18_hot_peer_cooldown_boundaries' (157488265) panicked at pkg/statistics/hot_peer_test.rs:163:9:
+assertion failed: stat.needs_cooldown_transfer_leader(100 * SECOND, 3, rw)
+
+thread 'hot_peer_test::state_task_18_hot_peer_bounds_and_missing_rolling' (157488264) panicked at pkg/statistics/hot_peer_test.rs:20:9:
+assertion `left == right` failed
+  left: 0.0
+ right: 1.0
+
+thread 'hot_peer_test::state_task_18_hot_peer_snapshot_and_topn' (157488267) panicked at pkg/statistics/hot_peer_test.rs:127:5:
+assertion `left == right` failed
+  left: []
+ right: [3.0, 5.0, 0.0, 0.0]
+test hot_peer_test::state_task_18_hot_peer_cpu_last_average ... FAILED
+test hot_peer_test::state_task_18_hot_peer_window_full_clear_and_clone ... FAILED
+test hot_peer_test::state_task_18_hot_peer_bounds_and_missing_rolling ... FAILED
+test hot_peer_test::state_task_18_hot_peer_cooldown_boundaries ... FAILED
+test hot_peer_test::state_task_18_hot_peer_snapshot_and_topn ... FAILED
+
+failures:
+
+failures:
+    hot_peer_test::state_task_18_hot_peer_bounds_and_missing_rolling
+    hot_peer_test::state_task_18_hot_peer_cooldown_boundaries
+    hot_peer_test::state_task_18_hot_peer_cpu_last_average
+    hot_peer_test::state_task_18_hot_peer_snapshot_and_topn
+    hot_peer_test::state_task_18_hot_peer_window_full_clear_and_clone
+
+test result: FAILED. 0 passed; 5 failed; 0 ignored; 0 measured; 46 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-statistics --lib`

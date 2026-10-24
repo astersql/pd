@@ -62,3 +62,8 @@ pub use label_statistics::{
 };
 #[cfg(test)]
 mod label_statistics_test;
+
+mod hot_peer;
+pub use hot_peer::{DimStat, HotPeerStat};
+#[cfg(test)]
+mod hot_peer_test;
