@@ -1,0 +1,55 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-schedule-affinity v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/affinity)
+warning: unused variable: `labels`
+  --> pkg/schedule/affinity/split.rs:12:65
+   |
+12 | ...Provider + ?Sized>(&self, labels: &RegionLabeler, conf: &C, region: Option<&Arc<RegionInfo>>, reason: SplitReason, now: u64) -> b...
+   |                              ^^^^^^ help: if this is intentional, prefix it with an underscore: `_labels`
+   |
+   = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `conf`
+  --> pkg/schedule/affinity/split.rs:12:89
+   |
+12 | ...lf, labels: &RegionLabeler, conf: &C, region: Option<&Arc<RegionInfo>>, reason: SplitReason, now: u64) -> bool {
+   |                                ^^^^ help: if this is intentional, prefix it with an underscore: `_conf`
+
+warning: unused variable: `region`
+  --> pkg/schedule/affinity/split.rs:12:99
+   |
+12 | ...&RegionLabeler, conf: &C, region: Option<&Arc<RegionInfo>>, reason: SplitReason, now: u64) -> bool {
+   |                              ^^^^^^ help: if this is intentional, prefix it with an underscore: `_region`
+
+warning: unused variable: `reason`
+  --> pkg/schedule/affinity/split.rs:12:133
+   |
+12 | ...Option<&Arc<RegionInfo>>, reason: SplitReason, now: u64) -> bool {
+   |                              ^^^^^^ help: if this is intentional, prefix it with an underscore: `_reason`
+
+warning: unused variable: `now`
+  --> pkg/schedule/affinity/split.rs:12:154
+   |
+12 | ...Info>>, reason: SplitReason, now: u64) -> bool {
+   |                                 ^^^ help: if this is intentional, prefix it with an underscore: `_now`
+
+warning: `astersql-pd-schedule-affinity` (lib test) generated 5 warnings (run `cargo fix --lib -p astersql-pd-schedule-affinity --tests` to apply 5 suggestions)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.36s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_affinity-0f1a0317ed941c8a)
+
+running 1 test
+
+thread 'affinity_split_test::affinity_split_thresholds_and_states' (156437182) panicked at pkg/schedule/affinity/affinity_split_test.rs:25:26:
+assertion `left == right` failed: size=5 keys=50000 leader=1 reason=Size
+  left: true
+ right: false
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test affinity_split_test::affinity_split_thresholds_and_states ... FAILED
+
+failures:
+
+failures:
+    affinity_split_test::affinity_split_thresholds_and_states
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 38 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-affinity --lib`

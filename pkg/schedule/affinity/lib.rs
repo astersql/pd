@@ -34,3 +34,8 @@ pub mod txn_peers;
 #[path = "affinity_cache_sync_test.rs"]
 mod affinity_cache_sync_test;
 pub mod region_cache;
+
+#[cfg(test)]
+#[path = "affinity_split_test.rs"]
+mod affinity_split_test;
+pub mod split;
