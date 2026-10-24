@@ -1,0 +1,253 @@
+Type 'help' for list of commands.
+(dlv) COMMAND break /Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler/labeler.go:271
+Breakpoint 1 set at ADDR for github.com/tikv/pd/pkg/schedule/labeler.(*RegionLabeler).SetLabelRule() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler/labeler.go:271
+(dlv) COMMAND condition 1 rule.ID == "probe"
+(dlv) COMMAND continue
+> [Breakpoint 1] github.com/tikv/pd/pkg/schedule/labeler.(*RegionLabeler).SetLabelRule() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler/labeler.go:271 (hits goroutine(490):1 total:1) (PC: ADDR)
+(dlv) COMMAND call l.ruleIndex.delete("keyspaces/0")
+> github.com/tikv/pd/pkg/schedule/labeler.(*RegionLabeler).SetLabelRule() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler/labeler.go:271 (PC: ADDR)
+Values returned:
+
+(dlv) COMMAND call l.ruleIndex.buildRanges()
+> github.com/tikv/pd/pkg/schedule/labeler.(*RegionLabeler).SetLabelRule() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler/labeler.go:271 (PC: ADDR)
+Values returned:
+
+(dlv) COMMAND print l.ruleIndex.rules
+map[string]*github.com/tikv/pd/pkg/schedule/labeler.LabelRule [
+	"high": *{
+		ID: "high",
+		Index: 5,
+		Labels: []github.com/tikv/pd/pkg/schedule/labeler.RegionLabel len: 1, cap: 1, [
+			(*"github.com/tikv/pd/pkg/schedule/labeler.RegionLabel")(ADDR),
+		],
+		RuleType: "key-range",
+		Data: interface {}([]*github.com/tikv/pd/pkg/schedule/labeler.KeyRangeRule) *(*interface {})(ADDR),
+		minExpire: *time.Time nil,},
+	"low": *{
+		ID: "low",
+		Index: -2,
+		Labels: []github.com/tikv/pd/pkg/schedule/labeler.RegionLabel len: 1, cap: 1, [
+			(*"github.com/tikv/pd/pkg/schedule/labeler.RegionLabel")(ADDR),
+		],
+		RuleType: "key-range",
+		Data: interface {}([]*github.com/tikv/pd/pkg/schedule/labeler.KeyRangeRule) *(*interface {})(ADDR),
+		minExpire: *time.Time nil,},
+	"probe": *{
+		ID: "probe",
+		Index: 1,
+		Labels: []github.com/tikv/pd/pkg/schedule/labeler.RegionLabel len: 1, cap: 1, [
+			(*"github.com/tikv/pd/pkg/schedule/labeler.RegionLabel")(ADDR),
+		],
+		RuleType: "key-range",
+		Data: interface {}([]*github.com/tikv/pd/pkg/schedule/labeler.KeyRangeRule) *(*interface {})(ADDR),
+		minExpire: *time.Time nil,},
+]
+(dlv) COMMAND call l.ruleIndex.getSplitKeys(nil, nil)
+> github.com/tikv/pd/pkg/schedule/labeler.(*RegionLabeler).SetLabelRule() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler/labeler.go:271 (PC: ADDR)
+Values returned:
+	~r0: [][]uint8 len: 6, cap: 8, [
+		[16],
+		[32],
+		[48],
+		[64],
+		[80],
+		[96],
+	]
+
+(dlv) COMMAND call l.ruleIndex.getRangeRules(nil, l.ruleIndex.ranges.segments[0].startKey)
+> github.com/tikv/pd/pkg/schedule/labeler.(*RegionLabeler).SetLabelRule() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler/labeler.go:271 (PC: ADDR)
+Values returned:
+	~r0: []interface {} len: 0, cap: 0, nil
+	~r1: *github.com/tikv/pd/pkg/schedule/labeler.LabelRule nil
+	~r2: true
+
+(dlv) COMMAND call l.ruleIndex.getRangeRules(l.ruleIndex.ranges.segments[0].startKey, l.ruleIndex.ranges.segments[1].startKey)
+> github.com/tikv/pd/pkg/schedule/labeler.(*RegionLabeler).SetLabelRule() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler/labeler.go:271 (PC: ADDR)
+Values returned:
+	~r0: []interface {} len: 1, cap: 1, [
+		*github.com/tikv/pd/pkg/schedule/labeler.LabelRule {
+			ID: "low",
+			Index: -2,
+			Labels: []github.com/tikv/pd/pkg/schedule/labeler.RegionLabel len: 1, cap: 1, [
+				(*"github.com/tikv/pd/pkg/schedule/labeler.RegionLabel")(ADDR),
+			],
+			RuleType: "key-range",
+			Data: interface {}([]*github.com/tikv/pd/pkg/schedule/labeler.KeyRangeRule) *(*interface {})(ADDR),
+			minExpire: *time.Time nil,},
+	]
+	~r1: *github.com/tikv/pd/pkg/schedule/labeler.LabelRule nil
+	~r2: true
+
+(dlv) COMMAND call l.ruleIndex.getRangeRules(l.ruleIndex.ranges.segments[1].startKey, l.ruleIndex.ranges.segments[2].startKey)
+> github.com/tikv/pd/pkg/schedule/labeler.(*RegionLabeler).SetLabelRule() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler/labeler.go:271 (PC: ADDR)
+Values returned:
+	~r0: []interface {} len: 2, cap: 2, [
+		*github.com/tikv/pd/pkg/schedule/labeler.LabelRule {
+			ID: "low",
+			Index: -2,
+			Labels: []github.com/tikv/pd/pkg/schedule/labeler.RegionLabel len: 1, cap: 1, [
+				(*"github.com/tikv/pd/pkg/schedule/labeler.RegionLabel")(ADDR),
+			],
+			RuleType: "key-range",
+			Data: interface {}([]*github.com/tikv/pd/pkg/schedule/labeler.KeyRangeRule) *(*interface {})(ADDR),
+			minExpire: *time.Time nil,},
+		*github.com/tikv/pd/pkg/schedule/labeler.LabelRule {
+			ID: "high",
+			Index: 5,
+			Labels: []github.com/tikv/pd/pkg/schedule/labeler.RegionLabel len: 1, cap: 1, [
+				(*"github.com/tikv/pd/pkg/schedule/labeler.RegionLabel")(ADDR),
+			],
+			RuleType: "key-range",
+			Data: interface {}([]*github.com/tikv/pd/pkg/schedule/labeler.KeyRangeRule) *(*interface {})(ADDR),
+			minExpire: *time.Time nil,},
+	]
+	~r1: *github.com/tikv/pd/pkg/schedule/labeler.LabelRule nil
+	~r2: true
+
+(dlv) COMMAND call l.ruleIndex.getRangeRules(l.ruleIndex.ranges.segments[1].startKey, l.ruleIndex.ranges.segments[3].startKey)
+> github.com/tikv/pd/pkg/schedule/labeler.(*RegionLabeler).SetLabelRule() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler/labeler.go:271 (PC: ADDR)
+Values returned:
+	~r0: []interface {} len: 0, cap: 0, nil
+	~r1: *github.com/tikv/pd/pkg/schedule/labeler.LabelRule nil
+	~r2: false
+
+(dlv) COMMAND call l.ruleIndex.getRangeRules(l.ruleIndex.ranges.segments[2].startKey, l.ruleIndex.ranges.segments[3].startKey)
+> github.com/tikv/pd/pkg/schedule/labeler.(*RegionLabeler).SetLabelRule() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler/labeler.go:271 (PC: ADDR)
+Values returned:
+	~r0: []interface {} len: 1, cap: 1, [
+		*github.com/tikv/pd/pkg/schedule/labeler.LabelRule {
+			ID: "low",
+			Index: -2,
+			Labels: []github.com/tikv/pd/pkg/schedule/labeler.RegionLabel len: 1, cap: 1, [
+				(*"github.com/tikv/pd/pkg/schedule/labeler.RegionLabel")(ADDR),
+			],
+			RuleType: "key-range",
+			Data: interface {}([]*github.com/tikv/pd/pkg/schedule/labeler.KeyRangeRule) *(*interface {})(ADDR),
+			minExpire: *time.Time nil,},
+	]
+	~r1: *github.com/tikv/pd/pkg/schedule/labeler.LabelRule nil
+	~r2: true
+
+(dlv) COMMAND call l.ruleIndex.getRangeRules(l.ruleIndex.ranges.segments[3].startKey, l.ruleIndex.ranges.segments[4].startKey)
+> github.com/tikv/pd/pkg/schedule/labeler.(*RegionLabeler).SetLabelRule() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler/labeler.go:271 (PC: ADDR)
+Values returned:
+	~r0: []interface {} len: 0, cap: 0, []
+	~r1: *github.com/tikv/pd/pkg/schedule/labeler.LabelRule nil
+	~r2: true
+
+(dlv) COMMAND call l.ruleIndex.getRangeRules(l.ruleIndex.ranges.segments[5].startKey, nil)
+> github.com/tikv/pd/pkg/schedule/labeler.(*RegionLabeler).SetLabelRule() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler/labeler.go:271 (PC: ADDR)
+Values returned:
+	~r0: []interface {} len: 0, cap: 0, []
+	~r1: *github.com/tikv/pd/pkg/schedule/labeler.LabelRule nil
+	~r2: true
+
+(dlv) COMMAND call l.ruleIndex.getSplitKeys(l.ruleIndex.ranges.segments[0].startKey, l.ruleIndex.ranges.segments[3].startKey)
+> github.com/tikv/pd/pkg/schedule/labeler.(*RegionLabeler).SetLabelRule() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler/labeler.go:271 (PC: ADDR)
+Values returned:
+	~r0: [][]uint8 len: 2, cap: 2, [
+		[32],
+		[48],
+	]
+
+(dlv) COMMAND call l.ruleIndex.delete("high")
+> github.com/tikv/pd/pkg/schedule/labeler.(*RegionLabeler).SetLabelRule() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler/labeler.go:271 (PC: ADDR)
+Values returned:
+
+(dlv) COMMAND call l.ruleIndex.buildRanges()
+> github.com/tikv/pd/pkg/schedule/labeler.(*RegionLabeler).SetLabelRule() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler/labeler.go:271 (PC: ADDR)
+Values returned:
+
+(dlv) COMMAND call l.ruleIndex.getSplitKeys(nil, nil)
+> github.com/tikv/pd/pkg/schedule/labeler.(*RegionLabeler).SetLabelRule() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler/labeler.go:271 (PC: ADDR)
+Values returned:
+	~r0: [][]uint8 len: 4, cap: 4, [
+		[16],
+		[64],
+		[80],
+		[96],
+	]
+
+(dlv) COMMAND call l.ruleIndex.getRangeRules(l.ruleIndex.ranges.segments[0].startKey, l.ruleIndex.ranges.segments[1].startKey)
+> github.com/tikv/pd/pkg/schedule/labeler.(*RegionLabeler).SetLabelRule() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler/labeler.go:271 (PC: ADDR)
+Values returned:
+	~r0: []interface {} len: 1, cap: 1, [
+		*github.com/tikv/pd/pkg/schedule/labeler.LabelRule {
+			ID: "low",
+			Index: -2,
+			Labels: []github.com/tikv/pd/pkg/schedule/labeler.RegionLabel len: 1, cap: 1, [
+				(*"github.com/tikv/pd/pkg/schedule/labeler.RegionLabel")(ADDR),
+			],
+			RuleType: "key-range",
+			Data: interface {}([]*github.com/tikv/pd/pkg/schedule/labeler.KeyRangeRule) *(*interface {})(ADDR),
+			minExpire: *time.Time nil,},
+	]
+	~r1: *github.com/tikv/pd/pkg/schedule/labeler.LabelRule nil
+	~r2: true
+
+(dlv) COMMAND set l.ruleIndex.rules["low"].Data = l.ruleIndex.rules["probe"].Data
+(dlv) COMMAND set l.ruleIndex.rules["low"].Index = 7
+(dlv) COMMAND call l.ruleIndex.set(l.ruleIndex.rules["low"])
+> github.com/tikv/pd/pkg/schedule/labeler.(*RegionLabeler).SetLabelRule() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler/labeler.go:271 (PC: ADDR)
+Values returned:
+
+(dlv) COMMAND call l.ruleIndex.buildRanges()
+> github.com/tikv/pd/pkg/schedule/labeler.(*RegionLabeler).SetLabelRule() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler/labeler.go:271 (PC: ADDR)
+Values returned:
+
+(dlv) COMMAND call l.ruleIndex.getSplitKeys(nil, nil)
+> github.com/tikv/pd/pkg/schedule/labeler.(*RegionLabeler).SetLabelRule() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler/labeler.go:271 (PC: ADDR)
+Values returned:
+	~r0: [][]uint8 len: 2, cap: 2, [
+		[80],
+		[96],
+	]
+
+(dlv) COMMAND call l.ruleIndex.getRangeRules(l.ruleIndex.ranges.segments[0].startKey, l.ruleIndex.ranges.segments[1].startKey)
+> github.com/tikv/pd/pkg/schedule/labeler.(*RegionLabeler).SetLabelRule() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler/labeler.go:271 (PC: ADDR)
+Values returned:
+	~r0: []interface {} len: 2, cap: 2, [
+		*github.com/tikv/pd/pkg/schedule/labeler.LabelRule {
+			ID: "probe",
+			Index: 1,
+			Labels: []github.com/tikv/pd/pkg/schedule/labeler.RegionLabel len: 1, cap: 1, [
+				(*"github.com/tikv/pd/pkg/schedule/labeler.RegionLabel")(ADDR),
+			],
+			RuleType: "key-range",
+			Data: interface {}([]*github.com/tikv/pd/pkg/schedule/labeler.KeyRangeRule) *(*interface {})(ADDR),
+			minExpire: *time.Time nil,},
+		*github.com/tikv/pd/pkg/schedule/labeler.LabelRule {
+			ID: "low",
+			Index: 7,
+			Labels: []github.com/tikv/pd/pkg/schedule/labeler.RegionLabel len: 1, cap: 1, [
+				(*"github.com/tikv/pd/pkg/schedule/labeler.RegionLabel")(ADDR),
+			],
+			RuleType: "key-range",
+			Data: interface {}([]*github.com/tikv/pd/pkg/schedule/labeler.KeyRangeRule) *(*interface {})(ADDR),
+			minExpire: *time.Time nil,},
+	]
+	~r1: *github.com/tikv/pd/pkg/schedule/labeler.LabelRule nil
+	~r2: true
+
+(dlv) COMMAND call l.ruleIndex.delete("missing")
+> github.com/tikv/pd/pkg/schedule/labeler.(*RegionLabeler).SetLabelRule() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler/labeler.go:271 (PC: ADDR)
+Values returned:
+
+(dlv) COMMAND call l.ruleIndex.delete("low")
+> github.com/tikv/pd/pkg/schedule/labeler.(*RegionLabeler).SetLabelRule() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler/labeler.go:271 (PC: ADDR)
+Values returned:
+
+(dlv) COMMAND call l.ruleIndex.delete("probe")
+> github.com/tikv/pd/pkg/schedule/labeler.(*RegionLabeler).SetLabelRule() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler/labeler.go:271 (PC: ADDR)
+Values returned:
+
+(dlv) COMMAND call l.ruleIndex.buildRanges()
+> github.com/tikv/pd/pkg/schedule/labeler.(*RegionLabeler).SetLabelRule() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler/labeler.go:271 (PC: ADDR)
+Values returned:
+
+(dlv) COMMAND call l.ruleIndex.getSplitKeys(nil, nil)
+> github.com/tikv/pd/pkg/schedule/labeler.(*RegionLabeler).SetLabelRule() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler/labeler.go:271 (PC: ADDR)
+Values returned:
+	~r0: [][]uint8 len: 0, cap: 0, nil
+
+(dlv)

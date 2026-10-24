@@ -368,6 +368,7 @@ name = "astersql-pd-schedule-labeler"
 version = "0.1.0"
 dependencies = [
  "astersql-pd-errs",
+ "astersql-pd-schedule-rangelist",
  "astersql-pd-typeutil",
  "chrono",
  "serde",

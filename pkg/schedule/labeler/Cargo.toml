@@ -14,3 +14,4 @@ serde_json.workspace = true
 chrono.workspace = true
 astersql-pd-typeutil.workspace = true
 astersql-pd-errs.workspace = true
+astersql-pd-schedule-rangelist.workspace = true
