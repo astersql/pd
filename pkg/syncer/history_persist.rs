@@ -93,6 +93,9 @@ impl<'a> PersistentHistory<'a> {
     /// Explicit checkpoint does not restart the automatic flush countdown.
     pub async fn persist(&mut self) -> Result<(), HistoryPersistError> {
         let next = self.history.next_index();
+        if let Some(metrics) = &self.history.metrics {
+            metrics.persist_metrics(self.history.first_index(), next);
+        }
         self.base
             .save(HISTORY_KEY, next.0.to_string().as_bytes())
             .await

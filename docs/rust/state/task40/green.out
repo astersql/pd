@@ -1,0 +1,24 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+   Compiling astersql-pd-syncer v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/syncer)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.56s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_syncer-64f4e0b2bf67d13c)
+
+running 11 tests
+
+thread 'lifecycle_test::state_task_40_lifecycle_worker_panic_still_joins_other_workers' (158392231) panicked at pkg/syncer/lifecycle_test.rs:310:13:
+injected transport panic
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test lifecycle_test::state_task_40_lifecycle_cancel_during_retry_wait ... ok
+test lifecycle_test::state_task_40_lifecycle_cancel_before_request_poll ... ok
+test lifecycle_test::state_task_40_lifecycle_retry_serially_then_cancel ... ok
+test lifecycle_test::state_task_40_lifecycle_cancel_while_waiting_first_request ... ok
+test lifecycle_test::state_task_40_lifecycle_zero_deadline_uses_go_default ... ok
+test lifecycle_test::state_task_40_lifecycle_stop_joins_all_blocked_sends ... ok
+test lifecycle_test::state_task_40_lifecycle_complete_releases_and_metrics_match_history ... ok
+test lifecycle_test::state_task_40_lifecycle_worker_panic_still_joins_other_workers ... ok
+test lifecycle_test::state_task_40_lifecycle_memory_watch_and_persistence ... ok
+test lifecycle_test::state_task_40_lifecycle_timeout_closes_stream_without_parallel_send ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:62120
+test lifecycle_test::state_task_40_lifecycle_etcd_watch_and_persistence ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 74 filtered out; finished in 4.24s

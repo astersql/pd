@@ -24,3 +24,7 @@ retain、观察窗口和缩容直接委托已有领域算法；外部只读访�
 真实 MemoryStore 与 EtcdMetaStore，etcd 停机写/读失败、重启恢复及取消写入。
 夹具复用既有 Go 程序，只读构建；退出关闭 stdin 并 wait，必要时 kill 后 wait。
 证据见 docs/rust/state/task-32.md。
+
+When the supplied HistoryBuffer has host metrics attached, persist publishes
+`first_index` and exclusive `last_index` before the backend write, including on
+write failure, matching Go. It does not update `sync_index` on reset/load.

@@ -28,3 +28,8 @@ Tests in `downstream_test.rs` use real history/regions, controlling only the I/O
 boundary with semaphores, send errors, and cancellation. They verify oracle event
 sequences, independent progress, bounded batches, failed acknowledgements, history
 gaps, keepalive races, replacement identity, and cancellation plus join.
+
+The lifecycle owner can attach host-registry gauges to the canonical history and
+await its task handles by mutable reference. This keeps pending joins owned if a
+shutdown future is temporarily dropped. The lifecycle's DeadlineSender implements
+per-Send deadlines without changing independent index/acknowledgement behavior.

@@ -57,6 +57,11 @@ pub struct DownstreamTask {
     join: Option<JoinHandle<Result<(), DownstreamError>>>,
 }
 impl DownstreamTask {
+    pub(crate) async fn wait(
+        &mut self,
+    ) -> Result<Result<(), DownstreamError>, tokio::task::JoinError> {
+        self.join.as_mut().expect("worker handle").await
+    }
     /// Last successfully acknowledged exclusive history index.
     pub fn send_index(&self) -> HistoryIndex {
         HistoryIndex(self.entry.index.load(Ordering::Acquire))
@@ -183,6 +188,9 @@ impl Downstreams {
             }
             entry.notify.notify_one();
         }
+    }
+    pub(crate) fn attach_metrics(&self, metrics: crate::SyncMetrics) {
+        self.0.lock().unwrap().history.attach_metrics(metrics);
     }
     /// Names of currently bound streams in lexical order.
     pub fn names(&self) -> Vec<String> {

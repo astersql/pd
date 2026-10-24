@@ -606,6 +606,7 @@ dependencies = [
  "astersql-pd-storage",
  "astersql-pd-storage-kv",
  "async-trait",
+ "prometheus",
  "serde_json",
  "thiserror 2.0.21",
  "tokio",

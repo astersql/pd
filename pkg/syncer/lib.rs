@@ -67,3 +67,11 @@ pub use metadata_watch::MetadataWatch;
 #[cfg(test)]
 #[path = "metadata_watch_test.rs"]
 mod metadata_watch_test;
+
+mod lifecycle;
+pub use lifecycle::{
+    SyncAttempt, SyncAttemptOutcome, SyncLifecycle, SyncLifecycleError, SyncMetrics,
+};
+#[cfg(test)]
+#[path = "lifecycle_test.rs"]
+mod lifecycle_test;

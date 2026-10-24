@@ -17,3 +17,8 @@
 生产依赖为workspace集中登记的core、storage、keypath、storage-kv、etcdutil、thiserror、tokio与tokio-util；不依赖protobuf或传输。
 宿主持有运行时并负责取消/join下游任务；本crate管理各流索引与历史锁，
 不创建私有运行时或安装全局处理器。
+
+`lifecycle` registers the start/stop owner, cancellable attempt/retry boundary,
+per-Send timeout adapter and host Registry metrics; production workers still use
+the existing downstream/history implementations. The only added crate dependency
+is the workspace's existing pinned prometheus version.

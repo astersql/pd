@@ -49,6 +49,7 @@ pub struct HistoryBuffer {
     pub(crate) capacity: usize,
     pub(crate) window: crate::history_window::WindowPolicy,
     next: HistoryIndex,
+    pub(crate) metrics: Option<crate::SyncMetrics>,
 }
 
 impl HistoryBuffer {
@@ -73,7 +74,14 @@ impl HistoryBuffer {
             capacity,
             window: crate::history_window::WindowPolicy::new(capacity, maximum, unit),
             next: HistoryIndex(0),
+            metrics: None,
         })
+    }
+
+    /// Attach cached gauges from the host registry before recording history.
+    /// Reset/reload leave sync_index unchanged, matching the Go event semantics.
+    pub fn attach_metrics(&mut self, metrics: crate::SyncMetrics) {
+        self.metrics = Some(metrics);
     }
 
     /// Maximum retained record count, excluding any allocator spare space.
@@ -126,6 +134,9 @@ impl HistoryBuffer {
         }
         self.records.push_back(region);
         self.next = HistoryIndex(next);
+        if let Some(metrics) = &self.metrics {
+            metrics.record_metrics(assigned);
+        }
         Ok(assigned)
     }
 

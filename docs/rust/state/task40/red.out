@@ -1,0 +1,26 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+   Compiling astersql-pd-syncer v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/syncer)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.85s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_syncer-64f4e0b2bf67d13c)
+
+running 7 tests
+test lifecycle_test::state_task_40_lifecycle_cancel_before_request_poll ... ok
+test lifecycle_test::state_task_40_lifecycle_retry_serially_then_cancel ... ok
+test lifecycle_test::state_task_40_lifecycle_cancel_while_waiting_first_request ... ok
+test lifecycle_test::state_task_40_lifecycle_cancel_during_retry_wait ... ok
+test lifecycle_test::state_task_40_lifecycle_stop_joins_all_blocked_sends ... ok
+test lifecycle_test::state_task_40_lifecycle_complete_releases_and_metrics_match_history ... ok
+
+thread 'lifecycle_test::state_task_40_lifecycle_timeout_closes_stream_without_parallel_send' (158389964) panicked at pkg/syncer/lifecycle_test.rs:158:5:
+send deadline must remove the blocked stream
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test lifecycle_test::state_task_40_lifecycle_timeout_closes_stream_without_parallel_send ... FAILED
+
+failures:
+
+failures:
+    lifecycle_test::state_task_40_lifecycle_timeout_closes_stream_without_parallel_send
+
+test result: FAILED. 6 passed; 1 failed; 0 ignored; 0 measured; 74 filtered out; finished in 0.25s
+
+error: test failed, to rerun pass `-p astersql-pd-syncer --lib`

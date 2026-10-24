@@ -1,0 +1,22 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+1b5427ae96908f6a42a5e4ba3946e7054a807e3370f86edbf007645a30939d2e  /Users/Shared/work/dir/data/codes/pd/target/rust-slot-2/syncer-oracle37-arm64.test
+=== RUN   TestSyncExitsWhenRegionSyncerStops
+[2026/10/24 21:08:57.334 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+[2026/10/24 21:08:57.334 +00:00] [INFO] [server.go:337] ["establish sync region stream"] [requested-server=pd-follower] [url=http://127.0.0.1:2379]
+[2026/10/24 21:08:57.334 +00:00] [INFO] [server.go:552] ["requested server has completed full synchronization with server"] [requested-server=pd-follower] [server=mock-server] [cost=2.833µs]
+--- PASS: TestSyncExitsWhenRegionSyncerStops (0.21s)
+=== RUN   TestCloseAllClientTimesOutBlockedSend
+[2026/10/24 21:08:57.540 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+[2026/10/24 21:08:57.540 +00:00] [INFO] [server.go:337] ["establish sync region stream"] [requested-server=pd-follower] [url=http://127.0.0.1:2379]
+[2026/10/24 21:08:57.540 +00:00] [INFO] [server.go:552] ["requested server has completed full synchronization with server"] [requested-server=pd-follower] [server=mock-server] [cost=2.208µs]
+[2026/10/24 21:08:57.652 +00:00] [WARN] [server.go:775] ["region syncer send data timeout"] [name=pd-follower] [timeout=10ms]
+[2026/10/24 21:08:57.652 +00:00] [WARN] [server.go:808] ["region syncer send close message meet error"] [name=pd-follower]
+--- PASS: TestCloseAllClientTimesOutBlockedSend (0.41s)
+=== RUN   TestSendRegionSyncResponseSerializesStreamSendAfterTimeout
+[2026/10/24 21:08:57.946 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+[2026/10/24 21:08:57.957 +00:00] [WARN] [server.go:775] ["region syncer send data timeout"] [name=pd2] [timeout=10ms]
+--- PASS: TestSendRegionSyncResponseSerializesStreamSendAfterTimeout (0.24s)
+=== RUN   TestSyncExitsWhenContextCanceledBeforeRequest
+[2026/10/24 21:08:58.188 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+--- PASS: TestSyncExitsWhenContextCanceledBeforeRequest (0.11s)
+PASS

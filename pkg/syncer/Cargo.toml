@@ -9,6 +9,7 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
+prometheus.workspace = true
 astersql-pd-etcdutil.workspace = true
 tokio-util.workspace = true
 astersql-pd-core.workspace = true

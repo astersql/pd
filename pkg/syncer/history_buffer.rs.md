@@ -18,5 +18,9 @@ get只接受[first,next)。返回Vec中的Arc保持原区域值的所有权，�
 
 本环只提供纯内存行为；保留窗口及增长/收缩见 [history_window](history_window.rs.md)。
 with_config支持base/max/unit；原有构造函数保持固定容量。reset回到base并隔离旧guard。
-索引持久化、metrics与流接线由后续批次扩展，
-没有假装成功的持久化方法、protobuf、watch或后台任务。
+索引持久化复用 history_persist，流接线复用 downstream/lifecycle。
+本文件不创建 protobuf、watch 或后台任务。
+
+Optional host-supplied `SyncMetrics` caches the existing Go gauge handles. A
+successful record publishes the assigned (pre-increment) `sync_index`; reset or
+reload leaves that gauge unchanged. No registration or label lookup runs here.
