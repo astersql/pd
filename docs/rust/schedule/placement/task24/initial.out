@@ -1,0 +1,39 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+   Compiling serde_json v1.0.145
+   Compiling astersql-pd-typeutil v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/utils/typeutil)
+   Compiling astersql-pd-logutil v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/utils/logutil)
+   Compiling astersql-pd-grpcutil v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/utils/grpcutil)
+   Compiling astersql-pd-encryption v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/encryption)
+   Compiling astersql-pd-storage-endpoint v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/storage/endpoint)
+   Compiling astersql-pd-configutil v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/utils/configutil)
+   Compiling astersql-pd-schedule-config v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/config)
+   Compiling astersql-pd-schedule-placement v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/placement)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.47s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_placement-d361f6a9c79d4419)
+
+running 4 tests
+
+thread 'placement_restore_test::placement_restore_memory_history_and_restart' (155769088) panicked at pkg/schedule/placement/placement_restore_test.rs:88:5:
+corrupt non-UTF8 suffix must be deleted byte-for-byte
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test placement_restore_test::placement_restore_validation_rejects_without_publish ... ok
+test placement_restore_test::placement_restore_defaults_skip_witness ... ok
+test placement_restore_test::placement_restore_memory_history_and_restart ... FAILED
+isolated etcd 3.5.15 ready at http://127.0.0.1:49981
+
+thread 'placement_restore_test::placement_restore_etcd_history_and_restart' (155769087) panicked at pkg/schedule/placement/placement_restore_test.rs:88:5:
+corrupt non-UTF8 suffix must be deleted byte-for-byte
+test placement_restore_test::placement_restore_etcd_history_and_restart ... FAILED
+
+failures:
+
+failures:
+    placement_restore_test::placement_restore_etcd_history_and_restart
+    placement_restore_test::placement_restore_memory_history_and_restart
+
+test result: FAILED. 2 passed; 2 failed; 0 ignored; 0 measured; 16 filtered out; finished in 6.08s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-placement --lib`

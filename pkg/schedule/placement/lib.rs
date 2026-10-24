@@ -24,3 +24,9 @@ pub use config::{RuleConfig, RuleConfigPatch, rule_may_restrict_engine};
 #[cfg(test)]
 #[path = "placement_patch_test.rs"]
 mod placement_patch_test;
+
+pub mod rule_manager;
+pub use rule_manager::{RuleManager, RuleManagerError};
+#[cfg(test)]
+#[path = "placement_restore_test.rs"]
+mod placement_restore_test;

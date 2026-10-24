@@ -1,0 +1,30 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-schedule-placement v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/placement)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.84s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_placement-d361f6a9c79d4419)
+
+running 7 tests
+test placement_restore_test::placement_restore_validation_rejects_without_publish ... ok
+test placement_restore_test::placement_restore_defaults_skip_witness ... ok
+
+thread 'placement_restore_test::placement_restore_go_runtime_fixture' (155781003) panicked at pkg/schedule/placement/placement_restore_test.rs:344:5:
+assertion `left == right` failed: published list must expose committed version
+  left: 0
+ right: 1
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test placement_restore_test::placement_restore_memory_io_failures ... ok
+test placement_restore_test::placement_restore_memory_history_and_restart ... ok
+test placement_restore_test::placement_restore_go_runtime_fixture ... FAILED
+isolated etcd 3.5.15 ready at http://127.0.0.1:51566
+isolated etcd 3.5.15 ready at http://127.0.0.1:51567
+test placement_restore_test::placement_restore_etcd_io_failures ... ok
+test placement_restore_test::placement_restore_etcd_history_and_restart ... ok
+
+failures:
+
+failures:
+    placement_restore_test::placement_restore_go_runtime_fixture
+
+test result: FAILED. 6 passed; 1 failed; 0 ignored; 0 measured; 16 filtered out; finished in 5.23s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-placement --lib`

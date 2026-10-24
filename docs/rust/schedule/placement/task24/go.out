@@ -1,0 +1,238 @@
+a88434347b66d8da5b0f093999d631c81fc9881091837cb1e2d7d76b1fdb5ebc
+bootstrap response 0a0a0887aaeb978da4a4ee6a1200
+pd-task24-oracle
+{
+  "sha256": "4537466d65d253b1e291cacecf53faee14117386e8f2c5ff7b380108e49cc268",
+  "steps": [
+    {
+      "name": "default",
+      "rules": null,
+      "groups": [
+        {
+          "id": "pd"
+        }
+      ]
+    },
+    {
+      "name": "insert",
+      "rules": [
+        {
+          "group_id": "g",
+          "id": "r",
+          "start_key": "",
+          "end_key": "",
+          "role": "voter",
+          "is_witness": false,
+          "count": 1,
+          "create_timestamp": 1792839968
+        }
+      ],
+      "groups": [
+        {
+          "id": "g"
+        },
+        {
+          "id": "pd"
+        }
+      ]
+    },
+    {
+      "name": "same",
+      "rules": [
+        {
+          "group_id": "g",
+          "id": "r",
+          "start_key": "",
+          "end_key": "",
+          "role": "voter",
+          "is_witness": false,
+          "count": 1,
+          "create_timestamp": 1792839968
+        }
+      ],
+      "groups": [
+        {
+          "id": "g"
+        },
+        {
+          "id": "pd"
+        }
+      ]
+    },
+    {
+      "name": "update",
+      "rules": [
+        {
+          "group_id": "g",
+          "id": "r",
+          "start_key": "",
+          "end_key": "",
+          "role": "voter",
+          "is_witness": false,
+          "count": 2,
+          "version": 1,
+          "create_timestamp": 1792839968
+        }
+      ],
+      "groups": [
+        {
+          "id": "g"
+        },
+        {
+          "id": "pd"
+        }
+      ]
+    },
+    {
+      "name": "restart",
+      "rules": [
+        {
+          "group_id": "g",
+          "id": "legacy",
+          "start_key": "",
+          "end_key": "",
+          "role": "voter",
+          "is_witness": false,
+          "count": 1
+        },
+        {
+          "group_id": "g",
+          "id": "r",
+          "start_key": "",
+          "end_key": "",
+          "role": "voter",
+          "is_witness": false,
+          "count": 2,
+          "create_timestamp": 1792839968
+        }
+      ],
+      "groups": [
+        {
+          "id": "g"
+        },
+        {
+          "id": "pd"
+        }
+      ]
+    },
+    {
+      "name": "group",
+      "rules": [
+        {
+          "group_id": "g",
+          "id": "legacy",
+          "start_key": "",
+          "end_key": "",
+          "role": "voter",
+          "is_witness": false,
+          "count": 1
+        },
+        {
+          "group_id": "g",
+          "id": "r",
+          "start_key": "",
+          "end_key": "",
+          "role": "voter",
+          "is_witness": false,
+          "count": 2,
+          "create_timestamp": 1792839968
+        }
+      ],
+      "groups": [
+        {
+          "id": "pd"
+        },
+        {
+          "id": "g",
+          "index": 8
+        }
+      ]
+    },
+    {
+      "name": "default_group",
+      "rules": [
+        {
+          "group_id": "g",
+          "id": "legacy",
+          "start_key": "",
+          "end_key": "",
+          "role": "voter",
+          "is_witness": false,
+          "count": 1
+        },
+        {
+          "group_id": "g",
+          "id": "r",
+          "start_key": "",
+          "end_key": "",
+          "role": "voter",
+          "is_witness": false,
+          "count": 2,
+          "create_timestamp": 1792839968
+        }
+      ],
+      "groups": [
+        {
+          "id": "g"
+        },
+        {
+          "id": "pd"
+        }
+      ]
+    },
+    {
+      "name": "delete",
+      "rules": [
+        {
+          "group_id": "g",
+          "id": "legacy",
+          "start_key": "",
+          "end_key": "",
+          "role": "voter",
+          "is_witness": false,
+          "count": 1
+        }
+      ],
+      "groups": [
+        {
+          "id": "g"
+        },
+        {
+          "id": "pd"
+        }
+      ]
+    }
+  ],
+  "restored_rules": [
+    {
+      "group_id": "g",
+      "id": "legacy",
+      "start_key": "",
+      "end_key": "",
+      "role": "voter",
+      "is_witness": false,
+      "count": 1
+    },
+    {
+      "group_id": "g",
+      "id": "r",
+      "start_key": "",
+      "end_key": "",
+      "role": "voter",
+      "is_witness": false,
+      "count": 2,
+      "create_timestamp": 1792839968
+    },
+    {
+      "group_id": "pd",
+      "id": "default",
+      "start_key": "",
+      "end_key": "",
+      "role": "voter",
+      "is_witness": false,
+      "count": 3
+    }
+  ],
+  "raw_range_hex": "0a1908d893f192f491d1c2d90110b1c4ecb7d2b5f69b30181e2003129d010a2d2f70642f373730303138393033333036313334303432332f72756c65732f36372d366336353637363136333739101d181d20012a667b2267726f75705f6964223a2267222c226964223a226c6567616379222c2273746172745f6b6579223a22222c22656e645f6b6579223a22222c22726f6c65223a22766f746572222c2269735f7769746e657373223a66616c73652c22636f756e74223a317d12ac010a232f70642f373730303138393033333036313334303432332f72756c65732f36372d37321010181120022a7f7b2267726f75705f6964223a2267222c226964223a2272222c2273746172745f6b6579223a22222c22656e645f6b6579223a22222c22726f6c65223a22766f746572222c2269735f7769746e657373223a66616c73652c22636f756e74223a322c226372656174655f74696d657374616d70223a313739323833393936387d12a3010a312f70642f373730303138393033333036313334303432332f72756c65732f373036342d3634363536363631373536633734100d180d20012a687b2267726f75705f6964223a227064222c226964223a2264656661756c74222c2273746172745f6b6579223a22222c22656e645f6b6579223a22222c22726f6c65223a22766f746572222c2269735f7769746e657373223a66616c73652c22636f756e74223a337d2003"
+}
+pd-task24-oracle

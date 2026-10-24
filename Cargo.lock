@@ -388,10 +388,18 @@ dependencies = [
 name = "astersql-pd-schedule-placement"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-codec",
  "astersql-pd-core",
+ "astersql-pd-keypath",
+ "astersql-pd-schedule-config",
  "astersql-pd-schedule-rangelist",
+ "astersql-pd-storage-endpoint",
+ "astersql-pd-storage-kv",
+ "async-trait",
  "serde",
  "serde_json",
+ "thiserror 2.0.21",
+ "tokio",
 ]
 
 [[package]]
