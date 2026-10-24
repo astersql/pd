@@ -1,0 +1,43 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+   Compiling astersql-pd-schedule-rangelist v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/rangelist)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.41s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_schedule_rangelist-08c0100503a46c0d)
+
+running 4 tests
+
+thread 'range_queries_test::range_queries_go_key_and_range' (154629653) panicked at pkg/schedule/rangelist/range_queries_test.rs:15:9:
+assertion `left == right` failed
+  left: (-1, None)
+ right: (0, Some([2, 3]))
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'range_queries_test::range_queries_boundaries_and_gaps' (154629651) panicked at pkg/schedule/rangelist/range_queries_test.rs:48:9:
+assertion `left == right` failed: a..c
+  left: (None, true)
+ right: (None, false)
+
+thread 'range_queries_test::range_queries_go_splits' (154629654) panicked at pkg/schedule/rangelist/range_queries_test.rs:27:9:
+assertion `left == right` failed
+  left: []
+ right: [[97], [98], [99], [100], [101], [102], [103], [104], [105]]
+
+thread 'range_queries_test::range_queries_empty_and_unbounded' (154629652) panicked at pkg/schedule/rangelist/range_queries_test.rs:39:5:
+assertion `left == right` failed
+  left: (-1, None)
+ right: (0, Some([1]))
+test range_queries_test::range_queries_empty_and_unbounded ... FAILED
+test range_queries_test::range_queries_boundaries_and_gaps ... FAILED
+test range_queries_test::range_queries_go_splits ... FAILED
+test range_queries_test::range_queries_go_key_and_range ... FAILED
+
+failures:
+
+failures:
+    range_queries_test::range_queries_boundaries_and_gaps
+    range_queries_test::range_queries_empty_and_unbounded
+    range_queries_test::range_queries_go_key_and_range
+    range_queries_test::range_queries_go_splits
+
+test result: FAILED. 0 passed; 4 failed; 0 ignored; 0 measured; 6 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-rangelist --lib`

@@ -1,0 +1,5 @@
+=== RUN   TestRangeList
+--- PASS: TestRangeList (0.00s)
+=== RUN   TestRangeList2
+--- PASS: TestRangeList2 (0.00s)
+PASS
