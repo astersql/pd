@@ -10,6 +10,7 @@ path = "lib.rs"
 astersql-pd-core.workspace = true
 astersql-pd-cluster.workspace = true
 astersql-pd-statistics.workspace = true
+astersql-pd-statistics-buckets.workspace = true
 astersql-pd-proto.workspace = true
 astersql-pd-tso.workspace = true
 async-trait.workspace = true

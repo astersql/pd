@@ -10,3 +10,7 @@ separate test modules, including store_heartbeat_adapter_test, are explicitly re
 The optional region_heartbeat_service accessor similarly defaults to None;
 RegionHeartbeatService supplies domain-only membership and region admission.
 The region adapter and its separate behavior tests are explicitly registered.
+
+The optional bucket_heartbeat_service defaults to None. BucketHeartbeatService
+and its separate test module are explicitly registered; the host supplies the
+canonical cluster admission and local worker without adding protocol types to domain crates.

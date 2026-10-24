@@ -1,0 +1,110 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+['/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2/pd-oracle47', '--name', 'oracle49', '--data-dir', '/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2/oracle49-data-51734', '--client-urls', 'http://127.0.0.1:61234', '--advertise-client-urls', 'http://127.0.0.1:61234', '--peer-urls', 'http://127.0.0.1:61235', '--advertise-peer-urls', 'http://127.0.0.1:61235', '--initial-cluster', 'oracle49=http://127.0.0.1:61235', '--log-level', 'error']
+warning: use of deprecated field `astersql_pd_proto::pdpb::RegionHeartbeatRequest::cpu_usage`
+   --> pkg/server/core_region_adapter.rs:134:30
+    |
+134 |     r.set_response_cpu_usage(p.cpu_usage);
+    |                              ^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: `astersql-pd-server` (lib) generated 1 warning
+   Compiling astersql-pd-server v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/server)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.47s
+     Running `target/rust-slot-2/debug/examples/bucket_heartbeat_oracle`
+not bootstrapped: ReportBucketsResponse { header: Some(ResponseHeader { cluster_id: 7700365609828994578, error: Some(Error { r#type: NotBootstrapped, message: "cluster is not bootstrapped" }) }) }
+bootstrap: Some(ResponseHeader { cluster_id: 7700365609828994578, error: None })
+missing: Err(Elapsed(()))
+snapshot (store bucket feature defaults off): GetRegionResponse { header: Some(ResponseHeader { cluster_id: 7700365609828994578, error: None }), region: Some(Region { id: 1, start_key: [], end_key: [], region_epoch: Some(RegionEpoch { conf_ver: 2, version: 2 }), peers: [Peer { id: 2, store_id: 1, role: Voter, is_witness: false }], encryption_meta: None, is_in_flashback: false, flashback_start_ts: 0 }), leader: Some(Peer { id: 2, store_id: 1, role: Voter, is_witness: false }), down_peers: [], pending_peers: [], buckets: None }
+hot: {}
+
+
+accepted: Err(Elapsed(()))
+snapshot (store bucket feature defaults off): GetRegionResponse { header: Some(ResponseHeader { cluster_id: 7700365609828994578, error: None }), region: Some(Region { id: 1, start_key: [], end_key: [], region_epoch: Some(RegionEpoch { conf_ver: 2, version: 2 }), peers: [Peer { id: 2, store_id: 1, role: Voter, is_witness: false }], encryption_meta: None, is_in_flashback: false, flashback_start_ts: 0 }), leader: Some(Peer { id: 2, store_id: 1, role: Voter, is_witness: false }), down_peers: [], pending_peers: [], buckets: None }
+hot: {}
+
+
+stale: Err(Elapsed(()))
+snapshot (store bucket feature defaults off): GetRegionResponse { header: Some(ResponseHeader { cluster_id: 7700365609828994578, error: None }), region: Some(Region { id: 1, start_key: [], end_key: [], region_epoch: Some(RegionEpoch { conf_ver: 2, version: 2 }), peers: [Peer { id: 2, store_id: 1, role: Voter, is_witness: false }], encryption_meta: None, is_in_flashback: false, flashback_start_ts: 0 }), leader: Some(Peer { id: 2, store_id: 1, role: Voter, is_witness: false }), down_peers: [], pending_peers: [], buckets: None }
+hot: {}
+
+
+duplicate: Err(Elapsed(()))
+snapshot (store bucket feature defaults off): GetRegionResponse { header: Some(ResponseHeader { cluster_id: 7700365609828994578, error: None }), region: Some(Region { id: 1, start_key: [], end_key: [], region_epoch: Some(RegionEpoch { conf_ver: 2, version: 2 }), peers: [Peer { id: 2, store_id: 1, role: Voter, is_witness: false }], encryption_meta: None, is_in_flashback: false, flashback_start_ts: 0 }), leader: Some(Peer { id: 2, store_id: 1, role: Voter, is_witness: false }), down_peers: [], pending_peers: [], buckets: None }
+hot: {
+  "1": [
+    {
+      "start_key": "",
+      "end_key": "6D",
+      "hot_degree": 3,
+      "read_bytes": 100000,
+      "read_keys": 2,
+      "write_bytes": 400000,
+      "write_keys": 5
+    },
+    {
+      "start_key": "6D",
+      "end_key": "",
+      "hot_degree": 3,
+      "read_bytes": 200000,
+      "read_keys": 4,
+      "write_bytes": 800000,
+      "write_keys": 10
+    }
+  ]
+}
+
+
+eof: Ok(Err(Status { code: Unknown, message: "EOF", metadata: MetadataMap { headers: {"content-type": "application/grpc"} }, source: None }))
+snapshot (store bucket feature defaults off): GetRegionResponse { header: Some(ResponseHeader { cluster_id: 7700365609828994578, error: None }), region: Some(Region { id: 1, start_key: [], end_key: [], region_epoch: Some(RegionEpoch { conf_ver: 2, version: 2 }), peers: [Peer { id: 2, store_id: 1, role: Voter, is_witness: false }], encryption_meta: None, is_in_flashback: false, flashback_start_ts: 0 }), leader: Some(Peer { id: 2, store_id: 1, role: Voter, is_witness: false }), down_peers: [], pending_peers: [], buckets: None }
+hot: {
+  "1": [
+    {
+      "start_key": "",
+      "end_key": "6D",
+      "hot_degree": 4,
+      "read_bytes": 100000,
+      "read_keys": 2,
+      "write_bytes": 400000,
+      "write_keys": 5
+    },
+    {
+      "start_key": "6D",
+      "end_key": "",
+      "hot_degree": 4,
+      "read_bytes": 200000,
+      "read_keys": 4,
+      "write_bytes": 800000,
+      "write_keys": 10
+    }
+  ]
+}
+
+
+wrong cluster: Ok(Err(Status { code: FailedPrecondition, message: "mismatch cluster id, need 7700365609828994578 but got 0", metadata: MetadataMap { headers: {"content-type": "application/grpc"} }, source: None }))
+snapshot (store bucket feature defaults off): GetRegionResponse { header: Some(ResponseHeader { cluster_id: 7700365609828994578, error: None }), region: Some(Region { id: 1, start_key: [], end_key: [], region_epoch: Some(RegionEpoch { conf_ver: 2, version: 2 }), peers: [Peer { id: 2, store_id: 1, role: Voter, is_witness: false }], encryption_meta: None, is_in_flashback: false, flashback_start_ts: 0 }), leader: Some(Peer { id: 2, store_id: 1, role: Voter, is_witness: false }), down_peers: [], pending_peers: [], buckets: None }
+hot: {
+  "1": [
+    {
+      "start_key": "",
+      "end_key": "6D",
+      "hot_degree": 4,
+      "read_bytes": 100000,
+      "read_keys": 2,
+      "write_bytes": 400000,
+      "write_keys": 5
+    },
+    {
+      "start_key": "6D",
+      "end_key": "",
+      "hot_degree": 4,
+      "read_bytes": 200000,
+      "read_keys": 4,
+      "write_bytes": 800000,
+      "write_keys": 10
+    }
+  ]
+}
+
+
+Go server joined exit=0; data removed

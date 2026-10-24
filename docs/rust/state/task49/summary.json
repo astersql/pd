@@ -1,0 +1,93 @@
+[
+  {
+    "command": [
+      "cargo",
+      "fmt",
+      "--all"
+    ],
+    "exit": 0,
+    "passed": 0,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-server",
+      "--locked",
+      "--lib",
+      "state_task_49_bucket_heartbeat_adapter",
+      "--",
+      "--nocapture"
+    ],
+    "exit": 0,
+    "passed": 7,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-server",
+      "--locked"
+    ],
+    "exit": 0,
+    "passed": 32,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "command": [
+      "cargo",
+      "metadata",
+      "--format-version",
+      "1",
+      "--no-deps"
+    ],
+    "exit": 0,
+    "passed": 0,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "command": [
+      "cargo",
+      "fmt",
+      "--all",
+      "--",
+      "--check"
+    ],
+    "exit": 0,
+    "passed": 0,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "command": [
+      "cargo",
+      "check",
+      "--workspace",
+      "--locked"
+    ],
+    "exit": 0,
+    "passed": 0,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "command": [
+      "cargo",
+      "test",
+      "--workspace",
+      "--locked"
+    ],
+    "exit": 0,
+    "passed": 1286,
+    "failed": 0,
+    "ignored": 1
+  }
+]

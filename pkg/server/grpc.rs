@@ -38,6 +38,56 @@ pub(crate) fn member(id: &Identity) -> pdpb::Member {
 }
 #[tonic::async_trait]
 impl Pd for Grpc {
+    async fn report_buckets(
+        &self,
+        request: Request<tonic::Streaming<pdpb::ReportBucketsRequest>>,
+    ) -> Result<Response<pdpb::ReportBucketsResponse>, Status> {
+        let mut input = request.into_inner();
+        loop {
+            let request = tokio::select! { biased;
+                _ = self.cancel.cancelled() => return Err(Status::cancelled("bucket report stream cancelled")),
+                request = input.message() => request?,
+            };
+            // Go sends no success response at EOF. Its client-streaming method
+            // is observed by tonic clients as Unknown/EOF, not an empty ack.
+            let request = request.ok_or_else(|| Status::unknown("EOF"))?;
+            let process = async {
+                let service = self.services.bucket_heartbeat_service().ok_or_else(|| {
+                    Status::unimplemented("bucket heartbeat state service is not configured")
+                })?;
+                if !service.is_bootstrapped() {
+                    let mut header = self.header().unwrap();
+                    header.error = Some(pdpb::Error {
+                        r#type: pdpb::ErrorType::NotBootstrapped as i32,
+                        message: "cluster is not bootstrapped".into(),
+                    });
+                    return Ok(Some(pdpb::ReportBucketsResponse {
+                        header: Some(header),
+                    }));
+                }
+                self.check(request.header.as_ref())?;
+                self.services.healthy().await.map_err(Status::unavailable)?;
+                if let Some(buckets) = request.buckets.filter(|b| !b.keys.is_empty()) {
+                    // Canonical host admission owns the applied flag and worker
+                    // submission. Missing regions are ignored and reception continues.
+                    let _ = service
+                        .bucket_heartbeat(crate::bucket_heartbeat_adapter::bucket_from_proto(
+                            buckets,
+                        ))
+                        .await;
+                }
+                Ok::<_, Status>(None)
+            };
+            let response = tokio::select! { biased;
+                _ = self.cancel.cancelled() => return Err(Status::cancelled("bucket report stream cancelled")),
+                response = process => response?,
+            };
+            if let Some(response) = response {
+                return Ok(Response::new(response));
+            }
+        }
+    }
+
     async fn region_heartbeat(
         &self,
         request: Request<tonic::Streaming<pdpb::RegionHeartbeatRequest>>,

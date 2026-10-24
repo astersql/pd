@@ -32,6 +32,12 @@ pub trait PdServices: Send + Sync {
     ) -> Option<&dyn region_heartbeat_adapter::RegionHeartbeatService> {
         None
     }
+    /// Optional bucket state service supplied by the host.
+    fn bucket_heartbeat_service(
+        &self,
+    ) -> Option<&dyn bucket_heartbeat_adapter::BucketHeartbeatService> {
+        None
+    }
     async fn healthy(&self) -> Result<(), String>;
     async fn alloc_id(&self) -> Result<u64, String>;
     async fn timestamp(&self, count: u32) -> Result<Timestamp, String>;
@@ -72,3 +78,8 @@ pub mod region_heartbeat_adapter;
 #[cfg(test)]
 #[path = "region_heartbeat_adapter_test.rs"]
 mod region_heartbeat_adapter_test;
+
+pub mod bucket_heartbeat_adapter;
+#[cfg(test)]
+#[path = "bucket_heartbeat_adapter_test.rs"]
+mod bucket_heartbeat_adapter_test;
