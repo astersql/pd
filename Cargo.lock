@@ -367,6 +367,7 @@ dependencies = [
 name = "astersql-pd-schedule-labeler"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-codec",
  "astersql-pd-errs",
  "astersql-pd-schedule-rangelist",
  "astersql-pd-typeutil",

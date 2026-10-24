@@ -1,0 +1,305 @@
+{
+  "binary_sha256": "4537466d65d253b1e291cacecf53faee14117386e8f2c5ff7b380108e49cc268",
+  "rules": [
+    {
+      "id": "keyspaces/42",
+      "index": 0,
+      "labels": [
+        {
+          "key": "id",
+          "value": "42"
+        }
+      ],
+      "rule_type": "key-range",
+      "data": [
+        {
+          "start_key": "7200002a00000000fb",
+          "end_key": "7200002b00000000fb"
+        },
+        {
+          "start_key": "7800002a00000000fb",
+          "end_key": "7800002b00000000fb"
+        }
+      ]
+    },
+    {
+      "id": "keyspaces/43",
+      "index": 0,
+      "labels": [
+        {
+          "key": "id",
+          "value": "43"
+        }
+      ],
+      "rule_type": "key-range",
+      "data": [
+        {
+          "start_key": "7800002b00000000fb",
+          "end_key": "7800002c00000000fb"
+        }
+      ]
+    },
+    {
+      "id": "keyspaces/255",
+      "index": 0,
+      "labels": [
+        {
+          "key": "id",
+          "value": "255"
+        }
+      ],
+      "rule_type": "key-range",
+      "data": [
+        {
+          "start_key": "780000ff00000000fb",
+          "end_key": "7800010000000000fb"
+        }
+      ]
+    },
+    {
+      "id": "keyspaces/256",
+      "index": 0,
+      "labels": [
+        {
+          "key": "id",
+          "value": "256"
+        }
+      ],
+      "rule_type": "key-range",
+      "data": [
+        {
+          "start_key": "7800010000000000fb",
+          "end_key": "7800010100000000fb"
+        }
+      ]
+    },
+    {
+      "id": "keyspaces/16777215",
+      "index": 0,
+      "labels": [
+        {
+          "key": "id",
+          "value": "16777215"
+        }
+      ],
+      "rule_type": "key-range",
+      "data": [
+        {
+          "start_key": "72ffffff00000000fb",
+          "end_key": "7300000000000000fb"
+        },
+        {
+          "start_key": "78ffffff00000000fb",
+          "end_key": "7900000000000000fb"
+        }
+      ]
+    },
+    {
+      "id": "keyspaces/01",
+      "index": 0,
+      "labels": [
+        {
+          "key": "id",
+          "value": "01"
+        }
+      ],
+      "rule_type": "key-range",
+      "data": [
+        {
+          "start_key": "7800000100000000fb",
+          "end_key": "7800000200000000fb"
+        }
+      ]
+    },
+    {
+      "id": "probe",
+      "index": 0,
+      "labels": [
+        {
+          "key": "id",
+          "value": "42"
+        }
+      ],
+      "rule_type": "key-range",
+      "data": [
+        {
+          "start_key": "7800002a00000000fb",
+          "end_key": "7800002b00000000fb"
+        }
+      ]
+    }
+  ],
+  "queries": [
+    {
+      "start": "7200002a00000000fb",
+      "end": "7200002b00000000fb",
+      "ids": [
+        "keyspaces/42"
+      ],
+      "within": true,
+      "keyspace_only": false
+    },
+    {
+      "start": "7200002a",
+      "end": "7200002a00000000fb",
+      "ids": [],
+      "within": true,
+      "keyspace_only": true
+    },
+    {
+      "start": "7800002a00000000fb",
+      "end": "7800002b00000000fb",
+      "ids": [
+        "keyspaces/42",
+        "probe"
+      ],
+      "within": true,
+      "keyspace_only": false
+    },
+    {
+      "start": "7800002a",
+      "end": "7800002a00000000fb",
+      "ids": [],
+      "within": true,
+      "keyspace_only": true
+    },
+    {
+      "start": "7800002b00000000fb",
+      "end": "7800002c00000000fb",
+      "ids": [
+        "keyspaces/43"
+      ],
+      "within": true,
+      "keyspace_only": false
+    },
+    {
+      "start": "7800002b",
+      "end": "7800002b00000000fb",
+      "ids": [
+        "keyspaces/42"
+      ],
+      "within": true,
+      "keyspace_only": true
+    },
+    {
+      "start": "780000ff00000000fb",
+      "end": "7800010000000000fb",
+      "ids": [
+        "keyspaces/255"
+      ],
+      "within": true,
+      "keyspace_only": false
+    },
+    {
+      "start": "780000ff",
+      "end": "780000ff00000000fb",
+      "ids": [],
+      "within": true,
+      "keyspace_only": true
+    },
+    {
+      "start": "7800010000000000fb",
+      "end": "7800010100000000fb",
+      "ids": [
+        "keyspaces/256"
+      ],
+      "within": true,
+      "keyspace_only": false
+    },
+    {
+      "start": "78000100",
+      "end": "7800010000000000fb",
+      "ids": [
+        "keyspaces/255"
+      ],
+      "within": true,
+      "keyspace_only": true
+    },
+    {
+      "start": "72ffffff00000000fb",
+      "end": "7300000000000000fb",
+      "ids": [
+        "keyspaces/16777215"
+      ],
+      "within": true,
+      "keyspace_only": false
+    },
+    {
+      "start": "72ffffff",
+      "end": "72ffffff00000000fb",
+      "ids": [],
+      "within": true,
+      "keyspace_only": true
+    },
+    {
+      "start": "78ffffff00000000fb",
+      "end": "7900000000000000fb",
+      "ids": [
+        "keyspaces/16777215"
+      ],
+      "within": true,
+      "keyspace_only": false
+    },
+    {
+      "start": "78ffffff",
+      "end": "78ffffff00000000fb",
+      "ids": [],
+      "within": true,
+      "keyspace_only": true
+    }
+  ],
+  "splits": [
+    "7200002a00000000fb",
+    "7200002b00000000fb",
+    "72ffffff00000000fb",
+    "7300000000000000fb",
+    "7800000100000000fb",
+    "7800000200000000fb",
+    "7800002a00000000fb",
+    "7800002b00000000fb",
+    "7800002c00000000fb",
+    "780000ff00000000fb",
+    "7800010000000000fb",
+    "7800010100000000fb",
+    "78ffffff00000000fb",
+    "7900000000000000fb"
+  ],
+  "operations": [
+    {
+      "command": "call l.ruleIndex.keyspaces.Contains(l.ruleIndex.rules[\"keyspaces/42\"])",
+      "value": true
+    },
+    {
+      "command": "call l.ruleIndex.keyspaces.Contains(l.ruleIndex.rules[\"keyspaces/01\"])",
+      "value": false
+    },
+    {
+      "command": "call l.ruleIndex.keyspaces.Add(l.ruleIndex.rules[\"keyspaces/42\"])",
+      "value": false
+    },
+    {
+      "command": "call l.ruleIndex.keyspaces.Replace(l.ruleIndex.rules[\"keyspaces/42\"],l.ruleIndex.rules[\"probe\"])",
+      "value": true
+    },
+    {
+      "command": "call l.ruleIndex.keyspaces.Contains(l.ruleIndex.rules[\"probe\"])",
+      "value": true
+    },
+    {
+      "command": "call l.ruleIndex.keyspaces.Remove(\"keyspaces/42\",l.ruleIndex.rules[\"keyspaces/42\"])",
+      "value": false
+    },
+    {
+      "command": "call l.ruleIndex.keyspaces.Remove(\"keyspaces/42\",l.ruleIndex.rules[\"probe\"])",
+      "value": true
+    },
+    {
+      "command": "call l.ruleIndex.keyspaces.Add(l.ruleIndex.rules[\"probe\"])",
+      "value": false
+    },
+    {
+      "command": "call l.ruleIndex.keyspaces.Add(l.ruleIndex.rules[\"keyspaces/42\"])",
+      "value": true
+    }
+  ]
+}

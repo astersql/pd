@@ -1,0 +1,24 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-schedule-labeler v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.92s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_labeler-6892ff837bafccbf)
+
+running 4 tests
+
+thread 'label_keyspace_test::label_keyspace_canonical_shape_and_ids' (155357952) panicked at pkg/schedule/labeler/label_keyspace_test.rs:51:9:
+noncanonical kind 0
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test label_keyspace_test::label_keyspace_ownership_and_atomic_replace ... ok
+test label_keyspace_test::label_keyspace_canonical_shape_and_ids ... FAILED
+test label_keyspace_test::label_keyspace_generic_equivalence_and_transitions ... ok
+test label_keyspace_test::label_keyspace_boundaries_and_incomplete_prefixes ... ok
+
+failures:
+
+failures:
+    label_keyspace_test::label_keyspace_canonical_shape_and_ids
+
+test result: FAILED. 3 passed; 1 failed; 0 ignored; 0 measured; 12 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-labeler --lib`
+EXIT=101
