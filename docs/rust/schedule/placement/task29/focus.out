@@ -1,0 +1,11 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-schedule-placement v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/placement)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.14s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_placement-d16fae04edf99afd)
+
+running 3 tests
+test placement_cache_test::placement_cache_promotion_invalidation_and_stale_store ... ok
+test placement_cache_test::placement_cache_changes_and_eligibility ... ok
+test placement_cache_test::placement_cache_manager_matches_uncached ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 37 filtered out; finished in 0.00s

@@ -32,6 +32,7 @@ pub struct RuleManager {
     pub(crate) paths: ClusterPaths,
     pub(crate) config: RuleConfig,
     pub(crate) list: Option<RuleList>,
+    pub(crate) cache: crate::RegionRuleFitCacheManager,
     initialized: bool,
     key_type: String,
 }
@@ -42,6 +43,7 @@ impl RuleManager {
             paths,
             config: RuleConfig::default(),
             list: None,
+            cache: Default::default(),
             initialized: false,
             key_type: String::new(),
         }

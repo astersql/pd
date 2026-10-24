@@ -1,0 +1,40 @@
+=== RUN   TestRegionRuleFitCache
+    region_rule_cache_test.go:183: unchanged
+    region_rule_cache_test.go:183: leader changed
+    region_rule_cache_test.go:183: have down peers
+    region_rule_cache_test.go:183: peers changed
+    region_rule_cache_test.go:183: replace peer
+    region_rule_cache_test.go:183: rule updated
+    region_rule_cache_test.go:183: rule re-created
+    region_rule_cache_test.go:183: add rules
+    region_rule_cache_test.go:183: remove rule
+    region_rule_cache_test.go:183: change rule
+    region_rule_cache_test.go:183: invalid input1
+    region_rule_cache_test.go:183: invalid input2
+    region_rule_cache_test.go:183: invalid input3
+    region_rule_cache_test.go:187: unchanged
+    region_rule_cache_test.go:187: leader changed
+    region_rule_cache_test.go:187: have down peers
+    region_rule_cache_test.go:187: peers changed
+    region_rule_cache_test.go:187: replace peer
+    region_rule_cache_test.go:187: rule updated
+    region_rule_cache_test.go:187: rule re-created
+    region_rule_cache_test.go:187: add rules
+    region_rule_cache_test.go:187: remove rule
+    region_rule_cache_test.go:187: change rule
+    region_rule_cache_test.go:187: invalid input1
+    region_rule_cache_test.go:187: invalid input2
+    region_rule_cache_test.go:187: invalid input3
+--- PASS: TestRegionRuleFitCache (0.00s)
+=== RUN   TestPublicStoreCaches
+--- PASS: TestPublicStoreCaches (0.00s)
+=== RUN   TestToStoreCacheListDoesNotReinsertStaleStore
+--- PASS: TestToStoreCacheListDoesNotReinsertStaleStore (0.00s)
+=== RUN   TestToStoreCacheListReturnsUncacheableForRemovedStore
+--- PASS: TestToStoreCacheListReturnsUncacheableForRemovedStore (0.00s)
+=== RUN   TestSetCacheDoesNotPromoteStaleFitAfterStoreRemoval
+--- PASS: TestSetCacheDoesNotPromoteStaleFitAfterStoreRemoval (0.00s)
+=== RUN   TestSetCachePromotionCannotRaceStoreRemoval
+--- PASS: TestSetCachePromotionCannotRaceStoreRemoval (0.00s)
+PASS
+ok  	github.com/tikv/pd/pkg/schedule/placement	0.928s

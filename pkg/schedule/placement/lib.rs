@@ -52,3 +52,9 @@ pub mod fit_isolation;
 #[cfg(test)]
 #[path = "placement_isolation_test.rs"]
 mod placement_isolation_test;
+
+pub mod region_rule_cache;
+pub use region_rule_cache::RegionRuleFitCacheManager;
+#[cfg(test)]
+#[path = "placement_cache_test.rs"]
+mod placement_cache_test;
