@@ -345,6 +345,9 @@ dependencies = [
 name = "astersql-pd-schedule-affinity"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-errs",
+ "astersql-pd-keyutil",
+ "astersql-pd-schedule-labeler",
  "serde",
  "serde_json",
  "thiserror 2.0.21",

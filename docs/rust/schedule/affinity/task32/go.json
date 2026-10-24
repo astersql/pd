@@ -1,0 +1,40 @@
+{
+  "sha256": "4537466d65d253b1e291cacecf53faee14117386e8f2c5ff7b380108e49cc268",
+  "request": {
+    "affinity_groups": {
+      "range32": {
+        "ranges": [
+          {
+            "start_key": "AA==",
+            "end_key": "AQ=="
+          },
+          {
+            "start_key": "AQ==",
+            "end_key": "/w=="
+          }
+        ]
+      }
+    }
+  },
+  "label_rule": {
+    "id": "affinity_group/range32",
+    "index": 0,
+    "labels": [
+      {
+        "key": "affinity_group",
+        "value": "range32"
+      }
+    ],
+    "rule_type": "key-range",
+    "data": [
+      {
+        "start_key": "00",
+        "end_key": "01"
+      },
+      {
+        "start_key": "01",
+        "end_key": "ff"
+      }
+    ]
+  }
+}
