@@ -19,12 +19,12 @@ without shifts that overflow at machine-word peer counts. Selection remains
 combinatorial, as in Go. Isolation uses canonical store location comparison;
 witness load sums store witness counts only for enabled witness rules.
 No persistence, I/O, background tasks, time inputs or protocol types are involved.
-Replacement and cache belong to later tasks.
+Replacement and fit metadata queries are documented in [fit_isolation.rs.md](fit_isolation.rs.md). Cache remains a later task.
 Independent tests are explicitly registered in lib.rs. See
 [task 26 evidence](../../../docs/rust/schedule/placement/26-证据.md).
 
 `fit_region(stores, region, rules, support_witness)` preserves the caller's rule
-order and returns `RegionFit { rule_fits, orphan_peers }`. Its `is_satisfied`
+order and returns `RegionFit` with rule fits, orphan peers and retained region-store/rule snapshots. Its `is_satisfied`
 requires a nonempty rule list, all rule fits satisfied, and no orphans.
 The worker sorts all peers by health then ID, filters each rule's unselected
 candidates, and explores fixed-count combinations in Go numeric-mask order.

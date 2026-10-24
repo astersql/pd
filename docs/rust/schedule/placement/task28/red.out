@@ -1,0 +1,28 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-schedule-placement v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/placement)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.15s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_placement-d16fae04edf99afd)
+
+running 3 tests
+
+thread 'placement_isolation_test::placement_isolation_replace_go_test_cases' (155899460) panicked at pkg/schedule/placement/placement_isolation_test.rs:67:5:
+Go TestReplace: preserve zone diversity
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'placement_isolation_test::placement_isolation_role_exchange_and_lookup' (155899461) panicked at pkg/schedule/placement/placement_isolation_test.rs:99:9:
+assertion `left == right` failed
+  left: false
+ right: true
+test placement_isolation_test::placement_isolation_hierarchy_and_extra_count ... ok
+test placement_isolation_test::placement_isolation_replace_go_test_cases ... FAILED
+test placement_isolation_test::placement_isolation_role_exchange_and_lookup ... FAILED
+
+failures:
+
+failures:
+    placement_isolation_test::placement_isolation_replace_go_test_cases
+    placement_isolation_test::placement_isolation_role_exchange_and_lookup
+
+test result: FAILED. 1 passed; 2 failed; 0 ignored; 0 measured; 34 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-placement --lib`

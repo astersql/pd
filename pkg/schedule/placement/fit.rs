@@ -131,6 +131,8 @@ pub fn fit_rule(
 pub struct RegionFit {
     pub rule_fits: Vec<RuleFit>,
     pub orphan_peers: Vec<Peer>,
+    pub(crate) region_stores: Vec<Arc<StoreInfo>>,
+    pub(crate) rules: Vec<Arc<Rule>>,
 }
 impl RegionFit {
     pub fn is_satisfied(&self) -> bool {
@@ -172,6 +174,13 @@ pub fn fit_region(
             .map(|f| f.expect("every rule has an empty combination"))
             .collect(),
         orphan_peers: worker.orphans,
+        region_stores: region
+            .meta()
+            .peers
+            .iter()
+            .filter_map(|p| stores.iter().find(|s| s.id() == p.store_id).cloned())
+            .collect(),
+        rules: rules.to_vec(),
     }
 }
 

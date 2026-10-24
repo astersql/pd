@@ -47,3 +47,8 @@ pub use fit::{RegionFit, fit_region};
 #[cfg(test)]
 #[path = "placement_region_fit_test.rs"]
 mod placement_region_fit_test;
+
+pub mod fit_isolation;
+#[cfg(test)]
+#[path = "placement_isolation_test.rs"]
+mod placement_isolation_test;

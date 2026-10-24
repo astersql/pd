@@ -1,0 +1,6 @@
+=== RUN   TestReplace
+--- PASS: TestReplace (0.01s)
+=== RUN   TestIsolationScore
+--- PASS: TestIsolationScore (0.00s)
+PASS
+ok  	github.com/tikv/pd/pkg/schedule/placement	0.999s
