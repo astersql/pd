@@ -87,22 +87,20 @@ impl ApplyHistory for crate::PersistentHistory<'_> {
 #[derive(Default)]
 /// Follower streaming state. The host serializes responses and owns all resources.
 pub struct ClientApply {
-    running: bool,
-    full_syncing: bool,
+    ready: crate::client_ready::ClientReady,
 }
 impl ClientApply {
     /// Whether the initial synchronization has completed.
     pub fn is_running(&self) -> bool {
-        self.running
+        self.ready.is_running()
     }
     /// Whether nonempty full-sync frames still carry positional offsets.
     pub fn full_syncing(&self) -> bool {
-        self.full_syncing
+        self.ready.full_syncing()
     }
     /// Start a new stream without discarding the caller-owned history or cache.
     pub fn reset_stream(&mut self) {
-        self.running = false;
-        self.full_syncing = false;
+        self.ready.reset_stream();
     }
     /// Apply a frame sequentially, skipping stale regions and error responses.
     /// Cache mutation precedes persistence. Save failures suppress history only;
@@ -116,19 +114,15 @@ impl ClientApply {
         history: &mut impl ApplyHistory,
     ) -> Result<ApplyOutcome, HistoryError> {
         if response.error.is_some() {
-            self.running = false;
+            self.ready.reject();
             return Ok(ApplyOutcome::default());
         }
-        let start_full = !self.full_syncing
-            && !self.running
-            && response.start_index == HistoryIndex(0)
-            && !response.regions.is_empty();
-        let in_full = self.full_syncing || start_full;
-        let positional = in_full && !start_full && !response.regions.is_empty();
-        if !positional && history.next_index() != response.start_index {
+        let frame = self
+            .ready
+            .classify(response.start_index, !response.regions.is_empty());
+        if !frame.positional && history.next_index() != response.start_index {
             history.reset_with_index(response.start_index);
         }
-        let has_regions = !response.regions.is_empty();
         let has_stats = response.stats.len() == response.regions.len();
         let has_buckets = response.buckets.len() == response.regions.len();
         let mut outcome = ApplyOutcome {
@@ -170,7 +164,7 @@ impl ClientApply {
             }
             // Go commits the cache before storage; failed saves suppress history,
             // but still delete overlaps. History exhaustion must not skip cleanup.
-            let recorded = if saved && !in_full {
+            let recorded = if saved && !frame.in_full_sync {
                 history.record_sync(region).await.map(|checkpoint_ok| {
                     if !checkpoint_ok {
                         outcome.checkpoint_errors += 1;
@@ -186,10 +180,7 @@ impl ClientApply {
             }
             recorded?;
         }
-        self.full_syncing = in_full && has_regions;
-        if !self.full_syncing {
-            self.running = true;
-        }
+        self.ready.complete(frame);
         Ok(outcome)
     }
 }

@@ -22,3 +22,7 @@
 存储最终状态；故障只在存储事务边界注入。Go运行oracle、红灯及验证见
 [任务37证据](../../docs/rust/state/task-37.md)。加载的 Go failpoint 闭包运行证据
 仅确认现有基准，不表示本任务已移植加载/网络/取消生命周期。
+
+就绪状态迁移统一委托给内部 `ClientReady`；详见
+[client_ready.rs.md](client_ready.rs.md)。响应应用仍负责索引重置、缓存/存储和历史记录，
+分类不改变状态，应用成功后才提交就绪状态。

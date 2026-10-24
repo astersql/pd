@@ -1,0 +1,14 @@
+   Compiling astersql-pd-syncer v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/syncer)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.67s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_syncer-838b8bf1fb9326e1)
+
+running 6 tests
+test client_ready_test::state_task_38_client_ready_empty_snapshot_without_catchup ... ok
+test client_ready_test::state_task_38_client_ready_error_and_leader_reconnect ... ok
+test client_ready_test::state_task_38_client_ready_waits_for_full_sync_completion ... ok
+test client_ready_test::state_task_38_client_ready_old_leader_keepalive ... ok
+test client_ready_test::state_task_38_client_ready_empty_snapshot_catchup_completion ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:56106
+test client_ready_test::state_task_38_client_ready_etcd_completion ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 63 filtered out; finished in 8.56s

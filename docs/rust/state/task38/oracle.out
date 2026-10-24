@@ -1,0 +1,18 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+=== RUN   TestClientWaitsForFullSyncCompletionBeforeRunning
+[2026/10/24 20:56:41.432 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+[2026/10/24 20:56:41.432 +00:00] [WARN] [client.go:119] ["server sync index not match the leader"] [server=mock-server] [own=0] [leader=1] [records-length=0]
+--- PASS: TestClientWaitsForFullSyncCompletionBeforeRunning (0.00s)
+=== RUN   TestClientFinishesFullSyncWithOldLeaderKeepAlive
+[2026/10/24 20:56:41.432 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+[2026/10/24 20:56:41.432 +00:00] [WARN] [client.go:119] ["server sync index not match the leader"] [server=mock-server] [own=42] [leader=0] [records-length=1]
+[2026/10/24 20:56:41.432 +00:00] [WARN] [client.go:119] ["server sync index not match the leader"] [server=mock-server] [own=0] [leader=43] [records-length=0]
+--- PASS: TestClientFinishesFullSyncWithOldLeaderKeepAlive (0.00s)
+=== RUN   TestClientWaitsForEmptySnapshotCatchUpCompletion
+[2026/10/24 20:56:41.443 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+[2026/10/24 20:56:41.443 +00:00] [INFO] [server.go:552] ["requested server has completed full synchronization with server"] [requested-server=pd-follower] [server=mock-server] [cost=2.125µs]
+[2026/10/24 20:56:41.443 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+[2026/10/24 20:56:41.443 +00:00] [WARN] [client.go:119] ["server sync index not match the leader"] [server=mock-server] [own=42] [leader=0] [records-length=1000]
+[2026/10/24 20:56:41.447 +00:00] [WARN] [client.go:119] ["server sync index not match the leader"] [server=mock-server] [own=0] [leader=1043] [records-length=0]
+--- PASS: TestClientWaitsForEmptySnapshotCatchUpCompletion (0.02s)
+PASS

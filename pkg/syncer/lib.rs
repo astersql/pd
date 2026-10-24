@@ -56,3 +56,8 @@ pub use client_apply::{
 #[cfg(test)]
 #[path = "client_apply_test.rs"]
 mod client_apply_test;
+
+mod client_ready;
+#[cfg(test)]
+#[path = "client_ready_test.rs"]
+mod client_ready_test;
