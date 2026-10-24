@@ -223,7 +223,10 @@ async fn replay(store: Arc<dyn MetaStore>) {
             assert_eq!(local.meta(), remote.meta());
             assert_eq!(local.leader(), remote.leader());
             assert_eq!(local.stats().written_bytes, remote.stats().written_bytes);
-            assert_eq!(local.buckets(), remote.buckets());
+            // Go followers consume BucketMeta, not the source's raw report counters/period.
+            let bucket_meta =
+                |r: &RegionInfo| r.buckets().map(|b| (b.region_id, b.version, b.keys));
+            assert_eq!(bucket_meta(local), bucket_meta(remote));
             assert_eq!(local.get_ref(), 2);
             assert_eq!(
                 h.storage

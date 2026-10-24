@@ -11,9 +11,22 @@ pub enum RegionSource {
     Sync,
     Heartbeat,
 }
+/// Raw bucket counters retained for source snapshots and protocol forwarding.
+/// Rates are computed by the statistics worker, never by this value type.
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
+pub struct RegionBucketStats {
+    pub read_bytes: Vec<u64>,
+    pub read_keys: Vec<u64>,
+    pub read_qps: Vec<u64>,
+    pub write_bytes: Vec<u64>,
+    pub write_keys: Vec<u64>,
+    pub write_qps: Vec<u64>,
+}
 /// Bucket boundaries reported separately from a region heartbeat.
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub struct RegionBuckets {
+    pub stats: Option<RegionBucketStats>,
+    pub period_in_ms: u64,
     pub region_id: u64,
     pub version: u64,
     pub keys: Vec<Vec<u8>>,
@@ -56,6 +69,7 @@ impl RegionInfo {
                 region_id: self.meta.id,
                 version: meta.version,
                 keys: meta.keys.clone(),
+                ..Default::default()
             })
         } else {
             self.report_buckets.as_deref().cloned()

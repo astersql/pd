@@ -1,0 +1,19 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+warning: use of deprecated field `astersql_pd_proto::pdpb::RegionHeartbeatRequest::cpu_usage`
+   --> pkg/server/core_region_adapter.rs:134:30
+    |
+134 |     r.set_response_cpu_usage(p.cpu_usage);
+    |                              ^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: `astersql-pd-server` (lib) generated 1 warning
+   Compiling astersql-pd-compat-tests v0.1.0 (/Users/Shared/work/dir/data/codes/pd/tests/rust-compat)
+error[E0425]: cannot find value `watch_cursor` in this scope
+   --> tests/rust-compat/state_regression_test.rs:174:9
+    |
+174 |         watch_cursor,
+    |         ^^^^^^^^^^^^ not found in this scope
+
+For more information about this error, try `rustc --explain E0425`.
+error: could not compile `astersql-pd-compat-tests` (lib test) due to 1 previous error

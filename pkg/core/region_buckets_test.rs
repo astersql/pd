@@ -10,6 +10,7 @@ fn buckets(version: u64) -> Arc<RegionBuckets> {
         region_id: 100,
         version,
         keys: vec![b"a".to_vec()],
+        ..Default::default()
     })
 }
 #[test]

@@ -1,0 +1,52 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+warning: use of deprecated field `astersql_pd_proto::pdpb::RegionHeartbeatRequest::cpu_usage`
+   --> pkg/server/core_region_adapter.rs:134:30
+    |
+134 |     r.set_response_cpu_usage(p.cpu_usage);
+    |                              ^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: `astersql-pd-server` (lib) generated 1 warning
+   Compiling astersql-pd-compat-tests v0.1.0 (/Users/Shared/work/dir/data/codes/pd/tests/rust-compat)
+error[E0599]: the method `as_ref` exists for reference `&astersql_pd_core::StoreMeta`, but its trait bounds were not satisfied
+   --> tests/rust-compat/state_regression.rs:319:14
+    |
+312 |           let mut store_meta = state
+    |  ______________________________-
+313 | |             .cluster
+314 | |             .stores
+315 | |             .get_store(1)
+...   |
+318 | |             .unwrap()
+319 | |             .as_ref()
+    | |             -^^^^^^ method cannot be called on `&astersql_pd_core::StoreMeta` due to unsatisfied trait bounds
+    | |_____________|
+    |
+    |
+   ::: pkg/core/store_meta.rs:6:1
+    |
+  6 |   pub struct StoreMeta {
+    |   -------------------- doesn't satisfy `astersql_pd_core::StoreMeta: AsRef<_>`
+    |
+    = note: the following trait bounds were not satisfied:
+            `astersql_pd_core::StoreMeta: AsRef<_>`
+            which is required by `&astersql_pd_core::StoreMeta: AsRef<_>`
+
+error[E0282]: type annotations needed
+   --> tests/rust-compat/state_regression.rs:350:24
+    |
+350 |     let (tx, mut rx) = tokio::sync::mpsc::channel(16);
+    |                        ^^^^^^^^^^^^^^^^^^^^^^^^^^ cannot infer type of the type parameter `T` declared on the function `channel`
+...
+364 |                 resume = HistoryIndex(frame.start_index().0 + frame.records().len() as u64);
+    |                                       ----- type must be known at this point
+    |
+help: consider specifying a concrete type for the type parameter `T`
+    |
+350 |     let (tx, mut rx) = tokio::sync::mpsc::channel::</* Type */>(16);
+    |                                                  ++++++++++++++
+
+Some errors have detailed explanations: E0282, E0599.
+For more information about an error, try `rustc --explain E0282`.
+error: could not compile `astersql-pd-compat-tests` (lib test) due to 2 previous errors

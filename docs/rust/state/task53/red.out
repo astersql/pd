@@ -1,0 +1,61 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+   Compiling serde_json v1.0.145
+   Compiling astersql-pd-proto v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/proto)
+    Checking astersql-pd-compat-tests v0.1.0 (/Users/Shared/work/dir/data/codes/pd/tests/rust-compat)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 4.14s
+   Compiling astersql-pd-schedule-labeler v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler)
+warning: use of deprecated field `astersql_pd_proto::pdpb::RegionHeartbeatRequest::cpu_usage`
+   --> pkg/server/core_region_adapter.rs:134:30
+    |
+134 |     r.set_response_cpu_usage(p.cpu_usage);
+    |                              ^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: `astersql-pd-server` (lib) generated 1 warning
+   Compiling astersql-pd-schedule-affinity v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/affinity)
+   Compiling astersql-pd-compat-tests v0.1.0 (/Users/Shared/work/dir/data/codes/pd/tests/rust-compat)
+warning: unused variable: `peers`
+   --> tests/rust-compat/state_regression.rs:256:20
+    |
+256 |                    peers: &std::collections::BTreeMap<
+    |                    ^^^^^ help: if this is intentional, prefix it with an underscore: `_peers`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: `astersql-pd-compat-tests` (lib test) generated 1 warning (run `cargo fix --lib -p astersql-pd-compat-tests --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.33s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_compat_tests-24dc2fd81d77a169)
+
+running 3 tests
+
+thread 'state_regression_test::state_theme_diff_reports_field' (158773548) panicked at tests/rust-compat/state_regression_test.rs:23:5:
+$/regions/regions/0/epoch/version: 999 != 2
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test state_regression_test::state_theme_diff_reports_field ... FAILED
+
+thread 'state_regression_test::state_theme_replay' (158773549) panicked at tests/rust-compat/state_regression.rs:368:9:
+"initial": $/hot_read/as_leader/1: Some(Object {"regions_count": Number(0), "statistics": Array [], "store_bytes": Number(0), "store_cpu": Number(0), "store_keys": Number(0), "store_query": Number(0), "total_flow_bytes": Number(0), "total_flow_cpu": Number(0), "total_flow_keys": Number(0), "total_flow_query": Number(0)}) != None
+$/hot_read/as_peer/1: Some(Object {"regions_count": Number(0), "statistics": Array [], "store_bytes": Number(0), "store_cpu": Number(0), "store_keys": Number(0), "store_query": Number(0), "total_flow_bytes": Number(0), "total_flow_cpu": Number(0), "total_flow_keys": Number(0), "total_flow_query": Number(0)}) != None
+$/hot_write/as_leader/1: Some(Object {"regions_count": Number(1), "statistics": Array [Object {"anti_count": Number(2), "flow_bytes": Number(1000000), "flow_cpu": Number(0), "flow_keys": Number(1000), "flow_query": Number(0), "hot_degree": Number(1), "is_leader": Bool(true), "is_learner": Bool(false), "last_update_time": String("1970-01-01T08:01:00+08:00"), "region_id": Number(1), "store_id": Number(1), "stores": Array [Number(1)]}], "store_bytes": Number(1000000), "store_cpu": Number(0), "store_keys": Number(1000), "store_query": Number(0), "total_flow_bytes": Number(1000000), "total_flow_cpu": Number(0), "total_flow_keys": Number(1000), "total_flow_query": Number(0)}) != None
+$/hot_write/as_peer/1: Some(Object {"regions_count": Number(1), "statistics": Array [Object {"anti_count": Number(2), "flow_bytes": Number(1000000), "flow_cpu": Number(0), "flow_keys": Number(1000), "flow_query": Number(0), "hot_degree": Number(1), "is_leader": Bool(true), "is_learner": Bool(false), "last_update_time": String("1970-01-01T08:01:00+08:00"), "region_id": Number(1), "store_id": Number(1), "stores": Array [Number(1)]}], "store_bytes": Number(0), "store_cpu": Number(0), "store_keys": Number(0), "store_query": Number(0), "total_flow_bytes": Number(1000000), "total_flow_cpu": Number(0), "total_flow_keys": Number(1000), "total_flow_query": Number(0)}) != None
+test state_regression_test::state_theme_replay ... FAILED
+isolated etcd 3.5.15 ready at http://127.0.0.1:65439
+
+thread 'state_regression_test::state_theme_replay_etcd' (158773550) panicked at tests/rust-compat/state_regression.rs:368:9:
+"initial": $/hot_read/as_leader/1: Some(Object {"regions_count": Number(0), "statistics": Array [], "store_bytes": Number(0), "store_cpu": Number(0), "store_keys": Number(0), "store_query": Number(0), "total_flow_bytes": Number(0), "total_flow_cpu": Number(0), "total_flow_keys": Number(0), "total_flow_query": Number(0)}) != None
+$/hot_read/as_peer/1: Some(Object {"regions_count": Number(0), "statistics": Array [], "store_bytes": Number(0), "store_cpu": Number(0), "store_keys": Number(0), "store_query": Number(0), "total_flow_bytes": Number(0), "total_flow_cpu": Number(0), "total_flow_keys": Number(0), "total_flow_query": Number(0)}) != None
+$/hot_write/as_leader/1: Some(Object {"regions_count": Number(1), "statistics": Array [Object {"anti_count": Number(2), "flow_bytes": Number(1000000), "flow_cpu": Number(0), "flow_keys": Number(1000), "flow_query": Number(0), "hot_degree": Number(1), "is_leader": Bool(true), "is_learner": Bool(false), "last_update_time": String("1970-01-01T08:01:00+08:00"), "region_id": Number(1), "store_id": Number(1), "stores": Array [Number(1)]}], "store_bytes": Number(1000000), "store_cpu": Number(0), "store_keys": Number(1000), "store_query": Number(0), "total_flow_bytes": Number(1000000), "total_flow_cpu": Number(0), "total_flow_keys": Number(1000), "total_flow_query": Number(0)}) != None
+$/hot_write/as_peer/1: Some(Object {"regions_count": Number(1), "statistics": Array [Object {"anti_count": Number(2), "flow_bytes": Number(1000000), "flow_cpu": Number(0), "flow_keys": Number(1000), "flow_query": Number(0), "hot_degree": Number(1), "is_leader": Bool(true), "is_learner": Bool(false), "last_update_time": String("1970-01-01T08:01:00+08:00"), "region_id": Number(1), "store_id": Number(1), "stores": Array [Number(1)]}], "store_bytes": Number(0), "store_cpu": Number(0), "store_keys": Number(0), "store_query": Number(0), "total_flow_bytes": Number(1000000), "total_flow_cpu": Number(0), "total_flow_keys": Number(1000), "total_flow_query": Number(0)}) != None
+test state_regression_test::state_theme_replay_etcd ... FAILED
+
+failures:
+
+failures:
+    state_regression_test::state_theme_diff_reports_field
+    state_regression_test::state_theme_replay
+    state_regression_test::state_theme_replay_etcd
+
+test result: FAILED. 0 passed; 3 failed; 0 ignored; 0 measured; 4 filtered out; finished in 3.97s
+
+error: test failed, to rerun pass `-p astersql-pd-compat-tests --lib`

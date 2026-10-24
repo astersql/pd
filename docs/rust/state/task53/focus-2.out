@@ -1,0 +1,65 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+   Compiling astersql-pd-core v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/core)
+   Compiling astersql-pd-storage-endpoint v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/storage/endpoint)
+   Compiling astersql-pd-schedule-config v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/config)
+   Compiling astersql-pd-schedule-placement v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/placement)
+   Compiling astersql-pd-storage v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/storage)
+   Compiling astersql-pd-schedule-labeler v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler)
+   Compiling astersql-pd-syncer v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/syncer)
+   Compiling astersql-pd-schedule-affinity v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/affinity)
+   Compiling astersql-pd-statistics v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics)
+   Compiling astersql-pd-cluster v0.1.0 (/Users/Shared/work/dir/data/codes/pd/server/cluster)
+warning: unused import: `RegionBucketStats`
+ --> server/cluster/bucket_heartbeat.rs:3:38
+  |
+3 | use astersql_pd_core::{BasicCluster, RegionBucketStats, RegionBuckets};
+  |                                      ^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+   Compiling astersql-pd-server v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/server)
+warning: `astersql-pd-cluster` (lib) generated 1 warning (run `cargo fix --lib -p astersql-pd-cluster` to apply 1 suggestion)
+warning: use of deprecated field `astersql_pd_proto::pdpb::RegionHeartbeatRequest::cpu_usage`
+   --> pkg/server/core_region_adapter.rs:134:30
+    |
+134 |     r.set_response_cpu_usage(p.cpu_usage);
+    |                              ^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: `astersql-pd-server` (lib) generated 1 warning
+   Compiling astersql-pd-compat-tests v0.1.0 (/Users/Shared/work/dir/data/codes/pd/tests/rust-compat)
+warning: unused variable: `peers`
+   --> tests/rust-compat/state_regression.rs:258:20
+    |
+258 |                    peers: &std::collections::BTreeMap<
+    |                    ^^^^^ help: if this is intentional, prefix it with an underscore: `_peers`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: `astersql-pd-compat-tests` (lib test) generated 1 warning (run `cargo fix --lib -p astersql-pd-compat-tests --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.84s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_compat_tests-24dc2fd81d77a169)
+
+running 3 tests
+test state_regression_test::state_theme_diff_reports_field ... ok
+
+thread 'state_regression_test::state_theme_replay' (158778493) panicked at tests/rust-compat/state_regression.rs:369:9:
+"bucket-v3": $/sync/0/records/0/bucket: "080110031a001a016d1a0022200a06c09a0c80b518120680ea3080d4611a02060c22020c182a02040832020a1428d00f" != "080110031a001a016d1a00"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test state_regression_test::state_theme_replay ... FAILED
+isolated etcd 3.5.15 ready at http://127.0.0.1:49479
+
+thread 'state_regression_test::state_theme_replay_etcd' (158778494) panicked at tests/rust-compat/state_regression.rs:369:9:
+"bucket-v3": $/sync/0/records/0/bucket: "080110031a001a016d1a0022200a06c09a0c80b518120680ea3080d4611a02060c22020c182a02040832020a1428d00f" != "080110031a001a016d1a00"
+test state_regression_test::state_theme_replay_etcd ... FAILED
+
+failures:
+
+failures:
+    state_regression_test::state_theme_replay
+    state_regression_test::state_theme_replay_etcd
+
+test result: FAILED. 1 passed; 2 failed; 0 ignored; 0 measured; 4 filtered out; finished in 3.64s
+
+error: test failed, to rerun pass `-p astersql-pd-compat-tests --lib`

@@ -1,0 +1,58 @@
+   Compiling astersql-pd-compat-tests v0.1.0 (/Users/Shared/work/dir/data/codes/pd/tests/rust-compat)
+warning: use of deprecated field `astersql_pd_proto::pdpb::RegionHeartbeatRequest::cpu_usage`
+   --> pkg/server/core_region_adapter.rs:134:30
+    |
+134 |     r.set_response_cpu_usage(p.cpu_usage);
+    |                              ^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: `astersql-pd-server` (lib) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.82s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_compat_tests-24dc2fd81d77a169)
+
+running 9 tests
+test state_regression_test::state_theme_diff_reports_field ... ok
+test schedule_foundation_test::schedule_foundation_memory ... ok
+test schedule_foundation_test::schedule_foundation_dependency_direction ... ok
+test state_regression_test::state_theme_fault_recovery ... ok
+test state_regression_test::state_theme_replay ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:51073
+isolated etcd 3.5.15 ready at http://127.0.0.1:51074
+isolated etcd 3.5.15 ready at http://127.0.0.1:51075
+isolated etcd 3.5.15 ready at http://127.0.0.1:51079
+test state_regression_test::state_theme_replay_etcd ... ok
+test schedule_foundation_test::schedule_foundation_etcd_io_failure ... ok
+test state_regression_test::state_theme_fault_recovery_etcd ... ok
+test schedule_foundation_test::schedule_foundation_etcd ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 5.07s
+
+     Running health_member_test.rs (target/rust-slot-2/debug/deps/health_member-a06dd79d5c3ce57d)
+
+running 10 tests
+test metric_values_and_types_are_semantic ... ok
+test normalization_does_not_hide_equal_valued_config ... ok
+test normalization_preserves_semantics ... ok
+test protobuf_clock_offset_preserves_logical_difference ... ok
+test minimal_member_preserves_semantics_and_rejects_unknown_fields ... ok
+test failed_start_cleans_directory ... ok
+test health_member_processes ... ok
+test detects_semantic_difference ... ok
+test early_exit_is_reported_and_cleaned ... ok
+test readiness_timeout_cleans_process_and_data ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.24s
+
+     Running tso_test.rs (target/rust-slot-2/debug/deps/tso-b52d02737c201907)
+
+running 1 test
+test tso_processes ... ignored, requires Go/Rust process binaries; run scripts/run-pd-compat.sh
+
+test result: ok. 0 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_compat_tests
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

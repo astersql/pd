@@ -1,0 +1,66 @@
+   Compiling astersql-pd-compat-tests v0.1.0 (/Users/Shared/work/dir/data/codes/pd/tests/rust-compat)
+warning: use of deprecated field `astersql_pd_proto::pdpb::RegionHeartbeatRequest::cpu_usage`
+   --> pkg/server/core_region_adapter.rs:134:30
+    |
+134 |     r.set_response_cpu_usage(p.cpu_usage);
+    |                              ^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: `astersql-pd-server` (lib) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.57s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_compat_tests-24dc2fd81d77a169)
+
+running 9 tests
+test state_regression_test::state_theme_diff_reports_field ... ok
+test schedule_foundation_test::schedule_foundation_memory ... ok
+test schedule_foundation_test::schedule_foundation_dependency_direction ... ok
+test state_regression_test::state_theme_fault_recovery ... ok
+test state_regression_test::state_theme_replay ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:50808
+isolated etcd 3.5.15 ready at http://127.0.0.1:50809
+panic: failed to create WAL
+
+goroutine 1 [running]:
+go.uber.org/zap/zapcore.CheckWriteAction.OnWrite(0x0?, 0x1?, {0x0?, 0x0?, 0x0?})
+    /Users/xiangmin/go/pkg/mod/go.uber.org/zap@v1.27.0/zapcore/entry.go:196 +0x74
+go.uber.org/zap/zapcore.(*CheckedEntry).Write(0x50038aa09450, {0x50038aa35000, 0x1, 0x1})
+    /Users/xiangmin/go/pkg/mod/go.uber.org/zap@v1.27.0/zapcore/entry.go:262 +0x1a8
+go.uber.org/zap.(*Logger).Panic(0x50038a850e00?, {0x100f35d20?, 0x5d?}, {0x50038aa35000, 0x1, 0x1})
+    /Users/xiangmin/go/pkg/mod/go.uber.org/zap@v1.27.0/logger.go:285 +0x4c
+go.etcd.io/etcd/server/v3/etcdserver.startNode({{0x100f26e32, 0x7}, {0x0, 0x0}, {0x0, 0x0}, {0x50038aa3e5a0, 0x1, 0x1}, {0x50038aa3e630, ...}, ...}, ...)
+    /Users/xiangmin/go/pkg/mod/go.etcd.io/etcd/server/v3@v3.5.15/etcdserver/raft.go:480 +0x1a8
+go.etcd.io/etcd/server/v3/etcdserver.NewServer({{0x100f26e32, 0x7}, {0x0, 0x0}, {0x0, 0x0}, {0x50038aa3e5a0, 0x1, 0x1}, {0x50038aa3e630, ...}, ...})
+    /Users/xiangmin/go/pkg/mod/go.etcd.io/etcd/server/v3@v3.5.15/etcdserver/server.go:469 +0x1bd4
+go.etcd.io/etcd/server/v3/embed.StartEtcd(0x50038a968608)
+    /Users/xiangmin/go/pkg/mod/go.etcd.io/etcd/server/v3@v3.5.15/embed/etcd.go:247 +0xd5c
+main.main.func2(...)
+    /Users/Shared/work/dir/data/codes/pd/scripts/rust-etcd-fixture/main.go:53
+main.main()
+    /Users/Shared/work/dir/data/codes/pd/scripts/rust-etcd-fixture/main.go:73 +0x3d4
+test state_regression_test::state_theme_fault_recovery_etcd ... FAILED
+test schedule_foundation_test::schedule_foundation_etcd ... ok
+test state_regression_test::state_theme_replay_etcd ... FAILED
+test schedule_foundation_test::schedule_foundation_etcd_io_failure ... ok
+
+failures:
+
+---- state_regression_test::state_theme_fault_recovery_etcd stdout ----
+
+thread 'state_regression_test::state_theme_fault_recovery_etcd' (158790410) panicked at tests/rust-compat/state_regression_test.rs:54:10:
+called `Result::unwrap()` on an `Err` value: Unavailable
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- state_regression_test::state_theme_replay_etcd stdout ----
+
+thread 'state_regression_test::state_theme_replay_etcd' (158790412) panicked at tests/rust-compat/state_regression.rs:326:81:
+called `Result::unwrap()` on an `Err` value: RegionLoadError { found: false, source: Endpoint(Store(Unavailable)) }
+
+
+failures:
+    state_regression_test::state_theme_fault_recovery_etcd
+    state_regression_test::state_theme_replay_etcd
+
+test result: FAILED. 7 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 4.48s
+
+error: test failed, to rerun pass `-p astersql-pd-compat-tests --lib`

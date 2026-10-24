@@ -200,6 +200,7 @@ pub fn response_from_proto(p: pdpb::SyncRegionResponse) -> SyncResponse {
                     region_id: b.region_id,
                     version: b.version,
                     keys: b.keys,
+                    ..Default::default()
                 },
                 period_in_ms: b.period_in_ms,
                 stats: b.stats.map(|s| BucketFlows {
@@ -325,7 +326,15 @@ fn records_to_proto(
                     region_id: b.region_id,
                     version: b.version,
                     keys: b.keys,
-                    ..Default::default()
+                    period_in_ms: b.period_in_ms,
+                    stats: b.stats.map(|s| metapb::BucketStats {
+                        read_bytes: s.read_bytes,
+                        read_keys: s.read_keys,
+                        read_qps: s.read_qps,
+                        write_bytes: s.write_bytes,
+                        write_keys: s.write_keys,
+                        write_qps: s.write_qps,
+                    }),
                 })
                 .unwrap_or_default(),
         );

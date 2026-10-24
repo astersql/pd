@@ -1,10 +1,8 @@
 // Copyright 2026 AsterSQL.
 use super::schedule_foundation::contract;
+use crate::harness::fixture;
 use astersql_pd_storage_kv::MemoryStore;
 use std::sync::Arc;
-#[allow(dead_code)]
-#[path = "../../pkg/storage/kv/etcd_fixture_test.rs"]
-mod fixture;
 #[tokio::test]
 async fn schedule_foundation_memory() {
     contract(Arc::new(MemoryStore::default()), true).await;

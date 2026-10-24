@@ -1,0 +1,16 @@
+{
+  "slot": 2,
+  "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2",
+  "lock_released": true,
+  "cache_preserved": true,
+  "active_slot_processes": [],
+  "removed_own_failed_fixture_data": [
+    "etcd-contract-87199-1",
+    "etcd-contract-84254-0",
+    "etcd-contract-83636-0",
+    "etcd-contract-83845-0",
+    "etcd-contract-86771-1",
+    "etcd-contract-86388-1"
+  ],
+  "oracle_data_removed": true
+}

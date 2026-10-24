@@ -1,0 +1,111 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+warning: use of deprecated field `astersql_pd_proto::pdpb::RegionHeartbeatRequest::cpu_usage`
+   --> pkg/server/core_region_adapter.rs:134:30
+    |
+134 |     r.set_response_cpu_usage(p.cpu_usage);
+    |                              ^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: `astersql-pd-server` (lib) generated 1 warning
+   Compiling astersql-pd-compat-tests v0.1.0 (/Users/Shared/work/dir/data/codes/pd/tests/rust-compat)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.81s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_compat_tests-24dc2fd81d77a169)
+
+running 5 tests
+test state_regression_test::state_theme_diff_reports_field ... ok
+test state_regression_test::state_theme_fault_recovery ... ok
+test state_regression_test::state_theme_replay ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:50416
+isolated etcd 3.5.15 ready at http://127.0.0.1:50415
+test state_regression_test::state_theme_replay_etcd ... ok
+test state_regression_test::state_theme_fault_recovery_etcd ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 4.24s
+
+   Compiling astersql-pd-schedule-config v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/config)
+   Compiling astersql-pd-storage-endpoint v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/storage/endpoint)
+   Compiling astersql-pd-schedule-placement v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/placement)
+   Compiling astersql-pd-storage v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/storage)
+   Compiling astersql-pd-syncer v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/syncer)
+   Compiling astersql-pd-statistics v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics)
+   Compiling astersql-pd-cluster v0.1.0 (/Users/Shared/work/dir/data/codes/pd/server/cluster)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.12s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_cluster-5269867855fbaab2)
+
+running 46 tests
+test bucket_heartbeat_test::state_task_45_bucket_heartbeat_three_attempt_boundary_real_core_cas ... ok
+test bucket_heartbeat_test::state_task_45_bucket_heartbeat_missing_leader_store_allowed ... ok
+test bucket_heartbeat_test::state_task_45_bucket_heartbeat_compatibility_and_stale_metadata ... ok
+test bucket_heartbeat_test::state_task_45_bucket_heartbeat_missing_removed_never_enqueue ... ok
+test bucket_heartbeat_test::state_task_45_bucket_heartbeat_closed_worker_keeps_commit ... ok
+test bucket_heartbeat_test::state_task_45_bucket_heartbeat_versions_and_worker_payload ... ok
+test bucket_heartbeat_test::state_task_45_bucket_heartbeat_competing_versions ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_accept_duplicate_inherit ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_delayed_duplicate_cannot_resurrect ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_concurrent_precheck_merge_commit ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_duplicate_repairs_subtree ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_epoch_term_rejection ... ok
+test heartbeat_effects_test::state_task_46_heartbeat_effects_delayed_stats_refresh_root ... ok
+test heartbeat_effects_test::state_task_46_heartbeat_effects_queue_cancel_and_duplicate_repair ... ok
+test heartbeat_effects_test::state_task_46_heartbeat_effects_duplicate_config_and_root_only ... ok
+test heartbeat_effects_test::state_task_46_heartbeat_effects_retained_admission_and_stopped_runner ... ok
+test heartbeat_effects_test::state_task_46_heartbeat_effects_bucket_peer_epoch_and_stale ... ok
+test heartbeat_effects_test::state_task_46_heartbeat_effects_guide_snapshots ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_flow_size_and_leader ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_membership_and_recovery ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_prepared_overlap_recheck ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_same_id_recheck_and_last_write ... ok
+test heartbeat_effects_test::state_task_46_heartbeat_effects_split_merge_memory ... ok
+test region_overlap_test::state_task_44_region_overlap_optional_statistics_and_duplicate_label_cleanup ... ok
+test heartbeat_effects_test::state_task_46_heartbeat_effects_delete_failure_continues_then_save_failure ... ok
+test region_overlap_test::state_task_44_region_overlap_merge_offline_cross_store_and_replay ... ok
+test removed_store_test::state_task_42_removed_store_commit_preserves_current_metadata ... ok
+test region_overlap_test::state_task_44_region_overlap_hot_history_uses_normal_ttl ... ok
+test region_overlap_test::state_task_44_region_overlap_split_left_then_right_and_empty_end ... ok
+test removed_store_test::state_task_42_removed_store_routine_noop ... ok
+test store_heartbeat_test::state_task_41_store_heartbeat_existing_and_missing ... ok
+test removed_store_test::state_task_42_removed_store_between_check_and_commit ... ok
+test store_heartbeat_test::state_task_41_store_heartbeat_closed_queue_keeps_core_update ... ok
+test removed_store_test::state_task_42_removed_store_deleted_between_check_and_commit ... ok
+test store_heartbeat_test::state_task_41_store_heartbeat_cpu_query_and_filters ... ok
+test store_heartbeat_test::state_task_41_store_heartbeat_removed_and_unhealthy ... ok
+test store_heartbeat_test::state_task_41_store_heartbeat_intervals_and_independent ... ok
+test store_heartbeat_test::state_task_41_store_heartbeat_raw_oracle_rates ... ok
+test store_heartbeat_test::state_task_41_store_heartbeat_reported_missing_peer_is_not_cold ... ok
+test store_heartbeat_test::state_task_41_store_heartbeat_go_hot_cold_sequence ... ok
+test state_pipeline_test::state_task_52_state_pipeline_hot_flow_and_owned_snapshots ... ok
+test state_pipeline_test::state_task_52_state_pipeline_memory_replay ... FAILED
+test region_overlap_test::state_task_44_region_overlap_go_repeated_split_merge_sequence ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:50462
+isolated etcd 3.5.15 ready at http://127.0.0.1:50464
+test state_pipeline_test::state_task_52_state_pipeline_etcd_replay ... FAILED
+test heartbeat_effects_test::state_task_46_heartbeat_effects_split_merge_etcd ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:50463
+test heartbeat_effects_test::state_task_46_heartbeat_effects_etcd_disconnect_keeps_cache_and_history ... ok
+
+failures:
+
+---- state_pipeline_test::state_task_52_state_pipeline_memory_replay stdout ----
+
+thread 'state_pipeline_test::state_task_52_state_pipeline_memory_replay' (158788278) panicked at server/cluster/state_pipeline_test.rs:226:13:
+assertion `left == right` failed
+  left: Some(RegionBuckets { stats: Some(RegionBucketStats { read_bytes: [100000], read_keys: [0], read_qps: [0], write_bytes: [0], write_keys: [0], write_qps: [0] }), period_in_ms: 1000, region_id: 1, version: 2, keys: [[97], [122]] })
+ right: Some(RegionBuckets { stats: None, period_in_ms: 0, region_id: 1, version: 2, keys: [[97], [122]] })
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- state_pipeline_test::state_task_52_state_pipeline_etcd_replay stdout ----
+
+thread 'state_pipeline_test::state_task_52_state_pipeline_etcd_replay' (158788275) panicked at server/cluster/state_pipeline_test.rs:226:13:
+assertion `left == right` failed
+  left: Some(RegionBuckets { stats: Some(RegionBucketStats { read_bytes: [100000], read_keys: [0], read_qps: [0], write_bytes: [0], write_keys: [0], write_qps: [0] }), period_in_ms: 1000, region_id: 1, version: 2, keys: [[97], [122]] })
+ right: Some(RegionBuckets { stats: None, period_in_ms: 0, region_id: 1, version: 2, keys: [[97], [122]] })
+
+
+failures:
+    state_pipeline_test::state_task_52_state_pipeline_etcd_replay
+    state_pipeline_test::state_task_52_state_pipeline_memory_replay
+
+test result: FAILED. 44 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 4.50s
+
+error: test failed, to rerun pass `-p astersql-pd-cluster --lib`

@@ -8,3 +8,8 @@ mod schedule_foundation;
 #[cfg(test)]
 #[path = "schedule_foundation_test.rs"]
 mod schedule_foundation_test;
+
+#[cfg(test)]
+mod state_regression;
+#[cfg(test)]
+mod state_regression_test;

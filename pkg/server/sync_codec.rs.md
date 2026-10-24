@@ -20,7 +20,8 @@ syncer 不消费，所以只在 adapter envelope 往返。不增加第二套应�
 
 `history_to_proto`、`snapshot_to_proto`、`catch_up_to_proto` 接受已有领域帧，发送端
 按 Go buildSyncRegionResponse 保持附属数组对齐，缺失 leader/bucket 写空消息；bucket
-只发送有效 metadata，四类 region counter 保持原始单位。snapshot offset 独立于历史索引，
+发送有效 metadata；独立 bucket report 同时转发原始 stats/毫秒 period，heartbeat
+BucketMeta 覆盖时不带 report stats/period。四类 region counter 保持原始单位。snapshot offset 独立于历史索引，
 completion 使用捕获的 next history index；转换不推进历史、不注册流、不确认发送结果。
 
 不创建任务、runtime、Registry 或 I/O；没有独立资源需要取消。宿主仍负责发送成功后的

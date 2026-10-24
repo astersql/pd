@@ -1,0 +1,39 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+warning: use of deprecated field `astersql_pd_proto::pdpb::RegionHeartbeatRequest::cpu_usage`
+   --> pkg/server/core_region_adapter.rs:134:30
+    |
+134 |     r.set_response_cpu_usage(p.cpu_usage);
+    |                              ^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: `astersql-pd-server` (lib) generated 1 warning
+   Compiling astersql-pd-compat-tests v0.1.0 (/Users/Shared/work/dir/data/codes/pd/tests/rust-compat)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.26s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_compat_tests-24dc2fd81d77a169)
+
+running 5 tests
+test state_regression_test::state_theme_diff_reports_field ... ok
+test state_regression_test::state_theme_fault_recovery ... ok
+
+thread 'state_regression_test::state_theme_replay' (158785212) panicked at tests/rust-compat/state_regression.rs:435:9:
+"initial": $/store_meta: "0801120f3132372e302e302e313a32393939392a05382e352e30" != "0801"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test state_regression_test::state_theme_replay ... FAILED
+isolated etcd 3.5.15 ready at http://127.0.0.1:50235
+isolated etcd 3.5.15 ready at http://127.0.0.1:50234
+test state_regression_test::state_theme_fault_recovery_etcd ... ok
+
+thread 'state_regression_test::state_theme_replay_etcd' (158785213) panicked at tests/rust-compat/state_regression.rs:435:9:
+"initial": $/store_meta: "0801120f3132372e302e302e313a32393939392a05382e352e30" != "0801"
+test state_regression_test::state_theme_replay_etcd ... FAILED
+
+failures:
+
+failures:
+    state_regression_test::state_theme_replay
+    state_regression_test::state_theme_replay_etcd
+
+test result: FAILED. 3 passed; 2 failed; 0 ignored; 0 measured; 4 filtered out; finished in 3.79s
+
+error: test failed, to rerun pass `-p astersql-pd-compat-tests --lib`

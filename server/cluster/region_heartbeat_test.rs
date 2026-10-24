@@ -53,6 +53,7 @@ fn state_task_43_region_heartbeat_accept_duplicate_inherit() {
             region_id: 1,
             version: 7,
             keys: vec![],
+            ..Default::default()
         }),
         None,
     );

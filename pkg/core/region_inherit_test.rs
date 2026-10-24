@@ -92,6 +92,7 @@ fn core_task_33_bucket_conditions_and_sharing() {
         region_id: 100,
         version: 1,
         keys: vec![b"a".to_vec(), b"b".to_vec()],
+        ..Default::default()
     });
     let mut origin = region();
     origin.report_buckets = Some(bucket.clone());

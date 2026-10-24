@@ -1,6 +1,6 @@
 // Copyright 2026 AsterSQL.
 //! Bucket report admission over the canonical region cache.
-use astersql_pd_core::{BasicCluster, RegionBuckets};
+use astersql_pd_core::{BasicCluster, RegionBucketStats, RegionBuckets};
 use astersql_pd_statistics_buckets::{BucketReport, BucketWorkerClient};
 use std::sync::Arc;
 
@@ -48,6 +48,15 @@ pub fn handle_bucket_heartbeat(
         region_id: report.region_id,
         version: report.version,
         keys: report.keys.clone(),
+        period_in_ms: report.period_in_ms,
+        stats: Some(RegionBucketStats {
+            read_bytes: report.flows.read_bytes.clone(),
+            read_keys: report.flows.read_keys.clone(),
+            read_qps: report.flows.read_qps.clone(),
+            write_bytes: report.flows.write_bytes.clone(),
+            write_keys: report.flows.write_keys.clone(),
+            write_qps: report.flows.write_qps.clone(),
+        }),
     });
     let mut next = origin.as_ref().clone();
     let applied =

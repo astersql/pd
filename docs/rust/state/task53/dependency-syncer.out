@@ -1,0 +1,19 @@
+=== RUN   TestBroadcastUsesIndependentDownstreamIndexes
+[2026/10/24 23:14:11.939 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+--- PASS: TestBroadcastUsesIndependentDownstreamIndexes (0.10s)
+=== RUN   TestBroadcastRemovesOnlyFailedDownstream
+[2026/10/24 23:14:12.040 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+[2026/10/24 23:14:12.040 +00:00] [WARN] [server.go:760] ["region syncer send data meet error"] [name=pd2] [error="[PD:grpc:ErrGRPCSend]send request error: send failed"]
+[2026/10/24 23:14:12.040 +00:00] [WARN] [server.go:616] ["region syncer send downstream records meet error"] [name=pd2] [error="[PD:grpc:ErrGRPCSend]send request error: send region sync response failed"]
+--- PASS: TestBroadcastRemovesOnlyFailedDownstream (0.10s)
+=== RUN   TestAppendHistoryRecordsDoesNotWaitForBusyDownstream
+[2026/10/24 23:14:12.141 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+[2026/10/24 23:14:12.141 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+--- PASS: TestAppendHistoryRecordsDoesNotWaitForBusyDownstream (0.10s)
+=== RUN   TestKeepAliveDoesNotPrecedePendingRecords
+[2026/10/24 23:14:12.242 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+--- PASS: TestKeepAliveDoesNotPrecedePendingRecords (0.00s)
+=== RUN   TestDrainDownstreamSendsPendingRecordsSerially
+[2026/10/24 23:14:12.243 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+--- PASS: TestDrainDownstreamSendsPendingRecordsSerially (0.10s)
+PASS

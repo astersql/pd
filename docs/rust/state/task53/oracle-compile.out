@@ -1,0 +1,14 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+['/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2/pd-oracle47', '--name', 'oracle53', '--data-dir', '/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2/oracle53-data-81657', '--client-urls', 'http://127.0.0.1:64748', '--advertise-client-urls', 'http://127.0.0.1:64748', '--peer-urls', 'http://127.0.0.1:64749', '--advertise-peer-urls', 'http://127.0.0.1:64749', '--initial-cluster', 'oracle53=http://127.0.0.1:64749', '--log-level', 'error', '--config', '/Users/Shared/work/dir/data/codes/pd/docs/rust/state/task53/oracle.toml']
+   Compiling astersql-pd-compat-tests v0.1.0 (/Users/Shared/work/dir/data/codes/pd/tests/rust-compat)
+   Compiling astersql-pd-schedule-labeler v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler)
+   Compiling astersql-pd-schedule-affinity v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/affinity)
+error[E0063]: missing field `region_epoch` in initializer of `ReportBucketsRequest`
+   --> tests/rust-compat/state_oracle.rs:204:25
+    |
+204 |                 tx.send(pdpb::ReportBucketsRequest {
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^ missing `region_epoch`
+
+For more information about this error, try `rustc --explain E0063`.
+error: could not compile `astersql-pd-compat-tests` (example "state_oracle") due to 1 previous error
+Go server joined exit=0; data removed

@@ -1,0 +1,10 @@
+[pd-server]
+use-region-storage = false
+flow-round-by-digit = 127
+[schedule]
+enable-heartbeat-concurrent-runner = false
+schedulers = []
+hot-region-cache-hits-threshold = 0
+[replication]
+max-replicas = 1
+enable-placement-rules = false

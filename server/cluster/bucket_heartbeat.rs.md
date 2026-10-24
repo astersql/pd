@@ -25,3 +25,8 @@
 取消并join，重复shutdown安全；生产函数不新增后台任务。
 
 Go运行oracle、红灯、回归及只读证据见 `docs/rust/state/task-45.md`。
+
+任务53联合差分补齐：canonical `RegionBuckets` 保留报告的六组原始计数和毫秒周期，
+source full-sync/history 编码完整转发。旧/同版本仍保留旧报告全部字段，worker 单独接受
+新报告；Go follower 的 SetBuckets 只消费版本和边界，不能用 source 完整报告与
+follower BucketMeta 的结构体全等替代消费契约。

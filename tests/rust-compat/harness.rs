@@ -11,7 +11,7 @@ use std::{
 };
 #[allow(dead_code)]
 #[path = "../../pkg/storage/kv/etcd_fixture_test.rs"]
-mod fixture;
+pub(crate) mod fixture;
 static NEXT: AtomicU64 = AtomicU64::new(0);
 pub struct Server {
     child: Child,
