@@ -1,0 +1,2044 @@
+
+PACKAGE types
+FILES
+pkg/schedule/types/type.go
+
+PUBLIC DECLARATIONS
+pkg/schedule/types/type.go:20:type CheckerSchedulerType string
+pkg/schedule/types/type.go:23:func (t CheckerSchedulerType) String() string {
+pkg/schedule/types/type.go:29:	JointStateChecker CheckerSchedulerType = "joint-state-checker"
+pkg/schedule/types/type.go:31:	LearnerChecker CheckerSchedulerType = "learner-checker"
+pkg/schedule/types/type.go:33:	MergeChecker CheckerSchedulerType = "merge-checker"
+pkg/schedule/types/type.go:35:	ReplicaChecker CheckerSchedulerType = "replica-checker"
+pkg/schedule/types/type.go:37:	RuleChecker CheckerSchedulerType = "rule-checker"
+pkg/schedule/types/type.go:39:	SplitChecker CheckerSchedulerType = "split-checker"
+pkg/schedule/types/type.go:41:	AffinityChecker CheckerSchedulerType = "affinity-checker"
+pkg/schedule/types/type.go:43:	SplitScatterChecker CheckerSchedulerType = "split-scatter-checker"
+pkg/schedule/types/type.go:46:	BalanceLeaderScheduler CheckerSchedulerType = "balance-leader-scheduler"
+pkg/schedule/types/type.go:48:	BalanceRegionScheduler CheckerSchedulerType = "balance-region-scheduler"
+pkg/schedule/types/type.go:50:	BalanceWitnessScheduler CheckerSchedulerType = "balance-witness-scheduler"
+pkg/schedule/types/type.go:52:	EvictLeaderScheduler CheckerSchedulerType = "evict-leader-scheduler"
+pkg/schedule/types/type.go:54:	EvictSlowStoreScheduler CheckerSchedulerType = "evict-slow-store-scheduler"
+pkg/schedule/types/type.go:56:	EvictSlowTrendScheduler CheckerSchedulerType = "evict-slow-trend-scheduler"
+pkg/schedule/types/type.go:58:	EvictStoppingStoreScheduler CheckerSchedulerType = "evict-stopping-store-scheduler"
+pkg/schedule/types/type.go:60:	GrantLeaderScheduler CheckerSchedulerType = "grant-leader-scheduler"
+pkg/schedule/types/type.go:62:	GrantHotRegionScheduler CheckerSchedulerType = "grant-hot-region-scheduler"
+pkg/schedule/types/type.go:64:	BalanceHotRegionScheduler CheckerSchedulerType = "balance-hot-region-scheduler"
+pkg/schedule/types/type.go:66:	RandomMergeScheduler CheckerSchedulerType = "random-merge-scheduler"
+pkg/schedule/types/type.go:68:	ScatterRangeScheduler CheckerSchedulerType = "scatter-range-scheduler"
+pkg/schedule/types/type.go:70:	ShuffleHotRegionScheduler CheckerSchedulerType = "shuffle-hot-region-scheduler"
+pkg/schedule/types/type.go:72:	ShuffleLeaderScheduler CheckerSchedulerType = "shuffle-leader-scheduler"
+pkg/schedule/types/type.go:74:	ShuffleRegionScheduler CheckerSchedulerType = "shuffle-region-scheduler"
+pkg/schedule/types/type.go:76:	TransferWitnessLeaderScheduler CheckerSchedulerType = "transfer-witness-leader-scheduler"
+pkg/schedule/types/type.go:78:	LabelScheduler CheckerSchedulerType = "label-scheduler"
+pkg/schedule/types/type.go:80:	BalanceRangeScheduler CheckerSchedulerType = "balance-range-scheduler"
+pkg/schedule/types/type.go:90:	SchedulerTypeCompatibleMap = map[CheckerSchedulerType]string{
+pkg/schedule/types/type.go:91:		BalanceLeaderScheduler:         "balance-leader",
+pkg/schedule/types/type.go:92:		BalanceRegionScheduler:         "balance-region",
+pkg/schedule/types/type.go:93:		BalanceWitnessScheduler:        "balance-witness",
+pkg/schedule/types/type.go:94:		EvictLeaderScheduler:           "evict-leader",
+pkg/schedule/types/type.go:95:		EvictSlowStoreScheduler:        "evict-slow-store",
+pkg/schedule/types/type.go:96:		EvictSlowTrendScheduler:        "evict-slow-trend",
+pkg/schedule/types/type.go:97:		EvictStoppingStoreScheduler:    "evict-stopping-store",
+pkg/schedule/types/type.go:98:		GrantLeaderScheduler:           "grant-leader",
+pkg/schedule/types/type.go:99:		GrantHotRegionScheduler:        "grant-hot-region",
+pkg/schedule/types/type.go:100:		BalanceHotRegionScheduler:      "hot-region",
+pkg/schedule/types/type.go:101:		RandomMergeScheduler:           "random-merge",
+pkg/schedule/types/type.go:102:		ScatterRangeScheduler:          "scatter-range",
+pkg/schedule/types/type.go:103:		ShuffleHotRegionScheduler:      "shuffle-hot-region",
+pkg/schedule/types/type.go:104:		ShuffleLeaderScheduler:         "shuffle-leader",
+pkg/schedule/types/type.go:105:		ShuffleRegionScheduler:         "shuffle-region",
+pkg/schedule/types/type.go:106:		TransferWitnessLeaderScheduler: "transfer-witness-leader",
+pkg/schedule/types/type.go:107:		LabelScheduler:                 "label",
+pkg/schedule/types/type.go:108:		BalanceRangeScheduler:          "balance-range",
+pkg/schedule/types/type.go:114:	ConvertOldStrToType = map[string]CheckerSchedulerType{
+pkg/schedule/types/type.go:136:	StringToSchedulerType = map[string]CheckerSchedulerType{
+pkg/schedule/types/type.go:165:	DefaultSchedulers     = defaultSchedulersInit()
+pkg/schedule/types/type.go:168:			BalanceLeaderScheduler,
+pkg/schedule/types/type.go:169:			BalanceRegionScheduler,
+pkg/schedule/types/type.go:170:			BalanceHotRegionScheduler,
+pkg/schedule/types/type.go:171:			EvictSlowStoreScheduler,
+
+GO TESTS
+
+FAILPOINTS / METRICS / KEYS / BACKGROUND
+
+RUST PUBLIC API / REGISTRATION
+pkg/schedule/types/lib.rs:4:pub use types::*;
+pkg/schedule/types/types.rs:7:pub struct CheckerSchedulerType(Cow<'static, str>);
+pkg/schedule/types/types.rs:11:    pub const fn from_static(value: &'static str) -> Self {
+pkg/schedule/types/types.rs:16:    pub fn as_str(&self) -> &str {
+pkg/schedule/types/types.rs:40:pub const JOINT_STATE_CHECKER: CheckerSchedulerType =
+pkg/schedule/types/types.rs:43:pub const LEARNER_CHECKER: CheckerSchedulerType =
+pkg/schedule/types/types.rs:46:pub const MERGE_CHECKER: CheckerSchedulerType = CheckerSchedulerType::from_static("merge-checker");
+pkg/schedule/types/types.rs:48:pub const REPLICA_CHECKER: CheckerSchedulerType =
+pkg/schedule/types/types.rs:51:pub const RULE_CHECKER: CheckerSchedulerType = CheckerSchedulerType::from_static("rule-checker");
+pkg/schedule/types/types.rs:53:pub const SPLIT_CHECKER: CheckerSchedulerType = CheckerSchedulerType::from_static("split-checker");
+pkg/schedule/types/types.rs:55:pub const AFFINITY_CHECKER: CheckerSchedulerType =
+pkg/schedule/types/types.rs:58:pub const SPLIT_SCATTER_CHECKER: CheckerSchedulerType =
+pkg/schedule/types/types.rs:61:pub const BALANCE_LEADER_SCHEDULER: CheckerSchedulerType =
+pkg/schedule/types/types.rs:64:pub const BALANCE_REGION_SCHEDULER: CheckerSchedulerType =
+pkg/schedule/types/types.rs:67:pub const BALANCE_WITNESS_SCHEDULER: CheckerSchedulerType =
+pkg/schedule/types/types.rs:70:pub const EVICT_LEADER_SCHEDULER: CheckerSchedulerType =
+pkg/schedule/types/types.rs:73:pub const EVICT_SLOW_STORE_SCHEDULER: CheckerSchedulerType =
+pkg/schedule/types/types.rs:76:pub const EVICT_SLOW_TREND_SCHEDULER: CheckerSchedulerType =
+pkg/schedule/types/types.rs:79:pub const EVICT_STOPPING_STORE_SCHEDULER: CheckerSchedulerType =
+pkg/schedule/types/types.rs:82:pub const GRANT_LEADER_SCHEDULER: CheckerSchedulerType =
+pkg/schedule/types/types.rs:85:pub const GRANT_HOT_REGION_SCHEDULER: CheckerSchedulerType =
+pkg/schedule/types/types.rs:88:pub const BALANCE_HOT_REGION_SCHEDULER: CheckerSchedulerType =
+pkg/schedule/types/types.rs:91:pub const RANDOM_MERGE_SCHEDULER: CheckerSchedulerType =
+pkg/schedule/types/types.rs:94:pub const SCATTER_RANGE_SCHEDULER: CheckerSchedulerType =
+pkg/schedule/types/types.rs:97:pub const SHUFFLE_HOT_REGION_SCHEDULER: CheckerSchedulerType =
+pkg/schedule/types/types.rs:100:pub const SHUFFLE_LEADER_SCHEDULER: CheckerSchedulerType =
+pkg/schedule/types/types.rs:103:pub const SHUFFLE_REGION_SCHEDULER: CheckerSchedulerType =
+pkg/schedule/types/types.rs:106:pub const TRANSFER_WITNESS_LEADER_SCHEDULER: CheckerSchedulerType =
+pkg/schedule/types/types.rs:109:pub const LABEL_SCHEDULER: CheckerSchedulerType =
+pkg/schedule/types/types.rs:112:pub const BALANCE_RANGE_SCHEDULER: CheckerSchedulerType =
+pkg/schedule/types/types.rs:116:pub const CHECKERS: [CheckerSchedulerType; 8] = [
+pkg/schedule/types/types.rs:128:pub const SCHEDULERS: [CheckerSchedulerType; 18] = [
+pkg/schedule/types/types.rs:150:pub const SCHEDULER_TYPE_COMPATIBLE_MAP: [(CheckerSchedulerType, &str); 18] = [
+pkg/schedule/types/types.rs:172:pub fn string_to_scheduler_type(value: &str) -> Option<CheckerSchedulerType> {
+pkg/schedule/types/types.rs:180:pub fn convert_old_str_to_type(value: &str) -> Option<CheckerSchedulerType> {
+pkg/schedule/types/types.rs:187:pub fn scheduler_type_compatible(value: &CheckerSchedulerType) -> Option<&'static str> {
+pkg/schedule/types/types.rs:194:pub fn is_checker(value: &CheckerSchedulerType) -> bool {
+pkg/schedule/types/types.rs:199:pub fn is_scheduler(value: &CheckerSchedulerType) -> bool {
+pkg/schedule/types/types.rs:205:pub fn default_schedulers(is_next_gen: bool) -> Vec<CheckerSchedulerType> {
+pkg/schedule/types/types.rs:219:pub fn current_kernel_default_schedulers() -> Vec<CheckerSchedulerType> {
+
+RUST TESTS
+pkg/schedule/types/types_contract_test.rs:7:fn oracle(nextgen: bool) -> serde_json::Value {
+pkg/schedule/types/types_contract_test.rs:17:fn types_contract_kernel_defaults() {
+pkg/schedule/types/types_contract_test.rs:38:fn types_contract_runtime_conversion_maps() {
+pkg/schedule/types/types_contract_test.rs:66:fn types_contract_checker_constants_and_strings() {
+pkg/schedule/types/types_contract_test.rs:103:fn types_contract_unknown_strings_are_preserved_not_classified() {
+pkg/schedule/types/types_contract_test.rs:130:fn types_contract_legacy_and_scatter_alias_boundaries() {
+
+CONSUMERS
+tests/testutil.go:57:	"github.com/tikv/pd/pkg/schedule/types"
+server/api/scheduler.go:38:	"github.com/tikv/pd/pkg/schedule/types"
+tests/integrations/mcs/scheduling/server_test.go:45:	"github.com/tikv/pd/pkg/schedule/types"
+tests/integrations/mcs/scheduling/config_test.go:32:	"github.com/tikv/pd/pkg/schedule/types"
+tests/integrations/realcluster/scheduler_test.go:33:	"github.com/tikv/pd/pkg/schedule/types"
+server/config/persist_options.go:40:	"github.com/tikv/pd/pkg/schedule/types"
+server/cluster/cluster_test.go:62:	"github.com/tikv/pd/pkg/schedule/types"
+server/cluster/scheduling_controller.go:39:	"github.com/tikv/pd/pkg/schedule/types"
+server/handler.go:41:	"github.com/tikv/pd/pkg/schedule/types"
+tests/server/api/diagnostic_test.go:31:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/mcs/scheduling/server/cluster.go:62:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/mock/mockconfig/mockconfig.go:19:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/mcs/scheduling/server/config/config_test.go:27:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/mcs/scheduling/server/config/config.go:40:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/schedulers/balance_region.go:32:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/schedulers/scheduler.go:34:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/schedulers/transfer_witness_leader_test.go:29:	"github.com/tikv/pd/pkg/schedule/types"
+tests/server/api/scheduler_test.go:37:	"github.com/tikv/pd/pkg/schedule/types"
+tests/server/cluster/cluster_test.go:51:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/schedulers/grant_hot_region_test.go:30:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/schedulers/diagnostic_recorder.go:27:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/schedulers/evict_stopping_store.go:32:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/schedulers/scatter_range.go:30:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/checker/rule_checker.go:37:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/schedulers/scheduler_controller.go:34:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/checker/replica_checker.go:32:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/schedulers/init.go:27:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/schedulers/evict_stopping_store_test.go:28:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/handler/handler.go:44:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/schedulers/evict_slow_trend_test.go:30:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/coordinator.go:40:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/config/config_provider.go:27:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/checker/affinity_checker.go:36:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/checker/merge_checker.go:35:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/schedulers/grant_leader_test.go:23:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/checker/split_scatter.go:35:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/config/config.go:26:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/schedulers/metrics.go:20:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/schedulers/hot_region.go:33:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/schedulers/shuffle_region.go:28:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/schedulers/grant_hot_region.go:38:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/schedulers/random_merge.go:30:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/schedulers/grant_leader.go:35:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/schedulers/scheduler_test.go:37:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/schedulers/scatter_range_test.go:27:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/schedulers/base_scheduler.go:27:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/schedulers/evict_leader.go:38:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/schedulers/evict_slow_trend.go:35:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/schedulers/balance_witness_test.go:27:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/schedulers/balance_leader_test.go:43:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/schedulers/transfer_witness_leader.go:28:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/schedulers/evict_slow_store_test.go:38:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/schedulers/balance_range_test.go:36:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/schedulers/evict_slow_store.go:37:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/schedulers/random_merge_test.go:23:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/schedulers/hot_region_solver_test.go:32:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/schedulers/shuffle_leader.go:26:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/schedulers/balance_witness.go:40:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/schedulers/balance_leader.go:39:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/operator/metrics.go:20:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/schedulers/evict_leader_test.go:39:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/schedulers/balance_region_test.go:33:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/schedulers/shuffle_hot_region.go:34:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/filter/counter_test.go:22:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/schedulers/label.go:29:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/schedulers/hot_region_test.go:38:	"github.com/tikv/pd/pkg/schedule/types"
+pkg/schedule/schedulers/balance_range.go:40:	"github.com/tikv/pd/pkg/schedule/types"
+
+PACKAGE keyrange
+FILES
+pkg/schedule/keyrange/manager.go
+
+PUBLIC DECLARATIONS
+pkg/schedule/keyrange/manager.go:24:type Manager struct {
+pkg/schedule/keyrange/manager.go:30:func NewManager() *Manager {
+pkg/schedule/keyrange/manager.go:37:func (s *Manager) GetNonOverlappingKeyRanges(base *keyutil.KeyRange) []keyutil.KeyRange {
+pkg/schedule/keyrange/manager.go:44:func (s *Manager) IsEmpty() bool {
+pkg/schedule/keyrange/manager.go:51:func (s *Manager) Append(rs []keyutil.KeyRange) {
+pkg/schedule/keyrange/manager.go:61:func (s *Manager) Delete(rs []keyutil.KeyRange) {
+
+GO TESTS
+
+FAILPOINTS / METRICS / KEYS / BACKGROUND
+
+RUST PUBLIC API / REGISTRATION
+pkg/schedule/keyrange/manager.rs:8:pub struct Manager {
+pkg/schedule/keyrange/manager.rs:14:    pub fn new() -> Self {
+pkg/schedule/keyrange/manager.rs:19:    pub fn is_empty(&self) -> bool {
+pkg/schedule/keyrange/manager.rs:24:    pub fn get_non_overlapping_key_ranges(&self, base: &KeyRange) -> Vec<KeyRange> {
+pkg/schedule/keyrange/manager.rs:29:    pub fn delete(&self, ranges: &[KeyRange]) {
+pkg/schedule/keyrange/manager.rs:37:    pub fn append(&self, ranges: &[KeyRange]) {
+pkg/schedule/keyrange/manager.rs:47:#[path = "range_append_test.rs"]
+pkg/schedule/keyrange/manager.rs:51:#[path = "range_subtract_test.rs"]
+pkg/schedule/keyrange/lib.rs:4:pub use manager::Manager;
+
+RUST TESTS
+pkg/schedule/keyrange/range_subtract_test.rs:7:fn r(a: &str, b: &str) -> KeyRange {
+pkg/schedule/keyrange/range_subtract_test.rs:12:fn range_subtract_go_complement_cases() {
+pkg/schedule/keyrange/range_subtract_test.rs:39:fn range_subtract_go_delete_cases() {
+pkg/schedule/keyrange/range_subtract_test.rs:64:fn range_subtract_batch_holes_and_owned_reads() {
+pkg/schedule/keyrange/range_subtract_test.rs:84:fn range_subtract_concurrent_batch_is_atomic() {
+pkg/schedule/keyrange/range_subtract_test.rs:113:fn range_subtract_append_normalization_precedes_delete() {
+pkg/schedule/keyrange/range_append_test.rs:4:fn ranges(bounds: &[(&str, &str)]) -> Vec<KeyRange> {
+pkg/schedule/keyrange/range_append_test.rs:8:fn snapshot(manager: &Manager) -> Vec<KeyRange> {
+pkg/schedule/keyrange/range_append_test.rs:13:fn range_append_empty() {
+pkg/schedule/keyrange/range_append_test.rs:22:fn range_append_unsorted_adjacent() {
+pkg/schedule/keyrange/range_append_test.rs:30:fn range_append_duplicates_and_overlaps_are_retained() {
+pkg/schedule/keyrange/range_append_test.rs:58:fn range_append_normalizes_across_batches() {
+pkg/schedule/keyrange/range_append_test.rs:69:fn range_append_empty_boundaries_follow_keyutil() {
+pkg/schedule/keyrange/range_append_test.rs:77:fn range_append_copies_input_and_keeps_disjoint_ranges_sorted() {
+pkg/schedule/keyrange/range_append_test.rs:86:fn range_append_concurrent_batches_are_atomic() {
+
+CONSUMERS
+pkg/mcs/scheduling/server/cluster.go:55:	"github.com/tikv/pd/pkg/schedule/keyrange"
+server/cluster/cluster.go:63:	"github.com/tikv/pd/pkg/schedule/keyrange"
+pkg/schedule/core/cluster_informer.go:21:	"github.com/tikv/pd/pkg/schedule/keyrange"
+pkg/mock/mockcluster/mockcluster.go:37:	"github.com/tikv/pd/pkg/schedule/keyrange"
+
+PACKAGE rangelist
+FILES
+pkg/schedule/rangelist/builder.go
+pkg/schedule/rangelist/range_list.go
+pkg/schedule/rangelist/range_list_test.go
+
+PUBLIC DECLARATIONS
+pkg/schedule/rangelist/builder.go:37:type Builder struct {
+pkg/schedule/rangelist/builder.go:43:func NewBuilder() *Builder {
+pkg/schedule/rangelist/builder.go:48:func (b *Builder) SetCompareFunc(f func(a, b any) int) {
+pkg/schedule/rangelist/builder.go:53:func (b *Builder) AddItem(start, end []byte, data any) {
+pkg/schedule/rangelist/builder.go:90:func (b *Builder) Build() List {
+pkg/schedule/rangelist/range_list.go:30:type List struct {
+pkg/schedule/rangelist/range_list.go:35:func (l List) Len() int {
+pkg/schedule/rangelist/range_list.go:40:func (l List) Get(i int) ([]byte, []any) {
+pkg/schedule/rangelist/range_list.go:45:func (l List) GetDataByKey(key []byte) (index int, data []any) {
+pkg/schedule/rangelist/range_list.go:56:func (l List) GetData(start, end []byte) (index int, data []any) {
+pkg/schedule/rangelist/range_list.go:67:func (l List) GetSplitKeys(start, end []byte) [][]byte {
+pkg/schedule/rangelist/range_list.go:80:func (l List) GetDataByRange(start, end []byte) ([]any, bool) {
+
+GO TESTS
+pkg/schedule/rangelist/range_list_test.go:26:func TestMain(m *testing.M) {
+pkg/schedule/rangelist/range_list_test.go:30:func TestRangeList(t *testing.T) {
+pkg/schedule/rangelist/range_list_test.go:67:func TestRangeList2(t *testing.T) {
+
+FAILPOINTS / METRICS / KEYS / BACKGROUND
+
+RUST PUBLIC API / REGISTRATION
+pkg/schedule/rangelist/builder.rs:5:pub struct Builder<T> {
+pkg/schedule/rangelist/builder.rs:11:pub struct List<T> {
+pkg/schedule/rangelist/builder.rs:23:    pub fn new() -> Self {
+pkg/schedule/rangelist/builder.rs:26:    pub fn set_compare_func(&mut self, compare: impl Fn(&T, &T) -> Ordering + 'static) {
+pkg/schedule/rangelist/builder.rs:29:    pub fn add_item(&mut self, start: &[u8], end: &[u8], data: T) {
+pkg/schedule/rangelist/builder.rs:35:    pub fn build(&mut self) -> List<T> {
+pkg/schedule/rangelist/builder.rs:56:    pub fn len(&self) -> usize {
+pkg/schedule/rangelist/builder.rs:59:    pub fn is_empty(&self) -> bool {
+pkg/schedule/rangelist/builder.rs:62:    pub fn get(&self, index: usize) -> (&[u8], &[T]) {
+pkg/schedule/rangelist/lib.rs:4:pub use builder::{Builder, List};
+pkg/schedule/rangelist/lib.rs:6:#[path = "range_build_test.rs"]
+pkg/schedule/rangelist/lib.rs:10:#[path = "range_queries_test.rs"]
+pkg/schedule/rangelist/range_list.rs:25:    pub fn get_data_by_key(&self, key: &[u8]) -> (isize, Option<&[T]>) {
+pkg/schedule/rangelist/range_list.rs:30:    pub fn get_data(&self, start: &[u8], end: &[u8]) -> (isize, Option<&[T]>) {
+pkg/schedule/rangelist/range_list.rs:39:    pub fn get_split_keys(&self, start: &[u8], end: &[u8]) -> Vec<&[u8]> {
+pkg/schedule/rangelist/range_list.rs:47:    pub fn get_data_by_range(&self, start: &[u8], end: &[u8]) -> (Option<&[T]>, bool) {
+
+RUST TESTS
+pkg/schedule/rangelist/range_build_test.rs:4:fn range_build_go_overlap_comparator() {
+pkg/schedule/rangelist/range_build_test.rs:36:fn range_build_empty_and_unbounded() {
+pkg/schedule/rangelist/range_build_test.rs:45:fn range_build_shared_events_duplicates_and_snapshot() {
+pkg/schedule/rangelist/range_build_test.rs:61:fn range_build_comparator_equal_and_reverse() {
+pkg/schedule/rangelist/range_build_test.rs:71:fn range_build_equal_comparator_preserves_event_order() {
+pkg/schedule/rangelist/range_build_test.rs:81:fn range_build_large_event_sort_preserves_permutation() {
+pkg/schedule/rangelist/range_queries_test.rs:3:fn overlap() -> List<i32> {
+pkg/schedule/rangelist/range_queries_test.rs:19:fn range_queries_go_key_and_range() {
+pkg/schedule/rangelist/range_queries_test.rs:48:fn range_queries_go_splits() {
+pkg/schedule/rangelist/range_queries_test.rs:60:fn range_queries_empty_and_unbounded() {
+pkg/schedule/rangelist/range_queries_test.rs:78:fn range_queries_boundaries_and_gaps() {
+
+CONSUMERS
+pkg/schedule/placement/rule_manager.go:39:	"github.com/tikv/pd/pkg/schedule/rangelist"
+pkg/schedule/placement/rule_list.go:25:	"github.com/tikv/pd/pkg/schedule/rangelist"
+pkg/schedule/labeler/rule_index.go:20:	"github.com/tikv/pd/pkg/schedule/rangelist"
+pkg/schedule/labeler/keyspace_index_test.go:32:	"github.com/tikv/pd/pkg/schedule/rangelist"
+
+PACKAGE plan
+FILES
+pkg/schedule/plan/balance_plan.go
+pkg/schedule/plan/balance_plan_test.go
+pkg/schedule/plan/plan.go
+pkg/schedule/plan/status.go
+
+PUBLIC DECLARATIONS
+pkg/schedule/plan/status.go:19:type StatusCode int
+pkg/schedule/plan/status.go:23:	StatusOK StatusCode = iota
+pkg/schedule/plan/status.go:29:	StatusStoreScoreDisallowed = iota + 100
+pkg/schedule/plan/status.go:31:	StatusStoreAlreadyHasPeer
+pkg/schedule/plan/status.go:33:	StatusStoreNotMatchRule
+pkg/schedule/plan/status.go:39:	StatusStoreSnapshotThrottled = iota + 200
+pkg/schedule/plan/status.go:41:	StatusStorePendingPeerThrottled
+pkg/schedule/plan/status.go:43:	StatusStoreAddLimitThrottled
+pkg/schedule/plan/status.go:45:	StatusStoreRemoveLimitThrottled
+pkg/schedule/plan/status.go:47:	StatusStoreTransferLeaderInLimitThrottled
+pkg/schedule/plan/status.go:53:	StatusStoreRejectLeader = iota + 300
+pkg/schedule/plan/status.go:55:	StatusStoreNotMatchIsolation
+pkg/schedule/plan/status.go:61:	StatusStoreBusy = iota + 400
+pkg/schedule/plan/status.go:63:	StatusStoreRemoved
+pkg/schedule/plan/status.go:65:	StatusStoreRemoving
+pkg/schedule/plan/status.go:67:	StatusStoreDown
+pkg/schedule/plan/status.go:69:	StatusStoreDisconnected
+pkg/schedule/plan/status.go:74:	StatusStoreLowSpace = iota + 500
+pkg/schedule/plan/status.go:76:	StatusStoreNotExisted
+pkg/schedule/plan/status.go:82:	StatusRegionHot = iota + 1000
+pkg/schedule/plan/status.go:84:	StatusRegionUnhealthy
+pkg/schedule/plan/status.go:86:	StatusRegionEmpty
+pkg/schedule/plan/status.go:88:	StatusRegionNotReplicated
+pkg/schedule/plan/status.go:90:	StatusRegionNotMatchRule
+pkg/schedule/plan/status.go:92:	StatusRegionNoLeader
+pkg/schedule/plan/status.go:94:	StatusNoTargetRegion
+pkg/schedule/plan/status.go:96:	StatusRegionLabelReject
+pkg/schedule/plan/status.go:98:	StatusRegionSendSnapshotThrottled
+pkg/schedule/plan/status.go:100:	StatusRegionAffinity
+pkg/schedule/plan/status.go:105:	StatusCreateOperatorFailed = iota + 2000
+pkg/schedule/plan/status.go:109:	StatusOK: "OK",
+pkg/schedule/plan/status.go:112:	StatusStoreScoreDisallowed: "StoreScoreDisallowed",
+pkg/schedule/plan/status.go:113:	StatusStoreAlreadyHasPeer:  "StoreAlreadyHasPeer",
+pkg/schedule/plan/status.go:114:	StatusStoreNotMatchRule:    "StoreNotMatchRule",
+pkg/schedule/plan/status.go:117:	StatusStoreSnapshotThrottled:              "StoreSnapshotThrottled",
+pkg/schedule/plan/status.go:118:	StatusStorePendingPeerThrottled:           "StorePendingPeerThrottled",
+pkg/schedule/plan/status.go:119:	StatusStoreAddLimitThrottled:              "StoreAddPeerThrottled",
+pkg/schedule/plan/status.go:120:	StatusStoreRemoveLimitThrottled:           "StoreRemovePeerThrottled",
+pkg/schedule/plan/status.go:121:	StatusStoreTransferLeaderInLimitThrottled: "StoreTransferLeaderInThrottled",
+pkg/schedule/plan/status.go:124:	StatusStoreRejectLeader:      "StoreRejectLeader",
+pkg/schedule/plan/status.go:125:	StatusStoreNotMatchIsolation: "StoreNotMatchIsolation",
+pkg/schedule/plan/status.go:128:	StatusStoreLowSpace:     "StoreLowSpace",
+pkg/schedule/plan/status.go:129:	StatusStoreRemoving:     "StoreRemoving",
+pkg/schedule/plan/status.go:130:	StatusStoreRemoved:      "StoreRemoved",
+pkg/schedule/plan/status.go:131:	StatusStoreDisconnected: "StoreDisconnected",
+pkg/schedule/plan/status.go:132:	StatusStoreDown:         "StoreDown",
+pkg/schedule/plan/status.go:133:	StatusStoreBusy:         "StoreBusy",
+pkg/schedule/plan/status.go:135:	StatusStoreNotExisted: "StoreNotExisted",
+pkg/schedule/plan/status.go:138:	StatusRegionHot:           "RegionHot",
+pkg/schedule/plan/status.go:139:	StatusRegionUnhealthy:     "RegionUnhealthy",
+pkg/schedule/plan/status.go:140:	StatusRegionEmpty:         "RegionEmpty",
+pkg/schedule/plan/status.go:141:	StatusRegionNotReplicated: "RegionNotReplicated",
+pkg/schedule/plan/status.go:142:	StatusRegionNotMatchRule:  "RegionNotMatchRule",
+pkg/schedule/plan/status.go:143:	StatusRegionNoLeader:      "RegionNoLeader",
+pkg/schedule/plan/status.go:144:	StatusRegionAffinity:      "RegionAffinity",
+pkg/schedule/plan/status.go:147:	StatusNoTargetRegion:    "NoTargetRegion",
+pkg/schedule/plan/status.go:148:	StatusRegionLabelReject: "RegionLabelReject",
+pkg/schedule/plan/status.go:151:	StatusCreateOperatorFailed: "CreateOperatorFailed",
+pkg/schedule/plan/status.go:155:func StatusText(code StatusCode) string {
+pkg/schedule/plan/status.go:160:type Status struct {
+pkg/schedule/plan/status.go:161:	StatusCode StatusCode
+pkg/schedule/plan/status.go:163:	DetailedReason string
+pkg/schedule/plan/status.go:167:func NewStatus(statusCode StatusCode, reason ...string) *Status {
+pkg/schedule/plan/status.go:173:		StatusCode:     statusCode,
+pkg/schedule/plan/status.go:174:		DetailedReason: detailedReason,
+pkg/schedule/plan/status.go:179:func (s *Status) IsOK() bool {
+pkg/schedule/plan/status.go:184:func (s *Status) Priority() float32 {
+pkg/schedule/plan/status.go:194:func (s *Status) String() string {
+pkg/schedule/plan/status.go:199:func (s *Status) IsNormal() bool {
+pkg/schedule/plan/balance_plan.go:32:type BalanceSchedulerPlan struct {
+pkg/schedule/plan/balance_plan.go:41:func NewBalanceSchedulerPlan() *BalanceSchedulerPlan {
+pkg/schedule/plan/balance_plan.go:49:func (p *BalanceSchedulerPlan) GetStep() int {
+pkg/schedule/plan/balance_plan.go:54:func (p *BalanceSchedulerPlan) SetResource(resource any) {
+pkg/schedule/plan/balance_plan.go:69:func (p *BalanceSchedulerPlan) SetResourceWithStep(resource any, step int) {
+pkg/schedule/plan/balance_plan.go:75:func (p *BalanceSchedulerPlan) GetResource(step int) uint64 {
+pkg/schedule/plan/balance_plan.go:92:func (p *BalanceSchedulerPlan) GetStatus() *Status {
+pkg/schedule/plan/balance_plan.go:97:func (p *BalanceSchedulerPlan) SetStatus(status *Status) {
+pkg/schedule/plan/balance_plan.go:102:func (p *BalanceSchedulerPlan) Clone(opts ...Option) Plan {
+pkg/schedule/plan/balance_plan.go:123:func BalancePlanSummary(plans []Plan) (map[uint64]Status, bool, error) {
+pkg/schedule/plan/plan.go:19:type Plan interface {
+pkg/schedule/plan/plan.go:20:	GetStep() int
+pkg/schedule/plan/plan.go:21:	GetStatus() *Status
+pkg/schedule/plan/plan.go:22:	GetResource(int) uint64
+pkg/schedule/plan/plan.go:25:	SetResource(any)
+pkg/schedule/plan/plan.go:29:	SetResourceWithStep(resource any, step int)
+pkg/schedule/plan/plan.go:30:	SetStatus(*Status)
+pkg/schedule/plan/plan.go:35:type Summary func([]Plan) (map[uint64]Status, bool, error)
+pkg/schedule/plan/plan.go:38:type Collector struct {
+pkg/schedule/plan/plan.go:45:func NewCollector(plan Plan) *Collector {
+pkg/schedule/plan/plan.go:54:func (c *Collector) Collect(opts ...Option) {
+pkg/schedule/plan/plan.go:67:func (c *Collector) GetPlans() []Plan {
+pkg/schedule/plan/plan.go:75:type Option func(plan Plan)
+pkg/schedule/plan/plan.go:78:func SetStatus(status *Status) Option {
+pkg/schedule/plan/plan.go:85:func SetResource(resource any) Option {
+pkg/schedule/plan/plan.go:92:func SetResourceWithStep(resource any, step int) Option {
+
+GO TESTS
+pkg/schedule/plan/balance_plan_test.go:30:func TestMain(m *testing.M) {
+pkg/schedule/plan/balance_plan_test.go:44:func TestBalanceSchedulerPlanAnalyzerTestSuite(t *testing.T) {
+
+FAILPOINTS / METRICS / KEYS / BACKGROUND
+
+RUST PUBLIC API / REGISTRATION
+pkg/schedule/plan/balance_plan.rs:9:pub enum Resource {
+pkg/schedule/plan/balance_plan.rs:15:pub struct BalanceSchedulerPlan {
+pkg/schedule/plan/balance_plan.rs:23:    pub fn new() -> Self {
+pkg/schedule/plan/balance_plan.rs:26:    pub fn get_step(&self) -> i64 {
+pkg/schedule/plan/balance_plan.rs:29:    pub fn get_status(&self) -> &Status {
+pkg/schedule/plan/balance_plan.rs:32:    pub fn set_status(&mut self, status: Status) {
+pkg/schedule/plan/balance_plan.rs:36:    pub fn set_resource(&mut self, resource: Resource) {
+pkg/schedule/plan/balance_plan.rs:45:    pub fn set_resource_with_step(&mut self, resource: Resource, step: i64) {
+pkg/schedule/plan/balance_plan.rs:49:    pub fn get_resource(&self, step: i64) -> u64 {
+pkg/schedule/plan/balance_plan.rs:61:    pub fn clone_with(&self, options: &[crate::PlanOption]) -> Self {
+pkg/schedule/plan/balance_summary.rs:8:pub type SummaryResult = Result<(BTreeMap<u64, Status>, bool), TypedError>;
+pkg/schedule/plan/balance_summary.rs:10:pub type Summary = fn(&[&dyn Any]) -> SummaryResult;
+pkg/schedule/plan/balance_summary.rs:14:pub fn balance_plan_summary(plans: &[&dyn Any]) -> SummaryResult {
+pkg/schedule/plan/status.rs:5:pub struct StatusCode(pub i64);
+pkg/schedule/plan/status.rs:8:    pub const OK: Self = Self(0);
+pkg/schedule/plan/status.rs:10:    pub const STORE_SCORE_DISALLOWED: Self = Self(100);
+pkg/schedule/plan/status.rs:12:    pub const STORE_ALREADY_HAS_PEER: Self = Self(101);
+pkg/schedule/plan/status.rs:14:    pub const STORE_NOT_MATCH_RULE: Self = Self(102);
+pkg/schedule/plan/status.rs:16:    pub const STORE_SNAPSHOT_THROTTLED: Self = Self(200);
+pkg/schedule/plan/status.rs:18:    pub const STORE_PENDING_PEER_THROTTLED: Self = Self(201);
+pkg/schedule/plan/status.rs:20:    pub const STORE_ADD_LIMIT_THROTTLED: Self = Self(202);
+pkg/schedule/plan/status.rs:22:    pub const STORE_REMOVE_LIMIT_THROTTLED: Self = Self(203);
+pkg/schedule/plan/status.rs:24:    pub const STORE_TRANSFER_LEADER_IN_LIMIT_THROTTLED: Self = Self(204);
+pkg/schedule/plan/status.rs:26:    pub const STORE_REJECT_LEADER: Self = Self(300);
+pkg/schedule/plan/status.rs:28:    pub const STORE_NOT_MATCH_ISOLATION: Self = Self(301);
+pkg/schedule/plan/status.rs:30:    pub const STORE_BUSY: Self = Self(400);
+pkg/schedule/plan/status.rs:32:    pub const STORE_REMOVED: Self = Self(401);
+pkg/schedule/plan/status.rs:34:    pub const STORE_REMOVING: Self = Self(402);
+pkg/schedule/plan/status.rs:36:    pub const STORE_DOWN: Self = Self(403);
+pkg/schedule/plan/status.rs:38:    pub const STORE_DISCONNECTED: Self = Self(404);
+pkg/schedule/plan/status.rs:40:    pub const STORE_LOW_SPACE: Self = Self(500);
+pkg/schedule/plan/status.rs:42:    pub const STORE_NOT_EXISTED: Self = Self(501);
+pkg/schedule/plan/status.rs:44:    pub const REGION_HOT: Self = Self(1000);
+pkg/schedule/plan/status.rs:46:    pub const REGION_UNHEALTHY: Self = Self(1001);
+pkg/schedule/plan/status.rs:48:    pub const REGION_EMPTY: Self = Self(1002);
+pkg/schedule/plan/status.rs:50:    pub const REGION_NOT_REPLICATED: Self = Self(1003);
+pkg/schedule/plan/status.rs:52:    pub const REGION_NOT_MATCH_RULE: Self = Self(1004);
+pkg/schedule/plan/status.rs:54:    pub const REGION_NO_LEADER: Self = Self(1005);
+pkg/schedule/plan/status.rs:56:    pub const NO_TARGET_REGION: Self = Self(1006);
+pkg/schedule/plan/status.rs:58:    pub const REGION_LABEL_REJECT: Self = Self(1007);
+pkg/schedule/plan/status.rs:60:    pub const REGION_SEND_SNAPSHOT_THROTTLED: Self = Self(1008);
+pkg/schedule/plan/status.rs:62:    pub const REGION_AFFINITY: Self = Self(1009);
+pkg/schedule/plan/status.rs:64:    pub const CREATE_OPERATOR_FAILED: Self = Self(2000);
+pkg/schedule/plan/status.rs:67:pub fn status_text(code: StatusCode) -> &'static str {
+pkg/schedule/plan/status.rs:102:pub struct Status {
+pkg/schedule/plan/status.rs:108:    pub fn new(status_code: StatusCode, reasons: &[&str]) -> Self {
+pkg/schedule/plan/status.rs:115:    pub fn is_ok(&self) -> bool {
+pkg/schedule/plan/status.rs:119:    pub fn is_normal(&self) -> bool {
+pkg/schedule/plan/status.rs:123:    pub fn priority(&self) -> f32 {
+pkg/schedule/plan/lib.rs:4:pub use status::{Status, StatusCode, status_text};
+pkg/schedule/plan/lib.rs:8:#[path = "plan_status_test.rs"]
+pkg/schedule/plan/lib.rs:10:pub use balance_plan::{BalanceSchedulerPlan, Resource};
+pkg/schedule/plan/lib.rs:11:pub use collector::{Collector, PlanOption};
+pkg/schedule/plan/lib.rs:13:#[path = "plan_collect_test.rs"]
+pkg/schedule/plan/lib.rs:17:pub use balance_summary::{Summary, SummaryResult, balance_plan_summary};
+pkg/schedule/plan/lib.rs:19:#[path = "plan_summary_test.rs"]
+pkg/schedule/plan/collector.rs:7:pub enum PlanOption {
+pkg/schedule/plan/collector.rs:13:    pub fn apply(&self, plan: &mut BalanceSchedulerPlan) {
+pkg/schedule/plan/collector.rs:22:pub struct Collector {
+pkg/schedule/plan/collector.rs:28:    pub fn new(base_plan: BalanceSchedulerPlan) -> Self {
+pkg/schedule/plan/collector.rs:35:    pub fn collect(&mut self, options: &[PlanOption]) {
+pkg/schedule/plan/collector.rs:43:    pub fn get_plans(&self) -> Vec<BalanceSchedulerPlan> {
+
+RUST TESTS
+pkg/schedule/plan/plan_summary_test.rs:5:fn plans(case: &str) -> Vec<BalanceSchedulerPlan> {
+pkg/schedule/plan/plan_summary_test.rs:46:fn check(case: &str, codes: &[i64], normal: bool) {
+pkg/schedule/plan/plan_summary_test.rs:59:fn plan_summary_analyzer1() {
+pkg/schedule/plan/plan_summary_test.rs:63:fn plan_summary_analyzer2() {
+pkg/schedule/plan/plan_summary_test.rs:67:fn plan_summary_analyzer3() {
+pkg/schedule/plan/plan_summary_test.rs:71:fn plan_summary_analyzer4() {
+pkg/schedule/plan/plan_summary_test.rs:75:fn plan_summary_analyzer5() {
+pkg/schedule/plan/plan_summary_test.rs:79:fn plan_summary_analyzer6() {
+pkg/schedule/plan/plan_summary_test.rs:83:fn plan_summary_empty_success() {
+pkg/schedule/plan/plan_summary_test.rs:88:fn plan_summary_selection() {
+pkg/schedule/plan/plan_summary_test.rs:94:fn plan_summary_depth_and_order() {
+pkg/schedule/plan/plan_summary_test.rs:99:fn plan_summary_invalid_plan() {
+pkg/schedule/plan/plan_summary_test.rs:109:fn plan_summary_reason_counts_and_owned_output() {
+pkg/schedule/plan/plan_status_test.rs:4:fn plan_status_codes_and_text() {
+pkg/schedule/plan/plan_status_test.rs:229:fn plan_status_reason_and_flags() {
+pkg/schedule/plan/plan_status_test.rs:243:fn plan_status_priority_boundaries() {
+pkg/schedule/plan/plan_status_test.rs:273:fn plan_status_runtime_go_oracle() {
+pkg/schedule/plan/plan_collect_test.rs:5:fn base(step: i64) -> BalanceSchedulerPlan {
+pkg/schedule/plan/plan_collect_test.rs:29:fn plan_collect_completed_steps_only() {
+pkg/schedule/plan/plan_collect_test.rs:43:fn plan_collect_options_and_isolation() {
+pkg/schedule/plan/plan_collect_test.rs:66:fn plan_collect_default_and_invalid_resources() {
+pkg/schedule/plan/plan_collect_test.rs:94:fn plan_collect_order_and_owned_results() {
+
+CONSUMERS
+pkg/schedule/filter/region_filters.go:24:	"github.com/tikv/pd/pkg/schedule/plan"
+pkg/schedule/schedulers/balance_region.go:31:	"github.com/tikv/pd/pkg/schedule/plan"
+pkg/schedule/filter/candidates.go:23:	"github.com/tikv/pd/pkg/schedule/plan"
+pkg/schedule/schedulers/scheduler.go:33:	"github.com/tikv/pd/pkg/schedule/plan"
+pkg/schedule/filter/filters_test.go:34:	"github.com/tikv/pd/pkg/schedule/plan"
+pkg/schedule/filter/status.go:17:import "github.com/tikv/pd/pkg/schedule/plan"
+pkg/schedule/filter/candidates_test.go:27:	"github.com/tikv/pd/pkg/schedule/plan"
+pkg/schedule/schedulers/diagnostic_recorder.go:26:	"github.com/tikv/pd/pkg/schedule/plan"
+pkg/schedule/filter/filters.go:31:	"github.com/tikv/pd/pkg/schedule/plan"
+pkg/schedule/schedulers/random_merge.go:29:	"github.com/tikv/pd/pkg/schedule/plan"
+pkg/schedule/schedulers/evict_leader.go:37:	"github.com/tikv/pd/pkg/schedule/plan"
+pkg/schedule/schedulers/evict_stopping_store.go:31:	"github.com/tikv/pd/pkg/schedule/plan"
+pkg/schedule/schedulers/evict_slow_trend.go:34:	"github.com/tikv/pd/pkg/schedule/plan"
+pkg/schedule/schedulers/shuffle_region.go:27:	"github.com/tikv/pd/pkg/schedule/plan"
+pkg/schedule/schedulers/scatter_range.go:29:	"github.com/tikv/pd/pkg/schedule/plan"
+pkg/schedule/schedulers/balance_witness.go:39:	"github.com/tikv/pd/pkg/schedule/plan"
+pkg/schedule/schedulers/grant_hot_region.go:37:	"github.com/tikv/pd/pkg/schedule/plan"
+pkg/schedule/schedulers/evict_slow_store.go:36:	"github.com/tikv/pd/pkg/schedule/plan"
+pkg/schedule/schedulers/scheduler_controller.go:33:	"github.com/tikv/pd/pkg/schedule/plan"
+pkg/schedule/schedulers/balance_leader_test.go:42:	"github.com/tikv/pd/pkg/schedule/plan"
+pkg/schedule/schedulers/transfer_witness_leader.go:27:	"github.com/tikv/pd/pkg/schedule/plan"
+pkg/schedule/schedulers/balance_leader.go:38:	"github.com/tikv/pd/pkg/schedule/plan"
+pkg/schedule/schedulers/utils.go:32:	"github.com/tikv/pd/pkg/schedule/plan"
+pkg/schedule/schedulers/balance_region_test.go:32:	"github.com/tikv/pd/pkg/schedule/plan"
+pkg/schedule/schedulers/balance_benchmark_test.go:30:	"github.com/tikv/pd/pkg/schedule/plan"
+pkg/schedule/schedulers/shuffle_leader.go:25:	"github.com/tikv/pd/pkg/schedule/plan"
+pkg/schedule/schedulers/hot_region.go:32:	"github.com/tikv/pd/pkg/schedule/plan"
+pkg/schedule/schedulers/shuffle_hot_region.go:33:	"github.com/tikv/pd/pkg/schedule/plan"
+pkg/schedule/schedulers/balance_range.go:39:	"github.com/tikv/pd/pkg/schedule/plan"
+pkg/schedule/schedulers/grant_leader.go:34:	"github.com/tikv/pd/pkg/schedule/plan"
+pkg/schedule/schedulers/label.go:28:	"github.com/tikv/pd/pkg/schedule/plan"
+
+PACKAGE config
+FILES
+pkg/schedule/config/config.go
+pkg/schedule/config/config_provider.go
+pkg/schedule/config/store_config.go
+pkg/schedule/config/store_config_test.go
+pkg/schedule/config/util.go
+pkg/schedule/config/util_test.go
+
+PUBLIC DECLARATIONS
+pkg/schedule/config/store_config.go:41:	RaftstoreV2 = "raft-kv2"
+pkg/schedule/config/store_config.go:46:type StoreConfig struct {
+pkg/schedule/config/store_config.go:49:	ReadPool    ReadPool `json:"readpool"`
+pkg/schedule/config/store_config.go:51:	RegionMaxSizeMB    uint64 `json:"-"`
+pkg/schedule/config/store_config.go:52:	RegionSplitSizeMB  uint64 `json:"-"`
+pkg/schedule/config/store_config.go:53:	RegionBucketSizeMB uint64 `json:"-"`
+pkg/schedule/config/store_config.go:57:type Storage struct {
+pkg/schedule/config/store_config.go:62:type ReadPool struct {
+pkg/schedule/config/store_config.go:63:	Unified UnifiedReadPool `json:"unified"`
+pkg/schedule/config/store_config.go:67:type UnifiedReadPool struct {
+pkg/schedule/config/store_config.go:68:	MaxThreadCount uint64 `json:"max-thread-count"`
+pkg/schedule/config/store_config.go:72:type Coprocessor struct {
+pkg/schedule/config/store_config.go:75:	RegionMaxSize string `json:"region-max-size"`
+pkg/schedule/config/store_config.go:77:	RegionSplitSize    string `json:"region-split-size"`
+pkg/schedule/config/store_config.go:78:	RegionMaxKeys      int    `json:"region-max-keys"`
+pkg/schedule/config/store_config.go:79:	RegionSplitKeys    int    `json:"region-split-keys"`
+pkg/schedule/config/store_config.go:80:	EnableRegionBucket bool   `json:"enable-region-bucket"`
+pkg/schedule/config/store_config.go:81:	RegionBucketSize   string `json:"region-bucket-size"`
+pkg/schedule/config/store_config.go:85:func (c *StoreConfig) Adjust() {
+pkg/schedule/config/store_config.go:96:func (c *StoreConfig) Equal(other *StoreConfig) bool {
+pkg/schedule/config/store_config.go:103:func (c *StoreConfig) String() string {
+pkg/schedule/config/store_config.go:112:func (c *StoreConfig) GetRegionMaxSize() uint64 {
+pkg/schedule/config/store_config.go:120:func (c *StoreConfig) GetRegionSplitSize() uint64 {
+pkg/schedule/config/store_config.go:128:func (c *StoreConfig) GetRegionSplitKeys() uint64 {
+pkg/schedule/config/store_config.go:136:func (c *StoreConfig) GetRegionMaxKeys() uint64 {
+pkg/schedule/config/store_config.go:144:func (c *StoreConfig) IsEnableRegionBucket() bool {
+pkg/schedule/config/store_config.go:152:func (c *StoreConfig) IsRaftKV2() bool {
+pkg/schedule/config/store_config.go:160:func (c *StoreConfig) GetUnifiedReadPoolMaxThreadCount() uint64 {
+pkg/schedule/config/store_config.go:168:func (c *StoreConfig) SetRegionBucketEnabled(enabled bool) {
+pkg/schedule/config/store_config.go:176:func (c *StoreConfig) GetRegionBucketSize() uint64 {
+pkg/schedule/config/store_config.go:187:func (c *StoreConfig) CheckRegionSize(size, mergeSize uint64) error {
+pkg/schedule/config/store_config.go:208:func (c *StoreConfig) CheckRegionKeys(keys, mergeKeys uint64) error {
+pkg/schedule/config/store_config.go:221:func (c *StoreConfig) Clone() *StoreConfig {
+pkg/schedule/config/util.go:42:func ValidateLabels(labels []*metapb.StoreLabel) error {
+pkg/schedule/config/util.go:55:func ValidateLabelKey(key string) error {
+pkg/schedule/config/config_provider.go:33:const RejectLeader = "reject-leader"
+pkg/schedule/config/config_provider.go:38:func RegisterScheduler(typ types.CheckerSchedulerType) {
+pkg/schedule/config/config_provider.go:43:type SchedulerConfigProvider interface {
+pkg/schedule/config/config_provider.go:44:	SharedConfigProvider
+pkg/schedule/config/config_provider.go:46:	SetSchedulingAllowanceStatus(bool, string)
+pkg/schedule/config/config_provider.go:47:	GetStoresLimit() map[uint64]StoreLimitConfig
+pkg/schedule/config/config_provider.go:49:	IsSchedulerDisabled(types.CheckerSchedulerType) bool
+pkg/schedule/config/config_provider.go:50:	AddSchedulerCfg(types.CheckerSchedulerType, []string)
+pkg/schedule/config/config_provider.go:51:	RemoveSchedulerCfg(types.CheckerSchedulerType)
+pkg/schedule/config/config_provider.go:54:	GetRegionScheduleLimit() uint64
+pkg/schedule/config/config_provider.go:55:	GetLeaderScheduleLimit() uint64
+pkg/schedule/config/config_provider.go:56:	GetHotRegionScheduleLimit() uint64
+pkg/schedule/config/config_provider.go:57:	GetWitnessScheduleLimit() uint64
+pkg/schedule/config/config_provider.go:59:	GetHotRegionCacheHitsThreshold() int
+pkg/schedule/config/config_provider.go:60:	GetMaxMovableHotPeerSize() int64
+pkg/schedule/config/config_provider.go:61:	IsTraceRegionFlow() bool
+pkg/schedule/config/config_provider.go:63:	GetTolerantSizeRatio() float64
+pkg/schedule/config/config_provider.go:64:	GetLeaderSchedulePolicy() constant.SchedulePolicy
+pkg/schedule/config/config_provider.go:66:	IsDebugMetricsEnabled() bool
+pkg/schedule/config/config_provider.go:67:	IsDiagnosticAllowed() bool
+pkg/schedule/config/config_provider.go:68:	GetSlowStoreEvictingAffectedStoreRatioThreshold() float64
+pkg/schedule/config/config_provider.go:70:	GetScheduleConfig() *ScheduleConfig
+pkg/schedule/config/config_provider.go:71:	SetScheduleConfig(*ScheduleConfig)
+pkg/schedule/config/config_provider.go:72:	SetSchedulers(SchedulerConfigs)
+pkg/schedule/config/config_provider.go:76:type CheckerConfigProvider interface {
+pkg/schedule/config/config_provider.go:77:	SharedConfigProvider
+pkg/schedule/config/config_provider.go:78:	StoreConfigProvider
+pkg/schedule/config/config_provider.go:80:	GetSwitchWitnessInterval() time.Duration
+pkg/schedule/config/config_provider.go:81:	IsRemoveExtraReplicaEnabled() bool
+pkg/schedule/config/config_provider.go:82:	IsRemoveDownReplicaEnabled() bool
+pkg/schedule/config/config_provider.go:83:	IsReplaceOfflineReplicaEnabled() bool
+pkg/schedule/config/config_provider.go:84:	IsMakeUpReplicaEnabled() bool
+pkg/schedule/config/config_provider.go:85:	IsLocationReplacementEnabled() bool
+pkg/schedule/config/config_provider.go:86:	GetIsolationLevel() string
+pkg/schedule/config/config_provider.go:87:	GetSplitMergeInterval() time.Duration
+pkg/schedule/config/config_provider.go:88:	GetPatrolRegionInterval() time.Duration
+pkg/schedule/config/config_provider.go:89:	GetPatrolRegionWorkerCount() int
+pkg/schedule/config/config_provider.go:90:	GetMaxMergeRegionSize() uint64
+pkg/schedule/config/config_provider.go:91:	GetMaxMergeRegionKeys() uint64
+pkg/schedule/config/config_provider.go:92:	GetReplicaScheduleLimit() uint64
+pkg/schedule/config/config_provider.go:93:	GetRegionScheduleLimit() uint64
+pkg/schedule/config/config_provider.go:97:type SharedConfigProvider interface {
+pkg/schedule/config/config_provider.go:98:	GetMaxReplicas() int
+pkg/schedule/config/config_provider.go:99:	IsPlacementRulesEnabled() bool
+pkg/schedule/config/config_provider.go:100:	GetAffinityScheduleLimit() uint64
+pkg/schedule/config/config_provider.go:101:	GetSplitScatterScheduleLimit() uint64
+pkg/schedule/config/config_provider.go:102:	GetMaxAffinityMergeRegionSize() uint64
+pkg/schedule/config/config_provider.go:103:	GetMaxSnapshotCount() uint64
+pkg/schedule/config/config_provider.go:104:	GetMaxPendingPeerCount() uint64
+pkg/schedule/config/config_provider.go:105:	GetLowSpaceRatio() float64
+pkg/schedule/config/config_provider.go:106:	GetHighSpaceRatio() float64
+pkg/schedule/config/config_provider.go:107:	GetMaxStoreDownTime() time.Duration
+pkg/schedule/config/config_provider.go:108:	GetLocationLabels() []string
+pkg/schedule/config/config_provider.go:109:	CheckLabelProperty(string, []*metapb.StoreLabel) bool
+pkg/schedule/config/config_provider.go:110:	GetClusterVersion() *semver.Version
+pkg/schedule/config/config_provider.go:111:	IsUseJointConsensus() bool
+pkg/schedule/config/config_provider.go:112:	GetKeyType() constant.KeyType
+pkg/schedule/config/config_provider.go:113:	IsCrossTableMergeEnabled() bool
+pkg/schedule/config/config_provider.go:114:	IsOneWayMergeEnabled() bool
+pkg/schedule/config/config_provider.go:115:	GetMergeScheduleLimit() uint64
+pkg/schedule/config/config_provider.go:116:	GetRegionScoreFormulaVersion() string
+pkg/schedule/config/config_provider.go:117:	GetSchedulerMaxWaitingOperator() uint64
+pkg/schedule/config/config_provider.go:118:	GetStoreLimitByType(uint64, storelimit.Type) float64
+pkg/schedule/config/config_provider.go:119:	IsWitnessAllowed() bool
+pkg/schedule/config/config_provider.go:120:	IsPlacementRulesCacheEnabled() bool
+pkg/schedule/config/config_provider.go:121:	SetHaltScheduling(bool, string)
+pkg/schedule/config/config_provider.go:122:	GetHotRegionCacheHitsThreshold() int
+pkg/schedule/config/config_provider.go:125:	SetPlacementRuleEnabled(bool)
+pkg/schedule/config/config_provider.go:126:	SetPlacementRulesCacheEnabled(bool)
+pkg/schedule/config/config_provider.go:127:	SetEnableWitness(bool)
+pkg/schedule/config/config_provider.go:131:type ConfProvider interface {
+pkg/schedule/config/config_provider.go:132:	SchedulerConfigProvider
+pkg/schedule/config/config_provider.go:133:	CheckerConfigProvider
+pkg/schedule/config/config_provider.go:134:	StoreConfigProvider
+pkg/schedule/config/config_provider.go:136:	SetPlacementRuleEnabled(bool)
+pkg/schedule/config/config_provider.go:137:	SetSplitMergeInterval(time.Duration)
+pkg/schedule/config/config_provider.go:138:	SetMaxReplicas(int)
+pkg/schedule/config/config_provider.go:139:	SetAllStoresLimit(storelimit.Type, float64)
+pkg/schedule/config/config_provider.go:143:type StoreConfigProvider interface {
+pkg/schedule/config/config_provider.go:144:	GetRegionMaxSize() uint64
+pkg/schedule/config/config_provider.go:145:	GetRegionMaxKeys() uint64
+pkg/schedule/config/config_provider.go:146:	GetRegionSplitSize() uint64
+pkg/schedule/config/config_provider.go:147:	GetRegionSplitKeys() uint64
+pkg/schedule/config/config_provider.go:148:	CheckRegionSize(uint64, uint64) error
+pkg/schedule/config/config_provider.go:149:	CheckRegionKeys(uint64, uint64) error
+pkg/schedule/config/config_provider.go:150:	IsEnableRegionBucket() bool
+pkg/schedule/config/config_provider.go:151:	IsRaftKV2() bool
+pkg/schedule/config/config_provider.go:152:	GetUnifiedReadPoolMaxThreadCount() uint64
+pkg/schedule/config/config.go:35:	DefaultMaxReplicas         = 3
+pkg/schedule/config/config.go:80:	DefaultSplitMergeInterval      = time.Hour
+pkg/schedule/config/config.go:95:	RegionSizeToKeysRatio = 10000
+pkg/schedule/config/config.go:101:	DefaultStoreLimit = StoreLimit{AddPeer: 15, RemovePeer: 15, TransferLeaderIn: storelimit.Unlimited}
+pkg/schedule/config/config.go:103:	DefaultTiFlashStoreLimit = StoreLimit{AddPeer: 30, RemovePeer: 30, TransferLeaderIn: storelimit.Unlimited}
+pkg/schedule/config/config.go:109:	TTLConfigPrefix = "/config/ttl"
+pkg/schedule/config/config.go:111:	MaxSnapshotCountKey            = "schedule.max-snapshot-count"
+pkg/schedule/config/config.go:112:	MaxMergeRegionSizeKey          = "schedule.max-merge-region-size"
+pkg/schedule/config/config.go:113:	MaxPendingPeerCountKey         = "schedule.max-pending-peer-count"
+pkg/schedule/config/config.go:114:	MaxMergeRegionKeysKey          = "schedule.max-merge-region-keys"
+pkg/schedule/config/config.go:115:	LeaderScheduleLimitKey         = "schedule.leader-schedule-limit"
+pkg/schedule/config/config.go:116:	RegionScheduleLimitKey         = "schedule.region-schedule-limit"
+pkg/schedule/config/config.go:117:	WitnessScheduleLimitKey        = "schedule.witness-schedule-limit"
+pkg/schedule/config/config.go:118:	ReplicaRescheduleLimitKey      = "schedule.replica-schedule-limit"
+pkg/schedule/config/config.go:119:	MergeScheduleLimitKey          = "schedule.merge-schedule-limit"
+pkg/schedule/config/config.go:120:	HotRegionScheduleLimitKey      = "schedule.hot-region-schedule-limit"
+pkg/schedule/config/config.go:121:	AffinityScheduleLimitKey       = "schedule.affinity-schedule-limit"
+pkg/schedule/config/config.go:122:	SplitScatterScheduleLimitKey   = "schedule.split-scatter-schedule-limit"
+pkg/schedule/config/config.go:123:	SchedulerMaxWaitingOperatorKey = "schedule.scheduler-max-waiting-operator"
+pkg/schedule/config/config.go:124:	EnableLocationReplacement      = "schedule.enable-location-replacement"
+pkg/schedule/config/config.go:128:	EnableTiKVSplitRegion = "schedule.enable-tikv-split-region"
+pkg/schedule/config/config.go:130:	DefaultGCInterval = 5 * time.Second
+pkg/schedule/config/config.go:131:	DefaultTTL        = 5 * time.Minute
+pkg/schedule/config/config.go:135:type StoreLimit struct {
+pkg/schedule/config/config.go:138:	AddPeer float64
+pkg/schedule/config/config.go:140:	RemovePeer float64
+pkg/schedule/config/config.go:142:	TransferLeaderIn float64
+pkg/schedule/config/config.go:146:func (sl *StoreLimit) SetDefaultStoreLimit(typ storelimit.Type, ratePerMin float64) {
+pkg/schedule/config/config.go:160:func (sl *StoreLimit) GetDefaultStoreLimit(typ storelimit.Type) float64 {
+pkg/schedule/config/config.go:186:type ScheduleConfig struct {
+pkg/schedule/config/config.go:189:	MaxSnapshotCount    uint64 `toml:"max-snapshot-count" json:"max-snapshot-count"`
+pkg/schedule/config/config.go:190:	MaxPendingPeerCount uint64 `toml:"max-pending-peer-count" json:"max-pending-peer-count"`
+pkg/schedule/config/config.go:194:	MaxMergeRegionSize uint64 `toml:"max-merge-region-size" json:"max-merge-region-size"`
+pkg/schedule/config/config.go:195:	MaxMergeRegionKeys uint64 `toml:"max-merge-region-keys" json:"max-merge-region-keys"`
+pkg/schedule/config/config.go:197:	SplitMergeInterval typeutil.Duration `toml:"split-merge-interval" json:"split-merge-interval"`
+pkg/schedule/config/config.go:199:	SwitchWitnessInterval typeutil.Duration `toml:"switch-witness-interval" json:"switch-witness-interval"`
+pkg/schedule/config/config.go:201:	EnableOneWayMerge bool `toml:"enable-one-way-merge" json:"enable-one-way-merge,string"`
+pkg/schedule/config/config.go:204:	EnableCrossTableMerge bool `toml:"enable-cross-table-merge" json:"enable-cross-table-merge,string"`
+pkg/schedule/config/config.go:206:	PatrolRegionInterval typeutil.Duration `toml:"patrol-region-interval" json:"patrol-region-interval"`
+pkg/schedule/config/config.go:209:	MaxStoreDownTime typeutil.Duration `toml:"max-store-down-time" json:"max-store-down-time"`
+pkg/schedule/config/config.go:212:	MaxStorePreparingTime typeutil.Duration `toml:"max-store-preparing-time" json:"max-store-preparing-time"`
+pkg/schedule/config/config.go:214:	LeaderScheduleLimit uint64 `toml:"leader-schedule-limit" json:"leader-schedule-limit"`
+pkg/schedule/config/config.go:216:	LeaderSchedulePolicy string `toml:"leader-schedule-policy" json:"leader-schedule-policy"`
+pkg/schedule/config/config.go:218:	RegionScheduleLimit uint64 `toml:"region-schedule-limit" json:"region-schedule-limit"`
+pkg/schedule/config/config.go:220:	WitnessScheduleLimit uint64 `toml:"witness-schedule-limit" json:"witness-schedule-limit"`
+pkg/schedule/config/config.go:222:	ReplicaScheduleLimit uint64 `toml:"replica-schedule-limit" json:"replica-schedule-limit"`
+pkg/schedule/config/config.go:224:	MergeScheduleLimit uint64 `toml:"merge-schedule-limit" json:"merge-schedule-limit"`
+pkg/schedule/config/config.go:226:	HotRegionScheduleLimit uint64 `toml:"hot-region-schedule-limit" json:"hot-region-schedule-limit"`
+pkg/schedule/config/config.go:228:	AffinityScheduleLimit uint64 `toml:"affinity-schedule-limit" json:"affinity-schedule-limit"`
+pkg/schedule/config/config.go:230:	SplitScatterScheduleLimit uint64 `toml:"split-scatter-schedule-limit" json:"split-scatter-schedule-limit"`
+pkg/schedule/config/config.go:234:	HotRegionCacheHitsThreshold uint64 `toml:"hot-region-cache-hits-threshold" json:"hot-region-cache-hits-threshold"`
+pkg/schedule/config/config.go:237:	StoreBalanceRate float64 `toml:"store-balance-rate" json:"store-balance-rate,omitempty"`
+pkg/schedule/config/config.go:239:	DefaultStoreLimit StoreLimitConfig `toml:"default-store-limit" json:"default-store-limit"`
+pkg/schedule/config/config.go:241:	StoreLimit map[uint64]StoreLimitConfig `toml:"store-limit" json:"store-limit"`
+pkg/schedule/config/config.go:243:	TolerantSizeRatio float64 `toml:"tolerant-size-ratio" json:"tolerant-size-ratio"`
+pkg/schedule/config/config.go:252:	LowSpaceRatio float64 `toml:"low-space-ratio" json:"low-space-ratio"`
+pkg/schedule/config/config.go:255:	HighSpaceRatio float64 `toml:"high-space-ratio" json:"high-space-ratio"`
+pkg/schedule/config/config.go:257:	RegionScoreFormulaVersion string `toml:"region-score-formula-version" json:"region-score-formula-version"`
+pkg/schedule/config/config.go:259:	SchedulerMaxWaitingOperator uint64 `toml:"scheduler-max-waiting-operator" json:"scheduler-max-waiting-operator"`
+pkg/schedule/config/config.go:262:	DisableLearner bool `toml:"disable-raft-learner" json:"disable-raft-learner,string,omitempty"`
+pkg/schedule/config/config.go:266:	DisableRemoveDownReplica bool `toml:"disable-remove-down-replica" json:"disable-remove-down-replica,string,omitempty"`
+pkg/schedule/config/config.go:270:	DisableReplaceOfflineReplica bool `toml:"disable-replace-offline-replica" json:"disable-replace-offline-replica,string,omitempty"`
+pkg/schedule/config/config.go:274:	DisableMakeUpReplica bool `toml:"disable-make-up-replica" json:"disable-make-up-replica,string,omitempty"`
+pkg/schedule/config/config.go:278:	DisableRemoveExtraReplica bool `toml:"disable-remove-extra-replica" json:"disable-remove-extra-replica,string,omitempty"`
+pkg/schedule/config/config.go:282:	DisableLocationReplacement bool `toml:"disable-location-replacement" json:"disable-location-replacement,string,omitempty"`
+pkg/schedule/config/config.go:285:	EnableRemoveDownReplica bool `toml:"enable-remove-down-replica" json:"enable-remove-down-replica,string"`
+pkg/schedule/config/config.go:287:	EnableReplaceOfflineReplica bool `toml:"enable-replace-offline-replica" json:"enable-replace-offline-replica,string"`
+pkg/schedule/config/config.go:289:	EnableMakeUpReplica bool `toml:"enable-make-up-replica" json:"enable-make-up-replica,string"`
+pkg/schedule/config/config.go:291:	EnableRemoveExtraReplica bool `toml:"enable-remove-extra-replica" json:"enable-remove-extra-replica,string"`
+pkg/schedule/config/config.go:293:	EnableLocationReplacement bool `toml:"enable-location-replacement" json:"enable-location-replacement,string"`
+pkg/schedule/config/config.go:295:	EnableDebugMetrics bool `toml:"enable-debug-metrics" json:"enable-debug-metrics,string"`
+pkg/schedule/config/config.go:297:	EnableJointConsensus bool `toml:"enable-joint-consensus" json:"enable-joint-consensus,string"`
+pkg/schedule/config/config.go:300:	EnableTiKVSplitRegion bool `toml:"enable-tikv-split-region" json:"enable-tikv-split-region,string"`
+pkg/schedule/config/config.go:303:	EnableHeartbeatBreakdownMetrics bool `toml:"enable-heartbeat-breakdown-metrics" json:"enable-heartbeat-breakdown-metrics,string"`
+pkg/schedule/config/config.go:306:	EnableHeartbeatConcurrentRunner bool `toml:"enable-heartbeat-concurrent-runner" json:"enable-heartbeat-concurrent-runner,string"`
+pkg/schedule/config/config.go:309:	Schedulers SchedulerConfigs `toml:"schedulers" json:"schedulers-v2"` // json v2 is for the sake of compatible upgrade
+pkg/schedule/config/config.go:312:	HotRegionsWriteInterval typeutil.Duration `toml:"hot-regions-write-interval" json:"hot-regions-write-interval"`
+pkg/schedule/config/config.go:315:	HotRegionsReservedDays uint64 `toml:"hot-regions-reserved-days" json:"hot-regions-reserved-days"`
+pkg/schedule/config/config.go:319:	MaxMovableHotPeerSize int64 `toml:"max-movable-hot-peer-size" json:"max-movable-hot-peer-size,omitempty"`
+pkg/schedule/config/config.go:322:	EnableDiagnostic bool `toml:"enable-diagnostic" json:"enable-diagnostic,string"`
+pkg/schedule/config/config.go:325:	EnableWitness bool `toml:"enable-witness" json:"enable-witness,string"`
+pkg/schedule/config/config.go:329:	SlowStoreEvictingAffectedStoreRatioThreshold float64 `toml:"slow-store-evicting-affected-store-ratio-threshold" json:"slow-store-evicting-affected-store-ratio-threshold,omitempty"`
+pkg/schedule/config/config.go:334:	StoreLimitVersion string `toml:"store-limit-version" json:"store-limit-version,omitempty"`
+pkg/schedule/config/config.go:338:	HaltScheduling bool `toml:"halt-scheduling" json:"halt-scheduling,string,omitempty"`
+pkg/schedule/config/config.go:341:	PatrolRegionWorkerCount int `toml:"patrol-region-worker-count" json:"patrol-region-worker-count"`
+pkg/schedule/config/config.go:347:	MaxAffinityMergeRegionSize uint64 `toml:"max-affinity-merge-region-size" json:"max-affinity-merge-region-size"`
+pkg/schedule/config/config.go:351:func (c *ScheduleConfig) Clone() *ScheduleConfig {
+pkg/schedule/config/config.go:367:func (c *ScheduleConfig) Adjust(meta *configutil.ConfigMetaData, reloading bool) error {
+pkg/schedule/config/config.go:524:	DefaultStoreLimit.SetDefaultStoreLimit(storelimit.AddPeer, c.DefaultStoreLimit.AddPeer)
+pkg/schedule/config/config.go:525:	DefaultStoreLimit.SetDefaultStoreLimit(storelimit.RemovePeer, c.DefaultStoreLimit.RemovePeer)
+pkg/schedule/config/config.go:544:	DefaultStoreLimit.SetDefaultStoreLimit(storelimit.AddPeer, c.DefaultStoreLimit.AddPeer)
+pkg/schedule/config/config.go:545:	DefaultStoreLimit.SetDefaultStoreLimit(storelimit.RemovePeer, c.DefaultStoreLimit.RemovePeer)
+pkg/schedule/config/config.go:546:	DefaultStoreLimit.SetDefaultStoreLimit(storelimit.TransferLeaderIn, c.DefaultStoreLimit.TransferLeaderIn)
+pkg/schedule/config/config.go:562:func (c *ScheduleConfig) GetMaxMergeRegionKeys() uint64 {
+pkg/schedule/config/config.go:571:func (c *ScheduleConfig) GetMaxAffinityMergeRegionSize() uint64 {
+pkg/schedule/config/config.go:596:func (c *ScheduleConfig) UnmarshalJSON(data []byte) error {
+pkg/schedule/config/config.go:600:		StoreLimit map[uint64]json.RawMessage `json:"store-limit"`
+pkg/schedule/config/config.go:623:func (c *ScheduleConfig) MigrateDeprecatedFlags() {
+pkg/schedule/config/config.go:629:func (c *ScheduleConfig) MigrateDeprecatedFlagsFromJSON(data []byte) error {
+pkg/schedule/config/config.go:631:		StoreLimit        map[uint64]json.RawMessage `json:"store-limit"`
+pkg/schedule/config/config.go:632:		DefaultStoreLimit struct {
+pkg/schedule/config/config.go:633:			AddPeer          *float64 `json:"add-peer"`
+pkg/schedule/config/config.go:634:			RemovePeer       *float64 `json:"remove-peer"`
+pkg/schedule/config/config.go:635:			TransferLeaderIn *float64 `json:"transfer-leader-in"`
+pkg/schedule/config/config.go:668:func (c *ScheduleConfig) Validate() error {
+pkg/schedule/config/config.go:718:func (c *ScheduleConfig) Deprecated() error {
+pkg/schedule/config/config.go:744:type StoreLimitConfig struct {
+pkg/schedule/config/config.go:745:	AddPeer    float64 `toml:"add-peer" json:"add-peer"`
+pkg/schedule/config/config.go:746:	RemovePeer float64 `toml:"remove-peer" json:"remove-peer"`
+pkg/schedule/config/config.go:749:	TransferLeaderIn float64 `toml:"transfer-leader-in" json:"transfer-leader-in"`
+pkg/schedule/config/config.go:753:func (c StoreLimitConfig) SetLimit(typ storelimit.Type, ratePerMin float64) StoreLimitConfig {
+pkg/schedule/config/config.go:766:func DefaultStoreLimitConfig() StoreLimitConfig {
+pkg/schedule/config/config.go:768:		AddPeer:          DefaultStoreLimit.GetDefaultStoreLimit(storelimit.AddPeer),
+pkg/schedule/config/config.go:769:		RemovePeer:       DefaultStoreLimit.GetDefaultStoreLimit(storelimit.RemovePeer),
+pkg/schedule/config/config.go:770:		TransferLeaderIn: DefaultStoreLimit.GetDefaultStoreLimit(storelimit.TransferLeaderIn),
+pkg/schedule/config/config.go:775:func (c *ScheduleConfig) GetDefaultStoreLimit() StoreLimitConfig {
+pkg/schedule/config/config.go:780:type SchedulerConfigs []SchedulerConfig
+pkg/schedule/config/config.go:783:type SchedulerConfig struct {
+pkg/schedule/config/config.go:787:	ArgsPayload string   `toml:"args-payload" json:"args-payload"`
+pkg/schedule/config/config.go:793:var DefaultSchedulers = defaultSchedulersInit()
+pkg/schedule/config/config.go:808:func IsDefaultScheduler(typ string) bool {
+pkg/schedule/config/config.go:819:type ReplicationConfig struct {
+pkg/schedule/config/config.go:821:	MaxReplicas uint64 `toml:"max-replicas" json:"max-replicas"`
+pkg/schedule/config/config.go:827:	LocationLabels typeutil.StringSlice `toml:"location-labels" json:"location-labels"`
+pkg/schedule/config/config.go:829:	StrictlyMatchLabel bool `toml:"strictly-match-label" json:"strictly-match-label,string"`
+pkg/schedule/config/config.go:832:	EnablePlacementRules bool `toml:"enable-placement-rules" json:"enable-placement-rules,string"`
+pkg/schedule/config/config.go:835:	EnablePlacementRulesCache bool `toml:"enable-placement-rules-cache" json:"enable-placement-rules-cache,string"`
+pkg/schedule/config/config.go:845:	IsolationLevel string `toml:"isolation-level" json:"isolation-level"`
+pkg/schedule/config/config.go:849:func (c *ReplicationConfig) Clone() *ReplicationConfig {
+pkg/schedule/config/config.go:857:func (c *ReplicationConfig) Validate() error {
+pkg/schedule/config/config.go:876:func (c *ReplicationConfig) Adjust(meta *configutil.ConfigMetaData) error {
+
+GO TESTS
+pkg/schedule/config/util_test.go:25:func TestValidateLabels(t *testing.T) {
+pkg/schedule/config/store_config_test.go:26:func TestMain(m *testing.M) {
+pkg/schedule/config/store_config_test.go:30:func TestMergeCheck(t *testing.T) {
+pkg/schedule/config/store_config_test.go:84:func TestStoreConfigEqualChecksReadPool(t *testing.T) {
+
+FAILPOINTS / METRICS / KEYS / BACKGROUND
+
+RUST PUBLIC API / REGISTRATION
+pkg/schedule/config/store_config.rs:8:pub const RAFTSTORE_V2: &str = "raft-kv2";
+pkg/schedule/config/store_config.rs:12:pub struct Coprocessor {
+pkg/schedule/config/store_config.rs:29:pub struct Storage {
+pkg/schedule/config/store_config.rs:36:pub struct UnifiedReadPool {
+pkg/schedule/config/store_config.rs:43:pub struct ReadPool {
+pkg/schedule/config/store_config.rs:50:pub struct StoreConfig {
+pkg/schedule/config/store_config.rs:74:pub enum MergeAgainError {
+pkg/schedule/config/store_config.rs:89:    pub fn adjust(&mut self) {
+pkg/schedule/config/store_config.rs:94:    pub fn get_region_max_size(&self) -> u64 {
+pkg/schedule/config/store_config.rs:101:    pub fn get_region_split_size(&self) -> u64 {
+pkg/schedule/config/store_config.rs:108:    pub fn get_region_max_keys(&self) -> u64 {
+pkg/schedule/config/store_config.rs:115:    pub fn get_region_split_keys(&self) -> u64 {
+pkg/schedule/config/store_config.rs:122:    pub fn is_enable_region_bucket(&self) -> bool {
+pkg/schedule/config/store_config.rs:125:    pub fn set_region_bucket_enabled(&mut self, enabled: bool) {
+pkg/schedule/config/store_config.rs:128:    pub fn get_region_bucket_size(&self) -> u64 {
+pkg/schedule/config/store_config.rs:137:    pub fn is_raft_kv2(&self) -> bool {
+pkg/schedule/config/store_config.rs:140:    pub fn get_unified_read_pool_max_thread_count(&self) -> u64 {
+pkg/schedule/config/store_config.rs:143:    pub fn check_region_size(&self, size: u64, merge_size: u64) -> Result<(), MergeAgainError> {
+pkg/schedule/config/store_config.rs:155:    pub fn check_region_keys(&self, keys: u64, merge_keys: u64) -> Result<(), MergeAgainError> {
+pkg/schedule/config/value_contract.rs:7:pub fn validate_labels<'a>(
+pkg/schedule/config/provider.rs:12:pub const REJECT_LEADER: &str = "reject-leader";
+pkg/schedule/config/provider.rs:15:pub struct SchedulerRegistry {
+pkg/schedule/config/provider.rs:20:    pub fn register(&mut self, typ: CheckerSchedulerType) {
+pkg/schedule/config/provider.rs:24:    pub fn contains(&self, typ: &CheckerSchedulerType) -> bool {
+pkg/schedule/config/provider.rs:28:    pub fn registered(&self) -> impl Iterator<Item = &CheckerSchedulerType> {
+pkg/schedule/config/provider.rs:35:pub struct ProviderSnapshot<V> {
+pkg/schedule/config/provider.rs:58:pub trait SharedConfigProvider {
+pkg/schedule/config/provider.rs:157:pub trait SchedulerConfigProvider: SharedConfigProvider {
+pkg/schedule/config/provider.rs:209:pub trait StoreConfigProvider {
+pkg/schedule/config/provider.rs:240:pub trait CheckerConfigProvider: SharedConfigProvider + StoreConfigProvider {
+pkg/schedule/config/provider.rs:287:pub trait ConfProvider: SchedulerConfigProvider + CheckerConfigProvider {}
+pkg/schedule/config/lib.rs:12:pub struct ScheduleConfig {
+pkg/schedule/config/lib.rs:198:pub struct StoreLimitConfig {
+pkg/schedule/config/lib.rs:212:pub struct SchedulerConfig {
+pkg/schedule/config/lib.rs:228:pub struct ReplicationConfig {
+pkg/schedule/config/lib.rs:266:    pub fn serialize<S: Serializer>(v: &bool, s: S) -> Result<S::Ok, S::Error> {
+pkg/schedule/config/lib.rs:269:    pub fn deserialize<'de, D: Deserializer<'de>>(d: D) -> Result<bool, D::Error> {
+pkg/schedule/config/lib.rs:280:pub struct ScheduleDefaults {
+pkg/schedule/config/lib.rs:310:    pub fn adjust(
+pkg/schedule/config/lib.rs:509:    pub fn validate(&self) -> Result<(), String> {
+pkg/schedule/config/lib.rs:574:    pub fn adjust(&mut self, meta: &ConfigMetaData) -> Result<(), String> {
+pkg/schedule/config/lib.rs:588:    pub fn validate(&self) -> Result<(), String> {
+pkg/schedule/config/lib.rs:604:pub fn validate_label_key(key: &str) -> Result<(), String> {
+pkg/schedule/config/lib.rs:622:pub fn decode_json(input: &str) -> Result<ScheduleConfig, serde_json::Error> {
+pkg/schedule/config/lib.rs:629:pub fn deserialize_json<'de, D: serde::Deserializer<'de>>(
+pkg/schedule/config/lib.rs:677:pub fn decode_toml(input: &str) -> Result<(ScheduleConfig, ConfigMetaData), String> {
+pkg/schedule/config/lib.rs:737:pub fn decode_toml_replication(input: &str) -> Result<(ReplicationConfig, ConfigMetaData), String> {
+pkg/schedule/config/lib.rs:808:pub use value_contract::validate_labels;
+pkg/schedule/config/lib.rs:811:pub use store_config::{
+pkg/schedule/config/lib.rs:818:pub use provider::{
+
+RUST TESTS
+pkg/schedule/config/config_values_test.rs:4:fn fixtures() -> serde_json::Value {
+pkg/schedule/config/config_values_test.rs:12:fn config_values_json_document_boundary() {
+pkg/schedule/config/config_values_test.rs:23:fn config_values_json_null_numbers() {
+pkg/schedule/config/config_values_test.rs:29:fn config_values_go_snapshots_round_trip() {
+pkg/schedule/config/config_values_test.rs:56:fn config_values_go_toml_defaults_presence_and_errors() {
+pkg/schedule/config/config_values_test.rs:116:fn config_values_clone_owned_collections() {
+pkg/schedule/config/config_values_test.rs:154:fn config_values_label_keys_go_table() {
+pkg/schedule/config/config_values_test.rs:186:fn config_values_label_values_and_first_error() {
+pkg/schedule/config/config_test.rs:3:fn configured() -> ScheduleConfig {
+pkg/schedule/config/config_test.rs:14:fn schedule_defaults_presence_reload_and_snapshot() {
+pkg/schedule/config/config_test.rs:39:fn schedule_all_validation_branches() {
+pkg/schedule/config/config_test.rs:99:fn schedule_five_deprecated_flag_truth_tables() {
+pkg/schedule/config/config_test.rs:141:fn schedule_store_migration_and_json_inheritance() {
+pkg/schedule/config/config_test.rs:165:fn replication_labels_and_isolation() {
+pkg/schedule/config/store_config_test.rs:5:fn store_config_merge_go_table_and_boundaries() {
+pkg/schedule/config/store_config_test.rs:34:fn store_config_units_adjust_and_bucket() {
+pkg/schedule/config/store_config_test.rs:69:fn store_config_clone_equal_readpool_and_engine() {
+pkg/schedule/config/store_config_test.rs:91:fn store_config_json_null_and_cache_exclusion() {
+pkg/schedule/config/config_provider_test.rs:7:fn label(key: &str, value: &str) -> StoreLabel {
+pkg/schedule/config/config_provider_test.rs:14:fn config_provider_shared_generation_and_store_delegation() {
+pkg/schedule/config/config_provider_test.rs:46:fn config_provider_reject_leader_exact_or_matching() {
+pkg/schedule/config/config_provider_test.rs:70:fn config_provider_registry_and_scheduler_first_match() {
+pkg/schedule/config/config_provider_test.rs:100:fn config_provider_flags_rates_and_integer_boundaries() {
+
+CONSUMERS
+server/server_test.go:31:	sc "github.com/tikv/pd/pkg/schedule/config"
+server/api/config_test.go:24:	sc "github.com/tikv/pd/pkg/schedule/config"
+tests/integrations/mcs/scheduling/config_test.go:30:	sc "github.com/tikv/pd/pkg/schedule/config"
+server/api/store.go:35:	sc "github.com/tikv/pd/pkg/schedule/config"
+server/api/config.go:37:	sc "github.com/tikv/pd/pkg/schedule/config"
+tests/integrations/client/http_client_test.go:44:	sc "github.com/tikv/pd/pkg/schedule/config"
+pkg/mcs/scheduling/server/grpc_service_test.go:38:	sc "github.com/tikv/pd/pkg/schedule/config"
+server/config/config_test.go:33:	sc "github.com/tikv/pd/pkg/schedule/config"
+pkg/mcs/scheduling/server/cluster.go:52:	sc "github.com/tikv/pd/pkg/schedule/config"
+server/config/persist_options.go:39:	sc "github.com/tikv/pd/pkg/schedule/config"
+server/config/config.go:40:	sc "github.com/tikv/pd/pkg/schedule/config"
+pkg/mcs/scheduling/server/config/watcher.go:34:	sc "github.com/tikv/pd/pkg/schedule/config"
+pkg/mcs/scheduling/server/config/config_test.go:26:	sc "github.com/tikv/pd/pkg/schedule/config"
+pkg/mcs/scheduling/server/config/config.go:39:	sc "github.com/tikv/pd/pkg/schedule/config"
+pkg/mcs/scheduling/server/server.go:59:	sc "github.com/tikv/pd/pkg/schedule/config"
+server/server.go:75:	sc "github.com/tikv/pd/pkg/schedule/config"
+server/cluster/cluster.go:60:	sc "github.com/tikv/pd/pkg/schedule/config"
+tests/server/api/cluster_test.go:26:	sc "github.com/tikv/pd/pkg/schedule/config"
+server/cluster/cluster_test.go:54:	sc "github.com/tikv/pd/pkg/schedule/config"
+server/cluster/scheduling_controller.go:30:	sc "github.com/tikv/pd/pkg/schedule/config"
+tests/server/api/scheduler_test.go:35:	sc "github.com/tikv/pd/pkg/schedule/config"
+tests/server/config/config_test.go:38:	sc "github.com/tikv/pd/pkg/schedule/config"
+server/handler.go:37:	sc "github.com/tikv/pd/pkg/schedule/config"
+tests/server/cluster/cluster_test.go:48:	sc "github.com/tikv/pd/pkg/schedule/config"
+pkg/schedule/placement/rule_manager.go:38:	"github.com/tikv/pd/pkg/schedule/config"
+pkg/schedule/core/cluster_informer.go:20:	sc "github.com/tikv/pd/pkg/schedule/config"
+pkg/schedule/coordinator.go:32:	sc "github.com/tikv/pd/pkg/schedule/config"
+pkg/unsaferecovery/unsafe_recovery_controller.go:38:	sc "github.com/tikv/pd/pkg/schedule/config"
+pkg/schedule/scatter/region_scatterer_test.go:41:	"github.com/tikv/pd/pkg/schedule/config"
+pkg/response/store.go:24:	sc "github.com/tikv/pd/pkg/schedule/config"
+pkg/schedule/scatter/region_scatterer.go:36:	sc "github.com/tikv/pd/pkg/schedule/config"
+pkg/schedule/affinity/split_test.go:30:	"github.com/tikv/pd/pkg/schedule/config"
+pkg/schedule/diagnostic/diagnostic_manager.go:21:	"github.com/tikv/pd/pkg/schedule/config"
+pkg/schedule/affinity/manager.go:29:	"github.com/tikv/pd/pkg/schedule/config"
+pkg/schedule/affinity/policy.go:29:	"github.com/tikv/pd/pkg/schedule/config"
+pkg/schedule/affinity/split.go:21:	"github.com/tikv/pd/pkg/schedule/config"
+pkg/schedule/schedulers/scheduler.go:30:	"github.com/tikv/pd/pkg/schedule/config"
+pkg/statistics/region_collection.go:28:	sc "github.com/tikv/pd/pkg/schedule/config"
+pkg/schedule/operator/builder_test.go:30:	"github.com/tikv/pd/pkg/schedule/config"
+pkg/schedule/schedulers/label.go:24:	"github.com/tikv/pd/pkg/schedule/config"
+pkg/schedule/checker/affinity_checker_test.go:33:	scheconfig "github.com/tikv/pd/pkg/schedule/config"
+pkg/schedule/schedulers/diagnostic_recorder.go:24:	sc "github.com/tikv/pd/pkg/schedule/config"
+pkg/schedule/operator/create_operator_test.go:36:	"github.com/tikv/pd/pkg/schedule/config"
+pkg/schedule/checker/merge_checker.go:29:	"github.com/tikv/pd/pkg/schedule/config"
+pkg/statistics/store_collection.go:26:	"github.com/tikv/pd/pkg/schedule/config"
+pkg/schedule/checker/checker_controller.go:34:	"github.com/tikv/pd/pkg/schedule/config"
+pkg/schedule/operator/step.go:34:	"github.com/tikv/pd/pkg/schedule/config"
+pkg/schedule/schedulers/balance_leader_test.go:40:	"github.com/tikv/pd/pkg/schedule/config"
+pkg/schedule/operator/operator_test.go:36:	"github.com/tikv/pd/pkg/schedule/config"
+pkg/schedule/checker/replica_checker_test.go:33:	"github.com/tikv/pd/pkg/schedule/config"
+pkg/schedule/operator/operator_controller.go:35:	"github.com/tikv/pd/pkg/schedule/config"
+pkg/schedule/checker/priority_inspector.go:22:	"github.com/tikv/pd/pkg/schedule/config"
+pkg/schedule/checker/affinity_checker.go:31:	"github.com/tikv/pd/pkg/schedule/config"
+pkg/schedule/schedulers/balance_witness_test.go:24:	"github.com/tikv/pd/pkg/schedule/config"
+pkg/schedule/checker/merge_checker_test.go:34:	"github.com/tikv/pd/pkg/schedule/config"
+pkg/schedule/checker/replica_checker.go:29:	"github.com/tikv/pd/pkg/schedule/config"
+pkg/schedule/schedulers/scheduler_test.go:33:	"github.com/tikv/pd/pkg/schedule/config"
+pkg/schedule/filter/candidates.go:22:	"github.com/tikv/pd/pkg/schedule/config"
+pkg/schedule/filter/filters.go:29:	"github.com/tikv/pd/pkg/schedule/config"
+pkg/schedule/filter/candidates_test.go:26:	"github.com/tikv/pd/pkg/schedule/config"
+pkg/schedule/filter/comparer.go:19:	"github.com/tikv/pd/pkg/schedule/config"
+pkg/mock/mockcluster/config.go:20:	sc "github.com/tikv/pd/pkg/schedule/config"
+pkg/mock/mockcluster/mockcluster.go:36:	sc "github.com/tikv/pd/pkg/schedule/config"
+pkg/mock/mockconfig/mockconfig.go:18:	sc "github.com/tikv/pd/pkg/schedule/config"
+
+PACKAGE labeler
+FILES
+pkg/schedule/labeler/keyspace_index.go
+pkg/schedule/labeler/keyspace_index_test.go
+pkg/schedule/labeler/labeler.go
+pkg/schedule/labeler/labeler_test.go
+pkg/schedule/labeler/metrics.go
+pkg/schedule/labeler/plan.go
+pkg/schedule/labeler/plan_test.go
+pkg/schedule/labeler/rule_index.go
+pkg/schedule/labeler/rule_test.go
+pkg/schedule/labeler/rules.go
+
+PUBLIC DECLARATIONS
+pkg/schedule/labeler/keyspace_index.go:242:func (i *keyspaceRuleIndex) Add(rule *LabelRule) bool {
+pkg/schedule/labeler/keyspace_index.go:261:func (i *keyspaceRuleIndex) Replace(old, rule *LabelRule) bool {
+pkg/schedule/labeler/keyspace_index.go:306:func (i *keyspaceRuleIndex) Remove(ruleID string, rule *LabelRule) bool {
+pkg/schedule/labeler/keyspace_index.go:323:func (i *keyspaceRuleIndex) Contains(rule *LabelRule) bool {
+pkg/schedule/labeler/keyspace_index.go:337:func (i *keyspaceRuleIndex) GetRule(start, end []byte) *LabelRule {
+pkg/schedule/labeler/keyspace_index.go:373:func (i *keyspaceRuleIndex) HasSplitKey(start, end []byte) bool {
+pkg/schedule/labeler/keyspace_index.go:393:func (i *keyspaceRuleIndex) GetSplitKeys(start, end []byte) [][]byte {
+pkg/schedule/labeler/labeler.go:36:type RegionLabeler struct {
+pkg/schedule/labeler/labeler.go:45:func (l *RegionLabeler) Unlock() {
+pkg/schedule/labeler/labeler.go:51:func NewRegionLabeler(ctx context.Context, storage endpoint.RuleStorage, gcInterval time.Duration) (*RegionLabeler, error) {
+pkg/schedule/labeler/labeler.go:146:func (l *RegionLabeler) BuildRangeListLocked() {
+pkg/schedule/labeler/labeler.go:151:func (l *RegionLabeler) GetSplitKeys(start, end []byte) [][]byte {
+pkg/schedule/labeler/labeler.go:185:		RuleType: rule.RuleType,
+pkg/schedule/labeler/labeler.go:192:func (l *RegionLabeler) GetAllLabelRules() []*LabelRule {
+pkg/schedule/labeler/labeler.go:207:func (l *RegionLabeler) GetRuleAndKeyRangeCounts() (ruleCount, keyRangeCount int) {
+pkg/schedule/labeler/labeler.go:224:func (l *RegionLabeler) GetLabelRules(ids []string) ([]*LabelRule, error) {
+pkg/schedule/labeler/labeler.go:241:func (l *RegionLabeler) GetLabelRule(id string) *LabelRule {
+pkg/schedule/labeler/labeler.go:248:func (l *RegionLabeler) GetLabelRuleLocked(id string) *LabelRule {
+pkg/schedule/labeler/labeler.go:257:func (l *RegionLabeler) SetLabelRule(rule *LabelRule) error {
+pkg/schedule/labeler/labeler.go:280:func (l *RegionLabeler) SetLabelRuleLocked(rule *LabelRule) error {
+pkg/schedule/labeler/labeler.go:291:func (l *RegionLabeler) DeleteLabelRule(id string) error {
+pkg/schedule/labeler/labeler.go:312:func (l *RegionLabeler) DeleteLabelRuleLocked(id string) error {
+pkg/schedule/labeler/labeler.go:323:func (l *RegionLabeler) Patch(patch LabelRulePatch) error {
+pkg/schedule/labeler/labeler.go:372:func (l *RegionLabeler) GetRegionLabel(region *core.RegionInfo, key string) string {
+pkg/schedule/labeler/labeler.go:405:func (l *RegionLabeler) ScheduleDisabled(region *core.RegionInfo) bool {
+pkg/schedule/labeler/labeler.go:412:func (l *RegionLabeler) GetRegionLabels(region *core.RegionInfo) []*RegionLabel {
+pkg/schedule/labeler/labeler.go:452:func MakeKeyRanges(keys ...string) []any {
+pkg/schedule/labeler/labeler.go:457:func (l *RegionLabeler) IterateLabelRules(iterator func(rule *LabelRule) bool) {
+pkg/schedule/labeler/rules.go:36:type RegionLabel struct {
+pkg/schedule/labeler/rules.go:39:	TTL     string `json:"ttl,omitempty"`
+pkg/schedule/labeler/rules.go:40:	StartAt string `json:"start_at,omitempty"`
+pkg/schedule/labeler/rules.go:44:func (l *RegionLabel) String() string {
+pkg/schedule/labeler/rules.go:50:type LabelRule struct {
+pkg/schedule/labeler/rules.go:54:	RuleType  string        `json:"rule_type"`
+pkg/schedule/labeler/rules.go:59:func (rule *LabelRule) String() string {
+pkg/schedule/labeler/rules.go:91:func (rule *LabelRule) GetKeyRanges() []*KeyRangeRule {
+pkg/schedule/labeler/rules.go:103:func NewLabelRuleFromJSON(data []byte) (*LabelRule, error) {
+pkg/schedule/labeler/rules.go:115:func NewLabelRuleFromJSONWithoutCheck(data []byte) (*LabelRule, error) {
+pkg/schedule/labeler/rules.go:125:	KeyRange = "key-range"
+pkg/schedule/labeler/rules.go:135:type KeyRangeRule struct {
+pkg/schedule/labeler/rules.go:136:	StartKey    []byte `json:"-"`         // range start key
+pkg/schedule/labeler/rules.go:137:	StartKeyHex string `json:"start_key"` // hex format start key, for marshal/unmarshal
+pkg/schedule/labeler/rules.go:138:	EndKey      []byte `json:"-"`         // range end key
+pkg/schedule/labeler/rules.go:139:	EndKeyHex   string `json:"end_key"`   // hex format end key, for marshal/unmarshal
+pkg/schedule/labeler/rules.go:144:type LabelRulePatch struct {
+pkg/schedule/labeler/rules.go:145:	SetRules    []*LabelRule `json:"sets"`
+pkg/schedule/labeler/rules.go:146:	DeleteRules []string     `json:"deletes"`
+pkg/schedule/labeler/metrics.go:21:	LabelerEventCounter = prometheus.NewCounterVec(
+pkg/schedule/labeler/plan.go:23:type Plan struct {
+pkg/schedule/labeler/plan.go:31:func (l *RegionLabeler) NewPlan() *Plan {
+pkg/schedule/labeler/plan.go:42:func (p *Plan) SetLabelRule(rule *LabelRule) error {
+pkg/schedule/labeler/plan.go:61:func (p *Plan) DeleteLabelRule(id string) error {
+pkg/schedule/labeler/plan.go:75:func (p *Plan) CommitOps() []func(txn kv.Txn) error {
+pkg/schedule/labeler/plan.go:83:func (p *Plan) Apply() {
+
+GO TESTS
+pkg/schedule/labeler/rule_test.go:26:func TestRegionLabelTTL(t *testing.T) {
+pkg/schedule/labeler/keyspace_index_test.go:61:func TestKeyspaceRuleIndex(t *testing.T) {
+pkg/schedule/labeler/keyspace_index_test.go:112:func TestKeyspaceRuleIndexRejectsNonCanonicalID(t *testing.T) {
+pkg/schedule/labeler/keyspace_index_test.go:123:func TestKeyspaceRuleIndexBoundaries(t *testing.T) {
+pkg/schedule/labeler/keyspace_index_test.go:154:func TestKeyspaceRuleIndexMatchesIncompletePrefix(t *testing.T) {
+pkg/schedule/labeler/keyspace_index_test.go:220:func TestKeyspaceRuleIndexSparseGap(t *testing.T) {
+pkg/schedule/labeler/keyspace_index_test.go:249:func TestKeyspaceBoundaryBoundMatchesBinarySearch(t *testing.T) {
+pkg/schedule/labeler/keyspace_index_test.go:284:func TestKeyspaceRuleSetUsesSparseChunks(t *testing.T) {
+pkg/schedule/labeler/keyspace_index_test.go:308:func TestKeyspaceRuleSetIteratesChunkBitmapBoundaries(t *testing.T) {
+pkg/schedule/labeler/keyspace_index_test.go:339:func TestKeyspaceRuleIndexReplaceReusesSparseStorage(t *testing.T) {
+pkg/schedule/labeler/keyspace_index_test.go:396:func TestKeyspaceRuleIndexPreservesLegacyResults(t *testing.T) {
+pkg/schedule/labeler/keyspace_index_test.go:479:func TestRegionLabelerUpdatesKeyspaceRulesIncrementally(t *testing.T) {
+pkg/schedule/labeler/keyspace_index_test.go:542:func TestRegionLabelerUpdatesMutatedKeyspaceRule(t *testing.T) {
+pkg/schedule/labeler/keyspace_index_test.go:564:func TestNewLabelRuleIndexBuildsAuthoritativeSnapshot(t *testing.T) {
+pkg/schedule/labeler/keyspace_index_test.go:587:func BenchmarkKeyspaceRuleIndexSparse(b *testing.B) {
+pkg/schedule/labeler/keyspace_index_test.go:630:func BenchmarkRegionLabelerNegativeLookup(b *testing.B) {
+pkg/schedule/labeler/keyspace_index_test.go:666:func BenchmarkRegionLabelerKeyspaceIndex(b *testing.B) {
+pkg/schedule/labeler/plan_test.go:29:func TestPlanSetLabelRule(t *testing.T) {
+pkg/schedule/labeler/plan_test.go:75:func TestPlanDeleteLabelRule(t *testing.T) {
+pkg/schedule/labeler/plan_test.go:98:func TestPlanCommitOps(t *testing.T) {
+pkg/schedule/labeler/plan_test.go:140:func TestPlanApply(t *testing.T) {
+pkg/schedule/labeler/plan_test.go:212:func TestPlanApplyWithError(t *testing.T) {
+pkg/schedule/labeler/plan_test.go:242:func TestPlanMultipleOperations(t *testing.T) {
+pkg/schedule/labeler/plan_test.go:295:func TestPlanDeleteNonExistentRule(t *testing.T) {
+pkg/schedule/labeler/labeler_test.go:40:func TestMain(m *testing.M) {
+pkg/schedule/labeler/labeler_test.go:44:func TestAdjustRule(t *testing.T) {
+pkg/schedule/labeler/labeler_test.go:63:func TestAdjustRule2(t *testing.T) {
+pkg/schedule/labeler/labeler_test.go:102:func TestGetSetRule(t *testing.T) {
+pkg/schedule/labeler/labeler_test.go:166:func TestTxnWithEtcd(t *testing.T) {
+pkg/schedule/labeler/labeler_test.go:235:func TestIndex(t *testing.T) {
+pkg/schedule/labeler/labeler_test.go:281:func TestSaveLoadRule(t *testing.T) {
+pkg/schedule/labeler/labeler_test.go:332:func TestKeyRange(t *testing.T) {
+pkg/schedule/labeler/labeler_test.go:377:func TestLabelerRuleTTL(t *testing.T) {
+pkg/schedule/labeler/labeler_test.go:452:func TestExpiredRuleRemovalPublishesRangeIndex(t *testing.T) {
+pkg/schedule/labeler/labeler_test.go:487:func TestGC(t *testing.T) {
+
+FAILPOINTS / METRICS / KEYS / BACKGROUND
+pkg/schedule/labeler/labeler.go:73:	ticker := time.NewTicker(gcInterval)
+pkg/schedule/labeler/labeler.go:80:		case <-l.ctx.Done():
+pkg/schedule/labeler/rules.go:150:	failpoint.Inject("regionLabelExpireSub1Minute", func() {
+pkg/schedule/labeler/metrics.go:21:	LabelerEventCounter = prometheus.NewCounterVec(
+pkg/schedule/labeler/metrics.go:22:		prometheus.CounterOpts{
+pkg/schedule/labeler/metrics.go:29:	newRegionLabelerDuration = prometheus.NewHistogram(
+pkg/schedule/labeler/metrics.go:30:		prometheus.HistogramOpts{
+pkg/schedule/labeler/metrics.go:35:			Buckets:   prometheus.ExponentialBuckets(0.001, 2, 13), // 1ms ~ 4s
+pkg/schedule/labeler/metrics.go:40:	prometheus.MustRegister(LabelerEventCounter)
+pkg/schedule/labeler/metrics.go:41:	prometheus.MustRegister(newRegionLabelerDuration)
+
+RUST PUBLIC API / REGISTRATION
+pkg/schedule/labeler/rule_index.rs:10:pub struct LabelRuleIndex {
+pkg/schedule/labeler/rule_index.rs:23:    pub fn new(rules: impl IntoIterator<Item = LabelRule>) -> Self {
+pkg/schedule/labeler/rule_index.rs:40:    pub fn rule(&self, id: &str) -> Option<&LabelRule> {
+pkg/schedule/labeler/rule_index.rs:44:    pub fn rules(&self) -> impl Iterator<Item = &LabelRule> {
+pkg/schedule/labeler/rule_index.rs:48:    pub fn set(&mut self, rule: LabelRule) {
+pkg/schedule/labeler/rule_index.rs:65:    pub fn delete(&mut self, id: &str) {
+pkg/schedule/labeler/rule_index.rs:74:    pub fn remove_expired_labels(&mut self, id: &str, now: Timestamp) -> bool {
+pkg/schedule/labeler/rule_index.rs:84:    pub fn min_expire(&self) -> Option<Timestamp> {
+pkg/schedule/labeler/rule_index.rs:89:    pub fn get_split_keys(&self, start: &[u8], end: &[u8]) -> Vec<&[u8]> {
+pkg/schedule/labeler/rule_index.rs:99:    pub fn get_range_rules(&self, start: &[u8], end: &[u8]) -> Option<Vec<&LabelRule>> {
+pkg/schedule/labeler/label_query.rs:7:    pub fn get_region_label(&self, region: &RegionInfo, key: &str, now: Timestamp) -> String {
+pkg/schedule/labeler/label_query.rs:29:    pub fn get_region_labels(&self, region: &RegionInfo, now: Timestamp) -> Vec<RegionLabel> {
+pkg/schedule/labeler/label_query.rs:56:    pub fn schedule_disabled(&self, region: &RegionInfo, now: Timestamp) -> bool {
+pkg/schedule/labeler/label_query.rs:61:    pub fn get_label_rules(&self, ids: &[&str], now: Timestamp) -> Vec<LabelRule> {
+pkg/schedule/labeler/label_query.rs:67:    pub fn get_label_rule(&self, id: &str, now: Timestamp) -> Option<LabelRule> {
+pkg/schedule/labeler/label_query.rs:73:    pub fn get_all_label_rules(&self, now: Timestamp) -> Vec<LabelRule> {
+pkg/schedule/labeler/label_query.rs:80:    pub fn iterate_label_rules(&self, mut visitor: impl FnMut(&LabelRule) -> bool) {
+pkg/schedule/labeler/labeler.rs:11:pub enum LabelerError {
+pkg/schedule/labeler/labeler.rs:24:pub struct RegionLabeler {
+pkg/schedule/labeler/labeler.rs:31:    pub async fn load(
+pkg/schedule/labeler/labeler.rs:64:    pub fn index(&self) -> &LabelRuleIndex {
+pkg/schedule/labeler/labeler.rs:68:    pub async fn set_label_rule(
+pkg/schedule/labeler/labeler.rs:77:    pub async fn set_validated_label_rule(&mut self, rule: LabelRule) -> Result<(), LabelerError> {
+pkg/schedule/labeler/labeler.rs:88:    pub async fn delete_label_rule(&mut self, id: &str) -> Result<(), LabelerError> {
+pkg/schedule/labeler/labeler.rs:99:    pub async fn delete_label_rule_if_present(&mut self, id: &str) -> Result<(), LabelerError> {
+pkg/schedule/labeler/keyspace_index.rs:9:pub const MAX_KEYSPACE_ID: u32 = 0xff_ffff;
+pkg/schedule/labeler/keyspace_index.rs:13:pub fn parse_keyspace_rule_id(text: &str) -> Option<u32> {
+pkg/schedule/labeler/keyspace_index.rs:67:pub struct KeyspaceRuleIndex {
+pkg/schedule/labeler/keyspace_index.rs:72:    pub fn is_empty(&self) -> bool {
+pkg/schedule/labeler/keyspace_index.rs:76:    pub fn add(&mut self, rule: Arc<LabelRule>) -> bool {
+pkg/schedule/labeler/keyspace_index.rs:97:    pub fn replace(&mut self, old: &Arc<LabelRule>, rule: Arc<LabelRule>) -> bool {
+pkg/schedule/labeler/keyspace_index.rs:135:    pub fn remove(&mut self, rule_id: &str, rule: &Arc<LabelRule>) -> bool {
+pkg/schedule/labeler/keyspace_index.rs:153:    pub fn contains(&self, rule: &Arc<LabelRule>) -> bool {
+pkg/schedule/labeler/keyspace_index.rs:163:    pub fn get_rule(&self, start: &[u8], end: &[u8]) -> Option<&LabelRule> {
+pkg/schedule/labeler/keyspace_index.rs:167:    pub fn match_rule(&self, start: &[u8], end: &[u8]) -> (Option<&LabelRule>, bool) {
+pkg/schedule/labeler/keyspace_index.rs:204:    pub fn has_split_key(&self, start: &[u8], end: &[u8]) -> bool {
+pkg/schedule/labeler/keyspace_index.rs:208:    pub fn get_split_keys<'a>(&'a self, start: &[u8], end: &[u8]) -> Vec<&'a [u8]> {
+pkg/schedule/labeler/keyspace_index.rs:256:pub fn merge_split_keys<'a>(left: Vec<&'a [u8]>, right: Vec<&'a [u8]>) -> Vec<&'a [u8]> {
+pkg/schedule/labeler/plan.rs:12:pub enum LabelCommitOp {
+pkg/schedule/labeler/plan.rs:18:    pub fn buffer(
+pkg/schedule/labeler/plan.rs:33:pub struct LabelPlan {
+pkg/schedule/labeler/plan.rs:38:    pub fn new() -> Self {
+pkg/schedule/labeler/plan.rs:42:    pub fn set_label_rule(
+pkg/schedule/labeler/plan.rs:56:    pub fn delete_label_rule(&mut self, id: impl Into<String>) -> Result<(), &RuleError> {
+pkg/schedule/labeler/plan.rs:63:    pub fn error(&self) -> Option<&RuleError> {
+pkg/schedule/labeler/plan.rs:67:    pub fn commit_ops(&self) -> &[LabelCommitOp] {
+pkg/schedule/labeler/plan.rs:71:    pub fn apply(&self, owner: &mut RegionLabeler) {
+pkg/schedule/labeler/plan.rs:87:pub struct LabelRulePatch {
+pkg/schedule/labeler/plan.rs:93:    pub fn new_plan(&self) -> LabelPlan {
+pkg/schedule/labeler/plan.rs:98:    pub async fn commit_plan(&mut self, plan: &LabelPlan) -> Result<(), LabelerError> {
+pkg/schedule/labeler/plan.rs:115:    pub async fn patch(
+pkg/schedule/labeler/gc.rs:13:pub struct LabelerMetrics {
+pkg/schedule/labeler/gc.rs:19:    pub fn register(registry: &Registry) -> Result<Self, prometheus::Error> {
+pkg/schedule/labeler/gc.rs:48:    pub fn get_rule_and_key_range_counts(&self, now: Timestamp) -> (usize, usize) {
+pkg/schedule/labeler/gc.rs:60:    pub async fn clear_expired_labels(&mut self, now: Timestamp) -> Vec<LabelerError> {
+pkg/schedule/labeler/gc.rs:90:pub struct LabelerGc {
+pkg/schedule/labeler/gc.rs:97:    pub fn start(
+pkg/schedule/labeler/gc.rs:130:    pub async fn shutdown(mut self) -> Result<Vec<LabelerError>, tokio::task::JoinError> {
+pkg/schedule/labeler/lib.rs:4:pub use rules::*;
+pkg/schedule/labeler/lib.rs:6:#[path = "label_rule_test.rs"]
+pkg/schedule/labeler/lib.rs:9:pub use rule_index::LabelRuleIndex;
+pkg/schedule/labeler/lib.rs:11:#[path = "label_index_test.rs"]
+pkg/schedule/labeler/lib.rs:15:pub use keyspace_index::{
+pkg/schedule/labeler/lib.rs:19:#[path = "label_keyspace_test.rs"]
+pkg/schedule/labeler/lib.rs:23:pub use labeler::{LabelerError, RegionLabeler};
+pkg/schedule/labeler/lib.rs:25:#[path = "label_restore_test.rs"]
+pkg/schedule/labeler/lib.rs:29:pub use plan::{LabelCommitOp, LabelPlan, LabelRulePatch};
+pkg/schedule/labeler/lib.rs:31:#[path = "label_txn_test.rs"]
+pkg/schedule/labeler/lib.rs:36:#[path = "label_query_test.rs"]
+pkg/schedule/labeler/lib.rs:40:pub use gc::{LabelerGc, LabelerMetrics};
+pkg/schedule/labeler/lib.rs:42:#[path = "label_gc_test.rs"]
+pkg/schedule/labeler/label_restore_test.rs:9:#[path = "../../storage/kv/etcd_fixture_test.rs"]
+pkg/schedule/labeler/rules.rs:14:pub const KEY_RANGE: &str = "key-range";
+pkg/schedule/labeler/rules.rs:17:pub type Timestamp = i128;
+pkg/schedule/labeler/rules.rs:21:pub enum RuleError {
+pkg/schedule/labeler/rules.rs:36:    pub fn code(&self) -> Option<&'static str> {
+pkg/schedule/labeler/rules.rs:49:pub struct RegionLabel {
+pkg/schedule/labeler/rules.rs:61:    pub fn expires_at(&self) -> Option<Timestamp> {
+pkg/schedule/labeler/rules.rs:65:    pub fn expire_before(&self, now: Timestamp) -> bool {
+pkg/schedule/labeler/rules.rs:69:    pub fn check_and_adjust_expire(&mut self, now: Timestamp) -> Result<(), RuleError> {
+pkg/schedule/labeler/rules.rs:97:pub struct KeyRangeRule {
+pkg/schedule/labeler/rules.rs:110:pub struct LabelRule {
+pkg/schedule/labeler/rules.rs:123:    pub fn from_json_without_check(data: &[u8]) -> Result<Self, RuleError> {
+pkg/schedule/labeler/rules.rs:127:    pub fn from_json(data: &[u8], now: Timestamp) -> Result<Self, RuleError> {
+pkg/schedule/labeler/rules.rs:133:    pub fn key_ranges(&self) -> Option<&[KeyRangeRule]> {
+pkg/schedule/labeler/rules.rs:141:    pub fn min_expire(&self) -> Option<Timestamp> {
+pkg/schedule/labeler/rules.rs:145:    pub fn expire_before(&self, now: Timestamp) -> bool {
+pkg/schedule/labeler/rules.rs:149:    pub fn check_and_remove_expire_labels(&mut self, now: Timestamp) -> bool {
+pkg/schedule/labeler/rules.rs:156:    pub fn check_and_adjust(&mut self, now: Timestamp) -> Result<(), RuleError> {
+
+RUST TESTS
+pkg/schedule/labeler/label_txn_test.rs:8:fn rule(id: &str, start: &str, end: &str) -> LabelRule {
+pkg/schedule/labeler/label_txn_test.rs:78:async fn contract(store: Arc<dyn MetaStore>) {
+pkg/schedule/labeler/label_txn_test.rs:265:async fn label_txn_memory_contract() {
+pkg/schedule/labeler/label_txn_test.rs:269:async fn label_txn_etcd_contract() {
+pkg/schedule/labeler/label_rule_test.rs:5:fn input() -> Value {
+pkg/schedule/labeler/label_rule_test.rs:8:fn decode(value: &Value) -> Result<LabelRule, RuleError> {
+pkg/schedule/labeler/label_rule_test.rs:13:fn label_rule_go_oracle_cases() {
+pkg/schedule/labeler/label_rule_test.rs:58:fn label_rule_expiration_boundary_and_minimum() {
+pkg/schedule/labeler/label_rule_test.rs:83:fn label_rule_auto_start_roundtrip_precision() {
+pkg/schedule/labeler/label_rule_test.rs:97:fn label_rule_hex_bytes_and_case_preservation() {
+pkg/schedule/labeler/label_rule_test.rs:110:fn label_rule_unchecked_and_json_errors() {
+pkg/schedule/labeler/label_rule_test.rs:128:fn label_rule_ttl_signed_zero_and_explicit_start() {
+pkg/schedule/labeler/label_rule_test.rs:152:fn label_rule_json_null_case_and_duplicate_fields() {
+pkg/schedule/labeler/label_rule_test.rs:165:fn label_rule_timezone_and_calendar_expiry() {
+pkg/schedule/labeler/label_gc_test.rs:10:async fn contract(store: Arc<dyn MetaStore>) {
+pkg/schedule/labeler/label_gc_test.rs:39:async fn label_gc_memory_expiry_restart() {
+pkg/schedule/labeler/label_gc_test.rs:43:async fn label_gc_etcd_expiry_restart() {
+pkg/schedule/labeler/label_gc_test.rs:48:async fn label_gc_background_cancellation_and_cadence() {
+pkg/schedule/labeler/label_gc_test.rs:85:fn label_gc_metrics_host_registry() {
+pkg/schedule/labeler/label_gc_test.rs:186:async fn gc_failure_contract(store: Arc<dyn MetaStore>) {
+pkg/schedule/labeler/label_gc_test.rs:214:async fn label_gc_memory_io_failure() {
+pkg/schedule/labeler/label_gc_test.rs:218:async fn label_gc_etcd_io_failure() {
+pkg/schedule/labeler/label_gc_test.rs:223:async fn label_gc_go_runtime_fixture() {
+pkg/schedule/labeler/label_gc_test.rs:246:async fn label_gc_etcd_same_wal_restart() {
+pkg/schedule/labeler/label_keyspace_test.rs:6:fn hex(bytes: &[u8]) -> String {
+pkg/schedule/labeler/label_keyspace_test.rs:9:fn rule(id: u32, modes: &[u8]) -> LabelRule {
+pkg/schedule/labeler/label_keyspace_test.rs:16:fn label_keyspace_canonical_shape_and_ids() {
+pkg/schedule/labeler/label_keyspace_test.rs:58:fn label_keyspace_ownership_and_atomic_replace() {
+pkg/schedule/labeler/label_keyspace_test.rs:99:fn label_keyspace_boundaries_and_incomplete_prefixes() {
+pkg/schedule/labeler/label_keyspace_test.rs:166:fn label_keyspace_generic_equivalence_and_transitions() {
+pkg/schedule/labeler/label_keyspace_test.rs:222:fn unhex(text: &str) -> Vec<u8> {
+pkg/schedule/labeler/label_keyspace_test.rs:229:fn label_keyspace_actual_go_runtime_fixture() {
+pkg/schedule/labeler/label_keyspace_test.rs:299:fn label_keyspace_legacy_range_equivalence() {
+pkg/schedule/labeler/label_restore_test.rs:12:fn rule(id: &str, start: &str, end: &str) -> LabelRule {
+pkg/schedule/labeler/label_restore_test.rs:15:async fn contract(store: Arc<dyn MetaStore>) {
+pkg/schedule/labeler/label_restore_test.rs:95:async fn label_restore_memory_contract() {
+pkg/schedule/labeler/label_restore_test.rs:99:async fn label_restore_etcd_contract_and_same_wal() {
+pkg/schedule/labeler/label_restore_test.rs:192:async fn failures(store: Arc<dyn MetaStore>) {
+pkg/schedule/labeler/label_restore_test.rs:314:async fn label_restore_memory_io_failures() {
+pkg/schedule/labeler/label_restore_test.rs:318:async fn label_restore_etcd_io_failures() {
+pkg/schedule/labeler/label_restore_test.rs:323:async fn restore_edges(store: Arc<dyn MetaStore>) {
+pkg/schedule/labeler/label_restore_test.rs:455:async fn label_restore_memory_pages_expiry_and_keyspaces() {
+pkg/schedule/labeler/label_restore_test.rs:459:async fn label_restore_etcd_pages_expiry_and_keyspaces() {
+pkg/schedule/labeler/label_index_test.rs:4:fn rule(id: &str, index: i64, ranges: &[(&str, &str)]) -> LabelRule {
+pkg/schedule/labeler/label_index_test.rs:10:fn initial() -> LabelRuleIndex {
+pkg/schedule/labeler/label_index_test.rs:17:fn ids(index: &LabelRuleIndex, start: &[u8], end: &[u8]) -> Option<Vec<String>> {
+pkg/schedule/labeler/label_index_test.rs:25:fn label_index_go_boundaries_and_priority() {
+pkg/schedule/labeler/label_index_test.rs:53:fn label_index_delete_and_replace_publish() {
+pkg/schedule/labeler/label_index_test.rs:81:fn label_index_multi_ranges_overlap_and_snapshot() {
+pkg/schedule/labeler/label_index_test.rs:98:fn label_index_expiry_snapshot_refresh() {
+pkg/schedule/labeler/label_query_test.rs:9:fn region(start: u8, end: u8) -> RegionInfo {
+pkg/schedule/labeler/label_query_test.rs:24:async fn label_query_priority_boundaries_and_ttl() {
+pkg/schedule/labeler/label_query_test.rs:79:async fn label_query_expired_snapshots_and_duplicate_labels() {
+pkg/schedule/labeler/label_query_test.rs:111:async fn label_query_go_runtime_fixture() {
+
+CONSUMERS
+tests/integrations/mcs/scheduling/api_test.go:39:	"github.com/tikv/pd/pkg/schedule/labeler"
+tests/integrations/mcs/scheduling/rule_test.go:28:	"github.com/tikv/pd/pkg/schedule/labeler"
+server/api/region_label.go:26:	"github.com/tikv/pd/pkg/schedule/labeler"
+tests/integrations/client/http_client_test.go:45:	"github.com/tikv/pd/pkg/schedule/labeler"
+pkg/mcs/scheduling/server/cluster.go:56:	"github.com/tikv/pd/pkg/schedule/labeler"
+pkg/mcs/scheduling/server/rule/watcher.go:34:	"github.com/tikv/pd/pkg/schedule/labeler"
+pkg/mcs/scheduling/server/rule/watcher_test.go:39:	"github.com/tikv/pd/pkg/schedule/labeler"
+tests/integrations/realcluster/scheduler_test.go:32:	"github.com/tikv/pd/pkg/schedule/labeler"
+pkg/mcs/scheduling/server/affinity/watcher.go:30:	"github.com/tikv/pd/pkg/schedule/labeler"
+pkg/mcs/scheduling/server/affinity/watcher_test.go:35:	"github.com/tikv/pd/pkg/schedule/labeler"
+server/cluster/split_scatter_test.go:33:	"github.com/tikv/pd/pkg/schedule/labeler"
+server/cluster/metering_test.go:31:	"github.com/tikv/pd/pkg/schedule/labeler"
+server/cluster/cluster.go:64:	"github.com/tikv/pd/pkg/schedule/labeler"
+tests/server/api/rule_test.go:40:	"github.com/tikv/pd/pkg/schedule/labeler"
+tests/server/api/region_label_test.go:28:	"github.com/tikv/pd/pkg/schedule/labeler"
+server/cluster/cluster_test.go:58:	"github.com/tikv/pd/pkg/schedule/labeler"
+tests/server/keyspace/keyspace_test.go:34:	"github.com/tikv/pd/pkg/schedule/labeler"
+pkg/schedule/core/cluster_informer.go:22:	"github.com/tikv/pd/pkg/schedule/labeler"
+pkg/schedule/handler/handler.go:39:	"github.com/tikv/pd/pkg/schedule/labeler"
+pkg/keyspace/util_test.go:33:	"github.com/tikv/pd/pkg/schedule/labeler"
+pkg/keyspace/keyspace.go:37:	"github.com/tikv/pd/pkg/schedule/labeler"
+pkg/keyspace/util.go:36:	"github.com/tikv/pd/pkg/schedule/labeler"
+pkg/schedule/affinity/split_test.go:31:	"github.com/tikv/pd/pkg/schedule/labeler"
+pkg/schedule/affinity/manager_test.go:32:	"github.com/tikv/pd/pkg/schedule/labeler"
+pkg/schedule/affinity/policy_test.go:32:	"github.com/tikv/pd/pkg/schedule/labeler"
+pkg/schedule/affinity/txn_test.go:29:	"github.com/tikv/pd/pkg/schedule/labeler"
+pkg/schedule/affinity/manager.go:30:	"github.com/tikv/pd/pkg/schedule/labeler"
+pkg/schedule/affinity/group.go:26:	"github.com/tikv/pd/pkg/schedule/labeler"
+pkg/schedule/checker/split_scatter_test.go:36:	"github.com/tikv/pd/pkg/schedule/labeler"
+pkg/schedule/affinity/txn.go:32:	"github.com/tikv/pd/pkg/schedule/labeler"
+pkg/schedule/schedulers/scheduler_controller.go:31:	"github.com/tikv/pd/pkg/schedule/labeler"
+pkg/schedule/affinity/group_test.go:29:	"github.com/tikv/pd/pkg/schedule/labeler"
+pkg/schedule/checker/affinity_checker_test.go:36:	"github.com/tikv/pd/pkg/schedule/labeler"
+pkg/schedule/checker/split_checker.go:24:	"github.com/tikv/pd/pkg/schedule/labeler"
+pkg/schedule/checker/merge_checker.go:32:	"github.com/tikv/pd/pkg/schedule/labeler"
+pkg/schedule/checker/checker_controller.go:36:	"github.com/tikv/pd/pkg/schedule/labeler"
+pkg/mock/mockcluster/mockcluster.go:38:	"github.com/tikv/pd/pkg/schedule/labeler"
+pkg/schedule/checker/merge_checker_test.go:36:	"github.com/tikv/pd/pkg/schedule/labeler"
+pkg/schedule/checker/split_checker_test.go:26:	"github.com/tikv/pd/pkg/schedule/labeler"
+pkg/schedule/operator/operator_controller_test.go:38:	"github.com/tikv/pd/pkg/schedule/labeler"
+
+PACKAGE placement
+FILES
+pkg/schedule/placement/config.go
+pkg/schedule/placement/config_test.go
+pkg/schedule/placement/fit.go
+pkg/schedule/placement/fit_region_test.go
+pkg/schedule/placement/fit_test.go
+pkg/schedule/placement/label_constraint.go
+pkg/schedule/placement/label_constraint_test.go
+pkg/schedule/placement/region_rule_cache.go
+pkg/schedule/placement/region_rule_cache_test.go
+pkg/schedule/placement/rule.go
+pkg/schedule/placement/rule_list.go
+pkg/schedule/placement/rule_manager.go
+pkg/schedule/placement/rule_manager_test.go
+pkg/schedule/placement/rule_test.go
+
+PUBLIC DECLARATIONS
+pkg/schedule/placement/rule_manager.go:48:	DefaultGroupID = "pd"
+pkg/schedule/placement/rule_manager.go:50:	DefaultRuleID = "default"
+pkg/schedule/placement/rule_manager.go:57:type RuleManager struct {
+pkg/schedule/placement/rule_manager.go:76:func NewRuleManager(ctx context.Context, storage endpoint.RuleStorage, storeSetInformer core.StoreSetInformer, conf config.SharedConfigProvider) *RuleManager {
+pkg/schedule/placement/rule_manager.go:89:func (m *RuleManager) Initialize(maxReplica int, locationLabels []string, isolationLevel string, skipLoadRules bool) error {
+pkg/schedule/placement/rule_manager.go:120:						GroupID:        DefaultGroupID,
+pkg/schedule/placement/rule_manager.go:124:						LocationLabels: locationLabels,
+pkg/schedule/placement/rule_manager.go:125:						IsolationLevel: isolationLevel,
+pkg/schedule/placement/rule_manager.go:128:						GroupID:        DefaultGroupID,
+pkg/schedule/placement/rule_manager.go:132:						IsWitness:      true,
+pkg/schedule/placement/rule_manager.go:133:						LocationLabels: locationLabels,
+pkg/schedule/placement/rule_manager.go:134:						IsolationLevel: isolationLevel,
+pkg/schedule/placement/rule_manager.go:140:				GroupID:        DefaultGroupID,
+pkg/schedule/placement/rule_manager.go:144:				LocationLabels: locationLabels,
+pkg/schedule/placement/rule_manager.go:145:				IsolationLevel: isolationLevel,
+pkg/schedule/placement/rule_manager.go:236:func (m *RuleManager) AdjustRule(r *Rule, groupID string) (err error) {
+pkg/schedule/placement/rule_manager.go:307:func (m *RuleManager) GetRule(group, id string) *Rule {
+pkg/schedule/placement/rule_manager.go:314:func (m *RuleManager) GetRuleLocked(group, id string) *Rule {
+pkg/schedule/placement/rule_manager.go:322:func (m *RuleManager) SetRule(rule *Rule) error {
+pkg/schedule/placement/rule_manager.go:338:func (m *RuleManager) DeleteRule(group, id string) error {
+pkg/schedule/placement/rule_manager.go:351:func (m *RuleManager) GetSplitKeys(start, end []byte) [][]byte {
+pkg/schedule/placement/rule_manager.go:358:func (m *RuleManager) GetAllRules() []*Rule {
+pkg/schedule/placement/rule_manager.go:370:func (m *RuleManager) GetRulesCount() int {
+pkg/schedule/placement/rule_manager.go:378:func (m *RuleManager) MayRestrictStoreLoad(isTiKV bool) bool {
+pkg/schedule/placement/rule_manager.go:398:func (m *RuleManager) GetGroupsCount() int {
+pkg/schedule/placement/rule_manager.go:406:func (m *RuleManager) GetRuleConfigForReconcile() ([]*Rule, []*RuleGroup) {
+pkg/schedule/placement/rule_manager.go:429:func (m *RuleManager) GetRulesByGroup(group string) []*Rule {
+pkg/schedule/placement/rule_manager.go:436:func (m *RuleManager) GetRulesByGroupLocked(group string) []*Rule {
+pkg/schedule/placement/rule_manager.go:448:func (m *RuleManager) GetRulesByKey(key []byte) []*Rule {
+pkg/schedule/placement/rule_manager.go:460:func (m *RuleManager) GetRulesForApplyRegion(region *core.RegionInfo) []*Rule {
+pkg/schedule/placement/rule_manager.go:467:func (m *RuleManager) GetRulesForApplyRange(start, end []byte) []*Rule {
+pkg/schedule/placement/rule_manager.go:474:func (m *RuleManager) IsRegionFitCached(storeSet StoreSet, region *core.RegionInfo) bool {
+pkg/schedule/placement/rule_manager.go:483:func (m *RuleManager) FitRegionWithoutCache(storeSet StoreSet, region *core.RegionInfo) (fit *RegionFit) {
+pkg/schedule/placement/rule_manager.go:493:func (m *RuleManager) FitRegion(storeSet StoreSet, region *core.RegionInfo) (fit *RegionFit) {
+pkg/schedule/placement/rule_manager.go:512:func (m *RuleManager) SetRegionFitCache(storeSet StoreSet, region *core.RegionInfo, fit *RegionFit) {
+pkg/schedule/placement/rule_manager.go:517:func (m *RuleManager) InvalidCache(regionID uint64) {
+pkg/schedule/placement/rule_manager.go:522:func (m *RuleManager) RemoveStoreCache(storeID uint64) {
+pkg/schedule/placement/rule_manager.go:528:func (m *RuleManager) SetPlaceholderRegionFitCache(region *core.RegionInfo) {
+pkg/schedule/placement/rule_manager.go:537:func (m *RuleManager) CheckIsCachedDirectly(regionID uint64) bool {
+pkg/schedule/placement/rule_manager.go:545:func (m *RuleManager) BeginPatch() *RuleConfigPatch {
+pkg/schedule/placement/rule_manager.go:550:func (m *RuleManager) TryCommitPatchLocked(patch *RuleConfigPatch) error {
+pkg/schedule/placement/rule_manager.go:606:func (m *RuleManager) SetRules(rules []*Rule) error {
+pkg/schedule/placement/rule_manager.go:625:type RuleOpType string
+pkg/schedule/placement/rule_manager.go:629:	RuleOpAdd RuleOpType = "add"
+pkg/schedule/placement/rule_manager.go:631:	RuleOpDel RuleOpType = "del"
+pkg/schedule/placement/rule_manager.go:636:type RuleOp struct {
+pkg/schedule/placement/rule_manager.go:638:	Action           RuleOpType `json:"action"`
+pkg/schedule/placement/rule_manager.go:639:	DeleteByIDPrefix bool       `json:"delete_by_id_prefix"` // if action == delete, delete by the prefix of id
+pkg/schedule/placement/rule_manager.go:642:func (r RuleOp) String() string {
+pkg/schedule/placement/rule_manager.go:648:func (m *RuleManager) Batch(todo []RuleOp) error {
+pkg/schedule/placement/rule_manager.go:688:func (m *RuleManager) GetRuleGroup(id string) *RuleGroup {
+pkg/schedule/placement/rule_manager.go:695:func (m *RuleManager) GetRuleGroups() []*RuleGroup {
+pkg/schedule/placement/rule_manager.go:710:func (m *RuleManager) SetRuleGroup(group *RuleGroup) error {
+pkg/schedule/placement/rule_manager.go:723:func (m *RuleManager) DeleteRuleGroup(id string) error {
+pkg/schedule/placement/rule_manager.go:737:func (m *RuleManager) GetAllGroupBundles() []GroupBundle {
+pkg/schedule/placement/rule_manager.go:766:func (m *RuleManager) GetGroupBundle(id string) (b GroupBundle) {
+pkg/schedule/placement/rule_manager.go:783:func (m *RuleManager) SetAllGroupBundles(groups []GroupBundle, override bool) error {
+pkg/schedule/placement/rule_manager.go:827:func (m *RuleManager) SetGroupBundle(group GroupBundle) error {
+pkg/schedule/placement/rule_manager.go:858:func (m *RuleManager) DeleteGroupBundle(id string, regex bool) error {
+pkg/schedule/placement/rule_manager.go:889:func (m *RuleManager) IsInitialized() bool {
+pkg/schedule/placement/rule_manager.go:904:func (m *RuleManager) SetKeyType(h string) *RuleManager {
+pkg/schedule/placement/rule.go:27:type PeerRoleType string
+pkg/schedule/placement/rule.go:31:	Voter PeerRoleType = "voter"
+pkg/schedule/placement/rule.go:33:	Leader PeerRoleType = "leader"
+pkg/schedule/placement/rule.go:35:	Follower PeerRoleType = "follower"
+pkg/schedule/placement/rule.go:37:	Learner PeerRoleType = "learner"
+pkg/schedule/placement/rule.go:45:func (s PeerRoleType) MetaPeerRole() metapb.PeerRole {
+pkg/schedule/placement/rule.go:57:type Rule struct {
+pkg/schedule/placement/rule.go:58:	GroupID          string            `json:"group_id"`                    // mark the source that add the rule
+pkg/schedule/placement/rule.go:62:	StartKey         []byte            `json:"-"`                           // range start key
+pkg/schedule/placement/rule.go:63:	StartKeyHex      string            `json:"start_key"`                   // hex format start key, for marshal/unmarshal
+pkg/schedule/placement/rule.go:64:	EndKey           []byte            `json:"-"`                           // range end key
+pkg/schedule/placement/rule.go:65:	EndKeyHex        string            `json:"end_key"`                     // hex format end key, for marshal/unmarshal
+pkg/schedule/placement/rule.go:66:	Role             PeerRoleType      `json:"role"`                        // expected role of the peers
+pkg/schedule/placement/rule.go:67:	IsWitness        bool              `json:"is_witness"`                  // when it is true, it means the role is also a witness
+pkg/schedule/placement/rule.go:69:	LabelConstraints []LabelConstraint `json:"label_constraints,omitempty"` // used to select stores to place peers
+pkg/schedule/placement/rule.go:70:	LocationLabels   []string          `json:"location_labels,omitempty"`   // used to make peers isolated physically
+pkg/schedule/placement/rule.go:71:	IsolationLevel   string            `json:"isolation_level,omitempty"`   // used to isolate replicas explicitly and forcibly
+pkg/schedule/placement/rule.go:73:	CreateTimestamp  uint64            `json:"create_timestamp,omitempty"`  // only set at runtime, recorded rule create timestamp
+pkg/schedule/placement/rule.go:78:func NewRuleFromJSON(data []byte) (*Rule, error) {
+pkg/schedule/placement/rule.go:86:func (r *Rule) String() string {
+pkg/schedule/placement/rule.go:92:func (r *Rule) Clone() *Rule {
+pkg/schedule/placement/rule.go:101:func (r *Rule) Key() [2]string {
+pkg/schedule/placement/rule.go:106:func (r *Rule) StoreKey() string {
+pkg/schedule/placement/rule.go:119:type RuleGroup struct {
+pkg/schedule/placement/rule.go:126:func NewRuleGroupFromJSON(data []byte) (*RuleGroup, error) {
+pkg/schedule/placement/rule.go:138:func (g *RuleGroup) String() string {
+pkg/schedule/placement/rule.go:144:func (g *RuleGroup) Clone() *RuleGroup {
+pkg/schedule/placement/rule.go:213:type GroupBundle struct {
+pkg/schedule/placement/rule.go:220:func (g GroupBundle) String() string {
+pkg/schedule/placement/label_constraint.go:26:type LabelConstraintOp string
+pkg/schedule/placement/label_constraint.go:31:	In LabelConstraintOp = "in"
+pkg/schedule/placement/label_constraint.go:34:	NotIn LabelConstraintOp = "notIn"
+pkg/schedule/placement/label_constraint.go:36:	Exists LabelConstraintOp = "exists"
+pkg/schedule/placement/label_constraint.go:38:	NotExists LabelConstraintOp = "notExists"
+pkg/schedule/placement/label_constraint.go:46:type LabelConstraint struct {
+pkg/schedule/placement/label_constraint.go:48:	Op     LabelConstraintOp `json:"op,omitempty"`
+pkg/schedule/placement/label_constraint.go:53:func (c *LabelConstraint) MatchStore(store *core.StoreInfo) bool {
+pkg/schedule/placement/label_constraint.go:84:func MatchLabelConstraints(store *core.StoreInfo, constraints []LabelConstraint) bool {
+pkg/schedule/placement/fit.go:32:type RegionFit struct {
+pkg/schedule/placement/fit.go:33:	RuleFits     []*RuleFit     `json:"rule-fits"`
+pkg/schedule/placement/fit.go:34:	OrphanPeers  []*metapb.Peer `json:"orphan-peers"`
+pkg/schedule/placement/fit.go:40:func (f *RegionFit) Replace(srcStoreID uint64, dstStore *core.StoreInfo) bool {
+pkg/schedule/placement/fit.go:85:func (f *RegionFit) IsSatisfied() bool {
+pkg/schedule/placement/fit.go:98:func (f *RegionFit) ExtraCount() int {
+pkg/schedule/placement/fit.go:107:func (f *RegionFit) GetRuleFit(peerID uint64) *RuleFit {
+pkg/schedule/placement/fit.go:119:func (f *RegionFit) GetRegionStores() []*core.StoreInfo {
+pkg/schedule/placement/fit.go:124:func (f *RegionFit) GetRules() []*Rule {
+pkg/schedule/placement/fit.go:129:type RuleFit struct {
+pkg/schedule/placement/fit.go:136:	PeersWithDifferentRole []*metapb.Peer `json:"peers-different-role"`
+pkg/schedule/placement/fit.go:139:	IsolationScore float64 `json:"isolation-score"`
+pkg/schedule/placement/fit.go:140:	WitnessScore   int     `json:"witness-score"`
+pkg/schedule/placement/fit.go:146:func (f *RuleFit) IsSatisfied() bool {
+pkg/schedule/placement/fit.go:183:type StoreSet interface {
+pkg/schedule/placement/fit.go:184:	GetStores() []*core.StoreInfo
+pkg/schedule/placement/fit.go:185:	GetStore(id uint64) *core.StoreInfo
+pkg/schedule/placement/config.go:133:type RuleConfigPatch struct {
+pkg/schedule/placement/config.go:139:func (p *RuleConfigPatch) SetRule(r *Rule) {
+pkg/schedule/placement/config.go:144:func (p *RuleConfigPatch) DeleteRule(group, id string) {
+pkg/schedule/placement/config.go:159:func (p *RuleConfigPatch) SetGroup(g *RuleGroup) {
+pkg/schedule/placement/config.go:164:func (p *RuleConfigPatch) DeleteGroup(id string) {
+pkg/schedule/placement/region_rule_cache.go:42:type RegionRuleFitCacheManager struct {
+pkg/schedule/placement/region_rule_cache.go:61:func NewRegionRuleFitCacheManager() *RegionRuleFitCacheManager {
+pkg/schedule/placement/region_rule_cache.go:71:func (manager *RegionRuleFitCacheManager) RemoveStoreCache(storeID uint64) {
+pkg/schedule/placement/region_rule_cache.go:86:func (manager *RegionRuleFitCacheManager) Invalid(regionID uint64) {
+pkg/schedule/placement/region_rule_cache.go:114:func (manager *RegionRuleFitCacheManager) CheckAndGetCache(region *core.RegionInfo,
+pkg/schedule/placement/region_rule_cache.go:131:func (manager *RegionRuleFitCacheManager) SetCache(storeSet StoreSet, region *core.RegionInfo, fit *RegionFit) {
+pkg/schedule/placement/region_rule_cache.go:186:func (cache *regionRuleFitCache) IsUnchanged(region *core.RegionInfo, rules []*Rule, stores []*core.StoreInfo) bool {
+pkg/schedule/placement/region_rule_cache.go:357:func ValidateStores(stores []*core.StoreInfo) bool {
+pkg/schedule/placement/region_rule_cache.go:364:func ValidateRegion(region *core.RegionInfo) bool {
+pkg/schedule/placement/region_rule_cache.go:369:func ValidateFit(fit *RegionFit) bool {
+
+GO TESTS
+pkg/schedule/placement/fit_test.go:132:func TestReplace(t *testing.T) {
+pkg/schedule/placement/fit_test.go:180:func TestFitRegion(t *testing.T) {
+pkg/schedule/placement/fit_test.go:232:func TestIsolationScore(t *testing.T) {
+pkg/schedule/placement/fit_test.go:266:func TestPickPeersFromBinaryInt(t *testing.T) {
+pkg/schedule/placement/config_test.go:26:func TestMain(m *testing.M) {
+pkg/schedule/placement/config_test.go:30:func TestTrim(t *testing.T) {
+pkg/schedule/placement/rule_test.go:25:func TestPrepareRulesForApply(t *testing.T) {
+pkg/schedule/placement/rule_test.go:62:func TestGroupProperties(t *testing.T) {
+pkg/schedule/placement/rule_test.go:110:func TestBuildRuleList(t *testing.T) {
+pkg/schedule/placement/rule_test.go:192:func TestRuleKeyClone(t *testing.T) {
+pkg/schedule/placement/fit_region_test.go:111:func BenchmarkFitRegion(b *testing.B) {
+pkg/schedule/placement/fit_region_test.go:130:func BenchmarkFitRegionMoreStores(b *testing.B) {
+pkg/schedule/placement/fit_region_test.go:149:func BenchmarkFitRegionMorePeers(b *testing.B) {
+pkg/schedule/placement/fit_region_test.go:168:func BenchmarkFitRegionMorePeersEquals(b *testing.B) {
+pkg/schedule/placement/fit_region_test.go:194:func BenchmarkFitRegionMorePeersSplitRules(b *testing.B) {
+pkg/schedule/placement/fit_region_test.go:222:func BenchmarkFitRegionMoreVotersSplitRules(b *testing.B) {
+pkg/schedule/placement/fit_region_test.go:250:func BenchmarkFitRegionTiflash(b *testing.B) {
+pkg/schedule/placement/fit_region_test.go:261:func BenchmarkFitRegionCrossRegion(b *testing.B) {
+pkg/schedule/placement/fit_region_test.go:288:func BenchmarkFitRegionWithMoreRulesAndStoreLabels(b *testing.B) {
+pkg/schedule/placement/fit_region_test.go:352:func BenchmarkFitRegionWithLocationLabels(b *testing.B) {
+pkg/schedule/placement/label_constraint_test.go:25:func TestLabelConstraint(t *testing.T) {
+pkg/schedule/placement/label_constraint_test.go:61:func TestLabelConstraints(t *testing.T) {
+pkg/schedule/placement/rule_manager_test.go:45:func TestDefault(t *testing.T) {
+pkg/schedule/placement/rule_manager_test.go:59:func TestDefault2(t *testing.T) {
+pkg/schedule/placement/rule_manager_test.go:81:func TestMayRestrictStoreLoad(t *testing.T) {
+pkg/schedule/placement/rule_manager_test.go:124:func TestAdjustRule(t *testing.T) {
+pkg/schedule/placement/rule_manager_test.go:176:func TestLeaderCheck(t *testing.T) {
+pkg/schedule/placement/rule_manager_test.go:193:func TestSaveLoad(t *testing.T) {
+pkg/schedule/placement/rule_manager_test.go:216:func TestSetAfterGet(t *testing.T) {
+pkg/schedule/placement/rule_manager_test.go:240:func TestKeys(t *testing.T) {
+pkg/schedule/placement/rule_manager_test.go:334:func TestDeleteByIDPrefix(t *testing.T) {
+pkg/schedule/placement/rule_manager_test.go:358:func TestRangeGap(t *testing.T) {
+pkg/schedule/placement/rule_manager_test.go:381:func TestGroupConfig(t *testing.T) {
+pkg/schedule/placement/rule_manager_test.go:417:func TestRuleVersion(t *testing.T) {
+pkg/schedule/placement/rule_manager_test.go:445:func TestCheckApplyRules(t *testing.T) {
+pkg/schedule/placement/rule_manager_test.go:508:func TestCacheManager(t *testing.T) {
+pkg/schedule/placement/region_rule_cache_test.go:30:func TestRegionRuleFitCache(t *testing.T) {
+pkg/schedule/placement/region_rule_cache_test.go:199:func TestPublicStoreCaches(t *testing.T) {
+pkg/schedule/placement/region_rule_cache_test.go:219:func TestToStoreCacheListDoesNotReinsertStaleStore(t *testing.T) {
+pkg/schedule/placement/region_rule_cache_test.go:243:func TestToStoreCacheListReturnsUncacheableForRemovedStore(t *testing.T) {
+pkg/schedule/placement/region_rule_cache_test.go:268:func TestSetCacheDoesNotPromoteStaleFitAfterStoreRemoval(t *testing.T) {
+pkg/schedule/placement/region_rule_cache_test.go:320:func TestSetCachePromotionCannotRaceStoreRemoval(t *testing.T) {
+
+FAILPOINTS / METRICS / KEYS / BACKGROUND
+
+RUST PUBLIC API / REGISTRATION
+pkg/schedule/placement/rule.rs:11:pub enum PeerRoleType {
+pkg/schedule/placement/rule.rs:46:    pub fn is_valid(&self) -> bool {
+pkg/schedule/placement/rule.rs:52:pub struct Rule {
+pkg/schedule/placement/rule.rs:93:    pub fn from_json(data: &[u8]) -> Result<Self, serde_json::Error> {
+pkg/schedule/placement/rule.rs:96:    pub fn key(&self) -> [String; 2] {
+pkg/schedule/placement/rule.rs:99:    pub fn store_key(&self) -> String {
+pkg/schedule/placement/rule.rs:105:    pub fn group_index(&self) -> i64 {
+pkg/schedule/placement/rule.rs:116:pub struct RuleGroup {
+pkg/schedule/placement/rule.rs:126:    pub fn from_json(data: &[u8]) -> Result<Self, serde_json::Error> {
+pkg/schedule/placement/rule.rs:129:    pub fn is_default(&self) -> bool {
+pkg/schedule/placement/rule.rs:140:pub struct GroupBundle {
+pkg/schedule/placement/rule_query.rs:9:    pub fn get_all_rules(&self) -> Vec<Rule> {
+pkg/schedule/placement/rule_query.rs:14:    pub fn get_rules_count(&self) -> usize {
+pkg/schedule/placement/rule_query.rs:17:    pub fn get_groups_count(&self) -> usize {
+pkg/schedule/placement/rule_query.rs:20:    pub fn may_restrict_store_load(&self, is_tikv: bool) -> bool {
+pkg/schedule/placement/rule_query.rs:23:    pub fn get_rules_by_group(&self, group: &str) -> Vec<Rule> {
+pkg/schedule/placement/rule_query.rs:29:    pub fn get_rules_by_key(&self, key: &[u8]) -> Vec<Rule> {
+pkg/schedule/placement/rule_query.rs:41:    pub fn get_rules_for_apply_range(&self, start: &[u8], end: &[u8]) -> Vec<Arc<Rule>> {
+pkg/schedule/placement/rule_query.rs:47:    pub fn get_rules_for_apply_region(&self, region: &RegionInfo) -> Vec<Arc<Rule>> {
+pkg/schedule/placement/rule_query.rs:54:    pub fn get_split_keys(&self, start: &[u8], end: &[u8]) -> Vec<Vec<u8>> {
+pkg/schedule/placement/rule_query.rs:61:    pub fn get_rule_config_for_reconcile(&self) -> (Vec<Arc<Rule>>, Vec<RuleGroup>) {
+pkg/schedule/placement/rule_query.rs:72:    pub fn get_rule_group(&self, id: &str) -> Option<RuleGroup> {
+pkg/schedule/placement/rule_query.rs:75:    pub fn get_rule_groups(&self) -> Vec<RuleGroup> {
+pkg/schedule/placement/rule_query.rs:80:    pub fn get_group_bundle(&self, id: &str) -> GroupBundle {
+pkg/schedule/placement/rule_query.rs:103:    pub fn get_all_group_bundles(&self) -> Vec<GroupBundle> {
+pkg/schedule/placement/placement_restore_test.rs:9:#[path = "../../storage/kv/etcd_fixture_test.rs"]
+pkg/schedule/placement/rule_list.rs:7:pub fn compare_rule(a: &Rule, b: &Rule) -> Ordering {
+pkg/schedule/placement/rule_list.rs:16:pub fn prepare_rules_for_apply(rules: &[Arc<Rule>]) -> Vec<Arc<Rule>> {
+pkg/schedule/placement/rule_list.rs:36:pub fn check_apply_rules(rules: &[Arc<Rule>]) -> Result<(), &'static str> {
+pkg/schedule/placement/rule_list.rs:55:pub struct BuildRuleListError(pub String);
+pkg/schedule/placement/rule_list.rs:57:    pub fn code(&self) -> &'static str {
+pkg/schedule/placement/rule_list.rs:69:pub struct RuleList {
+pkg/schedule/placement/rule_list.rs:75:    pub fn build(rules: impl IntoIterator<Item = Arc<Rule>>) -> Result<Self, BuildRuleListError> {
+pkg/schedule/placement/rule_list.rs:112:    pub fn get_split_keys(&self, start: &[u8], end: &[u8]) -> Vec<Vec<u8>> {
+pkg/schedule/placement/rule_list.rs:120:    pub fn get_rules_by_key(&self, key: &[u8]) -> &[Arc<Rule>] {
+pkg/schedule/placement/rule_list.rs:124:    pub fn get_rules_for_apply_range(&self, start: &[u8], end: &[u8]) -> &[Arc<Rule>] {
+pkg/schedule/placement/rule_manager.rs:14:pub enum RuleManagerError {
+pkg/schedule/placement/rule_manager.rs:30:pub struct RuleManager {
+pkg/schedule/placement/rule_manager.rs:40:    pub fn new(storage: Arc<StorageEndpoint>, paths: ClusterPaths) -> Self {
+pkg/schedule/placement/rule_manager.rs:51:    pub fn set_key_type(&mut self, key_type: &str) {
+pkg/schedule/placement/rule_manager.rs:54:    pub fn is_initialized(&self) -> bool {
+pkg/schedule/placement/rule_manager.rs:57:    pub fn config(&self) -> &RuleConfig {
+pkg/schedule/placement/rule_manager.rs:60:    pub fn rule_list(&self) -> Option<&RuleList> {
+pkg/schedule/placement/rule_manager.rs:63:    pub fn get_rule(&self, group: &str, id: &str) -> Option<Rule> {
+pkg/schedule/placement/rule_manager.rs:67:    pub fn adjust_rule<C: SharedConfigProvider + ?Sized>(
+pkg/schedule/placement/rule_manager.rs:149:    pub async fn initialize<C: SharedConfigProvider + ?Sized>(
+pkg/schedule/placement/rule_manager.rs:266:    pub async fn set_rule<C: SharedConfigProvider + ?Sized>(
+pkg/schedule/placement/rule_manager.rs:278:    pub async fn delete_rule(
+pkg/schedule/placement/rule_batch.rs:12:pub struct RuleOp {
+pkg/schedule/placement/rule_batch.rs:18:    pub fn begin_patch(&self) -> RuleConfigPatch {
+pkg/schedule/placement/rule_batch.rs:22:    pub async fn try_commit_patch(
+pkg/schedule/placement/rule_batch.rs:72:    pub async fn set_rules<C: SharedConfigProvider + ?Sized>(
+pkg/schedule/placement/rule_batch.rs:86:    pub async fn batch<C: SharedConfigProvider + ?Sized>(
+pkg/schedule/placement/rule_batch.rs:116:    pub async fn set_rule_group(
+pkg/schedule/placement/rule_batch.rs:125:    pub async fn delete_rule_group(&mut self, id: &str, now: u64) -> Result<(), RuleManagerError> {
+pkg/schedule/placement/rule_batch.rs:159:    pub async fn set_all_group_bundles<C: SharedConfigProvider + ?Sized>(
+pkg/schedule/placement/rule_batch.rs:183:    pub async fn set_group_bundle<C: SharedConfigProvider + ?Sized>(
+pkg/schedule/placement/rule_batch.rs:193:    pub async fn delete_group_bundle(
+pkg/schedule/placement/region_rule_cache.rs:8:pub struct RegionRuleFitCacheManager {
+pkg/schedule/placement/region_rule_cache.rs:20:pub fn validate_region(region: &RegionInfo) -> bool {
+pkg/schedule/placement/region_rule_cache.rs:24:pub fn validate_stores(stores: &[Arc<StoreInfo>], now: i128) -> bool {
+pkg/schedule/placement/region_rule_cache.rs:29:pub fn validate_fit(fit: &RegionFit) -> bool {
+pkg/schedule/placement/region_rule_cache.rs:62:    pub fn new() -> Self {
+pkg/schedule/placement/region_rule_cache.rs:65:    pub fn invalid(&mut self, region_id: u64) {
+pkg/schedule/placement/region_rule_cache.rs:69:    pub fn remove_store_cache(&mut self, store_id: u64) {
+pkg/schedule/placement/region_rule_cache.rs:74:    pub fn check_and_get_cache(
+pkg/schedule/placement/region_rule_cache.rs:98:    pub fn set_cache(
+pkg/schedule/placement/region_rule_cache.rs:144:    pub fn fit_region_without_cache<
+pkg/schedule/placement/region_rule_cache.rs:159:    pub fn is_region_fit_cached(
+pkg/schedule/placement/region_rule_cache.rs:181:    pub fn fit_region<C: astersql_pd_schedule_config::SharedConfigProvider + ?Sized>(
+pkg/schedule/placement/region_rule_cache.rs:215:    pub fn set_region_fit_cache(
+pkg/schedule/placement/region_rule_cache.rs:224:    pub fn invalid_cache(&mut self, region_id: u64) {
+pkg/schedule/placement/region_rule_cache.rs:227:    pub fn remove_store_cache(&mut self, store_id: u64) {
+pkg/schedule/placement/lib.rs:6:pub use label_constraint::{
+pkg/schedule/placement/lib.rs:9:pub use rule::{GroupBundle, PeerRoleType, Rule, RuleGroup};
+pkg/schedule/placement/lib.rs:11:#[path = "placement_values_test.rs"]
+pkg/schedule/placement/lib.rs:15:pub use rule_list::{
+pkg/schedule/placement/lib.rs:19:#[path = "placement_order_test.rs"]
+pkg/schedule/placement/lib.rs:23:pub use config::{RuleConfig, RuleConfigPatch, rule_may_restrict_engine};
+pkg/schedule/placement/lib.rs:25:#[path = "placement_patch_test.rs"]
+pkg/schedule/placement/lib.rs:29:pub use rule_manager::{RuleManager, RuleManagerError};
+pkg/schedule/placement/lib.rs:31:#[path = "placement_restore_test.rs"]
+pkg/schedule/placement/lib.rs:35:pub use rule_batch::RuleOp;
+pkg/schedule/placement/lib.rs:37:#[path = "placement_batch_test.rs"]
+pkg/schedule/placement/lib.rs:41:pub use fit::{RuleFit, fit_rule};
+pkg/schedule/placement/lib.rs:43:#[path = "placement_role_fit_test.rs"]
+pkg/schedule/placement/lib.rs:46:pub use fit::{RegionFit, fit_region};
+pkg/schedule/placement/lib.rs:48:#[path = "placement_region_fit_test.rs"]
+pkg/schedule/placement/lib.rs:53:#[path = "placement_isolation_test.rs"]
+pkg/schedule/placement/lib.rs:57:pub use region_rule_cache::RegionRuleFitCacheManager;
+pkg/schedule/placement/lib.rs:59:#[path = "placement_cache_test.rs"]
+pkg/schedule/placement/lib.rs:63:#[path = "placement_manager_test.rs"]
+pkg/schedule/placement/fit.rs:8:pub struct RuleFit {
+pkg/schedule/placement/fit.rs:18:    pub fn is_satisfied(&self) -> bool {
+pkg/schedule/placement/fit.rs:21:    pub fn contains_store(&self, id: u64) -> bool {
+pkg/schedule/placement/fit.rs:25:    pub fn compare(&self, other: &Self) -> Ordering {
+pkg/schedule/placement/fit.rs:91:pub fn fit_rule(
+pkg/schedule/placement/fit.rs:131:pub struct RegionFit {
+pkg/schedule/placement/fit.rs:138:    pub fn is_satisfied(&self) -> bool {
+pkg/schedule/placement/fit.rs:145:pub fn fit_region(
+pkg/schedule/placement/config.rs:10:pub struct RuleConfig {
+pkg/schedule/placement/config.rs:16:    pub fn rules(&self) -> impl Iterator<Item = &Arc<Rule>> {
+pkg/schedule/placement/config.rs:19:    pub fn groups(&self) -> &BTreeMap<String, RuleGroup> {
+pkg/schedule/placement/config.rs:22:    pub fn get_rule(&self, group: &str, id: &str) -> Option<&Arc<Rule>> {
+pkg/schedule/placement/config.rs:25:    pub fn get_group(&self, id: &str) -> RuleGroup {
+pkg/schedule/placement/config.rs:31:    pub fn set_rule(&mut self, rule: Rule) {
+pkg/schedule/placement/config.rs:34:    pub fn set_group(&mut self, group: RuleGroup) {
+pkg/schedule/placement/config.rs:37:    pub fn may_restrict_store_load(&self, is_tikv: bool) -> bool {
+pkg/schedule/placement/config.rs:40:    pub fn adjust(&mut self) {
+pkg/schedule/placement/config.rs:66:    pub fn begin_patch(&self) -> RuleConfigPatch {
+pkg/schedule/placement/config.rs:76:pub fn rule_may_restrict_engine(rule: &Rule, values: &[&str]) -> bool {
+pkg/schedule/placement/config.rs:95:pub struct RuleConfigPatch {
+pkg/schedule/placement/config.rs:102:    pub fn set_rule(&mut self, rule: Rule) {
+pkg/schedule/placement/config.rs:106:    pub fn delete_rule(&mut self, group: &str, id: &str) {
+pkg/schedule/placement/config.rs:110:    pub fn set_group(&mut self, group: RuleGroup) {
+pkg/schedule/placement/config.rs:114:    pub fn delete_group(&mut self, id: &str) {
+pkg/schedule/placement/config.rs:120:    pub fn get_group(&self, id: &str) -> RuleGroup {
+pkg/schedule/placement/config.rs:126:    pub fn mutation_counts(&self) -> (usize, usize) {
+pkg/schedule/placement/config.rs:150:    pub fn adjust(&mut self) -> &RuleConfig {
+pkg/schedule/placement/config.rs:161:    pub fn trim(&mut self) {
+pkg/schedule/placement/config.rs:173:    pub fn commit(self, now_unix_seconds: u64) -> RuleConfig {
+pkg/schedule/placement/label_constraint.rs:8:pub enum LabelConstraintOp {
+pkg/schedule/placement/label_constraint.rs:43:    pub fn is_valid(&self) -> bool {
+pkg/schedule/placement/label_constraint.rs:52:pub struct LabelConstraint {
+pkg/schedule/placement/label_constraint.rs:62:    pub fn match_store(&self, store: &StoreInfo) -> bool {
+pkg/schedule/placement/label_constraint.rs:65:    pub fn match_value(&self, value: &str) -> bool {
+pkg/schedule/placement/label_constraint.rs:76:pub fn is_exclusive_label(key: &str) -> bool {
+pkg/schedule/placement/label_constraint.rs:80:pub fn match_label_constraints(store: Option<&StoreInfo>, constraints: &[LabelConstraint]) -> bool {
+pkg/schedule/placement/fit_isolation.rs:9:pub fn isolation_store_score(
+pkg/schedule/placement/fit_isolation.rs:42:    pub fn replace(&self, source: u64, destination: Option<&StoreInfo>) -> bool {
+pkg/schedule/placement/fit_isolation.rs:63:    pub fn extra_count(&self) -> i64 {
+pkg/schedule/placement/fit_isolation.rs:68:    pub fn get_rule_fit(&self, id: u64) -> Option<&RuleFit> {
+pkg/schedule/placement/fit_isolation.rs:74:    pub fn region_stores(&self) -> &[Arc<StoreInfo>] {
+pkg/schedule/placement/fit_isolation.rs:78:    pub fn rules(&self) -> &[Arc<Rule>] {
+
+RUST TESTS
+pkg/schedule/placement/placement_batch_test.rs:8:fn rule(id: &str) -> Rule {
+pkg/schedule/placement/placement_batch_test.rs:17:fn conf() -> ProviderSnapshot<String> {
+pkg/schedule/placement/placement_batch_test.rs:20:fn manager(s: Arc<dyn MetaStore>) -> RuleManager {
+pkg/schedule/placement/placement_batch_test.rs:23:async fn init(m: &mut RuleManager) {
+pkg/schedule/placement/placement_batch_test.rs:26:fn op(id: &str, action: &str, prefix: bool) -> RuleOp {
+pkg/schedule/placement/placement_batch_test.rs:101:async fn contract(store: Arc<dyn MetaStore>) {
+pkg/schedule/placement/placement_batch_test.rs:221:async fn placement_batch_memory_contract() {
+pkg/schedule/placement/placement_batch_test.rs:225:async fn placement_batch_etcd_contract() {
+pkg/schedule/placement/placement_batch_test.rs:230:async fn placement_batch_go_regexp_ascii_classes() {
+pkg/schedule/placement/placement_batch_test.rs:259:async fn placement_batch_go_runtime_fixture() {
+pkg/schedule/placement/placement_restore_test.rs:11:fn config() -> ProviderSnapshot<String> {
+pkg/schedule/placement/placement_restore_test.rs:14:fn rule(id: &str) -> Rule {
+pkg/schedule/placement/placement_restore_test.rs:23:fn manager(store: Arc<dyn MetaStore>) -> RuleManager {
+pkg/schedule/placement/placement_restore_test.rs:26:async fn init(m: &mut RuleManager) {
+pkg/schedule/placement/placement_restore_test.rs:33:async fn placement_restore_defaults_skip_witness() {
+pkg/schedule/placement/placement_restore_test.rs:57:async fn restore_contract(store: Arc<dyn MetaStore>) {
+pkg/schedule/placement/placement_restore_test.rs:127:async fn placement_restore_memory_history_and_restart() {
+pkg/schedule/placement/placement_restore_test.rs:131:async fn placement_restore_etcd_history_and_restart() {
+pkg/schedule/placement/placement_restore_test.rs:141:async fn placement_restore_validation_rejects_without_publish() {
+pkg/schedule/placement/placement_restore_test.rs:255:async fn failures(store: Arc<dyn MetaStore>) {
+pkg/schedule/placement/placement_restore_test.rs:301:async fn placement_restore_memory_io_failures() {
+pkg/schedule/placement/placement_restore_test.rs:305:async fn placement_restore_etcd_io_failures() {
+pkg/schedule/placement/placement_restore_test.rs:311:async fn placement_restore_go_runtime_fixture() {
+pkg/schedule/placement/placement_patch_test.rs:3:fn rule(group: &str, id: &str) -> Rule {
+pkg/schedule/placement/placement_patch_test.rs:13:fn placement_patch_snapshot_and_versions() {
+pkg/schedule/placement/placement_patch_test.rs:64:fn placement_patch_json_trim_and_default_groups() {
+pkg/schedule/placement/placement_patch_test.rs:104:fn placement_patch_engine_restrictions() {
+pkg/schedule/placement/placement_patch_test.rs:156:fn placement_patch_go_runtime_fixture() {
+pkg/schedule/placement/placement_patch_test.rs:207:fn placement_patch_preview_engine_summary() {
+pkg/schedule/placement/placement_order_test.rs:7:fn rule(
+pkg/schedule/placement/placement_order_test.rs:30:fn keys(rules: &[Arc<Rule>]) -> Vec<[String; 2]> {
+pkg/schedule/placement/placement_order_test.rs:34:fn placement_order_priority_and_override() {
+pkg/schedule/placement/placement_order_test.rs:56:fn placement_order_rule_override_and_ties() {
+pkg/schedule/placement/placement_order_test.rs:78:fn hex(s: &str) -> Vec<u8> {
+pkg/schedule/placement/placement_order_test.rs:85:fn placement_order_go_runtime_fixture() {
+pkg/schedule/placement/placement_order_test.rs:162:fn placement_order_role_errors_and_gap() {
+pkg/schedule/placement/placement_role_fit_test.rs:6:fn placement_role_fit_go_runtime_fixture() {
+pkg/schedule/placement/placement_role_fit_test.rs:113:fn snapshots() -> (Vec<Arc<StoreInfo>>, RegionInfo) {
+pkg/schedule/placement/placement_role_fit_test.rs:142:fn rule(role: crate::PeerRoleType, count: i64) -> Arc<Rule> {
+pkg/schedule/placement/placement_role_fit_test.rs:150:fn placement_role_fit_nil_leader_unknown_and_witness() {
+pkg/schedule/placement/placement_role_fit_test.rs:179:fn placement_role_fit_constraints_missing_and_health() {
+pkg/schedule/placement/placement_role_fit_test.rs:218:fn placement_role_fit_comparison_location_and_witness_load() {
+pkg/schedule/placement/placement_region_fit_test.rs:8:fn placement_region_fit_go_runtime_fixture() {
+pkg/schedule/placement/placement_region_fit_test.rs:141:fn region_peers(ids: &[u64]) -> RegionInfo {
+pkg/schedule/placement/placement_region_fit_test.rs:159:fn voter(count: i64) -> Arc<Rule> {
+pkg/schedule/placement/placement_region_fit_test.rs:166:fn stores(count: u64) -> Vec<Arc<StoreInfo>> {
+pkg/schedule/placement/placement_region_fit_test.rs:177:fn placement_region_fit_empty_rules_and_missing_stores() {
+pkg/schedule/placement/placement_region_fit_test.rs:195:fn placement_region_fit_ties_and_large_peer_set_early_exit() {
+pkg/schedule/placement/placement_cache_test.rs:5:fn input() -> (RegionInfo, Vec<Arc<StoreInfo>>, Vec<Arc<Rule>>) {
+pkg/schedule/placement/placement_cache_test.rs:38:fn placement_cache_promotion_invalidation_and_stale_store() {
+pkg/schedule/placement/placement_cache_test.rs:66:fn placement_cache_changes_and_eligibility() {
+pkg/schedule/placement/placement_cache_test.rs:130:async fn placement_cache_manager_matches_uncached() {
+pkg/schedule/placement/placement_values_test.rs:3:fn store(labels: &[(&str, &str)]) -> StoreInfo {
+pkg/schedule/placement/placement_values_test.rs:16:fn placement_values_json_null_duplicate_fields() {
+pkg/schedule/placement/placement_values_test.rs:27:fn placement_values_rule_json_clone_store_key() {
+pkg/schedule/placement/placement_values_test.rs:77:fn placement_values_roles_and_operators() {
+pkg/schedule/placement/placement_values_test.rs:105:fn placement_values_store_constraints() {
+pkg/schedule/placement/placement_values_test.rs:138:fn placement_values_go_runtime_fixture() {
+pkg/schedule/placement/placement_values_test.rs:180:fn placement_values_go_constraint_matrix() {
+pkg/schedule/placement/placement_values_test.rs:221:fn placement_values_go_runtime_matching() {
+pkg/schedule/placement/placement_manager_test.rs:8:async fn manager() -> (RuleManager, ProviderSnapshot<String>) {
+pkg/schedule/placement/placement_manager_test.rs:17:fn rule(group: &str, id: &str, start: &str, end: &str) -> Rule {
+pkg/schedule/placement/placement_manager_test.rs:28:fn keys(r: &[Rule]) -> Vec<(&str, &str)> {
+pkg/schedule/placement/placement_manager_test.rs:34:async fn placement_manager_priority_and_reconcile_snapshots() {
+pkg/schedule/placement/placement_manager_test.rs:119:async fn placement_manager_go_keys_and_boundaries() {
+pkg/schedule/placement/placement_manager_test.rs:189:fn same_fit(a: &RegionFit, b: &RegionFit) {
+pkg/schedule/placement/placement_manager_test.rs:211:async fn placement_manager_query_fit_cache_and_mutation() {
+pkg/schedule/placement/placement_manager_test.rs:315:async fn placement_manager_empty_explicit_group_bundle_keeps_null_rules() {
+pkg/schedule/placement/placement_isolation_test.rs:5:fn store(id: u64) -> Arc<StoreInfo> {
+pkg/schedule/placement/placement_isolation_test.rs:22:fn rule(count: i64, role: PeerRoleType, constraint: Option<(&str, &[&str])>) -> Arc<Rule> {
+pkg/schedule/placement/placement_isolation_test.rs:39:fn region(ids: &[u64]) -> RegionInfo {
+pkg/schedule/placement/placement_isolation_test.rs:59:fn placement_isolation_replace_go_test_cases() {
+pkg/schedule/placement/placement_isolation_test.rs:89:fn placement_isolation_role_exchange_and_lookup() {
+pkg/schedule/placement/placement_isolation_test.rs:106:fn placement_isolation_hierarchy_and_extra_count() {
+
+CONSUMERS
+tests/testutil.go:56:	"github.com/tikv/pd/pkg/schedule/placement"
+server/api/rule.go:28:	"github.com/tikv/pd/pkg/schedule/placement"
+tests/integrations/mcs/scheduling/api_test.go:40:	"github.com/tikv/pd/pkg/schedule/placement"
+tests/integrations/mcs/scheduling/rule_test.go:29:	"github.com/tikv/pd/pkg/schedule/placement"
+tests/integrations/client/http_client_test.go:47:	"github.com/tikv/pd/pkg/schedule/placement"
+pkg/mcs/scheduling/server/cluster.go:58:	"github.com/tikv/pd/pkg/schedule/placement"
+pkg/mcs/scheduling/server/rule/watcher.go:35:	"github.com/tikv/pd/pkg/schedule/placement"
+pkg/mcs/scheduling/server/rule/watcher_test.go:41:	"github.com/tikv/pd/pkg/schedule/placement"
+server/server.go:77:	"github.com/tikv/pd/pkg/schedule/placement"
+server/cluster/cluster.go:65:	"github.com/tikv/pd/pkg/schedule/placement"
+tests/server/api/rule_test.go:41:	"github.com/tikv/pd/pkg/schedule/placement"
+server/cluster/cluster_test.go:60:	"github.com/tikv/pd/pkg/schedule/placement"
+tests/server/api/region_test.go:42:	"github.com/tikv/pd/pkg/schedule/placement"
+server/cluster/scheduling_controller.go:35:	"github.com/tikv/pd/pkg/schedule/placement"
+tests/server/api/operator_test.go:33:	"github.com/tikv/pd/pkg/schedule/placement"
+tests/server/api/cluster_test.go:27:	"github.com/tikv/pd/pkg/schedule/placement"
+pkg/schedule/checker/rule_checker.go:36:	"github.com/tikv/pd/pkg/schedule/placement"
+pkg/schedule/checker/split_checker_test.go:28:	"github.com/tikv/pd/pkg/schedule/placement"
+pkg/schedule/checker/replica_strategy.go:26:	"github.com/tikv/pd/pkg/schedule/placement"
+pkg/schedule/checker/affinity_checker.go:35:	"github.com/tikv/pd/pkg/schedule/placement"
+pkg/schedule/checker/affinity_checker_test.go:38:	"github.com/tikv/pd/pkg/schedule/placement"
+pkg/schedule/checker/split_checker.go:26:	"github.com/tikv/pd/pkg/schedule/placement"
+pkg/schedule/checker/merge_checker.go:34:	"github.com/tikv/pd/pkg/schedule/placement"
+pkg/schedule/checker/rule_checker_test.go:40:	"github.com/tikv/pd/pkg/schedule/placement"
+pkg/mock/mockcluster/config.go:21:	"github.com/tikv/pd/pkg/schedule/placement"
+pkg/replication/replication_mode.go:36:	"github.com/tikv/pd/pkg/schedule/placement"
+pkg/mock/mockcluster/mockcluster.go:39:	"github.com/tikv/pd/pkg/schedule/placement"
+pkg/replication/replication_mode_test.go:34:	"github.com/tikv/pd/pkg/schedule/placement"
+pkg/schedule/handler/handler.go:41:	"github.com/tikv/pd/pkg/schedule/placement"
+pkg/schedule/checker/priority_inspector.go:24:	"github.com/tikv/pd/pkg/schedule/placement"
+pkg/schedule/core/cluster_informer.go:23:	"github.com/tikv/pd/pkg/schedule/placement"
+pkg/schedule/checker/merge_checker_test.go:38:	"github.com/tikv/pd/pkg/schedule/placement"
+pkg/schedule/schedulers/hot_region_test.go:37:	"github.com/tikv/pd/pkg/schedule/placement"
+pkg/schedule/schedulers/balance_range_test.go:35:	"github.com/tikv/pd/pkg/schedule/placement"
+pkg/cluster/cluster.go:23:	"github.com/tikv/pd/pkg/schedule/placement"
+pkg/schedule/schedulers/hot_region_solver_test.go:31:	"github.com/tikv/pd/pkg/schedule/placement"
+pkg/schedule/schedulers/shuffle_region_config.go:23:	"github.com/tikv/pd/pkg/schedule/placement"
+pkg/schedule/operator/create_operator_test.go:37:	"github.com/tikv/pd/pkg/schedule/placement"
+pkg/schedule/schedulers/hot_region_rank_v2_test.go:27:	"github.com/tikv/pd/pkg/schedule/placement"
+pkg/schedule/operator/builder.go:29:	"github.com/tikv/pd/pkg/schedule/placement"
+pkg/schedule/schedulers/hot_region_solver.go:38:	"github.com/tikv/pd/pkg/schedule/placement"
+pkg/statistics/region_collection_test.go:29:	"github.com/tikv/pd/pkg/schedule/placement"
+pkg/statistics/region_collection.go:29:	"github.com/tikv/pd/pkg/schedule/placement"
+pkg/schedule/schedulers/balance_benchmark_test.go:29:	"github.com/tikv/pd/pkg/schedule/placement"
+pkg/schedule/filter/region_filters.go:23:	"github.com/tikv/pd/pkg/schedule/placement"
+pkg/schedule/scatter/region_scatterer_test.go:45:	"github.com/tikv/pd/pkg/schedule/placement"
+pkg/schedule/schedulers/utils_test.go:26:	"github.com/tikv/pd/pkg/schedule/placement"
+pkg/schedule/scatter/region_scatterer.go:40:	"github.com/tikv/pd/pkg/schedule/placement"
+pkg/schedule/filter/filters.go:30:	"github.com/tikv/pd/pkg/schedule/placement"
+pkg/schedule/schedulers/scheduler_test.go:36:	"github.com/tikv/pd/pkg/schedule/placement"
+pkg/schedule/operator/create_operator.go:31:	"github.com/tikv/pd/pkg/schedule/placement"
+pkg/schedule/filter/filters_test.go:33:	"github.com/tikv/pd/pkg/schedule/placement"
+pkg/schedule/schedulers/utils.go:31:	"github.com/tikv/pd/pkg/schedule/placement"
+pkg/schedule/schedulers/balance_witness_test.go:26:	"github.com/tikv/pd/pkg/schedule/placement"
+
+PACKAGE affinity
+FILES
+pkg/schedule/affinity/affinity_test.go
+pkg/schedule/affinity/group.go
+pkg/schedule/affinity/group_test.go
+pkg/schedule/affinity/manager.go
+pkg/schedule/affinity/manager_test.go
+pkg/schedule/affinity/metrics.go
+pkg/schedule/affinity/parse.go
+pkg/schedule/affinity/policy.go
+pkg/schedule/affinity/policy_test.go
+pkg/schedule/affinity/split.go
+pkg/schedule/affinity/split_test.go
+pkg/schedule/affinity/txn.go
+pkg/schedule/affinity/txn_test.go
+
+PUBLIC DECLARATIONS
+pkg/schedule/affinity/parse.go:20:	GetAllAffinityGroupStates() []*GroupState
+pkg/schedule/affinity/parse.go:21:	GetAffinityGroupState(id string) *GroupState
+pkg/schedule/affinity/parse.go:25:func CollectAllGroupStates(provider groupStateProvider) map[string]*GroupState {
+pkg/schedule/affinity/parse.go:36:func ParseGroupIDs(rawIDs []string) ([]string, error) {
+pkg/schedule/affinity/parse.go:62:func CollectGroupStates(provider groupStateProvider, rawIDs []string) (map[string]*GroupState, error) {
+pkg/schedule/affinity/manager.go:52:type Manager struct {
+pkg/schedule/affinity/manager.go:84:func NewManager(ctx context.Context, storage endpoint.AffinityStorage, storeSetInformer core.StoreSetInformer, conf config.SharedConfigProvider, regionLabeler *labeler.RegionLabeler) (*Manager, error) {
+pkg/schedule/affinity/manager.go:142:func (m *Manager) IsAvailable() bool {
+pkg/schedule/affinity/manager.go:156:			CreateTimestamp: group.CreateTimestamp,
+pkg/schedule/affinity/manager.go:157:			LeaderStoreID:   group.LeaderStoreID,
+pkg/schedule/affinity/manager.go:158:			VoterStoreIDs:   slices.Clone(group.VoterStoreIDs),
+pkg/schedule/affinity/manager.go:162:		AffinityVer:         1,
+pkg/schedule/affinity/manager.go:163:		AffinityRegionCount: 0,
+pkg/schedule/affinity/manager.go:165:		LabelRule:           nil,
+pkg/schedule/affinity/manager.go:166:		RangeCount:          0,
+pkg/schedule/affinity/manager.go:234:func (m *Manager) ExpireAffinityGroup(groupID string) {
+pkg/schedule/affinity/manager.go:241:func (m *Manager) DegradeAffinityGroup(groupID string) {
+pkg/schedule/affinity/manager.go:248:func (m *Manager) RestoreAffinityGroup(groupID string) {
+pkg/schedule/affinity/manager.go:346:func (m *Manager) InvalidCache(regionID uint64) {
+pkg/schedule/affinity/manager.go:371:func (m *Manager) GetRegionAffinityGroupState(region *core.RegionInfo) (group *GroupState, isAffinity bool) {
+pkg/schedule/affinity/manager.go:378:func (m *Manager) GetAndCacheRegionAffinityGroupState(region *core.RegionInfo) (group *GroupState, isAffinity bool) {
+pkg/schedule/affinity/manager.go:409:func (m *Manager) IsGroupExist(id string) bool {
+pkg/schedule/affinity/manager.go:417:func (m *Manager) GetAffinityGroupState(id string) *GroupState {
+pkg/schedule/affinity/manager.go:431:func (m *Manager) CheckAndGetAffinityGroupState(groupID string) (*GroupState, error) {
+pkg/schedule/affinity/manager.go:443:func (m *Manager) GetAffinityGroupCount() int {
+pkg/schedule/affinity/manager.go:450:func (m *Manager) GetAllAffinityGroupStates() []*GroupState {
+pkg/schedule/affinity/manager.go:464:func (m *Manager) SyncGroupFromEtcd(group *Group) {
+pkg/schedule/affinity/manager.go:540:func (m *Manager) SyncGroupDeleteFromEtcd(groupID string) {
+pkg/schedule/affinity/manager.go:558:func (m *Manager) SyncKeyRangesFromEtcd(labelRule *labeler.LabelRule) error {
+pkg/schedule/affinity/manager.go:606:func (m *Manager) SyncKeyRangesDeleteFromEtcd(ruleID string) {
+pkg/schedule/affinity/split.go:34:func (m *Manager) AllowSplit(region *core.RegionInfo, reason pdpb.SplitReason) bool {
+pkg/schedule/affinity/group.go:55:func (a groupAvailability) String() string {
+pkg/schedule/affinity/group.go:69:type Phase string
+pkg/schedule/affinity/group.go:74:	PhasePending = Phase("pending")
+pkg/schedule/affinity/group.go:76:	PhasePreparing = Phase("preparing")
+pkg/schedule/affinity/group.go:78:	PhaseStable = Phase("stable")
+pkg/schedule/affinity/group.go:88:type Group struct {
+pkg/schedule/affinity/group.go:92:	CreateTimestamp uint64 `json:"create_timestamp"`
+pkg/schedule/affinity/group.go:97:	LeaderStoreID uint64 `json:"leader_store_id,omitempty"`
+pkg/schedule/affinity/group.go:99:	VoterStoreIDs []uint64 `json:"voter_store_ids,omitempty"`
+pkg/schedule/affinity/group.go:102:func (g *Group) String() string {
+pkg/schedule/affinity/group.go:109:type GroupState struct {
+pkg/schedule/affinity/group.go:112:	RegularSchedulingAllowed bool `json:"-"`
+pkg/schedule/affinity/group.go:114:	AffinitySchedulingAllowed bool `json:"-"`
+pkg/schedule/affinity/group.go:116:	Phase Phase `json:"phase"`
+pkg/schedule/affinity/group.go:118:	RangeCount int `json:"range_count"`
+pkg/schedule/affinity/group.go:120:	RegionCount int `json:"region_count"`
+pkg/schedule/affinity/group.go:122:	AffinityRegionCount int `json:"affinity_region_count"`
+pkg/schedule/affinity/group.go:164:	AffinityVer uint64
+pkg/schedule/affinity/group.go:166:	AffinityRegionCount int
+pkg/schedule/affinity/group.go:171:	LabelRule *labeler.LabelRule
+pkg/schedule/affinity/group.go:173:	RangeCount int
+pkg/schedule/affinity/group.go:193:			CreateTimestamp: g.CreateTimestamp,
+pkg/schedule/affinity/group.go:194:			LeaderStoreID:   g.LeaderStoreID,
+pkg/schedule/affinity/group.go:195:			VoterStoreIDs:   slices.Clone(g.VoterStoreIDs),
+pkg/schedule/affinity/group.go:197:		RegularSchedulingAllowed:  g.IsRegularSchedulingAllowed(),
+pkg/schedule/affinity/group.go:198:		AffinitySchedulingAllowed: affinitySchedulingAllowed,
+pkg/schedule/affinity/group.go:200:		RangeCount:                g.RangeCount,
+pkg/schedule/affinity/group.go:201:		RegionCount:               len(g.Regions),
+pkg/schedule/affinity/group.go:202:		AffinityRegionCount:       g.AffinityRegionCount,
+pkg/schedule/affinity/group.go:210:func (g *runtimeGroupInfo) IsAvailable() bool {
+pkg/schedule/affinity/group.go:216:func (g *runtimeGroupInfo) IsExpired() bool {
+pkg/schedule/affinity/group.go:221:func (g *runtimeGroupInfo) GetAvailability() groupAvailability {
+pkg/schedule/affinity/group.go:243:func (g *runtimeGroupInfo) SetAvailability(newAvailability groupAvailability) {
+pkg/schedule/affinity/group.go:267:func (g *runtimeGroupInfo) IsAffinitySchedulingAllowed() bool {
+pkg/schedule/affinity/group.go:272:func (g *runtimeGroupInfo) IsRegularSchedulingAllowed() bool {
+pkg/schedule/affinity/group.go:277:func (m *Manager) AdjustGroup(g *Group) error {
+pkg/schedule/affinity/group.go:308:type GroupKeyRanges struct {
+pkg/schedule/affinity/group.go:309:	KeyRanges []keyutil.KeyRange
+pkg/schedule/affinity/group.go:310:	GroupID   string
+pkg/schedule/affinity/group.go:314:func ValidateGroupID(id string) error {
+pkg/schedule/affinity/txn.go:41:	LabelRuleIDPrefix = "affinity_group/"
+pkg/schedule/affinity/txn.go:47:func GetLabelRuleID(groupID string) string {
+pkg/schedule/affinity/txn.go:78:func MakeLabelRule(groupKeyRanges GroupKeyRanges) *labeler.LabelRule {
+pkg/schedule/affinity/txn.go:89:		RuleType: labeler.KeyRange,
+pkg/schedule/affinity/txn.go:95:func (m *Manager) CreateAffinityGroups(changes []GroupKeyRanges) error {
+pkg/schedule/affinity/txn.go:100:func (m *Manager) CreateAffinityGroupsIfNotExists(changes []GroupKeyRanges) error {
+pkg/schedule/affinity/txn.go:110:			CreateTimestamp: uint64(time.Now().Unix()),
+pkg/schedule/affinity/txn.go:111:			LeaderStoreID:   0,
+pkg/schedule/affinity/txn.go:112:			VoterStoreIDs:   nil,
+pkg/schedule/affinity/txn.go:193:				KeyRanges: change.KeyRanges,
+pkg/schedule/affinity/txn.go:194:				GroupID:   change.GroupID,
+pkg/schedule/affinity/txn.go:215:func (m *Manager) DeleteAffinityGroups(groupIDs []string, force bool) error {
+pkg/schedule/affinity/txn.go:292:func (m *Manager) UpdateAffinityGroupPeers(groupID string, leaderStoreID uint64, voterStoreIDs []uint64) (*GroupState, error) {
+pkg/schedule/affinity/txn.go:307:		LeaderStoreID: leaderStoreID,
+pkg/schedule/affinity/txn.go:308:		VoterStoreIDs: voterStoreIDs,
+pkg/schedule/affinity/txn.go:358:func (m *Manager) UpdateAffinityGroupKeyRanges(addOps, removeOps []GroupKeyRanges) error {
+pkg/schedule/affinity/txn.go:401:			GroupID:   op.GroupID,
+pkg/schedule/affinity/txn.go:402:			KeyRanges: slices.Concat(currentRanges.KeyRanges, op.KeyRanges),
+pkg/schedule/affinity/txn.go:555:		KeyRanges: filtered,
+pkg/schedule/affinity/txn.go:556:		GroupID:   currentRanges.GroupID,
+pkg/schedule/affinity/txn.go:581:			StartKey: startKey,
+pkg/schedule/affinity/txn.go:582:			EndKey:   endKey,
+pkg/schedule/affinity/txn.go:586:		KeyRanges: keyRanges,
+pkg/schedule/affinity/txn.go:587:		GroupID:   groupID,
+pkg/schedule/affinity/txn.go:679:				KeyRange: kr,
+pkg/schedule/affinity/policy.go:61:func (c storeCondition) String() string {
+pkg/schedule/affinity/policy.go:123:func (m *Manager) ObserveAvailableRegion(region *core.RegionInfo, group *GroupState) {
+
+GO TESTS
+pkg/schedule/affinity/txn_test.go:35:func TestKeyRangeOverlapValidation(t *testing.T) {
+pkg/schedule/affinity/txn_test.go:114:func TestKeyRangeOverlapRebuild(t *testing.T) {
+pkg/schedule/affinity/txn_test.go:162:func TestParseKeyRangesFromDataInvalidHex(t *testing.T) {
+pkg/schedule/affinity/txn_test.go:171:func TestAffinityPersistenceWithLabeler(t *testing.T) {
+pkg/schedule/affinity/txn_test.go:227:func TestLoadRegionLabelIgnoreUnknownGroup(t *testing.T) {
+pkg/schedule/affinity/txn_test.go:270:func TestLabelRuleIntegration(t *testing.T) {
+pkg/schedule/affinity/txn_test.go:311:func TestUpdateAffinityGroupKeyRangesAddToEmptyGroup(t *testing.T) {
+pkg/schedule/affinity/txn_test.go:346:func TestDuplicateRangeAdd(t *testing.T) {
+pkg/schedule/affinity/txn_test.go:378:func TestDeleteAffinityGroupsForceMissing(t *testing.T) {
+pkg/schedule/affinity/txn_test.go:412:func TestSameGroupNonOverlappingAdd(t *testing.T) {
+pkg/schedule/affinity/txn_test.go:448:func TestOverlapDuringMigration(t *testing.T) {
+pkg/schedule/affinity/txn_test.go:477:func TestPartialOverlapSameGroup(t *testing.T) {
+pkg/schedule/affinity/txn_test.go:510:func TestNewGroupOverlapWithExistingGroup(t *testing.T) {
+pkg/schedule/affinity/group_test.go:33:func TestGroupState(t *testing.T) {
+pkg/schedule/affinity/group_test.go:56:func TestAdjustGroup(t *testing.T) {
+pkg/schedule/affinity/split_test.go:36:func TestAllowSplit(t *testing.T) {
+pkg/schedule/affinity/manager_test.go:38:func TestGetRegionAffinityGroupState(t *testing.T) {
+pkg/schedule/affinity/manager_test.go:145:func TestBasicGroupOperations(t *testing.T) {
+pkg/schedule/affinity/manager_test.go:179:func TestSyncLabelRuleBeforeGroup(t *testing.T) {
+pkg/schedule/affinity/manager_test.go:220:func TestRegionCountStaleCache(t *testing.T) {
+pkg/schedule/affinity/manager_test.go:289:func TestDeleteGroupClearsCache(t *testing.T) {
+pkg/schedule/affinity/manager_test.go:352:func TestAvailabilityChangeRegionCount(t *testing.T) {
+pkg/schedule/affinity/manager_test.go:414:func TestInvalidCacheMultipleTimes(t *testing.T) {
+pkg/schedule/affinity/manager_test.go:476:func TestConcurrentOperations(t *testing.T) {
+pkg/schedule/affinity/manager_test.go:588:func TestDegradedExpiration(t *testing.T) {
+pkg/schedule/affinity/affinity_test.go:32:func TestMain(m *testing.M) {
+pkg/schedule/affinity/policy_test.go:36:func TestStoreCondition(t *testing.T) {
+pkg/schedule/affinity/policy_test.go:53:func TestCollectUnavailableStores(t *testing.T) {
+pkg/schedule/affinity/policy_test.go:117:func TestObserveAvailableRegion(t *testing.T) {
+pkg/schedule/affinity/policy_test.go:206:func TestAvailabilityCheckInvalidatesGroup(t *testing.T) {
+pkg/schedule/affinity/policy_test.go:248:func TestStoreHealthCheck(t *testing.T) {
+pkg/schedule/affinity/policy_test.go:354:func TestDegradedGroupShouldExpire(t *testing.T) {
+pkg/schedule/affinity/policy_test.go:403:func TestGroupAvailabilityPriority(t *testing.T) {
+
+FAILPOINTS / METRICS / KEYS / BACKGROUND
+pkg/schedule/affinity/policy.go:141:	ticker := time.NewTicker(interval)
+pkg/schedule/affinity/policy.go:142:	failpoint.Inject("changeAvailabilityCheckInterval", func() {
+pkg/schedule/affinity/policy.go:145:	go func() {
+pkg/schedule/affinity/policy.go:150:			case <-m.ctx.Done():
+pkg/schedule/affinity/metrics.go:20:	affinityStatusGauge = prometheus.NewGaugeVec(
+pkg/schedule/affinity/metrics.go:21:		prometheus.GaugeOpts{
+pkg/schedule/affinity/metrics.go:38:	prometheus.MustRegister(affinityStatusGauge)
+
+RUST PUBLIC API / REGISTRATION
+pkg/schedule/affinity/ranges.rs:14:pub const LABEL_RULE_ID_PREFIX: &str = "affinity_group/";
+pkg/schedule/affinity/ranges.rs:16:pub const LABEL_KEY: &str = "affinity_group";
+pkg/schedule/affinity/ranges.rs:19:pub struct GroupKeyRanges {
+pkg/schedule/affinity/ranges.rs:24:pub fn get_label_rule_id(group_id: &str) -> String {
+pkg/schedule/affinity/ranges.rs:28:pub fn parse_affinity_group_id_from_label_rule(rule: Option<&LabelRule>) -> Option<&str> {
+pkg/schedule/affinity/ranges.rs:43:pub fn make_label_rule(ranges: &GroupKeyRanges) -> LabelRule {
+pkg/schedule/affinity/ranges.rs:60:pub fn decode_hex_key(value: &str, group_id: &str, key_type: &str) -> Result<Vec<u8>, TypedError> {
+pkg/schedule/affinity/ranges.rs:80:pub fn parse_key_ranges_from_data(
+pkg/schedule/affinity/ranges.rs:100:pub fn extract_key_ranges_from_label_rule(
+pkg/schedule/affinity/ranges.rs:128:pub fn apply_remove_ops(
+pkg/schedule/affinity/ranges.rs:157:pub fn check_key_ranges_overlap(a: &KeyRange, b: &KeyRange) -> bool {
+pkg/schedule/affinity/ranges.rs:165:pub fn validate_no_overlap(ranges: &[GroupKeyRanges]) -> Result<(), TypedError> {
+pkg/schedule/affinity/split.rs:9:pub enum SplitReason {
+pkg/schedule/affinity/split.rs:17:    pub fn allow_split<C: SharedConfigProvider + ?Sized>(
+pkg/schedule/affinity/group.rs:5:pub struct Group {
+pkg/schedule/affinity/group.rs:27:pub struct GroupState {
+pkg/schedule/affinity/group.rs:40:pub enum Availability {
+pkg/schedule/affinity/group.rs:56:pub struct RuntimeGroupInfo {
+pkg/schedule/affinity/group.rs:65:    pub fn availability(&self, now: u64) -> Availability {
+pkg/schedule/affinity/group.rs:72:    pub fn set_availability(&mut self, value: Availability, now: u64) {
+pkg/schedule/affinity/group.rs:83:    pub fn state(&self, now: u64) -> GroupState {
+pkg/schedule/affinity/group.rs:111:pub struct InvalidGroupId(pub String);
+pkg/schedule/affinity/group.rs:112:pub fn validate_group_id(id: &str) -> Result<(), InvalidGroupId> {
+pkg/schedule/affinity/txn.rs:18:pub enum TransactionError {
+pkg/schedule/affinity/txn.rs:32:    pub async fn create_affinity_groups(
+pkg/schedule/affinity/txn.rs:44:    pub async fn create_affinity_groups_if_not_exists(
+pkg/schedule/affinity/txn.rs:153:    pub async fn delete_affinity_groups(
+pkg/schedule/affinity/region_cache.rs:25:    pub fn affinity_region_count(&self) -> usize {
+pkg/schedule/affinity/region_cache.rs:32:    pub fn invalid_cache(&mut self, region_id: u64) {
+pkg/schedule/affinity/region_cache.rs:51:    pub fn get_region_affinity_group_state(
+pkg/schedule/affinity/region_cache.rs:86:    pub fn get_and_cache_region_affinity_group_state(
+pkg/schedule/affinity/region_cache.rs:116:    pub fn sync_group_from_etcd(&mut self, group: &Group, labels: &RegionLabeler, now: u64) {
+pkg/schedule/affinity/region_cache.rs:156:    pub fn sync_group_delete_from_etcd(&mut self, id: &str) {
+pkg/schedule/affinity/region_cache.rs:164:    pub fn sync_key_ranges_from_etcd(&mut self, rule: &LabelRule) -> Result<(), TypedError> {
+pkg/schedule/affinity/region_cache.rs:189:    pub fn sync_key_ranges_delete_from_etcd(&mut self, rule_id: &str) {
+pkg/schedule/affinity/parse.rs:4:pub fn parse_group_ids(raw: &[String]) -> Result<Option<Vec<String>>, InvalidGroupId> {
+pkg/schedule/affinity/parse.rs:21:pub trait GroupStateProvider {
+pkg/schedule/affinity/parse.rs:25:pub fn collect_all_group_states(
+pkg/schedule/affinity/parse.rs:34:pub fn collect_group_states(
+pkg/schedule/affinity/availability_loop.rs:11:pub const DEFAULT_AVAILABILITY_CHECK_INTERVAL: Duration = Duration::from_secs(10);
+pkg/schedule/affinity/availability_loop.rs:15:pub struct AffinityMetrics {
+pkg/schedule/affinity/availability_loop.rs:57:pub struct AvailabilityLoop {
+pkg/schedule/affinity/availability_loop.rs:63:pub enum StartError {
+pkg/schedule/affinity/availability_loop.rs:71:    pub async fn initialize<C, F>(
+pkg/schedule/affinity/availability_loop.rs:95:    pub fn start<C, F>(
+pkg/schedule/affinity/availability_loop.rs:147:    pub async fn shutdown(&mut self) -> Result<(), tokio::task::JoinError> {
+pkg/schedule/affinity/manager.rs:17:pub enum RestoreError {
+pkg/schedule/affinity/manager.rs:25:pub struct RestoredGroup {
+pkg/schedule/affinity/manager.rs:32:pub struct Manager {
+pkg/schedule/affinity/manager.rs:42:    pub async fn initialize(
+pkg/schedule/affinity/txn_ranges.rs:37:    pub async fn update_affinity_group_key_ranges(
+pkg/schedule/affinity/lib.rs:3:#[path = "affinity_create_delete_test.rs"]
+pkg/schedule/affinity/lib.rs:6:#[path = "affinity_ranges_test.rs"]
+pkg/schedule/affinity/lib.rs:9:#[path = "affinity_restore_test.rs"]
+pkg/schedule/affinity/lib.rs:12:#[path = "affinity_update_ranges_test.rs"]
+pkg/schedule/affinity/lib.rs:15:#[path = "affinity_values_test.rs"]
+pkg/schedule/affinity/lib.rs:25:#[path = "affinity_availability_test.rs"]
+pkg/schedule/affinity/lib.rs:28:#[path = "affinity_update_peers_test.rs"]
+pkg/schedule/affinity/lib.rs:34:#[path = "affinity_cache_sync_test.rs"]
+pkg/schedule/affinity/lib.rs:39:#[path = "affinity_split_test.rs"]
+pkg/schedule/affinity/lib.rs:44:#[path = "affinity_lifecycle_test.rs"]
+pkg/schedule/affinity/affinity_restore_test.rs:13:#[path = "../../storage/kv/etcd_fixture_test.rs"]
+pkg/schedule/affinity/txn_peers.rs:14:pub struct GroupObservation {
+pkg/schedule/affinity/txn_peers.rs:20:    pub fn group_observation(&self, id: &str, now: u64) -> Option<GroupObservation> {
+pkg/schedule/affinity/txn_peers.rs:27:    pub async fn update_affinity_group_peers(
+pkg/schedule/affinity/txn_peers.rs:43:    pub async fn update_affinity_group_peers_with_version(
+pkg/schedule/affinity/txn_peers.rs:110:    pub async fn observe_available_region(
+pkg/schedule/affinity/policy.rs:11:pub enum StoreCondition {
+pkg/schedule/affinity/policy.rs:23:    pub fn group_availability(self) -> Availability {
+pkg/schedule/affinity/policy.rs:30:    pub fn affects_leader_only(self) -> bool {
+pkg/schedule/affinity/policy.rs:50:pub fn collect_unavailable_stores<C: SharedConfigProvider + ?Sized>(
+pkg/schedule/affinity/policy.rs:86:pub fn calc_group_availability(
+pkg/schedule/affinity/policy.rs:105:    pub fn check_groups_availability<C: SharedConfigProvider + ?Sized>(
+pkg/schedule/affinity/policy.rs:122:    pub fn update_group_availability(&mut self, id: &str, availability: Availability, now: u64) {
+pkg/schedule/affinity/policy.rs:129:    pub fn expire_affinity_group(&mut self, id: &str, now: u64) {
+pkg/schedule/affinity/policy.rs:132:    pub fn degrade_affinity_group(&mut self, id: &str, now: u64) {
+pkg/schedule/affinity/policy.rs:135:    pub fn restore_affinity_group(&mut self, id: &str, now: u64) {
+pkg/schedule/affinity/policy.rs:139:    pub fn apply_store_availability(
+pkg/schedule/affinity/policy.rs:170:    pub fn check_has_unavailable_store(
+
+RUST TESTS
+pkg/schedule/affinity/affinity_ranges_test.rs:5:fn group(id: &str, pairs: &[(&str, &str)]) -> GroupKeyRanges {
+pkg/schedule/affinity/affinity_ranges_test.rs:12:fn affinity_ranges_label_roundtrip() {
+pkg/schedule/affinity/affinity_ranges_test.rs:38:fn affinity_ranges_identity() {
+pkg/schedule/affinity/affinity_ranges_test.rs:54:fn affinity_ranges_hex() {
+pkg/schedule/affinity/affinity_ranges_test.rs:78:fn affinity_ranges_remove() {
+pkg/schedule/affinity/affinity_ranges_test.rs:102:fn affinity_ranges_overlap() {
+pkg/schedule/affinity/affinity_ranges_test.rs:132:fn affinity_ranges_go_runtime_fixture() {
+pkg/schedule/affinity/affinity_lifecycle_test.rs:17:async fn manager() -> Manager {
+pkg/schedule/affinity/affinity_lifecycle_test.rs:46:fn snapshot() -> (Vec<StoreInfo>, ProviderSnapshot<String>, i128, u64) {
+pkg/schedule/affinity/affinity_lifecycle_test.rs:58:fn gauge(registry: &Registry, name: &str) -> f64 {
+pkg/schedule/affinity/affinity_lifecycle_test.rs:75:async fn affinity_lifecycle_periodic_metrics_and_two_shutdowns() {
+pkg/schedule/affinity/affinity_lifecycle_test.rs:111:async fn affinity_lifecycle_cancel_waiting_lock_and_registration_failure() {
+pkg/schedule/affinity/affinity_lifecycle_test.rs:156:async fn affinity_lifecycle_split_deny_metric() {
+pkg/schedule/affinity/affinity_lifecycle_test.rs:208:async fn affinity_lifecycle_initialization_failure_and_drop_cleanup() {
+pkg/schedule/affinity/affinity_lifecycle_test.rs:279:async fn affinity_lifecycle_nonzero_cache_metrics_and_deletion() {
+pkg/schedule/affinity/affinity_create_delete_test.rs:13:fn change(id: &str, ranges: bool) -> GroupKeyRanges {
+pkg/schedule/affinity/affinity_create_delete_test.rs:23:async fn contract(store: Arc<dyn MetaStore>) {
+pkg/schedule/affinity/affinity_create_delete_test.rs:123:async fn affinity_create_delete_memory() {
+pkg/schedule/affinity/affinity_create_delete_test.rs:127:async fn affinity_create_delete_etcd() {
+pkg/schedule/affinity/affinity_create_delete_test.rs:215:async fn affinity_create_delete_validation_duplicates() {
+pkg/schedule/affinity/affinity_create_delete_test.rs:279:async fn fault_contract(inner: Arc<dyn MetaStore>) {
+pkg/schedule/affinity/affinity_create_delete_test.rs:341:async fn affinity_create_delete_fault_memory() {
+pkg/schedule/affinity/affinity_create_delete_test.rs:345:async fn affinity_create_delete_fault_etcd() {
+pkg/schedule/affinity/affinity_create_delete_test.rs:350:async fn label_batch_fault(inner: Arc<dyn MetaStore>) {
+pkg/schedule/affinity/affinity_create_delete_test.rs:386:async fn affinity_create_delete_label_batch_memory() {
+pkg/schedule/affinity/affinity_create_delete_test.rs:390:async fn affinity_create_delete_label_batch_etcd() {
+pkg/schedule/affinity/affinity_update_peers_test.rs:10:fn stores() -> Vec<StoreInfo> {
+pkg/schedule/affinity/affinity_update_peers_test.rs:20:fn region(id: u64) -> RegionInfo {
+pkg/schedule/affinity/affinity_update_peers_test.rs:45:async fn contract(inner: Arc<dyn MetaStore>) {
+pkg/schedule/affinity/affinity_update_peers_test.rs:209:async fn affinity_update_peers_memory() {
+pkg/schedule/affinity/affinity_update_peers_test.rs:213:async fn affinity_update_peers_etcd() {
+pkg/schedule/affinity/affinity_split_test.rs:16:fn region(size: u64, keys: u64, leader: u64) -> Arc<RegionInfo> {
+pkg/schedule/affinity/affinity_split_test.rs:47:async fn affinity_split_thresholds_and_states() {
+pkg/schedule/affinity/affinity_values_test.rs:3:fn raw(s: &[&str]) -> Vec<String> {
+pkg/schedule/affinity/affinity_values_test.rs:7:fn affinity_values_ids_and_queries() {
+pkg/schedule/affinity/affinity_values_test.rs:23:fn affinity_values_json() {
+pkg/schedule/affinity/affinity_values_test.rs:48:fn affinity_values_availability_phase() {
+pkg/schedule/affinity/affinity_values_test.rs:92:fn affinity_values_collection() {
+pkg/schedule/affinity/affinity_values_test.rs:108:fn affinity_values_go_runtime_fixture() {
+pkg/schedule/affinity/affinity_cache_sync_test.rs:14:fn region(id: u64, store: u64, start: u8, end: u8) -> Arc<RegionInfo> {
+pkg/schedule/affinity/affinity_cache_sync_test.rs:35:fn counts(m: &Manager, regions: usize, affinity: usize) {
+pkg/schedule/affinity/affinity_cache_sync_test.rs:40:async fn contract(store: Arc<dyn MetaStore>) {
+pkg/schedule/affinity/affinity_cache_sync_test.rs:228:async fn affinity_cache_sync_memory() {
+pkg/schedule/affinity/affinity_cache_sync_test.rs:232:async fn affinity_cache_sync_etcd() {
+pkg/schedule/affinity/affinity_cache_sync_test.rs:238:async fn affinity_cache_sync_buffer_and_reassignment() {
+pkg/schedule/affinity/affinity_restore_test.rs:16:async fn seed(store: Arc<dyn MetaStore>) -> (Arc<dyn MetaStore>, ClusterPaths) {
+pkg/schedule/affinity/affinity_restore_test.rs:62:async fn verify(store: Arc<dyn MetaStore>, paths: &ClusterPaths) {
+pkg/schedule/affinity/affinity_restore_test.rs:90:async fn affinity_restore_memory() {
+pkg/schedule/affinity/affinity_restore_test.rs:95:async fn affinity_restore_etcd_wal() {
+pkg/schedule/affinity/affinity_restore_test.rs:105:async fn affinity_restore_overlap_rejected() {
+pkg/schedule/affinity/affinity_restore_test.rs:130:async fn affinity_restore_unadjusted_rule_skipped() {
+pkg/schedule/affinity/affinity_restore_test.rs:151:async fn affinity_restore_null_and_empty_rules() {
+pkg/schedule/affinity/affinity_restore_test.rs:194:async fn affinity_restore_storage_failure() {
+pkg/schedule/affinity/affinity_availability_test.rs:6:fn affinity_availability_store_collection() {
+pkg/schedule/affinity/affinity_availability_test.rs:26:fn store(id: u64) -> StoreInfo {
+pkg/schedule/affinity/affinity_availability_test.rs:33:fn condition(s: StoreInfo, nanos: i128) -> Option<StoreCondition> {
+pkg/schedule/affinity/affinity_availability_test.rs:39:fn affinity_availability_priority_and_boundaries() {
+pkg/schedule/affinity/affinity_availability_test.rs:105:fn affinity_availability_eviction_sources() {
+pkg/schedule/affinity/affinity_availability_test.rs:133:fn affinity_availability_transitions() {
+pkg/schedule/affinity/affinity_availability_test.rs:188:async fn affinity_availability_memory_manager() {
+pkg/schedule/affinity/affinity_update_ranges_test.rs:13:fn op(id: &str, pairs: &[(u8, u8)]) -> GroupKeyRanges {
+pkg/schedule/affinity/affinity_update_ranges_test.rs:22:async fn contract(store: Arc<dyn MetaStore>) {
+pkg/schedule/affinity/affinity_update_ranges_test.rs:91:async fn affinity_update_ranges_memory() {
+pkg/schedule/affinity/affinity_update_ranges_test.rs:95:async fn affinity_update_ranges_etcd() {
+pkg/schedule/affinity/affinity_update_ranges_test.rs:100:async fn fault_contract(inner: Arc<dyn MetaStore>) {
+pkg/schedule/affinity/affinity_update_ranges_test.rs:173:async fn affinity_update_ranges_fault_memory() {
+pkg/schedule/affinity/affinity_update_ranges_test.rs:177:async fn affinity_update_ranges_fault_etcd() {
+
+CONSUMERS
+pkg/mcs/scheduling/server/grpc_service_test.go:37:	"github.com/tikv/pd/pkg/schedule/affinity"
+pkg/mcs/scheduling/server/cluster.go:51:	"github.com/tikv/pd/pkg/schedule/affinity"
+pkg/mcs/scheduling/server/affinity/watcher.go:29:	"github.com/tikv/pd/pkg/schedule/affinity"
+server/apiv2/handlers/affinity.go:25:	"github.com/tikv/pd/pkg/schedule/affinity"
+pkg/mcs/scheduling/server/affinity/watcher_test.go:34:	"github.com/tikv/pd/pkg/schedule/affinity"
+pkg/mcs/scheduling/server/apis/v1/api.go:44:	"github.com/tikv/pd/pkg/schedule/affinity"
+server/server.go:74:	"github.com/tikv/pd/pkg/schedule/affinity"
+server/cluster/cluster.go:59:	"github.com/tikv/pd/pkg/schedule/affinity"
+tests/server/apiv2/handlers/affinity_test.go:33:	"github.com/tikv/pd/pkg/schedule/affinity"
+pkg/cluster/cluster.go:22:	"github.com/tikv/pd/pkg/schedule/affinity"
+pkg/mock/mockcluster/mockcluster.go:35:	"github.com/tikv/pd/pkg/schedule/affinity"
+pkg/schedule/core/cluster_informer.go:19:	"github.com/tikv/pd/pkg/schedule/affinity"
+pkg/schedule/checker/affinity_checker_test.go:32:	"github.com/tikv/pd/pkg/schedule/affinity"
+pkg/schedule/scatter/region_scatterer_test.go:40:	"github.com/tikv/pd/pkg/schedule/affinity"
+pkg/schedule/checker/affinity_checker.go:30:	"github.com/tikv/pd/pkg/schedule/affinity"
+pkg/schedule/filter/region_filters.go:21:	"github.com/tikv/pd/pkg/schedule/affinity"
+pkg/schedule/filter/region_filters_test.go:30:	"github.com/tikv/pd/pkg/schedule/affinity"

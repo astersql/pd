@@ -2,3 +2,9 @@
 //! Real-process differential harness for the Go oracle and future Rust services.
 pub mod harness;
 pub mod normalize;
+
+#[cfg(test)]
+mod schedule_foundation;
+#[cfg(test)]
+#[path = "schedule_foundation_test.rs"]
+mod schedule_foundation_test;

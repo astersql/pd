@@ -29,3 +29,13 @@ test = false
 [[test]]
 name = "tso"
 path = "tso_test.rs"
+
+[dev-dependencies]
+astersql-pd-schedule-affinity.workspace = true
+astersql-pd-schedule-placement.workspace = true
+astersql-pd-schedule-labeler.workspace = true
+astersql-pd-schedule-config.workspace = true
+astersql-pd-core.workspace = true
+astersql-pd-keypath.workspace = true
+astersql-pd-keyutil.workspace = true
+astersql-pd-storage-endpoint.workspace = true

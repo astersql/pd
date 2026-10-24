@@ -1,0 +1,44 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-compat-tests v0.1.0 (/Users/Shared/work/dir/data/codes/pd/tests/rust-compat)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.01s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_compat_tests-7ad6c597a8ba8beb)
+
+running 2 tests
+schedule_foundation oracle case=reserve_leader fit/match/restore/duplicate passed
+schedule_foundation oracle case=reserve_follower fit/match/restore/duplicate passed
+schedule_foundation oracle case=priority_leader_first fit/match/restore/duplicate passed
+schedule_foundation oracle case=orphan_order fit/match/restore/duplicate passed
+schedule_foundation oracle case=shortage fit/match/restore/duplicate passed
+schedule_foundation oracle case=role_conversion fit/match/restore/duplicate passed
+schedule_foundation oracle case=health_order fit/match/restore/duplicate passed
+
+thread 'schedule_foundation_test::schedule_foundation_memory' (156484062) panicked at tests/rust-compat/schedule_foundation.rs:120:9:
+assertion `left == right` failed: witness_on orphans
+  left: [2, 3]
+ right: [2]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test schedule_foundation_test::schedule_foundation_memory ... FAILED
+isolated etcd 3.5.15 ready at http://127.0.0.1:53204
+schedule_foundation oracle case=reserve_leader fit/match/restore/duplicate passed
+schedule_foundation oracle case=reserve_follower fit/match/restore/duplicate passed
+schedule_foundation oracle case=priority_leader_first fit/match/restore/duplicate passed
+schedule_foundation oracle case=orphan_order fit/match/restore/duplicate passed
+schedule_foundation oracle case=shortage fit/match/restore/duplicate passed
+schedule_foundation oracle case=role_conversion fit/match/restore/duplicate passed
+schedule_foundation oracle case=health_order fit/match/restore/duplicate passed
+
+thread 'schedule_foundation_test::schedule_foundation_etcd' (156484061) panicked at tests/rust-compat/schedule_foundation.rs:120:9:
+assertion `left == right` failed: witness_on orphans
+  left: [2, 3]
+ right: [2]
+test schedule_foundation_test::schedule_foundation_etcd ... FAILED
+
+failures:
+
+failures:
+    schedule_foundation_test::schedule_foundation_etcd
+    schedule_foundation_test::schedule_foundation_memory
+
+test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.74s
+
+error: test failed, to rerun pass `-p astersql-pd-compat-tests --lib`

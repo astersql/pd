@@ -80,7 +80,15 @@ version = "0.1.0"
 name = "astersql-pd-compat-tests"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-core",
+ "astersql-pd-keypath",
+ "astersql-pd-keyutil",
  "astersql-pd-proto",
+ "astersql-pd-schedule-affinity",
+ "astersql-pd-schedule-config",
+ "astersql-pd-schedule-labeler",
+ "astersql-pd-schedule-placement",
+ "astersql-pd-storage-endpoint",
  "astersql-pd-storage-kv",
  "prost",
  "serde_json",
