@@ -5,4 +5,4 @@ Canonical `astersql-pd-statistics-utils`, Rust 2024、默认 features，无生�
 不接线 core、protobuf、transport、Registry 或运行时。
 行为范围与兼容边界见 [kind.rs.md](kind.rs.md)，验收见
 [任务证据](../../../docs/rust/state/task-01.md)。多维 TopN 集合通过 `TopN` / `TopNItem` 公开，测试模块 `topn_test` 显式登记，
-见 [topn.rs.md](topn.rs.md)；TTL 属后续任务。
+见 [topn.rs.md](topn.rs.md)；TTL 通过 `TtlTopN` 公开，`topn_ttl_test` 显式登记；见 [topn_ttl.rs.md](topn_ttl.rs.md)。

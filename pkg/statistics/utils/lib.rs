@@ -13,3 +13,9 @@ pub use topn::{TopN, TopNItem};
 
 #[cfg(test)]
 mod topn_test;
+
+mod topn_ttl;
+pub use topn_ttl::TtlTopN;
+
+#[cfg(test)]
+mod topn_ttl_test;

@@ -1,0 +1,4 @@
+=== RUN   TestTTL
+--- PASS: TestTTL (0.92s)
+PASS
+ok  	command-line-arguments	1.163s

@@ -1,0 +1,43 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-statistics-utils v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics/utils)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.31s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics_utils-3d0f49b4fac9f695)
+
+running 4 tests
+
+thread 'topn_ttl_test::state_task_03_topn_ttl_renewal_never_deletes_latest_version' (156800597) panicked at pkg/statistics/utils/topn_ttl_test.rs:51:5:
+assertion `left == right` failed
+  left: []
+ right: [2, 2, 2, 2]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'topn_ttl_test::state_task_03_topn_ttl_boundary_and_explicit_cleanup' (156800594) panicked at pkg/statistics/utils/topn_ttl_test.rs:35:5:
+assertion `left == right` failed
+  left: []
+ right: [7, 7, 7, 7]
+
+thread 'topn_ttl_test::state_task_03_topn_ttl_remove_reinsert_and_partial_batch' (156800596) panicked at pkg/statistics/utils/topn_ttl_test.rs:67:5:
+assertion `left == right` failed
+  left: []
+ right: [1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3]
+test topn_ttl_test::state_task_03_topn_ttl_renewal_never_deletes_latest_version ... FAILED
+test topn_ttl_test::state_task_03_topn_ttl_boundary_and_explicit_cleanup ... FAILED
+test topn_ttl_test::state_task_03_topn_ttl_remove_reinsert_and_partial_batch ... FAILED
+
+thread 'topn_ttl_test::state_task_03_topn_ttl_go_test_ttl_contract' (156800595) panicked at pkg/statistics/utils/topn_ttl_test.rs:80:5:
+assertion `left == right` failed
+  left: 0
+ right: 3996
+test topn_ttl_test::state_task_03_topn_ttl_go_test_ttl_contract ... FAILED
+
+failures:
+
+failures:
+    topn_ttl_test::state_task_03_topn_ttl_boundary_and_explicit_cleanup
+    topn_ttl_test::state_task_03_topn_ttl_go_test_ttl_contract
+    topn_ttl_test::state_task_03_topn_ttl_remove_reinsert_and_partial_batch
+    topn_ttl_test::state_task_03_topn_ttl_renewal_never_deletes_latest_version
+
+test result: FAILED. 0 passed; 4 failed; 0 ignored; 0 measured; 12 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `-p astersql-pd-statistics-utils --lib`

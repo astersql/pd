@@ -1,0 +1,2 @@
+Both Cargo phases used slot 1. Own slot-1.lock released; compilation cache retained.
+Validation wrapper and its command completed with exit 0; fixture Drop closes/waits children.
