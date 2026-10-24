@@ -1,0 +1,26 @@
+Type 'help' for list of commands.
+Breakpoint 1 set at 0x1913570 for github.com/tikv/pd/server/cluster.TestBucketHeartbeat() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1063
+> [Breakpoint 1] github.com/tikv/pd/server/cluster.TestBucketHeartbeat() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1063 (hits goroutine(256):1 total:1) (PC: 0x1913570)
+Breakpoint 2 set at 0x18ee3b0 for github.com/tikv/pd/server/cluster.(*RaftCluster).processRegionBuckets() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster.go:1325
+> [Breakpoint 2] github.com/tikv/pd/server/cluster.(*RaftCluster).processRegionBuckets() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster.go:1325 (hits goroutine(256):1 total:1) (PC: 0x18ee3b0)
+("*github.com/pingcap/kvproto/pkg/metapb.Store")(0x52d863ff1600)
+*github.com/pingcap/kvproto/pkg/metapb.Store {
+    Id: 1,
+    Address: "mock://tikv-1:1",
+    State: StoreState_Tombstone (2),
+    Labels: []*github.com/pingcap/kvproto/pkg/metapb.StoreLabel len: 0, cap: 0, nil,
+    Version: "2.0.0",
+    PeerAddress: "",
+    StatusAddress: "mock://tikv-1:2",
+    GitHash: "",
+    StartTimestamp: 0,
+    DeployPath: "test/store1",
+    LastHeartbeat: 0,
+    PhysicallyDestroyed: false,
+    NodeState: NodeState_Removed (3),
+    TxnProtocolVersionRange: *github.com/pingcap/kvproto/pkg/metapb.TxnProtocolVersionRange nil,}
+unsafe.Pointer(0x0)
+> github.com/tikv/pd/server/cluster.TestBucketHeartbeat() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1064 (PC: 0x19135d8)
+Values returned:
+    ~r0: false
+    ~r1: error nil

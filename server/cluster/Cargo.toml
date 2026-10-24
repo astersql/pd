@@ -9,11 +9,13 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
+astersql-pd-statistics-buckets.workspace = true
 astersql-pd-core.workspace = true
 astersql-pd-statistics.workspace = true
 astersql-pd-statistics-utils.workspace = true
 
 [dev-dependencies]
+tokio-util.workspace = true
 astersql-pd-schedule-config.workspace = true
 tokio.workspace = true
 prometheus.workspace = true

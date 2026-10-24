@@ -1,0 +1,14 @@
+break /Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1063
+continue
+set cluster.StoresInfo.stores[1].meta.State = 2
+set cluster.StoresInfo.stores[1].meta.NodeState = 3
+set cluster.StoresInfo.stores[2].meta.State = 2
+set cluster.StoresInfo.stores[2].meta.NodeState = 3
+set cluster.StoresInfo.stores[3].meta.State = 2
+set cluster.StoresInfo.stores[3].meta.NodeState = 3
+break /Users/Shared/work/dir/data/codes/pd/server/cluster/cluster.go:1325
+continue
+print store.meta
+print region.reportBuckets
+stepout
+exit

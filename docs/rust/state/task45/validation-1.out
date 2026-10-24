@@ -1,0 +1,14 @@
+   Compiling astersql-pd-cluster v0.1.0 (/Users/Shared/work/dir/data/codes/pd/server/cluster)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.58s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_cluster-885b566541b44b2c)
+
+running 7 tests
+test bucket_heartbeat_test::state_task_45_bucket_heartbeat_three_attempt_boundary_real_core_cas ... ok
+test bucket_heartbeat_test::state_task_45_bucket_heartbeat_missing_leader_store_allowed ... ok
+test bucket_heartbeat_test::state_task_45_bucket_heartbeat_compatibility_and_stale_metadata ... ok
+test bucket_heartbeat_test::state_task_45_bucket_heartbeat_competing_versions ... ok
+test bucket_heartbeat_test::state_task_45_bucket_heartbeat_closed_worker_keeps_commit ... ok
+test bucket_heartbeat_test::state_task_45_bucket_heartbeat_missing_removed_never_enqueue ... ok
+test bucket_heartbeat_test::state_task_45_bucket_heartbeat_versions_and_worker_payload ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 26 filtered out; finished in 0.00s

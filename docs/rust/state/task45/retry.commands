@@ -1,0 +1,20 @@
+break /Users/Shared/work/dir/data/codes/pd/pkg/core/region.go:683
+continue
+print buckets
+print old
+set old = buckets
+continue
+print buckets
+print old
+set old = buckets
+continue
+print buckets
+print old
+set old = buckets
+break /Users/Shared/work/dir/data/codes/pd/server/cluster/cluster.go:1338
+continue
+print buckets
+print region.reportBuckets
+stack 3
+stepout
+exit

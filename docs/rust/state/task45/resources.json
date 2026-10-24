@@ -1,0 +1,11 @@
+{
+  "oracle_containers_exited": true,
+  "slots": [
+    "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2",
+    "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-3"
+  ],
+  "own_locks_released": true,
+  "active_slot_processes": [],
+  "caches_preserved": true,
+  "foreign_slot_1_untouched": true
+}

@@ -66,9 +66,11 @@ dependencies = [
  "astersql-pd-core",
  "astersql-pd-schedule-config",
  "astersql-pd-statistics",
+ "astersql-pd-statistics-buckets",
  "astersql-pd-statistics-utils",
  "prometheus",
  "tokio",
+ "tokio-util",
 ]
 
 [[package]]

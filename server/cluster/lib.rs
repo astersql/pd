@@ -24,3 +24,8 @@ mod region_overlap;
 pub use region_overlap::handle_region_heartbeat_with_overlap_cleanup;
 #[cfg(test)]
 mod region_overlap_test;
+
+mod bucket_heartbeat;
+pub use bucket_heartbeat::{BucketRegionNotFound, handle_bucket_heartbeat};
+#[cfg(test)]
+mod bucket_heartbeat_test;

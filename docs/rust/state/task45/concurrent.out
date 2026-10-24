@@ -1,0 +1,30 @@
+Type 'help' for list of commands.
+Breakpoint 1 set at 0xde6b08 for github.com/tikv/pd/pkg/core.(*RegionInfo).CompareAndSetReportBuckets() .Users/Shared/work/dir/data/codes/pd/pkg/core/region.go:683
+> [Breakpoint 1] github.com/tikv/pd/pkg/core.(*RegionInfo).CompareAndSetReportBuckets() .Users/Shared/work/dir/data/codes/pd/pkg/core/region.go:683 (hits goroutine(310):1 total:1) (PC: 0xde6b08)
+3
+*github.com/pingcap/kvproto/pkg/metapb.Buckets nil
+> github.com/tikv/pd/pkg/core.(*RegionInfo).CompareAndSetReportBuckets() .Users/Shared/work/dir/data/codes/pd/pkg/core/region.go:683 (PC: 0xde6b08)
+Values returned:
+    ~r0: []uint8 len: 2, cap: 896, [120,10]
+    ~r1: error nil
+
+*github.com/pingcap/kvproto/pkg/metapb.Buckets nil
+("*github.com/pingcap/kvproto/pkg/metapb.Buckets")(0x38f00f86dbc0)
+*github.com/pingcap/kvproto/pkg/metapb.Buckets {
+    RegionId: 1,
+    Version: 2,
+    Keys: [][]uint8 len: 0, cap: 0, nil,
+    Stats: *github.com/pingcap/kvproto/pkg/metapb.BucketStats nil,
+    PeriodInMs: 0,}
+> [Breakpoint 1] github.com/tikv/pd/pkg/core.(*RegionInfo).CompareAndSetReportBuckets() .Users/Shared/work/dir/data/codes/pd/pkg/core/region.go:683 (hits goroutine(310):2 total:2) (PC: 0xde6b08)
+("*github.com/pingcap/kvproto/pkg/metapb.Buckets")(0x38f00f86dbc0)
+*github.com/pingcap/kvproto/pkg/metapb.Buckets {
+    RegionId: 1,
+    Version: 2,
+    Keys: [][]uint8 len: 0, cap: 0, nil,
+    Stats: *github.com/pingcap/kvproto/pkg/metapb.BucketStats nil,
+    PeriodInMs: 0,}
+3
+Breakpoint 1 cleared at 0xde6b08 for github.com/tikv/pd/pkg/core.(*RegionInfo).CompareAndSetReportBuckets() .Users/Shared/work/dir/data/codes/pd/pkg/core/region.go:683
+PASS
+/oracle/concurrent.commands:13: Process 24 has exited with status 0

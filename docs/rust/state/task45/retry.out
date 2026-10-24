@@ -1,0 +1,64 @@
+Type 'help' for list of commands.
+Breakpoint 1 set at 0xde6b08 for github.com/tikv/pd/pkg/core.(*RegionInfo).CompareAndSetReportBuckets() .Users/Shared/work/dir/data/codes/pd/pkg/core/region.go:683
+> [Breakpoint 1] github.com/tikv/pd/pkg/core.(*RegionInfo).CompareAndSetReportBuckets() .Users/Shared/work/dir/data/codes/pd/pkg/core/region.go:683 (hits goroutine(293):1 total:1) (PC: 0xde6b08)
+("*github.com/pingcap/kvproto/pkg/metapb.Buckets")(0x139b8cc23340)
+*github.com/pingcap/kvproto/pkg/metapb.Buckets {
+    RegionId: 1,
+    Version: 1,
+    Keys: [][]uint8 len: 2, cap: 2, [
+        [49],
+        [50],
+    ],
+    Stats: *github.com/pingcap/kvproto/pkg/metapb.BucketStats nil,
+    PeriodInMs: 0,}
+*github.com/pingcap/kvproto/pkg/metapb.Buckets nil
+> [Breakpoint 1] github.com/tikv/pd/pkg/core.(*RegionInfo).CompareAndSetReportBuckets() .Users/Shared/work/dir/data/codes/pd/pkg/core/region.go:683 (hits goroutine(293):2 total:2) (PC: 0xde6b08)
+("*github.com/pingcap/kvproto/pkg/metapb.Buckets")(0x139b8cc23340)
+*github.com/pingcap/kvproto/pkg/metapb.Buckets {
+    RegionId: 1,
+    Version: 1,
+    Keys: [][]uint8 len: 2, cap: 2, [
+        [49],
+        [50],
+    ],
+    Stats: *github.com/pingcap/kvproto/pkg/metapb.BucketStats nil,
+    PeriodInMs: 0,}
+*github.com/pingcap/kvproto/pkg/metapb.Buckets nil
+> [Breakpoint 1] github.com/tikv/pd/pkg/core.(*RegionInfo).CompareAndSetReportBuckets() .Users/Shared/work/dir/data/codes/pd/pkg/core/region.go:683 (hits goroutine(293):3 total:3) (PC: 0xde6b08)
+("*github.com/pingcap/kvproto/pkg/metapb.Buckets")(0x139b8cc23340)
+*github.com/pingcap/kvproto/pkg/metapb.Buckets {
+    RegionId: 1,
+    Version: 1,
+    Keys: [][]uint8 len: 2, cap: 2, [
+        [49],
+        [50],
+    ],
+    Stats: *github.com/pingcap/kvproto/pkg/metapb.BucketStats nil,
+    PeriodInMs: 0,}
+*github.com/pingcap/kvproto/pkg/metapb.Buckets nil
+Breakpoint 2 set at 0x18ee568 for github.com/tikv/pd/server/cluster.(*RaftCluster).processRegionBuckets() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster.go:1338
+> [Breakpoint 2] github.com/tikv/pd/server/cluster.(*RaftCluster).processRegionBuckets() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster.go:1338 (hits goroutine(293):1 total:1) (PC: 0x18ee568)
+("*github.com/pingcap/kvproto/pkg/metapb.Buckets")(0x139b8cc23340)
+*github.com/pingcap/kvproto/pkg/metapb.Buckets {
+    RegionId: 1,
+    Version: 1,
+    Keys: [][]uint8 len: 2, cap: 2, [
+        [49],
+        [50],
+    ],
+    Stats: *github.com/pingcap/kvproto/pkg/metapb.BucketStats nil,
+    PeriodInMs: 0,}
+unsafe.Pointer(0x0)
+0  0x00000000018ee568 in [1mgithub.com/tikv/pd/server/cluster.(*RaftCluster).processRegionBuckets[0m
+   at .Users/Shared/work/dir/data/codes/pd/server/cluster/[1mcluster.go:1338[0m
+1  0x00000000019135d8 in [1mgithub.com/tikv/pd/server/cluster.TestBucketHeartbeat[0m
+   at .Users/Shared/work/dir/data/codes/pd/server/cluster/[1mcluster_test.go:1064[0m
+2  0x00000000001d8de0 in [1mtesting.tRunner[0m
+   at .Users/xiangmin/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.8.darwin-amd64/src/testing/[1mtesting.go:2036[0m
+3  0x00000000001da6b0 in [1mtesting.(*T).Run.gowrap1[0m
+   at .Users/xiangmin/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.8.darwin-amd64/src/testing/[1mtesting.go:2101[0m
+(truncated)
+> github.com/tikv/pd/server/cluster.TestBucketHeartbeat() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1064 (PC: 0x19135d8)
+Values returned:
+    ~r0: false
+    ~r1: error nil

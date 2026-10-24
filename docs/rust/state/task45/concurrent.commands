@@ -1,0 +1,14 @@
+break /Users/Shared/work/dir/data/codes/pd/pkg/core/region.go:683
+condition 1 buckets.Version == 3
+continue
+print buckets.Version
+print old
+call os.ReadFile("/delay")
+print old
+print (*"github.com/pingcap/kvproto/pkg/metapb.Buckets")(r.reportBuckets)
+continue
+print old
+print buckets.Version
+clear 1
+continue
+exit

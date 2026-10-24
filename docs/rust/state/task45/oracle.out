@@ -1,0 +1,14 @@
+8781f08225e2b8b746217d79fe78e3ff072369cc8ae8941cc8d616a8a77986d9  /Users/Shared/work/dir/data/codes/pd/target/rust-slot-2/cluster-oracle41.test
+=== RUN   TestBucketCompatibility
+[2026/10/24 21:58:10.905 +00:00] [INFO] [region.go:915] ["region Version changed"] [region-id=1] [detail="StartKey:{61}, EndKey:{64}"] [old-version=1] [new-version=2]
+[2026/10/24 21:58:10.905 +00:00] [INFO] [region.go:915] ["region Version changed"] [region-id=1] [detail="StartKey:{61}, EndKey:{64}"] [old-version=2] [new-version=3]
+[2026/10/24 21:58:10.905 +00:00] [INFO] [region.go:915] ["region Version changed"] [region-id=1] [detail="StartKey:{61}, EndKey:{64}"] [old-version=3] [new-version=4]
+--- PASS: TestBucketCompatibility (0.00s)
+=== RUN   TestStaleBucketMeta
+[2026/10/24 21:58:10.906 +00:00] [INFO] [region.go:915] ["region Version changed"] [region-id=1] [detail="StartKey Changed:{61} -> {63}, EndKey:{64}"] [old-version=1] [new-version=2]
+[2026/10/24 21:58:10.906 +00:00] [INFO] [region.go:915] ["region Version changed"] [region-id=1] [detail="StartKey:{63}, EndKey:{64}"] [old-version=2] [new-version=3]
+--- PASS: TestStaleBucketMeta (0.00s)
+=== RUN   TestBucketHeartbeat
+[2026/10/24 21:58:10.907 +00:00] [INFO] [region.go:915] ["region ConfVer changed"] [region-id=1] [detail=] [old-confver=2] [new-confver=3]
+--- PASS: TestBucketHeartbeat (0.00s)
+PASS

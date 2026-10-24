@@ -1,0 +1,24 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+Type 'help' for list of commands.
+Set a suspended breakpoint (Delve will try to set this breakpoint when a plugin is loaded) [Y/n]?/oracle/retry.commands:1: EOF
+Command failed: could not find statement at /Users/Shared/work/dir/data/codes/pd/pkg/core/region.go:684, please use a line with a statement
+[2026/10/24 21:45:25.253 +00:00] [INFO] [region.go:915] ["region ConfVer changed"] [region-id=1] [detail=] [old-confver=2] [new-confver=3]
+PASS
+/oracle/retry.commands:2: Process 17 has exited with status 0
+/oracle/retry.commands:3: Process 17 has exited with status 0
+/oracle/retry.commands:4: Process 17 has exited with status 0
+/oracle/retry.commands:5: Process 17 has exited with status 0
+/oracle/retry.commands:6: Process 17 has exited with status 0
+/oracle/retry.commands:7: Process 17 has exited with status 0
+/oracle/retry.commands:8: Process 17 has exited with status 0
+/oracle/retry.commands:9: Process 17 has exited with status 0
+/oracle/retry.commands:10: Process 17 has exited with status 0
+/oracle/retry.commands:11: Process 17 has exited with status 0
+/oracle/retry.commands:12: Process 17 has exited with status 0
+/oracle/retry.commands:13: Process 17 has exited with status 0
+Command failed: Process 17 has exited with status 0
+Set a suspended breakpoint (Delve will try to set this breakpoint when process restarts) [Y/n]?/oracle/retry.commands:14: EOF
+/oracle/retry.commands:15: Process 17 has exited with status 0
+/oracle/retry.commands:16: Process 17 has exited with status 0
+/oracle/retry.commands:17: Process 17 has exited with status 0
+/oracle/retry.commands:18: Process 17 has exited with status 0
