@@ -1,0 +1,56 @@
+break store_collection_test.go:83
+continue
+config max-variable-recurse 5
+config max-array-values 300
+print stats.LabelCounter
+print "STORE 0"
+call -unsafe stats.observeStoreStatus(stores[0])
+print "STORE 1"
+call -unsafe stats.observeStoreStatus(stores[1])
+print "STORE 2"
+call -unsafe stats.observeStoreStatus(stores[2])
+print "STORE 3"
+call -unsafe stats.observeStoreStatus(stores[3])
+print "STORE 4"
+call -unsafe stats.observeStoreStatus(stores[4])
+print "STORE 5"
+call -unsafe stats.observeStoreStatus(stores[5])
+print "STORE 6"
+call -unsafe stats.observeStoreStatus(stores[6])
+print "STORE 7"
+call -unsafe stats.observeStoreStatus(stores[7])
+print "STORE 8"
+call -unsafe stats.observeStoreStatus(stores[8])
+print "STORE 9"
+call -unsafe stats.observeStoreStatus(stores[9])
+print "CAPACITY"
+print stores[5].storeStats
+print "SLOW"
+set stores[5].storeStats.rawStats.SlowScore = 80
+call -unsafe stats.observeStoreStatus(stores[5])
+print "DISCONNECTED"
+set stores[5].meta.LastHeartbeat = stores[5].meta.LastHeartbeat - 30000000000
+call -unsafe stats.observeStoreStatus(stores[5])
+print "UNHEALTHY"
+set stores[5].meta.LastHeartbeat = stores[5].meta.LastHeartbeat - 600000000000
+call -unsafe stats.observeStoreStatus(stores[5])
+print "DOWN"
+set stores[5].meta.LastHeartbeat = stores[5].meta.LastHeartbeat - 3600000000000
+call -unsafe stats.observeStoreStatus(stores[5])
+print "SERVING"
+set stores[0].meta.NodeState = 1
+call -unsafe stats.observeStoreStatus(stores[0])
+print "REMOVED"
+set stores[0].meta.NodeState = 3
+call -unsafe stats.observeStoreStatus(stores[0])
+print "UNKNOWN"
+set stores[0].meta.NodeState = 99
+call -unsafe stats.observeStoreStatus(stores[0])
+call -unsafe stats.collect()
+config max-variable-recurse 4
+print "PLACEMENT"
+print "github.com/tikv/pd/pkg/statistics".placementStatusGauge.MetricVec.metricMap.metrics
+print "METRIC CAPACITY"
+print "github.com/tikv/pd/pkg/statistics".clusterStatusGauge.MetricVec.metricMap.metrics
+continue
+exit

@@ -1,0 +1,14 @@
+   Compiling astersql-pd-statistics v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.65s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics-beaad74b356850b8)
+
+running 7 tests
+test store_collection_test::state_task_27_store_collection_exact_clock_boundaries ... ok
+test store_collection_test::state_task_27_store_collection_resource_samples ... ok
+test store_collection_test::state_task_27_store_collection_low_space_and_removed_retention ... ok
+test store_collection_test::state_task_27_store_collection_group_config_isolation ... ok
+test store_collection_test::state_task_27_store_collection_space_predicate_and_windows ... ok
+test store_collection_test::state_task_27_store_collection_go_health_priority ... ok
+test store_collection_test::state_task_27_store_collection_go_snapshots ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 98 filtered out; finished in 0.00s

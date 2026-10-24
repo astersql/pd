@@ -109,3 +109,8 @@ mod slow_stat;
 pub use slow_stat::{SlowStat, SlowStoresStats};
 #[cfg(test)]
 mod slow_stat_test;
+
+mod store_collection;
+pub use store_collection::{StoreMetricSample, StoreStatistics, StoreStatisticsMap};
+#[cfg(test)]
+mod store_collection_test;

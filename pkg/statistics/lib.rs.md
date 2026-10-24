@@ -70,3 +70,7 @@ HotPeerStatShow、HotPeersStat、StoreHotPeersInfos与StoreHotPeersStat，hot_pr
 
 已加入[慢节点集合状态](slow_stat.rs.md)：SlowStoresStats、SlowStat，
 slow_stat_test显式登记。单锁原子观察保留重复slow删除行为，宿主可Arc共享。
+
+已加入[存储状态汇总](store_collection.rs.md)：StoreStatistics、StoreStatisticsMap、
+StoreMetricSample与显式store_collection_test。宿主传入时钟与配置，返回独立的
+节点健康/容量、位置、配置、限额与v2窗口样本；Registry与清理由后续任务处理。
