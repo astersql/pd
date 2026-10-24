@@ -1,0 +1,4 @@
+SLOT=1
+CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+Own slot lock released; no slot test or etcd fixture processes remain.
+Compilation cache retained.

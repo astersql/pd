@@ -1,0 +1,8 @@
+=== RUN   TestThresholdWithUpdateHotPeerStat
+--- PASS: TestThresholdWithUpdateHotPeerStat (0.00s)
+=== RUN   TestHotPeerStatIsHotUsesCPULastAverage
+--- PASS: TestHotPeerStatIsHotUsesCPULastAverage (0.00s)
+=== RUN   TestHotPeerCacheTopNThreshold
+--- PASS: TestHotPeerCacheTopNThreshold (0.00s)
+PASS
+ok  	github.com/tikv/pd/pkg/statistics	0.031s

@@ -1,0 +1,50 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-statistics v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.70s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics-19f9aca67fa98079)
+
+running 5 tests
+
+thread 'hot_threshold_test::state_task_20_hot_threshold_rank_replacement_remove_and_stores' (157542531) panicked at pkg/statistics/hot_threshold_test.rs:122:5:
+assertion `left == right` failed
+  left: [1024.0, 32.0, 32.0, 1.0]
+ right: [3200.0, 160.0, 32.0, 16.0]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'hot_threshold_test::state_task_20_hot_threshold_cpu_last_average_and_dynamic_admission' (157542529) panicked at pkg/statistics/hot_threshold_test.rs:159:5:
+assertion `left == right` failed
+  left: [8192.0, 128.0, 128.0, 1.0]
+ right: [8192.0, 128.0, 128.0, 10.4]
+
+thread 'hot_threshold_test::state_task_20_hot_threshold_clock_boundary' (157542528) panicked at pkg/statistics/hot_threshold_test.rs:148:5:
+assertion `left == right` failed
+  left: [1024.0, 32.0, 32.0, 1.0]
+ right: [8000.0, 8000.0, 8000.0, 8000.0]
+test hot_threshold_test::state_task_20_hot_threshold_rank_replacement_remove_and_stores ... FAILED
+test hot_threshold_test::state_task_20_hot_threshold_clock_boundary ... FAILED
+test hot_threshold_test::state_task_20_hot_threshold_cpu_last_average_and_dynamic_admission ... FAILED
+
+thread 'hot_threshold_test::state_task_20_hot_threshold_report_intervals' (157542532) panicked at pkg/statistics/hot_threshold_test.rs:63:13:
+assertion `left == right` failed: interval=120 id=60
+  left: 8192.0
+ right: 13107.2
+test hot_threshold_test::state_task_20_hot_threshold_report_intervals ... FAILED
+
+thread 'hot_threshold_test::state_task_20_hot_threshold_go_topn_and_refresh' (157542530) panicked at pkg/statistics/hot_threshold_test.rs:100:9:
+assertion `left == right` failed
+  left: [1024.0, 32.0, 32.0, 1.0]
+ right: [3200.0, 3200.0, 3200.0, 1.0]
+test hot_threshold_test::state_task_20_hot_threshold_go_topn_and_refresh ... FAILED
+
+failures:
+
+failures:
+    hot_threshold_test::state_task_20_hot_threshold_clock_boundary
+    hot_threshold_test::state_task_20_hot_threshold_cpu_last_average_and_dynamic_admission
+    hot_threshold_test::state_task_20_hot_threshold_go_topn_and_refresh
+    hot_threshold_test::state_task_20_hot_threshold_rank_replacement_remove_and_stores
+    hot_threshold_test::state_task_20_hot_threshold_report_intervals
+
+test result: FAILED. 0 passed; 5 failed; 0 ignored; 0 measured; 56 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `-p astersql-pd-statistics --lib`

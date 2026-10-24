@@ -41,4 +41,8 @@ is_region_label_isolation_satisfied与LabelStatistics；label_statistics_test显
 
 已加入[热点副本升温与降温](hot_peer_update.rs.md)：HotPeerCache同步直接报告状态机，
 显式hot_peer_update_test，按方向选择真实DimStat窗口，宿主逐报告应用Add/Update/Remove；
-阈值闭包注入每store阈值，动态TopN、继承和异步策略留后续扩展。
+阈值闭包注入每store阈值，继承和异步策略留后续扩展。
+
+已加入[热点动态阈值](hot_threshold.rs.md)：HotPeerCache::calc_hot_thresholds、
+set_thresholds_update_interval和check_peer_flow_dynamic；hot_threshold_test显式登记。
+应用动作同步维护真实每store TopN，宿主传入纳秒时钟，各维第60大负载乘0.8并受最小阈值约束。

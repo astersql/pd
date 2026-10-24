@@ -5,18 +5,19 @@ use std::collections::BTreeMap;
 use astersql_pd_core::RegionInfo;
 use astersql_pd_statistics_utils::{ActionType, DIM_LEN, MIN_HOT_THRESHOLDS, RWType};
 
+use crate::hot_threshold::HotThresholds;
 use crate::{DimStat, HotPeerStat};
 
 const SECOND: i64 = 1_000_000_000;
 
-/// Synchronous directional peer lifecycle. The host supplies per-store thresholds
-/// and applies returned actions in report order. Read and write use separate caches.
-/// TopN thresholds, membership inheritance, TTL and asynchronous work are separate
-/// policies; this type owns only the direct-report state machine.
+/// Synchronous directional peer lifecycle with per-store TopN thresholds.
+/// The host applies returned actions in report order and supplies time for dynamic
+/// thresholds. Read and write use separate caches; TTL and inheritance are separate policies.
 pub struct HotPeerCache {
     kind: RWType,
     peers: BTreeMap<(u64, u64), HotPeerStat>,
     denoising: bool,
+    pub(crate) hot_thresholds: HotThresholds,
 }
 
 impl HotPeerCache {
@@ -27,6 +28,7 @@ impl HotPeerCache {
             kind,
             peers: BTreeMap::new(),
             denoising: true,
+            hot_thresholds: HotThresholds::default(),
         }
     }
 
@@ -45,9 +47,11 @@ impl HotPeerCache {
         let key = (item.region_id, item.store_id);
         match item.action_type {
             ActionType::ADD | ActionType::UPDATE => {
+                self.hot_thresholds.put(&item);
                 self.peers.insert(key, item);
             }
             ActionType::REMOVE => {
+                self.hot_thresholds.remove(item.store_id, item.region_id);
                 self.peers.remove(&key);
             }
             _ => {}

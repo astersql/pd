@@ -72,3 +72,7 @@ mod hot_peer_update;
 pub use hot_peer_update::HotPeerCache;
 #[cfg(test)]
 mod hot_peer_update_test;
+
+mod hot_threshold;
+#[cfg(test)]
+mod hot_threshold_test;

@@ -4,7 +4,7 @@
 [HotPeerStat/DimStat](hot_peer.rs.md) 和真实 TimeMedian。
 `check_peer_flow` 消费 canonical core RegionInfo、显式 store ID 列表（None 回退全部
 region peers，空列表不处理）、8维累计 delta 和整数秒，阈值闭包返回各 store 的4维阈值。
-`minimum_thresholds` 提供默认下限；动态 TopN 阈值由下一批次扩展。
+`minimum_thresholds` 提供默认下限；动态 TopN 阈值见[热点动态阈值](hot_threshold.rs.md)。
 
 默认丢弃小于3秒报告；`set_denoising` 为每实例策略，不引入全局开关。
 首次按瞬时任一维 inclusive 阈值接纳，满报告窗口初始化 degree=1、anti=12(read)/2(write)，
@@ -17,7 +17,7 @@ CPU和byte/key/query参与同一种判定，读写通过utils映射互不污染�
 推进已存状态；这是Rust所有权下的事务接口。它不同于继承用DimStat::clone（重置pending delta）
 和HotPeerStat::clone（只返回去噪快照）。没有返回值借用或可变别名。
 
-本批次仅实现直接报告路径，不提供TTL/GC、tombstone过滤、动态阈值、跨副本继承、leader
+本批次仅实现直接报告路径，不提供TTL/GC、tombstone过滤、跨副本继承、leader
 转移策略、未上报peer扫描或async队列。宿主选择有效store输入；后续批次在同一canonical crate扩展。
 库不依赖协议、传输、MetaStore或调度，且不创建运行时、线程或后台任务。
 独立hot_peer_update_test在lib.rs显式注册；[验收证据](../../docs/rust/state/task-19.md)。
