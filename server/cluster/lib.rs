@@ -41,3 +41,8 @@ pub use heartbeat_effects::{
 mod effects_fixture;
 #[cfg(test)]
 mod heartbeat_effects_test;
+
+mod state_pipeline;
+pub use state_pipeline::{StatePipeline, StateSnapshot};
+#[cfg(test)]
+mod state_pipeline_test;

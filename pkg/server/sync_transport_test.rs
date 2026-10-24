@@ -612,3 +612,152 @@ async fn state_task_51_sync_transport_follower_error_and_eof() {
         server.await.unwrap();
     }
 }
+
+// Batch 52: admission, statistics, history and real HTTP/2 share canonical state.
+#[tokio::test]
+async fn state_task_52_state_pipeline_real_region_syncer() {
+    use astersql_pd_cluster::*;
+    use astersql_pd_core::{Peer, StoreInfo, StoreMeta};
+    use astersql_pd_ratelimit::ConcurrentRunner;
+    use astersql_pd_schedule_config::ProviderSnapshot;
+    use astersql_pd_schedule_placement::RuleManager;
+    use astersql_pd_statistics::{HotStat, LabelStatistics, RegionStatistics};
+    use astersql_pd_storage_endpoint::StorageEndpoint;
+    let store = Arc::new(MemoryStore::default());
+    let endpoint = Arc::new(StorageEndpoint::new(store));
+    let paths = ClusterPaths::new(42);
+    let mut config = ProviderSnapshot::<()>::default();
+    config.replication.enable_placement_rules = false;
+    let cluster = BasicCluster::new();
+    cluster.stores.put_store(Arc::new(StoreInfo::new(StoreMeta {
+        id: 1,
+        ..Default::default()
+    })));
+    let state = Arc::new(Mutex::new(HeartbeatEffectsState {
+        cluster,
+        config,
+        region_stats: Some(RegionStatistics::new()),
+        label_stats: LabelStatistics::new(),
+        rules: RuleManager::new(endpoint.clone(), paths),
+    }));
+    let mut hot = HotStat::new(&Handle::current(), &prometheus::Registry::new(), 128).unwrap();
+    let mut runners: [ConcurrentRunner; 3] = std::array::from_fn(|_| ConcurrentRunner::new(None));
+    for runner in &mut runners {
+        runner.start(&CancellationToken::new());
+    }
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let url = format!("http://{}", listener.local_addr().unwrap());
+    let host = Arc::new(Host {
+        identity: crate::Identity {
+            cluster_id: 42,
+            member_id: 1,
+            name: "heartbeat".into(),
+            client_url: url.clone(),
+            peer_url: String::new(),
+        },
+        syncer: RegionSyncer::for_heartbeat_state(
+            Handle::current(),
+            state.clone(),
+            HistoryBuffer::new(100).unwrap(),
+            Duration::from_secs(2),
+        ),
+    });
+    let cancel = CancellationToken::new();
+    let stop = cancel.clone();
+    let router = crate::router(host.clone(), cancel.clone());
+    let server = tokio::spawn(async move {
+        axum::serve(listener, router)
+            .with_graceful_shutdown(stop.cancelled_owned())
+            .await
+            .unwrap();
+    });
+    let mut client = pdpb::pd_client::PdClient::connect(url).await.unwrap();
+    let (tx, mut stream) = subscribe(&mut client, "state52", 0).await;
+    let mut follower = follower_state();
+    apply(&mut follower, next(&mut stream).await).await; // Empty initial completion.
+    {
+        let pipeline = StatePipeline {
+            state: &state,
+            hot: &hot,
+            runners: HeartbeatRunners {
+                subtree: &runners[0],
+                misc: &runners[1],
+                sync: &runners[2],
+            },
+            storage: endpoint.clone(),
+            paths,
+            downstreams: host.syncer.downstreams(),
+            bucket_enabled: true,
+        };
+        for version in 1..=3 {
+            let peer = Peer {
+                id: 11,
+                store_id: 1,
+                ..Default::default()
+            };
+            let mut r = RegionInfo::new(
+                RegionMeta {
+                    id: 1,
+                    epoch: Some(RegionEpoch {
+                        version,
+                        conf_ver: 1,
+                    }),
+                    peers: vec![peer.clone()],
+                    ..Default::default()
+                },
+                Some(peer),
+                vec![],
+                vec![],
+            );
+            r.stats_mut().written_bytes = version * 60_000_000;
+            r.set_report_interval(0, 60);
+            let mut receipt = pipeline.region(r.clone(), 100, 100_000_000_000).unwrap();
+            assert!(receipt.wait().await.is_empty());
+            apply(&mut follower, next(&mut stream).await).await;
+            assert_eq!(follower.history.next_index(), I(version));
+            assert_eq!(
+                follower.cluster.regions.get_region(1).unwrap().meta(),
+                r.meta()
+            );
+            assert_eq!(
+                follower
+                    .cluster
+                    .regions
+                    .get_region(1)
+                    .unwrap()
+                    .stats()
+                    .written_bytes,
+                r.stats().written_bytes
+            );
+            let mut duplicate = pipeline.region(r, 100, 100_000_000_000).unwrap();
+            assert_eq!(
+                duplicate.heartbeat.guide,
+                astersql_pd_core::RegionGuide::default()
+            );
+            assert!(duplicate.wait().await.is_empty());
+        }
+        let snapshot = pipeline.snapshot().await.unwrap();
+        assert_eq!(
+            snapshot.regions[0].meta().epoch.as_ref().unwrap().version,
+            3
+        );
+        assert!(!snapshot.statistics.write.is_empty());
+        assert_eq!(host.syncer.downstreams().records_from(I(0)).len(), 3);
+        // A new full subscriber reads the very same heartbeat root, with no publish copy.
+        let (full_tx, mut full_stream) = subscribe(&mut client, "full52", 0).await;
+        let first = next(&mut full_stream).await;
+        assert_eq!(first.regions.len(), 1);
+        assert_eq!(first.regions[0].region_epoch.as_ref().unwrap().version, 3);
+        let completion = next(&mut full_stream).await;
+        assert_eq!(completion.start_index, 3);
+        drop(full_tx);
+        drop(full_stream);
+    }
+    drop(tx);
+    drop(stream);
+    shutdown(&host, cancel, server).await;
+    for runner in &mut runners {
+        runner.stop().await;
+    }
+    hot.shutdown().await.unwrap();
+}

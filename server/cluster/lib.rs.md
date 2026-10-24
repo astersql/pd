@@ -17,3 +17,8 @@
 anomaly cleanup and deferred label marking for actual evicted IDs. Same-ID
 survivors and rejected reports retain their statistics. Hot history uses its
 existing expiration lifecycle; see [region_overlap.rs.md](region_overlap.rs.md).
+
+`StatePipeline` and `StateSnapshot` compose the existing state owners and expose
+owned query views; state_pipeline_test is explicitly registered. The pipeline
+feeds canonical hot flow for accepted reports, including duplicates, and shares
+Downstreams with the optional server RegionSyncer.

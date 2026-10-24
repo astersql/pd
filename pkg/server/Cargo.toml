@@ -27,6 +27,10 @@ prometheus.workspace = true
 futures-util.workspace = true
 
 [dev-dependencies]
+astersql-pd-ratelimit.workspace = true
+astersql-pd-schedule-config.workspace = true
+astersql-pd-schedule-placement.workspace = true
+astersql-pd-storage-endpoint.workspace = true
 astersql-pd-statistics-utils.workspace = true
 prost.workspace = true
 astersql-pd-storage-kv.workspace = true

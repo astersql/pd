@@ -1,0 +1,56 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+     Locking 200 packages to highest Rust 1.85 compatible versions
+      Adding base64 v0.22.1 (available: v0.23.1)
+      Adding chrono v0.4.42 (available: v0.4.45)
+      Adding etcd-client v0.17.0 (available: v0.19.0)
+      Adding prost v0.14.1 (available: v0.14.4)
+      Adding prost-build v0.14.1 (available: v0.14.4)
+      Adding prost-types v0.14.1 (available: v0.14.4)
+      Adding protobuf v2.28.0 (available: v3.7.2)
+      Adding protoc-bin-vendored v3.2.0 (available: v3.3.0)
+      Adding protoc-bin-vendored-linux-aarch_64 v3.2.0 (available: v3.3.0)
+      Adding protoc-bin-vendored-linux-ppcle_64 v3.2.0 (available: v3.3.0)
+      Adding protoc-bin-vendored-linux-s390_64 v3.2.0 (available: v3.3.0)
+      Adding protoc-bin-vendored-linux-x86_32 v3.2.0 (available: v3.3.0)
+      Adding protoc-bin-vendored-linux-x86_64 v3.2.0 (available: v3.3.0)
+      Adding protoc-bin-vendored-macos-aarch_64 v3.2.0 (available: v3.3.0)
+      Adding protoc-bin-vendored-macos-x86_64 v3.2.0 (available: v3.3.0)
+      Adding protoc-bin-vendored-win32 v3.2.0 (available: v3.3.0)
+      Adding serde_json v1.0.145 (available: v1.0.151)
+      Adding sha2 v0.10.9 (available: v0.11.0)
+      Adding tokio v1.48.0 (available: v1.53.2)
+      Adding tokio-macros v2.6.1 (available: v2.7.2)
+      Adding tokio-util v0.7.17 (available: v0.7.19)
+      Adding toml v0.9.8 (available: v0.9.11+spec-1.1.0)
+      Adding tonic v0.14.2 (available: v0.14.5)
+      Adding tonic-build v0.14.5 (available: v0.14.6, requires Rust 1.88)
+      Adding tonic-prost v0.14.2 (available: v0.14.5)
+      Adding tonic-prost-build v0.14.2 (available: v0.14.6, requires Rust 1.88)
+   Compiling pulldown-cmark-to-cmark v21.1.0
+   Compiling prost-build v0.14.1
+   Compiling tonic-prost-build v0.14.2
+   Compiling etcd-client v0.17.0
+   Compiling astersql-pd-proto v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/proto)
+   Compiling astersql-pd-storage-kv v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/storage/kv)
+   Compiling astersql-pd-etcdutil v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/utils/etcdutil)
+   Compiling astersql-pd-storage-endpoint v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/storage/endpoint)
+   Compiling astersql-pd-schedule-placement v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/placement)
+   Compiling astersql-pd-storage v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/storage)
+   Compiling astersql-pd-syncer v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/syncer)
+   Compiling astersql-pd-statistics v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics)
+   Compiling astersql-pd-cluster v0.1.0 (/Users/Shared/work/dir/data/codes/pd/server/cluster)
+error[E0596]: cannot borrow `*r` as mutable, as it is behind a `&` reference
+  --> server/cluster/state_pipeline_test.rs:88:13
+   |
+87 |         for r in &runners {
+   |                  -------- this iterator yields `&` references
+88 |             r.start(&CancellationToken::new());
+   |             ^ `r` is a `&` reference, so it cannot be borrowed as mutable
+   |
+help: use a mutable iterator instead
+   |
+87 |         for r in &mut runners {
+   |                   +++
+
+For more information about this error, try `rustc --explain E0596`.
+error: could not compile `astersql-pd-cluster` (lib test) due to 1 previous error

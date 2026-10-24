@@ -23,6 +23,7 @@ astersql-pd-statistics.workspace = true
 astersql-pd-statistics-utils.workspace = true
 
 [dev-dependencies]
+astersql-pd-storage.workspace = true
 astersql-pd-storage-kv.workspace = true
 async-trait.workspace = true
 prometheus.workspace = true

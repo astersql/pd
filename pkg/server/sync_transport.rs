@@ -23,11 +23,25 @@ type Output<T> = Pin<Box<dyn Stream<Item = Result<T, Status>> + Send + 'static>>
 /// Call `stop` before releasing the host runtime. No private runtime is created.
 pub struct RegionSyncer {
     runtime: Handle,
-    cluster: Arc<Mutex<BasicCluster>>,
+    cluster: Arc<dyn SyncSource>,
     downstreams: Downstreams,
     cancel: CancellationToken,
     tasks: Mutex<Vec<JoinHandle<()>>>,
     timeout: Duration,
+}
+// A visitor keeps snapshot capture/binding inside the canonical admission gate.
+trait SyncSource: Send + Sync {
+    fn with_cluster(&self, visit: &mut dyn FnMut(&mut BasicCluster));
+}
+impl SyncSource for Mutex<BasicCluster> {
+    fn with_cluster(&self, visit: &mut dyn FnMut(&mut BasicCluster)) {
+        visit(&mut self.lock().unwrap());
+    }
+}
+impl<C: Send> SyncSource for Mutex<astersql_pd_cluster::HeartbeatEffectsState<C>> {
+    fn with_cluster(&self, visit: &mut dyn FnMut(&mut BasicCluster)) {
+        visit(&mut self.lock().unwrap().cluster);
+    }
 }
 impl RegionSyncer {
     pub fn new(
@@ -49,16 +63,48 @@ impl RegionSyncer {
             },
         }
     }
+    /// Attach to canonical heartbeat state. Use `downstreams()` in StatePipeline;
+    /// its sync runner is the sole history publisher. The host must finish queued
+    /// effects before requesting a quiescent full-state checkpoint.
+    pub fn for_heartbeat_state<C: Send + 'static>(
+        runtime: Handle,
+        state: Arc<Mutex<astersql_pd_cluster::HeartbeatEffectsState<C>>>,
+        history: HistoryBuffer,
+        timeout: Duration,
+    ) -> Self {
+        Self {
+            runtime,
+            cluster: state,
+            downstreams: Downstreams::new(history),
+            cancel: CancellationToken::new(),
+            tasks: Mutex::new(Vec::new()),
+            timeout: if timeout.is_zero() {
+                Duration::from_secs(10)
+            } else {
+                timeout
+            },
+        }
+    }
+    /// Shared history for the heartbeat pipeline; do not publish the same report twice.
+    pub fn downstreams(&self) -> Downstreams {
+        self.downstreams.clone()
+    }
     /// Publish already-admitted domain changes without waiting for network I/O.
     pub fn publish(&self, region: Arc<RegionInfo>) -> Result<(), String> {
-        let mut cluster = self.cluster.lock().unwrap();
-        self.downstreams
-            .append([region.clone()])
-            .map_err(|e| e.to_string())?;
-        cluster.regions.put_region(region);
-        self.downstreams.broadcast(false);
-        Ok(())
+        let mut result = Ok(());
+        self.cluster.with_cluster(&mut |cluster| {
+            result = self
+                .downstreams
+                .append([region.clone()])
+                .map_err(|e| e.to_string());
+            if result.is_ok() {
+                cluster.regions.put_region(region.clone());
+                self.downstreams.broadcast(false);
+            }
+        });
+        result
     }
+
     pub fn downstream_names(&self) -> Vec<String> {
         self.downstreams.names()
     }
@@ -98,23 +144,32 @@ impl RegionSyncer {
         if self.cancel.is_cancelled() {
             return Err(Status::unavailable("region syncer stopped"));
         }
-        let cluster = self.cluster.lock().unwrap();
-        let (initial, end) = self
-            .downstreams
-            .prepare_sync(&cluster, request.start_index)
-            .map_err(|e| Status::internal(e.to_string()))?;
         let ready = CancellationToken::new();
-        let mut worker = self.downstreams.bind(
-            &self.runtime,
-            name,
-            end,
-            WireSender {
-                tx: tx.clone(),
-                cluster_id,
-                timeout: self.timeout,
-                ready: ready.clone(),
-            },
-        );
+        let mut sender = Some(WireSender {
+            tx: tx.clone(),
+            cluster_id,
+            timeout: self.timeout,
+            ready: ready.clone(),
+        });
+        let mut prepared = None;
+        self.cluster.with_cluster(&mut |cluster| {
+            prepared = Some(
+                self.downstreams
+                    .prepare_sync(cluster, request.start_index)
+                    .map(|(initial, end)| {
+                        let worker = self.downstreams.bind(
+                            &self.runtime,
+                            name.clone(),
+                            end,
+                            sender.take().unwrap(),
+                        );
+                        (initial, worker)
+                    }),
+            );
+        });
+        let (initial, mut worker) = prepared
+            .unwrap()
+            .map_err(|e| Status::internal(e.to_string()))?;
         // Registration precedes publication; the gate excludes an append between
         // capture and binding. Live sends wait until all initial frames finish.
         let cancel = self.cancel.child_token();

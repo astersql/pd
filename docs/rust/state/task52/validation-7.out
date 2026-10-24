@@ -1,0 +1,15 @@
+    Checking astersql-pd-cluster v0.1.0 (/Users/Shared/work/dir/data/codes/pd/server/cluster)
+    Checking astersql-pd-server v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/server)
+warning: use of deprecated field `astersql_pd_proto::pdpb::RegionHeartbeatRequest::cpu_usage`
+   --> pkg/server/core_region_adapter.rs:134:30
+    |
+134 |     r.set_response_cpu_usage(p.cpu_usage);
+    |                              ^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: `astersql-pd-server` (lib) generated 1 warning
+    Checking astersql-pd-runtime v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/runtime)
+    Checking astersql-pd-cmd-pd-server v0.1.0 (/Users/Shared/work/dir/data/codes/pd/cmd/pd-server)
+    Checking astersql-pd v0.1.0 (/Users/Shared/work/dir/data/codes/pd)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.91s

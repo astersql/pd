@@ -1,0 +1,23 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+   Compiling astersql-pd-syncer v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/syncer)
+   Compiling astersql-pd-cluster v0.1.0 (/Users/Shared/work/dir/data/codes/pd/server/cluster)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.87s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_cluster-5269867855fbaab2)
+
+running 1 test
+
+thread 'state_pipeline_test::state_task_52_state_pipeline_hot_flow_and_owned_snapshots' (158730141) panicked at server/cluster/state_pipeline_test.rs:363:5:
+assertion `left == right` failed: accepted region reports must feed canonical write statistics
+  left: 0
+ right: 1
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test state_pipeline_test::state_task_52_state_pipeline_hot_flow_and_owned_snapshots ... FAILED
+
+failures:
+
+failures:
+    state_pipeline_test::state_task_52_state_pipeline_hot_flow_and_owned_snapshots
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 45 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-cluster --lib`

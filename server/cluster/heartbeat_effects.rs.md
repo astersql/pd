@@ -45,3 +45,8 @@ Tests are explicitly registered in lib.rs. They check cache/KV/history snapshots
 root-only repair, current-configuration reclassification, latest-root observation,
 retained admission under queue aging, stopped/cancelled work, best-effort deletion,
 MemoryStore and real EtcdMetaStore split/merge, and real etcd interruption/restart.
+
+The sync effect acquires the canonical HeartbeatEffectsState lock around history
+append/broadcast. RegionSyncer attached to this state captures and binds under the
+same gate; locks are released before any transport I/O. Lock order is state then
+Downstreams, consistent with subscription capture and all other heartbeat effects.

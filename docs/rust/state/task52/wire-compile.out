@@ -1,0 +1,23 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+   Compiling astersql-pd-cluster v0.1.0 (/Users/Shared/work/dir/data/codes/pd/server/cluster)
+   Compiling astersql-pd-server v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/server)
+warning: use of deprecated field `astersql_pd_proto::pdpb::RegionHeartbeatRequest::cpu_usage`
+   --> pkg/server/core_region_adapter.rs:134:30
+    |
+134 |     r.set_response_cpu_usage(p.cpu_usage);
+    |                              ^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+error[E0596]: cannot borrow `cluster.regions` as mutable, as it is behind a `&` reference
+   --> pkg/server/sync_transport.rs:101:17
+    |
+ 95 |         self.cluster.read(&mut |cluster| {
+    |                                 ------- consider changing this binding's type to be: `&mut BasicCluster`
+...
+101 |                 cluster.regions.put_region(region.clone());
+    |                 ^^^^^^^^^^^^^^^ `cluster` is a `&` reference, so it cannot be borrowed as mutable
+
+For more information about this error, try `rustc --explain E0596`.
+warning: `astersql-pd-server` (lib) generated 1 warning
+error: could not compile `astersql-pd-server` (lib) due to 1 previous error; 1 warning emitted

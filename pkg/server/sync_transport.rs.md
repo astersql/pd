@@ -43,3 +43,17 @@ MemoryStore and real EtcdMetaStore persistence, multiple readers, multi-MiB flow
 snapshots, publishes during scanning, reconnect and explicit shutdown. Only the
 send-failure/deadline boundary uses a controlled real bounded channel. No Go or
 protocol types enter the domain crate; no MetaStore persistence is added here.
+
+`RegionSyncer::for_heartbeat_state` attaches directly to the canonical cluster
+inside HeartbeatEffectsState via a private lock-scoped visitor. Its `downstreams()`
+is passed to StatePipeline, whose effects publish once into that same history.
+Full snapshot capture and binding use the state gate, also held by the sync effect
+while appending. No copied BasicCluster or second history is introduced. In this
+mode do not additionally call publish for pipeline reports; standalone new/publish
+keeps its original contract. Queued effects must finish for a quiescent checkpoint;
+subscription does not silently wait for unrelated runner queues.
+
+The task52 test admits three real heartbeats, checks live wire-applied followers
+and duplicate history suppression, then subscribes from zero and reads version3
+from the same canonical root without an explicit publish/cache copy. It closes
+streams, stops the RegionSyncer, joins the listener and stops all domain workers.

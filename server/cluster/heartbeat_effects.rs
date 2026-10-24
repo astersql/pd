@@ -202,6 +202,7 @@ pub fn submit_region_heartbeat<C: CheckerConfigProvider + Send + 'static>(
     if guide.save_kv || guide.need_sync {
         if let Some(downstreams) = downstreams {
             let region = receipt.heartbeat.region.clone();
+            let shared = state.clone();
             receipt.enqueue(
                 runners.sync,
                 HeartbeatEffect::SyncRegionToFollower,
@@ -210,6 +211,8 @@ pub fn submit_region_heartbeat<C: CheckerConfigProvider + Send + 'static>(
                     if cancel.is_cancelled() {
                         return None;
                     }
+                    // Serialize history publication with full snapshot capture/binding.
+                    let _state = shared.lock().unwrap();
                     let failures = downstreams
                         .append([region])
                         .err()

@@ -1,0 +1,123 @@
+[
+  {
+    "command": [
+      "cargo",
+      "fmt",
+      "--all"
+    ],
+    "exit": 0,
+    "passed": 0,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-cluster",
+      "--locked",
+      "--lib",
+      "state_task_52_state_pipeline",
+      "--",
+      "--nocapture"
+    ],
+    "exit": 0,
+    "passed": 3,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-cluster",
+      "--locked"
+    ],
+    "exit": 0,
+    "passed": 46,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-server",
+      "--locked",
+      "--lib",
+      "state_task_52_state_pipeline",
+      "--",
+      "--nocapture"
+    ],
+    "exit": 0,
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-server",
+      "--locked"
+    ],
+    "exit": 0,
+    "passed": 49,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "command": [
+      "cargo",
+      "metadata",
+      "--format-version",
+      "1",
+      "--no-deps"
+    ],
+    "exit": 0,
+    "passed": 0,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "command": [
+      "cargo",
+      "fmt",
+      "--all",
+      "--",
+      "--check"
+    ],
+    "exit": 0,
+    "passed": 0,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "command": [
+      "cargo",
+      "check",
+      "--workspace",
+      "--locked"
+    ],
+    "exit": 0,
+    "passed": 0,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "command": [
+      "cargo",
+      "test",
+      "--workspace",
+      "--locked"
+    ],
+    "exit": 0,
+    "passed": 1306,
+    "failed": 0,
+    "ignored": 1
+  }
+]

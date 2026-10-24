@@ -1,0 +1,12 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+   Compiling astersql-pd-cluster v0.1.0 (/Users/Shared/work/dir/data/codes/pd/server/cluster)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.60s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_cluster-5269867855fbaab2)
+
+running 3 tests
+test state_pipeline_test::state_task_52_state_pipeline_hot_flow_and_owned_snapshots ... ok
+test state_pipeline_test::state_task_52_state_pipeline_memory_replay ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:58907
+test state_pipeline_test::state_task_52_state_pipeline_etcd_replay ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 43 filtered out; finished in 3.17s
