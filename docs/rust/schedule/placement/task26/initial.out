@@ -1,0 +1,9 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-schedule-placement v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/placement)
+error: couldn't read `pkg/schedule/placement/../../../docs/rust/schedule/placement/task26/go.json`: No such file or directory (os error 2)
+ --> pkg/schedule/placement/placement_role_fit_test.rs:7:59
+  |
+7 |     let fixture: serde_json::Value = serde_json::from_str(include_str!("../../../docs/rust/schedule/placement/task26/go.json")).unwra...
+  |                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: could not compile `astersql-pd-schedule-placement` (lib test) due to 1 previous error

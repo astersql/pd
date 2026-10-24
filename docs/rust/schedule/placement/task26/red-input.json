@@ -1,0 +1,1399 @@
+{
+  "sha256": "4537466d65d253b1e291cacecf53faee14117386e8f2c5ff7b380108e49cc268",
+  "cases": [
+    {
+      "name": "voter1",
+      "role": "voter",
+      "count": 1,
+      "peers": [
+        {
+          "id": 1,
+          "store_id": 1
+        },
+        {
+          "id": 2,
+          "store_id": 2,
+          "role": 1
+        },
+        {
+          "id": 3,
+          "store_id": 3,
+          "is_witness": true
+        }
+      ],
+      "leader": 1,
+      "output": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target",
+              "index": -1,
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 1,
+              "create_timestamp": 1792841032
+            },
+            "peers": [
+              {
+                "id": 1,
+                "store_id": 1
+              }
+            ],
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "default",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 3
+            },
+            "peers": [
+              {
+                "id": 2,
+                "store_id": 2,
+                "role": 1
+              },
+              {
+                "id": 3,
+                "store_id": 3,
+                "is_witness": true
+              }
+            ],
+            "peers-different-role": [
+              {
+                "id": 2,
+                "store_id": 2,
+                "role": 1
+              },
+              {
+                "id": 3,
+                "store_id": 3,
+                "is_witness": true
+              }
+            ],
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": null
+      }
+    },
+    {
+      "name": "voter3",
+      "role": "voter",
+      "count": 3,
+      "peers": [
+        {
+          "id": 1,
+          "store_id": 1
+        },
+        {
+          "id": 2,
+          "store_id": 2,
+          "role": 1
+        },
+        {
+          "id": 3,
+          "store_id": 3,
+          "is_witness": true
+        }
+      ],
+      "leader": 1,
+      "output": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target",
+              "index": -1,
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 3,
+              "version": 1,
+              "create_timestamp": 1792841032
+            },
+            "peers": [
+              {
+                "id": 1,
+                "store_id": 1
+              },
+              {
+                "id": 2,
+                "store_id": 2,
+                "role": 1
+              },
+              {
+                "id": 3,
+                "store_id": 3,
+                "is_witness": true
+              }
+            ],
+            "peers-different-role": [
+              {
+                "id": 2,
+                "store_id": 2,
+                "role": 1
+              },
+              {
+                "id": 3,
+                "store_id": 3,
+                "is_witness": true
+              }
+            ],
+            "isolation-score": 0,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "default",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 3
+            },
+            "peers": null,
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": null
+      }
+    },
+    {
+      "name": "voter5",
+      "role": "voter",
+      "count": 5,
+      "peers": [
+        {
+          "id": 1,
+          "store_id": 1
+        },
+        {
+          "id": 2,
+          "store_id": 2,
+          "role": 1
+        },
+        {
+          "id": 3,
+          "store_id": 3,
+          "is_witness": true
+        }
+      ],
+      "leader": 1,
+      "output": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target",
+              "index": -1,
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 5,
+              "version": 2,
+              "create_timestamp": 1792841032
+            },
+            "peers": [
+              {
+                "id": 1,
+                "store_id": 1
+              },
+              {
+                "id": 2,
+                "store_id": 2,
+                "role": 1
+              },
+              {
+                "id": 3,
+                "store_id": 3,
+                "is_witness": true
+              }
+            ],
+            "peers-different-role": [
+              {
+                "id": 2,
+                "store_id": 2,
+                "role": 1
+              },
+              {
+                "id": 3,
+                "store_id": 3,
+                "is_witness": true
+              }
+            ],
+            "isolation-score": 0,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "default",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 3
+            },
+            "peers": null,
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": null
+      }
+    },
+    {
+      "name": "leader1",
+      "role": "leader",
+      "count": 1,
+      "peers": [
+        {
+          "id": 1,
+          "store_id": 1
+        },
+        {
+          "id": 2,
+          "store_id": 2,
+          "role": 1
+        },
+        {
+          "id": 3,
+          "store_id": 3,
+          "is_witness": true
+        }
+      ],
+      "leader": 1,
+      "output": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target",
+              "index": -1,
+              "start_key": "",
+              "end_key": "",
+              "role": "leader",
+              "is_witness": false,
+              "count": 1,
+              "version": 3,
+              "create_timestamp": 1792841032
+            },
+            "peers": [
+              {
+                "id": 1,
+                "store_id": 1
+              }
+            ],
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "default",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 3
+            },
+            "peers": [
+              {
+                "id": 2,
+                "store_id": 2,
+                "role": 1
+              },
+              {
+                "id": 3,
+                "store_id": 3,
+                "is_witness": true
+              }
+            ],
+            "peers-different-role": [
+              {
+                "id": 2,
+                "store_id": 2,
+                "role": 1
+              },
+              {
+                "id": 3,
+                "store_id": 3,
+                "is_witness": true
+              }
+            ],
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": null
+      }
+    },
+    {
+      "name": "follower1",
+      "role": "follower",
+      "count": 1,
+      "peers": [
+        {
+          "id": 1,
+          "store_id": 1
+        },
+        {
+          "id": 2,
+          "store_id": 2,
+          "role": 1
+        },
+        {
+          "id": 3,
+          "store_id": 3,
+          "is_witness": true
+        }
+      ],
+      "leader": 1,
+      "output": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target",
+              "index": -1,
+              "start_key": "",
+              "end_key": "",
+              "role": "follower",
+              "is_witness": false,
+              "count": 1,
+              "version": 4,
+              "create_timestamp": 1792841032
+            },
+            "peers": [
+              {
+                "id": 2,
+                "store_id": 2,
+                "role": 1
+              }
+            ],
+            "peers-different-role": [
+              {
+                "id": 2,
+                "store_id": 2,
+                "role": 1
+              }
+            ],
+            "isolation-score": 0,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "default",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 3
+            },
+            "peers": [
+              {
+                "id": 1,
+                "store_id": 1
+              },
+              {
+                "id": 3,
+                "store_id": 3,
+                "is_witness": true
+              }
+            ],
+            "peers-different-role": [
+              {
+                "id": 3,
+                "store_id": 3,
+                "is_witness": true
+              }
+            ],
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": null
+      }
+    },
+    {
+      "name": "follower3",
+      "role": "follower",
+      "count": 3,
+      "peers": [
+        {
+          "id": 1,
+          "store_id": 1
+        },
+        {
+          "id": 2,
+          "store_id": 2,
+          "role": 1
+        },
+        {
+          "id": 3,
+          "store_id": 3,
+          "is_witness": true
+        }
+      ],
+      "leader": 1,
+      "output": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target",
+              "index": -1,
+              "start_key": "",
+              "end_key": "",
+              "role": "follower",
+              "is_witness": false,
+              "count": 3,
+              "version": 5,
+              "create_timestamp": 1792841032
+            },
+            "peers": [
+              {
+                "id": 1,
+                "store_id": 1
+              },
+              {
+                "id": 2,
+                "store_id": 2,
+                "role": 1
+              },
+              {
+                "id": 3,
+                "store_id": 3,
+                "is_witness": true
+              }
+            ],
+            "peers-different-role": [
+              {
+                "id": 1,
+                "store_id": 1
+              },
+              {
+                "id": 2,
+                "store_id": 2,
+                "role": 1
+              },
+              {
+                "id": 3,
+                "store_id": 3,
+                "is_witness": true
+              }
+            ],
+            "isolation-score": 0,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "default",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 3
+            },
+            "peers": null,
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": null
+      }
+    },
+    {
+      "name": "follower5",
+      "role": "follower",
+      "count": 5,
+      "peers": [
+        {
+          "id": 1,
+          "store_id": 1
+        },
+        {
+          "id": 2,
+          "store_id": 2,
+          "role": 1
+        },
+        {
+          "id": 3,
+          "store_id": 3,
+          "is_witness": true
+        }
+      ],
+      "leader": 1,
+      "output": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target",
+              "index": -1,
+              "start_key": "",
+              "end_key": "",
+              "role": "follower",
+              "is_witness": false,
+              "count": 5,
+              "version": 6,
+              "create_timestamp": 1792841032
+            },
+            "peers": [
+              {
+                "id": 1,
+                "store_id": 1
+              },
+              {
+                "id": 2,
+                "store_id": 2,
+                "role": 1
+              },
+              {
+                "id": 3,
+                "store_id": 3,
+                "is_witness": true
+              }
+            ],
+            "peers-different-role": [
+              {
+                "id": 1,
+                "store_id": 1
+              },
+              {
+                "id": 2,
+                "store_id": 2,
+                "role": 1
+              },
+              {
+                "id": 3,
+                "store_id": 3,
+                "is_witness": true
+              }
+            ],
+            "isolation-score": 0,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "default",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 3
+            },
+            "peers": null,
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": null
+      }
+    },
+    {
+      "name": "learner1",
+      "role": "learner",
+      "count": 1,
+      "peers": [
+        {
+          "id": 1,
+          "store_id": 1
+        },
+        {
+          "id": 2,
+          "store_id": 2,
+          "role": 1
+        },
+        {
+          "id": 3,
+          "store_id": 3,
+          "is_witness": true
+        }
+      ],
+      "leader": 1,
+      "output": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target",
+              "index": -1,
+              "start_key": "",
+              "end_key": "",
+              "role": "learner",
+              "is_witness": false,
+              "count": 1,
+              "version": 7,
+              "create_timestamp": 1792841032
+            },
+            "peers": [
+              {
+                "id": 2,
+                "store_id": 2,
+                "role": 1
+              }
+            ],
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "default",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 3
+            },
+            "peers": [
+              {
+                "id": 1,
+                "store_id": 1
+              },
+              {
+                "id": 3,
+                "store_id": 3,
+                "is_witness": true
+              }
+            ],
+            "peers-different-role": [
+              {
+                "id": 3,
+                "store_id": 3,
+                "is_witness": true
+              }
+            ],
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": null
+      }
+    },
+    {
+      "name": "learner3",
+      "role": "learner",
+      "count": 3,
+      "peers": [
+        {
+          "id": 1,
+          "store_id": 1
+        },
+        {
+          "id": 2,
+          "store_id": 2,
+          "role": 1
+        },
+        {
+          "id": 3,
+          "store_id": 3,
+          "is_witness": true
+        }
+      ],
+      "leader": 1,
+      "output": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target",
+              "index": -1,
+              "start_key": "",
+              "end_key": "",
+              "role": "learner",
+              "is_witness": false,
+              "count": 3,
+              "version": 8,
+              "create_timestamp": 1792841032
+            },
+            "peers": [
+              {
+                "id": 1,
+                "store_id": 1
+              },
+              {
+                "id": 2,
+                "store_id": 2,
+                "role": 1
+              },
+              {
+                "id": 3,
+                "store_id": 3,
+                "is_witness": true
+              }
+            ],
+            "peers-different-role": [
+              {
+                "id": 1,
+                "store_id": 1
+              },
+              {
+                "id": 3,
+                "store_id": 3,
+                "is_witness": true
+              }
+            ],
+            "isolation-score": 0,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "default",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 3
+            },
+            "peers": null,
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": null
+      }
+    },
+    {
+      "name": "learner5",
+      "role": "learner",
+      "count": 5,
+      "peers": [
+        {
+          "id": 1,
+          "store_id": 1
+        },
+        {
+          "id": 2,
+          "store_id": 2,
+          "role": 1
+        },
+        {
+          "id": 3,
+          "store_id": 3,
+          "is_witness": true
+        }
+      ],
+      "leader": 1,
+      "output": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target",
+              "index": -1,
+              "start_key": "",
+              "end_key": "",
+              "role": "learner",
+              "is_witness": false,
+              "count": 5,
+              "version": 9,
+              "create_timestamp": 1792841032
+            },
+            "peers": [
+              {
+                "id": 1,
+                "store_id": 1
+              },
+              {
+                "id": 2,
+                "store_id": 2,
+                "role": 1
+              },
+              {
+                "id": 3,
+                "store_id": 3,
+                "is_witness": true
+              }
+            ],
+            "peers-different-role": [
+              {
+                "id": 1,
+                "store_id": 1
+              },
+              {
+                "id": 3,
+                "store_id": 3,
+                "is_witness": true
+              }
+            ],
+            "isolation-score": 0,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "default",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 3
+            },
+            "peers": null,
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": null
+      }
+    },
+    {
+      "name": "witness_on",
+      "role": "voter",
+      "count": 1,
+      "witness": true,
+      "support": true,
+      "peers": [
+        {
+          "id": 1,
+          "store_id": 1
+        },
+        {
+          "id": 2,
+          "store_id": 2,
+          "role": 1
+        },
+        {
+          "id": 3,
+          "store_id": 3,
+          "is_witness": true
+        }
+      ],
+      "leader": 1,
+      "output": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target",
+              "index": -1,
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": true,
+              "count": 1,
+              "version": 10,
+              "create_timestamp": 1792841032
+            },
+            "peers": [
+              {
+                "id": 3,
+                "store_id": 3,
+                "is_witness": true
+              }
+            ],
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 1
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "default",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 3
+            },
+            "peers": [
+              {
+                "id": 1,
+                "store_id": 1
+              },
+              {
+                "id": 2,
+                "store_id": 2,
+                "role": 1
+              }
+            ],
+            "peers-different-role": [
+              {
+                "id": 2,
+                "store_id": 2,
+                "role": 1
+              }
+            ],
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": null
+      }
+    },
+    {
+      "name": "witness_off",
+      "role": "voter",
+      "count": 1,
+      "witness": true,
+      "support": false,
+      "peers": [
+        {
+          "id": 1,
+          "store_id": 1
+        },
+        {
+          "id": 2,
+          "store_id": 2,
+          "role": 1
+        },
+        {
+          "id": 3,
+          "store_id": 3,
+          "is_witness": true
+        }
+      ],
+      "leader": 1,
+      "output": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target",
+              "index": -1,
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": true,
+              "count": 1,
+              "version": 11,
+              "create_timestamp": 1792841032
+            },
+            "peers": [
+              {
+                "id": 1,
+                "store_id": 1
+              }
+            ],
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "default",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 3
+            },
+            "peers": [
+              {
+                "id": 2,
+                "store_id": 2,
+                "role": 1
+              },
+              {
+                "id": 3,
+                "store_id": 3,
+                "is_witness": true
+              }
+            ],
+            "peers-different-role": [
+              {
+                "id": 2,
+                "store_id": 2,
+                "role": 1
+              },
+              {
+                "id": 3,
+                "store_id": 3,
+                "is_witness": true
+              }
+            ],
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": null
+      }
+    },
+    {
+      "name": "missing_store",
+      "role": "voter",
+      "count": 4,
+      "missing": true,
+      "peers": [
+        {
+          "id": 1,
+          "store_id": 1
+        },
+        {
+          "id": 2,
+          "store_id": 2,
+          "role": 1
+        },
+        {
+          "id": 3,
+          "store_id": 3,
+          "is_witness": true
+        },
+        {
+          "id": 4,
+          "store_id": 999
+        }
+      ],
+      "leader": 1,
+      "output": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target",
+              "index": -1,
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 4,
+              "version": 12,
+              "create_timestamp": 1792841032
+            },
+            "peers": [
+              {
+                "id": 1,
+                "store_id": 1
+              },
+              {
+                "id": 2,
+                "store_id": 2,
+                "role": 1
+              },
+              {
+                "id": 3,
+                "store_id": 3,
+                "is_witness": true
+              }
+            ],
+            "peers-different-role": [
+              {
+                "id": 2,
+                "store_id": 2,
+                "role": 1
+              },
+              {
+                "id": 3,
+                "store_id": 3,
+                "is_witness": true
+              }
+            ],
+            "isolation-score": 0,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "default",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 3
+            },
+            "peers": null,
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": [
+          {
+            "id": 4,
+            "store_id": 999
+          }
+        ]
+      }
+    },
+    {
+      "name": "health_order",
+      "role": "voter",
+      "count": 1,
+      "health": true,
+      "peers": [
+        {
+          "id": 1,
+          "store_id": 1
+        },
+        {
+          "id": 2,
+          "store_id": 2,
+          "role": 1
+        },
+        {
+          "id": 3,
+          "store_id": 3,
+          "is_witness": true
+        }
+      ],
+      "leader": 1,
+      "output": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target",
+              "index": -1,
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 1,
+              "version": 13,
+              "create_timestamp": 1792841032
+            },
+            "peers": [
+              {
+                "id": 1,
+                "store_id": 1
+              }
+            ],
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "default",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 3
+            },
+            "peers": [
+              {
+                "id": 3,
+                "store_id": 3,
+                "is_witness": true
+              },
+              {
+                "id": 2,
+                "store_id": 2,
+                "role": 1
+              }
+            ],
+            "peers-different-role": [
+              {
+                "id": 3,
+                "store_id": 3,
+                "is_witness": true
+              },
+              {
+                "id": 2,
+                "store_id": 2,
+                "role": 1
+              }
+            ],
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": null
+      }
+    },
+    {
+      "name": "health_fallback",
+      "role": "voter",
+      "count": 3,
+      "health": true,
+      "peers": [
+        {
+          "id": 1,
+          "store_id": 1
+        },
+        {
+          "id": 2,
+          "store_id": 2,
+          "role": 1
+        },
+        {
+          "id": 3,
+          "store_id": 3,
+          "is_witness": true
+        }
+      ],
+      "leader": 1,
+      "output": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target",
+              "index": -1,
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 3,
+              "version": 14,
+              "create_timestamp": 1792841032
+            },
+            "peers": [
+              {
+                "id": 3,
+                "store_id": 3,
+                "is_witness": true
+              },
+              {
+                "id": 2,
+                "store_id": 2,
+                "role": 1
+              },
+              {
+                "id": 1,
+                "store_id": 1
+              }
+            ],
+            "peers-different-role": [
+              {
+                "id": 3,
+                "store_id": 3,
+                "is_witness": true
+              },
+              {
+                "id": 2,
+                "store_id": 2,
+                "role": 1
+              }
+            ],
+            "isolation-score": 0,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "default",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 3
+            },
+            "peers": null,
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": null
+      }
+    },
+    {
+      "name": "joint_voters",
+      "role": "voter",
+      "count": 3,
+      "joint": true,
+      "peers": [
+        {
+          "id": 1,
+          "store_id": 1
+        },
+        {
+          "id": 2,
+          "store_id": 2,
+          "role": 2
+        },
+        {
+          "id": 3,
+          "store_id": 3,
+          "is_witness": true,
+          "role": 3
+        }
+      ],
+      "leader": 1,
+      "output": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target",
+              "index": -1,
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 3,
+              "version": 15,
+              "create_timestamp": 1792841032
+            },
+            "peers": [
+              {
+                "id": 1,
+                "store_id": 1
+              },
+              {
+                "id": 2,
+                "store_id": 2,
+                "role": 2
+              },
+              {
+                "id": 3,
+                "store_id": 3,
+                "role": 3,
+                "is_witness": true
+              }
+            ],
+            "peers-different-role": [
+              {
+                "id": 3,
+                "store_id": 3,
+                "role": 3,
+                "is_witness": true
+              }
+            ],
+            "isolation-score": 0,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "default",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 3
+            },
+            "peers": null,
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": null
+      }
+    }
+  ]
+}

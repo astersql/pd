@@ -1,0 +1,78 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+   Compiling serde_json v1.0.145
+   Compiling axum v0.8.9
+   Compiling aho-corasick v1.1.5
+   Compiling regex-syntax v0.8.11
+   Compiling astersql-pd-proto v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/proto)
+   Compiling astersql-pd-typeutil v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/utils/typeutil)
+   Compiling astersql-pd-logutil v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/utils/logutil)
+   Compiling astersql-pd-grpcutil v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/utils/grpcutil)
+   Compiling regex-automata v0.4.18
+   Compiling astersql-pd-encryption v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/encryption)
+   Compiling tonic v0.14.2
+   Compiling astersql-pd-configutil v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/utils/configutil)
+   Compiling regex v1.13.1
+   Compiling astersql-pd-schedule-config v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/config)
+   Compiling tonic-prost v0.14.2
+   Compiling etcd-client v0.17.0
+   Compiling astersql-pd-storage-kv v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/storage/kv)
+   Compiling astersql-pd-storage-endpoint v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/storage/endpoint)
+   Compiling astersql-pd-schedule-placement v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/placement)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 17.11s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_schedule_placement-d16fae04edf99afd)
+
+running 4 tests
+test placement_role_fit_test::placement_role_fit_nil_leader_unknown_and_witness ... ok
+test placement_role_fit_test::placement_role_fit_constraints_missing_and_health ... ok
+test placement_role_fit_test::placement_role_fit_comparison_location_and_witness_load ... ok
+test placement_role_fit_test::placement_role_fit_go_runtime_fixture ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 27 filtered out; finished in 0.00s
+
+   Compiling astersql-pd-schedule-placement v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/placement)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.60s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_schedule_placement-d16fae04edf99afd)
+
+running 31 tests
+test placement_order_test::placement_order_priority_and_override ... ok
+test placement_order_test::placement_order_rule_override_and_ties ... ok
+test placement_patch_test::placement_patch_preview_engine_summary ... ok
+test placement_order_test::placement_order_role_errors_and_gap ... ok
+test placement_patch_test::placement_patch_json_trim_and_default_groups ... ok
+test placement_patch_test::placement_patch_engine_restrictions ... ok
+test placement_patch_test::placement_patch_snapshot_and_versions ... ok
+test placement_patch_test::placement_patch_go_runtime_fixture ... ok
+test placement_order_test::placement_order_go_runtime_fixture ... ok
+test placement_restore_test::placement_restore_defaults_skip_witness ... ok
+test placement_role_fit_test::placement_role_fit_comparison_location_and_witness_load ... ok
+test placement_role_fit_test::placement_role_fit_constraints_missing_and_health ... ok
+test placement_restore_test::placement_restore_validation_rejects_without_publish ... ok
+test placement_restore_test::placement_restore_memory_io_failures ... ok
+test placement_restore_test::placement_restore_go_runtime_fixture ... ok
+test placement_role_fit_test::placement_role_fit_nil_leader_unknown_and_witness ... ok
+test placement_restore_test::placement_restore_memory_history_and_restart ... ok
+test placement_values_test::placement_values_go_constraint_matrix ... ok
+test placement_values_test::placement_values_json_null_duplicate_fields ... ok
+test placement_values_test::placement_values_roles_and_operators ... ok
+test placement_values_test::placement_values_rule_json_clone_store_key ... ok
+test placement_values_test::placement_values_store_constraints ... ok
+test placement_batch_test::placement_batch_go_regexp_ascii_classes ... ok
+test placement_values_test::placement_values_go_runtime_matching ... ok
+test placement_values_test::placement_values_go_runtime_fixture ... ok
+test placement_batch_test::placement_batch_go_runtime_fixture ... ok
+test placement_role_fit_test::placement_role_fit_go_runtime_fixture ... ok
+test placement_batch_test::placement_batch_memory_contract ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:61546
+test placement_restore_test::placement_restore_etcd_io_failures ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:61547
+isolated etcd 3.5.15 ready at http://127.0.0.1:61548
+test placement_batch_test::placement_batch_etcd_contract ... ok
+test placement_restore_test::placement_restore_etcd_history_and_restart ... ok
+
+test result: ok. 31 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 4.21s
+
+   Doc-tests astersql_pd_schedule_placement
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

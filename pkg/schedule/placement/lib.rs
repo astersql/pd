@@ -36,3 +36,9 @@ pub use rule_batch::RuleOp;
 #[cfg(test)]
 #[path = "placement_batch_test.rs"]
 mod placement_batch_test;
+
+pub mod fit;
+pub use fit::{RuleFit, fit_rule};
+#[cfg(test)]
+#[path = "placement_role_fit_test.rs"]
+mod placement_role_fit_test;
