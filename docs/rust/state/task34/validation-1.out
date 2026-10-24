@@ -1,0 +1,16 @@
+   Compiling astersql-pd-syncer v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/syncer)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.82s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_syncer-f6c36878c994325f)
+
+running 5 tests
+
+thread 'full_snapshot_test::state_task_34_full_snapshot_retain_is_bounded_and_unwind_safe' (158157446) panicked at pkg/syncer/full_snapshot_test.rs:175:17:
+sender panicked
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test full_snapshot_test::state_task_34_full_snapshot_buffers_live_records ... ok
+test full_snapshot_test::state_task_34_full_snapshot_retain_is_bounded_and_unwind_safe ... ok
+test full_snapshot_test::state_task_34_full_snapshot_failure_releases_retain ... ok
+test full_snapshot_test::state_task_34_full_snapshot_offsets_and_empty ... ok
+test full_snapshot_test::state_task_34_full_snapshot_bind_waits_for_append_boundary ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 33 filtered out; finished in 0.03s

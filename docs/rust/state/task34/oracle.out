@@ -1,0 +1,30 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+=== RUN   TestSyncHistoryRegionStartIndexZeroDoesNotGrowHistoryWindow
+[2026/10/24 20:18:01.467 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+[2026/10/24 20:18:01.468 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+[2026/10/24 20:18:01.469 +00:00] [INFO] [server.go:552] ["requested server has completed full synchronization with server"] [requested-server=pd-follower] [server=mock-server] [cost=132.459µs]
+--- PASS: TestSyncHistoryRegionStartIndexZeroDoesNotGrowHistoryWindow (0.02s)
+=== RUN   TestSyncFullRegionsBuffersLiveRecords
+[2026/10/24 20:18:01.475 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+[2026/10/24 20:18:01.475 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+[2026/10/24 20:18:01.577 +00:00] [INFO] [server.go:552] ["requested server has completed full synchronization with server"] [requested-server=pd-follower] [server=mock-server] [cost=101.849417ms]
+[2026/10/24 20:18:01.585 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+[2026/10/24 20:18:01.585 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+--- PASS: TestSyncFullRegionsBuffersLiveRecords (0.11s)
+=== RUN   TestSyncFullRegionsFailsWhenCatchUpHistoryExceedsMax
+[2026/10/24 20:18:01.589 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+[2026/10/24 20:18:01.589 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+[2026/10/24 20:18:01.690 +00:00] [INFO] [server.go:552] ["requested server has completed full synchronization with server"] [requested-server=pd-follower] [server=mock-server] [cost=100.810125ms]
+--- PASS: TestSyncFullRegionsFailsWhenCatchUpHistoryExceedsMax (0.10s)
+=== RUN   TestBindStreamWaitsForAppendHistoryRecordsBoundary
+[2026/10/24 20:18:01.691 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+[2026/10/24 20:18:01.691 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+--- PASS: TestBindStreamWaitsForAppendHistoryRecordsBoundary (0.01s)
+=== RUN   TestClientWaitsForEmptySnapshotCatchUpCompletion
+[2026/10/24 20:18:01.706 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+[2026/10/24 20:18:01.708 +00:00] [INFO] [server.go:552] ["requested server has completed full synchronization with server"] [requested-server=pd-follower] [server=mock-server] [cost=4.958µs]
+[2026/10/24 20:18:01.710 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+[2026/10/24 20:18:01.711 +00:00] [WARN] [client.go:119] ["server sync index not match the leader"] [server=mock-server] [own=42] [leader=0] [records-length=1000]
+[2026/10/24 20:18:01.719 +00:00] [WARN] [client.go:119] ["server sync index not match the leader"] [server=mock-server] [own=0] [leader=1043] [records-length=0]
+--- PASS: TestClientWaitsForEmptySnapshotCatchUpCompletion (0.02s)
+PASS

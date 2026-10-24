@@ -30,3 +30,9 @@ pub use history_replay::{HistoryReplay, MAX_SYNC_REGION_BATCH_SIZE, SyncFrame};
 #[cfg(test)]
 #[path = "history_replay_test.rs"]
 mod history_replay_test;
+
+mod full_snapshot;
+pub use full_snapshot::{FullSnapshot, SnapshotBatch, SnapshotOffset};
+#[cfg(test)]
+#[path = "full_snapshot_test.rs"]
+mod full_snapshot_test;
