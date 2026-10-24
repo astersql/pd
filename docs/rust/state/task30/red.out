@@ -1,0 +1,61 @@
+   Compiling serde_json v1.0.145
+   Compiling astersql-pd-core v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/core)
+   Compiling astersql-pd-syncer v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/syncer)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.06s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_syncer-80e1f2fdde401ca1)
+
+running 7 tests
+
+thread 'history_buffer_test::state_task_30_history_buffer_normalization' (158011089) panicked at pkg/syncer/history_buffer_test.rs:32:9:
+assertion `left == right` failed
+  left: 0
+ right: 10000
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'history_buffer_test::state_task_30_history_buffer_index_exhaustion' (158011088) panicked at pkg/syncer/history_buffer_test.rs:143:5:
+assertion failed: matches!(h.record(region(2)), Err(HistoryError::IndexExhausted))
+
+thread 'history_buffer_test::state_task_30_history_buffer_empty_and_reset' (158011086) panicked at pkg/syncer/history_buffer_test.rs:81:5:
+assertion `left == right` failed
+  left: HistoryIndex(100)
+ right: HistoryIndex(101)
+
+thread 'history_buffer_test::state_task_30_history_buffer_101_records' (158011085) panicked at pkg/syncer/history_buffer_test.rs:124:13:
+assertion `left == right` failed
+  left: HistoryIndex(0)
+ right: HistoryIndex(1)
+
+thread 'history_buffer_test::state_task_30_history_buffer_releases_overwritten_and_reset_records' (158011090) panicked at pkg/syncer/history_buffer_test.rs:162:5:
+assertion failed: weak.upgrade().is_some()
+
+thread 'history_buffer_test::state_task_30_history_buffer_wrapped_intervals' (158011091) panicked at pkg/syncer/history_buffer_test.rs:100:5:
+assertion `left == right` failed
+  left: 0
+ right: 4
+
+thread 'history_buffer_test::state_task_30_history_buffer_go_snapshot' (158011087) panicked at pkg/syncer/history_buffer_test.rs:55:5:
+assertion `left == right` failed
+  left: HistoryIndex(100)
+ right: HistoryIndex(103)
+test history_buffer_test::state_task_30_history_buffer_101_records ... FAILED
+test history_buffer_test::state_task_30_history_buffer_wrapped_intervals ... FAILED
+test history_buffer_test::state_task_30_history_buffer_go_snapshot ... FAILED
+test history_buffer_test::state_task_30_history_buffer_empty_and_reset ... FAILED
+test history_buffer_test::state_task_30_history_buffer_normalization ... FAILED
+test history_buffer_test::state_task_30_history_buffer_index_exhaustion ... FAILED
+test history_buffer_test::state_task_30_history_buffer_releases_overwritten_and_reset_records ... FAILED
+
+failures:
+
+failures:
+    history_buffer_test::state_task_30_history_buffer_101_records
+    history_buffer_test::state_task_30_history_buffer_empty_and_reset
+    history_buffer_test::state_task_30_history_buffer_go_snapshot
+    history_buffer_test::state_task_30_history_buffer_index_exhaustion
+    history_buffer_test::state_task_30_history_buffer_normalization
+    history_buffer_test::state_task_30_history_buffer_releases_overwritten_and_reset_records
+    history_buffer_test::state_task_30_history_buffer_wrapped_intervals
+
+test result: FAILED. 0 passed; 7 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-syncer --lib`

@@ -597,6 +597,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "astersql-pd-syncer"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-core",
+ "serde_json",
+ "thiserror 2.0.21",
+]
+
+[[package]]
 name = "astersql-pd-syncutil"
 version = "0.1.0"
 dependencies = [

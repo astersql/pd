@@ -1,0 +1,17 @@
+{
+  "source": "history_buffer_test.go:50-64, dlv h.index/head/tail/size and records meta.Id",
+  "baseline": "69ba16e6d47dfe59a21498c21641e1c1eaa726e0",
+  "reset": 100,
+  "input": [
+    1,
+    2,
+    3
+  ],
+  "capacity": 2,
+  "next": 103,
+  "first": 101,
+  "records": [
+    2,
+    3
+  ]
+}

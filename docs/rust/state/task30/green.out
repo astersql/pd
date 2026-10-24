@@ -1,0 +1,15 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-syncer v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/syncer)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.03s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_syncer-80e1f2fdde401ca1)
+
+running 7 tests
+test history_buffer_test::state_task_30_history_buffer_empty_and_reset ... ok
+test history_buffer_test::state_task_30_history_buffer_index_exhaustion ... ok
+test history_buffer_test::state_task_30_history_buffer_go_snapshot ... ok
+test history_buffer_test::state_task_30_history_buffer_normalization ... ok
+test history_buffer_test::state_task_30_history_buffer_101_records ... ok
+test history_buffer_test::state_task_30_history_buffer_releases_overwritten_and_reset_records ... ok
+test history_buffer_test::state_task_30_history_buffer_wrapped_intervals ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

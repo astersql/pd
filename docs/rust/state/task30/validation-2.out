@@ -1,0 +1,20 @@
+   Compiling astersql-pd-syncer v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/syncer)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.63s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_syncer-80e1f2fdde401ca1)
+
+running 7 tests
+test history_buffer_test::state_task_30_history_buffer_empty_and_reset ... ok
+test history_buffer_test::state_task_30_history_buffer_index_exhaustion ... ok
+test history_buffer_test::state_task_30_history_buffer_go_snapshot ... ok
+test history_buffer_test::state_task_30_history_buffer_releases_overwritten_and_reset_records ... ok
+test history_buffer_test::state_task_30_history_buffer_normalization ... ok
+test history_buffer_test::state_task_30_history_buffer_wrapped_intervals ... ok
+test history_buffer_test::state_task_30_history_buffer_101_records ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_syncer
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

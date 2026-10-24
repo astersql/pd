@@ -1,0 +1,13 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+Type 'help' for list of commands.
+Breakpoint 1 set at 0x139b86c for command-line-arguments.TestHistoryBufferKeepsRingBehaviorWithoutRetain() .Users/Shared/work/dir/data/codes/pd/pkg/syncer/history_buffer_test.go:64
+[2026/10/24 19:51:03.015 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+> [Breakpoint 1] command-line-arguments.TestHistoryBufferKeepsRingBehaviorWithoutRetain() .Users/Shared/work/dir/data/codes/pd/pkg/syncer/history_buffer_test.go:64 (hits goroutine(150):1 total:1) (PC: 0x139b86c)
+103
+1
+0
+3
+2
+3
+PASS
+/oracle/oracle.commands:9: Process 21 has exited with status 0

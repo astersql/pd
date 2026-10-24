@@ -1,0 +1,42 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+=== RUN   TestNormalizeHistoryBufferCapacity
+=== RUN   TestNormalizeHistoryBufferCapacity/below-unit
+=== RUN   TestNormalizeHistoryBufferCapacity/one-unit
+=== RUN   TestNormalizeHistoryBufferCapacity/round-to-two-units
+=== RUN   TestNormalizeHistoryBufferCapacity/round-to-four-units
+=== RUN   TestNormalizeHistoryBufferCapacity/test-unit
+--- PASS: TestNormalizeHistoryBufferCapacity (0.00s)
+    --- PASS: TestNormalizeHistoryBufferCapacity/below-unit (0.00s)
+    --- PASS: TestNormalizeHistoryBufferCapacity/one-unit (0.00s)
+    --- PASS: TestNormalizeHistoryBufferCapacity/round-to-two-units (0.00s)
+    --- PASS: TestNormalizeHistoryBufferCapacity/round-to-four-units (0.00s)
+    --- PASS: TestNormalizeHistoryBufferCapacity/test-unit (0.00s)
+=== RUN   TestHistoryBufferKeepsRingBehaviorWithoutRetain
+[2026/10/24 19:50:47.682 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+--- PASS: TestHistoryBufferKeepsRingBehaviorWithoutRetain (0.00s)
+=== RUN   TestHistoryBufferRecordsAndFlushes
+[2026/10/24 19:50:47.683 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+[2026/10/24 19:50:47.683 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+[2026/10/24 19:50:47.683 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+[2026/10/24 19:50:47.683 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=6]
+--- PASS: TestHistoryBufferRecordsAndFlushes (0.00s)
+=== RUN   TestHistoryBufferPersistsNextIndexOnly
+[2026/10/24 19:50:47.684 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+[2026/10/24 19:50:47.684 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=3]
+--- PASS: TestHistoryBufferPersistsNextIndexOnly (0.00s)
+=== RUN   TestHistoryBufferRetainKeepsCatchUpRecords
+[2026/10/24 19:50:47.684 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+--- PASS: TestHistoryBufferRetainKeepsCatchUpRecords (0.00s)
+=== RUN   TestHistoryBufferObservedRequiredWindowKeepsSlowDownstreamRecords
+[2026/10/24 19:50:47.684 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+--- PASS: TestHistoryBufferObservedRequiredWindowKeepsSlowDownstreamRecords (0.00s)
+=== RUN   TestHistoryBufferFullSyncRetainTakesPriorityOverRequiredWindow
+[2026/10/24 19:50:47.684 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+--- PASS: TestHistoryBufferFullSyncRetainTakesPriorityOverRequiredWindow (0.00s)
+=== RUN   TestHistoryBufferObserveRequiredWindowGrowsWithoutRetain
+[2026/10/24 19:50:47.684 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+--- PASS: TestHistoryBufferObserveRequiredWindowGrowsWithoutRetain (0.00s)
+=== RUN   TestHistoryBufferShrinksOneStepAfterReplayWindowStaysLow
+[2026/10/24 19:50:47.684 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+--- PASS: TestHistoryBufferShrinksOneStepAfterReplayWindowStaysLow (0.00s)
+PASS

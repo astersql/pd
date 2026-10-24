@@ -1,0 +1,10 @@
+break history_buffer_test.go:64
+continue
+print h.index
+print h.head
+print h.tail
+print h.size
+print records[0].meta.Id
+print records[1].meta.Id
+continue
+quit
