@@ -1,0 +1,19 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+['/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2/pd-oracle47', '--name', 'oracle50', '--data-dir', '/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2/oracle50-data-57300', '--client-urls', 'http://127.0.0.1:64618', '--advertise-client-urls', 'http://127.0.0.1:64618', '--peer-urls', 'http://127.0.0.1:64619', '--advertise-peer-urls', 'http://127.0.0.1:64619', '--initial-cluster', 'oracle50=http://127.0.0.1:64619', '--log-level', 'error']
+warning: use of deprecated field `astersql_pd_proto::pdpb::RegionHeartbeatRequest::cpu_usage`
+   --> pkg/server/core_region_adapter.rs:134:30
+    |
+134 |     r.set_response_cpu_usage(p.cpu_usage);
+    |                              ^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: `astersql-pd-server` (lib) generated 1 warning
+   Compiling astersql-pd-server v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/server)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.43s
+     Running `target/rust-slot-2/debug/examples/sync_codec_oracle`
+not bootstrapped: ReportBucketsResponse { header: Some(ResponseHeader { cluster_id: 7700367616291770735, error: Some(Error { r#type: NotBootstrapped, message: "cluster is not bootstrapped" }) }) }
+bootstrap: Some(ResponseHeader { cluster_id: 7700367616291770735, error: None })
+Go sync: SyncRegionResponse { header: Some(ResponseHeader { cluster_id: 7700367616291770735, error: None }), regions: [Region { id: 1, start_key: [], end_key: [], region_epoch: Some(RegionEpoch { conf_ver: 2, version: 2 }), peers: [Peer { id: 2, store_id: 1, role: Voter, is_witness: false }], encryption_meta: None, is_in_flashback: false, flashback_start_ts: 0 }], start_index: 0, region_stats: [RegionStat { bytes_written: 1234, bytes_read: 4567, keys_written: 23, keys_read: 89 }], region_leaders: [Peer { id: 2, store_id: 1, role: Voter, is_witness: false }], buckets: [Buckets { region_id: 1, version: 7, keys: [[], [109], []], stats: None, period_in_ms: 0 }], down_peers: [], pending_peers: [] }
+Go sync: SyncRegionResponse { header: Some(ResponseHeader { cluster_id: 7700367616291770735, error: None }), regions: [], start_index: 1, region_stats: [], region_leaders: [], buckets: [], down_peers: [], pending_peers: [] }
+Go server joined exit=0; data removed

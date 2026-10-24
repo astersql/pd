@@ -7,6 +7,7 @@ license.workspace = true
 [lib]
 path = "lib.rs"
 [dependencies]
+astersql-pd-syncer.workspace = true
 astersql-pd-core.workspace = true
 astersql-pd-cluster.workspace = true
 astersql-pd-statistics.workspace = true
@@ -24,6 +25,7 @@ prometheus.workspace = true
 futures-util.workspace = true
 
 [dev-dependencies]
+astersql-pd-keypath.workspace = true
 astersql-pd-statistics-utils.workspace = true
 prost.workspace = true
 astersql-pd-storage-kv.workspace = true

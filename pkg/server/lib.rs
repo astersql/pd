@@ -83,3 +83,8 @@ pub mod bucket_heartbeat_adapter;
 #[cfg(test)]
 #[path = "bucket_heartbeat_adapter_test.rs"]
 mod bucket_heartbeat_adapter_test;
+
+pub mod sync_codec;
+#[cfg(test)]
+#[path = "sync_codec_test.rs"]
+mod sync_codec_test;

@@ -480,6 +480,7 @@ version = "0.1.0"
 dependencies = [
  "astersql-pd-cluster",
  "astersql-pd-core",
+ "astersql-pd-keypath",
  "astersql-pd-proto",
  "astersql-pd-runtime",
  "astersql-pd-statistics",
@@ -487,6 +488,7 @@ dependencies = [
  "astersql-pd-statistics-utils",
  "astersql-pd-storage",
  "astersql-pd-storage-kv",
+ "astersql-pd-syncer",
  "astersql-pd-tso",
  "async-trait",
  "axum",
