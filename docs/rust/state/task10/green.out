@@ -1,0 +1,15 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-statistics v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.45s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics-0863a55b0be19dde)
+
+running 7 tests
+test store_rolling_test::state_task_10_store_rolling_unsigned_set_and_duration_wrap ... ok
+test store_rolling_test::state_task_10_store_rolling_zero_interval_and_collect_overflow ... ok
+test store_rolling_test::state_task_10_store_rolling_go_cpu_time_median ... ok
+test store_rolling_test::state_task_10_store_rolling_set_preserves_time_history ... ok
+test store_rolling_test::state_task_10_store_rolling_all_kinds_and_unknown ... ok
+test store_rolling_test::state_task_10_store_rolling_partial_intervals_and_median_eviction ... ok
+test store_rolling_test::state_task_10_store_rolling_distinct_windows_and_recent_max ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s

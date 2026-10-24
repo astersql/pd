@@ -506,6 +506,8 @@ name = "astersql-pd-statistics"
 version = "0.1.0"
 dependencies = [
  "astersql-pd-core",
+ "astersql-pd-movingaverage",
+ "astersql-pd-statistics-utils",
 ]
 
 [[package]]

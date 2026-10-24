@@ -10,3 +10,5 @@ path = "lib.rs"
 
 [dependencies]
 astersql-pd-core.workspace = true
+astersql-pd-movingaverage.workspace = true
+astersql-pd-statistics-utils.workspace = true

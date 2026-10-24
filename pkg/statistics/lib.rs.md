@@ -5,3 +5,7 @@
 依赖 canonical core 领域值，不依赖 protobuf、传输或调度决策。
 `cpu_test` 在 cfg(test) 下显式登记，生产测试位于独立 cpu_test.rs。
 后续统计行为在本 crate 原位扩展，不创建平行实现。
+
+已加入[存储节点滚动统计](store_rolling.rs.md)：公开 RollingStoreStats、
+REGIONS_STATS_OBSERVE_INTERVAL 和 REGIONS_STATS_ROLLING_WINDOWS_SIZE。
+复用 core、movingaverage 与 statistics-utils 领域能力；store_rolling_test 显式登记。

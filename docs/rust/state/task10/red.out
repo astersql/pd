@@ -1,0 +1,64 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-statistics v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.10s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics-0863a55b0be19dde)
+
+running 7 tests
+
+thread 'store_rolling_test::state_task_10_store_rolling_all_kinds_and_unknown' (157169343) panicked at pkg/statistics/store_rolling_test.rs:40:9:
+assertion `left == right` failed: kind 0
+  left: 0.0
+ right: 10.0
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'store_rolling_test::state_task_10_store_rolling_go_cpu_time_median' (157169345) panicked at pkg/statistics/store_rolling_test.rs:56:5:
+assertion `left == right` failed
+  left: 0.0
+ right: 100.0
+
+thread 'store_rolling_test::state_task_10_store_rolling_set_preserves_time_history' (157169347) panicked at pkg/statistics/store_rolling_test.rs:104:5:
+assertion `left == right` failed
+  left: 0.0
+ right: 20.0
+
+thread 'store_rolling_test::state_task_10_store_rolling_distinct_windows_and_recent_max' (157169344) panicked at pkg/statistics/store_rolling_test.rs:153:5:
+assertion `left == right` failed
+  left: 0.0
+ right: 90.0
+
+thread 'store_rolling_test::state_task_10_store_rolling_unsigned_set_and_duration_wrap' (157169348) panicked at pkg/statistics/store_rolling_test.rs:195:5:
+assertion `left == right` failed
+  left: 0.0
+ right: 1.0
+
+thread 'store_rolling_test::state_task_10_store_rolling_partial_intervals_and_median_eviction' (157169346) panicked at pkg/statistics/store_rolling_test.rs:86:5:
+assertion `left == right` failed
+  left: 0.0
+ right: 10.0
+
+thread 'store_rolling_test::state_task_10_store_rolling_zero_interval_and_collect_overflow' (157169349) panicked at pkg/statistics/store_rolling_test.rs:40:9:
+assertion `left == right` failed: kind 0
+  left: 0.0
+ right: 10.0
+test store_rolling_test::state_task_10_store_rolling_go_cpu_time_median ... FAILED
+test store_rolling_test::state_task_10_store_rolling_distinct_windows_and_recent_max ... FAILED
+test store_rolling_test::state_task_10_store_rolling_all_kinds_and_unknown ... FAILED
+test store_rolling_test::state_task_10_store_rolling_unsigned_set_and_duration_wrap ... FAILED
+test store_rolling_test::state_task_10_store_rolling_set_preserves_time_history ... FAILED
+test store_rolling_test::state_task_10_store_rolling_partial_intervals_and_median_eviction ... FAILED
+test store_rolling_test::state_task_10_store_rolling_zero_interval_and_collect_overflow ... FAILED
+
+failures:
+
+failures:
+    store_rolling_test::state_task_10_store_rolling_all_kinds_and_unknown
+    store_rolling_test::state_task_10_store_rolling_distinct_windows_and_recent_max
+    store_rolling_test::state_task_10_store_rolling_go_cpu_time_median
+    store_rolling_test::state_task_10_store_rolling_partial_intervals_and_median_eviction
+    store_rolling_test::state_task_10_store_rolling_set_preserves_time_history
+    store_rolling_test::state_task_10_store_rolling_unsigned_set_and_duration_wrap
+    store_rolling_test::state_task_10_store_rolling_zero_interval_and_collect_overflow
+
+test result: FAILED. 0 passed; 7 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-statistics --lib`

@@ -1,0 +1,4 @@
+SLOT=1
+CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+Cargo validation and child processes exited; no running slot-1 executable in ps.
+Own owner/slot-1.lock removed; target/rust-slot-1 cache retained.
