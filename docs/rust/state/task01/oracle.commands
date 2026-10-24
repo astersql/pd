@@ -1,0 +1,185 @@
+break main.main
+continue
+next
+config max-array-values 128
+config max-string-len 256
+print "CASE thresholds"
+print "github.com/tikv/pd/pkg/statistics/utils".MinHotThresholds
+print "CASE read_stats"
+print "github.com/tikv/pd/pkg/statistics/utils".readRegionStats
+print "CASE write_stats"
+print "github.com/tikv/pd/pkg/statistics/utils".writeRegionStats
+print "CASE dim_byte"
+call "github.com/tikv/pd/pkg/statistics/utils".StringToDim("byte")
+print "CASE dim_key"
+call "github.com/tikv/pd/pkg/statistics/utils".StringToDim("key")
+print "CASE dim_query"
+call "github.com/tikv/pd/pkg/statistics/utils".StringToDim("query")
+print "CASE dim_cpu"
+call "github.com/tikv/pd/pkg/statistics/utils".StringToDim("cpu")
+print "CASE dim_"
+call "github.com/tikv/pd/pkg/statistics/utils".StringToDim("")
+print "CASE dim_unknown"
+call "github.com/tikv/pd/pkg/statistics/utils".StringToDim("unknown")
+print "CASE dim_CPU"
+call "github.com/tikv/pd/pkg/statistics/utils".StringToDim("CPU")
+print "CASE name_-1"
+call "github.com/tikv/pd/pkg/statistics/utils".DimToString(-1)
+print "CASE name_0"
+call "github.com/tikv/pd/pkg/statistics/utils".DimToString(0)
+print "CASE name_1"
+call "github.com/tikv/pd/pkg/statistics/utils".DimToString(1)
+print "CASE name_2"
+call "github.com/tikv/pd/pkg/statistics/utils".DimToString(2)
+print "CASE name_3"
+call "github.com/tikv/pd/pkg/statistics/utils".DimToString(3)
+print "CASE name_4"
+call "github.com/tikv/pd/pkg/statistics/utils".DimToString(4)
+print "CASE rw_0_String"
+call ("github.com/tikv/pd/pkg/statistics/utils.RWType"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0])).String()
+print "CASE rw_0_RegionStats"
+call ("github.com/tikv/pd/pkg/statistics/utils.RWType"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0])).RegionStats()
+print "CASE rw_0_Inverse"
+call ("github.com/tikv/pd/pkg/statistics/utils.RWType"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0])).Inverse()
+print "CASE rw_0_ReportInterval"
+call ("github.com/tikv/pd/pkg/statistics/utils.RWType"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0])).ReportInterval()
+print "CASE rw_0_DefaultAntiCount"
+call ("github.com/tikv/pd/pkg/statistics/utils.RWType"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0])).DefaultAntiCount()
+print "CASE rw_0_rates_2"
+call ("github.com/tikv/pd/pkg/statistics/utils.RWType"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0])).GetLoadRates("github.com/tikv/pd/pkg/statistics/utils".MinHotThresholds[:], 2)
+print "CASE rw_0_rates_0"
+call ("github.com/tikv/pd/pkg/statistics/utils.RWType"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0])).GetLoadRates("github.com/tikv/pd/pkg/statistics/utils".MinHotThresholds[:], 0)
+print "CASE rw_1_String"
+call ("github.com/tikv/pd/pkg/statistics/utils.RWType"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[1])).String()
+print "CASE rw_1_RegionStats"
+call ("github.com/tikv/pd/pkg/statistics/utils.RWType"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[1])).RegionStats()
+print "CASE rw_1_Inverse"
+call ("github.com/tikv/pd/pkg/statistics/utils.RWType"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[1])).Inverse()
+print "CASE rw_1_ReportInterval"
+call ("github.com/tikv/pd/pkg/statistics/utils.RWType"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[1])).ReportInterval()
+print "CASE rw_1_DefaultAntiCount"
+call ("github.com/tikv/pd/pkg/statistics/utils.RWType"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[1])).DefaultAntiCount()
+print "CASE rw_1_rates_2"
+call ("github.com/tikv/pd/pkg/statistics/utils.RWType"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[1])).GetLoadRates("github.com/tikv/pd/pkg/statistics/utils".MinHotThresholds[:], 2)
+print "CASE rw_1_rates_0"
+call ("github.com/tikv/pd/pkg/statistics/utils.RWType"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[1])).GetLoadRates("github.com/tikv/pd/pkg/statistics/utils".MinHotThresholds[:], 0)
+print "CASE rw_2_String"
+call ("github.com/tikv/pd/pkg/statistics/utils.RWType"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[2])).String()
+print "CASE rw_2_RegionStats"
+call ("github.com/tikv/pd/pkg/statistics/utils.RWType"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[2])).RegionStats()
+print "CASE rw_2_Inverse"
+call ("github.com/tikv/pd/pkg/statistics/utils.RWType"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[2])).Inverse()
+print "CASE rw_2_ReportInterval"
+call ("github.com/tikv/pd/pkg/statistics/utils.RWType"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[2])).ReportInterval()
+print "CASE rw_2_DefaultAntiCount"
+call ("github.com/tikv/pd/pkg/statistics/utils.RWType"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[2])).DefaultAntiCount()
+print "CASE rw_2_rates_2"
+call ("github.com/tikv/pd/pkg/statistics/utils.RWType"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[2])).GetLoadRates("github.com/tikv/pd/pkg/statistics/utils".MinHotThresholds[:], 2)
+print "CASE rw_2_rates_0"
+call ("github.com/tikv/pd/pkg/statistics/utils.RWType"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[2])).GetLoadRates("github.com/tikv/pd/pkg/statistics/utils".MinHotThresholds[:], 0)
+print "CASE single_label"
+call "github.com/tikv/pd/pkg/statistics/utils".SingleLabel("store", "42")
+print "CASE set_write"
+call ("github.com/tikv/pd/pkg/statistics/utils.RWType"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0])).SetFullLoadRates("github.com/tikv/pd/pkg/statistics/utils".MinHotThresholds[:], "github.com/tikv/pd/pkg/statistics/utils".MinHotThresholds[4:8])
+print "CASE full_after_write"
+print "github.com/tikv/pd/pkg/statistics/utils".MinHotThresholds
+print "CASE set_read"
+call ("github.com/tikv/pd/pkg/statistics/utils.RWType"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[1])).SetFullLoadRates("github.com/tikv/pd/pkg/statistics/utils".MinHotThresholds[:], "github.com/tikv/pd/pkg/statistics/utils".MinHotThresholds[4:8])
+print "CASE full_after_read"
+print "github.com/tikv/pd/pkg/statistics/utils".MinHotThresholds
+set "github.com/tikv/pd/pkg/statistics/utils".MinHotThresholds[0] = 0
+set "github.com/tikv/pd/pkg/statistics/utils".MinHotThresholds[1] = -128
+print "CASE zero_mixed"
+call ("github.com/tikv/pd/pkg/statistics/utils.RWType"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[1])).GetLoadRates("github.com/tikv/pd/pkg/statistics/utils".MinHotThresholds[:], 0)
+set "github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0] = 0
+print "CASE RegionStatKind_0"
+call ("github.com/tikv/pd/pkg/statistics/utils.RegionStatKind"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0])).String()
+set "github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0] = 1
+print "CASE RegionStatKind_1"
+call ("github.com/tikv/pd/pkg/statistics/utils.RegionStatKind"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0])).String()
+set "github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0] = 2
+print "CASE RegionStatKind_2"
+call ("github.com/tikv/pd/pkg/statistics/utils.RegionStatKind"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0])).String()
+set "github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0] = 3
+print "CASE RegionStatKind_3"
+call ("github.com/tikv/pd/pkg/statistics/utils.RegionStatKind"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0])).String()
+set "github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0] = 4
+print "CASE RegionStatKind_4"
+call ("github.com/tikv/pd/pkg/statistics/utils.RegionStatKind"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0])).String()
+set "github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0] = 5
+print "CASE RegionStatKind_5"
+call ("github.com/tikv/pd/pkg/statistics/utils.RegionStatKind"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0])).String()
+set "github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0] = 6
+print "CASE RegionStatKind_6"
+call ("github.com/tikv/pd/pkg/statistics/utils.RegionStatKind"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0])).String()
+set "github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0] = 7
+print "CASE RegionStatKind_7"
+call ("github.com/tikv/pd/pkg/statistics/utils.RegionStatKind"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0])).String()
+set "github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0] = -1
+print "CASE RegionStatKind_-1"
+call ("github.com/tikv/pd/pkg/statistics/utils.RegionStatKind"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0])).String()
+set "github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0] = 8
+print "CASE RegionStatKind_8"
+call ("github.com/tikv/pd/pkg/statistics/utils.RegionStatKind"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0])).String()
+set "github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0] = 0
+print "CASE StoreLoadKind_0"
+call ("github.com/tikv/pd/pkg/statistics/utils.StoreLoadKind"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0])).String()
+set "github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0] = 1
+print "CASE StoreLoadKind_1"
+call ("github.com/tikv/pd/pkg/statistics/utils.StoreLoadKind"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0])).String()
+set "github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0] = 2
+print "CASE StoreLoadKind_2"
+call ("github.com/tikv/pd/pkg/statistics/utils.StoreLoadKind"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0])).String()
+set "github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0] = 3
+print "CASE StoreLoadKind_3"
+call ("github.com/tikv/pd/pkg/statistics/utils.StoreLoadKind"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0])).String()
+set "github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0] = 4
+print "CASE StoreLoadKind_4"
+call ("github.com/tikv/pd/pkg/statistics/utils.StoreLoadKind"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0])).String()
+set "github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0] = 5
+print "CASE StoreLoadKind_5"
+call ("github.com/tikv/pd/pkg/statistics/utils.StoreLoadKind"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0])).String()
+set "github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0] = 6
+print "CASE StoreLoadKind_6"
+call ("github.com/tikv/pd/pkg/statistics/utils.StoreLoadKind"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0])).String()
+set "github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0] = 7
+print "CASE StoreLoadKind_7"
+call ("github.com/tikv/pd/pkg/statistics/utils.StoreLoadKind"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0])).String()
+set "github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0] = 8
+print "CASE StoreLoadKind_8"
+call ("github.com/tikv/pd/pkg/statistics/utils.StoreLoadKind"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0])).String()
+set "github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0] = 9
+print "CASE StoreLoadKind_9"
+call ("github.com/tikv/pd/pkg/statistics/utils.StoreLoadKind"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0])).String()
+set "github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0] = 10
+print "CASE StoreLoadKind_10"
+call ("github.com/tikv/pd/pkg/statistics/utils.StoreLoadKind"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0])).String()
+set "github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0] = 11
+print "CASE StoreLoadKind_11"
+call ("github.com/tikv/pd/pkg/statistics/utils.StoreLoadKind"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0])).String()
+set "github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0] = -1
+print "CASE StoreLoadKind_-1"
+call ("github.com/tikv/pd/pkg/statistics/utils.StoreLoadKind"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0])).String()
+set "github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0] = 12
+print "CASE StoreLoadKind_12"
+call ("github.com/tikv/pd/pkg/statistics/utils.StoreLoadKind"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0])).String()
+set "github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0] = 0
+set "github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0] = 1
+set "github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0] = -1
+set "github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0] = 2
+set "github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0] = 0
+print "CASE ActionType_0"
+call ("github.com/tikv/pd/pkg/statistics/utils.ActionType"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0])).String()
+set "github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0] = 1
+print "CASE ActionType_1"
+call ("github.com/tikv/pd/pkg/statistics/utils.ActionType"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0])).String()
+set "github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0] = 2
+print "CASE ActionType_2"
+call ("github.com/tikv/pd/pkg/statistics/utils.ActionType"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0])).String()
+set "github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0] = -1
+print "CASE ActionType_-1"
+call ("github.com/tikv/pd/pkg/statistics/utils.ActionType"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0])).String()
+set "github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0] = 3
+print "CASE ActionType_3"
+call ("github.com/tikv/pd/pkg/statistics/utils.ActionType"("github.com/tikv/pd/pkg/statistics/utils".readRegionStats[0])).String()
+exit

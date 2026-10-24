@@ -1,0 +1,348 @@
+Type 'help' for list of commands.
+Breakpoint 1 set at 0x280c840 for main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:58
+> [Breakpoint 1] main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:58 (hits goroutine(1):1 total:1) (PC: 0x280c840)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+"CASE thresholds"
+[8]float64 [8192,128,128,1024,32,32,1,1]
+"CASE read_stats"
+[]github.com/tikv/pd/pkg/statistics/utils.RegionStatKind len: 4, cap: 4, [RegionReadBytes (0),RegionReadKeys (1),RegionReadQueryNum (2),RegionReadCPU (6)]
+"CASE write_stats"
+[]github.com/tikv/pd/pkg/statistics/utils.RegionStatKind len: 4, cap: 4, [RegionWriteBytes (3),RegionWriteKeys (4),RegionWriteQueryNum (5),RegionWriteCPU (7)]
+"CASE dim_byte"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 0
+
+"CASE dim_key"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 1
+
+"CASE dim_query"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 2
+
+"CASE dim_cpu"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 3
+
+"CASE dim_"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 0
+
+"CASE dim_unknown"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 0
+
+"CASE dim_CPU"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 0
+
+"CASE name_-1"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: ""
+
+"CASE name_0"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "byte"
+
+"CASE name_1"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "key"
+
+"CASE name_2"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "query"
+
+"CASE name_3"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "cpu"
+
+"CASE name_4"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: ""
+
+"CASE rw_0_String"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "write"
+
+"CASE rw_0_RegionStats"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: []github.com/tikv/pd/pkg/statistics/utils.RegionStatKind len: 4, cap: 4, [RegionWriteBytes (3),RegionWriteKeys (4),RegionWriteQueryNum (5),RegionWriteCPU (7)]
+
+"CASE rw_0_Inverse"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: Read (1)
+
+"CASE rw_0_ReportInterval"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 60
+
+"CASE rw_0_DefaultAntiCount"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 2
+
+"CASE rw_0_rates_2"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: []float64 len: 4, cap: 4, [512,16,16,0.5]
+
+"CASE rw_0_rates_0"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: []float64 len: 4, cap: 4, [+Inf,+Inf,+Inf,+Inf]
+
+"CASE rw_1_String"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "read"
+
+"CASE rw_1_RegionStats"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: []github.com/tikv/pd/pkg/statistics/utils.RegionStatKind len: 4, cap: 4, [RegionReadBytes (0),RegionReadKeys (1),RegionReadQueryNum (2),RegionReadCPU (6)]
+
+"CASE rw_1_Inverse"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: Write (0)
+
+"CASE rw_1_ReportInterval"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 10
+
+"CASE rw_1_DefaultAntiCount"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 12
+
+"CASE rw_1_rates_2"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: []float64 len: 4, cap: 4, [4096,64,64,0.5]
+
+"CASE rw_1_rates_0"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: []float64 len: 4, cap: 4, [+Inf,+Inf,+Inf,+Inf]
+
+"CASE rw_2_String"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "unimplemented"
+
+"CASE rw_2_RegionStats"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: []github.com/tikv/pd/pkg/statistics/utils.RegionStatKind len: 0, cap: 0, nil
+
+"CASE rw_2_Inverse"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: Write (0)
+
+"CASE rw_2_ReportInterval"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 10
+
+"CASE rw_2_DefaultAntiCount"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 12
+
+"CASE rw_2_rates_2"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: []float64 len: 4, cap: 4, [0,0,0,0]
+
+"CASE rw_2_rates_0"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: []float64 len: 4, cap: 4, [0,0,0,0]
+
+"CASE single_label"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: github.com/prometheus/client_golang/prometheus.Labels [
+		"store": "42",
+	]
+
+"CASE set_write"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+
+"CASE full_after_write"
+[8]float64 [8192,128,128,32,32,1,1,1]
+"CASE set_read"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+
+"CASE full_after_read"
+[8]float64 [32,1,1,32,32,1,1,1]
+"CASE zero_mixed"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: []float64 len: 4, cap: 4, [NaN,-Inf,+Inf,+Inf]
+
+"CASE RegionStatKind_0"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "read_bytes"
+
+"CASE RegionStatKind_1"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "read_keys"
+
+"CASE RegionStatKind_2"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "read_query"
+
+"CASE RegionStatKind_3"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "write_bytes"
+
+"CASE RegionStatKind_4"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "write_keys"
+
+"CASE RegionStatKind_5"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "write_query"
+
+"CASE RegionStatKind_6"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "read_cpu"
+
+"CASE RegionStatKind_7"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "write_cpu"
+
+"CASE RegionStatKind_-1"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "unknown RegionStatKind"
+
+"CASE RegionStatKind_8"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "unknown RegionStatKind"
+
+"CASE StoreLoadKind_0"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "store_read_bytes"
+
+"CASE StoreLoadKind_1"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "store_read_keys"
+
+"CASE StoreLoadKind_2"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "store_write_bytes"
+
+"CASE StoreLoadKind_3"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "store_write_keys"
+
+"CASE StoreLoadKind_4"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "store_read_query"
+
+"CASE StoreLoadKind_5"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "store_write_query"
+
+"CASE StoreLoadKind_6"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "store_cpu_usage"
+
+"CASE StoreLoadKind_7"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "store_disk_read_rate"
+
+"CASE StoreLoadKind_8"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "store_disk_write_rate"
+
+"CASE StoreLoadKind_9"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "store_regions_write_bytes"
+
+"CASE StoreLoadKind_10"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "store_regions_write_keys"
+
+"CASE StoreLoadKind_11"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "store_read_cpu"
+
+"CASE StoreLoadKind_-1"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "unknown StoreStatKind"
+
+"CASE StoreLoadKind_12"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "unknown StoreStatKind"
+
+"CASE ActionType_0"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "add"
+
+"CASE ActionType_1"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "remove"
+
+"CASE ActionType_2"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "update"
+
+"CASE ActionType_-1"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "unimplemented"
+
+"CASE ActionType_3"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "unimplemented"

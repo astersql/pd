@@ -1,0 +1,44 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-statistics-utils v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics/utils)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.12s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics_utils-3d0f49b4fac9f695)
+
+running 7 tests
+
+thread 'kind_test::state_task_01_kind_short_slices_follow_accessed_indexes' (156718482) panicked at pkg/statistics/utils/kind_test.rs:190:5:
+assertion failed: std::panic::catch_unwind(|| RWType::READ.get_load_rates(&[1.; 6], 1)).is_err()
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'kind_test::state_task_01_kind_rates_and_zero_interval' (156718479) panicked at pkg/statistics/utils/kind_test.rs:136:5:
+assertion `left == right` failed
+  left: Array [Number(8192.0), Number(128.0), Number(128.0), Number(1024.0), Number(32.0), Number(32.0), Number(1.0), Number(1.0)]
+ right: Array [Number(8192), Number(128), Number(128), Number(1024), Number(32), Number(32), Number(1), Number(1)]
+
+thread 'kind_test::state_task_01_kind_names_and_defaults' (156718478) panicked at pkg/statistics/utils/kind_test.rs:19:18:
+assertion `left == right` failed
+  left: 0.0
+ right: 4096.0
+
+thread 'kind_test::state_task_01_kind_set_rates_preserves_other_direction' (156718481) panicked at pkg/statistics/utils/kind_test.rs:175:5:
+assertion `left == right` failed
+  left: Array [Number(8192.0), Number(128.0), Number(128.0), Number(32.0), Number(32.0), Number(1.0), Number(1.0), Number(1.0)]
+ right: Array [Number(8192), Number(128), Number(128), Number(32), Number(32), Number(1), Number(1), Number(1)]
+test kind_test::state_task_01_kind_complete_integer_mappings ... ok
+test kind_test::state_task_01_kind_rw_order_inverse_and_intervals ... ok
+test kind_test::state_task_01_kind_single_owned_label ... ok
+test kind_test::state_task_01_kind_short_slices_follow_accessed_indexes ... FAILED
+test kind_test::state_task_01_kind_rates_and_zero_interval ... FAILED
+test kind_test::state_task_01_kind_set_rates_preserves_other_direction ... FAILED
+test kind_test::state_task_01_kind_names_and_defaults ... FAILED
+
+failures:
+
+failures:
+    kind_test::state_task_01_kind_names_and_defaults
+    kind_test::state_task_01_kind_rates_and_zero_interval
+    kind_test::state_task_01_kind_set_rates_preserves_other_direction
+    kind_test::state_task_01_kind_short_slices_follow_accessed_indexes
+
+test result: FAILED. 3 passed; 4 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-statistics-utils --lib`

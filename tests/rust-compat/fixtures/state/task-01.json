@@ -1,0 +1,159 @@
+{
+  "binary_sha256": "4537466d65d253b1e291cacecf53faee14117386e8f2c5ff7b380108e49cc268",
+  "values": {
+    "thresholds": [
+      8192,
+      128,
+      128,
+      1024,
+      32,
+      32,
+      1,
+      1
+    ],
+    "read_stats": [
+      0,
+      1,
+      2,
+      6
+    ],
+    "write_stats": [
+      3,
+      4,
+      5,
+      7
+    ],
+    "dim_byte": 0,
+    "dim_key": 1,
+    "dim_query": 2,
+    "dim_cpu": 3,
+    "dim_": 0,
+    "dim_unknown": 0,
+    "dim_CPU": 0,
+    "name_-1": "",
+    "name_0": "byte",
+    "name_1": "key",
+    "name_2": "query",
+    "name_3": "cpu",
+    "name_4": "",
+    "rw_0_String": "write",
+    "rw_0_RegionStats": [
+      3,
+      4,
+      5,
+      7
+    ],
+    "rw_0_Inverse": 1,
+    "rw_0_ReportInterval": 60,
+    "rw_0_DefaultAntiCount": 2,
+    "rw_0_rates_2": [
+      512.0,
+      16.0,
+      16.0,
+      0.5
+    ],
+    "rw_0_rates_0": [
+      "+Inf",
+      "+Inf",
+      "+Inf",
+      "+Inf"
+    ],
+    "rw_1_String": "read",
+    "rw_1_RegionStats": [
+      0,
+      1,
+      2,
+      6
+    ],
+    "rw_1_Inverse": 0,
+    "rw_1_ReportInterval": 10,
+    "rw_1_DefaultAntiCount": 12,
+    "rw_1_rates_2": [
+      4096.0,
+      64.0,
+      64.0,
+      0.5
+    ],
+    "rw_1_rates_0": [
+      "+Inf",
+      "+Inf",
+      "+Inf",
+      "+Inf"
+    ],
+    "rw_2_String": "unimplemented",
+    "rw_2_RegionStats": [],
+    "rw_2_Inverse": 0,
+    "rw_2_ReportInterval": 10,
+    "rw_2_DefaultAntiCount": 12,
+    "rw_2_rates_2": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "rw_2_rates_0": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "single_label": {
+      "store": "42"
+    },
+    "full_after_write": [
+      8192,
+      128,
+      128,
+      32,
+      32,
+      1,
+      1,
+      1
+    ],
+    "full_after_read": [
+      32,
+      1,
+      1,
+      32,
+      32,
+      1,
+      1,
+      1
+    ],
+    "zero_mixed": [
+      "NaN",
+      "-Inf",
+      "+Inf",
+      "+Inf"
+    ],
+    "RegionStatKind_0": "read_bytes",
+    "RegionStatKind_1": "read_keys",
+    "RegionStatKind_2": "read_query",
+    "RegionStatKind_3": "write_bytes",
+    "RegionStatKind_4": "write_keys",
+    "RegionStatKind_5": "write_query",
+    "RegionStatKind_6": "read_cpu",
+    "RegionStatKind_7": "write_cpu",
+    "RegionStatKind_-1": "unknown RegionStatKind",
+    "RegionStatKind_8": "unknown RegionStatKind",
+    "StoreLoadKind_0": "store_read_bytes",
+    "StoreLoadKind_1": "store_read_keys",
+    "StoreLoadKind_2": "store_write_bytes",
+    "StoreLoadKind_3": "store_write_keys",
+    "StoreLoadKind_4": "store_read_query",
+    "StoreLoadKind_5": "store_write_query",
+    "StoreLoadKind_6": "store_cpu_usage",
+    "StoreLoadKind_7": "store_disk_read_rate",
+    "StoreLoadKind_8": "store_disk_write_rate",
+    "StoreLoadKind_9": "store_regions_write_bytes",
+    "StoreLoadKind_10": "store_regions_write_keys",
+    "StoreLoadKind_11": "store_read_cpu",
+    "StoreLoadKind_-1": "unknown StoreStatKind",
+    "StoreLoadKind_12": "unknown StoreStatKind",
+    "ActionType_0": "add",
+    "ActionType_1": "remove",
+    "ActionType_2": "update",
+    "ActionType_-1": "unimplemented",
+    "ActionType_3": "unimplemented"
+  }
+}

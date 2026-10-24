@@ -502,6 +502,13 @@ name = "astersql-pd-slice"
 version = "0.1.0"
 
 [[package]]
+name = "astersql-pd-statistics-utils"
+version = "0.1.0"
+dependencies = [
+ "serde_json",
+]
+
+[[package]]
 name = "astersql-pd-storage"
 version = "0.1.0"
 dependencies = [
