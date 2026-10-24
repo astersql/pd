@@ -1,0 +1,87 @@
+{
+  "sha256": "4537466d65d253b1e291cacecf53faee14117386e8f2c5ff7b380108e49cc268",
+  "seed": [
+    200,
+    "Update region label rule successfully."
+  ],
+  "patch": [
+    200,
+    "Update region label rules successfully."
+  ],
+  "rules": [
+    {
+      "id": "r",
+      "index": 0,
+      "labels": [
+        {
+          "key": "k",
+          "value": "r"
+        }
+      ],
+      "rule_type": "key-range",
+      "data": [
+        {
+          "start_key": "30",
+          "end_key": "40"
+        }
+      ]
+    },
+    {
+      "id": "s",
+      "index": 0,
+      "labels": [
+        {
+          "key": "k",
+          "value": "s"
+        }
+      ],
+      "rule_type": "key-range",
+      "data": [
+        {
+          "start_key": "50",
+          "end_key": "60"
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    400,
+    "[PD:region:ErrRegionRuleContent]invalid region rule content, empty rule id"
+  ],
+  "after_invalid": [
+    {
+      "id": "r",
+      "index": 0,
+      "labels": [
+        {
+          "key": "k",
+          "value": "r"
+        }
+      ],
+      "rule_type": "key-range",
+      "data": [
+        {
+          "start_key": "30",
+          "end_key": "40"
+        }
+      ]
+    },
+    {
+      "id": "s",
+      "index": 0,
+      "labels": [
+        {
+          "key": "k",
+          "value": "s"
+        }
+      ],
+      "rule_type": "key-range",
+      "data": [
+        {
+          "start_key": "50",
+          "end_key": "60"
+        }
+      ]
+    }
+  ]
+}

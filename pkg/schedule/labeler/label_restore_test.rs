@@ -7,7 +7,7 @@ use serde_json::{Value, json};
 use std::sync::Arc;
 #[allow(dead_code)]
 #[path = "../../storage/kv/etcd_fixture_test.rs"]
-mod fixture;
+pub(super) mod fixture;
 
 fn rule(id: &str, start: &str, end: &str) -> LabelRule {
     LabelRule::from_json(&serde_json::to_vec(&json!({"id":id,"labels":[{"key":"k","value":id}],"rule_type":"key-range","data":[{"start_key":start,"end_key":end}]})).unwrap(),0).unwrap()

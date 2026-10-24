@@ -22,9 +22,9 @@ pub enum LabelerError {
 /// Persisted label-rule owner. Exclusive mutation publishes a complete derived index.
 /// The host supplies storage and time; this shell starts no background tasks.
 pub struct RegionLabeler {
-    storage: StorageEndpoint,
-    paths: ClusterPaths,
-    index: LabelRuleIndex,
+    pub(crate) storage: StorageEndpoint,
+    pub(crate) paths: ClusterPaths,
+    pub(crate) index: LabelRuleIndex,
 }
 impl RegionLabeler {
     /// Restore rules before exposing this owner; malformed records are discarded.

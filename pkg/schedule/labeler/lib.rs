@@ -24,3 +24,9 @@ pub use labeler::{LabelerError, RegionLabeler};
 #[cfg(test)]
 #[path = "label_restore_test.rs"]
 mod label_restore_test;
+
+mod plan;
+pub use plan::{LabelCommitOp, LabelPlan, LabelRulePatch};
+#[cfg(test)]
+#[path = "label_txn_test.rs"]
+mod label_txn_test;
