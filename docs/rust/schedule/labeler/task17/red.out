@@ -1,0 +1,29 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-proto v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/proto)
+   Compiling astersql-pd-storage-endpoint v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/storage/endpoint)
+   Compiling astersql-pd-schedule-labeler v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.66s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_labeler-ffa00205a1b419a1)
+
+running 2 tests
+
+thread 'label_restore_test::label_restore_memory_contract' (155429761) panicked at pkg/schedule/labeler/label_restore_test.rs:69:5:
+corrupt persisted value must be deleted
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test label_restore_test::label_restore_memory_contract ... FAILED
+isolated etcd 3.5.15 ready at http://127.0.0.1:51970
+
+thread 'label_restore_test::label_restore_etcd_contract_and_same_wal' (155429760) panicked at pkg/schedule/labeler/label_restore_test.rs:69:5:
+corrupt persisted value must be deleted
+test label_restore_test::label_restore_etcd_contract_and_same_wal ... FAILED
+
+failures:
+
+failures:
+    label_restore_test::label_restore_etcd_contract_and_same_wal
+    label_restore_test::label_restore_memory_contract
+
+test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 18 filtered out; finished in 6.44s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-labeler --lib`
+EXIT=101

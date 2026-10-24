@@ -369,11 +369,17 @@ version = "0.1.0"
 dependencies = [
  "astersql-pd-codec",
  "astersql-pd-errs",
+ "astersql-pd-keypath",
  "astersql-pd-schedule-rangelist",
+ "astersql-pd-storage-endpoint",
+ "astersql-pd-storage-kv",
  "astersql-pd-typeutil",
+ "async-trait",
  "chrono",
  "serde",
  "serde_json",
+ "thiserror 2.0.21",
+ "tokio",
 ]
 
 [[package]]

@@ -1,0 +1,69 @@
+{
+  "sha256": "4537466d65d253b1e291cacecf53faee14117386e8f2c5ff7b380108e49cc268",
+  "set": [
+    200,
+    "Update region label rule successfully."
+  ],
+  "replace": [
+    200,
+    "Update region label rule successfully."
+  ],
+  "delete_missing": [
+    404,
+    "[PD:region:ErrRegionRuleNotFound]region label rule not found for id absent"
+  ],
+  "delete": [
+    200,
+    "Delete rule successfully."
+  ],
+  "set_again": [
+    200,
+    "Update region label rule successfully."
+  ],
+  "seeded": {
+    "corrupt": "{",
+    "invalid": "{\"id\": \"invalid\", \"index\": 0, \"labels\": [], \"rule_type\": \"key-range\", \"data\": [{\"start_key\": \"10\", \"end_key\": \"20\"}]}",
+    "alias": "{\"id\": \"embedded\", \"index\": 0, \"labels\": [{\"key\": \"k\", \"value\": \"embedded\"}], \"rule_type\": \"key-range\", \"data\": [{\"start_key\": \"50\", \"end_key\": \"60\"}]}"
+  },
+  "restored": [
+    {
+      "id": "embedded",
+      "index": 0,
+      "labels": [
+        {
+          "key": "k",
+          "value": "embedded"
+        }
+      ],
+      "rule_type": "key-range",
+      "data": [
+        {
+          "start_key": "50",
+          "end_key": "60"
+        }
+      ]
+    },
+    {
+      "id": "restore",
+      "index": 0,
+      "labels": [
+        {
+          "key": "k",
+          "value": "restore"
+        }
+      ],
+      "rule_type": "key-range",
+      "data": [
+        {
+          "start_key": "10",
+          "end_key": "20"
+        }
+      ]
+    }
+  ],
+  "persisted": [
+    "alias",
+    "keyspaces/0",
+    "restore"
+  ]
+}

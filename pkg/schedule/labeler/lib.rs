@@ -18,3 +18,9 @@ pub use keyspace_index::{
 #[cfg(test)]
 #[path = "label_keyspace_test.rs"]
 mod label_keyspace_test;
+
+mod labeler;
+pub use labeler::{LabelerError, RegionLabeler};
+#[cfg(test)]
+#[path = "label_restore_test.rs"]
+mod label_restore_test;

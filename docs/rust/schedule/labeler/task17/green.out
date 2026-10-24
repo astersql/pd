@@ -1,0 +1,16 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-schedule-labeler v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.23s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_labeler-ffa00205a1b419a1)
+
+running 4 tests
+test label_restore_test::label_restore_memory_contract ... ok
+test label_restore_test::label_restore_memory_io_failures ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:52174
+isolated etcd 3.5.15 ready at http://127.0.0.1:52173
+test label_restore_test::label_restore_etcd_contract_and_same_wal ... ok
+test label_restore_test::label_restore_etcd_io_failures ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 18 filtered out; finished in 4.30s
+
+EXIT=0
