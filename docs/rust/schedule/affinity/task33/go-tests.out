@@ -1,0 +1,24 @@
+=== RUN   TestAffinityPersistenceWithLabeler
+[2026/10/24 20:24:09.604 +08:00] [INFO] [labeler.go:65] ["new region labeler created"] [label-rules-count=0]
+[2026/10/24 20:24:09.606 +08:00] [INFO] [txn.go:756] ["rebuilt group-label mapping"] [total-groups=0] [total-ranges=0]
+[2026/10/24 20:24:09.606 +08:00] [INFO] [policy.go:158] ["affinity manager availability check loop started"] [interval=10s]
+[2026/10/24 20:24:09.606 +08:00] [INFO] [manager.go:137] ["affinity manager initialized"] [group-count=0]
+[2026/10/24 20:24:09.609 +08:00] [INFO] [txn.go:200] ["affinity group added"] [group="{\"id\":\"persist\",\"create_timestamp\":1792844649}"]
+[2026/10/24 20:24:09.611 +08:00] [INFO] [txn.go:756] ["rebuilt group-label mapping"] [total-groups=1] [total-ranges=10]
+[2026/10/24 20:24:09.611 +08:00] [INFO] [policy.go:158] ["affinity manager availability check loop started"] [interval=10s]
+[2026/10/24 20:24:09.611 +08:00] [INFO] [manager.go:137] ["affinity manager initialized"] [group-count=1]
+--- PASS: TestAffinityPersistenceWithLabeler (0.02s)
+[2026/10/24 20:24:09.612 +08:00] [INFO] [labeler.go:81] ["region labeler GC stopped"]
+[2026/10/24 20:24:09.613 +08:00] [INFO] [policy.go:151] ["affinity manager availability check loop stopped"]
+[2026/10/24 20:24:09.613 +08:00] [INFO] [policy.go:151] ["affinity manager availability check loop stopped"]
+=== RUN   TestLoadRegionLabelIgnoreUnknownGroup
+[2026/10/24 20:24:09.613 +08:00] [INFO] [labeler.go:65] ["new region labeler created"] [label-rules-count=0]
+[2026/10/24 20:24:09.614 +08:00] [INFO] [txn.go:756] ["rebuilt group-label mapping"] [total-groups=0] [total-ranges=0]
+[2026/10/24 20:24:09.614 +08:00] [INFO] [policy.go:158] ["affinity manager availability check loop started"] [interval=10s]
+[2026/10/24 20:24:09.614 +08:00] [INFO] [manager.go:137] ["affinity manager initialized"] [group-count=0]
+[2026/10/24 20:24:09.614 +08:00] [INFO] [txn.go:200] ["affinity group added"] [group="{\"id\":\"real\",\"create_timestamp\":1792844649}"]
+--- PASS: TestLoadRegionLabelIgnoreUnknownGroup (0.00s)
+[2026/10/24 20:24:09.614 +08:00] [INFO] [policy.go:151] ["affinity manager availability check loop stopped"]
+[2026/10/24 20:24:09.614 +08:00] [INFO] [labeler.go:81] ["region labeler GC stopped"]
+PASS
+ok  	github.com/tikv/pd/pkg/schedule/affinity	1.009s

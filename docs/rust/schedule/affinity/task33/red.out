@@ -1,0 +1,42 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-schedule-affinity v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/affinity)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.79s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_affinity-c82b64a1fefdb6ec)
+
+running 4 tests
+
+thread 'affinity_restore_test::affinity_restore_memory' (156046686) panicked at pkg/schedule/affinity/affinity_restore_test.rs:68:5:
+assertion `left == right` failed
+  left: 0
+ right: 2
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'affinity_restore_test::affinity_restore_unadjusted_rule_skipped' (156046688) panicked at pkg/schedule/affinity/affinity_restore_test.rs:145:5:
+assertion `left == right` failed
+  left: 0
+ right: 2
+
+thread 'affinity_restore_test::affinity_restore_overlap_rejected' (156046687) panicked at pkg/schedule/affinity/affinity_restore_test.rs:123:10:
+called `Result::unwrap_err()` on an `Ok` value: Manager { groups: {}, key_ranges: {} }
+test affinity_restore_test::affinity_restore_memory ... FAILED
+test affinity_restore_test::affinity_restore_unadjusted_rule_skipped ... FAILED
+test affinity_restore_test::affinity_restore_overlap_rejected ... FAILED
+isolated etcd 3.5.15 ready at http://127.0.0.1:58625
+
+thread 'affinity_restore_test::affinity_restore_etcd_wal' (156046685) panicked at pkg/schedule/affinity/affinity_restore_test.rs:68:5:
+assertion `left == right` failed
+  left: 0
+ right: 2
+test affinity_restore_test::affinity_restore_etcd_wal ... FAILED
+
+failures:
+
+failures:
+    affinity_restore_test::affinity_restore_etcd_wal
+    affinity_restore_test::affinity_restore_memory
+    affinity_restore_test::affinity_restore_overlap_rejected
+    affinity_restore_test::affinity_restore_unadjusted_rule_skipped
+
+test result: FAILED. 0 passed; 4 failed; 0 ignored; 0 measured; 11 filtered out; finished in 4.61s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-affinity --lib`
