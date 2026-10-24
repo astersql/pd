@@ -389,6 +389,7 @@ name = "astersql-pd-schedule-placement"
 version = "0.1.0"
 dependencies = [
  "astersql-pd-core",
+ "astersql-pd-schedule-rangelist",
  "serde",
  "serde_json",
 ]

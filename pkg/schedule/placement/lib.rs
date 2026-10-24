@@ -10,3 +10,11 @@ pub use rule::{GroupBundle, PeerRoleType, Rule, RuleGroup};
 #[cfg(test)]
 #[path = "placement_values_test.rs"]
 mod placement_values_test;
+
+pub mod rule_list;
+pub use rule_list::{
+    BuildRuleListError, RuleList, check_apply_rules, compare_rule, prepare_rules_for_apply,
+};
+#[cfg(test)]
+#[path = "placement_order_test.rs"]
+mod placement_order_test;

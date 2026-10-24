@@ -10,3 +10,4 @@ path = "lib.rs"
 serde = { workspace = true, features = ["derive"] }
 serde_json.workspace = true
 astersql-pd-core.workspace = true
+astersql-pd-schedule-rangelist.workspace = true

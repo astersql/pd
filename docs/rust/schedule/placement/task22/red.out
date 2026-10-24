@@ -1,0 +1,37 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-schedule-placement v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/placement)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.51s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_placement-42ef082d9d2276d0)
+
+running 4 tests
+
+thread 'placement_order_test::placement_order_rule_override_and_ties' (155684789) panicked at pkg/schedule/placement/placement_order_test.rs:21:5:
+assertion `left == right` failed
+  left: ["a", "z", "after"]
+ right: ["z", "after"]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'placement_order_test::placement_order_priority_and_override' (155684787) panicked at pkg/schedule/placement/placement_order_test.rs:13:5:
+assertion `left == right` failed
+  left: [["g1", "a"], ["g2", "b"], ["g2", "c"], ["g2", "d"], ["g3", "e"]]
+ right: [["g2", "c"], ["g2", "d"], ["g3", "e"]]
+test placement_order_test::placement_order_role_errors_and_gap ... ok
+test placement_order_test::placement_order_rule_override_and_ties ... FAILED
+test placement_order_test::placement_order_priority_and_override ... FAILED
+
+thread 'placement_order_test::placement_order_go_runtime_fixture' (155684786) panicked at pkg/schedule/placement/placement_order_test.rs:49:13:
+assertion `left == right` failed: region "override" {"end":"","rules":[{"count":1,"create_timestamp":1792838845,"end_key":"","group_id":"g2","id":"c","is_witness":false,"override":true,"role":"voter","start_key":""},{"count":1,"create_timestamp":1792838845,"end_key":"","group_id":"g2","id":"d","index":1,"is_witness":false,"role":"voter","start_key":""},{"count":1,"create_timestamp":1792838845,"end_key":"","group_id":"g3","id":"e","is_witness":false,"role":"voter","start_key":""}],"start":""}
+  left: [["g1", "a"], ["g2", "b"], ["g2", "c"], ["g2", "d"], ["g3", "e"]]
+ right: [["g2", "c"], ["g2", "d"], ["g3", "e"]]
+test placement_order_test::placement_order_go_runtime_fixture ... FAILED
+
+failures:
+
+failures:
+    placement_order_test::placement_order_go_runtime_fixture
+    placement_order_test::placement_order_priority_and_override
+    placement_order_test::placement_order_rule_override_and_ties
+
+test result: FAILED. 1 passed; 3 failed; 0 ignored; 0 measured; 7 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-placement --lib`
