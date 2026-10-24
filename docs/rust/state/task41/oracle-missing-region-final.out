@@ -1,0 +1,16 @@
+Type 'help' for list of commands.
+Breakpoint 1 set at 0x19089d0 for github.com/tikv/pd/server/cluster.TestStoreHeartbeat() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:171
+> [Breakpoint 1] github.com/tikv/pd/server/cluster.TestStoreHeartbeat() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:171 (hits goroutine(277):1 total:1) (PC: 0x19089d0)
+Breakpoint 2 set at 0x18ee040 for github.com/tikv/pd/server/cluster.(*RaftCluster).HandleStoreHeartbeat() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster.go:1261
+> [Breakpoint 2] github.com/tikv/pd/server/cluster.(*RaftCluster).HandleStoreHeartbeat() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster.go:1261 (hits goroutine(277):1 total:1) (PC: 0x18ee040)
+99
+*github.com/tikv/pd/pkg/core.RegionInfo nil
+map[uint64]struct {} [
+	99: {},
+]
+Breakpoint 3 set at 0x18ee254 for github.com/tikv/pd/server/cluster.(*RaftCluster).HandleStoreHeartbeat() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster.go:1308
+[2026/10/24 21:21:25.568 +00:00] [WARN] [cluster.go:1261] ["discard hot peer stat for unknown region"] [region-id=99] [store-id=1]
+> [Breakpoint 3] github.com/tikv/pd/server/cluster.(*RaftCluster).HandleStoreHeartbeat() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster.go:1308 (hits goroutine(277):1 total:1) (PC: 0x18ee254)
+map[uint64]struct {} [
+	99: {},
+]

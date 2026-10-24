@@ -1,0 +1,12 @@
+break cluster_test.go:171
+continue
+set hotReq.Stats.PeerStats[0].RegionId = 99
+break /Users/Shared/work/dir/data/codes/pd/server/cluster/cluster.go:1261
+continue
+print regionID
+print region
+print reportedRegions
+break /Users/Shared/work/dir/data/codes/pd/server/cluster/cluster.go:1308
+continue
+print reportedRegions
+exit

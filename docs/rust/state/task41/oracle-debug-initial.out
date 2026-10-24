@@ -1,0 +1,15 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+Type 'help' for list of commands.
+Breakpoint 1 set at 0x1908b20 for github.com/tikv/pd/server/cluster.TestStoreHeartbeat() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:176
+> [Breakpoint 1] github.com/tikv/pd/server/cluster.TestStoreHeartbeat() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:176 (hits goroutine(262):1 total:1) (PC: 0x1908b20)
+> github.com/tikv/pd/server/cluster.TestStoreHeartbeat() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:176 (PC: 0x1908b20)
+Values returned:
+	~panic: interface {}(runtime.errorString) "invalid memory address or nil pointer dereference"
+
+Set a suspended breakpoint (Delve will try to set this breakpoint when a plugin is loaded) [Y/n]?/oracle/oracle.commands:6: EOF
+Command failed: Location "cluster.go:1285" ambiguous: /Users/Shared/work/dir/data/codes/pd/pkg/cluster/cluster.go, /Users/Shared/work/dir/data/codes/pd/pkg/utils/grpcutil/cluster.go, /Users/Shared/work/dir/data/codes/pd/server/cluster/cluster.go, /Users/xiangmin/go/pkg/mod/go.etcd.io/etcd/client/v3@v3.5.15/cluster.go, /Users/xiangmin/go/pkg/mod/go.etcd.io/etcd/server/v3@v3.5.15/etcdserver/api/cluster.go…
+PASS
+/oracle/oracle.commands:7: Process 22 has exited with status 0
+/oracle/oracle.commands:8: Process 22 has exited with status 0
+/oracle/oracle.commands:9: Process 22 has exited with status 0
+/oracle/oracle.commands:10: Process 22 has exited with status 0

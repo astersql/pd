@@ -1,0 +1,18 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+Type 'help' for list of commands.
+Breakpoint 1 set at 0x19089d0 for github.com/tikv/pd/server/cluster.TestStoreHeartbeat() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:171
+> [Breakpoint 1] github.com/tikv/pd/server/cluster.TestStoreHeartbeat() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:171 (hits goroutine(260):1 total:1) (PC: 0x19089d0)
+/oracle/oracle.commands:7: can not convert "&hotReq.Stats.PeerStats[0].WrittenKeys" to *struct github.com/pingcap/kvproto/pkg/pdpb.CPUStats
+Breakpoint 2 set at 0x18edd1c for github.com/tikv/pd/server/cluster.(*RaftCluster).HandleStoreHeartbeat() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster.go:1285
+> [Breakpoint 2] github.com/tikv/pd/server/cluster.(*RaftCluster).HandleStoreHeartbeat() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster.go:1285 (hits goroutine(260):1 total:1) (PC: 0x18edd1c)
+[]float64 len: 8, cap: 8, [9999998,9999999,10000002,0,0,0,0,0]
+10
+("*github.com/pingcap/kvproto/pkg/pdpb.PeerStat")(0x378c471a65c0)
+*github.com/pingcap/kvproto/pkg/pdpb.PeerStat {
+	RegionId: 1,
+	ReadKeys: 9999999,
+	ReadBytes: 9999998,
+	QueryStats: *github.com/pingcap/kvproto/pkg/pdpb.QueryStats {GC: 100, Get: 9999997, Scan: 2, Coprocessor: 3, Delete: 0, DeleteRange: 0, Put: 0, Prewrite: 0, AcquirePessimisticLock: 0, Commit: 0, Rollback: 0},
+	WrittenKeys: 7,
+	WrittenBytes: 999,
+	CpuStats: *github.com/pingcap/kvproto/pkg/pdpb.CPUStats nil,}

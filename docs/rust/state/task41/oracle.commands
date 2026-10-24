@@ -1,0 +1,16 @@
+break cluster_test.go:171
+continue
+config max-array-values 30
+config max-variable-recurse 3
+set hotReq.Stats.PeerStats[0].WrittenKeys = 7
+set hotReq.Stats.PeerStats[0].WrittenBytes = 999
+set hotReq.Stats.PeerStats[0].CpuStats = (*"github.com/pingcap/kvproto/pkg/pdpb.CPUStats")(uintptr(&hotReq.Stats.PeerStats[0].WrittenKeys))
+set hotReq.Stats.PeerStats[0].QueryStats.Scan = 2
+set hotReq.Stats.PeerStats[0].QueryStats.Coprocessor = 3
+set hotReq.Stats.PeerStats[0].QueryStats.GC = 100
+break /Users/Shared/work/dir/data/codes/pd/server/cluster/cluster.go:1285
+continue
+print loads
+print interval
+print peerStat
+exit

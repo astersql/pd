@@ -60,6 +60,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "astersql-pd-cluster"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-core",
+ "astersql-pd-statistics",
+ "astersql-pd-statistics-utils",
+ "prometheus",
+ "tokio",
+]
+
+[[package]]
 name = "astersql-pd-cmd-pd-server"
 version = "0.1.0"
 dependencies = [

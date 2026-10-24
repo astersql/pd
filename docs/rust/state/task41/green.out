@@ -1,0 +1,37 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+   Compiling astersql-pd-schedule-config v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/config)
+   Compiling astersql-pd-statistics-buckets v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics/buckets)
+   Compiling astersql-pd-storage-endpoint v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/storage/endpoint)
+   Compiling astersql-pd-schedule-placement v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/placement)
+   Compiling astersql-pd-statistics v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics)
+   Compiling astersql-pd-cluster v0.1.0 (/Users/Shared/work/dir/data/codes/pd/server/cluster)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.25s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_cluster-2e5fab8b58718585)
+
+running 5 tests
+test store_heartbeat_test::state_task_41_store_heartbeat_existing_and_missing ... ok
+test store_heartbeat_test::state_task_41_store_heartbeat_removed_and_unhealthy ... ok
+
+thread 'store_heartbeat_test::state_task_41_store_heartbeat_go_hot_cold_sequence' (158420488) panicked at server/cluster/store_heartbeat_test.rs:127:5:
+assertion `left == right` failed
+  left: [1000000.0, 1000000.0, 1000000.0, 0.0]
+ right: [999999.8, 999999.9, 999999.7, 0.0]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'store_heartbeat_test::state_task_41_store_heartbeat_cpu_query_and_filters' (158420486) panicked at server/cluster/store_heartbeat_test.rs:185:5:
+assertion `left == right` failed
+  left: 1000000.0
+ right: 1000000.2
+test store_heartbeat_test::state_task_41_store_heartbeat_intervals_and_independent ... ok
+test store_heartbeat_test::state_task_41_store_heartbeat_cpu_query_and_filters ... FAILED
+test store_heartbeat_test::state_task_41_store_heartbeat_go_hot_cold_sequence ... FAILED
+
+failures:
+
+failures:
+    store_heartbeat_test::state_task_41_store_heartbeat_cpu_query_and_filters
+    store_heartbeat_test::state_task_41_store_heartbeat_go_hot_cold_sequence
+
+test result: FAILED. 3 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-cluster --lib`
