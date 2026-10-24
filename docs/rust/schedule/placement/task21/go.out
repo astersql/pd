@@ -1,0 +1,752 @@
+2663c45a652e9c329d1cb72ee5c6bf34949bc854890b5cac57d637ef1b22e180
+bootstrap response 0a0a08a5f58aa1e1dca2ee6a1200
+dummy in 0a0a08a5f58aa1e1dca2ee6a1200
+dummy notIn 0a0a08a5f58aa1e1dca2ee6a1200
+dummy exists 0a0a08a5f58aa1e1dca2ee6a1200
+dummy notExists 0a0a08a5f58aa1e1dca2ee6a1200
+dummy in 0a0a08a5f58aa1e1dca2ee6a1200
+dummy notIn 0a0a08a5f58aa1e1dca2ee6a1200
+dummy exists 0a0a08a5f58aa1e1dca2ee6a1200
+dummy notExists 0a0a08a5f58aa1e1dca2ee6a1200
+dummy in 0a0a08a5f58aa1e1dca2ee6a1200
+dummy notIn 0a0a08a5f58aa1e1dca2ee6a1200
+dummy exists 0a0a08a5f58aa1e1dca2ee6a1200
+dummy notExists 0a0a08a5f58aa1e1dca2ee6a1200
+{
+  "sha256": "4537466d65d253b1e291cacecf53faee14117386e8f2c5ff7b380108e49cc268",
+  "cases": [
+    {
+      "name": "minimal",
+      "input": {
+        "group_id": "task21",
+        "id": "r",
+        "role": "voter",
+        "count": 1,
+        "start_key": "",
+        "end_key": ""
+      },
+      "status": 200,
+      "output": "Update rule successfully.",
+      "read": {
+        "group_id": "task21",
+        "id": "r",
+        "start_key": "",
+        "end_key": "",
+        "role": "voter",
+        "is_witness": false,
+        "count": 1,
+        "create_timestamp": 1792838374
+      }
+    },
+    {
+      "name": "collections",
+      "input": {
+        "group_id": "task21",
+        "id": "r",
+        "role": "voter",
+        "count": 1,
+        "start_key": "",
+        "end_key": "",
+        "index": -2,
+        "override": true,
+        "location_labels": [
+          "zone"
+        ],
+        "label_constraints": [
+          {
+            "key": "zone",
+            "op": "notIn",
+            "values": [
+              "a",
+              "b"
+            ]
+          }
+        ]
+      },
+      "status": 200,
+      "output": "Update rule successfully.",
+      "read": {
+        "group_id": "task21",
+        "id": "r",
+        "index": -2,
+        "override": true,
+        "start_key": "",
+        "end_key": "",
+        "role": "voter",
+        "is_witness": false,
+        "count": 1,
+        "label_constraints": [
+          {
+            "key": "zone",
+            "op": "notIn",
+            "values": [
+              "a",
+              "b"
+            ]
+          }
+        ],
+        "location_labels": [
+          "zone"
+        ],
+        "version": 1,
+        "create_timestamp": 1792838374
+      }
+    },
+    {
+      "name": "role",
+      "input": {
+        "group_id": "task21",
+        "id": "r",
+        "role": "learner",
+        "count": 1,
+        "start_key": "",
+        "end_key": ""
+      },
+      "status": 200,
+      "output": "Update rule successfully.",
+      "read": {
+        "group_id": "task21",
+        "id": "r",
+        "start_key": "",
+        "end_key": "",
+        "role": "learner",
+        "is_witness": false,
+        "count": 1,
+        "version": 2,
+        "create_timestamp": 1792838374
+      }
+    },
+    {
+      "name": "witness",
+      "input": {
+        "group_id": "task21",
+        "id": "r",
+        "role": "voter",
+        "count": 1,
+        "start_key": "",
+        "end_key": "",
+        "is_witness": true
+      },
+      "status": 200,
+      "output": "Update rule successfully.",
+      "read": {
+        "group_id": "task21",
+        "id": "r",
+        "start_key": "",
+        "end_key": "",
+        "role": "voter",
+        "is_witness": true,
+        "count": 1,
+        "version": 3,
+        "create_timestamp": 1792838374
+      }
+    }
+  ],
+  "duplicate_null": {
+    "input": "{\"group_id\":\"task21\",\"id\":\"r\",\"role\":\"voter\",\"count\":1,\"location_labels\":[\"zone\"],\"location_labels\":null}",
+    "read": {
+      "group_id": "task21",
+      "id": "r",
+      "start_key": "",
+      "end_key": "",
+      "role": "voter",
+      "is_witness": false,
+      "count": 1,
+      "version": 4,
+      "create_timestamp": 1792838374
+    }
+  },
+  "bundle": {
+    "status": 200,
+    "output": {
+      "group_id": "task21",
+      "group_index": 0,
+      "group_override": false,
+      "rules": [
+        {
+          "group_id": "task21",
+          "id": "r",
+          "start_key": "",
+          "end_key": "",
+          "role": "voter",
+          "is_witness": false,
+          "count": 1,
+          "version": 4,
+          "create_timestamp": 1792838374
+        }
+      ]
+    }
+  },
+  "kv": [
+    200,
+    {
+      "header": {
+        "cluster_id": "15674009460217235928",
+        "member_id": "3474484975246189105",
+        "revision": "20",
+        "raft_term": "2"
+      },
+      "kvs": [
+        {
+          "key": "L3BkLzc3MDAxODIxODM2ODE2MzcwMjkvcnVsZXMvNzQ2MTczNmIzMjMxLTcy",
+          "create_revision": "16",
+          "mod_revision": "20",
+          "version": "5",
+          "value": "eyJncm91cF9pZCI6InRhc2syMSIsImlkIjoiciIsInN0YXJ0X2tleSI6IiIsImVuZF9rZXkiOiIiLCJyb2xlIjoidm90ZXIiLCJpc193aXRuZXNzIjpmYWxzZSwiY291bnQiOjF9"
+        }
+      ],
+      "count": "1"
+    }
+  ],
+  "group": {
+    "id": "task21",
+    "index": 10,
+    "override": true
+  },
+  "matching": [
+    {
+      "labels": {},
+      "constraint": {
+        "key": "zone",
+        "op": "in",
+        "values": [
+          "x"
+        ]
+      },
+      "matched": false,
+      "fit": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "task21",
+              "id": "r",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 1,
+              "label_constraints": [
+                {
+                  "key": "zone",
+                  "op": "in",
+                  "values": [
+                    "x"
+                  ]
+                }
+              ],
+              "version": 5,
+              "create_timestamp": 1792838374
+            },
+            "peers": null,
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": [
+          {
+            "id": 3,
+            "store_id": 1
+          }
+        ]
+      }
+    },
+    {
+      "labels": {},
+      "constraint": {
+        "key": "zone",
+        "op": "notIn",
+        "values": [
+          "x"
+        ]
+      },
+      "matched": true,
+      "fit": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "task21",
+              "id": "r",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 1,
+              "label_constraints": [
+                {
+                  "key": "zone",
+                  "op": "notIn",
+                  "values": [
+                    "x"
+                  ]
+                }
+              ],
+              "version": 6,
+              "create_timestamp": 1792838374
+            },
+            "peers": [
+              {
+                "id": 3,
+                "store_id": 1
+              }
+            ],
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": null
+      }
+    },
+    {
+      "labels": {},
+      "constraint": {
+        "key": "zone",
+        "op": "exists"
+      },
+      "matched": false,
+      "fit": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "task21",
+              "id": "r",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 1,
+              "label_constraints": [
+                {
+                  "key": "zone",
+                  "op": "exists"
+                }
+              ],
+              "version": 7,
+              "create_timestamp": 1792838374
+            },
+            "peers": null,
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": [
+          {
+            "id": 3,
+            "store_id": 1
+          }
+        ]
+      }
+    },
+    {
+      "labels": {},
+      "constraint": {
+        "key": "zone",
+        "op": "notExists"
+      },
+      "matched": true,
+      "fit": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "task21",
+              "id": "r",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 1,
+              "label_constraints": [
+                {
+                  "key": "zone",
+                  "op": "notExists"
+                }
+              ],
+              "version": 8,
+              "create_timestamp": 1792838374
+            },
+            "peers": [
+              {
+                "id": 3,
+                "store_id": 1
+              }
+            ],
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": null
+      }
+    },
+    {
+      "labels": {
+        "zone": "x"
+      },
+      "constraint": {
+        "key": "zone",
+        "op": "in",
+        "values": [
+          "x"
+        ]
+      },
+      "matched": true,
+      "fit": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "task21",
+              "id": "r",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 1,
+              "label_constraints": [
+                {
+                  "key": "zone",
+                  "op": "in",
+                  "values": [
+                    "x"
+                  ]
+                }
+              ],
+              "version": 9,
+              "create_timestamp": 1792838374
+            },
+            "peers": [
+              {
+                "id": 3,
+                "store_id": 1
+              }
+            ],
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": null
+      }
+    },
+    {
+      "labels": {
+        "zone": "x"
+      },
+      "constraint": {
+        "key": "zone",
+        "op": "notIn",
+        "values": [
+          "x"
+        ]
+      },
+      "matched": false,
+      "fit": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "task21",
+              "id": "r",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 1,
+              "label_constraints": [
+                {
+                  "key": "zone",
+                  "op": "notIn",
+                  "values": [
+                    "x"
+                  ]
+                }
+              ],
+              "version": 10,
+              "create_timestamp": 1792838374
+            },
+            "peers": null,
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": [
+          {
+            "id": 3,
+            "store_id": 1
+          }
+        ]
+      }
+    },
+    {
+      "labels": {
+        "zone": "x"
+      },
+      "constraint": {
+        "key": "zone",
+        "op": "exists"
+      },
+      "matched": true,
+      "fit": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "task21",
+              "id": "r",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 1,
+              "label_constraints": [
+                {
+                  "key": "zone",
+                  "op": "exists"
+                }
+              ],
+              "version": 11,
+              "create_timestamp": 1792838374
+            },
+            "peers": [
+              {
+                "id": 3,
+                "store_id": 1
+              }
+            ],
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": null
+      }
+    },
+    {
+      "labels": {
+        "zone": "x"
+      },
+      "constraint": {
+        "key": "zone",
+        "op": "notExists"
+      },
+      "matched": false,
+      "fit": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "task21",
+              "id": "r",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 1,
+              "label_constraints": [
+                {
+                  "key": "zone",
+                  "op": "notExists"
+                }
+              ],
+              "version": 12,
+              "create_timestamp": 1792838374
+            },
+            "peers": null,
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": [
+          {
+            "id": 3,
+            "store_id": 1
+          }
+        ]
+      }
+    },
+    {
+      "labels": {
+        "zone": "y"
+      },
+      "constraint": {
+        "key": "zone",
+        "op": "in",
+        "values": [
+          "x"
+        ]
+      },
+      "matched": false,
+      "fit": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "task21",
+              "id": "r",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 1,
+              "label_constraints": [
+                {
+                  "key": "zone",
+                  "op": "in",
+                  "values": [
+                    "x"
+                  ]
+                }
+              ],
+              "version": 13,
+              "create_timestamp": 1792838374
+            },
+            "peers": null,
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": [
+          {
+            "id": 3,
+            "store_id": 1
+          }
+        ]
+      }
+    },
+    {
+      "labels": {
+        "zone": "y"
+      },
+      "constraint": {
+        "key": "zone",
+        "op": "notIn",
+        "values": [
+          "x"
+        ]
+      },
+      "matched": true,
+      "fit": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "task21",
+              "id": "r",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 1,
+              "label_constraints": [
+                {
+                  "key": "zone",
+                  "op": "notIn",
+                  "values": [
+                    "x"
+                  ]
+                }
+              ],
+              "version": 14,
+              "create_timestamp": 1792838374
+            },
+            "peers": [
+              {
+                "id": 3,
+                "store_id": 1
+              }
+            ],
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": null
+      }
+    },
+    {
+      "labels": {
+        "zone": "y"
+      },
+      "constraint": {
+        "key": "zone",
+        "op": "exists"
+      },
+      "matched": true,
+      "fit": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "task21",
+              "id": "r",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 1,
+              "label_constraints": [
+                {
+                  "key": "zone",
+                  "op": "exists"
+                }
+              ],
+              "version": 15,
+              "create_timestamp": 1792838374
+            },
+            "peers": [
+              {
+                "id": 3,
+                "store_id": 1
+              }
+            ],
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": null
+      }
+    },
+    {
+      "labels": {
+        "zone": "y"
+      },
+      "constraint": {
+        "key": "zone",
+        "op": "notExists"
+      },
+      "matched": false,
+      "fit": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "task21",
+              "id": "r",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 1,
+              "label_constraints": [
+                {
+                  "key": "zone",
+                  "op": "notExists"
+                }
+              ],
+              "version": 16,
+              "create_timestamp": 1792838374
+            },
+            "peers": null,
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": [
+          {
+            "id": 3,
+            "store_id": 1
+          }
+        ]
+      }
+    }
+  ]
+}pd-task21-oracle

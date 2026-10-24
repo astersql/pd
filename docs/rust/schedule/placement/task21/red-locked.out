@@ -1,0 +1,22 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.21s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_placement-66f90d558ec8f6af)
+
+running 4 tests
+
+thread 'placement_values_test::placement_values_json_null_duplicate_fields' (155639613) panicked at pkg/schedule/placement/placement_values_test.rs:9:28:
+assertion failed: r.location_labels.is_empty()
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test placement_values_test::placement_values_roles_and_operators ... ok
+test placement_values_test::placement_values_store_constraints ... ok
+test placement_values_test::placement_values_rule_json_clone_store_key ... ok
+test placement_values_test::placement_values_json_null_duplicate_fields ... FAILED
+
+failures:
+
+failures:
+    placement_values_test::placement_values_json_null_duplicate_fields
+
+test result: FAILED. 3 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-placement --lib`
