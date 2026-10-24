@@ -1,0 +1,6 @@
+Read-only review: TestInherit -> newTestBuckets -> convertToBucketTreeItem -> BucketTreeItem.inherit.
+TestMain: goleak.VerifyTestMain only. No failpoint, generation, filesystem writes or background tasks in selected behavior.
+Source bucket_stat_informer.go and hot_bucket_cache_test.go unchanged from 69ba16e6d47dfe59a21498c21641e1c1eaa726e0.
+Caller checkBucketsFlow: convert -> query origins -> inherit -> calculateHotDegree.
+Reviewed proto/build.rs: pinned cached module ZIP input, generated output only in slot OUT_DIR.
+Reviewed storage/kv/etcd_fixture_test.rs and scripts/rust-etcd-fixture/main.go: existing Go build, readonly module flags inherited; slot outputs; EOF shutdown then wait/kill/wait. No generate/failpoint.

@@ -1,0 +1,4 @@
+=== RUN   TestInherit
+--- PASS: TestInherit (0.00s)
+PASS
+ok  	github.com/tikv/pd/pkg/statistics/buckets	0.596s

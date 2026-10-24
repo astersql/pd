@@ -1,0 +1,35 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+
+COMMAND: cargo fmt --all
+EXIT=0
+
+COMMAND: cargo fmt --all -- --check
+EXIT=0
+
+COMMAND: cargo test -p astersql-pd-statistics-buckets --locked --lib state_task_06_bucket_inherit -- --nocapture
+   Compiling astersql-pd-statistics-buckets v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics/buckets)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.79s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics_buckets-982aad480d11d96c)
+
+running 5 tests
+
+thread 'bucket_inherit_test::state_task_06_bucket_inherit_source_empty_end_comparisons' (156956122) panicked at pkg/statistics/buckets/bucket_inherit_test.rs:34:5:
+assertion `left == right` failed
+  left: [9, 0, 0]
+ right: [9, 9, 9]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test bucket_inherit_test::state_task_06_bucket_inherit_disjoint_partial_and_empty ... ok
+test bucket_inherit_test::state_task_06_bucket_inherit_go_matrix ... ok
+test bucket_inherit_test::state_task_06_bucket_inherit_cold_hot_merge_and_existing_degree ... ok
+test bucket_inherit_test::state_task_06_bucket_inherit_archive_split_merge ... ok
+test bucket_inherit_test::state_task_06_bucket_inherit_source_empty_end_comparisons ... FAILED
+
+failures:
+
+failures:
+    bucket_inherit_test::state_task_06_bucket_inherit_source_empty_end_comparisons
+
+test result: FAILED. 4 passed; 1 failed; 0 ignored; 0 measured; 11 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-statistics-buckets --lib`
+EXIT=101

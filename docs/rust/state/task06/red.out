@@ -1,0 +1,50 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-statistics-buckets v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics/buckets)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.08s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics_buckets-982aad480d11d96c)
+
+running 5 tests
+
+thread 'bucket_inherit_test::state_task_06_bucket_inherit_source_empty_end_comparisons' (156952239) panicked at pkg/statistics/buckets/bucket_inherit_test.rs:34:5:
+assertion `left == right` failed
+  left: [0, 0, 0]
+ right: [9, 9, 9]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'bucket_inherit_test::state_task_06_bucket_inherit_archive_split_merge' (156952235) panicked at pkg/statistics/buckets/bucket_inherit_test.rs:102:5:
+assertion `left == right` failed
+  left: [0, 0]
+ right: [-4, -4]
+
+thread 'bucket_inherit_test::state_task_06_bucket_inherit_cold_hot_merge_and_existing_degree' (156952236) panicked at pkg/statistics/buckets/bucket_inherit_test.rs:34:5:
+assertion `left == right` failed
+  left: [0]
+ right: [-8]
+
+thread 'bucket_inherit_test::state_task_06_bucket_inherit_disjoint_partial_and_empty' (156952237) panicked at pkg/statistics/buckets/bucket_inherit_test.rs:34:5:
+assertion `left == right` failed
+  left: [0, 0, 0, 0, 0, 0, 0]
+ right: [0, 7, 7, 0, -5, -5, 0]
+
+thread 'bucket_inherit_test::state_task_06_bucket_inherit_go_matrix' (156952238) panicked at pkg/statistics/buckets/bucket_inherit_test.rs:34:5:
+assertion `left == right` failed
+  left: [0, 0, 0, 0]
+ right: [3, 2, 2, 2]
+test bucket_inherit_test::state_task_06_bucket_inherit_archive_split_merge ... FAILED
+test bucket_inherit_test::state_task_06_bucket_inherit_disjoint_partial_and_empty ... FAILED
+test bucket_inherit_test::state_task_06_bucket_inherit_source_empty_end_comparisons ... FAILED
+test bucket_inherit_test::state_task_06_bucket_inherit_go_matrix ... FAILED
+test bucket_inherit_test::state_task_06_bucket_inherit_cold_hot_merge_and_existing_degree ... FAILED
+
+failures:
+
+failures:
+    bucket_inherit_test::state_task_06_bucket_inherit_archive_split_merge
+    bucket_inherit_test::state_task_06_bucket_inherit_cold_hot_merge_and_existing_degree
+    bucket_inherit_test::state_task_06_bucket_inherit_disjoint_partial_and_empty
+    bucket_inherit_test::state_task_06_bucket_inherit_go_matrix
+    bucket_inherit_test::state_task_06_bucket_inherit_source_empty_end_comparisons
+
+test result: FAILED. 0 passed; 5 failed; 0 ignored; 0 measured; 11 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-statistics-buckets --lib`

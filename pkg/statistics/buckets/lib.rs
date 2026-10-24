@@ -13,3 +13,9 @@ pub use bucket_range::*;
 #[cfg(test)]
 #[path = "bucket_range_test.rs"]
 mod bucket_range_test;
+
+mod bucket_inherit;
+
+#[cfg(test)]
+#[path = "bucket_inherit_test.rs"]
+mod bucket_inherit_test;
