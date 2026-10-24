@@ -1,0 +1,33 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-schedule-labeler v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.72s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_labeler-6213c9a6718ba0df)
+
+running 6 tests
+
+thread 'label_rule_test::label_rule_hex_bytes_and_case_preservation' (155259203) panicked at pkg/schedule/labeler/label_rule_test.rs:104:9:
+non-increasing range aa..AA
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'label_rule_test::label_rule_unchecked_and_json_errors' (155259205) panicked at pkg/schedule/labeler/label_rule_test.rs:119:9:
+assertion failed: matches!(LabelRule::from_json(data, NOW), Err(RuleError::Json(_)))
+test label_rule_test::label_rule_expiration_boundary_and_minimum ... ok
+test label_rule_test::label_rule_ttl_signed_zero_and_explicit_start ... ok
+test label_rule_test::label_rule_auto_start_roundtrip_precision ... ok
+test label_rule_test::label_rule_unchecked_and_json_errors ... FAILED
+test label_rule_test::label_rule_hex_bytes_and_case_preservation ... FAILED
+
+thread 'label_rule_test::label_rule_go_oracle_cases' (155259202) panicked at pkg/schedule/labeler/label_rule_test.rs:31:32:
+equal: LabelRule { id: "r", index: -2, labels: [RegionLabel { key: "k", value: "v", ttl: "", start_at: "", expire: None }], rule_type: "key-range", data: Array [Object {"end_key": String("AA"), "start_key": String("aa")}], ranges: Some([KeyRangeRule { start_key: [170], start_key_hex: "aa", end_key: [170], end_key_hex: "AA" }]), min_expire: None }
+test label_rule_test::label_rule_go_oracle_cases ... FAILED
+
+failures:
+
+failures:
+    label_rule_test::label_rule_go_oracle_cases
+    label_rule_test::label_rule_hex_bytes_and_case_preservation
+    label_rule_test::label_rule_unchecked_and_json_errors
+
+test result: FAILED. 3 passed; 3 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-labeler --lib`

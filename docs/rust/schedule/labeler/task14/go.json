@@ -1,0 +1,1189 @@
+{
+  "sha256": "4537466d65d253b1e291cacecf53faee14117386e8f2c5ff7b380108e49cc268",
+  "cases": [
+    {
+      "name": "valid",
+      "input": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "AA",
+            "end_key": ""
+          }
+        ]
+      },
+      "status": 200,
+      "output": "Update region label rule successfully.",
+      "adjusted": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "AA",
+            "end_key": ""
+          }
+        ]
+      }
+    },
+    {
+      "name": "empty_id",
+      "input": {
+        "id": "",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "AA",
+            "end_key": ""
+          }
+        ]
+      },
+      "status": 400,
+      "output": "[PD:region:ErrRegionRuleContent]invalid region rule content, empty rule id"
+    },
+    {
+      "name": "empty_labels",
+      "input": {
+        "id": "r",
+        "index": -2,
+        "labels": [],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "AA",
+            "end_key": ""
+          }
+        ]
+      },
+      "status": 400,
+      "output": "[PD:region:ErrRegionRuleContent]invalid region rule content, no region labels"
+    },
+    {
+      "name": "empty_key",
+      "input": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "",
+            "value": "v"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "AA",
+            "end_key": ""
+          }
+        ]
+      },
+      "status": 400,
+      "output": "[PD:region:ErrRegionRuleContent]invalid region rule content, empty region label key"
+    },
+    {
+      "name": "empty_value",
+      "input": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": ""
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "AA",
+            "end_key": ""
+          }
+        ]
+      },
+      "status": 400,
+      "output": "[PD:region:ErrRegionRuleContent]invalid region rule content, empty region label value"
+    },
+    {
+      "name": "invalid_type",
+      "input": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v"
+          }
+        ],
+        "rule_type": "unknown",
+        "data": [
+          {
+            "start_key": "AA",
+            "end_key": ""
+          }
+        ]
+      },
+      "status": 400,
+      "output": "[PD:region:ErrRegionRuleContent]invalid region rule content, invalid rule type: unknown"
+    },
+    {
+      "name": "object",
+      "input": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": {}
+      },
+      "status": 400,
+      "output": "[PD:region:ErrRegionRuleContent]invalid region rule content, invalid rule type: map[string]interface {}"
+    },
+    {
+      "name": "null",
+      "input": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": null
+      },
+      "status": 400,
+      "output": "[PD:region:ErrRegionRuleContent]invalid region rule content, invalid rule type: <nil>"
+    },
+    {
+      "name": "empty",
+      "input": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": []
+      },
+      "status": 400,
+      "output": "[PD:region:ErrRegionRuleContent]invalid region rule content, no key ranges"
+    },
+    {
+      "name": "item_number",
+      "input": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          42
+        ]
+      },
+      "status": 400,
+      "output": "[PD:region:ErrRegionRuleContent]invalid region rule content, invalid rule type: *reflect.rtype"
+    },
+    {
+      "name": "missing_start",
+      "input": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "end_key": ""
+          }
+        ]
+      },
+      "status": 400,
+      "output": "[PD:region:ErrRegionRuleContent]invalid region rule content, invalid startKey type: <nil>"
+    },
+    {
+      "name": "missing_end",
+      "input": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": ""
+          }
+        ]
+      },
+      "status": 400,
+      "output": "[PD:region:ErrRegionRuleContent]invalid region rule content, invalid endKey type: <nil>"
+    },
+    {
+      "name": "numeric_start",
+      "input": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": 1,
+            "end_key": ""
+          }
+        ]
+      },
+      "status": 400,
+      "output": "[PD:region:ErrRegionRuleContent]invalid region rule content, invalid startKey type: *reflect.rtype"
+    },
+    {
+      "name": "odd_hex",
+      "input": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "a",
+            "end_key": ""
+          }
+        ]
+      },
+      "status": 400,
+      "output": "[PD:hex:ErrHexDecodingString]decode string a error"
+    },
+    {
+      "name": "bad_hex",
+      "input": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "xx",
+            "end_key": ""
+          }
+        ]
+      },
+      "status": 400,
+      "output": "[PD:hex:ErrHexDecodingString]decode string xx error"
+    },
+    {
+      "name": "bad_end",
+      "input": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "",
+            "end_key": "xy"
+          }
+        ]
+      },
+      "status": 400,
+      "output": "[PD:hex:ErrHexDecodingString]decode string xy error"
+    },
+    {
+      "name": "equal",
+      "input": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "aa",
+            "end_key": "AA"
+          }
+        ]
+      },
+      "status": 400,
+      "output": "[PD:region:ErrRegionRuleContent]invalid region rule content, endKey should be greater than startKey"
+    },
+    {
+      "name": "reverse",
+      "input": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "ff",
+            "end_key": "aa"
+          }
+        ]
+      },
+      "status": 400,
+      "output": "[PD:region:ErrRegionRuleContent]invalid region rule content, endKey should be greater than startKey"
+    },
+    {
+      "name": "bounded",
+      "input": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "00",
+            "end_key": "01"
+          }
+        ]
+      },
+      "status": 200,
+      "output": "Update region label rule successfully.",
+      "adjusted": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "00",
+            "end_key": "01"
+          }
+        ]
+      }
+    },
+    {
+      "name": "multiple",
+      "input": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "AA",
+            "end_key": ""
+          },
+          {
+            "start_key": "",
+            "end_key": "00"
+          }
+        ]
+      },
+      "status": 200,
+      "output": "Update region label rule successfully.",
+      "adjusted": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "AA",
+            "end_key": ""
+          },
+          {
+            "start_key": "",
+            "end_key": "00"
+          }
+        ]
+      }
+    },
+    {
+      "name": "invalid_ttl",
+      "input": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v",
+            "ttl": "ttl",
+            "start_at": ""
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "AA",
+            "end_key": ""
+          }
+        ]
+      },
+      "status": 400,
+      "output": "[PD:region:ErrRegionRuleContent]invalid region rule content, region label with invalid ttl info time: invalid duration \"ttl\""
+    },
+    {
+      "name": "overflow_ttl",
+      "input": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v",
+            "ttl": "9223372036854775808ns",
+            "start_at": ""
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "AA",
+            "end_key": ""
+          }
+        ]
+      },
+      "status": 400,
+      "output": "[PD:region:ErrRegionRuleContent]invalid region rule content, region label with invalid ttl info time: invalid duration \"9223372036854775808ns\""
+    },
+    {
+      "name": "invalid_start",
+      "input": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v",
+            "ttl": "1h",
+            "start_at": "bad"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "AA",
+            "end_key": ""
+          }
+        ]
+      },
+      "status": 400,
+      "output": "[PD:region:ErrRegionRuleContent]invalid region rule content, region label with invalid ttl info parsing time \"bad\" as \"Mon Jan _2 15:04:05 MST 2006\": cannot parse \"bad\" as \"Mon\""
+    },
+    {
+      "name": "expired",
+      "input": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v",
+            "ttl": "1h",
+            "start_at": "Mon Jan  2 15:04:05 UTC 2006"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "AA",
+            "end_key": ""
+          }
+        ]
+      },
+      "status": 400,
+      "output": "[PD:region:ErrRegionRuleContent]invalid region rule content, region label with expired ttl"
+    },
+    {
+      "name": "negative",
+      "input": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v",
+            "ttl": "-1h",
+            "start_at": "Mon Jan  2 15:04:05 UTC 2006"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "AA",
+            "end_key": ""
+          }
+        ]
+      },
+      "status": 400,
+      "output": "[PD:region:ErrRegionRuleContent]invalid region rule content, region label with expired ttl"
+    },
+    {
+      "name": "future",
+      "input": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v",
+            "ttl": "10h10m10s10ms",
+            "start_at": "Fri Jan  1 00:00:00 UTC 2100"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "AA",
+            "end_key": ""
+          }
+        ]
+      },
+      "status": 200,
+      "output": "Update region label rule successfully.",
+      "adjusted": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v",
+            "ttl": "10h10m10s10ms",
+            "start_at": "Fri Jan  1 00:00:00 UTC 2100"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "AA",
+            "end_key": ""
+          }
+        ]
+      }
+    },
+    {
+      "name": "zone",
+      "input": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v",
+            "ttl": "1h",
+            "start_at": "Fri Jan  1 00:00:00 XYZ 2100"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "AA",
+            "end_key": ""
+          }
+        ]
+      },
+      "status": 200,
+      "output": "Update region label rule successfully.",
+      "adjusted": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v",
+            "ttl": "1h",
+            "start_at": "Fri Jan  1 00:00:00 XYZ 2100"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "AA",
+            "end_key": ""
+          }
+        ]
+      }
+    },
+    {
+      "name": "fraction",
+      "input": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v",
+            "ttl": "1h",
+            "start_at": "Fri Jan  1 00:00:00.123456789 UTC 2100"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "AA",
+            "end_key": ""
+          }
+        ]
+      },
+      "status": 200,
+      "output": "Update region label rule successfully.",
+      "adjusted": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v",
+            "ttl": "1h",
+            "start_at": "Fri Jan  1 00:00:00.123456789 UTC 2100"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "AA",
+            "end_key": ""
+          }
+        ]
+      }
+    },
+    {
+      "name": "auto",
+      "input": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v",
+            "ttl": "1h",
+            "start_at": ""
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "AA",
+            "end_key": ""
+          }
+        ]
+      },
+      "status": 200,
+      "output": "Update region label rule successfully.",
+      "adjusted": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v",
+            "ttl": "1h",
+            "start_at": "Sat Oct 24 09:29:24 UTC 2026"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "AA",
+            "end_key": ""
+          }
+        ]
+      }
+    },
+    {
+      "name": "no_ttl",
+      "input": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v",
+            "ttl": "",
+            "start_at": "bad"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "AA",
+            "end_key": ""
+          }
+        ]
+      },
+      "status": 200,
+      "output": "Update region label rule successfully.",
+      "adjusted": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v",
+            "start_at": "bad"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "AA",
+            "end_key": ""
+          }
+        ]
+      }
+    },
+    {
+      "name": "partial_expired",
+      "input": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v"
+          },
+          {
+            "key": "old",
+            "value": "v",
+            "ttl": "1h",
+            "start_at": "Mon Jan  2 15:04:05 UTC 2006"
+          },
+          {
+            "key": "future",
+            "value": "v",
+            "ttl": "1h",
+            "start_at": "Fri Jan  1 00:00:00 UTC 2100"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "AA",
+            "end_key": ""
+          }
+        ]
+      },
+      "status": 200,
+      "output": "Update region label rule successfully.",
+      "adjusted": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v"
+          },
+          {
+            "key": "future",
+            "value": "v",
+            "ttl": "1h",
+            "start_at": "Fri Jan  1 00:00:00 UTC 2100"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "AA",
+            "end_key": ""
+          }
+        ]
+      }
+    },
+    {
+      "name": "null_label",
+      "input": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          null
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "AA",
+            "end_key": ""
+          }
+        ]
+      },
+      "status": 400,
+      "output": "[PD:region:ErrRegionRuleContent]invalid region rule content, empty region label key"
+    },
+    {
+      "name": "null_scalar",
+      "input": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v",
+            "ttl": null,
+            "start_at": null
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "AA",
+            "end_key": ""
+          }
+        ]
+      },
+      "status": 200,
+      "output": "Update region label rule successfully.",
+      "adjusted": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "AA",
+            "end_key": ""
+          }
+        ]
+      }
+    },
+    {
+      "name": "case_insensitive",
+      "input": {
+        "index": -2,
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "AA",
+            "end_key": ""
+          }
+        ],
+        "ID": "r",
+        "LABELS": [
+          {
+            "key": "k",
+            "value": "v"
+          }
+        ]
+      },
+      "status": 200,
+      "output": "Update region label rule successfully.",
+      "adjusted": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "AA",
+            "end_key": ""
+          }
+        ]
+      }
+    },
+    {
+      "name": "gmt_offset",
+      "input": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v",
+            "ttl": "1h",
+            "start_at": "Fri Jan  1 00:00:00 GMT+8 2100"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "AA",
+            "end_key": ""
+          }
+        ]
+      },
+      "status": 200,
+      "output": "Update region label rule successfully.",
+      "adjusted": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v",
+            "ttl": "1h",
+            "start_at": "Fri Jan  1 00:00:00 GMT+8 2100"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "AA",
+            "end_key": ""
+          }
+        ]
+      }
+    },
+    {
+      "name": "signed_zone",
+      "input": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v",
+            "ttl": "1h",
+            "start_at": "Fri Jan  1 00:00:00 +03 2100"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "AA",
+            "end_key": ""
+          }
+        ]
+      },
+      "status": 200,
+      "output": "Update region label rule successfully.",
+      "adjusted": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v",
+            "ttl": "1h",
+            "start_at": "Fri Jan  1 00:00:00 +03 2100"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "AA",
+            "end_key": ""
+          }
+        ]
+      }
+    },
+    {
+      "name": "mixed_zone",
+      "input": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v",
+            "ttl": "1h",
+            "start_at": "Fri Jan  1 00:00:00 ChST 2100"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "AA",
+            "end_key": ""
+          }
+        ]
+      },
+      "status": 200,
+      "output": "Update region label rule successfully.",
+      "adjusted": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v",
+            "ttl": "1h",
+            "start_at": "Fri Jan  1 00:00:00 ChST 2100"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "AA",
+            "end_key": ""
+          }
+        ]
+      }
+    },
+    {
+      "name": "invalid_zone",
+      "input": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v",
+            "ttl": "1h",
+            "start_at": "Fri Jan  1 00:00:00 ABCDE 2100"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "AA",
+            "end_key": ""
+          }
+        ]
+      },
+      "status": 400,
+      "output": "[PD:region:ErrRegionRuleContent]invalid region rule content, region label with invalid ttl info parsing time \"Fri Jan  1 00:00:00 ABCDE 2100\" as \"Mon Jan _2 15:04:05 MST 2006\": cannot parse \"ABCDE 2100\" as \"MST\""
+    },
+    {
+      "name": "invalid_day",
+      "input": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v",
+            "ttl": "1h",
+            "start_at": "Fri Feb 30 00:00:00 UTC 2100"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "AA",
+            "end_key": ""
+          }
+        ]
+      },
+      "status": 400,
+      "output": "[PD:region:ErrRegionRuleContent]invalid region rule content, region label with invalid ttl info parsing time \"Fri Feb 30 00:00:00 UTC 2100\": day out of range"
+    },
+    {
+      "name": "weekday_ignored",
+      "input": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v",
+            "ttl": "1h",
+            "start_at": "Mon Jan  1 00:00:00 UTC 2100"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "AA",
+            "end_key": ""
+          }
+        ]
+      },
+      "status": 200,
+      "output": "Update region label rule successfully.",
+      "adjusted": {
+        "id": "r",
+        "index": -2,
+        "labels": [
+          {
+            "key": "k",
+            "value": "v",
+            "ttl": "1h",
+            "start_at": "Mon Jan  1 00:00:00 UTC 2100"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "AA",
+            "end_key": ""
+          }
+        ]
+      }
+    }
+  ]
+}

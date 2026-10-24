@@ -1,0 +1,41 @@
+bootstrap response 0a2f08fd9ec4e1e4b49eee6a12230804121f636c757374657220697320616c726561647920626f6f747374726170706564
+valid 200 Update region label rule successfully.
+empty_id 400 [PD:region:ErrRegionRuleContent]invalid region rule content, empty rule id
+empty_labels 400 [PD:region:ErrRegionRuleContent]invalid region rule content, no region labels
+empty_key 400 [PD:region:ErrRegionRuleContent]invalid region rule content, empty region label key
+empty_value 400 [PD:region:ErrRegionRuleContent]invalid region rule content, empty region label value
+invalid_type 400 [PD:region:ErrRegionRuleContent]invalid region rule content, invalid rule type: unknown
+object 400 [PD:region:ErrRegionRuleContent]invalid region rule content, invalid rule type: map[string]interface {}
+null 400 [PD:region:ErrRegionRuleContent]invalid region rule content, invalid rule type: <nil>
+empty 400 [PD:region:ErrRegionRuleContent]invalid region rule content, no key ranges
+item_number 400 [PD:region:ErrRegionRuleContent]invalid region rule content, invalid rule type: *reflect.rtype
+missing_start 400 [PD:region:ErrRegionRuleContent]invalid region rule content, invalid startKey type: <nil>
+missing_end 400 [PD:region:ErrRegionRuleContent]invalid region rule content, invalid endKey type: <nil>
+numeric_start 400 [PD:region:ErrRegionRuleContent]invalid region rule content, invalid startKey type: *reflect.rtype
+odd_hex 400 [PD:hex:ErrHexDecodingString]decode string a error
+bad_hex 400 [PD:hex:ErrHexDecodingString]decode string xx error
+bad_end 400 [PD:hex:ErrHexDecodingString]decode string xy error
+equal 400 [PD:region:ErrRegionRuleContent]invalid region rule content, endKey should be greater than startKey
+reverse 400 [PD:region:ErrRegionRuleContent]invalid region rule content, endKey should be greater than startKey
+bounded 200 Update region label rule successfully.
+multiple 200 Update region label rule successfully.
+invalid_ttl 400 [PD:region:ErrRegionRuleContent]invalid region rule content, region label with invalid ttl info time: invalid duration "ttl"
+overflow_ttl 400 [PD:region:ErrRegionRuleContent]invalid region rule content, region label with invalid ttl info time: invalid duration "9223372036854775808ns"
+invalid_start 400 [PD:region:ErrRegionRuleContent]invalid region rule content, region label with invalid ttl info parsing time "bad" as "Mon Jan _2 15:04:05 MST 2006": cannot parse "bad" as "Mon"
+expired 400 [PD:region:ErrRegionRuleContent]invalid region rule content, region label with expired ttl
+negative 400 [PD:region:ErrRegionRuleContent]invalid region rule content, region label with expired ttl
+future 200 Update region label rule successfully.
+zone 200 Update region label rule successfully.
+fraction 200 Update region label rule successfully.
+auto 200 Update region label rule successfully.
+no_ttl 200 Update region label rule successfully.
+partial_expired 200 Update region label rule successfully.
+null_label 400 [PD:region:ErrRegionRuleContent]invalid region rule content, empty region label key
+null_scalar 200 Update region label rule successfully.
+case_insensitive 200 Update region label rule successfully.
+gmt_offset 200 Update region label rule successfully.
+signed_zone 200 Update region label rule successfully.
+mixed_zone 200 Update region label rule successfully.
+invalid_zone 400 [PD:region:ErrRegionRuleContent]invalid region rule content, region label with invalid ttl info parsing time "Fri Jan  1 00:00:00 ABCDE 2100" as "Mon Jan _2 15:04:05 MST 2006": cannot parse "ABCDE 2100" as "MST"
+invalid_day 400 [PD:region:ErrRegionRuleContent]invalid region rule content, region label with invalid ttl info parsing time "Fri Feb 30 00:00:00 UTC 2100": day out of range
+weekday_ignored 200 Update region label rule successfully.

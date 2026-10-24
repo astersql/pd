@@ -1,0 +1,48 @@
+Type 'help' for list of commands.
+(dlv) COMMAND sources labeler/rules.go
+/Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler/rules.go
+(dlv) COMMAND break /Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler/rules.go:230
+Breakpoint 1 set at 0x1c85f2c for github.com/tikv/pd/pkg/schedule/labeler.(*LabelRule).checkAndAdjust() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler/rules.go:230
+(dlv) COMMAND condition 1 rule.ID == "r"
+(dlv) COMMAND continue
+> [Breakpoint 1] github.com/tikv/pd/pkg/schedule/labeler.(*LabelRule).checkAndAdjust() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler/rules.go:230 (hits goroutine(579):1 total:1) (PC: 0x1c85f2c)
+(dlv) COMMAND print rule.Labels[0].expire
+(*time.Time)(0x22c14e003380)
+*time.Time(2100-01-01T01:00:00Z){
+	wall: 0,
+	ext: 66238045200,
+	loc: *time.Location nil,}
+(dlv) COMMAND call rule.Labels[0].expireBefore(*rule.Labels[0].expire)
+> github.com/tikv/pd/pkg/schedule/labeler.(*LabelRule).checkAndAdjust() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler/rules.go:230 (PC: 0x1c85f2c)
+Values returned:
+	~r0: false
+
+(dlv) COMMAND call rule.expireBefore(*rule.minExpire)
+> github.com/tikv/pd/pkg/schedule/labeler.(*LabelRule).checkAndAdjust() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler/rules.go:230 (PC: 0x1c85f2c)
+Values returned:
+	~r0: false
+
+(dlv) COMMAND call rule.Labels[0].expire.Add(1)
+> github.com/tikv/pd/pkg/schedule/labeler.(*LabelRule).checkAndAdjust() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler/rules.go:230 (PC: 0x1c85f2c)
+Values returned:
+	~r0: time.Time(2100-01-01T01:00:00Z){
+		wall: 1,
+		ext: 66238045200,
+		loc: *time.Location nil,}
+
+(dlv) COMMAND call rule.Labels[0].expireBefore(rule.Labels[0].expire.Add(1))
+> github.com/tikv/pd/pkg/schedule/labeler.(*LabelRule).checkAndAdjust() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler/rules.go:230 (PC: 0x1c85f2c)
+Values returned:
+	~r0: true
+
+(dlv) COMMAND call rule.expireBefore(rule.minExpire.Add(1))
+> github.com/tikv/pd/pkg/schedule/labeler.(*LabelRule).checkAndAdjust() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler/rules.go:230 (PC: 0x1c85f2c)
+Values returned:
+	~r0: true
+
+(dlv) COMMAND call rule.Labels[0].expireBefore(rule.Labels[0].expire.Add(-1))
+> github.com/tikv/pd/pkg/schedule/labeler.(*LabelRule).checkAndAdjust() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler/rules.go:230 (PC: 0x1c85f2c)
+Values returned:
+	~r0: false
+
+(dlv)
