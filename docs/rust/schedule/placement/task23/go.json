@@ -1,0 +1,133 @@
+{
+  "sha256": "4537466d65d253b1e291cacecf53faee14117386e8f2c5ff7b380108e49cc268",
+  "steps": [
+    {
+      "name": "insert",
+      "rules": [
+        {
+          "group_id": "g",
+          "id": "r",
+          "start_key": "",
+          "end_key": "",
+          "role": "voter",
+          "is_witness": false,
+          "count": 1,
+          "create_timestamp": 1792839240
+        }
+      ],
+      "groups": [
+        {
+          "id": "g"
+        },
+        {
+          "id": "pd"
+        }
+      ]
+    },
+    {
+      "name": "same",
+      "rules": [
+        {
+          "group_id": "g",
+          "id": "r",
+          "start_key": "",
+          "end_key": "",
+          "role": "voter",
+          "is_witness": false,
+          "count": 1,
+          "create_timestamp": 1792839240
+        }
+      ],
+      "groups": [
+        {
+          "id": "g"
+        },
+        {
+          "id": "pd"
+        }
+      ]
+    },
+    {
+      "name": "update",
+      "rules": [
+        {
+          "group_id": "g",
+          "id": "r",
+          "start_key": "",
+          "end_key": "",
+          "role": "voter",
+          "is_witness": false,
+          "count": 2,
+          "version": 1,
+          "create_timestamp": 1792839240
+        }
+      ],
+      "groups": [
+        {
+          "id": "g"
+        },
+        {
+          "id": "pd"
+        }
+      ]
+    },
+    {
+      "name": "group",
+      "rules": [
+        {
+          "group_id": "g",
+          "id": "r",
+          "start_key": "",
+          "end_key": "",
+          "role": "voter",
+          "is_witness": false,
+          "count": 2,
+          "version": 1,
+          "create_timestamp": 1792839240
+        }
+      ],
+      "groups": [
+        {
+          "id": "pd"
+        },
+        {
+          "id": "g",
+          "index": 8
+        }
+      ]
+    },
+    {
+      "name": "default_group",
+      "rules": [
+        {
+          "group_id": "g",
+          "id": "r",
+          "start_key": "",
+          "end_key": "",
+          "role": "voter",
+          "is_witness": false,
+          "count": 2,
+          "version": 1,
+          "create_timestamp": 1792839240
+        }
+      ],
+      "groups": [
+        {
+          "id": "g"
+        },
+        {
+          "id": "pd"
+        }
+      ]
+    },
+    {
+      "name": "delete",
+      "rules": null,
+      "groups": [
+        {
+          "id": "pd"
+        }
+      ]
+    }
+  ]
+}

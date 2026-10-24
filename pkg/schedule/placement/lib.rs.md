@@ -8,3 +8,7 @@ canonical astersql-pd-schedule-placement 入口，重导出 Rule/RuleGroup/Group
 check_apply_rules、BuildRuleListError、RuleList，显式注册 placement_order_test.rs。
 范围算法复用 astersql-pd-schedule-rangelist，公开接口保持协议无关。
 见 [规则列表说明](rule_list.rs.md) 和 [批次 22](../../../docs/rust/schedule/placement/22-证据.md)。
+
+批次 23 增加公开 config 模块，重导出 RuleConfig、RuleConfigPatch、rule_may_restrict_engine，
+显式登记 placement_patch_test.rs；owned 快照、JSON 裁剪、调用者时钟提交、TiKV/TiFlash 摘要
+见 [配置说明](config.rs.md) 和 [批次 23](../../../docs/rust/schedule/placement/23-证据.md)。

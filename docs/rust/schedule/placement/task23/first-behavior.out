@@ -1,0 +1,11 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-schedule-placement v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/placement)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.46s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_placement-42ef082d9d2276d0)
+
+running 3 tests
+test placement_patch_test::placement_patch_json_trim_and_default_groups ... ok
+test placement_patch_test::placement_patch_engine_restrictions ... ok
+test placement_patch_test::placement_patch_snapshot_and_versions ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 11 filtered out; finished in 0.00s

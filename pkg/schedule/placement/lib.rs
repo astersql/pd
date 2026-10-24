@@ -18,3 +18,9 @@ pub use rule_list::{
 #[cfg(test)]
 #[path = "placement_order_test.rs"]
 mod placement_order_test;
+
+pub mod config;
+pub use config::{RuleConfig, RuleConfigPatch, rule_may_restrict_engine};
+#[cfg(test)]
+#[path = "placement_patch_test.rs"]
+mod placement_patch_test;
