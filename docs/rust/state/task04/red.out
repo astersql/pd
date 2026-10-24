@@ -1,0 +1,40 @@
+   Compiling astersql-pd-statistics-buckets v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics/buckets)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.61s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics_buckets-663e1d80626bad7d)
+
+running 4 tests
+
+thread 'bucket_values_test::state_task_04_bucket_values_array_boundaries' (156841415) panicked at pkg/statistics/buckets/bucket_values_test.rs:80:5:
+assertion failed: std::panic::catch_unwind(|| convert_to_bucket_tree_item(&r)).is_err()
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'bucket_values_test::state_task_04_bucket_values_intervals_and_wrap' (156841417) panicked at pkg/statistics/buckets/bucket_values_test.rs:45:9:
+assertion `left == right` failed
+  left: 0
+ right: 10000
+
+thread 'bucket_values_test::state_task_04_bucket_values_deep_clone' (156841416) panicked at pkg/statistics/buckets/bucket_values_test.rs:61:5:
+assertion `left == right` failed
+  left: 0
+ right: 2
+
+thread 'bucket_values_test::state_task_04_bucket_values_normalize' (156841418) panicked at pkg/statistics/buckets/bucket_values_test.rs:23:5:
+assertion `left == right` failed
+  left: 0
+ right: 2
+test bucket_values_test::state_task_04_bucket_values_array_boundaries ... FAILED
+test bucket_values_test::state_task_04_bucket_values_deep_clone ... FAILED
+test bucket_values_test::state_task_04_bucket_values_normalize ... FAILED
+test bucket_values_test::state_task_04_bucket_values_intervals_and_wrap ... FAILED
+
+failures:
+
+failures:
+    bucket_values_test::state_task_04_bucket_values_array_boundaries
+    bucket_values_test::state_task_04_bucket_values_deep_clone
+    bucket_values_test::state_task_04_bucket_values_intervals_and_wrap
+    bucket_values_test::state_task_04_bucket_values_normalize
+
+test result: FAILED. 0 passed; 4 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-statistics-buckets --lib`

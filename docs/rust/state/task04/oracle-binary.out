@@ -1,0 +1,3 @@
+Existing test compiled read-only, linux/arm64, bucket package -N -l
+SHA256=c039d97cd638811af174842736d68cc23182f344b93fcb645744ee48ba49884b
+Alpine 3.22 + Delve 1.27.1-r0

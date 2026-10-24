@@ -1,0 +1,28 @@
+break hot_bucket_cache_test.go:120
+continue
+config max-array-values 64
+config max-variable-recurse 5
+print buckets
+print "CASE original"
+call -unsafe "github.com/tikv/pd/pkg/statistics/buckets".convertToBucketTreeItem(buckets)
+set buckets.PeriodInMs = 0
+print "CASE zero"
+call -unsafe "github.com/tikv/pd/pkg/statistics/buckets".convertToBucketTreeItem(buckets)
+set buckets.PeriodInMs = 3
+print "CASE truncate"
+call -unsafe "github.com/tikv/pd/pkg/statistics/buckets".convertToBucketTreeItem(buckets)
+set buckets.PeriodInMs = 1
+set buckets.Stats.ReadBytes[0] = 18446744073709551615
+print "CASE wrap"
+call -unsafe "github.com/tikv/pd/pkg/statistics/buckets".convertToBucketTreeItem(buckets)
+set buckets.PeriodInMs = 2000
+set buckets.Stats.ReadBytes[0] = 11
+set buckets.Stats.ReadKeys[0] = 12
+set buckets.Stats.ReadQps[0] = 13
+set buckets.Stats.WriteBytes[0] = 14
+set buckets.Stats.WriteKeys[0] = 15
+set buckets.Stats.WriteQps[0] = 16
+set buckets.Keys[4] = buckets.Keys[0][:0]
+print "CASE empty_staggered"
+call -unsafe "github.com/tikv/pd/pkg/statistics/buckets".convertToBucketTreeItem(buckets)
+exit

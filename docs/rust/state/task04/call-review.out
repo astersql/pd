@@ -1,0 +1,11 @@
+pkg/utils/logutil/log.go:170:func init() {
+pkg/core/metrics.go:129:func init() {
+pkg/core/region_test.go:35:	"github.com/pingcap/failpoint"
+pkg/core/region_test.go:601:	re.NoError(failpoint.Enable("github.com/tikv/pd/pkg/core/UpdateSubTree", `return()`))
+pkg/core/region_test.go:614:	re.NoError(failpoint.Disable("github.com/tikv/pd/pkg/core/UpdateSubTree"))
+pkg/core/store_test.go:246:// newStoreInfoWithDisk is created with all disk infos.
+pkg/core/region.go:35:	"github.com/pingcap/failpoint"
+pkg/core/region.go:680:	failpoint.Inject("concurrentBucketHeartbeat", func() {
+pkg/core/region.go:1419:	failpoint.Inject("UpdateSubTree", func() {
+pkg/statistics/buckets/metric.go:32:func init() {
+pkg/statistics/buckets/bucket_stat_informer.go:30:func init() {

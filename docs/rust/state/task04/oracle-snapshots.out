@@ -1,0 +1,231 @@
+Type 'help' for list of commands.
+Breakpoint 1 set at 0x80309c for github.com/tikv/pd/pkg/statistics/buckets.TestConvertToBucketTreeStat() .Users/Shared/work/dir/data/codes/pd/pkg/statistics/buckets/hot_bucket_cache_test.go:120
+> [Breakpoint 1] github.com/tikv/pd/pkg/statistics/buckets.TestConvertToBucketTreeStat() .Users/Shared/work/dir/data/codes/pd/pkg/statistics/buckets/hot_bucket_cache_test.go:120 (hits goroutine(15):1 total:1) (PC: 0x80309c)
+("*github.com/pingcap/kvproto/pkg/metapb.Buckets")(0x75cbe0baac78)
+*github.com/pingcap/kvproto/pkg/metapb.Buckets {
+	RegionId: 1,
+	Version: 0,
+	Keys: [][]uint8 len: 5, cap: 5, [
+		[49],
+		[50],
+		[51],
+		[52],
+		[53],
+	],
+	Stats: *github.com/pingcap/kvproto/pkg/metapb.BucketStats {
+		ReadBytes: []uint64 len: 4, cap: 4, [1,2,3,4],
+		WriteBytes: []uint64 len: 4, cap: 4, [1,2,3,4],
+		ReadQps: []uint64 len: 4, cap: 4, [1,2,3,4],
+		WriteQps: []uint64 len: 4, cap: 4, [1,2,3,4],
+		ReadKeys: []uint64 len: 4, cap: 4, [1,2,3,4],
+		WriteKeys: []uint64 len: 4, cap: 4, [1,2,3,4],},
+	PeriodInMs: 1000,}
+"CASE original"
+> github.com/tikv/pd/pkg/statistics/buckets.TestConvertToBucketTreeStat() .Users/Shared/work/dir/data/codes/pd/pkg/statistics/buckets/hot_bucket_cache_test.go:120 (PC: 0x80309c)
+Values returned:
+	~r0: ("*github.com/tikv/pd/pkg/statistics/buckets.BucketTreeItem")(0x75cbe0d7e8c0)
+*github.com/tikv/pd/pkg/statistics/buckets.BucketTreeItem {
+		regionID: 1,
+		startKey: []uint8 len: 1, cap: 1, [49],
+		endKey: []uint8 len: 1, cap: 1, [53],
+		stats: []*github.com/tikv/pd/pkg/statistics/buckets.BucketStat len: 4, cap: 4, [
+			*{
+				RegionID: 1,
+				StartKey: []uint8 len: 1, cap: 1, [49],
+				EndKey: []uint8 len: 1, cap: 1, [50],
+				HotDegree: 0,
+				Interval: 1000,
+				Loads: []uint64 len: 6, cap: 6, [1,1,1,1,1,1],},
+			*{
+				RegionID: 1,
+				StartKey: []uint8 len: 1, cap: 1, [50],
+				EndKey: []uint8 len: 1, cap: 1, [51],
+				HotDegree: 0,
+				Interval: 1000,
+				Loads: []uint64 len: 6, cap: 6, [2,2,2,2,2,2],},
+			*{
+				RegionID: 1,
+				StartKey: []uint8 len: 1, cap: 1, [51],
+				EndKey: []uint8 len: 1, cap: 1, [52],
+				HotDegree: 0,
+				Interval: 1000,
+				Loads: []uint64 len: 6, cap: 6, [3,3,3,3,3,3],},
+			*{
+				RegionID: 1,
+				StartKey: []uint8 len: 1, cap: 1, [52],
+				EndKey: []uint8 len: 1, cap: 1, [53],
+				HotDegree: 0,
+				Interval: 1000,
+				Loads: []uint64 len: 6, cap: 6, [4,4,4,4,4,4],},
+		],
+		interval: 1000,
+		version: 0,
+		status: alive (0),}
+
+"CASE zero"
+> github.com/tikv/pd/pkg/statistics/buckets.TestConvertToBucketTreeStat() .Users/Shared/work/dir/data/codes/pd/pkg/statistics/buckets/hot_bucket_cache_test.go:120 (PC: 0x80309c)
+Values returned:
+	~r0: ("*github.com/tikv/pd/pkg/statistics/buckets.BucketTreeItem")(0x75cbe0d7e9a0)
+*github.com/tikv/pd/pkg/statistics/buckets.BucketTreeItem {
+		regionID: 1,
+		startKey: []uint8 len: 1, cap: 1, [49],
+		endKey: []uint8 len: 1, cap: 1, [53],
+		stats: []*github.com/tikv/pd/pkg/statistics/buckets.BucketStat len: 4, cap: 4, [
+			*{
+				RegionID: 1,
+				StartKey: []uint8 len: 1, cap: 1, [49],
+				EndKey: []uint8 len: 1, cap: 1, [50],
+				HotDegree: 0,
+				Interval: 10000,
+				Loads: []uint64 len: 6, cap: 6, [0,0,0,0,0,0],},
+			*{
+				RegionID: 1,
+				StartKey: []uint8 len: 1, cap: 1, [50],
+				EndKey: []uint8 len: 1, cap: 1, [51],
+				HotDegree: 0,
+				Interval: 10000,
+				Loads: []uint64 len: 6, cap: 6, [0,0,0,0,0,0],},
+			*{
+				RegionID: 1,
+				StartKey: []uint8 len: 1, cap: 1, [51],
+				EndKey: []uint8 len: 1, cap: 1, [52],
+				HotDegree: 0,
+				Interval: 10000,
+				Loads: []uint64 len: 6, cap: 6, [0,0,0,0,0,0],},
+			*{
+				RegionID: 1,
+				StartKey: []uint8 len: 1, cap: 1, [52],
+				EndKey: []uint8 len: 1, cap: 1, [53],
+				HotDegree: 0,
+				Interval: 10000,
+				Loads: []uint64 len: 6, cap: 6, [0,0,0,0,0,0],},
+		],
+		interval: 10000,
+		version: 0,
+		status: alive (0),}
+
+"CASE truncate"
+> github.com/tikv/pd/pkg/statistics/buckets.TestConvertToBucketTreeStat() .Users/Shared/work/dir/data/codes/pd/pkg/statistics/buckets/hot_bucket_cache_test.go:120 (PC: 0x80309c)
+Values returned:
+	~r0: ("*github.com/tikv/pd/pkg/statistics/buckets.BucketTreeItem")(0x75cbe0d7ea10)
+*github.com/tikv/pd/pkg/statistics/buckets.BucketTreeItem {
+		regionID: 1,
+		startKey: []uint8 len: 1, cap: 1, [49],
+		endKey: []uint8 len: 1, cap: 1, [53],
+		stats: []*github.com/tikv/pd/pkg/statistics/buckets.BucketStat len: 4, cap: 4, [
+			*{
+				RegionID: 1,
+				StartKey: []uint8 len: 1, cap: 1, [49],
+				EndKey: []uint8 len: 1, cap: 1, [50],
+				HotDegree: 0,
+				Interval: 3,
+				Loads: []uint64 len: 6, cap: 6, [333,333,333,333,333,333],},
+			*{
+				RegionID: 1,
+				StartKey: []uint8 len: 1, cap: 1, [50],
+				EndKey: []uint8 len: 1, cap: 1, [51],
+				HotDegree: 0,
+				Interval: 3,
+				Loads: []uint64 len: 6, cap: 6, [666,666,666,666,666,666],},
+			*{
+				RegionID: 1,
+				StartKey: []uint8 len: 1, cap: 1, [51],
+				EndKey: []uint8 len: 1, cap: 1, [52],
+				HotDegree: 0,
+				Interval: 3,
+				Loads: []uint64 len: 6, cap: 6, [1000,1000,1000,1000,1000,1000],},
+			*{
+				RegionID: 1,
+				StartKey: []uint8 len: 1, cap: 1, [52],
+				EndKey: []uint8 len: 1, cap: 1, [53],
+				HotDegree: 0,
+				Interval: 3,
+				Loads: []uint64 len: 6, cap: 6, [1333,1333,1333,1333,1333,1333],},
+		],
+		interval: 3,
+		version: 0,
+		status: alive (0),}
+
+"CASE wrap"
+> github.com/tikv/pd/pkg/statistics/buckets.TestConvertToBucketTreeStat() .Users/Shared/work/dir/data/codes/pd/pkg/statistics/buckets/hot_bucket_cache_test.go:120 (PC: 0x80309c)
+Values returned:
+	~r0: ("*github.com/tikv/pd/pkg/statistics/buckets.BucketTreeItem")(0x75cbe0d7ea80)
+*github.com/tikv/pd/pkg/statistics/buckets.BucketTreeItem {
+		regionID: 1,
+		startKey: []uint8 len: 1, cap: 1, [49],
+		endKey: []uint8 len: 1, cap: 1, [53],
+		stats: []*github.com/tikv/pd/pkg/statistics/buckets.BucketStat len: 4, cap: 4, [
+			*{
+				RegionID: 1,
+				StartKey: []uint8 len: 1, cap: 1, [49],
+				EndKey: []uint8 len: 1, cap: 1, [50],
+				HotDegree: 0,
+				Interval: 1,
+				Loads: []uint64 len: 6, cap: 6, [18446744073709550616,1000,1000,1000,1000,1000],},
+			*{
+				RegionID: 1,
+				StartKey: []uint8 len: 1, cap: 1, [50],
+				EndKey: []uint8 len: 1, cap: 1, [51],
+				HotDegree: 0,
+				Interval: 1,
+				Loads: []uint64 len: 6, cap: 6, [2000,2000,2000,2000,2000,2000],},
+			*{
+				RegionID: 1,
+				StartKey: []uint8 len: 1, cap: 1, [51],
+				EndKey: []uint8 len: 1, cap: 1, [52],
+				HotDegree: 0,
+				Interval: 1,
+				Loads: []uint64 len: 6, cap: 6, [3000,3000,3000,3000,3000,3000],},
+			*{
+				RegionID: 1,
+				StartKey: []uint8 len: 1, cap: 1, [52],
+				EndKey: []uint8 len: 1, cap: 1, [53],
+				HotDegree: 0,
+				Interval: 1,
+				Loads: []uint64 len: 6, cap: 6, [4000,4000,4000,4000,4000,4000],},
+		],
+		interval: 1,
+		version: 0,
+		status: alive (0),}
+
+"CASE empty_staggered"
+> github.com/tikv/pd/pkg/statistics/buckets.TestConvertToBucketTreeStat() .Users/Shared/work/dir/data/codes/pd/pkg/statistics/buckets/hot_bucket_cache_test.go:120 (PC: 0x80309c)
+Values returned:
+	~r0: ("*github.com/tikv/pd/pkg/statistics/buckets.BucketTreeItem")(0x75cbe0d7eaf0)
+*github.com/tikv/pd/pkg/statistics/buckets.BucketTreeItem {
+		regionID: 1,
+		startKey: []uint8 len: 1, cap: 1, [49],
+		endKey: []uint8 len: 0, cap: 1, [],
+		stats: []*github.com/tikv/pd/pkg/statistics/buckets.BucketStat len: 4, cap: 4, [
+			*{
+				RegionID: 1,
+				StartKey: []uint8 len: 1, cap: 1, [49],
+				EndKey: []uint8 len: 1, cap: 1, [50],
+				HotDegree: 0,
+				Interval: 2000,
+				Loads: []uint64 len: 6, cap: 6, [5,6,6,7,7,8],},
+			*{
+				RegionID: 1,
+				StartKey: []uint8 len: 1, cap: 1, [50],
+				EndKey: []uint8 len: 1, cap: 1, [51],
+				HotDegree: 0,
+				Interval: 2000,
+				Loads: []uint64 len: 6, cap: 6, [1,1,1,1,1,1],},
+			*{
+				RegionID: 1,
+				StartKey: []uint8 len: 1, cap: 1, [51],
+				EndKey: []uint8 len: 1, cap: 1, [52],
+				HotDegree: 0,
+				Interval: 2000,
+				Loads: []uint64 len: 6, cap: 6, [1,1,1,1,1,1],},
+			*{
+				RegionID: 1,
+				StartKey: []uint8 len: 1, cap: 1, [52],
+				EndKey: []uint8 len: 0, cap: 1, [],
+				HotDegree: 0,
+				Interval: 2000,
+				Loads: []uint64 len: 6, cap: 6, [2,2,2,2,2,2],},
+		],
+		interval: 2000,
+		version: 0,
+		status: alive (0),}
