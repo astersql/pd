@@ -1,0 +1,198 @@
+break main.main
+continue
+next
+config max-string-len 256
+config max-array-values 128
+print "CASE -101"
+call "github.com/tikv/pd/pkg/schedule/plan".StatusText(-101)
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(-101, nil).Priority()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(-101, nil).IsOK()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(-101, nil).IsNormal()
+print "CASE -99"
+call "github.com/tikv/pd/pkg/schedule/plan".StatusText(-99)
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(-99, nil).Priority()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(-99, nil).IsOK()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(-99, nil).IsNormal()
+print "CASE -1"
+call "github.com/tikv/pd/pkg/schedule/plan".StatusText(-1)
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(-1, nil).Priority()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(-1, nil).IsOK()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(-1, nil).IsNormal()
+print "CASE 0"
+call "github.com/tikv/pd/pkg/schedule/plan".StatusText(0)
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(0, nil).Priority()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(0, nil).IsOK()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(0, nil).IsNormal()
+print "CASE 99"
+call "github.com/tikv/pd/pkg/schedule/plan".StatusText(99)
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(99, nil).Priority()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(99, nil).IsOK()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(99, nil).IsNormal()
+print "CASE 100"
+call "github.com/tikv/pd/pkg/schedule/plan".StatusText(100)
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(100, nil).Priority()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(100, nil).IsOK()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(100, nil).IsNormal()
+print "CASE 101"
+call "github.com/tikv/pd/pkg/schedule/plan".StatusText(101)
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(101, nil).Priority()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(101, nil).IsOK()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(101, nil).IsNormal()
+print "CASE 102"
+call "github.com/tikv/pd/pkg/schedule/plan".StatusText(102)
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(102, nil).Priority()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(102, nil).IsOK()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(102, nil).IsNormal()
+print "CASE 109"
+call "github.com/tikv/pd/pkg/schedule/plan".StatusText(109)
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(109, nil).Priority()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(109, nil).IsOK()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(109, nil).IsNormal()
+print "CASE 110"
+call "github.com/tikv/pd/pkg/schedule/plan".StatusText(110)
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(110, nil).Priority()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(110, nil).IsOK()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(110, nil).IsNormal()
+print "CASE 199"
+call "github.com/tikv/pd/pkg/schedule/plan".StatusText(199)
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(199, nil).Priority()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(199, nil).IsOK()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(199, nil).IsNormal()
+print "CASE 200"
+call "github.com/tikv/pd/pkg/schedule/plan".StatusText(200)
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(200, nil).Priority()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(200, nil).IsOK()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(200, nil).IsNormal()
+print "CASE 201"
+call "github.com/tikv/pd/pkg/schedule/plan".StatusText(201)
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(201, nil).Priority()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(201, nil).IsOK()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(201, nil).IsNormal()
+print "CASE 202"
+call "github.com/tikv/pd/pkg/schedule/plan".StatusText(202)
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(202, nil).Priority()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(202, nil).IsOK()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(202, nil).IsNormal()
+print "CASE 203"
+call "github.com/tikv/pd/pkg/schedule/plan".StatusText(203)
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(203, nil).Priority()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(203, nil).IsOK()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(203, nil).IsNormal()
+print "CASE 204"
+call "github.com/tikv/pd/pkg/schedule/plan".StatusText(204)
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(204, nil).Priority()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(204, nil).IsOK()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(204, nil).IsNormal()
+print "CASE 300"
+call "github.com/tikv/pd/pkg/schedule/plan".StatusText(300)
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(300, nil).Priority()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(300, nil).IsOK()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(300, nil).IsNormal()
+print "CASE 301"
+call "github.com/tikv/pd/pkg/schedule/plan".StatusText(301)
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(301, nil).Priority()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(301, nil).IsOK()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(301, nil).IsNormal()
+print "CASE 400"
+call "github.com/tikv/pd/pkg/schedule/plan".StatusText(400)
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(400, nil).Priority()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(400, nil).IsOK()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(400, nil).IsNormal()
+print "CASE 401"
+call "github.com/tikv/pd/pkg/schedule/plan".StatusText(401)
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(401, nil).Priority()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(401, nil).IsOK()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(401, nil).IsNormal()
+print "CASE 402"
+call "github.com/tikv/pd/pkg/schedule/plan".StatusText(402)
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(402, nil).Priority()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(402, nil).IsOK()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(402, nil).IsNormal()
+print "CASE 403"
+call "github.com/tikv/pd/pkg/schedule/plan".StatusText(403)
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(403, nil).Priority()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(403, nil).IsOK()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(403, nil).IsNormal()
+print "CASE 404"
+call "github.com/tikv/pd/pkg/schedule/plan".StatusText(404)
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(404, nil).Priority()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(404, nil).IsOK()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(404, nil).IsNormal()
+print "CASE 500"
+call "github.com/tikv/pd/pkg/schedule/plan".StatusText(500)
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(500, nil).Priority()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(500, nil).IsOK()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(500, nil).IsNormal()
+print "CASE 501"
+call "github.com/tikv/pd/pkg/schedule/plan".StatusText(501)
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(501, nil).Priority()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(501, nil).IsOK()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(501, nil).IsNormal()
+print "CASE 999"
+call "github.com/tikv/pd/pkg/schedule/plan".StatusText(999)
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(999, nil).Priority()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(999, nil).IsOK()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(999, nil).IsNormal()
+print "CASE 1000"
+call "github.com/tikv/pd/pkg/schedule/plan".StatusText(1000)
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(1000, nil).Priority()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(1000, nil).IsOK()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(1000, nil).IsNormal()
+print "CASE 1001"
+call "github.com/tikv/pd/pkg/schedule/plan".StatusText(1001)
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(1001, nil).Priority()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(1001, nil).IsOK()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(1001, nil).IsNormal()
+print "CASE 1002"
+call "github.com/tikv/pd/pkg/schedule/plan".StatusText(1002)
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(1002, nil).Priority()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(1002, nil).IsOK()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(1002, nil).IsNormal()
+print "CASE 1003"
+call "github.com/tikv/pd/pkg/schedule/plan".StatusText(1003)
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(1003, nil).Priority()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(1003, nil).IsOK()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(1003, nil).IsNormal()
+print "CASE 1004"
+call "github.com/tikv/pd/pkg/schedule/plan".StatusText(1004)
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(1004, nil).Priority()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(1004, nil).IsOK()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(1004, nil).IsNormal()
+print "CASE 1005"
+call "github.com/tikv/pd/pkg/schedule/plan".StatusText(1005)
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(1005, nil).Priority()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(1005, nil).IsOK()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(1005, nil).IsNormal()
+print "CASE 1006"
+call "github.com/tikv/pd/pkg/schedule/plan".StatusText(1006)
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(1006, nil).Priority()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(1006, nil).IsOK()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(1006, nil).IsNormal()
+print "CASE 1007"
+call "github.com/tikv/pd/pkg/schedule/plan".StatusText(1007)
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(1007, nil).Priority()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(1007, nil).IsOK()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(1007, nil).IsNormal()
+print "CASE 1008"
+call "github.com/tikv/pd/pkg/schedule/plan".StatusText(1008)
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(1008, nil).Priority()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(1008, nil).IsOK()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(1008, nil).IsNormal()
+print "CASE 1009"
+call "github.com/tikv/pd/pkg/schedule/plan".StatusText(1009)
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(1009, nil).Priority()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(1009, nil).IsOK()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(1009, nil).IsNormal()
+print "CASE 2000"
+call "github.com/tikv/pd/pkg/schedule/plan".StatusText(2000)
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(2000, nil).Priority()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(2000, nil).IsOK()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(2000, nil).IsNormal()
+print "CASE 10000"
+call "github.com/tikv/pd/pkg/schedule/plan".StatusText(10000)
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(10000, nil).Priority()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(10000, nil).IsOK()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(10000, nil).IsNormal()
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(101, strings.Split("first: 原因|ignored", "|"))
+call "github.com/tikv/pd/pkg/schedule/plan".NewStatus(101, strings.Split("|ignored", "|"))
+exit

@@ -1,0 +1,38 @@
+-101		-1	false	false
+-99		0	false	false
+-1		0	false	false
+0	OK	0	true	false
+99		0	false	false
+100	StoreScoreDisallowed	1	false	true
+101	StoreAlreadyHasPeer	1.01	false	true
+102	StoreNotMatchRule	1.02	false	true
+109		1.09	false	true
+110		1.1	false	false
+199		1.99	false	false
+200	StoreSnapshotThrottled	2	false	false
+201	StorePendingPeerThrottled	2	false	false
+202	StoreAddPeerThrottled	2	false	false
+203	StoreRemovePeerThrottled	2	false	false
+204	StoreTransferLeaderInThrottled	2	false	false
+300	StoreRejectLeader	3	false	false
+301	StoreNotMatchIsolation	3	false	false
+400	StoreBusy	4	false	false
+401	StoreRemoved	4	false	false
+402	StoreRemoving	4	false	false
+403	StoreDown	4	false	false
+404	StoreDisconnected	4	false	false
+500	StoreLowSpace	5	false	false
+501	StoreNotExisted	5	false	false
+999		9	false	false
+1000	RegionHot	10	false	false
+1001	RegionUnhealthy	10	false	false
+1002	RegionEmpty	10	false	false
+1003	RegionNotReplicated	10	false	false
+1004	RegionNotMatchRule	10	false	false
+1005	RegionNoLeader	10	false	false
+1006	NoTargetRegion	10	false	false
+1007	RegionLabelReject	10	false	false
+1008		10	false	false
+1009	RegionAffinity	10	false	false
+2000	CreateOperatorFailed	20	false	false
+10000		100	false	false

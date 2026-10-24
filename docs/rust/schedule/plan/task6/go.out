@@ -1,0 +1,661 @@
+Type 'help' for list of commands.
+Breakpoint 1 set at 0x280c840 for main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:58
+> [Breakpoint 1] main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:58 (hits goroutine(1):1 total:1) (PC: 0x280c840)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+"CASE -101"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: ""
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: -1
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+"CASE -99"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: ""
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 0
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+"CASE -1"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: ""
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 0
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+"CASE 0"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "OK"
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 0
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: true
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+"CASE 99"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: ""
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 0
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+"CASE 100"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "StoreScoreDisallowed"
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 1
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: true
+
+"CASE 101"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "StoreAlreadyHasPeer"
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 1.01
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: true
+
+"CASE 102"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "StoreNotMatchRule"
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 1.02
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: true
+
+"CASE 109"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: ""
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 1.09
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: true
+
+"CASE 110"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: ""
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 1.1
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+"CASE 199"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: ""
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 1.99
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+"CASE 200"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "StoreSnapshotThrottled"
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 2
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+"CASE 201"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "StorePendingPeerThrottled"
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 2
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+"CASE 202"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "StoreAddPeerThrottled"
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 2
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+"CASE 203"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "StoreRemovePeerThrottled"
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 2
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+"CASE 204"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "StoreTransferLeaderInThrottled"
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 2
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+"CASE 300"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "StoreRejectLeader"
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 3
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+"CASE 301"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "StoreNotMatchIsolation"
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 3
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+"CASE 400"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "StoreBusy"
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 4
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+"CASE 401"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "StoreRemoved"
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 4
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+"CASE 402"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "StoreRemoving"
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 4
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+"CASE 403"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "StoreDown"
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 4
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+"CASE 404"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "StoreDisconnected"
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 4
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+"CASE 500"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "StoreLowSpace"
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 5
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+"CASE 501"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "StoreNotExisted"
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 5
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+"CASE 999"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: ""
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 9
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+"CASE 1000"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "RegionHot"
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 10
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+"CASE 1001"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "RegionUnhealthy"
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 10
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+"CASE 1002"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "RegionEmpty"
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 10
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+"CASE 1003"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "RegionNotReplicated"
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 10
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+"CASE 1004"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "RegionNotMatchRule"
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 10
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+"CASE 1005"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "RegionNoLeader"
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 10
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+"CASE 1006"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "NoTargetRegion"
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 10
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+"CASE 1007"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "RegionLabelReject"
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 10
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+"CASE 1008"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: ""
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 10
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+"CASE 1009"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "RegionAffinity"
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 10
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+"CASE 2000"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: "CreateOperatorFailed"
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 20
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+"CASE 10000"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: ""
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 100
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: ("*github.com/tikv/pd/pkg/schedule/plan.Status")(0xa3e80f50198)
+*github.com/tikv/pd/pkg/schedule/plan.Status {
+		StatusCode: 101,
+		DetailedReason: "first: 原因",}
+
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: ("*github.com/tikv/pd/pkg/schedule/plan.Status")(0xa3e80f501b0)
+*github.com/tikv/pd/pkg/schedule/plan.Status {StatusCode: 101, DetailedReason: ""}

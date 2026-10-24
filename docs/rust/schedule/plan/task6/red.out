@@ -1,0 +1,65 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+
+COMMAND cargo generate-lockfile --offline
+     Locking 197 packages to highest Rust 1.85 compatible versions
+      Adding base64 v0.22.1 (available: v0.23.1)
+      Adding etcd-client v0.17.0 (available: v0.19.0)
+      Adding prost v0.14.1 (available: v0.14.4)
+      Adding prost-build v0.14.1 (available: v0.14.4)
+      Adding prost-types v0.14.1 (available: v0.14.4)
+      Adding protobuf v2.28.0 (available: v3.7.2)
+      Adding protoc-bin-vendored v3.2.0 (available: v3.3.0)
+      Adding protoc-bin-vendored-linux-aarch_64 v3.2.0 (available: v3.3.0)
+      Adding protoc-bin-vendored-linux-ppcle_64 v3.2.0 (available: v3.3.0)
+      Adding protoc-bin-vendored-linux-s390_64 v3.2.0 (available: v3.3.0)
+      Adding protoc-bin-vendored-linux-x86_32 v3.2.0 (available: v3.3.0)
+      Adding protoc-bin-vendored-linux-x86_64 v3.2.0 (available: v3.3.0)
+      Adding protoc-bin-vendored-macos-aarch_64 v3.2.0 (available: v3.3.0)
+      Adding protoc-bin-vendored-macos-x86_64 v3.2.0 (available: v3.3.0)
+      Adding protoc-bin-vendored-win32 v3.2.0 (available: v3.3.0)
+      Adding serde_json v1.0.145 (available: v1.0.151)
+      Adding sha2 v0.10.9 (available: v0.11.0)
+      Adding tokio v1.48.0 (available: v1.53.2)
+      Adding tokio-macros v2.6.1 (available: v2.7.2)
+      Adding tokio-util v0.7.17 (available: v0.7.19)
+      Adding toml v0.9.8 (available: v0.9.11+spec-1.1.0)
+      Adding tonic v0.14.2 (available: v0.14.5)
+      Adding tonic-build v0.14.5 (available: v0.14.6, requires Rust 1.88)
+      Adding tonic-prost v0.14.2 (available: v0.14.5)
+      Adding tonic-prost-build v0.14.2 (available: v0.14.6, requires Rust 1.88)
+EXIT=0
+
+COMMAND cargo fmt --all
+EXIT=0
+
+COMMAND cargo test --locked -p astersql-pd-schedule-plan plan_status -- --nocapture
+   Compiling astersql-pd-schedule-plan v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/plan)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.57s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_plan-3fd54fcd8571b4d5)
+
+running 3 tests
+
+thread 'plan_status_test::plan_status_codes_and_text' (154642790) panicked at pkg/schedule/plan/plan_status_test.rs:6:5:
+assertion `left == right` failed
+  left: ""
+ right: "OK"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'plan_status_test::plan_status_priority_boundaries' (154642791) panicked at pkg/schedule/plan/plan_status_test.rs:264:9:
+assertion `left == right` failed: code=-101
+  left: 0.0
+ right: -1.0
+test plan_status_test::plan_status_codes_and_text ... FAILED
+test plan_status_test::plan_status_priority_boundaries ... FAILED
+test plan_status_test::plan_status_reason_and_flags ... ok
+
+failures:
+
+failures:
+    plan_status_test::plan_status_codes_and_text
+    plan_status_test::plan_status_priority_boundaries
+
+test result: FAILED. 1 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-plan --lib`
+EXIT=101

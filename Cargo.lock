@@ -360,6 +360,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "astersql-pd-schedule-plan"
+version = "0.1.0"
+
+[[package]]
 name = "astersql-pd-schedule-rangelist"
 version = "0.1.0"
 
