@@ -58,3 +58,8 @@ pub use region_rule_cache::RegionRuleFitCacheManager;
 #[cfg(test)]
 #[path = "placement_cache_test.rs"]
 mod placement_cache_test;
+
+#[cfg(test)]
+#[path = "placement_manager_test.rs"]
+mod placement_manager_test;
+pub mod rule_query;

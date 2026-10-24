@@ -1,0 +1,83 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-schedule-placement v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/placement)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.48s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_placement-d16fae04edf99afd)
+
+running 3 tests
+test placement_manager_test::placement_manager_go_keys_and_boundaries ... ok
+test placement_manager_test::placement_manager_priority_and_reconcile_snapshots ... ok
+test placement_manager_test::placement_manager_query_fit_cache_and_mutation ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 40 filtered out; finished in 0.00s
+
+   Compiling astersql-pd-schedule-placement v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/placement)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.52s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_placement-d16fae04edf99afd)
+
+running 43 tests
+test placement_cache_test::placement_cache_promotion_invalidation_and_stale_store ... ok
+test placement_isolation_test::placement_isolation_replace_go_test_cases ... ok
+test placement_isolation_test::placement_isolation_role_exchange_and_lookup ... ok
+test placement_isolation_test::placement_isolation_hierarchy_and_extra_count ... ok
+test placement_order_test::placement_order_priority_and_override ... ok
+test placement_cache_test::placement_cache_changes_and_eligibility ... ok
+test placement_cache_test::placement_cache_manager_matches_uncached ... ok
+test placement_order_test::placement_order_rule_override_and_ties ... ok
+test placement_order_test::placement_order_role_errors_and_gap ... ok
+test placement_patch_test::placement_patch_engine_restrictions ... ok
+test placement_patch_test::placement_patch_json_trim_and_default_groups ... ok
+test placement_manager_test::placement_manager_priority_and_reconcile_snapshots ... ok
+test placement_manager_test::placement_manager_go_keys_and_boundaries ... ok
+test placement_manager_test::placement_manager_query_fit_cache_and_mutation ... ok
+test placement_patch_test::placement_patch_preview_engine_summary ... ok
+test placement_order_test::placement_order_go_runtime_fixture ... ok
+test placement_patch_test::placement_patch_snapshot_and_versions ... ok
+test placement_region_fit_test::placement_region_fit_empty_rules_and_missing_stores ... ok
+test placement_patch_test::placement_patch_go_runtime_fixture ... ok
+test placement_batch_test::placement_batch_go_regexp_ascii_classes ... ok
+test placement_restore_test::placement_restore_defaults_skip_witness ... ok
+test placement_role_fit_test::placement_role_fit_comparison_location_and_witness_load ... ok
+test placement_restore_test::placement_restore_validation_rejects_without_publish ... ok
+test placement_batch_test::placement_batch_go_runtime_fixture ... ok
+test placement_role_fit_test::placement_role_fit_constraints_missing_and_health ... ok
+test placement_role_fit_test::placement_role_fit_nil_leader_unknown_and_witness ... ok
+test placement_restore_test::placement_restore_memory_io_failures ... ok
+test placement_restore_test::placement_restore_go_runtime_fixture ... ok
+test placement_values_test::placement_values_go_constraint_matrix ... ok
+test placement_restore_test::placement_restore_memory_history_and_restart ... ok
+test placement_values_test::placement_values_json_null_duplicate_fields ... ok
+test placement_values_test::placement_values_roles_and_operators ... ok
+test placement_values_test::placement_values_rule_json_clone_store_key ... ok
+test placement_values_test::placement_values_store_constraints ... ok
+test placement_values_test::placement_values_go_runtime_matching ... ok
+test placement_values_test::placement_values_go_runtime_fixture ... ok
+test placement_region_fit_test::placement_region_fit_ties_and_large_peer_set_early_exit ... ok
+test placement_role_fit_test::placement_role_fit_go_runtime_fixture ... ok
+test placement_region_fit_test::placement_region_fit_go_runtime_fixture ... ok
+test placement_batch_test::placement_batch_memory_contract ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:61567
+isolated etcd 3.5.15 ready at http://127.0.0.1:61566
+test placement_restore_test::placement_restore_etcd_io_failures ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:61568
+test placement_batch_test::placement_batch_etcd_contract ... ok
+test placement_restore_test::placement_restore_etcd_history_and_restart ... ok
+
+test result: ok. 43 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 4.12s
+
+   Doc-tests astersql_pd_schedule_placement
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+warning: use of deprecated field `astersql_pd_proto::pdpb::RegionHeartbeatRequest::cpu_usage`
+   --> pkg/server/core_region_adapter.rs:134:30
+    |
+134 |     r.set_response_cpu_usage(p.cpu_usage);
+    |                              ^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: `astersql-pd-server` (lib) generated 1 warning
+    Checking astersql-pd-schedule-placement v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/placement)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.48s

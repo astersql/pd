@@ -108,6 +108,14 @@ impl RuleList {
         }
         Ok(Self { ranges, apply })
     }
+    /// Boundaries strictly inside the requested range.
+    pub fn get_split_keys(&self, start: &[u8], end: &[u8]) -> Vec<Vec<u8>> {
+        self.ranges
+            .get_split_keys(start, end)
+            .into_iter()
+            .map(<[u8]>::to_vec)
+            .collect()
+    }
     /// All matching rules at a key, before override selection.
     pub fn get_rules_by_key(&self, key: &[u8]) -> &[Arc<Rule>] {
         self.ranges.get_data_by_key(key).1.unwrap_or(&[])

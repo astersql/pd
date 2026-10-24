@@ -1,0 +1,37 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-schedule-placement v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/placement)
+warning: unused import: `compare_rule`
+ --> pkg/schedule/placement/rule_query.rs:3:56
+  |
+3 | use crate::{GroupBundle, Rule, RuleGroup, RuleManager, compare_rule};
+  |                                                        ^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `astersql-pd-schedule-placement` (lib test) generated 1 warning (run `cargo fix --lib -p astersql-pd-schedule-placement --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.95s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_placement-d16fae04edf99afd)
+
+running 3 tests
+
+thread 'placement_manager_test::placement_manager_priority_and_reconcile_snapshots' (155933239) panicked at pkg/schedule/placement/placement_manager_test.rs:57:5:
+assertion `left == right` failed
+  left: [("a", "b"), ("a", "z"), ("pd", "default")]
+ right: [("pd", "default"), ("a", "z"), ("a", "b")]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test placement_manager_test::placement_manager_go_keys_and_boundaries ... ok
+
+thread 'placement_manager_test::placement_manager_query_fit_cache_and_mutation' (155933240) panicked at pkg/schedule/placement/placement_manager_test.rs:293:5:
+assertion failed: m.may_restrict_store_load(false)
+test placement_manager_test::placement_manager_priority_and_reconcile_snapshots ... FAILED
+test placement_manager_test::placement_manager_query_fit_cache_and_mutation ... FAILED
+
+failures:
+
+failures:
+    placement_manager_test::placement_manager_priority_and_reconcile_snapshots
+    placement_manager_test::placement_manager_query_fit_cache_and_mutation
+
+test result: FAILED. 1 passed; 2 failed; 0 ignored; 0 measured; 40 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-placement --lib`

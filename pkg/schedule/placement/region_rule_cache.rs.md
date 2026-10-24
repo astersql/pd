@@ -33,3 +33,6 @@ candidate and promoted fits. Removal is O(cached regions); checks remain local t
 one region. Shared store pointer identity is not a Rust public contract.
 No protocol types, I/O, persistence keys, global state or additional dependencies
 are introduced. Tests and Go run provenance: [task 29 evidence](../../../docs/rust/schedule/placement/29-证据.md).
+
+批次 30：管理器的 cache eligibility、cached fit、uncached fit 均通过公开
+`get_rules_for_apply_region` 选择规则，避免管理查询与适配出现不同选择入口。

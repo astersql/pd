@@ -1,0 +1,31 @@
+=== RUN   TestMayRestrictStoreLoad
+[2026/10/24 19:54:06.492 +08:00] [INFO] [rule_manager.go:333] ["placement rule updated"] [rule="{\"group_id\":\"group\",\"id\":\"rule\",\"start_key\":\"\",\"end_key\":\"\",\"role\":\"voter\",\"is_witness\":false,\"count\":1,\"label_constraints\":[{\"key\":\"zone\",\"op\":\"in\",\"values\":[\"z1\"]}],\"create_timestamp\":1792842846}"]
+[2026/10/24 19:54:06.493 +08:00] [INFO] [rule_manager.go:333] ["placement rule updated"] [rule="{\"group_id\":\"group\",\"id\":\"rule\",\"start_key\":\"\",\"end_key\":\"\",\"role\":\"voter\",\"is_witness\":false,\"count\":1,\"label_constraints\":[{\"key\":\"engine\",\"op\":\"in\",\"values\":[\"tiflash\"]}],\"version\":1,\"create_timestamp\":1792842846}"]
+[2026/10/24 19:54:06.493 +08:00] [INFO] [rule_manager.go:333] ["placement rule updated"] [rule="{\"group_id\":\"group\",\"id\":\"rule\",\"start_key\":\"\",\"end_key\":\"\",\"role\":\"voter\",\"is_witness\":false,\"count\":1,\"label_constraints\":[{\"key\":\"engine\",\"op\":\"notIn\",\"values\":[\"tiflash\"]}],\"version\":2,\"create_timestamp\":1792842846}"]
+[2026/10/24 19:54:06.493 +08:00] [INFO] [rule_manager.go:333] ["placement rule updated"] [rule="{\"group_id\":\"group\",\"id\":\"rule\",\"start_key\":\"\",\"end_key\":\"\",\"role\":\"voter\",\"is_witness\":false,\"count\":1,\"label_constraints\":[{\"key\":\"engine\",\"op\":\"in\",\"values\":[\"tiflash\"]},{\"key\":\"zone\",\"op\":\"in\",\"values\":[\"z1\"]}],\"version\":3,\"create_timestamp\":1792842846}"]
+[2026/10/24 19:54:06.494 +08:00] [INFO] [rule_manager.go:333] ["placement rule updated"] [rule="{\"group_id\":\"group\",\"id\":\"rule\",\"start_key\":\"\",\"end_key\":\"\",\"role\":\"voter\",\"is_witness\":false,\"count\":1,\"version\":4,\"create_timestamp\":1792842846}"]
+[2026/10/24 19:54:06.494 +08:00] [INFO] [rule_manager.go:333] ["placement rule updated"] [rule="{\"group_id\":\"group\",\"id\":\"restricted\",\"start_key\":\"\",\"end_key\":\"\",\"role\":\"voter\",\"is_witness\":false,\"count\":1,\"label_constraints\":[{\"key\":\"zone\",\"op\":\"in\",\"values\":[\"z1\"]}],\"create_timestamp\":1792842846}"]
+--- PASS: TestMayRestrictStoreLoad (0.01s)
+=== RUN   TestSetAfterGet
+[2026/10/24 19:54:06.496 +08:00] [INFO] [rule_manager.go:333] ["placement rule updated"] [rule="{\"group_id\":\"pd\",\"id\":\"default\",\"start_key\":\"\",\"end_key\":\"\",\"role\":\"voter\",\"is_witness\":false,\"count\":1,\"location_labels\":[\"zone\",\"rack\",\"host\"],\"version\":1}"]
+--- PASS: TestSetAfterGet (0.00s)
+=== RUN   TestKeys
+[2026/10/24 19:54:06.497 +08:00] [INFO] [rule_manager.go:333] ["placement rule updated"] [rule="{\"group_id\":\"1\",\"id\":\"1\",\"start_key\":\"\",\"end_key\":\"\",\"role\":\"voter\",\"is_witness\":false,\"count\":1,\"create_timestamp\":1792842846}"]
+[2026/10/24 19:54:06.497 +08:00] [INFO] [rule_manager.go:333] ["placement rule updated"] [rule="{\"group_id\":\"2\",\"id\":\"2\",\"start_key\":\"11\",\"end_key\":\"ff\",\"role\":\"voter\",\"is_witness\":false,\"count\":1,\"create_timestamp\":1792842846}"]
+[2026/10/24 19:54:06.497 +08:00] [INFO] [rule_manager.go:333] ["placement rule updated"] [rule="{\"group_id\":\"2\",\"id\":\"3\",\"start_key\":\"22\",\"end_key\":\"dd\",\"role\":\"voter\",\"is_witness\":false,\"count\":1,\"create_timestamp\":1792842846}"]
+[2026/10/24 19:54:06.498 +08:00] [INFO] [rule_manager.go:683] ["placement rules updated"] [batch="[{\"group_id\":\"1\",\"id\":\"1\",\"start_key\":\"\",\"end_key\":\"\",\"role\":\"voter\",\"is_witness\":false,\"count\":1,\"create_timestamp\":1792842846,\"action\":\"del\",\"delete_by_id_prefix\":false} {\"group_id\":\"2\",\"id\":\"2\",\"start_key\":\"11\",\"end_key\":\"ff\",\"role\":\"voter\",\"is_witness\":false,\"count\":1,\"create_timestamp\":1792842846,\"action\":\"del\",\"delete_by_id_prefix\":false} {\"group_id\":\"2\",\"id\":\"3\",\"start_key\":\"22\",\"end_key\":\"dd\",\"role\":\"voter\",\"is_witness\":false,\"count\":1,\"create_timestamp\":1792842846,\"action\":\"del\",\"delete_by_id_prefix\":false}]"]
+[2026/10/24 19:54:06.499 +08:00] [INFO] [rule_manager.go:620] ["placement rules updated"] [rules="[{\"group_id\":\"1\",\"id\":\"1\",\"start_key\":\"\",\"end_key\":\"\",\"role\":\"voter\",\"is_witness\":false,\"count\":1,\"create_timestamp\":1792842846} {\"group_id\":\"2\",\"id\":\"2\",\"start_key\":\"11\",\"end_key\":\"ff\",\"role\":\"voter\",\"is_witness\":false,\"count\":1,\"create_timestamp\":1792842846} {\"group_id\":\"2\",\"id\":\"3\",\"start_key\":\"22\",\"end_key\":\"dd\",\"role\":\"voter\",\"is_witness\":false,\"count\":1,\"create_timestamp\":1792842846} {\"group_id\":\"3\",\"id\":\"4\",\"start_key\":\"44\",\"end_key\":\"ee\",\"role\":\"voter\",\"is_witness\":false,\"count\":1,\"create_timestamp\":1792842846} {\"group_id\":\"3\",\"id\":\"5\",\"start_key\":\"44\",\"end_key\":\"dd\",\"role\":\"voter\",\"is_witness\":false,\"count\":1,\"create_timestamp\":1792842846}]"]
+[2026/10/24 19:54:06.499 +08:00] [INFO] [rule_manager.go:346] ["placement rule is removed"] [group=pd] [id=default]
+--- PASS: TestKeys (0.00s)
+=== RUN   TestGroupConfig
+[2026/10/24 19:54:06.500 +08:00] [INFO] [rule_manager.go:718] ["group config updated"] [group="{\"id\":\"pd\",\"index\":100,\"override\":true}"]
+[2026/10/24 19:54:06.500 +08:00] [INFO] [rule_manager.go:333] ["placement rule updated"] [rule="{\"group_id\":\"g\",\"id\":\"1\",\"start_key\":\"\",\"end_key\":\"\",\"role\":\"voter\",\"is_witness\":false,\"count\":1,\"create_timestamp\":1792842846}"]
+[2026/10/24 19:54:06.501 +08:00] [INFO] [rule_manager.go:718] ["group config updated"] [group="{\"id\":\"g\",\"index\":2,\"override\":true}"]
+[2026/10/24 19:54:06.501 +08:00] [INFO] [rule_manager.go:731] ["group config reset"] [group=pd]
+[2026/10/24 19:54:06.501 +08:00] [INFO] [rule_manager.go:346] ["placement rule is removed"] [group=pd] [id=default]
+--- PASS: TestGroupConfig (0.00s)
+=== RUN   TestCacheManager
+[2026/10/24 19:54:06.501 +08:00] [INFO] [rule_manager.go:620] ["placement rules updated"] [rules="[{\"group_id\":\"pd\",\"id\":\"default\",\"start_key\":\"\",\"end_key\":\"\",\"role\":\"voter\",\"is_witness\":false,\"count\":3,\"version\":1}]"]
+--- PASS: TestCacheManager (0.01s)
+PASS
+ok  	github.com/tikv/pd/pkg/schedule/placement	0.967s

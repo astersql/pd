@@ -13,3 +13,5 @@
 没有 I/O、MetaStore、副作用、时钟或后台任务。类型不依赖 proto/transport。
 独立测试显式注册于 lib.rs；固定 Go 运行输出、红绿测试及依赖树见
 [22-证据](../../../docs/rust/schedule/placement/22-证据.md)。
+
+批次 30：`get_split_keys(start,end)` 直接复用 canonical rangelist 开区间查询并返回独立字节数组；管理器查询与 fit 共用同一 RuleList 快照。

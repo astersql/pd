@@ -141,17 +141,6 @@ impl RegionRuleFitCacheManager {
 }
 
 impl crate::RuleManager {
-    fn rules_for_fit(&self, region: &RegionInfo) -> Vec<Arc<Rule>> {
-        self.rule_list()
-            .map(|l| {
-                l.get_rules_for_apply_range(
-                    &region.meta().key_range.start_key,
-                    &region.meta().key_range.end_key,
-                )
-                .to_vec()
-            })
-            .unwrap_or_default()
-    }
     pub fn fit_region_without_cache<
         C: astersql_pd_schedule_config::SharedConfigProvider + ?Sized,
     >(
@@ -163,7 +152,7 @@ impl crate::RuleManager {
         Arc::new(crate::fit_region(
             stores,
             region,
-            &self.rules_for_fit(region),
+            &self.get_rules_for_apply_region(region),
             conf.is_witness_allowed(),
         ))
     }
@@ -180,7 +169,12 @@ impl crate::RuleManager {
             .filter_map(|p| stores.iter().find(|s| s.id() == p.store_id).cloned())
             .collect();
         self.cache
-            .check_and_get_cache(region, &self.rules_for_fit(region), &selected, now)
+            .check_and_get_cache(
+                region,
+                &self.get_rules_for_apply_region(region),
+                &selected,
+                now,
+            )
             .0
     }
     /// Like Go, first insertion is explicit; unchanged candidates advance on fit.
@@ -191,7 +185,7 @@ impl crate::RuleManager {
         conf: &C,
         now: i128,
     ) -> Arc<RegionFit> {
-        let rules = self.rules_for_fit(region);
+        let rules = self.get_rules_for_apply_region(region);
         let selected: Vec<_> = region
             .meta()
             .peers
