@@ -126,6 +126,14 @@ impl RuleConfigPatch {
     pub fn mutation_counts(&self) -> (usize, usize) {
         (self.rules.len(), self.groups.len())
     }
+    pub(crate) fn rule_mutations(
+        &self,
+    ) -> impl Iterator<Item = (&[String; 2], &Option<Arc<Rule>>)> {
+        self.rules.iter()
+    }
+    pub(crate) fn group_mutations(&self) -> impl Iterator<Item = (&String, &RuleGroup)> {
+        self.groups.iter()
+    }
     fn merged(&self) -> RuleConfig {
         let mut result = self.original.clone();
         for (key, rule) in &self.rules {

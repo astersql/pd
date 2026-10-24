@@ -30,3 +30,9 @@ pub use rule_manager::{RuleManager, RuleManagerError};
 #[cfg(test)]
 #[path = "placement_restore_test.rs"]
 mod placement_restore_test;
+
+pub mod rule_batch;
+pub use rule_batch::RuleOp;
+#[cfg(test)]
+#[path = "placement_batch_test.rs"]
+mod placement_batch_test;

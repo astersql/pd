@@ -16,6 +16,8 @@ pub enum RuleManagerError {
     Content(String),
     #[error("[PD:hex:ErrHexDecodingString]decode string {0} error")]
     Hex(String),
+    #[error("invalid group regexp: {0}")]
+    Regex(#[from] regex::Error),
     #[error(transparent)]
     Build(#[from] crate::BuildRuleListError),
     #[error(transparent)]
@@ -26,10 +28,10 @@ pub enum RuleManagerError {
 /// Owns immutable configuration snapshots; no private runtime, clock or background work.
 /// `&mut self` makes the host's mutation serialization explicit.
 pub struct RuleManager {
-    storage: Arc<StorageEndpoint>,
-    paths: ClusterPaths,
-    config: RuleConfig,
-    list: Option<RuleList>,
+    pub(crate) storage: Arc<StorageEndpoint>,
+    pub(crate) paths: ClusterPaths,
+    pub(crate) config: RuleConfig,
+    pub(crate) list: Option<RuleList>,
     initialized: bool,
     key_type: String,
 }

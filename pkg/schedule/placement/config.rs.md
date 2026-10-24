@@ -19,3 +19,6 @@
 没有协议类型、MetaStore、I/O、全局状态、后台任务、私有 runtime 或系统时钟。
 生产实现对照 config.go，独立测试显式登记于 lib.rs；见
 [批次 23 证据](../../../docs/rust/schedule/placement/23-证据.md)。
+
+批次 25 的 crate 内只读 `rule_mutations/group_mutations` 供 manager 持久化 trim 后的补丁，
+不把存储写入领域配置，也不公开内部 map 给调用方修改。

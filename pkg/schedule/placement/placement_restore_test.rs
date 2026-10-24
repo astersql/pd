@@ -7,7 +7,7 @@ use astersql_pd_storage_kv::{Base, MemoryStore, MetaStore};
 use std::sync::Arc;
 #[allow(dead_code)]
 #[path = "../../storage/kv/etcd_fixture_test.rs"]
-mod fixture;
+pub(crate) mod fixture;
 fn config() -> ProviderSnapshot<String> {
     ProviderSnapshot::default()
 }

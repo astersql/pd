@@ -1,0 +1,27 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling aho-corasick v1.1.5
+   Compiling regex-syntax v0.8.11
+   Compiling regex-automata v0.4.18
+   Compiling regex v1.13.1
+   Compiling astersql-pd-schedule-placement v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/placement)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.86s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_placement-d16fae04edf99afd)
+
+running 3 tests
+
+thread 'placement_batch_test::placement_batch_go_regexp_ascii_classes' (155811651) panicked at pkg/schedule/placement/placement_batch_test.rs:236:5:
+Go regexp \d matches ASCII digits only
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test placement_batch_test::placement_batch_go_regexp_ascii_classes ... FAILED
+test placement_batch_test::placement_batch_memory_contract ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:55195
+test placement_batch_test::placement_batch_etcd_contract ... ok
+
+failures:
+
+failures:
+    placement_batch_test::placement_batch_go_regexp_ascii_classes
+
+test result: FAILED. 2 passed; 1 failed; 0 ignored; 0 measured; 23 filtered out; finished in 4.43s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-placement --lib`

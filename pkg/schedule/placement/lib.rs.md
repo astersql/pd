@@ -12,3 +12,6 @@ check_apply_rules、BuildRuleListError、RuleList，显式注册 placement_order
 批次 23 增加公开 config 模块，重导出 RuleConfig、RuleConfigPatch、rule_may_restrict_engine，
 显式登记 placement_patch_test.rs；owned 快照、JSON 裁剪、调用者时钟提交、TiKV/TiFlash 摘要
 见 [配置说明](config.rs.md) 和 [批次 23](../../../docs/rust/schedule/placement/23-证据.md)。
+
+批次 25 增加公开 rule_batch 模块、重导出 RuleOp，显式登记 placement_batch_test.rs。
+批量规则、组、bundle 和分批事务见 [rule_batch.rs.md](rule_batch.rs.md)。

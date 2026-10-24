@@ -396,6 +396,7 @@ dependencies = [
  "astersql-pd-storage-endpoint",
  "astersql-pd-storage-kv",
  "async-trait",
+ "regex",
  "serde",
  "serde_json",
  "thiserror 2.0.21",
