@@ -24,4 +24,8 @@ pub mod txn_ranges;
 #[cfg(test)]
 #[path = "affinity_availability_test.rs"]
 mod affinity_availability_test;
+#[cfg(test)]
+#[path = "affinity_update_peers_test.rs"]
+mod affinity_update_peers_test;
 pub mod policy;
+pub mod txn_peers;

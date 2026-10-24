@@ -1,0 +1,19 @@
+=== RUN   TestAdjustGroup
+[2026/10/24 22:07:54.509 +08:00] [INFO] [labeler.go:65] ["new region labeler created"] [label-rules-count=0]
+[2026/10/24 22:07:54.511 +08:00] [INFO] [txn.go:756] ["rebuilt group-label mapping"] [total-groups=0] [total-ranges=0]
+[2026/10/24 22:07:54.511 +08:00] [INFO] [policy.go:158] ["affinity manager availability check loop started"] [interval=10s]
+[2026/10/24 22:07:54.511 +08:00] [INFO] [manager.go:137] ["affinity manager initialized"] [group-count=0]
+--- PASS: TestAdjustGroup (0.01s)
+[2026/10/24 22:07:54.513 +08:00] [INFO] [labeler.go:81] ["region labeler GC stopped"]
+[2026/10/24 22:07:54.513 +08:00] [INFO] [policy.go:151] ["affinity manager availability check loop stopped"]
+=== RUN   TestObserveAvailableRegion
+[2026/10/24 22:07:54.514 +08:00] [INFO] [labeler.go:65] ["new region labeler created"] [label-rules-count=0]
+[2026/10/24 22:07:54.514 +08:00] [INFO] [txn.go:756] ["rebuilt group-label mapping"] [total-groups=0] [total-ranges=0]
+[2026/10/24 22:07:54.514 +08:00] [INFO] [policy.go:158] ["affinity manager availability check loop started"] [interval=10s]
+[2026/10/24 22:07:54.514 +08:00] [INFO] [manager.go:137] ["affinity manager initialized"] [group-count=0]
+[2026/10/24 22:07:54.515 +08:00] [INFO] [txn.go:200] ["affinity group added"] [group="{\"id\":\"g\",\"create_timestamp\":1792850874}"]
+--- PASS: TestObserveAvailableRegion (0.00s)
+[2026/10/24 22:07:54.518 +08:00] [INFO] [policy.go:151] ["affinity manager availability check loop stopped"]
+[2026/10/24 22:07:54.518 +08:00] [INFO] [labeler.go:81] ["region labeler GC stopped"]
+PASS
+ok  	github.com/tikv/pd/pkg/schedule/affinity	0.966s

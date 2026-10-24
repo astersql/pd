@@ -1,0 +1,30 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-schedule-affinity v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/affinity)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.26s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_affinity-0f1a0317ed941c8a)
+
+running 2 tests
+
+thread 'affinity_update_peers_test::affinity_update_peers_memory' (156371233) panicked at pkg/schedule/affinity/affinity_update_peers_test.rs:63:5:
+assertion `left == right` failed
+  left: []
+ right: [1]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test affinity_update_peers_test::affinity_update_peers_memory ... FAILED
+isolated etcd 3.5.15 ready at http://127.0.0.1:51493
+
+thread 'affinity_update_peers_test::affinity_update_peers_etcd' (156371232) panicked at pkg/schedule/affinity/affinity_update_peers_test.rs:63:5:
+assertion `left == right` failed
+  left: []
+ right: [1]
+test affinity_update_peers_test::affinity_update_peers_etcd ... FAILED
+
+failures:
+
+failures:
+    affinity_update_peers_test::affinity_update_peers_etcd
+    affinity_update_peers_test::affinity_update_peers_memory
+
+test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 33 filtered out; finished in 4.41s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-affinity --lib`
