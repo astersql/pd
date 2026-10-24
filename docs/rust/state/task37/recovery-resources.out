@@ -8,8 +8,8 @@ objdump 81646 xiangmin  txt    REG               1,15  4719296           3147779
 objdump 81646 xiangmin  txt    REG               1,15  2299152 1152921500312560823 /usr/lib/dyld
 objdump 81646 xiangmin  txt    REG               1,15   233056 1152921500312563091 /usr/libexec/rosetta/runtime
 objdump 81646 xiangmin    0r   CHR                3,2      0t0                 339 /dev/null
-objdump 81646 xiangmin    1   PIPE 0xceb5721b8c65db89    16384                     
-objdump 81646 xiangmin    2   PIPE 0x7c66fbf809f14c8f    16384                     
+objdump 81646 xiangmin    1   PIPE 0xceb5721b8c65db89    16384
+objdump 81646 xiangmin    2   PIPE 0x7c66fbf809f14c8f    16384
 objdump 81646 xiangmin    3r   REG               1,15  2299152 1152921500312560823 /usr/lib/dyld
 objdump 81646 xiangmin    4r   REG               1,15  4719296           314777900 /private/var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/go-build2919774261/b001/exe/objdump
 Running containers=8; none mounts target/rust-slot-1.
