@@ -1,0 +1,33 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-logutil v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/utils/logutil)
+   Compiling astersql-pd-grpcutil v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/utils/grpcutil)
+   Compiling astersql-pd-encryption v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/encryption)
+   Compiling astersql-pd-configutil v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/utils/configutil)
+   Compiling astersql-pd-schedule-config v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/config)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.11s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_config-4505728bb4291727)
+
+running 6 tests
+
+thread 'config_values_test::config_values_json_null_numbers' (154738343) panicked at pkg/schedule/config/config_values_test.rs:18:281:
+called `Result::unwrap()` on an `Err` value: Error("invalid type: null, expected f64", line: 0, column: 0)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test config_values_test::config_values_label_keys_go_table ... ok
+
+thread 'config_values_test::config_values_json_document_boundary' (154738342) panicked at pkg/schedule/config/config_values_test.rs:11:9:
+accepted trailing input: "{} {}"
+test config_values_test::config_values_json_document_boundary ... FAILED
+test config_values_test::config_values_json_null_numbers ... FAILED
+test config_values_test::config_values_clone_owned_collections ... ok
+test config_values_test::config_values_go_snapshots_round_trip ... ok
+test config_values_test::config_values_go_toml_defaults_presence_and_errors ... ok
+
+failures:
+
+failures:
+    config_values_test::config_values_json_document_boundary
+    config_values_test::config_values_json_null_numbers
+
+test result: FAILED. 4 passed; 2 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-config --lib`

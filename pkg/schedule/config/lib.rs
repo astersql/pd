@@ -71,6 +71,7 @@ pub struct ScheduleConfig {
         skip_serializing_if = "is_zero_float",
         serialize_with = "finite_float"
     )]
+    #[serde(deserialize_with = "null_default")]
     pub store_balance_rate: f64,
     #[serde(rename = "default-store-limit")]
     #[serde(deserialize_with = "null_default")]
@@ -78,10 +79,13 @@ pub struct ScheduleConfig {
     #[serde(rename = "store-limit")]
     pub store_limit: Option<BTreeMap<u64, StoreLimitConfig>>,
     #[serde(rename = "tolerant-size-ratio", serialize_with = "finite_float")]
+    #[serde(deserialize_with = "null_default")]
     pub tolerant_size_ratio: f64,
     #[serde(rename = "low-space-ratio", serialize_with = "finite_float")]
+    #[serde(deserialize_with = "null_default")]
     pub low_space_ratio: f64,
     #[serde(rename = "high-space-ratio", serialize_with = "finite_float")]
+    #[serde(deserialize_with = "null_default")]
     pub high_space_ratio: f64,
     #[serde(rename = "region-score-formula-version")]
     #[serde(deserialize_with = "null_default")]
@@ -167,6 +171,7 @@ pub struct ScheduleConfig {
         skip_serializing_if = "is_zero_float",
         serialize_with = "finite_float"
     )]
+    #[serde(deserialize_with = "null_default")]
     pub slow_store_evicting_affected_store_ratio_threshold: f64,
     #[serde(
         rename = "store-limit-version",
@@ -192,10 +197,13 @@ pub struct ScheduleConfig {
 #[serde(default)]
 pub struct StoreLimitConfig {
     #[serde(rename = "add-peer", serialize_with = "finite_float")]
+    #[serde(deserialize_with = "null_default")]
     pub add_peer: f64,
     #[serde(rename = "remove-peer", serialize_with = "finite_float")]
+    #[serde(deserialize_with = "null_default")]
     pub remove_peer: f64,
     #[serde(rename = "transfer-leader-in", serialize_with = "finite_float")]
+    #[serde(deserialize_with = "null_default")]
     pub transfer_leader_in: f64,
 }
 /// Pure values from Go SchedulerConfig; no service or IO initialization.
@@ -612,7 +620,10 @@ pub fn validate_label_key(key: &str) -> Result<(), String> {
 /// Decodes a fresh scheduling JSON snapshot. New stores inherit omitted fields
 /// from default-store-limit, including null fields, like Go UnmarshalJSON.
 pub fn decode_json(input: &str) -> Result<ScheduleConfig, serde_json::Error> {
-    deserialize_json(&mut serde_json::Deserializer::from_str(input))
+    let mut decoder = serde_json::Deserializer::from_str(input);
+    let config = deserialize_json(&mut decoder)?;
+    decoder.end()?;
+    Ok(config)
 }
 /// Serde adapter for Config's scheduling field.
 pub fn deserialize_json<'de, D: serde::Deserializer<'de>>(
@@ -789,3 +800,9 @@ const SCHEDULE_FLAGS: &[&str] = &[
     "enable-witness",
     "halt-scheduling",
 ];
+
+#[cfg(test)]
+mod config_values_test;
+
+mod value_contract;
+pub use value_contract::validate_labels;

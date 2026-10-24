@@ -1,0 +1,15 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-schedule-config v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/config)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.15s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_config-4505728bb4291727)
+
+running 7 tests
+test config_values_test::config_values_label_values_and_first_error ... ok
+test config_values_test::config_values_label_keys_go_table ... ok
+test config_values_test::config_values_json_document_boundary ... ok
+test config_values_test::config_values_json_null_numbers ... ok
+test config_values_test::config_values_clone_owned_collections ... ok
+test config_values_test::config_values_go_snapshots_round_trip ... ok
+test config_values_test::config_values_go_toml_defaults_presence_and_errors ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s

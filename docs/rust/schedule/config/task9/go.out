@@ -1,0 +1,500 @@
+Type 'help' for list of commands.
+(dlv) COMMAND config max-string-len 4096
+(dlv) COMMAND config max-array-values 128
+(dlv) COMMAND break main.main
+Breakpoint 1 set at 0x280c840 for main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:58
+(dlv) COMMAND continue
+> [Breakpoint 1] main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:58 (hits goroutine(1):1 total:1) (PC: 0x280c840)
+(dlv) COMMAND next
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+(dlv) COMMAND call runtime.mallocgc(4096, nil, true)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: unsafe.Pointer(0x3065e6465000)
+
+(dlv) COMMAND call runtime.mallocgc(4096, nil, true)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: unsafe.Pointer(0x3065e6129000)
+
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[0] = 123
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[1] = 125
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[2] = 32
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[3] = 123
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[4] = 125
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.ScheduleConfig")(0x3065e6465000).UnmarshalJSON((*(*"[4096]uint8")(0x3065e6129000))[:5])
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: error(*encoding/json.SyntaxError) *{
+		msg: "invalid character '{' after top-level value",
+		Offset: 4,}
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.ScheduleConfig")(0x3065e6465000).UnmarshalJSON((*(*"[4096]uint8")(0x3065e6129000))[:2])
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: error nil
+
+(dlv) SCENARIO {"default-store-limit":{"add-peer":null},"low-space-ratio":null}
+COMMAND set (*"[4096]uint8")(0x3065e6129000)[0] = 123
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[1] = 34
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[2] = 100
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[3] = 101
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[4] = 102
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[5] = 97
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[6] = 117
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[7] = 108
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[8] = 116
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[9] = 45
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[10] = 115
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[11] = 116
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[12] = 111
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[13] = 114
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[14] = 101
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[15] = 45
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[16] = 108
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[17] = 105
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[18] = 109
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[19] = 105
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[20] = 116
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[21] = 34
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[22] = 58
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[23] = 123
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[24] = 34
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[25] = 97
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[26] = 100
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[27] = 100
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[28] = 45
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[29] = 112
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[30] = 101
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[31] = 101
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[32] = 114
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[33] = 34
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[34] = 58
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[35] = 110
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[36] = 117
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[37] = 108
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[38] = 108
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[39] = 125
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[40] = 44
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[41] = 34
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[42] = 108
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[43] = 111
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[44] = 119
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[45] = 45
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[46] = 115
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[47] = 112
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[48] = 97
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[49] = 99
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[50] = 101
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[51] = 45
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[52] = 114
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[53] = 97
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[54] = 116
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[55] = 105
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[56] = 111
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[57] = 34
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[58] = 58
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[59] = 110
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[60] = 117
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[61] = 108
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[62] = 108
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[63] = 125
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.ScheduleConfig")(0x3065e6465000).UnmarshalJSON((*(*"[4096]uint8")(0x3065e6129000))[:64])
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: error nil
+
+(dlv) SCENARIO {"enable-joint-consensus":true}
+COMMAND set (*"[4096]uint8")(0x3065e6129000)[0] = 123
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[1] = 34
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[2] = 101
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[3] = 110
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[4] = 97
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[5] = 98
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[6] = 108
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[7] = 101
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[8] = 45
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[9] = 106
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[10] = 111
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[11] = 105
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[12] = 110
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[13] = 116
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[14] = 45
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[15] = 99
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[16] = 111
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[17] = 110
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[18] = 115
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[19] = 101
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[20] = 110
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[21] = 115
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[22] = 117
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[23] = 115
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[24] = 34
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[25] = 58
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[26] = 116
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[27] = 114
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[28] = 117
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[29] = 101
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[30] = 125
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.ScheduleConfig")(0x3065e6465000).UnmarshalJSON((*(*"[4096]uint8")(0x3065e6129000))[:31])
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: error(*errors.errorString) *{
+		s: "json: invalid use of ,string struct tag, trying to unmarshal unquoted value into bool",}
+
+(dlv) SCENARIO {"enable-joint-consensus":"false","max-snapshot-count":0}
+COMMAND set (*"[4096]uint8")(0x3065e6129000)[0] = 123
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[1] = 34
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[2] = 101
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[3] = 110
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[4] = 97
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[5] = 98
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[6] = 108
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[7] = 101
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[8] = 45
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[9] = 106
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[10] = 111
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[11] = 105
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[12] = 110
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[13] = 116
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[14] = 45
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[15] = 99
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[16] = 111
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[17] = 110
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[18] = 115
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[19] = 101
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[20] = 110
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[21] = 115
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[22] = 117
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[23] = 115
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[24] = 34
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[25] = 58
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[26] = 34
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[27] = 102
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[28] = 97
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[29] = 108
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[30] = 115
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[31] = 101
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[32] = 34
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[33] = 44
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[34] = 34
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[35] = 109
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[36] = 97
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[37] = 120
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[38] = 45
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[39] = 115
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[40] = 110
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[41] = 97
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[42] = 112
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[43] = 115
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[44] = 104
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[45] = 111
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[46] = 116
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[47] = 45
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[48] = 99
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[49] = 111
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[50] = 117
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[51] = 110
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[52] = 116
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[53] = 34
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[54] = 58
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[55] = 48
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[56] = 125
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.ScheduleConfig")(0x3065e6465000).UnmarshalJSON((*(*"[4096]uint8")(0x3065e6129000))[:57])
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: error nil
+
+(dlv) COMMAND call runtime.mallocgc(4096, nil, true)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: unsafe.Pointer(0x3065e64ac000)
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.ScheduleConfig")(0x3065e6465000).Adjust((*"github.com/tikv/pd/pkg/utils/configutil.ConfigMetaData")(0x3065e64ac000), false)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: error nil
+
+(dlv) COMMAND print (*"github.com/tikv/pd/pkg/schedule/config.ScheduleConfig")(0x3065e6465000)
+("*github.com/tikv/pd/pkg/schedule/config.ScheduleConfig")(0x3065e6465000)
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[0] = 123
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[1] = 34
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[2] = 115
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[3] = 99
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[4] = 104
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[5] = 101
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[6] = 100
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[7] = 117
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[8] = 108
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[9] = 101
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[10] = 114
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[11] = 115
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[12] = 45
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[13] = 118
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[14] = 50
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[15] = 34
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[16] = 58
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[17] = 91
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[18] = 123
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[19] = 34
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[20] = 116
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[21] = 121
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[22] = 112
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[23] = 101
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[24] = 34
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[25] = 58
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[26] = 34
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[27] = 98
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[28] = 97
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[29] = 108
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[30] = 97
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[31] = 110
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[32] = 99
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[33] = 101
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[34] = 45
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[35] = 114
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[36] = 101
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[37] = 103
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[38] = 105
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[39] = 111
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[40] = 110
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[41] = 34
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[42] = 44
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[43] = 34
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[44] = 97
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[45] = 114
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[46] = 103
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[47] = 115
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[48] = 34
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[49] = 58
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[50] = 91
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[51] = 34
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[52] = 97
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[53] = 34
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[54] = 93
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[55] = 125
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[56] = 93
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[57] = 44
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[58] = 34
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[59] = 115
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[60] = 116
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[61] = 111
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[62] = 114
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[63] = 101
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[64] = 45
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[65] = 108
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[66] = 105
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[67] = 109
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[68] = 105
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[69] = 116
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[70] = 34
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[71] = 58
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[72] = 123
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[73] = 34
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[74] = 55
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[75] = 34
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[76] = 58
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[77] = 123
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[78] = 34
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[79] = 97
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[80] = 100
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[81] = 100
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[82] = 45
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[83] = 112
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[84] = 101
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[85] = 101
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[86] = 114
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[87] = 34
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[88] = 58
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[89] = 51
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[90] = 125
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[91] = 125
+(dlv) COMMAND set (*"[4096]uint8")(0x3065e6129000)[92] = 125
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.ScheduleConfig")(0x3065e6465000).UnmarshalJSON((*(*"[4096]uint8")(0x3065e6129000))[:93])
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: error nil
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.ScheduleConfig")(0x3065e6465000).Clone()
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: ("*github.com/tikv/pd/pkg/schedule/config.ScheduleConfig")(0x3065e62fb800)
+*github.com/tikv/pd/pkg/schedule/config.ScheduleConfig {
+		MaxSnapshotCount: 64,
+		MaxPendingPeerCount: 64,
+		MaxMergeRegionSize: 54,
+		MaxMergeRegionKeys: 0,
+		SplitMergeInterval: github.com/tikv/pd/pkg/utils/typeutil.Duration {Duration: github.com/tikv/pd/pkg/schedule/config.defaultSwitchWitnessInterval (3600000000000)},
+		SwitchWitnessInterval: github.com/tikv/pd/pkg/utils/typeutil.Duration {Duration: github.com/tikv/pd/pkg/schedule/config.defaultSwitchWitnessInterval (3600000000000)},
+		EnableOneWayMerge: false,
+		EnableCrossTableMerge: true,
+		PatrolRegionInterval: github.com/tikv/pd/pkg/utils/typeutil.Duration {Duration: github.com/tikv/pd/pkg/schedule/schedulers.MinScheduleInterval (10000000)},
+		MaxStoreDownTime: github.com/tikv/pd/pkg/utils/typeutil.Duration {Duration: github.com/tikv/pd/pkg/schedule/checker.splitScatterPendingTTL (1800000000000)},
+		MaxStorePreparingTime: github.com/tikv/pd/pkg/utils/typeutil.Duration {Duration: github.com/tikv/pd/pkg/schedule/config.defaultMaxStorePreparingTime (172800000000000)},
+		LeaderScheduleLimit: 4,
+		LeaderSchedulePolicy: "count",
+		RegionScheduleLimit: 2048,
+		WitnessScheduleLimit: 4,
+		ReplicaScheduleLimit: 64,
+		MergeScheduleLimit: 8,
+		HotRegionScheduleLimit: 4,
+		AffinityScheduleLimit: 0,
+		SplitScatterScheduleLimit: 4,
+		HotRegionCacheHitsThreshold: 3,
+		StoreBalanceRate: 0,
+		DefaultStoreLimit: github.com/tikv/pd/pkg/schedule/config.StoreLimitConfig {AddPeer: 15, RemovePeer: 15, TransferLeaderIn: 100000000},
+		StoreLimit: map[uint64]github.com/tikv/pd/pkg/schedule/config.StoreLimitConfig [
+			7: (*"github.com/tikv/pd/pkg/schedule/config.StoreLimitConfig")(0x3065e5ebe6d0),
+		],
+		TolerantSizeRatio: 0,
+		LowSpaceRatio: 0.8,
+		HighSpaceRatio: 0.7,
+		RegionScoreFormulaVersion: "v2",
+		SchedulerMaxWaitingOperator: 5,
+		DisableLearner: false,
+		DisableRemoveDownReplica: false,
+		DisableReplaceOfflineReplica: false,
+		DisableMakeUpReplica: false,
+		DisableRemoveExtraReplica: false,
+		DisableLocationReplacement: false,
+		EnableRemoveDownReplica: true,
+		EnableReplaceOfflineReplica: true,
+		EnableMakeUpReplica: true,
+		EnableRemoveExtraReplica: true,
+		EnableLocationReplacement: true,
+		EnableDebugMetrics: false,
+		EnableJointConsensus: true,
+		EnableTiKVSplitRegion: true,
+		EnableHeartbeatBreakdownMetrics: true,
+		EnableHeartbeatConcurrentRunner: true,
+		Schedulers: github.com/tikv/pd/pkg/schedule/config.SchedulerConfigs len: 1, cap: 1, [
+			(*"github.com/tikv/pd/pkg/schedule/config.SchedulerConfig")(0x3065e6302d80),
+		],
+		HotRegionsWriteInterval: github.com/tikv/pd/pkg/utils/typeutil.Duration {Duration: github.com/tikv/pd/pkg/schedule/operator.operatorStatusRemainTime (600000000000)},
+		HotRegionsReservedDays: 7,
+		MaxMovableHotPeerSize: 512,
+		EnableDiagnostic: true,
+		EnableWitness: false,
+		SlowStoreEvictingAffectedStoreRatioThreshold: 0.3,
+		StoreLimitVersion: "v1",
+		HaltScheduling: false,
+		PatrolRegionWorkerCount: 1,
+		MaxAffinityMergeRegionSize: 256,}
+
+(dlv) COMMAND set (*"github.com/tikv/pd/pkg/schedule/config.ScheduleConfig")(0x3065e62fb800).MaxSnapshotCount = 999
+(dlv) COMMAND print (*"github.com/tikv/pd/pkg/schedule/config.ScheduleConfig")(0x3065e6465000).MaxSnapshotCount
+64
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.ScheduleConfig")(0x3065e62fb800).Schedulers[0].Type = "changed"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+(dlv) COMMAND print (*"github.com/tikv/pd/pkg/schedule/config.ScheduleConfig")(0x3065e6465000).Schedulers[0].Type
+"balance-region"
+(dlv) COMMAND set (*"github.com/tikv/pd/pkg/schedule/config.ScheduleConfig")(0x3065e62fb800).StoreLimit[7] = (*"github.com/tikv/pd/pkg/schedule/config.ScheduleConfig")(0x3065e6465000).DefaultStoreLimit
+(dlv) COMMAND print (*"github.com/tikv/pd/pkg/schedule/config.ScheduleConfig")(0x3065e6465000).StoreLimit[7].AddPeer
+3
+(dlv) COMMAND call runtime.mallocgc(4096, nil, true)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: unsafe.Pointer(0x3065e63c6000)
+
+(dlv) COMMAND call runtime.mallocgc(4096, nil, true)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: unsafe.Pointer(0x3065e63c7000)
+
+(dlv) COMMAND set (*"[1]*github.com/pingcap/kvproto/pkg/metapb.StoreLabel")(0x3065e63c7000)[0] = (*"github.com/pingcap/kvproto/pkg/metapb.StoreLabel")(0x3065e63c6000)
+(dlv) COMMAND call (*"github.com/pingcap/kvproto/pkg/metapb.StoreLabel")(0x3065e63c6000).Key = "zone"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+(dlv) COMMAND call (*"github.com/pingcap/kvproto/pkg/metapb.StoreLabel")(0x3065e63c6000).Value = ""
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+(dlv) COMMAND call "github.com/tikv/pd/pkg/schedule/config".ValidateLabels((*(*"[1]*github.com/pingcap/kvproto/pkg/metapb.StoreLabel")(0x3065e63c7000))[:1])
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: error nil
+
+(dlv) COMMAND call (*"github.com/pingcap/kvproto/pkg/metapb.StoreLabel")(0x3065e63c6000).Value = "-_./"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+(dlv) COMMAND call "github.com/tikv/pd/pkg/schedule/config".ValidateLabels((*(*"[1]*github.com/pingcap/kvproto/pkg/metapb.StoreLabel")(0x3065e63c7000))[:1])
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: error nil
+
+(dlv) COMMAND call (*"github.com/pingcap/kvproto/pkg/metapb.StoreLabel")(0x3065e63c6000).Value = "$abc"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+(dlv) COMMAND call "github.com/tikv/pd/pkg/schedule/config".ValidateLabels((*(*"[1]*github.com/pingcap/kvproto/pkg/metapb.StoreLabel")(0x3065e63c7000))[:1])
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: error(*github.com/pingcap/errors.fundamental) *{
+		msg: "$abc does not match format \"^[-A-Za-z0-9_./]*$\"",
+		stack: *github.com/pingcap/errors.stack len: 5, cap: 32, [30065276,30065576,184596,184444,660420],}
+
+(dlv) COMMAND call (*"github.com/pingcap/kvproto/pkg/metapb.StoreLabel")(0x3065e63c6000).Value = "a b"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+(dlv) COMMAND call "github.com/tikv/pd/pkg/schedule/config".ValidateLabels((*(*"[1]*github.com/pingcap/kvproto/pkg/metapb.StoreLabel")(0x3065e63c7000))[:1])
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: error(*github.com/pingcap/errors.fundamental) *{
+		msg: "a b does not match format \"^[-A-Za-z0-9_./]*$\"",
+		stack: *github.com/pingcap/errors.stack len: 5, cap: 32, [30065276,30065576,184596,184444,660420],}
+
+(dlv) COMMAND call (*"github.com/pingcap/kvproto/pkg/metapb.StoreLabel")(0x3065e63c6000).Value = "é"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+(dlv) COMMAND call "github.com/tikv/pd/pkg/schedule/config".ValidateLabels((*(*"[1]*github.com/pingcap/kvproto/pkg/metapb.StoreLabel")(0x3065e63c7000))[:1])
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: error(*github.com/pingcap/errors.fundamental) *{
+		msg: "é does not match format \"^[-A-Za-z0-9_./]*$\"",
+		stack: *github.com/pingcap/errors.stack len: 5, cap: 32, [30065276,30065576,184596,184444,660420],}
+
+(dlv) COMMAND call (*"github.com/pingcap/kvproto/pkg/metapb.StoreLabel")(0x3065e63c6000).Value = "a\n"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+(dlv) COMMAND call "github.com/tikv/pd/pkg/schedule/config".ValidateLabels((*(*"[1]*github.com/pingcap/kvproto/pkg/metapb.StoreLabel")(0x3065e63c7000))[:1])
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: error(*github.com/pingcap/errors.fundamental) *{
+		msg: "a\n does not match format \"^[-A-Za-z0-9_./]*$\"",
+		stack: *github.com/pingcap/errors.stack len: 5, cap: 32, [30065276,30065576,184596,184444,660420],}
+
+(dlv) COMMAND call "github.com/tikv/pd/pkg/schedule/config".ValidateLabelKey("z1")
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: error nil
+
+(dlv) COMMAND call "github.com/tikv/pd/pkg/schedule/config".ValidateLabelKey("z_")
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: error(*github.com/pingcap/errors.fundamental) *{
+		msg: "z_ does not match format \"^[$]?[A-Za-z0-9]([-A-Za-z0-9_./]*[A-Za-z0-9])?$\"",
+		stack: *github.com/pingcap/errors.stack len: 5, cap: 32, [30065276,30065760,184596,184444,660420],}
+
+(dlv) COMMAND call "github.com/tikv/pd/pkg/schedule/config".ValidateLabelKey("a/b")
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: error nil
+
+(dlv) COMMAND call "github.com/tikv/pd/pkg/schedule/config".ValidateLabelKey("$abc")
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: error nil
+
+(dlv) COMMAND call "github.com/tikv/pd/pkg/schedule/config".ValidateLabelKey("$")
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: error(*github.com/pingcap/errors.fundamental) *{
+		msg: "$ does not match format \"^[$]?[A-Za-z0-9]([-A-Za-z0-9_./]*[A-Za-z0-9])?$\"",
+		stack: *github.com/pingcap/errors.stack len: 5, cap: 32, [30065276,30065760,184596,184444,660420],}
+
+(dlv) COMMAND call "github.com/tikv/pd/pkg/schedule/config".ValidateLabelKey("é")
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: error(*github.com/pingcap/errors.fundamental) *{
+		msg: "é does not match format \"^[$]?[A-Za-z0-9]([-A-Za-z0-9_./]*[A-Za-z0-9])?$\"",
+		stack: *github.com/pingcap/errors.stack len: 5, cap: 32, [30065276,30065760,184596,184444,660420],}
+
+(dlv) COMMAND call "github.com/tikv/pd/pkg/schedule/config".ValidateLabelKey("a\n")
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: error(*github.com/pingcap/errors.fundamental) *{
+		msg: "a\n does not match format \"^[$]?[A-Za-z0-9]([-A-Za-z0-9_./]*[A-Za-z0-9])?$\"",
+		stack: *github.com/pingcap/errors.stack len: 5, cap: 32, [30065276,30065760,184596,184444,660420],}
+
+(dlv)

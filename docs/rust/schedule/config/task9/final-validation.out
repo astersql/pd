@@ -1,0 +1,1740 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+COMMAND cargo fmt --all
+EXIT 0
+COMMAND cargo metadata --format-version 1 --no-deps
+{"packages":[{"name":"astersql-pd-schedule-plan","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/schedule/plan#astersql-pd-schedule-plan@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[{"name":"astersql-pd-core","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/core"},{"name":"astersql-pd-errs","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/errs"}],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_schedule_plan","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/schedule/plan/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/schedule/plan/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-core","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/core#astersql-pd-core@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[{"name":"astersql-pd-btree","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/btree"},{"name":"astersql-pd-core-constant","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/core/constant"},{"name":"astersql-pd-movingaverage","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/movingaverage"},{"name":"astersql-pd-storelimit","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/core/storelimit"},{"name":"serde","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.0.229","kind":"dev","rename":null,"optional":false,"uses_default_features":true,"features":["derive"],"target":null,"registry":null},{"name":"serde_json","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.0.145","kind":"dev","rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"tokio","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.48.0","kind":"dev","rename":null,"optional":false,"uses_default_features":true,"features":["rt-multi-thread","macros","net","signal","sync","test-util","time"],"target":null,"registry":null}],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_core","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/core/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/core/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-btree","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/btree#astersql-pd-btree@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_btree","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/btree/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/btree/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-core-constant","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/core/constant#astersql-pd-core-constant@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_core_constant","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/core/constant/kind.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/core/constant/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-movingaverage","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/movingaverage#astersql-pd-movingaverage@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_movingaverage","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/movingaverage/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/movingaverage/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-storelimit","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/core/storelimit#astersql-pd-storelimit@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[{"name":"astersql-pd-core-constant","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/core/constant"},{"name":"astersql-pd-ratelimit","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/ratelimit"},{"name":"serde","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.0.229","kind":"dev","rename":null,"optional":false,"uses_default_features":true,"features":["derive"],"target":null,"registry":null},{"name":"serde_json","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.0.145","kind":"dev","rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"tokio","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.48.0","kind":"dev","rename":null,"optional":false,"uses_default_features":true,"features":["rt-multi-thread","macros","net","signal","sync","test-util","time"],"target":null,"registry":null}],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_storelimit","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/core/storelimit/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/core/storelimit/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-ratelimit","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/ratelimit#astersql-pd-ratelimit@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[{"name":"astersql-pd-errs","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/errs"},{"name":"astersql-pd-syncutil","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/syncutil"},{"name":"prometheus","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.14.0","kind":null,"rename":null,"optional":false,"uses_default_features":false,"features":[],"target":null,"registry":null},{"name":"thiserror","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=2.0.21","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"tokio","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.48.0","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["rt-multi-thread","macros","net","signal","sync","test-util","time"],"target":null,"registry":null},{"name":"tokio-util","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.7.17","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["rt"],"target":null,"registry":null}],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_ratelimit","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/ratelimit/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/ratelimit/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-errs","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/errs#astersql-pd-errs@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_errs","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/errs/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/errs/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-syncutil","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/utils/syncutil#astersql-pd-syncutil@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[{"name":"tokio","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.48.0","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["rt-multi-thread","macros","net","signal","sync","test-util","time"],"target":null,"registry":null}],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_syncutil","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/syncutil/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/syncutil/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-schedule-rangelist","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/schedule/rangelist#astersql-pd-schedule-rangelist@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_schedule_rangelist","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/schedule/rangelist/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/schedule/rangelist/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-schedule-keyrange","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/schedule/keyrange#astersql-pd-schedule-keyrange@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[{"name":"astersql-pd-keyutil","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/keyutil"}],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_schedule_keyrange","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/schedule/keyrange/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/schedule/keyrange/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-keyutil","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/utils/keyutil#astersql-pd-keyutil@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[{"name":"astersql-pd-errs","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/errs"},{"name":"serde","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.0.229","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"serde_json","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.0.145","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null}],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_keyutil","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/keyutil/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/keyutil/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-schedule-types","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/schedule/types#astersql-pd-schedule-types@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[{"name":"astersql-pd-kerneltype","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/versioninfo/kerneltype"},{"name":"serde_json","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.0.145","kind":"dev","rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null}],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_schedule_types","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/schedule/types/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/schedule/types/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-kerneltype","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/versioninfo/kerneltype#astersql-pd-kerneltype@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_kerneltype","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/versioninfo/kerneltype/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{"nextgen":[]},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/versioninfo/kerneltype/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-metering-config","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/metering/config#astersql-pd-metering-config@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[{"name":"serde","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.0.229","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["derive"],"target":null,"registry":null},{"name":"serde_json","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.0.145","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null}],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_metering_config","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/metering/config/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/metering/config/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-grpcutil","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/utils/grpcutil#astersql-pd-grpcutil@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[{"name":"base64","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.22.1","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"serde","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.0.229","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["derive"],"target":null,"registry":null},{"name":"serde_json","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.0.145","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null}],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_grpcutil","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/grpcutil/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/grpcutil/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-metricutil","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/utils/metricutil#astersql-pd-metricutil@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[{"name":"astersql-pd-typeutil","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/typeutil"},{"name":"serde","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.0.229","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["derive"],"target":null,"registry":null}],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_metricutil","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/metricutil/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/metricutil/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-typeutil","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/utils/typeutil#astersql-pd-typeutil@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[{"name":"serde","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.0.229","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"serde_json","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.0.145","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null}],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_typeutil","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/typeutil/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/typeutil/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-logutil","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/utils/logutil#astersql-pd-logutil@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[{"name":"serde","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.0.229","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["derive"],"target":null,"registry":null},{"name":"serde_json","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.0.145","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null}],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_logutil","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/logutil/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/logutil/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-encryption","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/encryption#astersql-pd-encryption@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[{"name":"astersql-pd-errs","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/errs"},{"name":"astersql-pd-typeutil","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/typeutil"},{"name":"serde","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.0.229","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["derive"],"target":null,"registry":null}],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_encryption","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/encryption/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/encryption/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-rm-server","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/mcs/resourcemanager/server#astersql-pd-rm-server@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[{"name":"astersql-pd-configutil","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/configutil"},{"name":"astersql-pd-typeutil","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/typeutil"},{"name":"serde","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.0.229","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["derive"],"target":null,"registry":null},{"name":"serde_json","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.0.145","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"toml","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.9.8","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null}],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_rm_server","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/mcs/resourcemanager/server/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/mcs/resourcemanager/server/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-configutil","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/utils/configutil#astersql-pd-configutil@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[{"name":"astersql-pd-encryption","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/encryption"},{"name":"astersql-pd-grpcutil","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/grpcutil"},{"name":"astersql-pd-logutil","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/logutil"},{"name":"astersql-pd-typeutil","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/typeutil"},{"name":"serde","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.0.229","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["derive"],"target":null,"registry":null}],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_configutil","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/configutil/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/configutil/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-schedule-config","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/schedule/config#astersql-pd-schedule-config@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[{"name":"astersql-pd-configutil","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/configutil"},{"name":"astersql-pd-typeutil","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/typeutil"},{"name":"serde","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.0.229","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["derive"],"target":null,"registry":null},{"name":"serde_json","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.0.145","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"toml","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.9.8","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null}],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_schedule_config","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/schedule/config/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/schedule/config/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-server-config","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/server/config#astersql-pd-server-config@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[{"name":"astersql-pd-configutil","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/configutil"},{"name":"astersql-pd-errs","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/errs"},{"name":"astersql-pd-logutil","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/logutil"},{"name":"astersql-pd-metering-config","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/metering/config"},{"name":"astersql-pd-metricutil","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/metricutil"},{"name":"astersql-pd-rm-server","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/mcs/resourcemanager/server"},{"name":"astersql-pd-schedule-config","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/schedule/config"},{"name":"astersql-pd-typeutil","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/typeutil"},{"name":"serde","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.0.229","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["derive"],"target":null,"registry":null},{"name":"serde_json","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.0.145","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["raw_value"],"target":null,"registry":null},{"name":"toml","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.9.8","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null}],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_server_config","src_path":"/Users/Shared/work/dir/data/codes/pd/server/config/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/server/config/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-etcdutil","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/utils/etcdutil#astersql-pd-etcdutil@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[{"name":"astersql-pd-storage-kv","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/storage/kv"},{"name":"tokio","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.48.0","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["rt-multi-thread","macros","net","signal","sync","test-util","time"],"target":null,"registry":null},{"name":"tokio-util","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.7.17","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["rt"],"target":null,"registry":null},{"name":"async-trait","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.1.92","kind":"dev","rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null}],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_etcdutil","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/etcdutil/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/etcdutil/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-storage-kv","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/storage/kv#astersql-pd-storage-kv@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[{"name":"async-trait","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.1.92","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"etcd-client","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.17.0","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["tls","tls-roots"],"target":null,"registry":null},{"name":"thiserror","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=2.0.21","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"tokio","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.48.0","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["rt-multi-thread","macros","net","signal","sync","test-util","time"],"target":null,"registry":null},{"name":"tokio-util","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.7.17","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["rt"],"target":null,"registry":null},{"name":"tonic","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.14.2","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null}],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_storage_kv","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/storage/kv/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true},{"kind":["test"],"crate_types":["bin"],"name":"etcd_contract","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/storage/kv/etcd_store_test.rs","edition":"2024","doc":false,"doctest":false,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/storage/kv/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-election","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/election#astersql-pd-election@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[{"name":"astersql-pd-storage-kv","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/storage/kv"},{"name":"thiserror","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=2.0.21","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"tokio","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.48.0","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["rt-multi-thread","macros","net","signal","sync","test-util","time"],"target":null,"registry":null},{"name":"tokio-util","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.7.17","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["rt"],"target":null,"registry":null},{"name":"async-trait","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.1.92","kind":"dev","rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null}],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_election","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/election/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/election/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-storage-endpoint","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/storage/endpoint#astersql-pd-storage-endpoint@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[{"name":"astersql-pd-core","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/core"},{"name":"astersql-pd-keypath","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/keypath"},{"name":"astersql-pd-proto","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/proto"},{"name":"astersql-pd-storage-kv","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/storage/kv"},{"name":"astersql-pd-typeutil","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/typeutil"},{"name":"prost","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.14.1","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"serde","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.0.229","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["derive"],"target":null,"registry":null},{"name":"serde_json","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.0.145","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["float_roundtrip"],"target":null,"registry":null},{"name":"thiserror","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=2.0.21","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"tokio","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.48.0","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["rt-multi-thread","macros","net","signal","sync","test-util","time"],"target":null,"registry":null},{"name":"tokio-util","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.7.17","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["rt"],"target":null,"registry":null},{"name":"async-trait","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.1.92","kind":"dev","rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null}],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_storage_endpoint","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/storage/endpoint/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/storage/endpoint/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-keypath","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/utils/keypath#astersql-pd-keypath@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_keypath","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/keypath/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/keypath/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-proto","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/proto#astersql-pd-proto@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[{"name":"prost","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.14.1","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"tonic","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.14.2","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"tonic-prost","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.14.2","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"prost-types","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.14.1","kind":"dev","rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"serde_json","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.0.145","kind":"dev","rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"protoc-bin-vendored","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=3.2.0","kind":"build","rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"serde_json","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.0.145","kind":"build","rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"sha2","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.10.9","kind":"build","rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"tonic-prost-build","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.14.2","kind":"build","rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"zip","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=2.4.2","kind":"build","rename":null,"optional":false,"uses_default_features":false,"features":["deflate"],"target":null,"registry":null}],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_proto","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/proto/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true},{"kind":["custom-build"],"crate_types":["bin"],"name":"build-script-build","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/proto/build.rs","edition":"2024","doc":false,"doctest":false,"test":false}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/proto/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-response","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/response#astersql-pd-response@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[{"name":"astersql-pd-core","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/core"},{"name":"astersql-pd-core-constant","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/core/constant"},{"name":"astersql-pd-typeutil","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/typeutil"},{"name":"serde","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.0.229","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["derive"],"target":null,"registry":null},{"name":"serde_json","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.0.145","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null}],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_response","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/response/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/response/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-rangetree","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/core/rangetree#astersql-pd-rangetree@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[{"name":"astersql-pd-btree","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/btree"}],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_rangetree","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/core/rangetree/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/core/rangetree/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-cache","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/cache#astersql-pd-cache@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[{"name":"astersql-pd-typeutil","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/typeutil"},{"name":"tokio","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.48.0","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["rt-multi-thread","macros","net","signal","sync","test-util","time"],"target":null,"registry":null},{"name":"tokio-util","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.7.17","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["rt"],"target":null,"registry":null}],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_cache","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/cache/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/cache/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-window","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/window#astersql-pd-window@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_window","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/window/window.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/window/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-balancer","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/balancer#astersql-pd-balancer@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[{"name":"astersql-pd-syncutil","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/syncutil"}],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_balancer","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/balancer/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/balancer/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-raft-prototype","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/storage/raft-prototype#astersql-pd-raft-prototype@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[{"name":"protobuf","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=2.28.0","kind":null,"rename":null,"optional":true,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"raft","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.7.0","kind":null,"rename":null,"optional":true,"uses_default_features":false,"features":["protobuf-codec"],"target":null,"registry":null},{"name":"serde_json","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.0.145","kind":null,"rename":null,"optional":true,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"sha2","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.10.9","kind":null,"rename":null,"optional":true,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"slog","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=2.8.2","kind":null,"rename":null,"optional":true,"uses_default_features":true,"features":[],"target":null,"registry":null}],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_raft_prototype","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/storage/raft-prototype/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true},{"kind":["test"],"crate_types":["bin"],"name":"cluster_test","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/storage/raft-prototype/cluster_test.rs","edition":"2024","required-features":["prototype"],"doc":false,"doctest":false,"test":true}],"features":{"default":[],"prototype":["dep:raft","dep:protobuf","dep:slog","dep:serde_json","dep:sha2"]},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/storage/raft-prototype/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-server","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/server#astersql-pd-server@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[{"name":"astersql-pd-core","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/core"},{"name":"astersql-pd-proto","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/proto"},{"name":"astersql-pd-tso","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/tso"},{"name":"async-trait","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.1.92","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"axum","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.8.9","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"futures-util","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.3.34","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"prometheus","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.14.0","kind":null,"rename":null,"optional":false,"uses_default_features":false,"features":[],"target":null,"registry":null},{"name":"serde_json","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.0.145","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"tokio","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.48.0","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["rt-multi-thread","macros","net","signal","sync","test-util","time"],"target":null,"registry":null},{"name":"tokio-stream","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.1.19","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"tokio-util","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.7.17","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["rt"],"target":null,"registry":null},{"name":"tonic","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.14.2","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"astersql-pd-runtime","source":null,"req":"*","kind":"dev","rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/runtime"},{"name":"astersql-pd-storage","source":null,"req":"*","kind":"dev","rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/storage"},{"name":"astersql-pd-storage-kv","source":null,"req":"*","kind":"dev","rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/storage/kv"}],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_server","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/server/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true},{"kind":["test"],"crate_types":["bin"],"name":"server","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/server/server_test.rs","edition":"2024","doc":false,"doctest":false,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/server/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-tso","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/tso#astersql-pd-tso@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[{"name":"astersql-pd-member","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/member"},{"name":"astersql-pd-storage-kv","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/storage/kv"},{"name":"thiserror","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=2.0.21","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"tokio","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.48.0","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["rt-multi-thread","macros","net","signal","sync","test-util","time"],"target":null,"registry":null},{"name":"tokio-util","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.7.17","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["rt"],"target":null,"registry":null},{"name":"serde_json","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.0.145","kind":"dev","rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null}],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_tso","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/tso/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true},{"kind":["test"],"crate_types":["bin"],"name":"etcd_behavior","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/tso/etcd_behavior_test.rs","edition":"2024","doc":false,"doctest":false,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/tso/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-member","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/member#astersql-pd-member@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[{"name":"astersql-pd-election","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/election"},{"name":"astersql-pd-keypath","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/keypath"},{"name":"astersql-pd-storage-kv","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/storage/kv"},{"name":"thiserror","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=2.0.21","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"tokio","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.48.0","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["rt-multi-thread","macros","net","signal","sync","test-util","time"],"target":null,"registry":null},{"name":"tokio-util","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.7.17","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["rt"],"target":null,"registry":null}],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_member","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/member/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true},{"kind":["test"],"crate_types":["bin"],"name":"etcd_behavior","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/member/etcd_behavior_test.rs","edition":"2024","doc":false,"doctest":false,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/member/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-runtime","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/runtime#astersql-pd-runtime@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[{"name":"astersql-pd-id","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/id"},{"name":"astersql-pd-member","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/member"},{"name":"astersql-pd-proto","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/proto"},{"name":"astersql-pd-server","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/server"},{"name":"astersql-pd-storage","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/storage"},{"name":"astersql-pd-tso","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/tso"},{"name":"async-trait","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.1.92","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"axum","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.8.9","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"prometheus","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.14.0","kind":null,"rename":null,"optional":false,"uses_default_features":false,"features":[],"target":null,"registry":null},{"name":"prost","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.14.1","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"tokio","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.48.0","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["rt-multi-thread","macros","net","signal","sync","test-util","time"],"target":null,"registry":null},{"name":"tokio-util","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.7.17","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["rt"],"target":null,"registry":null},{"name":"astersql-pd-storage-kv","source":null,"req":"*","kind":"dev","rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/storage/kv"},{"name":"serde_json","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.0.145","kind":"dev","rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"tokio-stream","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.1.19","kind":"dev","rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"tonic","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.14.2","kind":"dev","rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null}],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_runtime","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/runtime/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/runtime/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-id","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/id#astersql-pd-id@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[{"name":"astersql-pd-member","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/member"},{"name":"astersql-pd-storage-kv","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/storage/kv"},{"name":"thiserror","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=2.0.21","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"tokio","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.48.0","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["rt-multi-thread","macros","net","signal","sync","test-util","time"],"target":null,"registry":null},{"name":"tokio-util","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.7.17","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["rt"],"target":null,"registry":null}],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_id","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/id/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true},{"kind":["test"],"crate_types":["bin"],"name":"etcd_behavior","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/id/etcd_behavior_test.rs","edition":"2024","doc":false,"doctest":false,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/id/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-storage","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/storage#astersql-pd-storage@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[{"name":"astersql-pd-core","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/core"},{"name":"astersql-pd-keypath","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/keypath"},{"name":"astersql-pd-storage-endpoint","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/storage/endpoint"},{"name":"astersql-pd-storage-kv","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/storage/kv"},{"name":"tokio-util","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.7.17","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["rt"],"target":null,"registry":null},{"name":"tokio","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.48.0","kind":"dev","rename":null,"optional":false,"uses_default_features":true,"features":["rt-multi-thread","macros","net","signal","sync","test-util","time"],"target":null,"registry":null}],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_storage","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/storage/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true},{"kind":["test"],"crate_types":["bin"],"name":"etcd_contract","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/storage/kv/etcd_store_test.rs","edition":"2024","doc":false,"doctest":false,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/storage/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-cmd-pd-server","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/cmd/pd-server#astersql-pd-cmd-pd-server@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[{"name":"astersql-pd-runtime","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/runtime"},{"name":"astersql-pd-storage","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/storage"},{"name":"prometheus","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.14.0","kind":null,"rename":null,"optional":false,"uses_default_features":false,"features":[],"target":null,"registry":null},{"name":"tokio","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.48.0","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["rt-multi-thread","macros","net","signal","sync","test-util","time"],"target":null,"registry":null},{"name":"tokio-util","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.7.17","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["rt"],"target":null,"registry":null},{"name":"astersql-pd-storage-kv","source":null,"req":"*","kind":"dev","rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/storage/kv"},{"name":"serde_json","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.0.145","kind":"dev","rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null}],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_cmd_pd_server","src_path":"/Users/Shared/work/dir/data/codes/pd/cmd/pd-server/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true},{"kind":["bin"],"crate_types":["bin"],"name":"pd-server","src_path":"/Users/Shared/work/dir/data/codes/pd/cmd/pd-server/bin_main.rs","edition":"2024","doc":true,"doctest":false,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/cmd/pd-server/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-compat-tests","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/tests/rust-compat#astersql-pd-compat-tests@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[{"name":"astersql-pd-proto","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/proto"},{"name":"astersql-pd-storage-kv","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/storage/kv"},{"name":"prost","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.14.1","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"serde_json","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.0.145","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"tokio","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.48.0","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["rt-multi-thread","macros","net","signal","sync","test-util","time"],"target":null,"registry":null},{"name":"tokio-stream","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.1.19","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"tonic","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=0.14.2","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null}],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_compat_tests","src_path":"/Users/Shared/work/dir/data/codes/pd/tests/rust-compat/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true},{"kind":["bin"],"crate_types":["bin"],"name":"pd-compat-different-service","src_path":"/Users/Shared/work/dir/data/codes/pd/tests/rust-compat/fixtures/different_service.rs","edition":"2024","doc":true,"doctest":false,"test":false},{"kind":["test"],"crate_types":["bin"],"name":"health_member","src_path":"/Users/Shared/work/dir/data/codes/pd/tests/rust-compat/health_member_test.rs","edition":"2024","doc":false,"doctest":false,"test":true},{"kind":["test"],"crate_types":["bin"],"name":"tso","src_path":"/Users/Shared/work/dir/data/codes/pd/tests/rust-compat/tso_test.rs","edition":"2024","doc":false,"doctest":false,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/tests/rust-compat/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":"README.md","repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-keyspace-constant","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/keyspace/constant#astersql-pd-keyspace-constant@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_keyspace_constant","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/keyspace/constant/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/keyspace/constant/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-mcs-constant","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/mcs/utils/constant#astersql-pd-mcs-constant@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_mcs_constant","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/mcs/utils/constant/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/mcs/utils/constant/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-slice","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/slice#astersql-pd-slice@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_slice","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/slice/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/slice/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-codec","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/codec#astersql-pd-codec@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_codec","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/codec/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/codec/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-reflectutil","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/utils/reflectutil#astersql-pd-reflectutil@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[{"name":"serde_json","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.0.145","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null}],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_reflectutil","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/reflectutil/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/reflectutil/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-timerutil","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/utils/timerutil#astersql-pd-timerutil@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[{"name":"tokio","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.48.0","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":["rt-multi-thread","macros","net","signal","sync","test-util","time"],"target":null,"registry":null}],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_timerutil","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/timerutil/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/timerutil/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd-jsonutil","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd/pkg/utils/jsonutil#astersql-pd-jsonutil@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[{"name":"astersql-pd-reflectutil","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/reflectutil"},{"name":"serde","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.0.229","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null},{"name":"serde_json","source":"registry+https://github.com/rust-lang/crates.io-index","req":"=1.0.145","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null}],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd_jsonutil","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/jsonutil/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/pkg/utils/jsonutil/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":null,"repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"},{"name":"astersql-pd","version":"0.1.0","id":"path+file:///Users/Shared/work/dir/data/codes/pd#astersql-pd@0.1.0","license":"Apache-2.0","license_file":null,"description":null,"source":null,"dependencies":[{"name":"astersql-pd-runtime","source":null,"req":"*","kind":null,"rename":null,"optional":false,"uses_default_features":true,"features":[],"target":null,"registry":null,"path":"/Users/Shared/work/dir/data/codes/pd/pkg/runtime"}],"targets":[{"kind":["lib"],"crate_types":["lib"],"name":"astersql_pd","src_path":"/Users/Shared/work/dir/data/codes/pd/pkg/lib.rs","edition":"2024","doc":true,"doctest":true,"test":true}],"features":{},"manifest_path":"/Users/Shared/work/dir/data/codes/pd/Cargo.toml","metadata":null,"publish":null,"authors":[],"categories":[],"keywords":[],"readme":"README.md","repository":null,"homepage":null,"documentation":null,"edition":"2024","links":null,"default_run":null,"rust_version":"1.85"}],"workspace_members":["path+file:///Users/Shared/work/dir/data/codes/pd/pkg/schedule/plan#astersql-pd-schedule-plan@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/core#astersql-pd-core@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/btree#astersql-pd-btree@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/core/constant#astersql-pd-core-constant@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/movingaverage#astersql-pd-movingaverage@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/core/storelimit#astersql-pd-storelimit@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/ratelimit#astersql-pd-ratelimit@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/errs#astersql-pd-errs@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/utils/syncutil#astersql-pd-syncutil@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/schedule/rangelist#astersql-pd-schedule-rangelist@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/schedule/keyrange#astersql-pd-schedule-keyrange@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/utils/keyutil#astersql-pd-keyutil@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/schedule/types#astersql-pd-schedule-types@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/versioninfo/kerneltype#astersql-pd-kerneltype@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/metering/config#astersql-pd-metering-config@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/utils/grpcutil#astersql-pd-grpcutil@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/utils/metricutil#astersql-pd-metricutil@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/utils/typeutil#astersql-pd-typeutil@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/utils/logutil#astersql-pd-logutil@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/encryption#astersql-pd-encryption@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/mcs/resourcemanager/server#astersql-pd-rm-server@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/utils/configutil#astersql-pd-configutil@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/schedule/config#astersql-pd-schedule-config@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/server/config#astersql-pd-server-config@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/utils/etcdutil#astersql-pd-etcdutil@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/storage/kv#astersql-pd-storage-kv@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/election#astersql-pd-election@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/storage/endpoint#astersql-pd-storage-endpoint@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/utils/keypath#astersql-pd-keypath@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/proto#astersql-pd-proto@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/response#astersql-pd-response@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/core/rangetree#astersql-pd-rangetree@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/cache#astersql-pd-cache@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/window#astersql-pd-window@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/balancer#astersql-pd-balancer@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/storage/raft-prototype#astersql-pd-raft-prototype@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/server#astersql-pd-server@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/tso#astersql-pd-tso@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/member#astersql-pd-member@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/runtime#astersql-pd-runtime@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/id#astersql-pd-id@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/storage#astersql-pd-storage@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/cmd/pd-server#astersql-pd-cmd-pd-server@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/tests/rust-compat#astersql-pd-compat-tests@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/keyspace/constant#astersql-pd-keyspace-constant@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/mcs/utils/constant#astersql-pd-mcs-constant@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/slice#astersql-pd-slice@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/codec#astersql-pd-codec@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/utils/reflectutil#astersql-pd-reflectutil@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/utils/timerutil#astersql-pd-timerutil@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd/pkg/utils/jsonutil#astersql-pd-jsonutil@0.1.0","path+file:///Users/Shared/work/dir/data/codes/pd#astersql-pd@0.1.0"],"workspace_default_members":["path+file:///Users/Shared/work/dir/data/codes/pd#astersql-pd@0.1.0"],"resolve":null,"target_directory":"/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1","build_directory":"/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1","version":1,"workspace_root":"/Users/Shared/work/dir/data/codes/pd","metadata":null}
+EXIT 0
+COMMAND cargo fmt --all -- --check
+EXIT 0
+COMMAND cargo test --locked -p astersql-pd-schedule-config config_values -- --nocapture
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.09s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_config-4505728bb4291727)
+
+running 7 tests
+test config_values_test::config_values_label_values_and_first_error ... ok
+test config_values_test::config_values_label_keys_go_table ... ok
+test config_values_test::config_values_json_document_boundary ... ok
+test config_values_test::config_values_json_null_numbers ... ok
+test config_values_test::config_values_clone_owned_collections ... ok
+test config_values_test::config_values_go_snapshots_round_trip ... ok
+test config_values_test::config_values_go_toml_defaults_presence_and_errors ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s
+
+EXIT 0
+COMMAND cargo test --locked -p astersql-pd-schedule-config
+   Compiling astersql-pd-schedule-config v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/config)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.07s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_config-4505728bb4291727)
+
+running 12 tests
+test config_test::replication_labels_and_isolation ... ok
+test config_values_test::config_values_json_null_numbers ... ok
+test config_values_test::config_values_label_keys_go_table ... ok
+test config_values_test::config_values_json_document_boundary ... ok
+test config_values_test::config_values_clone_owned_collections ... ok
+test config_values_test::config_values_label_values_and_first_error ... ok
+test config_test::schedule_defaults_presence_reload_and_snapshot ... ok
+test config_test::schedule_store_migration_and_json_inheritance ... ok
+test config_test::schedule_five_deprecated_flag_truth_tables ... ok
+test config_test::schedule_all_validation_branches ... ok
+test config_values_test::config_values_go_snapshots_round_trip ... ok
+test config_values_test::config_values_go_toml_defaults_presence_and_errors ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_schedule_config
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+EXIT 0
+COMMAND cargo tree --locked -p astersql-pd-schedule-config
+astersql-pd-schedule-config v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/config)
+├── astersql-pd-configutil v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/utils/configutil)
+│   ├── astersql-pd-encryption v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/encryption)
+│   │   ├── astersql-pd-errs v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/errs)
+│   │   ├── astersql-pd-typeutil v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/utils/typeutil)
+│   │   │   ├── serde v1.0.229
+│   │   │   │   ├── serde_core v1.0.229
+│   │   │   │   └── serde_derive v1.0.229 (proc-macro)
+│   │   │   │       ├── proc-macro2 v1.0.107
+│   │   │   │       │   └── unicode-ident v1.0.27
+│   │   │   │       ├── quote v1.0.47
+│   │   │   │       │   └── proc-macro2 v1.0.107 (*)
+│   │   │   │       └── syn v3.0.9
+│   │   │   │           ├── proc-macro2 v1.0.107 (*)
+│   │   │   │           ├── quote v1.0.47 (*)
+│   │   │   │           └── unicode-ident v1.0.27
+│   │   │   └── serde_json v1.0.145
+│   │   │       ├── itoa v1.0.18
+│   │   │       ├── memchr v2.8.3
+│   │   │       ├── ryu v1.0.23
+│   │   │       └── serde_core v1.0.229
+│   │   └── serde v1.0.229 (*)
+│   ├── astersql-pd-grpcutil v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/utils/grpcutil)
+│   │   ├── base64 v0.22.1
+│   │   ├── serde v1.0.229 (*)
+│   │   └── serde_json v1.0.145 (*)
+│   ├── astersql-pd-logutil v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/utils/logutil)
+│   │   ├── serde v1.0.229 (*)
+│   │   └── serde_json v1.0.145 (*)
+│   ├── astersql-pd-typeutil v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/utils/typeutil) (*)
+│   └── serde v1.0.229 (*)
+├── astersql-pd-typeutil v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/utils/typeutil) (*)
+├── serde v1.0.229 (*)
+├── serde_json v1.0.145 (*)
+└── toml v0.9.8
+    ├── serde_core v1.0.229
+    ├── serde_spanned v1.1.2
+    │   └── serde_core v1.0.229
+    ├── toml_datetime v0.7.5+spec-1.1.0
+    │   └── serde_core v1.0.229
+    ├── toml_parser v1.1.5+spec-1.1.0
+    │   └── winnow v1.0.4
+    ├── toml_writer v1.1.3+spec-1.1.0
+    └── winnow v0.7.15
+EXIT 0
+COMMAND cargo check --workspace --locked
+    Checking astersql-pd-schedule-config v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/config)
+warning: use of deprecated field `astersql_pd_proto::pdpb::RegionHeartbeatRequest::cpu_usage`
+   --> pkg/server/core_region_adapter.rs:134:30
+    |
+134 |     r.set_response_cpu_usage(p.cpu_usage);
+    |                              ^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: `astersql-pd-server` (lib) generated 1 warning
+    Checking astersql-pd-server-config v0.1.0 (/Users/Shared/work/dir/data/codes/pd/server/config)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.14s
+EXIT 0
+COMMAND cargo test --workspace --locked
+   Compiling astersql-pd-schedule-config v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/config)
+warning: use of deprecated field `astersql_pd_proto::pdpb::RegionHeartbeatRequest::cpu_usage`
+   --> pkg/server/core_region_adapter.rs:134:30
+    |
+134 |     r.set_response_cpu_usage(p.cpu_usage);
+    |                              ^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: `astersql-pd-server` (lib) generated 1 warning
+   Compiling astersql-pd-schedule-plan v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/plan)
+warning: use of deprecated field `astersql_pd_proto::pdpb::RegionHeartbeatRequest::cpu_usage`
+  --> pkg/server/core_region_adapter_test.rs:88:13
+   |
+88 |             cpu_usage: 77,
+   |             ^^^^^^^^^^^^^
+
+warning: `astersql-pd-server` (lib test) generated 2 warnings (1 duplicate)
+   Compiling astersql-pd-server-config v0.1.0 (/Users/Shared/work/dir/data/codes/pd/server/config)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.56s
+     Running unittests pkg/lib.rs (target/rust-slot-1/debug/deps/astersql_pd-b4f8677f87a4e38a)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_balancer-2b4a90ef22198dfa)
+
+running 5 tests
+test balancer_test::round_robin_next ... ok
+test balancer_test::policy_and_membership ... ok
+test balancer_test::concurrent_membership ... ok
+test balancer_test::round_robin_next_concurrent ... ok
+test balancer_test::delete_duplicate_and_concurrency ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_btree-e8b849aefbddd8e1)
+
+running 12 tests
+test tests::clear_releases_payloads_and_reuses_empty_buffers ... ok
+test tests::invalid_degree - should panic ... ok
+test tests::zero_degree - should panic ... ok
+test tests::descending_order ... ok
+test tests::clone_clear_and_freelist ... ok
+test tests::insert_get_and_len ... ok
+test tests::split_replace_min_max ... ok
+test tests::descending_iteration ... ok
+test tests::ascending_iteration ... ok
+test tests::delete_min_max ... ok
+test tests::delete_and_rebalance ... ok
+test tests::order_statistics ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.32s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_cache-5b73eb89b75b127b)
+
+running 17 tests
+test cache_test::lru_behavior ... ok
+test cache_test::two_queue_behavior ... ok
+test cache_test::fifo_last_same_group ... ok
+test cache_test::priority_queue_query_remove ... ok
+test cache_test::fifo_behavior ... ok
+test cache_test::lru_behavior_unbounded_and_shared_values ... ok
+test cache_test::priority_queue_put_update ... ok
+test cache_test::two_queue_behavior_ghost_capacity_and_ratios ... ok
+test cache_test::thread_safe_cache_factory ... ok
+test ttl_test::ttl_cache_lifecycle_drop_releases_values_and_preserves_parent ... ok
+test ttl_test::ttl_cache_lifecycle_expiration_boundaries ... ok
+test ttl_test::ttl_cache_lifecycle_update_and_revival ... ok
+test ttl_test::ttl_cache_lifecycle_gc_restarts_and_cancels ... ok
+test ttl_test::ttl_cache_lifecycle_concurrent_put_pop ... ok
+test cache_test::fifo_behavior_concurrent_insertion ... ok
+test cache_test::fifo_behavior_empty_remove_panics - should panic ... ok
+test cache_test::thread_safe_cache_factory_concurrent_access ... ok
+
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_cmd_pd_server-aee8727b0ba8caa8)
+
+running 1 test
+isolated etcd 3.5.15 ready at http://127.0.0.1:58644
+test main_test::standalone_runtime_lifecycle ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 4.60s
+
+     Running unittests bin_main.rs (target/rust-slot-1/debug/deps/pd_server-4f47a9f723de1db4)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_codec-ef31fa85b3d7cbad)
+
+running 7 tests
+test bytes_test::memcomparable_bytes ... ok
+test keyspace_test::encoded_keyspace_boundary ... ok
+test keyspace_test::supported_keyspace_modes ... ok
+test keyspace_test::raw_keyspace_prefix ... ok
+test number_test::comparable_i64 ... ok
+test table_test::record_and_index_keys ... ok
+test table_test::table_identity_and_meta ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_compat_tests-2d1a9479ab8cbacc)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running health_member_test.rs (target/rust-slot-1/debug/deps/health_member-0f62ac08736fdbec)
+
+running 10 tests
+test metric_values_and_types_are_semantic ... ok
+test normalization_does_not_hide_equal_valued_config ... ok
+test normalization_preserves_semantics ... ok
+test minimal_member_preserves_semantics_and_rejects_unknown_fields ... ok
+test protobuf_clock_offset_preserves_logical_difference ... ok
+test failed_start_cleans_directory ... ok
+test health_member_processes ... ok
+test detects_semantic_difference ... ok
+test early_exit_is_reported_and_cleaned ... ok
+test readiness_timeout_cleans_process_and_data ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.23s
+
+     Running tso_test.rs (target/rust-slot-1/debug/deps/tso-58790fba46981b32)
+
+running 1 test
+test tso_processes ... ignored, requires Go/Rust process binaries; run scripts/run-pd-compat.sh
+
+test result: ok. 0 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_configutil-85c3137e46504819)
+
+running 15 tests
+test config_metadata_test::config_metadata_absent_and_empty_metadata ... ok
+test config_adjust_test::config_adjust_string ... ok
+test config_adjust_test::config_adjust_float64 ... ok
+test config_adjust_test::config_adjust_integers ... ok
+test config_adjust_test::config_adjust_bool ... ok
+test config_adjust_test::config_adjust_duration ... ok
+test config_unknown_test::config_unknown_absent_and_empty_metadata ... ok
+test config_unknown_test::config_unknown_child_uses_global_metadata ... ok
+test config_metadata_test::config_metadata_child_does_not_mutate_parent_or_siblings ... ok
+test config_metadata_test::config_metadata_literal_segments_case_and_empty_keys ... ok
+test config_metadata_test::config_metadata_explicit_zero_values_and_missing ... ok
+test config_metadata_test::config_metadata_nested_prefixes_and_missing_paths ... ok
+test config_unknown_test::config_unknown_nested_paths_and_document_order ... ok
+test config_unknown_test::config_unknown_preserves_parser_display_verbatim ... ok
+test config_unknown_test::config_unknown_warning_leaves_values_and_views_usable ... ok
+
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_core-f75d13634a223c2d)
+
+running 160 tests
+test peer_test::core_task_09_default_and_identity ... ok
+test region_buckets_test::core_task_34_identity_and_clear ... ok
+test region_buckets_test::core_task_34_meta_priority_and_clone ... ok
+test region_buckets_test::core_task_34_absent_and_zero ... ok
+test region_buckets_test::core_task_34_versions ... ok
+test region_clone_test::core_task_29_snapshot_options ... ok
+test region_clone_test::core_task_29_epoch_boundaries ... ok
+test peer_test::core_task_09_joint_and_empty ... ok
+test peer_test::core_task_09_unknown_role ... ok
+test peer_test::core_task_09_roles_and_witness ... ok
+test region_clone_test::core_task_29_peers_and_absent_candidates ... ok
+test region_clone_test::core_task_68_clone_option_coverage ... ok
+test region_flow_test::core_task_30_invalid_flow_pairs ... ok
+test region_flow_test::core_task_30_rounding ... ok
+test region_flow_test::core_task_30_sizes_and_clone ... ok
+test region_buckets_test::core_task_34_competing_snapshots ... ok
+test region_flow_test::core_task_68_raw_stat_options_preserve_signed_values_and_source ... ok
+test basic_cluster_rates_test::core_task_58_empty_and_missing_store ... ok
+test basic_cluster_test::core_task_57_leader_lookup_absent_paths ... ok
+test region_flow_test::core_task_68_store_peer_statistics ... ok
+test basic_cluster_test::core_task_57_removal_clears_status ... ok
+test region_format_test::core_task_36_peer_diffs ... ok
+test basic_cluster_test::core_task_57_status_and_snapshot ... ok
+test region_format_test::core_task_36_peer_order_duplicates_and_roles ... ok
+test region_guide_test::core_task_35_new_region ... ok
+test basic_cluster_rates_test::core_task_58_alignment_roles_removed_and_deletion ... ok
+test region_format_test::core_task_36_rule_codec ... ok
+test region_inherit_test::core_task_33_bucket_conditions_and_sharing ... ok
+test region_inherit_test::core_task_33_sources_and_flow_remain_local ... ok
+test region_inherit_test::core_task_33_size_keys_fixture ... ok
+test region_merge_test::core_task_38_absent_unselected_epoch ... ok
+test region_merge_test::core_task_38_empty_and_odd_tail ... ok
+test region_merge_policy_test::core_task_32_thresholds_and_empty_sentinels ... ok
+test region_meta_test::core_task_10_defaults_preserve_absent_epoch ... ok
+test region_guide_test::core_task_35_branch_matrix ... ok
+test region_merge_test::core_task_38_pair_metadata_and_epoch_side_effects ... ok
+test region_meta_test::core_task_10_owned_metadata_and_u64_boundaries ... ok
+test region_meta_test::core_task_10_key_ranges ... ok
+test region_query_test::core_task_31_query_merge_reset ... ok
+test region_query_test::core_task_31_loads_and_rates ... ok
+test region_split_test::core_task_37_empty_and_batch_offsets ... ok
+test region_split_test::core_task_37_boundaries_epoch_ids_and_owned_clones ... ok
+test region_stale_test::core_task_45_error_precedence_and_payloads ... ok
+test region_stale_test::core_task_45_nil_epoch_and_unsigned_limits ... ok
+test region_test::core_task_28_duplicate_store_lookup_order ... ok
+test region_test::core_task_28_empty_and_missing ... ok
+test region_test::core_task_28_classification_and_queries ... ok
+test region_tree_random_test::core_task_43_continuous_ranges ... ok
+test region_stale_test::core_task_45_fixture_checks ... ok
+test region_tree_random_test::core_task_43_empty_duplicate_and_identity ... ok
+test region_format_test::core_task_36_keys_and_meta ... ok
+test region_tree_scan_test::core_task_42_callback_stops_immediately ... ok
+test region_tree_random_test::core_task_43_retry_boundaries ... ok
+test region_tree_random_test::core_task_43_ranges_and_candidates ... ok
+test region_tree_scan_test::core_task_42_count_rank_semantics ... ok
+test region_tree_scan_test::core_task_42_empty_and_no_candidate ... ok
+test region_tree_scan_test::core_task_42_scan_holes_and_boundaries ... ok
+test region_tree_stats_test::core_task_41_in_place_and_uncounted ... ok
+test region_tree_stats_test::core_task_41_missing_removal_and_overlap ... ok
+test region_tree_stats_test::core_task_41_go_size_sequence_and_multi_overlap ... ok
+test region_tree_random_test::core_task_43_invalid_random_index - should panic ... ok
+test region_split_test::core_task_37_absent_epoch_panics_like_go - should panic ... ok
+test region_merge_test::core_task_38_absent_selected_epoch - should panic ... ok
+test region_tree_stats_test::core_task_41_replace_remove ... ok
+test region_tree_test::core_task_39_adjacent_and_ordering ... ok
+test region_tree_test::core_task_39_binary_bounds_and_shared_identity ... ok
+test region_tree_test::core_task_39_fixture_queries ... ok
+test regions_atomic_test::core_task_46_precheck_snapshot_cannot_authorize_stale_commit ... ok
+test regions_atomic_test::core_task_68_combined_put_updates_roles_but_root_only_does_not ... ok
+test regions_atomic_test::core_task_46_fixture_all_entries ... ok
+test region_tree_update_test::core_task_40_fixture_mutations ... ok
+test regions_batch_scan_test::core_task_52_go_limit_matrix ... ok
+test regions_query_test::core_task_50_empty_and_no_candidates ... ok
+test regions_query_test::core_task_50_mixed_fixture ... ok
+test regions_random_test::core_task_55_distinct_candidates_and_injected_randomness ... ok
+test regions_batch_scan_test::core_task_52_fixture_behavior ... ok
+test regions_random_test::core_task_55_witness_leader ... ok
+test regions_atomic_test::core_task_46_shared_owners_preserve_newest_version ... ok
+test regions_random_test::core_task_55_role_changes_remove_old_candidates ... ok
+test regions_range_stats_test::core_task_54_holes_and_neighbors ... ok
+test regions_range_stats_test::core_task_54_counts ... ok
+test regions_range_stats_test::core_task_54_sizes ... ok
+test regions_reset_test::core_task_49_flow_replacement_and_reset ... ok
+test regions_random_test::core_task_55_roles_ranges_and_absence ... ok
+test regions_reset_test::core_task_49_remove_split_and_missing ... ok
+test regions_scan_test::core_task_51_empty_and_finite_tail ... ok
+test regions_scan_test::core_task_51_iterator_identity_and_stop ... ok
+test regions_reset_test::core_task_49_reset_and_reinsert ... ok
+test regions_stats_test::core_task_53_roles_updates_and_removal ... ok
+test regions_subtree_order_test::core_task_48_missing_root_and_overlap_recheck ... ok
+test regions_scan_test::core_task_51_ranges_and_limits ... ok
+test regions_subtree_order_test::core_task_48_stale_and_recreated ... ok
+test regions_subtree_test::core_task_47_overlap_fallback_and_empty_membership ... ok
+test regions_subtree_order_test::core_task_48_eventual_repair_with_barrier ... ok
+test regions_subtree_test::core_task_47_same_range_payload_and_nil_leader ... ok
+test regions_stats_test::core_task_53_prepared_threshold_and_empty ... ok
+test regions_subtree_test::core_task_47_roles_and_range_changes ... ok
+test regions_test::core_task_44_snapshot_ownership ... ok
+test store_clone_test::core_task_16_metadata_boundaries ... ok
+test regions_subtree_test::core_task_47_same_range_role_changes_and_explicit_overlap ... ok
+test store_clone_test::core_task_16_zero_value ... ok
+test store_clone_test::core_task_16_concurrent_stats ... ok
+test store_clone_test::core_task_16_shared_stats_and_smoothing ... ok
+test regions_test::core_task_44_fixture_replacements ... ok
+test store_control_test::core_task_18_invalid_direction_is_noop ... ok
+test store_control_test::core_task_18_clone_counters_are_independent ... ok
+test store_health_test::core_task_23_slow ... ok
+test store_health_test::core_task_68_witness_score_delta_and_wrapping ... ok
+test store_control_test::core_task_18_source_scenarios ... ok
+test store_health_test::core_task_23_space ... ok
+test store_health_test::core_task_23_resolved ... ok
+test regions_query_test::core_task_50_batch_boundaries_duplicates_and_buckets ... ok
+test store_labels_test::core_task_13_lookup_and_absent_meta ... ok
+test store_labels_test::core_task_13_unicode_and_error_escaping ... ok
+test store_clone_test::core_task_16_shared_limiter ... ok
+test store_location_test::core_task_24_empty_and_same_id ... ok
+test store_limit_test::core_task_19_assembly_reset_and_clone ... ok
+test store_meta_test::core_task_11_absent_metadata_and_zero_value ... ok
+test store_labels_test::core_task_13_engine_fixture ... ok
+test store_labels_test::core_task_13_merge_fixture ... ok
+test store_limit_test::core_task_19_unknown_type_panics - should panic ... ok
+test store_limit_test::core_task_19_v2_priority_feedback_and_replacement ... ok
+test store_location_test::core_task_24_location_fixture ... ok
+test store_meta_test::core_task_68_store_metadata_options_detach_and_preserve_identity ... ok
+test store_resource_test::core_task_20_weight_edges ... ok
+test store_resource_test::core_task_20_resources_and_clone ... ok
+test store_resource_test::core_task_20_fixture_scores ... ok
+test store_meta_test::core_task_11_metadata_roundtrip ... ok
+test store_labels_test::core_task_13_go_simple_fold_orbits ... ok
+test store_score_v1_test::core_task_21_zero_used_regression_and_nan_weight ... ok
+test store_score_v2_test::core_task_22_average_nan_and_wrapping ... ok
+test store_score_v2_test::core_task_22_existing_go_ordering ... ok
+test store_score_v1_test::core_task_21_fixture_scores ... ok
+test store_state_test::core_task_12_absent_metadata_defaults ... ok
+test store_state_test::core_task_12_transitions ... ok
+test store_stats_average_test::core_task_15_clamp ... ok
+test store_state_test::core_task_12_offline_requires_flag - should panic ... ok
+test store_stats_average_test::core_task_15_unsmoothed_zero_value ... ok
+test store_state_test::core_task_12_state_matrix ... ok
+test store_score_v2_test::core_task_22_fixture_and_routing ... ok
+test store_stats_average_test::core_task_15_sequences ... ok
+test store_stats_test::core_task_14_dfs_owned_counters ... ok
+test store_stats_average_test::core_task_15_window_rollover_and_negative_overshoot ... ok
+test store_stats_test::core_task_68_new_store_stats_detaches_smoothing ... ok
+test store_time_test::core_task_17_clone_and_clock_progression ... ok
+test store_stats_test::core_task_14_raw_stats_fixture ... ok
+test stores_control_test::core_task_27_controls_and_snapshots ... ok
+test stores_control_test::core_task_27_missing_and_limit ... ok
+test regions_query_test::core_task_50_distinct_ids_across_batches ... ok
+test store_time_test::core_task_17_time_contract ... ok
+test stores_control_test::core_task_27_network_current_membership ... ok
+test stores_test::core_task_26_zero_id_and_absent_metadata ... ok
+test stores_test::core_task_26_registry_snapshots ... ok
+test store_topology_test::core_task_25_topology_fixtures ... ok
+test stores_region_test::core_task_56_handles_survive_replacement_and_deletion ... ok
+test stores_region_test::core_task_56_membership_intersects_registry ... ok
+test store_location_test::core_task_24_go_grid ... ok
+test regions_range_stats_test::core_task_54_size_across_go_scan_batches ... ok
+test stores_test::core_task_26_patch_current_and_concurrent_updates ... ok
+test region_tree_update_test::core_task_40_repeated_split_merge ... ok
+
+test result: ok. 160 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running unittests kind.rs (target/rust-slot-1/debug/deps/astersql_pd_core_constant-9ecdb4a21559637c)
+
+running 4 tests
+test kind_test::priority_and_resource_kind ... ok
+test kind_test::direction_display ... ok
+test kind_test::key_type_round_trip ... ok
+test kind_test::schedule_policy_round_trip ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_election-29a01eeb0934e411)
+
+running 19 tests
+test lease_expiry_test::lease_expiry_boundaries ... ok
+test leader_delete_test::leader_delete_memory ... ok
+test leader_watch_test::leader_watch_healthy_idle_reopen ... ok
+test lease_expiry_test::lease_expiry_memory ... ok
+test leadership_test::leadership_move_memory ... ok
+test campaign_key_test::campaign_key_memory ... ok
+test leader_watch_test::leader_watch_unhealthy_timeout ... ok
+test watch_reset_test::watch_reset_race_memory ... ok
+test watch_reset_test::watch_reset_memory ... ok
+test leader_watch_test::leader_watch_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:58715
+isolated etcd 3.5.15 ready at http://127.0.0.1:58711
+isolated etcd 3.5.15 ready at http://127.0.0.1:58709
+isolated etcd 3.5.15 ready at http://127.0.0.1:58705
+isolated etcd 3.5.15 ready at http://127.0.0.1:58706
+test leader_delete_test::leader_delete_etcd ... ok
+test watch_reset_test::watch_reset_race_etcd ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:58702
+isolated etcd 3.5.15 ready at http://127.0.0.1:58713
+isolated etcd 3.5.15 ready at http://127.0.0.1:58701
+test watch_reset_test::watch_reset_etcd ... ok
+test campaign_key_test::campaign_key_etcd ... ok
+test leadership_test::leadership_move_etcd ... ok
+test lease_expiry_test::lease_expiry_etcd ... ok
+test lease_keep_test::lease_keep_memory ... ok
+test leader_watch_test::leader_watch_etcd ... ok
+test lease_keep_test::lease_keep_etcd ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 12.51s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_encryption-901a69c2281c9589)
+
+running 2 tests
+test config_test::encryption_defaults_and_methods ... ok
+test config_test::encryption_errors_preserve_code_precedence_and_partial_defaults ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_errs-e429f02db16c1b90)
+
+running 7 tests
+test error_test::leader_changed_classification ... ok
+test error_test::typed_error_core ... ok
+test catalog_test::catalog_service_domains ... ok
+test catalog_test::catalog_foundation_domains ... ok
+test catalog_test::catalog_infrastructure_domains ... ok
+test catalog_test::catalog_scheduling_domains ... ok
+test catalog_test::catalog_completeness ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_etcdutil-f46aadaee21b482a)
+
+running 12 tests
+test snapshot_loader_test::snapshot_loader_values ... ok
+test snapshot_loader_test::snapshot_loader_memory ... ok
+test watch_control_test::watch_control_initial_force_interval ... ok
+test snapshot_watch_test::snapshot_watch_memory ... ok
+test watch_reconcile_test::watch_reconcile_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:58819
+isolated etcd 3.5.15 ready at http://127.0.0.1:58817
+isolated etcd 3.5.15 ready at http://127.0.0.1:58816
+isolated etcd 3.5.15 ready at http://127.0.0.1:58818
+isolated etcd 3.5.15 ready at http://127.0.0.1:58815
+test snapshot_loader_test::snapshot_loader_etcd ... ok
+test watch_reconcile_test::watch_reconcile_etcd ... ok
+test watch_control_test::watch_control_memory ... ok
+test snapshot_watch_test::snapshot_watch_etcd ... ok
+test ttl_put_test::ttl_put_memory ... ok
+test watch_control_test::watch_control_etcd ... ok
+test ttl_put_test::ttl_put_etcd ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 8.96s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_grpcutil-408f27123d98e533)
+
+running 1 test
+test config_test::tls_bytes_null_empty_and_base64 ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_id-522d8bc03720f60b)
+
+running 9 tests
+test allocator_namespace_test::allocator_namespace_values ... ok
+test allocator_test::memory_corrupt_and_exhausted_boundary ... ok
+test allocator_namespace_test::allocator_namespace_memory ... ok
+test allocator_base_test::allocator_base_memory ... ok
+test allocator_test::memory_concurrency_restart_fencing ... ok
+test allocate_count_test::allocate_count_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:58905
+isolated etcd 3.5.15 ready at http://127.0.0.1:58903
+isolated etcd 3.5.15 ready at http://127.0.0.1:58904
+test allocate_count_test::allocate_count_etcd ... ok
+test allocator_base_test::allocator_base_etcd ... ok
+test allocator_namespace_test::allocator_namespace_etcd ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 5.03s
+
+     Running etcd_behavior_test.rs (target/rust-slot-1/debug/deps/etcd_behavior-d51890af520aab4d)
+
+running 5 tests
+test scenario::memory_corrupt_and_exhausted_boundary ... ok
+test scenario::memory_concurrency_restart_fencing ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:58947
+isolated etcd 3.5.15 ready at http://127.0.0.1:58946
+test real_etcd_boundaries ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:58945
+test real_etcd_behavior ... ok
+test real_etcd_wal_restart ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.28s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_jsonutil-9183623d0a1734c1)
+
+running 5 tests
+test jsonutil_test::add_key_value_existing_null_and_nested_unknown ... ok
+test jsonutil_test::merge_json_object_serialization_failure ... ok
+test jsonutil_test::merge_json_object_invalid_inputs_are_unchanged ... ok
+test jsonutil_test::merge_json_object_fields_and_flags ... ok
+test jsonutil_test::add_key_value_flags ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_kerneltype-244aaf9ef19a655c)
+
+running 2 tests
+test kerneltype_test::classic_kernel_default ... ok
+test kerneltype_test::nextgen_kernel_feature ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_keypath-041a3051b85eb517)
+
+running 13 tests
+test gc_paths_test::gc_paths_context_and_aliases ... ok
+test cluster_paths_test::cluster_paths_independent_contexts ... ok
+test cluster_paths_test::cluster_paths_go_store_parsing ... ok
+test keyspace_time_paths_test::keyspace_time_paths_isolation_and_order ... ok
+test member_config_paths_test::member_config_paths_independent_contexts ... ok
+test cluster_paths_test::cluster_paths_go_bytes ... ok
+test registry_marker_paths_test::registry_marker_paths_boundaries_and_isolation ... ok
+test rule_resource_paths_test::rule_resource_paths_go_byte_oracle ... ok
+test registry_marker_paths_test::registry_marker_paths_go_bytes ... ok
+test rule_resource_paths_test::rule_resource_paths_prefixes_and_roundtrips ... ok
+test keyspace_time_paths_test::keyspace_time_paths_go_bytes ... ok
+test gc_paths_test::gc_paths_go_byte_oracle ... ok
+test member_config_paths_test::member_config_paths_go_oracle ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_keyspace_constant-0592fae75f4857a2)
+
+running 2 tests
+test constant_test::base_keyspace_ids ... ok
+test constant_test::reserved_keyspaces_and_labels ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_keyutil-8e0cc28578b386fe)
+
+running 10 tests
+test key_range_test::key_ranges_collection_lifecycle ... ok
+test util::tests::key_boundary_comparison ... ok
+test http_test::decode_http_key_ranges_success ... ok
+test key_range_test::sort_deduce_and_merge ... ok
+test key_range_test::delete_key_ranges ... ok
+test http_test::decode_http_key_ranges_invalid_arguments ... ok
+test key_range_test::subtract_key_ranges ... ok
+test http_test::decode_http_key_ranges_escape_errors ... ok
+test key_range_test::key_range_codec_and_overlap ... ok
+test util::tests::key_range_map_builders ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_logutil-1818a768b8b5a020)
+
+running 2 tests
+test config_test::log_defaults_and_presence ... ok
+test config_test::redact_accepted_types_and_errors ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_mcs_constant-e401ddffaf41d90b)
+
+running 3 tests
+test constant_test::keyspace_group_limits ... ok
+test constant_test::network_and_timing_defaults ... ok
+test constant_test::service_names_and_root ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_member-98ecb1f42f89b796)
+
+running 9 tests
+test member_info_test::member_info_memory ... ok
+test member_test::memory_bootstrap_and_lease_loss ... ok
+test leader_priority_test::leader_priority_memory ... ok
+test member_info_test::member_info_pending_io_cancel ... ok
+test member_test::memory_natural_expiry ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:58991
+isolated etcd 3.5.15 ready at http://127.0.0.1:58988
+test member_info_test::member_info_etcd ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:58989
+isolated etcd 3.5.15 ready at http://127.0.0.1:58990
+test leader_priority_test::leader_priority_etcd ... ok
+test leader_priority_test::leader_priority_etcd_io_failure ... ok
+test member_info_test::member_info_etcd_io_failure_and_cancellation ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.51s
+
+     Running etcd_behavior_test.rs (target/rust-slot-1/debug/deps/etcd_behavior-50f240a5164d8cb5)
+
+running 5 tests
+test scenario::memory_bootstrap_and_lease_loss ... ok
+test scenario::memory_natural_expiry ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:59035
+isolated etcd 3.5.15 ready at http://127.0.0.1:59033
+test real_etcd_behavior ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:59034
+test real_etcd_identity_recovery ... ok
+test real_etcd_natural_expiry ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 4.35s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_metering_config-11be5f03214fb44f)
+
+running 1 test
+test config_test::metering_provider_values_and_omitempty ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_metricutil-cfa905f37790024b)
+
+running 1 test
+test config_test::metric_invalid_interval_and_job_defaults ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_movingaverage-6dd462f965154c63)
+
+running 17 tests
+test moving_average_test::ema_behavior ... ok
+test max_filter_test::max_filter_ieee_comparison_order ... ok
+test avg_over_time_test::avg_over_time_state_set_clear_clone ... ok
+test avg_over_time_test::avg_over_time_window_min_filled_and_pulse ... ok
+test avg_over_time_test::avg_over_time_window_fractional_margin_and_eviction ... ok
+test max_filter_test::max_filter_go_sequence_set_reset ... ok
+test avg_over_time_test::avg_over_time_state_unstable_and_signed_intervals ... ok
+test max_filter_test::max_filter_negative_values_and_window_expiry ... ok
+test moving_average_test::median_filter_go_sequence ... ok
+test moving_average_test::time_median_report_intervals ... ok
+test moving_average_test::median_filter_empty_and_invalid_windows ... ok
+test moving_average_test::time_median_set_clone_and_zero_interval ... ok
+test max_filter_test::max_filter_invalid_and_empty_windows ... ok
+test weight_allocator_test::weight_allocator ... ok
+test moving_average_test::median_filter_windows_and_clone ... ok
+test moving_average_test::wma_behavior ... ok
+test moving_average_test::hma_behavior ... ok
+
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_proto-66c99b0720ac04ed)
+
+running 8 tests
+test proto_compat_test::proto_compat_oneof_preserves_explicit_zero ... ok
+test proto_compat_test::proto_compat_tso_response ... ok
+test proto_compat_test::proto_compat_tso_request ... ok
+test proto_compat_test::proto_compat_error_enum ... ok
+test proto_compat_test::proto_compat_request_header ... ok
+test proto_compat_test::proto_compat_member_response ... ok
+test proto_compat_test::proto_compat_region_heartbeat ... ok
+test proto_compat_test::proto_compat_descriptors_and_streams ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_raft_prototype-a0081436f8c5a5de)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_rangetree-cbe3d6318504198d)
+
+running 6 tests
+test tests::remove_scan_and_adjacent ... ok
+test tests::overlap_query ... ok
+test tests::update_with_debris ... ok
+test tests::update_with_debris_filters_invalid_children_and_inserts_new_last ... ok
+test tests::find_len_and_index ... ok
+test tests::update_with_debris_unbounded_and_many_overlaps ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_ratelimit-e525d2c27bc138df)
+
+running 29 tests
+test concurrency_test::concurrency_allow_release ... ok
+test concurrency_test::concurrency_tokens_cancel_head ... ok
+test concurrency_test::concurrency_tokens ... ok
+test limiter_test::limiter_config_updates ... ok
+test rate_limiter_test::token_bucket_available_does_not_consume_on_running_clock ... ok
+test rate_limiter_test::token_bucket_fractional_refill_and_burst_growth ... ok
+test limiter_test::combined_limiter_allow ... ok
+test rate_limiter_test::token_bucket_oracle_and_updates ... ok
+test controller_test::controller_labels_and_allowlist ... ok
+test rate_limiter_test::token_bucket_zero_infinite_and_concurrency ... ok
+test rate_limiter_test::token_bucket_wait_serializes_and_drop_refunds ... ok
+test controller_test::controller_qps_and_metrics ... ok
+test rate_limiter_test::token_bucket_wait_cancel_deadline_and_refund ... ok
+test runner::tests::runner_dedup_and_queue_unlimited_dispatches_without_completion ... ok
+test controller_test::controller_labels_and_allowlist_parallel ... ok
+test runner::tests::runner_lifecycle_dispatch_and_release ... ok
+test runner::tests::runner_dedup_and_queue_age_retained_capacity ... ok
+test runner::tests::runner_lifecycle_sync ... ok
+test runner::tests::runner_lifecycle_completion_schedules_next ... ok
+test runner::tests::runner_lifecycle_unlimited_and_parent_cancel ... ok
+test runner::tests::runner_lifecycle_stop_during_acquire_and_restart ... ok
+test limiter_test::combined_limiter_allow_parallel ... ok
+test runner::tests::runner_timeout_and_cancellation_age_boundary ... ok
+test concurrency_test::concurrency_tokens_parallel ... ok
+test concurrency_test::concurrency_allow_release_parallel ... ok
+test runner::tests::runner_lifecycle_panic_releases_token ... ok
+test runner::tests::runner_timeout_and_cancellation_burst_cleanup ... ok
+test runner::tests::runner_timeout_and_cancellation_concurrent_burst_drains ... ok
+test runner::tests::runner_dedup_and_queue_storage_reuse_release_fifo ... ok
+
+test result: ok. 29 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_reflectutil-8b1147fa0c5d5647)
+
+running 3 tests
+test tag_test::full_tag_by_child_tag ... ok
+test tag_test::same_fields_by_json ... ok
+test tag_test::field_type_by_json_path ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_response-045df2c33a04adf5)
+
+running 19 tests
+test peer_test::core_task_63_nil_and_default ... ok
+test regions_test::core_task_65_empty_even_when_cancelled ... ok
+test peer_test::core_task_63_down_peer_conversion ... ok
+test peer_test::core_task_63_stats ... ok
+test regions_test::core_task_65_cancel_before_or_during_list_discards_output ... ok
+test region_test::core_task_64_present_zero_and_unknown_replication ... ok
+test region_test::core_task_64_zero_epoch_signed_and_clone ... ok
+test peer_test::core_task_63_peer_roles_and_boundaries ... ok
+test region_test::core_task_64_empty_and_absent ... ok
+test region_test::core_task_68_single_region_cancellation ... ok
+test region_test::core_task_64_full_and_reuse ... ok
+test regions_test::core_task_65_order_duplicates_and_reuse ... ok
+test store_state_test::core_task_67_caller_clock_progression ... ok
+test store_test::core_task_66_defaults_and_empty_list ... ok
+test store_test::core_task_66_full_status ... ok
+test store_test::core_task_66_metadata_pause_and_invalid_encoding ... ok
+test store_test::core_task_66_time_boundaries_and_presence ... ok
+test store_state_test::core_task_67_state_names_and_thresholds ... ok
+test store_test::core_task_66_config_and_calendar_boundaries ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_rm_server-52e2db6d6b31053d)
+
+running 2 tests
+test config_test::controller_presence_costs_and_push ... ok
+test config_test::ru_policy_validation_lookup_clone_and_omission ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_runtime-4e2fbee33514b4da)
+
+running 3 tests
+isolated etcd 3.5.15 ready at http://127.0.0.1:59082
+test node_test::lease_loss_stops_admission_and_reports_failure ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:59081
+test node_test::startup_failure_releases_term_and_listener ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:59083
+test node_test::shared_runtime_network_lifecycle ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.75s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_config-2192c719ea443bb9)
+
+running 12 tests
+test config_values_test::config_values_label_keys_go_table ... ok
+test config_values_test::config_values_label_values_and_first_error ... ok
+test config_test::replication_labels_and_isolation ... ok
+test config_test::schedule_defaults_presence_reload_and_snapshot ... ok
+test config_values_test::config_values_json_null_numbers ... ok
+test config_test::schedule_store_migration_and_json_inheritance ... ok
+test config_values_test::config_values_clone_owned_collections ... ok
+test config_values_test::config_values_json_document_boundary ... ok
+test config_test::schedule_five_deprecated_flag_truth_tables ... ok
+test config_test::schedule_all_validation_branches ... ok
+test config_values_test::config_values_go_snapshots_round_trip ... ok
+test config_values_test::config_values_go_toml_defaults_presence_and_errors ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_keyrange-0041b5d72ddfe213)
+
+running 12 tests
+test manager::range_append_test::range_append_empty ... ok
+test manager::range_append_test::range_append_copies_input_and_keeps_disjoint_ranges_sorted ... ok
+test manager::range_append_test::range_append_empty_boundaries_follow_keyutil ... ok
+test manager::range_append_test::range_append_normalizes_across_batches ... ok
+test manager::range_append_test::range_append_unsorted_adjacent ... ok
+test manager::range_subtract_test::range_subtract_batch_holes_and_owned_reads ... ok
+test manager::range_subtract_test::range_subtract_go_delete_cases ... ok
+test manager::range_subtract_test::range_subtract_append_normalization_precedes_delete ... ok
+test manager::range_subtract_test::range_subtract_go_complement_cases ... ok
+test manager::range_append_test::range_append_duplicates_and_overlaps_are_retained ... ok
+test manager::range_append_test::range_append_concurrent_batches_are_atomic ... ok
+test manager::range_subtract_test::range_subtract_concurrent_batch_is_atomic ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_plan-84f5567ede20d1c8)
+
+running 19 tests
+test plan_status_test::plan_status_codes_and_text ... ok
+test plan_status_test::plan_status_priority_boundaries ... ok
+test plan_status_test::plan_status_runtime_go_oracle ... ok
+test plan_collect_test::plan_collect_order_and_owned_results ... ok
+test plan_collect_test::plan_collect_completed_steps_only ... ok
+test plan_status_test::plan_status_reason_and_flags ... ok
+test plan_summary_test::plan_summary_analyzer2 ... ok
+test plan_collect_test::plan_collect_options_and_isolation ... ok
+test plan_summary_test::plan_summary_analyzer3 ... ok
+test plan_collect_test::plan_collect_default_and_invalid_resources ... ok
+test plan_summary_test::plan_summary_analyzer5 ... ok
+test plan_summary_test::plan_summary_analyzer4 ... ok
+test plan_summary_test::plan_summary_analyzer6 ... ok
+test plan_summary_test::plan_summary_analyzer1 ... ok
+test plan_summary_test::plan_summary_invalid_plan ... ok
+test plan_summary_test::plan_summary_empty_success ... ok
+test plan_summary_test::plan_summary_depth_and_order ... ok
+test plan_summary_test::plan_summary_reason_counts_and_owned_output ... ok
+test plan_summary_test::plan_summary_selection ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_rangelist-08c0100503a46c0d)
+
+running 10 tests
+test range_queries_test::range_queries_empty_and_unbounded ... ok
+test range_build_test::range_build_empty_and_unbounded ... ok
+test range_build_test::range_build_comparator_equal_and_reverse ... ok
+test range_build_test::range_build_equal_comparator_preserves_event_order ... ok
+test range_queries_test::range_queries_boundaries_and_gaps ... ok
+test range_build_test::range_build_shared_events_duplicates_and_snapshot ... ok
+test range_queries_test::range_queries_go_key_and_range ... ok
+test range_queries_test::range_queries_go_splits ... ok
+test range_build_test::range_build_go_overlap_comparator ... ok
+test range_build_test::range_build_large_event_sort_preserves_permutation ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_types-bba7715c748a3d4c)
+
+running 5 tests
+test types_contract_test::types_contract_unknown_strings_are_preserved_not_classified ... ok
+test types_contract_test::types_contract_checker_constants_and_strings ... ok
+test types_contract_test::types_contract_legacy_and_scatter_alias_boundaries ... ok
+test types_contract_test::types_contract_kernel_defaults ... ok
+test types_contract_test::types_contract_runtime_conversion_maps ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_server-af4531ed89786f79)
+
+running 12 tests
+test core_region_adapter_test::core_task_61_metadata_roles ... ok
+test core_store_adapter_test::core_task_60_full_store ... ok
+test core_store_adapter_test::core_task_60_nested_presence_order_and_unsigned_limits ... ok
+test core_region_adapter_test::core_task_61_missing_fields ... ok
+test core_store_adapter_test::core_task_60_defaults_and_presence ... ok
+test core_store_adapter_test::core_task_60_full_store_stats ... ok
+test core_region_adapter_test::core_task_61_heartbeat_fields ... ok
+test core_region_adapter_test::core_task_61_sizes ... ok
+test core_store_adapter_test::core_task_60_unknown_enums_and_signed_extremes ... ok
+test core_trace_test::core_task_59_save_cache_resets_and_recovery ... ok
+test core_trace_test::core_task_59_registry_ownership ... ok
+test core_trace_test::core_task_59_each_stage_and_clock_regression ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running server_test.rs (target/rust-slot-1/debug/deps/server-de0efa26a346d796)
+
+running 1 test
+isolated etcd 3.5.15 ready at http://127.0.0.1:59115
+test validation_and_open_stream_shutdown ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.27s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_server_config-4caa0c7dca1ba537)
+
+running 79 tests
+test config_defaults_test::config_defaults_inherits_addresses_and_preserves_other_owners ... ok
+test config_defaults_test::config_defaults_missing_values ... ok
+test config_defaults_test::config_defaults_duration_boundaries ... ok
+test config_defaults_test::config_defaults_absent_metadata_overwrites_sizes ... ok
+test config_tso_test::config_tso_physical_interval_clamps ... ok
+test config_tso_test::config_tso_positive_save_and_timeout_preserved ... ok
+test config_defaults_test::config_defaults_explicit_values_preserved ... ok
+test config_tso_test::config_tso_proxy_count_preserves_negative_unlimited ... ok
+test config_tso_test::config_tso_zero_and_negative_defaults ... ok
+test config_decode_test::config_decode_presence_before_defaults ... ok
+test config_defaults_test::config_defaults_decoded_durations_and_labels ... ok
+test config_defaults_test::config_defaults_presence_zero_and_false ... ok
+test config_tso_test::config_tso_decoded_values_normalize ... ok
+test config_decode_test::config_decode_format_specific_names ... ok
+test config_decode_test::config_decode_type_errors_and_unknown_fields ... ok
+test dashboard_config_test::dashboard_config_presence_and_host_defaults ... ok
+test config_urls_test::config_urls_scheme_matches_go_table ... ok
+test config_urls_test::config_urls_join_matches_go_cases ... ok
+test config_urls_test::config_urls_list_preserves_parse_not_request_semantics ... ok
+test dashboard_config_test::dashboard_config_nested_metadata_and_missing_toml ... ok
+test config_urls_test::config_urls_request_and_join_boundaries ... ok
+test deprecated_config_test::deprecated_config_learner_presence_including_false ... ok
+test config_decode_test::config_decode_go_toml_input_to_json ... ok
+test dashboard_config_test::dashboard_config_custom_values_and_toml_roundtrip ... ok
+test deprecated_config_test::deprecated_config_log_mapping_and_warning_order ... ok
+test deprecated_config_test::deprecated_config_trace_presence_always_conflicts ... ok
+test dashboard_config_test::dashboard_config_existing_go_json_bytes ... ok
+test deprecated_config_test::deprecated_config_raw_kv_split_is_ignored ... ok
+test keyspace_config_test::keyspace_config_split_validation_boundaries ... ok
+test microservice_config_test::microservice_config_clone_and_getters ... ok
+test deprecated_config_test::deprecated_config_existing_go_bytes_after_ignored_legacy_key ... ok
+test keyspace_config_test::keyspace_config_group_mapping_and_adjust_failure ... ok
+test keyspace_config_test::keyspace_config_clone_and_accessors ... ok
+test keyspace_config_test::keyspace_config_group_ids_and_atomic_errors ... ok
+test keyspace_config_test::keyspace_config_defaults_and_presence ... ok
+test dashboard_config_test::dashboard_config_scalar_types_and_null ... ok
+test microservice_config_test::microservice_config_nested_metadata ... ok
+test middleware_config_test::middleware_config_clone_map_ownership ... ok
+test microservice_config_test::microservice_config_existing_go_json_bytes ... ok
+test microservice_config_test::microservice_config_json_roundtrip_and_types ... ok
+test middleware_config_test::middleware_config_dimension_and_decode ... ok
+test microservice_config_test::microservice_config_presence_all_combinations ... ok
+test middleware_config_test::middleware_config_qps_number_encoding ... ok
+test nested_config_test::nested_config_error_precedence ... ok
+test nested_config_test::nested_config_defaults ... ok
+test keyspace_config_test::keyspace_config_existing_go_json_bytes ... ok
+test middleware_config_test::middleware_config_zero_and_nil_clone ... ok
+test middleware_config_test::middleware_config_constructor_go_bytes ... ok
+test middleware_config_test::middleware_config_populated_go_bytes ... ok
+test pd_server_defaults_test::pd_server_defaults_explicit_zero ... ok
+test pd_server_defaults_test::pd_server_defaults_bounds ... ok
+test pd_server_defaults_test::pd_server_defaults_preserve_and_replace ... ok
+test config_decode_test::config_decode_go_json_bytes ... ok
+test pd_server_defaults_test::pd_server_defaults_string_encoding ... ok
+test microservice_config_test::microservice_config_toml_presence_and_types ... ok
+test nested_config_test::nested_config_paths_semver_and_warnings ... ok
+test pd_server_gc_test::pd_server_gc_first_error_and_no_implicit_adjustment ... ok
+test pd_server_defaults_test::pd_server_defaults_toml_presence_and_types ... ok
+test pd_server_gc_test::pd_server_gc_reload_candidate_values ... ok
+test pd_server_defaults_test::pd_server_defaults_float_boundaries_and_nonfinite_encoding ... ok
+test pd_server_defaults_test::pd_server_defaults_go_bytes ... ok
+test pd_server_validate_test::pd_server_validate_dashboard ... ok
+test pd_server_validate_test::pd_server_validate_decode_adjust_and_unchecked_fields ... ok
+test pd_server_validate_test::pd_server_validate_error_order ... ok
+test nested_config_test::nested_config_order_reload_presence_and_no_side_effects ... ok
+test replication_config_test::replication_config_defaults_and_presence ... ok
+test replication_config_test::replication_config_clone_independent ... ok
+test pd_server_validate_test::pd_server_validate_float_boundaries ... ok
+test pd_server_validate_test::pd_server_validate_key_and_flow ... ok
+test replication_config_test::replication_config_codec_types_and_roundtrip ... ok
+test pd_server_gc_test::pd_server_gc_explicit_boundaries_and_errors ... ok
+test replication_config_test::replication_config_normalize_and_preserve_mode ... ok
+test nested_config_test::nested_config_json_toml_types_and_float_boundaries ... ok
+test replication_config_test::replication_config_existing_go_json_bytes ... ok
+test replication_config_test::replication_config_toml_dr_values ... ok
+test pd_server_gc_test::pd_server_gc_defaults_and_valid_combinations ... ok
+test nested_config_test::nested_config_go_raw_nested_bytes ... ok
+test nested_config_test::nested_config_go_captured_values_and_errors ... ok
+test nested_config_test::nested_config_go_full_json_decode ... ok
+
+test result: ok. 79 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_slice-1f39b3cf152c8147)
+
+running 4 tests
+test slice_test::contains_and_remove ... ok
+test slice_test::multiset_equal_and_sorted_duplicate ... ok
+test slice_test::predicate_quantifiers ... ok
+test slice_test::split_into_batches ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_storage-227926d69e70ae6d)
+
+running 17 tests
+test meta_store_test::invalid_atomic ... ok
+test meta_store_test::compaction_recovery ... ok
+test meta_store_test::snapshot_scan ... ok
+test meta_store_test::cas_atomic_revision ... ok
+test meta_store_test::watch_replay ... ok
+test meta_store_test::election_fencing ... ok
+test region_lifecycle_test::region_lifecycle_memory ... ok
+test facade_test::facade_memory ... ok
+test region_switch_test::region_switch_memory ... ok
+test region_load_once_test::region_load_once_memory ... ok
+test meta_store_test::watch_cancel ... ok
+test meta_store_test::lease_expiry ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:59135
+test facade_test::facade_etcd ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:59134
+isolated etcd 3.5.15 ready at http://127.0.0.1:59133
+test region_switch_test::region_switch_etcd ... ok
+test meta_store_test::lease_renew_revoke ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:59138
+isolated etcd 3.5.15 ready at http://127.0.0.1:59148
+test region_lifecycle_test::region_lifecycle_etcd ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:59155
+test region_load_once_test::region_load_once_etcd ... ok
+
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.44s
+
+     Running kv/etcd_store_test.rs (target/rust-slot-1/debug/deps/etcd_contract-999fa55ba2851929)
+
+running 10 tests
+isolated etcd 3.5.15 ready at http://127.0.0.1:59189
+isolated etcd 3.5.15 ready at http://127.0.0.1:59199
+isolated etcd 3.5.15 ready at http://127.0.0.1:59188
+isolated etcd 3.5.15 ready at http://127.0.0.1:59185
+isolated etcd 3.5.15 ready at http://127.0.0.1:59202
+test cas_atomic_revision ... ok
+test invalid_atomic ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:59186
+test watch_cancel ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:59195
+test watch_replay ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:59184
+isolated etcd 3.5.15 ready at http://127.0.0.1:59187
+isolated etcd 3.5.15 ready at http://127.0.0.1:59198
+test election_fencing ... ok
+test snapshot_scan ... ok
+test compaction_recovery ... ok
+test lease_expiry ... ok
+test lease_renew_revoke ... ok
+test disconnect_restart_resume_and_cancel ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 9.70s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_storage_endpoint-df00c299dc086364)
+
+running 103 tests
+test batch_ops_test::batch_ops_limit ... ok
+test cluster_id_test::cluster_id_candidate_values ... ok
+test affinity_endpoint_test::affinity_endpoint_go_bytes ... ok
+test config_endpoint_test::config_endpoint_go_bytes ... ok
+test cluster_meta_test::cluster_meta_memory ... ok
+test config_endpoint_test::config_endpoint_memory ... ok
+test endpoint_codec_test::endpoint_codec_go_json_fixture ... ok
+test endpoint_codec_test::endpoint_codec_memory ... ok
+test affinity_endpoint_test::affinity_endpoint_memory ... ok
+test batch_ops_test::batch_ops_memory ... ok
+test gc_barrier_read_test::gc_barrier_read_values ... ok
+test gc_barrier_read_test::gc_barrier_read_memory ... ok
+test gc_barrier_txn_test::gc_barrier_txn_go_values ... ok
+test gc_barrier_txn_test::gc_barrier_txn_memory ... ok
+test gc_barrier_value_test::gc_barrier_value_errors_and_escaping ... ok
+test gc_barrier_value_test::gc_barrier_value_global_json_compatibility ... ok
+test gc_barrier_value_test::gc_barrier_value_go_bytes ... ok
+test gc_barrier_value_test::gc_barrier_value_legacy_keyspace_and_sentinels ... ok
+test gc_barrier_value_test::gc_barrier_value_rounding_and_input_mutation ... ok
+test gc_barrier_value_test::gc_barrier_value_strict_expiration ... ok
+test cluster_id_test::cluster_id_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:59284
+isolated etcd 3.5.15 ready at http://127.0.0.1:59286
+test endpoint_codec_test::endpoint_codec_etcd ... ok
+test gc_batch_read_test::gc_batch_read_memory ... ok
+test gc_batch_read_test::gc_batch_read_response_validation ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:59297
+isolated etcd 3.5.15 ready at http://127.0.0.1:59295
+isolated etcd 3.5.15 ready at http://127.0.0.1:59283
+isolated etcd 3.5.15 ready at http://127.0.0.1:59287
+isolated etcd 3.5.15 ready at http://127.0.0.1:59298
+isolated etcd 3.5.15 ready at http://127.0.0.1:59285
+isolated etcd 3.5.15 ready at http://127.0.0.1:59300
+test gc_batch_read_test::gc_batch_read_inflight_cancel_etcd ... ok
+test gc_safepoint_read_test::gc_safepoint_read_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:59292
+isolated etcd 3.5.15 ready at http://127.0.0.1:59305
+isolated etcd 3.5.15 ready at http://127.0.0.1:59303
+isolated etcd 3.5.15 ready at http://127.0.0.1:59326
+isolated etcd 3.5.15 ready at http://127.0.0.1:59363
+test cluster_id_test::cluster_id_etcd_cancel_inflight_read ... ok
+test gc_state_txn_test::gc_state_txn_go_encoding ... ok
+test gc_state_txn_test::gc_state_txn_memory ... ok
+test keyspace_group_state_test::keyspace_group_state_go_split_json ... ok
+test keyspace_group_state_test::keyspace_group_state_json_boundaries ... ok
+test keyspace_group_state_test::keyspace_group_state_merge_roles ... ok
+test keyspace_group_state_test::keyspace_group_state_nil_and_absent ... ok
+test gc_barrier_txn_test::gc_barrier_txn_etcd ... ok
+test keyspace_group_state_test::keyspace_group_state_repeated_and_null_json ... ok
+test keyspace_group_state_test::keyspace_group_state_split_roles ... ok
+test keyspace_group_store_test::keyspace_group_store_go_wire ... ok
+test keyspace_group_store_test::keyspace_group_store_memory ... ok
+test keyspace_group_value_test::keyspace_group_value_addresses ... ok
+test keyspace_group_value_test::keyspace_group_value_member_json ... ok
+test keyspace_group_value_test::keyspace_group_value_user_kinds ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:59399
+test config_endpoint_test::config_endpoint_etcd ... ok
+test keyspace_meta_test::keyspace_meta_memory ... ok
+test keyspace_meta_test::keyspace_meta_values ... ok
+test cluster_meta_test::cluster_meta_etcd ... ok
+test keyspace_scan_test::keyspace_scan_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:59401
+test batch_ops_test::batch_ops_etcd ... ok
+test maintenance_delete_test::maintenance_delete_go_wire ... ok
+test maintenance_delete_test::maintenance_delete_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:59413
+test gc_safepoint_read_test::gc_safepoint_read_etcd ... ok
+test maintenance_start_test::maintenance_start_go_wire ... ok
+test maintenance_start_test::maintenance_start_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:59429
+isolated etcd 3.5.15 ready at http://127.0.0.1:59415
+isolated etcd 3.5.15 ready at http://127.0.0.1:59427
+test batch_ops_test::batch_ops_inflight_cancel_etcd ... ok
+test meta_service_group_test::meta_service_group_go_wire ... ok
+test meta_service_group_test::meta_service_group_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:59441
+test affinity_endpoint_test::affinity_endpoint_etcd ... ok
+test region_meta_test::region_meta_memory ... ok
+test cluster_id_test::cluster_id_etcd ... ok
+test gc_batch_read_test::gc_batch_read_etcd ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:59455
+test region_scan_test::region_scan_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:59466
+test gc_state_txn_test::gc_state_txn_etcd ... ok
+test replication_endpoint_test::replication_endpoint_go_bytes ... ok
+test replication_endpoint_test::replication_endpoint_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:59473
+isolated etcd 3.5.15 ready at http://127.0.0.1:59479
+isolated etcd 3.5.15 ready at http://127.0.0.1:59490
+test meta_service_group_test::meta_service_group_etcd ... ok
+test resource_settings_test::resource_settings_go_bytes ... ok
+test resource_settings_test::resource_settings_memory ... ok
+test region_meta_test::region_meta_etcd ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:59511
+test resource_states_test::resource_states_go_bytes ... ok
+test maintenance_start_test::maintenance_start_etcd ... ok
+test resource_states_test::resource_states_memory ... ok
+test rule_endpoint_test::rule_endpoint_go_bytes ... ok
+test rule_endpoint_test::rule_endpoint_memory ... ok
+test region_scan_test::region_scan_etcd ... ok
+test scheduler_endpoint_test::scheduler_endpoint_memory ... ok
+test keyspace_meta_test::keyspace_meta_etcd ... ok
+test service_limits_test::service_limits_memory ... ok
+test keyspace_group_store_test::keyspace_group_store_etcd ... ok
+test store_meta_test::store_meta_memory ... ok
+test keyspace_scan_test::keyspace_scan_etcd ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:59538
+test store_weights_test::store_weights_float_boundaries ... isolated etcd 3.5.15 ready at http://127.0.0.1:59544
+ok
+test store_weights_test::store_weights_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:59553
+isolated etcd 3.5.15 ready at http://127.0.0.1:59541
+isolated etcd 3.5.15 ready at http://127.0.0.1:59546
+isolated etcd 3.5.15 ready at http://127.0.0.1:59563
+test replication_endpoint_test::replication_endpoint_etcd ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:59582
+test maintenance_delete_test::maintenance_delete_etcd ... ok
+test timestamp_fenced_save_test::timestamp_fenced_save_go_bytes ... ok
+test timestamp_fenced_save_test::timestamp_fenced_save_memory ... ok
+test timestamp_fenced_save_test::timestamp_fenced_save_memory_races ... ok
+test timestamp_fenced_save_test::timestamp_fenced_save_etcd_races ... ok
+test timestamp_values_test::timestamp_values_go_bytes ... ok
+test timestamp_values_test::timestamp_values_memory ... ok
+test store_meta_test::store_meta_etcd ... ok
+test timestamp_window_test::timestamp_window_go_bytes ... ok
+test timestamp_window_test::timestamp_window_memory ... ok
+test timestamp_fenced_save_test::timestamp_fenced_save_etcd ... ok
+test region_scan_test::region_scan_etcd_adaptive_and_io_failure ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:59613
+isolated etcd 3.5.15 ready at http://127.0.0.1:59607
+test scheduler_endpoint_test::scheduler_endpoint_etcd ... ok
+test store_weights_test::store_weights_etcd ... ok
+test timestamp_window_test::timestamp_window_etcd ... ok
+test resource_settings_test::resource_settings_etcd ... ok
+test timestamp_values_test::timestamp_values_etcd ... ok
+test gc_barrier_read_test::gc_barrier_read_etcd ... ok
+test resource_states_test::resource_states_etcd ... ok
+test service_limits_test::service_limits_etcd ... ok
+test rule_endpoint_test::rule_endpoint_etcd ... ok
+
+test result: ok. 103 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 28.03s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_storage_kv-2049f5823e531cf2)
+
+running 30 tests
+test bounded_range_test::bounded_range_request ... ok
+test meta_store_test::invalid_atomic ... ok
+test meta_store_test::cas_atomic_revision ... ok
+test base_kv_test::base_kv_memory ... ok
+test meta_store_test::compaction_recovery ... ok
+test meta_store_test::snapshot_scan ... ok
+test callback_txn_test::callback_txn_memory ... ok
+test meta_store_test::watch_replay ... ok
+test meta_store_test::election_fencing ... ok
+test bounded_range_test::bounded_range_memory ... ok
+test raw_branches_test::raw_branches_memory ... ok
+test raw_get_test::raw_get_memory ... ok
+test raw_range_test::raw_range_memory ... ok
+test raw_compare_test::raw_compare_memory ... ok
+test revision_txn_test::revision_txn_memory ... ok
+test txn_cancel_test::txn_cancel_error_categories ... ok
+test meta_store_test::watch_cancel ... ok
+test meta_store_test::lease_expiry ... ok
+test txn_cancel_test::txn_cancel_memory ... ok
+test meta_store_test::lease_renew_revoke ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:59765
+isolated etcd 3.5.15 ready at http://127.0.0.1:59764
+isolated etcd 3.5.15 ready at http://127.0.0.1:59776
+isolated etcd 3.5.15 ready at http://127.0.0.1:59767
+test callback_txn_test::callback_txn_etcd ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:59778
+isolated etcd 3.5.15 ready at http://127.0.0.1:59766
+isolated etcd 3.5.15 ready at http://127.0.0.1:59774
+test raw_get_test::raw_get_etcd ... isolated etcd 3.5.15 ready at http://127.0.0.1:59780
+ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:59772
+test raw_range_test::raw_range_etcd ... ok
+test raw_branches_test::raw_branches_etcd ... ok
+test txn_cancel_test::txn_cancel_etcd ... ok
+test base_kv_test::base_kv_etcd ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:59782
+test txn_cancel_test::txn_cancel_malformed_response ... ok
+test bounded_range_test::bounded_range_etcd ... ok
+test revision_txn_test::revision_txn_etcd ... ok
+test raw_compare_test::raw_compare_etcd ... ok
+
+test result: ok. 30 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 8.38s
+
+     Running etcd_store_test.rs (target/rust-slot-1/debug/deps/etcd_contract-4485a081d13338f5)
+
+running 10 tests
+isolated etcd 3.5.15 ready at http://127.0.0.1:59860
+isolated etcd 3.5.15 ready at http://127.0.0.1:59849
+isolated etcd 3.5.15 ready at http://127.0.0.1:59844
+isolated etcd 3.5.15 ready at http://127.0.0.1:59858
+test cas_atomic_revision ... ok
+test election_fencing ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:59852
+isolated etcd 3.5.15 ready at http://127.0.0.1:59862
+isolated etcd 3.5.15 ready at http://127.0.0.1:59847
+isolated etcd 3.5.15 ready at http://127.0.0.1:59848
+isolated etcd 3.5.15 ready at http://127.0.0.1:59845
+isolated etcd 3.5.15 ready at http://127.0.0.1:59846
+test invalid_atomic ... ok
+test watch_cancel ... ok
+test watch_replay ... ok
+test snapshot_scan ... ok
+test compaction_recovery ... ok
+test lease_renew_revoke ... ok
+test lease_expiry ... ok
+test disconnect_restart_resume_and_cancel ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 10.89s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_storelimit-1f8073a62199dbfb)
+
+running 21 tests
+test limit_types_test::core_task_02_influence_and_version_constants ... ok
+test limit_types_test::core_task_02_name_lookup_and_unknowns ... ok
+test limit_types_test::core_task_02_type_values_and_names ... ok
+test rate_reset_test::core_task_04_reset_preserves_other_bucket ... ok
+test rate_reset_test::core_task_04_changed_rate_rebuilds_target ... ok
+test rate_reset_test::core_task_04_fractional_refill_and_capacity ... ok
+test rate_reset_test::core_task_04_unlimited_threshold ... ok
+test rate_limit_test::core_task_03_minimum_capacity_and_snapshot_bypass ... ok
+test rate_reset_test::core_task_04_same_rate_preserves_balance ... ok
+test rate_limit_test::core_task_03_capacity_query_consumption_and_isolation ... ok
+test sliding_windows_test::core_task_06_priority_snapshot_oracle ... ok
+test window_feedback_test::core_task_07_all_priority_capacities_and_usage_survive_feedback ... ok
+test rate_reset_test::core_task_04_snapshot_reset_is_noop ... ok
+test rate_reset_test::core_task_04_zero_initial_and_reset ... ok
+test window_feedback_test::core_task_07_go_feedback_sequence ... ok
+test rate_reset_test::core_task_04_invalid_reset_type_panics - should panic ... ok
+test window_test::core_task_05_reset_preserves_used ... ok
+test rate_limit_test::core_task_03_invalid_available_type_panics - should panic ... ok
+test rate_limit_test::core_task_03_invalid_take_type_panics - should panic ... ok
+test window_test::core_task_05_boundary ... ok
+test window_test::core_task_05_minimum_and_overshoot ... ok
+
+test result: ok. 21 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_syncutil-b99436bd85d86c91)
+
+running 9 tests
+test lock_group_test::lock_group_serialization ... ok
+test lock_group_test::lock_group_cleanup ... ok
+test ordered_single_flight_test::singleflight_cancellation_noncooperative_execution_keeps_order ... ok
+test ordered_single_flight_test::singleflight_cancellation_last_waiter ... ok
+test ordered_single_flight_test::singleflight_cancellation_pending_can_be_reused ... ok
+test ordered_single_flight_test::singleflight_cancellation_shared_waiters ... ok
+test ordered_single_flight_test::singleflight_coalesce_and_order ... ok
+test mutex_test::mutex_boundary ... ok
+test ordered_single_flight_test::singleflight_randomized ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_timerutil-37f9a13599cc7777)
+
+running 2 tests
+test pool_test::timer_checkout_and_expiry ... ok
+test pool_test::timer_reuse_and_cancel ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_tso-158b5fae92c2de0b)
+
+running 3 tests
+test restart_test::memory_restart ... ok
+test oracle_test::memory_boundaries ... ok
+test oracle_test::memory_behavior ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running etcd_behavior_test.rs (target/rust-slot-1/debug/deps/etcd_behavior-3a5388bd2d181f2c)
+
+running 9 tests
+test oracle_test::memory_boundaries ... ok
+test restart_test::memory_restart ... ok
+test oracle_test::memory_behavior ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:59952
+test real_etcd_boundaries ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:59951
+isolated etcd 3.5.15 ready at http://127.0.0.1:59956
+test real_etcd_restart ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:59953
+test real_etcd_oracle_process_restart ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:59954
+test real_etcd_behavior ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:59955
+test real_etcd_wal_restart_and_outage ... ok
+test real_etcd_natural_lease_expiry ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 6.49s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_typeutil-4bf759f994a91fc5)
+
+running 10 tests
+test time_test::timestamp_and_wall_clock_differences ... ok
+test time_test::timestamp_and_wall_clock_parse ... ok
+test comparison_test::comparison_helpers ... ok
+test conversion_test::conversion_helpers ... ok
+test duration_test::duration_serde_and_saturation ... ok
+test clone_test::deep_clone_contract_codec_errors ... ok
+test time_test::time_optional_json ... ok
+test size_test::byte_size_serde_text_and_mb_fallback ... ok
+test string_slice_test::string_slice_json ... ok
+test clone_test::deep_clone_contract ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests window.rs (target/rust-slot-1/debug/deps/astersql_pd_window-286a8925e6608fa1)
+
+running 10 tests
+test counter_test::rolling_counter_aggregates_integer_conversion ... ok
+test policy_test::rolling_policy_reduce_expiry ... ok
+test policy_test::rolling_policy_rotation ... ok
+test counter_test::rolling_counter_aggregates ... ok
+test window_test::window_bucket_mutations ... ok
+test window_test::empty_window_bucket_panics_like_go - should panic ... ok
+test window_test::bucket_add_requires_existing_point - should panic ... ok
+test reduce_test::iterator_and_reducers ... ok
+test counter_test::rolling_counter_aggregates_concurrent ... ok
+test counter_test::rolling_counter_concurrency ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+   Doc-tests astersql_pd
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_balancer
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_btree
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_cache
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_cmd_pd_server
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_codec
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_compat_tests
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_configutil
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_core
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_core_constant
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_election
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_encryption
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_errs
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_etcdutil
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_grpcutil
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_id
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_jsonutil
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_kerneltype
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_keypath
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_keyspace_constant
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_keyutil
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_logutil
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_mcs_constant
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_member
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_metering_config
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_metricutil
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_movingaverage
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_proto
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_raft_prototype
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_rangetree
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_ratelimit
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_reflectutil
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_response
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_rm_server
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_runtime
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_schedule_config
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_schedule_keyrange
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_schedule_plan
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_schedule_rangelist
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_schedule_types
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_server
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_server_config
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_slice
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_storage
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_storage_endpoint
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_storage_kv
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_storelimit
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_syncutil
+
+running 2 tests
+test pkg/utils/syncutil/lib.rs - asynchronous (line 34) - compile fail ... ok
+test pkg/utils/syncutil/lib.rs - blocking (line 17) - compile fail ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.57s
+
+   Doc-tests astersql_pd_timerutil
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_tso
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_typeutil
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_window
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+EXIT 0
+COMMAND git diff --check
+EXIT 0
