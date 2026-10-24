@@ -1,0 +1,313 @@
+pkg/schedule/affinity/split.go:28:const (
+pkg/schedule/affinity/split.go:34:func (m *Manager) AllowSplit(region *core.RegionInfo, reason pdpb.SplitReason) bool {
+pkg/schedule/affinity/split_test.go:33:	"github.com/tikv/pd/pkg/utils/keyutil"
+pkg/schedule/affinity/split_test.go:36:func TestAllowSplit(t *testing.T) {
+pkg/schedule/affinity/split_test.go:62:	keyRange := keyutil.KeyRange{StartKey: []byte("a"), EndKey: []byte("z")}
+pkg/schedule/affinity/split_test.go:63:	err = manager.CreateAffinityGroups([]GroupKeyRanges{{GroupID: groupID, KeyRanges: []keyutil.KeyRange{keyRange}}})
+pkg/schedule/affinity/split_test.go:75:	smallRegion := generateRegionForTest(1, []uint64{1, 2, 3}, keyutil.KeyRange{StartKey: []byte("b"), EndKey: []byte("y")})
+pkg/schedule/affinity/policy.go:24:	"github.com/pingcap/failpoint"
+pkg/schedule/affinity/policy.go:33:const (
+pkg/schedule/affinity/policy.go:42:type storeCondition int
+pkg/schedule/affinity/policy.go:44:const (
+pkg/schedule/affinity/policy.go:61:func (c storeCondition) String() string {
+pkg/schedule/affinity/policy.go:86:func (c storeCondition) groupAvailability() groupAvailability {
+pkg/schedule/affinity/policy.go:97:func (c storeCondition) affectsLeaderOnly() bool {
+pkg/schedule/affinity/policy.go:106:func calcGroupAvailability(
+pkg/schedule/affinity/policy.go:123:func (m *Manager) ObserveAvailableRegion(region *core.RegionInfo, group *GroupState) {
+pkg/schedule/affinity/policy.go:137:// startAvailabilityCheckLoop starts a goroutine to periodically check store availability and invalidate groups with unavailable stores.
+pkg/schedule/affinity/policy.go:139:func (m *Manager) startAvailabilityCheckLoop() {
+pkg/schedule/affinity/policy.go:142:	failpoint.Inject("changeAvailabilityCheckInterval", func() {
+pkg/schedule/affinity/policy.go:151:				log.Info("affinity manager availability check loop stopped")
+pkg/schedule/affinity/policy.go:158:	log.Info("affinity manager availability check loop started", zap.Duration("interval", interval))
+pkg/schedule/affinity/policy.go:162:func (m *Manager) checkGroupsAvailability() {
+pkg/schedule/affinity/policy.go:175:func (m *Manager) collectMetrics() {
+pkg/schedule/affinity/policy.go:185:func (m *Manager) collectUnavailableStores() map[uint64]storeCondition {
+pkg/schedule/affinity/policy.go:218:func (m *Manager) getGroupAvailabilityChanges(unavailableStores map[uint64]storeCondition) (isUnavailableStoresChanged bool, groupAvailabilityChanges map[string]groupAvailability) {
+pkg/schedule/affinity/policy.go:265:func (m *Manager) setGroupAvailabilityChanges(unavailableStores map[uint64]storeCondition, groupAvailabilityChanges map[string]groupAvailability) {
+pkg/schedule/affinity/policy.go:274:func (m *Manager) checkHasUnavailableStore(leaderStoreID uint64, voterStoreIDs []uint64) error {
+pkg/schedule/affinity/affinity_test.go:28:	"github.com/tikv/pd/pkg/utils/keyutil"
+pkg/schedule/affinity/affinity_test.go:32:func TestMain(m *testing.M) {
+pkg/schedule/affinity/affinity_test.go:36:func getGroupForTest(re *require.Assertions, m *Manager, id string) *runtimeGroupInfo {
+pkg/schedule/affinity/affinity_test.go:47:func createGroupForTest(re *require.Assertions, m *Manager, id string, rangeCount int) []keyutil.KeyRange {
+pkg/schedule/affinity/affinity_test.go:49:		KeyRanges: make([]keyutil.KeyRange, rangeCount),
+pkg/schedule/affinity/affinity_test.go:53:		gkr.KeyRanges[i] = keyutil.KeyRange{
+pkg/schedule/affinity/affinity_test.go:62:func testCacheStale(re *require.Assertions, m *Manager, region *core.RegionInfo) {
+pkg/schedule/affinity/affinity_test.go:71:func generateRegionForTest(id uint64, voterStoreIDs []uint64, keyRange keyutil.KeyRange) *core.RegionInfo {
+pkg/schedule/affinity/affinity_test.go:81:		StartKey: keyRange.StartKey,
+pkg/schedule/affinity/affinity_test.go:82:		EndKey:   keyRange.EndKey,
+pkg/schedule/affinity/affinity_test.go:88:var nonOverlappingRange = keyutil.KeyRange{
+pkg/schedule/affinity/parse.go:19:type groupStateProvider interface {
+pkg/schedule/affinity/parse.go:25:func CollectAllGroupStates(provider groupStateProvider) map[string]*GroupState {
+pkg/schedule/affinity/parse.go:36:func ParseGroupIDs(rawIDs []string) ([]string, error) {
+pkg/schedule/affinity/parse.go:62:func CollectGroupStates(provider groupStateProvider, rawIDs []string) (map[string]*GroupState, error) {
+pkg/schedule/affinity/metrics.go:19:var (
+pkg/schedule/affinity/metrics.go:20:	affinityStatusGauge = prometheus.NewGaugeVec(
+pkg/schedule/affinity/metrics.go:21:		prometheus.GaugeOpts{
+pkg/schedule/affinity/metrics.go:29:var (
+pkg/schedule/affinity/metrics.go:31:	groupCount           = affinityStatusGauge.WithLabelValues("group-count")
+pkg/schedule/affinity/metrics.go:32:	regionCount          = affinityStatusGauge.WithLabelValues("region-count")
+pkg/schedule/affinity/metrics.go:33:	affinityRegionCount  = affinityStatusGauge.WithLabelValues("affinity-region-count")
+pkg/schedule/affinity/metrics.go:34:	regionSplitDenyCount = affinityStatusGauge.WithLabelValues("split-deny-count")
+pkg/schedule/affinity/metrics.go:37:func init() {
+pkg/schedule/affinity/metrics.go:38:	prometheus.MustRegister(affinityStatusGauge)
+pkg/schedule/affinity/group.go:28:	"github.com/tikv/pd/pkg/utils/keyutil"
+pkg/schedule/affinity/group.go:47:type groupAvailability int
+pkg/schedule/affinity/group.go:49:const (
+pkg/schedule/affinity/group.go:55:func (a groupAvailability) String() string {
+pkg/schedule/affinity/group.go:69:type Phase string
+pkg/schedule/affinity/group.go:71:const (
+pkg/schedule/affinity/group.go:84:var idRegexp = regexp.MustCompile("^[-A-Za-z0-9_]{1,64}$")
+pkg/schedule/affinity/group.go:88:type Group struct {
+pkg/schedule/affinity/group.go:102:func (g *Group) String() string {
+pkg/schedule/affinity/group.go:109:type GroupState struct {
+pkg/schedule/affinity/group.go:117:	// RangeCount indicates how many key ranges are associated with this group.
+pkg/schedule/affinity/group.go:132:func (g *GroupState) isRegionAffinity(region *core.RegionInfo) bool {
+pkg/schedule/affinity/group.go:155:type runtimeGroupInfo struct {
+pkg/schedule/affinity/group.go:170:	// LabelRule using label's internal multiple keyrange mechanism.
+pkg/schedule/affinity/group.go:177:func newGroupState(g *runtimeGroupInfo) *GroupState {
+pkg/schedule/affinity/group.go:210:func (g *runtimeGroupInfo) IsAvailable() bool {
+pkg/schedule/affinity/group.go:216:func (g *runtimeGroupInfo) IsExpired() bool {
+pkg/schedule/affinity/group.go:221:func (g *runtimeGroupInfo) GetAvailability() groupAvailability {
+pkg/schedule/affinity/group.go:243:func (g *runtimeGroupInfo) SetAvailability(newAvailability groupAvailability) {
+pkg/schedule/affinity/group.go:262:func newDegradedExpiredAtFromNow() uint64 {
+pkg/schedule/affinity/group.go:267:func (g *runtimeGroupInfo) IsAffinitySchedulingAllowed() bool {
+pkg/schedule/affinity/group.go:272:func (g *runtimeGroupInfo) IsRegularSchedulingAllowed() bool {
+pkg/schedule/affinity/group.go:277:func (m *Manager) AdjustGroup(g *Group) error {
+pkg/schedule/affinity/group.go:307:// GroupKeyRanges represents key ranges with group id.
+pkg/schedule/affinity/group.go:308:type GroupKeyRanges struct {
+pkg/schedule/affinity/group.go:309:	KeyRanges []keyutil.KeyRange
+pkg/schedule/affinity/group.go:314:func ValidateGroupID(id string) error {
+pkg/schedule/affinity/group_test.go:33:func TestGroupState(t *testing.T) {
+pkg/schedule/affinity/group_test.go:43:	// keyRange is unused in this test.
+pkg/schedule/affinity/group_test.go:56:func TestAdjustGroup(t *testing.T) {
+pkg/schedule/affinity/manager_test.go:34:	"github.com/tikv/pd/pkg/utils/keyutil"
+pkg/schedule/affinity/manager_test.go:38:func TestGetRegionAffinityGroupState(t *testing.T) {
+pkg/schedule/affinity/manager_test.go:58:	// Create affinity group with 6 key ranges for testing
+pkg/schedule/affinity/manager_test.go:80:		keyRange      keyutil.KeyRange
+pkg/schedule/affinity/manager_test.go:88:			keyRange: nonOverlappingRange,
+pkg/schedule/affinity/manager_test.go:94:			keyRange: ranges[1],
+pkg/schedule/affinity/manager_test.go:100:			keyRange: ranges[2],
+pkg/schedule/affinity/manager_test.go:106:			keyRange: ranges[3],
+pkg/schedule/affinity/manager_test.go:112:			keyRange:      ranges[4],
+pkg/schedule/affinity/manager_test.go:119:			keyRange: ranges[5],
+pkg/schedule/affinity/manager_test.go:133:			region := generateRegionForTest(tc.regionID, tc.peers, tc.keyRange)
+pkg/schedule/affinity/manager_test.go:145:func TestBasicGroupOperations(t *testing.T) {
+pkg/schedule/affinity/manager_test.go:172:	// Delete the group (no key ranges, so force=false should work)
+pkg/schedule/affinity/manager_test.go:179:func TestSyncLabelRuleBeforeGroup(t *testing.T) {
+pkg/schedule/affinity/manager_test.go:199:		KeyRanges: []keyutil.KeyRange{
+pkg/schedule/affinity/manager_test.go:220:func TestRegionCountStaleCache(t *testing.T) {
+pkg/schedule/affinity/manager_test.go:264:	// Remove key ranges, which bumps AffinityVer and invalidates affinity for the cached region.
+pkg/schedule/affinity/manager_test.go:276:	// Add key ranges, which bumps AffinityVer and invalidates affinity for the cached region.
+pkg/schedule/affinity/manager_test.go:289:func TestDeleteGroupClearsCache(t *testing.T) {
+pkg/schedule/affinity/manager_test.go:352:func TestAvailabilityChangeRegionCount(t *testing.T) {
+pkg/schedule/affinity/manager_test.go:414:func TestInvalidCacheMultipleTimes(t *testing.T) {
+pkg/schedule/affinity/manager_test.go:476:func TestConcurrentOperations(t *testing.T) {
+pkg/schedule/affinity/manager_test.go:496:	groups := make([][]keyutil.KeyRange, 3)
+pkg/schedule/affinity/manager_test.go:588:func TestDegradedExpiration(t *testing.T) {
+pkg/schedule/affinity/policy_test.go:36:func TestStoreCondition(t *testing.T) {
+pkg/schedule/affinity/policy_test.go:53:func TestCollectUnavailableStores(t *testing.T) {
+pkg/schedule/affinity/policy_test.go:117:func TestObserveAvailableRegion(t *testing.T) {
+pkg/schedule/affinity/policy_test.go:206:func TestAvailabilityCheckInvalidatesGroup(t *testing.T) {
+pkg/schedule/affinity/policy_test.go:248:func TestStoreHealthCheck(t *testing.T) {
+pkg/schedule/affinity/policy_test.go:354:func TestDegradedGroupShouldExpire(t *testing.T) {
+pkg/schedule/affinity/policy_test.go:403:func TestGroupAvailabilityPriority(t *testing.T) {
+pkg/schedule/affinity/manager.go:35:const (
+pkg/schedule/affinity/manager.go:36:	// labelKey is the key for affinity group id in region label.
+pkg/schedule/affinity/manager.go:44:type regionCache struct {
+pkg/schedule/affinity/manager.go:52:type Manager struct {
+pkg/schedule/affinity/manager.go:53:	// RWMutex protects only in-memory data. (Does not include auxiliary data needed for meta updates, such as keyRanges)
+pkg/schedule/affinity/manager.go:67:	regionLabeler    *labeler.RegionLabeler // region labeler for syncing key ranges
+pkg/schedule/affinity/manager.go:76:	// keyRanges cached in memory to reduce labeler lock contention
+pkg/schedule/affinity/manager.go:77:	keyRanges map[string]GroupKeyRanges // {group_id} -> key ranges
+pkg/schedule/affinity/manager.go:84:func NewManager(ctx context.Context, storage endpoint.AffinityStorage, storeSetInformer core.StoreSetInformer, conf config.SharedConfigProvider, regionLabeler *labeler.RegionLabeler) (*Manager, error) {
+pkg/schedule/affinity/manager.go:98:		keyRanges:           make(map[string]GroupKeyRanges),
+pkg/schedule/affinity/manager.go:108:func (m *Manager) initialize() error {
+pkg/schedule/affinity/manager.go:109:	// metaMutex must be locked, because loadRegionLabel will acquire RWMutex to protect keyRanges
+pkg/schedule/affinity/manager.go:120:				zap.String("key", k),
+pkg/schedule/affinity/manager.go:136:	m.startAvailabilityCheckLoop()
+pkg/schedule/affinity/manager.go:142:func (m *Manager) IsAvailable() bool {
+pkg/schedule/affinity/manager.go:148:func (m *Manager) initGroupLocked(group *Group) {
+pkg/schedule/affinity/manager.go:170:func (m *Manager) noGroupsExist(groups []*Group) error {
+pkg/schedule/affinity/manager.go:181:func (m *Manager) allGroupsExist(groupIDs []string) error {
+pkg/schedule/affinity/manager.go:192:func (m *Manager) createGroups(groups []*Group, labelRules []*labeler.LabelRule) {
+pkg/schedule/affinity/manager.go:201:func (m *Manager) resetCountLocked(groupInfo *runtimeGroupInfo) {
+pkg/schedule/affinity/manager.go:207:func (m *Manager) updateGroupPeers(groupID string, leaderStoreID uint64, voterStoreIDs []uint64) (*GroupState, error) {
+pkg/schedule/affinity/manager.go:224:func (m *Manager) updateGroupAvailabilityLocked(groupID string, availability groupAvailability) {
+pkg/schedule/affinity/manager.go:234:func (m *Manager) ExpireAffinityGroup(groupID string) {
+pkg/schedule/affinity/manager.go:241:func (m *Manager) DegradeAffinityGroup(groupID string) {
+pkg/schedule/affinity/manager.go:248:func (m *Manager) RestoreAffinityGroup(groupID string) {
+pkg/schedule/affinity/manager.go:254:func (m *Manager) updateGroupLabelRuleLocked(groupID string, labelRule *labeler.LabelRule, needClear bool) {
+pkg/schedule/affinity/manager.go:264:func (m *Manager) updateGroupLabelRuleLockedWithCount(groupID string, labelRule *labeler.LabelRule, rangeCount int, needClear bool) {
+pkg/schedule/affinity/manager.go:280:func (m *Manager) updateGroupLabelRules(labels map[string]*labeler.LabelRule, needClear bool) {
+pkg/schedule/affinity/manager.go:288:func (m *Manager) clearGroupCacheLocked(groupID string) {
+pkg/schedule/affinity/manager.go:301:func (m *Manager) deleteGroupLocked(groupID string) {
+pkg/schedule/affinity/manager.go:306:func (m *Manager) deleteGroups(groupIDs []string) {
+pkg/schedule/affinity/manager.go:314:func (m *Manager) deleteCacheLocked(regionID uint64) {
+pkg/schedule/affinity/manager.go:327:func (m *Manager) saveCache(cache *regionCache) {
+pkg/schedule/affinity/manager.go:346:func (m *Manager) InvalidCache(regionID uint64) {
+pkg/schedule/affinity/manager.go:359:func (m *Manager) getCache(region *core.RegionInfo) (*regionCache, *GroupState) {
+pkg/schedule/affinity/manager.go:371:func (m *Manager) GetRegionAffinityGroupState(region *core.RegionInfo) (group *GroupState, isAffinity bool) {
+pkg/schedule/affinity/manager.go:378:func (m *Manager) GetAndCacheRegionAffinityGroupState(region *core.RegionInfo) (group *GroupState, isAffinity bool) {
+pkg/schedule/affinity/manager.go:382:func (m *Manager) calcRegionAffinityGroupState(region *core.RegionInfo, saveCache bool) (group *GroupState, isAffinity bool) {
+pkg/schedule/affinity/manager.go:409:func (m *Manager) IsGroupExist(id string) bool {
+pkg/schedule/affinity/manager.go:417:func (m *Manager) GetAffinityGroupState(id string) *GroupState {
+pkg/schedule/affinity/manager.go:431:func (m *Manager) CheckAndGetAffinityGroupState(groupID string) (*GroupState, error) {
+pkg/schedule/affinity/manager.go:443:func (m *Manager) GetAffinityGroupCount() int {
+pkg/schedule/affinity/manager.go:450:func (m *Manager) GetAllAffinityGroupStates() []*GroupState {
+pkg/schedule/affinity/manager.go:464:func (m *Manager) SyncGroupFromEtcd(group *Group) {
+pkg/schedule/affinity/manager.go:516:				m.keyRanges[group.ID] = gkr
+pkg/schedule/affinity/manager.go:540:func (m *Manager) SyncGroupDeleteFromEtcd(groupID string) {
+pkg/schedule/affinity/manager.go:544:	delete(m.keyRanges, groupID)
+pkg/schedule/affinity/manager.go:557:// SyncKeyRangesFromEtcd synchronizes key ranges from a label rule.
+pkg/schedule/affinity/manager.go:558:func (m *Manager) SyncKeyRangesFromEtcd(labelRule *labeler.LabelRule) error {
+pkg/schedule/affinity/manager.go:564:	// Extract key ranges from label rule
+pkg/schedule/affinity/manager.go:567:		log.Error("failed to extract key ranges from label rule during sync",
+pkg/schedule/affinity/manager.go:593:		m.keyRanges[groupID] = gkr
+pkg/schedule/affinity/manager.go:595:		delete(m.keyRanges, groupID)
+pkg/schedule/affinity/manager.go:605:// SyncKeyRangesDeleteFromEtcd synchronizes key ranges deletion.
+pkg/schedule/affinity/manager.go:606:func (m *Manager) SyncKeyRangesDeleteFromEtcd(ruleID string) {
+pkg/schedule/affinity/manager.go:612:	// Clear keyRanges cache (needs metaMutex)
+pkg/schedule/affinity/manager.go:616:	delete(m.keyRanges, groupID)
+pkg/schedule/affinity/txn.go:35:	"github.com/tikv/pd/pkg/utils/keyutil"
+pkg/schedule/affinity/txn.go:38:const (
+pkg/schedule/affinity/txn.go:47:func GetLabelRuleID(groupID string) string {
+pkg/schedule/affinity/txn.go:53:func parseAffinityGroupIDFromLabelRule(rule *labeler.LabelRule) (string, bool) {
+pkg/schedule/affinity/txn.go:78:func MakeLabelRule(groupKeyRanges GroupKeyRanges) *labeler.LabelRule {
+pkg/schedule/affinity/txn.go:82:			"start_key": hex.EncodeToString(kr.StartKey),
+pkg/schedule/affinity/txn.go:83:			"end_key":   hex.EncodeToString(kr.EndKey),
+pkg/schedule/affinity/txn.go:95:func (m *Manager) CreateAffinityGroups(changes []GroupKeyRanges) error {
+pkg/schedule/affinity/txn.go:100:func (m *Manager) CreateAffinityGroupsIfNotExists(changes []GroupKeyRanges) error {
+pkg/schedule/affinity/txn.go:104:func (m *Manager) createGroupsWithSkipExisting(changes []GroupKeyRanges, skipExisting bool) error {
+pkg/schedule/affinity/txn.go:147:	// Step 2: Convert and validate key ranges no overlaps
+pkg/schedule/affinity/txn.go:190:		// Update key ranges cache for this group
+pkg/schedule/affinity/txn.go:192:			m.keyRanges[change.GroupID] = GroupKeyRanges{
+pkg/schedule/affinity/txn.go:197:			// No key ranges, remove from cache if exists
+pkg/schedule/affinity/txn.go:198:			delete(m.keyRanges, change.GroupID)
+pkg/schedule/affinity/txn.go:210://   - Returns error if any group has key ranges
+pkg/schedule/affinity/txn.go:214://   - Deletes groups even if they have key ranges
+pkg/schedule/affinity/txn.go:215:func (m *Manager) DeleteAffinityGroups(groupIDs []string, force bool) error {
+pkg/schedule/affinity/txn.go:226:	// Step 1: Check if group has key ranges when force is false
+pkg/schedule/affinity/txn.go:232:		// Check if group has key ranges when force is false
+pkg/schedule/affinity/txn.go:234:			if ranges, exists := m.keyRanges[groupID]; exists && len(ranges.KeyRanges) > 0 {
+pkg/schedule/affinity/txn.go:236:					"affinity group " + groupID + " has key ranges, use force=true to delete")
+pkg/schedule/affinity/txn.go:283:		delete(m.keyRanges, groupID)
+pkg/schedule/affinity/txn.go:292:func (m *Manager) UpdateAffinityGroupPeers(groupID string, leaderStoreID uint64, voterStoreIDs []uint64) (*GroupState, error) {
+pkg/schedule/affinity/txn.go:300:func (m *Manager) updateAffinityGroupPeersWithAffinityVer(groupID string, affinityVer uint64, leaderStoreID uint64, voterStoreIDs []uint64) (*GroupState, error) {
+pkg/schedule/affinity/txn.go:354:// UpdateAffinityGroupKeyRanges batch modifies key ranges for multiple affinity groups.
+pkg/schedule/affinity/txn.go:358:func (m *Manager) UpdateAffinityGroupKeyRanges(addOps, removeOps []GroupKeyRanges) error {
+pkg/schedule/affinity/txn.go:479:		m.keyRanges[groupID] = currentRanges
+pkg/schedule/affinity/txn.go:483:			m.keyRanges[groupID] = currentRanges
+pkg/schedule/affinity/txn.go:485:			delete(m.keyRanges, groupID)
+pkg/schedule/affinity/txn.go:494:// getCurrentRanges retrieves the current key ranges for a group.
+pkg/schedule/affinity/txn.go:495:func (m *Manager) getCurrentRanges(groupID string) (GroupKeyRanges, error) {
+pkg/schedule/affinity/txn.go:497:	if gkr, ok := m.keyRanges[groupID]; ok {
+pkg/schedule/affinity/txn.go:519:// currentRanges has been sorted by start key and not overlapping.
+pkg/schedule/affinity/txn.go:520:func applyRemoveOps(currentRanges GroupKeyRanges, removes GroupKeyRanges) (GroupKeyRanges, error) {
+pkg/schedule/affinity/txn.go:526:	// Use hex encoding to avoid key collisions
+pkg/schedule/affinity/txn.go:527:	removeSet := make(map[string]keyutil.KeyRange, len(removes.KeyRanges))
+pkg/schedule/affinity/txn.go:529:		key := hex.EncodeToString(remove.StartKey)
+pkg/schedule/affinity/txn.go:530:		if _, exists := removeSet[key]; exists {
+pkg/schedule/affinity/txn.go:533:		removeSet[key] = remove
+pkg/schedule/affinity/txn.go:536:	var filtered []keyutil.KeyRange
+pkg/schedule/affinity/txn.go:538:		key := hex.EncodeToString(current.StartKey)
+pkg/schedule/affinity/txn.go:539:		if remove, exists := removeSet[key]; exists {
+pkg/schedule/affinity/txn.go:543:			delete(removeSet, key)
+pkg/schedule/affinity/txn.go:560:// parseKeyRangesFromData parses key ranges from []*labeler.KeyRangeRule format (from label rule).
+pkg/schedule/affinity/txn.go:561:func parseKeyRangesFromData(data []*labeler.KeyRangeRule, groupID string) (GroupKeyRanges, error) {
+pkg/schedule/affinity/txn.go:566:	var keyRanges []keyutil.KeyRange
+pkg/schedule/affinity/txn.go:580:		keyRanges = append(keyRanges, keyutil.KeyRange{
+pkg/schedule/affinity/txn.go:586:		KeyRanges: keyRanges,
+pkg/schedule/affinity/txn.go:592:func decodeHexKey(hexStr, groupID, keyType string) ([]byte, error) {
+pkg/schedule/affinity/txn.go:598:		return nil, errs.ErrInvalidKeyFormat.FastGenByArgs(keyType, hexStr, groupID)
+pkg/schedule/affinity/txn.go:603:// extractKeyRangesFromLabelRule extracts key ranges from a label rule data.
+pkg/schedule/affinity/txn.go:606:func extractKeyRangesFromLabelRule(rule *labeler.LabelRule) (GroupKeyRanges, error) {
+pkg/schedule/affinity/txn.go:625:// checkKeyRangesOverlap checks if two key ranges overlap.
+pkg/schedule/affinity/txn.go:627:func checkKeyRangesOverlap(start1, end1, start2, end2 []byte) bool {
+pkg/schedule/affinity/txn.go:628:	// If the start or end keys are the same, they overlap
+pkg/schedule/affinity/txn.go:633:	// Handle empty keys (representing infinity)
+pkg/schedule/affinity/txn.go:656:type flattenKeyRange struct {
+pkg/schedule/affinity/txn.go:657:	keyutil.KeyRange
+pkg/schedule/affinity/txn.go:661:// validateNoOverlapLocked validates that the given key ranges do not overlap with existing ones.
+pkg/schedule/affinity/txn.go:663:// Uses in-memory keyRanges cache to avoid repeated labeler access and reduce lock contention.
+pkg/schedule/affinity/txn.go:665:func (m *Manager) validateNoOverlapLocked(newRanges []GroupKeyRanges) error {
+pkg/schedule/affinity/txn.go:667:	combined := slices.Concat(newRanges, slices.Collect(maps.Values(m.keyRanges)))
+pkg/schedule/affinity/txn.go:674:func validateNoOverlap(ranges []GroupKeyRanges) error {
+pkg/schedule/affinity/txn.go:685:	// Sort by start key
+pkg/schedule/affinity/txn.go:699:					"key ranges overlap within group " + allRanges[i].groupID)
+pkg/schedule/affinity/txn.go:702:				"key range overlaps between groups: " +
+pkg/schedule/affinity/txn.go:712:func (m *Manager) loadRegionLabel() error {
+pkg/schedule/affinity/txn.go:713:	// Collect all key ranges from label rules and populate in-memory cache
+pkg/schedule/affinity/txn.go:732:			log.Warn("failed to extract key ranges from label rule during rebuild",
+pkg/schedule/affinity/txn.go:741:			// Populate in-memory key ranges cache
+pkg/schedule/affinity/txn.go:742:			m.keyRanges[groupID] = gkr
+pkg/schedule/affinity/txn.go:751:	// Validate that all key ranges are non-overlapping
+pkg/schedule/affinity/txn.go:757:		zap.Int("total-groups", len(m.keyRanges)),
+pkg/schedule/affinity/txn_test.go:32:	"github.com/tikv/pd/pkg/utils/keyutil"
+pkg/schedule/affinity/txn_test.go:35:func TestKeyRangeOverlapValidation(t *testing.T) {
+pkg/schedule/affinity/txn_test.go:63:	keyRanges1 := []GroupKeyRanges{
+pkg/schedule/affinity/txn_test.go:64:		{GroupID: "group1", KeyRanges: []keyutil.KeyRange{
+pkg/schedule/affinity/txn_test.go:69:	err = validate(keyRanges1)
+pkg/schedule/affinity/txn_test.go:73:	keyRanges2 := []GroupKeyRanges{
+pkg/schedule/affinity/txn_test.go:74:		{GroupID: "group1", KeyRanges: []keyutil.KeyRange{
+pkg/schedule/affinity/txn_test.go:79:	err = validate(keyRanges2)
+pkg/schedule/affinity/txn_test.go:84:	keyRanges3 := []GroupKeyRanges{
+pkg/schedule/affinity/txn_test.go:85:		{GroupID: "group1", KeyRanges: []keyutil.KeyRange{
+pkg/schedule/affinity/txn_test.go:90:	err = validate(keyRanges3)
+pkg/schedule/affinity/txn_test.go:94:	keyRangesDup := []GroupKeyRanges{
+pkg/schedule/affinity/txn_test.go:95:		{GroupID: "group1", KeyRanges: []keyutil.KeyRange{
+pkg/schedule/affinity/txn_test.go:100:	err = validate(keyRangesDup)
+pkg/schedule/affinity/txn_test.go:114:func TestKeyRangeOverlapRebuild(t *testing.T) {
+pkg/schedule/affinity/txn_test.go:134:	// Create two groups without key ranges for basic testing
+pkg/schedule/affinity/txn_test.go:162:func TestParseKeyRangesFromDataInvalidHex(t *testing.T) {
+pkg/schedule/affinity/txn_test.go:168:	re.ErrorContains(err, "invalid hex start key")
+pkg/schedule/affinity/txn_test.go:171:func TestAffinityPersistenceWithLabeler(t *testing.T) {
+pkg/schedule/affinity/txn_test.go:190:	keyRanges := createGroupForTest(re, manager, "persist", 10)
+pkg/schedule/affinity/txn_test.go:210:		[]GroupKeyRanges{{GroupID: "persist", KeyRanges: keyRanges[:3]}},
+pkg/schedule/affinity/txn_test.go:219:		[]GroupKeyRanges{{GroupID: "persist", KeyRanges: keyRanges[3:]}},
+pkg/schedule/affinity/txn_test.go:227:func TestLoadRegionLabelIgnoreUnknownGroup(t *testing.T) {
+pkg/schedule/affinity/txn_test.go:245:			map[string]any{"start_key": hex.EncodeToString([]byte{0x01}), "end_key": hex.EncodeToString([]byte{0x02})},
+pkg/schedule/affinity/txn_test.go:260:		KeyRanges: []keyutil.KeyRange{{
+pkg/schedule/affinity/txn_test.go:270:func TestLabelRuleIntegration(t *testing.T) {
+pkg/schedule/affinity/txn_test.go:290:	// Test: Group with no key ranges should not create label rule
+pkg/schedule/affinity/txn_test.go:298:	re.Nil(labelRule, "No label rule should be created when keyRanges is nil")
+pkg/schedule/affinity/txn_test.go:303:	// Delete group (no key ranges, so force=false should work)
+pkg/schedule/affinity/txn_test.go:310:// when adding key ranges to a group created without initial ranges.
+pkg/schedule/affinity/txn_test.go:311:func TestUpdateAffinityGroupKeyRangesAddToEmptyGroup(t *testing.T) {
+pkg/schedule/affinity/txn_test.go:329:	// Create a group without key ranges or peers.
+pkg/schedule/affinity/txn_test.go:336:			KeyRanges: []keyutil.KeyRange{{
+pkg/schedule/affinity/txn_test.go:346:func TestDuplicateRangeAdd(t *testing.T) {
+pkg/schedule/affinity/txn_test.go:364:	r := keyutil.KeyRange{StartKey: []byte{0x00}, EndKey: []byte{0x10}}
+pkg/schedule/affinity/txn_test.go:368:		KeyRanges: []keyutil.KeyRange{r}}}))
+pkg/schedule/affinity/txn_test.go:371:		[]GroupKeyRanges{{GroupID: "dup", KeyRanges: []keyutil.KeyRange{r}}},
+pkg/schedule/affinity/txn_test.go:378:func TestDeleteAffinityGroupsForceMissing(t *testing.T) {
+pkg/schedule/affinity/txn_test.go:396:	// Create a group with a key range.
+pkg/schedule/affinity/txn_test.go:399:		KeyRanges: []keyutil.KeyRange{{
+pkg/schedule/affinity/txn_test.go:412:func TestSameGroupNonOverlappingAdd(t *testing.T) {
+pkg/schedule/affinity/txn_test.go:429:	r1 := keyutil.KeyRange{StartKey: []byte{0x00}, EndKey: []byte{0x10}}
+pkg/schedule/affinity/txn_test.go:430:	r2 := keyutil.KeyRange{StartKey: []byte{0x20}, EndKey: []byte{0x30}}
+pkg/schedule/affinity/txn_test.go:432:	re.NoError(manager.CreateAffinityGroups([]GroupKeyRanges{{GroupID: "g", KeyRanges: []keyutil.KeyRange{r1}}}))
+pkg/schedule/affinity/txn_test.go:435:		[]GroupKeyRanges{{GroupID: "g", KeyRanges: []keyutil.KeyRange{r2}}},
+pkg/schedule/affinity/txn_test.go:448:func TestOverlapDuringMigration(t *testing.T) {
+pkg/schedule/affinity/txn_test.go:465:	r := keyutil.KeyRange{StartKey: []byte{0x00}, EndKey: []byte{0x10}}
+pkg/schedule/affinity/txn_test.go:466:	re.NoError(manager.CreateAffinityGroups([]GroupKeyRanges{{GroupID: "g1", KeyRanges: []keyutil.KeyRange{r}}}))
+pkg/schedule/affinity/txn_test.go:469:		[]GroupKeyRanges{{GroupID: "g2", KeyRanges: []keyutil.KeyRange{r}}},
+pkg/schedule/affinity/txn_test.go:470:		[]GroupKeyRanges{{GroupID: "g1", KeyRanges: []keyutil.KeyRange{r}}},
+pkg/schedule/affinity/txn_test.go:477:func TestPartialOverlapSameGroup(t *testing.T) {
+pkg/schedule/affinity/txn_test.go:494:	rOld := keyutil.KeyRange{StartKey: []byte{0x00}, EndKey: []byte{0x10}}
+pkg/schedule/affinity/txn_test.go:495:	rNew := keyutil.KeyRange{StartKey: []byte{0x00}, EndKey: []byte{0x05}}
+pkg/schedule/affinity/txn_test.go:497:	re.NoError(manager.CreateAffinityGroups([]GroupKeyRanges{{GroupID: "g", KeyRanges: []keyutil.KeyRange{rOld}}}))
+pkg/schedule/affinity/txn_test.go:500:		[]GroupKeyRanges{{GroupID: "g", KeyRanges: []keyutil.KeyRange{rNew}}},
+pkg/schedule/affinity/txn_test.go:501:		[]GroupKeyRanges{{GroupID: "g", KeyRanges: []keyutil.KeyRange{rOld}}},
+pkg/schedule/affinity/txn_test.go:510:func TestNewGroupOverlapWithExistingGroup(t *testing.T) {
+pkg/schedule/affinity/txn_test.go:528:	rangeA := keyutil.KeyRange{StartKey: []byte{0x00}, EndKey: []byte{0x20}}
+pkg/schedule/affinity/txn_test.go:531:		KeyRanges: []keyutil.KeyRange{rangeA},
+pkg/schedule/affinity/txn_test.go:536:	rangeB := keyutil.KeyRange{StartKey: []byte{0x10}, EndKey: []byte{0x30}}
+pkg/schedule/affinity/txn_test.go:539:		KeyRanges: []keyutil.KeyRange{rangeB},
+pkg/schedule/affinity/txn_test.go:555:			KeyRanges: []keyutil.KeyRange{rangeB},
+pkg/schedule/affinity/txn_test.go:564:	rangeD := keyutil.KeyRange{StartKey: []byte{0x40}, EndKey: []byte{0x50}}
+pkg/schedule/affinity/txn_test.go:567:		KeyRanges: []keyutil.KeyRange{rangeD},
+pkg/schedule/affinity/txn_test.go:575:	rangeC := keyutil.KeyRange{StartKey: []byte{0x45}, EndKey: []byte{0x55}} // overlaps with D
+pkg/schedule/affinity/txn_test.go:576:	rangeE := keyutil.KeyRange{StartKey: []byte{0x60}, EndKey: []byte{0x70}} // no overlap
+pkg/schedule/affinity/txn_test.go:579:			{GroupID: "groupC", KeyRanges: []keyutil.KeyRange{rangeC}},
+pkg/schedule/affinity/txn_test.go:580:			{GroupID: "groupE", KeyRanges: []keyutil.KeyRange{rangeE}},
+pkg/schedule/affinity/txn_test.go:584:	// This is the key test: C's new range vs D's existing range should be detected

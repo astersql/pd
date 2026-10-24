@@ -1,0 +1,12 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.10s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_affinity-c7390c16fa8bf1ad)
+
+running 5 tests
+test affinity_values_test::affinity_values_availability_phase ... ok
+test affinity_values_test::affinity_values_ids_and_queries ... ok
+test affinity_values_test::affinity_values_json ... ok
+test affinity_values_test::affinity_values_collection ... ok
+test affinity_values_test::affinity_values_go_runtime_fixture ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

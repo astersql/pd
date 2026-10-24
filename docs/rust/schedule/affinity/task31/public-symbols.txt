@@ -1,0 +1,71 @@
+pkg/schedule/affinity/split.go:34:func (m *Manager) AllowSplit(region *core.RegionInfo, reason pdpb.SplitReason) bool {
+pkg/schedule/affinity/policy.go:42:type storeCondition int
+pkg/schedule/affinity/policy.go:61:func (c storeCondition) String() string {
+pkg/schedule/affinity/policy.go:86:func (c storeCondition) groupAvailability() groupAvailability {
+pkg/schedule/affinity/policy.go:97:func (c storeCondition) affectsLeaderOnly() bool {
+pkg/schedule/affinity/policy.go:106:func calcGroupAvailability(
+pkg/schedule/affinity/policy.go:123:func (m *Manager) ObserveAvailableRegion(region *core.RegionInfo, group *GroupState) {
+pkg/schedule/affinity/policy.go:139:func (m *Manager) startAvailabilityCheckLoop() {
+pkg/schedule/affinity/policy.go:162:func (m *Manager) checkGroupsAvailability() {
+pkg/schedule/affinity/policy.go:175:func (m *Manager) collectMetrics() {
+pkg/schedule/affinity/policy.go:185:func (m *Manager) collectUnavailableStores() map[uint64]storeCondition {
+pkg/schedule/affinity/policy.go:218:func (m *Manager) getGroupAvailabilityChanges(unavailableStores map[uint64]storeCondition) (isUnavailableStoresChanged bool, groupAvailabilityChanges map[string]groupAvailability) {
+pkg/schedule/affinity/policy.go:265:func (m *Manager) setGroupAvailabilityChanges(unavailableStores map[uint64]storeCondition, groupAvailabilityChanges map[string]groupAvailability) {
+pkg/schedule/affinity/policy.go:274:func (m *Manager) checkHasUnavailableStore(leaderStoreID uint64, voterStoreIDs []uint64) error {
+pkg/schedule/affinity/manager.go:44:type regionCache struct {
+pkg/schedule/affinity/manager.go:52:type Manager struct {
+pkg/schedule/affinity/manager.go:84:func NewManager(ctx context.Context, storage endpoint.AffinityStorage, storeSetInformer core.StoreSetInformer, conf config.SharedConfigProvider, regionLabeler *labeler.RegionLabeler) (*Manager, error) {
+pkg/schedule/affinity/manager.go:108:func (m *Manager) initialize() error {
+pkg/schedule/affinity/manager.go:142:func (m *Manager) IsAvailable() bool {
+pkg/schedule/affinity/manager.go:148:func (m *Manager) initGroupLocked(group *Group) {
+pkg/schedule/affinity/manager.go:170:func (m *Manager) noGroupsExist(groups []*Group) error {
+pkg/schedule/affinity/manager.go:181:func (m *Manager) allGroupsExist(groupIDs []string) error {
+pkg/schedule/affinity/manager.go:192:func (m *Manager) createGroups(groups []*Group, labelRules []*labeler.LabelRule) {
+pkg/schedule/affinity/manager.go:201:func (m *Manager) resetCountLocked(groupInfo *runtimeGroupInfo) {
+pkg/schedule/affinity/manager.go:207:func (m *Manager) updateGroupPeers(groupID string, leaderStoreID uint64, voterStoreIDs []uint64) (*GroupState, error) {
+pkg/schedule/affinity/manager.go:224:func (m *Manager) updateGroupAvailabilityLocked(groupID string, availability groupAvailability) {
+pkg/schedule/affinity/manager.go:234:func (m *Manager) ExpireAffinityGroup(groupID string) {
+pkg/schedule/affinity/manager.go:241:func (m *Manager) DegradeAffinityGroup(groupID string) {
+pkg/schedule/affinity/manager.go:248:func (m *Manager) RestoreAffinityGroup(groupID string) {
+pkg/schedule/affinity/manager.go:254:func (m *Manager) updateGroupLabelRuleLocked(groupID string, labelRule *labeler.LabelRule, needClear bool) {
+pkg/schedule/affinity/manager.go:264:func (m *Manager) updateGroupLabelRuleLockedWithCount(groupID string, labelRule *labeler.LabelRule, rangeCount int, needClear bool) {
+pkg/schedule/affinity/manager.go:280:func (m *Manager) updateGroupLabelRules(labels map[string]*labeler.LabelRule, needClear bool) {
+pkg/schedule/affinity/manager.go:288:func (m *Manager) clearGroupCacheLocked(groupID string) {
+pkg/schedule/affinity/manager.go:301:func (m *Manager) deleteGroupLocked(groupID string) {
+pkg/schedule/affinity/manager.go:306:func (m *Manager) deleteGroups(groupIDs []string) {
+pkg/schedule/affinity/manager.go:314:func (m *Manager) deleteCacheLocked(regionID uint64) {
+pkg/schedule/affinity/manager.go:327:func (m *Manager) saveCache(cache *regionCache) {
+pkg/schedule/affinity/manager.go:346:func (m *Manager) InvalidCache(regionID uint64) {
+pkg/schedule/affinity/manager.go:359:func (m *Manager) getCache(region *core.RegionInfo) (*regionCache, *GroupState) {
+pkg/schedule/affinity/manager.go:371:func (m *Manager) GetRegionAffinityGroupState(region *core.RegionInfo) (group *GroupState, isAffinity bool) {
+pkg/schedule/affinity/manager.go:378:func (m *Manager) GetAndCacheRegionAffinityGroupState(region *core.RegionInfo) (group *GroupState, isAffinity bool) {
+pkg/schedule/affinity/manager.go:382:func (m *Manager) calcRegionAffinityGroupState(region *core.RegionInfo, saveCache bool) (group *GroupState, isAffinity bool) {
+pkg/schedule/affinity/manager.go:409:func (m *Manager) IsGroupExist(id string) bool {
+pkg/schedule/affinity/manager.go:417:func (m *Manager) GetAffinityGroupState(id string) *GroupState {
+pkg/schedule/affinity/manager.go:431:func (m *Manager) CheckAndGetAffinityGroupState(groupID string) (*GroupState, error) {
+pkg/schedule/affinity/manager.go:443:func (m *Manager) GetAffinityGroupCount() int {
+pkg/schedule/affinity/manager.go:450:func (m *Manager) GetAllAffinityGroupStates() []*GroupState {
+pkg/schedule/affinity/manager.go:464:func (m *Manager) SyncGroupFromEtcd(group *Group) {
+pkg/schedule/affinity/manager.go:540:func (m *Manager) SyncGroupDeleteFromEtcd(groupID string) {
+pkg/schedule/affinity/manager.go:558:func (m *Manager) SyncKeyRangesFromEtcd(labelRule *labeler.LabelRule) error {
+pkg/schedule/affinity/manager.go:606:func (m *Manager) SyncKeyRangesDeleteFromEtcd(ruleID string) {
+pkg/schedule/affinity/txn.go:47:func GetLabelRuleID(groupID string) string {
+pkg/schedule/affinity/txn.go:53:func parseAffinityGroupIDFromLabelRule(rule *labeler.LabelRule) (string, bool) {
+pkg/schedule/affinity/txn.go:78:func MakeLabelRule(groupKeyRanges GroupKeyRanges) *labeler.LabelRule {
+pkg/schedule/affinity/txn.go:95:func (m *Manager) CreateAffinityGroups(changes []GroupKeyRanges) error {
+pkg/schedule/affinity/txn.go:100:func (m *Manager) CreateAffinityGroupsIfNotExists(changes []GroupKeyRanges) error {
+pkg/schedule/affinity/txn.go:104:func (m *Manager) createGroupsWithSkipExisting(changes []GroupKeyRanges, skipExisting bool) error {
+pkg/schedule/affinity/txn.go:215:func (m *Manager) DeleteAffinityGroups(groupIDs []string, force bool) error {
+pkg/schedule/affinity/txn.go:292:func (m *Manager) UpdateAffinityGroupPeers(groupID string, leaderStoreID uint64, voterStoreIDs []uint64) (*GroupState, error) {
+pkg/schedule/affinity/txn.go:300:func (m *Manager) updateAffinityGroupPeersWithAffinityVer(groupID string, affinityVer uint64, leaderStoreID uint64, voterStoreIDs []uint64) (*GroupState, error) {
+pkg/schedule/affinity/txn.go:358:func (m *Manager) UpdateAffinityGroupKeyRanges(addOps, removeOps []GroupKeyRanges) error {
+pkg/schedule/affinity/txn.go:495:func (m *Manager) getCurrentRanges(groupID string) (GroupKeyRanges, error) {
+pkg/schedule/affinity/txn.go:520:func applyRemoveOps(currentRanges GroupKeyRanges, removes GroupKeyRanges) (GroupKeyRanges, error) {
+pkg/schedule/affinity/txn.go:561:func parseKeyRangesFromData(data []*labeler.KeyRangeRule, groupID string) (GroupKeyRanges, error) {
+pkg/schedule/affinity/txn.go:592:func decodeHexKey(hexStr, groupID, keyType string) ([]byte, error) {
+pkg/schedule/affinity/txn.go:606:func extractKeyRangesFromLabelRule(rule *labeler.LabelRule) (GroupKeyRanges, error) {
+pkg/schedule/affinity/txn.go:627:func checkKeyRangesOverlap(start1, end1, start2, end2 []byte) bool {
+pkg/schedule/affinity/txn.go:656:type flattenKeyRange struct {
+pkg/schedule/affinity/txn.go:665:func (m *Manager) validateNoOverlapLocked(newRanges []GroupKeyRanges) error {
+pkg/schedule/affinity/txn.go:674:func validateNoOverlap(ranges []GroupKeyRanges) error {
+pkg/schedule/affinity/txn.go:712:func (m *Manager) loadRegionLabel() error {

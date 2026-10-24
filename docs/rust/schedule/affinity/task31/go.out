@@ -1,0 +1,11 @@
+bootstrap response 0a2f08cca19bd298f0a7ee6a12230804121f636c757374657220697320616c726561647920626f6f747374726170706564
+CREATE 200 {'affinity_groups': {'B_1-': {'id': 'B_1-', 'create_timestamp': 1792843701, 'phase': 'pending', 'range_count': 1, 'region_count': 0, 'affinity_region_count': 0}, 'a': {'id': 'a', 'create_timestamp': 1792843701, 'phase': 'pending', 'range_count': 1, 'region_count': 0, 'affinity_region_count': 0}}}
+[] 200 {'affinity_groups': {'B_1-': {'id': 'B_1-', 'create_timestamp': 1792843701, 'phase': 'pending', 'range_count': 1, 'region_count': 0, 'affinity_region_count': 0}, 'a': {'id': 'a', 'create_timestamp': 1792843701, 'phase': 'pending', 'range_count': 1, 'region_count': 0, 'affinity_region_count': 0}}}
+[' a ', 'a', '', '\x85B_1-\u3000'] 200 {'affinity_groups': {'B_1-': {'id': 'B_1-', 'create_timestamp': 1792843701, 'phase': 'pending', 'range_count': 1, 'region_count': 0, 'affinity_region_count': 0}, 'a': {'id': 'a', 'create_timestamp': 1792843701, 'phase': 'pending', 'range_count': 1, 'region_count': 0, 'affinity_region_count': 0}}}
+[' '] 200 {'affinity_groups': {}}
+['a', 'missing'] 200 {'affinity_groups': {'a': {'id': 'a', 'create_timestamp': 1792843701, 'phase': 'pending', 'range_count': 1, 'region_count': 0, 'affinity_region_count': 0}}}
+['bad/id'] 400 [PD:affinity:ErrInvalidGroupID]invalid group id bad/id: should contain only letters (a-z, A-Z), numbers (0-9), hyphens (-) and underscores (_), and be 1-64 characters long
+['a\n'] 200 {'affinity_groups': {'a': {'id': 'a', 'create_timestamp': 1792843701, 'phase': 'pending', 'range_count': 1, 'region_count': 0, 'affinity_region_count': 0}}}
+['aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'] 200 {'affinity_groups': {}}
+['aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'] 400 [PD:affinity:ErrInvalidGroupID]invalid group id aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa: should contain only letters (a-z, A-Z), numbers (0-9), hyphens (-) and underscores (_), and be 1-64 characters long
+['é'] 400 [PD:affinity:ErrInvalidGroupID]invalid group id é: should contain only letters (a-z, A-Z), numbers (0-9), hyphens (-) and underscores (_), and be 1-64 characters long

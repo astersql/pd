@@ -1,0 +1,154 @@
+{
+  "sha256": "4537466d65d253b1e291cacecf53faee14117386e8f2c5ff7b380108e49cc268",
+  "cases": [
+    {
+      "raw": [],
+      "status": 200,
+      "response": {
+        "affinity_groups": {
+          "B_1-": {
+            "id": "B_1-",
+            "create_timestamp": 1792843701,
+            "phase": "pending",
+            "range_count": 1,
+            "region_count": 0,
+            "affinity_region_count": 0
+          },
+          "a": {
+            "id": "a",
+            "create_timestamp": 1792843701,
+            "phase": "pending",
+            "range_count": 1,
+            "region_count": 0,
+            "affinity_region_count": 0
+          }
+        }
+      }
+    },
+    {
+      "raw": [
+        " a ",
+        "a",
+        "",
+        "B_1-　"
+      ],
+      "status": 200,
+      "response": {
+        "affinity_groups": {
+          "B_1-": {
+            "id": "B_1-",
+            "create_timestamp": 1792843701,
+            "phase": "pending",
+            "range_count": 1,
+            "region_count": 0,
+            "affinity_region_count": 0
+          },
+          "a": {
+            "id": "a",
+            "create_timestamp": 1792843701,
+            "phase": "pending",
+            "range_count": 1,
+            "region_count": 0,
+            "affinity_region_count": 0
+          }
+        }
+      }
+    },
+    {
+      "raw": [
+        " "
+      ],
+      "status": 200,
+      "response": {
+        "affinity_groups": {}
+      }
+    },
+    {
+      "raw": [
+        "a",
+        "missing"
+      ],
+      "status": 200,
+      "response": {
+        "affinity_groups": {
+          "a": {
+            "id": "a",
+            "create_timestamp": 1792843701,
+            "phase": "pending",
+            "range_count": 1,
+            "region_count": 0,
+            "affinity_region_count": 0
+          }
+        }
+      }
+    },
+    {
+      "raw": [
+        "bad/id"
+      ],
+      "status": 400,
+      "response": "[PD:affinity:ErrInvalidGroupID]invalid group id bad/id: should contain only letters (a-z, A-Z), numbers (0-9), hyphens (-) and underscores (_), and be 1-64 characters long"
+    },
+    {
+      "raw": [
+        "a\n"
+      ],
+      "status": 200,
+      "response": {
+        "affinity_groups": {
+          "a": {
+            "id": "a",
+            "create_timestamp": 1792843701,
+            "phase": "pending",
+            "range_count": 1,
+            "region_count": 0,
+            "affinity_region_count": 0
+          }
+        }
+      }
+    },
+    {
+      "raw": [
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      ],
+      "status": 200,
+      "response": {
+        "affinity_groups": {}
+      }
+    },
+    {
+      "raw": [
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      ],
+      "status": 400,
+      "response": "[PD:affinity:ErrInvalidGroupID]invalid group id aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa: should contain only letters (a-z, A-Z), numbers (0-9), hyphens (-) and underscores (_), and be 1-64 characters long"
+    },
+    {
+      "raw": [
+        "é"
+      ],
+      "status": 400,
+      "response": "[PD:affinity:ErrInvalidGroupID]invalid group id é: should contain only letters (a-z, A-Z), numbers (0-9), hyphens (-) and underscores (_), and be 1-64 characters long"
+    }
+  ],
+  "created": {
+    "affinity_groups": {
+      "B_1-": {
+        "id": "B_1-",
+        "create_timestamp": 1792843701,
+        "phase": "pending",
+        "range_count": 1,
+        "region_count": 0,
+        "affinity_region_count": 0
+      },
+      "a": {
+        "id": "a",
+        "create_timestamp": 1792843701,
+        "phase": "pending",
+        "range_count": 1,
+        "region_count": 0,
+        "affinity_region_count": 0
+      }
+    }
+  }
+}
