@@ -12,10 +12,10 @@ const SECOND: i64 = 1_000_000_000;
 
 /// Synchronous directional peer lifecycle with per-store TopN thresholds.
 /// The host applies returned actions in report order and supplies time for dynamic
-/// thresholds. Read and write use separate caches; TTL and inheritance are separate policies.
+/// thresholds. Read and write use separate caches; TTL is a separate policy.
 pub struct HotPeerCache {
     kind: RWType,
-    peers: BTreeMap<(u64, u64), HotPeerStat>,
+    pub(crate) peers: BTreeMap<(u64, u64), HotPeerStat>,
     denoising: bool,
     pub(crate) hot_thresholds: HotThresholds,
 }
@@ -61,6 +61,7 @@ impl HotPeerCache {
     /// Checks cumulative eight-kind deltas reported over whole seconds. None
     /// selects region peers; Some(empty) selects none. Explicit extra stores are
     /// retained, matching Go. The threshold provider returns byte/key/query/CPU.
+    /// Uses clock origin zero; use check_peer_flow_at for a live host clock.
     /// Returned actions must be applied before checking the next report. Checking
     /// is transactional: dropping an action does not advance the cached window.
     pub fn check_peer_flow(
@@ -69,6 +70,19 @@ impl HotPeerCache {
         peers: Option<&[u64]>,
         delta: &[f64],
         interval: u64,
+        thresholds: impl Fn(u64) -> [f64; DIM_LEN],
+    ) -> Vec<HotPeerStat> {
+        self.check_peer_flow_at(region, peers, delta, interval, 0, thresholds)
+    }
+
+    /// Checks a report with explicit host-clock nanoseconds for leader cooldown.
+    pub fn check_peer_flow_at(
+        &self,
+        region: &RegionInfo,
+        peers: Option<&[u64]>,
+        delta: &[f64],
+        interval: u64,
+        now: i64,
         thresholds: impl Fn(u64) -> [f64; DIM_LEN],
     ) -> Vec<HotPeerStat> {
         if self.denoising && interval < 3 {
@@ -85,7 +99,10 @@ impl HotPeerCache {
         let nanos = (interval as i64).wrapping_mul(SECOND);
         let mut result = Vec::with_capacity(stores.len());
         for &store in stores {
-            let old = self.get(region.meta().id, store);
+            let (old, inherited) = match self.get(region.meta().id, store) {
+                Some(old) => (Some(old), false),
+                None => self.find_old_hot_peer_for_inheritance(region),
+            };
             let thresholds = thresholds(store);
             let loads = self.kind.get_load_rates(delta, interval);
             if old.is_none() && !loads.iter().zip(thresholds).any(|(v, t)| *v >= t) {
@@ -101,7 +118,15 @@ impl HotPeerCache {
                 ..Default::default()
             };
             if let Some(old) = old {
-                self.update_hot_peer_stat(&mut item, old, delta, nanos, &thresholds);
+                self.update_hot_peer_stat(
+                    &mut item,
+                    old,
+                    delta,
+                    nanos,
+                    &thresholds,
+                    inherited,
+                    self.just_transfer_leader(region, old).then_some(now),
+                );
             } else {
                 item.action_type = ActionType::ADD;
                 if interval >= self.kind.report_interval() {
@@ -144,17 +169,30 @@ impl HotPeerCache {
         delta: &[f64],
         nanos: i64,
         thresholds: &[f64],
+        inherited: bool,
+        transfer_time: Option<i64>,
     ) {
         item.hot_degree = old.hot_degree;
         item.anti_count = old.anti_count;
-        item.allow_inherited = old.allow_inherited;
-        item.last_transfer_leader_time = old.last_transfer_leader_time;
+        item.allow_inherited = !inherited && old.allow_inherited;
+        item.last_transfer_leader_time = transfer_time.or(old.last_transfer_leader_time);
         item.rolling_loads = old.rolling_loads.as_ref().map(|loads| {
             loads
                 .iter()
-                .map(|d| d.as_ref().map(DimStat::copy_for_report))
+                .map(|d| {
+                    d.as_ref().map(|d| {
+                        if inherited {
+                            d.clone()
+                        } else {
+                            d.copy_for_report()
+                        }
+                    })
+                })
                 .collect()
         });
+        if transfer_time.is_some() && self.kind == RWType::WRITE {
+            return;
+        }
         let rolling = item
             .rolling_loads
             .as_mut()
@@ -168,7 +206,15 @@ impl HotPeerCache {
         if !rolling[0].as_ref().unwrap().is_full(self.report_nanos()) {
             return;
         }
-        if item.is_hot(thresholds) {
+        let old_cold_peer = old.stores.contains(&item.store_id)
+            && self.get(item.region_id, item.store_id).is_none();
+        if old_cold_peer {
+            if item.is_hot(thresholds) {
+                self.init_item(item);
+            } else {
+                item.action_type = ActionType::REMOVE;
+            }
+        } else if item.is_hot(thresholds) {
             item.hot_degree = old.hot_degree.wrapping_add(1);
             if old.anti_count < self.kind.default_anti_count() as i64 {
                 item.anti_count = old.anti_count.wrapping_add(1);

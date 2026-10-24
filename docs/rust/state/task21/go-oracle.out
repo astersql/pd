@@ -1,0 +1,18 @@
+=== RUN   TestFindOldHotPeerStatForInheritance
+=== RUN   TestFindOldHotPeerStatForInheritance/inherit-from-old-store
+=== RUN   TestFindOldHotPeerStatForInheritance/inherit-from-new-store
+=== RUN   TestFindOldHotPeerStatForInheritance/preserve-last-direct-item
+=== RUN   TestFindOldHotPeerStatForInheritance/preserve-final-miss
+=== RUN   TestFindOldHotPeerStatForInheritance/deduplicate-new-stores
+--- PASS: TestFindOldHotPeerStatForInheritance (0.00s)
+    --- PASS: TestFindOldHotPeerStatForInheritance/inherit-from-old-store (0.00s)
+    --- PASS: TestFindOldHotPeerStatForInheritance/inherit-from-new-store (0.00s)
+    --- PASS: TestFindOldHotPeerStatForInheritance/preserve-last-direct-item (0.00s)
+    --- PASS: TestFindOldHotPeerStatForInheritance/preserve-final-miss (0.00s)
+    --- PASS: TestFindOldHotPeerStatForInheritance/deduplicate-new-stores (0.00s)
+=== RUN   TestCoolDownTransferLeader
+--- PASS: TestCoolDownTransferLeader (0.00s)
+=== RUN   TestCacheInherit
+--- PASS: TestCacheInherit (0.00s)
+PASS
+ok  	github.com/tikv/pd/pkg/statistics	0.032s

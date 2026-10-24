@@ -17,7 +17,8 @@ CPU和byte/key/query参与同一种判定，读写通过utils映射互不污染�
 推进已存状态；这是Rust所有权下的事务接口。它不同于继承用DimStat::clone（重置pending delta）
 和HotPeerStat::clone（只返回去噪快照）。没有返回值借用或可变别名。
 
-本批次仅实现直接报告路径，不提供TTL/GC、tombstone过滤、跨副本继承、leader
-转移策略、未上报peer扫描或async队列。宿主选择有效store输入；后续批次在同一canonical crate扩展。
+跨副本继承和leader转移见[继承策略](hot_inherit.rs.md)。
+`check_peer_flow_at`接收宿主纳秒时钟；原`check_peer_flow`使用固定时钟原点0，实时宿主应使用前者。
+不提供TTL/GC、tombstone过滤、未上报peer扫描或async队列。宿主选择有效store输入；后续批次在同一canonical crate扩展。
 库不依赖协议、传输、MetaStore或调度，且不创建运行时、线程或后台任务。
 独立hot_peer_update_test在lib.rs显式注册；[验收证据](../../docs/rust/state/task-19.md)。

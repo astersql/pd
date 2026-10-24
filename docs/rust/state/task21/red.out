@@ -1,0 +1,46 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-statistics v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.45s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics-19f9aca67fa98079)
+
+running 5 tests
+
+thread 'hot_inherit_test::state_task_21_hot_inherit_lookup_and_final_miss' (157580971) panicked at pkg/statistics/hot_inherit_test.rs:73:5:
+assertion failed: inherit
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'hot_inherit_test::state_task_21_hot_inherit_partial_clone_resets_delta' (157580972) panicked at pkg/statistics/hot_inherit_test.rs:156:21:
+index out of bounds: the len is 0 but the index is 0
+test hot_inherit_test::state_task_21_hot_inherit_lookup_and_final_miss ... FAILED
+test hot_inherit_test::state_task_21_hot_inherit_partial_clone_resets_delta ... FAILED
+
+thread 'hot_inherit_test::state_task_21_hot_inherit_replacement_preserves_window_and_isolation' (157580973) panicked at pkg/statistics/hot_inherit_test.rs:94:5:
+assertion `left == right` failed
+  left: 0
+ right: 1
+
+thread 'hot_inherit_test::state_task_21_hot_inherit_leader_read_write_cooldown' (157580970) panicked at pkg/statistics/hot_inherit_test.rs:125:13:
+assertion `left == right` failed
+  left: None
+ right: Some(1000000000000)
+test hot_inherit_test::state_task_21_hot_inherit_replacement_preserves_window_and_isolation ... FAILED
+test hot_inherit_test::state_task_21_hot_inherit_leader_read_write_cooldown ... FAILED
+
+thread 'hot_inherit_test::state_task_21_hot_inherit_cache_inherit_new_flow' (157580969) panicked at pkg/statistics/hot_inherit_test.rs:175:13:
+assertion `left == right` failed
+  left: 550.0
+ right: 1000.0
+test hot_inherit_test::state_task_21_hot_inherit_cache_inherit_new_flow ... FAILED
+
+failures:
+
+failures:
+    hot_inherit_test::state_task_21_hot_inherit_cache_inherit_new_flow
+    hot_inherit_test::state_task_21_hot_inherit_leader_read_write_cooldown
+    hot_inherit_test::state_task_21_hot_inherit_lookup_and_final_miss
+    hot_inherit_test::state_task_21_hot_inherit_partial_clone_resets_delta
+    hot_inherit_test::state_task_21_hot_inherit_replacement_preserves_window_and_isolation
+
+test result: FAILED. 0 passed; 5 failed; 0 ignored; 0 measured; 61 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `-p astersql-pd-statistics --lib`

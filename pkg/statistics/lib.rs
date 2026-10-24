@@ -76,3 +76,7 @@ mod hot_peer_update_test;
 mod hot_threshold;
 #[cfg(test)]
 mod hot_threshold_test;
+
+mod hot_inherit;
+#[cfg(test)]
+mod hot_inherit_test;

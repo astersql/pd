@@ -104,7 +104,7 @@ impl HotPeerCache {
         interval: u64,
         now: i64,
     ) -> Vec<HotPeerStat> {
-        self.check_peer_flow(region, peers, delta, interval, |store| {
+        self.check_peer_flow_at(region, peers, delta, interval, now, |store| {
             self.calc_hot_thresholds(store, now)
         })
     }
