@@ -15,4 +15,3 @@ isolated etcd 3.5.15 ready at http://127.0.0.1:63265
 test config_hot_update_test::config_hot_update_etcd_publication_and_rollback ... ok
 
 test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 86 filtered out; finished in 2.79s
-

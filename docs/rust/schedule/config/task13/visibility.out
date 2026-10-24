@@ -102,4 +102,4 @@ interface {}(*github.com/tikv/pd/pkg/schedule/config.ScheduleConfig) *{
 (dlv) COMMAND clearall
 Breakpoint 2 cleared at 0x243875c for github.com/tikv/pd/server/config.(*PersistOptions).UpdateScheduleConfig() .Users/Shared/work/dir/data/codes/pd/server/config/persist_options.go:122
 Breakpoint 1 cleared at 0x280c840 for main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:58
-(dlv) 
+(dlv)
