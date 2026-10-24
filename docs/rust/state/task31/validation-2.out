@@ -1,0 +1,32 @@
+   Compiling astersql-pd-syncer v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/syncer)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.50s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_syncer-80e1f2fdde401ca1)
+
+running 19 tests
+test history_buffer_test::state_task_30_history_buffer_empty_and_reset ... ok
+test history_buffer_test::state_task_30_history_buffer_index_exhaustion ... ok
+test history_buffer_test::state_task_30_history_buffer_releases_overwritten_and_reset_records ... ok
+test history_buffer_test::state_task_30_history_buffer_wrapped_intervals ... ok
+test history_window_test::state_task_31_history_window_cancelled_future_releases_guard ... ok
+test history_buffer_test::state_task_30_history_buffer_normalization ... ok
+test history_buffer_test::state_task_30_history_buffer_101_records ... ok
+test history_buffer_test::state_task_30_history_buffer_go_snapshot ... ok
+test history_window_test::state_task_31_history_window_failed_append_preserves_retained_snapshot ... ok
+test history_window_test::state_task_31_history_window_full_sync_priority ... ok
+test history_window_test::state_task_31_history_window_gap_at_maximum_and_invalid_indexes ... ok
+test history_window_test::state_task_31_history_window_high_resets_streak_and_overflow_safe ... ok
+test history_window_test::state_task_31_history_window_duplicate_guards_and_error_cancel ... ok
+test history_window_test::state_task_31_history_window_normalization_and_missing_past ... ok
+test history_window_test::state_task_31_history_window_observed_required_window ... ok
+test history_window_test::state_task_31_history_window_oldest_guard_and_wrap_growth ... ok
+test history_window_test::state_task_31_history_window_reset_invalidates_old_guards ... ok
+test history_window_test::state_task_31_history_window_retain_keeps_catch_up_records ... ok
+test history_window_test::state_task_31_history_window_shrinks_one_step_after_low_window ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_syncer
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

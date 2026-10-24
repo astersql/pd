@@ -1,0 +1,84 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-syncer v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/syncer)
+warning: field `window` is never read
+  --> pkg/syncer/history_buffer.rs:50:16
+   |
+47 | pub struct HistoryBuffer {
+   |            ------------- field in this struct
+...
+50 |     pub(crate) window: crate::history_window::WindowPolicy,
+   |                ^^^^^^
+   |
+   = note: `HistoryBuffer` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `astersql-pd-syncer` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.00s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_syncer-80e1f2fdde401ca1)
+
+running 8 tests
+
+thread 'history_window_test::state_task_31_history_window_high_resets_streak_and_overflow_safe' (158041254) panicked at pkg/syncer/history_window_test.rs:160:5:
+assertion `left == right` failed
+  left: 2
+ right: 16
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'history_window_test::state_task_31_history_window_retain_keeps_catch_up_records' (158041257) panicked at pkg/syncer/history_window_test.rs:35:5:
+assertion `left == right` failed
+  left: 2
+ right: 8
+
+thread 'history_window_test::state_task_31_history_window_gap_at_maximum_and_invalid_indexes' (158041253) panicked at pkg/syncer/history_window_test.rs:97:5:
+assertion `left == right` failed
+  left: 2
+ right: 4
+
+thread 'history_window_test::state_task_31_history_window_duplicate_guards_and_error_cancel' (158041251) panicked at pkg/syncer/history_window_test.rs:120:5:
+assertion `left == right` failed
+  left: 2
+ right: 8
+
+thread 'history_window_test::state_task_31_history_window_reset_invalidates_old_guards' (158041256) panicked at pkg/syncer/history_window_test.rs:149:5:
+assertion `left == right` failed
+  left: []
+ right: [1, 2, 3, 4, 5]
+
+thread 'history_window_test::state_task_31_history_window_full_sync_priority' (158041252) panicked at pkg/syncer/history_window_test.rs:61:5:
+assertion `left == right` failed
+  left: 2
+ right: 8
+
+thread 'history_window_test::state_task_31_history_window_shrinks_one_step_after_low_window' (158041258) panicked at pkg/syncer/history_window_test.rs:74:5:
+assertion `left == right` failed
+  left: 2
+ right: 8
+
+thread 'history_window_test::state_task_31_history_window_observed_required_window' (158041255) panicked at pkg/syncer/history_window_test.rs:46:5:
+assertion `left == right` failed
+  left: 2
+ right: 8
+test history_window_test::state_task_31_history_window_high_resets_streak_and_overflow_safe ... FAILED
+test history_window_test::state_task_31_history_window_retain_keeps_catch_up_records ... FAILED
+test history_window_test::state_task_31_history_window_shrinks_one_step_after_low_window ... FAILED
+test history_window_test::state_task_31_history_window_reset_invalidates_old_guards ... FAILED
+test history_window_test::state_task_31_history_window_duplicate_guards_and_error_cancel ... FAILED
+test history_window_test::state_task_31_history_window_full_sync_priority ... FAILED
+test history_window_test::state_task_31_history_window_gap_at_maximum_and_invalid_indexes ... FAILED
+test history_window_test::state_task_31_history_window_observed_required_window ... FAILED
+
+failures:
+
+failures:
+    history_window_test::state_task_31_history_window_duplicate_guards_and_error_cancel
+    history_window_test::state_task_31_history_window_full_sync_priority
+    history_window_test::state_task_31_history_window_gap_at_maximum_and_invalid_indexes
+    history_window_test::state_task_31_history_window_high_resets_streak_and_overflow_safe
+    history_window_test::state_task_31_history_window_observed_required_window
+    history_window_test::state_task_31_history_window_reset_invalidates_old_guards
+    history_window_test::state_task_31_history_window_retain_keeps_catch_up_records
+    history_window_test::state_task_31_history_window_shrinks_one_step_after_low_window
+
+test result: FAILED. 0 passed; 8 failed; 0 ignored; 0 measured; 7 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-syncer --lib`

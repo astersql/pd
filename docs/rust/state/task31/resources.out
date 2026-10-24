@@ -1,0 +1,3 @@
+slot-1 lock released; cache retained: /Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+No running slot-product executables; all commands and oracle Docker process exited.
+Workspace etcd fixtures close stdin, terminate if necessary, and wait in Drop.

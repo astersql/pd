@@ -7,7 +7,7 @@
 
 容量是 unit 乘 2 的幂，零 unit 默认10000，零 size 也至少一个 unit。
 Rust接受非负容量，归一化乘法溢出和分配失败返回类型化错误；不模仿Go无限溢出循环。
-记录使用真实 core.RegionInfo 的 Arc；VecDeque 实现固定逻辑容量，已满时先弹出最旧项。
+记录使用真实 core.RegionInfo 的 Arc；VecDeque 实现有界逻辑容量，已满时先弹出最旧项。
 不需要Go用于区分空满的额外物理槽位，公开容量和顺序保持一致。
 索引达到u64::MAX时拒绝追加且不改动历史，避免Go无符号绕回破坏区间不变量。
 
@@ -16,5 +16,7 @@ get只接受[first,next)。返回Vec中的Arc保持原区域值的所有权，�
 无外部快照时覆盖和重置立即释放旧区域引用。reset清空全部记录并设置任意新next。
 独占可变借用保证每次变更完整；并发宿主负责选择锁，内部不安装全局状态或runtime。
 
-本批只提供纯内存环。保留窗口、增长/收缩、索引持久化、metrics与流接线由后续批次扩展，
+本环只提供纯内存行为；保留窗口及增长/收缩见 [history_window](history_window.rs.md)。
+with_config支持base/max/unit；原有构造函数保持固定容量。reset回到base并隔离旧guard。
+索引持久化、metrics与流接线由后续批次扩展，
 没有假装成功的持久化方法、protobuf、watch或后台任务。

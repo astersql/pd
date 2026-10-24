@@ -8,3 +8,9 @@ pub use history_buffer::{
 #[cfg(test)]
 #[path = "history_buffer_test.rs"]
 mod history_buffer_test;
+
+mod history_window;
+pub use history_window::HistoryRetain;
+#[cfg(test)]
+#[path = "history_window_test.rs"]
+mod history_window_test;

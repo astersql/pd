@@ -1,0 +1,15 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+RUN cargo fmt --all
+{'command': ['cargo', 'fmt', '--all'], 'exit': 0, 'passed': 0, 'failed': 0, 'ignored': 0}
+RUN cargo test -p astersql-pd-syncer --locked --lib state_task_31_history_window -- --nocapture
+{'command': ['cargo', 'test', '-p', 'astersql-pd-syncer', '--locked', '--lib', 'state_task_31_history_window', '--', '--nocapture'], 'exit': 0, 'passed': 12, 'failed': 0, 'ignored': 0}
+RUN cargo test -p astersql-pd-syncer --locked
+{'command': ['cargo', 'test', '-p', 'astersql-pd-syncer', '--locked'], 'exit': 0, 'passed': 19, 'failed': 0, 'ignored': 0}
+RUN cargo metadata --format-version 1 --no-deps
+{'command': ['cargo', 'metadata', '--format-version', '1', '--no-deps'], 'exit': 0, 'passed': 0, 'failed': 0, 'ignored': 0}
+RUN cargo fmt --all -- --check
+{'command': ['cargo', 'fmt', '--all', '--', '--check'], 'exit': 0, 'passed': 0, 'failed': 0, 'ignored': 0}
+RUN cargo check --workspace --locked
+{'command': ['cargo', 'check', '--workspace', '--locked'], 'exit': 0, 'passed': 0, 'failed': 0, 'ignored': 0}
+RUN cargo test --workspace --locked
+{'command': ['cargo', 'test', '--workspace', '--locked'], 'exit': 0, 'passed': 1158, 'failed': 0, 'ignored': 1}

@@ -3,7 +3,7 @@
 use astersql_pd_core::RegionInfo;
 use std::{collections::VecDeque, sync::Arc};
 
-const CAPACITY_UNIT: usize = 10_000;
+pub(crate) const CAPACITY_UNIT: usize = 10_000;
 
 /// Sequence number of a region change, or the next number to assign.
 /// This is deliberately distinct from a MetaStore revision.
@@ -19,6 +19,12 @@ pub enum HistoryError {
     AllocationFailed(#[from] std::collections::TryReserveError),
     #[error("history index exhausted")]
     IndexExhausted,
+    #[error("history gap: requested {requested:?}, available {first:?}..{next:?}")]
+    HistoryGap {
+        requested: HistoryIndex,
+        first: HistoryIndex,
+        next: HistoryIndex,
+    },
 }
 
 /// Round up to `unit * 2^n`, defaulting a zero unit to 10,000.
@@ -33,14 +39,15 @@ pub fn normalize_history_buffer_capacity(size: usize, unit: usize) -> Result<usi
     Ok(capacity)
 }
 
-/// Fixed-capacity history retaining the newest region changes in assignment order.
+/// Bounded-capacity history retaining the newest region changes in assignment order.
 /// `first_index()..next_index()` is exactly the replayable half-open interval.
 /// Mutations require exclusive access; hosts may share the ring through their own lock.
 /// Returned snapshots share immutable region values and survive overwrites and resets.
 #[derive(Debug)]
 pub struct HistoryBuffer {
-    records: VecDeque<Arc<RegionInfo>>,
-    capacity: usize,
+    pub(crate) records: VecDeque<Arc<RegionInfo>>,
+    pub(crate) capacity: usize,
+    pub(crate) window: crate::history_window::WindowPolicy,
     next: HistoryIndex,
 }
 
@@ -52,12 +59,19 @@ impl HistoryBuffer {
 
     /// Create empty history with an explicit normalization unit.
     pub fn with_capacity_unit(capacity: usize, unit: usize) -> Result<Self, HistoryError> {
-        let capacity = normalize_history_buffer_capacity(capacity, unit)?;
+        Self::with_config(capacity, capacity, unit)
+    }
+
+    /// Create history with independently normalized base and maximum capacities.
+    pub fn with_config(base: usize, maximum: usize, unit: usize) -> Result<Self, HistoryError> {
+        let capacity = normalize_history_buffer_capacity(base, unit)?;
+        let maximum = normalize_history_buffer_capacity(maximum, unit)?.max(capacity);
         let mut records = VecDeque::new();
         records.try_reserve_exact(capacity)?;
         Ok(Self {
             records,
             capacity,
+            window: crate::history_window::WindowPolicy::new(capacity, maximum, unit),
             next: HistoryIndex(0),
         })
     }
@@ -92,6 +106,9 @@ impl HistoryBuffer {
     pub fn reset_with_index(&mut self, index: HistoryIndex) {
         self.records.clear();
         self.next = index;
+        self.capacity = self.window.base;
+        self.records.shrink_to(self.capacity);
+        self.window.reset();
     }
 
     /// Assign the next index, evicting the oldest change when full.
@@ -102,6 +119,7 @@ impl HistoryBuffer {
             .0
             .checked_add(1)
             .ok_or(HistoryError::IndexExhausted)?;
+        self.prepare_required_window(HistoryIndex(next))?;
         let assigned = self.next;
         if self.records.len() == self.capacity {
             self.records.pop_front();
