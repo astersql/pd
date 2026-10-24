@@ -1,0 +1,57 @@
+533c197d278937ee7589d408d69bd1be32c9610e120834f5b56963f2d1dd84ab
+pd-task19-oracle
+bootstrap response 0a0a0888f38ca7b8baa1ee6a1200
+{
+  "sha256": "4537466d65d253b1e291cacecf53faee14117386e8f2c5ff7b380108e49cc268",
+  "seed": [
+    200,
+    "Update region label rule successfully."
+  ],
+  "crossing": [
+    200,
+    []
+  ],
+  "single": [
+    200,
+    "high"
+  ],
+  "labels": [
+    200,
+    [
+      {
+        "key": "k",
+        "value": "high"
+      },
+      {
+        "key": "schedule",
+        "value": "DeNy"
+      }
+    ]
+  ],
+  "all": [
+    200,
+    [
+      {
+        "id": "query19",
+        "index": 5,
+        "labels": [
+          {
+            "key": "k",
+            "value": "high"
+          },
+          {
+            "key": "schedule",
+            "value": "DeNy"
+          }
+        ],
+        "rule_type": "key-range",
+        "data": [
+          {
+            "start_key": "",
+            "end_key": ""
+          }
+        ]
+      }
+    ]
+  ]
+}

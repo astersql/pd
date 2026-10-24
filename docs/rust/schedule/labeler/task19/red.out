@@ -1,0 +1,20 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-schedule-labeler v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.31s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_labeler-923b402c6626a89f)
+
+running 1 test
+
+thread 'label_query_test::label_query_priority_boundaries_and_ttl' (155517672) panicked at pkg/schedule/labeler/label_query_test.rs:22:5:
+assertion failed: owner.schedule_disabled(&r, 0)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test label_query_test::label_query_priority_boundaries_and_ttl ... FAILED
+
+failures:
+
+failures:
+    label_query_test::label_query_priority_boundaries_and_ttl
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 26 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-labeler --lib`

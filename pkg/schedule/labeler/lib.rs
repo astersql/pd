@@ -30,3 +30,8 @@ pub use plan::{LabelCommitOp, LabelPlan, LabelRulePatch};
 #[cfg(test)]
 #[path = "label_txn_test.rs"]
 mod label_txn_test;
+
+mod label_query;
+#[cfg(test)]
+#[path = "label_query_test.rs"]
+mod label_query_test;
