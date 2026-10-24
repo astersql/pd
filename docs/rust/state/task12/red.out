@@ -1,0 +1,58 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+     Locking 0 packages to highest Rust 1.85 compatible versions
+note: pass `--verbose` to see 27 unchanged dependencies behind latest
+   Compiling astersql-pd-statistics v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics)
+warning: fields `next` and `update` are never read
+  --> pkg/statistics/store_history.rs:15:5
+   |
+13 | struct StoreHistoryLoad {
+   |        ---------------- fields in this struct
+14 |     history: HistoryLoads,
+15 |     next: usize,
+   |     ^^^^
+16 |     update: Option<Duration>,
+   |     ^^^^^^
+   |
+   = note: `StoreHistoryLoad` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `astersql-pd-statistics` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.16s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics-62613012d5c00a6d)
+
+running 4 tests
+
+thread 'store_history_test::state_task_12_store_history_go_loads' (157224571) panicked at pkg/statistics/store_history_test.rs:23:5:
+assertion `left == right` failed
+  left: 0
+ right: 10
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'store_history_test::state_task_12_store_history_interval_wrap_and_snapshot' (157224572) panicked at pkg/statistics/store_history_test.rs:41:5:
+assertion `left == right` failed
+  left: [[], [], [], []]
+ right: [[1.0, 0.0], [1.0, 0.0], [1.0, 0.0], [1.0, 0.0]]
+
+thread 'store_history_test::state_task_12_store_history_isolation_and_config' (157224573) panicked at pkg/statistics/store_history_test.rs:70:17:
+assertion `left == right` failed
+  left: []
+ right: [100.0, 0.0]
+
+thread 'store_history_test::state_task_12_store_history_gc_does_not_readd_removed' (157224570) panicked at pkg/statistics/store_history_test.rs:89:5:
+assertion failed: !h.get(1, R::READ, K::REGION)[0].is_empty()
+test store_history_test::state_task_12_store_history_interval_wrap_and_snapshot ... FAILED
+test store_history_test::state_task_12_store_history_go_loads ... FAILED
+test store_history_test::state_task_12_store_history_isolation_and_config ... FAILED
+test store_history_test::state_task_12_store_history_gc_does_not_readd_removed ... FAILED
+
+failures:
+
+failures:
+    store_history_test::state_task_12_store_history_gc_does_not_readd_removed
+    store_history_test::state_task_12_store_history_go_loads
+    store_history_test::state_task_12_store_history_interval_wrap_and_snapshot
+    store_history_test::state_task_12_store_history_isolation_and_config
+
+test result: FAILED. 0 passed; 4 failed; 0 ignored; 0 measured; 16 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-statistics --lib`

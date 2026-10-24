@@ -1,0 +1,6 @@
+=== RUN   TestHistoryLoads
+--- PASS: TestHistoryLoads (0.00s)
+=== RUN   TestHistoryGCDoesNotReaddRemovedStore
+--- PASS: TestHistoryGCDoesNotReaddRemovedStore (0.00s)
+PASS
+ok  	github.com/tikv/pd/pkg/statistics	0.028s

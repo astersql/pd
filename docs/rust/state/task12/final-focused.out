@@ -1,0 +1,45 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-statistics v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.72s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics-62613012d5c00a6d)
+
+running 4 tests
+test store_history_test::state_task_12_store_history_interval_wrap_and_snapshot ... ok
+test store_history_test::state_task_12_store_history_go_loads ... ok
+test store_history_test::state_task_12_store_history_isolation_and_config ... ok
+test store_history_test::state_task_12_store_history_gc_does_not_readd_removed ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 16 filtered out; finished in 0.00s
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.03s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics-62613012d5c00a6d)
+
+running 20 tests
+test cpu_test::state_task_09_cpu_peer_go_oracle_and_missing ... ok
+test cpu_test::state_task_09_cpu_peer_ignores_scheduler ... ok
+test cpu_test::state_task_09_cpu_store_go_oracle ... ok
+test cpu_test::state_task_09_cpu_store_prefix_and_multiple_records ... ok
+test cpu_test::state_task_09_cpu_store_wraps_before_float_conversion ... ok
+test store_history_test::state_task_12_store_history_interval_wrap_and_snapshot ... ok
+test store_history_test::state_task_12_store_history_go_loads ... ok
+test store_history_test::state_task_12_store_history_gc_does_not_readd_removed ... ok
+test store_history_test::state_task_12_store_history_isolation_and_config ... ok
+test store_rolling_test::state_task_10_store_rolling_all_kinds_and_unknown ... ok
+test store_rolling_test::state_task_10_store_rolling_go_cpu_time_median ... ok
+test store_rolling_test::state_task_10_store_rolling_set_preserves_time_history ... ok
+test store_rolling_test::state_task_10_store_rolling_unsigned_set_and_duration_wrap ... ok
+test store_rolling_test::state_task_10_store_rolling_partial_intervals_and_median_eviction ... ok
+test store_rolling_test::state_task_10_store_rolling_zero_interval_and_collect_overflow ... ok
+test stores_test::state_task_11_stores_creation_deletion_and_snapshots ... ok
+test stores_test::state_task_11_stores_go_filter_unhealthy ... ok
+test store_rolling_test::state_task_10_store_rolling_distinct_windows_and_recent_max ... ok
+test stores_test::state_task_11_stores_health_boundary_recovery_and_empty ... ok
+test stores_test::state_task_11_stores_concurrent_snapshots_and_removal ... ok
+
+test result: ok. 20 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_statistics
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

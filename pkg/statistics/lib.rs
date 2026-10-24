@@ -19,3 +19,11 @@ mod stores;
 pub use stores::{StoreKindLoads, StoreStatInformer, StoresStats};
 #[cfg(test)]
 mod stores_test;
+
+mod store_history;
+pub use store_history::{
+    DEFAULT_HISTORY_SAMPLE_DURATION, DEFAULT_HISTORY_SAMPLE_INTERVAL, HistoryLoads, Loads,
+    StoreHistoryLoads,
+};
+#[cfg(test)]
+mod store_history_test;

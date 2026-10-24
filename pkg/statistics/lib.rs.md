@@ -12,3 +12,6 @@ REGIONS_STATS_OBSERVE_INTERVAL 和 REGIONS_STATS_ROLLING_WINDOWS_SIZE。
 
 已加入[存储统计容器生命周期](stores.rs.md)：StoresStats、StoreKindLoads 与
 StoreStatInformer，所有读取返回独立快照，stores_test 显式登记。
+
+已加入[负载历史采样与回收](store_history.rs.md)：StoreHistoryLoads、Loads、
+HistoryLoads 及默认采样配置；store_history_test 显式登记。
