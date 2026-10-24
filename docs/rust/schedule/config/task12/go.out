@@ -1,0 +1,19 @@
+{
+  "binary_sha256": "4537466d65d253b1e291cacecf53faee14117386e8f2c5ff7b380108e49cc268",
+  "max-snapshot-count": 10,
+  "max-replicas": 3,
+  "max-movable-hot-peer-size": 512,
+  "restart_equal_sections": [
+    "schedule",
+    "replication",
+    "pd-server",
+    "replication-mode",
+    "label-property",
+    "keyspace",
+    "micro-service",
+    "cluster-version"
+  ],
+  "store_present": true,
+  "persisted_name": "",
+  "enable-placement-rules": "true"
+}

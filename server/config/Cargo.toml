@@ -20,3 +20,11 @@ astersql-pd-rm-server.workspace = true
 astersql-pd-logutil.workspace = true
 astersql-pd-metricutil.workspace = true
 astersql-pd-metering-config.workspace = true
+
+astersql-pd-storage-endpoint.workspace = true
+astersql-pd-keypath.workspace = true
+thiserror.workspace = true
+
+[dev-dependencies]
+astersql-pd-storage-kv.workspace = true
+tokio.workspace = true

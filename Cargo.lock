@@ -410,14 +410,19 @@ version = "0.1.0"
 dependencies = [
  "astersql-pd-configutil",
  "astersql-pd-errs",
+ "astersql-pd-keypath",
  "astersql-pd-logutil",
  "astersql-pd-metering-config",
  "astersql-pd-metricutil",
  "astersql-pd-rm-server",
  "astersql-pd-schedule-config",
+ "astersql-pd-storage-endpoint",
+ "astersql-pd-storage-kv",
  "astersql-pd-typeutil",
  "serde",
  "serde_json",
+ "thiserror 2.0.21",
+ "tokio",
  "toml",
 ]
 

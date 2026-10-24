@@ -80,3 +80,8 @@ mod nested_config;
 pub use nested_config::*;
 #[cfg(test)]
 mod nested_config_test;
+
+mod persist_schedule;
+pub use persist_schedule::*;
+#[cfg(test)]
+mod config_persist_test;

@@ -1,0 +1,20 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-server-config v0.1.0 (/Users/Shared/work/dir/data/codes/pd/server/config)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.16s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_server_config-54b2a99891e1f294)
+
+running 1 test
+
+thread 'config_persist_test::config_persist_rejects_malformed_migration_fields' (155072040) panicked at server/config/config_persist_test.rs:295:9:
+{"schedule":{"store-balance-rate":"invalid"}}
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test config_persist_test::config_persist_rejects_malformed_migration_fields ... FAILED
+
+failures:
+
+failures:
+    config_persist_test::config_persist_rejects_malformed_migration_fields
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 85 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-server-config --lib`
