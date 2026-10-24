@@ -1,0 +1,4 @@
+validation command exit 0; all Cargo/fixture children exited
+slot-1.lock exists=False
+active slot binaries=[]
+cache retained=True

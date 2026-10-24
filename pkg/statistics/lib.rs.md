@@ -9,3 +9,6 @@
 已加入[存储节点滚动统计](store_rolling.rs.md)：公开 RollingStoreStats、
 REGIONS_STATS_OBSERVE_INTERVAL 和 REGIONS_STATS_ROLLING_WINDOWS_SIZE。
 复用 core、movingaverage 与 statistics-utils 领域能力；store_rolling_test 显式登记。
+
+已加入[存储统计容器生命周期](stores.rs.md)：StoresStats、StoreKindLoads 与
+StoreStatInformer，所有读取返回独立快照，stores_test 显式登记。

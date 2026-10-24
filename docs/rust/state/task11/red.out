@@ -1,0 +1,31 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-statistics v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.11s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics-0863a55b0be19dde)
+
+running 4 tests
+
+thread 'stores_test::state_task_11_stores_go_filter_unhealthy' (157196792) panicked at pkg/statistics/stores_test.rs:49:5:
+assertion `left == right` failed
+  left: [1, 2, 3, 4, 5]
+ right: [4, 5]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'stores_test::state_task_11_stores_health_boundary_recovery_and_empty' (157196793) panicked at pkg/statistics/stores_test.rs:74:5:
+assertion `left == right` failed
+  left: [1, 2, 3, 4]
+ right: [1, 4]
+test stores_test::state_task_11_stores_creation_deletion_and_snapshots ... ok
+test stores_test::state_task_11_stores_health_boundary_recovery_and_empty ... FAILED
+test stores_test::state_task_11_stores_go_filter_unhealthy ... FAILED
+test stores_test::state_task_11_stores_concurrent_snapshots_and_removal ... ok
+
+failures:
+
+failures:
+    stores_test::state_task_11_stores_go_filter_unhealthy
+    stores_test::state_task_11_stores_health_boundary_recovery_and_empty
+
+test result: FAILED. 2 passed; 2 failed; 0 ignored; 0 measured; 12 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-statistics --lib`

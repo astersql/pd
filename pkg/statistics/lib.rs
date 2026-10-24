@@ -14,3 +14,8 @@ pub use store_rolling::{
 };
 #[cfg(test)]
 mod store_rolling_test;
+
+mod stores;
+pub use stores::{StoreKindLoads, StoreStatInformer, StoresStats};
+#[cfg(test)]
+mod stores_test;

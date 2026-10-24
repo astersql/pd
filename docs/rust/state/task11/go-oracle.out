@@ -1,0 +1,4 @@
+=== RUN   TestFilterUnhealthyStore
+--- PASS: TestFilterUnhealthyStore (0.00s)
+PASS
+ok  	github.com/tikv/pd/pkg/statistics	0.029s
