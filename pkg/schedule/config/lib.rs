@@ -813,3 +813,11 @@ pub use store_config::{
 };
 #[cfg(test)]
 mod store_config_test;
+
+mod provider;
+pub use provider::{
+    CheckerConfigProvider, ConfProvider, ProviderSnapshot, REJECT_LEADER, SchedulerConfigProvider,
+    SchedulerRegistry, SharedConfigProvider, StoreConfigProvider,
+};
+#[cfg(test)]
+mod config_provider_test;

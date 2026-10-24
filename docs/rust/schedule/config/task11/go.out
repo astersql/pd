@@ -1,0 +1,144 @@
+Type 'help' for list of commands.
+(dlv) COMMAND config max-string-len 4096
+(dlv) COMMAND config max-array-values 128
+(dlv) COMMAND break main.main
+Breakpoint 1 set at 0x280c840 for main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:58
+(dlv) COMMAND continue
+> [Breakpoint 1] main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:58 (hits goroutine(1):1 total:1) (PC: 0x280c840)
+(dlv) COMMAND next
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+(dlv) COMMAND call runtime.mallocgc(65536, nil, true)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: unsafe.Pointer(0x5f903abaa000)
+
+(dlv) COMMAND call "github.com/tikv/pd/server/config".NewPersistOptions((*"github.com/tikv/pd/server/config.Config")(0x5f903abaa000))
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: ("*github.com/tikv/pd/server/config.PersistOptions")(0x5f903ad9d180)
+*github.com/tikv/pd/server/config.PersistOptions {
+		persistMu: sync.Mutex {
+			_: sync.noCopy {},
+			mu: (*"internal/sync.Mutex")(0x5f903ad9d180),},
+		ttl: *github.com/tikv/pd/pkg/cache.TTLString nil,
+		schedule: sync/atomic.Value {
+			v: interface {}(*github.com/tikv/pd/pkg/schedule/config.ScheduleConfig) ...,},
+		replication: sync/atomic.Value {
+			v: interface {}(*github.com/tikv/pd/pkg/schedule/config.ReplicationConfig) ...,},
+		pdServerConfig: sync/atomic.Value {
+			v: interface {}(*github.com/tikv/pd/server/config.PDServerConfig) ...,},
+		replicationMode: sync/atomic.Value {
+			v: interface {}(*github.com/tikv/pd/server/config.ReplicationModeConfig) ...,},
+		labelProperty: sync/atomic.Value {
+			v: interface {}(github.com/tikv/pd/server/config.LabelPropertyConfig) *(*interface {})(0x5f903ad9d1d0),},
+		keyspace: sync/atomic.Value {
+			v: interface {}(*github.com/tikv/pd/server/config.KeyspaceConfig) ...,},
+		microservice: sync/atomic.Value {
+			v: interface {}(*github.com/tikv/pd/server/config.MicroserviceConfig) ...,},
+		storeConfig: sync/atomic.Value {
+			v: interface {}(*github.com/tikv/pd/pkg/schedule/config.StoreConfig) ...,},
+		clusterVersion: unsafe.Pointer(0x5f903abaa3e0),}
+
+(dlv) COMMAND call (*"github.com/tikv/pd/server/config.PersistOptions")(0x5f903ad9d180).GetMaxReplicas()
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 0
+
+(dlv) COMMAND call (*"github.com/tikv/pd/server/config.PersistOptions")(0x5f903ad9d180).GetRegionScheduleLimit()
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 0
+
+(dlv) COMMAND call (*"github.com/tikv/pd/server/config.PersistOptions")(0x5f903ad9d180).IsSchedulerDisabled("balance-leader-scheduler")
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+(dlv) COMMAND call (*"github.com/tikv/pd/server/config.PersistOptions")(0x5f903ad9d180).AddSchedulerCfg("balance-leader-scheduler", nil)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+
+(dlv) COMMAND call (*"github.com/tikv/pd/server/config.PersistOptions")(0x5f903ad9d180).RemoveSchedulerCfg("balance-leader-scheduler")
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+
+(dlv) COMMAND call (*"github.com/tikv/pd/server/config.PersistOptions")(0x5f903ad9d180).IsSchedulerDisabled("balance-leader-scheduler")
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: true
+
+(dlv) COMMAND call (*"github.com/tikv/pd/server/config.PersistOptions")(0x5f903ad9d180).SetLabelProperty("reject-leader", "zone", "east")
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+
+(dlv) COMMAND call (*"github.com/tikv/pd/server/config.PersistOptions")(0x5f903ad9d180).CheckLabelProperty("reject-leader", nil)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+(dlv) COMMAND call runtime.mallocgc(128, nil, true)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: unsafe.Pointer(0x5f903aa24800)
+
+(dlv) COMMAND call (*"github.com/pingcap/kvproto/pkg/metapb.StoreLabel")(0x5f903aa24800).Key = "zone"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+(dlv) COMMAND call (*"github.com/pingcap/kvproto/pkg/metapb.StoreLabel")(0x5f903aa24800).Value = "east"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+(dlv) COMMAND call runtime.mallocgc(128, nil, true)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: unsafe.Pointer(0x5f903aa24880)
+
+(dlv) COMMAND set (*"[1]*github.com/pingcap/kvproto/pkg/metapb.StoreLabel")(0x5f903aa24880)[0] = (*"github.com/pingcap/kvproto/pkg/metapb.StoreLabel")(0x5f903aa24800)
+(dlv) COMMAND call (*"github.com/tikv/pd/server/config.PersistOptions")(0x5f903ad9d180).CheckLabelProperty("reject-leader", (*(*"[1]*github.com/pingcap/kvproto/pkg/metapb.StoreLabel")(0x5f903aa24880))[:])
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: true
+
+(dlv) COMMAND call (*"github.com/pingcap/kvproto/pkg/metapb.StoreLabel")(0x5f903aa24800).Value = "East"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+(dlv) COMMAND call (*"github.com/tikv/pd/server/config.PersistOptions")(0x5f903ad9d180).CheckLabelProperty("reject-leader", (*(*"[1]*github.com/pingcap/kvproto/pkg/metapb.StoreLabel")(0x5f903aa24880))[:])
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+(dlv) COMMAND call (*"github.com/tikv/pd/server/config.PersistOptions")(0x5f903ad9d180).CheckLabelProperty("other", (*(*"[1]*github.com/pingcap/kvproto/pkg/metapb.StoreLabel")(0x5f903aa24880))[:])
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+(dlv) COMMAND call (*"github.com/tikv/pd/server/config.Config")(0x5f903abaa000).Schedule.MaxMergeRegionSize = 20
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+(dlv) COMMAND call (*"github.com/tikv/pd/server/config.PersistOptions")(0x5f903ad9d180).SetScheduleConfig(&(*"github.com/tikv/pd/server/config.Config")(0x5f903abaa000).Schedule)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+
+(dlv) COMMAND call (*"github.com/tikv/pd/server/config.PersistOptions")(0x5f903ad9d180).GetMaxMergeRegionKeys()
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 200000
+
+(dlv) COMMAND call (*"github.com/tikv/pd/server/config.PersistOptions")(0x5f903ad9d180).GetMaxAffinityMergeRegionSize()
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 0
+
+(dlv) COMMAND call (*"github.com/tikv/pd/server/config.PersistOptions")(0x5f903ad9d180).GetLabelPropertyConfig()
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: github.com/tikv/pd/server/config.LabelPropertyConfig [
+		"reject-leader": [
+			(*"github.com/tikv/pd/server/config.StoreLabel")(0x5f903b010500),
+		],
+	]
+
+(dlv) COMMAND call "github.com/tikv/pd/pkg/schedule/config".RegisterScheduler("custom-scheduler")
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+
+(dlv) COMMAND call "github.com/tikv/pd/pkg/schedule/config".RegisterScheduler("custom-scheduler")
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+
+(dlv)

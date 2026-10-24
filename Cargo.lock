@@ -346,6 +346,10 @@ name = "astersql-pd-schedule-config"
 version = "0.1.0"
 dependencies = [
  "astersql-pd-configutil",
+ "astersql-pd-core",
+ "astersql-pd-core-constant",
+ "astersql-pd-schedule-types",
+ "astersql-pd-storelimit",
  "astersql-pd-typeutil",
  "serde",
  "serde_json",

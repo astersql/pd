@@ -1,0 +1,30 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+
+COMMAND cargo fmt --all
+EXIT 0
+
+COMMAND cargo test --locked -p astersql-pd-schedule-config config_provider -- --nocapture
+   Compiling astersql-pd-schedule-config v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/config)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.25s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_config-3a30b3b449f98db2)
+
+running 3 tests
+
+thread 'config_provider_test::config_provider_shared_generation_and_store_delegation' (154936591) panicked at pkg/schedule/config/config_provider_test.rs:33:5:
+assertion `left == right` failed
+  left: 0
+ right: 200000
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test config_provider_test::config_provider_reject_leader_exact_or_matching ... ok
+test config_provider_test::config_provider_registry_and_scheduler_first_match ... ok
+test config_provider_test::config_provider_shared_generation_and_store_delegation ... FAILED
+
+failures:
+
+failures:
+    config_provider_test::config_provider_shared_generation_and_store_delegation
+
+test result: FAILED. 2 passed; 1 failed; 0 ignored; 0 measured; 16 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-config --lib`
+EXIT 101

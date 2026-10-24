@@ -14,3 +14,7 @@ serde_json.workspace = true
 astersql-pd-configutil.workspace = true
 astersql-pd-typeutil.workspace = true
 toml.workspace = true
+astersql-pd-core.workspace = true
+astersql-pd-core-constant.workspace = true
+astersql-pd-schedule-types.workspace = true
+astersql-pd-storelimit.workspace = true

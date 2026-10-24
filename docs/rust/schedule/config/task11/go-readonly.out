@@ -1,0 +1,5 @@
+begin/end protected Go/module file count: 1101
+SHA-256 maps identical (including untracked files)
+Go/module git status at start/end: empty
+No Go source/module writes, make targets, failpoint toggles or Go formatting performed
+canonical sorted path/SHA-256 map SHA-256 (begin=end): ae4ea1307f6a0074d7d6b706be224a1d139607a343ed2b2c6ea9068395425bd4
