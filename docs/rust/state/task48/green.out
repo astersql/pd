@@ -24,4 +24,3 @@ running 1 test
 test region_heartbeat_adapter_test::state_task_48_region_heartbeat_adapter_loopback ... ok
 
 test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 19 filtered out; finished in 0.01s
-

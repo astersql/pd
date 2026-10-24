@@ -26,4 +26,3 @@ test region_heartbeat_adapter_test::state_task_48_region_heartbeat_adapter_defau
 test region_heartbeat_adapter_test::state_task_48_region_heartbeat_adapter_errors_and_close ... ok
 
 test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 19 filtered out; finished in 0.01s
-
