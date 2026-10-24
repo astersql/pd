@@ -1,0 +1,120 @@
+{
+  "analyzer1": {
+    "statuses": {
+      "4": 102,
+      "5": 102,
+      "1": 102,
+      "2": 102,
+      "3": 102
+    },
+    "normal": true,
+    "error": null
+  },
+  "analyzer2": {
+    "statuses": {
+      "5": 403,
+      "4": 403,
+      "3": 403,
+      "2": 403,
+      "1": 403
+    },
+    "normal": false,
+    "error": null
+  },
+  "analyzer3": {
+    "statuses": {
+      "5": 403,
+      "4": 1004,
+      "3": 1004,
+      "2": 1004,
+      "1": 1004
+    },
+    "normal": false,
+    "error": null
+  },
+  "analyzer4": {
+    "statuses": {
+      "1": 101,
+      "2": 101,
+      "5": 403,
+      "4": 102,
+      "3": 102
+    },
+    "normal": false,
+    "error": null
+  },
+  "analyzer5": {
+    "statuses": {
+      "5": 203,
+      "4": 102,
+      "3": 102,
+      "1": 101,
+      "2": 101
+    },
+    "normal": false,
+    "error": null
+  },
+  "analyzer6": {
+    "statuses": {
+      "4": 403,
+      "5": 403,
+      "1": 403,
+      "2": 403,
+      "3": 403
+    },
+    "normal": false,
+    "error": null
+  },
+  "empty": {
+    "statuses": {},
+    "normal": true,
+    "error": null
+  },
+  "success": {
+    "statuses": {
+      "1": 0
+    },
+    "normal": false,
+    "error": null
+  },
+  "majority": {
+    "statuses": {
+      "1": 403
+    },
+    "normal": false,
+    "error": null
+  },
+  "tie": {
+    "statuses": {
+      "1": 400
+    },
+    "normal": false,
+    "error": null
+  },
+  "priority": {
+    "statuses": {
+      "1": 102
+    },
+    "normal": true,
+    "error": null
+  },
+  "skip_lower": {
+    "statuses": {
+      "1": 102
+    },
+    "normal": true,
+    "error": null
+  },
+  "replace_lower": {
+    "statuses": {
+      "1": 102
+    },
+    "normal": false,
+    "error": null
+  },
+  "invalid_plan": {
+    "statuses": {},
+    "normal": false,
+    "error": "PD:diagnostic:ErrDiagnosticLoadPlan"
+  }
+}

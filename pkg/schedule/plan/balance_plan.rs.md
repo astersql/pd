@@ -1,6 +1,6 @@
 # BalanceSchedulerPlan 资源快照
 
-对应 Go balance_plan.go 的资源与克隆部分；汇总留给批次 8。
+对应 Go balance_plan.go 的资源与克隆部分；汇总由 [balance_summary.rs](balance_summary.rs.md) 实现。
 公开 BalanceSchedulerPlan 的 source/region/target 为 canonical core 类型的
 Option<Arc<_>>，status 为拥有的 Status，step 为 i64。new/default 为步骤 0、OK、无资源。
 get_step/get_status/set_status、set_resource/set_resource_with_step/get_resource

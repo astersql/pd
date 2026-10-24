@@ -10,3 +10,4 @@ path = "lib.rs"
 
 [dependencies]
 astersql-pd-core.workspace = true
+astersql-pd-errs.workspace = true

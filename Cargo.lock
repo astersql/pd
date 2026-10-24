@@ -364,6 +364,7 @@ name = "astersql-pd-schedule-plan"
 version = "0.1.0"
 dependencies = [
  "astersql-pd-core",
+ "astersql-pd-errs",
 ]
 
 [[package]]

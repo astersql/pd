@@ -12,3 +12,9 @@ pub use collector::{Collector, PlanOption};
 #[cfg(test)]
 #[path = "plan_collect_test.rs"]
 mod plan_collect_test;
+
+pub mod balance_summary;
+pub use balance_summary::{Summary, SummaryResult, balance_plan_summary};
+#[cfg(test)]
+#[path = "plan_summary_test.rs"]
+mod plan_summary_test;

@@ -1,0 +1,61 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+
+COMMAND cargo update --offline -p astersql-pd-schedule-plan
+     Locking 0 packages to highest Rust 1.85 compatible versions
+note: pass `--verbose` to see 26 unchanged dependencies behind latest
+EXIT 0
+
+COMMAND cargo fmt --all
+EXIT 0
+
+COMMAND cargo test --locked -p astersql-pd-schedule-plan plan_summary -- --nocapture
+   Compiling astersql-pd-schedule-plan v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/plan)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.14s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_plan-f61c24cf139ac291)
+
+running 11 tests
+
+thread 'test plan_summary_test::plan_summary_analyzer2 ... ok
+plan_summary_test::plan_summary_analyzer5' (154708801) panicked at pkg/schedule/plan/plan_summary_test.rstest plan_summary_test::plan_summary_analyzer3 ... :51:5:
+assertion `left == right` failed: analyzer5
+  left: {1: Status { status_code: StatusCode(100), detailed_reason: "" }, 2: Status { status_code: StatusCode(101), detailed_reason: "" }, 3: Status { status_code: StatusCode(102), detailed_reason: "" }, 4: Status { status_code: StatusCode(102), detailed_reason: "" }, 5: Status { status_code: StatusCode(203), detailed_reason: "" }}
+ right: {1: Status { status_code: StatusCode(101), detailed_reason: "" }, 2: Status { status_code: StatusCode(101), detailed_reason: "" }, 3: Status { status_code: StatusCode(102), detailed_reason: "" }, 4: Status { status_code: StatusCode(102), detailed_reason: "" }, 5: Status { status_code: StatusCode(203), detailed_reason: "" }}
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+ok
+
+thread 'plan_summary_test::plan_summary_analyzer4' (154708800) panicked at test plan_summary_test::plan_summary_empty_success ... ok
+pkg/schedule/plan/plan_summary_test.rs:51:5test plan_summary_test::plan_summary_depth_and_order ... ok
+:
+assertion `left == right` failed: analyzer4
+  left: {1: Status { status_code: StatusCode(100), detailed_reason: "" }, 2: Status { status_code: StatusCode(101), detailed_reason: "" }, 3: Status { status_code: StatusCode(102), detailed_reason: "" }, 4: Status { status_code: StatusCode(102), detailed_reason: "" }, 5: Status { status_code: StatusCode(403), detailed_reason: "" }}
+ right: {1: Status { status_code: StatusCode(101), detailed_reason: "" }, 2: Status { status_code: StatusCode(101), detailed_reason: "" }, 3: Status { status_code: StatusCode(102), detailed_reason: "" }, 4: Status { status_code: StatusCode(102), detailed_reason: "" }, 5: Status { status_code: StatusCode(403), detailed_reason: "" }}
+test plan_summary_test::plan_summary_analyzer6 ... ok
+
+thread 'plan_summary_test::plan_summary_analyzer1' (154708797test plan_summary_test::plan_summary_invalid_plan ... ok
+) panicked at pkg/schedule/plan/plan_summary_test.rs:51:5:
+assertion `left == right` failed: analyzer1
+  left: {1: Status { status_code: StatusCode(100), detailed_reason: "" }, 2: Status { status_code: StatusCode(100), detailed_reason: "" }, 3: Status { status_code: StatusCode(100), detailed_reason: "" }, 4: Status { status_code: StatusCode(102), detailed_reason: "" }, 5: Status { status_code: StatusCode(100), detailed_reason: "" }}
+ right: {1: Status { status_code: StatusCode(102), detailed_reason: "" }, 2: Status { status_code: StatusCode(102), detailed_reason: "" }, 3: Status { status_code: StatusCode(102), detailed_reason: "" }, 4: Status { status_code: StatusCode(102), detailed_reason: "" }, 5: Status { status_code: StatusCode(102), detailed_reason: "" }}test plan_summary_test::plan_summary_reason_counts_and_owned_output ... ok
+
+test plan_summary_test::plan_summary_analyzer5 ... FAILED
+thread 'plan_summary_test::plan_summary_selection' (154708807) panicked at pkg/schedule/plan/plan_summary_test.rs:51:5:
+assertion `left == right` failed: tie
+  left: {1: Status { status_code: StatusCode(403), detailed_reason: "" }}
+ right: {1: Status { status_code: StatusCode(400), detailed_reason: "" }}
+
+test plan_summary_test::plan_summary_analyzer4 ... FAILED
+test plan_summary_test::plan_summary_selection ... FAILED
+test plan_summary_test::plan_summary_analyzer1 ... FAILED
+
+failures:
+
+failures:
+    plan_summary_test::plan_summary_analyzer1
+    plan_summary_test::plan_summary_analyzer4
+    plan_summary_test::plan_summary_analyzer5
+    plan_summary_test::plan_summary_selection
+
+test result: FAILED. 7 passed; 4 failed; 0 ignored; 0 measured; 8 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-plan --lib`
+EXIT 101
