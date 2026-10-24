@@ -38,6 +38,144 @@ pub(crate) fn member(id: &Identity) -> pdpb::Member {
 }
 #[tonic::async_trait]
 impl Pd for Grpc {
+    async fn region_heartbeat(
+        &self,
+        request: Request<tonic::Streaming<pdpb::RegionHeartbeatRequest>>,
+    ) -> Result<
+        Response<
+            Pin<
+                Box<
+                    dyn Stream<Item = Result<pdpb::RegionHeartbeatResponse, Status>>
+                        + Send
+                        + 'static,
+                >,
+            >,
+        >,
+        Status,
+    > {
+        let input = request.into_inner();
+        let services = self.services.clone();
+        let cancel = self.cancel.clone();
+        // The output owns the receive loop, including the in-flight state future.
+        // Accepted reports produce no ack; cancellation/drop detaches no worker.
+        let output = futures_util::stream::unfold(
+            (input, services, cancel, false),
+            |(mut input, services, cancel, terminal)| async move {
+                if terminal {
+                    return None;
+                }
+                loop {
+                    let next = tokio::select! { biased;
+                        _ = cancel.cancelled() => return None,
+                        next = input.message() => next,
+                    };
+                    let req = match next {
+                        Ok(Some(req)) => req,
+                        Ok(None) => return None,
+                        Err(e) => return Some((Err(e), (input, services, cancel, true))),
+                    };
+                    let cluster_id = services.identity().cluster_id;
+                    let result = async {
+                        let service = services.region_heartbeat_service().ok_or_else(|| {
+                            Status::unimplemented(
+                                "region heartbeat state service is not configured",
+                            )
+                        })?;
+                        let error_response =
+                            |kind: pdpb::ErrorType, message: String, target_peer| {
+                                pdpb::RegionHeartbeatResponse {
+                                    header: Some(pdpb::ResponseHeader {
+                                        cluster_id,
+                                        error: Some(pdpb::Error {
+                                            r#type: kind as i32,
+                                            message,
+                                        }),
+                                    }),
+                                    target_peer,
+                                    ..Default::default()
+                                }
+                            };
+                        if !service.is_bootstrapped() {
+                            return Ok(Some((
+                                error_response(
+                                    pdpb::ErrorType::NotBootstrapped,
+                                    "cluster is not bootstrapped".into(),
+                                    None,
+                                ),
+                                true,
+                            )));
+                        }
+                        if req.header.as_ref().map(|h| h.cluster_id).unwrap_or(0) != cluster_id {
+                            return Err(Status::failed_precondition(format!(
+                                "mismatch cluster id, need {} but got {}",
+                                cluster_id,
+                                req.header.as_ref().map(|h| h.cluster_id).unwrap_or(0)
+                            )));
+                        }
+                        services.healthy().await.map_err(Status::unavailable)?;
+                        let store_id = req.leader.as_ref().map(|p| p.store_id).unwrap_or(0);
+                        match service.region_store_state(store_id) {
+                            None => {
+                                return Err(Status::unknown(format!(
+                                    "invalid store ID {store_id}, not found"
+                                )));
+                            }
+                            Some(astersql_pd_core::NodeState::Removed) => return Ok(None),
+                            _ => {}
+                        }
+                        let target = req.leader.clone();
+                        let region = match crate::core_region_adapter::region_from_heartbeat(
+                            req,
+                            service.flow_round_divisor(),
+                        ) {
+                            Ok(region) => region,
+                            Err(message) => {
+                                return Ok(Some((
+                                    error_response(
+                                        pdpb::ErrorType::Unknown,
+                                        message.into(),
+                                        target,
+                                    ),
+                                    false,
+                                )));
+                            }
+                        };
+                        let invalid = if region.leader().is_none() {
+                            Some("invalid request leader")
+                        } else if region.meta().id == 0 {
+                            Some("invalid request region")
+                        } else if region.meta().peers.is_empty() {
+                            Some("invalid region, zero region peer count")
+                        } else {
+                            None
+                        };
+                        let error = match invalid {
+                            Some(message) => Some(message.into()),
+                            None => service.region_heartbeat(region).await.err().map(|e| e.0),
+                        };
+                        Ok(error.map(|message| {
+                            (
+                                error_response(pdpb::ErrorType::Unknown, message, target),
+                                false,
+                            )
+                        }))
+                    };
+                    let result = tokio::select! { biased;
+                        _ = cancel.cancelled() => return None,
+                        result = result => result,
+                    };
+                    match result {
+                        Ok(None) => continue,
+                        Ok(Some((response, terminal))) => {
+                            return Some((Ok(response), (input, services, cancel, terminal)));
+                        }
+                        Err(error) => return Some((Err(error), (input, services, cancel, true))),
+                    }
+                }
+            },
+        );
+        Ok(Response::new(Box::pin(output)))
+    }
     async fn store_heartbeat(
         &self,
         request: Request<pdpb::StoreHeartbeatRequest>,

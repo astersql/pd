@@ -6,3 +6,7 @@ the state service. Hosts may implement the domain-only StoreHeartbeatService and
 use apply_store_heartbeat with their existing canonical cluster and statistics.
 router composes HTTP and gRPC under one host cancellation scope. Production and
 separate test modules, including store_heartbeat_adapter_test, are explicitly registered.
+
+The optional region_heartbeat_service accessor similarly defaults to None;
+RegionHeartbeatService supplies domain-only membership and region admission.
+The region adapter and its separate behavior tests are explicitly registered.

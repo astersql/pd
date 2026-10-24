@@ -1,0 +1,11 @@
+{
+  "slot": 2,
+  "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2",
+  "own_lock_released": true,
+  "cache_retained": true,
+  "oracle_exit": 0,
+  "oracle_joined": true,
+  "oracle_data_removed": true,
+  "http2_listener_cancelled_and_joined": true,
+  "inflight_future_dropped_on_cancel_and_disconnect": true
+}

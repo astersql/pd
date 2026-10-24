@@ -1,0 +1,26 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+['/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2/pd-oracle47', '--name', 'oracle48', '--data-dir', '/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2/oracle48-data-46025', '--client-urls', 'http://127.0.0.1:57743', '--advertise-client-urls', 'http://127.0.0.1:57743', '--peer-urls', 'http://127.0.0.1:57744', '--advertise-peer-urls', 'http://127.0.0.1:57744', '--initial-cluster', 'oracle48=http://127.0.0.1:57744', '--log-level', 'error']
+warning: use of deprecated field `astersql_pd_proto::pdpb::RegionHeartbeatRequest::cpu_usage`
+   --> pkg/server/core_region_adapter.rs:134:30
+    |
+134 |     r.set_response_cpu_usage(p.cpu_usage);
+    |                              ^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: `astersql-pd-server` (lib) generated 1 warning
+   Compiling astersql-pd-server v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/server)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.41s
+     Running `target/rust-slot-2/debug/examples/region_heartbeat_oracle`
+bootstrap: Some(ResponseHeader { cluster_id: 7700363443201329587, error: None })
+accepted: Err(Elapsed(()))
+snapshot: GetRegionResponse { header: Some(ResponseHeader { cluster_id: 7700363443201329587, error: None }), region: Some(Region { id: 1, start_key: [], end_key: [], region_epoch: Some(RegionEpoch { conf_ver: 2, version: 2 }), peers: [Peer { id: 2, store_id: 1, role: Voter, is_witness: false }], encryption_meta: None, is_in_flashback: false, flashback_start_ts: 0 }), leader: Some(Peer { id: 2, store_id: 1, role: Voter, is_witness: false }), down_peers: [], pending_peers: [], buckets: None }
+duplicate: Err(Elapsed(()))
+snapshot: GetRegionResponse { header: Some(ResponseHeader { cluster_id: 7700363443201329587, error: None }), region: Some(Region { id: 1, start_key: [], end_key: [], region_epoch: Some(RegionEpoch { conf_ver: 2, version: 2 }), peers: [Peer { id: 2, store_id: 1, role: Voter, is_witness: false }], encryption_meta: None, is_in_flashback: false, flashback_start_ts: 0 }), leader: Some(Peer { id: 2, store_id: 1, role: Voter, is_witness: false }), down_peers: [], pending_peers: [], buckets: None }
+stale: Ok(Ok(Some(RegionHeartbeatResponse { header: Some(ResponseHeader { cluster_id: 7700363443201329587, error: Some(Error { r#type: Unknown, message: "region is stale: region id:1 region_epoch:<conf_ver:2 version:1 > peers:<id:2 store_id:1 >  origin id:1 region_epoch:<conf_ver:2 version:2 > peers:<id:2 store_id:1 > " }) }), change_peer: None, transfer_leader: None, region_id: 0, region_epoch: None, target_peer: Some(Peer { id: 2, store_id: 1, role: Voter, is_witness: false }), merge: None, split_region: None, change_peer_v2: None, switch_witnesses: None, change_split: None })))
+snapshot: GetRegionResponse { header: Some(ResponseHeader { cluster_id: 7700363443201329587, error: None }), region: Some(Region { id: 1, start_key: [], end_key: [], region_epoch: Some(RegionEpoch { conf_ver: 2, version: 2 }), peers: [Peer { id: 2, store_id: 1, role: Voter, is_witness: false }], encryption_meta: None, is_in_flashback: false, flashback_start_ts: 0 }), leader: Some(Peer { id: 2, store_id: 1, role: Voter, is_witness: false }), down_peers: [], pending_peers: [], buckets: None }
+invalid region: Ok(Ok(Some(RegionHeartbeatResponse { header: Some(ResponseHeader { cluster_id: 7700363443201329587, error: Some(Error { r#type: Unknown, message: "invalid request region, header:<cluster_id:7700363443201329587 > region:<region_epoch:<conf_ver:2 version:2 > peers:<id:2 store_id:1 > > leader:<id:2 store_id:1 > approximate_size:2097152 interval:<start_timestamp:10 end_timestamp:20 > term:7 query_stats:<Get:11 Put:13 > cpu_stats:<UnifiedRead:17 Scheduler:999 > " }) }), change_peer: None, transfer_leader: None, region_id: 0, region_epoch: None, target_peer: Some(Peer { id: 2, store_id: 1, role: Voter, is_witness: false }), merge: None, split_region: None, change_peer_v2: None, switch_witnesses: None, change_split: None })))
+snapshot: GetRegionResponse { header: Some(ResponseHeader { cluster_id: 7700363443201329587, error: None }), region: Some(Region { id: 1, start_key: [], end_key: [], region_epoch: Some(RegionEpoch { conf_ver: 2, version: 2 }), peers: [Peer { id: 2, store_id: 1, role: Voter, is_witness: false }], encryption_meta: None, is_in_flashback: false, flashback_start_ts: 0 }), leader: Some(Peer { id: 2, store_id: 1, role: Voter, is_witness: false }), down_peers: [], pending_peers: [], buckets: None }
+nil leader: Ok(Err(Status { code: Unknown, message: "invalid store ID 0, not found", metadata: MetadataMap { headers: {"content-type": "application/grpc"} }, source: None }))
+snapshot: GetRegionResponse { header: Some(ResponseHeader { cluster_id: 7700363443201329587, error: None }), region: Some(Region { id: 1, start_key: [], end_key: [], region_epoch: Some(RegionEpoch { conf_ver: 2, version: 2 }), peers: [Peer { id: 2, store_id: 1, role: Voter, is_witness: false }], encryption_meta: None, is_in_flashback: false, flashback_start_ts: 0 }), leader: Some(Peer { id: 2, store_id: 1, role: Voter, is_witness: false }), down_peers: [], pending_peers: [], buckets: None }
+Go server joined exit=0; data removed

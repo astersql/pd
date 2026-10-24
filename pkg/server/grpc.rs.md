@@ -7,3 +7,8 @@ cluster ID and health, preserves transport versus response-header errors and map
 NodeState values without importing protobuf into the cluster library.
 See store_heartbeat_adapter.rs.md for field presence, unsupported controller inputs,
 state ownership and lifecycle boundaries. No worker or runtime is created here.
+
+RegionHeartbeat uses the optional domain-only region state service. The response
+stream owns all receive/acceptance work, sends errors without success acknowledgements,
+and drops the in-flight future on cancellation or disconnect. See
+region_heartbeat_adapter.rs.md for validation order and excluded scheduling work.
