@@ -29,3 +29,8 @@ mod affinity_availability_test;
 mod affinity_update_peers_test;
 pub mod policy;
 pub mod txn_peers;
+
+#[cfg(test)]
+#[path = "affinity_cache_sync_test.rs"]
+mod affinity_cache_sync_test;
+pub mod region_cache;

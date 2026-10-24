@@ -114,6 +114,9 @@ impl Manager {
                 } else {
                     self.key_ranges.insert(id.clone(), r.clone());
                 }
+                if clear {
+                    self.clear_group_cache(id);
+                }
                 if let Some(g) = self.groups.get_mut(id) {
                     g.label_rule = labels.index().rule(&get_label_rule_id(id)).cloned();
                     g.info.range_count = r.key_ranges.len();

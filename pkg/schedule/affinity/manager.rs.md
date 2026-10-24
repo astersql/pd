@@ -25,3 +25,7 @@ seconds for expiration boundaries. See [batch 33 evidence](../../../docs/rust/sc
 
 Batch 36 adds a private unavailable-store snapshot and synchronous health policy;
 see [policy module](policy.rs.md). The host still owns loop lifecycle.
+
+Batch 38 adds owned region snapshots and a label-first synchronization buffer;
+see [region cache and synchronization](region_cache.rs.md). Hosts supply exclusive
+access to synchronous mutations and deliver labeler events separately.

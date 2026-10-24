@@ -218,6 +218,8 @@ impl Manager {
         plan.apply(labels);
         for id in unique {
             self.key_ranges.remove(id);
+            self.clear_group_cache(id);
+            self.label_rule_buffer.remove(id);
             self.groups.remove(id);
         }
         Ok(())
