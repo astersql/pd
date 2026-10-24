@@ -1,0 +1,3 @@
+slot=1 lock released; compilation cache retained
+CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+no processes executing slot binaries remain

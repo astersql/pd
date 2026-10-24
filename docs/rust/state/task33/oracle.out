@@ -1,0 +1,14 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+=== RUN   TestSyncHistoryRecordsSplitBatches
+[2026/10/24 20:11:47.455 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+--- PASS: TestSyncHistoryRecordsSplitBatches (0.02s)
+=== RUN   TestSyncHistoryRegionStopsAtSyncStartIndex
+[2026/10/24 20:11:47.461 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+[2026/10/24 20:11:47.462 +00:00] [INFO] [server.go:438] ["sync the history regions with server"] [server=pd2] [from-index=10] [last-index=11] [records-length=1]
+--- PASS: TestSyncHistoryRegionStopsAtSyncStartIndex (0.00s)
+=== RUN   TestSyncFallsBackToFullSyncWhenHistoryMissing
+[2026/10/24 20:11:47.467 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+[2026/10/24 20:11:47.468 +00:00] [INFO] [server.go:337] ["establish sync region stream"] [requested-server=pd-follower] [url=http://127.0.0.1:2379]
+[2026/10/24 20:11:47.571 +00:00] [INFO] [server.go:552] ["requested server has completed full synchronization with server"] [requested-server=pd-follower] [server=mock-server] [cost=102.896375ms]
+--- PASS: TestSyncFallsBackToFullSyncWhenHistoryMissing (0.31s)
+PASS

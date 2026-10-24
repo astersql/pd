@@ -1,0 +1,13 @@
+   Compiling astersql-pd-syncer v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/syncer)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.03s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_syncer-f6c36878c994325f)
+
+running 6 tests
+test history_replay_test::state_task_33_history_replay_equal_and_keepalive_do_not_skip ... ok
+test history_replay_test::state_task_33_history_replay_falls_back_when_history_missing ... ok
+test history_replay_test::state_task_33_history_replay_stops_at_sync_start_index ... ok
+test history_replay_test::state_task_33_history_replay_custom_batch_and_snapshot_survive_overwrite ... ok
+test history_replay_test::state_task_33_history_replay_caps_batch_and_observes_window ... ok
+test history_replay_test::state_task_33_history_replay_split_batches ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 27 filtered out; finished in 0.00s

@@ -24,3 +24,9 @@ mod history_persist_test;
 #[allow(dead_code)]
 #[path = "../storage/kv/etcd_fixture_test.rs"]
 mod persist_fixture;
+
+mod history_replay;
+pub use history_replay::{HistoryReplay, MAX_SYNC_REGION_BATCH_SIZE, SyncFrame};
+#[cfg(test)]
+#[path = "history_replay_test.rs"]
+mod history_replay_test;
