@@ -1,0 +1,67 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-statistics v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.77s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics-19f9aca67fa98079)
+
+running 4 tests
+test region_placement_test::state_task_16_region_placement_uninitialized_and_config_update ... ok
+test region_placement_test::state_task_16_region_placement_go_sequence ... ok
+test region_placement_test::state_task_16_region_placement_learner_and_voter_duration ... ok
+test region_placement_test::state_task_16_region_placement_boundary_and_rule_update ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 37 filtered out; finished in 0.00s
+
+   Compiling astersql-pd-statistics v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.94s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics-19f9aca67fa98079)
+
+running 41 tests
+test cpu_test::state_task_09_cpu_peer_go_oracle_and_missing ... ok
+test cpu_test::state_task_09_cpu_peer_ignores_scheduler ... ok
+test cpu_test::state_task_09_cpu_store_go_oracle ... ok
+test cpu_test::state_task_09_cpu_store_prefix_and_multiple_records ... ok
+test cpu_test::state_task_09_cpu_store_wraps_before_float_conversion ... ok
+test load_values_test::state_task_13_load_values_ieee_extrema ... ok
+test load_values_test::state_task_13_load_values_predictions_and_snapshot_isolation ... ok
+test load_values_test::state_task_13_load_values_min_max_pending_diff ... ok
+test load_values_test::state_task_13_load_values_weighted_influence ... ok
+test load_values_test::state_task_13_load_values_go_pending_sequence ... ok
+test region_classify_test::state_task_15_region_classify_clear_query_witness ... ok
+test region_classify_test::state_task_15_region_classify_durations_and_reset ... ok
+test region_classify_test::state_task_15_region_classify_go_sequence ... ok
+test region_classify_test::state_task_15_region_classify_special_transitions_and_rule_boundary ... ok
+test region_classify_test::state_task_15_region_classify_thresholds_and_config ... ok
+test load_values_test::state_task_13_load_values_slice_contracts ... ok
+test region_totals_test::state_task_14_region_totals_accumulation_and_wrapping ... ok
+test region_totals_test::state_task_14_region_totals_empty_uses_keys ... ok
+test region_totals_test::state_task_14_region_totals_go_api_distribution ... ok
+test region_totals_test::state_task_14_region_totals_go_api_hot_filter ... ok
+test region_totals_test::state_task_14_region_totals_ia_cap_and_nil_leader ... ok
+test region_placement_test::state_task_16_region_placement_uninitialized_and_config_update ... ok
+test region_totals_test::state_task_14_region_totals_witness_tiflash_and_no_leader ... ok
+test region_placement_test::state_task_16_region_placement_go_sequence ... ok
+test store_history_test::state_task_12_store_history_go_loads ... ok
+test store_history_test::state_task_12_store_history_gc_does_not_readd_removed ... ok
+test store_history_test::state_task_12_store_history_interval_wrap_and_snapshot ... ok
+test store_history_test::state_task_12_store_history_isolation_and_config ... ok
+test region_placement_test::state_task_16_region_placement_learner_and_voter_duration ... ok
+test store_rolling_test::state_task_10_store_rolling_all_kinds_and_unknown ... ok
+test store_rolling_test::state_task_10_store_rolling_go_cpu_time_median ... ok
+test store_rolling_test::state_task_10_store_rolling_set_preserves_time_history ... ok
+test store_rolling_test::state_task_10_store_rolling_unsigned_set_and_duration_wrap ... ok
+test store_rolling_test::state_task_10_store_rolling_partial_intervals_and_median_eviction ... ok
+test store_rolling_test::state_task_10_store_rolling_zero_interval_and_collect_overflow ... ok
+test region_placement_test::state_task_16_region_placement_boundary_and_rule_update ... ok
+test store_rolling_test::state_task_10_store_rolling_distinct_windows_and_recent_max ... ok
+test stores_test::state_task_11_stores_creation_deletion_and_snapshots ... ok
+test stores_test::state_task_11_stores_go_filter_unhealthy ... ok
+test stores_test::state_task_11_stores_health_boundary_recovery_and_empty ... ok
+test stores_test::state_task_11_stores_concurrent_snapshots_and_removal ... ok
+
+test result: ok. 41 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_statistics
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

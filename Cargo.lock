@@ -507,9 +507,14 @@ version = "0.1.0"
 dependencies = [
  "astersql-pd-core",
  "astersql-pd-core-constant",
+ "astersql-pd-keypath",
  "astersql-pd-movingaverage",
  "astersql-pd-schedule-config",
+ "astersql-pd-schedule-placement",
  "astersql-pd-statistics-utils",
+ "astersql-pd-storage-endpoint",
+ "astersql-pd-storage-kv",
+ "tokio",
 ]
 
 [[package]]

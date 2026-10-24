@@ -1,0 +1,4 @@
+=== RUN   TestRegionStatisticsWithPlacementRule
+--- PASS: TestRegionStatisticsWithPlacementRule (0.00s)
+PASS
+ok  	github.com/tikv/pd/pkg/statistics	0.027s

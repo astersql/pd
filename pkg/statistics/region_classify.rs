@@ -46,12 +46,12 @@ pub struct RegionAnomalyDurations {
     pub miss_voter_seconds: Option<i64>,
     pub down_peer_seconds: Option<i64>,
 }
-/// Placement rules require the rule integration, rather than replica-count fallback.
+/// Placement-enabled observation requires passing a RuleManager to observe_with_placement.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct PlacementRulesRequired;
 impl std::fmt::Display for PlacementRulesRequired {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str("placement rules require rule classification integration")
+        f.write_str("placement rules require observe_with_placement and a rule manager")
     }
 }
 impl std::error::Error for PlacementRulesRequired {}
@@ -140,15 +140,34 @@ impl RegionStatistics {
         if conf.is_placement_rules_enabled() {
             return Err(PlacementRulesRequired);
         }
+        Ok(self.observe_counts(
+            region,
+            stores,
+            conf,
+            now_unix_seconds,
+            conf.get_max_replicas(),
+            conf.get_max_replicas(),
+        ))
+    }
+    /// Shared classification path; counts are selected by the caller's rule policy.
+    pub(crate) fn observe_counts(
+        &mut self,
+        region: &RegionInfo,
+        stores: &[StoreInfo],
+        conf: &impl CheckerConfigProvider,
+        now_unix_seconds: i64,
+        desired_replicas: i64,
+        desired_voters: i64,
+    ) -> RegionAnomalyDurations {
         let mut bits = special_bits(region, conf);
         for (typ, yes) in [
             (
                 RegionStatisticType::MissPeer,
-                (region.meta().peers.len() as i64) < conf.get_max_replicas(),
+                (region.meta().peers.len() as i64) < desired_replicas,
             ),
             (
                 RegionStatisticType::ExtraPeer,
-                (region.meta().peers.len() as i64) > conf.get_max_replicas(),
+                (region.meta().peers.len() as i64) > desired_replicas,
             ),
             (
                 RegionStatisticType::OfflinePeer,
@@ -176,7 +195,7 @@ impl RegionStatistics {
             }
         }
         if bits & RegionStatisticType::MissPeer as u16 != 0 {
-            if (region.voters().len() as i64) < conf.get_max_replicas() {
+            if (region.voters().len() as i64) < desired_voters {
                 durations.miss_voter_seconds =
                     sample_duration(&mut entry.miss_start, now_unix_seconds);
             }
@@ -189,7 +208,7 @@ impl RegionStatistics {
             entry.down_start = 0;
         }
         entry.bits = bits;
-        Ok(durations)
+        durations
     }
 }
 const SPECIAL: u16 = 4 | 8 | 32 | 64 | 128 | 256;

@@ -51,3 +51,7 @@ pub use region_classify::{
 };
 #[cfg(test)]
 mod region_classify_test;
+
+mod region_placement;
+#[cfg(test)]
+mod region_placement_test;

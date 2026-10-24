@@ -1,0 +1,46 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+    Checking serde_json v1.0.145
+    Checking axum v0.8.9
+    Checking astersql-pd-typeutil v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/utils/typeutil)
+    Checking astersql-pd-logutil v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/utils/logutil)
+    Checking astersql-pd-grpcutil v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/utils/grpcutil)
+    Checking tonic v0.14.2
+    Checking astersql-pd-encryption v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/encryption)
+    Checking astersql-pd-configutil v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/utils/configutil)
+    Checking tonic-prost v0.14.2
+    Checking astersql-pd-schedule-config v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/config)
+    Checking etcd-client v0.17.0
+    Checking astersql-pd-proto v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/proto)
+    Checking astersql-pd-storage-kv v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/storage/kv)
+    Checking astersql-pd-storage-endpoint v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/storage/endpoint)
+    Checking astersql-pd-schedule-placement v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/placement)
+    Checking astersql-pd-statistics v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 18.57s
+   Compiling astersql-pd-statistics v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics)
+error[E0599]: no associated function or constant named `new` found for struct `KeyRange` in the current scope
+  --> pkg/statistics/region_placement_test.rs:43:34
+   |
+43 |             key_range: KeyRange::new(start.to_vec(), end.to_vec()),
+   |                                  ^^^ associated function or constant not found in `KeyRange`
+   |
+help: there is a method `ne` with a similar name, but with different arguments
+  --> /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/core/src/cmp.rs:275:4
+
+error[E0599]: no associated function or constant named `new` found for struct `KeyRange` in the current scope
+  --> pkg/statistics/region_placement_test.rs:95:38
+   |
+95 |                 key_range: KeyRange::new(start.to_vec(), end.to_vec()),
+   |                                      ^^^ associated function or constant not found in `KeyRange`
+   |
+help: there is a method `ne` with a similar name, but with different arguments
+  --> /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/core/src/cmp.rs:275:4
+
+error[E0308]: mismatched types
+   --> pkg/statistics/region_placement_test.rs:190:19
+    |
+190 |         (4, b"z", b"", true, false),
+    |                   ^^^ expected an array with a size of 1, found one with a size of 0
+
+Some errors have detailed explanations: E0308, E0599.
+For more information about an error, try `rustc --explain E0308`.
+error: could not compile `astersql-pd-statistics` (lib test) due to 3 previous errors

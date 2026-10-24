@@ -27,3 +27,6 @@ region_totals_test显式登记。热点领域输入是已求值快照，完整�
 已加入[区域异常分类索引](region_classify.rs.md)：RegionStatistics、RegionStatisticType、
 RegionInfoProvider、RegionAnomalyDurations与PlacementRulesRequired；region_classify_test显式登记。
 复用canonical CheckerConfigProvider，placement禁用时更新与清除10类异常；宿主传入时钟并消费duration样本。
+
+已加入[规则驱动的分类入口](region_placement.rs.md)：RegionStatistics::observe_with_placement，
+复用真实RuleManager查询和同一异常索引；region_placement_test显式登记。未初始化返回None且不改变索引。

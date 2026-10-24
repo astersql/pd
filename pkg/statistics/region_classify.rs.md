@@ -6,7 +6,8 @@
 
 `observe(region, stores, conf, now_unix_seconds)` 复用 core 的真实 RegionInfo、StoreInfo
 和 schedule/config 的 CheckerConfigProvider，每次调用读取同一代配置快照。
-本阶段覆盖 placement 禁用分支，启用返回显式错误且不改变任何索引。
+此入口覆盖 placement 禁用分支，启用返回显式错误且不改变任何索引。
+启用placement请使用[规则入口](region_placement.rs.md)，复用同一内部分类路径。
 10种单bit分类与Go顺序相同：miss/extra/down/pending/offline/learner/empty/oversized/undersized/witness。
 offline仅考虑region确有peer的Removing store；learner计入总peer数，witness看leader，nil安全。
 

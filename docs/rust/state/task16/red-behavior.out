@@ -1,0 +1,35 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-statistics v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.93s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics-19f9aca67fa98079)
+
+running 4 tests
+
+thread 'region_placement_test::state_task_16_region_placement_uninitialized_and_config_update' (157414675) panicked at pkg/statistics/region_placement_test.rs:220:5:
+assertion failed: s.observe_with_placement(&r, &[], &c, &m, 100).is_some()
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'region_placement_test::state_task_16_region_placement_go_sequence' (157414673) panicked at pkg/statistics/region_placement_test.rs:109:9:
+assertion failed: s.observe_with_placement(&r, &[], &c, &m, 100).is_some()
+
+thread 'region_placement_test::state_task_16_region_placement_learner_and_voter_duration' (157414674) panicked at pkg/statistics/region_placement_test.rs:145:62:
+called `Option::unwrap()` on a `None` value
+
+thread 'region_placement_test::state_task_16_region_placement_boundary_and_rule_update' (157414672) panicked at pkg/statistics/region_placement_test.rs:199:14:
+called `Option::unwrap()` on a `None` value
+test region_placement_test::state_task_16_region_placement_uninitialized_and_config_update ... FAILED
+test region_placement_test::state_task_16_region_placement_learner_and_voter_duration ... FAILED
+test region_placement_test::state_task_16_region_placement_go_sequence ... FAILED
+test region_placement_test::state_task_16_region_placement_boundary_and_rule_update ... FAILED
+
+failures:
+
+failures:
+    region_placement_test::state_task_16_region_placement_boundary_and_rule_update
+    region_placement_test::state_task_16_region_placement_go_sequence
+    region_placement_test::state_task_16_region_placement_learner_and_voter_duration
+    region_placement_test::state_task_16_region_placement_uninitialized_and_config_update
+
+test result: FAILED. 0 passed; 4 failed; 0 ignored; 0 measured; 37 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-statistics --lib`
