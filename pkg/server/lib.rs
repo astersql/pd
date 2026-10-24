@@ -20,6 +20,12 @@ pub struct Identity {
 #[async_trait]
 pub trait PdServices: Send + Sync {
     fn identity(&self) -> &Identity;
+    /// Optional store state service supplied by the host.
+    fn store_heartbeat_service(
+        &self,
+    ) -> Option<&dyn store_heartbeat_adapter::StoreHeartbeatService> {
+        None
+    }
     async fn healthy(&self) -> Result<(), String>;
     async fn alloc_id(&self) -> Result<u64, String>;
     async fn timestamp(&self, count: u32) -> Result<Timestamp, String>;
@@ -50,3 +56,8 @@ pub mod core_region_adapter;
 #[cfg(test)]
 #[path = "core_region_adapter_test.rs"]
 mod core_region_adapter_test;
+
+pub mod store_heartbeat_adapter;
+#[cfg(test)]
+#[path = "store_heartbeat_adapter_test.rs"]
+mod store_heartbeat_adapter_test;

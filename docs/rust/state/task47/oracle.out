@@ -1,0 +1,36 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+['/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2/pd-oracle47', '--name', 'oracle47', '--data-dir', '/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2/oracle47-data-40348', '--client-urls', 'http://127.0.0.1:54447', '--advertise-client-urls', 'http://127.0.0.1:54447', '--peer-urls', 'http://127.0.0.1:54448', '--advertise-peer-urls', 'http://127.0.0.1:54448', '--initial-cluster', 'oracle47=http://127.0.0.1:54448', '--log-level', 'error']
+   Compiling etcd-client v0.17.0
+   Compiling astersql-pd-proto v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/proto)
+   Compiling astersql-pd-storage-kv v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/storage/kv)
+   Compiling astersql-pd-election v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/election)
+   Compiling astersql-pd-etcdutil v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/utils/etcdutil)
+   Compiling astersql-pd-member v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/member)
+   Compiling astersql-pd-tso v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/tso)
+   Compiling astersql-pd-id v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/id)
+   Compiling astersql-pd-storage-endpoint v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/storage/endpoint)
+   Compiling astersql-pd-storage v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/storage)
+   Compiling astersql-pd-schedule-placement v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/placement)
+   Compiling astersql-pd-syncer v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/syncer)
+   Compiling astersql-pd-statistics v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics)
+   Compiling astersql-pd-cluster v0.1.0 (/Users/Shared/work/dir/data/codes/pd/server/cluster)
+   Compiling astersql-pd-server v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/server)
+warning: use of deprecated field `astersql_pd_proto::pdpb::RegionHeartbeatRequest::cpu_usage`
+   --> pkg/server/core_region_adapter.rs:134:30
+    |
+134 |     r.set_response_cpu_usage(p.cpu_usage);
+    |                              ^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+   Compiling astersql-pd-runtime v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/runtime)
+warning: `astersql-pd-server` (lib) generated 1 warning
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 6.90s
+     Running `target/rust-slot-2/debug/examples/store_heartbeat_oracle`
+missing stats: Unknown invalid store heartbeat command, but header:<cluster_id:7700361399708674273 >
+bootstrap: Some(ResponseHeader { cluster_id: 7700361399708674273, error: None })
+store 99: StoreHeartbeatResponse { header: Some(ResponseHeader { cluster_id: 7700361399708674273, error: Some(Error { r#type: Unknown, message: "store 99 not found" }) }), replication_status: None, cluster_version: "", require_detailed_report: false, recovery_plan: None, awaken_regions: None, control_grpc: None, state: Preparing }
+store 1: StoreHeartbeatResponse { header: Some(ResponseHeader { cluster_id: 7700361399708674273, error: None }), replication_status: Some(ReplicationStatus { mode: Majority, dr_auto_sync: None }), cluster_version: "0.0.0", require_detailed_report: false, recovery_plan: None, awaken_regions: None, control_grpc: None, state: Preparing }
+register removed: PutStoreResponse { header: Some(ResponseHeader { cluster_id: 7700361399708674273, error: None }), replication_status: Some(ReplicationStatus { mode: Majority, dr_auto_sync: None }) }
+removed heartbeat: StoreHeartbeatResponse { header: Some(ResponseHeader { cluster_id: 7700361399708674273, error: Some(Error { r#type: StoreTombstone, message: "store is tombstone" }) }), replication_status: None, cluster_version: "", require_detailed_report: false, recovery_plan: None, awaken_regions: None, control_grpc: None, state: Preparing }
+Go server joined exit=0; data removed

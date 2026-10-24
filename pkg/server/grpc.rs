@@ -38,6 +38,66 @@ pub(crate) fn member(id: &Identity) -> pdpb::Member {
 }
 #[tonic::async_trait]
 impl Pd for Grpc {
+    async fn store_heartbeat(
+        &self,
+        request: Request<pdpb::StoreHeartbeatRequest>,
+    ) -> Result<Response<pdpb::StoreHeartbeatResponse>, Status> {
+        use crate::store_heartbeat_adapter::StoreHeartbeatError;
+        let request = request.into_inner();
+        self.check(request.header.as_ref())?;
+        self.services.healthy().await.map_err(Status::unavailable)?;
+        // Do not include a debug dump of the wire payload in transport errors.
+        let stats = request
+            .stats
+            .ok_or_else(|| Status::unknown("invalid store heartbeat command"))?;
+        let service = self.services.store_heartbeat_service().ok_or_else(|| {
+            Status::unimplemented("store heartbeat state service is not configured")
+        })?;
+        // These fields belong to recovery/replication controllers outside this
+        // state adapter. In particular a recovery report must bypass statistics.
+        if request.store_report.is_some() || request.dr_autosync_status.is_some() {
+            return Err(Status::unimplemented(
+                "store recovery and DR status are unsupported",
+            ));
+        }
+        let stats = crate::core_store_adapter::store_stats_from_proto(Some(stats)).unwrap();
+        let result = service.store_heartbeat(stats).await;
+        let mut header = self.header().unwrap();
+        let state = match result {
+            Ok(state) => match state {
+                astersql_pd_core::NodeState::Preparing => 0,
+                astersql_pd_core::NodeState::Serving => 1,
+                astersql_pd_core::NodeState::Removing => 2,
+                astersql_pd_core::NodeState::Removed => 3,
+                astersql_pd_core::NodeState::Unknown(value) => value,
+            },
+            Err(error) => {
+                let (kind, message) = match error {
+                    StoreHeartbeatError::NotBootstrapped => (
+                        pdpb::ErrorType::NotBootstrapped,
+                        "cluster is not bootstrapped".into(),
+                    ),
+                    StoreHeartbeatError::StoreNotFound(id) => {
+                        (pdpb::ErrorType::Unknown, format!("store {id} not found"))
+                    }
+                    StoreHeartbeatError::Removed => {
+                        (pdpb::ErrorType::StoreTombstone, "store is tombstone".into())
+                    }
+                    StoreHeartbeatError::Other(message) => (pdpb::ErrorType::Unknown, message),
+                };
+                header.error = Some(pdpb::Error {
+                    r#type: kind as i32,
+                    message,
+                });
+                0
+            }
+        };
+        Ok(Response::new(pdpb::StoreHeartbeatResponse {
+            header: Some(header),
+            state,
+            ..Default::default()
+        }))
+    }
     async fn get_members(
         &self,
         _: Request<pdpb::GetMembersRequest>,

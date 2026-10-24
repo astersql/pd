@@ -1,0 +1,56 @@
+warning: use of deprecated field `astersql_pd_proto::pdpb::RegionHeartbeatRequest::cpu_usage`
+   --> pkg/server/core_region_adapter.rs:134:30
+    |
+134 |     r.set_response_cpu_usage(p.cpu_usage);
+    |                              ^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: `astersql-pd-server` (lib) generated 1 warning
+warning: use of deprecated field `astersql_pd_proto::pdpb::RegionHeartbeatRequest::cpu_usage`
+  --> pkg/server/core_region_adapter_test.rs:88:13
+   |
+88 |             cpu_usage: 77,
+   |             ^^^^^^^^^^^^^
+
+   Compiling astersql-pd-server v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/server)
+warning: `astersql-pd-server` (lib test) generated 2 warnings (1 duplicate)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.32s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_server-2db8e599397b241d)
+
+running 19 tests
+test core_region_adapter_test::core_task_61_metadata_roles ... ok
+test core_store_adapter_test::core_task_60_full_store ... ok
+test core_region_adapter_test::core_task_61_missing_fields ... ok
+test core_region_adapter_test::core_task_61_sizes ... ok
+test core_store_adapter_test::core_task_60_defaults_and_presence ... ok
+test core_region_adapter_test::core_task_61_heartbeat_fields ... ok
+test core_store_adapter_test::core_task_60_nested_presence_order_and_unsigned_limits ... ok
+test core_store_adapter_test::core_task_60_unknown_enums_and_signed_extremes ... ok
+test core_store_adapter_test::core_task_60_full_store_stats ... ok
+test core_trace_test::core_task_59_save_cache_resets_and_recovery ... ok
+test store_heartbeat_adapter_test::state_task_47_store_heartbeat_adapter_defaults ... ok
+test store_heartbeat_adapter_test::state_task_47_store_heartbeat_adapter_opt_in_and_bootstrap ... ok
+test store_heartbeat_adapter_test::state_task_47_store_heartbeat_adapter_presence_and_controller_boundary ... ok
+test store_heartbeat_adapter_test::state_task_47_store_heartbeat_adapter_wire_errors ... ok
+test store_heartbeat_adapter_test::state_task_47_store_heartbeat_adapter_state ... ok
+test core_trace_test::core_task_59_registry_ownership ... ok
+test store_heartbeat_adapter_test::state_task_47_store_heartbeat_adapter_response_state_and_errors ... ok
+test core_trace_test::core_task_59_each_stage_and_clock_regression ... ok
+test store_heartbeat_adapter_test::state_task_47_store_heartbeat_adapter_multi_peer_network ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running server_test.rs (target/rust-slot-2/debug/deps/server-cbf2fd1c38126dd2)
+
+running 1 test
+isolated etcd 3.5.15 ready at http://127.0.0.1:55345
+test validation_and_open_stream_shutdown ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.53s
+
+   Doc-tests astersql_pd_server
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

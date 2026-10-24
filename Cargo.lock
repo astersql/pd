@@ -478,9 +478,12 @@ dependencies = [
 name = "astersql-pd-server"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-cluster",
  "astersql-pd-core",
  "astersql-pd-proto",
  "astersql-pd-runtime",
+ "astersql-pd-statistics",
+ "astersql-pd-statistics-utils",
  "astersql-pd-storage",
  "astersql-pd-storage-kv",
  "astersql-pd-tso",
@@ -488,6 +491,7 @@ dependencies = [
  "axum",
  "futures-util",
  "prometheus",
+ "prost",
  "serde_json",
  "tokio",
  "tokio-stream",

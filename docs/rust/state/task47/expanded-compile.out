@@ -1,0 +1,25 @@
+warning: use of deprecated field `astersql_pd_proto::pdpb::RegionHeartbeatRequest::cpu_usage`
+   --> pkg/server/core_region_adapter.rs:134:30
+    |
+134 |     r.set_response_cpu_usage(p.cpu_usage);
+    |                              ^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: `astersql-pd-server` (lib) generated 1 warning
+   Compiling astersql-pd-server v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/server)
+error[E0433]: cannot find `StoreDrAutoSyncStatus` in `pdpb`
+   --> pkg/server/store_heartbeat_adapter_test.rs:462:49
+    |
+462 |             req.dr_autosync_status = Some(pdpb::StoreDrAutoSyncStatus::default());
+    |                                                 ^^^^^^^^^^^^^^^^^^^^^ could not find `StoreDrAutoSyncStatus` in `pdpb`
+
+warning: use of deprecated field `astersql_pd_proto::pdpb::RegionHeartbeatRequest::cpu_usage`
+  --> pkg/server/core_region_adapter_test.rs:88:13
+   |
+88 |             cpu_usage: 77,
+   |             ^^^^^^^^^^^^^
+
+For more information about this error, try `rustc --explain E0433`.
+warning: `astersql-pd-server` (lib test) generated 2 warnings (1 duplicate)
+error: could not compile `astersql-pd-server` (lib test) due to 1 previous error; 2 warnings emitted
