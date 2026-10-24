@@ -17,6 +17,8 @@ astersql-pd-core-constant.workspace = true
 astersql-pd-schedule-config.workspace = true
 astersql-pd-schedule-placement.workspace = true
 tokio.workspace = true
+tokio-util.workspace = true
+astersql-pd-statistics-buckets.workspace = true
 serde.workspace = true
 
 [dev-dependencies]

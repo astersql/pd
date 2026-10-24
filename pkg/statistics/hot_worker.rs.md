@@ -23,7 +23,8 @@ Worker 不在计算中 await；取消不会造成一个任务中部分 actions �
 `cancel` 拒绝后续 admission，worker 关闭 receiver 并将未执行任务回复 Canceled；
 已经 claimed 的任务允许完成。`shutdown` 必须等待完成，取消并 join 两个 worker（即使一个失败），
 返回最终 read/write cache；重复调用返回 None。宿主 runtime 必须保持运行。
-不要中途丢弃 shutdown future；Drop 只请求取消，不提供 join 完成保证。
+shutdown future 中途被丢弃会保留尚未完成的 join handle 及已完成缓存，后续调用继续等待；
+Drop 只请求取消，不提供 join 完成保证。
 宿主销毁 runtime 或 worker 异常时，receipt/关闭返回 WorkerStopped，不误报 Applied。
 
 Peer/Stats 查询返回 HotPeerStat::clone 的独立去噪快照，不泄露滚动窗口。
@@ -40,3 +41,7 @@ Go oracle、红绿日志和 workspace 检查见 [任务23证据](../../docs/rust
 `HotTaskOutput::Metrics(HotMetricsSnapshot)`，使用原队列/FIFO/cancel/错误契约。
 `HotCache::collect_metrics`驱动两个方向并传回完整指标快照，宿主传入时钟和完整
 live store集合；没有新报告也执行节流GC。无新增后台任务，仍通过原shutdown完成join。
+
+[组合容器](hot_stat.rs.md)增加 `HotTask::Snapshot`，在原FIFO内返回不按热度过滤的
+owned peer快照，供同步RegionStatInformer及不同过滤查询使用。原Stats语义保持不变。
+关闭逐个保存join结果，即使前一个worker失败也等待后一个，支持被取消后重试。

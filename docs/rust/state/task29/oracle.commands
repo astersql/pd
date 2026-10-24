@@ -1,0 +1,9 @@
+break cluster_test.go:3022
+continue
+config max-variable-recurse 1
+print tc.hotStat
+print tc.slowStat
+print len(tc.hotStat.StoresStats.rollingStoresStats)
+call -unsafe tc.hotStat.StoresStats.GetStoresLoads()
+continue
+exit

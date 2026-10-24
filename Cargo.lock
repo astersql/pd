@@ -511,6 +511,7 @@ dependencies = [
  "astersql-pd-movingaverage",
  "astersql-pd-schedule-config",
  "astersql-pd-schedule-placement",
+ "astersql-pd-statistics-buckets",
  "astersql-pd-statistics-utils",
  "astersql-pd-storage-endpoint",
  "astersql-pd-storage-kv",
@@ -518,6 +519,7 @@ dependencies = [
  "serde",
  "serde_json",
  "tokio",
+ "tokio-util",
 ]
 
 [[package]]

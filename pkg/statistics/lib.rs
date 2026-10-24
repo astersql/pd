@@ -119,3 +119,8 @@ mod metrics;
 pub use metrics::{HotMetricsSnapshot, StatisticsMetrics};
 #[cfg(test)]
 mod metrics_test;
+
+mod hot_stat;
+pub use hot_stat::{HotStat, StatisticsSnapshot, StatisticsSnapshotError};
+#[cfg(test)]
+mod hot_stat_test;

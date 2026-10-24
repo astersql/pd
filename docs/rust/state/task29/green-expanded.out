@@ -1,0 +1,15 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-statistics v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.15s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics-a38d42dee5f3b32c)
+
+running 7 tests
+test hot_stat_test::state_task_29_hot_stat_interrupted_shutdown_retains_joins ... ok
+test hot_stat_test::state_task_29_hot_stat_cancel_joins_all_children ... ok
+test hot_stat_test::state_task_29_hot_stat_empty_and_registration_conflict ... ok
+test hot_stat_test::state_task_29_hot_stat_pending_snapshot_cancel_and_bucket_selection ... ok
+test hot_stat_test::state_task_29_hot_stat_full_and_abandoned_snapshot ... ok
+test hot_stat_test::state_task_29_hot_stat_unfiltered_informer_and_filter_contract ... ok
+test hot_stat_test::state_task_29_hot_stat_reports_and_isolated_snapshot ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 117 filtered out; finished in 0.00s

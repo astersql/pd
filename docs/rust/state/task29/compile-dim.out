@@ -1,0 +1,28 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-statistics v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics)
+error[E0277]: can't compare `[f64; 4]` with `[{float}; 3]`
+   --> pkg/statistics/hot_stat_test.rs:272:5
+    |
+272 | /     assert_eq!(
+273 | |         snapshot
+274 | |             .get_hot_peer_stat(RWType::READ, 7, 1)
+275 | |             .unwrap()
+276 | |             .loads,
+277 | |         [12., 3., 4.]
+278 | |     );
+    | |_____^ no implementation for `[f64; 4] == [{float}; 3]`
+    |
+    = help: the trait `PartialEq<[{float}; 3]>` is not implemented for `[f64; 4]`
+    = help: the following other types implement trait `PartialEq<Rhs>`:
+              `&[T]` implements `PartialEq<Vec<U, A>>`
+              `&[T]` implements `PartialEq<[U; N]>`
+              `&[u8; N]` implements `PartialEq<ByteStr>`
+              `&[u8; N]` implements `PartialEq<ByteString>`
+              `&[u8]` implements `PartialEq<ByteStr>`
+              `&[u8]` implements `PartialEq<ByteString>`
+              `&[u8]` implements `PartialEq<BytesMut>`
+              `&[u8]` implements `PartialEq<tokio_util::bytes::Bytes>`
+            and 29 others
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `astersql-pd-statistics` (lib test) due to 1 previous error

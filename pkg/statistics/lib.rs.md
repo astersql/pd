@@ -78,3 +78,7 @@ StoreMetricSample与显式store_collection_test。宿主传入时钟与配置，
 已加入[统计指标宿主注册与清理](metrics.rs.md)：StatisticsMetrics/HotMetricsSnapshot，
 显式metrics_test，宿主Registry、10个Go兼容family、store/region/label/hot清理与
 真实领域样本接线。HotCache用原worker执行Metrics命令和空闲GC，无新增运行时。
+
+已加入[统计容器与只读快照](hot_stat.rs.md)：HotStat、StatisticsSnapshot、
+StatisticsSnapshotError；显式hot_stat_test。真实HotCache、StoresStats、BucketWorker和
+SlowStat组合，快照实现StoreStatInformer/RegionStatInformer，统一取消并join三个worker。

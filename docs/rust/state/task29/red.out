@@ -1,0 +1,25 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-statistics v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.60s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics-a38d42dee5f3b32c)
+
+running 2 tests
+
+thread 'hot_stat_test::state_task_29_hot_stat_cancel_joins_all_children' (157966416) panicked at pkg/statistics/hot_stat_test.rs:143:5:
+assertion failed: matches!(stat.snapshot(0, vec![]).await, Err(_))
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test hot_stat_test::state_task_29_hot_stat_cancel_joins_all_children ... FAILED
+
+thread 'hot_stat_test::state_task_29_hot_stat_reports_and_isolated_snapshot' (157966417) panicked at pkg/statistics/hot_stat_test.rs:93:21:
+no entry found for key
+test hot_stat_test::state_task_29_hot_stat_reports_and_isolated_snapshot ... FAILED
+
+failures:
+
+failures:
+    hot_stat_test::state_task_29_hot_stat_cancel_joins_all_children
+    hot_stat_test::state_task_29_hot_stat_reports_and_isolated_snapshot
+
+test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 117 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-statistics --lib`

@@ -1,0 +1,137 @@
+   Compiling astersql-pd-statistics v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.51s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics-a38d42dee5f3b32c)
+
+running 124 tests
+test cpu_test::state_task_09_cpu_peer_ignores_scheduler ... ok
+test cpu_test::state_task_09_cpu_peer_go_oracle_and_missing ... ok
+test cpu_test::state_task_09_cpu_store_go_oracle ... ok
+test cpu_test::state_task_09_cpu_store_prefix_and_multiple_records ... ok
+test cpu_test::state_task_09_cpu_store_wraps_before_float_conversion ... ok
+test engine_load_test::state_task_24_engine_load_summary_ragged_history_and_no_hot_peers ... ok
+test engine_load_test::state_task_24_engine_load_zero_cpu_stddev ... ok
+test engine_load_test::state_task_24_engine_load_transfer_filter_and_removed_history ... ok
+test engine_load_test::state_task_24_engine_load_tiflash_compute_excluded ... ok
+test engine_load_test::state_task_24_engine_load_tikv_not_affected_by_compute ... ok
+test engine_load_test::state_task_24_engine_load_summary_store_infos ... ok
+test engine_load_test::state_task_24_engine_load_collectors_and_pending ... ok
+test hot_inherit_test::state_task_21_hot_inherit_partial_clone_resets_delta ... ok
+test hot_inherit_test::state_task_21_hot_inherit_lookup_and_final_miss ... ok
+test hot_expire_test::state_task_22_hot_expire_ttl_refresh_boundary_and_rollback ... ok
+test hot_peer_test::state_task_18_hot_peer_bounds_and_missing_rolling ... ok
+test hot_peer_test::state_task_18_hot_peer_cooldown_boundaries ... ok
+test hot_peer_test::state_task_18_hot_peer_cpu_last_average ... ok
+test hot_peer_test::state_task_18_hot_peer_snapshot_and_topn ... ok
+test hot_peer_test::state_task_18_hot_peer_window_full_clear_and_clone ... ok
+test hot_peer_update_test::state_task_19_hot_peer_update_denoising_action_isolation ... ok
+test hot_peer_update_test::state_task_19_hot_peer_update_heat_cold_remove ... ok
+test hot_peer_update_test::state_task_19_hot_peer_update_recovery_and_cpu ... ok
+test hot_expire_test::state_task_22_hot_expire_region_disappearance_and_threshold_recompute ... ok
+test hot_peer_update_test::state_task_19_hot_peer_update_unstable_data ... ok
+test hot_projection_test::state_task_25_hot_projection_collect_oracle ... ok
+test hot_projection_test::state_task_25_hot_projection_detail_current_rates_and_owned_values ... ok
+test hot_projection_test::state_task_25_hot_projection_empty_and_missing ... ok
+test hot_projection_test::state_task_25_hot_projection_ids_and_cold_only ... ok
+test hot_peer_update_test::state_task_19_hot_peer_update_report_intervals_and_explicit_peers ... ok
+test hot_projection_test::state_task_25_hot_projection_status_oracle_and_learner ... ok
+test hot_expire_test::state_task_22_hot_expire_removed_store_and_threshold_only_store ... ok
+test hot_stat_test::state_task_29_hot_stat_cancel_joins_all_children ... ok
+test hot_stat_test::state_task_29_hot_stat_empty_and_registration_conflict ... ok
+test hot_stat_test::state_task_29_hot_stat_interrupted_shutdown_retains_joins ... ok
+test hot_stat_test::state_task_29_hot_stat_pending_snapshot_cancel_and_bucket_selection ... ok
+test hot_stat_test::state_task_29_hot_stat_full_and_abandoned_snapshot ... ok
+test hot_stat_test::state_task_29_hot_stat_unfiltered_informer_and_filter_contract ... ok
+test hot_stat_test::state_task_29_hot_stat_reports_and_isolated_snapshot ... ok
+test hot_expire_test::state_task_22_hot_expire_missing_report_partial_window_and_isolation ... ok
+test hot_inherit_test::state_task_21_hot_inherit_replacement_preserves_window_and_isolation ... ok
+test hot_threshold_test::state_task_20_hot_threshold_clock_boundary ... ok
+test hot_worker_test::state_task_23_hot_worker_admission_cancel_shutdown_join ... ok
+test hot_worker_test::state_task_23_hot_worker_captured_fields ... ok
+test hot_threshold_test::state_task_20_hot_threshold_cpu_last_average_and_dynamic_admission ... ok
+test hot_threshold_test::state_task_20_hot_threshold_rank_replacement_remove_and_stores ... ok
+test hot_worker_test::state_task_23_hot_worker_queued_read_cold_expiry_fifo_and_owned_fields ... ok
+test hot_worker_test::state_task_23_hot_worker_fifo_partial_admission_and_snapshot_filters ... ok
+test hot_inherit_test::state_task_21_hot_inherit_write_skip_keeps_pending_window_and_dynamic_clock ... ok
+test hot_worker_test::state_task_23_hot_worker_runtime_loss_and_drop_are_not_applied ... ok
+test label_statistics_test::state_task_17_label_statistics_defunct_lifecycle ... ok
+test label_statistics_test::state_task_17_label_statistics_empty_missing_and_keys ... ok
+test hot_worker_test::state_task_23_hot_worker_read_queries_and_cold ... ok
+test load_values_test::state_task_13_load_values_go_pending_sequence ... ok
+test load_values_test::state_task_13_load_values_ieee_extrema ... ok
+test hot_worker_test::state_task_23_hot_worker_shared_host_cancel_race ... ok
+test load_values_test::state_task_13_load_values_min_max_pending_diff ... ok
+test load_values_test::state_task_13_load_values_predictions_and_snapshot_isolation ... ok
+test hot_worker_test::state_task_23_hot_worker_flow_matches_original_all_peer_counts ... ok
+test load_values_test::state_task_13_load_values_weighted_influence ... ok
+test label_statistics_test::state_task_17_label_statistics_go_case_insensitive ... ok
+test metrics_test::state_task_28_metrics_delete_cluster_status_and_global_reset ... ok
+test load_values_test::state_task_13_load_values_slice_contracts ... ok
+test label_statistics_test::state_task_17_label_statistics_go_levels_and_reobservation ... ok
+test metrics_test::state_task_28_metrics_go_reset_snapshot ... ok
+test metrics_test::state_task_28_metrics_discarded_collection_reconciles_labels ... ok
+test metrics_test::state_task_28_metrics_explicit_gc_and_reactivated_store ... ok
+test metrics_test::state_task_28_metrics_independent_registry_and_duplicate ... ok
+test hot_expire_test::state_task_22_hot_expire_cold_write_and_default_ttl ... ok
+test metrics_test::state_task_28_metrics_idle_worker_gc_and_shutdown ... ok
+test metrics_test::state_task_28_metrics_registration_rollback_and_schema ... ok
+test metrics_test::state_task_28_metrics_store_reset ... ok
+test metrics_test::state_task_28_metrics_resets ... ok
+test metrics_test::state_task_28_metrics_hot_threshold_actions_gc_and_reset ... ok
+test region_classify_test::state_task_15_region_classify_clear_query_witness ... ok
+test region_classify_test::state_task_15_region_classify_durations_and_reset ... ok
+test region_classify_test::state_task_15_region_classify_go_sequence ... ok
+test region_classify_test::state_task_15_region_classify_special_transitions_and_rule_boundary ... ok
+test metrics_test::state_task_28_metrics_real_store_collect_transfer_limit_and_recreate ... ok
+test region_classify_test::state_task_15_region_classify_thresholds_and_config ... ok
+test metrics_test::state_task_28_metrics_region_label_and_flows ... ok
+test region_placement_test::state_task_16_region_placement_go_sequence ... ok
+test region_placement_test::state_task_16_region_placement_learner_and_voter_duration ... ok
+test region_totals_test::state_task_14_region_totals_accumulation_and_wrapping ... ok
+test region_placement_test::state_task_16_region_placement_uninitialized_and_config_update ... ok
+test region_totals_test::state_task_14_region_totals_empty_uses_keys ... ok
+test region_placement_test::state_task_16_region_placement_boundary_and_rule_update ... ok
+test region_totals_test::state_task_14_region_totals_go_api_distribution ... ok
+test region_totals_test::state_task_14_region_totals_ia_cap_and_nil_leader ... ok
+test region_totals_test::state_task_14_region_totals_witness_tiflash_and_no_leader ... ok
+test region_placement_test::state_task_16_region_placement_nonlearner_roles_and_empty_rules ... ok
+test region_totals_test::state_task_14_region_totals_go_api_hot_filter ... ok
+test slow_stat_test::state_task_26_slow_stat_repeated_true_removes ... ok
+test slow_stat_test::state_task_26_slow_stat_store_and_container_isolation ... ok
+test slow_stat_test::state_task_26_slow_stat_go_event_replay ... ok
+test store_collection_test::state_task_27_store_collection_exact_clock_boundaries ... ok
+test slow_stat_test::state_task_26_slow_stat_concurrent_same_store_parity ... ok
+test store_collection_test::state_task_27_store_collection_group_config_isolation ... ok
+test store_collection_test::state_task_27_store_collection_low_space_and_removed_retention ... ok
+test store_collection_test::state_task_27_store_collection_resource_samples ... ok
+test store_history_test::state_task_12_store_history_go_loads ... ok
+test store_history_test::state_task_12_store_history_gc_does_not_readd_removed ... ok
+test store_collection_test::state_task_27_store_collection_space_predicate_and_windows ... ok
+test store_history_test::state_task_12_store_history_isolation_and_config ... ok
+test store_history_test::state_task_12_store_history_interval_wrap_and_snapshot ... ok
+test store_rolling_test::state_task_10_store_rolling_all_kinds_and_unknown ... ok
+test store_rolling_test::state_task_10_store_rolling_go_cpu_time_median ... ok
+test store_rolling_test::state_task_10_store_rolling_set_preserves_time_history ... ok
+test store_rolling_test::state_task_10_store_rolling_distinct_windows_and_recent_max ... ok
+test store_rolling_test::state_task_10_store_rolling_partial_intervals_and_median_eviction ... ok
+test store_rolling_test::state_task_10_store_rolling_unsigned_set_and_duration_wrap ... ok
+test store_rolling_test::state_task_10_store_rolling_zero_interval_and_collect_overflow ... ok
+test store_collection_test::state_task_27_store_collection_go_health_priority ... ok
+test stores_test::state_task_11_stores_creation_deletion_and_snapshots ... ok
+test stores_test::state_task_11_stores_go_filter_unhealthy ... ok
+test stores_test::state_task_11_stores_health_boundary_recovery_and_empty ... ok
+test store_collection_test::state_task_27_store_collection_go_snapshots ... ok
+test hot_inherit_test::state_task_21_hot_inherit_cache_inherit_new_flow ... ok
+test hot_inherit_test::state_task_21_hot_inherit_leader_read_write_cooldown ... ok
+test hot_inherit_test::state_task_21_hot_inherit_cold_peer_reentry_and_replica_changes ... ok
+test stores_test::state_task_11_stores_concurrent_snapshots_and_removal ... ok
+test hot_threshold_test::state_task_20_hot_threshold_go_topn_and_refresh ... ok
+test hot_threshold_test::state_task_20_hot_threshold_report_intervals ... ok
+test hot_expire_test::state_task_22_hot_expire_fixed_replica_moves_and_cold_reports ... ok
+
+test result: ok. 124 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+   Doc-tests astersql_pd_statistics
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

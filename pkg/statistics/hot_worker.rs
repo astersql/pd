@@ -21,6 +21,8 @@ use crate::{HotPeerCache, HotPeerStat};
 /// Immutable directional commands. Region metadata and load arrays are owned.
 #[derive(Clone, Debug)]
 pub enum HotTask {
+    /// Unfiltered owned peers for synchronous informer snapshots.
+    Snapshot,
     Metrics {
         active_stores: BTreeSet<u64>,
     },
@@ -122,6 +124,13 @@ impl HotPeerCache {
     /// Host-clock nanoseconds are captured at admission, not read from a global clock.
     pub fn run_task(&mut self, task: HotTask, now: i64) -> Result<HotTaskOutput, HotTaskError> {
         let actions = match task {
+            HotTask::Snapshot => {
+                let mut stats = BTreeMap::<u64, Vec<HotPeerStat>>::new();
+                for peer in self.peers.values() {
+                    stats.entry(peer.store_id).or_default().push(peer.clone());
+                }
+                return Ok(HotTaskOutput::Stats(stats));
+            }
             HotTask::Metrics { active_stores } => {
                 return Ok(HotTaskOutput::Metrics(
                     self.collect_metrics(now, &active_stores),
@@ -254,7 +263,10 @@ pub struct HotCache {
     read: mpsc::Sender<PendingTask>,
     write: mpsc::Sender<PendingTask>,
     cancel: watch::Sender<bool>,
-    workers: Option<[JoinHandle<HotPeerCache>; 2]>,
+    workers: [Option<JoinHandle<HotPeerCache>>; 2],
+    exited: [Option<HotPeerCache>; 2],
+    join_failed: bool,
+    joined: bool,
 }
 impl HotCache {
     /// Starts independent directional queues. Capacity must be nonzero.
@@ -279,7 +291,10 @@ impl HotCache {
             read,
             write,
             cancel,
-            workers: Some(workers),
+            workers: workers.map(Some),
+            exited: [None, None],
+            join_failed: false,
+            joined: false,
         }
     }
     /// Nonblocking admission. Only the returned receipt can confirm application.
@@ -385,14 +400,29 @@ impl HotCache {
     /// Repeated calls safely return None. The host runtime must remain running.
     pub async fn shutdown(&mut self) -> Result<Option<[HotPeerCache; 2]>, HotTaskError> {
         self.cancel();
-        let Some([read, write]) = self.workers.take() else {
+        if self.joined {
             return Ok(None);
-        };
-        let (read, write) = tokio::join!(read, write);
-        Ok(Some([
-            read.map_err(|_| HotTaskError::WorkerStopped)?,
-            write.map_err(|_| HotTaskError::WorkerStopped)?,
-        ]))
+        }
+        // Keep each handle until its await completes. Store completed results
+        // before the next await so dropping this future never detaches a child.
+        for i in 0..2 {
+            if let Some(worker) = self.workers[i].as_mut() {
+                match worker.await {
+                    Ok(cache) => self.exited[i] = Some(cache),
+                    Err(_) => self.join_failed = true,
+                }
+                self.workers[i].take();
+            }
+        }
+        self.joined = true;
+        if self.join_failed {
+            return Err(HotTaskError::WorkerStopped);
+        }
+        Ok(Some(
+            self.exited
+                .each_mut()
+                .map(|cache| cache.take().expect("joined cache")),
+        ))
     }
 }
 impl Drop for HotCache {

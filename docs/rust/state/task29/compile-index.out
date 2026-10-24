@@ -1,0 +1,10 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-statistics v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics)
+error[E0599]: no method named `index` found for struct `StoreLoadKind` in the current scope
+  --> pkg/statistics/hot_stat_test.rs:92:59
+   |
+92 |     assert_eq!(first.stores[&1][StoreLoadKind::READ_BYTES.index()], 10.);
+   |                                                           ^^^^^ method not found in `StoreLoadKind`
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `astersql-pd-statistics` (lib test) due to 1 previous error
