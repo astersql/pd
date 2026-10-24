@@ -1,0 +1,18 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-server-config v0.1.0 (/Users/Shared/work/dir/data/codes/pd/server/config)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.80s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_server_config-09eb9dbd29f25c39)
+
+running 7 tests
+test config_hot_update_test::config_hot_update_noop_error_and_clone_isolation ... ok
+test config_hot_update_test::config_hot_update_queued_writer_and_persist_wait_for_rollback ... ok
+test config_hot_update_test::config_hot_update_cancel_restores_before_next_writer ... ok
+test config_hot_update_test::config_hot_update_memory_publication_and_rollback ... ok
+test config_hot_update_test::config_hot_update_memory_concurrent_read_modify_persist ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63266
+test config_hot_update_test::config_hot_update_etcd_concurrent_read_modify_persist ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63265
+test config_hot_update_test::config_hot_update_etcd_publication_and_rollback ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 86 filtered out; finished in 2.79s
+

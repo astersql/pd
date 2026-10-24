@@ -217,3 +217,83 @@ fn check_shape(base: &Value, patch: &Value) -> Result<(), String> {
     }
     Ok(())
 }
+
+/// Host-owned hot configuration. All mutations and full persistence share one lock;
+/// readers capture an immutable generation without waiting for storage I/O.
+pub struct HotConfig {
+    active: std::sync::RwLock<std::sync::Arc<PersistedConfig>>,
+    writer: tokio::sync::Mutex<()>,
+    endpoint: StorageEndpoint,
+    paths: ClusterPaths,
+}
+impl HotConfig {
+    /// Bind a configuration owner to its existing storage endpoint and cluster.
+    pub fn new(config: PersistedConfig, endpoint: StorageEndpoint, paths: ClusterPaths) -> Self {
+        Self {
+            active: std::sync::RwLock::new(std::sync::Arc::new(config)),
+            writer: tokio::sync::Mutex::new(()),
+            endpoint,
+            paths,
+        }
+    }
+    /// Capture one generation, including a candidate while persistence is pending.
+    pub fn snapshot(&self) -> std::sync::Arc<PersistedConfig> {
+        self.active.read().unwrap().clone()
+    }
+    /// Serialize a read-modify-publish-persist transaction. The callback receives
+    /// immutable current values and a detached next value. False skips publication.
+    pub async fn update_schedule(
+        &self,
+        update: impl FnOnce(
+            &astersql_pd_schedule_config::ScheduleConfig,
+            &mut astersql_pd_schedule_config::ScheduleConfig,
+        ) -> Result<bool, ConfigPersistenceError>,
+    ) -> Result<(), ConfigPersistenceError> {
+        let _writer = self.writer.lock().await;
+        let current = self.snapshot();
+        let mut next = (*current).clone();
+        if !update(&current.config.schedule, &mut next.config.schedule)? {
+            return Ok(());
+        }
+        let next = std::sync::Arc::new(next);
+        *self.active.write().unwrap() = next.clone();
+        // Drop order matters: restore before releasing the writer lock, including
+        // when the caller drops a pending future. An ambiguous backend failure
+        // is returned without retry; storage may still have committed.
+        let mut rollback = ScheduleRollback {
+            owner: self,
+            previous: Some(current),
+        };
+        next.persist(&self.endpoint, &self.paths).await?;
+        rollback.previous = None;
+        Ok(())
+    }
+    /// Serialize an in-memory helper with all schedule transactions.
+    pub async fn mutate_schedule(
+        &self,
+        update: impl FnOnce(&mut astersql_pd_schedule_config::ScheduleConfig),
+    ) {
+        let _writer = self.writer.lock().await;
+        let mut next = (*self.snapshot()).clone();
+        update(&mut next.config.schedule);
+        *self.active.write().unwrap() = std::sync::Arc::new(next);
+    }
+    /// Save a full dynamic snapshot under the same transaction lock.
+    pub async fn persist(&self) -> Result<(), ConfigPersistenceError> {
+        let _writer = self.writer.lock().await;
+        self.snapshot().persist(&self.endpoint, &self.paths).await
+    }
+}
+
+// This guard is created after publication and before the first I/O await.
+struct ScheduleRollback<'a> {
+    owner: &'a HotConfig,
+    previous: Option<std::sync::Arc<PersistedConfig>>,
+}
+impl Drop for ScheduleRollback<'_> {
+    fn drop(&mut self) {
+        if let Some(previous) = self.previous.take() {
+            *self.owner.active.write().unwrap() = previous;
+        }
+    }
+}

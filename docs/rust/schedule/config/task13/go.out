@@ -1,0 +1,30 @@
+{
+  "sha256": "4537466d65d253b1e291cacecf53faee14117386e8f2c5ff7b380108e49cc268",
+  "concurrent_active_and_stored": {
+    "max-snapshot-count": 99,
+    "max-pending-peer-count": 88,
+    "leader-schedule-limit": 7,
+    "region-schedule-limit": 13
+  },
+  "alarm": {
+    "header": {
+      "cluster_id": "15674009460217235928",
+      "member_id": "3474484975246189105",
+      "revision": "44",
+      "raft_term": "2"
+    },
+    "alarms": [
+      {
+        "alarm": "NOSPACE"
+      }
+    ]
+  },
+  "failed_update": {
+    "exit": 1,
+    "stdout": "",
+    "stderr": "wget: server returned error: HTTP/1.1 500 Internal Server Error\n"
+  },
+  "rollback_active_equal": true,
+  "rollback_stored_equal": true,
+  "subsequent_update": 101
+}

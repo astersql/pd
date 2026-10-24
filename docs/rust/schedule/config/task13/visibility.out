@@ -1,0 +1,105 @@
+Type 'help' for list of commands.
+(dlv) COMMAND break main.main
+Breakpoint 1 set at 0x280c840 for main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:58
+(dlv) COMMAND continue
+> [Breakpoint 1] main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:58 (hits goroutine(1):1 total:1) (PC: 0x280c840)
+(dlv) COMMAND config max-variable-recurse 2
+(dlv) COMMAND config max-string-len 256
+(dlv) COMMAND break persist_options.go:122
+Breakpoint 2 set at 0x243875c for github.com/tikv/pd/server/config.(*PersistOptions).UpdateScheduleConfig() .Users/Shared/work/dir/data/codes/pd/server/config/persist_options.go:122
+(dlv) COMMAND continue
+> [Breakpoint 2] github.com/tikv/pd/server/config.(*PersistOptions).UpdateScheduleConfig() .Users/Shared/work/dir/data/codes/pd/server/config/persist_options.go:122 (hits goroutine(506):1 total:1) (PC: 0x243875c)
+(dlv) COMMAND print current.MaxSnapshotCount
+64
+(dlv) COMMAND print next.MaxSnapshotCount
+102
+(dlv) COMMAND next
+> github.com/tikv/pd/server/config.(*PersistOptions).UpdateScheduleConfig() .Users/Shared/work/dir/data/codes/pd/server/config/persist_options.go:123 (PC: 0x2438768)
+(dlv) COMMAND print o.schedule.v
+interface {}(*github.com/tikv/pd/pkg/schedule/config.ScheduleConfig) *{
+	MaxSnapshotCount: 102,
+	MaxPendingPeerCount: 64,
+	MaxMergeRegionSize: 54,
+	MaxMergeRegionKeys: 0,
+	SplitMergeInterval: github.com/tikv/pd/pkg/utils/typeutil.Duration {Duration: github.com/tikv/pd/pkg/schedule/config.defaultSwitchWitnessInterval (3600000000000)},
+	SwitchWitnessInterval: github.com/tikv/pd/pkg/utils/typeutil.Duration {Duration: github.com/tikv/pd/pkg/schedule/config.defaultSwitchWitnessInterval (3600000000000)},
+	EnableOneWayMerge: false,
+	EnableCrossTableMerge: true,
+	PatrolRegionInterval: github.com/tikv/pd/pkg/utils/typeutil.Duration {Duration: github.com/tikv/pd/pkg/schedule/schedulers.MinScheduleInterval (10000000)},
+	MaxStoreDownTime: github.com/tikv/pd/pkg/utils/typeutil.Duration {Duration: github.com/tikv/pd/pkg/schedule/checker.splitScatterPendingTTL (1800000000000)},
+	MaxStorePreparingTime: github.com/tikv/pd/pkg/utils/typeutil.Duration {Duration: github.com/tikv/pd/pkg/schedule/config.defaultMaxStorePreparingTime (172800000000000)},
+	LeaderScheduleLimit: 4,
+	LeaderSchedulePolicy: "count",
+	RegionScheduleLimit: 2048,
+	WitnessScheduleLimit: 4,
+	ReplicaScheduleLimit: 64,
+	MergeScheduleLimit: 8,
+	HotRegionScheduleLimit: 4,
+	AffinityScheduleLimit: 0,
+	SplitScatterScheduleLimit: 4,
+	HotRegionCacheHitsThreshold: 3,
+	StoreBalanceRate: 0,
+	DefaultStoreLimit: github.com/tikv/pd/pkg/schedule/config.StoreLimitConfig {AddPeer: 15, RemovePeer: 15, TransferLeaderIn: 100000000},
+	StoreLimit: map[uint64]github.com/tikv/pd/pkg/schedule/config.StoreLimitConfig [],
+	TolerantSizeRatio: 0,
+	LowSpaceRatio: 0.8,
+	HighSpaceRatio: 0.7,
+	RegionScoreFormulaVersion: "v2",
+	SchedulerMaxWaitingOperator: 5,
+	DisableLearner: false,
+	DisableRemoveDownReplica: false,
+	DisableReplaceOfflineReplica: false,
+	DisableMakeUpReplica: false,
+	DisableRemoveExtraReplica: false,
+	DisableLocationReplacement: false,
+	EnableRemoveDownReplica: true,
+	EnableReplaceOfflineReplica: true,
+	EnableMakeUpReplica: true,
+	EnableRemoveExtraReplica: true,
+	EnableLocationReplacement: true,
+	EnableDebugMetrics: false,
+	EnableJointConsensus: true,
+	EnableTiKVSplitRegion: true,
+	EnableHeartbeatBreakdownMetrics: true,
+	EnableHeartbeatConcurrentRunner: true,
+	Schedulers: github.com/tikv/pd/pkg/schedule/config.SchedulerConfigs len: 5, cap: 5, [
+		{
+			Type: "balance-region",
+			Args: []string len: 0, cap: 0, nil,
+			Disable: false,
+			ArgsPayload: "",},
+		{
+			Type: "balance-leader",
+			Args: []string len: 0, cap: 0, nil,
+			Disable: false,
+			ArgsPayload: "",},
+		{
+			Type: "hot-region",
+			Args: []string len: 0, cap: 0, nil,
+			Disable: false,
+			ArgsPayload: "",},
+		{
+			Type: "evict-slow-store",
+			Args: []string len: 0, cap: 0, nil,
+			Disable: false,
+			ArgsPayload: "",},
+		{
+			Type: "evict-stopping-store",
+			Args: []string len: 0, cap: 0, nil,
+			Disable: false,
+			ArgsPayload: "",},
+	],
+	HotRegionsWriteInterval: github.com/tikv/pd/pkg/utils/typeutil.Duration {Duration: github.com/tikv/pd/pkg/schedule/operator.operatorStatusRemainTime (600000000000)},
+	HotRegionsReservedDays: 7,
+	MaxMovableHotPeerSize: 512,
+	EnableDiagnostic: true,
+	EnableWitness: false,
+	SlowStoreEvictingAffectedStoreRatioThreshold: 0.3,
+	StoreLimitVersion: "v1",
+	HaltScheduling: false,
+	PatrolRegionWorkerCount: 1,
+	MaxAffinityMergeRegionSize: 256,}
+(dlv) COMMAND clearall
+Breakpoint 2 cleared at 0x243875c for github.com/tikv/pd/server/config.(*PersistOptions).UpdateScheduleConfig() .Users/Shared/work/dir/data/codes/pd/server/config/persist_options.go:122
+Breakpoint 1 cleared at 0x280c840 for main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:58
+(dlv) 

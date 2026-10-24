@@ -1,0 +1,50 @@
+Initial validation before sharing the fixture module. Full final validation is in validation.out.
+test replication_config_test::replication_config_normalize_and_preserve_mode ... ok
+test replication_config_test::replication_config_existing_go_json_bytes ... ok
+test replication_config_test::replication_config_toml_dr_values ... ok
+test config_hot_update_test::config_hot_update_memory_concurrent_read_modify_persist ... ok
+test nested_config_test::nested_config_go_raw_nested_bytes ... ok
+test nested_config_test::nested_config_go_captured_values_and_errors ... ok
+test nested_config_test::nested_config_go_full_json_decode ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63766
+panic: failed to create WAL
+
+goroutine 1 [running]:
+go.uber.org/zap/zapcore.CheckWriteAction.OnWrite(0xc0?, 0x1?, {0x0?, 0x0?, 0x0?})
+	/Users/xiangmin/go/pkg/mod/go.uber.org/zap@v1.27.0/zapcore/entry.go:196 +0x74
+go.uber.org/zap/zapcore.(*CheckedEntry).Write(0x3d4cc72845b0, {0x3d4cc71cd2c0, 0x1, 0x1})
+	/Users/xiangmin/go/pkg/mod/go.uber.org/zap@v1.27.0/zapcore/entry.go:262 +0x1a8
+go.uber.org/zap.(*Logger).Panic(0x3d4cc728c700?, {0x101289d20?, 0x5d?}, {0x3d4cc71cd2c0, 0x1, 0x1test config_persist_test::config_persist_etcd_reload_and_roundtrip ... ok
+})
+	/Users/xiangmin/go/pkg/mod/go.uber.org/zap@v1.27.0/logger.go:285 +0x4c
+go.etcd.io/etcd/server/v3/etcdserver.startNode({{0x10127ae32, 0x7}, {0x0, 0x0}, {0x0, 0x0}, {0x3d4cc6fb8510, 0x1, 0x1}, {0x3d4cc6fb85a0, ...}, ...}, ...)
+	/Users/xiangmin/go/pkg/mod/go.etcd.io/etcd/server/v3@v3.5.15/etcdserver/raft.go:480 +0x1a8
+go.etcd.io/etcd/server/v3/etcdserver.NewServer({{0x10127ae32, 0x7}, {0x0, 0x0}, {0x0, 0x0}, {0x3d4cc6fb8510, 0x1, 0x1}, {0x3d4cc6fb85a0, ...}, ...})
+	/Users/xiangmin/go/pkg/mod/go.etcd.io/etcd/server/v3@v3.5.15/etcdserver/server.go:469 +0x1bd4
+go.etcd.io/etcd/server/v3/embed.StartEtcd(0x3d4cc71e6608)
+	/Users/xiangmin/go/pkg/mod/go.etcd.io/etcd/server/v3@v3.5.15/embed/etcd.go:247 +0xd5c
+main.main.func2(...)
+	/Users/Shared/work/dir/data/codes/pd/scripts/rust-etcd-fixture/main.go:53
+main.main()
+	/Users/Shared/work/dir/data/codes/pd/scripts/rust-etcd-fixture/main.go:73 +0x3d4
+test config_hot_update_test::config_hot_update_etcd_publication_and_rollback ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63768
+test config_hot_update_test::config_hot_update_etcd_concurrent_read_modify_persist ... ok
+test config_persist_test::config_persist_etcd_restart_and_backend_errors ... FAILED
+
+failures:
+
+---- config_persist_test::config_persist_etcd_restart_and_backend_errors stdout ----
+
+thread 'config_persist_test::config_persist_etcd_restart_and_backend_errors' (155116837) panicked at server/config/../../pkg/storage/kv/etcd_fixture_test.rs:69:13:
+etcd fixture exited: /Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/etcd-contract-99176-1
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    config_persist_test::config_persist_etcd_restart_and_backend_errors
+
+test result: FAILED. 92 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.19s
+
+error: test failed, to rerun pass `-p astersql-pd-server-config --lib`
+EXIT_CODE: 101

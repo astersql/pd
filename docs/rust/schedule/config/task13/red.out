@@ -1,0 +1,26 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-server-config v0.1.0 (/Users/Shared/work/dir/data/codes/pd/server/config)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.42s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_server_config-09eb9dbd29f25c39)
+
+running 2 tests
+
+thread 'config_hot_update_test::config_hot_update_memory_publication_and_rollback' (155105165) panicked at server/config/config_hot_update_test.rs:69:5:
+failed persistence must restore the original generation
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test config_hot_update_test::config_hot_update_memory_publication_and_rollback ... FAILED
+isolated etcd 3.5.15 ready at http://127.0.0.1:62686
+
+thread 'config_hot_update_test::config_hot_update_etcd_publication_and_rollback' (155105164) panicked at server/config/config_hot_update_test.rs:69:5:
+failed persistence must restore the original generation
+test config_hot_update_test::config_hot_update_etcd_publication_and_rollback ... FAILED
+
+failures:
+
+failures:
+    config_hot_update_test::config_hot_update_etcd_publication_and_rollback
+    config_hot_update_test::config_hot_update_memory_publication_and_rollback
+
+test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 86 filtered out; finished in 5.81s
+
+error: test failed, to rerun pass `-p astersql-pd-server-config --lib`

@@ -90,7 +90,7 @@ async fn config_persist_memory_reload_upgrade() {
 
 #[allow(dead_code)]
 #[path = "../../pkg/storage/kv/etcd_fixture_test.rs"]
-mod fixture;
+pub(super) mod fixture;
 
 async fn roundtrip(store: Arc<dyn MetaStore>) {
     let endpoint = StorageEndpoint::new(store.clone());

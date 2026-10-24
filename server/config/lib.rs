@@ -85,3 +85,6 @@ mod persist_schedule;
 pub use persist_schedule::*;
 #[cfg(test)]
 mod config_persist_test;
+
+#[cfg(test)]
+mod config_hot_update_test;
