@@ -1,0 +1,77 @@
+Type 'help' for list of commands.
+Breakpoint 1 set at 0x280c840 for main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:58
+> [Breakpoint 1] main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:58 (hits goroutine(1):1 total:1) (PC: 0x280c840)
+[]github.com/tikv/pd/pkg/schedule/types.CheckerSchedulerType len: 5, cap: 8, [
+	"balance-leader-scheduler",
+	"balance-region-scheduler",
+	"balance-hot-region-scheduler",
+	"evict-slow-store-scheduler",
+	"evict-stopping-store-scheduler",
+]
+map[string]github.com/tikv/pd/pkg/schedule/types.CheckerSchedulerType [
+	"evict-leader-scheduler": "evict-leader-scheduler",
+	"evict-slow-store-scheduler": "evict-slow-store-scheduler",
+	"evict-stopping-store-scheduler": "evict-stopping-store-scheduler",
+	"random-merge-scheduler": "random-merge-scheduler",
+	"scatter-range-scheduler": "scatter-range-scheduler",
+	"scatter-range": "scatter-range-scheduler",
+	"transfer-witness-leader-scheduler": "transfer-witness-leader-scheduler",
+	"label-scheduler": "label-scheduler",
+	"balance-leader-scheduler": "balance-leader-scheduler",
+	"balance-witness-scheduler": "balance-witness-scheduler",
+	"evict-slow-trend-scheduler": "evict-slow-trend-scheduler",
+	"shuffle-hot-region-scheduler": "shuffle-hot-region-scheduler",
+	"shuffle-leader-scheduler": "shuffle-leader-scheduler",
+	"shuffle-region-scheduler": "shuffle-region-scheduler",
+	"balance-range-scheduler": "balance-range-scheduler",
+	"balance-region-scheduler": "balance-region-scheduler",
+	"grant-leader-scheduler": "grant-leader-scheduler",
+	"grant-hot-region-scheduler": "grant-hot-region-scheduler",
+	"balance-hot-region-scheduler": "balance-hot-region-scheduler",
+]
+map[string]github.com/tikv/pd/pkg/schedule/types.CheckerSchedulerType [
+	"shuffle-leader": "shuffle-leader-scheduler",
+	"balance-witness": "balance-witness-scheduler",
+	"hot-region": "balance-hot-region-scheduler",
+	"transfer-witness-leader": "transfer-witness-leader-scheduler",
+	"label": "label-scheduler",
+	"balance-range": "balance-range-scheduler",
+	"balance-region": "balance-region-scheduler",
+	"evict-slow-store": "evict-slow-store-scheduler",
+	"evict-slow-trend": "evict-slow-trend-scheduler",
+	"evict-stopping-store": "evict-stopping-store-scheduler",
+	"grant-hot-region": "grant-hot-region-scheduler",
+	"random-merge": "random-merge-scheduler",
+	"shuffle-hot-region": "shuffle-hot-region-scheduler",
+	"shuffle-region": "shuffle-region-scheduler",
+	"balance-leader": "balance-leader-scheduler",
+	"evict-leader": "evict-leader-scheduler",
+	"grant-leader": "grant-leader-scheduler",
+	"scatter-range": "scatter-range-scheduler",
+]
+map[github.com/tikv/pd/pkg/schedule/types.CheckerSchedulerType]string [
+	"evict-slow-store-scheduler": "evict-slow-store",
+	"shuffle-hot-region-scheduler": "shuffle-hot-region",
+	"transfer-witness-leader-scheduler": "transfer-witness-leader",
+	"evict-leader-scheduler": "evict-leader",
+	"evict-slow-trend-scheduler": "evict-slow-trend",
+	"evict-stopping-store-scheduler": "evict-stopping-store",
+	"balance-hot-region-scheduler": "hot-region",
+	"random-merge-scheduler": "random-merge",
+	"label-scheduler": "label",
+	"balance-range-scheduler": "balance-range",
+	"balance-leader-scheduler": "balance-leader",
+	"balance-region-scheduler": "balance-region",
+	"shuffle-leader-scheduler": "shuffle-leader",
+	"balance-witness-scheduler": "balance-witness",
+	"grant-leader-scheduler": "grant-leader",
+	"grant-hot-region-scheduler": "grant-hot-region",
+	"scatter-range-scheduler": "scatter-range",
+	"shuffle-region-scheduler": "shuffle-region",
+]
+/oracle/dlv-runtime:9: key not found
+/oracle/dlv-runtime:10: key not found
+/oracle/dlv-runtime:11: key not found
+/oracle/dlv-runtime:12: key not found
+/oracle/dlv-runtime:13: key not found
+"scatter-range-scheduler"

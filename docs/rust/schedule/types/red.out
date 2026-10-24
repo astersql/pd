@@ -1,0 +1,22 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.02s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_types-5b8f4210ff04d56e)
+
+running 1 test
+
+thread 'types_contract_test::types_contract_kernel_defaults' (154476589) panicked at pkg/schedule/types/types_contract_test.rs:7:5:
+assertion `left == right` failed
+  left: []
+ right: ["balance-leader-scheduler", "balance-region-scheduler", "balance-hot-region-scheduler", "evict-slow-store-scheduler", "evict-stopping-store-scheduler"]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test types_contract_test::types_contract_kernel_defaults ... FAILED
+
+failures:
+
+failures:
+    types_contract_test::types_contract_kernel_defaults
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-types --lib`
+EXIT=101

@@ -1,0 +1,57 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+ACTION=metadata EXIT=0
+ACTION=fmt EXIT=0
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.05s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_types-aa532b8eb4562c82)
+
+running 5 tests
+test types_contract_test::types_contract_checker_constants_and_strings ... ok
+test types_contract_test::types_contract_unknown_strings_are_preserved_not_classified ... ok
+test types_contract_test::types_contract_legacy_and_scatter_alias_boundaries ... ok
+test types_contract_test::types_contract_kernel_defaults ... ok
+test types_contract_test::types_contract_runtime_conversion_maps ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+ACTION=focus EXIT=0
+   Compiling astersql-pd-schedule-types v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/types)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.28s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_types-aa532b8eb4562c82)
+
+running 5 tests
+test types_contract_test::types_contract_legacy_and_scatter_alias_boundaries ... ok
+test types_contract_test::types_contract_checker_constants_and_strings ... ok
+test types_contract_test::types_contract_unknown_strings_are_preserved_not_classified ... ok
+test types_contract_test::types_contract_kernel_defaults ... ok
+test types_contract_test::types_contract_runtime_conversion_maps ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_schedule_types
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+ACTION=crate EXIT=0
+astersql-pd-schedule-types v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/types)
+└── astersql-pd-kerneltype v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/versioninfo/kerneltype)
+[dev-dependencies]
+└── serde_json v1.0.145
+    ├── itoa v1.0.18
+    ├── memchr v2.8.3
+    ├── ryu v1.0.23
+    └── serde_core v1.0.229
+ACTION=tree EXIT=0
+    Checking astersql-pd-schedule-types v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/types)
+warning: use of deprecated field `astersql_pd_proto::pdpb::RegionHeartbeatRequest::cpu_usage`
+   --> pkg/server/core_region_adapter.rs:134:30
+    |
+134 |     r.set_response_cpu_usage(p.cpu_usage);
+    |                              ^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: `astersql-pd-server` (lib) generated 1 warning
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.44s
+ACTION=check EXIT=0

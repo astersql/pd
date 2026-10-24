@@ -1,0 +1,221 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+warning: use of deprecated field `astersql_pd_proto::pdpb::RegionHeartbeatRequest::cpu_usage`
+warning: `astersql-pd-server` (lib) generated 1 warning
+warning: use of deprecated field `astersql_pd_proto::pdpb::RegionHeartbeatRequest::cpu_usage`
+warning: `astersql-pd-server` (lib test) generated 2 warnings (1 duplicate)
+     Running unittests pkg/lib.rs (target/rust-slot-2/debug/deps/astersql_pd-b4f8677f87a4e38a)
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_balancer-2b4a90ef22198dfa)
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_btree-e8b849aefbddd8e1)
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.28s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_cache-5b73eb89b75b127b)
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_cmd_pd_server-aee8727b0ba8caa8)
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.74s
+     Running unittests bin_main.rs (target/rust-slot-2/debug/deps/pd_server-4f47a9f723de1db4)
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_codec-ef31fa85b3d7cbad)
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_compat_tests-2d1a9479ab8cbacc)
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running health_member_test.rs (target/rust-slot-2/debug/deps/health_member-0f62ac08736fdbec)
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.24s
+     Running tso_test.rs (target/rust-slot-2/debug/deps/tso-58790fba46981b32)
+test tso_processes ... ignored, requires Go/Rust process binaries; run scripts/run-pd-compat.sh
+test result: ok. 0 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_configutil-85c3137e46504819)
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_core-f75d13634a223c2d)
+test result: ok. 160 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+     Running unittests kind.rs (target/rust-slot-2/debug/deps/astersql_pd_core_constant-9ecdb4a21559637c)
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_election-29a01eeb0934e411)
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 12.32s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_encryption-901a69c2281c9589)
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_errs-e429f02db16c1b90)
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_etcdutil-f46aadaee21b482a)
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 9.52s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_grpcutil-408f27123d98e533)
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_id-522d8bc03720f60b)
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 4.72s
+     Running etcd_behavior_test.rs (target/rust-slot-2/debug/deps/etcd_behavior-d51890af520aab4d)
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.35s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_jsonutil-9183623d0a1734c1)
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_kerneltype-244aaf9ef19a655c)
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_keypath-041a3051b85eb517)
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_keyspace_constant-0592fae75f4857a2)
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_keyutil-8e0cc28578b386fe)
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_logutil-1818a768b8b5a020)
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_mcs_constant-e401ddffaf41d90b)
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_member-98ecb1f42f89b796)
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.85s
+     Running etcd_behavior_test.rs (target/rust-slot-2/debug/deps/etcd_behavior-50f240a5164d8cb5)
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 4.86s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_metering_config-11be5f03214fb44f)
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_metricutil-cfa905f37790024b)
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_movingaverage-6dd462f965154c63)
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_proto-66c99b0720ac04ed)
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_raft_prototype-a0081436f8c5a5de)
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_rangetree-cbe3d6318504198d)
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_ratelimit-e525d2c27bc138df)
+test result: ok. 29 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_reflectutil-8b1147fa0c5d5647)
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_response-045df2c33a04adf5)
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_rm_server-52e2db6d6b31053d)
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_runtime-4e2fbee33514b4da)
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.91s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_schedule_config-2192c719ea443bb9)
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_schedule_types-bba7715c748a3d4c)
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_server-af4531ed89786f79)
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running server_test.rs (target/rust-slot-2/debug/deps/server-de0efa26a346d796)
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.76s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_server_config-4caa0c7dca1ba537)
+test result: ok. 79 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_slice-1f39b3cf152c8147)
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_storage-227926d69e70ae6d)
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.53s
+     Running kv/etcd_store_test.rs (target/rust-slot-2/debug/deps/etcd_contract-999fa55ba2851929)
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 10.53s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_storage_endpoint-df00c299dc086364)
+test result: ok. 103 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 27.10s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_storage_kv-2049f5823e531cf2)
+test result: ok. 30 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 6.56s
+     Running etcd_store_test.rs (target/rust-slot-2/debug/deps/etcd_contract-4485a081d13338f5)
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 10.34s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_storelimit-1f8073a62199dbfb)
+test result: ok. 21 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_syncutil-b99436bd85d86c91)
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_timerutil-37f9a13599cc7777)
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_tso-158b5fae92c2de0b)
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running etcd_behavior_test.rs (target/rust-slot-2/debug/deps/etcd_behavior-3a5388bd2d181f2c)
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 4.90s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_typeutil-4bf759f994a91fc5)
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running unittests window.rs (target/rust-slot-2/debug/deps/astersql_pd_window-286a8925e6608fa1)
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+   Doc-tests astersql_pd
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_balancer
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_btree
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_cache
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_cmd_pd_server
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_codec
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_compat_tests
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_configutil
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_core
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_core_constant
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_election
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_encryption
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_errs
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_etcdutil
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_grpcutil
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_id
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_jsonutil
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_kerneltype
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_keypath
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_keyspace_constant
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_keyutil
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_logutil
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_mcs_constant
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_member
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_metering_config
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_metricutil
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_movingaverage
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_proto
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_raft_prototype
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_rangetree
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_ratelimit
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_reflectutil
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_response
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_rm_server
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_runtime
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_schedule_config
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_schedule_types
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_server
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_server_config
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_slice
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_storage
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_storage_endpoint
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_storage_kv
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_storelimit
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_syncutil
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.13s
+   Doc-tests astersql_pd_timerutil
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_tso
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_typeutil
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+   Doc-tests astersql_pd_window
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+EXIT=0

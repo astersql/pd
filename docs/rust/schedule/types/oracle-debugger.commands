@@ -1,0 +1,15 @@
+break main.main
+continue
+config max-string-len 256
+config max-array-values 128
+print "github.com/tikv/pd/pkg/schedule/types".DefaultSchedulers
+print "github.com/tikv/pd/pkg/schedule/types".StringToSchedulerType
+print "github.com/tikv/pd/pkg/schedule/types".ConvertOldStrToType
+print "github.com/tikv/pd/pkg/schedule/types".SchedulerTypeCompatibleMap
+print "github.com/tikv/pd/pkg/schedule/types".StringToSchedulerType[""]
+print "github.com/tikv/pd/pkg/schedule/types".StringToSchedulerType["unknown"]
+print "github.com/tikv/pd/pkg/schedule/types".StringToSchedulerType["BALANCE-LEADER-SCHEDULER"]
+print "github.com/tikv/pd/pkg/schedule/types".StringToSchedulerType["joint-state-checker"]
+print "github.com/tikv/pd/pkg/schedule/types".StringToSchedulerType["balance-leader"]
+print "github.com/tikv/pd/pkg/schedule/types".StringToSchedulerType["scatter-range"]
+exit
