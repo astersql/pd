@@ -26,3 +26,10 @@ pub use bucket_degree::{MAX_HOT_DEGREE, MIN_HOT_DEGREE};
 #[cfg(test)]
 #[path = "bucket_degree_test.rs"]
 mod bucket_degree_test;
+
+mod bucket_worker;
+pub use bucket_worker::*;
+
+#[cfg(test)]
+#[path = "bucket_worker_test.rs"]
+mod bucket_worker_test;

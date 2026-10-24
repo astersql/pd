@@ -276,3 +276,18 @@ fn remove_scan_and_adjacent() {
     assert_eq!(scanned, vec![item(b"", b"")]);
     assert_eq!(all.get_adjacent_item(&item(b"", b"x")), (None, None));
 }
+
+#[test]
+fn owned_range_tree_can_move_to_host_worker() {
+    fn assert_send<T: Send>() {}
+    assert_send::<RangeTree<Item>>();
+    let mut tree = RangeTree::with_factory(2, debris);
+    tree.update(item(b"10", b"30"));
+    let result = std::thread::spawn(move || {
+        tree.update(item(b"20", b"30"));
+        tree.len()
+    })
+    .join()
+    .unwrap();
+    assert_eq!(result, 2);
+}

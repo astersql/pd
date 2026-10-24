@@ -1,0 +1,34 @@
+COMMAND: git rev-parse HEAD
+93ec851ae214d473c63e910af0a52fbf4b7256b6
+EXIT=0
+COMMAND: git diff 69ba16e6d47dfe59a21498c21641e1c1eaa726e0 -- pkg/statistics/buckets/*.go
+EXIT=0
+COMMAND: rg -n failpoint|TestMain|go:generate pkg/statistics/buckets pkg/core/rangetree
+pkg/core/rangetree/range_tree_test.go:25:func TestMain(m *testing.M) {
+pkg/core/rangetree/range_tree_test.go:26:	goleak.VerifyTestMain(m)
+pkg/statistics/buckets/hot_bucket_cache_test.go:27:func TestMain(m *testing.M) {
+pkg/statistics/buckets/hot_bucket_cache_test.go:28:	goleak.VerifyTestMain(m)
+EXIT=0
+COMMAND: rg -n Command::new|current_dir|OUT_DIR|extract pkg/proto/build.rs
+14:    let output = Command::new("go")
+21:        .current_dir(manifest.join("../.."))
+38:    let out = PathBuf::from(env::var_os("OUT_DIR").unwrap());
+45:        .extract(&source)
+EXIT=0
+COMMAND: rg -n go|CARGO_TARGET_DIR|Command::new|kill|wait|drop pkg/storage/kv/etcd_fixture_test.rs
+28:            std::env::var_os("CARGO_TARGET_DIR")
+29:                .expect("claim Cargo shared slot and set absolute CARGO_TARGET_DIR first"),
+34:            let status = Command::new("go")
+50:        let child = Command::new(binary)
+62:        fixture.wait_file("ready");
+66:    fn wait_file(&mut self, name: &str) {
+70:                self.child.try_wait().unwrap().is_none(),
+80:        self.wait_file(acknowledgement);
+84:            .await
+89:    fn drop(&mut self) {
+90:        drop(self.child.stdin.take()); // EOF requests graceful shutdown, including on test panic.
+92:        while matches!(self.child.try_wait(), Ok(None)) && Instant::now() < deadline {
+95:        if matches!(self.child.try_wait(), Ok(None)) {
+96:            let _ = self.child.kill();
+98:        let _ = self.child.wait();
+EXIT=0

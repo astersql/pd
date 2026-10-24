@@ -1,0 +1,5 @@
+Validation wrapper exit=0
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+No state08 owners remain; own slot lock released.
+No slot-1 artifact processes remain.
+Cache retained.

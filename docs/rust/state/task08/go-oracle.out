@@ -1,0 +1,6 @@
+=== RUN   TestCheckBucketsTask
+--- PASS: TestCheckBucketsTask (0.04s)
+=== RUN   TestCollectBucketStatsTask
+--- PASS: TestCollectBucketStatsTask (0.02s)
+PASS
+ok  	github.com/tikv/pd/pkg/statistics/buckets	0.597s

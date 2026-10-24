@@ -12,6 +12,10 @@ path = "lib.rs"
 astersql-pd-rangetree.workspace = true
 astersql-pd-keyutil.workspace = true
 astersql-pd-statistics-utils.workspace = true
+tokio.workspace = true
+tokio-util.workspace = true
+prometheus.workspace = true
+thiserror.workspace = true
 
 [dev-dependencies]
 serde_json.workspace = true

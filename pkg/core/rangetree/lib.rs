@@ -20,7 +20,7 @@ pub struct RangeTree<T> {
 }
 
 /// Produces remaining pieces of an old range when a new range covers it.
-pub type DebrisFactory<T> = dyn FnMut(&[u8], &[u8], &T) -> Vec<T>;
+pub type DebrisFactory<T> = dyn FnMut(&[u8], &[u8], &T) -> Vec<T> + Send;
 
 impl<T: RangeItem> RangeTree<T> {
     /// Creates an empty tree whose updates discard overlapping ranges entirely.
@@ -31,10 +31,11 @@ impl<T: RangeItem> RangeTree<T> {
 
     /// Creates an empty tree with a factory for preserving old range fragments.
     /// The factory receives the new start/end and each overlapping old item.
+    /// It must be Send so an owned index can move into a host runtime task.
     /// Panics when `degree` is less than two.
     pub fn with_factory(
         degree: usize,
-        factory: impl FnMut(&[u8], &[u8], &T) -> Vec<T> + 'static,
+        factory: impl FnMut(&[u8], &[u8], &T) -> Vec<T> + Send + 'static,
     ) -> Self {
         Self {
             tree: BTree::new(degree, T::less),

@@ -1,0 +1,24 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+     Locking 0 packages to highest Rust 1.85 compatible versions
+note: pass `--verbose` to see 27 unchanged dependencies behind latest
+   Compiling astersql-pd-statistics-buckets v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics/buckets)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.70s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics_buckets-626ecb3ac3302112)
+
+running 10 tests
+
+thread 'bucket_worker_test::state_task_08_bucket_worker_panic_propagates_and_unblocks' (157036867) panicked at pkg/statistics/buckets/bucket_values.rs:60:5:
+bucket report requires at least one key
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test bucket_worker_test::state_task_08_bucket_worker_shutdown_wait_is_cancel_safe ... ok
+test bucket_worker_test::state_task_08_bucket_worker_duplicate_registry_no_spawn ... ok
+test bucket_worker_test::state_task_08_bucket_worker_cancel_wait_and_drop_reply ... ok
+test bucket_worker_test::state_task_08_bucket_worker_parent_cancel_and_drop ... ok
+test bucket_worker_test::state_task_08_bucket_worker_go_check_fifo ... ok
+test bucket_worker_test::state_task_08_bucket_worker_panic_propagates_and_unblocks ... ok
+test bucket_worker_test::state_task_08_bucket_worker_go_collect_snapshot ... ok
+test bucket_worker_test::state_task_08_bucket_worker_shared_host_concurrent_producers ... ok
+test bucket_worker_test::state_task_08_bucket_worker_full_and_pending_shutdown ... ok
+test bucket_worker_test::state_task_08_bucket_worker_full_rejection_has_no_effect ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 21 filtered out; finished in 0.07s
