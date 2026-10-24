@@ -21,7 +21,8 @@ astersql-pd-storage-endpoint.workspace = true
 astersql-pd-storage-kv.workspace = true
 astersql-pd-keypath.workspace = true
 thiserror.workspace = true
+tokio.workspace = true
+prometheus.workspace = true
 
 [dev-dependencies]
-tokio.workspace = true
 async-trait.workspace = true

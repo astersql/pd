@@ -1,0 +1,56 @@
+445f4c23dc8352b6b0c73403165f25541f1f0fb35e9c119fa3937c569ff5a8d3
+pd-task20-oracle
+bootstrap response 0a0a08fff2c78bc3f7a1ee6a1200
+{
+  "sha256": "4537466d65d253b1e291cacecf53faee14117386e8f2c5ff7b380108e49cc268",
+  "seed": [
+    200,
+    "Update region label rule successfully."
+  ],
+  "before": [
+    200,
+    {
+      "id": "ttl20",
+      "index": 0,
+      "labels": [
+        {
+          "key": "old",
+          "value": "v",
+          "ttl": "1s",
+          "start_at": "Sat Oct 24 10:26:04 UTC 2026"
+        },
+        {
+          "key": "keep",
+          "value": "v"
+        }
+      ],
+      "rule_type": "key-range",
+      "data": [
+        {
+          "start_key": "10",
+          "end_key": "20"
+        }
+      ]
+    }
+  ],
+  "after": [
+    200,
+    {
+      "id": "ttl20",
+      "index": 0,
+      "labels": [
+        {
+          "key": "keep",
+          "value": "v"
+        }
+      ],
+      "rule_type": "key-range",
+      "data": [
+        {
+          "start_key": "10",
+          "end_key": "20"
+        }
+      ]
+    }
+  ]
+}

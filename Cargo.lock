@@ -377,6 +377,7 @@ dependencies = [
  "astersql-pd-typeutil",
  "async-trait",
  "chrono",
+ "prometheus",
  "serde",
  "serde_json",
  "thiserror 2.0.21",

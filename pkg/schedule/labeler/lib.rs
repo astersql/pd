@@ -35,3 +35,9 @@ mod label_query;
 #[cfg(test)]
 #[path = "label_query_test.rs"]
 mod label_query_test;
+
+mod gc;
+pub use gc::{LabelerGc, LabelerMetrics};
+#[cfg(test)]
+#[path = "label_gc_test.rs"]
+mod label_gc_test;

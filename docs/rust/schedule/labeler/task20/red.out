@@ -1,0 +1,34 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-schedule-labeler v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.25s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_labeler-ed74abd0183a29ac)
+
+running 4 tests
+test label_gc_test::label_gc_metrics_host_registry ... ok
+
+thread 'label_gc_test::label_gc_memory_expiry_restart' (155575128) panicked at pkg/schedule/labeler/label_gc_test.rs:23:5:
+assertion failed: owner.index().rule("dead").is_none()
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'label_gc_test::label_gc_background_cancellation_and_cadence' (155575126) panicked at pkg/schedule/labeler/label_gc_test.rs:48:5:
+assertion `left == right` failed
+  left: 1
+ right: 0
+test label_gc_test::label_gc_background_cancellation_and_cadence ... FAILED
+test label_gc_test::label_gc_memory_expiry_restart ... FAILED
+isolated etcd 3.5.15 ready at http://127.0.0.1:63790
+
+thread 'label_gc_test::label_gc_etcd_expiry_restart' (155575127) panicked at pkg/schedule/labeler/label_gc_test.rs:23:5:
+assertion failed: owner.index().rule("dead").is_none()
+test label_gc_test::label_gc_etcd_expiry_restart ... FAILED
+
+failures:
+
+failures:
+    label_gc_test::label_gc_background_cancellation_and_cadence
+    label_gc_test::label_gc_etcd_expiry_restart
+    label_gc_test::label_gc_memory_expiry_restart
+
+test result: FAILED. 1 passed; 3 failed; 0 ignored; 0 measured; 29 filtered out; finished in 4.89s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-labeler --lib`
