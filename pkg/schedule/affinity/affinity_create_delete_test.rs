@@ -147,13 +147,13 @@ async fn affinity_create_delete_etcd() {
 use astersql_pd_storage_kv::*;
 use async_trait::async_trait;
 use std::sync::atomic::{AtomicIsize, Ordering};
-struct Gate {
+pub(super) struct Gate {
     inner: Arc<dyn MetaStore>,
     reads: AtomicIsize,
-    writes: AtomicIsize,
+    pub(super) writes: AtomicIsize,
 }
 impl Gate {
-    fn new(inner: Arc<dyn MetaStore>) -> Arc<Self> {
+    pub(super) fn new(inner: Arc<dyn MetaStore>) -> Arc<Self> {
         Arc::new(Self {
             inner,
             reads: AtomicIsize::new(-1),

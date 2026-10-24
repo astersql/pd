@@ -16,6 +16,8 @@ use std::collections::BTreeSet;
 /// Validation and backend errors retain their canonical identity.
 #[derive(Debug, thiserror::Error)]
 pub enum TransactionError {
+    #[error("label rule not found for group {0}")]
+    MissingLabel(String),
     #[error(transparent)]
     Content(#[from] TypedError),
     #[error(transparent)]

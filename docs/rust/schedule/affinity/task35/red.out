@@ -1,0 +1,69 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-schedule-affinity v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/affinity)
+warning: unused variable: `storage`
+ --> pkg/schedule/affinity/txn_ranges.rs:8:9
+  |
+8 |         storage: &StorageEndpoint,
+  |         ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_storage`
+  |
+  = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `paths`
+ --> pkg/schedule/affinity/txn_ranges.rs:9:9
+  |
+9 |         paths: &ClusterPaths,
+  |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_paths`
+
+warning: unused variable: `labels`
+  --> pkg/schedule/affinity/txn_ranges.rs:10:9
+   |
+10 |         labels: &mut RegionLabeler,
+   |         ^^^^^^ help: if this is intentional, prefix it with an underscore: `_labels`
+
+warning: unused variable: `adds`
+  --> pkg/schedule/affinity/txn_ranges.rs:11:9
+   |
+11 |         adds: &[GroupKeyRanges],
+   |         ^^^^ help: if this is intentional, prefix it with an underscore: `_adds`
+
+warning: unused variable: `removes`
+  --> pkg/schedule/affinity/txn_ranges.rs:12:9
+   |
+12 |         removes: &[GroupKeyRanges],
+   |         ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_removes`
+
+warning: unused variable: `now`
+  --> pkg/schedule/affinity/txn_ranges.rs:13:9
+   |
+13 |         now: u64,
+   |         ^^^ help: if this is intentional, prefix it with an underscore: `_now`
+
+warning: `astersql-pd-schedule-affinity` (lib test) generated 6 warnings (run `cargo fix --lib -p astersql-pd-schedule-affinity --tests` to apply 6 suggestions)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.32s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_affinity-8a04481d6d5f7923)
+
+running 2 tests
+
+thread 'affinity_update_ranges_test::affinity_update_ranges_memory' (156287152) panicked at pkg/schedule/affinity/affinity_update_ranges_test.rs:41:5:
+assertion `left == right` failed
+  left: 0
+ right: 1
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test affinity_update_ranges_test::affinity_update_ranges_memory ... FAILED
+isolated etcd 3.5.15 ready at http://127.0.0.1:58944
+
+thread 'affinity_update_ranges_test::affinity_update_ranges_etcd' (156287151) panicked at pkg/schedule/affinity/affinity_update_ranges_test.rs:41:5:
+assertion `left == right` failed
+  left: 0
+ right: 1
+test affinity_update_ranges_test::affinity_update_ranges_etcd ... FAILED
+
+failures:
+
+failures:
+    affinity_update_ranges_test::affinity_update_ranges_etcd
+    affinity_update_ranges_test::affinity_update_ranges_memory
+
+test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 24 filtered out; finished in 5.93s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-affinity --lib`
