@@ -1,0 +1,52 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+   Compiling astersql-pd-cluster v0.1.0 (/Users/Shared/work/dir/data/codes/pd/server/cluster)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.86s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_cluster-c9922e446ef6c2f4)
+
+running 5 tests
+test region_overlap_test::state_task_44_region_overlap_optional_statistics_and_duplicate_label_cleanup ... ok
+test region_overlap_test::state_task_44_region_overlap_merge_offline_cross_store_and_replay ... ok
+test region_overlap_test::state_task_44_region_overlap_split_left_then_right_and_empty_end ... ok
+test region_overlap_test::state_task_44_region_overlap_hot_history_uses_normal_ttl ... ok
+test region_overlap_test::state_task_44_region_overlap_go_repeated_split_merge_sequence ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 21 filtered out; finished in 0.01s
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.05s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_cluster-c9922e446ef6c2f4)
+
+running 26 tests
+test region_heartbeat_test::state_task_43_region_heartbeat_duplicate_repairs_subtree ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_epoch_term_rejection ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_flow_size_and_leader ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_accept_duplicate_inherit ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_same_id_recheck_and_last_write ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_delayed_duplicate_cannot_resurrect ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_prepared_overlap_recheck ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_membership_and_recovery ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_concurrent_precheck_merge_commit ... ok
+test region_overlap_test::state_task_44_region_overlap_optional_statistics_and_duplicate_label_cleanup ... ok
+test region_overlap_test::state_task_44_region_overlap_merge_offline_cross_store_and_replay ... ok
+test removed_store_test::state_task_42_removed_store_commit_preserves_current_metadata ... ok
+test region_overlap_test::state_task_44_region_overlap_split_left_then_right_and_empty_end ... ok
+test region_overlap_test::state_task_44_region_overlap_hot_history_uses_normal_ttl ... ok
+test store_heartbeat_test::state_task_41_store_heartbeat_existing_and_missing ... ok
+test store_heartbeat_test::state_task_41_store_heartbeat_closed_queue_keeps_core_update ... ok
+test removed_store_test::state_task_42_removed_store_routine_noop ... ok
+test store_heartbeat_test::state_task_41_store_heartbeat_raw_oracle_rates ... ok
+test store_heartbeat_test::state_task_41_store_heartbeat_cpu_query_and_filters ... ok
+test store_heartbeat_test::state_task_41_store_heartbeat_intervals_and_independent ... ok
+test removed_store_test::state_task_42_removed_store_between_check_and_commit ... ok
+test removed_store_test::state_task_42_removed_store_deleted_between_check_and_commit ... ok
+test store_heartbeat_test::state_task_41_store_heartbeat_removed_and_unhealthy ... ok
+test store_heartbeat_test::state_task_41_store_heartbeat_reported_missing_peer_is_not_cold ... ok
+test store_heartbeat_test::state_task_41_store_heartbeat_go_hot_cold_sequence ... ok
+test region_overlap_test::state_task_44_region_overlap_go_repeated_split_merge_sequence ... ok
+
+test result: ok. 26 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+   Doc-tests astersql_pd_cluster
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

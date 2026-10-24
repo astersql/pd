@@ -1,0 +1,25 @@
+   Compiling astersql-pd-cluster v0.1.0 (/Users/Shared/work/dir/data/codes/pd/server/cluster)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.38s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_cluster-c9922e446ef6c2f4)
+
+running 5 tests
+test region_overlap_test::state_task_44_region_overlap_optional_statistics_and_duplicate_label_cleanup ... ok
+test region_overlap_test::state_task_44_region_overlap_merge_offline_cross_store_and_replay ... ok
+test region_overlap_test::state_task_44_region_overlap_split_left_then_right_and_empty_end ... ok
+test region_overlap_test::state_task_44_region_overlap_hot_history_uses_normal_ttl ... ok
+
+thread 'region_overlap_test::state_task_44_region_overlap_go_repeated_split_merge_sequence' (158478527) panicked at server/cluster/region_overlap_test.rs:213:13:
+assertion `left == right` failed: phase 7
+  left: 0
+ right: 64
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test region_overlap_test::state_task_44_region_overlap_go_repeated_split_merge_sequence ... FAILED
+
+failures:
+
+failures:
+    region_overlap_test::state_task_44_region_overlap_go_repeated_split_merge_sequence
+
+test result: FAILED. 4 passed; 1 failed; 0 ignored; 0 measured; 21 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `-p astersql-pd-cluster --lib`

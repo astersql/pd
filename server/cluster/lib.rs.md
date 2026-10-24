@@ -12,3 +12,8 @@
 `PreparedRegionHeartbeat::commit`和顺序入口`handle_region_heartbeat`，返回
 `RegionHeartbeatResult`供宿主接线副作用；以真实core完成继承、guide与提交前重判。
 独立region_heartbeat_test覆盖重复、乱序、并发合并和根树/子树状态。
+
+`handle_region_heartbeat_with_overlap_cleanup` composes core admission with optional
+anomaly cleanup and deferred label marking for actual evicted IDs. Same-ID
+survivors and rejected reports retain their statistics. Hot history uses its
+existing expiration lifecycle; see [region_overlap.rs.md](region_overlap.rs.md).

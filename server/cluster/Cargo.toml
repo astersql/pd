@@ -14,5 +14,6 @@ astersql-pd-statistics.workspace = true
 astersql-pd-statistics-utils.workspace = true
 
 [dev-dependencies]
+astersql-pd-schedule-config.workspace = true
 tokio.workspace = true
 prometheus.workspace = true

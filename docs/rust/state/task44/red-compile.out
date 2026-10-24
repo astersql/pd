@@ -1,0 +1,59 @@
+   Compiling astersql-pd-cluster v0.1.0 (/Users/Shared/work/dir/data/codes/pd/server/cluster)
+error[E0609]: no field `region_count` on type `StoreRegionStats`
+  --> server/cluster/region_overlap_test.rs:80:41
+   |
+80 |     assert_eq!(c.regions.store_stats(2).region_count, 0);
+   |                                         ^^^^^^^^^^^^ unknown field
+   |
+   = note: available fields are: `leader`, `region`, `witness`, `learner`, `pending` ... and 2 others
+
+error[E0609]: no field `region_count` on type `StoreRegionStats`
+  --> server/cluster/region_overlap_test.rs:89:41
+   |
+89 |     assert_eq!(c.regions.store_stats(1).region_count, 2);
+   |                                         ^^^^^^^^^^^^ unknown field
+   |
+   = note: available fields are: `leader`, `region`, `witness`, `learner`, `pending` ... and 2 others
+
+error[E0609]: no field `region_count` on type `StoreRegionStats`
+  --> server/cluster/region_overlap_test.rs:90:41
+   |
+90 |     assert_eq!(c.regions.store_stats(3).region_count, 1);
+   |                                         ^^^^^^^^^^^^ unknown field
+   |
+   = note: available fields are: `leader`, `region`, `witness`, `learner`, `pending` ... and 2 others
+
+error[E0609]: no field `region_count` on type `StoreRegionStats`
+  --> server/cluster/region_overlap_test.rs:98:41
+   |
+98 |     assert_eq!(c.regions.store_stats(1).region_count, 3);
+   |                                         ^^^^^^^^^^^^ unknown field
+   |
+   = note: available fields are: `leader`, `region`, `witness`, `learner`, `pending` ... and 2 others
+
+error[E0609]: no field `region_count` on type `StoreRegionStats`
+   --> server/cluster/region_overlap_test.rs:115:41
+    |
+115 |     assert_eq!(c.regions.store_stats(1).region_count, 1);
+    |                                         ^^^^^^^^^^^^ unknown field
+    |
+    = note: available fields are: `leader`, `region`, `witness`, `learner`, `pending` ... and 2 others
+
+error[E0609]: no field `region_count` on type `StoreRegionStats`
+   --> server/cluster/region_overlap_test.rs:117:49
+    |
+117 |         assert_eq!(c.regions.store_stats(store).region_count, 0);
+    |                                                 ^^^^^^^^^^^^ unknown field
+    |
+    = note: available fields are: `leader`, `region`, `witness`, `learner`, `pending` ... and 2 others
+
+error[E0609]: no field `region_count` on type `StoreRegionStats`
+   --> server/cluster/region_overlap_test.rs:119:41
+    |
+119 |     assert_eq!(c.regions.store_stats(4).region_count, 1);
+    |                                         ^^^^^^^^^^^^ unknown field
+    |
+    = note: available fields are: `leader`, `region`, `witness`, `learner`, `pending` ... and 2 others
+
+For more information about this error, try `rustc --explain E0609`.
+error: could not compile `astersql-pd-cluster` (lib test) due to 7 previous errors
