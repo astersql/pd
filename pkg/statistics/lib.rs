@@ -84,3 +84,10 @@ mod hot_inherit_test;
 mod hot_expire;
 #[cfg(test)]
 mod hot_expire_test;
+
+mod hot_worker;
+pub use hot_worker::{
+    HotCache, HotTask, HotTaskError, HotTaskOutput, HotTaskReceipt, new_region_flow_tasks,
+};
+#[cfg(test)]
+mod hot_worker_test;

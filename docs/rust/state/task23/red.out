@@ -1,0 +1,42 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-core v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/core)
+   Compiling astersql-pd-schedule-config v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/config)
+   Compiling astersql-pd-storage-endpoint v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/storage/endpoint)
+   Compiling astersql-pd-schedule-placement v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/placement)
+   Compiling astersql-pd-statistics v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics)
+warning: unused import: `Peer`
+  --> pkg/statistics/hot_worker.rs:11:24
+   |
+11 | use astersql_pd_core::{Peer, RegionInfo, RegionMeta};
+   |                        ^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `astersql-pd-statistics` (lib test) generated 1 warning (run `cargo fix --lib -p astersql-pd-statistics --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.41s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics-19f9aca67fa98079)
+
+running 4 tests
+test hot_worker_test::state_task_23_hot_worker_captured_fields ... ok
+test hot_worker_test::state_task_23_hot_worker_admission_cancel_shutdown_join ... ok
+
+thread 'hot_worker_test::state_task_23_hot_worker_read_queries_and_cold' (157695586) panicked at pkg/statistics/hot_worker_test.rs:93:9:
+assertion failed: worker.is_region_hot(&r, 1).await.unwrap()
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'hot_worker_test::state_task_23_hot_worker_flow_matches_original_all_peer_counts' (157695585) panicked at pkg/statistics/hot_worker_test.rs:68:9:
+assertion `left == right` failed: 1 peers
+  left: "[]"
+ right: "[(HotPeerStat { store_id: 1, region_id: 1, hot_degree: 2, anti_count: 2, loads: [17476.0, 17.0, 0.0, 0.0], rolling_loads: None, stores: [1], action_type: ActionType(2), is_leader: true, last_transfer_leader_time: None, in_cold: false, allow_inherited: true }, 0, [17476.266666666666, 17.066666666666666, 0.0, 0.0])]"
+test hot_worker_test::state_task_23_hot_worker_read_queries_and_cold ... FAILED
+test hot_worker_test::state_task_23_hot_worker_flow_matches_original_all_peer_counts ... FAILED
+
+failures:
+
+failures:
+    hot_worker_test::state_task_23_hot_worker_flow_matches_original_all_peer_counts
+    hot_worker_test::state_task_23_hot_worker_read_queries_and_cold
+
+test result: FAILED. 2 passed; 2 failed; 0 ignored; 0 measured; 74 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-statistics --lib`

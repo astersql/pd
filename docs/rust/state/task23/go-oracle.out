@@ -1,0 +1,18 @@
+=== RUN   TestIsHot
+--- PASS: TestIsHot (0.00s)
+=== RUN   TestRegionFlowTasksMatchOriginalForAnyPeerCount
+=== RUN   TestRegionFlowTasksMatchOriginalForAnyPeerCount/0-peers
+=== RUN   TestRegionFlowTasksMatchOriginalForAnyPeerCount/1-peers
+=== RUN   TestRegionFlowTasksMatchOriginalForAnyPeerCount/2-peers
+=== RUN   TestRegionFlowTasksMatchOriginalForAnyPeerCount/3-peers
+=== RUN   TestRegionFlowTasksMatchOriginalForAnyPeerCount/5-peers
+=== RUN   TestRegionFlowTasksMatchOriginalForAnyPeerCount/9-peers
+--- PASS: TestRegionFlowTasksMatchOriginalForAnyPeerCount (0.00s)
+    --- PASS: TestRegionFlowTasksMatchOriginalForAnyPeerCount/0-peers (0.00s)
+    --- PASS: TestRegionFlowTasksMatchOriginalForAnyPeerCount/1-peers (0.00s)
+    --- PASS: TestRegionFlowTasksMatchOriginalForAnyPeerCount/2-peers (0.00s)
+    --- PASS: TestRegionFlowTasksMatchOriginalForAnyPeerCount/3-peers (0.00s)
+    --- PASS: TestRegionFlowTasksMatchOriginalForAnyPeerCount/5-peers (0.00s)
+    --- PASS: TestRegionFlowTasksMatchOriginalForAnyPeerCount/9-peers (0.00s)
+PASS
+ok  	github.com/tikv/pd/pkg/statistics	0.029s

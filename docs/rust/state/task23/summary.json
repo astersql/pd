@@ -1,0 +1,66 @@
+{
+  "slot": 1,
+  "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+  "initial_validation": [
+    {
+      "command": "cargo fmt --all",
+      "exit_code": 0,
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "command": "cargo metadata --format-version 1 --no-deps",
+      "exit_code": 0,
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "command": "cargo fmt --all -- --check",
+      "exit_code": 0,
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "command": "cargo test -p astersql-pd-statistics --locked --lib state_task_23_hot_worker -- --nocapture",
+      "exit_code": 0,
+      "passed": 8,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "command": "cargo test -p astersql-pd-statistics --locked",
+      "exit_code": 0,
+      "passed": 82,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "command": "cargo check --workspace --locked",
+      "exit_code": 0,
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "command": "cargo test --workspace --locked",
+      "exit_code": 101,
+      "passed": 1060,
+      "failed": 1,
+      "ignored": 1
+    }
+  ],
+  "singleflight_retry": {
+    "exit_code": 0,
+    "passed": 1
+  },
+  "workspace_retry": {
+    "command": "cargo test --workspace --locked",
+    "exit_code": 0,
+    "passed": 1097,
+    "failed": 0,
+    "ignored": 1
+  }
+}

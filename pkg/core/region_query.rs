@@ -93,6 +93,10 @@ impl RegionInfo {
     pub fn set_report_interval(&mut self, start: u64, end: u64) {
         self.report_interval = (start, end);
     }
+    /// Return the heartbeat's start and end timestamps in whole seconds.
+    pub fn report_interval(&self) -> (u64, u64) {
+        self.report_interval
+    }
     /// Set the unified-read CPU counter reported by the heartbeat.
     pub fn set_read_cpu_usage(&mut self, usage: u64) {
         self.read_cpu_usage = usage;

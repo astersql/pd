@@ -54,3 +54,8 @@ collect_expired_items与check_peer_flow_at，hot_inherit_test显式登记。
 已加入[热点过期与冷副本清理](hot_expire.rs.md)：check_cold_peer、update_stat_at、
 gc、remove_region及双向成员查询；hot_expire_test显式登记。宿主传入时钟与存活store集合，
 复用真实窗口和TopN，应用动作同步刷新TTL和索引。
+
+已加入[热点任务执行与关闭](hot_worker.rs.md)：HotCache、HotTask、HotTaskReceipt、
+HotTaskOutput、HotTaskError和new_region_flow_tasks，hot_worker_test显式登记。
+宿主Tokio handle驱动独立有界读写队列，复用HotPeerCache::run_task；明确admission、
+Applied、拒绝和取消结果，shutdown等待两个worker退出并返回最终缓存。
