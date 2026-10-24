@@ -15,3 +15,7 @@ StoreStatInformer，所有读取返回独立快照，stores_test 显式登记。
 
 已加入[负载历史采样与回收](store_history.rs.md)：StoreHistoryLoads、Loads、
 HistoryLoads 及默认采样配置；store_history_test 显式登记。
+
+已加入[负载预测值代数](load_values.rs.md)：Influence、RegionKindLoads、
+StoreSummaryInfo、summary_store_infos、StoreLoad、StoreLoadPred、min_load和max_load；
+load_values_test显式登记。复用Loads、HistoryLoads与StoreKindLoads，不重复类型实现。

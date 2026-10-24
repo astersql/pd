@@ -1,0 +1,3 @@
+slot-1.lock released; owner removed; rust-slot-1 build cache retained
+No running slot-1 binaries or fixture processes
+Validation command group exited 0; fixture Drop closes EOF and waits

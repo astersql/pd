@@ -27,3 +27,11 @@ pub use store_history::{
 };
 #[cfg(test)]
 mod store_history_test;
+
+mod load_values;
+pub use load_values::{
+    Influence, RegionKindLoads, StoreLoad, StoreLoadPred, StoreSummaryInfo, max_load, min_load,
+    summary_store_infos,
+};
+#[cfg(test)]
+mod load_values_test;

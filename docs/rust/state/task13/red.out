@@ -1,0 +1,52 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+    Blocking waiting for file lock on package cache
+   Compiling astersql-pd-statistics v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.79s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics-62613012d5c00a6d)
+
+running 6 tests
+
+thread 'load_values_test::state_task_13_load_values_ieee_extrema' (157270702) panicked at pkg/statistics/load_values_test.rs:188:25:
+assertion `left == right` failed
+  left: 0
+ right: 9223372036854775808
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'load_values_test::state_task_13_load_values_slice_contracts' (157270705) panicked at pkg/statistics/load_values_test.rs:199:5:
+assertion failed: sum.pending_sum.is_some()
+
+thread 'load_values_test::state_task_13_load_values_min_max_pending_diff' (157270703) panicked at pkg/statistics/load_values_test.rs:117:13:
+assertion `left == right` failed
+  left: [0.0, 0.0, 0.0, 0.0]
+ right: [100.0, 10.0, 30.0, -4.0]
+
+thread 'load_values_test::state_task_13_load_values_weighted_influence' (157270706) panicked at pkg/statistics/load_values_test.rs:29:48:
+called `Option::unwrap()` on a `None` value
+
+thread 'load_values_test::state_task_13_load_values_predictions_and_snapshot_isolation' (157270704) panicked at pkg/statistics/load_values_test.rs:79:9:
+assertion `left == right` failed
+  left: [0.0, 0.0, 0.0, 0.0]
+ right: [101.0, 18.0, 33.0, 47.0]
+
+thread 'load_values_test::state_task_13_load_values_go_pending_sequence' (157270701) panicked at pkg/statistics/load_values_test.rs:152:17:
+assertion failed: (s.min().loads[dim] - (7.1 - total) * mib).abs() < 1e-8
+test load_values_test::state_task_13_load_values_ieee_extrema ... FAILED
+test load_values_test::state_task_13_load_values_predictions_and_snapshot_isolation ... FAILED
+test load_values_test::state_task_13_load_values_min_max_pending_diff ... FAILED
+test load_values_test::state_task_13_load_values_weighted_influence ... FAILED
+test load_values_test::state_task_13_load_values_slice_contracts ... FAILED
+test load_values_test::state_task_13_load_values_go_pending_sequence ... FAILED
+
+failures:
+
+failures:
+    load_values_test::state_task_13_load_values_go_pending_sequence
+    load_values_test::state_task_13_load_values_ieee_extrema
+    load_values_test::state_task_13_load_values_min_max_pending_diff
+    load_values_test::state_task_13_load_values_predictions_and_snapshot_isolation
+    load_values_test::state_task_13_load_values_slice_contracts
+    load_values_test::state_task_13_load_values_weighted_influence
+
+test result: FAILED. 0 passed; 6 failed; 0 ignored; 0 measured; 20 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-statistics --lib`
