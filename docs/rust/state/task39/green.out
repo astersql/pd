@@ -1,0 +1,14 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+   Compiling astersql-pd-syncer v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/syncer)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.84s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_syncer-faffacd60b6c53ae)
+
+running 4 tests
+test metadata_watch_test::state_task_39_metadata_watch_memory_empty_and_pages ... ok
+test metadata_watch_test::state_task_39_metadata_watch_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:58918
+isolated etcd 3.5.15 ready at http://127.0.0.1:58917
+test metadata_watch_test::state_task_39_metadata_watch_etcd ... ok
+test metadata_watch_test::state_task_39_metadata_watch_etcd_empty_and_pages ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 69 filtered out; finished in 2.51s

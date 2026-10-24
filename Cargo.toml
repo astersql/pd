@@ -8,6 +8,7 @@ rust-version = "1.85"
 license = "Apache-2.0"
 
 [workspace.dependencies]
+astersql-pd-etcdutil = { path = "pkg/utils/etcdutil" }
 astersql-pd-syncer = { path = "pkg/syncer" }
 astersql-pd-statistics = { path = "pkg/statistics" }
 astersql-pd-statistics-buckets = { path = "pkg/statistics/buckets" }

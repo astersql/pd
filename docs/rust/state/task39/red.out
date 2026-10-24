@@ -1,0 +1,68 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+    Checking tracing v0.1.44
+    Checking serde_core v1.0.229
+    Checking axum-core v0.5.6
+    Checking h2 v0.4.20
+    Checking tower v0.5.3
+    Checking axum v0.8.9
+    Checking serde v1.0.229
+    Checking serde_json v1.0.145
+    Checking hyper v1.12.0
+    Checking astersql-pd-typeutil v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/utils/typeutil)
+    Checking hyper-util v0.1.21
+    Checking hyper-timeout v0.5.2
+    Checking tonic v0.14.2
+    Checking tonic-prost v0.14.2
+    Checking etcd-client v0.17.0
+    Checking astersql-pd-proto v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/proto)
+    Checking astersql-pd-storage-kv v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/storage/kv)
+    Checking astersql-pd-etcdutil v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/utils/etcdutil)
+    Checking astersql-pd-storage-endpoint v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/storage/endpoint)
+    Checking astersql-pd-storage v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/storage)
+    Checking astersql-pd-syncer v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/syncer)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 5.75s
+   Compiling astersql-pd-etcdutil v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/utils/etcdutil)
+   Compiling astersql-pd-syncer v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/syncer)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.17s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_syncer-faffacd60b6c53ae)
+
+running 4 tests
+
+thread 'metadata_watch_test::state_task_39_metadata_watch_memory_empty_and_pages' (158368846) panicked at pkg/syncer/metadata_watch_test.rs:314:5:
+assertion `left == right` failed
+  left: 0
+ right: 1
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'metadata_watch_test::state_task_39_metadata_watch_memory' (158368845) panicked at pkg/syncer/metadata_watch_test.rs:176:5:
+assertion `left == right` failed: complete initial metadata snapshot
+  left: 0
+ right: 3
+test metadata_watch_test::state_task_39_metadata_watch_memory_empty_and_pages ... FAILED
+test metadata_watch_test::state_task_39_metadata_watch_memory ... FAILED
+isolated etcd 3.5.15 ready at http://127.0.0.1:58834
+
+thread 'metadata_watch_test::state_task_39_metadata_watch_etcd_empty_and_pages' (158368844) panicked at pkg/syncer/metadata_watch_test.rs:314:5:
+assertion `left == right` failed
+  left: 0
+ right: 1
+test metadata_watch_test::state_task_39_metadata_watch_etcd_empty_and_pages ... FAILED
+isolated etcd 3.5.15 ready at http://127.0.0.1:58833
+
+thread 'metadata_watch_test::state_task_39_metadata_watch_etcd' (158368843) panicked at pkg/syncer/metadata_watch_test.rs:176:5:
+assertion `left == right` failed: complete initial metadata snapshot
+  left: 0
+ right: 3
+test metadata_watch_test::state_task_39_metadata_watch_etcd ... FAILED
+
+failures:
+
+failures:
+    metadata_watch_test::state_task_39_metadata_watch_etcd
+    metadata_watch_test::state_task_39_metadata_watch_etcd_empty_and_pages
+    metadata_watch_test::state_task_39_metadata_watch_memory
+    metadata_watch_test::state_task_39_metadata_watch_memory_empty_and_pages
+
+test result: FAILED. 0 passed; 4 failed; 0 ignored; 0 measured; 69 filtered out; finished in 4.60s
+
+error: test failed, to rerun pass `-p astersql-pd-syncer --lib`

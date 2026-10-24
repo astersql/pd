@@ -601,6 +601,7 @@ name = "astersql-pd-syncer"
 version = "0.1.0"
 dependencies = [
  "astersql-pd-core",
+ "astersql-pd-etcdutil",
  "astersql-pd-keypath",
  "astersql-pd-storage",
  "astersql-pd-storage-kv",
@@ -608,6 +609,7 @@ dependencies = [
  "serde_json",
  "thiserror 2.0.21",
  "tokio",
+ "tokio-util",
 ]
 
 [[package]]

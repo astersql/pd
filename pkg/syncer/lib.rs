@@ -61,3 +61,9 @@ mod client_ready;
 #[cfg(test)]
 #[path = "client_ready_test.rs"]
 mod client_ready_test;
+
+mod metadata_watch;
+pub use metadata_watch::MetadataWatch;
+#[cfg(test)]
+#[path = "metadata_watch_test.rs"]
+mod metadata_watch_test;

@@ -9,6 +9,8 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
+astersql-pd-etcdutil.workspace = true
+tokio-util.workspace = true
 astersql-pd-core.workspace = true
 astersql-pd-storage.workspace = true
 astersql-pd-keypath.workspace = true

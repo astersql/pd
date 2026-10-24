@@ -1,0 +1,94 @@
+   Compiling astersql-pd-syncer v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/syncer)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.32s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_syncer-faffacd60b6c53ae)
+
+running 74 tests
+test client_ready_test::state_task_38_client_ready_empty_snapshot_without_catchup ... ok
+test client_apply_test::state_task_37_client_apply_error_does_not_mutate ... ok
+test client_apply_test::state_task_37_client_apply_raw_stats_and_unchanged_meta ... ok
+test client_apply_test::state_task_37_client_apply_full_sync_positional_completion ... ok
+test client_apply_test::state_task_37_client_apply_overlong_arrays_discarded ... ok
+test client_apply_test::state_task_37_client_apply_memory_overlap_oracle ... ok
+test client_apply_test::state_task_37_client_apply_missing_arrays_and_zero_leader ... ok
+test client_ready_test::state_task_38_client_ready_error_and_leader_reconnect ... ok
+test client_apply_test::state_task_37_client_apply_storage_failures_keep_cache_and_cleanup ... ok
+test client_ready_test::state_task_38_client_ready_old_leader_keepalive ... ok
+test client_ready_test::state_task_38_client_ready_waits_for_full_sync_completion ... ok
+test client_apply_test::state_task_37_client_apply_checkpoint_failure_keeps_assigned_record ... ok
+test downstream_test::state_task_36_downstream_history_gap_and_future_index ... ok
+test client_apply_test::state_task_37_client_apply_persistent_history_cadence ... ok
+test downstream_test::state_task_36_downstream_drains_records_appended_during_keepalive ... ok
+test downstream_test::state_task_36_downstream_independent_indexes ... ok
+test downstream_test::state_task_36_downstream_cancel_blocked_send_and_rebind ... ok
+test full_catchup_test::state_task_35_full_catchup_no_changes_still_completes ... ok
+test full_catchup_test::state_task_35_full_catchup_keeps_live_records ... ok
+test downstream_test::state_task_36_downstream_removes_only_failed ... ok
+test full_catchup_test::state_task_35_full_catchup_overflow_disconnects_and_requires_resync ... ok
+test full_catchup_test::state_task_35_full_catchup_send_failure_closes_and_releases ... ok
+test full_snapshot_test::state_task_34_full_snapshot_buffers_live_records ... ok
+test downstream_test::state_task_36_downstream_drain_serially_and_batch ... ok
+test downstream_test::state_task_36_downstream_send_failure_preserves_last_success ... ok
+test full_catchup_test::state_task_35_full_catchup_empty_scan_positions_and_completion ... ok
+test full_snapshot_test::state_task_34_full_snapshot_retain_is_bounded_and_unwind_safe ... ok
+test history_buffer_test::state_task_30_history_buffer_empty_and_reset ... ok
+test history_buffer_test::state_task_30_history_buffer_101_records ... ok
+test history_buffer_test::state_task_30_history_buffer_index_exhaustion ... ok
+test history_buffer_test::state_task_30_history_buffer_go_snapshot ... ok
+test history_buffer_test::state_task_30_history_buffer_normalization ... ok
+test history_buffer_test::state_task_30_history_buffer_releases_overwritten_and_reset_records ... ok
+test history_buffer_test::state_task_30_history_buffer_wrapped_intervals ... ok
+test history_persist_test::state_task_32_history_persist_adaptive_window_reset ... ok
+test history_persist_test::state_task_32_history_persist_cancel_write ... ok
+test history_persist_test::state_task_32_history_persist_decimal_and_corruption ... ok
+test history_persist_test::state_task_32_history_persist_memory_go_snapshot ... ok
+test history_persist_test::state_task_32_history_persist_next_index_only_and_exhaustion ... ok
+test history_persist_test::state_task_32_history_persist_reset_and_flush_boundary ... ok
+test history_replay_test::state_task_33_history_replay_caps_batch_and_observes_window ... ok
+test history_replay_test::state_task_33_history_replay_custom_batch_and_snapshot_survive_overwrite ... ok
+test history_replay_test::state_task_33_history_replay_equal_and_keepalive_do_not_skip ... ok
+test history_replay_test::state_task_33_history_replay_falls_back_when_history_missing ... ok
+test history_replay_test::state_task_33_history_replay_split_batches ... ok
+test history_replay_test::state_task_33_history_replay_stops_at_sync_start_index ... ok
+test history_window_test::state_task_31_history_window_cancelled_future_releases_guard ... ok
+test history_window_test::state_task_31_history_window_duplicate_guards_and_error_cancel ... ok
+test history_window_test::state_task_31_history_window_failed_append_preserves_retained_snapshot ... ok
+test history_window_test::state_task_31_history_window_full_sync_priority ... ok
+test history_window_test::state_task_31_history_window_gap_at_maximum_and_invalid_indexes ... ok
+test history_window_test::state_task_31_history_window_high_resets_streak_and_overflow_safe ... ok
+test history_window_test::state_task_31_history_window_normalization_and_missing_past ... ok
+test history_window_test::state_task_31_history_window_observed_required_window ... ok
+test history_window_test::state_task_31_history_window_oldest_guard_and_wrap_growth ... ok
+test downstream_test::state_task_36_downstream_buffered_then_live_matches_go ... ok
+test downstream_test::state_task_36_downstream_keepalive_after_pending_records ... ok
+test history_window_test::state_task_31_history_window_reset_invalidates_old_guards ... ok
+test downstream_test::state_task_36_downstream_append_and_other_stream_progress_when_busy ... ok
+test history_window_test::state_task_31_history_window_retain_keeps_catch_up_records ... ok
+test history_window_test::state_task_31_history_window_shrinks_one_step_after_low_window ... ok
+test metadata_watch_test::state_task_39_metadata_watch_memory ... ok
+test metadata_watch_test::state_task_39_metadata_watch_memory_empty_and_pages ... ok
+test full_snapshot_test::state_task_34_full_snapshot_failure_releases_retain ... ok
+test full_snapshot_test::state_task_34_full_snapshot_offsets_and_empty ... ok
+test full_snapshot_test::state_task_34_full_snapshot_bind_waits_for_append_boundary ... ok
+test client_ready_test::state_task_38_client_ready_empty_snapshot_catchup_completion ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:59079
+isolated etcd 3.5.15 ready at http://127.0.0.1:59080
+isolated etcd 3.5.15 ready at http://127.0.0.1:59081
+isolated etcd 3.5.15 ready at http://127.0.0.1:59083
+test metadata_watch_test::state_task_39_metadata_watch_etcd_empty_and_pages ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:59084
+test client_apply_test::state_task_37_client_apply_etcd_overlap_oracle ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:59082
+test metadata_watch_test::state_task_39_metadata_watch_etcd ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:59085
+test history_persist_test::state_task_32_history_persist_etcd_go_snapshot ... ok
+test metadata_watch_test::state_task_39_metadata_watch_etcd_restart ... ok
+test history_persist_test::state_task_32_history_persist_etcd_failure_and_restart ... ok
+test client_ready_test::state_task_38_client_ready_etcd_completion ... ok
+
+test result: ok. 74 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 9.10s
+
+   Doc-tests astersql_pd_syncer
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
