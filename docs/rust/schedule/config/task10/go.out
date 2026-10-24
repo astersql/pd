@@ -1,0 +1,240 @@
+Type 'help' for list of commands.
+(dlv) COMMAND config max-string-len 4096
+(dlv) COMMAND config max-array-values 128
+(dlv) COMMAND break main.main
+Breakpoint 1 set at 0x280c840 for main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:58
+(dlv) COMMAND continue
+> [Breakpoint 1] main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:58 (hits goroutine(1):1 total:1) (PC: 0x280c840)
+(dlv) COMMAND next
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+(dlv) COMMAND call runtime.mallocgc(4096, nil, true)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: unsafe.Pointer(0x7eba5b41b000)
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5b41b000).GetRegionMaxSize()
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 144
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5b41b000).GetRegionSplitSize()
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 96
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5b41b000).GetRegionMaxKeys()
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 1440000
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5b41b000).GetRegionSplitKeys()
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 960000
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5b41b000).GetRegionBucketSize()
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 0
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5b41b000).IsRaftKV2()
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5b41b000).GetUnifiedReadPoolMaxThreadCount()
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 0
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5b41b000).CheckRegionSize(116, 20)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: error nil
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5b41b000).CheckRegionKeys(1640000, 200000)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: error nil
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5b41b000).CheckRegionSize(164, 20)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: error nil
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5b41b000).CheckRegionKeys(1640000, 200000)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: error nil
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5b41b000).CheckRegionSize(146, 50)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: error(*github.com/pingcap/errors.withStack) *{
+		error: error(*github.com/pingcap/errors.Error) *{
+			code: 0,
+			codeText: "PD:checker:ErrCheckerMergeAgain",
+			message: "region will be merged again, %s",
+			redactArgsPos: []int len: 0, cap: 0, nil,
+			cause: error nil,
+			args: []interface {} len: 1, cap: 1, [
+				*(*interface {})(0x7eba5b39eb50),
+			],
+			file: "",
+			line: 0,},
+		stack: *github.com/pingcap/errors.stack len: 0, cap: 0, nil,}
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5b41b000).CheckRegionKeys(1460000, 500000)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: error(*github.com/pingcap/errors.withStack) *{
+		error: error(*github.com/pingcap/errors.Error) *{
+			code: 0,
+			codeText: "PD:checker:ErrCheckerMergeAgain",
+			message: "region will be merged again, %s",
+			redactArgsPos: []int len: 0, cap: 0, nil,
+			cause: error nil,
+			args: []interface {} len: 1, cap: 1, [
+				*(*interface {})(0x7eba5aecc2a0),
+			],
+			file: "",
+			line: 0,},
+		stack: *github.com/pingcap/errors.stack len: 0, cap: 0, nil,}
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5b41b000).CheckRegionSize(147, 50)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: error nil
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5b41b000).CheckRegionKeys(1470000, 500000)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: error nil
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5b41b000).CheckRegionSize(192, 96)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: error nil
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5b41b000).CheckRegionKeys(1920000, 960000)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: error nil
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5b41b000).CheckRegionSize(144, 48)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: error(*github.com/pingcap/errors.withStack) *{
+		error: error(*github.com/pingcap/errors.Error) *{
+			code: 0,
+			codeText: "PD:checker:ErrCheckerMergeAgain",
+			message: "region will be merged again, %s",
+			redactArgsPos: []int len: 0, cap: 0, nil,
+			cause: error nil,
+			args: []interface {} len: 1, cap: 1, [
+				*(*interface {})(0x7eba5aecc2f0),
+			],
+			file: "",
+			line: 0,},
+		stack: *github.com/pingcap/errors.stack len: 0, cap: 0, nil,}
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5b41b000).CheckRegionKeys(1440000, 480000)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: error(*github.com/pingcap/errors.withStack) *{
+		error: error(*github.com/pingcap/errors.Error) *{
+			code: 0,
+			codeText: "PD:checker:ErrCheckerMergeAgain",
+			message: "region will be merged again, %s",
+			redactArgsPos: []int len: 0, cap: 0, nil,
+			cause: error nil,
+			args: []interface {} len: 1, cap: 1, [
+				*(*interface {})(0x7eba5aecc310),
+			],
+			file: "",
+			line: 0,},
+		stack: *github.com/pingcap/errors.stack len: 0, cap: 0, nil,}
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5b41b000).RegionSplitSize = "100KiB"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5b41b000).RegionMaxSize = "1GiB"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5b41b000).RegionBucketSize = "bad"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5b41b000).Adjust()
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5b41b000).SetRegionBucketEnabled(true)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5b41b000).GetRegionMaxSize()
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 1024
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5b41b000).GetRegionSplitSize()
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 0
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5b41b000).GetRegionBucketSize()
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 96
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5b41b000).CheckRegionSize(2000, 50)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: error nil
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5b41b000).Engine = "raft-kv2"
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5b41b000).IsRaftKV2()
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: true
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5b41b000).Clone()
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: ("*github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5af1d000)
+*github.com/tikv/pd/pkg/schedule/config.StoreConfig {
+		Coprocessor: github.com/tikv/pd/pkg/schedule/config.Coprocessor {RegionMaxSize: "1GiB", RegionSplitSize: "100KiB", RegionMaxKeys: 0, RegionSplitKeys: 0, EnableRegionBucket: true, RegionBucketSize: "bad"},
+		Storage: github.com/tikv/pd/pkg/schedule/config.Storage {
+			Engine: "raft-kv2",},
+		ReadPool: github.com/tikv/pd/pkg/schedule/config.ReadPool {
+			Unified: (*"github.com/tikv/pd/pkg/schedule/config.UnifiedReadPool")(0x7eba5af1d058),},
+		RegionMaxSizeMB: 1024,
+		RegionSplitSizeMB: 0,
+		RegionBucketSizeMB: 96,}
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5b41b000).Equal((*"github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5af1d000))
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: true
+
+(dlv) COMMAND set (*"github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5af1d000).RegionMaxSizeMB = 999
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5b41b000).Equal((*"github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5af1d000))
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: true
+
+(dlv) COMMAND set (*"github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5af1d000).ReadPool.Unified.MaxThreadCount = 12
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5b41b000).Equal((*"github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5af1d000))
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: false
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5af1d000).GetUnifiedReadPoolMaxThreadCount()
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 12
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/config.StoreConfig")(0x7eba5b41b000).GetUnifiedReadPoolMaxThreadCount()
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 0
+
+(dlv)

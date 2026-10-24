@@ -806,3 +806,10 @@ mod config_values_test;
 
 mod value_contract;
 pub use value_contract::validate_labels;
+
+mod store_config;
+pub use store_config::{
+    Coprocessor, MergeAgainError, RAFTSTORE_V2, ReadPool, Storage, StoreConfig, UnifiedReadPool,
+};
+#[cfg(test)]
+mod store_config_test;
