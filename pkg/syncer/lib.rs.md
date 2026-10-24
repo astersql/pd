@@ -6,6 +6,8 @@
 - `history_window`：窗口增长、缩减与 `HistoryRetain`。
 - `history_persist`：通过真实Base/MetaStore保存和恢复next index。
 - `history_replay`：捕获结束索引内的增量分帧，或明确请求全量同步。
+- `full_snapshot`：固定全量扫描与 history retain 边界。
+- `full_catchup`：追赶固定上界，发送 completion，失败断开并要求重同步。
 
 测试均在独立 `*_test.rs` 中显式登记；持久化测试复用现有etcd夹具。
 生产依赖为workspace集中登记的core、storage-kv与thiserror；不依赖protobuf或传输。

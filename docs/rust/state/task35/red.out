@@ -1,0 +1,44 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-syncer v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/syncer)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.19s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_syncer-f6c36878c994325f)
+
+running 5 tests
+test full_catchup_test::state_task_35_full_catchup_no_changes_still_completes ... ok
+
+thread 'full_catchup_test::state_task_35_full_catchup_send_failure_closes_and_releases' (158183043) panicked at pkg/syncer/full_catchup_test.rs:190:9:
+assertion `left == right` failed
+  left: 0
+ right: 1
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'full_catchup_test::state_task_35_full_catchup_keeps_live_records' (158183040) panicked at pkg/syncer/full_catchup_test.rs:78:5:
+assertion `left == right` failed
+  left: [(10, [])]
+ right: [(10, [100, 101]), (12, [])]
+
+thread 'full_catchup_test::state_task_35_full_catchup_overflow_disconnects_and_requires_resync' (158183042) panicked at pkg/syncer/full_catchup_test.rs:118:5:
+assertion failed: matches!(result,
+    Err(FullCatchUpError::ResyncRequired(HistoryError::HistoryGap
+    { requested: I(100), first: I(101), next: I(102) })))
+test full_catchup_test::state_task_35_full_catchup_send_failure_closes_and_releases ... FAILED
+
+thread 'full_catchup_test::state_task_35_full_catchup_empty_scan_positions_and_completion' (158183039) panicked at pkg/syncer/full_catchup_test.rs:158:5:
+assertion `left == right` failed
+  left: [(42, 0)]
+ right: [(0, 1000), (1000, 1), (1043, 0)]
+test full_catchup_test::state_task_35_full_catchup_keeps_live_records ... FAILED
+test full_catchup_test::state_task_35_full_catchup_overflow_disconnects_and_requires_resync ... FAILED
+test full_catchup_test::state_task_35_full_catchup_empty_scan_positions_and_completion ... FAILED
+
+failures:
+
+failures:
+    full_catchup_test::state_task_35_full_catchup_empty_scan_positions_and_completion
+    full_catchup_test::state_task_35_full_catchup_keeps_live_records
+    full_catchup_test::state_task_35_full_catchup_overflow_disconnects_and_requires_resync
+    full_catchup_test::state_task_35_full_catchup_send_failure_closes_and_releases
+
+test result: FAILED. 1 passed; 4 failed; 0 ignored; 0 measured; 38 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-syncer --lib`

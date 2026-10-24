@@ -1,0 +1,12 @@
+   Compiling astersql-pd-syncer v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/syncer)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.54s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_syncer-f6c36878c994325f)
+
+running 5 tests
+test full_catchup_test::state_task_35_full_catchup_no_changes_still_completes ... ok
+test full_catchup_test::state_task_35_full_catchup_overflow_disconnects_and_requires_resync ... ok
+test full_catchup_test::state_task_35_full_catchup_keeps_live_records ... ok
+test full_catchup_test::state_task_35_full_catchup_send_failure_closes_and_releases ... ok
+test full_catchup_test::state_task_35_full_catchup_empty_scan_positions_and_completion ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 38 filtered out; finished in 0.00s

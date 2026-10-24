@@ -36,3 +36,9 @@ pub use full_snapshot::{FullSnapshot, SnapshotBatch, SnapshotOffset};
 #[cfg(test)]
 #[path = "full_snapshot_test.rs"]
 mod full_snapshot_test;
+
+mod full_catchup;
+pub use full_catchup::{CatchUpFrame, FullCatchUpError};
+#[cfg(test)]
+#[path = "full_catchup_test.rs"]
+mod full_catchup_test;
