@@ -14,4 +14,5 @@ region报告索引。put_item独占借用内计算重叠、替换范围并更新
 interval及各桶热度/负载，status为Archive；桶边界和负载深复制，防止旧快照被更新污染。
 保留Go的裁剪细节：stat裁剪不是min_end_key，left<right才保留，空stat.end可能被过滤。
 空/空无效工厂碎片由既有RangeTree过滤，不制造额外全范围条目。
+`current_regions` 为 crate 内冷热查询提供当前报告的只读遍历，不包含归档碎片。
 本模块只处理范围状态，不判断冷热、不做协议转换、不启动队列或后台任务。

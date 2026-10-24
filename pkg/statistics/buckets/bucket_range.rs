@@ -147,6 +147,10 @@ impl BucketRangeIndex {
         self.regions.get(&id)
     }
 
+    pub(crate) fn current_regions(&self) -> impl Iterator<Item = &BucketTreeItem> {
+        self.regions.values()
+    }
+
     /// Returns the number of currently indexed region reports.
     pub fn region_count(&self) -> usize {
         self.regions.len()

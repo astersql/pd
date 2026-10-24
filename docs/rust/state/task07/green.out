@@ -1,0 +1,15 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+     Locking 0 packages to highest Rust 1.85 compatible versions
+note: pass `--verbose` to see 27 unchanged dependencies behind latest
+   Compiling astersql-pd-statistics-buckets v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics/buckets)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.63s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics_buckets-6ae2423c72bc60a7)
+
+running 5 tests
+test bucket_degree_test::state_task_07_bucket_degree_go_calculate ... ok
+test bucket_degree_test::state_task_07_bucket_degree_thresholds_and_bounds ... ok
+test bucket_degree_test::state_task_07_bucket_degree_query_snapshot_and_archive ... ok
+test bucket_degree_test::state_task_07_bucket_degree_go_collect ... ok
+test bucket_degree_test::state_task_07_bucket_degree_go_repeated_and_transition ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 16 filtered out; finished in 0.00s

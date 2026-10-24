@@ -19,3 +19,10 @@ mod bucket_inherit;
 #[cfg(test)]
 #[path = "bucket_inherit_test.rs"]
 mod bucket_inherit_test;
+
+mod bucket_degree;
+pub use bucket_degree::{MAX_HOT_DEGREE, MIN_HOT_DEGREE};
+
+#[cfg(test)]
+#[path = "bucket_degree_test.rs"]
+mod bucket_degree_test;

@@ -1,0 +1,4 @@
+1101 Go/module files: file set, SHA256 and Git status unchanged
+relative documentation links valid
+both read-only plan.md hashes unchanged
+git diff --check exit=0

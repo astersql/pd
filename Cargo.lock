@@ -507,6 +507,7 @@ version = "0.1.0"
 dependencies = [
  "astersql-pd-keyutil",
  "astersql-pd-rangetree",
+ "astersql-pd-statistics-utils",
  "serde_json",
 ]
 
