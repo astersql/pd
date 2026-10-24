@@ -1,0 +1,51 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-keyutil v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/utils/keyutil)
+   Compiling astersql-pd-statistics-buckets v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics/buckets)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.55s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics_buckets-982aad480d11d96c)
+
+running 5 tests
+
+thread 'bucket_range_test::state_task_05_bucket_range_go_put_sequence' (156914883) panicked at pkg/statistics/buckets/bucket_range_test.rs:34:9:
+assertion `left == right` failed
+  left: 0
+ right: 1
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'bucket_range_test::state_task_05_bucket_range_empty_end_factory_contract' (156914881) panicked at pkg/statistics/buckets/bucket_range_test.rs:147:5:
+assertion `left == right` failed
+  left: 0
+ right: 2
+
+thread 'bucket_range_test::state_task_05_bucket_range_go_queries_and_adjacency' (156914884) panicked at pkg/statistics/buckets/bucket_range_test.rs:55:9:
+assertion `left == right` failed
+  left: []
+ right: [1, 2, 3]
+
+thread 'bucket_range_test::state_task_05_bucket_range_double_debris_and_archive_index' (156914880) panicked at pkg/statistics/buckets/bucket_range_test.rs:116:5:
+assertion `left == right` failed
+  left: 0
+ right: 3
+
+thread 'bucket_range_test::state_task_05_bucket_range_go_clone_and_owned_stats' (156914882) panicked at pkg/statistics/buckets/bucket_range_test.rs:87:9:
+assertion `left == right` failed
+  left: Alive
+ right: Archive
+test bucket_range_test::state_task_05_bucket_range_go_put_sequence ... FAILED
+test bucket_range_test::state_task_05_bucket_range_go_clone_and_owned_stats ... FAILED
+test bucket_range_test::state_task_05_bucket_range_double_debris_and_archive_index ... FAILED
+test bucket_range_test::state_task_05_bucket_range_empty_end_factory_contract ... FAILED
+test bucket_range_test::state_task_05_bucket_range_go_queries_and_adjacency ... FAILED
+
+failures:
+
+failures:
+    bucket_range_test::state_task_05_bucket_range_double_debris_and_archive_index
+    bucket_range_test::state_task_05_bucket_range_empty_end_factory_contract
+    bucket_range_test::state_task_05_bucket_range_go_clone_and_owned_stats
+    bucket_range_test::state_task_05_bucket_range_go_put_sequence
+    bucket_range_test::state_task_05_bucket_range_go_queries_and_adjacency
+
+test result: FAILED. 0 passed; 5 failed; 0 ignored; 0 measured; 6 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-statistics-buckets --lib`

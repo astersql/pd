@@ -1,0 +1,38 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-statistics-buckets v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics/buckets)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.65s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics_buckets-982aad480d11d96c)
+
+running 5 tests
+test bucket_range_test::state_task_05_bucket_range_go_clone_and_owned_stats ... ok
+test bucket_range_test::state_task_05_bucket_range_empty_end_factory_contract ... ok
+test bucket_range_test::state_task_05_bucket_range_go_queries_and_adjacency ... ok
+test bucket_range_test::state_task_05_bucket_range_go_put_sequence ... ok
+test bucket_range_test::state_task_05_bucket_range_double_debris_and_archive_index ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 6 filtered out; finished in 0.00s
+
+   Compiling astersql-pd-statistics-buckets v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics/buckets)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.42s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics_buckets-982aad480d11d96c)
+
+running 11 tests
+test bucket_values_test::state_task_04_bucket_values_go_conversion ... ok
+test bucket_values_test::state_task_04_bucket_values_deep_clone ... ok
+test bucket_range_test::state_task_05_bucket_range_empty_end_factory_contract ... ok
+test bucket_values_test::state_task_04_bucket_values_intervals_and_wrap ... ok
+test bucket_range_test::state_task_05_bucket_range_go_clone_and_owned_stats ... ok
+test bucket_range_test::state_task_05_bucket_range_go_queries_and_adjacency ... ok
+test bucket_values_test::state_task_04_bucket_values_normalize ... ok
+test bucket_range_test::state_task_05_bucket_range_double_debris_and_archive_index ... ok
+test bucket_range_test::state_task_05_bucket_range_go_put_sequence ... ok
+test bucket_values_test::state_task_04_bucket_values_runtime_snapshots ... ok
+test bucket_values_test::state_task_04_bucket_values_array_boundaries ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_statistics_buckets
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

@@ -1,0 +1,16 @@
+pkg/core/rangetree/range_tree_test.go:25:func TestMain(m *testing.M) {
+pkg/statistics/buckets/hot_bucket_cache.go:180:		case <-h.ctx.Done():
+pkg/statistics/buckets/hot_bucket_task_test.go:38:	defer cancelFn()
+pkg/statistics/buckets/hot_bucket_task_test.go:70:	defer cancelFn()
+pkg/statistics/buckets/hot_bucket_task_test.go:111:	defer cancelFn()
+pkg/statistics/buckets/bucket_stat_informer.go:30:func init() {
+pkg/statistics/buckets/metric.go:32:func init() {
+pkg/statistics/buckets/hot_bucket_task.go:93:	case <-ctx.Done():
+pkg/utils/keyutil/keyrange_test.go:26:func TestMain(m *testing.M) {
+pkg/statistics/buckets/hot_bucket_cache_test.go:27:func TestMain(m *testing.M) {
+pkg/statistics/buckets/hot_bucket_cache_test.go:34:	defer cancel()
+pkg/statistics/buckets/hot_bucket_cache_test.go:131:	defer cancel()
+pkg/statistics/buckets/hot_bucket_cache_test.go:257:func newTestBuckets(regionID uint64, version uint64, keys [][]byte, flow uint64) *metapb.Buckets {
+pkg/core/region.go:35:	"github.com/pingcap/failpoint"
+pkg/core/region.go:680:	failpoint.Inject("concurrentBucketHeartbeat", func() {
+pkg/core/region.go:1419:	failpoint.Inject("UpdateSubTree", func() {

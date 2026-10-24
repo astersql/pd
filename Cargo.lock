@@ -505,6 +505,8 @@ version = "0.1.0"
 name = "astersql-pd-statistics-buckets"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-keyutil",
+ "astersql-pd-rangetree",
  "serde_json",
 ]
 

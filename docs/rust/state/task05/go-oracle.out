@@ -1,0 +1,8 @@
+=== RUN   TestPutItem
+--- PASS: TestPutItem (0.00s)
+=== RUN   TestGetBucketsByKeyRange
+--- PASS: TestGetBucketsByKeyRange (0.00s)
+=== RUN   TestBucketTreeItemClone
+--- PASS: TestBucketTreeItemClone (0.00s)
+PASS
+ok  	github.com/tikv/pd/pkg/statistics/buckets	0.604s
