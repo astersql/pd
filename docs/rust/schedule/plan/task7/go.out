@@ -1,0 +1,352 @@
+Type 'help' for list of commands.
+(dlv) COMMAND break main.main
+Breakpoint 1 set at 0x280c840 for main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:58
+(dlv) COMMAND continue
+> [Breakpoint 1] main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:58 (hits goroutine(1):1 total:1) (PC: 0x280c840)
+(dlv) COMMAND next
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+(dlv) COMMAND call "github.com/tikv/pd/pkg/schedule/plan".NewBalanceSchedulerPlan()
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: ("*github.com/tikv/pd/pkg/schedule/plan.BalanceSchedulerPlan")(0x605c3c26ac60)
+*github.com/tikv/pd/pkg/schedule/plan.BalanceSchedulerPlan {
+		Source: *github.com/tikv/pd/pkg/core.StoreInfo nil,
+		Target: *github.com/tikv/pd/pkg/core.StoreInfo nil,
+		Region: *github.com/tikv/pd/pkg/core.RegionInfo nil,
+		Status: *github.com/tikv/pd/pkg/schedule/plan.Status {StatusCode: StatusOK (0), DetailedReason: ""},
+		Step: 0,}
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/plan.BalanceSchedulerPlan")(0x605c3c26ac60).GetResource(0)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~panic: interface {}(runtime.errorString) "invalid memory address or nil pointer dereference"
+
+(dlv) COMMAND call "github.com/tikv/pd/pkg/core".NewStoreInfo(nil, nil)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: ("*github.com/tikv/pd/pkg/core.StoreInfo")(0x605c3bf63860)
+*github.com/tikv/pd/pkg/core.StoreInfo {
+		meta: *github.com/pingcap/kvproto/pkg/metapb.Store nil,
+		storeStats: *github.com/tikv/pd/pkg/core.storeStats {
+			mu: (*"github.com/tikv/pd/pkg/utils/syncutil.RWMutex")(0x605c3c58c000),
+			rawStats: *(*"github.com/pingcap/kvproto/pkg/pdpb.StoreStats")(0x605c3c028300),
+			avgAvailable: *(*"github.com/tikv/pd/pkg/movingaverage.HMA")(0x605c3c58a000),},
+		pauseLeaderTransferIn: sync/atomic.Int64 {
+			_: sync/atomic.noCopy {},
+			_: sync/atomic.align64 {},
+			v: 0,},
+		pauseLeaderTransferOut: sync/atomic.Int64 {
+			_: sync/atomic.noCopy {},
+			_: sync/atomic.align64 {},
+			v: 0,},
+		slowStoreEvicted: sync/atomic.Int64 {
+			_: sync/atomic.noCopy {},
+			_: sync/atomic.align64 {},
+			v: 0,},
+		slowTrendEvicted: sync/atomic.Int64 {
+			_: sync/atomic.noCopy {},
+			_: sync/atomic.align64 {},
+			v: 0,},
+		stoppingStoreEvicted: sync/atomic.Int64 {
+			_: sync/atomic.noCopy {},
+			_: sync/atomic.align64 {},
+			v: 0,},
+		leaderCount: 0,
+		regionCount: 0,
+		learnerCount: 0,
+		witnessCount: 0,
+		leaderSize: 0,
+		regionSize: 0,
+		pendingPeerCount: 0,
+		lastPersistTime: time.Time(0001-01-01T00:00:00Z){
+			wall: 0,
+			ext: 0,
+			loc: *time.Location nil,},
+		leaderWeight: 1,
+		regionWeight: 1,
+		limiter: github.com/tikv/pd/pkg/core/storelimit.StoreLimit(*github.com/tikv/pd/pkg/core/storelimit.StoreRateLimit) *{
+			limits: []*github.com/tikv/pd/pkg/core/storelimit.limit len: 4, cap: 4, [
+				*(*"github.com/tikv/pd/pkg/core/storelimit.limit")(0x605c3c58c030),
+				*(*"github.com/tikv/pd/pkg/core/storelimit.limit")(0x605c3c58c060),
+				*(*"github.com/tikv/pd/pkg/core/storelimit.limit")(0x605c3c58c090),
+				*(*"github.com/tikv/pd/pkg/core/storelimit.limit")(0x605c3c58c0c0),
+			],},
+		minResolvedTS: 0,
+		lastAwakenTime: time.Time(0001-01-01T00:00:00Z){
+			wall: 0,
+			ext: 0,
+			loc: *time.Location nil,},
+		networkSlowTriggers: 0,}
+
+(dlv) COMMAND set (*"github.com/tikv/pd/pkg/schedule/plan.BalanceSchedulerPlan")(0x605c3c26ac60).Source = (*"github.com/tikv/pd/pkg/core.StoreInfo")(0x605c3bf63860)
+(dlv) COMMAND set (*"github.com/tikv/pd/pkg/schedule/plan.BalanceSchedulerPlan")(0x605c3c26ac60).Target = (*"github.com/tikv/pd/pkg/schedule/plan.BalanceSchedulerPlan")(0x605c3c26ac60).Source
+(dlv) COMMAND set (*"github.com/tikv/pd/pkg/schedule/plan.BalanceSchedulerPlan")(0x605c3c26ac60).Step = -1
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/plan.BalanceSchedulerPlan")(0x605c3c26ac60).Clone(nil)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: github.com/tikv/pd/pkg/schedule/plan.Plan(*github.com/tikv/pd/pkg/schedule/plan.BalanceSchedulerPlan) *{
+		Source: *github.com/tikv/pd/pkg/core.StoreInfo nil,
+		Target: *github.com/tikv/pd/pkg/core.StoreInfo nil,
+		Region: *github.com/tikv/pd/pkg/core.RegionInfo nil,
+		Status: *github.com/tikv/pd/pkg/schedule/plan.Status {StatusCode: StatusOK (0), DetailedReason: ""},
+		Step: -1,}
+
+(dlv) COMMAND set (*"github.com/tikv/pd/pkg/schedule/plan.BalanceSchedulerPlan")(0x605c3c26ac60).Step = 0
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/plan.BalanceSchedulerPlan")(0x605c3c26ac60).Clone(nil)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: github.com/tikv/pd/pkg/schedule/plan.Plan(*github.com/tikv/pd/pkg/schedule/plan.BalanceSchedulerPlan) *{
+		Source: *github.com/tikv/pd/pkg/core.StoreInfo nil,
+		Target: *github.com/tikv/pd/pkg/core.StoreInfo nil,
+		Region: *github.com/tikv/pd/pkg/core.RegionInfo nil,
+		Status: *github.com/tikv/pd/pkg/schedule/plan.Status {StatusCode: StatusOK (0), DetailedReason: ""},
+		Step: 0,}
+
+(dlv) COMMAND set (*"github.com/tikv/pd/pkg/schedule/plan.BalanceSchedulerPlan")(0x605c3c26ac60).Step = 1
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/plan.BalanceSchedulerPlan")(0x605c3c26ac60).Clone(nil)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: github.com/tikv/pd/pkg/schedule/plan.Plan(*github.com/tikv/pd/pkg/schedule/plan.BalanceSchedulerPlan) *{
+		Source: *github.com/tikv/pd/pkg/core.StoreInfo {
+			meta: *github.com/pingcap/kvproto/pkg/metapb.Store nil,
+			storeStats: *(*"github.com/tikv/pd/pkg/core.storeStats")(0x605c3c58c000),
+			pauseLeaderTransferIn: (*"sync/atomic.Int64")(0x605c3bf63870),
+			pauseLeaderTransferOut: (*"sync/atomic.Int64")(0x605c3bf63878),
+			slowStoreEvicted: (*"sync/atomic.Int64")(0x605c3bf63880),
+			slowTrendEvicted: (*"sync/atomic.Int64")(0x605c3bf63888),
+			stoppingStoreEvicted: (*"sync/atomic.Int64")(0x605c3bf63890),
+			leaderCount: 0,
+			regionCount: 0,
+			learnerCount: 0,
+			witnessCount: 0,
+			leaderSize: 0,
+			regionSize: 0,
+			pendingPeerCount: 0,
+			lastPersistTime: (*time.Time)(0x605c3bf638d0),
+			leaderWeight: 1,
+			regionWeight: 1,
+			limiter: github.com/tikv/pd/pkg/core/storelimit.StoreLimit(*github.com/tikv/pd/pkg/core/storelimit.StoreRateLimit) ...,
+			minResolvedTS: 0,
+			lastAwakenTime: (*time.Time)(0x605c3bf63910),
+			networkSlowTriggers: 0,},
+		Target: *github.com/tikv/pd/pkg/core.StoreInfo nil,
+		Region: *github.com/tikv/pd/pkg/core.RegionInfo nil,
+		Status: *github.com/tikv/pd/pkg/schedule/plan.Status {StatusCode: StatusOK (0), DetailedReason: ""},
+		Step: 1,}
+
+(dlv) COMMAND set (*"github.com/tikv/pd/pkg/schedule/plan.BalanceSchedulerPlan")(0x605c3c26ac60).Step = 2
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/plan.BalanceSchedulerPlan")(0x605c3c26ac60).Clone(nil)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: github.com/tikv/pd/pkg/schedule/plan.Plan(*github.com/tikv/pd/pkg/schedule/plan.BalanceSchedulerPlan) *{
+		Source: *github.com/tikv/pd/pkg/core.StoreInfo {
+			meta: *github.com/pingcap/kvproto/pkg/metapb.Store nil,
+			storeStats: *(*"github.com/tikv/pd/pkg/core.storeStats")(0x605c3c58c000),
+			pauseLeaderTransferIn: (*"sync/atomic.Int64")(0x605c3bf63870),
+			pauseLeaderTransferOut: (*"sync/atomic.Int64")(0x605c3bf63878),
+			slowStoreEvicted: (*"sync/atomic.Int64")(0x605c3bf63880),
+			slowTrendEvicted: (*"sync/atomic.Int64")(0x605c3bf63888),
+			stoppingStoreEvicted: (*"sync/atomic.Int64")(0x605c3bf63890),
+			leaderCount: 0,
+			regionCount: 0,
+			learnerCount: 0,
+			witnessCount: 0,
+			leaderSize: 0,
+			regionSize: 0,
+			pendingPeerCount: 0,
+			lastPersistTime: (*time.Time)(0x605c3bf638d0),
+			leaderWeight: 1,
+			regionWeight: 1,
+			limiter: github.com/tikv/pd/pkg/core/storelimit.StoreLimit(*github.com/tikv/pd/pkg/core/storelimit.StoreRateLimit) ...,
+			minResolvedTS: 0,
+			lastAwakenTime: (*time.Time)(0x605c3bf63910),
+			networkSlowTriggers: 0,},
+		Target: *github.com/tikv/pd/pkg/core.StoreInfo nil,
+		Region: *github.com/tikv/pd/pkg/core.RegionInfo nil,
+		Status: *github.com/tikv/pd/pkg/schedule/plan.Status {StatusCode: StatusOK (0), DetailedReason: ""},
+		Step: 2,}
+
+(dlv) COMMAND set (*"github.com/tikv/pd/pkg/schedule/plan.BalanceSchedulerPlan")(0x605c3c26ac60).Step = 3
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/plan.BalanceSchedulerPlan")(0x605c3c26ac60).Clone(nil)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: github.com/tikv/pd/pkg/schedule/plan.Plan(*github.com/tikv/pd/pkg/schedule/plan.BalanceSchedulerPlan) *{
+		Source: *github.com/tikv/pd/pkg/core.StoreInfo {
+			meta: *github.com/pingcap/kvproto/pkg/metapb.Store nil,
+			storeStats: *(*"github.com/tikv/pd/pkg/core.storeStats")(0x605c3c58c000),
+			pauseLeaderTransferIn: (*"sync/atomic.Int64")(0x605c3bf63870),
+			pauseLeaderTransferOut: (*"sync/atomic.Int64")(0x605c3bf63878),
+			slowStoreEvicted: (*"sync/atomic.Int64")(0x605c3bf63880),
+			slowTrendEvicted: (*"sync/atomic.Int64")(0x605c3bf63888),
+			stoppingStoreEvicted: (*"sync/atomic.Int64")(0x605c3bf63890),
+			leaderCount: 0,
+			regionCount: 0,
+			learnerCount: 0,
+			witnessCount: 0,
+			leaderSize: 0,
+			regionSize: 0,
+			pendingPeerCount: 0,
+			lastPersistTime: (*time.Time)(0x605c3bf638d0),
+			leaderWeight: 1,
+			regionWeight: 1,
+			limiter: github.com/tikv/pd/pkg/core/storelimit.StoreLimit(*github.com/tikv/pd/pkg/core/storelimit.StoreRateLimit) ...,
+			minResolvedTS: 0,
+			lastAwakenTime: (*time.Time)(0x605c3bf63910),
+			networkSlowTriggers: 0,},
+		Target: *github.com/tikv/pd/pkg/core.StoreInfo {
+			meta: *github.com/pingcap/kvproto/pkg/metapb.Store nil,
+			storeStats: *(*"github.com/tikv/pd/pkg/core.storeStats")(0x605c3c58c000),
+			pauseLeaderTransferIn: (*"sync/atomic.Int64")(0x605c3bf63870),
+			pauseLeaderTransferOut: (*"sync/atomic.Int64")(0x605c3bf63878),
+			slowStoreEvicted: (*"sync/atomic.Int64")(0x605c3bf63880),
+			slowTrendEvicted: (*"sync/atomic.Int64")(0x605c3bf63888),
+			stoppingStoreEvicted: (*"sync/atomic.Int64")(0x605c3bf63890),
+			leaderCount: 0,
+			regionCount: 0,
+			learnerCount: 0,
+			witnessCount: 0,
+			leaderSize: 0,
+			regionSize: 0,
+			pendingPeerCount: 0,
+			lastPersistTime: (*time.Time)(0x605c3bf638d0),
+			leaderWeight: 1,
+			regionWeight: 1,
+			limiter: github.com/tikv/pd/pkg/core/storelimit.StoreLimit(*github.com/tikv/pd/pkg/core/storelimit.StoreRateLimit) ...,
+			minResolvedTS: 0,
+			lastAwakenTime: (*time.Time)(0x605c3bf63910),
+			networkSlowTriggers: 0,},
+		Region: *github.com/tikv/pd/pkg/core.RegionInfo nil,
+		Status: *github.com/tikv/pd/pkg/schedule/plan.Status {StatusCode: StatusOK (0), DetailedReason: ""},
+		Step: 3,}
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/plan.BalanceSchedulerPlan")(0x605c3c26ac60).GetResource(0)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 0
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/plan.BalanceSchedulerPlan")(0x605c3c26ac60).GetResource(2)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 0
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/plan.BalanceSchedulerPlan")(0x605c3c26ac60).SetResourceWithStep(nil, 99)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/plan.BalanceSchedulerPlan")(0x605c3c26ac60).GetResource(99)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 0
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/plan.BalanceSchedulerPlan")(0x605c3c26ac60).GetResource(100)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: 0
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/plan.BalanceSchedulerPlan")(0x605c3c26ac60).SetResourceWithStep(nil, 0)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~panic: interface {}(*runtime.TypeAssertionError) *{
+		_interface: *internal/abi.Type {Size_: 16, PtrBytes: 16, Hash: 4042687801, TFlag: TFlagExtraStar (2), Align_: 8, FieldAlign_: 8, Kind_: internal/reflectlite.Interface (20), Equal: runtime.nilinterequal, GCData: *2, Str: 175744, PtrToThis: 1194272},
+		concrete: *internal/abi.Type nil,
+		asserted: *internal/abi.Type {Size_: 8, PtrBytes: 8, Hash: 1043597555, TFlag: TFlagUncommon|TFlagRegularMemory|TFlagDirectIface (41), Align_: 8, FieldAlign_: 8, Kind_: Pointer (22), Equal: runtime.memequal64, GCData: *1, Str: 241256, PtrToThis: 0},
+		missingMethod: "",}
+
+(dlv) COMMAND call "github.com/tikv/pd/pkg/schedule/plan".NewCollector((*"github.com/tikv/pd/pkg/schedule/plan.BalanceSchedulerPlan")(0x605c3c26ac60).Clone(nil))
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: ("*github.com/tikv/pd/pkg/schedule/plan.Collector")(0x605c3c1ae240)
+*github.com/tikv/pd/pkg/schedule/plan.Collector {
+		basePlan: github.com/tikv/pd/pkg/schedule/plan.Plan(*github.com/tikv/pd/pkg/schedule/plan.BalanceSchedulerPlan) *{
+			Source: *github.com/tikv/pd/pkg/core.StoreInfo nil,
+			Target: *github.com/tikv/pd/pkg/core.StoreInfo nil,
+			Region: *github.com/tikv/pd/pkg/core.RegionInfo nil,
+			Status: *(*"github.com/tikv/pd/pkg/schedule/plan.Status")(0x605c3bf97e90),
+			Step: 0,},
+		unschedulablePlans: []github.com/tikv/pd/pkg/schedule/plan.Plan len: 0, cap: 0, [],
+		schedulablePlans: []github.com/tikv/pd/pkg/schedule/plan.Plan len: 0, cap: 0, [],}
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/plan.Collector")(0x605c3c1ae240).Collect(nil)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/plan.Collector")(0x605c3c1ae240).GetPlans()
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: []github.com/tikv/pd/pkg/schedule/plan.Plan len: 1, cap: 1, [
+		*github.com/tikv/pd/pkg/schedule/plan.BalanceSchedulerPlan {
+			Source: *github.com/tikv/pd/pkg/core.StoreInfo nil,
+			Target: *github.com/tikv/pd/pkg/core.StoreInfo nil,
+			Region: *github.com/tikv/pd/pkg/core.RegionInfo nil,
+			Status: *(*"github.com/tikv/pd/pkg/schedule/plan.Status")(0x605c3bf97e90),
+			Step: 0,},
+	]
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/plan.Collector")(0x605c3c1ae240).basePlan.SetStatus("github.com/tikv/pd/pkg/schedule/plan".NewStatus(400, nil))
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/plan.Collector")(0x605c3c1ae240).Collect(nil)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/plan.Collector")(0x605c3c1ae240).basePlan.SetStatus("github.com/tikv/pd/pkg/schedule/plan".NewStatus(0, nil))
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/plan.Collector")(0x605c3c1ae240).Collect(nil)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/plan.Collector")(0x605c3c1ae240).GetPlans()
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: []github.com/tikv/pd/pkg/schedule/plan.Plan len: 3, cap: 4, [
+		*github.com/tikv/pd/pkg/schedule/plan.BalanceSchedulerPlan {
+			Source: *github.com/tikv/pd/pkg/core.StoreInfo nil,
+			Target: *github.com/tikv/pd/pkg/core.StoreInfo nil,
+			Region: *github.com/tikv/pd/pkg/core.RegionInfo nil,
+			Status: *(*"github.com/tikv/pd/pkg/schedule/plan.Status")(0x605c3bf97e90),
+			Step: 0,},
+		*github.com/tikv/pd/pkg/schedule/plan.BalanceSchedulerPlan {
+			Source: *github.com/tikv/pd/pkg/core.StoreInfo nil,
+			Target: *github.com/tikv/pd/pkg/core.StoreInfo nil,
+			Region: *github.com/tikv/pd/pkg/core.RegionInfo nil,
+			Status: *(*"github.com/tikv/pd/pkg/schedule/plan.Status")(0x605c3bf700c0),
+			Step: 0,},
+		*github.com/tikv/pd/pkg/schedule/plan.BalanceSchedulerPlan {
+			Source: *github.com/tikv/pd/pkg/core.StoreInfo nil,
+			Target: *github.com/tikv/pd/pkg/core.StoreInfo nil,
+			Region: *github.com/tikv/pd/pkg/core.RegionInfo nil,
+			Status: *(*"github.com/tikv/pd/pkg/schedule/plan.Status")(0x605c3bf700a8),
+			Step: 0,},
+	]
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/plan.Collector")(0x605c3c1ae240).GetPlans()[0].GetStatus()
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: ("*github.com/tikv/pd/pkg/schedule/plan.Status")(0x605c3bf97e90)
+*github.com/tikv/pd/pkg/schedule/plan.Status {StatusCode: StatusOK (0), DetailedReason: ""}
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/plan.Collector")(0x605c3c1ae240).GetPlans()[1].GetStatus()
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: ("*github.com/tikv/pd/pkg/schedule/plan.Status")(0x605c3bf700c0)
+*github.com/tikv/pd/pkg/schedule/plan.Status {StatusCode: StatusOK (0), DetailedReason: ""}
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/plan.Collector")(0x605c3c1ae240).GetPlans()[2].GetStatus()
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: ("*github.com/tikv/pd/pkg/schedule/plan.Status")(0x605c3bf700a8)
+*github.com/tikv/pd/pkg/schedule/plan.Status {StatusCode: 400, DetailedReason: ""}
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/plan.Collector")(0).Collect(nil)
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+
+(dlv) COMMAND call (*"github.com/tikv/pd/pkg/schedule/plan.Collector")(0).GetPlans()
+> main.main() .Users/Shared/work/dir/data/codes/pd/cmd/pd-server/main.go:59 (PC: 0x280c84c)
+Values returned:
+	~r0: []github.com/tikv/pd/pkg/schedule/plan.Plan len: 0, cap: 0, nil
+
+(dlv)

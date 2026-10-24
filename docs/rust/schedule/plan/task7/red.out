@@ -1,0 +1,42 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+COMMAND: cargo update --offline -p astersql-pd-schedule-plan
+     Locking 0 packages to highest Rust 1.85 compatible versions
+note: pass `--verbose` to see 26 unchanged dependencies behind latest
+EXIT: 0
+COMMAND: cargo fmt --all
+EXIT: 0
+COMMAND: cargo test --locked -p astersql-pd-schedule-plan plan_collect -- --nocapture
+   Compiling astersql-pd-schedule-plan v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/plan)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.96s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_plan-ca65991d686d8848)
+
+running 4 tests
+
+thread 'plan_collect_test::plan_collect_default_and_invalid_resources' (154678241) panicked at pkg/schedule/plan/balance_plan.rs:41:27:
+resource type does not match balance step
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'plan_collect_test::plan_collect_completed_steps_only' (154678240) panicked at pkg/schedule/plan/plan_collect_test.rs:33:9:
+assertion `left == right` failed: source step -1
+  left: true
+ right: false
+test plan_collect_test::plan_collect_options_and_isolation ... ok
+
+thread 'plan_collect_test::plan_collect_default_and_invalid_resources' (154678241) panicked at pkg/schedule/plan/balance_plan.rs:41:27:
+resource type does not match balance step
+test plan_collect_test::plan_collect_order_and_owned_results ... ok
+
+thread 'plan_collect_test::plan_collect_default_and_invalid_resources' (154678241) panicked at pkg/schedule/plan/balance_plan.rs:41:27:
+resource type does not match balance step
+test plan_collect_test::plan_collect_completed_steps_only ... FAILED
+test plan_collect_test::plan_collect_default_and_invalid_resources ... ok
+
+failures:
+
+failures:
+    plan_collect_test::plan_collect_completed_steps_only
+
+test result: FAILED. 3 passed; 1 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-plan --lib`
+EXIT: 101
