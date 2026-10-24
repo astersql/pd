@@ -1,0 +1,36 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+   Compiling astersql-pd-schedule-keyrange v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/keyrange)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.16s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_schedule_keyrange-18c5405155a19840)
+
+running 7 tests
+test manager::range_append_test::range_append_empty ... ok
+test manager::range_append_test::range_append_copies_input_and_keeps_disjoint_ranges_sorted ... ok
+test manager::range_append_test::range_append_duplicates_and_overlaps_are_retained ... ok
+test manager::range_append_test::range_append_empty_boundaries_follow_keyutil ... ok
+test manager::range_append_test::range_append_unsorted_adjacent ... ok
+test manager::range_append_test::range_append_normalizes_across_batches ... ok
+test manager::range_append_test::range_append_concurrent_batches_are_atomic ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Compiling astersql-pd-schedule-keyrange v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/keyrange)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.07s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_schedule_keyrange-18c5405155a19840)
+
+running 7 tests
+test manager::range_append_test::range_append_copies_input_and_keeps_disjoint_ranges_sorted ... ok
+test manager::range_append_test::range_append_duplicates_and_overlaps_are_retained ... ok
+test manager::range_append_test::range_append_empty ... ok
+test manager::range_append_test::range_append_empty_boundaries_follow_keyutil ... ok
+test manager::range_append_test::range_append_normalizes_across_batches ... ok
+test manager::range_append_test::range_append_unsorted_adjacent ... ok
+test manager::range_append_test::range_append_concurrent_batches_are_atomic ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_schedule_keyrange
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

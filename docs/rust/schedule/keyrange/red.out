@@ -1,0 +1,51 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.02s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_schedule_keyrange-18c5405155a19840)
+
+running 7 tests
+
+thread 'manager::range_append_test::range_append_copies_input_and_keeps_disjoint_ranges_sorted' (154523145) panicked at pkg/schedule/keyrange/range_append_test.rs:61:5:
+assertion `left == right` failed
+  left: [KeyRange { start_key: [99], end_key: [100] }, KeyRange { start_key: [97], end_key: [98] }]
+ right: [KeyRange { start_key: [97], end_key: [98] }, KeyRange { start_key: [99], end_key: [100] }]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'manager::range_append_test::range_append_normalizes_across_batches' (154523151) panicked at pkg/schedule/keyrange/range_append_test.rs:42:5:
+assertion `left == right` failed
+  left: [KeyRange { start_key: [99], end_key: [100] }, KeyRange { start_key: [97], end_key: [98] }, KeyRange { start_key: [98], end_key: [99] }]
+ right: [KeyRange { start_key: [97], end_key: [100] }]
+
+thread 'manager::range_append_test::range_append_unsorted_adjacent' (154523153) panicked at pkg/schedule/keyrange/range_append_test.rs:25:5:
+assertion `left == right` failed
+  left: [KeyRange { start_key: [99], end_key: [100] }, KeyRange { start_key: [97], end_key: [98] }, KeyRange { start_key: [98], end_key: [99] }]
+ right: [KeyRange { start_key: [97], end_key: [100] }]
+
+thread 'manager::range_append_test::range_append_empty_boundaries_follow_keyutil' (154523149) panicked at pkg/schedule/keyrange/range_append_test.rs:51:5:
+assertion `left == right` failed
+  left: [KeyRange { start_key: [98], end_key: [] }, KeyRange { start_key: [], end_key: [97] }, KeyRange { start_key: [97], end_key: [98] }]
+ right: [KeyRange { start_key: [], end_key: [] }]
+test manager::range_append_test::range_append_duplicates_and_overlaps_are_retained ... ok
+
+thread 'manager::range_append_test::range_append_concurrent_batches_are_atomic' (154523144) panicked at test manager::range_append_test::range_append_normalizes_across_batches ... FAILED
+pkg/schedule/keyrange/range_append_test.rs:73:test manager::range_append_test::range_append_empty ... ok
+5:
+assertion `left == right` failed
+  left: [KeyRange { start_key: [1], end_key: [2] }, KeyRange { start_key: [3], end_key: [4] }, KeyRange { start_key: [4], end_key: [5] }, KeyRange { start_key: [5], end_key: [6] }, KeyRange { start_key: [2], end_key: [3] }, KeyRange { start_key: [6], end_key: [7] }, KeyRange { start_key: [10], end_key: [11] }, KeyRange { start_key: [7], end_key: [8] }, KeyRange { start_key: [12], end_key: [13] }, KeyRange { start_key: [8], end_key: [9] }, KeyRange { start_key: [13], end_key: [14] }, KeyRange { start_key: [9], end_key: [10] }, KeyRange { start_key: [16], end_key: [17] }, KeyRange { start_key: [14], end_key: [15] }, KeyRange { start_key: [15], end_key: [16] }, KeyRange { start_key: [11], end_key: [12] }]
+ right: [KeyRange { start_key: [1], end_key: [17] }]
+test manager::range_append_test::range_append_unsorted_adjacent ... FAILED
+test manager::range_append_test::range_append_copies_input_and_keeps_disjoint_ranges_sorted ... FAILED
+test manager::range_append_test::range_append_empty_boundaries_follow_keyutil ... FAILED
+test manager::range_append_test::range_append_concurrent_batches_are_atomic ... FAILED
+
+failures:
+
+failures:
+    manager::range_append_test::range_append_concurrent_batches_are_atomic
+    manager::range_append_test::range_append_copies_input_and_keeps_disjoint_ranges_sorted
+    manager::range_append_test::range_append_empty_boundaries_follow_keyutil
+    manager::range_append_test::range_append_normalizes_across_batches
+    manager::range_append_test::range_append_unsorted_adjacent
+
+test result: FAILED. 2 passed; 5 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-keyrange --lib`

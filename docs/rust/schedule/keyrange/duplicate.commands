@@ -1,0 +1,9 @@
+break /Users/Shared/work/dir/data/codes/pd/pkg/utils/keyutil/keyrange_test.go:190
+condition 1 tc.name == "non-overlapping"
+continue
+set rs.krs[1].StartKey[0] = 97
+set rs.krs[1].EndKey[0] = 98
+print rs.krs
+next
+print rs.krs
+exit

@@ -353,6 +353,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "astersql-pd-schedule-keyrange"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-keyutil",
+]
+
+[[package]]
 name = "astersql-pd-schedule-types"
 version = "0.1.0"
 dependencies = [
