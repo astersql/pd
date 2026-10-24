@@ -1,0 +1,12 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-statistics-utils v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics/utils)
+error[E0600]: cannot apply unary operator `-` to type `usize`
+  --> pkg/statistics/utils/topn_test.rs:83:56
+   |
+83 |         |id: usize, offset: i64| [1, 3, 7, 11].map(|m| -((id * m) % TOTAL) as i64 + offset);
+   |                                                        ^^^^^^^^^^^^^^^^^^^ cannot apply unary operator `-`
+   |
+   = note: unsigned values cannot be negated
+
+For more information about this error, try `rustc --explain E0600`.
+error: could not compile `astersql-pd-statistics-utils` (lib test) due to 1 previous error

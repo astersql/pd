@@ -7,3 +7,9 @@ pub use kind::*;
 
 #[cfg(test)]
 mod kind_test;
+
+mod topn;
+pub use topn::{TopN, TopNItem};
+
+#[cfg(test)]
+mod topn_test;

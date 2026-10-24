@@ -1,0 +1,6 @@
+=== RUN   TestPut
+--- PASS: TestPut (0.05s)
+=== RUN   TestRemove
+--- PASS: TestRemove (0.04s)
+PASS
+ok  	command-line-arguments	0.335s

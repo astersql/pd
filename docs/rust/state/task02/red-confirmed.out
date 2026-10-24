@@ -1,0 +1,57 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-statistics-utils v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics/utils)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.86s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics_utils-3d0f49b4fac9f695)
+
+running 5 tests
+
+thread 'topn_test::state_task_02_topn_cross_rank_updates_and_removals' (156778654) panicked at pkg/statistics/utils/topn_test.rs:54:9:
+assertion `left == right` failed
+  left: 0
+ right: 1
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'topn_test::state_task_02_topn_invalid_arguments' (156778657) panicked at pkg/statistics/utils/topn.rs:20:9:
+assertion failed: dimensions > 0 && n > 0
+
+thread 'topn_test::state_task_02_topn_equal_loads_n_boundaries_and_max_id' (156778655) panicked at pkg/statistics/utils/topn_test.rs:122:9:
+assertion failed: tn.put(item(1, [5; 4]))
+
+thread 'topn_test::state_task_02_topn_repeated_heap_repairs' (156778658) panicked at pkg/statistics/utils/topn_test.rs:151:9:
+assertion `left == right` failed
+  left: {}
+ right: {14}
+
+thread 'topn_test::state_task_02_topn_invalid_arguments' (156778657) panicked at pkg/statistics/utils/topn.rs:20:9:
+assertion failed: dimensions > 0 && n > 0
+
+thread 'topn_test::state_task_02_topn_invalid_arguments' (156778657) panicked at pkg/statistics/utils/topn.rs:20:9:
+assertion failed: dimensions > 0 && n > 0
+
+thread 'topn_test::state_task_02_topn_invalid_arguments' (156778657) panicked at pkg/statistics/utils/topn.rs:40:9:
+assertion failed: dimension < self.dimensions
+test topn_test::state_task_02_topn_cross_rank_updates_and_removals ... FAILED
+
+thread 'topn_test::state_task_02_topn_invalid_arguments' (156778657) panicked at pkg/statistics/utils/topn.rs:40:9:
+assertion failed: dimension < self.dimensions
+test topn_test::state_task_02_topn_equal_loads_n_boundaries_and_max_id ... FAILED
+test topn_test::state_task_02_topn_repeated_heap_repairs ... FAILED
+test topn_test::state_task_02_topn_invalid_arguments ... ok
+
+thread 'topn_test::state_task_02_topn_go_put_remove_contract' (156778656) panicked at pkg/statistics/utils/topn_test.rs:90:9:
+assertion `left == right` failed
+  left: 0
+ right: 10000
+test topn_test::state_task_02_topn_go_put_remove_contract ... FAILED
+
+failures:
+
+failures:
+    topn_test::state_task_02_topn_cross_rank_updates_and_removals
+    topn_test::state_task_02_topn_equal_loads_n_boundaries_and_max_id
+    topn_test::state_task_02_topn_go_put_remove_contract
+    topn_test::state_task_02_topn_repeated_heap_repairs
+
+test result: FAILED. 1 passed; 4 failed; 0 ignored; 0 measured; 7 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-statistics-utils --lib`

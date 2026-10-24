@@ -1,0 +1,55 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-statistics-utils v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics/utils)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.49s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics_utils-3d0f49b4fac9f695)
+
+running 5 tests
+
+thread 'topn_test::state_task_02_topn_invalid_arguments' (156779698) panicked at pkg/statistics/utils/topn.rs:29:9:
+invalid TopN dimensions or capacity
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'topn_test::state_task_02_topn_invalid_arguments' (156779698) panicked at pkg/statistics/utils/topn.rs:29:9:
+invalid TopN dimensions or capacity
+
+thread 'topn_test::state_task_02_topn_invalid_arguments' (156779698) panicked at pkg/statistics/utils/topn.rs:29:9:
+invalid TopN dimensions or capacity
+
+thread 'topn_test::state_task_02_topn_invalid_arguments' (156779698) panicked at pkg/statistics/utils/topn.rs:69:24:
+index out of bounds: the len is 4 but the index is 4
+
+thread 'topn_test::state_task_02_topn_invalid_arguments' (156779698) panicked at pkg/statistics/utils/topn.rs:75:24:
+index out of bounds: the len is 4 but the index is 18446744073709551615
+test topn_test::state_task_02_topn_cross_rank_updates_and_removals ... ok
+test topn_test::state_task_02_topn_invalid_arguments ... ok
+test topn_test::state_task_02_topn_equal_loads_n_boundaries_and_max_id ... ok
+test topn_test::state_task_02_topn_repeated_heap_repairs ... ok
+test topn_test::state_task_02_topn_go_put_remove_contract ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 7 filtered out; finished in 0.13s
+
+   Compiling astersql-pd-statistics-utils v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics/utils)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.34s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics_utils-3d0f49b4fac9f695)
+
+running 12 tests
+test kind_test::state_task_01_kind_short_slices_follow_accessed_indexes ... ok
+test kind_test::state_task_01_kind_single_owned_label ... ok
+test kind_test::state_task_01_kind_set_rates_preserves_other_direction ... ok
+test kind_test::state_task_01_kind_rw_order_inverse_and_intervals ... ok
+test kind_test::state_task_01_kind_names_and_defaults ... ok
+test topn_test::state_task_02_topn_invalid_arguments ... ok
+test kind_test::state_task_01_kind_rates_and_zero_interval ... ok
+test kind_test::state_task_01_kind_complete_integer_mappings ... ok
+test topn_test::state_task_02_topn_cross_rank_updates_and_removals ... ok
+test topn_test::state_task_02_topn_equal_loads_n_boundaries_and_max_id ... ok
+test topn_test::state_task_02_topn_repeated_heap_repairs ... ok
+test topn_test::state_task_02_topn_go_put_remove_contract ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.13s
+
+   Doc-tests astersql_pd_statistics_utils
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
