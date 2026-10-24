@@ -1,0 +1,11 @@
+Oracle: explicit existing files pkg/statistics/cpu.go and cpu_test.go only.
+No package TestMain, goroutines, failpoint calls, I/O, generate or module mutation.
+Functions: strings.HasPrefix -> RecordPair.GetKey/GetValue -> u64 sum -> float64.
+Peer: nil -> GetCpuStats -> nil -> CPUStats.GetUnifiedRead -> float64.
+Test imports: testing, testify/require, pinned pdpb (pure generated getters).
+Standard go test does not execute go generate; GOFLAGS=-mod=readonly GOPROXY=off.
+Workspace: proto/build.rs reads pinned module archive, verifies SHA256, generates
+only in Cargo OUT_DIR. Existing etcd_fixture_test.rs builds the existing Go fixture
+into the claimed target slot. scripts/rust-etcd-fixture/main.go writes WAL/log/ready
+only beneath its slot directory; no generate or failpoint. EOF closes etcd;
+Fixture::drop polls, kills if necessary, and waits before returning.

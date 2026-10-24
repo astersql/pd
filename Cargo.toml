@@ -1,5 +1,5 @@
 [workspace]
-members = ["pkg/statistics/buckets", "pkg/statistics/utils", "pkg/schedule/affinity", "pkg/schedule/placement", "pkg/schedule/labeler", "pkg/schedule/plan", "pkg/schedule/rangelist", "pkg/schedule/keyrange", "pkg/schedule/types", "pkg/metering/config", "pkg/utils/grpcutil", "pkg/utils/metricutil", "pkg/utils/logutil", "pkg/encryption", "pkg/mcs/resourcemanager/server", "pkg/schedule/config", "server/config", "pkg/utils/configutil", "pkg/utils/etcdutil", "pkg/election", "pkg/storage/endpoint", "pkg/response", "pkg/core", "pkg/core/storelimit", "pkg/core/rangetree", "pkg/cache", "pkg/ratelimit", "pkg/window", "pkg/btree", "pkg/balancer", "pkg/storage/raft-prototype", "pkg/server", "pkg/runtime", "cmd/pd-server", "pkg/proto", "tests/rust-compat", "pkg/storage", "pkg/storage/kv", "pkg/member", "pkg/id", "pkg/tso", "pkg/core/constant", "pkg/keyspace/constant", "pkg/mcs/utils/constant", "pkg/versioninfo/kerneltype", "pkg/slice", "pkg/codec", "pkg/utils/reflectutil", "pkg/utils/syncutil", "pkg/utils/timerutil", "pkg/utils/typeutil", "pkg/movingaverage", "pkg/errs", "pkg/utils/jsonutil", "pkg/utils/keyutil", "pkg/utils/keypath"]
+members = ["pkg/statistics", "pkg/statistics/buckets", "pkg/statistics/utils", "pkg/schedule/affinity", "pkg/schedule/placement", "pkg/schedule/labeler", "pkg/schedule/plan", "pkg/schedule/rangelist", "pkg/schedule/keyrange", "pkg/schedule/types", "pkg/metering/config", "pkg/utils/grpcutil", "pkg/utils/metricutil", "pkg/utils/logutil", "pkg/encryption", "pkg/mcs/resourcemanager/server", "pkg/schedule/config", "server/config", "pkg/utils/configutil", "pkg/utils/etcdutil", "pkg/election", "pkg/storage/endpoint", "pkg/response", "pkg/core", "pkg/core/storelimit", "pkg/core/rangetree", "pkg/cache", "pkg/ratelimit", "pkg/window", "pkg/btree", "pkg/balancer", "pkg/storage/raft-prototype", "pkg/server", "pkg/runtime", "cmd/pd-server", "pkg/proto", "tests/rust-compat", "pkg/storage", "pkg/storage/kv", "pkg/member", "pkg/id", "pkg/tso", "pkg/core/constant", "pkg/keyspace/constant", "pkg/mcs/utils/constant", "pkg/versioninfo/kerneltype", "pkg/slice", "pkg/codec", "pkg/utils/reflectutil", "pkg/utils/syncutil", "pkg/utils/timerutil", "pkg/utils/typeutil", "pkg/movingaverage", "pkg/errs", "pkg/utils/jsonutil", "pkg/utils/keyutil", "pkg/utils/keypath"]
 resolver = "3"
 
 [workspace.package]
@@ -8,6 +8,7 @@ rust-version = "1.85"
 license = "Apache-2.0"
 
 [workspace.dependencies]
+astersql-pd-statistics = { path = "pkg/statistics" }
 astersql-pd-statistics-buckets = { path = "pkg/statistics/buckets" }
 astersql-pd-statistics-utils = { path = "pkg/statistics/utils" }
 astersql-pd-schedule-affinity = { path = "pkg/schedule/affinity" }

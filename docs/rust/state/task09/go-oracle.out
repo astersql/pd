@@ -1,0 +1,6 @@
+=== RUN   TestStoreReadCPUUsage
+--- PASS: TestStoreReadCPUUsage (0.00s)
+=== RUN   TestRegionReadCPUUsage
+--- PASS: TestRegionReadCPUUsage (0.00s)
+PASS
+ok  	command-line-arguments	0.017s
