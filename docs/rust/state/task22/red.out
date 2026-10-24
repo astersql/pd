@@ -1,0 +1,53 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-statistics v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.07s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics-19f9aca67fa98079)
+
+running 6 tests
+
+thread 'hot_expire_test::state_task_22_hot_expire_ttl_refresh_boundary_and_rollback' (157645679) panicked at pkg/statistics/hot_expire_test.rs:93:5:
+assertion failed: c.get(100, 1).is_none()
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test hot_expire_test::state_task_22_hot_expire_ttl_refresh_boundary_and_rollback ... FAILED
+
+thread 'hot_expire_test::state_task_22_hot_expire_cold_write_and_default_ttl' (157645674) panicked at pkg/statistics/hot_expire_test.rs:176:13:
+assertion `left == right` failed
+  left: 0
+ right: 1
+test hot_expire_test::state_task_22_hot_expire_cold_write_and_default_ttl ... FAILED
+
+thread 'hot_expire_test::state_task_22_hot_expire_removed_store_and_threshold_only_store' (157645678) panicked at pkg/statistics/hot_expire_test.rs:116:5:
+assertion `left == right` failed
+  left: [80000.0, 80000.0, 80000.0, 80000.0]
+ right: [1024.0, 32.0, 32.0, 1.0]
+
+thread 'hot_expire_test::state_task_22_hot_expire_region_disappearance_and_threshold_recompute' (157645677) panicked at pkg/statistics/hot_expire_test.rs:131:5:
+assertion failed: c.get(1, 1).is_none()
+test hot_expire_test::state_task_22_hot_expire_removed_store_and_threshold_only_store ... FAILED
+test hot_expire_test::state_task_22_hot_expire_region_disappearance_and_threshold_recompute ... FAILED
+
+thread 'hot_expire_test::state_task_22_hot_expire_missing_report_partial_window_and_isolation' (157645676) panicked at pkg/statistics/hot_expire_test.rs:58:5:
+assertion `left == right` failed
+  left: 0
+ right: 1
+test hot_expire_test::state_task_22_hot_expire_missing_report_partial_window_and_isolation ... FAILED
+
+thread 'hot_expire_test::state_task_22_hot_expire_fixed_replica_moves_and_cold_reports' (157645675) panicked at pkg/statistics/hot_expire_test.rs:156:13:
+assertion `left == right` failed
+  left: {}
+ right: {1, 2, 3}
+test hot_expire_test::state_task_22_hot_expire_fixed_replica_moves_and_cold_reports ... FAILED
+
+failures:
+
+failures:
+    hot_expire_test::state_task_22_hot_expire_cold_write_and_default_ttl
+    hot_expire_test::state_task_22_hot_expire_fixed_replica_moves_and_cold_reports
+    hot_expire_test::state_task_22_hot_expire_missing_report_partial_window_and_isolation
+    hot_expire_test::state_task_22_hot_expire_region_disappearance_and_threshold_recompute
+    hot_expire_test::state_task_22_hot_expire_removed_store_and_threshold_only_store
+    hot_expire_test::state_task_22_hot_expire_ttl_refresh_boundary_and_rollback
+
+test result: FAILED. 0 passed; 6 failed; 0 ignored; 0 measured; 68 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `-p astersql-pd-statistics --lib`

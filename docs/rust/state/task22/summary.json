@@ -1,0 +1,51 @@
+[
+  {
+    "command": "cargo fmt --all",
+    "exit": 0,
+    "passed": 0,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "command": "cargo metadata --format-version 1 --no-deps",
+    "exit": 0,
+    "passed": 0,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "command": "cargo fmt --all -- --check",
+    "exit": 0,
+    "passed": 0,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "command": "cargo test -p astersql-pd-statistics --locked --lib state_task_22_hot_expire -- --nocapture",
+    "exit": 0,
+    "passed": 6,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "command": "cargo test -p astersql-pd-statistics --locked",
+    "exit": 0,
+    "passed": 74,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "command": "cargo check --workspace --locked",
+    "exit": 0,
+    "passed": 0,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "command": "cargo test --workspace --locked",
+    "exit": 0,
+    "passed": 1089,
+    "failed": 0,
+    "ignored": 1
+  }
+]

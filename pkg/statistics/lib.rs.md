@@ -50,3 +50,7 @@ set_thresholds_update_interval和check_peer_flow_dynamic；hot_threshold_test显
 已加入[热点副本继承与主节点变化](hot_inherit.rs.md)：原缓存内查找继承候选、
 collect_expired_items与check_peer_flow_at，hot_inherit_test显式登记。
 复制真实历史窗口，宿主纳秒时钟维护leader冷却，write跳过迁移首报。
+
+已加入[热点过期与冷副本清理](hot_expire.rs.md)：check_cold_peer、update_stat_at、
+gc、remove_region及双向成员查询；hot_expire_test显式登记。宿主传入时钟与存活store集合，
+复用真实窗口和TopN，应用动作同步刷新TTL和索引。

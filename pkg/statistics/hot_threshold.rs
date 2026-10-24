@@ -10,14 +10,14 @@ use crate::{HotPeerCache, HotPeerStat};
 const TOP_N: usize = 60;
 const HOT_THRESHOLD_RATIO: f64 = 0.8;
 
-struct ThresholdSnapshot {
+pub(crate) struct ThresholdSnapshot {
     updated: i64,
     rates: [f64; DIM_LEN],
 }
 
 pub(crate) struct HotThresholds {
     stores: BTreeMap<u64, TopN<HotPeerStat>>,
-    snapshots: Mutex<BTreeMap<u64, ThresholdSnapshot>>,
+    pub(crate) snapshots: Mutex<BTreeMap<u64, ThresholdSnapshot>>,
     refresh_nanos: u64,
 }
 
@@ -32,6 +32,14 @@ impl Default for HotThresholds {
 }
 
 impl HotThresholds {
+    pub(crate) fn retain_stores(&mut self, active: &std::collections::BTreeSet<u64>) {
+        self.stores.retain(|store, _| active.contains(store));
+        self.snapshots
+            .get_mut()
+            .expect("threshold snapshot lock poisoned")
+            .retain(|store, _| active.contains(store));
+    }
+
     pub(crate) fn put(&mut self, item: &HotPeerStat) {
         // Freeze denoised loads; later pending reports must not mutate heap keys.
         self.stores

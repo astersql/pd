@@ -14,10 +14,11 @@ const SECOND: i64 = 1_000_000_000;
 /// The host applies returned actions in report order and supplies time for dynamic
 /// thresholds. Read and write use separate caches; TTL is a separate policy.
 pub struct HotPeerCache {
-    kind: RWType,
+    pub(crate) kind: RWType,
     pub(crate) peers: BTreeMap<(u64, u64), HotPeerStat>,
-    denoising: bool,
+    pub(crate) denoising: bool,
     pub(crate) hot_thresholds: HotThresholds,
+    pub(crate) expiry: crate::hot_expire::HotExpiry,
 }
 
 impl HotPeerCache {
@@ -29,6 +30,7 @@ impl HotPeerCache {
             peers: BTreeMap::new(),
             denoising: true,
             hot_thresholds: HotThresholds::default(),
+            expiry: crate::hot_expire::HotExpiry::new(kind),
         }
     }
 
@@ -44,13 +46,21 @@ impl HotPeerCache {
 
     /// Applies Add/Update/Remove; unknown actions leave the cache unchanged.
     pub fn update_stat(&mut self, item: HotPeerStat) {
+        self.update_stat_at(item, 0);
+    }
+
+    /// Applies a report and refreshes its TTL using host-clock nanoseconds.
+    /// Live hosts should use this method consistently instead of clock origin zero.
+    pub fn update_stat_at(&mut self, item: HotPeerStat, now: i64) {
         let key = (item.region_id, item.store_id);
         match item.action_type {
             ActionType::ADD | ActionType::UPDATE => {
+                self.expiry.updated.insert(key, now);
                 self.hot_thresholds.put(&item);
                 self.peers.insert(key, item);
             }
             ActionType::REMOVE => {
+                self.expiry.updated.remove(&key);
                 self.hot_thresholds.remove(item.store_id, item.region_id);
                 self.peers.remove(&key);
             }
@@ -162,7 +172,7 @@ impl HotPeerCache {
         item.allow_inherited = true;
     }
 
-    fn update_hot_peer_stat(
+    pub(crate) fn update_hot_peer_stat(
         &self,
         item: &mut HotPeerStat,
         old: &HotPeerStat,
@@ -214,7 +224,7 @@ impl HotPeerCache {
             } else {
                 item.action_type = ActionType::REMOVE;
             }
-        } else if item.is_hot(thresholds) {
+        } else if !item.in_cold && item.is_hot(thresholds) {
             item.hot_degree = old.hot_degree.wrapping_add(1);
             if old.anti_count < self.kind.default_anti_count() as i64 {
                 item.anti_count = old.anti_count.wrapping_add(1);

@@ -80,3 +80,7 @@ mod hot_threshold_test;
 mod hot_inherit;
 #[cfg(test)]
 mod hot_inherit_test;
+
+mod hot_expire;
+#[cfg(test)]
+mod hot_expire_test;
