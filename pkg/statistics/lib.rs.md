@@ -59,3 +59,7 @@ gc、remove_region及双向成员查询；hot_expire_test显式登记。宿主�
 HotTaskOutput、HotTaskError和new_region_flow_tasks，hot_worker_test显式登记。
 宿主Tokio handle驱动独立有界读写队列，复用HotPeerCache::run_task；明确admission、
 Applied、拒绝和取消结果，shutdown等待两个worker退出并返回最终缓存。
+
+已加入[分引擎负载聚合](engine_load.rs.md)：summary_stores_load、StoreLoadDetail、
+StoreLoadSummary，engine_load_test显式登记。TiKV/TiFlash独立人口计算expected/stddev，
+compute排除；复用热点去噪快照、pending预测和宿主时钟历史采样。

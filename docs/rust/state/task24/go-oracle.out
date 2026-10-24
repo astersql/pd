@@ -1,0 +1,10 @@
+=== RUN   TestSummaryStoreInfos
+--- PASS: TestSummaryStoreInfos (0.00s)
+=== RUN   TestSummaryStoresLoadByEngineZeroCPUStddev
+--- PASS: TestSummaryStoresLoadByEngineZeroCPUStddev (0.00s)
+=== RUN   TestTiFlashComputeExcludedFromExpectation
+--- PASS: TestTiFlashComputeExcludedFromExpectation (0.00s)
+=== RUN   TestTiKVNotAffectedByTiFlashCompute
+--- PASS: TestTiKVNotAffectedByTiFlashCompute (0.00s)
+PASS
+ok  	github.com/tikv/pd/pkg/statistics	0.025s

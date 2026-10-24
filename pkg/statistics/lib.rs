@@ -91,3 +91,8 @@ pub use hot_worker::{
 };
 #[cfg(test)]
 mod hot_worker_test;
+
+mod engine_load;
+pub use engine_load::{StoreLoadDetail, StoreLoadSummary, summary_stores_load};
+#[cfg(test)]
+mod engine_load_test;
