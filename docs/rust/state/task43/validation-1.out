@@ -1,0 +1,15 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.05s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_cluster-2e5fab8b58718585)
+
+running 9 tests
+test region_heartbeat_test::state_task_43_region_heartbeat_epoch_term_rejection ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_accept_duplicate_inherit ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_duplicate_repairs_subtree ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_same_id_recheck_and_last_write ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_flow_size_and_leader ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_prepared_overlap_recheck ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_delayed_duplicate_cannot_resurrect ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_membership_and_recovery ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_concurrent_precheck_merge_commit ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 12 filtered out; finished in 0.00s

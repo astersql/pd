@@ -1,0 +1,13 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+Type 'help' for list of commands.
+Breakpoint 1 set at 0x191421c for github.com/tikv/pd/server/cluster.TestRegionHeartbeat() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1128
+> [Breakpoint 1] github.com/tikv/pd/server/cluster.TestRegionHeartbeat() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1128 (hits goroutine(268):1 total:1) (PC: 0x191421c)
+Breakpoint 2 set at 0x18eeb74 for github.com/tikv/pd/server/cluster.(*RaftCluster).processRegionHeartbeat() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster.go:1406
+[2026/10/24 21:33:13.262 +00:00] [INFO] [region.go:915] ["region Version changed"] [region-id=0] [detail="StartKey:{612020202020202020202020202020202020202031}, EndKey:{612020202020202020202020202020202020202032}"] [old-version=2] [new-version=3]
+> [Breakpoint 2] github.com/tikv/pd/server/cluster.(*RaftCluster).processRegionHeartbeat() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster.go:1406 (hits goroutine(268):1 total:1) (PC: 0x18eeb74)
+> github.com/tikv/pd/server/cluster.(*RaftCluster).processRegionHeartbeat() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster.go:1407 (PC: 0x18eec1c)
+error(*github.com/pingcap/errors.fundamental) *{
+    msg: "region is stale: region start_key:\"a                   1\" end_ke...+350 more",
+    stack: *github.com/pingcap/errors.stack len: 7, cap: 32, [14559656,14599632,14594640,26143664,26296892,1936864,660564],}
+5
+4

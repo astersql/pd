@@ -1,0 +1,25 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+   Compiling astersql-pd-cluster v0.1.0 (/Users/Shared/work/dir/data/codes/pd/server/cluster)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.31s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_cluster-2e5fab8b58718585)
+
+running 6 tests
+test region_heartbeat_test::state_task_43_region_heartbeat_duplicate_repairs_subtree ... ok
+thread 'region_heartbeat_test::state_task_43_region_heartbeat_accept_duplicate_inherit' (158459422) panicked at server/cluster/region_heartbeat_test.rs:72
+:83:
+called `Result::unwrap()` on an `Err` value: StaleRegionError { incoming: RegionMeta { id: 2, key_range: KeyRange { start_key: [120], end_key: [122] }, epoch: Some(RegionEpoch { conf_ver: 2, version: 2 }), peers: [Peer { id: 12, store_id: 1, role: Voter, is_witness: false }], encryption_meta: None, is_in_flashback: false, flashback_start_ts: 0 }, current: RegionMeta { id: 1, key_range: KeyRange { start_key: [], end_key: [] }, epoch: Some(RegionEpoch { conf_ver: 2, version: 3 }), peers: [Peer { id: 11, store_id: 1, role: Voter, is_witness: false }], encryption_meta: None, is_in_flashback: false, flashback_start_ts: 0 } }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test region_heartbeat_test::state_task_43_region_heartbeat_epoch_term_rejection ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_same_id_recheck_and_last_write ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_flow_size_and_leader ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_prepared_overlap_recheck ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_accept_duplicate_inherit ... FAILED
+
+failures:
+
+failures:
+    region_heartbeat_test::state_task_43_region_heartbeat_accept_duplicate_inherit
+
+test result: FAILED. 5 passed; 1 failed; 0 ignored; 0 measured; 12 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-cluster --lib`

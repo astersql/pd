@@ -1,0 +1,24 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+8781f08225e2b8b746217d79fe78e3ff072369cc8ae8941cc8d616a8a77986d9  /Users/Shared/work/dir/data/codes/pd/target/rust-slot-2/cluster-oracle41.test
+=== RUN   TestRegionHeartbeat
+[2026/10/24 21:31:31.178 +00:00] [INFO] [region.go:915] ["region Version changed"] [region-id=0] [detail="StartKey:{612020202020202020202020202020202020202031}, EndKey:{612020202020202020202020202020202020202032}"] [old-version=2] [new-version=3]
+[2026/10/24 21:31:31.179 +00:00] [INFO] [region.go:915] ["region ConfVer changed"] [region-id=0] [detail=] [old-confver=2] [new-confver=3]
+[2026/10/24 21:31:31.180 +00:00] [INFO] [region.go:915] ["region ConfVer changed"] [region-id=0] [detail="Remove peer:{id:100000000 },Add peer:{id:100000000 is_witness:true }"] [old-confver=3] [new-confver=4]
+[2026/10/24 21:31:31.180 +00:00] [INFO] [region.go:915] ["leader changed"] [region-id=0] [from=0] [to=1]
+[2026/10/24 21:31:31.180 +00:00] [INFO] [region.go:915] ["region Version changed"] [region-id=1] [detail="StartKey:{612020202020202020202020202020202020202032}, EndKey:{612020202020202020202020202020202020202033}"] [old-version=2] [new-version=3]
+[2026/10/24 21:31:31.181 +00:00] [INFO] [region.go:915] ["region ConfVer changed"] [region-id=1] [detail=] [old-confver=2] [new-confver=3]
+[2026/10/24 21:31:31.181 +00:00] [INFO] [region.go:915] ["region ConfVer changed"] [region-id=1] [detail="Remove peer:{id:100000005 },Add peer:{id:100000005 is_witness:true }"] [old-confver=3] [new-confver=4]
+[2026/10/24 21:31:31.181 +00:00] [INFO] [region.go:915] ["leader changed"] [region-id=1] [from=1] [to=2]
+[2026/10/24 21:31:31.182 +00:00] [INFO] [region.go:915] ["region Version changed"] [region-id=2] [detail="StartKey:{612020202020202020202020202020202020202033}, EndKey:{612020202020202020202020202020202020202034}"] [old-version=2] [new-version=3]
+[2026/10/24 21:31:31.182 +00:00] [INFO] [region.go:915] ["region ConfVer changed"] [region-id=2] [detail=] [old-confver=2] [new-confver=3]
+[2026/10/24 21:31:31.183 +00:00] [INFO] [region.go:915] ["region ConfVer changed"] [region-id=2] [detail="Remove peer:{id:100000006 store_id:2 },Add peer:{id:100000006 store_id:2 is_witness:true }"] [old-confver=3] [new-confver=4]
+[2026/10/24 21:31:31.183 +00:00] [INFO] [region.go:915] ["leader changed"] [region-id=2] [from=2] [to=0]
+--- PASS: TestRegionHeartbeat (0.06s)
+=== RUN   TestRegionFlowChanged
+--- PASS: TestRegionFlowChanged (0.00s)
+=== RUN   TestRegionSizeChanged
+[2026/10/24 21:31:31.235 +00:00] [INFO] [cluster.go:962] ["update store stats background jobs has been stopped"]
+--- PASS: TestRegionSizeChanged (0.00s)
+=== RUN   TestCheckStaleRegion
+--- PASS: TestCheckStaleRegion (0.00s)
+PASS

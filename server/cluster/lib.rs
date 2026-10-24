@@ -11,3 +11,11 @@ mod store_heartbeat_test;
 mod removed_store;
 #[cfg(test)]
 mod removed_store_test;
+
+mod region_heartbeat;
+pub use region_heartbeat::{
+    PreparedRegionHeartbeat, RegionHeartbeatResult, handle_region_heartbeat,
+    prepare_region_heartbeat,
+};
+#[cfg(test)]
+mod region_heartbeat_test;

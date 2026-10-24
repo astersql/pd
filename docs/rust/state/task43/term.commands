@@ -1,0 +1,11 @@
+break cluster_test.go:1128
+continue
+break /Users/Shared/work/dir/data/codes/pd/server/cluster/cluster.go:1406
+continue
+set origin.term = 5
+set region.term = 4
+next
+print err
+print origin.term
+print region.term
+exit

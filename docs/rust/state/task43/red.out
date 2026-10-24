@@ -1,0 +1,47 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+   Compiling astersql-pd-cluster v0.1.0 (/Users/Shared/work/dir/data/codes/pd/server/cluster)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.97s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_cluster-2e5fab8b58718585)
+
+running 6 tests
+
+thread 'region_heartbeat_test::state_task_43_region_heartbeat_same_id_recheck_and_last_write' (158458245) panicked at server/cluster/region_heartbeat_test.rs:162:5:
+assertion failed: delayed.commit(&mut c).is_err()
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'region_heartbeat_test::state_task_43_region_heartbeat_epoch_term_rejection' (158458242) panicked at server/cluster/region_heartbeat_test.rs:31:30:
+called `Option::unwrap()` on a `None` value
+
+thread 'region_heartbeat_test::state_task_43_region_heartbeat_accept_duplicate_inherit' (158458240) panicked at server/cluster/region_heartbeat_test.rs:60:5:
+assertion failed: first.guide.save_cache && first.guide.save_kv && first.guide.retained
+
+thread 'region_heartbeat_test::state_task_43_region_heartbeat_flow_size_and_leader' (158458243) panicked at server/cluster/region_heartbeat_test.rs:116:5:
+assertion failed: result.guide.save_cache && result.guide.need_sync && !result.guide.save_kv
+
+thread 'region_heartbeat_test::state_task_43_region_heartbeat_prepared_overlap_recheck' (158458244) panicked at server/cluster/region_heartbeat_test.rs:142:5:
+assertion `left == right` failed
+  left: []
+ right: [1]
+
+thread 'region_heartbeat_test::state_task_43_region_heartbeat_duplicate_repairs_subtree' (158458241) panicked at server/cluster/region_heartbeat_test.rs:38:10:
+called `Option::unwrap()` on a `None` value
+test region_heartbeat_test::state_task_43_region_heartbeat_epoch_term_rejection ... FAILED
+test region_heartbeat_test::state_task_43_region_heartbeat_accept_duplicate_inherit ... FAILED
+test region_heartbeat_test::state_task_43_region_heartbeat_same_id_recheck_and_last_write ... FAILED
+test region_heartbeat_test::state_task_43_region_heartbeat_flow_size_and_leader ... FAILED
+test region_heartbeat_test::state_task_43_region_heartbeat_prepared_overlap_recheck ... FAILED
+test region_heartbeat_test::state_task_43_region_heartbeat_duplicate_repairs_subtree ... FAILED
+
+failures:
+
+failures:
+    region_heartbeat_test::state_task_43_region_heartbeat_accept_duplicate_inherit
+    region_heartbeat_test::state_task_43_region_heartbeat_duplicate_repairs_subtree
+    region_heartbeat_test::state_task_43_region_heartbeat_epoch_term_rejection
+    region_heartbeat_test::state_task_43_region_heartbeat_flow_size_and_leader
+    region_heartbeat_test::state_task_43_region_heartbeat_prepared_overlap_recheck
+    region_heartbeat_test::state_task_43_region_heartbeat_same_id_recheck_and_last_write
+
+test result: FAILED. 0 passed; 6 failed; 0 ignored; 0 measured; 12 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-cluster --lib`

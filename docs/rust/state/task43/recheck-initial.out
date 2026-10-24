@@ -1,0 +1,40 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+Type 'help' for list of commands.
+Breakpoint 1 set at 0x191421c for github.com/tikv/pd/server/cluster.TestRegionHeartbeat() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1128
+> [Breakpoint 1] github.com/tikv/pd/server/cluster.TestRegionHeartbeat() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1128 (hits goroutine(296):1 total:1) (PC: 0x191421c)
+Command failed: Location "cluster.go:1406" ambiguous: /Users/Shared/work/dir/data/codes/pd/pkg/cluster/cluster.go, /Users/Shared/work/dir/data/codes/pd/pkg/utils/grpcutil/cluster.go, /Users/Shared/work/dir/data/codes/pd/server/cluster/cluster.go, /Users/xiangmin/go/pkg/mod/go.etcd.io/etcd/client/v3@v3.5.15/cluster.go, /Users/xiangmin/go/pkg/mod/go.etcd.io/etcd/server/v3@v3.5.15/etcdserver/api/cluster.go…
+Set a suspended breakpoint (Delve will try to set this breakpoint when a plugin is loaded) [Y/n]?/oracle/oracle.commands:3: EOF
+[2026/10/24 21:31:41.886 +00:00] [INFO] [region.go:915] ["region Version changed"] [region-id=0] [detail="StartKey:{612020202020202020202020202020202020202031}, EndKey:{612020202020202020202020202020202020202032}"] [old-version=2] [new-version=3]
+[2026/10/24 21:31:41.886 +00:00] [INFO] [region.go:915] ["region ConfVer changed"] [region-id=0] [detail=] [old-confver=2] [new-confver=3]
+[2026/10/24 21:31:41.888 +00:00] [INFO] [region.go:915] ["region ConfVer changed"] [region-id=0] [detail="Remove peer:{id:100000000 },Add peer:{id:100000000 is_witness:true }"] [old-confver=3] [new-confver=4]
+[2026/10/24 21:31:41.888 +00:00] [INFO] [region.go:915] ["leader changed"] [region-id=0] [from=0] [to=1]
+> [Breakpoint 1] github.com/tikv/pd/server/cluster.TestRegionHeartbeat() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1128 (hits goroutine(296):2 total:2) (PC: 0x191421c)
+("*github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x7d212d04c0e0)
+*github.com/pingcap/kvproto/pkg/metapb.RegionEpoch {ConfVer: 2, Version: 2}
+("*github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x7d212d04c970)
+*github.com/pingcap/kvproto/pkg/metapb.RegionEpoch {ConfVer: 2, Version: 3}
+--- FAIL: TestRegionHeartbeat (0.05s)
+    cluster_test.go:1128:
+            Error Trace:    /Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1128
+            Error:          Received unexpected error:
+                            region is stale: region id:1 start_key:"a                   2" end_key:"a                   3" region_epoch:<conf_ver:2 version:3 > peers:<id:100000003 store_id:1 > peers:<id:100000004 store_id:2 > peers:<id:100000005 >  origin id:1 start_key:"a                   2" end_key:"a                   3" region_epoch:<conf_ver:2 version:100 > peers:<id:100000003 store_id:1 > peers:<id:100000004 store_id:2 > peers:<id:100000005 >
+                            github.com/tikv/pd/pkg/core.errRegionIsStale
+                                /Users/Shared/work/dir/data/codes/pd/pkg/core/region.go:61
+                            github.com/tikv/pd/pkg/core.check
+                                /Users/Shared/work/dir/data/codes/pd/pkg/core/region.go:1354
+                            github.com/tikv/pd/pkg/core.(*RegionsInfo).PreCheckPutRegion
+                                /Users/Shared/work/dir/data/codes/pd/pkg/core/region.go:1143
+                            github.com/tikv/pd/server/cluster.(*RaftCluster).processRegionHeartbeat
+                                /Users/Shared/work/dir/data/codes/pd/server/cluster/cluster.go:1347
+                            github.com/tikv/pd/server/cluster.TestRegionHeartbeat
+                                /Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1128
+                            testing.tRunner
+                                /Users/xiangmin/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.8.darwin-amd64/src/testing/testing.go:2036
+                            runtime.goexit
+                                /Users/xiangmin/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.8.darwin-amd64/src/runtime/asm_arm64.s:1447
+            Test:           TestRegionHeartbeat
+FAIL
+/oracle/oracle.commands:8: Process 22 has exited with status 1
+/oracle/oracle.commands:9: Process 22 has exited with status 1
+/oracle/oracle.commands:10: Process 22 has exited with status 1
+/oracle/oracle.commands:11: Process 22 has exited with status 1

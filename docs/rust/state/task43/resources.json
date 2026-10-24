@@ -1,0 +1,16 @@
+{
+  "successful_slots": [
+    2
+  ],
+  "initial_debug_probe_slot": 3,
+  "target_dirs": [
+    "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2",
+    "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-3"
+  ],
+  "own_locks_released": true,
+  "own_slot_processes": [],
+  "cache_retained": true,
+  "other_lock_paths": [
+    "target/rust-slot-locks/slot-1.lock/owner"
+  ]
+}
