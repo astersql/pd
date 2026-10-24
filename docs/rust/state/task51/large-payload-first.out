@@ -1,0 +1,46 @@
+   Compiling astersql-pd-syncer v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/syncer)
+   Compiling astersql-pd-cluster v0.1.0 (/Users/Shared/work/dir/data/codes/pd/server/cluster)
+   Compiling astersql-pd-server v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/server)
+warning: use of deprecated field `astersql_pd_proto::pdpb::RegionHeartbeatRequest::cpu_usage`
+   --> pkg/server/core_region_adapter.rs:134:30
+    |
+134 |     r.set_response_cpu_usage(p.cpu_usage);
+    |                              ^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+   Compiling astersql-pd-runtime v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/runtime)
+warning: `astersql-pd-server` (lib) generated 1 warning
+warning: use of deprecated field `astersql_pd_proto::pdpb::RegionHeartbeatRequest::cpu_usage`
+  --> pkg/server/core_region_adapter_test.rs:88:13
+   |
+88 |             cpu_usage: 77,
+   |             ^^^^^^^^^^^^^
+
+warning: `astersql-pd-server` (lib test) generated 2 warnings (1 duplicate)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.66s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_server-b2130a98b1fdb8d1)
+
+running 7 tests
+test sync_transport_test::state_task_51_sync_transport_stop_before_first_request ... ok
+test sync_transport_test::state_task_51_sync_transport_full_and_incremental ... ok
+test sync_transport_test::state_task_51_sync_transport_follower_leader_reconnect ... ok
+test sync_transport_test::state_task_51_sync_transport_replacement_and_reconnect ... ok
+
+thread 'sync_transport_test::state_task_51_sync_transport_independent_slow_reader_and_final_state' (158680238) panicked at pkg/server/sync_transport_test.rs:187:5:
+assertion `left == right` failed
+  left: 1
+ right: 0
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test sync_transport_test::state_task_51_sync_transport_independent_slow_reader_and_final_state ... FAILED
+test sync_transport_test::state_task_51_sync_transport_send_failure_cancellation_and_join ... ok
+test sync_transport_test::state_task_51_sync_transport_snapshot_batches_and_publish_during_scan ... ok
+
+failures:
+
+failures:
+    sync_transport_test::state_task_51_sync_transport_independent_slow_reader_and_final_state
+
+test result: FAILED. 6 passed; 1 failed; 0 ignored; 0 measured; 38 filtered out; finished in 0.14s
+
+error: test failed, to rerun pass `-p astersql-pd-server --lib`

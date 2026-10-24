@@ -38,6 +38,10 @@ pub trait PdServices: Send + Sync {
     ) -> Option<&dyn bucket_heartbeat_adapter::BucketHeartbeatService> {
         None
     }
+    /// Optional host-owned region synchronization transport.
+    fn region_sync_service(&self) -> Option<&sync_transport::RegionSyncer> {
+        None
+    }
     async fn healthy(&self) -> Result<(), String>;
     async fn alloc_id(&self) -> Result<u64, String>;
     async fn timestamp(&self, count: u32) -> Result<Timestamp, String>;
@@ -45,10 +49,10 @@ pub trait PdServices: Send + Sync {
 /// One router, listener and cancellation scope for HTTP/1 and HTTP/2 gRPC.
 pub fn router(services: Arc<dyn PdServices>, cancel: CancellationToken) -> axum::Router {
     tonic::service::Routes::new(astersql_pd_proto::pdpb::pd_server::PdServer::new(
-        grpc::Grpc {
+        sync_transport::SyncGrpc(grpc::Grpc {
             services: services.clone(),
             cancel,
-        },
+        }),
     ))
     .into_axum_router()
     .merge(http::router(services))
@@ -88,3 +92,8 @@ pub mod sync_codec;
 #[cfg(test)]
 #[path = "sync_codec_test.rs"]
 mod sync_codec_test;
+
+pub mod sync_transport;
+#[cfg(test)]
+#[path = "sync_transport_test.rs"]
+mod sync_transport_test;

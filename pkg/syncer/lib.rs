@@ -44,7 +44,9 @@ pub use full_catchup::{CatchUpFrame, FullCatchUpError};
 mod full_catchup_test;
 
 mod downstream;
-pub use downstream::{DownstreamError, DownstreamSender, DownstreamTask, Downstreams};
+pub use downstream::{
+    BootstrapFrame, DownstreamError, DownstreamSender, DownstreamTask, Downstreams,
+};
 #[cfg(test)]
 #[path = "downstream_test.rs"]
 mod downstream_test;

@@ -33,3 +33,12 @@ The lifecycle owner can attach host-registry gauges to the canonical history and
 await its task handles by mutable reference. This keeps pending joins owned if a
 shutdown future is temporarily dropped. The lifecycle's DeadlineSender implements
 per-Send deadlines without changing independent index/acknowledgement behavior.
+
+`prepare_sync` captures an owned bootstrap plan from this same canonical history:
+`plan_replay` for incremental requests, `FullSnapshot` plus completion for full
+requests. `BootstrapFrame` separates positional batches from history frames. The
+host must serialize cluster updates, preparation and the following `bind`; no I/O
+runs in that interval. The transport can then send the captured values while live
+records drain independently after its initial-send gate. `DownstreamTask::wait`
+allows a tracked session supervisor to select worker completion against network
+closure; after it completes the handle is dropped rather than joined twice.

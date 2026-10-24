@@ -1,0 +1,349 @@
+// Copyright 2026 AsterSQL.
+//! Host-owned SyncRegions sessions. Protocol conversion stays at this boundary.
+use crate::{grpc::Grpc, sync_codec::*};
+use astersql_pd_core::{BasicCluster, RegionInfo};
+use astersql_pd_proto::pdpb::{self, pd_server::Pd};
+use astersql_pd_syncer::{Downstreams, HistoryBuffer, SyncFrame};
+use std::{
+    future::Future,
+    pin::Pin,
+    sync::{Arc, Mutex},
+    task::Poll,
+    time::Duration,
+};
+use tokio::{runtime::Handle, sync::mpsc, task::JoinHandle};
+use tokio_stream::{Stream, wrappers::ReceiverStream};
+use tokio_util::sync::CancellationToken;
+use tonic::{Request, Response, Status};
+
+type Output<T> = Pin<Box<dyn Stream<Item = Result<T, Status>> + Send + 'static>>;
+
+/// Shared canonical cluster and history. The host publishes accepted changes via
+/// `publish`; it must not mutate the shared cluster outside that admission gate.
+/// Call `stop` before releasing the host runtime. No private runtime is created.
+pub struct RegionSyncer {
+    runtime: Handle,
+    cluster: Arc<Mutex<BasicCluster>>,
+    downstreams: Downstreams,
+    cancel: CancellationToken,
+    tasks: Mutex<Vec<JoinHandle<()>>>,
+    timeout: Duration,
+}
+impl RegionSyncer {
+    pub fn new(
+        runtime: Handle,
+        cluster: Arc<Mutex<BasicCluster>>,
+        history: HistoryBuffer,
+        timeout: Duration,
+    ) -> Self {
+        Self {
+            runtime,
+            cluster,
+            downstreams: Downstreams::new(history),
+            cancel: CancellationToken::new(),
+            tasks: Mutex::new(Vec::new()),
+            timeout: if timeout.is_zero() {
+                Duration::from_secs(10)
+            } else {
+                timeout
+            },
+        }
+    }
+    /// Publish already-admitted domain changes without waiting for network I/O.
+    pub fn publish(&self, region: Arc<RegionInfo>) -> Result<(), String> {
+        let mut cluster = self.cluster.lock().unwrap();
+        self.downstreams
+            .append([region.clone()])
+            .map_err(|e| e.to_string())?;
+        cluster.regions.put_region(region);
+        self.downstreams.broadcast(false);
+        Ok(())
+    }
+    pub fn downstream_names(&self) -> Vec<String> {
+        self.downstreams.names()
+    }
+    /// Cancel all streams, including those blocked on sends, then join every
+    /// supervisor. Keeping pending handles in the owner preserves ownership if
+    /// the caller temporarily drops the shutdown future.
+    pub async fn stop(&self) {
+        self.cancel.cancel();
+        std::future::poll_fn(|cx| {
+            let mut tasks = self.tasks.lock().unwrap();
+            let mut index = 0;
+            while index < tasks.len() {
+                if Pin::new(&mut tasks[index]).poll(cx).is_ready() {
+                    drop(tasks.swap_remove(index));
+                } else {
+                    index += 1;
+                }
+            }
+            if tasks.is_empty() {
+                Poll::Ready(())
+            } else {
+                Poll::Pending
+            }
+        })
+        .await;
+    }
+    fn open(
+        &self,
+        request: SyncRequest,
+        cluster_id: u64,
+        mut input: tonic::Streaming<pdpb::SyncRegionRequest>,
+        host_cancel: CancellationToken,
+    ) -> Result<Output<pdpb::SyncRegionResponse>, Status> {
+        let name = request.member.map(|m| m.name).unwrap_or_default();
+        let (tx, rx) = mpsc::channel(1);
+        let mut tasks = self.tasks.lock().unwrap();
+        if self.cancel.is_cancelled() {
+            return Err(Status::unavailable("region syncer stopped"));
+        }
+        let cluster = self.cluster.lock().unwrap();
+        let (initial, end) = self
+            .downstreams
+            .prepare_sync(&cluster, request.start_index)
+            .map_err(|e| Status::internal(e.to_string()))?;
+        let ready = CancellationToken::new();
+        let mut worker = self.downstreams.bind(
+            &self.runtime,
+            name,
+            end,
+            WireSender {
+                tx: tx.clone(),
+                cluster_id,
+                timeout: self.timeout,
+                ready: ready.clone(),
+            },
+        );
+        // Registration precedes publication; the gate excludes an append between
+        // capture and binding. Live sends wait until all initial frames finish.
+        let cancel = self.cancel.child_token();
+        let downstreams = self.downstreams.clone();
+        let timeout = self.timeout;
+        tasks.retain_mut(|task| {
+            if task.is_finished() {
+                let _ = futures_util::FutureExt::now_or_never(&mut *task);
+                false
+            } else {
+                true
+            }
+        });
+        let closed = CancellationToken::new();
+        let session_closed = closed.clone();
+        tasks.push(self.runtime.spawn(async move {
+            let send_initial = async {
+                for response in initial {
+                    let response = match response {
+                        astersql_pd_syncer::BootstrapFrame::Snapshot((start_index, records)) =>
+                            catch_up_to_proto(cluster_id, astersql_pd_syncer::CatchUpFrame::Records { start_index, records: &records }),
+                        astersql_pd_syncer::BootstrapFrame::History(frame) => history_to_proto(cluster_id, &frame),
+                    };
+                    tokio::time::timeout(timeout, tx.send(Ok(response))).await.map_err(|_| ())?.map_err(|_| ())?;
+                }
+                Ok::<_, ()>(())
+            };
+            let mut finished = false;
+            let initialized = tokio::select! { biased;
+                _ = cancel.cancelled() => false,
+                _ = host_cancel.cancelled() => false,
+                _ = tx.closed() => false,
+                _ = worker.wait() => { finished = true; false },
+                result = send_initial => result.is_ok(),
+            };
+            if initialized {
+                ready.cancel();
+                downstreams.broadcast(false);
+                tokio::select! { biased;
+                    _ = cancel.cancelled() => {},
+                    _ = host_cancel.cancelled() => {},
+                    _ = tx.closed() => {},
+                    // The initial Go request owns the stream until disconnect;
+                    // subsequent request frames are not another subscription.
+                    _ = async { loop { if !matches!(input.message().await, Ok(Some(_))) { break; } } } => {},
+                    _ = worker.wait() => { finished = true; },
+                }
+            }
+            worker.cancel();
+            if !finished { let _ = worker.join().await; }
+            session_closed.cancel();
+        }));
+        Ok(Box::pin(futures_util::stream::unfold(
+            (rx, closed, false),
+            |(mut rx, closed, terminal)| async move {
+                if terminal {
+                    return None;
+                }
+                let next = tokio::select! { biased;
+                    _ = closed.cancelled() => Some(Err(Status::unavailable("region syncer stream closed"))),
+                    next = rx.recv() => next,
+                };
+                let terminal = next.as_ref().is_some_and(Result::is_err);
+                next.map(|value| (value, (rx, closed, terminal)))
+            },
+        )))
+    }
+}
+impl Drop for RegionSyncer {
+    fn drop(&mut self) {
+        self.cancel.cancel();
+    }
+}
+pub(crate) struct WireSender {
+    pub(crate) tx: mpsc::Sender<Result<pdpb::SyncRegionResponse, Status>>,
+    pub(crate) cluster_id: u64,
+    pub(crate) timeout: Duration,
+    pub(crate) ready: CancellationToken,
+}
+impl astersql_pd_syncer::DownstreamSender for WireSender {
+    async fn send(&mut self, frame: SyncFrame) -> Result<(), String> {
+        self.ready.cancelled().await;
+        tokio::time::timeout(
+            self.timeout,
+            self.tx.send(Ok(history_to_proto(self.cluster_id, &frame))),
+        )
+        .await
+        .map_err(|_| "region syncer send timeout".to_owned())?
+        .map_err(|_| "region syncer stream closed".into())
+    }
+}
+
+/// Delegates the existing PD methods unchanged while extending the generated
+/// service's optional SyncRegions method. grpc.rs remains read-only.
+pub(crate) struct SyncGrpc(pub Grpc);
+#[tonic::async_trait]
+impl Pd for SyncGrpc {
+    async fn sync_regions(
+        &self,
+        request: Request<tonic::Streaming<pdpb::SyncRegionRequest>>,
+    ) -> Result<Response<Output<pdpb::SyncRegionResponse>>, Status> {
+        let service = self
+            .0
+            .services
+            .region_sync_service()
+            .ok_or_else(|| Status::unimplemented("region sync service is not configured"))?;
+        let mut input = request.into_inner();
+        let request = tokio::select! { biased;
+            _ = service.cancel.cancelled() => return Err(Status::unavailable("region syncer stopped")),
+            _ = self.0.cancel.cancelled() => return Err(Status::unavailable("region syncer stopped")),
+            request = input.message() => request?,
+        };
+        let Some(request) = request else {
+            return Ok(Response::new(Box::pin(tokio_stream::empty())));
+        };
+        let cluster_id = self.0.services.identity().cluster_id;
+        if request.header.as_ref().map(|h| h.cluster_id).unwrap_or(0) != cluster_id {
+            return Err(Status::unknown(format!(
+                "mismatch cluster id, need {cluster_id} but got {}",
+                request.header.as_ref().map(|h| h.cluster_id).unwrap_or(0)
+            )));
+        }
+        self.0
+            .services
+            .healthy()
+            .await
+            .map_err(Status::unavailable)?;
+        Ok(Response::new(service.open(
+            request_from_proto(request),
+            cluster_id,
+            input,
+            self.0.cancel.clone(),
+        )?))
+    }
+    async fn report_buckets(
+        &self,
+        r: Request<tonic::Streaming<pdpb::ReportBucketsRequest>>,
+    ) -> Result<Response<pdpb::ReportBucketsResponse>, Status> {
+        self.0.report_buckets(r).await
+    }
+    async fn region_heartbeat(
+        &self,
+        r: Request<tonic::Streaming<pdpb::RegionHeartbeatRequest>>,
+    ) -> Result<Response<Output<pdpb::RegionHeartbeatResponse>>, Status> {
+        self.0.region_heartbeat(r).await
+    }
+    async fn store_heartbeat(
+        &self,
+        r: Request<pdpb::StoreHeartbeatRequest>,
+    ) -> Result<Response<pdpb::StoreHeartbeatResponse>, Status> {
+        self.0.store_heartbeat(r).await
+    }
+    async fn get_members(
+        &self,
+        r: Request<pdpb::GetMembersRequest>,
+    ) -> Result<Response<pdpb::GetMembersResponse>, Status> {
+        self.0.get_members(r).await
+    }
+    async fn alloc_id(
+        &self,
+        r: Request<pdpb::AllocIdRequest>,
+    ) -> Result<Response<pdpb::AllocIdResponse>, Status> {
+        self.0.alloc_id(r).await
+    }
+    async fn tso(
+        &self,
+        r: Request<tonic::Streaming<pdpb::TsoRequest>>,
+    ) -> Result<Response<Output<pdpb::TsoResponse>>, Status> {
+        self.0.tso(r).await
+    }
+}
+
+/// Canonical follower state, shared with the host for readiness and snapshots.
+pub struct SyncFollowerState {
+    pub cluster: BasicCluster,
+    pub history: HistoryBuffer,
+    pub apply: astersql_pd_syncer::ClientApply,
+    pub storage: astersql_pd_storage::Storage,
+    pub paths: astersql_pd_keypath::ClusterPaths,
+}
+/// One real tonic connection attempt for SyncLifecycle's serialized retry loop.
+/// Dropping sync cancels both request and response I/O. Leader replacement uses
+/// a new attempt after the host cancels and joins the previous lifecycle.
+pub struct SyncFollower {
+    pub endpoint: String,
+    pub request: SyncRequest,
+    pub state: Arc<tokio::sync::Mutex<SyncFollowerState>>,
+}
+impl astersql_pd_syncer::SyncAttempt for SyncFollower {
+    async fn sync(&mut self) -> Result<astersql_pd_syncer::SyncAttemptOutcome, String> {
+        let mut client = pdpb::pd_client::PdClient::connect(self.endpoint.clone())
+            .await
+            .map_err(|e| e.to_string())?;
+        let mut request = self.request.clone();
+        request.start_index = self.state.lock().await.history.next_index();
+        let (tx, rx) = mpsc::channel(1);
+        tx.send(request_to_proto(request))
+            .await
+            .map_err(|e| e.to_string())?;
+        let mut stream = client
+            .sync_regions(ReceiverStream::new(rx))
+            .await
+            .map_err(|e| e.to_string())?
+            .into_inner();
+        self.state.lock().await.apply.reset_stream();
+        while let Some(response) = stream.message().await.map_err(|e| e.to_string())? {
+            let mut state = self.state.lock().await;
+            let SyncFollowerState {
+                cluster,
+                history,
+                apply,
+                storage,
+                paths,
+            } = &mut *state;
+            let outcome = apply
+                .apply(
+                    response_from_proto(response).into_apply(),
+                    cluster,
+                    storage,
+                    paths,
+                    history,
+                )
+                .await
+                .map_err(|e| e.to_string())?;
+            if !outcome.handled {
+                return Ok(astersql_pd_syncer::SyncAttemptOutcome::Retry);
+            }
+        }
+        drop(tx);
+        Ok(astersql_pd_syncer::SyncAttemptOutcome::Complete)
+    }
+}

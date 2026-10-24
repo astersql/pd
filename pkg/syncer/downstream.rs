@@ -57,9 +57,9 @@ pub struct DownstreamTask {
     join: Option<JoinHandle<Result<(), DownstreamError>>>,
 }
 impl DownstreamTask {
-    pub(crate) async fn wait(
-        &mut self,
-    ) -> Result<Result<(), DownstreamError>, tokio::task::JoinError> {
+    /// Observe worker completion without consuming its host-owned handle.
+    /// After this returns, drop the task; its completed join must not be polled again.
+    pub async fn wait(&mut self) -> Result<Result<(), DownstreamError>, tokio::task::JoinError> {
         self.join.as_mut().expect("worker handle").await
     }
     /// Last successfully acknowledged exclusive history index.
@@ -152,6 +152,35 @@ impl Downstreams {
             entry,
             join: Some(join),
         }
+    }
+    /// Capture initial replay under the history lock. The host must serialize
+    /// this call and the following bind with accepted cluster/history updates.
+    /// Returned records own their values, so no transport I/O holds this lock.
+    pub fn prepare_sync(
+        &self,
+        cluster: &astersql_pd_core::BasicCluster,
+        start: HistoryIndex,
+    ) -> Result<(Vec<BootstrapFrame>, HistoryIndex), HistoryError> {
+        let mut state = self.0.lock().unwrap();
+        let end = state.history.next_index();
+        let size = std::num::NonZeroUsize::new(crate::MAX_SYNC_REGION_BATCH_SIZE).unwrap();
+        let frames = match state.history.plan_replay(start, end, size)? {
+            crate::HistoryReplay::Incremental(frames) => {
+                frames.into_iter().map(BootstrapFrame::History).collect()
+            }
+            crate::HistoryReplay::FullSync { .. } => {
+                let snapshot = crate::FullSnapshot::bind(&mut state.history, cluster);
+                let mut frames: Vec<_> = snapshot
+                    .batches(size)
+                    .map(|batch| {
+                        BootstrapFrame::Snapshot((batch.offset.0 as u64, batch.records.to_vec()))
+                    })
+                    .collect();
+                frames.push(BootstrapFrame::History(SyncFrame::keepalive(end)));
+                frames
+            }
+        };
+        Ok((frames, end))
     }
     /// Append only to history. Even a blocked Send never holds this lock.
     pub fn append(
@@ -263,4 +292,11 @@ impl Downstreams {
             tokio::task::yield_now().await;
         }
     }
+}
+
+/// Owned initial replay; snapshot offsets remain distinct from history indexes.
+#[derive(Debug)]
+pub enum BootstrapFrame {
+    Snapshot((u64, Vec<Arc<RegionInfo>>)),
+    History(SyncFrame),
 }

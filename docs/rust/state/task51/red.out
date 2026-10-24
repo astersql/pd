@@ -1,0 +1,38 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+warning: use of deprecated field `astersql_pd_proto::pdpb::RegionHeartbeatRequest::cpu_usage`
+   --> pkg/server/core_region_adapter.rs:134:30
+    |
+134 |     r.set_response_cpu_usage(p.cpu_usage);
+    |                              ^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: `astersql-pd-server` (lib) generated 1 warning
+   Compiling astersql-pd-server v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/server)
+warning: use of deprecated field `astersql_pd_proto::pdpb::RegionHeartbeatRequest::cpu_usage`
+  --> pkg/server/core_region_adapter_test.rs:88:13
+   |
+88 |             cpu_usage: 77,
+   |             ^^^^^^^^^^^^^
+
+warning: `astersql-pd-server` (lib test) generated 2 warnings (1 duplicate)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.99s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_server-9d8803183432ab2f)
+
+running 1 test
+
+thread 'sync_transport_test::state_task_51_sync_transport_full_and_incremental' (158673489) panicked at pkg/server/sync_transport_test.rs:147:5:
+assertion `left == right` failed: full snapshot must contain canonical region
+  left: 0
+ right: 1
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test sync_transport_test::state_task_51_sync_transport_full_and_incremental ... FAILED
+
+failures:
+
+failures:
+    sync_transport_test::state_task_51_sync_transport_full_and_incremental
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 38 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `-p astersql-pd-server --lib`

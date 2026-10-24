@@ -1,0 +1,85 @@
+warning: use of deprecated field `astersql_pd_proto::pdpb::RegionHeartbeatRequest::cpu_usage`
+   --> pkg/server/core_region_adapter.rs:134:30
+    |
+134 |     r.set_response_cpu_usage(p.cpu_usage);
+    |                              ^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: `astersql-pd-server` (lib) generated 1 warning
+   Compiling astersql-pd-server v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/server)
+warning: use of deprecated field `astersql_pd_proto::pdpb::RegionHeartbeatRequest::cpu_usage`
+  --> pkg/server/core_region_adapter_test.rs:88:13
+   |
+88 |             cpu_usage: 77,
+   |             ^^^^^^^^^^^^^
+
+warning: `astersql-pd-server` (lib test) generated 2 warnings (1 duplicate)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.85s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_server-b2130a98b1fdb8d1)
+
+running 47 tests
+test core_region_adapter_test::core_task_61_metadata_roles ... ok
+test core_region_adapter_test::core_task_61_missing_fields ... ok
+test core_region_adapter_test::core_task_61_heartbeat_fields ... ok
+test core_store_adapter_test::core_task_60_full_store ... ok
+test core_region_adapter_test::core_task_61_sizes ... ok
+test core_store_adapter_test::core_task_60_defaults_and_presence ... ok
+test core_store_adapter_test::core_task_60_full_store_stats ... ok
+test core_store_adapter_test::core_task_60_nested_presence_order_and_unsigned_limits ... ok
+test core_store_adapter_test::core_task_60_unknown_enums_and_signed_extremes ... ok
+test core_trace_test::core_task_59_save_cache_resets_and_recovery ... ok
+test core_trace_test::core_task_59_registry_ownership ... ok
+test core_trace_test::core_task_59_each_stage_and_clock_regression ... ok
+test region_heartbeat_adapter_test::state_task_48_region_heartbeat_adapter_disconnect ... ok
+test region_heartbeat_adapter_test::state_task_48_region_heartbeat_adapter_cancel_inflight ... ok
+test bucket_heartbeat_adapter_test::state_task_49_bucket_heartbeat_adapter_wire_versions_and_loads ... ok
+test store_heartbeat_adapter_test::state_task_47_store_heartbeat_adapter_defaults ... ok
+test bucket_heartbeat_adapter_test::state_task_49_bucket_heartbeat_adapter_competing_streams ... ok
+test bucket_heartbeat_adapter_test::state_task_49_bucket_heartbeat_adapter_same_stream_continues_unknown_store ... ok
+test store_heartbeat_adapter_test::state_task_47_store_heartbeat_adapter_opt_in_and_bootstrap ... ok
+test store_heartbeat_adapter_test::state_task_47_store_heartbeat_adapter_presence_and_controller_boundary ... ok
+test store_heartbeat_adapter_test::state_task_47_store_heartbeat_adapter_state ... ok
+test region_heartbeat_adapter_test::state_task_48_region_heartbeat_adapter_loopback ... ok
+test bucket_heartbeat_adapter_test::state_task_49_bucket_heartbeat_adapter_cancel_and_disconnect ... ok
+test sync_codec_test::state_task_50_sync_codec_error_header_and_keepalive ... ok
+test store_heartbeat_adapter_test::state_task_47_store_heartbeat_adapter_wire_errors ... ok
+test sync_codec_test::state_task_50_sync_codec_go_wire ... ok
+test region_heartbeat_adapter_test::state_task_48_region_heartbeat_adapter_defaults_and_epoch ... ok
+test store_heartbeat_adapter_test::state_task_47_store_heartbeat_adapter_response_state_and_errors ... ok
+test sync_codec_test::state_task_50_sync_codec_lossless_pinned_response_fields ... ok
+test sync_codec_test::state_task_50_sync_codec_request_presence_and_all_member_fields ... ok
+test sync_codec_test::state_task_50_sync_codec_send_matches_go_raw_wire ... ok
+test sync_codec_test::state_task_50_sync_codec_mismatch_go_application ... ok
+test bucket_heartbeat_adapter_test::state_task_49_bucket_heartbeat_adapter_defaults_errors_and_empty ... ok
+test bucket_heartbeat_adapter_test::state_task_49_bucket_heartbeat_adapter_applied_old_versions_missing_removed ... ok
+test store_heartbeat_adapter_test::state_task_47_store_heartbeat_adapter_multi_peer_network ... ok
+test sync_transport_test::state_task_51_sync_transport_follower_error_and_eof ... ok
+test sync_transport_test::state_task_51_sync_transport_full_and_incremental ... ok
+test sync_transport_test::state_task_51_sync_transport_stop_before_first_request ... ok
+test region_heartbeat_adapter_test::state_task_48_region_heartbeat_adapter_errors_and_close ... ok
+test sync_transport_test::state_task_51_sync_transport_replacement_and_reconnect ... ok
+test sync_transport_test::state_task_51_sync_transport_follower_leader_reconnect ... ok
+test sync_transport_test::state_task_51_sync_transport_independent_slow_reader_and_final_state ... ok
+test sync_transport_test::state_task_51_sync_transport_send_failure_cancellation_and_join ... ok
+test bucket_heartbeat_adapter_test::state_task_49_bucket_heartbeat_adapter_open_stream_has_no_ack ... ok
+test sync_codec_test::state_task_50_sync_codec_snapshot_offsets_and_incremental ... ok
+test sync_transport_test::state_task_51_sync_transport_snapshot_batches_and_publish_during_scan ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:55760
+test sync_transport_test::state_task_51_sync_transport_etcd_follower_persistence ... ok
+
+test result: ok. 47 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.47s
+
+     Running server_test.rs (target/rust-slot-2/debug/deps/server-d2585ae45860343e)
+
+running 1 test
+isolated etcd 3.5.15 ready at http://127.0.0.1:55784
+test validation_and_open_stream_shutdown ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.79s
+
+   Doc-tests astersql_pd_server
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

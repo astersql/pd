@@ -1,0 +1,28 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+   Compiling astersql-pd-syncer v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/syncer)
+   Compiling astersql-pd-cluster v0.1.0 (/Users/Shared/work/dir/data/codes/pd/server/cluster)
+   Compiling astersql-pd-server v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/server)
+warning: use of deprecated field `astersql_pd_proto::pdpb::RegionHeartbeatRequest::cpu_usage`
+   --> pkg/server/core_region_adapter.rs:134:30
+    |
+134 |     r.set_response_cpu_usage(p.cpu_usage);
+    |                              ^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+   Compiling astersql-pd-runtime v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/runtime)
+warning: `astersql-pd-server` (lib) generated 1 warning
+warning: use of deprecated field `astersql_pd_proto::pdpb::RegionHeartbeatRequest::cpu_usage`
+  --> pkg/server/core_region_adapter_test.rs:88:13
+   |
+88 |             cpu_usage: 77,
+   |             ^^^^^^^^^^^^^
+
+warning: `astersql-pd-server` (lib test) generated 2 warnings (1 duplicate)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.85s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_server-b2130a98b1fdb8d1)
+
+running 1 test
+test sync_transport_test::state_task_51_sync_transport_full_and_incremental ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 38 filtered out; finished in 0.01s
