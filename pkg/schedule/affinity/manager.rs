@@ -30,6 +30,7 @@ pub struct RestoredGroup {
 /// Startup snapshot, published only after the complete range set is validated.
 #[derive(Debug, Default)]
 pub struct Manager {
+    pub(crate) metrics: Option<crate::availability_loop::AffinityMetrics>,
     pub(crate) regions: BTreeMap<u64, crate::region_cache::RegionCache>,
     pub(crate) label_rule_buffer: BTreeMap<String, LabelRule>,
     pub(crate) unavailable_stores: BTreeMap<u64, crate::policy::StoreCondition>,

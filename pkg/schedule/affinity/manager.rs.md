@@ -29,3 +29,6 @@ see [policy module](policy.rs.md). The host still owns loop lifecycle.
 Batch 38 adds owned region snapshots and a label-first synchronization buffer;
 see [region cache and synchronization](region_cache.rs.md). Hosts supply exclusive
 access to synchronous mutations and deliver labeler events separately.
+
+Batch 40 adds an optional registry-scoped cached metrics handle, installed by
+AvailabilityLoop after restoration. See [loop lifecycle](availability_loop.rs.md).

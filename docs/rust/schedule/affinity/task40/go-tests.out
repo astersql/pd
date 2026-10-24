@@ -1,0 +1,22 @@
+=== RUN   TestAvailabilityCheckInvalidatesGroup
+[2026/10/24 22:36:13.598 +08:00] [INFO] [labeler.go:65] ["new region labeler created"] [label-rules-count=0]
+[2026/10/24 22:36:13.600 +08:00] [INFO] [txn.go:756] ["rebuilt group-label mapping"] [total-groups=0] [total-ranges=0]
+[2026/10/24 22:36:13.601 +08:00] [INFO] [policy.go:158] ["affinity manager availability check loop started"] [interval=10s]
+[2026/10/24 22:36:13.601 +08:00] [INFO] [manager.go:137] ["affinity manager initialized"] [group-count=0]
+[2026/10/24 22:36:13.602 +08:00] [INFO] [txn.go:200] ["affinity group added"] [group="{\"id\":\"avail\",\"create_timestamp\":1792852573}"]
+[2026/10/24 22:36:13.603 +08:00] [WARN] [policy.go:256] ["affinity groups invalidated due to unavailable stores"] [unavailable-store-count=1] [unavailable-group-count=1] [available-group-count=0]
+--- PASS: TestAvailabilityCheckInvalidatesGroup (0.01s)
+[2026/10/24 22:36:13.604 +08:00] [INFO] [labeler.go:81] ["region labeler GC stopped"]
+[2026/10/24 22:36:13.604 +08:00] [INFO] [policy.go:151] ["affinity manager availability check loop stopped"]
+=== RUN   TestAllowSplit
+[2026/10/24 22:36:13.605 +08:00] [INFO] [labeler.go:65] ["new region labeler created"] [label-rules-count=0]
+[2026/10/24 22:36:13.605 +08:00] [INFO] [txn.go:756] ["rebuilt group-label mapping"] [total-groups=0] [total-ranges=0]
+[2026/10/24 22:36:13.605 +08:00] [INFO] [policy.go:158] ["affinity manager availability check loop started"] [interval=10s]
+[2026/10/24 22:36:13.605 +08:00] [INFO] [manager.go:137] ["affinity manager initialized"] [group-count=0]
+[2026/10/24 22:36:13.606 +08:00] [INFO] [txn.go:200] ["affinity group added"] [group="{\"id\":\"g1\",\"create_timestamp\":1792852573}"]
+[2026/10/24 22:36:13.608 +08:00] [INFO] [txn.go:284] ["affinity group deleted"] [group-id=g1]
+--- PASS: TestAllowSplit (0.00s)
+[2026/10/24 22:36:13.608 +08:00] [INFO] [policy.go:151] ["affinity manager availability check loop stopped"]
+[2026/10/24 22:36:13.608 +08:00] [INFO] [labeler.go:81] ["region labeler GC stopped"]
+PASS
+ok  	github.com/tikv/pd/pkg/schedule/affinity	0.990s

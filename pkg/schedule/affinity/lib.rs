@@ -39,3 +39,8 @@ pub mod region_cache;
 #[path = "affinity_split_test.rs"]
 mod affinity_split_test;
 pub mod split;
+
+#[cfg(test)]
+#[path = "affinity_lifecycle_test.rs"]
+mod affinity_lifecycle_test;
+pub mod availability_loop;

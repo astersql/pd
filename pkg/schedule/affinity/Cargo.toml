@@ -20,7 +20,10 @@ astersql-pd-storage-kv.workspace = true
 astersql-pd-core.workspace = true
 astersql-pd-schedule-config.workspace = true
 
+tokio.workspace = true
+tokio-util.workspace = true
+prometheus.workspace = true
+
 [dev-dependencies]
 astersql-pd-core-constant.workspace = true
-tokio.workspace = true
 async-trait.workspace = true

@@ -38,6 +38,9 @@ impl Manager {
             let max_size = size.wrapping_add(10).wrapping_mul(4);
             let max_keys = max_size.wrapping_mul(10_000);
             if r.stats().approximate_size < max_size && r.stats().approximate_keys < max_keys {
+                if let Some(metrics) = &self.metrics {
+                    metrics.record_split_deny_metrics();
+                }
                 return false;
             }
         }

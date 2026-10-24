@@ -12,3 +12,6 @@ but unexpired groups still block. Signed wrapping arithmetic matches Go int64.
 The query does not write caches or storage. Metric collection is batch 40 scope.
 
 Behavior and verification: [batch 39 evidence](../../../docs/rust/schedule/affinity/39-证据.md).
+
+Batch 40 records each actual automatic split rejection in the cached
+`pd_affinity_status{type="split-deny-count"}` gauge when attached to a host loop.
