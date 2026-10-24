@@ -1,0 +1,59 @@
+break cluster_test.go:3022
+continue
+config max-variable-recurse 5
+print "STEP 0"
+print tc.slowStat.SlowStoresStats.slowStores
+call -unsafe tc.slowStat.SlowStoresStats.ExistsSlowStores()
+call -unsafe tc.slowStat.SlowStoresStats.ObserveSlowStoreStatus(1,true)
+print "STEP 1"
+print tc.slowStat.SlowStoresStats.slowStores
+call -unsafe tc.slowStat.SlowStoresStats.ExistsSlowStores()
+call -unsafe tc.slowStat.SlowStoresStats.ObserveSlowStoreStatus(1,true)
+print "STEP 2"
+print tc.slowStat.SlowStoresStats.slowStores
+call -unsafe tc.slowStat.SlowStoresStats.ExistsSlowStores()
+call -unsafe tc.slowStat.SlowStoresStats.ObserveSlowStoreStatus(1,false)
+print "STEP 3"
+print tc.slowStat.SlowStoresStats.slowStores
+call -unsafe tc.slowStat.SlowStoresStats.ExistsSlowStores()
+call -unsafe tc.slowStat.SlowStoresStats.RemoveSlowStoreStatus(1)
+print "STEP 4"
+print tc.slowStat.SlowStoresStats.slowStores
+call -unsafe tc.slowStat.SlowStoresStats.ExistsSlowStores()
+call -unsafe tc.slowStat.SlowStoresStats.ObserveSlowStoreStatus(1,true)
+print "STEP 5"
+print tc.slowStat.SlowStoresStats.slowStores
+call -unsafe tc.slowStat.SlowStoresStats.ExistsSlowStores()
+call -unsafe tc.slowStat.SlowStoresStats.ObserveSlowStoreStatus(2,true)
+print "STEP 6"
+print tc.slowStat.SlowStoresStats.slowStores
+call -unsafe tc.slowStat.SlowStoresStats.ExistsSlowStores()
+call -unsafe tc.slowStat.SlowStoresStats.ObserveSlowStoreStatus(1,true)
+print "STEP 7"
+print tc.slowStat.SlowStoresStats.slowStores
+call -unsafe tc.slowStat.SlowStoresStats.ExistsSlowStores()
+call -unsafe tc.slowStat.SlowStoresStats.ObserveSlowStoreStatus(2,false)
+print "STEP 8"
+print tc.slowStat.SlowStoresStats.slowStores
+call -unsafe tc.slowStat.SlowStoresStats.ExistsSlowStores()
+call -unsafe tc.slowStat.SlowStoresStats.ObserveSlowStoreStatus(0,true)
+print "STEP 9"
+print tc.slowStat.SlowStoresStats.slowStores
+call -unsafe tc.slowStat.SlowStoresStats.ExistsSlowStores()
+call -unsafe tc.slowStat.SlowStoresStats.ObserveSlowStoreStatus(18446744073709551615,true)
+print "STEP 10"
+print tc.slowStat.SlowStoresStats.slowStores
+call -unsafe tc.slowStat.SlowStoresStats.ExistsSlowStores()
+call -unsafe tc.slowStat.SlowStoresStats.RemoveSlowStoreStatus(0)
+print "STEP 11"
+print tc.slowStat.SlowStoresStats.slowStores
+call -unsafe tc.slowStat.SlowStoresStats.ExistsSlowStores()
+call -unsafe tc.slowStat.SlowStoresStats.RemoveSlowStoreStatus(18446744073709551615)
+print "STEP 12"
+print tc.slowStat.SlowStoresStats.slowStores
+call -unsafe tc.slowStat.SlowStoresStats.ExistsSlowStores()
+call -unsafe tc.slowStat.SlowStoresStats.RemoveSlowStoreStatus(18446744073709551615)
+print "STEP 13"
+print tc.slowStat.SlowStoresStats.slowStores
+call -unsafe tc.slowStat.SlowStoresStats.ExistsSlowStores()
+exit

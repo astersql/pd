@@ -104,3 +104,8 @@ pub use hot_projection::{
 };
 #[cfg(test)]
 mod hot_projection_test;
+
+mod slow_stat;
+pub use slow_stat::{SlowStat, SlowStoresStats};
+#[cfg(test)]
+mod slow_stat_test;

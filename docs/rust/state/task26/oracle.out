@@ -1,0 +1,157 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+Type 'help' for list of commands.
+Breakpoint 1 set at 0x192c70c for github.com/tikv/pd/server/cluster.TestCollectMetrics() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:3022
+[2026/10/24 19:06:35.150 +00:00] [INFO] [labeler.go:65] ["new region labeler created"] [label-rules-count=0]
+[2026/10/24 19:06:35.153 +00:00] [INFO] [coordinator.go:236] ["coordinator starts to collect cluster information"]
+[2026/10/24 19:06:35.153 +00:00] [INFO] [prepare_checker.go:75] ["not loaded from storage region number is satisfied, finish prepare checker"] [not-from-storage-region=0] [total-region=0]
+[2026/10/24 19:06:35.153 +00:00] [INFO] [coordinator.go:239] ["coordinator has finished cluster information preparation"]
+[2026/10/24 19:06:35.153 +00:00] [INFO] [coordinator.go:249] ["coordinator starts to run schedulers"]
+[2026/10/24 19:06:35.153 +00:00] [INFO] [coordinator.go:362] ["create scheduler"] [scheduler-name=balance-region-scheduler] [scheduler-args="[]"]
+[2026/10/24 19:06:35.153 +00:00] [INFO] [coordinator.go:362] ["create scheduler"] [scheduler-name=balance-leader-scheduler] [scheduler-args="[]"]
+[2026/10/24 19:06:35.153 +00:00] [INFO] [coordinator.go:362] ["create scheduler"] [scheduler-name=balance-hot-region-scheduler] [scheduler-args="[]"]
+[2026/10/24 19:06:35.153 +00:00] [INFO] [coordinator.go:362] ["create scheduler"] [scheduler-name=evict-slow-store-scheduler] [scheduler-args="[]"]
+[2026/10/24 19:06:35.153 +00:00] [INFO] [coordinator.go:362] ["create scheduler"] [scheduler-name=evict-stopping-store-scheduler] [scheduler-args="[]"]
+[2026/10/24 19:06:35.154 +00:00] [INFO] [coordinator.go:391] ["scheduler config is updated"] [scheduler-config="[{\"type\":\"balance-region\",\"args\":null,\"disable\":false,\"args-payload\":\"\"},{\"type\":\"balance-leader\",\"args\":null,\"disable\":false,\"args-payload\":\"\"},{\"type\":\"hot-region\",\"args\":null,\"disable\":false,\"args-payload\":\"\"},{\"type\":\"evict-slow-store\",\"args\":null,\"disable\":false,\"args-payload\":\"\"},{\"type\":\"evict-stopping-store\",\"args\":null,\"disable\":false,\"args-payload\":\"\"}]"]
+[2026/10/24 19:06:35.154 +00:00] [INFO] [coordinator.go:169] ["coordinator begins to actively drive push operator"]
+[2026/10/24 19:06:35.154 +00:00] [INFO] [coordinator.go:140] ["coordinator starts patrol regions"]
+[2026/10/24 19:06:35.154 +00:00] [INFO] [coordinator.go:151] ["coordinator begins to check suspect key ranges"]
+[2026/10/24 19:06:35.165 +00:00] [INFO] [checker_controller.go:234] ["checkers starts patrol regions with new workers count"] [old-workers-count=0] [new-workers-count=1]
+> [Breakpoint 1] github.com/tikv/pd/server/cluster.TestCollectMetrics() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:3022 (hits goroutine(291):1 total:1) (PC: 0x192c70c)
+"STEP 0"
+map[uint64]struct {} []
+> github.com/tikv/pd/server/cluster.TestCollectMetrics() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:3022 (PC: 0x192c70c)
+Values returned:
+	~r0: false
+
+> github.com/tikv/pd/server/cluster.TestCollectMetrics() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:3022 (PC: 0x192c70c)
+Values returned:
+
+"STEP 1"
+map[uint64]struct {} [
+	1: {},
+]
+> github.com/tikv/pd/server/cluster.TestCollectMetrics() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:3022 (PC: 0x192c70c)
+Values returned:
+	~r0: true
+
+> github.com/tikv/pd/server/cluster.TestCollectMetrics() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:3022 (PC: 0x192c70c)
+Values returned:
+
+"STEP 2"
+map[uint64]struct {} []
+> github.com/tikv/pd/server/cluster.TestCollectMetrics() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:3022 (PC: 0x192c70c)
+Values returned:
+	~r0: false
+
+> github.com/tikv/pd/server/cluster.TestCollectMetrics() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:3022 (PC: 0x192c70c)
+Values returned:
+
+"STEP 3"
+map[uint64]struct {} []
+> github.com/tikv/pd/server/cluster.TestCollectMetrics() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:3022 (PC: 0x192c70c)
+Values returned:
+	~r0: false
+
+> github.com/tikv/pd/server/cluster.TestCollectMetrics() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:3022 (PC: 0x192c70c)
+Values returned:
+
+"STEP 4"
+map[uint64]struct {} []
+> github.com/tikv/pd/server/cluster.TestCollectMetrics() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:3022 (PC: 0x192c70c)
+Values returned:
+	~r0: false
+
+> github.com/tikv/pd/server/cluster.TestCollectMetrics() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:3022 (PC: 0x192c70c)
+Values returned:
+
+"STEP 5"
+map[uint64]struct {} [
+	1: {},
+]
+> github.com/tikv/pd/server/cluster.TestCollectMetrics() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:3022 (PC: 0x192c70c)
+Values returned:
+	~r0: true
+
+> github.com/tikv/pd/server/cluster.TestCollectMetrics() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:3022 (PC: 0x192c70c)
+Values returned:
+
+"STEP 6"
+map[uint64]struct {} [
+	1: {},
+	2: {},
+]
+> github.com/tikv/pd/server/cluster.TestCollectMetrics() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:3022 (PC: 0x192c70c)
+Values returned:
+	~r0: true
+
+> github.com/tikv/pd/server/cluster.TestCollectMetrics() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:3022 (PC: 0x192c70c)
+Values returned:
+
+"STEP 7"
+map[uint64]struct {} [
+	2: {},
+]
+> github.com/tikv/pd/server/cluster.TestCollectMetrics() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:3022 (PC: 0x192c70c)
+Values returned:
+	~r0: true
+
+> github.com/tikv/pd/server/cluster.TestCollectMetrics() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:3022 (PC: 0x192c70c)
+Values returned:
+
+"STEP 8"
+map[uint64]struct {} []
+> github.com/tikv/pd/server/cluster.TestCollectMetrics() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:3022 (PC: 0x192c70c)
+Values returned:
+	~r0: false
+
+> github.com/tikv/pd/server/cluster.TestCollectMetrics() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:3022 (PC: 0x192c70c)
+Values returned:
+
+"STEP 9"
+map[uint64]struct {} [
+	0: {},
+]
+> github.com/tikv/pd/server/cluster.TestCollectMetrics() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:3022 (PC: 0x192c70c)
+Values returned:
+	~r0: true
+
+> github.com/tikv/pd/server/cluster.TestCollectMetrics() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:3022 (PC: 0x192c70c)
+Values returned:
+
+"STEP 10"
+map[uint64]struct {} [
+	0: {},
+	18446744073709551615: {},
+]
+> github.com/tikv/pd/server/cluster.TestCollectMetrics() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:3022 (PC: 0x192c70c)
+Values returned:
+	~r0: true
+
+> github.com/tikv/pd/server/cluster.TestCollectMetrics() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:3022 (PC: 0x192c70c)
+Values returned:
+
+"STEP 11"
+map[uint64]struct {} [
+	18446744073709551615: {},
+]
+> github.com/tikv/pd/server/cluster.TestCollectMetrics() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:3022 (PC: 0x192c70c)
+Values returned:
+	~r0: true
+
+> github.com/tikv/pd/server/cluster.TestCollectMetrics() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:3022 (PC: 0x192c70c)
+Values returned:
+
+"STEP 12"
+map[uint64]struct {} []
+> github.com/tikv/pd/server/cluster.TestCollectMetrics() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:3022 (PC: 0x192c70c)
+Values returned:
+	~r0: false
+
+> github.com/tikv/pd/server/cluster.TestCollectMetrics() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:3022 (PC: 0x192c70c)
+Values returned:
+
+"STEP 13"
+map[uint64]struct {} []
+> github.com/tikv/pd/server/cluster.TestCollectMetrics() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:3022 (PC: 0x192c70c)
+Values returned:
+	~r0: false

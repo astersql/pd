@@ -67,3 +67,6 @@ compute排除；复用热点去噪快照、pending预测和宿主时钟历史采
 已加入[热点查询投影](hot_projection.rs.md)：collect_hot_peer_infos、get_hot_status、
 HotPeerStatShow、HotPeersStat、StoreHotPeersInfos与StoreHotPeersStat，hot_projection_test显式登记。
 复用批次24聚合，保留快速汇总与详细列表的热度过滤和null/[]差异。
+
+已加入[慢节点集合状态](slow_stat.rs.md)：SlowStoresStats、SlowStat，
+slow_stat_test显式登记。单锁原子观察保留重复slow删除行为，宿主可Arc共享。

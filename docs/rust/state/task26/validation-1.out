@@ -1,0 +1,11 @@
+   Compiling astersql-pd-statistics v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.74s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics-beaad74b356850b8)
+
+running 4 tests
+test slow_stat_test::state_task_26_slow_stat_store_and_container_isolation ... ok
+test slow_stat_test::state_task_26_slow_stat_repeated_true_removes ... ok
+test slow_stat_test::state_task_26_slow_stat_go_event_replay ... ok
+test slow_stat_test::state_task_26_slow_stat_concurrent_same_store_parity ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 94 filtered out; finished in 0.00s

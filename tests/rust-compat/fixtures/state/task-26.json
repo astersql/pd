@@ -1,0 +1,159 @@
+{
+  "source": "pkg/statistics/slow_stat.go",
+  "baseline": "69ba16e6d47dfe59a21498c21641e1c1eaa726e0",
+  "events": [
+    [
+      "observe",
+      1,
+      true
+    ],
+    [
+      "observe",
+      1,
+      true
+    ],
+    [
+      "observe",
+      1,
+      false
+    ],
+    [
+      "remove",
+      1,
+      null
+    ],
+    [
+      "observe",
+      1,
+      true
+    ],
+    [
+      "observe",
+      2,
+      true
+    ],
+    [
+      "observe",
+      1,
+      true
+    ],
+    [
+      "observe",
+      2,
+      false
+    ],
+    [
+      "observe",
+      0,
+      true
+    ],
+    [
+      "observe",
+      18446744073709551615,
+      true
+    ],
+    [
+      "remove",
+      0,
+      null
+    ],
+    [
+      "remove",
+      18446744073709551615,
+      null
+    ],
+    [
+      "remove",
+      18446744073709551615,
+      null
+    ]
+  ],
+  "steps": [
+    {
+      "step": 0,
+      "members": [],
+      "exists": false
+    },
+    {
+      "step": 1,
+      "members": [
+        1
+      ],
+      "exists": true
+    },
+    {
+      "step": 2,
+      "members": [],
+      "exists": false
+    },
+    {
+      "step": 3,
+      "members": [],
+      "exists": false
+    },
+    {
+      "step": 4,
+      "members": [],
+      "exists": false
+    },
+    {
+      "step": 5,
+      "members": [
+        1
+      ],
+      "exists": true
+    },
+    {
+      "step": 6,
+      "members": [
+        1,
+        2
+      ],
+      "exists": true
+    },
+    {
+      "step": 7,
+      "members": [
+        2
+      ],
+      "exists": true
+    },
+    {
+      "step": 8,
+      "members": [],
+      "exists": false
+    },
+    {
+      "step": 9,
+      "members": [
+        0
+      ],
+      "exists": true
+    },
+    {
+      "step": 10,
+      "members": [
+        0,
+        18446744073709551615
+      ],
+      "exists": true
+    },
+    {
+      "step": 11,
+      "members": [
+        18446744073709551615
+      ],
+      "exists": true
+    },
+    {
+      "step": 12,
+      "members": [],
+      "exists": false
+    },
+    {
+      "step": 13,
+      "members": [],
+      "exists": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-statistics v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.98s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics-beaad74b356850b8)
+
+running 4 tests
+
+thread 'slow_stat_test::state_task_26_slow_stat_store_and_container_isolation' (157804680) panicked at pkg/statistics/slow_stat_test.rs:61:5:
+assertion failed: stats.exists_slow_stores()
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'slow_stat_test::state_task_26_slow_stat_repeated_true_removes' (157804679) panicked at pkg/statistics/slow_stat_test.rs:39:9:
+assertion failed: stats.exists_slow_stores()
+
+thread 'slow_stat_test::state_task_26_slow_stat_go_event_replay' (157804678) panicked at pkg/statistics/slow_stat_test.rs:25:9:
+assertion `left == right` failed: Go step 1
+  left: false
+ right: true
+test slow_stat_test::state_task_26_slow_stat_store_and_container_isolation ... FAILED
+test slow_stat_test::state_task_26_slow_stat_repeated_true_removes ... FAILED
+test slow_stat_test::state_task_26_slow_stat_go_event_replay ... FAILED
+
+thread 'slow_stat_test::state_task_26_slow_stat_concurrent_same_store_parity' (157804677) panicked at pkg/statistics/slow_stat_test.rs:89:5:
+assertion failed: stats.exists_slow_stores()
+test slow_stat_test::state_task_26_slow_stat_concurrent_same_store_parity ... FAILED
+
+failures:
+
+failures:
+    slow_stat_test::state_task_26_slow_stat_concurrent_same_store_parity
+    slow_stat_test::state_task_26_slow_stat_go_event_replay
+    slow_stat_test::state_task_26_slow_stat_repeated_true_removes
+    slow_stat_test::state_task_26_slow_stat_store_and_container_isolation
+
+test result: FAILED. 0 passed; 4 failed; 0 ignored; 0 measured; 94 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-statistics --lib`
