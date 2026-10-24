@@ -1,0 +1,43 @@
+slot=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+   Compiling astersql-pd-schedule-keyrange v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/keyrange)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.97s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_schedule_keyrange-18c5405155a19840)
+
+running 4 tests
+
+thread 'manager::range_subtract_test::range_subtract_batch_holes_and_owned_reads' (154554390) panicked at pkg/schedule/keyrange/range_subtract_test.rs:49:5:
+assertion `left == right` failed
+  left: []
+ right: [KeyRange { start_key: [99], end_key: [101] }, KeyRange { start_key: [103], end_key: [105] }, KeyRange { start_key: [107], end_key: [109] }]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'manager::range_subtract_test::range_subtract_go_delete_cases' (154554393) panicked at pkg/schedule/keyrange/range_subtract_test.rs:38:9:
+assertion `left == right` failed
+  left: [KeyRange { start_key: [], end_key: [] }]
+ right: [KeyRange { start_key: [], end_key: [98] }, KeyRange { start_key: [101], end_key: [] }]
+
+thread 'manager::range_subtract_test::range_subtract_go_complement_cases' (154554392) panicked at pkg/schedule/keyrange/range_subtract_test.rs:22:9:
+assertion `left == right` failed
+  left: []
+ right: [KeyRange { start_key: [], end_key: [97] }, KeyRange { start_key: [100], end_key: [101] }, KeyRange { start_key: [102], end_key: [] }]
+test manager::range_subtract_test::range_subtract_batch_holes_and_owned_reads ... FAILED
+test manager::range_subtract_test::range_subtract_go_complement_cases ... FAILED
+test manager::range_subtract_test::range_subtract_go_delete_cases ... FAILED
+
+thread 'manager::range_subtract_test::range_subtract_concurrent_batch_is_atomic' (154554391) panicked at pkg/schedule/keyrange/range_subtract_test.rs:75:5:
+assertion `left == right` failed
+  left: []
+ right: [KeyRange { start_key: [99], end_key: [101] }, KeyRange { start_key: [103], end_key: [105] }]
+test manager::range_subtract_test::range_subtract_concurrent_batch_is_atomic ... FAILED
+
+failures:
+
+failures:
+    manager::range_subtract_test::range_subtract_batch_holes_and_owned_reads
+    manager::range_subtract_test::range_subtract_concurrent_batch_is_atomic
+    manager::range_subtract_test::range_subtract_go_complement_cases
+    manager::range_subtract_test::range_subtract_go_delete_cases
+
+test result: FAILED. 0 passed; 4 failed; 0 ignored; 0 measured; 7 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-keyrange --lib`

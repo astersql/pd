@@ -1,0 +1,5 @@
+=== RUN   TestSubtractKeyRanges
+--- PASS: TestSubtractKeyRanges (0.00s)
+=== RUN   TestDeleteKeyRanges
+--- PASS: TestDeleteKeyRanges (0.00s)
+PASS
