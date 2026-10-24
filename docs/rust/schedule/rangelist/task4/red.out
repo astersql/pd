@@ -1,0 +1,40 @@
+slot=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.02s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_schedule_rangelist-08c0100503a46c0d)
+
+running 4 tests
+
+thread 'range_build_test::range_build_comparator_equal_and_reverse' (154585432) panicked at pkg/schedule/rangelist/builder.rs:19:88:
+index out of bounds: the len is 0 but the index is 0
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'range_build_test::range_build_go_overlap_comparator' (154585434) panicked at pkg/schedule/rangelist/range_build_test.rs:8:5:
+assertion `left == right` failed
+  left: 0
+ right: 10
+
+thread 'range_build_test::range_build_empty_and_unbounded' (154585433) panicked at pkg/schedule/rangelist/range_build_test.rs:12:102:
+assertion `left == right` failed
+  left: 0
+ right: 1
+
+thread 'range_build_test::range_build_shared_events_duplicates_and_snapshot' (154585435) panicked at pkg/schedule/rangelist/range_build_test.rs:17:22:
+assertion `left == right` failed
+  left: 0
+ right: 4
+test range_build_test::range_build_empty_and_unbounded ... FAILED
+test range_build_test::range_build_comparator_equal_and_reverse ... FAILED
+test range_build_test::range_build_go_overlap_comparator ... FAILED
+test range_build_test::range_build_shared_events_duplicates_and_snapshot ... FAILED
+
+failures:
+
+failures:
+    range_build_test::range_build_comparator_equal_and_reverse
+    range_build_test::range_build_empty_and_unbounded
+    range_build_test::range_build_go_overlap_comparator
+    range_build_test::range_build_shared_events_duplicates_and_snapshot
+
+test result: FAILED. 0 passed; 4 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-rangelist --lib`
