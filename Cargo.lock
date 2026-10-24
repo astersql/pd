@@ -345,9 +345,12 @@ dependencies = [
 name = "astersql-pd-schedule-affinity"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-core",
+ "astersql-pd-core-constant",
  "astersql-pd-errs",
  "astersql-pd-keypath",
  "astersql-pd-keyutil",
+ "astersql-pd-schedule-config",
  "astersql-pd-schedule-labeler",
  "astersql-pd-storage-endpoint",
  "astersql-pd-storage-kv",

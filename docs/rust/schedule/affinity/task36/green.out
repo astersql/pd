@@ -1,0 +1,12 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-schedule-affinity v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/affinity)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.65s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_affinity-0f1a0317ed941c8a)
+
+running 4 tests
+test affinity_availability_test::affinity_availability_store_collection ... ok
+test affinity_availability_test::affinity_availability_eviction_sources ... ok
+test affinity_availability_test::affinity_availability_priority_and_boundaries ... ok
+test affinity_availability_test::affinity_availability_transitions ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 28 filtered out; finished in 0.00s

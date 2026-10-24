@@ -20,3 +20,8 @@ pub mod parse;
 pub mod ranges;
 pub mod txn;
 pub mod txn_ranges;
+
+#[cfg(test)]
+#[path = "affinity_availability_test.rs"]
+mod affinity_availability_test;
+pub mod policy;

@@ -22,3 +22,6 @@ this API. Storage endpoint retains its existing protocol-adapter dependencies.
 Tests are registered in `lib.rs` from `affinity_restore_test.rs`. They use real
 memory/etcd endpoints, the same etcd WAL across a process restart, and explicit
 seconds for expiration boundaries. See [batch 33 evidence](../../../docs/rust/schedule/affinity/33-证据.md).
+
+Batch 36 adds a private unavailable-store snapshot and synchronous health policy;
+see [policy module](policy.rs.md). The host still owns loop lifecycle.
