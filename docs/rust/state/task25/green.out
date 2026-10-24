@@ -1,0 +1,13 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-statistics v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.40s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics-beaad74b356850b8)
+
+running 5 tests
+test hot_projection_test::state_task_25_hot_projection_detail_current_rates_and_owned_values ... ok
+test hot_projection_test::state_task_25_hot_projection_empty_and_missing ... ok
+test hot_projection_test::state_task_25_hot_projection_ids_and_cold_only ... ok
+test hot_projection_test::state_task_25_hot_projection_collect_oracle ... ok
+test hot_projection_test::state_task_25_hot_projection_status_oracle_and_learner ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 89 filtered out; finished in 0.00s

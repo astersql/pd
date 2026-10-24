@@ -1,0 +1,46 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-statistics v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.16s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics-beaad74b356850b8)
+
+running 5 tests
+
+thread 'hot_projection_test::state_task_25_hot_projection_ids_and_cold_only' (157780810) panicked at pkg/statistics/hot_projection_test.rs:189:30:
+no entry found for key
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'hot_projection_test::state_task_25_hot_projection_empty_and_missing' (157780809) panicked at pkg/statistics/hot_projection_test.rs:121:30:
+no entry found for key
+
+thread 'hot_projection_test::state_task_25_hot_projection_collect_oracle' (157780807) panicked at pkg/statistics/hot_projection_test.rs:58:13:
+assertion `left == right` failed
+  left: []
+ right: ["1", "2", "3"]
+
+thread 'hot_projection_test::state_task_25_hot_projection_status_oracle_and_learner' (157780811) panicked at pkg/statistics/hot_projection_test.rs:58:13:
+assertion `left == right` failed
+  left: []
+ right: ["1", "2", "3"]
+test hot_projection_test::state_task_25_hot_projection_ids_and_cold_only ... FAILED
+test hot_projection_test::state_task_25_hot_projection_collect_oracle ... FAILED
+test hot_projection_test::state_task_25_hot_projection_empty_and_missing ... FAILED
+test hot_projection_test::state_task_25_hot_projection_status_oracle_and_learner ... FAILED
+
+thread 'hot_projection_test::state_task_25_hot_projection_detail_current_rates_and_owned_values' (157780808) panicked at pkg/statistics/hot_projection_test.rs:150:5:
+assertion `left == right` failed
+  left: [0.0, 0.0, 0.0, 0.0]
+ right: [100.25, 10.5, 5.75, 0.25]
+test hot_projection_test::state_task_25_hot_projection_detail_current_rates_and_owned_values ... FAILED
+
+failures:
+
+failures:
+    hot_projection_test::state_task_25_hot_projection_collect_oracle
+    hot_projection_test::state_task_25_hot_projection_detail_current_rates_and_owned_values
+    hot_projection_test::state_task_25_hot_projection_empty_and_missing
+    hot_projection_test::state_task_25_hot_projection_ids_and_cold_only
+    hot_projection_test::state_task_25_hot_projection_status_oracle_and_learner
+
+test result: FAILED. 0 passed; 5 failed; 0 ignored; 0 measured; 89 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-statistics --lib`

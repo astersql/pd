@@ -514,6 +514,8 @@ dependencies = [
  "astersql-pd-statistics-utils",
  "astersql-pd-storage-endpoint",
  "astersql-pd-storage-kv",
+ "serde",
+ "serde_json",
  "tokio",
 ]
 

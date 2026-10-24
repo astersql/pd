@@ -63,3 +63,7 @@ Applied、拒绝和取消结果，shutdown等待两个worker退出并返回最�
 已加入[分引擎负载聚合](engine_load.rs.md)：summary_stores_load、StoreLoadDetail、
 StoreLoadSummary，engine_load_test显式登记。TiKV/TiFlash独立人口计算expected/stddev，
 compute排除；复用热点去噪快照、pending预测和宿主时钟历史采样。
+
+已加入[热点查询投影](hot_projection.rs.md)：collect_hot_peer_infos、get_hot_status、
+HotPeerStatShow、HotPeersStat、StoreHotPeersInfos与StoreHotPeersStat，hot_projection_test显式登记。
+复用批次24聚合，保留快速汇总与详细列表的热度过滤和null/[]差异。

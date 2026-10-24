@@ -96,3 +96,11 @@ mod engine_load;
 pub use engine_load::{StoreLoadDetail, StoreLoadSummary, summary_stores_load};
 #[cfg(test)]
 mod engine_load_test;
+
+mod hot_projection;
+pub use hot_projection::{
+    HotPeerStatShow, HotPeersStat, StoreHotPeersInfos, StoreHotPeersStat, collect_hot_peer_infos,
+    get_hot_status,
+};
+#[cfg(test)]
+mod hot_projection_test;

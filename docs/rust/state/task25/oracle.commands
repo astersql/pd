@@ -1,0 +1,41 @@
+break cluster_test.go:3022
+continue
+config max-array-values 5000
+config max-variable-recurse 5
+config max-string-len 30000
+print "CASE empty"
+call -unsafe "github.com/tikv/pd/pkg/statistics".CollectHotPeerInfos(nil,nil)
+call -unsafe "github.com/tikv/pd/pkg/statistics".GetHotStatus(nil,nil,nil,1,false)
+call -unsafe tc.addRegionStore(1,0,nil)
+call -unsafe tc.addRegionStore(2,0,nil)
+call -unsafe tc.addRegionStore(3,0,nil)
+next
+next
+set regionStats[3] = regionStats[3][:0]
+set regionStats[1] = regionStats[1][:3]
+set regionStats[2] = regionStats[2][:1]
+set regionStats[1][0].RegionID = 11
+set regionStats[1][0].isLeader = true
+set regionStats[1][0].Loads[0] = 11.4
+set regionStats[1][0].Loads[1] = 12.6
+set regionStats[1][0].Loads[2] = -1.5
+set regionStats[1][0].Loads[3] = 3.5
+set regionStats[1][1].RegionID = 12
+set regionStats[1][1].HotDegree = 0
+set regionStats[1][2].RegionID = 13
+set regionStats[1][2].HotDegree = -1
+set regionStats[2][0].RegionID = 21
+print "CASE collect"
+next
+print status1
+print "CASE status"
+next
+print status2
+print "JSON collect"
+call -unsafe "encoding/json".Marshal(status1)
+print "JSON status"
+call -unsafe "encoding/json".Marshal(status2)
+set status2.AsPeer[2].Stats[0].IsLearner = true
+print "JSON learner"
+call -unsafe "encoding/json".Marshal(status2)
+exit

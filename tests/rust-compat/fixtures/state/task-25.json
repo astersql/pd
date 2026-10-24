@@ -1,0 +1,330 @@
+{
+  "source_commit": "a177aad73712d15133a60a10bdb5e05c599853b1",
+  "source": "docs/rust/state/task25/oracle.commands",
+  "snapshots": {
+    "collect": {
+      "as_peer": {
+        "1": {
+          "store_bytes": 0,
+          "store_keys": 0,
+          "store_query": 0,
+          "store_cpu": 0,
+          "total_flow_bytes": 31,
+          "total_flow_keys": 53,
+          "total_flow_query": 58,
+          "total_flow_cpu": 4,
+          "regions_count": 3,
+          "statistics": null
+        },
+        "2": {
+          "store_bytes": 0,
+          "store_keys": 0,
+          "store_query": 0,
+          "store_cpu": 0,
+          "total_flow_bytes": 10,
+          "total_flow_keys": 20,
+          "total_flow_query": 30,
+          "total_flow_cpu": 0,
+          "regions_count": 1,
+          "statistics": null
+        },
+        "3": {
+          "store_bytes": 0,
+          "store_keys": 0,
+          "store_query": 0,
+          "store_cpu": 0,
+          "total_flow_bytes": 0,
+          "total_flow_keys": 0,
+          "total_flow_query": 0,
+          "total_flow_cpu": 0,
+          "regions_count": 0,
+          "statistics": null
+        }
+      },
+      "as_leader": {
+        "1": {
+          "store_bytes": 0,
+          "store_keys": 0,
+          "store_query": 0,
+          "store_cpu": 0,
+          "total_flow_bytes": 11,
+          "total_flow_keys": 13,
+          "total_flow_query": -2,
+          "total_flow_cpu": 4,
+          "regions_count": 1,
+          "statistics": null
+        },
+        "2": {
+          "store_bytes": 0,
+          "store_keys": 0,
+          "store_query": 0,
+          "store_cpu": 0,
+          "total_flow_bytes": 0,
+          "total_flow_keys": 0,
+          "total_flow_query": 0,
+          "total_flow_cpu": 0,
+          "regions_count": 0,
+          "statistics": null
+        },
+        "3": {
+          "store_bytes": 0,
+          "store_keys": 0,
+          "store_query": 0,
+          "store_cpu": 0,
+          "total_flow_bytes": 0,
+          "total_flow_keys": 0,
+          "total_flow_query": 0,
+          "total_flow_cpu": 0,
+          "regions_count": 0,
+          "statistics": null
+        }
+      }
+    },
+    "status": {
+      "as_peer": {
+        "1": {
+          "store_bytes": 0,
+          "store_keys": 0,
+          "store_query": 0,
+          "store_cpu": 0,
+          "total_flow_bytes": 11,
+          "total_flow_keys": 13,
+          "total_flow_query": -2,
+          "total_flow_cpu": 4,
+          "regions_count": 1,
+          "statistics": [
+            {
+              "store_id": 1,
+              "stores": null,
+              "is_leader": true,
+              "is_learner": false,
+              "region_id": 11,
+              "hot_degree": 10,
+              "flow_bytes": 11,
+              "flow_keys": 13,
+              "flow_query": -2,
+              "flow_cpu": 4,
+              "anti_count": 2,
+              "last_update_time": "0001-01-01T00:00:00Z"
+            }
+          ]
+        },
+        "2": {
+          "store_bytes": 0,
+          "store_keys": 0,
+          "store_query": 0,
+          "store_cpu": 0,
+          "total_flow_bytes": 10,
+          "total_flow_keys": 20,
+          "total_flow_query": 30,
+          "total_flow_cpu": 0,
+          "regions_count": 1,
+          "statistics": [
+            {
+              "store_id": 2,
+              "stores": null,
+              "is_leader": false,
+              "is_learner": false,
+              "region_id": 21,
+              "hot_degree": 10,
+              "flow_bytes": 10,
+              "flow_keys": 20,
+              "flow_query": 30,
+              "flow_cpu": 0,
+              "anti_count": 2,
+              "last_update_time": "0001-01-01T00:00:00Z"
+            }
+          ]
+        },
+        "3": {
+          "store_bytes": 0,
+          "store_keys": 0,
+          "store_query": 0,
+          "store_cpu": 0,
+          "total_flow_bytes": 0,
+          "total_flow_keys": 0,
+          "total_flow_query": 0,
+          "total_flow_cpu": 0,
+          "regions_count": 0,
+          "statistics": []
+        }
+      },
+      "as_leader": {
+        "1": {
+          "store_bytes": 11,
+          "store_keys": 13,
+          "store_query": 0,
+          "store_cpu": 0,
+          "total_flow_bytes": 11,
+          "total_flow_keys": 13,
+          "total_flow_query": -2,
+          "total_flow_cpu": 4,
+          "regions_count": 1,
+          "statistics": [
+            {
+              "store_id": 1,
+              "stores": null,
+              "is_leader": true,
+              "is_learner": false,
+              "region_id": 11,
+              "hot_degree": 10,
+              "flow_bytes": 11,
+              "flow_keys": 13,
+              "flow_query": -2,
+              "flow_cpu": 4,
+              "anti_count": 2,
+              "last_update_time": "0001-01-01T00:00:00Z"
+            }
+          ]
+        },
+        "2": {
+          "store_bytes": 0,
+          "store_keys": 0,
+          "store_query": 0,
+          "store_cpu": 0,
+          "total_flow_bytes": 0,
+          "total_flow_keys": 0,
+          "total_flow_query": 0,
+          "total_flow_cpu": 0,
+          "regions_count": 0,
+          "statistics": []
+        },
+        "3": {
+          "store_bytes": 0,
+          "store_keys": 0,
+          "store_query": 0,
+          "store_cpu": 0,
+          "total_flow_bytes": 0,
+          "total_flow_keys": 0,
+          "total_flow_query": 0,
+          "total_flow_cpu": 0,
+          "regions_count": 0,
+          "statistics": []
+        }
+      }
+    },
+    "learner": {
+      "as_peer": {
+        "1": {
+          "store_bytes": 0,
+          "store_keys": 0,
+          "store_query": 0,
+          "store_cpu": 0,
+          "total_flow_bytes": 11,
+          "total_flow_keys": 13,
+          "total_flow_query": -2,
+          "total_flow_cpu": 4,
+          "regions_count": 1,
+          "statistics": [
+            {
+              "store_id": 1,
+              "stores": null,
+              "is_leader": true,
+              "is_learner": false,
+              "region_id": 11,
+              "hot_degree": 10,
+              "flow_bytes": 11,
+              "flow_keys": 13,
+              "flow_query": -2,
+              "flow_cpu": 4,
+              "anti_count": 2,
+              "last_update_time": "0001-01-01T00:00:00Z"
+            }
+          ]
+        },
+        "2": {
+          "store_bytes": 0,
+          "store_keys": 0,
+          "store_query": 0,
+          "store_cpu": 0,
+          "total_flow_bytes": 10,
+          "total_flow_keys": 20,
+          "total_flow_query": 30,
+          "total_flow_cpu": 0,
+          "regions_count": 1,
+          "statistics": [
+            {
+              "store_id": 2,
+              "stores": null,
+              "is_leader": false,
+              "is_learner": true,
+              "region_id": 21,
+              "hot_degree": 10,
+              "flow_bytes": 10,
+              "flow_keys": 20,
+              "flow_query": 30,
+              "flow_cpu": 0,
+              "anti_count": 2,
+              "last_update_time": "0001-01-01T00:00:00Z"
+            }
+          ]
+        },
+        "3": {
+          "store_bytes": 0,
+          "store_keys": 0,
+          "store_query": 0,
+          "store_cpu": 0,
+          "total_flow_bytes": 0,
+          "total_flow_keys": 0,
+          "total_flow_query": 0,
+          "total_flow_cpu": 0,
+          "regions_count": 0,
+          "statistics": []
+        }
+      },
+      "as_leader": {
+        "1": {
+          "store_bytes": 11,
+          "store_keys": 13,
+          "store_query": 0,
+          "store_cpu": 0,
+          "total_flow_bytes": 11,
+          "total_flow_keys": 13,
+          "total_flow_query": -2,
+          "total_flow_cpu": 4,
+          "regions_count": 1,
+          "statistics": [
+            {
+              "store_id": 1,
+              "stores": null,
+              "is_leader": true,
+              "is_learner": false,
+              "region_id": 11,
+              "hot_degree": 10,
+              "flow_bytes": 11,
+              "flow_keys": 13,
+              "flow_query": -2,
+              "flow_cpu": 4,
+              "anti_count": 2,
+              "last_update_time": "0001-01-01T00:00:00Z"
+            }
+          ]
+        },
+        "2": {
+          "store_bytes": 0,
+          "store_keys": 0,
+          "store_query": 0,
+          "store_cpu": 0,
+          "total_flow_bytes": 0,
+          "total_flow_keys": 0,
+          "total_flow_query": 0,
+          "total_flow_cpu": 0,
+          "regions_count": 0,
+          "statistics": []
+        },
+        "3": {
+          "store_bytes": 0,
+          "store_keys": 0,
+          "store_query": 0,
+          "store_cpu": 0,
+          "total_flow_bytes": 0,
+          "total_flow_keys": 0,
+          "total_flow_query": 0,
+          "total_flow_cpu": 0,
+          "regions_count": 0,
+          "statistics": []
+        }
+      }
+    }
+  }
+}
