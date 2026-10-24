@@ -38,3 +38,7 @@ is_region_label_isolation_satisfied与LabelStatistics；label_statistics_test显
 已加入[热点单副本窗口](hot_peer.rs.md)：DimStat、HotPeerStat和显式hot_peer_test。
 复用真实TimeMedian和utils动作/方向/TopN，宿主传入时间；支持nil滚动负载回退、CPU last-average、
 窗口克隆隔离及Go兼容去噪快照。完整热点缓存生命周期由后续任务扩展。
+
+已加入[热点副本升温与降温](hot_peer_update.rs.md)：HotPeerCache同步直接报告状态机，
+显式hot_peer_update_test，按方向选择真实DimStat窗口，宿主逐报告应用Add/Update/Remove；
+阈值闭包注入每store阈值，动态TopN、继承和异步策略留后续扩展。

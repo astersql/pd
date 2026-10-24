@@ -67,3 +67,8 @@ mod hot_peer;
 pub use hot_peer::{DimStat, HotPeerStat};
 #[cfg(test)]
 mod hot_peer_test;
+
+mod hot_peer_update;
+pub use hot_peer_update::HotPeerCache;
+#[cfg(test)]
+mod hot_peer_update_test;

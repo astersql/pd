@@ -1,0 +1,2 @@
+All validation commands exited 0; slot-1.lock absent; target/rust-slot-1 cache retained.
+No Cargo test, slot-1 test binary, or rust-etcd-fixture child remains.

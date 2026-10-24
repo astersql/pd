@@ -27,6 +27,15 @@ impl Clone for DimStat {
 }
 
 impl DimStat {
+    // Direct reports preserve pending delta, unlike Go inheritance clone semantics.
+    pub(crate) fn copy_for_report(&self) -> Self {
+        Self {
+            rolling: self.rolling.clone(),
+            last_interval_sum: self.last_interval_sum,
+            last_delta: self.last_delta,
+        }
+    }
+
     /// Creates a real TimeMedian; report interval uses signed nanoseconds.
     pub fn new(report_interval: i64) -> Self {
         Self {

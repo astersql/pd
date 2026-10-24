@@ -21,3 +21,6 @@ READ为10秒、WRITE为60秒；None映射未转leader，未来时间仍冷却。
 `interval_sum`使用第一维，缺失返回0；TopN按region ID与去噪负载排序，保留时不得修改比较值。
 
 独立[行为测试](hot_peer_test.rs)显式登记，oracle和红绿验收见[任务18证据](../../docs/rust/state/task-18.md)。
+
+内部copy_for_report保留pending delta与时间窗口，供直接报告事务检查；
+继承Clone仍按Go重置pending delta，两种复制语义分开。

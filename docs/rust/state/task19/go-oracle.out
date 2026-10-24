@@ -1,0 +1,8 @@
+=== RUN   TestUpdateHotPeerStat
+--- PASS: TestUpdateHotPeerStat (0.00s)
+=== RUN   TestUnstableData
+--- PASS: TestUnstableData (0.00s)
+=== RUN   TestDifferentReportInterval
+--- PASS: TestDifferentReportInterval (0.00s)
+PASS
+ok  	github.com/tikv/pd/pkg/statistics	0.026s

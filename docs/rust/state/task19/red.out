@@ -1,0 +1,37 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-statistics v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.94s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics-19f9aca67fa98079)
+
+running 4 tests
+test hot_peer_update_test::state_task_19_hot_peer_update_unstable_data ... ok
+
+thread 'hot_peer_update_test::state_task_19_hot_peer_update_recovery_and_cpu' (157511494) panicked at pkg/statistics/hot_peer_update_test.rs:43:5:
+assertion `left == right` failed
+  left: 0
+ right: 1
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'hot_peer_update_test::state_task_19_hot_peer_update_heat_cold_remove' (157511493) panicked at pkg/statistics/hot_peer_update_test.rs:43:5:
+assertion `left == right` failed
+  left: 0
+ right: 1
+
+thread 'hot_peer_update_test::state_task_19_hot_peer_update_report_intervals_and_explicit_peers' (157511495) panicked at pkg/statistics/hot_peer_update_test.rs:97:17:
+assertion `left == right` failed
+  left: 0
+ right: 3
+test hot_peer_update_test::state_task_19_hot_peer_update_report_intervals_and_explicit_peers ... FAILED
+test hot_peer_update_test::state_task_19_hot_peer_update_recovery_and_cpu ... FAILED
+test hot_peer_update_test::state_task_19_hot_peer_update_heat_cold_remove ... FAILED
+
+failures:
+
+failures:
+    hot_peer_update_test::state_task_19_hot_peer_update_heat_cold_remove
+    hot_peer_update_test::state_task_19_hot_peer_update_recovery_and_cpu
+    hot_peer_update_test::state_task_19_hot_peer_update_report_intervals_and_explicit_peers
+
+test result: FAILED. 1 passed; 3 failed; 0 ignored; 0 measured; 51 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-statistics --lib`
