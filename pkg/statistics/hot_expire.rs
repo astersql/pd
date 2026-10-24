@@ -106,8 +106,14 @@ impl HotPeerCache {
             })
             .collect();
         for item in expired {
-            self.update_stat_at(item, now);
+            // Go GC removes expired index entries without an UpdateStat action.
+            let key = (item.region_id, item.store_id);
+            self.expiry.updated.remove(&key);
+            self.hot_thresholds.remove(item.store_id, item.region_id);
+            self.peers.remove(&key);
         }
+        self.metric_actions
+            .retain(|store, _| active_stores.contains(store));
         // A store can acquire a threshold snapshot without ever becoming hot.
         self.hot_thresholds.retain_stores(active_stores);
     }

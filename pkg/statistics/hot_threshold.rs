@@ -12,7 +12,8 @@ const HOT_THRESHOLD_RATIO: f64 = 0.8;
 
 pub(crate) struct ThresholdSnapshot {
     updated: i64,
-    rates: [f64; DIM_LEN],
+    pub(crate) rates: [f64; DIM_LEN],
+    pub(crate) top_n_len: usize,
 }
 
 pub(crate) struct HotThresholds {
@@ -89,6 +90,7 @@ impl HotPeerCache {
             ThresholdSnapshot {
                 updated: now,
                 rates,
+                top_n_len: state.stores.get(&store).map_or(0, TopN::len),
             },
         );
         rates

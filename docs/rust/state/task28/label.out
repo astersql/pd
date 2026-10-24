@@ -1,0 +1,16 @@
+Type 'help' for list of commands.
+Breakpoint 1 set at 0x1919c7c for github.com/tikv/pd/server/cluster.TestRegionLabelIsolationLevel() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1553
+> [Breakpoint 1] github.com/tikv/pd/server/cluster.TestRegionLabelIsolationLevel() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1553 (hits goroutine(298):1 total:1) (PC: 0x1919c7c)
+> github.com/tikv/pd/server/cluster.TestRegionLabelIsolationLevel() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1553 (PC: 0x1919c7c)
+Values returned:
+
+"LABEL_BEFORE"
+1
+> github.com/tikv/pd/server/cluster.TestRegionLabelIsolationLevel() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1553 (PC: 0x1919c7c)
+Values returned:
+
+"LABEL_AFTER"
+0
+[2026/10/24 19:27:54.340 +00:00] [INFO] [region.go:915] ["leader changed"] [region-id=9] [from=1] [to=4]
+PASS
+/oracle/label.commands:10: Process 22 has exited with status 0

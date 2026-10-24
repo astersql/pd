@@ -1,0 +1,6 @@
+--- PASS: TestResetStoreStatisticsClearsPlacementStatusGauge (0.00s)
+--- PASS: TestStoreLimitMetricsIncludeTransferLeaderIn (0.00s)
+PASS
+/oracle/oracle.commands:15: could not find symbol github.com/tikv/pd/pkg/statistics.Reset
+--- PASS: TestStoreStatistics (0.29s)
+PASS

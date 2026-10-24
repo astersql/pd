@@ -35,3 +35,8 @@ Stats 与 Go 同样筛选 degree>=min、非 inCold、anti==方向默认值，按
 各100次 IsHot、字段捕获、完整缓存/窗口状态与同步路径相等、48条排队读/冷/过期事件、
 TopN/TTL 后果、容量/部分拒绝、取消、runtime 丢失、Drop、共享多线程宿主及重复 join。
 Go oracle、红绿日志和 workspace 检查见 [任务23证据](../../docs/rust/state/task-23.md)。
+
+[指标层](metrics.rs.md)增加`HotTask::Metrics { active_stores }`与
+`HotTaskOutput::Metrics(HotMetricsSnapshot)`，使用原队列/FIFO/cancel/错误契约。
+`HotCache::collect_metrics`驱动两个方向并传回完整指标快照，宿主传入时钟和完整
+live store集合；没有新报告也执行节流GC。无新增后台任务，仍通过原shutdown完成join。

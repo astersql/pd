@@ -26,3 +26,6 @@ TTL/GC和未上报peer扫描由hot_expire模块扩展；宿主提供排除tombst
 [过期策略](hot_expire.rs.md)扩展update_stat_at，Add/Update刷新宿主纳秒时间，
 Remove同时删除过期记录。update_stat保留时钟原点0的兼容入口；实时宿主应一致使用update_stat_at。
 缺失报告复用update_hot_peer_stat，满窗口in_cold强制降温，不触发leader切换。
+
+[指标层](metrics.rs.md)在应用有效Add/Remove/Update时累计每store的三个Gauge计数，
+unknown不创建计数；GC丢弃removed store的计数，完整采集快照据此清理Registry旧序列。

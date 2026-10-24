@@ -1,0 +1,10 @@
+   Compiling astersql-pd-statistics v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.07s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics-b738ca506dc1fe43)
+
+running 3 tests
+test metrics_test::state_task_28_metrics_resets ... ok
+test metrics_test::state_task_28_metrics_independent_registry_and_duplicate ... ok
+test metrics_test::state_task_28_metrics_store_reset ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 105 filtered out; finished in 0.00s

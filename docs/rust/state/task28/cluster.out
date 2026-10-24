@@ -1,0 +1,58 @@
+Type 'help' for list of commands.
+Breakpoint 1 set at 0x192c70c for github.com/tikv/pd/server/cluster.TestCollectMetrics() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:3022
+[2026/10/24 19:27:48.168 +00:00] [INFO] [labeler.go:65] ["new region labeler created"] [label-rules-count=0]
+[2026/10/24 19:27:48.170 +00:00] [INFO] [coordinator.go:236] ["coordinator starts to collect cluster information"]
+[2026/10/24 19:27:48.170 +00:00] [INFO] [prepare_checker.go:75] ["not loaded from storage region number is satisfied, finish prepare checker"] [not-from-storage-region=0] [total-region=0]
+[2026/10/24 19:27:48.170 +00:00] [INFO] [coordinator.go:239] ["coordinator has finished cluster information preparation"]
+[2026/10/24 19:27:48.170 +00:00] [INFO] [coordinator.go:249] ["coordinator starts to run schedulers"]
+[2026/10/24 19:27:48.170 +00:00] [INFO] [coordinator.go:362] ["create scheduler"] [scheduler-name=balance-region-scheduler] [scheduler-args="[]"]
+[2026/10/24 19:27:48.171 +00:00] [INFO] [coordinator.go:362] ["create scheduler"] [scheduler-name=balance-leader-scheduler] [scheduler-args="[]"]
+[2026/10/24 19:27:48.171 +00:00] [INFO] [coordinator.go:362] ["create scheduler"] [scheduler-name=balance-hot-region-scheduler] [scheduler-args="[]"]
+[2026/10/24 19:27:48.171 +00:00] [INFO] [coordinator.go:362] ["create scheduler"] [scheduler-name=evict-slow-store-scheduler] [scheduler-args="[]"]
+[2026/10/24 19:27:48.171 +00:00] [INFO] [coordinator.go:362] ["create scheduler"] [scheduler-name=evict-stopping-store-scheduler] [scheduler-args="[]"]
+[2026/10/24 19:27:48.172 +00:00] [INFO] [coordinator.go:391] ["scheduler config is updated"] [scheduler-config="[{\"type\":\"balance-region\",\"args\":null,\"disable\":false,\"args-payload\":\"\"},{\"type\":\"balance-leader\",\"args\":null,\"disable\":false,\"args-payload\":\"\"},{\"type\":\"hot-region\",\"args\":null,\"disable\":false,\"args-payload\":\"\"},{\"type\":\"evict-slow-store\",\"args\":null,\"disable\":false,\"args-payload\":\"\"},{\"type\":\"evict-stopping-store\",\"args\":null,\"disable\":false,\"args-payload\":\"\"}]"]
+[2026/10/24 19:27:48.172 +00:00] [INFO] [coordinator.go:151] ["coordinator begins to check suspect key ranges"]
+[2026/10/24 19:27:48.172 +00:00] [INFO] [coordinator.go:140] ["coordinator starts patrol regions"]
+[2026/10/24 19:27:48.172 +00:00] [INFO] [coordinator.go:169] ["coordinator begins to actively drive push operator"]
+[2026/10/24 19:27:48.184 +00:00] [INFO] [checker_controller.go:234] ["checkers starts patrol regions with new workers count"] [old-workers-count=0] [new-workers-count=1]
+> [Breakpoint 1] github.com/tikv/pd/server/cluster.TestCollectMetrics() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:3022 (hits goroutine(283):1 total:1) (PC: 0x192c70c)
+> github.com/tikv/pd/server/cluster.TestCollectMetrics() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:3022 (PC: 0x192c70c)
+Values returned:
+
+"BEFORE_RESET"
+15
+0
+> github.com/tikv/pd/server/cluster.TestCollectMetrics() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:3022 (PC: 0x192c70c)
+Values returned:
+
+"AFTER_RESET"
+0
+0
+github.com/prometheus/client_golang/prometheus.Gauge(*github.com/prometheus/client_golang/prometheus.gauge) *{
+	valBits: 0,
+	selfCollector: github.com/prometheus/client_golang/prometheus.selfCollector {
+		self: github.com/prometheus/client_golang/prometheus.Metric(*github.com/prometheus/client_golang/prometheus.gauge) ...,},
+	desc: *github.com/prometheus/client_golang/prometheus.Desc {
+		fqName: "pd_regions_status",
+		help: "Status of the regions.",
+		constLabelPairs: []*github.com/prometheus/client_model/go.LabelPair len: 0, cap: 0, [],
+		variableLabels: *(*"github.com/prometheus/client_golang/prometheus.compiledLabels")(0x1438dfc53b20),
+		id: 12167312756822275287,
+		dimHash: 7797916051028351147,
+		err: error nil,},
+	labelPairs: []*github.com/prometheus/client_model/go.LabelPair len: 1, cap: 1, [
+		*(*"github.com/prometheus/client_model/go.LabelPair")(0x1438dff07dc0),
+	],}
+[2026/10/24 19:27:48.294 +00:00] [INFO] [coordinator.go:153] ["check suspect key ranges has been stopped"]
+[2026/10/24 19:27:48.294 +00:00] [INFO] [coordinator.go:142] ["patrol regions has been stopped"]
+[2026/10/24 19:27:48.295 +00:00] [INFO] [coordinator.go:175] ["drive push operator has been stopped"]
+[2026/10/24 19:27:48.294 +00:00] [INFO] [scheduler_controller.go:455] ["scheduler has been stopped"] [scheduler-name=balance-hot-region-scheduler] [error="context canceled"]
+[2026/10/24 19:27:48.295 +00:00] [INFO] [scheduler_controller.go:455] ["scheduler has been stopped"] [scheduler-name=evict-slow-store-scheduler] [error="context canceled"]
+[2026/10/24 19:27:48.295 +00:00] [INFO] [coordinator.go:193] ["drive slow node scheduler is stopped"]
+[2026/10/24 19:27:48.295 +00:00] [INFO] [scheduler_controller.go:455] ["scheduler has been stopped"] [scheduler-name=balance-leader-scheduler] [error="context canceled"]
+[2026/10/24 19:27:48.295 +00:00] [INFO] [scheduler_controller.go:455] ["scheduler has been stopped"] [scheduler-name=balance-region-scheduler] [error="context canceled"]
+[2026/10/24 19:27:48.295 +00:00] [INFO] [scheduler_controller.go:455] ["scheduler has been stopped"] [scheduler-name=evict-stopping-store-scheduler] [error="context canceled"]
+[2026/10/24 19:27:48.295 +00:00] [INFO] [heartbeat_streams.go:214] ["heartbeat stream is closed, stop running"]
+PASS
+[2026/10/24 19:27:48.295 +00:00] [INFO] [labeler.go:81] ["region labeler GC stopped"]
+/oracle/cluster.commands:13: Process 16 has exited with status 0

@@ -19,6 +19,7 @@ pub struct HotPeerCache {
     pub(crate) denoising: bool,
     pub(crate) hot_thresholds: HotThresholds,
     pub(crate) expiry: crate::hot_expire::HotExpiry,
+    pub(crate) metric_actions: BTreeMap<u64, [f64; 3]>,
 }
 
 impl HotPeerCache {
@@ -31,6 +32,7 @@ impl HotPeerCache {
             denoising: true,
             hot_thresholds: HotThresholds::default(),
             expiry: crate::hot_expire::HotExpiry::new(kind),
+            metric_actions: BTreeMap::new(),
         }
     }
 
@@ -53,6 +55,13 @@ impl HotPeerCache {
     /// Live hosts should use this method consistently instead of clock origin zero.
     pub fn update_stat_at(&mut self, item: HotPeerStat, now: i64) {
         let key = (item.region_id, item.store_id);
+        if matches!(
+            item.action_type,
+            ActionType::ADD | ActionType::UPDATE | ActionType::REMOVE
+        ) {
+            self.metric_actions.entry(item.store_id).or_default()
+                [item.action_type.as_i32() as usize] += 1.;
+        }
         match item.action_type {
             ActionType::ADD | ActionType::UPDATE => {
                 self.expiry.updated.insert(key, now);

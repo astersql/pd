@@ -1,0 +1,14 @@
+break cluster_test.go:3022
+continue
+config max-variable-recurse 1
+call -unsafe "github.com/tikv/pd/pkg/statistics".regionMissPeerRegionCounter.Set(7)
+print "BEFORE_RESET"
+print len("github.com/tikv/pd/pkg/statistics".hotCacheStatusGauge.MetricVec.metricMap.metrics)
+print len("github.com/tikv/pd/pkg/statistics".regionLabelLevelGauge.MetricVec.metricMap.metrics)
+call -unsafe "github.com/tikv/pd/pkg/statistics".Reset()
+print "AFTER_RESET"
+print len("github.com/tikv/pd/pkg/statistics".hotCacheStatusGauge.MetricVec.metricMap.metrics)
+print len("github.com/tikv/pd/pkg/statistics".regionLabelLevelGauge.MetricVec.metricMap.metrics)
+print "github.com/tikv/pd/pkg/statistics".regionMissPeerRegionCounter
+continue
+exit

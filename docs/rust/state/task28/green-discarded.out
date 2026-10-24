@@ -1,0 +1,19 @@
+   Compiling astersql-pd-statistics v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.28s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics-b738ca506dc1fe43)
+
+running 12 tests
+test metrics_test::state_task_28_metrics_independent_registry_and_duplicate ... ok
+test metrics_test::state_task_28_metrics_registration_rollback_and_schema ... ok
+test metrics_test::state_task_28_metrics_store_reset ... ok
+test metrics_test::state_task_28_metrics_resets ... ok
+test metrics_test::state_task_28_metrics_discarded_collection_reconciles_labels ... ok
+test metrics_test::state_task_28_metrics_idle_worker_gc_and_shutdown ... ok
+test metrics_test::state_task_28_metrics_explicit_gc_and_reactivated_store ... ok
+test metrics_test::state_task_28_metrics_delete_cluster_status_and_global_reset ... ok
+test metrics_test::state_task_28_metrics_go_reset_snapshot ... ok
+test metrics_test::state_task_28_metrics_hot_threshold_actions_gc_and_reset ... ok
+test metrics_test::state_task_28_metrics_real_store_collect_transfer_limit_and_recreate ... ok
+test metrics_test::state_task_28_metrics_region_label_and_flows ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 105 filtered out; finished in 0.00s

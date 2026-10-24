@@ -1,0 +1,11 @@
+break cluster_test.go:1553
+continue
+config max-variable-recurse 2
+call -unsafe cluster.labelStats.Collect()
+print "LABEL_BEFORE"
+print len("github.com/tikv/pd/pkg/statistics".regionLabelLevelGauge.MetricVec.metricMap.metrics)
+call -unsafe "github.com/tikv/pd/pkg/statistics".ResetLabelStatsMetrics()
+print "LABEL_AFTER"
+print len("github.com/tikv/pd/pkg/statistics".regionLabelLevelGauge.MetricVec.metricMap.metrics)
+continue
+exit

@@ -24,3 +24,6 @@ None/空peer区别及事务所有权。新peer按瞬时速率接纳，已有peer
 
 TTL/GC、继承、leader转移及async队列保留后续边界，无新增依赖或协议/调度反向依赖。
 测试在独立hot_threshold_test.rs显式注册；[验收证据](../../docs/rust/state/task-20.md)。
+
+[指标层](metrics.rs.md)同时保存阈值计算时TopN长度，采集返回当时rates/total_length，
+不在采集时额外刷新阈值。阈值快照保持crate私有，不向宿主暴露可变TopN。

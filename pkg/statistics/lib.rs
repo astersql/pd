@@ -114,3 +114,8 @@ mod store_collection;
 pub use store_collection::{StoreMetricSample, StoreStatistics, StoreStatisticsMap};
 #[cfg(test)]
 mod store_collection_test;
+
+mod metrics;
+pub use metrics::{HotMetricsSnapshot, StatisticsMetrics};
+#[cfg(test)]
+mod metrics_test;

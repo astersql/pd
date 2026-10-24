@@ -1,0 +1,5 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+slot-1.lock released after command completion; cache preserved
+no remaining slot-1 build/test/oracle child processes
+HotCache cancellation/shutdown joins verified by state_task_28_metrics_idle_worker_gc_and_shutdown
+Etcd fixtures use existing Drop EOF/kill/wait cleanup; workspace exit 0

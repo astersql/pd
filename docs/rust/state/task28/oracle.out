@@ -1,0 +1,6 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+=== RUN   TestResetStoreStatisticsClearsPlacementStatusGauge
+--- PASS: TestResetStoreStatisticsClearsPlacementStatusGauge (0.00s)
+=== RUN   TestStoreLimitMetricsIncludeTransferLeaderIn
+--- PASS: TestStoreLimitMetricsIncludeTransferLeaderIn (0.00s)
+PASS

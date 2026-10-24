@@ -74,3 +74,7 @@ slow_stat_test显式登记。单锁原子观察保留重复slow删除行为，�
 已加入[存储状态汇总](store_collection.rs.md)：StoreStatistics、StoreStatisticsMap、
 StoreMetricSample与显式store_collection_test。宿主传入时钟与配置，返回独立的
 节点健康/容量、位置、配置、限额与v2窗口样本；Registry与清理由后续任务处理。
+
+已加入[统计指标宿主注册与清理](metrics.rs.md)：StatisticsMetrics/HotMetricsSnapshot，
+显式metrics_test，宿主Registry、10个Go兼容family、store/region/label/hot清理与
+真实领域样本接线。HotCache用原worker执行Metrics命令和空闲GC，无新增运行时。

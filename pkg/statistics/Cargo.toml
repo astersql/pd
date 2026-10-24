@@ -9,6 +9,7 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
+prometheus.workspace = true
 astersql-pd-core.workspace = true
 astersql-pd-movingaverage.workspace = true
 astersql-pd-statistics-utils.workspace = true

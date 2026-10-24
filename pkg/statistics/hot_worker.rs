@@ -21,6 +21,9 @@ use crate::{HotPeerCache, HotPeerStat};
 /// Immutable directional commands. Region metadata and load arrays are owned.
 #[derive(Clone, Debug)]
 pub enum HotTask {
+    Metrics {
+        active_stores: BTreeSet<u64>,
+    },
     Expire {
         meta: RegionMeta,
     },
@@ -107,6 +110,7 @@ impl std::error::Error for HotTaskError {}
 /// Completed command result; snapshots own their data and contain no live windows.
 #[derive(Debug)]
 pub enum HotTaskOutput {
+    Metrics(crate::HotMetricsSnapshot),
     Applied,
     Stats(BTreeMap<u64, Vec<HotPeerStat>>),
     Peer(Option<HotPeerStat>),
@@ -118,6 +122,11 @@ impl HotPeerCache {
     /// Host-clock nanoseconds are captured at admission, not read from a global clock.
     pub fn run_task(&mut self, task: HotTask, now: i64) -> Result<HotTaskOutput, HotTaskError> {
         let actions = match task {
+            HotTask::Metrics { active_stores } => {
+                return Ok(HotTaskOutput::Metrics(
+                    self.collect_metrics(now, &active_stores),
+                ));
+            }
             HotTask::Expire { meta } => self.collect_expired_items(&task_region(meta, 0)),
             HotTask::Write {
                 meta,

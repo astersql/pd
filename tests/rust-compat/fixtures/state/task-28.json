@@ -1,0 +1,19 @@
+{
+  "source_commit": "69ba16e6d47dfe59a21498c21641e1c1eaa726e0",
+  "hot": {
+    "before": 15,
+    "after": 0
+  },
+  "label": {
+    "before": 1,
+    "after": 0
+  },
+  "region": {
+    "input": 7,
+    "after": 0
+  },
+  "tests": [
+    "TestResetStoreStatisticsClearsPlacementStatusGauge",
+    "TestStoreLimitMetricsIncludeTransferLeaderIn"
+  ]
+}

@@ -23,3 +23,7 @@ region的辅助map，Rust不复制该内部map失配，成员查询始终与实�
 库不创建后台任务、全局时钟、运行时、持久化或调度决策；宿主串行调用、提供时钟与拓扑。
 [独立测试](hot_expire_test.rs)由[lib.rs](lib.rs)显式注册，
 [验收证据](../../docs/rust/state/task-22.md)记录原Go测试、红绿灯及workspace回归。
+
+[指标层](metrics.rs.md)接入后，GC直接清除过期索引而不增加report Remove次数；
+缺失store的阈值/动作计数/peer集合被删除，显式gc后完整采集快照仍会删除Registry
+旧序列，重新激活store允许清除旧标签再发布新计数。TTL与GC节流边界不变。
