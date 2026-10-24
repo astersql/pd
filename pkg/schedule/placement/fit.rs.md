@@ -1,4 +1,4 @@
-# Single-rule fit
+# Placement fit
 
 `RuleFit` owns an immutable `Arc<Rule>`, canonical core peers, selected store
 snapshots, peers requiring role conversion, isolation and witness-load scores.
@@ -19,6 +19,26 @@ without shifts that overflow at machine-word peer counts. Selection remains
 combinatorial, as in Go. Isolation uses canonical store location comparison;
 witness load sums store witness counts only for enabled witness rules.
 No persistence, I/O, background tasks, time inputs or protocol types are involved.
-Multi-rule assignment, RegionFit, replacement and cache belong to later tasks.
+Replacement and cache belong to later tasks.
 Independent tests are explicitly registered in lib.rs. See
 [task 26 evidence](../../../docs/rust/schedule/placement/26-证据.md).
+
+`fit_region(stores, region, rules, support_witness)` preserves the caller's rule
+order and returns `RegionFit { rule_fits, orphan_peers }`. Its `is_satisfied`
+requires a nonempty rule list, all rule fits satisfied, and no orphans.
+The worker sorts all peers by health then ID, filters each rule's unselected
+candidates, and explores fixed-count combinations in Go numeric-mask order.
+Single-rule assembly and comparison are shared with `fit_rule`.
+
+Better rule fits reset the best suffix; equal fits recurse into the next rule
+and replace the current assignment only if that suffix improves. Earlier rules
+therefore dominate later rules lexicographically. Peers are marked for recursion
+and unmarked on return. Orphans are captured from the winning complete selection,
+including unknown-store peers. Exact ties retain the first combination. With no
+location labels, Go's satisfied-fit early exit stops combination traversal too;
+location labels keep exhaustive search enabled for later isolation improvements.
+The iterator avoids machine-word mask overflow; complexity remains combinatorial.
+No rules produces sorted orphan peers and an unsatisfied fit. Rules are expected
+to be validated by the existing rule manager (including positive counts).
+See [task 27 evidence](../../../docs/rust/schedule/placement/27-证据.md) and
+explicitly registered `placement_region_fit_test.rs`.

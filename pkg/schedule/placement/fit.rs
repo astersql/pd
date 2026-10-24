@@ -1,5 +1,5 @@
 // Copyright 2026 AsterSQL.
-//! Single-rule peer selection over canonical core snapshots.
+//! Ordered placement-rule combination search over canonical core snapshots.
 use crate::{PeerRoleType, Rule, match_label_constraints};
 use astersql_pd_core::{Peer, RegionInfo, StoreInfo};
 use std::{cmp::Ordering, sync::Arc};
@@ -106,41 +106,12 @@ pub fn fit_rule(
                 .then_some((peer, store))
         })
         .collect();
-    let state = |p: &Peer| {
-        if region.get_down_peer(p.id).is_some() {
-            0
-        } else if region.get_pending_peer(p.id).is_some() {
-            1
-        } else {
-            2
-        }
-    };
-    candidates.sort_by_key(|(p, _)| (std::cmp::Reverse(state(p)), p.id));
+    candidates.sort_by_key(|(p, _)| (std::cmp::Reverse(state_score(region, p.id)), p.id));
     let count = usize::try_from(rule.count)
         .unwrap_or(0)
         .min(candidates.len());
     let mut best = None;
-    // Enumerate fixed-size combinations in colex order, matching Go numeric masks,
-    // without machine-word shifts or an artificial peer-count limit.
-    fn visit<'a>(
-        c: &[(&'a Peer, &'a Arc<StoreInfo>)],
-        end: usize,
-        remaining: usize,
-        indices: &mut Vec<usize>,
-        emit: &mut impl FnMut(&[(&'a Peer, &'a Arc<StoreInfo>)]),
-    ) {
-        if remaining == 0 {
-            let selected: Vec<_> = indices.iter().rev().map(|i| c[*i]).collect();
-            emit(&selected);
-            return;
-        }
-        for last in remaining - 1..end {
-            indices.push(last);
-            visit(c, last, remaining - 1, indices, emit);
-            indices.pop();
-        }
-    }
-    visit(
+    combinations(
         &candidates,
         candidates.len(),
         count,
@@ -150,7 +121,191 @@ pub fn fit_rule(
             if best.as_ref().is_none_or(|b| fit.compare(b).is_gt()) {
                 best = Some(fit);
             }
+            true
         },
     );
     best.expect("the empty selection is a combination")
+}
+
+/// Ordered assignment of peers to rules and the remaining orphan peers.
+pub struct RegionFit {
+    pub rule_fits: Vec<RuleFit>,
+    pub orphan_peers: Vec<Peer>,
+}
+impl RegionFit {
+    pub fn is_satisfied(&self) -> bool {
+        !self.rule_fits.is_empty()
+            && self.rule_fits.iter().all(RuleFit::is_satisfied)
+            && self.orphan_peers.is_empty()
+    }
+}
+/// Fit an ordered rule list over canonical core snapshots.
+pub fn fit_region(
+    stores: &[Arc<StoreInfo>],
+    region: &RegionInfo,
+    rules: &[Arc<Rule>],
+    support_witness: bool,
+) -> RegionFit {
+    let leader = region.leader().map_or(0, |p| p.id);
+    let mut peers: Vec<_> = region.meta().peers.iter().collect();
+    peers.sort_by_key(|p| (std::cmp::Reverse(state_score(region, p.id)), p.id));
+    let mut worker = FitWorker {
+        stores,
+        peers,
+        leader,
+        rules,
+        support_witness,
+        selected: vec![false; region.meta().peers.len()],
+        best: (0..rules.len()).map(|_| None).collect(),
+        orphans: vec![],
+        need_isolation: rules.iter().any(|r| !r.location_labels.is_empty()),
+        exit: false,
+    };
+    worker.fit(0);
+    if rules.is_empty() {
+        worker.update_orphans();
+    }
+    RegionFit {
+        rule_fits: worker
+            .best
+            .into_iter()
+            .map(|f| f.expect("every rule has an empty combination"))
+            .collect(),
+        orphan_peers: worker.orphans,
+    }
+}
+
+// Enumerate fixed-size combinations in colex order, matching Go numeric masks,
+// without machine-word shifts or an artificial peer-count limit.
+fn combinations<T: Copy>(
+    c: &[T],
+    end: usize,
+    remaining: usize,
+    indices: &mut Vec<usize>,
+    emit: &mut impl FnMut(&[T]) -> bool,
+) -> bool {
+    if remaining == 0 {
+        let selected: Vec<_> = indices.iter().rev().map(|i| c[*i]).collect();
+        return emit(&selected);
+    }
+    for last in remaining - 1..end {
+        indices.push(last);
+        let keep_searching = combinations(c, last, remaining - 1, indices, emit);
+        indices.pop();
+        if !keep_searching {
+            return false;
+        }
+    }
+    true
+}
+
+fn state_score(region: &RegionInfo, id: u64) -> u8 {
+    if region.get_down_peer(id).is_some() {
+        0
+    } else if region.get_pending_peer(id).is_some() {
+        1
+    } else {
+        2
+    }
+}
+
+struct FitWorker<'a> {
+    stores: &'a [Arc<StoreInfo>],
+    peers: Vec<&'a Peer>,
+    leader: u64,
+    rules: &'a [Arc<Rule>],
+    support_witness: bool,
+    selected: Vec<bool>,
+    best: Vec<Option<RuleFit>>,
+    orphans: Vec<Peer>,
+    need_isolation: bool,
+    exit: bool,
+}
+impl FitWorker<'_> {
+    fn update_orphans(&mut self) {
+        self.orphans = self
+            .peers
+            .iter()
+            .zip(&self.selected)
+            .filter(|(_, selected)| !**selected)
+            .map(|(p, _)| (*p).clone())
+            .collect();
+    }
+    fn fit(&mut self, index: usize) -> bool {
+        if self.exit {
+            return false;
+        }
+        if index == self.rules.len() {
+            if !self.need_isolation
+                && !self.best.is_empty()
+                && self.orphans.is_empty()
+                && self
+                    .best
+                    .iter()
+                    .all(|f| f.as_ref().is_some_and(RuleFit::is_satisfied))
+            {
+                self.exit = true;
+            }
+            return false;
+        }
+        let rule = Arc::clone(&self.rules[index]);
+        let candidates: Vec<_> = self
+            .peers
+            .iter()
+            .enumerate()
+            .filter_map(|(i, p)| {
+                let store = self.stores.iter().find(|s| s.id() == p.store_id)?;
+                (!self.selected[i]
+                    && match_label_constraints(Some(store), &rule.label_constraints)
+                    && (p.id != self.leader || !self.support_witness || !rule.is_witness))
+                    .then_some((i, *p, store))
+            })
+            .collect();
+        let count = usize::try_from(rule.count)
+            .unwrap_or(0)
+            .min(candidates.len());
+        // Enumerate against a local immutable candidate snapshot; only the selection
+        // flags and best suffix mutate while descending through subsequent rules.
+        let mut better = false;
+        combinations(
+            &candidates,
+            candidates.len(),
+            count,
+            &mut vec![],
+            &mut |chosen| {
+                for (i, _, _) in chosen {
+                    self.selected[*i] = true;
+                }
+                let selected: Vec<_> = chosen.iter().map(|(_, p, s)| (*p, *s)).collect();
+                let fit = assemble(
+                    Arc::clone(&rule),
+                    &selected,
+                    self.leader,
+                    self.support_witness,
+                );
+                let cmp = self.best[index]
+                    .as_ref()
+                    .map_or(Ordering::Greater, |best| fit.compare(best));
+                if cmp.is_gt() {
+                    self.best[index] = Some(fit);
+                    for next in &mut self.best[index + 1..] {
+                        *next = None;
+                    }
+                    self.fit(index + 1);
+                    if index + 1 == self.rules.len() {
+                        self.update_orphans();
+                    }
+                    better = true;
+                } else if cmp.is_eq() && self.fit(index + 1) {
+                    self.best[index] = Some(fit);
+                    better = true;
+                }
+                for (i, _, _) in chosen {
+                    self.selected[*i] = false;
+                }
+                !self.exit
+            },
+        );
+        better
+    }
 }

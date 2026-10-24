@@ -42,3 +42,8 @@ pub use fit::{RuleFit, fit_rule};
 #[cfg(test)]
 #[path = "placement_role_fit_test.rs"]
 mod placement_role_fit_test;
+
+pub use fit::{RegionFit, fit_region};
+#[cfg(test)]
+#[path = "placement_region_fit_test.rs"]
+mod placement_region_fit_test;

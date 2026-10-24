@@ -1,0 +1,3497 @@
+{
+  "sha256": "4537466d65d253b1e291cacecf53faee14117386e8f2c5ff7b380108e49cc268",
+  "cases": [
+    {
+      "name": "reserve_leader",
+      "rules": [
+        {
+          "role": "voter",
+          "count": 1
+        },
+        {
+          "role": "leader",
+          "count": 1
+        }
+      ],
+      "peers": [
+        {
+          "id": 1,
+          "store_id": 1
+        },
+        {
+          "id": 2,
+          "store_id": 2,
+          "role": 0
+        },
+        {
+          "id": 3,
+          "store_id": 3,
+          "is_witness": false
+        }
+      ],
+      "leader": 1,
+      "output": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target0",
+              "index": -100,
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 1,
+              "create_timestamp": 1792841791
+            },
+            "peers": [
+              {
+                "id": 2,
+                "store_id": 2
+              }
+            ],
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target1",
+              "index": -99,
+              "start_key": "",
+              "end_key": "",
+              "role": "leader",
+              "is_witness": false,
+              "count": 1,
+              "create_timestamp": 1792841791
+            },
+            "peers": [
+              {
+                "id": 1,
+                "store_id": 1
+              }
+            ],
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "default",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 3,
+              "label_constraints": [
+                {
+                  "key": "oracle",
+                  "op": "in",
+                  "values": [
+                    "reserve"
+                  ]
+                }
+              ],
+              "version": 1
+            },
+            "peers": null,
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": [
+          {
+            "id": 3,
+            "store_id": 3
+          }
+        ]
+      },
+      "stores": [
+        {
+          "store": {
+            "id": 1,
+            "address": "127.0.0.1:20161",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "a"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 1,
+            "leader_weight": 1,
+            "leader_score": 1,
+            "leader_size": 1,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 2,
+            "address": "127.0.0.1:20162",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 3,
+            "address": "127.0.0.1:20163",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 4,
+            "address": "127.0.0.1:20164",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              },
+              {
+                "key": "oracle",
+                "value": "reserve"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 0,
+            "region_weight": 1,
+            "region_score": 0,
+            "region_size": 0,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        }
+      ]
+    },
+    {
+      "name": "reserve_follower",
+      "rules": [
+        {
+          "role": "voter",
+          "count": 1
+        },
+        {
+          "role": "follower",
+          "count": 1
+        }
+      ],
+      "peers": [
+        {
+          "id": 1,
+          "store_id": 1
+        },
+        {
+          "id": 2,
+          "store_id": 2,
+          "role": 0
+        },
+        {
+          "id": 3,
+          "store_id": 3,
+          "is_witness": false
+        }
+      ],
+      "leader": 1,
+      "output": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target0",
+              "index": -100,
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 1,
+              "version": 1,
+              "create_timestamp": 1792841791
+            },
+            "peers": [
+              {
+                "id": 1,
+                "store_id": 1
+              }
+            ],
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target1",
+              "index": -99,
+              "start_key": "",
+              "end_key": "",
+              "role": "follower",
+              "is_witness": false,
+              "count": 1,
+              "version": 1,
+              "create_timestamp": 1792841791
+            },
+            "peers": [
+              {
+                "id": 2,
+                "store_id": 2
+              }
+            ],
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "default",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 3,
+              "label_constraints": [
+                {
+                  "key": "oracle",
+                  "op": "in",
+                  "values": [
+                    "reserve"
+                  ]
+                }
+              ],
+              "version": 2
+            },
+            "peers": null,
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": [
+          {
+            "id": 3,
+            "store_id": 3
+          }
+        ]
+      },
+      "stores": [
+        {
+          "store": {
+            "id": 1,
+            "address": "127.0.0.1:20161",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "a"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 1,
+            "leader_weight": 1,
+            "leader_score": 1,
+            "leader_size": 1,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 2,
+            "address": "127.0.0.1:20162",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 3,
+            "address": "127.0.0.1:20163",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 4,
+            "address": "127.0.0.1:20164",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              },
+              {
+                "key": "oracle",
+                "value": "reserve"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 0,
+            "region_weight": 1,
+            "region_score": 0,
+            "region_size": 0,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        }
+      ]
+    },
+    {
+      "name": "priority_leader_first",
+      "rules": [
+        {
+          "role": "leader",
+          "count": 1
+        },
+        {
+          "role": "voter",
+          "count": 1
+        }
+      ],
+      "peers": [
+        {
+          "id": 1,
+          "store_id": 1
+        },
+        {
+          "id": 2,
+          "store_id": 2,
+          "role": 0
+        },
+        {
+          "id": 3,
+          "store_id": 3,
+          "is_witness": false
+        }
+      ],
+      "leader": 1,
+      "output": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target0",
+              "index": -100,
+              "start_key": "",
+              "end_key": "",
+              "role": "leader",
+              "is_witness": false,
+              "count": 1,
+              "version": 2,
+              "create_timestamp": 1792841791
+            },
+            "peers": [
+              {
+                "id": 1,
+                "store_id": 1
+              }
+            ],
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target1",
+              "index": -99,
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 1,
+              "version": 2,
+              "create_timestamp": 1792841791
+            },
+            "peers": [
+              {
+                "id": 2,
+                "store_id": 2
+              }
+            ],
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "default",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 3,
+              "label_constraints": [
+                {
+                  "key": "oracle",
+                  "op": "in",
+                  "values": [
+                    "reserve"
+                  ]
+                }
+              ],
+              "version": 3
+            },
+            "peers": null,
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": [
+          {
+            "id": 3,
+            "store_id": 3
+          }
+        ]
+      },
+      "stores": [
+        {
+          "store": {
+            "id": 1,
+            "address": "127.0.0.1:20161",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "a"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 1,
+            "leader_weight": 1,
+            "leader_score": 1,
+            "leader_size": 1,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 2,
+            "address": "127.0.0.1:20162",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 3,
+            "address": "127.0.0.1:20163",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 4,
+            "address": "127.0.0.1:20164",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              },
+              {
+                "key": "oracle",
+                "value": "reserve"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 0,
+            "region_weight": 1,
+            "region_score": 0,
+            "region_size": 0,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        }
+      ]
+    },
+    {
+      "name": "orphan_order",
+      "rules": [
+        {
+          "role": "voter",
+          "count": 1
+        }
+      ],
+      "peers": [
+        {
+          "id": 1,
+          "store_id": 1
+        },
+        {
+          "id": 2,
+          "store_id": 2,
+          "role": 0
+        },
+        {
+          "id": 3,
+          "store_id": 3,
+          "is_witness": false
+        }
+      ],
+      "leader": 1,
+      "output": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target0",
+              "index": -100,
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 1,
+              "version": 3,
+              "create_timestamp": 1792841791
+            },
+            "peers": [
+              {
+                "id": 1,
+                "store_id": 1
+              }
+            ],
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "default",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 3,
+              "label_constraints": [
+                {
+                  "key": "oracle",
+                  "op": "in",
+                  "values": [
+                    "reserve"
+                  ]
+                }
+              ],
+              "version": 4
+            },
+            "peers": null,
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": [
+          {
+            "id": 2,
+            "store_id": 2
+          },
+          {
+            "id": 3,
+            "store_id": 3
+          }
+        ]
+      },
+      "stores": [
+        {
+          "store": {
+            "id": 1,
+            "address": "127.0.0.1:20161",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "a"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 1,
+            "leader_weight": 1,
+            "leader_score": 1,
+            "leader_size": 1,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 2,
+            "address": "127.0.0.1:20162",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 3,
+            "address": "127.0.0.1:20163",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 4,
+            "address": "127.0.0.1:20164",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              },
+              {
+                "key": "oracle",
+                "value": "reserve"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 0,
+            "region_weight": 1,
+            "region_score": 0,
+            "region_size": 0,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        }
+      ]
+    },
+    {
+      "name": "shortage",
+      "rules": [
+        {
+          "role": "voter",
+          "count": 3
+        },
+        {
+          "role": "learner",
+          "count": 2
+        }
+      ],
+      "peers": [
+        {
+          "id": 1,
+          "store_id": 1
+        },
+        {
+          "id": 2,
+          "store_id": 2,
+          "role": 0
+        },
+        {
+          "id": 3,
+          "store_id": 3,
+          "is_witness": false
+        }
+      ],
+      "leader": 1,
+      "output": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target0",
+              "index": -100,
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 3,
+              "version": 4,
+              "create_timestamp": 1792841791
+            },
+            "peers": [
+              {
+                "id": 1,
+                "store_id": 1
+              },
+              {
+                "id": 2,
+                "store_id": 2
+              },
+              {
+                "id": 3,
+                "store_id": 3
+              }
+            ],
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target1",
+              "index": -99,
+              "start_key": "",
+              "end_key": "",
+              "role": "learner",
+              "is_witness": false,
+              "count": 2,
+              "create_timestamp": 1792841792
+            },
+            "peers": null,
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "default",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 3,
+              "label_constraints": [
+                {
+                  "key": "oracle",
+                  "op": "in",
+                  "values": [
+                    "reserve"
+                  ]
+                }
+              ],
+              "version": 5
+            },
+            "peers": null,
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": null
+      },
+      "stores": [
+        {
+          "store": {
+            "id": 1,
+            "address": "127.0.0.1:20161",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "a"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 1,
+            "leader_weight": 1,
+            "leader_score": 1,
+            "leader_size": 1,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 2,
+            "address": "127.0.0.1:20162",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 3,
+            "address": "127.0.0.1:20163",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 4,
+            "address": "127.0.0.1:20164",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              },
+              {
+                "key": "oracle",
+                "value": "reserve"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 0,
+            "region_weight": 1,
+            "region_score": 0,
+            "region_size": 0,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        }
+      ]
+    },
+    {
+      "name": "role_conversion",
+      "rules": [
+        {
+          "role": "learner",
+          "count": 1
+        },
+        {
+          "role": "voter",
+          "count": 2
+        }
+      ],
+      "peers": [
+        {
+          "id": 1,
+          "store_id": 1
+        },
+        {
+          "id": 2,
+          "store_id": 2,
+          "role": 1
+        },
+        {
+          "id": 3,
+          "store_id": 3,
+          "is_witness": true
+        }
+      ],
+      "leader": 1,
+      "output": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target0",
+              "index": -100,
+              "start_key": "",
+              "end_key": "",
+              "role": "learner",
+              "is_witness": false,
+              "count": 1,
+              "version": 5,
+              "create_timestamp": 1792841791
+            },
+            "peers": [
+              {
+                "id": 2,
+                "store_id": 2,
+                "role": 1
+              }
+            ],
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target1",
+              "index": -99,
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 2,
+              "version": 1,
+              "create_timestamp": 1792841792
+            },
+            "peers": [
+              {
+                "id": 1,
+                "store_id": 1
+              },
+              {
+                "id": 3,
+                "store_id": 3,
+                "is_witness": true
+              }
+            ],
+            "peers-different-role": [
+              {
+                "id": 3,
+                "store_id": 3,
+                "is_witness": true
+              }
+            ],
+            "isolation-score": 0,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "default",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 3,
+              "label_constraints": [
+                {
+                  "key": "oracle",
+                  "op": "in",
+                  "values": [
+                    "reserve"
+                  ]
+                }
+              ],
+              "version": 6
+            },
+            "peers": null,
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": null
+      },
+      "stores": [
+        {
+          "store": {
+            "id": 1,
+            "address": "127.0.0.1:20161",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "a"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 1,
+            "leader_weight": 1,
+            "leader_score": 1,
+            "leader_size": 1,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 2,
+            "address": "127.0.0.1:20162",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 3,
+            "address": "127.0.0.1:20163",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 4,
+            "address": "127.0.0.1:20164",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              },
+              {
+                "key": "oracle",
+                "value": "reserve"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 0,
+            "region_weight": 1,
+            "region_score": 0,
+            "region_size": 0,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        }
+      ]
+    },
+    {
+      "name": "health_order",
+      "rules": [
+        {
+          "role": "voter",
+          "count": 1
+        },
+        {
+          "role": "voter",
+          "count": 1
+        }
+      ],
+      "health": true,
+      "peers": [
+        {
+          "id": 1,
+          "store_id": 1
+        },
+        {
+          "id": 2,
+          "store_id": 2,
+          "role": 0
+        },
+        {
+          "id": 3,
+          "store_id": 3,
+          "is_witness": false
+        }
+      ],
+      "leader": 1,
+      "output": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target0",
+              "index": -100,
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 1,
+              "version": 6,
+              "create_timestamp": 1792841791
+            },
+            "peers": [
+              {
+                "id": 3,
+                "store_id": 3
+              }
+            ],
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target1",
+              "index": -99,
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 1,
+              "version": 2,
+              "create_timestamp": 1792841792
+            },
+            "peers": [
+              {
+                "id": 2,
+                "store_id": 2
+              }
+            ],
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "default",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 3,
+              "label_constraints": [
+                {
+                  "key": "oracle",
+                  "op": "in",
+                  "values": [
+                    "reserve"
+                  ]
+                }
+              ],
+              "version": 7
+            },
+            "peers": null,
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": [
+          {
+            "id": 1,
+            "store_id": 1
+          }
+        ]
+      },
+      "stores": [
+        {
+          "store": {
+            "id": 1,
+            "address": "127.0.0.1:20161",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "a"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 1,
+            "leader_weight": 1,
+            "leader_score": 1,
+            "leader_size": 1,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 2,
+            "address": "127.0.0.1:20162",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "pending_peer_count": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 3,
+            "address": "127.0.0.1:20163",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 4,
+            "address": "127.0.0.1:20164",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              },
+              {
+                "key": "oracle",
+                "value": "reserve"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 0,
+            "region_weight": 1,
+            "region_score": 0,
+            "region_size": 0,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        }
+      ]
+    },
+    {
+      "name": "witness_on",
+      "rules": [
+        {
+          "role": "voter",
+          "count": 1
+        },
+        {
+          "role": "voter",
+          "count": 1,
+          "is_witness": true
+        }
+      ],
+      "support": true,
+      "peers": [
+        {
+          "id": 1,
+          "store_id": 1
+        },
+        {
+          "id": 2,
+          "store_id": 2,
+          "role": 1
+        },
+        {
+          "id": 3,
+          "store_id": 3,
+          "is_witness": true
+        }
+      ],
+      "leader": 1,
+      "output": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target0",
+              "index": -100,
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 1,
+              "version": 7,
+              "create_timestamp": 1792841791
+            },
+            "peers": [
+              {
+                "id": 1,
+                "store_id": 1
+              }
+            ],
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target1",
+              "index": -99,
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": true,
+              "count": 1,
+              "version": 3,
+              "create_timestamp": 1792841792
+            },
+            "peers": [
+              {
+                "id": 3,
+                "store_id": 3,
+                "is_witness": true
+              }
+            ],
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 1
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "default",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 3,
+              "label_constraints": [
+                {
+                  "key": "oracle",
+                  "op": "in",
+                  "values": [
+                    "reserve"
+                  ]
+                }
+              ],
+              "version": 8
+            },
+            "peers": null,
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": [
+          {
+            "id": 2,
+            "store_id": 2,
+            "role": 1
+          }
+        ]
+      },
+      "stores": [
+        {
+          "store": {
+            "id": 1,
+            "address": "127.0.0.1:20161",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "a"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 1,
+            "leader_weight": 1,
+            "leader_score": 1,
+            "leader_size": 1,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 2,
+            "address": "127.0.0.1:20162",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "learner_count": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 3,
+            "address": "127.0.0.1:20163",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "witness_count": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 4,
+            "address": "127.0.0.1:20164",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              },
+              {
+                "key": "oracle",
+                "value": "reserve"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 0,
+            "region_weight": 1,
+            "region_score": 0,
+            "region_size": 0,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        }
+      ]
+    },
+    {
+      "name": "witness_off",
+      "rules": [
+        {
+          "role": "voter",
+          "count": 1
+        },
+        {
+          "role": "voter",
+          "count": 1,
+          "is_witness": true
+        }
+      ],
+      "peers": [
+        {
+          "id": 1,
+          "store_id": 1
+        },
+        {
+          "id": 2,
+          "store_id": 2,
+          "role": 1
+        },
+        {
+          "id": 3,
+          "store_id": 3,
+          "is_witness": true
+        }
+      ],
+      "leader": 1,
+      "output": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target0",
+              "index": -100,
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 1,
+              "version": 8,
+              "create_timestamp": 1792841791
+            },
+            "peers": [
+              {
+                "id": 1,
+                "store_id": 1
+              }
+            ],
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target1",
+              "index": -99,
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": true,
+              "count": 1,
+              "version": 4,
+              "create_timestamp": 1792841792
+            },
+            "peers": [
+              {
+                "id": 2,
+                "store_id": 2,
+                "role": 1
+              }
+            ],
+            "peers-different-role": [
+              {
+                "id": 2,
+                "store_id": 2,
+                "role": 1
+              }
+            ],
+            "isolation-score": 0,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "default",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 3,
+              "label_constraints": [
+                {
+                  "key": "oracle",
+                  "op": "in",
+                  "values": [
+                    "reserve"
+                  ]
+                }
+              ],
+              "version": 9
+            },
+            "peers": null,
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": [
+          {
+            "id": 3,
+            "store_id": 3,
+            "is_witness": true
+          }
+        ]
+      },
+      "stores": [
+        {
+          "store": {
+            "id": 1,
+            "address": "127.0.0.1:20161",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "a"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 1,
+            "leader_weight": 1,
+            "leader_score": 1,
+            "leader_size": 1,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 2,
+            "address": "127.0.0.1:20162",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "learner_count": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 3,
+            "address": "127.0.0.1:20163",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "witness_count": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 4,
+            "address": "127.0.0.1:20164",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              },
+              {
+                "key": "oracle",
+                "value": "reserve"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 0,
+            "region_weight": 1,
+            "region_score": 0,
+            "region_size": 0,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        }
+      ]
+    },
+    {
+      "name": "missing_store",
+      "rules": [
+        {
+          "role": "voter",
+          "count": 4
+        }
+      ],
+      "missing": true,
+      "peers": [
+        {
+          "id": 1,
+          "store_id": 1
+        },
+        {
+          "id": 2,
+          "store_id": 2,
+          "role": 0
+        },
+        {
+          "id": 3,
+          "store_id": 3,
+          "is_witness": false
+        },
+        {
+          "id": 4,
+          "store_id": 999
+        }
+      ],
+      "leader": 1,
+      "output": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target0",
+              "index": -100,
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 4,
+              "version": 9,
+              "create_timestamp": 1792841791
+            },
+            "peers": [
+              {
+                "id": 1,
+                "store_id": 1
+              },
+              {
+                "id": 2,
+                "store_id": 2
+              },
+              {
+                "id": 3,
+                "store_id": 3
+              }
+            ],
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "default",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 3,
+              "label_constraints": [
+                {
+                  "key": "oracle",
+                  "op": "in",
+                  "values": [
+                    "reserve"
+                  ]
+                }
+              ],
+              "version": 10
+            },
+            "peers": null,
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": [
+          {
+            "id": 4,
+            "store_id": 999
+          }
+        ]
+      },
+      "stores": [
+        {
+          "store": {
+            "id": 1,
+            "address": "127.0.0.1:20161",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "a"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 1,
+            "leader_weight": 1,
+            "leader_score": 1,
+            "leader_size": 1,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 2,
+            "address": "127.0.0.1:20162",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 3,
+            "address": "127.0.0.1:20163",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 4,
+            "address": "127.0.0.1:20164",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              },
+              {
+                "key": "oracle",
+                "value": "reserve"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 0,
+            "region_weight": 1,
+            "region_score": 0,
+            "region_size": 0,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        }
+      ]
+    },
+    {
+      "name": "later_isolation",
+      "rules": [
+        {
+          "role": "voter",
+          "count": 1
+        },
+        {
+          "role": "voter",
+          "count": 2,
+          "location_labels": [
+            "zone"
+          ]
+        }
+      ],
+      "peers": [
+        {
+          "id": 1,
+          "store_id": 1
+        },
+        {
+          "id": 2,
+          "store_id": 2,
+          "role": 0
+        },
+        {
+          "id": 3,
+          "store_id": 3,
+          "is_witness": false
+        }
+      ],
+      "leader": 1,
+      "output": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target0",
+              "index": -100,
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 1,
+              "version": 10,
+              "create_timestamp": 1792841791
+            },
+            "peers": [
+              {
+                "id": 2,
+                "store_id": 2
+              }
+            ],
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target1",
+              "index": -99,
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 2,
+              "location_labels": [
+                "zone"
+              ],
+              "create_timestamp": 1792841792
+            },
+            "peers": [
+              {
+                "id": 1,
+                "store_id": 1
+              },
+              {
+                "id": 3,
+                "store_id": 3
+              }
+            ],
+            "peers-different-role": null,
+            "isolation-score": 1,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "default",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 3,
+              "label_constraints": [
+                {
+                  "key": "oracle",
+                  "op": "in",
+                  "values": [
+                    "reserve"
+                  ]
+                }
+              ],
+              "version": 11
+            },
+            "peers": null,
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": null
+      },
+      "stores": [
+        {
+          "store": {
+            "id": 1,
+            "address": "127.0.0.1:20161",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "a"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 1,
+            "leader_weight": 1,
+            "leader_score": 1,
+            "leader_size": 1,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 2,
+            "address": "127.0.0.1:20162",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 3,
+            "address": "127.0.0.1:20163",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 4,
+            "address": "127.0.0.1:20164",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              },
+              {
+                "key": "oracle",
+                "value": "reserve"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 0,
+            "region_weight": 1,
+            "region_score": 0,
+            "region_size": 0,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        }
+      ]
+    },
+    {
+      "name": "first_isolation",
+      "rules": [
+        {
+          "role": "voter",
+          "count": 2,
+          "location_labels": [
+            "zone"
+          ]
+        },
+        {
+          "role": "voter",
+          "count": 1
+        }
+      ],
+      "peers": [
+        {
+          "id": 1,
+          "store_id": 1
+        },
+        {
+          "id": 2,
+          "store_id": 2,
+          "role": 0
+        },
+        {
+          "id": 3,
+          "store_id": 3,
+          "is_witness": false
+        }
+      ],
+      "leader": 1,
+      "output": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target0",
+              "index": -100,
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 2,
+              "location_labels": [
+                "zone"
+              ],
+              "version": 11,
+              "create_timestamp": 1792841791
+            },
+            "peers": [
+              {
+                "id": 1,
+                "store_id": 1
+              },
+              {
+                "id": 2,
+                "store_id": 2
+              }
+            ],
+            "peers-different-role": null,
+            "isolation-score": 1,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target1",
+              "index": -99,
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 1,
+              "version": 1,
+              "create_timestamp": 1792841792
+            },
+            "peers": [
+              {
+                "id": 3,
+                "store_id": 3
+              }
+            ],
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "default",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 3,
+              "label_constraints": [
+                {
+                  "key": "oracle",
+                  "op": "in",
+                  "values": [
+                    "reserve"
+                  ]
+                }
+              ],
+              "version": 12
+            },
+            "peers": null,
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": null
+      },
+      "stores": [
+        {
+          "store": {
+            "id": 1,
+            "address": "127.0.0.1:20161",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "a"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 1,
+            "leader_weight": 1,
+            "leader_score": 1,
+            "leader_size": 1,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 2,
+            "address": "127.0.0.1:20162",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 3,
+            "address": "127.0.0.1:20163",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 4,
+            "address": "127.0.0.1:20164",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              },
+              {
+                "key": "oracle",
+                "value": "reserve"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 0,
+            "region_weight": 1,
+            "region_score": 0,
+            "region_size": 0,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        }
+      ]
+    },
+    {
+      "name": "isolation_priority",
+      "rules": [
+        {
+          "role": "voter",
+          "count": 2,
+          "location_labels": [
+            "zone"
+          ]
+        },
+        {
+          "role": "voter",
+          "count": 1,
+          "label_constraints": [
+            {
+              "key": "zone",
+              "op": "in",
+              "values": [
+                "a"
+              ]
+            }
+          ]
+        }
+      ],
+      "peers": [
+        {
+          "id": 1,
+          "store_id": 1
+        },
+        {
+          "id": 2,
+          "store_id": 2,
+          "role": 0
+        },
+        {
+          "id": 3,
+          "store_id": 3,
+          "is_witness": false
+        }
+      ],
+      "leader": 1,
+      "output": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target0",
+              "index": -100,
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 2,
+              "location_labels": [
+                "zone"
+              ],
+              "version": 12,
+              "create_timestamp": 1792841791
+            },
+            "peers": [
+              {
+                "id": 1,
+                "store_id": 1
+              },
+              {
+                "id": 2,
+                "store_id": 2
+              }
+            ],
+            "peers-different-role": null,
+            "isolation-score": 1,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target1",
+              "index": -99,
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 1,
+              "label_constraints": [
+                {
+                  "key": "zone",
+                  "op": "in",
+                  "values": [
+                    "a"
+                  ]
+                }
+              ],
+              "version": 2,
+              "create_timestamp": 1792841792
+            },
+            "peers": null,
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "default",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 3,
+              "label_constraints": [
+                {
+                  "key": "oracle",
+                  "op": "in",
+                  "values": [
+                    "reserve"
+                  ]
+                }
+              ],
+              "version": 13
+            },
+            "peers": null,
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": [
+          {
+            "id": 3,
+            "store_id": 3
+          }
+        ]
+      },
+      "stores": [
+        {
+          "store": {
+            "id": 1,
+            "address": "127.0.0.1:20161",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "a"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 1,
+            "leader_weight": 1,
+            "leader_score": 1,
+            "leader_size": 1,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 2,
+            "address": "127.0.0.1:20162",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 3,
+            "address": "127.0.0.1:20163",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 4,
+            "address": "127.0.0.1:20164",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              },
+              {
+                "key": "oracle",
+                "value": "reserve"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 0,
+            "region_weight": 1,
+            "region_score": 0,
+            "region_size": 0,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        }
+      ]
+    },
+    {
+      "name": "constraint_priority",
+      "rules": [
+        {
+          "role": "voter",
+          "count": 1,
+          "label_constraints": [
+            {
+              "key": "zone",
+              "op": "in",
+              "values": [
+                "a"
+              ]
+            }
+          ]
+        },
+        {
+          "role": "voter",
+          "count": 2,
+          "location_labels": [
+            "zone"
+          ]
+        }
+      ],
+      "peers": [
+        {
+          "id": 1,
+          "store_id": 1
+        },
+        {
+          "id": 2,
+          "store_id": 2,
+          "role": 0
+        },
+        {
+          "id": 3,
+          "store_id": 3,
+          "is_witness": false
+        }
+      ],
+      "leader": 1,
+      "output": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target0",
+              "index": -100,
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 1,
+              "label_constraints": [
+                {
+                  "key": "zone",
+                  "op": "in",
+                  "values": [
+                    "a"
+                  ]
+                }
+              ],
+              "version": 13,
+              "create_timestamp": 1792841791
+            },
+            "peers": [
+              {
+                "id": 1,
+                "store_id": 1
+              }
+            ],
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target1",
+              "index": -99,
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 2,
+              "location_labels": [
+                "zone"
+              ],
+              "version": 3,
+              "create_timestamp": 1792841792
+            },
+            "peers": [
+              {
+                "id": 2,
+                "store_id": 2
+              },
+              {
+                "id": 3,
+                "store_id": 3
+              }
+            ],
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "default",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 3,
+              "label_constraints": [
+                {
+                  "key": "oracle",
+                  "op": "in",
+                  "values": [
+                    "reserve"
+                  ]
+                }
+              ],
+              "version": 14
+            },
+            "peers": null,
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": null
+      },
+      "stores": [
+        {
+          "store": {
+            "id": 1,
+            "address": "127.0.0.1:20161",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "a"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 1,
+            "leader_weight": 1,
+            "leader_score": 1,
+            "leader_size": 1,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 2,
+            "address": "127.0.0.1:20162",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 3,
+            "address": "127.0.0.1:20163",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 4,
+            "address": "127.0.0.1:20164",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              },
+              {
+                "key": "oracle",
+                "value": "reserve"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 0,
+            "region_weight": 1,
+            "region_score": 0,
+            "region_size": 0,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        }
+      ]
+    },
+    {
+      "name": "constraint_backtrack",
+      "rules": [
+        {
+          "role": "voter",
+          "count": 1
+        },
+        {
+          "role": "voter",
+          "count": 1,
+          "label_constraints": [
+            {
+              "key": "zone",
+              "op": "in",
+              "values": [
+                "a"
+              ]
+            }
+          ]
+        }
+      ],
+      "peers": [
+        {
+          "id": 1,
+          "store_id": 1
+        },
+        {
+          "id": 2,
+          "store_id": 2,
+          "role": 0
+        },
+        {
+          "id": 3,
+          "store_id": 3,
+          "is_witness": false
+        }
+      ],
+      "leader": 1,
+      "output": {
+        "rule-fits": [
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target0",
+              "index": -100,
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 1,
+              "version": 14,
+              "create_timestamp": 1792841791
+            },
+            "peers": [
+              {
+                "id": 2,
+                "store_id": 2
+              }
+            ],
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "target1",
+              "index": -99,
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 1,
+              "label_constraints": [
+                {
+                  "key": "zone",
+                  "op": "in",
+                  "values": [
+                    "a"
+                  ]
+                }
+              ],
+              "version": 4,
+              "create_timestamp": 1792841792
+            },
+            "peers": [
+              {
+                "id": 1,
+                "store_id": 1
+              }
+            ],
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          },
+          {
+            "rule": {
+              "group_id": "pd",
+              "id": "default",
+              "start_key": "",
+              "end_key": "",
+              "role": "voter",
+              "is_witness": false,
+              "count": 3,
+              "label_constraints": [
+                {
+                  "key": "oracle",
+                  "op": "in",
+                  "values": [
+                    "reserve"
+                  ]
+                }
+              ],
+              "version": 15
+            },
+            "peers": null,
+            "peers-different-role": null,
+            "isolation-score": 0,
+            "witness-score": 0
+          }
+        ],
+        "orphan-peers": [
+          {
+            "id": 3,
+            "store_id": 3
+          }
+        ]
+      },
+      "stores": [
+        {
+          "store": {
+            "id": 1,
+            "address": "127.0.0.1:20161",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "a"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 1,
+            "leader_weight": 1,
+            "leader_score": 1,
+            "leader_size": 1,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 2,
+            "address": "127.0.0.1:20162",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 3,
+            "address": "127.0.0.1:20163",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 1,
+            "region_weight": 1,
+            "region_score": 1,
+            "region_size": 1,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        },
+        {
+          "store": {
+            "id": 4,
+            "address": "127.0.0.1:20164",
+            "labels": [
+              {
+                "key": "zone",
+                "value": "b"
+              },
+              {
+                "key": "oracle",
+                "value": "reserve"
+              }
+            ],
+            "state_name": "Down"
+          },
+          "status": {
+            "capacity": "0B",
+            "available": "0B",
+            "used_size": "0B",
+            "leader_count": 0,
+            "leader_weight": 1,
+            "leader_score": 0,
+            "leader_size": 0,
+            "region_count": 0,
+            "region_weight": 1,
+            "region_score": 0,
+            "region_size": 0,
+            "start_ts": "1970-01-01T00:00:00Z",
+            "last_heartbeat_ts": "1970-01-01T00:00:00Z"
+          }
+        }
+      ]
+    }
+  ]
+}

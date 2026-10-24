@@ -1,0 +1,22 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-schedule-placement v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/placement)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.63s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_placement-d16fae04edf99afd)
+
+running 1 test
+
+thread 'placement_region_fit_test::placement_region_fit_go_runtime_fixture' (155865188) panicked at pkg/schedule/placement/placement_region_fit_test.rs:103:13:
+assertion `left == right` failed: reserve_leader target0
+  left: [1]
+ right: [2]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test placement_region_fit_test::placement_region_fit_go_runtime_fixture ... FAILED
+
+failures:
+
+failures:
+    placement_region_fit_test::placement_region_fit_go_runtime_fixture
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 31 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-placement --lib`
