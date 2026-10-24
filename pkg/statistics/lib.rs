@@ -55,3 +55,10 @@ mod region_classify_test;
 mod region_placement;
 #[cfg(test)]
 mod region_placement_test;
+
+mod label_statistics;
+pub use label_statistics::{
+    LabelStatistics, get_region_label_isolation, is_region_label_isolation_satisfied,
+};
+#[cfg(test)]
+mod label_statistics_test;

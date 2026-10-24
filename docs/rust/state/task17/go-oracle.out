@@ -1,0 +1,28 @@
+=== RUN   TestRegionLabelIsolationLevel
+--- PASS: TestRegionLabelIsolationLevel (0.00s)
+=== RUN   TestRegionLabelIsolationCaseInsensitive
+=== RUN   TestRegionLabelIsolationCaseInsensitive/distinct-dotted-i
+=== RUN   TestRegionLabelIsolationCaseInsensitive/distinct-dotless-i
+=== RUN   TestRegionLabelIsolationCaseInsensitive/unicode-fold
+=== RUN   TestRegionLabelIsolationCaseInsensitive/unicode-long-s
+=== RUN   TestRegionLabelIsolationCaseInsensitive/mixed-ascii-kelvin
+=== RUN   TestRegionLabelIsolationCaseInsensitive/mixed-ascii-long-s
+=== RUN   TestRegionLabelIsolationCaseInsensitive/distinct-unicode-values
+=== RUN   TestRegionLabelIsolationCaseInsensitive/host
+=== RUN   TestRegionLabelIsolationCaseInsensitive/rack
+=== RUN   TestRegionLabelIsolationCaseInsensitive/zone
+=== RUN   TestRegionLabelIsolationCaseInsensitive/missing-label
+--- PASS: TestRegionLabelIsolationCaseInsensitive (0.00s)
+    --- PASS: TestRegionLabelIsolationCaseInsensitive/distinct-dotted-i (0.00s)
+    --- PASS: TestRegionLabelIsolationCaseInsensitive/distinct-dotless-i (0.00s)
+    --- PASS: TestRegionLabelIsolationCaseInsensitive/unicode-fold (0.00s)
+    --- PASS: TestRegionLabelIsolationCaseInsensitive/unicode-long-s (0.00s)
+    --- PASS: TestRegionLabelIsolationCaseInsensitive/mixed-ascii-kelvin (0.00s)
+    --- PASS: TestRegionLabelIsolationCaseInsensitive/mixed-ascii-long-s (0.00s)
+    --- PASS: TestRegionLabelIsolationCaseInsensitive/distinct-unicode-values (0.00s)
+    --- PASS: TestRegionLabelIsolationCaseInsensitive/host (0.00s)
+    --- PASS: TestRegionLabelIsolationCaseInsensitive/rack (0.00s)
+    --- PASS: TestRegionLabelIsolationCaseInsensitive/zone (0.00s)
+    --- PASS: TestRegionLabelIsolationCaseInsensitive/missing-label (0.00s)
+PASS
+ok  	github.com/tikv/pd/pkg/statistics	0.027s

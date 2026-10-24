@@ -30,3 +30,7 @@ RegionInfoProvider、RegionAnomalyDurations与PlacementRulesRequired；region_cl
 
 已加入[规则驱动的分类入口](region_placement.rs.md)：RegionStatistics::observe_with_placement，
 复用真实RuleManager查询和同一异常索引；region_placement_test显式登记。未初始化返回None且不改变索引。
+
+已加入[标签隔离状态统计](label_statistics.rs.md)：get_region_label_isolation、
+is_region_label_isolation_satisfied与LabelStatistics；label_statistics_test显式登记。
+复用core标签比较，覆盖Unicode/缺失值、重复观察与延迟defunct清理；宿主消费独立计数快照。

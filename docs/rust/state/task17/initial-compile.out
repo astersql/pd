@@ -1,0 +1,24 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+COMMAND: cargo fmt --all
+EXIT_CODE=0
+COMMAND: cargo metadata --format-version 1 --no-deps
+EXIT_CODE=0
+COMMAND: cargo fmt --all -- --check
+EXIT_CODE=0
+COMMAND: cargo test -p astersql-pd-statistics --locked --lib state_task_17_label_statistics -- --nocapture
+   Compiling astersql-pd-statistics v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics)
+error[E0599]: no method named `id` found for reference `&RegionInfo` in the current scope
+  --> pkg/statistics/label_statistics.rs:63:53
+   |
+63 |         if let Some(old) = self.regions.get(&region.id()) {
+   |                                                     ^^ method not found in `&RegionInfo`
+
+error[E0599]: no method named `id` found for reference `&RegionInfo` in the current scope
+  --> pkg/statistics/label_statistics.rs:69:36
+   |
+69 |         self.regions.insert(region.id(), isolation.to_owned());
+   |                                    ^^ method not found in `&RegionInfo`
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `astersql-pd-statistics` (lib test) due to 2 previous errors
+EXIT_CODE=101
