@@ -1,0 +1,17 @@
+{
+  "command": [
+    "cargo",
+    "test",
+    "-p",
+    "astersql-pd-cluster",
+    "--locked",
+    "--lib",
+    "state_task_46_bucket_heartbeat",
+    "--",
+    "--nocapture"
+  ],
+  "exit": 0,
+  "passed": 0,
+  "failed": 0,
+  "ignored": 0
+}

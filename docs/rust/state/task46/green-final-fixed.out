@@ -1,0 +1,20 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+   Compiling astersql-pd-cluster v0.1.0 (/Users/Shared/work/dir/data/codes/pd/server/cluster)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.58s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_cluster-43c14e429cc11134)
+
+running 10 tests
+test heartbeat_effects_test::state_task_46_heartbeat_effects_queue_cancel_and_duplicate_repair ... ok
+test heartbeat_effects_test::state_task_46_heartbeat_effects_delayed_stats_refresh_root ... ok
+test heartbeat_effects_test::state_task_46_heartbeat_effects_retained_admission_and_stopped_runner ... ok
+test heartbeat_effects_test::state_task_46_heartbeat_effects_duplicate_config_and_root_only ... ok
+test heartbeat_effects_test::state_task_46_heartbeat_effects_bucket_peer_epoch_and_stale ... ok
+test heartbeat_effects_test::state_task_46_heartbeat_effects_guide_snapshots ... ok
+test heartbeat_effects_test::state_task_46_heartbeat_effects_split_merge_memory ... ok
+test heartbeat_effects_test::state_task_46_heartbeat_effects_delete_failure_continues_then_save_failure ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:51232
+isolated etcd 3.5.15 ready at http://127.0.0.1:51233
+test heartbeat_effects_test::state_task_46_heartbeat_effects_split_merge_etcd ... ok
+test heartbeat_effects_test::state_task_46_heartbeat_effects_etcd_disconnect_keeps_cache_and_history ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 33 filtered out; finished in 3.68s

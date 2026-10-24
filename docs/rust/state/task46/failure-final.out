@@ -1,0 +1,56 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+Type 'help' for list of commands.
+Breakpoint 1 set at 0x15824c0 for github.com/tikv/pd/pkg/encryption.EncryptRegion() .Users/Shared/work/dir/data/codes/pd/pkg/encryption/region_crypter.go:46
+> [Breakpoint 1] github.com/tikv/pd/pkg/encryption.EncryptRegion() .Users/Shared/work/dir/data/codes/pd/pkg/encryption/region_crypter.go:46 (hits goroutine(289):1 total:1) (PC: 0x15824c0)
+("*github.com/pingcap/kvproto/pkg/metapb.Region")(0x521cb5a4e70)
+*github.com/pingcap/kvproto/pkg/metapb.Region {
+        Id: 0,
+        StartKey: []uint8 len: 21, cap: 24, [97,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,49],
+        EndKey: []uint8 len: 21, cap: 24, [97,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,50],
+        RegionEpoch: *github.com/pingcap/kvproto/pkg/metapb.RegionEpoch {ConfVer: 2, Version: 2},
+        Peers: []*github.com/pingcap/kvproto/pkg/metapb.Peer len: 3, cap: 3, [
+                *(*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x521cba681c8),
+                *(*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x521cba68210),
+                *(*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x521cba68240),
+        ],
+        EncryptionMeta: *github.com/pingcap/kvproto/pkg/encryptionpb.EncryptionMeta nil,
+        IsInFlashback: false,
+        FlashbackStartTs: 0,}
+Breakpoint 2 set at 0x18ef708 for github.com/tikv/pd/server/cluster.(*RaftCluster).processRegionHeartbeat.func8() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster.go:1470
+> [Breakpoint 2] github.com/tikv/pd/server/cluster.(*RaftCluster).processRegionHeartbeat.func8() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster.go:1470 (hits goroutine(289):1 total:1) (PC: 0x18ef708)
+error(*github.com/pingcap/errors.withStack) *{
+        error: error(*github.com/pingcap/errors.Error) *{
+                code: 0,
+                codeText: "PD:encryption:ErrEncryptionEncryptRegion",
+                message: "trying to encrypt nil region",
+                redactArgsPos: []int len: 0, cap: 0, nil,
+                cause: error nil,
+                args: []interface {} len: 0, cap: 0, nil,
+                file: "/Users/Shared/work/dir/data/codes/pd/pkg/encryption/region_crypt...+5 more",
+                line: 48,},
+        stack: *github.com/pingcap/errors.stack len: 10, cap: 32, [10362568,10370920,22555124,22774944,26146552,14499096,26144984,26296252,1936864,660564],}
+("*github.com/pingcap/kvproto/pkg/metapb.Region")(0x521cb5a4e70)
+*github.com/pingcap/kvproto/pkg/metapb.Region {
+        Id: 0,
+        StartKey: []uint8 len: 21, cap: 24, [97,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,49],
+        EndKey: []uint8 len: 21, cap: 24, [97,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,50],
+        RegionEpoch: *github.com/pingcap/kvproto/pkg/metapb.RegionEpoch {ConfVer: 2, Version: 2},
+        Peers: []*github.com/pingcap/kvproto/pkg/metapb.Peer len: 3, cap: 3, [
+                *(*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x521cba681c8),
+                *(*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x521cba68210),
+                *(*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x521cba68240),
+        ],
+        EncryptionMeta: *github.com/pingcap/kvproto/pkg/encryptionpb.EncryptionMeta nil,
+        IsInFlashback: false,
+        FlashbackStartTs: 0,}
+/oracle/failure.commands:9: *github.com/tikv/pd/pkg/core.regionItem has no member region
+Breakpoint 3 set at 0x1913fec for github.com/tikv/pd/server/cluster.TestRegionHeartbeat() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1117
+[2026/10/24 22:02:17.622 +00:00] [ERROR] [cluster.go:1469] ["failed to save region to storage"] [region-id=0] [region-meta="start_key:\"612020202020202020202020202020202020202031\" end_key:\"612020202020202020202020202020202020202032\" region_epoch:<conf_ver:2 version:2 > peers:<id:100000000 > peers:<id:100000001 store_id:1 > peers:<id:100000002 store_id:2 >"] [error="[PD:encryption:ErrEncryptionEncryptRegion]trying to encrypt nil region"] [errorVerbose="[PD:encryption:ErrEncryptionEncryptRegion]trying to encrypt nil region\ngithub.com/pingcap/errors.AddStack\n\t/Users/xiangmin/go/pkg/mod/github.com/pingcap/errors@v0.11.5-0.20211224045212-9687c2b0f87c/errors.go:174\ngithub.com/pingcap/errors.(*Error).GenWithStack\n\t/Users/xiangmin/go/pkg/mod/github.com/pingcap/errors@v0.11.5-0.20211224045212-9687c2b0f87c/normalize.go:155\ngithub.com/tikv/pd/pkg/encryption.EncryptRegion\n\t/Users/Shared/work/dir/data/codes/pd/pkg/encryption/region_crypter.go:48\ngithub.com/tikv/pd/pkg/storage/endpoint.(*StorageEndpoint).SaveRegion\n\t/Users/Shared/work/dir/data/codes/pd/pkg/storage/endpoint/meta.go:226\ngithub.com/tikv/pd/server/cluster.(*RaftCluster).processRegionHeartbeat.func8\n\t/Users/Shared/work/dir/data/codes/pd/server/cluster/cluster.go:1468\ngithub.com/tikv/pd/pkg/ratelimit.(*SyncRunner).RunTask\n\t/Users/Shared/work/dir/data/codes/pd/pkg/ratelimit/runner.go:331\ngithub.com/tikv/pd/server/cluster.(*RaftCluster).processRegionHeartbeat\n\t/Users/Shared/work/dir/data/codes/pd/server/cluster/cluster.go:1452\ngithub.com/tikv/pd/server/cluster.TestRegionHeartbeat\n\t/Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1116\ntesting.tRunner\n\t/Users/xiangmin/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.8.darwin-amd64/src/testing/testing.go:2036\nruntime.goexit\n\t/Users/xiangmin/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.8.darwin-amd64/src/runtime/asm_arm64.s:1447"] [stack="github.com/tikv/pd/server/cluster.(*RaftCluster).processRegionHeartbeat.func8\n\t/Users/Shared/work/dir/data/codes/pd/server/cluster/cluster.go:1469\ngithub.com/tikv/pd/pkg/ratelimit.(*SyncRunner).RunTask\n\t/Users/Shared/work/dir/data/codes/pd/pkg/ratelimit/runner.go:331\ngithub.com/tikv/pd/server/cluster.(*RaftCluster).processRegionHeartbeat\n\t/Users/Shared/work/dir/data/codes/pd/server/cluster/cluster.go:1452\ngithub.com/tikv/pd/server/cluster.TestRegionHeartbeat\n\t/Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1116\ntesting.tRunner\n\t/Users/xiangmin/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.8.darwin-amd64/src/testing/testing.go:2036"]
+> [Breakpoint 3] github.com/tikv/pd/server/cluster.TestRegionHeartbeat() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1117 (hits goroutine(289):1 total:1) (PC: 0x1913fec)
+1
+/oracle/failure.commands:13: *github.com/tikv/pd/pkg/core.regionItem has no member region
+github.com/tikv/pd/pkg/storage.Storage(*github.com/tikv/pd/pkg/storage.memoryStorage) *{
+        StorageEndpoint: *github.com/tikv/pd/pkg/storage/endpoint.StorageEndpoint {
+                Base: github.com/tikv/pd/pkg/storage/kv.Base(*github.com/tikv/pd/pkg/storage/kv.memoryKV) ...,
+                encryptionKeyManager: *github.com/tikv/pd/pkg/encryption.Manager nil,
+                nextRegionID: 0,},}

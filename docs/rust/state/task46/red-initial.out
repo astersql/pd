@@ -1,0 +1,55 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+    Checking astersql-pd-etcdutil v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/utils/etcdutil)
+    Checking astersql-pd-storage v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/storage)
+    Checking astersql-pd-syncer v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/syncer)
+    Checking astersql-pd-cluster v0.1.0 (/Users/Shared/work/dir/data/codes/pd/server/cluster)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.80s
+   Compiling astersql-pd-etcdutil v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/utils/etcdutil)
+   Compiling astersql-pd-storage v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/storage)
+   Compiling astersql-pd-syncer v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/syncer)
+   Compiling astersql-pd-cluster v0.1.0 (/Users/Shared/work/dir/data/codes/pd/server/cluster)
+error[E0599]: no method named `set_store` found for struct `StoresInfo` in the current scope
+  --> server/cluster/heartbeat_effects_test.rs:65:28
+   |
+65 |             cluster.stores.set_store(Arc::new(StoreInfo::new(StoreMeta {
+   |             ---------------^^^^^^^^^
+   |
+help: there is a method `get_store` with a similar name
+   |
+65 -             cluster.stores.set_store(Arc::new(StoreInfo::new(StoreMeta {
+65 +             cluster.stores.get_store(Arc::new(StoreInfo::new(StoreMeta {
+   |
+
+error[E0599]: no associated function or constant named `new` found for struct `MemoryStore` in the current scope
+   --> server/cluster/heartbeat_effects_test.rs:136:49
+    |
+136 |     let mut h = Host::new(Arc::new(MemoryStore::new()));
+    |                                                 ^^^ associated function or constant not found in `MemoryStore`
+
+error[E0599]: no method named `set_leader` found for struct `astersql_pd_core::RegionInfo` in the current scope
+   --> server/cluster/heartbeat_effects_test.rs:158:7
+    |
+158 |     r.set_leader(Some(r.meta().peers[1].clone()));
+    |       ^^^^^^^^^^
+    |
+help: there is a method `leader` with a similar name, but with different arguments
+   --> pkg/core/region.rs:90:5
+    |
+ 90 |     pub fn leader(&self) -> Option<&Peer> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0609]: no field `bytes_written` on type `&mut astersql_pd_core::RegionStats`
+   --> server/cluster/heartbeat_effects_test.rs:187:19
+    |
+187 |     r.stats_mut().bytes_written = 24000;
+    |                   ^^^^^^^^^^^^^ unknown field
+    |
+help: a field with a similar name exists
+    |
+187 -     r.stats_mut().bytes_written = 24000;
+187 +     r.stats_mut().written_bytes = 24000;
+    |
+
+Some errors have detailed explanations: E0599, E0609.
+For more information about an error, try `rustc --explain E0599`.
+error: could not compile `astersql-pd-cluster` (lib test) due to 4 previous errors

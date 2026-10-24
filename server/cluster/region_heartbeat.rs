@@ -46,6 +46,15 @@ impl PreparedRegionHeartbeat {
         self,
         cluster: &mut BasicCluster,
     ) -> Result<RegionHeartbeatResult, StaleRegionError> {
+        let result = self.commit_root(cluster)?;
+        // Refresh from root so a delayed report cannot restore an evicted ID.
+        cluster.regions.check_and_put_sub_tree(&result.region);
+        Ok(result)
+    }
+    pub(crate) fn commit_root(
+        self,
+        cluster: &mut BasicCluster,
+    ) -> Result<RegionHeartbeatResult, StaleRegionError> {
         let overlaps = if self.guide.save_cache {
             cluster
                 .regions
@@ -53,9 +62,6 @@ impl PreparedRegionHeartbeat {
         } else {
             vec![]
         };
-        // Root refresh prevents a delayed event from restoring an evicted ID.
-        // Also repair a root-only origin on the duplicate fast path.
-        cluster.regions.check_and_put_sub_tree(&self.region);
         Ok(RegionHeartbeatResult {
             region: self.region,
             guide: self.guide,

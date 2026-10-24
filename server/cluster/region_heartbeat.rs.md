@@ -16,6 +16,8 @@ another report evicts it, but subtree refresh cannot restore its missing ID.
 
 `handle_region_heartbeat` is the sequential convenience entry point. Results
 contain the inherited report, guide and actual evictions for later host wiring.
+The crate-private `commit_root` shares the same admission and root recheck with
+the asynchronous heartbeat-effects pipeline, which owns delayed subtree delivery.
 Persistence, hot statistics, classification, sync queues and scheduling are not
 performed here. No protobuf, runtime, storage backend or global state is added.
 Tests are explicitly registered in lib.rs and use real BasicCluster indexes.

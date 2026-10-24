@@ -1,0 +1,2 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+{'command': ['cargo', 'test', '-p', 'astersql-pd-cluster', '--locked', '--lib', 'state_task_46_heartbeat_effects', '--', '--nocapture'], 'exit': 0, 'passed': 10, 'failed': 0, 'ignored': 0}

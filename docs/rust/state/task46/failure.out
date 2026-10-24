@@ -1,0 +1,33 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+Type 'help' for list of commands.
+Command failed: could not find statement at /Users/Shared/work/dir/data/codes/pd/pkg/storage/storage.go:203, please use a line with a statement
+Set a suspended breakpoint (Delve will try to set this breakpoint when a plugin is loaded) [Y/n]?/oracle/failure.commands:1: EOF
+[2026/10/24 22:01:18.352 +00:00] [INFO] [region.go:915] ["region Version changed"] [region-id=0] [detail="StartKey:{612020202020202020202020202020202020202031}, EndKey:{612020202020202020202020202020202020202032}"] [old-version=2] [new-version=3]
+[2026/10/24 22:01:18.352 +00:00] [INFO] [region.go:915] ["region ConfVer changed"] [region-id=0] [detail=] [old-confver=2] [new-confver=3]
+[2026/10/24 22:01:18.353 +00:00] [INFO] [region.go:915] ["region ConfVer changed"] [region-id=0] [detail="Remove peer:{id:100000001 store_id:1 },Add peer:{id:100000001 store_id:1 is_witness:true }"] [old-confver=3] [new-confver=4]
+[2026/10/24 22:01:18.353 +00:00] [INFO] [region.go:915] ["leader changed"] [region-id=0] [from=0] [to=1]
+[2026/10/24 22:01:18.353 +00:00] [INFO] [region.go:915] ["region Version changed"] [region-id=1] [detail="StartKey:{612020202020202020202020202020202020202032}, EndKey:{612020202020202020202020202020202020202033}"] [old-version=2] [new-version=3]
+[2026/10/24 22:01:18.353 +00:00] [INFO] [region.go:915] ["region ConfVer changed"] [region-id=1] [detail=] [old-confver=2] [new-confver=3]
+[2026/10/24 22:01:18.354 +00:00] [INFO] [region.go:915] ["region ConfVer changed"] [region-id=1] [detail="Remove peer:{id:100000003 store_id:1 },Add peer:{id:100000003 store_id:1 is_witness:true }"] [old-confver=3] [new-confver=4]
+[2026/10/24 22:01:18.354 +00:00] [INFO] [region.go:915] ["leader changed"] [region-id=1] [from=1] [to=2]
+[2026/10/24 22:01:18.354 +00:00] [INFO] [region.go:915] ["region Version changed"] [region-id=2] [detail="StartKey:{612020202020202020202020202020202020202033}, EndKey:{612020202020202020202020202020202020202034}"] [old-version=2] [new-version=3]
+[2026/10/24 22:01:18.355 +00:00] [INFO] [region.go:915] ["region ConfVer changed"] [region-id=2] [detail=] [old-confver=2] [new-confver=3]
+[2026/10/24 22:01:18.355 +00:00] [INFO] [region.go:915] ["region ConfVer changed"] [region-id=2] [detail="Remove peer:{id:100000006 store_id:2 },Add peer:{id:100000006 store_id:2 is_witness:true }"] [old-confver=3] [new-confver=4]
+[2026/10/24 22:01:18.355 +00:00] [INFO] [region.go:915] ["leader changed"] [region-id=2] [from=2] [to=0]
+PASS
+[2026/10/24 22:01:18.407 +00:00] [INFO] [cluster.go:962] ["update store stats background jobs has been stopped"]
+/oracle/failure.commands:2: Process 21 has exited with status 0
+/oracle/failure.commands:3: Process 21 has exited with status 0
+/oracle/failure.commands:4: Process 21 has exited with status 0
+Command failed: Process 21 has exited with status 0
+Set a suspended breakpoint (Delve will try to set this breakpoint when process restarts) [Y/n]?/oracle/failure.commands:5: EOF
+/oracle/failure.commands:6: Process 21 has exited with status 0
+/oracle/failure.commands:7: Process 21 has exited with status 0
+/oracle/failure.commands:8: Process 21 has exited with status 0
+/oracle/failure.commands:9: Process 21 has exited with status 0
+Command failed: Process 21 has exited with status 0
+Set a suspended breakpoint (Delve will try to set this breakpoint when process restarts) [Y/n]?/oracle/failure.commands:10: EOF
+/oracle/failure.commands:11: Process 21 has exited with status 0
+/oracle/failure.commands:12: Process 21 has exited with status 0
+/oracle/failure.commands:13: Process 21 has exited with status 0
+/oracle/failure.commands:14: Process 21 has exited with status 0

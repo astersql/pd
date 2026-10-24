@@ -1,0 +1,20 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+   Compiling astersql-pd-cluster v0.1.0 (/Users/Shared/work/dir/data/codes/pd/server/cluster)
+warning: variable does not need to be mutable
+  --> server/cluster/heartbeat_effects_test.rs:63:13
+   |
+63 |         let mut cluster = BasicCluster::new();
+   |             ----^^^^^^^
+   |             |
+   |             help: remove this `mut`
+   |
+   = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: `astersql-pd-cluster` (lib test) generated 1 warning (run `cargo fix --lib -p astersql-pd-cluster --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.60s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_cluster-43c14e429cc11134)
+
+running 1 test
+test heartbeat_effects_test::state_task_46_heartbeat_effects_guide_snapshots ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 33 filtered out; finished in 0.00s

@@ -29,3 +29,15 @@ mod bucket_heartbeat;
 pub use bucket_heartbeat::{BucketRegionNotFound, handle_bucket_heartbeat};
 #[cfg(test)]
 mod bucket_heartbeat_test;
+
+mod heartbeat_effects;
+pub use heartbeat_effects::{
+    HeartbeatEffect, HeartbeatEffectFailure, HeartbeatEffectsReceipt, HeartbeatEffectsState,
+    HeartbeatRunners, submit_region_heartbeat,
+};
+#[cfg(test)]
+#[allow(dead_code)]
+#[path = "../../pkg/storage/kv/etcd_fixture_test.rs"]
+mod effects_fixture;
+#[cfg(test)]
+mod heartbeat_effects_test;

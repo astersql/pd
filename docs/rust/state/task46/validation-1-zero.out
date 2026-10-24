@@ -1,0 +1,7 @@
+   Compiling astersql-pd-cluster v0.1.0 (/Users/Shared/work/dir/data/codes/pd/server/cluster)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.56s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_cluster-43c14e429cc11134)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 43 filtered out; finished in 0.00s
