@@ -1,0 +1,24 @@
+Baseline HEAD=8b2e43603145f31b603bebbf3dfc6142689441ed
+Old owner: plan=区域状态同步 task=37 session=state37 PID=82189
+Owner and Cargo/runner/test/fixture PIDs all absent.
+Remaining unrelated orphan: 81646     1 U    /var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/go-build2919774261/b001/exe/objdump -s github.com/pingcap/failpoint.Inject$ target/rust-slot-1/syncer-oracle37-arm64.test
+COMMAND   PID     USER   FD   TYPE             DEVICE SIZE/OFF                NODE NAME
+objdump 81646 xiangmin  cwd    DIR               1,15     1568           267722115 /Users/Shared/work/dir/data/codes/pd
+objdump 81646 xiangmin  txt    REG               1,15  4719296           314777900 /private/var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/go-build2919774261/b001/exe/objdump
+objdump 81646 xiangmin  txt    REG               1,15  2299152 1152921500312560823 /usr/lib/dyld
+objdump 81646 xiangmin  txt    REG               1,15   233056 1152921500312563091 /usr/libexec/rosetta/runtime
+objdump 81646 xiangmin    0r   CHR                3,2      0t0                 339 /dev/null
+objdump 81646 xiangmin    1   PIPE 0xceb5721b8c65db89    16384                     
+objdump 81646 xiangmin    2   PIPE 0x7c66fbf809f14c8f    16384                     
+objdump 81646 xiangmin    3r   REG               1,15  2299152 1152921500312560823 /usr/lib/dyld
+objdump 81646 xiangmin    4r   REG               1,15  4719296           314777900 /private/var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/go-build2919774261/b001/exe/objdump
+Running containers=8; none mounts target/rust-slot-1.
+Read-only input handle held by system VirtualMachine service; no task container remains.
+Only own obsolete owner record and slot-1.lock removed; all caches and system processes retained.
+No new Cargo commands: required latest regression already passed on slot2.
+
+System read-only handle observation:
+  PID  PPID STAT     ELAPSED COMMAND
+  865     1 Ss   15-12:45:04 /System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine
+COMMAND   PID     USER   FD   TYPE DEVICE SIZE/OFF      NODE NAME
+com.apple 865 xiangmin  520r   REG   1,15 50550504 314776834 target/rust-slot-1/syncer-oracle37-arm64.test

@@ -68,7 +68,7 @@ cache先于save、save失败抑制记录但继续删除overlaps，delete失败�
 GOARCH=arm64用于Go子进程，并持有绝对CARGO_TARGET_DIR槽位2；日志逐命令保存。
 额外Rust故障/极值测试为source-derived扩展，不把它们冒充额外Go运行差分。
 
-## 系统阻塞与待回归范围
+## 系统阻塞与待回归范围（历史，现已解除）
 
 默认环境go env GOARCH=amd64，而宿主uname为arm64。首次红灯夹具
 PID82346（slot1/rust-etcd-fixture-82290，Mach-O x86_64）在macOS陷入U不可中断状态，
@@ -88,4 +88,38 @@ slot1锁（正常runner退出会自动释放），按相同脚本复核回归与
 聚合SHA256 ae4ea1307f6a0074d7d6b706be224a1d139607a343ed2b2c6ea9068395425bd4；
 全部只读plan.md哈希不变，相对链接及git diff检查通过。用户已有计划变更保持原样。
 
-状态：已完成，待回归（仅默认x86验证的系统进程回收；必要行为证据已齐全）。
+历史状态：已完成，待回归（已由下述最终恢复判定解除）。
+
+## 最终共享工作区回归与恢复判定（2026-10-25）
+
+最新验证基准 `8b2e43603145f31b603bebbf3dfc6142689441ed`，没有新增实现或测试修改。
+先检查既有Go oracle快照，`python3 docs/rust/state/task37/check-oracle.py`退出0。
+[最新逐命令摘要](task37/recovery-summary.json)：从仓库根动态领取槽位2，
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2`，
+Go子进程继承GOARCH=arm64、CGO_ENABLED=0、GOFLAGS=-mod=readonly、GOPROXY=off。
+聚焦命令 `cargo test -p astersql-pd-syncer --locked --lib state_task_37_client_apply -- --nocapture`
+10通过、0失败、0忽略；`cargo test -p astersql-pd-syncer --locked` 85通过、0失败、0忽略。
+`cargo metadata --format-version 1 --no-deps`、`cargo fmt --all -- --check`、
+`cargo check --workspace --locked`均退出0；`cargo test --workspace --locked`
+1312通过、0失败、1既有ignored。完整本地日志保留于`/tmp/pd-state37-rerun/`。
+本轮槽位2全部子进程结束并已释放锁，缓存保留。必要回归已通过，无需为资源判定重复执行。
+
+[恢复检查](task37/recovery-resources.out)证实槽位1持有PID82189以及shell82192、
+Cargo82206、Rust测试82290、Go夹具82346均已退出。PID81646虽然仍处于系统U状态，
+其父进程已为1；执行映射为槽位外的`go-build2919774261/b001/exe/objdump`、dyld和
+Rosetta runtime。逐项检查其所有文件描述符与txt映射，未发现任何槽位1文件。
+槽位路径仅保留于命令行参数，不等于仍读取/执行槽位产物；当前运行的全部容器也没有
+槽位1挂载。针对输入文件发现的另一个只读句柄属于长期运行的macOS VirtualMachine
+服务，不属于任务子进程或活跃容器，没有终止或修改系统服务。
+
+此前将该孤立工具的命令行参数一并视为活跃槽位占用，判定过于保守。结合持有者已死、
+所有实际构建/验证子进程结束、孤立工具没有打开或映射槽位产物、无运行容器使用槽位，
+确认该锁是本任务自己的陈旧记录。再次检查owner内容和锁目录仅有owner后，只unlink
+本任务owner记录并rmdir对应slot-1.lock；没有删除缓存或其他任务记录，也没有再次发信号。
+这是陈旧锁清理，不宣称系统孤立工具已被回收；后者不再是本任务验收的外部依赖。
+
+Go/模块1101个文件的清单、内容哈希、Git状态与起点一致；所有只读plan.md保持原样。
+最新hash/link/diff检查仍由`python3 docs/rust/state/task37/readonly.py`验证通过。
+实现提交 `371dac696` 保持不变，仅保存本次验收与恢复证据；编号任务文件可删除。
+
+状态：已完成。
