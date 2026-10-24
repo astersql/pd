@@ -1,0 +1,18 @@
+   Compiling astersql-pd-syncer v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/syncer)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.12s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_syncer-838b8bf1fb9326e1)
+
+running 10 tests
+test client_apply_test::state_task_37_client_apply_error_does_not_mutate ... ok
+test client_apply_test::state_task_37_client_apply_raw_stats_and_unchanged_meta ... ok
+test client_apply_test::state_task_37_client_apply_full_sync_positional_completion ... ok
+test client_apply_test::state_task_37_client_apply_overlong_arrays_discarded ... ok
+test client_apply_test::state_task_37_client_apply_missing_arrays_and_zero_leader ... ok
+test client_apply_test::state_task_37_client_apply_memory_overlap_oracle ... ok
+test client_apply_test::state_task_37_client_apply_storage_failures_keep_cache_and_cleanup ... ok
+test client_apply_test::state_task_37_client_apply_checkpoint_failure_keeps_assigned_record ... ok
+test client_apply_test::state_task_37_client_apply_persistent_history_cadence ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:54446
+test client_apply_test::state_task_37_client_apply_etcd_overlap_oracle ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 53 filtered out; finished in 2.74s

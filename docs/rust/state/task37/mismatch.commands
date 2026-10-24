@@ -1,0 +1,40 @@
+break pkg/syncer/client.go:109
+continue
+config max-array-values 5
+print resp.RegionStats[0]
+print resp.Buckets[0]
+print resp.RegionLeaders[0]
+print s.streamingRunning
+set resp.Regions = resp.Regions[:3]
+set resp.RegionStats = resp.RegionStats[:1]
+set resp.Buckets = resp.Buckets[:1]
+set resp.RegionLeaders = resp.RegionLeaders[:1]
+set resp.StartIndex = 10
+set resp.RegionStats[0].BytesWritten = 101
+set resp.RegionLeaders[0].Id = 0
+set resp.Buckets[0].Version = 7
+set resp.Regions[0].RegionEpoch.Version = 5
+set resp.Regions[1].RegionEpoch.Version = 4
+set resp.Regions[2].RegionEpoch.Version = 6
+set resp.Regions[1].StartKey = resp.Regions[0].StartKey
+set resp.Regions[1].EndKey = resp.Regions[0].EndKey
+set resp.Regions[2].StartKey = resp.Regions[0].StartKey
+set resp.Regions[2].EndKey = resp.Regions[0].EndKey
+clear 1
+break pkg/syncer/client.go:151
+continue
+print region
+print err
+continue
+print region.meta.Id
+print err
+continue
+print region
+print err
+clear 2
+break pkg/syncer/client.go:179
+continue
+print bc.RegionsInfo.regions
+print s.history.index
+print regionStorage
+quit

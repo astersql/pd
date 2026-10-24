@@ -1,0 +1,26 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+=== RUN   TestClientWaitsForFullSyncCompletionBeforeRunning
+[2026/10/24 20:38:44.628 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+[2026/10/24 20:38:44.633 +00:00] [WARN] [client.go:119] ["server sync index not match the leader"] [server=mock-server] [own=0] [leader=1] [records-length=0]
+--- PASS: TestClientWaitsForFullSyncCompletionBeforeRunning (0.01s)
+=== RUN   TestClientFinishesFullSyncWithOldLeaderKeepAlive
+[2026/10/24 20:38:44.634 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+[2026/10/24 20:38:44.635 +00:00] [WARN] [client.go:119] ["server sync index not match the leader"] [server=mock-server] [own=42] [leader=0] [records-length=1]
+[2026/10/24 20:38:44.635 +00:00] [WARN] [client.go:119] ["server sync index not match the leader"] [server=mock-server] [own=0] [leader=43] [records-length=0]
+--- PASS: TestClientFinishesFullSyncWithOldLeaderKeepAlive (0.00s)
+=== RUN   TestClientWaitsForEmptySnapshotCatchUpCompletion
+[2026/10/24 20:38:44.653 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+[2026/10/24 20:38:44.655 +00:00] [INFO] [server.go:552] ["requested server has completed full synchronization with server"] [requested-server=pd-follower] [server=mock-server] [cost=106.709µs]
+[2026/10/24 20:38:44.656 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+[2026/10/24 20:38:44.656 +00:00] [WARN] [client.go:119] ["server sync index not match the leader"] [server=mock-server] [own=42] [leader=0] [records-length=1000]
+[2026/10/24 20:38:44.664 +00:00] [WARN] [client.go:119] ["server sync index not match the leader"] [server=mock-server] [own=0] [leader=1043] [records-length=0]
+--- PASS: TestClientWaitsForEmptySnapshotCatchUpCompletion (0.03s)
+=== RUN   TestErrorCode
+[2026/10/24 20:38:44.669 +00:00] [WARN] [history_buffer.go:345] ["load history index failed"] [error="leveldb: closed"]
+[2026/10/24 20:38:44.669 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+--- PASS: TestErrorCode (0.02s)
+=== RUN   TestHandleRegionSyncResponseSkipsErrorResponse
+[2026/10/24 20:38:44.683 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+[2026/10/24 20:38:44.683 +00:00] [WARN] [client.go:103] ["region sync with leader received error response"] [server=mock-server] [error-type=UNKNOWN] [error-message="server stopped, close the region syncer client"]
+--- PASS: TestHandleRegionSyncResponseSkipsErrorResponse (0.00s)
+PASS

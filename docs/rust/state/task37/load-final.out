@@ -1,0 +1,57 @@
+Type 'help' for list of commands.
+Breakpoint 1 set at 0x640240 for github.com/pingcap/failpoint.Inject() .Users/xiangmin/go/pkg/mod/github.com/pingcap/failpoint@v0.0.0-20240528011301-b51a646c7c86/marker.go:26
+=== RUN   TestLoadRegion
+[2026/10/24 20:53:30.450 +00:00] [WARN] [history_buffer.go:345] ["load history index failed"] [error="leveldb: closed"]
+[2026/10/24 20:53:30.450 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+[2026/10/24 20:53:30.450 +00:00] [INFO] [client.go:203] ["region syncer start load region"]
+> [Breakpoint 1] github.com/pingcap/failpoint.Inject() .Users/xiangmin/go/pkg/mod/github.com/pingcap/failpoint@v0.0.0-20240528011301-b51a646c7c86/marker.go:26 (hits goroutine(110):1 total:1) (PC: 0x640240)
+> github.com/pingcap/failpoint.Inject() .Users/xiangmin/go/pkg/mod/github.com/pingcap/failpoint@v0.0.0-20240528011301-b51a646c7c86/marker.go:26 (PC: 0x640244)
+TEXT github.com/pingcap/failpoint.Inject(SB) /Users/xiangmin/go/pkg/mod/github.com/pingcap/failpoint@v0.0.0-20240528011301-b51a646c7c86/marker.go
+	marker.go:26	0x640240*	e00700f9	MOVD R0, 8(RSP)
+=>	marker.go:26	0x640244	e10b00f9	MOVD R1, 16(RSP)
+	marker.go:26	0x640248	e20f00f9	MOVD R2, 24(RSP)
+	marker.go:26	0x64024c	e31300f9	MOVD R3, 32(RSP)
+	marker.go:26	0x640250	c0035fd6	RET
+	marker.go:26	0x640254	00000000	?
+	marker.go:26	0x640258	00000000	?
+> github.com/pingcap/failpoint.Inject() .Users/xiangmin/go/pkg/mod/github.com/pingcap/failpoint@v0.0.0-20240528011301-b51a646c7c86/marker.go:26 (PC: 0x640248)
+TEXT github.com/pingcap/failpoint.Inject(SB) /Users/xiangmin/go/pkg/mod/github.com/pingcap/failpoint@v0.0.0-20240528011301-b51a646c7c86/marker.go
+	marker.go:26	0x640240*	e00700f9	MOVD R0, 8(RSP)
+	marker.go:26	0x640244	e10b00f9	MOVD R1, 16(RSP)
+=>	marker.go:26	0x640248	e20f00f9	MOVD R2, 24(RSP)
+	marker.go:26	0x64024c	e31300f9	MOVD R3, 32(RSP)
+	marker.go:26	0x640250	c0035fd6	RET
+	marker.go:26	0x640254	00000000	?
+	marker.go:26	0x640258	00000000	?
+	marker.go:26	0x64025c	00000000	?
+> github.com/pingcap/failpoint.Inject() .Users/xiangmin/go/pkg/mod/github.com/pingcap/failpoint@v0.0.0-20240528011301-b51a646c7c86/marker.go:26 (PC: 0x64024c)
+TEXT github.com/pingcap/failpoint.Inject(SB) /Users/xiangmin/go/pkg/mod/github.com/pingcap/failpoint@v0.0.0-20240528011301-b51a646c7c86/marker.go
+	marker.go:26	0x640240*	e00700f9	MOVD R0, 8(RSP)
+	marker.go:26	0x640244	e10b00f9	MOVD R1, 16(RSP)
+	marker.go:26	0x640248	e20f00f9	MOVD R2, 24(RSP)
+=>	marker.go:26	0x64024c	e31300f9	MOVD R3, 32(RSP)
+	marker.go:26	0x640250	c0035fd6	RET
+	marker.go:26	0x640254	00000000	?
+	marker.go:26	0x640258	00000000	?
+	marker.go:26	0x64025c	00000000	?
+> github.com/pingcap/failpoint.Inject() .Users/xiangmin/go/pkg/mod/github.com/pingcap/failpoint@v0.0.0-20240528011301-b51a646c7c86/marker.go:26 (PC: 0x640250)
+TEXT github.com/pingcap/failpoint.Inject(SB) /Users/xiangmin/go/pkg/mod/github.com/pingcap/failpoint@v0.0.0-20240528011301-b51a646c7c86/marker.go
+	marker.go:26	0x640240*	e00700f9	MOVD R0, 8(RSP)
+	marker.go:26	0x640244	e10b00f9	MOVD R1, 16(RSP)
+	marker.go:26	0x640248	e20f00f9	MOVD R2, 24(RSP)
+	marker.go:26	0x64024c	e31300f9	MOVD R3, 32(RSP)
+=>	marker.go:26	0x640250	c0035fd6	RET
+	marker.go:26	0x640254	00000000	?
+	marker.go:26	0x640258	00000000	?
+	marker.go:26	0x64025c	00000000	?
+interface {}(func()) github.com/tikv/pd/pkg/storage/endpoint.(*StorageEndpoint).LoadRegions.func1 {
+	rangeLimit int = 10000
+}
+> github.com/pingcap/failpoint.Inject() .Users/xiangmin/go/pkg/mod/github.com/pingcap/failpoint@v0.0.0-20240528011301-b51a646c7c86/marker.go:26 (PC: 0x640250)
+Values returned:
+
+Breakpoint 1 cleared at 0x640240 for github.com/pingcap/failpoint.Inject() .Users/xiangmin/go/pkg/mod/github.com/pingcap/failpoint@v0.0.0-20240528011301-b51a646c7c86/marker.go:26
+[2026/10/24 20:53:31.477 +00:00] [WARN] [client.go:207] ["region syncer failed to load regions"] [error="context canceled"] [time-cost=1.026777167s]
+--- PASS: TestLoadRegion (1.03s)
+PASS
+/oracle/load.commands:11: Process 22 has exited with status 0

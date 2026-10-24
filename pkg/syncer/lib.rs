@@ -48,3 +48,11 @@ pub use downstream::{DownstreamError, DownstreamSender, DownstreamTask, Downstre
 #[cfg(test)]
 #[path = "downstream_test.rs"]
 mod downstream_test;
+
+mod client_apply;
+pub use client_apply::{
+    ApplyHistory, ApplyOutcome, ClientApply, SyncApplyResponse, SyncRegionStats, SyncResponseError,
+};
+#[cfg(test)]
+#[path = "client_apply_test.rs"]
+mod client_apply_test;

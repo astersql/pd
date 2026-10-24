@@ -1,0 +1,12 @@
+break github.com/pingcap/failpoint.Inject
+condition 1 fpname == "slowLoadRegion"
+continue
+step-instruction
+step-instruction
+step-instruction
+step-instruction
+print fpbody
+call fpbody.(func())()
+clear 1
+continue
+quit

@@ -1,0 +1,10 @@
+Final native Cargo/oracle phases: slot=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+slot-2.lock released=True; cache retained
+Initial x86 phase: slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+slot-1.lock retained=True because processes remain
+  PID  PPID STAT ELAPSED COMMAND
+81646     1 U      10:37 /var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/go-build2919774261/b001/exe/objdump -s github.com/pingcap/failpoint.Inject$ target/rust-slot-1/syncer-oracle37-arm64.test
+82189 16431 Ss     08:23 /opt/homebrew/Cellar/python@3.12/3.12.11/Frameworks/Python.framework/Versions/3.12/Resources/Python.app/Contents/MacOS/Python - bash -c cargo fmt --all && cargo test -p astersql-pd-syncer --locked --lib state_task_37_client_apply -- --nocapture
+82290 82206 S      08:17 /Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/debug/deps/astersql_pd_syncer-838b8bf1fb9326e1 state_task_37_client_apply --nocapture
+82346 82290 U      08:14 /Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-82290 /Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/etcd-contract-82290-0
+SIGTERM/SIGKILL sent to own blocked children; U state persists. No lock/cache/other task process removed.

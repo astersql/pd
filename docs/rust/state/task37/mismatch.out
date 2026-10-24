@@ -1,0 +1,132 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+Type 'help' for list of commands.
+Breakpoint 1 set at 0x1492d04 for command-line-arguments.(*RegionSyncer).handleRegionSyncResponse() .Users/Shared/work/dir/data/codes/pd/pkg/syncer/client.go:109
+[2026/10/24 20:45:45.734 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+[2026/10/24 20:45:45.735 +00:00] [INFO] [server.go:552] ["requested server has completed full synchronization with server"] [requested-server=pd-follower] [server=mock-server] [cost=5.958µs]
+[2026/10/24 20:45:45.735 +00:00] [INFO] [history_buffer.go:353] ["start from history index"] [start-index=0]
+> [Breakpoint 1] command-line-arguments.(*RegionSyncer).handleRegionSyncResponse() .Users/Shared/work/dir/data/codes/pd/pkg/syncer/client.go:109 (hits goroutine(163):1 total:1) (PC: 0x1492d04)
+("*github.com/pingcap/kvproto/pkg/pdpb.RegionStat")(0x1433b54fc180)
+*github.com/pingcap/kvproto/pkg/pdpb.RegionStat {BytesWritten: 0, BytesRead: 0, KeysWritten: 0, KeysRead: 0}
+("*github.com/pingcap/kvproto/pkg/metapb.Buckets")(0x1433b5a43100)
+*github.com/pingcap/kvproto/pkg/metapb.Buckets {
+	RegionId: 0,
+	Version: 0,
+	Keys: [][]uint8 len: 0, cap: 0, nil,
+	Stats: *github.com/pingcap/kvproto/pkg/metapb.BucketStats nil,
+	PeriodInMs: 0,}
+("*github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1433b551a7b0)
+*github.com/pingcap/kvproto/pkg/metapb.Peer {Id: 2, StoreId: 1, Role: PeerRole_Voter (0), IsWitness: false}
+sync/atomic.Bool {
+	_: sync/atomic.noCopy {},
+	v: 0,}
+Breakpoint 1 cleared at 0x1492d04 for command-line-arguments.(*RegionSyncer).handleRegionSyncResponse() .Users/Shared/work/dir/data/codes/pd/pkg/syncer/client.go:109
+Breakpoint 2 set at 0x1493738 for command-line-arguments.(*RegionSyncer).handleRegionSyncResponse() .Users/Shared/work/dir/data/codes/pd/pkg/syncer/client.go:151
+[2026/10/24 20:45:45.763 +00:00] [WARN] [client.go:119] ["server sync index not match the leader"] [server=mock-server] [own=42] [leader=10] [records-length=3]
+> [Breakpoint 2] command-line-arguments.(*RegionSyncer).handleRegionSyncResponse() .Users/Shared/work/dir/data/codes/pd/pkg/syncer/client.go:151 (hits goroutine(163):1 total:1) (PC: 0x1493738)
+("*github.com/tikv/pd/pkg/core.RegionInfo")(0x1433b57c77a0)
+*github.com/tikv/pd/pkg/core.RegionInfo {
+	meta: *github.com/pingcap/kvproto/pkg/metapb.Region {
+		Id: 1,
+		StartKey: []uint8 len: 2, cap: 2, [0,1],
+		EndKey: []uint8 len: 2, cap: 2, [0,2],
+		RegionEpoch: *(*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x1433b54ee0f0),
+		Peers: []*github.com/pingcap/kvproto/pkg/metapb.Peer len: 1, cap: 1, [
+			*(*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1433b551a780),
+		],
+		EncryptionMeta: *github.com/pingcap/kvproto/pkg/encryptionpb.EncryptionMeta nil,
+		IsInFlashback: false,
+		FlashbackStartTs: 0,},
+	learners: []*github.com/pingcap/kvproto/pkg/metapb.Peer len: 0, cap: 1, [],
+	witnesses: []*github.com/pingcap/kvproto/pkg/metapb.Peer len: 0, cap: 1, [],
+	voters: []*github.com/pingcap/kvproto/pkg/metapb.Peer len: 1, cap: 1, [
+		*(*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1433b551a780),
+	],
+	leader: *github.com/pingcap/kvproto/pkg/metapb.Peer nil,
+	downPeers: []*github.com/pingcap/kvproto/pkg/pdpb.PeerStats len: 0, cap: 0, nil,
+	pendingPeers: []*github.com/pingcap/kvproto/pkg/metapb.Peer len: 0, cap: 0, nil,
+	term: 0,
+	cpuUsage: 0,
+	cpuStats: *github.com/pingcap/kvproto/pkg/pdpb.CPUStats nil,
+	writtenBytes: 0,
+	writtenKeys: 0,
+	readBytes: 0,
+	readKeys: 0,
+	approximateSize: 0,
+	approximateKvSize: 0,
+	approximateIAKvSize: 0,
+	approximateColumnarKvSize: 0,
+	approximateKeys: 0,
+	interval: *github.com/pingcap/kvproto/pkg/pdpb.TimeInterval nil,
+	replicationStatus: *github.com/pingcap/kvproto/pkg/replication_modepb.RegionReplicationStatus nil,
+	queryStats: *github.com/pingcap/kvproto/pkg/pdpb.QueryStats nil,
+	flowRoundDivisor: 0,
+	reportBuckets: unsafe.Pointer(0x0),
+	source: Sync (1),
+	ref: sync/atomic.Int32 {
+		_: sync/atomic.noCopy {},
+		v: 0,},
+	bucketMeta: *github.com/pingcap/kvproto/pkg/metapb.BucketMeta nil,}
+error nil
+> [Breakpoint 2] command-line-arguments.(*RegionSyncer).handleRegionSyncResponse() .Users/Shared/work/dir/data/codes/pd/pkg/syncer/client.go:151 (hits goroutine(163):2 total:2) (PC: 0x1493738)
+2
+error(*github.com/pingcap/errors.fundamental) *{
+	msg: "region is stale: region id:2 start_key:\"\\000\\001\" end_key:\"\\000\\...+182 more",
+	stack: *github.com/pingcap/errors.stack len: 7, cap: 32, [12807656,12842116,12835812,21575384,21659376,...+2 more],}
+> [Breakpoint 2] command-line-arguments.(*RegionSyncer).handleRegionSyncResponse() .Users/Shared/work/dir/data/codes/pd/pkg/syncer/client.go:151 (hits goroutine(163):3 total:3) (PC: 0x1493738)
+("*github.com/tikv/pd/pkg/core.RegionInfo")(0x1433b596c120)
+*github.com/tikv/pd/pkg/core.RegionInfo {
+	meta: *github.com/pingcap/kvproto/pkg/metapb.Region {
+		Id: 3,
+		StartKey: []uint8 len: 2, cap: 2, [0,1],
+		EndKey: []uint8 len: 2, cap: 2, [0,2],
+		RegionEpoch: *(*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x1433b54ee120),
+		Peers: []*github.com/pingcap/kvproto/pkg/metapb.Peer len: 1, cap: 1, [
+			*(*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1433b551a888),
+		],
+		EncryptionMeta: *github.com/pingcap/kvproto/pkg/encryptionpb.EncryptionMeta nil,
+		IsInFlashback: false,
+		FlashbackStartTs: 0,},
+	learners: []*github.com/pingcap/kvproto/pkg/metapb.Peer len: 0, cap: 1, [],
+	witnesses: []*github.com/pingcap/kvproto/pkg/metapb.Peer len: 0, cap: 1, [],
+	voters: []*github.com/pingcap/kvproto/pkg/metapb.Peer len: 1, cap: 1, [
+		*(*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1433b551a888),
+	],
+	leader: *github.com/pingcap/kvproto/pkg/metapb.Peer nil,
+	downPeers: []*github.com/pingcap/kvproto/pkg/pdpb.PeerStats len: 0, cap: 0, nil,
+	pendingPeers: []*github.com/pingcap/kvproto/pkg/metapb.Peer len: 0, cap: 0, nil,
+	term: 0,
+	cpuUsage: 0,
+	cpuStats: *github.com/pingcap/kvproto/pkg/pdpb.CPUStats nil,
+	writtenBytes: 0,
+	writtenKeys: 0,
+	readBytes: 0,
+	readKeys: 0,
+	approximateSize: 0,
+	approximateKvSize: 0,
+	approximateIAKvSize: 0,
+	approximateColumnarKvSize: 0,
+	approximateKeys: 0,
+	interval: *github.com/pingcap/kvproto/pkg/pdpb.TimeInterval nil,
+	replicationStatus: *github.com/pingcap/kvproto/pkg/replication_modepb.RegionReplicationStatus nil,
+	queryStats: *github.com/pingcap/kvproto/pkg/pdpb.QueryStats nil,
+	flowRoundDivisor: 0,
+	reportBuckets: unsafe.Pointer(0x0),
+	source: Sync (1),
+	ref: sync/atomic.Int32 {
+		_: sync/atomic.noCopy {},
+		v: 0,},
+	bucketMeta: *github.com/pingcap/kvproto/pkg/metapb.BucketMeta nil,}
+error nil
+Breakpoint 2 cleared at 0x1493738 for command-line-arguments.(*RegionSyncer).handleRegionSyncResponse() .Users/Shared/work/dir/data/codes/pd/pkg/syncer/client.go:151
+Breakpoint 3 set at 0x1493c38 for command-line-arguments.(*RegionSyncer).handleRegionSyncResponse() .Users/Shared/work/dir/data/codes/pd/pkg/syncer/client.go:179
+> [Breakpoint 3] command-line-arguments.(*RegionSyncer).handleRegionSyncResponse() .Users/Shared/work/dir/data/codes/pd/pkg/syncer/client.go:179 (hits goroutine(163):1 total:1) (PC: 0x1493c38)
+map[uint64]*github.com/tikv/pd/pkg/core.regionItem [
+	3: *{
+		RegionInfo: *(*"github.com/tikv/pd/pkg/core.RegionInfo")(0x1433b596c120),},
+]
+12
+github.com/tikv/pd/pkg/storage.Storage(*github.com/tikv/pd/pkg/storage.memoryStorage) *{
+	StorageEndpoint: *github.com/tikv/pd/pkg/storage/endpoint.StorageEndpoint {
+		Base: github.com/tikv/pd/pkg/storage/kv.Base(*github.com/tikv/pd/pkg/storage/kv.memoryKV) ...,
+		encryptionKeyManager: *github.com/tikv/pd/pkg/encryption.Manager nil,
+		nextRegionID: 0,},}

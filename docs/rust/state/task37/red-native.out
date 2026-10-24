@@ -1,0 +1,47 @@
+SLOT=2 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-2
+   Compiling astersql-pd-proto v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/proto)
+   Compiling astersql-pd-core v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/core)
+   Compiling astersql-pd-storage-endpoint v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/storage/endpoint)
+   Compiling astersql-pd-storage v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/storage)
+   Compiling astersql-pd-syncer v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/syncer)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.39s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_syncer-838b8bf1fb9326e1)
+
+running 5 tests
+
+thread 'client_apply_test::state_task_37_client_apply_error_does_not_mutate' (158307994) panicked at pkg/syncer/client_apply_test.rs:138:5:
+assertion failed: client.is_running()
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'client_apply_test::state_task_37_client_apply_full_sync_positional_completion' (158307996) panicked at pkg/syncer/client_apply_test.rs:203:9:
+assertion failed: out.handled
+
+thread 'client_apply_test::state_task_37_client_apply_memory_overlap_oracle' (158307997) panicked at pkg/syncer/client_apply_test.rs:78:5:
+assertion failed: out.handled
+
+thread 'client_apply_test::state_task_37_client_apply_missing_arrays_and_zero_leader' (158307998) panicked at pkg/syncer/client_apply_test.rs:172:9:
+assertion `left == right` failed
+  left: HistoryIndex(0)
+ right: HistoryIndex(12)
+test client_apply_test::state_task_37_client_apply_memory_overlap_oracle ... FAILED
+test client_apply_test::state_task_37_client_apply_full_sync_positional_completion ... FAILED
+test client_apply_test::state_task_37_client_apply_missing_arrays_and_zero_leader ... FAILED
+test client_apply_test::state_task_37_client_apply_error_does_not_mutate ... FAILED
+isolated etcd 3.5.15 ready at http://127.0.0.1:52158
+
+thread 'client_apply_test::state_task_37_client_apply_etcd_overlap_oracle' (158307995) panicked at pkg/syncer/client_apply_test.rs:78:5:
+assertion failed: out.handled
+test client_apply_test::state_task_37_client_apply_etcd_overlap_oracle ... FAILED
+
+failures:
+
+failures:
+    client_apply_test::state_task_37_client_apply_error_does_not_mutate
+    client_apply_test::state_task_37_client_apply_etcd_overlap_oracle
+    client_apply_test::state_task_37_client_apply_full_sync_positional_completion
+    client_apply_test::state_task_37_client_apply_memory_overlap_oracle
+    client_apply_test::state_task_37_client_apply_missing_arrays_and_zero_leader
+
+test result: FAILED. 0 passed; 5 failed; 0 ignored; 0 measured; 53 filtered out; finished in 4.11s
+
+error: test failed, to rerun pass `-p astersql-pd-syncer --lib`
