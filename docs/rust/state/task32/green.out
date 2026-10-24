@@ -1,0 +1,15 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-syncer v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/syncer)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.71s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_syncer-69d37aa1af2e4077)
+
+running 5 tests
+test history_persist_test::state_task_32_history_persist_reset_and_flush_boundary ... ok
+test history_persist_test::state_task_32_history_persist_decimal_and_corruption ... ok
+test history_persist_test::state_task_32_history_persist_memory_go_snapshot ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:49302
+isolated etcd 3.5.15 ready at http://127.0.0.1:49304
+test history_persist_test::state_task_32_history_persist_etcd_go_snapshot ... ok
+test history_persist_test::state_task_32_history_persist_etcd_failure_and_restart ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 19 filtered out; finished in 4.78s

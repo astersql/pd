@@ -601,8 +601,11 @@ name = "astersql-pd-syncer"
 version = "0.1.0"
 dependencies = [
  "astersql-pd-core",
+ "astersql-pd-storage-kv",
+ "async-trait",
  "serde_json",
  "thiserror 2.0.21",
+ "tokio",
 ]
 
 [[package]]

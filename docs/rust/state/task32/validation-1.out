@@ -1,0 +1,17 @@
+   Compiling astersql-pd-syncer v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/syncer)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.12s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_syncer-f6c36878c994325f)
+
+running 8 tests
+test history_persist_test::state_task_32_history_persist_cancel_write ... ok
+test history_persist_test::state_task_32_history_persist_adaptive_window_reset ... ok
+test history_persist_test::state_task_32_history_persist_next_index_only_and_exhaustion ... ok
+test history_persist_test::state_task_32_history_persist_reset_and_flush_boundary ... ok
+test history_persist_test::state_task_32_history_persist_decimal_and_corruption ... ok
+test history_persist_test::state_task_32_history_persist_memory_go_snapshot ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:49857
+isolated etcd 3.5.15 ready at http://127.0.0.1:49858
+test history_persist_test::state_task_32_history_persist_etcd_go_snapshot ... ok
+test history_persist_test::state_task_32_history_persist_etcd_failure_and_restart ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 19 filtered out; finished in 5.40s

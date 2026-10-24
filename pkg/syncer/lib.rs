@@ -14,3 +14,13 @@ pub use history_window::HistoryRetain;
 #[cfg(test)]
 #[path = "history_window_test.rs"]
 mod history_window_test;
+
+mod history_persist;
+pub use history_persist::{HISTORY_KEY, HistoryPersistError, PersistentHistory};
+#[cfg(test)]
+#[path = "history_persist_test.rs"]
+mod history_persist_test;
+#[cfg(test)]
+#[allow(dead_code)]
+#[path = "../storage/kv/etcd_fixture_test.rs"]
+mod persist_fixture;

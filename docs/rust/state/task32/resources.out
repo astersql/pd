@@ -1,0 +1,3 @@
+slot-1.lock released; target/rust-slot-1 cache retained
+no slot binary processes remain; fixture Drop closes stdin and waits
+final Go/module and plan.md hash/status verification passed

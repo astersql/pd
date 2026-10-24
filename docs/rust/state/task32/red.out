@@ -1,0 +1,88 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+   Compiling astersql-pd-syncer v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/syncer)
+warning: field `base` is never read
+  --> pkg/syncer/history_persist.rs:37:5
+   |
+35 | pub struct PersistentHistory<'a> {
+   |            ----------------- field in this struct
+36 |     history: HistoryBuffer,
+37 |     base: Base<'a>,
+   |     ^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused `Result` that must be used
+   --> pkg/syncer/history_persist.rs:107:9
+    |
+107 |         self.history.observe_required_window(window);
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: this `Result` may be an `Err` variant, which should be handled
+    = note: `#[warn(unused_must_use)]` (part of `#[warn(unused)]`) on by default
+help: use `let _ = ...` to ignore the resulting value
+    |
+107 |         let _ = self.history.observe_required_window(window);
+    |         +++++++
+
+warning: unused `Result` that must be used
+   --> pkg/syncer/history_persist.rs:111:9
+    |
+111 |         self.history.maybe_shrink();
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: this `Result` may be an `Err` variant, which should be handled
+help: use `let _ = ...` to ignore the resulting value
+    |
+111 |         let _ = self.history.maybe_shrink();
+    |         +++++++
+
+warning: `astersql-pd-syncer` (lib test) generated 3 warnings
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.11s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_syncer-69d37aa1af2e4077)
+
+running 5 tests
+
+thread 'history_persist_test::state_task_32_history_persist_memory_go_snapshot' (158065480) panicked at pkg/syncer/history_persist_test.rs:32:5:
+assertion `left == right` failed
+  left: []
+ right: [54]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'history_persist_test::state_task_32_history_persist_reset_and_flush_boundary' (158065481) panicked at pkg/syncer/history_persist_test.rs:83:5:
+assertion `left == right` failed
+  left: []
+ right: [49, 48, 48]
+
+thread 'history_persist_test::state_task_32_history_persist_decimal_and_corruption' (158065477) panicked at pkg/syncer/history_persist_test.rs:106:9:
+assertion `left == right` failed
+  left: HistoryIndex(0)
+ right: HistoryIndex(3)
+test history_persist_test::state_task_32_history_persist_decimal_and_corruption ... FAILED
+test history_persist_test::state_task_32_history_persist_reset_and_flush_boundary ... FAILED
+test history_persist_test::state_task_32_history_persist_memory_go_snapshot ... FAILED
+isolated etcd 3.5.15 ready at http://127.0.0.1:65529
+
+thread 'history_persist_test::state_task_32_history_persist_etcd_go_snapshot' (158065479) panicked at pkg/syncer/history_persist_test.rs:32:5:
+assertion `left == right` failed
+  left: []
+ right: [54]
+test history_persist_test::state_task_32_history_persist_etcd_go_snapshot ... FAILED
+isolated etcd 3.5.15 ready at http://127.0.0.1:65526
+
+thread 'history_persist_test::state_task_32_history_persist_etcd_failure_and_restart' (158065478) panicked at pkg/syncer/history_persist_test.rs:140:5:
+assertion failed: matches!(h.record(region(99)).await,
+    Err(HistoryPersistError::Save { next: I(103), .. }))
+test history_persist_test::state_task_32_history_persist_etcd_failure_and_restart ... FAILED
+
+failures:
+
+failures:
+    history_persist_test::state_task_32_history_persist_decimal_and_corruption
+    history_persist_test::state_task_32_history_persist_etcd_failure_and_restart
+    history_persist_test::state_task_32_history_persist_etcd_go_snapshot
+    history_persist_test::state_task_32_history_persist_memory_go_snapshot
+    history_persist_test::state_task_32_history_persist_reset_and_flush_boundary
+
+test result: FAILED. 0 passed; 5 failed; 0 ignored; 0 measured; 19 filtered out; finished in 5.37s
+
+error: test failed, to rerun pass `-p astersql-pd-syncer --lib`
