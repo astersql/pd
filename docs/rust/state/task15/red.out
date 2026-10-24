@@ -1,0 +1,93 @@
+SLOT=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1
+    Checking serde_core v1.0.229
+    Checking astersql-pd-ratelimit v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/ratelimit)
+    Checking astersql-pd-storelimit v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/core/storelimit)
+    Checking serde_json v1.0.145
+    Checking serde v1.0.229
+    Checking toml_datetime v0.7.5+spec-1.1.0
+    Checking serde_spanned v1.1.2
+    Checking astersql-pd-core v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/core)
+    Checking toml v0.9.8
+    Checking astersql-pd-typeutil v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/utils/typeutil)
+    Checking astersql-pd-logutil v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/utils/logutil)
+    Checking astersql-pd-grpcutil v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/utils/grpcutil)
+    Checking astersql-pd-encryption v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/encryption)
+    Checking astersql-pd-configutil v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/utils/configutil)
+    Checking astersql-pd-schedule-config v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/config)
+    Checking astersql-pd-statistics v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics)
+warning: fields `miss_start` and `down_start` are never read
+  --> pkg/statistics/region_classify.rs:55:5
+   |
+53 | struct Entry {
+   |        ----- fields in this struct
+54 |     bits: u16,
+55 |     miss_start: i64,
+   |     ^^^^^^^^^^
+56 |     down_start: i64,
+   |     ^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `astersql-pd-statistics` (lib) generated 1 warning
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 7.59s
+   Compiling astersql-pd-statistics v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics)
+warning: fields `miss_start` and `down_start` are never read
+  --> pkg/statistics/region_classify.rs:55:5
+   |
+53 | struct Entry {
+   |        ----- fields in this struct
+54 |     bits: u16,
+55 |     miss_start: i64,
+   |     ^^^^^^^^^^
+56 |     down_start: i64,
+   |     ^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `astersql-pd-statistics` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.03s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics-df63b22602648626)
+
+running 5 tests
+
+thread 'region_classify_test::state_task_15_region_classify_thresholds_and_config' (157357612) panicked at pkg/statistics/region_classify_test.rs:141:9:
+assertion failed: !s.region_stats_need_update(&r, &c)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'region_classify_test::state_task_15_region_classify_special_transitions_and_rule_boundary' (157357611) panicked at pkg/statistics/region_classify_test.rs:219:5:
+assertion `left == right` failed
+  left: None
+ right: Some(0)
+
+thread 'region_classify_test::state_task_15_region_classify_durations_and_reset' (157357609) panicked at pkg/statistics/region_classify_test.rs:169:5:
+assertion `left == right` failed
+  left: (None, None)
+ right: (Some(7), Some(7))
+
+thread 'region_classify_test::state_task_15_region_classify_clear_query_witness' (157357608) panicked at pkg/statistics/region_classify_test.rs:100:5:
+assertion `left == right` failed
+  left: None
+ right: Some(512)
+
+thread 'region_classify_test::state_task_15_region_classify_go_sequence' (157357610) panicked at pkg/statistics/region_classify_test.rs:74:5:
+assertion `left == right` failed
+  left: None
+ right: Some(370)
+test region_classify_test::state_task_15_region_classify_durations_and_reset ... FAILED
+test region_classify_test::state_task_15_region_classify_clear_query_witness ... FAILED
+test region_classify_test::state_task_15_region_classify_thresholds_and_config ... FAILED
+test region_classify_test::state_task_15_region_classify_go_sequence ... FAILED
+test region_classify_test::state_task_15_region_classify_special_transitions_and_rule_boundary ... FAILED
+
+failures:
+
+failures:
+    region_classify_test::state_task_15_region_classify_clear_query_witness
+    region_classify_test::state_task_15_region_classify_durations_and_reset
+    region_classify_test::state_task_15_region_classify_go_sequence
+    region_classify_test::state_task_15_region_classify_special_transitions_and_rule_boundary
+    region_classify_test::state_task_15_region_classify_thresholds_and_config
+
+test result: FAILED. 0 passed; 5 failed; 0 ignored; 0 measured; 32 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-statistics --lib`

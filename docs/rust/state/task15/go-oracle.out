@@ -1,0 +1,4 @@
+=== RUN   TestRegionStatistics
+--- PASS: TestRegionStatistics (0.00s)
+PASS
+ok  	github.com/tikv/pd/pkg/statistics	0.028s

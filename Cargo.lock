@@ -508,6 +508,7 @@ dependencies = [
  "astersql-pd-core",
  "astersql-pd-core-constant",
  "astersql-pd-movingaverage",
+ "astersql-pd-schedule-config",
  "astersql-pd-statistics-utils",
 ]
 

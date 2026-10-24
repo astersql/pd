@@ -43,3 +43,11 @@ pub use region_totals::{
 };
 #[cfg(test)]
 mod region_totals_test;
+
+mod region_classify;
+pub use region_classify::{
+    PlacementRulesRequired, RegionAnomalyDurations, RegionInfoProvider, RegionStatisticType,
+    RegionStatistics,
+};
+#[cfg(test)]
+mod region_classify_test;
