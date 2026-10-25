@@ -1,0 +1,45 @@
+break balance_witness_test.go:116
+continue
+call -unsafe suite.tc.SetEnablePlacementRules(true)
+clearall
+break filters.go:824
+continue
+clearall
+config max-variable-recurse 1
+print f.oldFit
+print f.region.meta
+print f.region.leader
+config max-variable-recurse 3
+print f.region.meta.Peers
+config max-variable-recurse 1
+set f.srcStore = 4
+print "CASE witness/114"
+call -unsafe f.Source(nil,f.cluster.StoresInfo.GetStore(1))
+call -unsafe f.Target(nil,f.cluster.StoresInfo.GetStore(1))
+print "CASE witness/115"
+call -unsafe f.Source(nil,f.cluster.StoresInfo.GetStore(2))
+call -unsafe f.Target(nil,f.cluster.StoresInfo.GetStore(2))
+print "CASE witness/116"
+call -unsafe f.Source(nil,f.cluster.StoresInfo.GetStore(3))
+call -unsafe f.Target(nil,f.cluster.StoresInfo.GetStore(3))
+print "CASE witness/117"
+call -unsafe f.Source(nil,f.cluster.StoresInfo.GetStore(4))
+call -unsafe f.Target(nil,f.cluster.StoresInfo.GetStore(4))
+set f.srcStore = 99
+print "CASE witness/118"
+call -unsafe f.Source(nil,f.cluster.StoresInfo.GetStore(1))
+call -unsafe f.Target(nil,f.cluster.StoresInfo.GetStore(1))
+print "CASE witness/119"
+call -unsafe f.Source(nil,f.cluster.StoresInfo.GetStore(2))
+call -unsafe f.Target(nil,f.cluster.StoresInfo.GetStore(2))
+print "CASE witness/120"
+call -unsafe f.Source(nil,f.cluster.StoresInfo.GetStore(3))
+call -unsafe f.Target(nil,f.cluster.StoresInfo.GetStore(3))
+print "CASE witness/121"
+call -unsafe f.Source(nil,f.cluster.StoresInfo.GetStore(4))
+call -unsafe f.Target(nil,f.cluster.StoresInfo.GetStore(4))
+set store.meta.Id = 99
+print "CASE witness/122"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+exit

@@ -26,3 +26,10 @@ mod task_008_test;
 
 mod store_constraints;
 pub use store_constraints::*;
+
+#[cfg(test)]
+#[path = "task_009_test.rs"]
+mod task_009_test;
+
+mod placement_guard;
+pub use placement_guard::*;

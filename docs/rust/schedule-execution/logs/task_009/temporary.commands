@@ -1,0 +1,13 @@
+break filters.go:717
+continue
+clearall
+config max-variable-recurse 3
+print "BEFORE"
+print f.region.meta.Peers
+print f.region.leader
+print "TEMPORARY"
+call -unsafe createRegionForRuleFit(f.region.GetStartKey(),f.region.GetEndKey(),f.region.GetPeers(),f.region.GetLeader(),nil)
+print "AFTER"
+print f.region.meta.Peers
+print f.region.leader
+exit

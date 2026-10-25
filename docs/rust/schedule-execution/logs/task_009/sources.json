@@ -1,0 +1,38 @@
+[
+  {
+    "path": "pkg/schedule/filter/filters.go",
+    "sha256": "2e72100da29ddac7d371c59898ef10a562cda9bf4eec666cc4e4e0c7c8edc0a4"
+  },
+  {
+    "path": "pkg/schedule/filter/filters_test.go",
+    "sha256": "7675a55b6d20d983416b5b0d0e215fa0e1033f5dfc0367f73c0e73f7e9f52e05"
+  },
+  {
+    "path": "pkg/schedule/filter/candidates_test.go",
+    "sha256": "f40241c4defd8b264abfe01f042352d3703602814331fd89b5c5c2c285622ed0"
+  },
+  {
+    "path": "pkg/schedule/schedulers/balance_witness.go",
+    "sha256": "c0b444018eeb1847513516cd79548fdceb0cd0e1fdd9d9269f33aca7f9c5a352"
+  },
+  {
+    "path": "pkg/schedule/schedulers/balance_witness_test.go",
+    "sha256": "cecd97b88b667ebe6a135d72688962f9897c696c0cf9b5ab67ede7aa26e36d80"
+  },
+  {
+    "path": "pkg/schedule/schedulers/scheduler_test.go",
+    "sha256": "55b18eda7e1834ed5090cf360f2cbac1048b0b164e4e84dcf06cbfbbdc8162fc"
+  },
+  {
+    "path": "pkg/schedule/schedulers/balance_leader_test.go",
+    "sha256": "c9b79231c539c2d0e8322f372ea1df30c950e41213cdd313e7e4f679a2858bb5"
+  },
+  {
+    "path": "pkg/utils/testutil/leak.go",
+    "sha256": "a269d3582084e8676a46b10299f377752ae7f831a456effcc05c0df6f31836ca"
+  },
+  {
+    "path": "pkg/schedule/placement/fit.go",
+    "sha256": "5e5c91601641ee4ffd1af5a7fedd3424bf5408d210fdb03b3956f52bb5da7b22"
+  }
+]

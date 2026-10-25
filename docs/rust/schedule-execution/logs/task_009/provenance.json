@@ -1,0 +1,17 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "dependency_commit": "0992b0b20",
+  "binaries": {
+    "filter.test": "ea96e2e54834ad026432b60327b63e986d8a388d4c580c41137ab7e0fd1dba53",
+    "schedulers.test": "be084116f4781d659008fca257645da66f10f59fc424db02a2655c2f293b9f3f",
+    "dlv": "dcd0463a4350f0660412f5c766d31077370eec10ac8055cf0d786377e0d6340e"
+  },
+  "normalization": "Status and detailed reason unchanged. Debugger pointers/frames/log time excluded. Witness scheduler peer identities are bijectively renamed to store IDs (leader store 3); Go allocated peer IDs retained in raw witness.json. Region ID and heartbeat times are not filter inputs.",
+  "safety": "No Go build, source edits, failpoint instrumentation or algorithm replacement. Existing TestMain/setup and selected filter paths inspected. Scheduler API probe enables placement rules explicitly before calling real production filter; exits without claiming the modified test passed.",
+  "witness_peer_id_mapping": {
+    "25": 3,
+    "26": 1,
+    "27": 2,
+    "28": 4
+  }
+}

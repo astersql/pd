@@ -1,0 +1,41 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=cargo test -p astersql-pd-schedule-filter --locked --lib task_009 -- --nocapture
+   Compiling astersql-pd-schedule-filter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter)
+error[E0433]: cannot find type `DistinctScoreFilter` in this scope
+  --> pkg/schedule/filter/task_009_test.rs:33:26
+   |
+33 | ...   Box::new(DistinctScoreFilter::new("task009", &labels, &members, stores.iter().find(|s| s.id()==source).unwrap(), if case["kind...
+   |                ^^^^^^^^^^^^^^^^^^^ use of undeclared type `DistinctScoreFilter`
+
+error[E0433]: cannot find type `LocationPolicy` in this scope
+  --> pkg/schedule/filter/task_009_test.rs:33:159
+   |
+33 | ...wrap(), if case["kind"]=="improve" { LocationPolicy::Improve } else { LocationPolicy::Safeguard }))
+   |                                         ^^^^^^^^^^^^^^ use of undeclared type `LocationPolicy`
+
+error[E0433]: cannot find type `LocationPolicy` in this scope
+  --> pkg/schedule/filter/task_009_test.rs:33:192
+   |
+33 | ..." { LocationPolicy::Improve } else { LocationPolicy::Safeguard }))
+   |                                         ^^^^^^^^^^^^^^ use of undeclared type `LocationPolicy`
+
+error[E0433]: cannot find type `RuleFitFilter` in this scope
+  --> pkg/schedule/filter/task_009_test.rs:39:40
+   |
+39 |                     "peer" => Box::new(RuleFitFilter::new("task009",fit,source)),
+   |                                        ^^^^^^^^^^^^^ use of undeclared type `RuleFitFilter`
+
+error[E0433]: cannot find type `RuleLeaderFitFilter` in this scope
+  --> pkg/schedule/filter/task_009_test.rs:40:42
+   |
+40 |                     "leader" => Box::new(RuleLeaderFitFilter::new("task009",region,fit,source,case["allow_move"].as_bool().unwrap())),
+   |                                          ^^^^^^^^^^^^^^^^^^^ use of undeclared type `RuleLeaderFitFilter`
+
+error[E0433]: cannot find type `RuleWitnessFitFilter` in this scope
+  --> pkg/schedule/filter/task_009_test.rs:41:43
+   |
+41 |                     "witness" => Box::new(RuleWitnessFitFilter::new("task009",region,fit,source)),
+   |                                           ^^^^^^^^^^^^^^^^^^^^ use of undeclared type `RuleWitnessFitFilter`
+
+For more information about this error, try `rustc --explain E0433`.
+error: could not compile `astersql-pd-schedule-filter` (lib test) due to 6 previous errors
+command_exit_code=101

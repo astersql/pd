@@ -1,0 +1,39 @@
+
+running 3 tests
+test task_009_test::task_009_temporary_region_is_independent ... ok
+test task_009_test::task_009_factories_and_reusable_fit ... FAILED
+test task_009_test::task_009_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_009_test::task_009_behavior_cases
+    task_009_test::task_009_factories_and_reusable_fit
+
+test result: FAILED. 1 passed; 2 failed; 0 ignored; 0 measured; 14 filtered out; finished in 0.01s
+
+   Compiling astersql-pd-schedule-filter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter)
+warning: field `allow_move` is never read
+   --> pkg/schedule/filter/placement_guard.rs:111:5
+    |
+108 | pub struct RuleLeaderFitFilter {
+    |            ------------------- field in this struct
+...
+111 |     allow_move: bool,
+    |     ^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `astersql-pd-schedule-filter` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.76s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_filter-2d06b74097965a58)
+
+thread 'task_009_test::task_009_factories_and_reusable_fit' (161616337) panicked at pkg/schedule/filter/task_009_test.rs:287:9:
+assertion failed: !leader.target(&conf, &stores[5]).is_ok()
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'task_009_test::task_009_behavior_cases' (161616336) panicked at pkg/schedule/filter/task_009_test.rs:131:13:
+assertion `left == right` failed: "default_rules/40" direction 1
+  left: 0
+ right: 102
+error: test failed, to rerun pass `-p astersql-pd-schedule-filter --lib`

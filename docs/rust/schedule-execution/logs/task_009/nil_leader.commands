@@ -1,0 +1,22 @@
+break balance_witness_test.go:116
+continue
+call -unsafe suite.tc.SetEnablePlacementRules(true)
+clearall
+break filters.go:824
+continue
+clearall
+config max-variable-recurse 1
+set f.region.leader = nil
+print "CASE nil_leader/125"
+call -unsafe f.Source(nil,f.cluster.StoresInfo.GetStore(1))
+call -unsafe f.Target(nil,f.cluster.StoresInfo.GetStore(1))
+print "CASE nil_leader/126"
+call -unsafe f.Source(nil,f.cluster.StoresInfo.GetStore(2))
+call -unsafe f.Target(nil,f.cluster.StoresInfo.GetStore(2))
+print "CASE nil_leader/127"
+call -unsafe f.Source(nil,f.cluster.StoresInfo.GetStore(3))
+call -unsafe f.Target(nil,f.cluster.StoresInfo.GetStore(3))
+print "CASE nil_leader/128"
+call -unsafe f.Source(nil,f.cluster.StoresInfo.GetStore(4))
+call -unsafe f.Target(nil,f.cluster.StoresInfo.GetStore(4))
+exit

@@ -1,0 +1,29 @@
+{
+  "argv": [
+    "docker",
+    "run",
+    "--rm",
+    "--cap-add",
+    "SYS_PTRACE",
+    "--security-opt",
+    "seccomp=unconfined",
+    "-v",
+    "/tmp/pd-sched005:/oracle:ro",
+    "alpine:3.22",
+    "timeout",
+    "90",
+    "/oracle/dlv",
+    "--check-go-version=false",
+    "exec",
+    "/oracle/filter.test",
+    "--allow-non-terminal-interactive",
+    "--init=/oracle/task009-temporary.commands",
+    "--",
+    "-test.run",
+    "^TestRuleFitFilter$",
+    "-test.timeout=85s"
+  ],
+  "exit_code": 0,
+  "stdout": "Type 'help' for list of commands.\nBreakpoint 1 set at 0x15f686c for github.com/tikv/pd/pkg/schedule/filter.(*ruleFitFilter).Target() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/filters.go:717\n[2026/10/25 10:13:07.183 +00:00] [INFO] [labeler.go:65] [\"new region labeler created\"] [label-rules-count=0]\n[2026/10/25 10:13:07.183 +00:00] [INFO] [txn.go:756] [\"rebuilt group-label mapping\"] [total-groups=0] [total-ranges=0]\n[2026/10/25 10:13:07.183 +00:00] [INFO] [policy.go:158] [\"affinity manager availability check loop started\"] [interval=10s]\n[2026/10/25 10:13:07.183 +00:00] [INFO] [manager.go:137] [\"affinity manager initialized\"] [group-count=0]\n> [Breakpoint 1] github.com/tikv/pd/pkg/schedule/filter.(*ruleFitFilter).Target() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/filters.go:717 (hits goroutine(218):1 total:1) (PC: 0x15f686c)\nBreakpoint 1 cleared at 0x15f686c for github.com/tikv/pd/pkg/schedule/filter.(*ruleFitFilter).Target() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/filters.go:717\n\"BEFORE\"\n[]*github.com/pingcap/kvproto/pkg/metapb.Peer len: 4, cap: 4, [\n\t*{Id: 1, StoreId: 1, Role: PeerRole_Voter (0), IsWitness: false},\n\t*{Id: 3, StoreId: 3, Role: PeerRole_Voter (0), IsWitness: false},\n\t*{Id: 5, StoreId: 5, Role: PeerRole_Voter (0), IsWitness: false},\n\t*{Id: 7, StoreId: 7, Role: PeerRole_Voter (0), IsWitness: true},\n]\n(\"*github.com/pingcap/kvproto/pkg/metapb.Peer\")(0x12872b8186a8)\n*github.com/pingcap/kvproto/pkg/metapb.Peer {Id: 1, StoreId: 1, Role: PeerRole_Voter (0), IsWitness: false}\n\"TEMPORARY\"\n> github.com/tikv/pd/pkg/schedule/filter.(*ruleFitFilter).Target() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/filters.go:717 (PC: 0x15f686c)\nValues returned:\n\t~r0: (\"*github.com/tikv/pd/pkg/core.RegionInfo\")(0x12872b8d8360)\n*github.com/tikv/pd/pkg/core.RegionInfo {\n\t\tmeta: *github.com/pingcap/kvproto/pkg/metapb.Region {\n\t\t\tId: 0,\n\t\t\tStartKey: []uint8 len: 0, cap: 0, nil,\n\t\t\tEndKey: []uint8 len: 0, cap: 0, nil,\n\t\t\tRegionEpoch: *github.com/pingcap/kvproto/pkg/metapb.RegionEpoch nil,\n\t\t\tPeers: []*github.com/pingcap/kvproto/pkg/metapb.Peer len: 4, cap: 4, [\n\t\t\t\t*{Id: 1, StoreId: 1, Role: PeerRole_Voter (0), IsWitness: false},\n\t\t\t\t*{Id: 3, StoreId: 3, Role: PeerRole_Voter (0), IsWitness: false},\n\t\t\t\t*{Id: 5, StoreId: 5, Role: PeerRole_Voter (0), IsWitness: false},\n\t\t\t\t*{Id: 7, StoreId: 7, Role: PeerRole_Voter (0), IsWitness: false},\n\t\t\t],\n\t\t\tEncryptionMeta: *github.com/pingcap/kvproto/pkg/encryptionpb.EncryptionMeta nil,\n\t\t\tIsInFlashback: false,\n\t\t\tFlashbackStartTs: 0,},\n\t\tlearners: []*github.com/pingcap/kvproto/pkg/metapb.Peer len: 0, cap: 1, [],\n\t\twitnesses: []*github.com/pingcap/kvproto/pkg/metapb.Peer len: 0, cap: 1, [],\n\t\tvoters: []*github.com/pingcap/kvproto/pkg/metapb.Peer len: 4, cap: 4, [\n\t\t\t*{Id: 1, StoreId: 1, Role: PeerRole_Voter (0), IsWitness: false},\n\t\t\t*{Id: 3, StoreId: 3, Role: PeerRole_Voter (0), IsWitness: false},\n\t\t\t*{Id: 5, StoreId: 5, Role: PeerRole_Voter (0), IsWitness: false},\n\t\t\t*{Id: 7, StoreId: 7, Role: PeerRole_Voter (0), IsWitness: false},\n\t\t],\n\t\tleader: *github.com/pingcap/kvproto/pkg/metapb.Peer {Id: 1, StoreId: 1, Role: PeerRole_Voter (0), IsWitness: false},\n\t\tdownPeers: []*github.com/pingcap/kvproto/pkg/pdpb.PeerStats len: 0, cap: 0, nil,\n\t\tpendingPeers: []*github.com/pingcap/kvproto/pkg/metapb.Peer len: 0, cap: 0, nil,\n\t\tterm: 0,\n\t\tcpuUsage: 0,\n\t\tcpuStats: *github.com/pingcap/kvproto/pkg/pdpb.CPUStats nil,\n\t\twrittenBytes: 0,\n\t\twrittenKeys: 0,\n\t\treadBytes: 0,\n\t\treadKeys: 0,\n\t\tapproximateSize: 0,\n\t\tapproximateKvSize: 0,\n\t\tapproximateIAKvSize: 0,\n\t\tapproximateColumnarKvSize: 0,\n\t\tapproximateKeys: 0,\n\t\tinterval: *github.com/pingcap/kvproto/pkg/pdpb.TimeInterval nil,\n\t\treplicationStatus: *github.com/pingcap/kvproto/pkg/replication_modepb.RegionReplicationStatus nil,\n\t\tqueryStats: *github.com/pingcap/kvproto/pkg/pdpb.QueryStats nil,\n\t\tflowRoundDivisor: 0,\n\t\treportBuckets: unsafe.Pointer(0x0),\n\t\tsource: Storage (0),\n\t\tref: sync/atomic.Int32 {\n\t\t\t_: sync/atomic.noCopy {},\n\t\t\tv: 0,},\n\t\tbucketMeta: *github.com/pingcap/kvproto/pkg/metapb.BucketMeta nil,}\n\n\"AFTER\"\n[]*github.com/pingcap/kvproto/pkg/metapb.Peer len: 4, cap: 4, [\n\t*{Id: 1, StoreId: 1, Role: PeerRole_Voter (0), IsWitness: false},\n\t*{Id: 3, StoreId: 3, Role: PeerRole_Voter (0), IsWitness: false},\n\t*{Id: 5, StoreId: 5, Role: PeerRole_Voter (0), IsWitness: false},\n\t*{Id: 7, StoreId: 7, Role: PeerRole_Voter (0), IsWitness: true},\n]\n(\"*github.com/pingcap/kvproto/pkg/metapb.Peer\")(0x12872b8186a8)\n*github.com/pingcap/kvproto/pkg/metapb.Peer {Id: 1, StoreId: 1, Role: PeerRole_Voter (0), IsWitness: false}\n",
+  "stderr": ""
+}

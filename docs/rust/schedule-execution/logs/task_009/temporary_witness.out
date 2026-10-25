@@ -1,0 +1,22 @@
+
+running 3 tests
+test task_009_test::task_009_temporary_region_is_independent ... FAILED
+test task_009_test::task_009_factories_and_reusable_fit ... ok
+task_009: 129 cases, 258 source/target results
+test task_009_test::task_009_behavior_cases ... ok
+
+failures:
+
+failures:
+    task_009_test::task_009_temporary_region_is_independent
+
+test result: FAILED. 2 passed; 1 failed; 0 ignored; 0 measured; 14 filtered out; finished in 0.01s
+
+   Compiling astersql-pd-schedule-filter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.84s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_filter-2d06b74097965a58)
+
+thread 'task_009_test::task_009_temporary_region_is_independent' (161617504) panicked at pkg/schedule/filter/task_009_test.rs:212:5:
+assertion failed: temp.meta().peers.iter().all(|p| !p.is_witness)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+error: test failed, to rerun pass `-p astersql-pd-schedule-filter --lib`

@@ -450,9 +450,12 @@ version = "0.1.0"
 dependencies = [
  "astersql-pd-core",
  "astersql-pd-core-constant",
+ "astersql-pd-keypath",
  "astersql-pd-schedule-config",
- "astersql-pd-schedule-plan",
  "astersql-pd-schedule-placement",
+ "astersql-pd-schedule-plan",
+ "astersql-pd-storage-endpoint",
+ "astersql-pd-storage-kv",
  "astersql-pd-storelimit",
  "serde_json",
  "tokio",

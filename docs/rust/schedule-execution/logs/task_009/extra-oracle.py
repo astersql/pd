@@ -1,0 +1,17 @@
+"""Additional immutable Go constructor and temporary-region observations."""
+import json,re,subprocess,hashlib
+from pathlib import Path
+out=Path('docs/rust/schedule-execution/logs/task_009');tmp=Path('/tmp/pd-sched005')
+def run(name,commands,test):
+ text='\n'.join(commands+['exit'])+'\n';(out/(name+'.commands')).write_text(text);(tmp/('task009-'+name+'.commands')).write_text(text)
+ argv=['docker','run','--rm','--cap-add','SYS_PTRACE','--security-opt','seccomp=unconfined','-v',str(tmp)+':/oracle:ro','alpine:3.22','timeout','90','/oracle/dlv','--check-go-version=false','exec','/oracle/filter.test','--allow-non-terminal-interactive','--init=/oracle/task009-'+name+'.commands','--','-test.run',test,'-test.timeout=85s']
+ p=subprocess.run(argv,capture_output=True,text=True);(out/(name+'.json')).write_text(json.dumps(dict(argv=argv,exit_code=p.returncode,stdout=p.stdout,stderr=p.stderr),indent=2)+'\n');assert p.returncode==0 and not re.search(r'commands:\d+:',p.stdout),p.stdout[-3000:];return p.stdout
+s=run('temporary',['break filters.go:717','continue','clearall','config max-variable-recurse 3','print "BEFORE"','print f.region.meta.Peers','print f.region.leader','print "TEMPORARY"','call -unsafe createRegionForRuleFit(f.region.GetStartKey(),f.region.GetEndKey(),f.region.GetPeers(),f.region.GetLeader(),nil)','print "AFTER"','print f.region.meta.Peers','print f.region.leader'],'^TestRuleFitFilter$')
+assert 'Id: 7, StoreId: 7, Role: PeerRole_Voter (0), IsWitness: false' in s.split('"TEMPORARY"')[1].split('"AFTER"')[0]
+assert s.split('"BEFORE"')[1].split('"TEMPORARY"')[0].count('IsWitness: true')==1
+assert s.split('"AFTER"')[1].count('IsWitness: true')==1
+# Complete unmodified existing tests, separately from altered debugger inputs.
+argv=['docker','run','--rm','-v',str(tmp)+':/oracle:ro','alpine:3.22','/oracle/filter.test','-test.run','^(TestDistinctScoreFilter|TestLabelConstraintsFilter|TestRuleFitFilter|TestRuleFitFilterWithPlacementRule|TestSendStateFilter|TestPlacementGuard)$','-test.v','-test.timeout=60s']
+p=subprocess.run(argv,capture_output=True,text=True);(out/'safe-tests.json').write_text(json.dumps(dict(argv=argv,exit_code=p.returncode,stdout=p.stdout,stderr=p.stderr),indent=2)+'\n');assert p.returncode==0 and p.stdout.count('--- PASS:')==6
+(out/'provenance.json').write_text(json.dumps(dict(source_commit='836fdc7cf3ef34f7eabc9d051418995bb97efabe',dependency_commit='0992b0b20',binaries={n:hashlib.sha256((tmp/n).read_bytes()).hexdigest() for n in ['filter.test','schedulers.test','dlv']},normalization='Status and detailed reason unchanged. Debugger pointers/frames/log time excluded. Witness scheduler peer identities are bijectively renamed to store IDs (leader store 3); Go allocated peer IDs retained in raw witness.json. Region ID and heartbeat times are not filter inputs.',safety='No Go build, source edits, failpoint instrumentation or algorithm replacement. Existing TestMain/setup and selected filter paths inspected. Scheduler API probe enables placement rules explicitly before calling real production filter; exits without claiming the modified test passed.'),indent=2)+'\n')
+p=out/'provenance.json';d=json.loads(p.read_text());s=json.loads((out/'witness.json').read_text())['stdout'];d['witness_peer_id_mapping']={pid:int(store) for pid,store,_ in re.findall(r'\*\{Id: (\d+), StoreId: (\d+), Role: PeerRole_\w+ \(\d+\), IsWitness: (true|false)\}',s)};p.write_text(json.dumps(d,indent=2)+'\n')

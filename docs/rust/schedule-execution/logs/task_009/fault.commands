@@ -1,0 +1,6 @@
+break filters_test.go:67
+continue
+clearall
+config max-variable-recurse 3
+call -unsafe NewLocationSafeguard("task009",labels,nil,allStores[0])
+exit

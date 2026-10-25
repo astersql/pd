@@ -1,0 +1,146 @@
+[
+  {
+    "name": "safeguard_equality",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_009",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "failed": 1,
+    "stdout": "\nrunning 3 tests\ntest task_009_test::task_009_temporary_region_is_independent ... ok\ntest task_009_test::task_009_behavior_cases ... FAILED\ntest task_009_test::task_009_factories_and_reusable_fit ... ok\n\nfailures:\n\nfailures:\n    task_009_test::task_009_behavior_cases\n\ntest result: FAILED. 2 passed; 1 failed; 0 ignored; 0 measured; 14 filtered out; finished in 0.01s\n\n",
+    "stderr": "   Compiling astersql-pd-schedule-filter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.29s\n     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_filter-2d06b74097965a58)\n\nthread 'task_009_test::task_009_behavior_cases' (161613781) panicked at pkg/schedule/filter/task_009_test.rs:131:13:\nassertion `left == right` failed: \"location0/0\" direction 1\n  left: 301\n right: 0\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nerror: test failed, to rerun pass `-p astersql-pd-schedule-filter --lib`\n"
+  },
+  {
+    "name": "improve_equality",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_009",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "failed": 1,
+    "stdout": "\nrunning 3 tests\ntest task_009_test::task_009_temporary_region_is_independent ... ok\ntest task_009_test::task_009_behavior_cases ... FAILED\ntest task_009_test::task_009_factories_and_reusable_fit ... ok\n\nfailures:\n\nfailures:\n    task_009_test::task_009_behavior_cases\n\ntest result: FAILED. 2 passed; 1 failed; 0 ignored; 0 measured; 14 filtered out; finished in 0.01s\n\n",
+    "stderr": "   Compiling astersql-pd-schedule-filter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.97s\n     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_filter-2d06b74097965a58)\n\nthread 'task_009_test::task_009_behavior_cases' (161614666) panicked at pkg/schedule/filter/task_009_test.rs:131:13:\nassertion `left == right` failed: \"location0/1\" direction 1\n  left: 0\n right: 301\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nerror: test failed, to rerun pass `-p astersql-pd-schedule-filter --lib`\n"
+  },
+  {
+    "name": "rule_bypass",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_009",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "failed": 2,
+    "stdout": "\nrunning 3 tests\ntest task_009_test::task_009_temporary_region_is_independent ... ok\ntest task_009_test::task_009_factories_and_reusable_fit ... FAILED\ntest task_009_test::task_009_behavior_cases ... FAILED\n\nfailures:\n\nfailures:\n    task_009_test::task_009_behavior_cases\n    task_009_test::task_009_factories_and_reusable_fit\n\ntest result: FAILED. 1 passed; 2 failed; 0 ignored; 0 measured; 14 filtered out; finished in 0.01s\n\n",
+    "stderr": "   Compiling astersql-pd-schedule-filter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter)\nwarning: unused variable: `store`\n   --> pkg/schedule/filter/placement_guard.rs:100:65\n    |\n100 |     fn target(&self, _: &dyn SharedConfigProvider<Version = V>, store: &StoreInfo) -> Status {\n    |                                                                 ^^^^^ help: if this is intentional, prefix it with an underscore: `_store`\n    |\n    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default\n\nwarning: `astersql-pd-schedule-filter` (lib test) generated 1 warning (run `cargo fix --lib -p astersql-pd-schedule-filter --tests` to apply 1 suggestion)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.80s\n     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_filter-2d06b74097965a58)\n\nthread 'task_009_test::task_009_factories_and_reusable_fit' (161615248) panicked at pkg/schedule/filter/task_009_test.rs:282:9:\nassertion failed: !guard.target(&conf, rejected).is_ok()\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\nthread 'task_009_test::task_009_behavior_cases' (161615247) panicked at pkg/schedule/filter/task_009_test.rs:131:13:\nassertion `left == right` failed: \"default_rules/45\" direction 1\n  left: 0\n right: 102\nerror: test failed, to rerun pass `-p astersql-pd-schedule-filter --lib`\n"
+  },
+  {
+    "name": "leader_witness",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_009",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "failed": 1,
+    "stdout": "\nrunning 3 tests\ntest task_009_test::task_009_temporary_region_is_independent ... ok\ntest task_009_test::task_009_factories_and_reusable_fit ... ok\ntest task_009_test::task_009_behavior_cases ... FAILED\n\nfailures:\n\nfailures:\n    task_009_test::task_009_behavior_cases\n\ntest result: FAILED. 2 passed; 1 failed; 0 ignored; 0 measured; 14 filtered out; finished in 0.01s\n\n",
+    "stderr": "    Blocking waiting for file lock on package cache\n    Blocking waiting for file lock on package cache\n    Blocking waiting for file lock on package cache\n   Compiling astersql-pd-schedule-filter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.07s\n     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_filter-2d06b74097965a58)\n\nthread 'task_009_test::task_009_behavior_cases' (161615817) panicked at pkg/schedule/filter/task_009_test.rs:131:13:\nassertion `left == right` failed: \"leader_witness/123\" direction 1\n  left: 0\n right: 102\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nerror: test failed, to rerun pass `-p astersql-pd-schedule-filter --lib`\n"
+  },
+  {
+    "name": "leader_missing_peer",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_009",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "failed": 2,
+    "stdout": "\nrunning 3 tests\ntest task_009_test::task_009_temporary_region_is_independent ... ok\ntest task_009_test::task_009_factories_and_reusable_fit ... FAILED\ntest task_009_test::task_009_behavior_cases ... FAILED\n\nfailures:\n\nfailures:\n    task_009_test::task_009_behavior_cases\n    task_009_test::task_009_factories_and_reusable_fit\n\ntest result: FAILED. 1 passed; 2 failed; 0 ignored; 0 measured; 14 filtered out; finished in 0.01s\n\n",
+    "stderr": "   Compiling astersql-pd-schedule-filter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter)\nwarning: field `allow_move` is never read\n   --> pkg/schedule/filter/placement_guard.rs:111:5\n    |\n108 | pub struct RuleLeaderFitFilter {\n    |            ------------------- field in this struct\n...\n111 |     allow_move: bool,\n    |     ^^^^^^^^^^\n    |\n    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: `astersql-pd-schedule-filter` (lib test) generated 1 warning\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.76s\n     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_filter-2d06b74097965a58)\n\nthread 'task_009_test::task_009_factories_and_reusable_fit' (161616337) panicked at pkg/schedule/filter/task_009_test.rs:287:9:\nassertion failed: !leader.target(&conf, &stores[5]).is_ok()\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\nthread 'task_009_test::task_009_behavior_cases' (161616336) panicked at pkg/schedule/filter/task_009_test.rs:131:13:\nassertion `left == right` failed: \"default_rules/40\" direction 1\n  left: 0\n right: 102\nerror: test failed, to rerun pass `-p astersql-pd-schedule-filter --lib`\n"
+  },
+  {
+    "name": "witness_leader",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_009",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "failed": 2,
+    "stdout": "\nrunning 3 tests\ntest task_009_test::task_009_temporary_region_is_independent ... ok\ntest task_009_test::task_009_factories_and_reusable_fit ... FAILED\ntest task_009_test::task_009_behavior_cases ... FAILED\n\nfailures:\n\nfailures:\n    task_009_test::task_009_behavior_cases\n    task_009_test::task_009_factories_and_reusable_fit\n\ntest result: FAILED. 1 passed; 2 failed; 0 ignored; 0 measured; 14 filtered out; finished in 0.01s\n\n",
+    "stderr": "   Compiling astersql-pd-schedule-filter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.85s\n     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_filter-2d06b74097965a58)\n\nthread 'task_009_test::task_009_factories_and_reusable_fit' (161616968) panicked at pkg/schedule/filter/task_009_test.rs:291:9:\nassertion failed: !witness.target(&conf, source).is_ok()\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\nthread 'task_009_test::task_009_behavior_cases' (161616967) panicked at pkg/schedule/filter/task_009_test.rs:131:13:\nassertion `left == right` failed: \"witness/116\" direction 1\n  left: 0\n right: 102\nerror: test failed, to rerun pass `-p astersql-pd-schedule-filter --lib`\n"
+  },
+  {
+    "name": "temporary_witness",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_009",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "failed": 1,
+    "stdout": "\nrunning 3 tests\ntest task_009_test::task_009_temporary_region_is_independent ... FAILED\ntest task_009_test::task_009_factories_and_reusable_fit ... ok\ntask_009: 129 cases, 258 source/target results\ntest task_009_test::task_009_behavior_cases ... ok\n\nfailures:\n\nfailures:\n    task_009_test::task_009_temporary_region_is_independent\n\ntest result: FAILED. 2 passed; 1 failed; 0 ignored; 0 measured; 14 filtered out; finished in 0.01s\n\n",
+    "stderr": "   Compiling astersql-pd-schedule-filter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.84s\n     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_filter-2d06b74097965a58)\n\nthread 'task_009_test::task_009_temporary_region_is_independent' (161617504) panicked at pkg/schedule/filter/task_009_test.rs:212:5:\nassertion failed: temp.meta().peers.iter().all(|p| !p.is_witness)\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nerror: test failed, to rerun pass `-p astersql-pd-schedule-filter --lib`\n"
+  },
+  {
+    "name": "supplied_fit",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_009",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "failed": 1,
+    "stdout": "\nrunning 3 tests\ntest task_009_test::task_009_temporary_region_is_independent ... ok\ntask_009: 129 cases, 258 source/target results\ntest task_009_test::task_009_behavior_cases ... ok\ntest task_009_test::task_009_factories_and_reusable_fit ... FAILED\n\nfailures:\n\nfailures:\n    task_009_test::task_009_factories_and_reusable_fit\n\ntest result: FAILED. 2 passed; 1 failed; 0 ignored; 0 measured; 14 filtered out; finished in 0.01s\n\n",
+    "stderr": "   Compiling astersql-pd-schedule-filter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter)\nwarning: unused variable: `fit`\n   --> pkg/schedule/filter/placement_guard.rs:199:23\n    |\n199 |     fn fit(&mut self, fit: Option<Arc<RegionFit>>) -> Arc<RegionFit> {\n    |                       ^^^ help: if this is intentional, prefix it with an underscore: `_fit`\n    |\n    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default\n\nwarning: `astersql-pd-schedule-filter` (lib test) generated 1 warning (run `cargo fix --lib -p astersql-pd-schedule-filter --tests` to apply 1 suggestion)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.10s\n     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_filter-2d06b74097965a58)\n\nthread 'task_009_test::task_009_factories_and_reusable_fit' (161618092) panicked at pkg/schedule/filter/task_009_test.rs:307:5:\nassertion failed: context.safeguard(\"cached\", source,\n            Some(fit)).target(&conf, &stores[1]).is_ok()\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nerror: test failed, to rerun pass `-p astersql-pd-schedule-filter --lib`\n"
+  }
+]

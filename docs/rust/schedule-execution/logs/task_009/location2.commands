@@ -1,0 +1,43 @@
+break filters_test.go:67
+continue
+continue
+continue
+clearall
+config max-variable-recurse 1
+print "CASE location2/24"
+call -unsafe ls.Source(nil,allStores[0])
+call -unsafe ls.Target(nil,allStores[0])
+print "CASE location2/25"
+call -unsafe li.Source(nil,allStores[0])
+call -unsafe li.Target(nil,allStores[0])
+print "CASE location2/26"
+call -unsafe ls.Source(nil,allStores[1])
+call -unsafe ls.Target(nil,allStores[1])
+print "CASE location2/27"
+call -unsafe li.Source(nil,allStores[1])
+call -unsafe li.Target(nil,allStores[1])
+print "CASE location2/28"
+call -unsafe ls.Source(nil,allStores[2])
+call -unsafe ls.Target(nil,allStores[2])
+print "CASE location2/29"
+call -unsafe li.Source(nil,allStores[2])
+call -unsafe li.Target(nil,allStores[2])
+print "CASE location2/30"
+call -unsafe ls.Source(nil,allStores[3])
+call -unsafe ls.Target(nil,allStores[3])
+print "CASE location2/31"
+call -unsafe li.Source(nil,allStores[3])
+call -unsafe li.Target(nil,allStores[3])
+print "CASE location2/32"
+call -unsafe ls.Source(nil,allStores[4])
+call -unsafe ls.Target(nil,allStores[4])
+print "CASE location2/33"
+call -unsafe li.Source(nil,allStores[4])
+call -unsafe li.Target(nil,allStores[4])
+print "CASE location2/34"
+call -unsafe ls.Source(nil,allStores[5])
+call -unsafe ls.Target(nil,allStores[5])
+print "CASE location2/35"
+call -unsafe li.Source(nil,allStores[5])
+call -unsafe li.Target(nil,allStores[5])
+exit

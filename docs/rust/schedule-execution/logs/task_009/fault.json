@@ -1,0 +1,28 @@
+{
+  "argv": [
+    "docker",
+    "run",
+    "--rm",
+    "--cap-add",
+    "SYS_PTRACE",
+    "--security-opt",
+    "seccomp=unconfined",
+    "-v",
+    "/tmp/pd-sched005:/oracle:ro",
+    "alpine:3.22",
+    "timeout",
+    "60",
+    "/oracle/dlv",
+    "--check-go-version=false",
+    "exec",
+    "/oracle/filter.test",
+    "--allow-non-terminal-interactive",
+    "--init=/oracle/task009-fault.commands",
+    "--",
+    "-test.run",
+    "^TestDistinctScoreFilter$"
+  ],
+  "exit_code": 0,
+  "stdout": "Type 'help' for list of commands.\nBreakpoint 1 set at 0x15fbe54 for github.com/tikv/pd/pkg/schedule/filter.TestDistinctScoreFilter() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/filters_test.go:67\n> [Breakpoint 1] github.com/tikv/pd/pkg/schedule/filter.TestDistinctScoreFilter() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/filters_test.go:67 (hits goroutine(212):1 total:1) (PC: 0x15fbe54)\nBreakpoint 1 cleared at 0x15fbe54 for github.com/tikv/pd/pkg/schedule/filter.TestDistinctScoreFilter() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/filters_test.go:67\n> github.com/tikv/pd/pkg/schedule/filter.TestDistinctScoreFilter() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/filters_test.go:67 (PC: 0x15fbe54)\nValues returned:\n\t~panic: interface {}(runtime.errorString) \"makeslice: cap out of range\"\n\n",
+  "stderr": ""
+}
