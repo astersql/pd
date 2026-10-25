@@ -878,9 +878,14 @@
           2
         ]
       ],
-      "steps": [],
-      "witness_target": 2,
-      "error": "PlanningRequired"
+      "steps": [
+        [
+          "w",
+          2,
+          2
+        ]
+      ],
+      "witness_target": 2
     }
   ]
 }

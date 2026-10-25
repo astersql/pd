@@ -19,8 +19,8 @@ execChangePeerV2，以及 `builder_test.go::TestBuild`。固定 fixture 的 prov
 与 Go 的 TestBuild 断言一致。保留输入 kind、原 peer ID、witness 标志及轻量标志。
 
 默认拒绝已有 joint 状态，沿用 BuilderOptions 的显式 origin-check 豁免语义，
-不将豁免解释为修复已有 joint 的能力。witness 转换返回 PlanningRequired，留给
-后续 witness 构建任务；未变更的 witness 副本可参与成员规划。
+不将豁免解释为修复已有 joint 的能力。witness 转换由 [witness 差异规划](builder_witness.rs.md) 接入：成员变更后批量
+切换，快照完成后单独恢复 voter；未变更的 witness 副本可参与成员规划。
 所有构建错误写回 Builder 首错状态；allocator 失败不会返回部分 Operator。
 
 `task_029_test.rs::task_029_behavior_cases` 用固定21场景断言完整步骤、目标、kind、

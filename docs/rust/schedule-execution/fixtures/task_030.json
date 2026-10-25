@@ -1,0 +1,1253 @@
+{
+  "provenance": "source-derived; no Go execution claimed",
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "cases": [
+    {
+      "name": "become-witness",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          true
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          true
+        ],
+        [
+          3,
+          "v",
+          3,
+          true
+        ]
+      ],
+      "steps": [
+        [
+          "w",
+          2,
+          2
+        ]
+      ],
+      "joint": false
+    },
+    {
+      "name": "become-nonwitness-learner",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          true
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "l",
+          3,
+          false
+        ]
+      ],
+      "steps": [
+        [
+          "remove",
+          3,
+          3
+        ],
+        [
+          "add",
+          3,
+          3,
+          false
+        ],
+        [
+          "n",
+          3,
+          3
+        ]
+      ],
+      "joint": false
+    },
+    {
+      "name": "nonwitness-voter-simple",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          true
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "steps": [
+        [
+          "remove",
+          3,
+          3
+        ],
+        [
+          "add",
+          3,
+          3,
+          true
+        ],
+        [
+          "n",
+          3,
+          3
+        ],
+        [
+          "promote",
+          3,
+          3,
+          false
+        ]
+      ],
+      "joint": false
+    },
+    {
+      "name": "nonwitness-voter-joint",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          true
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "steps": [
+        [
+          "enter",
+          [],
+          [
+            [
+              3,
+              true
+            ]
+          ]
+        ],
+        [
+          "batch",
+          [],
+          [
+            3
+          ]
+        ],
+        [
+          "enter",
+          [
+            [
+              3,
+              false
+            ]
+          ],
+          []
+        ]
+      ],
+      "joint": true
+    },
+    {
+      "name": "batch-switch",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          true
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          true
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "steps": [
+        [
+          "enter",
+          [],
+          [
+            [
+              3,
+              true
+            ]
+          ]
+        ],
+        [
+          "batch",
+          [
+            2
+          ],
+          [
+            3
+          ]
+        ],
+        [
+          "enter",
+          [
+            [
+              3,
+              false
+            ]
+          ],
+          []
+        ]
+      ],
+      "joint": true
+    },
+    {
+      "name": "single-joint-fallback",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          true
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          true
+        ],
+        [
+          3,
+          "v",
+          3,
+          true
+        ]
+      ],
+      "steps": [
+        [
+          "w",
+          2,
+          2
+        ]
+      ],
+      "joint": true
+    },
+    {
+      "name": "add-witness",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          true
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          true
+        ],
+        [
+          4,
+          "v",
+          0,
+          true
+        ]
+      ],
+      "steps": [
+        [
+          "add",
+          4,
+          100,
+          true
+        ],
+        [
+          "promote",
+          4,
+          100,
+          true
+        ]
+      ],
+      "joint": false,
+      "allocated": 1
+    },
+    {
+      "name": "add-witness-learner",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          true
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          true
+        ],
+        [
+          4,
+          "l",
+          0,
+          true
+        ]
+      ],
+      "steps": [
+        [
+          "add",
+          4,
+          100,
+          true
+        ]
+      ],
+      "joint": false,
+      "allocated": 1
+    },
+    {
+      "name": "add-fault",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          true
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          true
+        ],
+        [
+          4,
+          "v",
+          0,
+          true
+        ]
+      ],
+      "steps": [],
+      "joint": false,
+      "allocation_fault": true,
+      "error": "Allocation(\"injected\")",
+      "allocated": 1
+    },
+    {
+      "name": "leader-witness-rejected",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          true
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "v",
+          1,
+          true
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          true
+        ]
+      ],
+      "steps": [],
+      "joint": false,
+      "leader": 1,
+      "error": "LeaderNotAllowed"
+    },
+    {
+      "name": "no-change",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          true
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          true
+        ]
+      ],
+      "steps": [],
+      "joint": false,
+      "error": "NoSteps"
+    },
+    {
+      "name": "missing-mutation",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          true
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          true
+        ]
+      ],
+      "steps": [],
+      "joint": false,
+      "mutation": [
+        "w",
+        9
+      ],
+      "error": "MissingPeer(9)"
+    },
+    {
+      "name": "already-witness",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          true
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          true
+        ]
+      ],
+      "steps": [],
+      "joint": false,
+      "mutation": [
+        "w",
+        3
+      ],
+      "error": "AlreadyWitness(3)"
+    },
+    {
+      "name": "already-nonwitness",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          true
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          true
+        ]
+      ],
+      "steps": [],
+      "joint": false,
+      "mutation": [
+        "n",
+        2
+      ],
+      "error": "AlreadyNonWitness(2)"
+    },
+    {
+      "name": "witness-leader-protection",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          true
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "v",
+          1,
+          true
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          true
+        ],
+        [
+          4,
+          "l",
+          40,
+          true
+        ]
+      ],
+      "steps": [
+        [
+          "add",
+          4,
+          40,
+          true
+        ],
+        [
+          "transfer",
+          1,
+          2
+        ],
+        [
+          "batch",
+          [
+            1
+          ],
+          []
+        ]
+      ],
+      "joint": true,
+      "extra_add_learner": true
+    },
+    {
+      "name": "promote-nonwitness",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "l",
+          2,
+          true
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          99,
+          false
+        ]
+      ],
+      "steps": [
+        [
+          "n",
+          2,
+          2
+        ],
+        [
+          "promote",
+          2,
+          2,
+          false
+        ]
+      ],
+      "joint": false
+    },
+    {
+      "name": "learner-switch",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "l",
+          2,
+          false
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "l",
+          99,
+          true
+        ]
+      ],
+      "steps": [
+        [
+          "w",
+          2,
+          2
+        ]
+      ],
+      "joint": false
+    },
+    {
+      "name": "mutation-witness",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          true
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          true
+        ]
+      ],
+      "steps": [
+        [
+          "w",
+          2,
+          2
+        ]
+      ],
+      "joint": false,
+      "mutation": [
+        "w",
+        2
+      ]
+    },
+    {
+      "name": "mutation-nonwitness",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          true
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          true
+        ]
+      ],
+      "steps": [
+        [
+          "remove",
+          3,
+          3
+        ],
+        [
+          "add",
+          3,
+          3,
+          true
+        ],
+        [
+          "n",
+          3,
+          3
+        ],
+        [
+          "promote",
+          3,
+          3,
+          false
+        ]
+      ],
+      "joint": false,
+      "mutation": [
+        "n",
+        3
+      ]
+    },
+    {
+      "name": "restoring-peer-cannot-be-target-leader",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          true
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "steps": [],
+      "joint": true,
+      "leader": 3,
+      "error": "LeaderNotAllowed"
+    },
+    {
+      "name": "two-voter-restoration",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          true
+        ],
+        [
+          3,
+          "v",
+          3,
+          true
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "steps": [
+        [
+          "enter",
+          [],
+          [
+            [
+              2,
+              true
+            ],
+            [
+              3,
+              true
+            ]
+          ]
+        ],
+        [
+          "leave",
+          [],
+          [
+            [
+              2,
+              true
+            ],
+            [
+              3,
+              true
+            ]
+          ]
+        ],
+        [
+          "batch",
+          [],
+          [
+            2,
+            3
+          ]
+        ],
+        [
+          "enter",
+          [
+            [
+              2,
+              false
+            ],
+            [
+              3,
+              false
+            ]
+          ],
+          []
+        ],
+        [
+          "leave",
+          [
+            [
+              2,
+              false
+            ],
+            [
+              3,
+              false
+            ]
+          ],
+          []
+        ]
+      ],
+      "joint": true
+    }
+  ],
+  "source_sha256": {
+    "pkg/schedule/operator/builder.go": "2c74830947c401ea8c4d46e8066e4c85aecd02beea035d0bb9eb4aab8cee8f83",
+    "pkg/schedule/operator/builder_test.go": "3c3e8b4681b988523e129dd3a0452e9f03c14273b118666984268432dbb4c953"
+  },
+  "evidence_kind": "source_assertion",
+  "go_execution": false,
+  "normalization": {}
+}

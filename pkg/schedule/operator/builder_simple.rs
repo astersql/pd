@@ -74,15 +74,16 @@ impl<'a, V> Builder<'a, V> {
             kind,
             options,
         };
+        let mut witness = crate::builder_witness::WitnessPlan::default();
+        let mut effective = self.target_peers.clone();
         for (&s, o) in &self.origin_peers {
             match self.target_peers.get(&s) {
                 None => {
                     p.remove.insert(s, o.clone());
                 }
                 Some(n) => {
-                    if o.is_witness != n.is_witness {
-                        return Err(BuilderError::PlanningRequired);
-                    }
+                    let n = witness.peer(o, n);
+                    effective.insert(s, n.clone());
                     if o.is_learner() && !n.is_learner() {
                         let mut n = n.clone();
                         n.id = o.id;
@@ -93,7 +94,10 @@ impl<'a, V> Builder<'a, V> {
                 }
             }
         }
-        for (&s, n) in &self.target_peers {
+        if witness.restore.contains_key(&self.target_leader) {
+            return Err(BuilderError::LeaderNotAllowed);
+        }
+        for (&s, n) in &effective {
             if !self.origin_peers.contains_key(&s)
                 || self
                     .origin_peers
@@ -148,7 +152,30 @@ impl<'a, V> Builder<'a, V> {
                 p.kind.0 |= OpKind::REGION.0;
             }
         }
-        let target = p.select_target_leader().await;
+        for n in witness.non_witnesses.values() {
+            p.steps
+                .push(OpStep::BecomeNonWitness(crate::BecomeNonWitness {
+                    store_id: n.store_id,
+                    peer_id: n.id,
+                    send_store: self.origin_leader,
+                }));
+            p.kind.0 |= OpKind::REGION.0;
+        }
+        for n in witness.restore.values() {
+            p.promote_step(n);
+        }
+        for n in witness.witnesses.values() {
+            p.steps.push(OpStep::BecomeWitness(crate::BecomeWitness {
+                store_id: n.store_id,
+                peer_id: n.id,
+            }));
+            p.kind.0 |= OpKind::REGION.0;
+        }
+        let target = if witness.restore.is_empty() {
+            p.select_target_leader().await
+        } else {
+            p.select_target_leader_excluding(&witness.restore).await
+        };
         if p.current.contains_key(&target) {
             p.transfer(target);
         }

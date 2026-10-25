@@ -6,7 +6,7 @@ use crate::{ChangePeerV2Enter, ChangePeerV2Leave, DemoteVoter};
 impl<V> Builder<'_, V> {
     /// Build with joint consensus enabled. Single non-demotion changes use the
     /// ordinary path, except a removal leaving one peer. Witness conversions
-    /// require the separate witness planner; unchanged witness flags are preserved.
+    /// are batched after membership changes and before data-voter restoration.
     pub async fn build_joint<F>(
         &mut self,
         kind: OpKind,
@@ -45,17 +45,14 @@ impl<V> Builder<'_, V> {
             options,
         };
         let mut demote = BTreeMap::new();
+        let mut witness = crate::builder_witness::WitnessPlan::default();
         for (&s, o) in &self.origin_peers {
             match self.target_peers.get(&s) {
                 None => {
                     p.remove.insert(s, o.clone());
                 }
                 Some(n) => {
-                    if o.is_witness != n.is_witness {
-                        return Err(BuilderError::PlanningRequired);
-                    }
-                    let mut n = n.clone();
-                    n.id = o.id;
+                    let n = witness.peer(o, n);
                     if o.is_learner() && !n.is_learner() {
                         p.promote.insert(s, n);
                     } else if !o.is_learner() && n.is_learner() {
@@ -64,12 +61,15 @@ impl<V> Builder<'_, V> {
                 }
             }
         }
+        if witness.restore.contains_key(&self.target_leader) {
+            return Err(BuilderError::LeaderNotAllowed);
+        }
         for (&s, n) in &self.target_peers {
             if !self.origin_peers.contains_key(&s) {
                 p.add.insert(s, n.clone());
             }
         }
-        if p.add.len() + p.remove.len() + p.promote.len() <= 1
+        if p.add.len() + p.remove.len() + p.promote.len() + witness.len() <= 1
             && demote.is_empty()
             && !(p.remove.len() == 1 && self.target_peers.len() == 1)
         {
@@ -96,7 +96,11 @@ impl<V> Builder<'_, V> {
             }
             p.kind.0 |= OpKind::REGION.0;
         }
-        let target = p.select_target_leader().await;
+        let target = if witness.restore.is_empty() {
+            p.select_target_leader().await
+        } else {
+            p.select_target_leader_excluding(&witness.restore).await
+        };
         if target == 0 {
             return Err(BuilderError::NoValidLeader);
         }
@@ -165,6 +169,53 @@ impl<V> Builder<'_, V> {
                 is_down_store: down,
             }));
             p.kind.0 |= OpKind::REGION.0;
+        }
+        if !witness.witnesses.is_empty() || !witness.non_witnesses.is_empty() {
+            p.steps
+                .push(OpStep::BatchSwitchWitness(crate::BatchSwitchWitness {
+                    to_witnesses: witness
+                        .witnesses
+                        .values()
+                        .map(|n| crate::BecomeWitness {
+                            store_id: n.store_id,
+                            peer_id: n.id,
+                        })
+                        .collect(),
+                    to_non_witnesses: witness
+                        .non_witnesses
+                        .values()
+                        .map(|n| crate::BecomeNonWitness {
+                            store_id: n.store_id,
+                            peer_id: n.id,
+                            send_store: self.origin_leader,
+                        })
+                        .collect(),
+                }));
+        }
+        if !witness.restore.is_empty() {
+            let promotions: Vec<_> = witness
+                .restore
+                .values()
+                .map(|n| PromoteLearner {
+                    to_store: n.store_id,
+                    peer_id: n.id,
+                    is_witness: false,
+                })
+                .collect();
+            p.steps.push(OpStep::ChangePeerV2Enter(ChangePeerV2Enter {
+                promote_learners: promotions.clone(),
+                demote_voters: vec![],
+            }));
+            if promotions.len() > 1 {
+                p.steps.push(OpStep::ChangePeerV2Leave(ChangePeerV2Leave {
+                    promote_learners: promotions,
+                    demote_voters: vec![],
+                }));
+            }
+            p.kind.0 |= OpKind::REGION.0;
+        }
+        if p.steps.is_empty() {
+            return Err(BuilderError::NoSteps);
         }
         let op = Operator::new(
             &self.description,

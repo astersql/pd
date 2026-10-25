@@ -14,7 +14,7 @@ planReplaceLeaders 和 allowLeader。目标先排除非法 peer 和 ExpectedRole
 目标 leader、目标 leader、减少 leader 迁移。标签复用 core::equal_fold，包含 Unicode。
 新增 learner + promote 的位置分数取两个距离分数较小者；新加 peer 做 leader
 额外罚 len(steps)+1。并列保留第一计划。非 joint 路径没有独立 demote 步骤，沿用
-普通 Planner 的 remove/add 语义；joint 与 witness 转换属于后继任务。
+普通 Planner 的 remove/add 语义；joint 路径复用同一择优函数；witness 恢复阶段额外排除待恢复 voter。
 
 内部 `allow_leader_at` 以 Planner.current leader 判断豁免，prepare 校验仍用 origin；
 角色/witness 在豁免前检查。修正了前序实现将 origin 永久豁免的差异。

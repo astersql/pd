@@ -72,3 +72,7 @@ pub use builder_simple::*;
 
 #[cfg(test)]
 mod task_029_test;
+
+mod builder_witness;
+#[cfg(test)]
+mod task_030_test;

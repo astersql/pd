@@ -7,10 +7,17 @@ use astersql_pd_schedule_placement::PeerRoleType;
 
 impl<V> Planner<'_, '_, V> {
     pub(super) async fn select_target_leader(&self) -> u64 {
+        self.select_target_leader_excluding(&BTreeMap::new()).await
+    }
+    pub(super) async fn select_target_leader_excluding(
+        &self,
+        excluded: &BTreeMap<u64, Peer>,
+    ) -> u64 {
         let mut target = self.builder.target_leader;
         if target == 0 {
             for (&s, n) in &self.builder.target_peers {
-                if self.builder.expected_roles.get(&s) == Some(&PeerRoleType::Follower)
+                if excluded.contains_key(&s)
+                    || self.builder.expected_roles.get(&s) == Some(&PeerRoleType::Follower)
                     || !self
                         .builder
                         .allow_leader_at(n, self.builder.force_target_leader, self.leader)

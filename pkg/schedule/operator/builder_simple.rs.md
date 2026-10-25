@@ -15,13 +15,13 @@ Builder 冻结 description 与 RegionInfo，生成真实 Operator 的 region ID�
 按位置标签前缀（复用 core 的 Unicode equal_fold）、up store、旧 peer、提前加入目标 leader、目标 leader、减少迁移次数
 进行字典序评分，相同评分保留 store ID 顺序较早的方案。最终 leader 排除 ExpectedRoles
 中的 Follower，按角色/up/current/keep voter/old 和 count/size leader score 选择。添加的 SendStore
-始终使用 origin leader；移除携带 down-store 与 light 标记；只有 add/remove 才增加
+始终使用 origin leader；移除携带 down-store 与 light 标记；add/remove 和普通 witness 转换增加
 REGION kind，独立 promote 保留来源不自动增加 REGION 的行为。leader 变化增加 LEADER。
 多候选 leader 使用 SetLeaders 排序并过滤后保存的顺序，构建时不再次过滤，透传到 TransferLeader。
 
 `NoValidLeader` 表示无法生成下一项合法计划；`NoSteps` 表示无变化（仅 ID 变化也无步）。
-role/witness 的 target 校验复用前序 API；已有 peer 的 witness 转换显式返回
-PlanningRequired，交给对应后续行为族，新增 witness peer 可复用普通 add/promote。
+role/witness 的 target 校验复用前序 API；已有 peer 的 witness 转换由 [witness 差异规划](builder_witness.rs.md) 接入，
+新增 witness peer 复用普通 add/promote。
 所有状态都在局部工作副本中演算，不改宿主 region 或 store。
 
 来源是只读 builder.go 的 prepareBuild、buildStepsWithoutJointConsensus、peerPlan、

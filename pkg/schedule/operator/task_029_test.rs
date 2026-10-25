@@ -138,6 +138,15 @@ async fn task_029_behavior_cases() {
         for i in 0..op.len() {
             let step = op.step(i).unwrap();
             let encoded = match step {
+                OpStep::BecomeWitness(s) => {
+                    region_kind = true;
+                    state
+                        .iter_mut()
+                        .find(|p| p.store_id == s.store_id)
+                        .unwrap()
+                        .is_witness = true;
+                    json!(["w", s.store_id, s.peer_id])
+                }
                 OpStep::AddLearner(s) => {
                     region_kind = true;
                     assert_eq!(s.send_store, 1);
@@ -268,6 +277,9 @@ async fn task_029_behavior_cases() {
         );
         let mut expected = peers(&c["target"]);
         for p in &mut expected {
+            if c["witness_target"] == p.store_id {
+                p.is_witness = true;
+            }
             if c["demote"] == p.store_id {
                 p.role = PeerRole::Learner;
             }
