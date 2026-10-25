@@ -1,0 +1,29 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.41s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-ea9d9c1e7425be33)
+
+running 5 tests
+task_055: canonical success callback, both IDs, duplicate burial, canceled exclusion, 60s inclusive TTL
+task_055: real store budget consumption rejects planned operator, pending insertion, rate reset queues/removes pending
+test task_055_test::task_055_success_callback ... ok
+test task_055_test::task_055_store_budget_after_planning ... ok
+task_055: real waiting enqueue/reject, promotion, existing/absent-region pending transitions
+test task_055_test::task_055_queue_rejection_existing_and_absent ... ok
+task_055: 36 frozen dispatch cases
+test task_055_test::task_055_behavior_cases ... ok
+
+thread 'task_055_test::task_055_pending_capacity_ttl_and_pause' (165134682) panicked at pkg/schedule/checker/task_055_test.rs:405:5:
+assertion `left == right` failed
+  left: 100000
+ right: 100001
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test task_055_test::task_055_pending_capacity_ttl_and_pause ... FAILED
+
+failures:
+
+failures:
+    task_055_test::task_055_pending_capacity_ttl_and_pause
+
+test result: FAILED. 4 passed; 1 failed; 0 ignored; 0 measured; 39 filtered out; finished in 0.04s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-checker --lib`

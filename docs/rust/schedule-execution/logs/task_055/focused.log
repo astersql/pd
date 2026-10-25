@@ -1,0 +1,17 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.92s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-ea9d9c1e7425be33)
+
+running 5 tests
+task_055: canonical success callback, both IDs, duplicate burial, canceled exclusion, 60s inclusive TTL
+test task_055_test::task_055_success_callback ... ok
+task_055: real store budget consumption rejects planned operator, pending insertion, rate reset queues/removes pending
+test task_055_test::task_055_store_budget_after_planning ... ok
+task_055: real waiting enqueue/reject, promotion, existing/absent-region pending transitions
+test task_055_test::task_055_queue_rejection_existing_and_absent ... ok
+task_055: 36 frozen dispatch cases
+test task_055_test::task_055_behavior_cases ... ok
+task_055: capacity=100001 strict boundary, unchecked insertion, remove/clear, exact 180s TTL, 7 pause names
+test task_055_test::task_055_pending_capacity_ttl_and_pause ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 39 filtered out; finished in 0.04s

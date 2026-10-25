@@ -112,7 +112,7 @@ impl RuleFaultChecker {
         }
         out
     }
-    async fn fix_rule<C, F>(
+    pub(crate) async fn fix_rule<C, F>(
         &mut self,
         ctx: &RuleMissingContext<'_, C>,
         r: &RegionInfo,

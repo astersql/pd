@@ -1,0 +1,19 @@
+{
+  "source_commit": "2f09dfd118109156722a10cd1e3425535df516be",
+  "go_execution": false,
+  "go_output": null,
+  "go_output_sha256": null,
+  "sources": {
+    "pkg/schedule/coordinator.go": "a61e5be78180e4a9e3f385beb6354ed352915785771edcc3a5805ee271cc5fc2",
+    "pkg/cache/ttl.go": "d78e9bd14065b2a7442cc1ca63e7e81b95a930a8c90bc177651e1314a0818ce2",
+    "pkg/schedule/checker/checker_controller.go": "48d03fd259b5762da0381ce8976057098d0b9d83a0527666c3bbc738862fd56d",
+    "pkg/schedule/checker/rule_checker.go": "b2cccb0a8ac670aa5957a5728998e1a7cf4b35dff3f43dd1cfc4a699dae6fc61",
+    "pkg/schedule/checker/affinity_checker.go": "e5b617a82f68abd5fda4fd30eb341a7bd588cb8187ff2cfef21446f8ee1bffbf",
+    "pkg/schedule/checker/rule_checker_test.go": "ac05aa4b43b98e29ca3772c35c152bc9748cc8ad34557d94a9b8050deeaeaee1",
+    "pkg/schedule/operator/create_operator.go": "43a938c72992f4ce81501c40ab85c1e79c08670383acd47f22655e779524b927",
+    "pkg/schedule/checker/replica_checker.go": "d0fd075ff8c7128cc1cac06857533acee19b99cb8da89ef3707b27f0cbccefa4"
+  },
+  "go_files": 1101,
+  "fixture_sha256": "ecbebdbe42abb65cfaae7b49dc3152ff51bf6e3371c27389261c20fdc87ef6a1",
+  "evidence_kind": "source-derived Rust behavior validation; user waived Go execution admission"
+}

@@ -1,0 +1,27 @@
+{
+  "focused": {
+    "passed": 5,
+    "failed": 0,
+    "ignored": 0,
+    "targets": 1,
+    "ignored_tests": []
+  },
+  "package": {
+    "passed": 44,
+    "failed": 0,
+    "ignored": 0,
+    "targets": 2,
+    "ignored_tests": []
+  },
+  "workspace": {
+    "passed": 1502,
+    "failed": 0,
+    "ignored": 1,
+    "targets": 139,
+    "ignored_tests": [
+      "tso_processes"
+    ]
+  },
+  "fixture_cases": 38,
+  "go_schedule_oracle_execution": false
+}

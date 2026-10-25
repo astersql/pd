@@ -1,0 +1,40 @@
+{
+  "go_file_count": 1101,
+  "go_contents_unchanged": true,
+  "changed_go_files": [],
+  "go_git_status": "",
+  "readonly_plans_match_head": {
+    ".plans/2026-10-25-调度执行内核/plan.md": true,
+    ".plans/2026-10-25-调度执行内核/05-检查器/plan.md": true
+  },
+  "links": {
+    "docs/rust/schedule-execution/task-055.md:../../../pkg/schedule/checker/checker_dispatch.rs": true,
+    "docs/rust/schedule-execution/task-055.md:../../../pkg/schedule/checker/checker_dispatch.rs.md": true,
+    "docs/rust/schedule-execution/task-055.md:task-054.md": true,
+    "docs/rust/schedule-execution/task-055.md:logs/task_055/source-provenance.json": true,
+    "docs/rust/schedule-execution/task-055.md:fixtures/task_055.json": true,
+    "docs/rust/schedule-execution/task-055.md:logs/task_055/red.log": true,
+    "docs/rust/schedule-execution/task-055.md:logs/task_055/mutation.py": true,
+    "docs/rust/schedule-execution/task-055.md:logs/task_055/mutation-results.json": true,
+    "docs/rust/schedule-execution/task-055.md:logs/task_055/transition-red.log": true,
+    "docs/rust/schedule-execution/task-055.md:logs/task_055/workspace-test-interrupted.json": true,
+    "docs/rust/schedule-execution/task-055.md:logs/task_055/run.py": true,
+    "docs/rust/schedule-execution/task-055.md:logs/task_055/fixture-cleanup.json": true,
+    "docs/rust/schedule-execution/task-055.md:logs/task_055/fixture-cleanup.log": true,
+    "docs/rust/schedule-execution/task-055.md:logs/task_055/cleanup-fixtures.py": true,
+    "docs/rust/schedule-execution/task-055.md:logs/task_055/member-etcd-disk-full.log": true,
+    "docs/rust/schedule-execution/task-055.md:logs/task_055/fixture-cleanup-retry.json": true,
+    "docs/rust/schedule-execution/task-055.md:logs/task_055/fixture-cleanup-retry.log": true,
+    "docs/rust/schedule-execution/task-055.md:logs/task_055/cleanup-retry.py": true,
+    "docs/rust/schedule-execution/task-055.md:logs/task_055/fixture-cleanup-summary.json": true,
+    "docs/rust/schedule-execution/task-055.md:logs/task_055/member-retry.log": true,
+    "docs/rust/schedule-execution/task-055.md:logs/task_055/workspace-test-retry.log": true,
+    "docs/rust/schedule-execution/task-055.md:logs/task_055/focused-final2.log": true,
+    "docs/rust/schedule-execution/task-055.md:logs/task_055/package-final.log": true,
+    "docs/rust/schedule-execution/task-055.md:logs/task_055/test-summary.json": true,
+    "docs/rust/schedule-execution/task-055.md:logs/task_055/commands.json": true,
+    "docs/rust/schedule-execution/task-055.md:logs/task_055/audit.json": true,
+    "pkg/schedule/checker/checker_dispatch.rs.md:../../../docs/rust/schedule-execution/task-055.md": true
+  },
+  "fixture_sha256": "ecbebdbe42abb65cfaae7b49dc3152ff51bf6e3371c27389261c20fdc87ef6a1"
+}

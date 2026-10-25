@@ -1,0 +1,252 @@
+{
+  "go_execution": false,
+  "provenance": "Read-only checker_controller.go CheckRegion and canonical checker source contracts; no Go runtime oracle",
+  "cases": [
+    {
+      "name": "joint-before-split",
+      "joint": true,
+      "split": true,
+      "expected": "leave-joint-state"
+    },
+    {
+      "name": "split-before-learner",
+      "split": true,
+      "learner": true,
+      "expected": "labeler-split-region"
+    },
+    {
+      "name": "learner-before-replica",
+      "learner": true,
+      "expected": "promote-learner"
+    },
+    {
+      "name": "replica-before-deny",
+      "peers": 2,
+      "deny": true,
+      "expected": "make-up-replica"
+    },
+    {
+      "name": "replica-limit-pending",
+      "peers": 2,
+      "replica_limit": 0,
+      "pending": true
+    },
+    {
+      "name": "learner-bypasses-replica-limit",
+      "learner": true,
+      "replica_limit": 0,
+      "expected": "promote-learner"
+    },
+    {
+      "name": "replica-paused",
+      "peers": 2,
+      "paused": "replica"
+    },
+    {
+      "name": "rule-before-deny",
+      "rules": true,
+      "peers": 2,
+      "deny": true,
+      "expected": "add-rule-peer"
+    },
+    {
+      "name": "rule-limit-before-allocation",
+      "rules": true,
+      "peers": 2,
+      "replica_limit": 0,
+      "allocation_error": true,
+      "pending": true
+    },
+    {
+      "name": "rule-paused",
+      "rules": true,
+      "peers": 2,
+      "paused": "rule"
+    },
+    {
+      "name": "rule-mode-repairs-learner",
+      "rules": true,
+      "learner": true,
+      "expected": "fix-peer-role"
+    },
+    {
+      "name": "deny-blocks-merge",
+      "deny": true,
+      "neighbor": true
+    },
+    {
+      "name": "affinity-before-merge",
+      "rules": true,
+      "affinity": true,
+      "neighbor": true,
+      "expected": "affinity-move-region"
+    },
+    {
+      "name": "affinity-limit-falls-through",
+      "rules": true,
+      "affinity": true,
+      "affinity_limit": 0
+    },
+    {
+      "name": "merge-pair",
+      "neighbor": true,
+      "expected": "merge-region",
+      "count": 2
+    },
+    {
+      "name": "merge-limit",
+      "neighbor": true,
+      "merge_limit": 0
+    },
+    {
+      "name": "merge-paused",
+      "neighbor": true,
+      "paused": "merge"
+    },
+    {
+      "name": "replica-allocation-failure",
+      "peers": 2,
+      "allocation_error": true,
+      "error": true
+    },
+    {
+      "name": "rule-allocation-failure",
+      "rules": true,
+      "peers": 2,
+      "allocation_error": true,
+      "error": true
+    },
+    {
+      "name": "temporary-replica-target",
+      "peers": 3,
+      "expected": null
+    },
+    {
+      "name": "healthy-noop"
+    },
+    {
+      "name": "joint-paused-split-rejected-by-factory",
+      "joint": true,
+      "split": true,
+      "paused": "joint-state",
+      "error": true
+    },
+    {
+      "name": "split-paused-falls-to-learner",
+      "split": true,
+      "learner": true,
+      "paused": "split",
+      "expected": "promote-learner"
+    },
+    {
+      "name": "learner-paused",
+      "learner": true,
+      "paused": "learner"
+    },
+    {
+      "name": "affinity-paused",
+      "rules": true,
+      "affinity": true,
+      "paused": "affinity"
+    },
+    {
+      "name": "cached-fit-skips-rule-limit",
+      "rules": true,
+      "cache": true,
+      "replica_limit": 0
+    },
+    {
+      "name": "invalid-fit-cache-inspected-and-pending",
+      "rules": true,
+      "cache": true,
+      "invalidate": true,
+      "replica_limit": 0,
+      "pending": true
+    },
+    {
+      "name": "split-precedes-fit-cache",
+      "rules": true,
+      "cache": true,
+      "split": true,
+      "expected": "labeler-split-region"
+    },
+    {
+      "name": "running-replica-limit",
+      "peers": 2,
+      "running_kind": "replica",
+      "replica_limit": 1,
+      "pending": true
+    },
+    {
+      "name": "running-rule-limit",
+      "rules": true,
+      "peers": 2,
+      "running_kind": "replica",
+      "replica_limit": 1,
+      "pending": true
+    },
+    {
+      "name": "running-affinity-limit",
+      "rules": true,
+      "affinity": true,
+      "running_kind": "affinity",
+      "affinity_limit": 1
+    },
+    {
+      "name": "running-merge-limit",
+      "neighbor": true,
+      "running_kind": "merge",
+      "merge_limit": 1
+    },
+    {
+      "name": "permanent-rule-rejection",
+      "rules": true,
+      "peers": 2,
+      "stores": 2,
+      "rule_pending": true,
+      "error": true
+    },
+    {
+      "name": "temporary-rule-rejection",
+      "rules": true,
+      "peers": 2,
+      "stores": 4,
+      "busy": true,
+      "rule_pending": false,
+      "error": true,
+      "pending": true
+    },
+    {
+      "name": "epoch-rejects-fit-cache",
+      "rules": true,
+      "cache": true,
+      "stale_epoch": true,
+      "replica_limit": 0,
+      "pending": true
+    },
+    {
+      "name": "rule-pending-removed-after-store-recovers",
+      "rules": true,
+      "peers": 2,
+      "stores": 2,
+      "recover": true,
+      "expected": "add-rule-peer"
+    },
+    {
+      "name": "permanent-to-temporary-clears-rule-pending",
+      "rules": true,
+      "peers": 2,
+      "stores": 2,
+      "temporary_transition": true,
+      "pending": true,
+      "error": true
+    },
+    {
+      "name": "replica-plans-before-limit",
+      "peers": 2,
+      "replica_limit": 0,
+      "allocation_error": true,
+      "error": true
+    }
+  ]
+}

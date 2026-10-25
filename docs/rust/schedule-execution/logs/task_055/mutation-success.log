@@ -1,0 +1,36 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+warning: unused import: `SUCCESS`
+  --> pkg/schedule/checker/checker_dispatch.rs:10:90
+   |
+10 |     AdmissionError, BuilderContext, BuilderError, ControllerAdmission, OpKind, Operator, SUCCESS,
+   |                                                                                          ^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `astersql-pd-schedule-checker` (lib test) generated 1 warning (run `cargo fix --lib -p astersql-pd-schedule-checker --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.77s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-ea9d9c1e7425be33)
+
+running 5 tests
+
+thread 'task_055_test::task_055_success_callback' (165135711) panicked at pkg/schedule/checker/task_055_test.rs:470:5:
+assertion failed: !owner.lock().unwrap().recently_affinity_merged(1, 100)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+task_055: real store budget consumption rejects planned operator, pending insertion, rate reset queues/removes pending
+test task_055_test::task_055_store_budget_after_planning ... ok
+test task_055_test::task_055_success_callback ... FAILED
+task_055: real waiting enqueue/reject, promotion, existing/absent-region pending transitions
+test task_055_test::task_055_queue_rejection_existing_and_absent ... ok
+task_055: 36 frozen dispatch cases
+test task_055_test::task_055_behavior_cases ... ok
+task_055: capacity=100001 strict boundary, unchecked insertion, remove/clear, exact 180s TTL, 7 pause names
+test task_055_test::task_055_pending_capacity_ttl_and_pause ... ok
+
+failures:
+
+failures:
+    task_055_test::task_055_success_callback
+
+test result: FAILED. 4 passed; 1 failed; 0 ignored; 0 measured; 39 filtered out; finished in 0.05s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-checker --lib`

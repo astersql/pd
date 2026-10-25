@@ -1,0 +1,21 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.05s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-ea9d9c1e7425be33)
+
+running 1 test
+
+thread 'task_055_test::task_055_behavior_cases' (165124076) panicked at pkg/schedule/checker/task_055_test.rs:204:9:
+assertion `left == right` failed: "affinity-before-merge"
+  left: Some("affinity-move-region")
+ right: Some("affinity-transfer-leader")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test task_055_test::task_055_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_055_test::task_055_behavior_cases
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 39 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-checker --lib`

@@ -32,3 +32,4 @@ astersql-pd-keyutil.workspace = true
 serde_json.workspace = true
 tokio.workspace = true
 astersql-pd-storage-kv.workspace = true
+tokio-util.workspace = true

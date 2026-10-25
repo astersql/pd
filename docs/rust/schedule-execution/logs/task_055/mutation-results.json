@@ -1,0 +1,14 @@
+[
+  {
+    "mutation": "capacity",
+    "exit_code": 101
+  },
+  {
+    "mutation": "cache",
+    "exit_code": 101
+  },
+  {
+    "mutation": "success",
+    "exit_code": 101
+  }
+]

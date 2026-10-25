@@ -1,0 +1,18 @@
+[
+  {
+    "phase": "fixture-cleanup",
+    "summary": {
+      "removed": 6,
+      "bytes": 484835460
+    },
+    "details": "Scripts checked PID absence and no process reference; per-item initial output was overwritten by same-name command record; output filenames now disambiguated"
+  },
+  {
+    "phase": "fixture-cleanup-retry",
+    "summary": {
+      "removed": 102,
+      "bytes": 3875000288
+    },
+    "details": "Scripts checked PID absence and no process reference; per-item initial output was overwritten by same-name command record; output filenames now disambiguated"
+  }
+]
