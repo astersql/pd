@@ -1,0 +1,15 @@
+
+running 3 tests
+test task_023_test::task_023_influence_counts_and_fault_inputs ... ok
+test task_023_test::task_023_commands_and_timeout ... ok
+test task_023_test::task_023_behavior_cases ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 28 filtered out; finished in 0.00s
+
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.66s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_operator-495e634b90917395)
+
+thread 'task_023_test::task_023_behavior_cases' (162738581) panicked at pkg/schedule/operator/step_range.rs:52:22:
+passive merge requires a target
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

@@ -1,0 +1,112 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "evidence_kind": "source_assertion",
+  "go_execution": false,
+  "normalization": [],
+  "sources": {
+    "pkg/schedule/operator/step.go": "9338b311dca1940cd76bbe3903f0d2545cfc258f88a20eedb391ab59e243eac5",
+    "pkg/schedule/operator/step_test.go": "cc353a5b70022385630b93ce77f8a8e637c4a51c7724dc9c29ae3ef696c56c7b"
+  },
+  "cases": [
+    {
+      "name": "unchanged",
+      "start": [
+        10
+      ],
+      "end": [
+        20
+      ],
+      "version": 1,
+      "finished": false
+    },
+    {
+      "name": "epoch-only",
+      "start": [
+        10
+      ],
+      "end": [
+        20
+      ],
+      "version": 99,
+      "finished": false
+    },
+    {
+      "name": "left-changed",
+      "start": [
+        0
+      ],
+      "end": [
+        20
+      ],
+      "version": 1,
+      "finished": true
+    },
+    {
+      "name": "right-changed",
+      "start": [
+        10
+      ],
+      "end": [
+        255
+      ],
+      "version": 1,
+      "finished": true
+    },
+    {
+      "name": "both-changed",
+      "start": [],
+      "end": [],
+      "version": 0,
+      "finished": true
+    },
+    {
+      "name": "binary-prefix",
+      "start": [
+        10,
+        0
+      ],
+      "end": [
+        20
+      ],
+      "version": 1,
+      "finished": true
+    }
+  ],
+  "timeouts": [
+    {
+      "size": -1,
+      "split_ns": 60000000000,
+      "merge_ns": 600000000000
+    },
+    {
+      "size": 0,
+      "split_ns": 60000000000,
+      "merge_ns": 600000000000
+    },
+    {
+      "size": 100,
+      "split_ns": 60000000000,
+      "merge_ns": 600000000000
+    },
+    {
+      "size": 102,
+      "split_ns": 61000000000,
+      "merge_ns": 610000000000
+    },
+    {
+      "size": 1000,
+      "split_ns": 600000000000,
+      "merge_ns": 6000000000000
+    },
+    {
+      "size": 10000000000,
+      "split_ns": 6000000000000000000,
+      "merge_ns": 4659767778871345152
+    }
+  ],
+  "provenance": {
+    "expectations": "derived from read-only step.go MergeRegion/SplitRegion methods and fastStepWaitDuration; not Rust output",
+    "adjacent_tests": "step_test.go TestOperatorStepTestSuite inspected; no MergeRegion or SplitRegion cases exist",
+    "authorization": "user explicitly waived Go runtime oracle/differential admission; Go and module source remains readonly"
+  }
+}

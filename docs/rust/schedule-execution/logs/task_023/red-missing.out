@@ -1,0 +1,94 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=sh -c 'cargo fmt --all && cargo test -p astersql-pd-schedule-operator --locked --lib task_023 -- --nocapture'
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+error[E0425]: cannot find type `MergeRegion` in this scope
+  --> pkg/schedule/operator/task_023_test.rs:48:29
+   |
+48 | fn steps(passive: bool) -> (MergeRegion, SplitRegion) {
+   |                             ^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find type `SplitRegion` in this scope
+  --> pkg/schedule/operator/task_023_test.rs:48:42
+   |
+48 | fn steps(passive: bool) -> (MergeRegion, SplitRegion) {
+   |                                          ^^^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `MergeRegion` in this scope
+  --> pkg/schedule/operator/task_023_test.rs:50:9
+   |
+50 |         MergeRegion {
+   |         ^^^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `SplitRegion` in this scope
+  --> pkg/schedule/operator/task_023_test.rs:58:9
+   |
+58 |         SplitRegion {
+   |         ^^^^^^^^^^^ not found in this scope
+
+error[E0107]: missing generics for struct `ProviderSnapshot`
+  --> pkg/schedule/operator/task_023_test.rs:70:17
+   |
+70 |     let config: ProviderSnapshot = ProviderSnapshot::default();
+   |                 ^^^^^^^^^^^^^^^^ expected 1 generic argument
+   |
+note: struct defined here, with 1 generic parameter: `V`
+  --> pkg/schedule/config/provider.rs:35:12
+   |
+35 | pub struct ProviderSnapshot<V> {
+   |            ^^^^^^^^^^^^^^^^ -
+help: add missing generic argument
+   |
+70 |     let config: ProviderSnapshot<V> = ProviderSnapshot::default();
+   |                                 +++
+
+error[E0433]: cannot find type `SplitRegion` in this scope
+   --> pkg/schedule/operator/task_023_test.rs:111:14
+    |
+111 |     assert!(!SplitRegion::default().is_finish(&r));
+    |              ^^^^^^^^^^^ use of undeclared type `SplitRegion`
+
+error[E0433]: cannot find type `MergeRegion` in this scope
+   --> pkg/schedule/operator/task_023_test.rs:112:14
+    |
+112 |     assert!(!MergeRegion::default().is_finish(&r));
+    |              ^^^^^^^^^^^ use of undeclared type `MergeRegion`
+
+error[E0433]: cannot find type `MergeRegion` in this scope
+   --> pkg/schedule/operator/task_023_test.rs:114:9
+    |
+114 |         MergeRegion::default().get_cmd(&r, false),
+    |         ^^^^^^^^^^^ use of undeclared type `MergeRegion`
+
+error[E0433]: cannot find type `MergeRegion` in this scope
+   --> pkg/schedule/operator/task_023_test.rs:121:9
+    |
+121 |         MergeRegion::default().to_string(),
+    |         ^^^^^^^^^^^ use of undeclared type `MergeRegion`
+
+error[E0433]: cannot find type `SplitRegion` in this scope
+   --> pkg/schedule/operator/task_023_test.rs:165:17
+    |
+165 |                 SplitRegion::default().get_cmd(&r, v2),
+    |                 ^^^^^^^^^^^ use of undeclared type `SplitRegion`
+
+error[E0599]: no variant, associated function, or constant named `ApproximateSize` found for enum `RegionOption` in the current scope
+   --> pkg/schedule/operator/task_023_test.rs:205:40
+    |
+205 |             .clone_with([RegionOption::ApproximateSize(123)]);
+    |                                        ^^^^^^^^^^^^^^^ variant, associated function, or constant not found in `RegionOption`
+
+error[E0433]: cannot find type `SplitRegion` in this scope
+   --> pkg/schedule/operator/task_023_test.rs:242:5
+    |
+242 |     SplitRegion::default().influence(&inf, &r);
+    |     ^^^^^^^^^^^ use of undeclared type `SplitRegion`
+
+error[E0433]: cannot find type `SplitRegion` in this scope
+   --> pkg/schedule/operator/task_023_test.rs:247:5
+    |
+247 |     SplitRegion::default().influence(&inf, &r);
+    |     ^^^^^^^^^^^ use of undeclared type `SplitRegion`
+
+Some errors have detailed explanations: E0107, E0422, E0425, E0433, E0599.
+For more information about an error, try `rustc --explain E0107`.
+error: could not compile `astersql-pd-schedule-operator` (lib test) due to 13 previous errors
+command_exit_code=101
