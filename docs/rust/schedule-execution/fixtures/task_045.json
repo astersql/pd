@@ -1,0 +1,497 @@
+{
+  "source_commit": "a816360862914633fa9f852937fedf6a741d1bbc",
+  "go_execution": false,
+  "evidence_kind": "source_assertion",
+  "normalization": {
+    "clock": "explicit Unix nanos; deterministic heartbeat age",
+    "allocation": "1000",
+    "candidate": "unique load-ranked source3, target4"
+  },
+  "cases": [
+    {
+      "name": "healthy-first-orphan",
+      "stage": "orphan",
+      "desc": "remove-orphan-peer",
+      "steps": [
+        [
+          "remove",
+          4,
+          104
+        ]
+      ],
+      "kind": 128
+    },
+    {
+      "name": "no-orphans",
+      "stage": "orphan",
+      "desc": null,
+      "steps": [],
+      "kind": 0,
+      "orphans": 0
+    },
+    {
+      "name": "missing-rule-protect-single",
+      "stage": "orphan",
+      "desc": null,
+      "steps": [],
+      "kind": 0,
+      "count": 5
+    },
+    {
+      "name": "pending-fit-protect-single",
+      "stage": "orphan",
+      "desc": null,
+      "steps": [],
+      "kind": 0,
+      "pending": 3
+    },
+    {
+      "name": "down-connected-protect-single",
+      "stage": "orphan",
+      "desc": null,
+      "steps": [],
+      "kind": 0,
+      "down": 3
+    },
+    {
+      "name": "disconnected-promote-orphan",
+      "stage": "orphan",
+      "desc": "replace-down-peer-with-orphan-peer",
+      "steps": [
+        [
+          "promote",
+          4,
+          104,
+          false
+        ],
+        [
+          "remove",
+          3,
+          103
+        ]
+      ],
+      "kind": 128,
+      "disconnect": 3
+    },
+    {
+      "name": "witness-orphan-not-used",
+      "stage": "orphan",
+      "desc": null,
+      "steps": [],
+      "kind": 0,
+      "disconnect": 3,
+      "witness": 4
+    },
+    {
+      "name": "pending-orphan-not-used",
+      "stage": "orphan",
+      "desc": null,
+      "steps": [],
+      "kind": 0,
+      "disconnect": 3,
+      "pending": 4
+    },
+    {
+      "name": "down-orphan-not-used",
+      "stage": "orphan",
+      "desc": null,
+      "steps": [],
+      "kind": 0,
+      "disconnect": 3,
+      "down": 4
+    },
+    {
+      "name": "disconnected-orphan-not-used",
+      "stage": "orphan",
+      "desc": null,
+      "steps": [],
+      "kind": 0,
+      "disconnect": 3,
+      "also_disconnect": 4
+    },
+    {
+      "name": "replacement-label-rejected",
+      "stage": "orphan",
+      "desc": null,
+      "steps": [],
+      "kind": 0,
+      "disconnect": 3,
+      "restricted": true
+    },
+    {
+      "name": "replacement-isolation-rejected",
+      "stage": "orphan",
+      "desc": null,
+      "steps": [],
+      "kind": 0,
+      "disconnect": 3,
+      "location": true,
+      "orphan_zone": "z1"
+    },
+    {
+      "name": "same-role-replaces-disconnected",
+      "stage": "orphan",
+      "desc": "remove-replaced-orphan-peer",
+      "steps": [
+        [
+          "remove",
+          3,
+          103
+        ]
+      ],
+      "kind": 128,
+      "disconnect": 3,
+      "orphan_voter": true,
+      "cached_fit": true
+    },
+    {
+      "name": "demote-orphan",
+      "stage": "orphan",
+      "desc": "replace-down-peer-with-orphan-peer",
+      "steps": [
+        [
+          "enter",
+          [],
+          [
+            [
+              4,
+              104,
+              false
+            ]
+          ]
+        ],
+        [
+          "remove",
+          3,
+          103
+        ]
+      ],
+      "kind": 128,
+      "disconnect": 3,
+      "demote": true,
+      "joint": true
+    },
+    {
+      "name": "demote-requires-joint",
+      "stage": "orphan",
+      "desc": null,
+      "steps": [],
+      "kind": 0,
+      "disconnect": 3,
+      "demote": true,
+      "disable_joint": true,
+      "error": "JointConsensusDisabled",
+      "joint": true
+    },
+    {
+      "name": "two-orphans-preserve-first-healthy",
+      "stage": "orphan",
+      "desc": "remove-orphan-peer",
+      "steps": [
+        [
+          "remove",
+          5,
+          105
+        ]
+      ],
+      "kind": 128,
+      "orphans": 2,
+      "pending": 3
+    },
+    {
+      "name": "unhealthy-orphan-first",
+      "stage": "orphan",
+      "desc": "remove-unhealthy-orphan-peer",
+      "steps": [
+        [
+          "remove",
+          4,
+          104
+        ]
+      ],
+      "kind": 128,
+      "orphans": 2,
+      "pending": 4,
+      "down": 3
+    },
+    {
+      "name": "disconnected-orphan-priority",
+      "stage": "orphan",
+      "desc": "remove-orphan-peer",
+      "steps": [
+        [
+          "remove",
+          4,
+          104
+        ]
+      ],
+      "kind": 128,
+      "orphans": 2,
+      "pending": 3,
+      "disconnect": 4
+    },
+    {
+      "name": "missing-orphan-store-priority",
+      "stage": "orphan",
+      "desc": "remove-orphan-peer",
+      "steps": [
+        [
+          "remove",
+          4,
+          104
+        ]
+      ],
+      "kind": 128,
+      "orphans": 2,
+      "pending": 3,
+      "missing_store": 4
+    },
+    {
+      "name": "no-extra-healthy-orphans-protected",
+      "stage": "orphan",
+      "desc": null,
+      "steps": [],
+      "kind": 0,
+      "orphans": 2,
+      "count": 5,
+      "restricted": true
+    },
+    {
+      "name": "no-extra-unhealthy-orphan-removed",
+      "stage": "orphan",
+      "desc": "remove-unhealthy-orphan-peer",
+      "steps": [
+        [
+          "remove",
+          4,
+          104
+        ]
+      ],
+      "kind": 128,
+      "orphans": 2,
+      "count": 5,
+      "pending": 4,
+      "restricted": true
+    },
+    {
+      "name": "heartbeat-at-disconnect-boundary",
+      "stage": "orphan",
+      "desc": "remove-orphan-peer",
+      "steps": [
+        [
+          "remove",
+          4,
+          104
+        ]
+      ],
+      "kind": 128,
+      "heartbeat_age": 20
+    },
+    {
+      "name": "heartbeat-after-disconnect-boundary",
+      "stage": "orphan",
+      "desc": "replace-down-peer-with-orphan-peer",
+      "steps": [
+        [
+          "promote",
+          4,
+          104,
+          false
+        ],
+        [
+          "remove",
+          3,
+          103
+        ]
+      ],
+      "kind": 128,
+      "heartbeat_age": 20.000000001
+    },
+    {
+      "name": "strict-location-improvement",
+      "stage": "better",
+      "desc": "move-to-better-location",
+      "steps": [
+        [
+          "add",
+          4,
+          1000,
+          false
+        ],
+        [
+          "promote",
+          4,
+          1000,
+          false
+        ],
+        [
+          "remove",
+          3,
+          103
+        ]
+      ],
+      "kind": 144
+    },
+    {
+      "name": "no-location-labels",
+      "stage": "better",
+      "desc": null,
+      "steps": [],
+      "kind": 16,
+      "no_labels": true
+    },
+    {
+      "name": "equal-location-is-not-improvement",
+      "stage": "better",
+      "desc": null,
+      "steps": [],
+      "kind": 16,
+      "equal": true,
+      "retry": true
+    },
+    {
+      "name": "no-target-permanent",
+      "stage": "better",
+      "desc": null,
+      "steps": [],
+      "kind": 16,
+      "missing_store": 4,
+      "retry": true
+    },
+    {
+      "name": "target-busy-temporary",
+      "stage": "better",
+      "desc": null,
+      "steps": [],
+      "kind": 16,
+      "busy": 4,
+      "temporary": true
+    },
+    {
+      "name": "source-busy-temporary",
+      "stage": "better",
+      "desc": null,
+      "steps": [],
+      "kind": 16,
+      "busy": 3,
+      "temporary": true,
+      "busy_sources": true
+    },
+    {
+      "name": "source-busy-no-improvement",
+      "stage": "better",
+      "desc": null,
+      "steps": [],
+      "kind": 16,
+      "busy": 3,
+      "equal": true,
+      "retry": true,
+      "busy_sources": true
+    },
+    {
+      "name": "constraint-rejects-target",
+      "stage": "better",
+      "desc": null,
+      "steps": [],
+      "kind": 16,
+      "restricted": true,
+      "retry": true
+    },
+    {
+      "name": "engine-constraint-rejects-tiflash",
+      "stage": "better",
+      "desc": null,
+      "steps": [],
+      "kind": 16,
+      "tiflash": 4,
+      "retry": true
+    },
+    {
+      "name": "allocation-failure",
+      "stage": "better",
+      "desc": null,
+      "steps": [],
+      "kind": 16,
+      "allocation_error": true,
+      "error": "allocation"
+    },
+    {
+      "name": "paused",
+      "stage": "better",
+      "desc": null,
+      "steps": [],
+      "kind": 16,
+      "paused": true
+    },
+    {
+      "name": "no-leader",
+      "stage": "better",
+      "desc": null,
+      "steps": [],
+      "kind": 16,
+      "no_leader": true
+    },
+    {
+      "name": "witness-location-improvement",
+      "stage": "better",
+      "desc": "move-to-better-location",
+      "steps": [
+        [
+          "add",
+          4,
+          1000,
+          true
+        ],
+        [
+          "promote",
+          4,
+          1000,
+          true
+        ],
+        [
+          "remove",
+          3,
+          103
+        ]
+      ],
+      "kind": 144,
+      "witness_rule": true
+    },
+    {
+      "name": "orphan-leader-transfers-first",
+      "stage": "orphan",
+      "orphan_voter": true,
+      "exclude_leader": true,
+      "desc": "remove-orphan-peer",
+      "steps": [
+        [
+          "transfer",
+          1,
+          2
+        ],
+        [
+          "remove",
+          1,
+          101
+        ]
+      ],
+      "kind": 384
+    },
+    {
+      "name": "paused-orphan",
+      "stage": "orphan",
+      "paused": true,
+      "desc": null,
+      "steps": [],
+      "kind": 0
+    },
+    {
+      "name": "no-leader-orphan",
+      "stage": "orphan",
+      "no_leader": true,
+      "desc": null,
+      "steps": [],
+      "kind": 0
+    }
+  ]
+}

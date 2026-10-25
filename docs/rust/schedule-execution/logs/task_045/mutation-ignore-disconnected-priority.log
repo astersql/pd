@@ -1,0 +1,48 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+warning: unused variable: `disconnected_peer`
+   --> pkg/schedule/checker/rule_location.rs:123:17
+    |
+123 |             let disconnected_peer = fit.orphan_peers.iter().find(|p| disconnected(p));
+    |                 ^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_disconnected_peer`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: `astersql-pd-schedule-checker` (lib test) generated 1 warning (run `cargo fix --lib -p astersql-pd-schedule-checker --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.75s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-78902705b86d3ebf)
+
+running 2 tests
+case passed: healthy-first-orphan
+case passed: no-orphans
+case passed: missing-rule-protect-single
+case passed: pending-fit-protect-single
+case passed: down-connected-protect-single
+case passed: disconnected-promote-orphan
+case passed: witness-orphan-not-used
+case passed: pending-orphan-not-used
+case passed: down-orphan-not-used
+case passed: disconnected-orphan-not-used
+case passed: replacement-label-rejected
+case passed: replacement-isolation-rejected
+case passed: same-role-replaces-disconnected
+case passed: demote-orphan
+case passed: demote-requires-joint
+case passed: two-orphans-preserve-first-healthy
+case passed: unhealthy-orphan-first
+
+thread 'task_045_test::task_045_behavior_cases' (164260519) panicked at pkg/schedule/checker/task_045_test.rs:356:13:
+assertion `left == right` failed: disconnected-orphan-priority:steps
+  left: Array [Array [String("remove"), Number(5), Number(105)]]
+ right: Array [Array [String("remove"), Number(4), Number(104)]]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test task_045_test::task_045_offline_recorder_refresh_uses_store_ids ... ok
+test task_045_test::task_045_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_045_test::task_045_behavior_cases
+
+test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 14 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-checker --lib`

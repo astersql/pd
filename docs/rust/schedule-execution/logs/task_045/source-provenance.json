@@ -1,0 +1,17 @@
+{
+  "source_commit": "a816360862914633fa9f852937fedf6a741d1bbc",
+  "go_execution": false,
+  "basis": "read-only Go source and test contracts; user waived runtime oracle admission",
+  "source_sha256": {
+    "pkg/schedule/checker/rule_checker.go": "b2cccb0a8ac670aa5957a5728998e1a7cf4b35dff3f43dd1cfc4a699dae6fc61",
+    "pkg/schedule/checker/rule_checker_test.go": "ac05aa4b43b98e29ca3772c35c152bc9748cc8ad34557d94a9b8050deeaeaee1",
+    "pkg/schedule/checker/replica_strategy.go": "0223f654c145abbcd6bf330cd42501766c415b85b60221692428ed13b7002c43",
+    "pkg/schedule/operator/create_operator.go": "43a938c72992f4ce81501c40ab85c1e79c08670383acd47f22655e779524b927",
+    "pkg/schedule/operator/builder.go": "2c74830947c401ea8c4d46e8066e4c85aecd02beea035d0bb9eb4aab8cee8f83",
+    "pkg/schedule/operator/kind.go": "b9fad78bd44d1f0e2077bc8d22dc875aedb1ab8fb6a160086dd2a166c217a133",
+    "pkg/schedule/placement/fit.go": "5e5c91601641ee4ffd1af5a7fedd3424bf5408d210fdb03b3956f52bb5da7b22"
+  },
+  "fixture_sha256": "2d3f6a300dfb79d509cac0796424be89c33f73ab723014a3fd80ecd617c8e679",
+  "fixture_cases": 39,
+  "recorder_scenarios": 1
+}

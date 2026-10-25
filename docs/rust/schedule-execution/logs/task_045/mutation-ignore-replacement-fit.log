@@ -1,0 +1,30 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.51s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-78902705b86d3ebf)
+
+running 2 tests
+case passed: healthy-first-orphan
+case passed: no-orphans
+case passed: missing-rule-protect-single
+case passed: pending-fit-protect-single
+case passed: down-connected-protect-single
+case passed: disconnected-promote-orphan
+case passed: witness-orphan-not-used
+case passed: pending-orphan-not-used
+case passed: down-orphan-not-used
+case passed: disconnected-orphan-not-used
+
+thread 'task_045_test::task_045_behavior_cases' (164258999) panicked at pkg/schedule/checker/task_045_test.rs:343:54:
+replacement-label-rejected
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test task_045_test::task_045_offline_recorder_refresh_uses_store_ids ... ok
+test task_045_test::task_045_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_045_test::task_045_behavior_cases
+
+test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 14 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-checker --lib`

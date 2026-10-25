@@ -29,3 +29,8 @@ mod rule_fault;
 pub use rule_fault::*;
 #[cfg(test)]
 mod task_044_test;
+
+mod rule_location;
+pub use rule_location::*;
+#[cfg(test)]
+mod task_045_test;

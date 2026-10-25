@@ -1,0 +1,49 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.25s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-78902705b86d3ebf)
+
+running 1 test
+case passed: healthy-first-orphan
+case passed: no-orphans
+case passed: missing-rule-protect-single
+case passed: pending-fit-protect-single
+case passed: down-connected-protect-single
+case passed: disconnected-promote-orphan
+case passed: witness-orphan-not-used
+case passed: pending-orphan-not-used
+case passed: down-orphan-not-used
+case passed: disconnected-orphan-not-used
+case passed: replacement-label-rejected
+case passed: replacement-isolation-rejected
+case passed: same-role-replaces-disconnected
+case passed: demote-orphan
+case passed: demote-requires-joint
+case passed: two-orphans-preserve-first-healthy
+case passed: unhealthy-orphan-first
+case passed: disconnected-orphan-priority
+case passed: missing-orphan-store-priority
+case passed: no-extra-healthy-orphans-protected
+case passed: no-extra-unhealthy-orphan-removed
+case passed: heartbeat-at-disconnect-boundary
+case passed: heartbeat-after-disconnect-boundary
+case passed: strict-location-improvement
+case passed: no-location-labels
+case passed: equal-location-is-not-improvement
+case passed: no-target-permanent
+case passed: target-busy-temporary
+
+thread 'task_045_test::task_045_behavior_cases' (164248497) panicked at pkg/schedule/checker/task_045_test.rs:316:9:
+assertion `left == right` failed: source-busy-temporary:temporary
+  left: false
+ right: true
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test task_045_test::task_045_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_045_test::task_045_behavior_cases
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 14 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-checker --lib`

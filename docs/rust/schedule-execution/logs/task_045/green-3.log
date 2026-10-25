@@ -1,0 +1,34 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.21s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-78902705b86d3ebf)
+
+running 1 test
+case passed: healthy-first-orphan
+case passed: no-orphans
+case passed: missing-rule-protect-single
+case passed: pending-fit-protect-single
+case passed: down-connected-protect-single
+case passed: disconnected-promote-orphan
+case passed: witness-orphan-not-used
+case passed: pending-orphan-not-used
+case passed: down-orphan-not-used
+case passed: disconnected-orphan-not-used
+case passed: replacement-label-rejected
+case passed: replacement-isolation-rejected
+case passed: same-role-replaces-disconnected
+
+thread 'task_045_test::task_045_behavior_cases' (164240652) panicked at pkg/schedule/checker/task_045_test.rs:327:13:
+assertion `left == right` failed: demote-orphan:steps
+  left: Array [Array [String("add"), Number(4), Number(104), Bool(false)], Array [String("remove"), Number(3), Number(103)], Array [String("remove"), Number(4), Number(104)]]
+ right: Array [Array [String("add"), Number(4), Number(1000), Bool(false)], Array [String("remove"), Number(4), Number(104)], Array [String("remove"), Number(3), Number(103)]]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test task_045_test::task_045_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_045_test::task_045_behavior_cases
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 14 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-checker --lib`
