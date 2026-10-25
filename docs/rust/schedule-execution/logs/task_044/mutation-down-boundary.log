@@ -1,0 +1,43 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.38s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-78902705b86d3ebf)
+
+running 4 tests
+
+thread 'task_044_test::task_044_tiflash_down_and_offline_preflight' (164189106) panicked at pkg/schedule/checker/task_044_test.rs:449:10:
+called `Option::unwrap()` on a `None` value
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+case passed: promote-learner
+test task_044_test::task_044_cooldown_and_leader_health ... ok
+case passed: leader-role
+case passed: leader-rejected
+test task_044_test::task_044_tiflash_down_and_offline_preflight ... FAILED
+case passed: follower-role
+case passed: no-new-leader
+case passed: demote-voter
+case passed: leader-cannot-witness
+case passed: voter-to-witness
+case passed: learner-to-witness
+case passed: witness-disabled-no-switch
+case passed: promote-cooldown
+case passed: pending-no-switch
+case passed: learner-to-nonwitness
+case passed: voter-to-nonwitness
+case passed: disabled-clears-witness
+case passed: healthy
+case passed: down-short
+
+thread 'task_044_test::task_044_behavior_cases' (164189103) panicked at pkg/schedule/checker/task_044_test.rs:251:13:
+down-threshold:missing op
+test task_044_test::task_044_behavior_cases ... FAILED
+test task_044_test::task_044_recorder_and_leader_replacement ... ok
+
+failures:
+
+failures:
+    task_044_test::task_044_behavior_cases
+    task_044_test::task_044_tiflash_down_and_offline_preflight
+
+test result: FAILED. 2 passed; 2 failed; 0 ignored; 0 measured; 10 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-checker --lib`

@@ -1,0 +1,26 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.92s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-78902705b86d3ebf)
+
+running 1 test
+case passed: promote-learner
+case passed: leader-role
+case passed: leader-rejected
+case passed: follower-role
+case passed: no-new-leader
+
+thread 'task_044_test::task_044_behavior_cases' (164172694) panicked at pkg/schedule/checker/task_044_test.rs:225:13:
+assertion `left == right` failed: demote-voter:steps
+  left: Array [Array [String("remove"), Number(3), Number(103)], Array [String("add"), Number(3), Number(103), Bool(false)]]
+ right: Array [Array [String("remove"), Number(3), Number(103)], Array [String("add"), Number(3), Number(1000), Bool(false)]]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test task_044_test::task_044_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_044_test::task_044_behavior_cases
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-checker --lib`

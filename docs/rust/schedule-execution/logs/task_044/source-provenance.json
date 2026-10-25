@@ -1,0 +1,14 @@
+{
+  "source_commit": "9eff3f3f29a7ef0ac370350a7bc94bd1500638de",
+  "dependency_commit": "9eff3f3f2",
+  "go_execution": false,
+  "basis": "read-only Go source and neighboring tests; runtime oracle admission waived by user",
+  "files": {
+    "pkg/schedule/checker/rule_checker.go": "b2cccb0a8ac670aa5957a5728998e1a7cf4b35dff3f43dd1cfc4a699dae6fc61",
+    "pkg/schedule/checker/rule_checker_test.go": "ac05aa4b43b98e29ca3772c35c152bc9748cc8ad34557d94a9b8050deeaeaee1",
+    "pkg/schedule/operator/builder.go": "2c74830947c401ea8c4d46e8066e4c85aecd02beea035d0bb9eb4aab8cee8f83",
+    "pkg/schedule/operator/create_operator.go": "43a938c72992f4ce81501c40ab85c1e79c08670383acd47f22655e779524b927",
+    "pkg/schedule/operator/kind.go": "b9fad78bd44d1f0e2077bc8d22dc875aedb1ab8fb6a160086dd2a166c217a133"
+  },
+  "fixture_sha256": "2ce4b67f25355d8fb485e95bb6e1e1a478dc4ceef5d68b2d0c1b995556384cb2"
+}

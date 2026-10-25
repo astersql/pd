@@ -1,0 +1,503 @@
+{
+  "source_commit": "9eff3f3f29a7ef0ac370350a7bc94bd1500638de",
+  "go_execution": false,
+  "evidence_kind": "source_assertion",
+  "provenance": [
+    "pkg/schedule/checker/rule_checker.go:149-192,274-432,594-725",
+    "pkg/schedule/checker/rule_checker_test.go:392-752,1504-1805,2756-2776"
+  ],
+  "normalization": {
+    "clock": "explicit Unix nanos, elapsed seconds",
+    "allocation": "1000",
+    "candidate": "unique matching store4"
+  },
+  "cases": [
+    {
+      "name": "promote-learner",
+      "desc": "fix-peer-role",
+      "steps": [
+        [
+          "promote",
+          3,
+          103,
+          false
+        ]
+      ],
+      "priority": "MEDIUM",
+      "kind": 0,
+      "learner": true
+    },
+    {
+      "name": "leader-role",
+      "desc": "fix-leader-role",
+      "steps": [
+        [
+          "transfer",
+          1,
+          3
+        ]
+      ],
+      "priority": "MEDIUM",
+      "kind": 256,
+      "role": "leader"
+    },
+    {
+      "name": "leader-rejected",
+      "desc": null,
+      "steps": [],
+      "priority": "MEDIUM",
+      "kind": 16,
+      "role": "leader",
+      "busy": 3,
+      "error": "PeerCannotBeLeader"
+    },
+    {
+      "name": "follower-role",
+      "desc": "fix-follower-role",
+      "steps": [
+        [
+          "transfer",
+          1,
+          2
+        ]
+      ],
+      "priority": "MEDIUM",
+      "kind": 256,
+      "target": 1,
+      "role": "follower"
+    },
+    {
+      "name": "no-new-leader",
+      "desc": null,
+      "steps": [],
+      "priority": "MEDIUM",
+      "kind": 16,
+      "target": 1,
+      "role": "follower",
+      "block_others": true,
+      "error": "NoNewLeader"
+    },
+    {
+      "name": "demote-voter",
+      "desc": "fix-demote-voter",
+      "steps": [
+        [
+          "remove",
+          3,
+          103
+        ],
+        [
+          "add",
+          3,
+          103,
+          false
+        ]
+      ],
+      "priority": "MEDIUM",
+      "kind": 128,
+      "role": "learner"
+    },
+    {
+      "name": "leader-cannot-witness",
+      "desc": null,
+      "steps": [],
+      "priority": "MEDIUM",
+      "kind": 16,
+      "target": 1,
+      "witness_rule": true,
+      "error": "PeerCannotBeWitness",
+      "enabled": true,
+      "fit_leader": 2
+    },
+    {
+      "name": "voter-to-witness",
+      "desc": "fix-witness-peer",
+      "steps": [
+        [
+          "witness",
+          3,
+          103
+        ]
+      ],
+      "priority": "MEDIUM",
+      "kind": 1152,
+      "witness_rule": true,
+      "enabled": true
+    },
+    {
+      "name": "learner-to-witness",
+      "desc": "fix-witness-peer",
+      "steps": [
+        [
+          "witness",
+          3,
+          103
+        ]
+      ],
+      "priority": "MEDIUM",
+      "kind": 1152,
+      "learner": true,
+      "role": "learner",
+      "witness_rule": true,
+      "enabled": true
+    },
+    {
+      "name": "witness-disabled-no-switch",
+      "desc": null,
+      "steps": [],
+      "priority": "MEDIUM",
+      "kind": 16,
+      "witness_rule": true
+    },
+    {
+      "name": "promote-cooldown",
+      "desc": null,
+      "steps": [],
+      "priority": "MEDIUM",
+      "kind": 16,
+      "witness_rule": true,
+      "enabled": true,
+      "recent": true
+    },
+    {
+      "name": "pending-no-switch",
+      "desc": null,
+      "steps": [],
+      "priority": "MEDIUM",
+      "kind": 16,
+      "witness_rule": true,
+      "enabled": true,
+      "pending": 2
+    },
+    {
+      "name": "learner-to-nonwitness",
+      "desc": "fix-non-witness-peer",
+      "steps": [
+        [
+          "nonwitness",
+          3,
+          103,
+          1
+        ]
+      ],
+      "priority": "MEDIUM",
+      "kind": 1152,
+      "learner": true,
+      "role": "learner",
+      "witness_peer": true
+    },
+    {
+      "name": "voter-to-nonwitness",
+      "desc": "fix-non-witness-peer",
+      "steps": [
+        [
+          "remove",
+          3,
+          103
+        ],
+        [
+          "add",
+          3,
+          103,
+          true
+        ],
+        [
+          "nonwitness",
+          3,
+          103,
+          1
+        ],
+        [
+          "promote",
+          3,
+          103,
+          false
+        ]
+      ],
+      "priority": "MEDIUM",
+      "kind": 1152,
+      "witness_peer": true
+    },
+    {
+      "name": "disabled-clears-witness",
+      "desc": "fix-non-witness-peer",
+      "steps": [
+        [
+          "remove",
+          3,
+          103
+        ],
+        [
+          "add",
+          3,
+          103,
+          true
+        ],
+        [
+          "nonwitness",
+          3,
+          103,
+          1
+        ],
+        [
+          "promote",
+          3,
+          103,
+          false
+        ]
+      ],
+      "priority": "MEDIUM",
+      "kind": 1152,
+      "witness_peer": true,
+      "witness_rule": true
+    },
+    {
+      "name": "healthy",
+      "desc": null,
+      "steps": [],
+      "priority": "MEDIUM",
+      "kind": 16
+    },
+    {
+      "name": "down-short",
+      "desc": null,
+      "steps": [],
+      "priority": "MEDIUM",
+      "kind": 16,
+      "down": 3,
+      "elapsed": 600
+    },
+    {
+      "name": "down-threshold",
+      "desc": "replace-rule-down-peer",
+      "steps": [
+        [
+          "add",
+          4,
+          1000,
+          false
+        ],
+        [
+          "promote",
+          4,
+          1000,
+          false
+        ],
+        [
+          "remove",
+          3,
+          103
+        ]
+      ],
+      "priority": "HIGH",
+      "kind": 144,
+      "down": 3,
+      "elapsed": 1800
+    },
+    {
+      "name": "fast-down",
+      "desc": "fast-replace-rule-down-peer",
+      "steps": [
+        [
+          "add",
+          4,
+          1000,
+          true
+        ],
+        [
+          "promote",
+          4,
+          1000,
+          true
+        ],
+        [
+          "remove",
+          3,
+          103
+        ]
+      ],
+      "priority": "URGENT",
+      "kind": 144,
+      "down": 3,
+      "elapsed": 1800,
+      "enabled": true
+    },
+    {
+      "name": "offline",
+      "desc": "replace-rule-offline-peer",
+      "steps": [
+        [
+          "add",
+          4,
+          1000,
+          false
+        ],
+        [
+          "promote",
+          4,
+          1000,
+          false
+        ],
+        [
+          "remove",
+          3,
+          103
+        ]
+      ],
+      "priority": "HIGH",
+      "kind": 144,
+      "offline": 3
+    },
+    {
+      "name": "offline-witness",
+      "desc": "fast-replace-rule-offline-peer",
+      "steps": [
+        [
+          "add",
+          4,
+          1000,
+          true
+        ],
+        [
+          "promote",
+          4,
+          1000,
+          true
+        ],
+        [
+          "remove",
+          3,
+          103
+        ]
+      ],
+      "priority": "URGENT",
+      "kind": 144,
+      "offline": 3,
+      "witness_rule": true,
+      "witness_peer": true,
+      "enabled": true
+    },
+    {
+      "name": "no-target",
+      "desc": null,
+      "steps": [],
+      "priority": "MEDIUM",
+      "kind": 16,
+      "offline": 3,
+      "no_target": true,
+      "error": "NoStoreToReplace",
+      "retry": true
+    },
+    {
+      "name": "temporary-target",
+      "desc": null,
+      "steps": [],
+      "priority": "MEDIUM",
+      "kind": 16,
+      "offline": 3,
+      "busy": 4,
+      "error": "NoStoreToReplace",
+      "temporary": true
+    },
+    {
+      "name": "allocator-failure",
+      "desc": null,
+      "steps": [],
+      "priority": "MEDIUM",
+      "kind": 16,
+      "offline": 3,
+      "allocation_error": true,
+      "error": "allocation"
+    },
+    {
+      "name": "down-promote-witness",
+      "desc": "promote-witness-for-down",
+      "steps": [
+        [
+          "remove",
+          3,
+          103
+        ],
+        [
+          "add",
+          3,
+          103,
+          true
+        ],
+        [
+          "nonwitness",
+          3,
+          103,
+          1
+        ],
+        [
+          "promote",
+          3,
+          103,
+          false
+        ]
+      ],
+      "priority": "MEDIUM",
+      "kind": 1152,
+      "down": 2,
+      "elapsed": 600,
+      "witness_peer": true,
+      "witness_rule": true,
+      "enabled": true
+    },
+    {
+      "name": "down-witness-unavailable",
+      "desc": null,
+      "steps": [],
+      "priority": "MEDIUM",
+      "kind": 16,
+      "down": 2,
+      "elapsed": 600,
+      "witness_peer": true,
+      "witness_rule": true,
+      "enabled": true,
+      "also_down": 3
+    },
+    {
+      "name": "paused",
+      "desc": null,
+      "steps": [],
+      "priority": "MEDIUM",
+      "kind": 16,
+      "paused": true,
+      "offline": 3
+    },
+    {
+      "name": "no-leader",
+      "desc": null,
+      "steps": [],
+      "priority": "MEDIUM",
+      "kind": 16,
+      "no_leader": true,
+      "offline": 3
+    },
+    {
+      "name": "missing-store-down",
+      "desc": "add-rule-peer",
+      "steps": [
+        [
+          "add",
+          4,
+          1000,
+          false
+        ],
+        [
+          "promote",
+          4,
+          1000,
+          false
+        ]
+      ],
+      "priority": "HIGH",
+      "kind": 144,
+      "down": 3,
+      "missing_store": 3,
+      "elapsed": 1800
+    }
+  ]
+}

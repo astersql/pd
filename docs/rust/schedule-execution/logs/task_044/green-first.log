@@ -1,0 +1,51 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+error[E0599]: no method named `down_peer` found for reference `&RegionInfo` in the current scope
+   --> pkg/schedule/checker/rule_fault.rs:132:18
+    |
+132 |             if r.down_peer(p.id).is_some() {
+    |                  ^^^^^^^^^
+    |
+help: there is a method `down_peers` with a similar name, but with different arguments
+   --> pkg/core/region.rs:106:5
+    |
+106 |     pub fn down_peers(&self) -> &[DownPeer] {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no method named `down_peer` found for reference `&RegionInfo` in the current scope
+   --> pkg/schedule/checker/rule_fault.rs:144:34
+    |
+144 | ...                   && r.down_peer(w.id).is_none()
+    |                            ^^^^^^^^^
+    |
+help: there is a method `down_peers` with a similar name, but with different arguments
+   --> pkg/core/region.rs:106:5
+    |
+106 |     pub fn down_peers(&self) -> &[DownPeer] {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no method named `down_peer` found for reference `&RegionInfo` in the current scope
+   --> pkg/schedule/checker/rule_fault.rs:234:31
+    |
+234 |                         || (r.down_peer(candidate.id).is_none()
+    |                               ^^^^^^^^^
+    |
+help: there is a method `down_peers` with a similar name, but with different arguments
+   --> pkg/core/region.rs:106:5
+    |
+106 |     pub fn down_peers(&self) -> &[DownPeer] {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no method named `pending_peer` found for reference `&RegionInfo` in the current scope
+   --> pkg/schedule/checker/rule_fault.rs:235:34
+    |
+235 | ...                   && r.pending_peer(candidate.id).is_none()
+    |                            ^^^^^^^^^^^^
+    |
+help: there is a method `pending_peers` with a similar name, but with different arguments
+   --> pkg/core/region.rs:110:5
+    |
+110 |     pub fn pending_peers(&self) -> &[Peer] {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `astersql-pd-schedule-checker` (lib test) due to 4 previous errors

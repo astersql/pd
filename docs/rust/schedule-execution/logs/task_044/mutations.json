@@ -1,0 +1,98 @@
+[
+  {
+    "name": "down-boundary",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_044",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "behavior_assertion": true
+  },
+  {
+    "name": "fast-failover",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_044",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "behavior_assertion": true
+  },
+  {
+    "name": "promote-role",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_044",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "behavior_assertion": true
+  },
+  {
+    "name": "cooldown",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_044",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "behavior_assertion": true
+  },
+  {
+    "name": "recorder-key",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_044",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "behavior_assertion": true
+  },
+  {
+    "name": "priority",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_044",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "behavior_assertion": true
+  }
+]

@@ -1,0 +1,42 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.12s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-78902705b86d3ebf)
+
+running 4 tests
+case passed: promote-learner
+test task_044_test::task_044_cooldown_and_leader_health ... ok
+test task_044_test::task_044_tiflash_down_and_offline_preflight ... ok
+case passed: leader-role
+case passed: leader-rejected
+case passed: follower-role
+case passed: no-new-leader
+case passed: demote-voter
+case passed: leader-cannot-witness
+case passed: voter-to-witness
+case passed: learner-to-witness
+case passed: witness-disabled-no-switch
+case passed: promote-cooldown
+case passed: pending-no-switch
+case passed: learner-to-nonwitness
+case passed: voter-to-nonwitness
+case passed: disabled-clears-witness
+case passed: healthy
+case passed: down-short
+case passed: down-threshold
+
+thread 'task_044_test::task_044_behavior_cases' (164191737) panicked at pkg/schedule/checker/task_044_test.rs:229:13:
+assertion `left == right` failed: fast-down:priority
+  left: PriorityLevel(2)
+ right: PriorityLevel(3)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test task_044_test::task_044_recorder_and_leader_replacement ... ok
+test task_044_test::task_044_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_044_test::task_044_behavior_cases
+
+test result: FAILED. 3 passed; 1 failed; 0 ignored; 0 measured; 10 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-checker --lib`

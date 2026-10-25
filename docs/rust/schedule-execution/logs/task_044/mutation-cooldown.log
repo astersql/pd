@@ -1,0 +1,40 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.14s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-78902705b86d3ebf)
+
+running 4 tests
+
+thread 'task_044_test::task_044_cooldown_and_leader_health' (164190578) panicked at pkg/schedule/checker/task_044_test.rs:394:9:
+assertion `left == right` failed
+  left: true
+ right: false
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+case passed: promote-learner
+test task_044_test::task_044_tiflash_down_and_offline_preflight ... ok
+case passed: leader-role
+case passed: leader-rejected
+test task_044_test::task_044_cooldown_and_leader_health ... FAILED
+case passed: follower-role
+case passed: no-new-leader
+case passed: demote-voter
+case passed: leader-cannot-witness
+case passed: voter-to-witness
+case passed: learner-to-witness
+case passed: witness-disabled-no-switch
+
+thread 'task_044_test::task_044_behavior_cases' (164190577) panicked at pkg/schedule/checker/task_044_test.rs:223:13:
+assertion `left == right` failed: promote-cooldown:desc
+  left: String("fix-witness-peer")
+ right: Null
+test task_044_test::task_044_behavior_cases ... FAILED
+test task_044_test::task_044_recorder_and_leader_replacement ... ok
+
+failures:
+
+failures:
+    task_044_test::task_044_behavior_cases
+    task_044_test::task_044_cooldown_and_leader_health
+
+test result: FAILED. 2 passed; 2 failed; 0 ignored; 0 measured; 10 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-checker --lib`

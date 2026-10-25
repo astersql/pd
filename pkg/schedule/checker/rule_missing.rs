@@ -142,7 +142,7 @@ impl RuleMissingChecker {
         }
         out
     }
-    async fn add<C, F>(
+    pub(crate) async fn add<C, F>(
         &self,
         context: &RuleMissingContext<'_, C>,
         region: &RegionInfo,

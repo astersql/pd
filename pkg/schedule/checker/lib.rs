@@ -24,3 +24,8 @@ mod rule_missing;
 pub use rule_missing::*;
 #[cfg(test)]
 mod task_043_test;
+
+mod rule_fault;
+pub use rule_fault::*;
+#[cfg(test)]
+mod task_044_test;

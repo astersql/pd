@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/Users/Shared/work/dir/data/codes/pd/docs/rust/schedule-execution/logs/task_044/mutation.py", line 28, in <module>
+    assert code==101 and 'assertion' in text and 'error[E' not in text,(name,code)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('down-boundary', 101)
