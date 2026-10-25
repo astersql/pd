@@ -1,0 +1,11 @@
+{
+  "source_commit": "09785453c9bee706c10d5c88d8a8f1cf0b799691",
+  "source_hashes": {
+    "pkg/schedule/checker/checker_controller.go": "48d03fd259b5762da0381ce8976057098d0b9d83a0527666c3bbc738862fd56d",
+    "pkg/cache/ttl.go": "d78e9bd14065b2a7442cc1ca63e7e81b95a930a8c90bc177651e1314a0818ce2",
+    "pkg/utils/keyutil/util.go": "097fe98711659df9fca6f940a5495a01f6814023b88a4f3745a896f55cd55b42"
+  },
+  "fixture_sha256": "9afe3205c8d12f18e07a78124405642812d129fb8e54ee30288b97c3dd3c3101",
+  "go_runtime_output": null,
+  "dependency": "09785453c; task-056 evidence and 52 passing package tests"
+}

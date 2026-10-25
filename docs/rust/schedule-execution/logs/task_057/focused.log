@@ -1,0 +1,20 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+error[E0308]: mismatched types
+   --> pkg/schedule/checker/task_056_test.rs:106:9
+    |
+105 |       pub(super) async fn learner_waiting(&self) -> usize {
+    |                                                     ----- expected `usize` because of return type
+106 | /         self.domain
+107 | |             .lock()
+108 | |             .await
+109 | |             .operators
+110 | |             .waiting_count("promote-learner")
+    | |_____________________________________________^ expected `usize`, found `u64`
+    |
+help: you can convert a `u64` to a `usize` and panic if the converted value doesn't fit
+    |
+110 |             .waiting_count("promote-learner").try_into().unwrap()
+    |                                              ++++++++++++++++++++
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `astersql-pd-schedule-checker` (lib test) due to 1 previous error

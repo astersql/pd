@@ -88,3 +88,8 @@ mod patrol;
 pub use patrol::*;
 #[cfg(test)]
 mod task_056_test;
+
+mod suspect_ranges;
+pub use suspect_ranges::*;
+#[cfg(test)]
+mod task_057_test;

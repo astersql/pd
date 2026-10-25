@@ -1,0 +1,93 @@
+{
+  "provenance": "read-only Go source derived; no Go execution output",
+  "go_output": null,
+  "normalization": {
+    "terminal_end": "Go nil terminal end is represented as an empty Rust Vec; explicit nonnil zero-length Go slice distinction is not represented by canonical core KeyRange",
+    "pop_order": "unordered Go map/TTL cache; compare range membership, never insertion order"
+  },
+  "scans": [
+    {
+      "name": "bounded",
+      "count": 1030,
+      "terminal": false,
+      "start": 1,
+      "end": 1031,
+      "expected_count": 1024,
+      "remainder": 1025
+    },
+    {
+      "name": "unbounded-byte-comparison",
+      "count": 1030,
+      "terminal": false,
+      "start": 1,
+      "end": null,
+      "expected_count": 1024,
+      "remainder": null
+    },
+    {
+      "name": "terminal",
+      "count": 1,
+      "terminal": true,
+      "start": 1,
+      "end": 99,
+      "expected_count": 1,
+      "remainder": null
+    },
+    {
+      "name": "empty-registry",
+      "count": 0,
+      "terminal": false,
+      "start": 1,
+      "end": 5,
+      "expected_count": 0,
+      "remainder": null
+    },
+    {
+      "name": "missing-region",
+      "count": 2,
+      "terminal": false,
+      "start": 99,
+      "end": 100,
+      "expected_count": 0,
+      "remainder": null
+    },
+    {
+      "name": "exact-end",
+      "count": 2,
+      "terminal": false,
+      "start": 1,
+      "end": 3,
+      "expected_count": 2,
+      "remainder": null
+    },
+    {
+      "name": "inside-region",
+      "count": 2,
+      "terminal": false,
+      "start": 1,
+      "end": 2,
+      "expected_count": 1,
+      "remainder": null
+    }
+  ],
+  "source_commit": "09785453c9bee706c10d5c88d8a8f1cf0b799691",
+  "source_hashes": {
+    "pkg/schedule/checker/checker_controller.go": "48d03fd259b5762da0381ce8976057098d0b9d83a0527666c3bbc738862fd56d",
+    "pkg/cache/ttl.go": "d78e9bd14065b2a7442cc1ca63e7e81b95a930a8c90bc177651e1314a0818ce2",
+    "pkg/utils/keyutil/util.go": "097fe98711659df9fca6f940a5495a01f6814023b88a4f3745a896f55cd55b42"
+  },
+  "dependency_commit": "09785453c",
+  "go_output_sha256": null,
+  "mode": "source-derived Rust behavioral verification",
+  "stories": [
+    "duplicate identity",
+    "overlap stays distinct",
+    "clear does not clear shared pending",
+    "TTL expiration",
+    "1024+6 continuation",
+    "shared patrol learner operator",
+    "100ms tick and canceled wake",
+    "in-flight join and host error",
+    "pending capacity bypass"
+  ]
+}

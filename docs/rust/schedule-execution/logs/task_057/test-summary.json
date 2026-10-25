@@ -1,0 +1,22 @@
+{
+  "red": {
+    "passed": 1,
+    "failed": 2,
+    "ignored": 0
+  },
+  "focused-provenance": {
+    "passed": 6,
+    "failed": 0,
+    "ignored": 0
+  },
+  "package": {
+    "passed": 58,
+    "failed": 0,
+    "ignored": 0
+  },
+  "workspace-test": {
+    "passed": 1516,
+    "failed": 0,
+    "ignored": 1
+  }
+}

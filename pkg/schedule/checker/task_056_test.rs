@@ -46,7 +46,7 @@ struct Domain {
     paths: ClusterPaths,
     operators: ControllerAdmission,
 }
-struct Host {
+pub(super) struct Host {
     pending: Arc<TTLUint64<()>>,
     domain: Mutex<Domain>,
     config: Cell<PatrolConfig>,
@@ -97,7 +97,20 @@ fn region(id: u64, terminal: bool) -> Arc<RegionInfo> {
     ))
 }
 impl Host {
-    async fn new(count: usize, workers: usize, terminal: bool) -> Self {
+    pub(super) async fn suspect_tick(&self, ranges: &SuspectRanges) -> Result<(), Fault> {
+        let d = self.domain.lock().await;
+        ranges.check_once(&d.cluster, &d.dispatcher);
+        Ok(())
+    }
+    pub(super) async fn learner_waiting(&self) -> u64 {
+        self.domain
+            .lock()
+            .await
+            .operators
+            .waiting_count("promote-learner")
+    }
+
+    pub(super) async fn new(count: usize, workers: usize, terminal: bool) -> Self {
         let storage = Arc::new(StorageEndpoint::new(Arc::new(MemoryStore::default())));
         let paths = ClusterPaths::new(56);
         let labels = RegionLabeler::load(
@@ -166,12 +179,12 @@ impl Host {
             label_stats: RefCell::new(astersql_pd_statistics::LabelStatistics::new()),
         }
     }
-    async fn shutdown(&self) {
+    pub(super) async fn shutdown(&self) {
         self.pending.shutdown().await;
     }
 }
 #[derive(Debug, PartialEq, Eq)]
-enum Fault {
+pub(super) enum Fault {
     Injected,
 }
 #[async_trait(?Send)]

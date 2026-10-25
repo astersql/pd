@@ -1,0 +1,14 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.55s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-09c25f305b3e17e1)
+
+running 6 tests
+test task_057_test::task_057_host_fault_and_inflight_join ... ok
+test task_057_test::task_057_identity_clear_and_expiration ... ok
+test task_057_test::task_057_tick_and_stop ... ok
+test task_057_test::task_057_continuation_and_shared_patrol ... ok
+task_057: 7 frozen bounded scan cases; real registry and shared dispatcher pending state
+test task_057_test::task_057_behavior_cases ... ok
+test task_057_test::task_057_pending_cap_bypass ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 52 filtered out; finished in 0.06s

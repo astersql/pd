@@ -1,0 +1,29 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.12s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-09c25f305b3e17e1)
+
+running 3 tests
+test task_057_test::task_057_identity_clear_and_expiration ... ok
+
+thread 'task_057_test::task_057_tick_and_stop' (165213707) panicked at pkg/schedule/checker/task_057_test.rs:55:61:
+assertion `left == right` failed
+  left: []
+ right: [1]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test task_057_test::task_057_tick_and_stop ... FAILED
+
+thread 'task_057_test::task_057_behavior_cases' (165213705) panicked at pkg/schedule/checker/task_057_test.rs:31:9:
+assertion `left == right` failed: "bounded"
+  left: 0
+ right: 1024
+test task_057_test::task_057_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_057_test::task_057_behavior_cases
+    task_057_test::task_057_tick_and_stop
+
+test result: FAILED. 1 passed; 2 failed; 0 ignored; 0 measured; 52 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-checker --lib`
