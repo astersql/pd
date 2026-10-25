@@ -1,0 +1,79 @@
+[
+  {
+    "command": [
+      "cargo",
+      "fmt",
+      "--all"
+    ],
+    "exit_code": 0,
+    "log": "fmt-final.out"
+  },
+  {
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-core",
+      "--locked",
+      "--lib",
+      "task_002",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 0,
+    "log": "green.out"
+  },
+  {
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-core",
+      "--locked"
+    ],
+    "exit_code": 0,
+    "log": "crate.out"
+  },
+  {
+    "command": [
+      "cargo",
+      "metadata",
+      "--format-version",
+      "1",
+      "--no-deps"
+    ],
+    "exit_code": 0,
+    "log": "metadata.out"
+  },
+  {
+    "command": [
+      "cargo",
+      "fmt",
+      "--all",
+      "--",
+      "--check"
+    ],
+    "exit_code": 0,
+    "log": "fmt-check.out"
+  },
+  {
+    "command": [
+      "cargo",
+      "check",
+      "--workspace",
+      "--locked"
+    ],
+    "exit_code": 0,
+    "log": "workspace-check.out"
+  },
+  {
+    "command": [
+      "cargo",
+      "test",
+      "--workspace",
+      "--locked"
+    ],
+    "exit_code": 0,
+    "log": "workspace-test.out"
+  }
+]

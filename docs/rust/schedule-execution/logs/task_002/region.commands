@@ -1,0 +1,26 @@
+break region_test.go:1116
+continue
+config max-variable-recurse 3
+config max-array-values 8
+print "CASE initial"
+call regionsOld.GetTotalRegionCount()
+call regionsOld.GetRegion(9999)
+print items[0].meta
+print "CASE insert"
+call -unsafe regionsOld.CheckAndPutRegion(items[0])
+call regionsOld.GetTotalRegionCount()
+call regionsOld.GetRegion(1)
+print "CASE update"
+set items[1].meta.Id = 1
+set items[1].meta.StartKey = items[0].meta.StartKey
+set items[1].meta.EndKey = items[0].meta.EndKey
+set items[1].meta.RegionEpoch.Version = 101
+call -unsafe regionsOld.CheckAndPutRegion(items[1])
+call regionsOld.GetRegion(1)
+call regionsOld.GetStoreRegionCount(1)
+call regionsOld.GetStoreRegionCount(2)
+call regionsOld.GetStoreRegionCount(4)
+print "CASE stale"
+call -unsafe regionsOld.CheckAndPutRegion(items[0])
+call regionsOld.GetRegion(1)
+exit

@@ -1,0 +1,29 @@
+{
+  "mutation": "get_region returns None for every present ID",
+  "results": [
+    {
+      "command": [
+        "cargo",
+        "fmt",
+        "--all"
+      ],
+      "exit_code": 0,
+      "log": "fmt-mutation.out"
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "astersql-pd-schedule-core",
+        "--locked",
+        "--lib",
+        "task_002",
+        "--",
+        "--nocapture"
+      ],
+      "exit_code": 101,
+      "log": "red-behavior.out"
+    }
+  ]
+}

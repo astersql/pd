@@ -1,0 +1,27 @@
+Type 'help' for list of commands.
+/oracle/region.commands:1: could not find statement at /Users/Shared/work/dir/data/codes/pd/pkg/core/region_test.go:1117, please use a line with a statement
+=== RUN   TestUpdateRegionEquivalence
+--- PASS: TestUpdateRegionEquivalence (0.02s)
+PASS
+/oracle/region.commands:2: Process 23 has exited with status 0
+/oracle/region.commands:5: Process 23 has exited with status 0
+/oracle/region.commands:6: no goroutine selected
+/oracle/region.commands:7: no goroutine selected
+/oracle/region.commands:8: Process 23 has exited with status 0
+/oracle/region.commands:9: Process 23 has exited with status 0
+/oracle/region.commands:10: no goroutine selected
+/oracle/region.commands:11: no goroutine selected
+/oracle/region.commands:12: no goroutine selected
+/oracle/region.commands:13: Process 23 has exited with status 0
+/oracle/region.commands:14: Process 23 has exited with status 0
+/oracle/region.commands:15: Process 23 has exited with status 0
+/oracle/region.commands:16: Process 23 has exited with status 0
+/oracle/region.commands:17: Process 23 has exited with status 0
+/oracle/region.commands:18: no goroutine selected
+/oracle/region.commands:19: no goroutine selected
+/oracle/region.commands:20: no goroutine selected
+/oracle/region.commands:21: no goroutine selected
+/oracle/region.commands:22: no goroutine selected
+/oracle/region.commands:23: Process 23 has exited with status 0
+/oracle/region.commands:24: no goroutine selected
+/oracle/region.commands:25: no goroutine selected

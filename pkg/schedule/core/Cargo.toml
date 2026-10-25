@@ -1,0 +1,16 @@
+[package]
+name = "astersql-pd-schedule-core"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[lib]
+path = "lib.rs"
+
+[dependencies]
+astersql-pd-core.workspace = true
+astersql-pd-core-constant.workspace = true
+
+[dev-dependencies]
+serde_json.workspace = true

@@ -1,0 +1,529 @@
+Type 'help' for list of commands.
+Breakpoint 1 set at 0x174a6e0 for github.com/tikv/pd/pkg/schedule/schedulers.TestEvictLeaderWithUnhealthyPeer() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers/evict_leader_test.go:91
+=== RUN   TestEvictLeaderWithUnhealthyPeer
+[2026/10/25 04:34:27.570 +00:00] [INFO] [labeler.go:65] ["new region labeler created"] [label-rules-count=0]
+[2026/10/25 04:34:27.570 +00:00] [INFO] [txn.go:756] ["rebuilt group-label mapping"] [total-groups=0] [total-ranges=0]
+[2026/10/25 04:34:27.570 +00:00] [INFO] [policy.go:158] ["affinity manager availability check loop started"] [interval=10s]
+[2026/10/25 04:34:27.571 +00:00] [INFO] [manager.go:137] ["affinity manager initialized"] [group-count=0]
+> [Breakpoint 1] github.com/tikv/pd/pkg/schedule/schedulers.TestEvictLeaderWithUnhealthyPeer() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers/evict_leader_test.go:91 (hits goroutine(260):1 total:1) (PC: 0x174a6e0)
+"CASE missing"
+> github.com/tikv/pd/pkg/schedule/schedulers.TestEvictLeaderWithUnhealthyPeer() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers/evict_leader_test.go:91 (PC: 0x174a6e0)
+Values returned:
+	~r0: *github.com/tikv/pd/pkg/core.StoreInfo nil
+
+> github.com/tikv/pd/pkg/schedule/schedulers.TestEvictLeaderWithUnhealthyPeer() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers/evict_leader_test.go:91 (PC: 0x174a6e0)
+Values returned:
+	~r0: error(*github.com/pingcap/errors.withStack) *{
+		error: error(*github.com/pingcap/errors.Error) *{
+			code: 0,
+			codeText: "PD:core:ErrStoreNotFound",
+			message: "store %v not found",
+			redactArgsPos: []int len: 0, cap: 0, nil,
+			cause: error nil,
+			args: []interface {} len: 1, cap: 1, [
+				*(*interface {})(0x3c56c26ff0b0),
+			],
+			file: "",
+			line: 0,},
+		stack: *github.com/pingcap/errors.stack len: 0, cap: 0, nil,}
+
+"CASE pause_in"
+[2026/10/25 04:34:27.598 +00:00] [INFO] [store.go:951] ["pause store leader transfer"] [store-id=2] [direction=in] [pause-in-time=0] [pause-out-time=0]
+> github.com/tikv/pd/pkg/schedule/schedulers.TestEvictLeaderWithUnhealthyPeer() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers/evict_leader_test.go:91 (PC: 0x174a6e0)
+Values returned:
+	~r0: error nil
+
+sync/atomic.Int64 {
+	_: sync/atomic.noCopy {},
+	_: sync/atomic.align64 {},
+	v: 1,}
+sync/atomic.Int64 {
+	_: sync/atomic.noCopy {},
+	_: sync/atomic.align64 {},
+	v: 0,}
+"CASE resume_in"
+[2026/10/25 04:34:27.605 +00:00] [INFO] [store.go:965] ["resume store leader transfer"] [store-id=2] [direction=in]
+> github.com/tikv/pd/pkg/schedule/schedulers.TestEvictLeaderWithUnhealthyPeer() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers/evict_leader_test.go:91 (PC: 0x174a6e0)
+Values returned:
+
+sync/atomic.Int64 {
+	_: sync/atomic.noCopy {},
+	_: sync/atomic.align64 {},
+	v: 0,}
+"CASE duplicate_trend"
+> github.com/tikv/pd/pkg/schedule/schedulers.TestEvictLeaderWithUnhealthyPeer() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers/evict_leader_test.go:91 (PC: 0x174a6e0)
+Values returned:
+	~r0: error nil
+
+> github.com/tikv/pd/pkg/schedule/schedulers.TestEvictLeaderWithUnhealthyPeer() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers/evict_leader_test.go:91 (PC: 0x174a6e0)
+Values returned:
+	~r0: error(*github.com/pingcap/errors.withStack) *{
+		error: error(*github.com/pingcap/errors.Error) *{
+			code: 0,
+			codeText: "PD:core:ErrSlowTrendEvicted",
+			message: "store %v is evicted as a slow store by trend",
+			redactArgsPos: []int len: 0, cap: 0, nil,
+			cause: error nil,
+			args: []interface {} len: 1, cap: 1, [
+				*(*interface {})(0x3c56c26ff100),
+			],
+			file: "",
+			line: 0,},
+		stack: *github.com/pingcap/errors.stack len: 0, cap: 0, nil,}
+
+> github.com/tikv/pd/pkg/schedule/schedulers.TestEvictLeaderWithUnhealthyPeer() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers/evict_leader_test.go:91 (PC: 0x174a6e0)
+Values returned:
+
+sync/atomic.Int64 {
+	_: sync/atomic.noCopy {},
+	_: sync/atomic.align64 {},
+	v: 0,}
+"CASE membership"
+> github.com/tikv/pd/pkg/schedule/schedulers.TestEvictLeaderWithUnhealthyPeer() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers/evict_leader_test.go:91 (PC: 0x174a6e0)
+Values returned:
+	~r0: []*github.com/tikv/pd/pkg/core.StoreInfo len: 3, cap: 4, [
+		*{
+			meta: *github.com/pingcap/kvproto/pkg/metapb.Store {
+				Id: 1,
+				Address: "",
+				State: StoreState_Up (0),
+				Labels: []*github.com/pingcap/kvproto/pkg/metapb.StoreLabel len: 0, cap: 0, nil,
+				Version: "",
+				PeerAddress: "",
+				StatusAddress: "",
+				GitHash: "",
+				StartTimestamp: 0,
+				DeployPath: "",
+				LastHeartbeat: 1792902867571999464,
+				PhysicallyDestroyed: false,
+				NodeState: NodeState_Preparing (0),
+				TxnProtocolVersionRange: *github.com/pingcap/kvproto/pkg/metapb.TxnProtocolVersionRange nil,},
+			storeStats: *github.com/tikv/pd/pkg/core.storeStats {
+				mu: (*"github.com/tikv/pd/pkg/utils/syncutil.RWMutex")(0x3c56c24d99e0),
+				rawStats: *(*"github.com/pingcap/kvproto/pkg/pdpb.StoreStats")(0x3c56c2654600),
+				avgAvailable: *(*"github.com/tikv/pd/pkg/movingaverage.HMA")(0x3c56c24d6b00),},
+			pauseLeaderTransferIn: sync/atomic.Int64 {
+				_: sync/atomic.noCopy {},
+				_: sync/atomic.align64 {},
+				v: 0,},
+			pauseLeaderTransferOut: sync/atomic.Int64 {
+				_: sync/atomic.noCopy {},
+				_: sync/atomic.align64 {},
+				v: 0,},
+			slowStoreEvicted: sync/atomic.Int64 {
+				_: sync/atomic.noCopy {},
+				_: sync/atomic.align64 {},
+				v: 0,},
+			slowTrendEvicted: sync/atomic.Int64 {
+				_: sync/atomic.noCopy {},
+				_: sync/atomic.align64 {},
+				v: 0,},
+			stoppingStoreEvicted: sync/atomic.Int64 {
+				_: sync/atomic.noCopy {},
+				_: sync/atomic.align64 {},
+				v: 0,},
+			leaderCount: 0,
+			regionCount: 0,
+			learnerCount: 0,
+			witnessCount: 0,
+			leaderSize: 0,
+			regionSize: 0,
+			pendingPeerCount: 0,
+			lastPersistTime: time.Time(0001-01-01T00:00:00Z){
+				wall: 0,
+				ext: 0,
+				loc: *time.Location nil,},
+			leaderWeight: 1,
+			regionWeight: 1,
+			limiter: github.com/tikv/pd/pkg/core/storelimit.StoreLimit(*github.com/tikv/pd/pkg/core/storelimit.StoreRateLimit) *{
+				limits: []*github.com/tikv/pd/pkg/core/storelimit.limit len: 4, cap: 4, [
+					*(*"github.com/tikv/pd/pkg/core/storelimit.limit")(0x3c56c24d9a10),
+					*(*"github.com/tikv/pd/pkg/core/storelimit.limit")(0x3c56c24d9a40),
+					*(*"github.com/tikv/pd/pkg/core/storelimit.limit")(0x3c56c24d9a70),
+					*(*"github.com/tikv/pd/pkg/core/storelimit.limit")(0x3c56c24d9aa0),
+				],},
+			minResolvedTS: 0,
+			lastAwakenTime: time.Time(0001-01-01T00:00:00Z){
+				wall: 0,
+				ext: 0,
+				loc: *time.Location nil,},
+			networkSlowTriggers: 0,},
+		*{
+			meta: *github.com/pingcap/kvproto/pkg/metapb.Store {
+				Id: 2,
+				Address: "",
+				State: StoreState_Up (0),
+				Labels: []*github.com/pingcap/kvproto/pkg/metapb.StoreLabel len: 0, cap: 0, nil,
+				Version: "",
+				PeerAddress: "",
+				StatusAddress: "",
+				GitHash: "",
+				StartTimestamp: 0,
+				DeployPath: "",
+				LastHeartbeat: 1792902867572014172,
+				PhysicallyDestroyed: false,
+				NodeState: NodeState_Preparing (0),
+				TxnProtocolVersionRange: *github.com/pingcap/kvproto/pkg/metapb.TxnProtocolVersionRange nil,},
+			storeStats: *github.com/tikv/pd/pkg/core.storeStats {
+				mu: (*"github.com/tikv/pd/pkg/utils/syncutil.RWMutex")(0x3c56c24d9b30),
+				rawStats: *(*"github.com/pingcap/kvproto/pkg/pdpb.StoreStats")(0x3c56c2654c00),
+				avgAvailable: *(*"github.com/tikv/pd/pkg/movingaverage.HMA")(0x3c56c24d6b60),},
+			pauseLeaderTransferIn: sync/atomic.Int64 {
+				_: sync/atomic.noCopy {},
+				_: sync/atomic.align64 {},
+				v: 0,},
+			pauseLeaderTransferOut: sync/atomic.Int64 {
+				_: sync/atomic.noCopy {},
+				_: sync/atomic.align64 {},
+				v: 0,},
+			slowStoreEvicted: sync/atomic.Int64 {
+				_: sync/atomic.noCopy {},
+				_: sync/atomic.align64 {},
+				v: 0,},
+			slowTrendEvicted: sync/atomic.Int64 {
+				_: sync/atomic.noCopy {},
+				_: sync/atomic.align64 {},
+				v: 0,},
+			stoppingStoreEvicted: sync/atomic.Int64 {
+				_: sync/atomic.noCopy {},
+				_: sync/atomic.align64 {},
+				v: 0,},
+			leaderCount: 0,
+			regionCount: 0,
+			learnerCount: 0,
+			witnessCount: 0,
+			leaderSize: 0,
+			regionSize: 0,
+			pendingPeerCount: 0,
+			lastPersistTime: time.Time(0001-01-01T00:00:00Z){
+				wall: 0,
+				ext: 0,
+				loc: *time.Location nil,},
+			leaderWeight: 1,
+			regionWeight: 1,
+			limiter: github.com/tikv/pd/pkg/core/storelimit.StoreLimit(*github.com/tikv/pd/pkg/core/storelimit.StoreRateLimit) *{
+				limits: []*github.com/tikv/pd/pkg/core/storelimit.limit len: 4, cap: 4, [
+					*(*"github.com/tikv/pd/pkg/core/storelimit.limit")(0x3c56c24d9b60),
+					*(*"github.com/tikv/pd/pkg/core/storelimit.limit")(0x3c56c24d9b90),
+					*(*"github.com/tikv/pd/pkg/core/storelimit.limit")(0x3c56c24d9bc0),
+					*(*"github.com/tikv/pd/pkg/core/storelimit.limit")(0x3c56c24d9bf0),
+				],},
+			minResolvedTS: 0,
+			lastAwakenTime: time.Time(0001-01-01T00:00:00Z){
+				wall: 0,
+				ext: 0,
+				loc: *time.Location nil,},
+			networkSlowTriggers: 0,},
+		*{
+			meta: *github.com/pingcap/kvproto/pkg/metapb.Store {
+				Id: 3,
+				Address: "",
+				State: StoreState_Up (0),
+				Labels: []*github.com/pingcap/kvproto/pkg/metapb.StoreLabel len: 0, cap: 0, nil,
+				Version: "",
+				PeerAddress: "",
+				StatusAddress: "",
+				GitHash: "",
+				StartTimestamp: 0,
+				DeployPath: "",
+				LastHeartbeat: 1792902867572016506,
+				PhysicallyDestroyed: false,
+				NodeState: NodeState_Preparing (0),
+				TxnProtocolVersionRange: *github.com/pingcap/kvproto/pkg/metapb.TxnProtocolVersionRange nil,},
+			storeStats: *github.com/tikv/pd/pkg/core.storeStats {
+				mu: (*"github.com/tikv/pd/pkg/utils/syncutil.RWMutex")(0x3c56c24d9c80),
+				rawStats: *(*"github.com/pingcap/kvproto/pkg/pdpb.StoreStats")(0x3c56c2655200),
+				avgAvailable: *(*"github.com/tikv/pd/pkg/movingaverage.HMA")(0x3c56c24d6bc0),},
+			pauseLeaderTransferIn: sync/atomic.Int64 {
+				_: sync/atomic.noCopy {},
+				_: sync/atomic.align64 {},
+				v: 0,},
+			pauseLeaderTransferOut: sync/atomic.Int64 {
+				_: sync/atomic.noCopy {},
+				_: sync/atomic.align64 {},
+				v: 0,},
+			slowStoreEvicted: sync/atomic.Int64 {
+				_: sync/atomic.noCopy {},
+				_: sync/atomic.align64 {},
+				v: 0,},
+			slowTrendEvicted: sync/atomic.Int64 {
+				_: sync/atomic.noCopy {},
+				_: sync/atomic.align64 {},
+				v: 0,},
+			stoppingStoreEvicted: sync/atomic.Int64 {
+				_: sync/atomic.noCopy {},
+				_: sync/atomic.align64 {},
+				v: 0,},
+			leaderCount: 0,
+			regionCount: 0,
+			learnerCount: 0,
+			witnessCount: 0,
+			leaderSize: 0,
+			regionSize: 0,
+			pendingPeerCount: 0,
+			lastPersistTime: time.Time(0001-01-01T00:00:00Z){
+				wall: 0,
+				ext: 0,
+				loc: *time.Location nil,},
+			leaderWeight: 1,
+			regionWeight: 1,
+			limiter: github.com/tikv/pd/pkg/core/storelimit.StoreLimit(*github.com/tikv/pd/pkg/core/storelimit.StoreRateLimit) *{
+				limits: []*github.com/tikv/pd/pkg/core/storelimit.limit len: 4, cap: 4, [
+					*(*"github.com/tikv/pd/pkg/core/storelimit.limit")(0x3c56c24d9cb0),
+					*(*"github.com/tikv/pd/pkg/core/storelimit.limit")(0x3c56c24d9ce0),
+					*(*"github.com/tikv/pd/pkg/core/storelimit.limit")(0x3c56c24d9d10),
+					*(*"github.com/tikv/pd/pkg/core/storelimit.limit")(0x3c56c24d9d40),
+				],},
+			minResolvedTS: 0,
+			lastAwakenTime: time.Time(0001-01-01T00:00:00Z){
+				wall: 0,
+				ext: 0,
+				loc: *time.Location nil,},
+			networkSlowTriggers: 0,},
+	]
+
+> github.com/tikv/pd/pkg/schedule/schedulers.TestEvictLeaderWithUnhealthyPeer() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers/evict_leader_test.go:91 (PC: 0x174a6e0)
+Values returned:
+	~r0: []*github.com/tikv/pd/pkg/core.StoreInfo len: 2, cap: 2, [
+		*{
+			meta: *github.com/pingcap/kvproto/pkg/metapb.Store {
+				Id: 2,
+				Address: "",
+				State: StoreState_Up (0),
+				Labels: []*github.com/pingcap/kvproto/pkg/metapb.StoreLabel len: 0, cap: 0, nil,
+				Version: "",
+				PeerAddress: "",
+				StatusAddress: "",
+				GitHash: "",
+				StartTimestamp: 0,
+				DeployPath: "",
+				LastHeartbeat: 1792902867572014172,
+				PhysicallyDestroyed: false,
+				NodeState: NodeState_Preparing (0),
+				TxnProtocolVersionRange: *github.com/pingcap/kvproto/pkg/metapb.TxnProtocolVersionRange nil,},
+			storeStats: *github.com/tikv/pd/pkg/core.storeStats {
+				mu: (*"github.com/tikv/pd/pkg/utils/syncutil.RWMutex")(0x3c56c24d9b30),
+				rawStats: *(*"github.com/pingcap/kvproto/pkg/pdpb.StoreStats")(0x3c56c2654c00),
+				avgAvailable: *(*"github.com/tikv/pd/pkg/movingaverage.HMA")(0x3c56c24d6b60),},
+			pauseLeaderTransferIn: sync/atomic.Int64 {
+				_: sync/atomic.noCopy {},
+				_: sync/atomic.align64 {},
+				v: 0,},
+			pauseLeaderTransferOut: sync/atomic.Int64 {
+				_: sync/atomic.noCopy {},
+				_: sync/atomic.align64 {},
+				v: 0,},
+			slowStoreEvicted: sync/atomic.Int64 {
+				_: sync/atomic.noCopy {},
+				_: sync/atomic.align64 {},
+				v: 0,},
+			slowTrendEvicted: sync/atomic.Int64 {
+				_: sync/atomic.noCopy {},
+				_: sync/atomic.align64 {},
+				v: 0,},
+			stoppingStoreEvicted: sync/atomic.Int64 {
+				_: sync/atomic.noCopy {},
+				_: sync/atomic.align64 {},
+				v: 0,},
+			leaderCount: 0,
+			regionCount: 0,
+			learnerCount: 0,
+			witnessCount: 0,
+			leaderSize: 0,
+			regionSize: 0,
+			pendingPeerCount: 0,
+			lastPersistTime: time.Time(0001-01-01T00:00:00Z){
+				wall: 0,
+				ext: 0,
+				loc: *time.Location nil,},
+			leaderWeight: 1,
+			regionWeight: 1,
+			limiter: github.com/tikv/pd/pkg/core/storelimit.StoreLimit(*github.com/tikv/pd/pkg/core/storelimit.StoreRateLimit) *{
+				limits: []*github.com/tikv/pd/pkg/core/storelimit.limit len: 4, cap: 4, [
+					*(*"github.com/tikv/pd/pkg/core/storelimit.limit")(0x3c56c24d9b60),
+					*(*"github.com/tikv/pd/pkg/core/storelimit.limit")(0x3c56c24d9b90),
+					*(*"github.com/tikv/pd/pkg/core/storelimit.limit")(0x3c56c24d9bc0),
+					*(*"github.com/tikv/pd/pkg/core/storelimit.limit")(0x3c56c24d9bf0),
+				],},
+			minResolvedTS: 0,
+			lastAwakenTime: time.Time(0001-01-01T00:00:00Z){
+				wall: 0,
+				ext: 0,
+				loc: *time.Location nil,},
+			networkSlowTriggers: 0,},
+		*{
+			meta: *github.com/pingcap/kvproto/pkg/metapb.Store {
+				Id: 3,
+				Address: "",
+				State: StoreState_Up (0),
+				Labels: []*github.com/pingcap/kvproto/pkg/metapb.StoreLabel len: 0, cap: 0, nil,
+				Version: "",
+				PeerAddress: "",
+				StatusAddress: "",
+				GitHash: "",
+				StartTimestamp: 0,
+				DeployPath: "",
+				LastHeartbeat: 1792902867572016506,
+				PhysicallyDestroyed: false,
+				NodeState: NodeState_Preparing (0),
+				TxnProtocolVersionRange: *github.com/pingcap/kvproto/pkg/metapb.TxnProtocolVersionRange nil,},
+			storeStats: *github.com/tikv/pd/pkg/core.storeStats {
+				mu: (*"github.com/tikv/pd/pkg/utils/syncutil.RWMutex")(0x3c56c24d9c80),
+				rawStats: *(*"github.com/pingcap/kvproto/pkg/pdpb.StoreStats")(0x3c56c2655200),
+				avgAvailable: *(*"github.com/tikv/pd/pkg/movingaverage.HMA")(0x3c56c24d6bc0),},
+			pauseLeaderTransferIn: sync/atomic.Int64 {
+				_: sync/atomic.noCopy {},
+				_: sync/atomic.align64 {},
+				v: 0,},
+			pauseLeaderTransferOut: sync/atomic.Int64 {
+				_: sync/atomic.noCopy {},
+				_: sync/atomic.align64 {},
+				v: 0,},
+			slowStoreEvicted: sync/atomic.Int64 {
+				_: sync/atomic.noCopy {},
+				_: sync/atomic.align64 {},
+				v: 0,},
+			slowTrendEvicted: sync/atomic.Int64 {
+				_: sync/atomic.noCopy {},
+				_: sync/atomic.align64 {},
+				v: 0,},
+			stoppingStoreEvicted: sync/atomic.Int64 {
+				_: sync/atomic.noCopy {},
+				_: sync/atomic.align64 {},
+				v: 0,},
+			leaderCount: 0,
+			regionCount: 0,
+			learnerCount: 0,
+			witnessCount: 0,
+			leaderSize: 0,
+			regionSize: 0,
+			pendingPeerCount: 0,
+			lastPersistTime: time.Time(0001-01-01T00:00:00Z){
+				wall: 0,
+				ext: 0,
+				loc: *time.Location nil,},
+			leaderWeight: 1,
+			regionWeight: 1,
+			limiter: github.com/tikv/pd/pkg/core/storelimit.StoreLimit(*github.com/tikv/pd/pkg/core/storelimit.StoreRateLimit) *{
+				limits: []*github.com/tikv/pd/pkg/core/storelimit.limit len: 4, cap: 4, [
+					*(*"github.com/tikv/pd/pkg/core/storelimit.limit")(0x3c56c24d9cb0),
+					*(*"github.com/tikv/pd/pkg/core/storelimit.limit")(0x3c56c24d9ce0),
+					*(*"github.com/tikv/pd/pkg/core/storelimit.limit")(0x3c56c24d9d10),
+					*(*"github.com/tikv/pd/pkg/core/storelimit.limit")(0x3c56c24d9d40),
+				],},
+			minResolvedTS: 0,
+			lastAwakenTime: time.Time(0001-01-01T00:00:00Z){
+				wall: 0,
+				ext: 0,
+				loc: *time.Location nil,},
+			networkSlowTriggers: 0,},
+	]
+
+> github.com/tikv/pd/pkg/schedule/schedulers.TestEvictLeaderWithUnhealthyPeer() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers/evict_leader_test.go:91 (PC: 0x174a6e0)
+Values returned:
+	~r0: ("*github.com/tikv/pd/pkg/core.StoreInfo")(0x3c56c26b64e0)
+*github.com/tikv/pd/pkg/core.StoreInfo {
+		meta: *github.com/pingcap/kvproto/pkg/metapb.Store {
+			Id: 1,
+			Address: "",
+			State: StoreState_Up (0),
+			Labels: []*github.com/pingcap/kvproto/pkg/metapb.StoreLabel len: 0, cap: 0, nil,
+			Version: "",
+			PeerAddress: "",
+			StatusAddress: "",
+			GitHash: "",
+			StartTimestamp: 0,
+			DeployPath: "",
+			LastHeartbeat: 1792902867571999464,
+			PhysicallyDestroyed: false,
+			NodeState: NodeState_Preparing (0),
+			TxnProtocolVersionRange: *github.com/pingcap/kvproto/pkg/metapb.TxnProtocolVersionRange nil,},
+		storeStats: *github.com/tikv/pd/pkg/core.storeStats {
+			mu: github.com/tikv/pd/pkg/utils/syncutil.RWMutex {
+				RWMutex: (*sync.RWMutex)(0x3c56c24d99e0),},
+			rawStats: *github.com/pingcap/kvproto/pkg/pdpb.StoreStats {
+				StoreId: 0,
+				Capacity: 107374182400,
+				Available: 107374182400,
+				RegionCount: 0,
+				SendingSnapCount: 0,
+				ReceivingSnapCount: 0,
+				StartTime: 0,
+				ApplyingSnapCount: 0,
+				IsBusy: false,
+				UsedSize: 0,
+				BytesWritten: 0,
+				KeysWritten: 0,
+				BytesRead: 0,
+				KeysRead: 0,
+				Interval: *github.com/pingcap/kvproto/pkg/pdpb.TimeInterval nil,
+				CpuUsages: []*github.com/pingcap/kvproto/pkg/pdpb.RecordPair len: 0, cap: 0, nil,
+				ReadIoRates: []*github.com/pingcap/kvproto/pkg/pdpb.RecordPair len: 0, cap: 0, nil,
+				WriteIoRates: []*github.com/pingcap/kvproto/pkg/pdpb.RecordPair len: 0, cap: 0, nil,
+				OpLatencies: []*github.com/pingcap/kvproto/pkg/pdpb.RecordPair len: 0, cap: 0, nil,
+				PeerStats: []*github.com/pingcap/kvproto/pkg/pdpb.PeerStat len: 0, cap: 0, nil,
+				QueryStats: *github.com/pingcap/kvproto/pkg/pdpb.QueryStats nil,
+				SlowScore: 0,
+				DamagedRegionsId: []uint64 len: 0, cap: 0, nil,
+				IsApplyBusy: false,
+				SnapshotStats: []*github.com/pingcap/kvproto/pkg/pdpb.SnapshotStat len: 0, cap: 0, nil,
+				SlowTrend: *github.com/pingcap/kvproto/pkg/pdpb.SlowTrend nil,
+				IsGrpcPaused: false,
+				TotalMemory: 0,
+				UsedMemory: 0,
+				NetworkSlowScores: map[uint64]uint64 nil,
+				Dfs: []*github.com/pingcap/kvproto/pkg/pdpb.DfsStatItem len: 0, cap: 0, nil,
+				IsStopping: false,},
+			avgAvailable: *github.com/tikv/pd/pkg/movingaverage.HMA {
+				size: 60,
+				wma: []*github.com/tikv/pd/pkg/movingaverage.WMA len: 3, cap: 3, [
+					*(*"github.com/tikv/pd/pkg/movingaverage.WMA")(0x3c56c24dab40),
+					*(*"github.com/tikv/pd/pkg/movingaverage.WMA")(0x3c56c24dab80),
+					*(*"github.com/tikv/pd/pkg/movingaverage.WMA")(0x3c56c24dabc0),
+				],},},
+		pauseLeaderTransferIn: sync/atomic.Int64 {
+			_: sync/atomic.noCopy {},
+			_: sync/atomic.align64 {},
+			v: 0,},
+		pauseLeaderTransferOut: sync/atomic.Int64 {
+			_: sync/atomic.noCopy {},
+			_: sync/atomic.align64 {},
+			v: 0,},
+		slowStoreEvicted: sync/atomic.Int64 {
+			_: sync/atomic.noCopy {},
+			_: sync/atomic.align64 {},
+			v: 0,},
+		slowTrendEvicted: sync/atomic.Int64 {
+			_: sync/atomic.noCopy {},
+			_: sync/atomic.align64 {},
+			v: 0,},
+		stoppingStoreEvicted: sync/atomic.Int64 {
+			_: sync/atomic.noCopy {},
+			_: sync/atomic.align64 {},
+			v: 0,},
+		leaderCount: 0,
+		regionCount: 0,
+		learnerCount: 0,
+		witnessCount: 0,
+		leaderSize: 0,
+		regionSize: 0,
+		pendingPeerCount: 0,
+		lastPersistTime: time.Time(0001-01-01T00:00:00Z){
+			wall: 0,
+			ext: 0,
+			loc: *time.Location nil,},
+		leaderWeight: 1,
+		regionWeight: 1,
+		limiter: github.com/tikv/pd/pkg/core/storelimit.StoreLimit(*github.com/tikv/pd/pkg/core/storelimit.StoreRateLimit) *{
+			limits: []*github.com/tikv/pd/pkg/core/storelimit.limit len: 4, cap: 4, [
+				*(*"github.com/tikv/pd/pkg/core/storelimit.limit")(0x3c56c24d9a10),
+				*(*"github.com/tikv/pd/pkg/core/storelimit.limit")(0x3c56c24d9a40),
+				*(*"github.com/tikv/pd/pkg/core/storelimit.limit")(0x3c56c24d9a70),
+				*(*"github.com/tikv/pd/pkg/core/storelimit.limit")(0x3c56c24d9aa0),
+			],},
+		minResolvedTS: 0,
+		lastAwakenTime: time.Time(0001-01-01T00:00:00Z){
+			wall: 0,
+			ext: 0,
+			loc: *time.Location nil,},
+		networkSlowTriggers: 0,}

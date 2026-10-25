@@ -419,6 +419,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "astersql-pd-schedule-core"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-core",
+ "astersql-pd-core-constant",
+ "serde_json",
+]
+
+[[package]]
 name = "astersql-pd-schedule-keyrange"
 version = "0.1.0"
 dependencies = [

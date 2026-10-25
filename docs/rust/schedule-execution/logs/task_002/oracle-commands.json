@@ -1,0 +1,122 @@
+[
+  {
+    "kind": "compile",
+    "env": {
+      "GOOS": "linux",
+      "GOARCH": "arm64",
+      "GOFLAGS": "-mod=readonly",
+      "GOPROXY": "off",
+      "CGO_ENABLED": "0"
+    },
+    "argv": [
+      "go",
+      "test",
+      "-c",
+      "-gcflags=all=-N -l",
+      "-o",
+      "/tmp/pd-schedule-task002-core-linux.test",
+      "./pkg/core"
+    ],
+    "exit_code": 0,
+    "executed_tests": 0,
+    "artifact_copy": "cp /tmp/pd-schedule-task002-core-linux.test /tmp/pd-schedule-task002-oracle/core.test"
+  },
+  {
+    "kind": "compile",
+    "env": {
+      "GOOS": "linux",
+      "GOARCH": "arm64",
+      "GOFLAGS": "-mod=readonly",
+      "GOPROXY": "off",
+      "CGO_ENABLED": "0"
+    },
+    "argv": [
+      "go",
+      "test",
+      "-c",
+      "-gcflags=all=-N -l",
+      "-o",
+      "/tmp/pd-schedule-task002-oracle/schedulers.test",
+      "./pkg/schedule/schedulers"
+    ],
+    "exit_code": 0,
+    "executed_tests": 0
+  },
+  {
+    "kind": "debugger observation; exits at breakpoint, not full test PASS",
+    "argv": [
+      "docker",
+      "run",
+      "--rm",
+      "--name",
+      "pd-schedule-task002-oracle",
+      "--cap-add",
+      "SYS_PTRACE",
+      "--security-opt",
+      "seccomp=unconfined",
+      "-v",
+      "/tmp/pd-schedule-task002-oracle:/oracle",
+      "alpine:3.22",
+      "sh",
+      "-c",
+      "apk add --no-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/community delve >/dev/null && cp /usr/bin/dlv /oracle/dlv && timeout 80 dlv --check-go-version=false exec /oracle/core.test --allow-non-terminal-interactive --init=/oracle/region.commands -- -test.run \"^TestUpdateRegionEquivalence$\" -test.v -test.timeout=65s"
+    ],
+    "exit_code": 0,
+    "log": "go-region-second.out",
+    "injection": "none; explicit method calls on real objects; region commands mutate only input fixtures, never validation or results"
+  },
+  {
+    "kind": "debugger observation; exits at breakpoint, not full test PASS",
+    "argv": [
+      "docker",
+      "run",
+      "--rm",
+      "--name",
+      "pd-schedule-task002-cluster",
+      "--cap-add",
+      "SYS_PTRACE",
+      "--security-opt",
+      "seccomp=unconfined",
+      "-v",
+      "/tmp/pd-schedule-task002-oracle:/oracle:ro",
+      "alpine:3.22",
+      "timeout",
+      "80",
+      "/oracle/dlv",
+      "--check-go-version=false",
+      "exec",
+      "/oracle/schedulers.test",
+      "--allow-non-terminal-interactive",
+      "--init=/oracle/cluster.commands",
+      "--",
+      "-test.run",
+      "^TestEvictLeaderWithUnhealthyPeer$",
+      "-test.v",
+      "-test.timeout=65s"
+    ],
+    "exit_code": 0,
+    "log": "go-cluster-direct.out",
+    "injection": "none; explicit method calls on real objects; region commands mutate only input fixtures, never validation or results"
+  },
+  {
+    "kind": "existing assertion run",
+    "env": {
+      "GOFLAGS": "-mod=readonly",
+      "GOPROXY": "off",
+      "CGO_ENABLED": "0"
+    },
+    "argv": [
+      "go",
+      "test",
+      "./pkg/core",
+      "-run",
+      "^(TestPutStore|TestPutStoreSkipsPatchForRemovedStore|TestUpdateRegionEquivalence|TestQueryRegions|TestStoreRegionCount)$",
+      "-count=1",
+      "-v"
+    ],
+    "exit_code": 0,
+    "effective_tests": 5,
+    "log": "go-safe-tests.out",
+    "audit": "Exact test paths + TestMain(goleak); no Enable/InjectCall or required injected behavior, no go:generate/build script/toolexec; UpdateSubTree marker is inactive and not required by these tests. Excludes TestSetRegionConcurrence and every failpoint-dependent test."
+  }
+]

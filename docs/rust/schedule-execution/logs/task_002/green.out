@@ -1,0 +1,17 @@
+   Compiling astersql-pd-schedule-core v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.03s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_core-e0ebc2b002e59abd)
+
+running 5 tests
+task_002_store_controls_and_errors: 5 oracle transitions passed
+test task_002_test::task_002_store_controls_and_errors ... oktask_002_key_lookup_hole_and_boundary: 3 oracle queries passed
+task_002_shared_source_target_views: 2 update phases passed
+task_002_behavior_cases: 4 oracle stages passed
+
+task_002_membership_queries: 3 oracle queries passed
+test task_002_test::task_002_shared_source_target_views ... ok
+test task_002_test::task_002_key_lookup_hole_and_boundary ... ok
+test task_002_test::task_002_behavior_cases ... ok
+test task_002_test::task_002_membership_queries ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

@@ -1,0 +1,17 @@
+{
+  "green": {
+    "passed": 5,
+    "failed": 0,
+    "ignored": 0
+  },
+  "crate": {
+    "passed": 5,
+    "failed": 0,
+    "ignored": 0
+  },
+  "workspace-test": {
+    "passed": 1317,
+    "failed": 0,
+    "ignored": 1
+  }
+}

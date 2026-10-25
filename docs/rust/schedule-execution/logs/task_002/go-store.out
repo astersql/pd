@@ -1,0 +1,44 @@
+Type 'help' for list of commands.
+Breakpoint 1 set at 0xc6456c for github.com/tikv/pd/pkg/core.TestPutStore() .Users/Shared/work/dir/data/codes/pd/pkg/core/store_test.go:267
+=== RUN   TestPutStore
+> [Breakpoint 1] github.com/tikv/pd/pkg/core.TestPutStore() .Users/Shared/work/dir/data/codes/pd/pkg/core/store_test.go:267 (hits goroutine(50):1 total:1) (PC: 0xc6456c)
+"CASE missing"
+> github.com/tikv/pd/pkg/core.TestPutStore() .Users/Shared/work/dir/data/codes/pd/pkg/core/store_test.go:267 (PC: 0xc6456c)
+Values returned:
+	~r0: *github.com/tikv/pd/pkg/core.StoreInfo nil
+
+> github.com/tikv/pd/pkg/core.TestPutStore() .Users/Shared/work/dir/data/codes/pd/pkg/core/store_test.go:267 (PC: 0xc6456c)
+/oracle/store.commands:6: storesInfo has no member PauseLeaderTransfer
+"CASE pause_in"
+> github.com/tikv/pd/pkg/core.TestPutStore() .Users/Shared/work/dir/data/codes/pd/pkg/core/store_test.go:267 (PC: 0xc6456c)
+/oracle/store.commands:8: storesInfo has no member PauseLeaderTransfer
+sync/atomic.Int64 {
+	_: sync/atomic.noCopy {},
+	_: sync/atomic.align64 {},
+	v: 0,}
+sync/atomic.Int64 {
+	_: sync/atomic.noCopy {},
+	_: sync/atomic.align64 {},
+	v: 0,}
+sync/atomic.Int64 {
+	_: sync/atomic.noCopy {},
+	_: sync/atomic.align64 {},
+	v: 0,}
+"CASE resume_in"
+> github.com/tikv/pd/pkg/core.TestPutStore() .Users/Shared/work/dir/data/codes/pd/pkg/core/store_test.go:267 (PC: 0xc6456c)
+/oracle/store.commands:13: storesInfo has no member ResumeLeaderTransfer
+sync/atomic.Int64 {
+	_: sync/atomic.noCopy {},
+	_: sync/atomic.align64 {},
+	v: 0,}
+"CASE duplicate_trend"
+> github.com/tikv/pd/pkg/core.TestPutStore() .Users/Shared/work/dir/data/codes/pd/pkg/core/store_test.go:267 (PC: 0xc6456c)
+/oracle/store.commands:16: storesInfo has no member SlowTrendEvicted
+> github.com/tikv/pd/pkg/core.TestPutStore() .Users/Shared/work/dir/data/codes/pd/pkg/core/store_test.go:267 (PC: 0xc6456c)
+/oracle/store.commands:17: storesInfo has no member SlowTrendEvicted
+> github.com/tikv/pd/pkg/core.TestPutStore() .Users/Shared/work/dir/data/codes/pd/pkg/core/store_test.go:267 (PC: 0xc6456c)
+/oracle/store.commands:18: storesInfo has no member SlowTrendRecovered
+sync/atomic.Int64 {
+	_: sync/atomic.noCopy {},
+	_: sync/atomic.align64 {},
+	v: 0,}

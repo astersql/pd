@@ -1,0 +1,258 @@
+Type 'help' for list of commands.
+Breakpoint 1 set at 0xc50df0,0xc50344 for (multiple functions)() .Users/Shared/work/dir/data/codes/pd/pkg/core/region_test.go:1116
+=== RUN   TestUpdateRegionEquivalence
+> [Breakpoint 1] github.com/tikv/pd/pkg/core.TestUpdateRegionEquivalence() .Users/Shared/work/dir/data/codes/pd/pkg/core/region_test.go:1116 (hits goroutine(38):1 total:1) (PC: 0xc50344)
+"CASE initial"
+> github.com/tikv/pd/pkg/core.TestUpdateRegionEquivalence() .Users/Shared/work/dir/data/codes/pd/pkg/core/region_test.go:1116 (PC: 0xc50344)
+Values returned:
+	~r0: 0
+
+> github.com/tikv/pd/pkg/core.TestUpdateRegionEquivalence() .Users/Shared/work/dir/data/codes/pd/pkg/core/region_test.go:1116 (PC: 0xc50344)
+Values returned:
+	~r0: *github.com/tikv/pd/pkg/core.RegionInfo nil
+
+("*github.com/pingcap/kvproto/pkg/metapb.Region")(0x1310d9590380)
+*github.com/pingcap/kvproto/pkg/metapb.Region {
+	Id: 1,
+	StartKey: []uint8 len: 20, cap: 24, [32,32,32,32,32,32,32,32,...+12 more],
+	EndKey: []uint8 len: 20, cap: 24, [32,32,32,32,32,32,32,32,...+12 more],
+	RegionEpoch: *github.com/pingcap/kvproto/pkg/metapb.RegionEpoch {ConfVer: 100, Version: 100},
+	Peers: []*github.com/pingcap/kvproto/pkg/metapb.Peer len: 3, cap: 3, [
+		*{Id: 1, StoreId: 1, Role: PeerRole_Voter (0), IsWitness: false},
+		*{Id: 2, StoreId: 2, Role: PeerRole_Voter (0), IsWitness: true},
+		*{Id: 3, StoreId: 3, Role: PeerRole_Voter (0), IsWitness: false},
+	],
+	EncryptionMeta: *github.com/pingcap/kvproto/pkg/encryptionpb.EncryptionMeta nil,
+	IsInFlashback: false,
+	FlashbackStartTs: 0,}
+"CASE insert"
+> github.com/tikv/pd/pkg/core.TestUpdateRegionEquivalence() .Users/Shared/work/dir/data/codes/pd/pkg/core/region_test.go:1116 (PC: 0xc50344)
+Values returned:
+	~r0: []*github.com/tikv/pd/pkg/core.RegionInfo len: 0, cap: 0, []
+
+> github.com/tikv/pd/pkg/core.TestUpdateRegionEquivalence() .Users/Shared/work/dir/data/codes/pd/pkg/core/region_test.go:1116 (PC: 0xc50344)
+Values returned:
+	~r0: 1
+
+> github.com/tikv/pd/pkg/core.TestUpdateRegionEquivalence() .Users/Shared/work/dir/data/codes/pd/pkg/core/region_test.go:1116 (PC: 0xc50344)
+Values returned:
+	~r0: ("*github.com/tikv/pd/pkg/core.RegionInfo")(0x1310d9246120)
+*github.com/tikv/pd/pkg/core.RegionInfo {
+		meta: *github.com/pingcap/kvproto/pkg/metapb.Region {
+			Id: 1,
+			StartKey: []uint8 len: 20, cap: 24, [32,32,32,32,32,32,32,32,...+12 more],
+			EndKey: []uint8 len: 20, cap: 24, [32,32,32,32,32,32,32,32,...+12 more],
+			RegionEpoch: *github.com/pingcap/kvproto/pkg/metapb.RegionEpoch {ConfVer: 100, Version: 100},
+			Peers: []*github.com/pingcap/kvproto/pkg/metapb.Peer len: 3, cap: 3, [
+				*{Id: 1, StoreId: 1, Role: PeerRole_Voter (0), IsWitness: false},
+				*{Id: 2, StoreId: 2, Role: PeerRole_Voter (0), IsWitness: true},
+				*{Id: 3, StoreId: 3, Role: PeerRole_Voter (0), IsWitness: false},
+			],
+			EncryptionMeta: *github.com/pingcap/kvproto/pkg/encryptionpb.EncryptionMeta nil,
+			IsInFlashback: false,
+			FlashbackStartTs: 0,},
+		learners: []*github.com/pingcap/kvproto/pkg/metapb.Peer len: 0, cap: 1, [],
+		witnesses: []*github.com/pingcap/kvproto/pkg/metapb.Peer len: 1, cap: 1, [
+			*{Id: 2, StoreId: 2, Role: PeerRole_Voter (0), IsWitness: true},
+		],
+		voters: []*github.com/pingcap/kvproto/pkg/metapb.Peer len: 3, cap: 3, [
+			*{Id: 1, StoreId: 1, Role: PeerRole_Voter (0), IsWitness: false},
+			*{Id: 2, StoreId: 2, Role: PeerRole_Voter (0), IsWitness: true},
+			*{Id: 3, StoreId: 3, Role: PeerRole_Voter (0), IsWitness: false},
+		],
+		leader: *github.com/pingcap/kvproto/pkg/metapb.Peer {Id: 1, StoreId: 1, Role: PeerRole_Voter (0), IsWitness: false},
+		downPeers: []*github.com/pingcap/kvproto/pkg/pdpb.PeerStats len: 0, cap: 0, nil,
+		pendingPeers: []*github.com/pingcap/kvproto/pkg/metapb.Peer len: 0, cap: 0, nil,
+		term: 0,
+		cpuUsage: 0,
+		cpuStats: *github.com/pingcap/kvproto/pkg/pdpb.CPUStats nil,
+		writtenBytes: 0,
+		writtenKeys: 0,
+		readBytes: 0,
+		readKeys: 0,
+		approximateSize: 10,
+		approximateKvSize: 0,
+		approximateIAKvSize: 0,
+		approximateColumnarKvSize: 0,
+		approximateKeys: 10,
+		interval: *github.com/pingcap/kvproto/pkg/pdpb.TimeInterval nil,
+		replicationStatus: *github.com/pingcap/kvproto/pkg/replication_modepb.RegionReplicationStatus nil,
+		queryStats: *github.com/pingcap/kvproto/pkg/pdpb.QueryStats nil,
+		flowRoundDivisor: 0,
+		reportBuckets: unsafe.Pointer(0x0),
+		source: Storage (0),
+		ref: sync/atomic.Int32 {
+			_: sync/atomic.noCopy {},
+			v: 2,},
+		bucketMeta: *github.com/pingcap/kvproto/pkg/metapb.BucketMeta nil,}
+
+"CASE update"
+> github.com/tikv/pd/pkg/core.TestUpdateRegionEquivalence() .Users/Shared/work/dir/data/codes/pd/pkg/core/region_test.go:1116 (PC: 0xc50344)
+Values returned:
+	~r0: []*github.com/tikv/pd/pkg/core.RegionInfo len: 0, cap: 0, nil
+
+> github.com/tikv/pd/pkg/core.TestUpdateRegionEquivalence() .Users/Shared/work/dir/data/codes/pd/pkg/core/region_test.go:1116 (PC: 0xc50344)
+Values returned:
+	~r0: ("*github.com/tikv/pd/pkg/core.RegionInfo")(0x1310d9246240)
+*github.com/tikv/pd/pkg/core.RegionInfo {
+		meta: *github.com/pingcap/kvproto/pkg/metapb.Region {
+			Id: 1,
+			StartKey: []uint8 len: 20, cap: 24, [32,32,32,32,32,32,32,32,...+12 more],
+			EndKey: []uint8 len: 20, cap: 24, [32,32,32,32,32,32,32,32,...+12 more],
+			RegionEpoch: *github.com/pingcap/kvproto/pkg/metapb.RegionEpoch {ConfVer: 100, Version: 101},
+			Peers: []*github.com/pingcap/kvproto/pkg/metapb.Peer len: 3, cap: 3, [
+				*{Id: 6, StoreId: 2, Role: PeerRole_Voter (0), IsWitness: false},
+				*{Id: 7, StoreId: 3, Role: PeerRole_Voter (0), IsWitness: false},
+				*{Id: 8, StoreId: 4, Role: PeerRole_Voter (0), IsWitness: false},
+			],
+			EncryptionMeta: *github.com/pingcap/kvproto/pkg/encryptionpb.EncryptionMeta nil,
+			IsInFlashback: false,
+			FlashbackStartTs: 0,},
+		learners: []*github.com/pingcap/kvproto/pkg/metapb.Peer len: 0, cap: 1, [],
+		witnesses: []*github.com/pingcap/kvproto/pkg/metapb.Peer len: 0, cap: 1, [],
+		voters: []*github.com/pingcap/kvproto/pkg/metapb.Peer len: 3, cap: 3, [
+			*{Id: 6, StoreId: 2, Role: PeerRole_Voter (0), IsWitness: false},
+			*{Id: 7, StoreId: 3, Role: PeerRole_Voter (0), IsWitness: false},
+			*{Id: 8, StoreId: 4, Role: PeerRole_Voter (0), IsWitness: false},
+		],
+		leader: *github.com/pingcap/kvproto/pkg/metapb.Peer {Id: 6, StoreId: 2, Role: PeerRole_Voter (0), IsWitness: false},
+		downPeers: []*github.com/pingcap/kvproto/pkg/pdpb.PeerStats len: 0, cap: 0, nil,
+		pendingPeers: []*github.com/pingcap/kvproto/pkg/metapb.Peer len: 0, cap: 0, nil,
+		term: 0,
+		cpuUsage: 0,
+		cpuStats: *github.com/pingcap/kvproto/pkg/pdpb.CPUStats nil,
+		writtenBytes: 0,
+		writtenKeys: 0,
+		readBytes: 0,
+		readKeys: 0,
+		approximateSize: 10,
+		approximateKvSize: 0,
+		approximateIAKvSize: 0,
+		approximateColumnarKvSize: 0,
+		approximateKeys: 10,
+		interval: *github.com/pingcap/kvproto/pkg/pdpb.TimeInterval nil,
+		replicationStatus: *github.com/pingcap/kvproto/pkg/replication_modepb.RegionReplicationStatus nil,
+		queryStats: *github.com/pingcap/kvproto/pkg/pdpb.QueryStats nil,
+		flowRoundDivisor: 0,
+		reportBuckets: unsafe.Pointer(0x0),
+		source: Storage (0),
+		ref: sync/atomic.Int32 {
+			_: sync/atomic.noCopy {},
+			v: 2,},
+		bucketMeta: *github.com/pingcap/kvproto/pkg/metapb.BucketMeta nil,}
+
+> github.com/tikv/pd/pkg/core.TestUpdateRegionEquivalence() .Users/Shared/work/dir/data/codes/pd/pkg/core/region_test.go:1116 (PC: 0xc50344)
+Values returned:
+	~r0: 0
+
+> github.com/tikv/pd/pkg/core.TestUpdateRegionEquivalence() .Users/Shared/work/dir/data/codes/pd/pkg/core/region_test.go:1116 (PC: 0xc50344)
+Values returned:
+	~r0: 1
+
+> github.com/tikv/pd/pkg/core.TestUpdateRegionEquivalence() .Users/Shared/work/dir/data/codes/pd/pkg/core/region_test.go:1116 (PC: 0xc50344)
+Values returned:
+	~r0: 1
+
+"CASE stale"
+> github.com/tikv/pd/pkg/core.TestUpdateRegionEquivalence() .Users/Shared/work/dir/data/codes/pd/pkg/core/region_test.go:1116 (PC: 0xc50344)
+Values returned:
+	~r0: []*github.com/tikv/pd/pkg/core.RegionInfo len: 1, cap: 1, [
+		*{
+			meta: *github.com/pingcap/kvproto/pkg/metapb.Region {
+				Id: 1,
+				StartKey: []uint8 len: 20, cap: 24, [32,32,32,32,32,32,32,32,...+12 more],
+				EndKey: []uint8 len: 20, cap: 24, [32,32,32,32,32,32,32,32,...+12 more],
+				RegionEpoch: *github.com/pingcap/kvproto/pkg/metapb.RegionEpoch {ConfVer: 100, Version: 100},
+				Peers: []*github.com/pingcap/kvproto/pkg/metapb.Peer len: 3, cap: 3, [
+					*(*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1310d9360000),
+					*(*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1310d9360018),
+					*(*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1310d9360030),
+				],
+				EncryptionMeta: *github.com/pingcap/kvproto/pkg/encryptionpb.EncryptionMeta nil,
+				IsInFlashback: false,
+				FlashbackStartTs: 0,},
+			learners: []*github.com/pingcap/kvproto/pkg/metapb.Peer len: 0, cap: 1, [],
+			witnesses: []*github.com/pingcap/kvproto/pkg/metapb.Peer len: 1, cap: 1, [
+				*{Id: 2, StoreId: 2, Role: PeerRole_Voter (0), IsWitness: true},
+			],
+			voters: []*github.com/pingcap/kvproto/pkg/metapb.Peer len: 3, cap: 3, [
+				*{Id: 1, StoreId: 1, Role: PeerRole_Voter (0), IsWitness: false},
+				*{Id: 2, StoreId: 2, Role: PeerRole_Voter (0), IsWitness: true},
+				*{Id: 3, StoreId: 3, Role: PeerRole_Voter (0), IsWitness: false},
+			],
+			leader: *github.com/pingcap/kvproto/pkg/metapb.Peer {Id: 1, StoreId: 1, Role: PeerRole_Voter (0), IsWitness: false},
+			downPeers: []*github.com/pingcap/kvproto/pkg/pdpb.PeerStats len: 0, cap: 0, nil,
+			pendingPeers: []*github.com/pingcap/kvproto/pkg/metapb.Peer len: 0, cap: 0, nil,
+			term: 0,
+			cpuUsage: 0,
+			cpuStats: *github.com/pingcap/kvproto/pkg/pdpb.CPUStats nil,
+			writtenBytes: 0,
+			writtenKeys: 0,
+			readBytes: 0,
+			readKeys: 0,
+			approximateSize: 10,
+			approximateKvSize: 0,
+			approximateIAKvSize: 0,
+			approximateColumnarKvSize: 0,
+			approximateKeys: 10,
+			interval: *github.com/pingcap/kvproto/pkg/pdpb.TimeInterval nil,
+			replicationStatus: *github.com/pingcap/kvproto/pkg/replication_modepb.RegionReplicationStatus nil,
+			queryStats: *github.com/pingcap/kvproto/pkg/pdpb.QueryStats nil,
+			flowRoundDivisor: 0,
+			reportBuckets: unsafe.Pointer(0x0),
+			source: Storage (0),
+			ref: sync/atomic.Int32 {
+				_: sync/atomic.noCopy {},
+				v: 0,},
+			bucketMeta: *github.com/pingcap/kvproto/pkg/metapb.BucketMeta nil,},
+	]
+
+> github.com/tikv/pd/pkg/core.TestUpdateRegionEquivalence() .Users/Shared/work/dir/data/codes/pd/pkg/core/region_test.go:1116 (PC: 0xc50344)
+Values returned:
+	~r0: ("*github.com/tikv/pd/pkg/core.RegionInfo")(0x1310d9246240)
+*github.com/tikv/pd/pkg/core.RegionInfo {
+		meta: *github.com/pingcap/kvproto/pkg/metapb.Region {
+			Id: 1,
+			StartKey: []uint8 len: 20, cap: 24, [32,32,32,32,32,32,32,32,...+12 more],
+			EndKey: []uint8 len: 20, cap: 24, [32,32,32,32,32,32,32,32,...+12 more],
+			RegionEpoch: *github.com/pingcap/kvproto/pkg/metapb.RegionEpoch {ConfVer: 100, Version: 101},
+			Peers: []*github.com/pingcap/kvproto/pkg/metapb.Peer len: 3, cap: 3, [
+				*{Id: 6, StoreId: 2, Role: PeerRole_Voter (0), IsWitness: false},
+				*{Id: 7, StoreId: 3, Role: PeerRole_Voter (0), IsWitness: false},
+				*{Id: 8, StoreId: 4, Role: PeerRole_Voter (0), IsWitness: false},
+			],
+			EncryptionMeta: *github.com/pingcap/kvproto/pkg/encryptionpb.EncryptionMeta nil,
+			IsInFlashback: false,
+			FlashbackStartTs: 0,},
+		learners: []*github.com/pingcap/kvproto/pkg/metapb.Peer len: 0, cap: 1, [],
+		witnesses: []*github.com/pingcap/kvproto/pkg/metapb.Peer len: 0, cap: 1, [],
+		voters: []*github.com/pingcap/kvproto/pkg/metapb.Peer len: 3, cap: 3, [
+			*{Id: 6, StoreId: 2, Role: PeerRole_Voter (0), IsWitness: false},
+			*{Id: 7, StoreId: 3, Role: PeerRole_Voter (0), IsWitness: false},
+			*{Id: 8, StoreId: 4, Role: PeerRole_Voter (0), IsWitness: false},
+		],
+		leader: *github.com/pingcap/kvproto/pkg/metapb.Peer {Id: 6, StoreId: 2, Role: PeerRole_Voter (0), IsWitness: false},
+		downPeers: []*github.com/pingcap/kvproto/pkg/pdpb.PeerStats len: 0, cap: 0, nil,
+		pendingPeers: []*github.com/pingcap/kvproto/pkg/metapb.Peer len: 0, cap: 0, nil,
+		term: 0,
+		cpuUsage: 0,
+		cpuStats: *github.com/pingcap/kvproto/pkg/pdpb.CPUStats nil,
+		writtenBytes: 0,
+		writtenKeys: 0,
+		readBytes: 0,
+		readKeys: 0,
+		approximateSize: 10,
+		approximateKvSize: 0,
+		approximateIAKvSize: 0,
+		approximateColumnarKvSize: 0,
+		approximateKeys: 10,
+		interval: *github.com/pingcap/kvproto/pkg/pdpb.TimeInterval nil,
+		replicationStatus: *github.com/pingcap/kvproto/pkg/replication_modepb.RegionReplicationStatus nil,
+		queryStats: *github.com/pingcap/kvproto/pkg/pdpb.QueryStats nil,
+		flowRoundDivisor: 0,
+		reportBuckets: unsafe.Pointer(0x0),
+		source: Storage (0),
+		ref: sync/atomic.Int32 {
+			_: sync/atomic.noCopy {},
+			v: 2,},
+		bucketMeta: *github.com/pingcap/kvproto/pkg/metapb.BucketMeta nil,}

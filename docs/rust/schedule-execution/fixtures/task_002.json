@@ -1,0 +1,130 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "mode": "classic/default",
+  "normalization": {
+    "store_lists": "sort by store ID (Go map order unspecified)",
+    "nil_slice": "normalize nil and empty region eviction slices to []",
+    "addresses": "not domain values; ignored debugger allocation addresses"
+  },
+  "oracle": {
+    "region": "logs/task_002/go-region-second.out",
+    "stores": "logs/task_002/go-cluster-direct.out",
+    "inputs": "existing generateTestRegions(1000,5) items[0:2]; second ID/range reassigned to first, Version=101; store fixture uses existing TestEvictLeaderWithUnhealthyPeer setup",
+    "core_binary_sha256": "9fef7638624682270757708b8d3b3e1188c5201ed50709ff1655fca5ef120cad",
+    "scheduler_binary_sha256": "be084116f4781d659008fca257645da66f10f59fc424db02a2655c2f293b9f3f",
+    "delve_binary_sha256": "dcd0463a4350f0660412f5c766d31077370eec10ac8055cf0d786377e0d6340e",
+    "go-region-second.out_sha256": "465f6483d0226e794fe18e3971f14ac47b1df7b26157394971648da3e6902525",
+    "go-cluster-direct.out_sha256": "144d235caf14a00d947d91945b16b2135b6afd4cfcae40b2ad4ae3eef3a3d487",
+    "safe_tests": "logs/task_002/go-safe-tests.out",
+    "safe_tests_sha256": "0d8ae3fcb48f4fd6ff21d7fe27f5aedb086ff27b9e5594a3d8fcd884ca18139a"
+  },
+  "regions": [
+    {
+      "name": "empty",
+      "version": null,
+      "leader": null,
+      "stores": [],
+      "count": 0,
+      "rejected": []
+    },
+    {
+      "name": "insert",
+      "version": 100,
+      "leader": 1,
+      "stores": [
+        1,
+        2,
+        3
+      ],
+      "count": 1,
+      "rejected": []
+    },
+    {
+      "name": "replace",
+      "version": 101,
+      "leader": 2,
+      "stores": [
+        2,
+        3,
+        4
+      ],
+      "count": 1,
+      "rejected": []
+    },
+    {
+      "name": "stale_replay",
+      "version": 101,
+      "leader": 2,
+      "stores": [
+        2,
+        3,
+        4
+      ],
+      "count": 1,
+      "rejected": [
+        1
+      ]
+    }
+  ],
+  "membership": {
+    "stores": [
+      1,
+      2,
+      3
+    ],
+    "followers": [
+      2,
+      3
+    ],
+    "leader": 1
+  },
+  "controls": {
+    "missing": 999,
+    "missing_error": "StoreNotFound",
+    "pause_in": [
+      1,
+      0
+    ],
+    "resume_in": [
+      0,
+      0
+    ],
+    "duplicate_trend_error": "SlowTrendEvicted",
+    "recovered_trend": 0
+  },
+  "source_sha256": {
+    "pkg/core/region_test.go": "f555c2ca97608c0925dc4b945ca95f8807f7c76b29ed9ed2896988933338cbbd",
+    "pkg/schedule/schedulers/evict_leader_test.go": "eb9288a2cb678c8e7911b876788b537fdce89e13ff0aa1d7543c760e74454b21",
+    "pkg/schedule/core/cluster_informer.go": "657dd1208bb79c0ffd6820d8bdc558b6ca17f15cba4917e86d325978344bfe78"
+  },
+  "key_lookup": {
+    "regions": [
+      [
+        1,
+        "a",
+        "b"
+      ],
+      [
+        2,
+        "b",
+        "c"
+      ],
+      [
+        3,
+        "d",
+        "e"
+      ]
+    ],
+    "keys": [
+      "a",
+      "b",
+      "c"
+    ],
+    "ids": [
+      1,
+      2,
+      0
+    ],
+    "runtime_assertions": "TestQueryRegions"
+  }
+}

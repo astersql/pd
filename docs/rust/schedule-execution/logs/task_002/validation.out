@@ -1,0 +1,8 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=python3 /tmp/pd-schedule-task002-validate.py
+fmt-final 0
+green 0
+crate 0
+metadata 0
+fmt-check 0
+workspace-check 0
+workspace-test 0

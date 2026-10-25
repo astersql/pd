@@ -1,0 +1,10 @@
+{
+  "go-region-attempt.out": "native debugger rejected Rosetta executable; exit 1",
+  "go-region.out": "comment-line breakpoint rejected; original test passed but no observations; excluded",
+  "go-store.out": "linker stripped unused methods in core-only binary; excluded",
+  "go-cluster.out": "Delve embedded receiver return decoding incorrect; excluded; rerun with explicit BasicCluster.StoresInfo",
+  "go-region-second.out": "successful region observations; exit 0",
+  "go-cluster-direct.out": "successful store observations with explicit canonical receiver; exit 0",
+  "red-compile.out": "expected initial unresolved trait import; exit 101, zero behavioral tests",
+  "red-behavior.out": "wrong present-ID lookup; exit 101, 2 failed + 2 passed, 0 ignored"
+}

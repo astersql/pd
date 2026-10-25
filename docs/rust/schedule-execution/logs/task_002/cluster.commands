@@ -1,0 +1,24 @@
+break evict_leader_test.go:91
+continue
+config max-variable-recurse 2
+config max-array-values 16
+print "CASE missing"
+call tc.BasicCluster.StoresInfo.GetStore(999)
+call tc.BasicCluster.StoresInfo.PauseLeaderTransfer(999, 0)
+print "CASE pause_in"
+call tc.BasicCluster.StoresInfo.PauseLeaderTransfer(2, 0)
+print tc.StoresInfo.stores[2].pauseLeaderTransferIn
+print tc.StoresInfo.stores[2].pauseLeaderTransferOut
+print "CASE resume_in"
+call tc.BasicCluster.StoresInfo.ResumeLeaderTransfer(2, 0)
+print tc.StoresInfo.stores[2].pauseLeaderTransferIn
+print "CASE duplicate_trend"
+call tc.BasicCluster.StoresInfo.SlowTrendEvicted(2)
+call tc.BasicCluster.StoresInfo.SlowTrendEvicted(2)
+call tc.BasicCluster.StoresInfo.SlowTrendRecovered(2)
+print tc.StoresInfo.stores[2].slowTrendEvicted
+print "CASE membership"
+call -unsafe tc.BasicCluster.StoresInfo.GetRegionStores(region)
+call -unsafe tc.BasicCluster.StoresInfo.GetFollowerStores(region)
+call -unsafe tc.BasicCluster.StoresInfo.GetLeaderStore(region)
+exit
