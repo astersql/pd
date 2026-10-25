@@ -1,0 +1,14 @@
+
+running 4 tests
+test task_010_test::task_010_snapshot_busy_missing_leader_and_snapshot_capture ... ok
+test task_010_test::task_010_fit_retains_last_success_and_selection_order ... ok
+task_010_behavior_cases: 43 frozen Go cases passed
+test task_010_test::task_010_behavior_cases ... ok
+task_010_affinity_real_manager: 2 frozen Go cases passed
+test task_010_test::task_010_affinity_real_manager ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 18 filtered out; finished in 0.00s
+
+   Compiling astersql-pd-schedule-filter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.75s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_filter-bc5e9e641a8bb578)

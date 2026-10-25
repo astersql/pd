@@ -1,0 +1,17 @@
+break region_filters_test.go:80
+continue
+call -unsafe testCluster.AddRegionStore(1,1,nil)
+call -unsafe testCluster.AddRegionStore(2,1,nil)
+call -unsafe testCluster.AddRegionStore(3,1,nil)
+call -unsafe testCluster.SetEnablePlacementRules(true)
+break region_filters.go:123
+continue
+clearall
+config max-variable-recurse 1
+print f.fit
+call -unsafe f.Select(region)
+print f.fit
+set region.meta.Peers = region.meta.Peers[:2]
+call -unsafe f.Select(region)
+print f.fit
+exit

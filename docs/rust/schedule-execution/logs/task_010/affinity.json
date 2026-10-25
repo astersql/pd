@@ -1,0 +1,29 @@
+{
+  "argv": [
+    "docker",
+    "run",
+    "--rm",
+    "--cap-add",
+    "SYS_PTRACE",
+    "--security-opt",
+    "seccomp=unconfined",
+    "-v",
+    "/tmp/pd-sched005:/oracle:ro",
+    "alpine:3.22",
+    "timeout",
+    "180",
+    "/oracle/dlv",
+    "--check-go-version=false",
+    "exec",
+    "/oracle/filter.test",
+    "--allow-non-terminal-interactive",
+    "--init=/oracle/task010-affinity.commands",
+    "--",
+    "-test.run",
+    "^TestAffinitySelect$",
+    "-test.timeout=175s"
+  ],
+  "exit_code": 0,
+  "stdout": "Type 'help' for list of commands.\nBreakpoint 1 set at 0x160a638 for github.com/tikv/pd/pkg/schedule/filter.TestAffinitySelect() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/region_filters_test.go:166\n[2026/10/25 10:27:12.578 +00:00] [INFO] [labeler.go:65] [\"new region labeler created\"] [label-rules-count=0]\n[2026/10/25 10:27:12.578 +00:00] [INFO] [txn.go:756] [\"rebuilt group-label mapping\"] [total-groups=0] [total-ranges=0]\n[2026/10/25 10:27:12.578 +00:00] [INFO] [policy.go:158] [\"affinity manager availability check loop started\"] [interval=10s]\n[2026/10/25 10:27:12.578 +00:00] [INFO] [manager.go:137] [\"affinity manager initialized\"] [group-count=0]\n[2026/10/25 10:27:12.578 +00:00] [INFO] [txn.go:200] [\"affinity group added\"] [group=\"{\\\"id\\\":\\\"g1\\\",\\\"create_timestamp\\\":1792924032}\"]\n> [Breakpoint 1] github.com/tikv/pd/pkg/schedule/filter.TestAffinitySelect() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/region_filters_test.go:166 (hits goroutine(226):1 total:1) (PC: 0x160a638)\nBreakpoint 1 cleared at 0x160a638 for github.com/tikv/pd/pkg/schedule/filter.TestAffinitySelect() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/region_filters_test.go:166\n\"CASE affinity/39\"\n> github.com/tikv/pd/pkg/schedule/filter.TestAffinitySelect() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/region_filters_test.go:166 (PC: 0x160a638)\nValues returned:\n\t~r0: (\"*github.com/tikv/pd/pkg/schedule/plan.Status\")(0x7df0bb7737a0)\n*github.com/tikv/pd/pkg/schedule/plan.Status {StatusCode: 1009, DetailedReason: \"\"}\n\n\"CASE affinity/40\"\n> github.com/tikv/pd/pkg/schedule/filter.TestAffinitySelect() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/region_filters_test.go:166 (PC: 0x160a638)\nValues returned:\n\t~r0: (\"*github.com/tikv/pd/pkg/schedule/plan.Status\")(0x7df0bb773560)\n*github.com/tikv/pd/pkg/schedule/plan.Status {StatusCode: StatusOK (0), DetailedReason: \"\"}\n\n",
+  "stderr": ""
+}

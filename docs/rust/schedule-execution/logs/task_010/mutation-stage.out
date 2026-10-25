@@ -1,0 +1,12 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=python3 -u docs/rust/schedule-execution/logs/task_010/mutation.py
+pending_healthy 101 1
+down_healthy 101 1
+wrong_replica_count 101 1
+skip_rule_rejection 101 2
+erase_last_fit 101 1
+empty_threshold 101 1
+witness_wrong_store 101 1
+ignore_busy 101 2
+affinity_gate 101 1
+select_reversed 101 1
+command_exit_code=0

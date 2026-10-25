@@ -1,0 +1,192 @@
+[
+  {
+    "name": "pending_healthy",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_010",
+      "--",
+      "--nocapture"
+    ],
+    "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "exit_code": 101,
+    "failed": 1,
+    "stdout": "\nrunning 4 tests\ntest task_010_test::task_010_snapshot_busy_missing_leader_and_snapshot_capture ... ok\ntest task_010_test::task_010_fit_retains_last_success_and_selection_order ... ok\ntest task_010_test::task_010_behavior_cases ... FAILED\ntask_010_affinity_real_manager: 2 frozen Go cases passed\ntest task_010_test::task_010_affinity_real_manager ... ok\n\nfailures:\n\nfailures:\n    task_010_test::task_010_behavior_cases\n\ntest result: FAILED. 3 passed; 1 failed; 0 ignored; 0 measured; 18 filtered out; finished in 0.00s\n\n",
+    "stderr": "   Compiling astersql-pd-schedule-filter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.81s\n     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_filter-bc5e9e641a8bb578)\n\nthread 'task_010_test::task_010_behavior_cases' (161695819) panicked at pkg/schedule/filter/task_010_test.rs:99:17:\nassertion `left == right` failed: \"health/2\"\n  left: true\n right: false\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nerror: test failed, to rerun pass `-p astersql-pd-schedule-filter --lib`\n"
+  },
+  {
+    "name": "down_healthy",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_010",
+      "--",
+      "--nocapture"
+    ],
+    "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "exit_code": 101,
+    "failed": 1,
+    "stdout": "\nrunning 4 tests\ntest task_010_test::task_010_snapshot_busy_missing_leader_and_snapshot_capture ... ok\ntest task_010_test::task_010_fit_retains_last_success_and_selection_order ... ok\ntest task_010_test::task_010_behavior_cases ... FAILED\ntask_010_affinity_real_manager: 2 frozen Go cases passed\ntest task_010_test::task_010_affinity_real_manager ... ok\n\nfailures:\n\nfailures:\n    task_010_test::task_010_behavior_cases\n\ntest result: FAILED. 3 passed; 1 failed; 0 ignored; 0 measured; 18 filtered out; finished in 0.00s\n\n",
+    "stderr": "   Compiling astersql-pd-schedule-filter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter)\nwarning: unused variable: `region`\n  --> pkg/schedule/filter/region_health.rs:21:40\n   |\n21 | pub fn is_region_healthy_allow_pending(region: &RegionInfo) -> bool {\n   |                                        ^^^^^^ help: if this is intentional, prefix it with an underscore: `_region`\n   |\n   = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default\n\nwarning: `astersql-pd-schedule-filter` (lib test) generated 1 warning (run `cargo fix --lib -p astersql-pd-schedule-filter --tests` to apply 1 suggestion)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.71s\n     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_filter-bc5e9e641a8bb578)\n\nthread 'task_010_test::task_010_behavior_cases' (161696275) panicked at pkg/schedule/filter/task_010_test.rs:99:17:\nassertion `left == right` failed: \"health/6\"\n  left: true\n right: false\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nerror: test failed, to rerun pass `-p astersql-pd-schedule-filter --lib`\n"
+  },
+  {
+    "name": "wrong_replica_count",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_010",
+      "--",
+      "--nocapture"
+    ],
+    "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "exit_code": 101,
+    "failed": 1,
+    "stdout": "\nrunning 4 tests\ntest task_010_test::task_010_snapshot_busy_missing_leader_and_snapshot_capture ... ok\ntest task_010_test::task_010_fit_retains_last_success_and_selection_order ... ok\ntask_010_affinity_real_manager: 2 frozen Go cases passed\ntest task_010_test::task_010_affinity_real_manager ... ok\ntest task_010_test::task_010_behavior_cases ... FAILED\n\nfailures:\n\nfailures:\n    task_010_test::task_010_behavior_cases\n\ntest result: FAILED. 3 passed; 1 failed; 0 ignored; 0 measured; 18 filtered out; finished in 0.00s\n\n",
+    "stderr": "   Compiling astersql-pd-schedule-filter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.71s\n     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_filter-bc5e9e641a8bb578)\n\nthread 'task_010_test::task_010_behavior_cases' (161696823) panicked at pkg/schedule/filter/task_010_test.rs:122:17:\nassertion `left == right` failed\n  left: true\n right: false\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nerror: test failed, to rerun pass `-p astersql-pd-schedule-filter --lib`\n"
+  },
+  {
+    "name": "skip_rule_rejection",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_010",
+      "--",
+      "--nocapture"
+    ],
+    "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "exit_code": 101,
+    "failed": 2,
+    "stdout": "\nrunning 4 tests\ntest task_010_test::task_010_snapshot_busy_missing_leader_and_snapshot_capture ... ok\ntest task_010_test::task_010_fit_retains_last_success_and_selection_order ... FAILED\ntest task_010_test::task_010_behavior_cases ... FAILED\ntask_010_affinity_real_manager: 2 frozen Go cases passed\ntest task_010_test::task_010_affinity_real_manager ... ok\n\nfailures:\n\nfailures:\n    task_010_test::task_010_behavior_cases\n    task_010_test::task_010_fit_retains_last_success_and_selection_order\n\ntest result: FAILED. 2 passed; 2 failed; 0 ignored; 0 measured; 18 filtered out; finished in 0.00s\n\n",
+    "stderr": "   Compiling astersql-pd-schedule-filter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.67s\n     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_filter-bc5e9e641a8bb578)\n\nthread 'task_010_test::task_010_fit_retains_last_success_and_selection_order' (161697305) panicked at pkg/schedule/filter/task_010_test.rs:221:5:\nassertion failed: !filter.select(&region(2, false, false, false)).is_ok()\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\nthread 'task_010_test::task_010_behavior_cases' (161697304) panicked at pkg/schedule/filter/task_010_test.rs:74:5:\nassertion `left == right` failed\n  left: 0\n right: 1004\nerror: test failed, to rerun pass `-p astersql-pd-schedule-filter --lib`\n"
+  },
+  {
+    "name": "erase_last_fit",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_010",
+      "--",
+      "--nocapture"
+    ],
+    "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "exit_code": 101,
+    "failed": 1,
+    "stdout": "\nrunning 4 tests\ntest task_010_test::task_010_snapshot_busy_missing_leader_and_snapshot_capture ... ok\ntest task_010_test::task_010_fit_retains_last_success_and_selection_order ... FAILED\ntask_010_behavior_cases: 43 frozen Go cases passed\ntest task_010_test::task_010_behavior_cases ... ok\ntask_010_affinity_real_manager: 2 frozen Go cases passed\ntest task_010_test::task_010_affinity_real_manager ... ok\n\nfailures:\n\nfailures:\n    task_010_test::task_010_fit_retains_last_success_and_selection_order\n\ntest result: FAILED. 3 passed; 1 failed; 0 ignored; 0 measured; 18 filtered out; finished in 0.00s\n\n",
+    "stderr": "   Compiling astersql-pd-schedule-filter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.76s\n     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_filter-bc5e9e641a8bb578)\n\nthread 'task_010_test::task_010_fit_retains_last_success_and_selection_order' (161697829) panicked at pkg/schedule/filter/task_010_test.rs:222:49:\ncalled `Option::unwrap()` on a `None` value\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nerror: test failed, to rerun pass `-p astersql-pd-schedule-filter --lib`\n"
+  },
+  {
+    "name": "empty_threshold",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_010",
+      "--",
+      "--nocapture"
+    ],
+    "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "exit_code": 101,
+    "failed": 1,
+    "stdout": "\nrunning 4 tests\ntest task_010_test::task_010_snapshot_busy_missing_leader_and_snapshot_capture ... ok\ntest task_010_test::task_010_fit_retains_last_success_and_selection_order ... ok\ntask_010_affinity_real_manager: 2 frozen Go cases passed\ntest task_010_test::task_010_affinity_real_manager ... ok\ntest task_010_test::task_010_behavior_cases ... FAILED\n\nfailures:\n\nfailures:\n    task_010_test::task_010_behavior_cases\n\ntest result: FAILED. 3 passed; 1 failed; 0 ignored; 0 measured; 18 filtered out; finished in 0.00s\n\n",
+    "stderr": "   Compiling astersql-pd-schedule-filter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.74s\n     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_filter-bc5e9e641a8bb578)\n\nthread 'task_010_test::task_010_behavior_cases' (161698304) panicked at pkg/schedule/filter/task_010_test.rs:74:5:\nassertion `left == right` failed\n  left: 0\n right: 1002\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nerror: test failed, to rerun pass `-p astersql-pd-schedule-filter --lib`\n"
+  },
+  {
+    "name": "witness_wrong_store",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_010",
+      "--",
+      "--nocapture"
+    ],
+    "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "exit_code": 101,
+    "failed": 1,
+    "stdout": "\nrunning 4 tests\ntest task_010_test::task_010_snapshot_busy_missing_leader_and_snapshot_capture ... ok\ntest task_010_test::task_010_fit_retains_last_success_and_selection_order ... ok\ntask_010_affinity_real_manager: 2 frozen Go cases passed\ntest task_010_test::task_010_affinity_real_manager ... ok\ntest task_010_test::task_010_behavior_cases ... FAILED\n\nfailures:\n\nfailures:\n    task_010_test::task_010_behavior_cases\n\ntest result: FAILED. 3 passed; 1 failed; 0 ignored; 0 measured; 18 filtered out; finished in 0.00s\n\n",
+    "stderr": "   Compiling astersql-pd-schedule-filter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.71s\n     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_filter-bc5e9e641a8bb578)\n\nthread 'task_010_test::task_010_behavior_cases' (161698857) panicked at pkg/schedule/filter/task_010_test.rs:74:5:\nassertion `left == right` failed\n  left: 1004\n right: 0\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nerror: test failed, to rerun pass `-p astersql-pd-schedule-filter --lib`\n"
+  },
+  {
+    "name": "ignore_busy",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_010",
+      "--",
+      "--nocapture"
+    ],
+    "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "exit_code": 101,
+    "failed": 2,
+    "stdout": "\nrunning 4 tests\ntest task_010_test::task_010_fit_retains_last_success_and_selection_order ... ok\ntest task_010_test::task_010_snapshot_busy_missing_leader_and_snapshot_capture ... FAILED\ntest task_010_test::task_010_behavior_cases ... FAILED\ntask_010_affinity_real_manager: 2 frozen Go cases passed\ntest task_010_test::task_010_affinity_real_manager ... ok\n\nfailures:\n\nfailures:\n    task_010_test::task_010_behavior_cases\n    task_010_test::task_010_snapshot_busy_missing_leader_and_snapshot_capture\n\ntest result: FAILED. 2 passed; 2 failed; 0 ignored; 0 measured; 18 filtered out; finished in 0.00s\n\n",
+    "stderr": "   Compiling astersql-pd-schedule-filter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.78s\n     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_filter-bc5e9e641a8bb578)\n\nthread 'task_010_test::task_010_snapshot_busy_missing_leader_and_snapshot_capture' (161699382) panicked at pkg/schedule/filter/task_010_test.rs:288:5:\nassertion failed: !SnapshotSenderFilter::new(&[Arc::new(busy)],\n                    PriorityLevel::MEDIUM).await.select(&r).is_ok()\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\nthread 'task_010_test::task_010_behavior_cases' (161699380) panicked at pkg/schedule/filter/task_010_test.rs:74:5:\nassertion `left == right` failed\n  left: 0\n right: 1008\nerror: test failed, to rerun pass `-p astersql-pd-schedule-filter --lib`\n"
+  },
+  {
+    "name": "affinity_gate",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_010",
+      "--",
+      "--nocapture"
+    ],
+    "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "exit_code": 101,
+    "failed": 1,
+    "stdout": "\nrunning 4 tests\ntest task_010_test::task_010_snapshot_busy_missing_leader_and_snapshot_capture ... ok\ntest task_010_test::task_010_fit_retains_last_success_and_selection_order ... ok\ntask_010_behavior_cases: 43 frozen Go cases passed\ntest task_010_test::task_010_behavior_cases ... ok\ntest task_010_test::task_010_affinity_real_manager ... FAILED\n\nfailures:\n\nfailures:\n    task_010_test::task_010_affinity_real_manager\n\ntest result: FAILED. 3 passed; 1 failed; 0 ignored; 0 measured; 18 filtered out; finished in 0.00s\n\n",
+    "stderr": "   Compiling astersql-pd-schedule-filter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter)\nwarning: unused variable: `group`\n   --> pkg/schedule/filter/region_health.rs:175:30\n    |\n175 |                 .is_none_or(|group| true)\n    |                              ^^^^^ help: if this is intentional, prefix it with an underscore: `_group`\n    |\n    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default\n\nwarning: `astersql-pd-schedule-filter` (lib test) generated 1 warning (run `cargo fix --lib -p astersql-pd-schedule-filter --tests` to apply 1 suggestion)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.73s\n     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_filter-bc5e9e641a8bb578)\n\nthread 'task_010_test::task_010_affinity_real_manager' (161699835) panicked at pkg/schedule/filter/task_010_test.rs:74:5:\nassertion `left == right` failed\n  left: 0\n right: 1009\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nerror: test failed, to rerun pass `-p astersql-pd-schedule-filter --lib`\n"
+  },
+  {
+    "name": "select_reversed",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_010",
+      "--",
+      "--nocapture"
+    ],
+    "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "exit_code": 101,
+    "failed": 1,
+    "stdout": "\nrunning 4 tests\ntest task_010_test::task_010_snapshot_busy_missing_leader_and_snapshot_capture ... ok\ntask_010_behavior_cases: 43 frozen Go cases passed\ntest task_010_test::task_010_fit_retains_last_success_and_selection_order ... FAILED\ntest task_010_test::task_010_behavior_cases ... ok\ntask_010_affinity_real_manager: 2 frozen Go cases passed\ntest task_010_test::task_010_affinity_real_manager ... ok\n\nfailures:\n\nfailures:\n    task_010_test::task_010_fit_retains_last_success_and_selection_order\n\ntest result: FAILED. 3 passed; 1 failed; 0 ignored; 0 measured; 18 filtered out; finished in 0.00s\n\n",
+    "stderr": "   Compiling astersql-pd-schedule-filter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.79s\n     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_filter-bc5e9e641a8bb578)\n\nthread 'task_010_test::task_010_fit_retains_last_success_and_selection_order' (161700431) panicked at pkg/schedule/filter/task_010_test.rs:229:5:\nassertion failed: Arc::ptr_eq(&selected[0], &good)\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nerror: test failed, to rerun pass `-p astersql-pd-schedule-filter --lib`\n"
+  }
+]

@@ -1,0 +1,29 @@
+{
+  "argv": [
+    "docker",
+    "run",
+    "--rm",
+    "--cap-add",
+    "SYS_PTRACE",
+    "--security-opt",
+    "seccomp=unconfined",
+    "-v",
+    "/tmp/pd-sched005:/oracle:ro",
+    "alpine:3.22",
+    "timeout",
+    "180",
+    "/oracle/dlv",
+    "--check-go-version=false",
+    "exec",
+    "/oracle/filter.test",
+    "--allow-non-terminal-interactive",
+    "--init=/oracle/task010-empty_small.commands",
+    "--",
+    "-test.run",
+    "^TestRegionEmptyFilter$",
+    "-test.timeout=175s"
+  ],
+  "exit_code": 0,
+  "stdout": "Type 'help' for list of commands.\nBreakpoint 1 set at 0x1609698 for github.com/tikv/pd/pkg/schedule/filter.TestRegionEmptyFilter() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/region_filters_test.go:102\n[2026/10/25 10:27:08.090 +00:00] [INFO] [labeler.go:65] [\"new region labeler created\"] [label-rules-count=0]\n[2026/10/25 10:27:08.090 +00:00] [INFO] [txn.go:756] [\"rebuilt group-label mapping\"] [total-groups=0] [total-ranges=0]\n[2026/10/25 10:27:08.090 +00:00] [INFO] [policy.go:158] [\"affinity manager availability check loop started\"] [interval=10s]\n[2026/10/25 10:27:08.090 +00:00] [INFO] [manager.go:137] [\"affinity manager initialized\"] [group-count=0]\n> [Breakpoint 1] github.com/tikv/pd/pkg/schedule/filter.TestRegionEmptyFilter() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/region_filters_test.go:102 (hits goroutine(196):1 total:1) (PC: 0x1609698)\nBreakpoint 1 cleared at 0x1609698 for github.com/tikv/pd/pkg/schedule/filter.TestRegionEmptyFilter() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/region_filters_test.go:102\n\"CASE empty_small/24\"\n> github.com/tikv/pd/pkg/schedule/filter.TestRegionEmptyFilter() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/region_filters_test.go:102 (PC: 0x1609698)\nValues returned:\n\t~r0: (\"*github.com/tikv/pd/pkg/schedule/plan.Status\")(0x35d6a59677e8)\n*github.com/tikv/pd/pkg/schedule/plan.Status {StatusCode: StatusOK (0), DetailedReason: \"\"}\n\n\"CASE empty_small/25\"\n> github.com/tikv/pd/pkg/schedule/filter.TestRegionEmptyFilter() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/region_filters_test.go:102 (PC: 0x1609698)\nValues returned:\n\t~r0: (\"*github.com/tikv/pd/pkg/schedule/plan.Status\")(0x35d6a59677e8)\n*github.com/tikv/pd/pkg/schedule/plan.Status {StatusCode: StatusOK (0), DetailedReason: \"\"}\n\n\"CASE empty_small/26\"\n> github.com/tikv/pd/pkg/schedule/filter.TestRegionEmptyFilter() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/region_filters_test.go:102 (PC: 0x1609698)\nValues returned:\n\t~r0: (\"*github.com/tikv/pd/pkg/schedule/plan.Status\")(0x35d6a59677e8)\n*github.com/tikv/pd/pkg/schedule/plan.Status {StatusCode: StatusOK (0), DetailedReason: \"\"}\n\n\"CASE empty_small/27\"\n> github.com/tikv/pd/pkg/schedule/filter.TestRegionEmptyFilter() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/region_filters_test.go:102 (PC: 0x1609698)\nValues returned:\n\t~r0: (\"*github.com/tikv/pd/pkg/schedule/plan.Status\")(0x35d6a59677e8)\n*github.com/tikv/pd/pkg/schedule/plan.Status {StatusCode: StatusOK (0), DetailedReason: \"\"}\n\n",
+  "stderr": ""
+}

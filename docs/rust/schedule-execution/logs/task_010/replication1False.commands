@@ -1,0 +1,10 @@
+break healthy.go:46
+continue
+continue
+continue
+clearall
+config max-variable-recurse 1
+print "CASE replication1False/14"
+call -unsafe IsRegionReplicated(cluster,region)
+call -unsafe NewRegionReplicatedFilter(cluster).Select(region)
+exit

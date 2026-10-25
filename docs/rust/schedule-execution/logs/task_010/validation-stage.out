@@ -1,0 +1,9 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=python3 -u docs/rust/schedule-execution/logs/task_010/validation.py
+0 ['cargo', 'fmt', '--all'] exit 0 passed 0 ignored 0
+1 ['cargo', 'test', '-p', 'astersql-pd-schedule-filter', '--locked', '--lib', 'task_010', '--', '--nocapture'] exit 0 passed 4 ignored 0
+2 ['cargo', 'test', '-p', 'astersql-pd-schedule-filter', '--locked'] exit 0 passed 22 ignored 0
+3 ['cargo', 'metadata', '--format-version', '1', '--no-deps'] exit 0 passed 0 ignored 0
+4 ['cargo', 'fmt', '--all', '--', '--check'] exit 0 passed 0 ignored 0
+5 ['cargo', 'check', '--workspace', '--locked'] exit 0 passed 0 ignored 0
+6 ['cargo', 'test', '--workspace', '--locked'] exit 0 passed 1348 ignored 1
+command_exit_code=0

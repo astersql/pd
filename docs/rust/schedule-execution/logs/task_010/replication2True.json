@@ -1,0 +1,29 @@
+{
+  "argv": [
+    "docker",
+    "run",
+    "--rm",
+    "--cap-add",
+    "SYS_PTRACE",
+    "--security-opt",
+    "seccomp=unconfined",
+    "-v",
+    "/tmp/pd-sched005:/oracle:ro",
+    "alpine:3.22",
+    "timeout",
+    "180",
+    "/oracle/dlv",
+    "--check-go-version=false",
+    "exec",
+    "/oracle/filter.test",
+    "--allow-non-terminal-interactive",
+    "--init=/oracle/task010-replication2True.commands",
+    "--",
+    "-test.run",
+    "^TestIsRegionHealthy$",
+    "-test.timeout=175s"
+  ],
+  "exit_code": 0,
+  "stdout": "Type 'help' for list of commands.\nBreakpoint 1 set at 0x15f82f8 for github.com/tikv/pd/pkg/schedule/filter.IsRegionReplicated() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/healthy.go:46\n[2026/10/25 10:27:01.937 +00:00] [INFO] [labeler.go:65] [\"new region labeler created\"] [label-rules-count=0]\n[2026/10/25 10:27:01.937 +00:00] [INFO] [txn.go:756] [\"rebuilt group-label mapping\"] [total-groups=0] [total-ranges=0]\n[2026/10/25 10:27:01.937 +00:00] [INFO] [policy.go:158] [\"affinity manager availability check loop started\"] [interval=10s]\n[2026/10/25 10:27:01.937 +00:00] [INFO] [manager.go:137] [\"affinity manager initialized\"] [group-count=0]\n> [Breakpoint 1] github.com/tikv/pd/pkg/schedule/filter.IsRegionReplicated() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/healthy.go:46 (hits goroutine(221):1 total:1) (PC: 0x15f82f8)\n> [Breakpoint 1] github.com/tikv/pd/pkg/schedule/filter.IsRegionReplicated() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/healthy.go:46 (hits goroutine(221):2 total:2) (PC: 0x15f82f8)\n> [Breakpoint 1] github.com/tikv/pd/pkg/schedule/filter.IsRegionReplicated() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/healthy.go:46 (hits goroutine(221):3 total:3) (PC: 0x15f82f8)\n> [Breakpoint 1] github.com/tikv/pd/pkg/schedule/filter.IsRegionReplicated() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/healthy.go:46 (hits goroutine(221):4 total:4) (PC: 0x15f82f8)\n> [Breakpoint 1] github.com/tikv/pd/pkg/schedule/filter.IsRegionReplicated() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/healthy.go:46 (hits goroutine(221):5 total:5) (PC: 0x15f82f8)\n> [Breakpoint 1] github.com/tikv/pd/pkg/schedule/filter.IsRegionReplicated() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/healthy.go:46 (hits goroutine(221):6 total:6) (PC: 0x15f82f8)\nBreakpoint 1 cleared at 0x15f82f8 for github.com/tikv/pd/pkg/schedule/filter.IsRegionReplicated() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/healthy.go:46\n\"CASE replication2True/17\"\n> github.com/tikv/pd/pkg/schedule/filter.IsRegionReplicated() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/healthy.go:46 (PC: 0x15f82f8)\nValues returned:\n\t~r0: false\n\n> github.com/tikv/pd/pkg/schedule/filter.IsRegionReplicated() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/healthy.go:46 (PC: 0x15f82f8)\nValues returned:\n\t~r0: (\"*github.com/tikv/pd/pkg/schedule/plan.Status\")(0x31885d9487e0)\n*github.com/tikv/pd/pkg/schedule/plan.Status {StatusCode: 1004, DetailedReason: \"\"}\n\n",
+  "stderr": ""
+}

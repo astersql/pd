@@ -1,0 +1,775 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "cases": [
+    {
+      "id": "health/0",
+      "route": "health",
+      "peers": 3,
+      "learner": false,
+      "pending": false,
+      "down": false,
+      "rules": false,
+      "statuses": [
+        {
+          "code": 0,
+          "detail": ""
+        },
+        {
+          "code": 0,
+          "detail": ""
+        }
+      ],
+      "bools": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "health/1",
+      "route": "health",
+      "peers": 3,
+      "learner": false,
+      "pending": false,
+      "down": false,
+      "rules": true,
+      "statuses": [
+        {
+          "code": 0,
+          "detail": ""
+        },
+        {
+          "code": 0,
+          "detail": ""
+        }
+      ],
+      "bools": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "health/2",
+      "route": "health",
+      "peers": 3,
+      "learner": false,
+      "pending": true,
+      "down": false,
+      "rules": false,
+      "statuses": [
+        {
+          "code": 1001,
+          "detail": ""
+        },
+        {
+          "code": 0,
+          "detail": ""
+        }
+      ],
+      "bools": [
+        false,
+        true
+      ]
+    },
+    {
+      "id": "health/3",
+      "route": "health",
+      "peers": 3,
+      "learner": false,
+      "pending": true,
+      "down": false,
+      "rules": true,
+      "statuses": [
+        {
+          "code": 1001,
+          "detail": ""
+        },
+        {
+          "code": 0,
+          "detail": ""
+        }
+      ],
+      "bools": [
+        false,
+        true
+      ]
+    },
+    {
+      "id": "health/4",
+      "route": "health",
+      "peers": 3,
+      "learner": true,
+      "pending": false,
+      "down": false,
+      "rules": false,
+      "statuses": [
+        {
+          "code": 0,
+          "detail": ""
+        },
+        {
+          "code": 0,
+          "detail": ""
+        }
+      ],
+      "bools": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "health/5",
+      "route": "health",
+      "peers": 3,
+      "learner": true,
+      "pending": false,
+      "down": false,
+      "rules": true,
+      "statuses": [
+        {
+          "code": 0,
+          "detail": ""
+        },
+        {
+          "code": 0,
+          "detail": ""
+        }
+      ],
+      "bools": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "health/6",
+      "route": "health",
+      "peers": 3,
+      "learner": false,
+      "pending": false,
+      "down": true,
+      "rules": false,
+      "statuses": [
+        {
+          "code": 0,
+          "detail": ""
+        },
+        {
+          "code": 1001,
+          "detail": ""
+        }
+      ],
+      "bools": [
+        false,
+        false
+      ]
+    },
+    {
+      "id": "health/7",
+      "route": "health",
+      "peers": 3,
+      "learner": false,
+      "pending": false,
+      "down": true,
+      "rules": true,
+      "statuses": [
+        {
+          "code": 0,
+          "detail": ""
+        },
+        {
+          "code": 1001,
+          "detail": ""
+        }
+      ],
+      "bools": [
+        false,
+        false
+      ]
+    },
+    {
+      "id": "health/8",
+      "route": "health",
+      "peers": 2,
+      "learner": false,
+      "pending": false,
+      "down": false,
+      "rules": false,
+      "statuses": [
+        {
+          "code": 0,
+          "detail": ""
+        },
+        {
+          "code": 0,
+          "detail": ""
+        }
+      ],
+      "bools": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "health/9",
+      "route": "health",
+      "peers": 2,
+      "learner": false,
+      "pending": false,
+      "down": false,
+      "rules": true,
+      "statuses": [
+        {
+          "code": 0,
+          "detail": ""
+        },
+        {
+          "code": 0,
+          "detail": ""
+        }
+      ],
+      "bools": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "health/10",
+      "route": "health",
+      "peers": 4,
+      "learner": true,
+      "pending": false,
+      "down": false,
+      "rules": false,
+      "statuses": [
+        {
+          "code": 0,
+          "detail": ""
+        },
+        {
+          "code": 0,
+          "detail": ""
+        }
+      ],
+      "bools": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "health/11",
+      "route": "health",
+      "peers": 4,
+      "learner": true,
+      "pending": false,
+      "down": false,
+      "rules": true,
+      "statuses": [
+        {
+          "code": 0,
+          "detail": ""
+        },
+        {
+          "code": 0,
+          "detail": ""
+        }
+      ],
+      "bools": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "replication0False/12",
+      "route": "replication0False",
+      "peers": 3,
+      "learner": false,
+      "pending": false,
+      "down": false,
+      "rules": false,
+      "statuses": [
+        {
+          "code": 0,
+          "detail": ""
+        }
+      ],
+      "bools": [
+        true
+      ]
+    },
+    {
+      "id": "replication0True/13",
+      "route": "replication0True",
+      "peers": 3,
+      "learner": false,
+      "pending": false,
+      "down": false,
+      "rules": true,
+      "statuses": [
+        {
+          "code": 0,
+          "detail": ""
+        }
+      ],
+      "bools": [
+        true
+      ]
+    },
+    {
+      "id": "replication1False/14",
+      "route": "replication1False",
+      "peers": 3,
+      "learner": false,
+      "pending": true,
+      "down": false,
+      "rules": false,
+      "statuses": [
+        {
+          "code": 0,
+          "detail": ""
+        }
+      ],
+      "bools": [
+        true
+      ]
+    },
+    {
+      "id": "replication1True/15",
+      "route": "replication1True",
+      "peers": 3,
+      "learner": false,
+      "pending": true,
+      "down": false,
+      "rules": true,
+      "statuses": [
+        {
+          "code": 0,
+          "detail": ""
+        }
+      ],
+      "bools": [
+        true
+      ]
+    },
+    {
+      "id": "replication2False/16",
+      "route": "replication2False",
+      "peers": 3,
+      "learner": true,
+      "pending": false,
+      "down": false,
+      "rules": false,
+      "statuses": [
+        {
+          "code": 1003,
+          "detail": ""
+        }
+      ],
+      "bools": [
+        false
+      ]
+    },
+    {
+      "id": "replication2True/17",
+      "route": "replication2True",
+      "peers": 3,
+      "learner": true,
+      "pending": false,
+      "down": false,
+      "rules": true,
+      "statuses": [
+        {
+          "code": 1004,
+          "detail": ""
+        }
+      ],
+      "bools": [
+        false
+      ]
+    },
+    {
+      "id": "replication3False/18",
+      "route": "replication3False",
+      "peers": 3,
+      "learner": false,
+      "pending": false,
+      "down": true,
+      "rules": false,
+      "statuses": [
+        {
+          "code": 0,
+          "detail": ""
+        }
+      ],
+      "bools": [
+        true
+      ]
+    },
+    {
+      "id": "replication3True/19",
+      "route": "replication3True",
+      "peers": 3,
+      "learner": false,
+      "pending": false,
+      "down": true,
+      "rules": true,
+      "statuses": [
+        {
+          "code": 0,
+          "detail": ""
+        }
+      ],
+      "bools": [
+        true
+      ]
+    },
+    {
+      "id": "replication4False/20",
+      "route": "replication4False",
+      "peers": 2,
+      "learner": false,
+      "pending": false,
+      "down": false,
+      "rules": false,
+      "statuses": [
+        {
+          "code": 1003,
+          "detail": ""
+        }
+      ],
+      "bools": [
+        false
+      ]
+    },
+    {
+      "id": "replication4True/21",
+      "route": "replication4True",
+      "peers": 2,
+      "learner": false,
+      "pending": false,
+      "down": false,
+      "rules": true,
+      "statuses": [
+        {
+          "code": 1004,
+          "detail": ""
+        }
+      ],
+      "bools": [
+        false
+      ]
+    },
+    {
+      "id": "replication5False/22",
+      "route": "replication5False",
+      "peers": 4,
+      "learner": true,
+      "pending": false,
+      "down": false,
+      "rules": false,
+      "statuses": [
+        {
+          "code": 1003,
+          "detail": ""
+        }
+      ],
+      "bools": [
+        false
+      ]
+    },
+    {
+      "id": "replication5True/23",
+      "route": "replication5True",
+      "peers": 4,
+      "learner": true,
+      "pending": false,
+      "down": false,
+      "rules": true,
+      "statuses": [
+        {
+          "code": 1004,
+          "detail": ""
+        }
+      ],
+      "bools": [
+        false
+      ]
+    },
+    {
+      "id": "empty_small/24",
+      "route": "empty_small",
+      "size": 0,
+      "total": 0,
+      "statuses": [
+        {
+          "code": 0,
+          "detail": ""
+        }
+      ],
+      "bools": []
+    },
+    {
+      "id": "empty_small/25",
+      "route": "empty_small",
+      "size": 1,
+      "total": 0,
+      "statuses": [
+        {
+          "code": 0,
+          "detail": ""
+        }
+      ],
+      "bools": []
+    },
+    {
+      "id": "empty_small/26",
+      "route": "empty_small",
+      "size": 2,
+      "total": 0,
+      "statuses": [
+        {
+          "code": 0,
+          "detail": ""
+        }
+      ],
+      "bools": []
+    },
+    {
+      "id": "empty_small/27",
+      "route": "empty_small",
+      "size": 30,
+      "total": 0,
+      "statuses": [
+        {
+          "code": 0,
+          "detail": ""
+        }
+      ],
+      "bools": []
+    },
+    {
+      "id": "empty_large/28",
+      "route": "empty_large",
+      "size": 0,
+      "total": 100,
+      "statuses": [
+        {
+          "code": 1002,
+          "detail": ""
+        }
+      ],
+      "bools": []
+    },
+    {
+      "id": "empty_large/29",
+      "route": "empty_large",
+      "size": 1,
+      "total": 100,
+      "statuses": [
+        {
+          "code": 1002,
+          "detail": ""
+        }
+      ],
+      "bools": []
+    },
+    {
+      "id": "empty_large/30",
+      "route": "empty_large",
+      "size": 2,
+      "total": 100,
+      "statuses": [
+        {
+          "code": 0,
+          "detail": ""
+        }
+      ],
+      "bools": []
+    },
+    {
+      "id": "empty_large/31",
+      "route": "empty_large",
+      "size": 30,
+      "total": 100,
+      "statuses": [
+        {
+          "code": 0,
+          "detail": ""
+        }
+      ],
+      "bools": []
+    },
+    {
+      "id": "witness/32",
+      "route": "witness",
+      "store": 0,
+      "statuses": [
+        {
+          "code": 0,
+          "detail": ""
+        }
+      ],
+      "bools": []
+    },
+    {
+      "id": "witness/33",
+      "route": "witness",
+      "store": 1,
+      "statuses": [
+        {
+          "code": 0,
+          "detail": ""
+        }
+      ],
+      "bools": []
+    },
+    {
+      "id": "witness/34",
+      "route": "witness",
+      "store": 2,
+      "statuses": [
+        {
+          "code": 1004,
+          "detail": ""
+        }
+      ],
+      "bools": []
+    },
+    {
+      "id": "witness/35",
+      "route": "witness",
+      "store": 3,
+      "statuses": [
+        {
+          "code": 0,
+          "detail": ""
+        }
+      ],
+      "bools": []
+    },
+    {
+      "id": "witness/36",
+      "route": "witness",
+      "store": 99,
+      "statuses": [
+        {
+          "code": 0,
+          "detail": ""
+        }
+      ],
+      "bools": []
+    },
+    {
+      "id": "snapshot_open/37",
+      "route": "snapshot_open",
+      "limited": false,
+      "statuses": [
+        {
+          "code": 0,
+          "detail": ""
+        }
+      ],
+      "bools": []
+    },
+    {
+      "id": "snapshot_limited/38",
+      "route": "snapshot_limited",
+      "limited": true,
+      "statuses": [
+        {
+          "code": 1008,
+          "detail": ""
+        }
+      ],
+      "bools": []
+    },
+    {
+      "id": "affinity/39",
+      "route": "affinity",
+      "start": "b",
+      "end": "y",
+      "statuses": [
+        {
+          "code": 1009,
+          "detail": ""
+        }
+      ],
+      "bools": []
+    },
+    {
+      "id": "affinity/40",
+      "route": "affinity",
+      "start": "za",
+      "end": "zz",
+      "statuses": [
+        {
+          "code": 0,
+          "detail": ""
+        }
+      ],
+      "bools": []
+    },
+    {
+      "id": "snapshot_busy/41",
+      "route": "snapshot_busy",
+      "busy": true,
+      "statuses": [
+        {
+          "code": 1008,
+          "detail": ""
+        }
+      ],
+      "bools": []
+    },
+    {
+      "id": "snapshot_no_leader/42",
+      "route": "snapshot_no_leader",
+      "leader": null,
+      "statuses": [
+        {
+          "code": 1008,
+          "detail": ""
+        }
+      ],
+      "bools": []
+    },
+    {
+      "id": "replication_extraFalse/43",
+      "route": "replication_extraFalse",
+      "peers": 4,
+      "learner": false,
+      "pending": false,
+      "down": false,
+      "rules": false,
+      "statuses": [
+        {
+          "code": 1003,
+          "detail": ""
+        }
+      ],
+      "bools": [
+        false
+      ]
+    },
+    {
+      "id": "replication_extraTrue/44",
+      "route": "replication_extraTrue",
+      "peers": 4,
+      "learner": false,
+      "pending": false,
+      "down": false,
+      "rules": true,
+      "statuses": [
+        {
+          "code": 1004,
+          "detail": ""
+        }
+      ],
+      "bools": [
+        false
+      ]
+    }
+  ],
+  "binaries": {
+    "filter.test": "ea96e2e54834ad026432b60327b63e986d8a388d4c580c41137ab7e0fd1dba53",
+    "dlv": "dcd0463a4350f0660412f5c766d31077370eec10ac8055cf0d786377e0d6340e"
+  }
+}

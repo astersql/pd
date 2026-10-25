@@ -1,0 +1,8 @@
+break filters_test.go:235
+continue
+clearall
+config max-variable-recurse 1
+set region.leader = nil
+print "CASE snapshot_no_leader/42"
+call -unsafe snapshotFilter.Select(region)
+exit

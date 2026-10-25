@@ -1,0 +1,29 @@
+{
+  "argv": [
+    "docker",
+    "run",
+    "--rm",
+    "--cap-add",
+    "SYS_PTRACE",
+    "--security-opt",
+    "seccomp=unconfined",
+    "-v",
+    "/tmp/pd-sched005:/oracle:ro",
+    "alpine:3.22",
+    "timeout",
+    "180",
+    "/oracle/dlv",
+    "--check-go-version=false",
+    "exec",
+    "/oracle/filter.test",
+    "--allow-non-terminal-interactive",
+    "--init=/oracle/task010-witness.commands",
+    "--",
+    "-test.run",
+    "^TestRegionWitnessFilter$",
+    "-test.timeout=175s"
+  ],
+  "exit_code": 0,
+  "stdout": "Type 'help' for list of commands.\nBreakpoint 1 set at 0x1609f60 for github.com/tikv/pd/pkg/schedule/filter.TestRegionWitnessFilter() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/region_filters_test.go:130\n> [Breakpoint 1] github.com/tikv/pd/pkg/schedule/filter.TestRegionWitnessFilter() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/region_filters_test.go:130 (hits goroutine(228):1 total:1) (PC: 0x1609f60)\nBreakpoint 1 cleared at 0x1609f60 for github.com/tikv/pd/pkg/schedule/filter.TestRegionWitnessFilter() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/region_filters_test.go:130\n\"CASE witness/32\"\n> github.com/tikv/pd/pkg/schedule/filter.TestRegionWitnessFilter() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/region_filters_test.go:130 (PC: 0x1609f60)\nValues returned:\n\t~r0: (\"*github.com/tikv/pd/pkg/schedule/plan.Status\")(0x2e41d7ba8690)\n*github.com/tikv/pd/pkg/schedule/plan.Status {StatusCode: StatusOK (0), DetailedReason: \"\"}\n\n\"CASE witness/33\"\n> github.com/tikv/pd/pkg/schedule/filter.TestRegionWitnessFilter() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/region_filters_test.go:130 (PC: 0x1609f60)\nValues returned:\n\t~r0: (\"*github.com/tikv/pd/pkg/schedule/plan.Status\")(0x2e41d7ba8690)\n*github.com/tikv/pd/pkg/schedule/plan.Status {StatusCode: StatusOK (0), DetailedReason: \"\"}\n\n\"CASE witness/34\"\n> github.com/tikv/pd/pkg/schedule/filter.TestRegionWitnessFilter() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/region_filters_test.go:130 (PC: 0x1609f60)\nValues returned:\n\t~r0: (\"*github.com/tikv/pd/pkg/schedule/plan.Status\")(0x2e41d7ba88a0)\n*github.com/tikv/pd/pkg/schedule/plan.Status {StatusCode: 1004, DetailedReason: \"\"}\n\n\"CASE witness/35\"\n> github.com/tikv/pd/pkg/schedule/filter.TestRegionWitnessFilter() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/region_filters_test.go:130 (PC: 0x1609f60)\nValues returned:\n\t~r0: (\"*github.com/tikv/pd/pkg/schedule/plan.Status\")(0x2e41d7ba8690)\n*github.com/tikv/pd/pkg/schedule/plan.Status {StatusCode: StatusOK (0), DetailedReason: \"\"}\n\n\"CASE witness/36\"\n> github.com/tikv/pd/pkg/schedule/filter.TestRegionWitnessFilter() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/region_filters_test.go:130 (PC: 0x1609f60)\nValues returned:\n\t~r0: (\"*github.com/tikv/pd/pkg/schedule/plan.Status\")(0x2e41d7ba8690)\n*github.com/tikv/pd/pkg/schedule/plan.Status {StatusCode: StatusOK (0), DetailedReason: \"\"}\n\n",
+  "stderr": ""
+}

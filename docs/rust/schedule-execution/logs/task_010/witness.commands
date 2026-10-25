@@ -1,0 +1,15 @@
+break region_filters_test.go:130
+continue
+clearall
+config max-variable-recurse 1
+print "CASE witness/32"
+call -unsafe NewRegionWitnessFilter(0).Select(region)
+print "CASE witness/33"
+call -unsafe NewRegionWitnessFilter(1).Select(region)
+print "CASE witness/34"
+call -unsafe NewRegionWitnessFilter(2).Select(region)
+print "CASE witness/35"
+call -unsafe NewRegionWitnessFilter(3).Select(region)
+print "CASE witness/36"
+call -unsafe NewRegionWitnessFilter(99).Select(region)
+exit

@@ -1,0 +1,29 @@
+{
+  "argv": [
+    "docker",
+    "run",
+    "--rm",
+    "--cap-add",
+    "SYS_PTRACE",
+    "--security-opt",
+    "seccomp=unconfined",
+    "-v",
+    "/tmp/pd-sched005:/oracle:ro",
+    "alpine:3.22",
+    "timeout",
+    "180",
+    "/oracle/dlv",
+    "--check-go-version=false",
+    "exec",
+    "/oracle/filter.test",
+    "--allow-non-terminal-interactive",
+    "--init=/oracle/task010-replication5False.commands",
+    "--",
+    "-test.run",
+    "^TestIsRegionHealthy$",
+    "-test.timeout=175s"
+  ],
+  "exit_code": 0,
+  "stdout": "Type 'help' for list of commands.\nBreakpoint 1 set at 0x15f82f8 for github.com/tikv/pd/pkg/schedule/filter.IsRegionReplicated() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/healthy.go:46\n[2026/10/25 10:27:06.400 +00:00] [INFO] [labeler.go:65] [\"new region labeler created\"] [label-rules-count=0]\n[2026/10/25 10:27:06.400 +00:00] [INFO] [txn.go:756] [\"rebuilt group-label mapping\"] [total-groups=0] [total-ranges=0]\n[2026/10/25 10:27:06.400 +00:00] [INFO] [policy.go:158] [\"affinity manager availability check loop started\"] [interval=10s]\n[2026/10/25 10:27:06.400 +00:00] [INFO] [manager.go:137] [\"affinity manager initialized\"] [group-count=0]\n> [Breakpoint 1] github.com/tikv/pd/pkg/schedule/filter.IsRegionReplicated() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/healthy.go:46 (hits goroutine(232):1 total:1) (PC: 0x15f82f8)\n> [Breakpoint 1] github.com/tikv/pd/pkg/schedule/filter.IsRegionReplicated() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/healthy.go:46 (hits goroutine(232):2 total:2) (PC: 0x15f82f8)\n> [Breakpoint 1] github.com/tikv/pd/pkg/schedule/filter.IsRegionReplicated() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/healthy.go:46 (hits goroutine(232):3 total:3) (PC: 0x15f82f8)\n> [Breakpoint 1] github.com/tikv/pd/pkg/schedule/filter.IsRegionReplicated() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/healthy.go:46 (hits goroutine(232):4 total:4) (PC: 0x15f82f8)\n> [Breakpoint 1] github.com/tikv/pd/pkg/schedule/filter.IsRegionReplicated() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/healthy.go:46 (hits goroutine(232):5 total:5) (PC: 0x15f82f8)\n> [Breakpoint 1] github.com/tikv/pd/pkg/schedule/filter.IsRegionReplicated() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/healthy.go:46 (hits goroutine(232):6 total:6) (PC: 0x15f82f8)\n> [Breakpoint 1] github.com/tikv/pd/pkg/schedule/filter.IsRegionReplicated() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/healthy.go:46 (hits goroutine(232):7 total:7) (PC: 0x15f82f8)\n> [Breakpoint 1] github.com/tikv/pd/pkg/schedule/filter.IsRegionReplicated() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/healthy.go:46 (hits goroutine(232):8 total:8) (PC: 0x15f82f8)\n> [Breakpoint 1] github.com/tikv/pd/pkg/schedule/filter.IsRegionReplicated() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/healthy.go:46 (hits goroutine(232):9 total:9) (PC: 0x15f82f8)\n> [Breakpoint 1] github.com/tikv/pd/pkg/schedule/filter.IsRegionReplicated() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/healthy.go:46 (hits goroutine(232):10 total:10) (PC: 0x15f82f8)\n> [Breakpoint 1] github.com/tikv/pd/pkg/schedule/filter.IsRegionReplicated() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/healthy.go:46 (hits goroutine(232):11 total:11) (PC: 0x15f82f8)\nBreakpoint 1 cleared at 0x15f82f8 for github.com/tikv/pd/pkg/schedule/filter.IsRegionReplicated() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/healthy.go:46\n\"CASE replication5False/22\"\n> github.com/tikv/pd/pkg/schedule/filter.IsRegionReplicated() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/healthy.go:46 (PC: 0x15f82f8)\nValues returned:\n\t~r0: false\n\n> github.com/tikv/pd/pkg/schedule/filter.IsRegionReplicated() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/healthy.go:46 (PC: 0x15f82f8)\nValues returned:\n\t~r0: (\"*github.com/tikv/pd/pkg/schedule/plan.Status\")(0x18649bf7eeb8)\n*github.com/tikv/pd/pkg/schedule/plan.Status {StatusCode: 1003, DetailedReason: \"\"}\n\n",
+  "stderr": ""
+}

@@ -1,0 +1,20 @@
+break healthy.go:46
+continue
+continue
+continue
+continue
+continue
+continue
+continue
+continue
+continue
+continue
+continue
+clearall
+config max-variable-recurse 1
+set region.learners = nil
+set region.meta.Peers[0].Role = 0
+print "CASE replication_extraFalse/43"
+call -unsafe IsRegionReplicated(cluster,region)
+call -unsafe NewRegionReplicatedFilter(cluster).Select(region)
+exit

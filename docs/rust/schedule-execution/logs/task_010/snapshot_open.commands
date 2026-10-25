@@ -1,0 +1,7 @@
+break filters_test.go:235
+continue
+clearall
+config max-variable-recurse 1
+print "CASE snapshot_open/37"
+call -unsafe snapshotFilter.Select(region)
+exit

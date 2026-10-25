@@ -1,0 +1,53 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "dependency_commit": "fc1aa13f2",
+  "binaries": {
+    "filter.test": "ea96e2e54834ad026432b60327b63e986d8a388d4c580c41137ab7e0fd1dba53",
+    "dlv": "dcd0463a4350f0660412f5c766d31077370eec10ac8055cf0d786377e0d6340e"
+  },
+  "mode": "classic default; existing Go without_dashboard binaries; no new Cargo features",
+  "normalization": "All StatusCode/DetailedReason and booleans retained. Debugger addresses, frame text and log timestamps are non-domain display fields only. Health peers IDs/store IDs 1..N, leader 1, pending/down peer 1 (down_seconds=0), learner role on peer 1. Witness route: three peers, witness store 2, leader 1. Empty region: three peers, leader 1; keys do not affect this size-only filter. Snapshot: leader store 1, real sliding windows at Medium, two 1000-cost reservations for throttled input. Affinity group g1 range [a,z), leader 1/voters [1,2,3]; cases use [b,y) and [za,zz). Region IDs/keys not consulted by non-affinity predicates are not compared.",
+  "safety": "Reused immutable filter.test/dlv from task_005; no Go compilation, source writes, failpoint instrumentation or algorithm mutation. Read TestMain/WaitForEtcdConnections and selected setup/method paths; these eight tests do not require failpoint injection. Extra debugger calls change only domain inputs and call production methods, and do not claim the modified test completed.",
+  "sources": [
+    {
+      "path": "pkg/schedule/filter/healthy.go",
+      "sha256": "dc9137941fc887c15aaf744650235939e7c28704958e3b1c8d2c3970a5502c5d"
+    },
+    {
+      "path": "pkg/schedule/filter/region_filters.go",
+      "sha256": "ab08b272ad1e1ff1f044e40ba0091f13678d3d31f09bbf9c61b2a009f8903915"
+    },
+    {
+      "path": "pkg/schedule/filter/healthy_test.go",
+      "sha256": "a476c05b0daff9784a69df42a6fc8532ab76b44b8bdc73cfc9ad90f5e0fb0577"
+    },
+    {
+      "path": "pkg/schedule/filter/region_filters_test.go",
+      "sha256": "5ad85ccafba024240ee68bd4e83d97ad7c4c79dade3813e24f1800ffa1944bf5"
+    },
+    {
+      "path": "pkg/schedule/filter/filters_test.go",
+      "sha256": "7675a55b6d20d983416b5b0d0e215fa0e1033f5dfc0367f73c0e73f7e9f52e05"
+    },
+    {
+      "path": "pkg/schedule/filter/candidates_test.go",
+      "sha256": "f40241c4defd8b264abfe01f042352d3703602814331fd89b5c5c2c285622ed0"
+    },
+    {
+      "path": "pkg/utils/testutil/leak.go",
+      "sha256": "a269d3582084e8676a46b10299f377752ae7f831a456effcc05c0df6f31836ca"
+    },
+    {
+      "path": "pkg/mock/mockcluster/mockcluster.go",
+      "sha256": "7e93c4a25b9ab59449a4323a9595caec8e94081f787ff00ca1c0a0ace5b5ea48"
+    },
+    {
+      "path": "pkg/core/region.go",
+      "sha256": "be6ed0dc77537d62926d21d9e4eef080ea0dbcc7dc97efb4dc26269a172f99d8"
+    },
+    {
+      "path": "pkg/core/store_stats.go",
+      "sha256": "7eb42ad16235801ee571e52df1fc8aa1d96e226957c1fa479ad6c501ac430246"
+    }
+  ]
+}

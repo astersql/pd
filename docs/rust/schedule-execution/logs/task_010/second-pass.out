@@ -1,0 +1,31 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=sh -c 'cargo fmt --all && cargo test -p astersql-pd-schedule-filter --locked --lib task_010 -- --nocapture'
+   Compiling astersql-pd-schedule-filter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.64s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_filter-bc5e9e641a8bb578)
+
+running 4 tests
+test task_010_test::task_010_snapshot_busy_missing_leader_and_snapshot_capture ... ok
+
+thread 'task_010_test::task_010_fit_retains_last_success_and_selection_order' (161686440) panicked at pkg/schedule/filter/task_010_test.rs:209:5:
+assertion failed: filter.select(&good).is_ok()
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'task_010_test::task_010_behavior_cases' (161686439) panicked at pkg/schedule/filter/task_010_test.rs:121:17:
+assertion `left == right` failed
+  left: false
+ right: true
+test task_010_test::task_010_fit_retains_last_success_and_selection_order ... FAILED
+test task_010_test::task_010_behavior_cases ... FAILED
+task_010_affinity_real_manager: 2 frozen Go cases passed
+test task_010_test::task_010_affinity_real_manager ... ok
+
+failures:
+
+failures:
+    task_010_test::task_010_behavior_cases
+    task_010_test::task_010_fit_retains_last_success_and_selection_order
+
+test result: FAILED. 2 passed; 2 failed; 0 ignored; 0 measured; 18 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-filter --lib`
+command_exit_code=101

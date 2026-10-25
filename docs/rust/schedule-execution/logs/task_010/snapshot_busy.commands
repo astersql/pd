@@ -1,0 +1,11 @@
+break region_filters.go:186
+continue
+clearall
+config max-variable-recurse 1
+set stores[0].storeStats.rawStats.IsBusy = true
+break filters_test.go:235
+continue
+clearall
+print "CASE snapshot_busy/41"
+call -unsafe snapshotFilter.Select(region)
+exit

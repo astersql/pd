@@ -1,0 +1,17 @@
+break region_filters_test.go:118
+continue
+clearall
+config max-variable-recurse 1
+set region.approximateSize = 0
+print "CASE empty_large/28"
+call -unsafe filter.Select(region)
+set region.approximateSize = 1
+print "CASE empty_large/29"
+call -unsafe filter.Select(region)
+set region.approximateSize = 2
+print "CASE empty_large/30"
+call -unsafe filter.Select(region)
+set region.approximateSize = 30
+print "CASE empty_large/31"
+call -unsafe filter.Select(region)
+exit

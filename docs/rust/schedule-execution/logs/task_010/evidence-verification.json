@@ -1,0 +1,23 @@
+{
+  "cargo_own_locks_released": true,
+  "cargo_cache_retained": true,
+  "fixture_sha256": "6ff5e21360b955df05e265cc66584c1d76983539ed7053a8187ccd8b8f7dc3fd",
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "dependency_commit": "fc1aa13f2",
+  "go_files_checked": 3012,
+  "go_unchanged": true,
+  "readonly_plans_checked": 17,
+  "oracle_cases": 45,
+  "oracle_status_returns": 57,
+  "oracle_booleans": 38,
+  "complete_go_tests": 8,
+  "fit_cache_runtime_observed": true,
+  "mutation_failures": 10,
+  "rust_focused_tests": 4,
+  "rust_package_tests": 22,
+  "rust_workspace_tests": 1348,
+  "rust_workspace_ignored": 1,
+  "no_server_runtime_dependency": true,
+  "registry_dependencies_unchanged": true,
+  "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+}

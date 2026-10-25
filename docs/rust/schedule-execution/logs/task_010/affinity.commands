@@ -1,0 +1,9 @@
+break region_filters_test.go:166
+continue
+clearall
+config max-variable-recurse 1
+print "CASE affinity/39"
+call -unsafe filter.Select(affinityRegion)
+print "CASE affinity/40"
+call -unsafe filter.Select(nonAffinityRegion)
+exit

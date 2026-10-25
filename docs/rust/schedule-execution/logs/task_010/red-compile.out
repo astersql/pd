@@ -1,0 +1,245 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=cargo test -p astersql-pd-schedule-filter --locked --lib task_010 -- --nocapture
+   Compiling astersql-pd-schedule-filter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter)
+error[E0433]: cannot find module or crate `astersql_pd_schedule_affinity` in this scope
+  --> pkg/schedule/filter/task_010_test.rs:84:9
+   |
+84 |     use astersql_pd_schedule_affinity::{manager::Manager,group::Group,ranges::{GroupKeyRanges,make_label_rule}};
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ use of unresolved module or unlinked crate `astersql_pd_schedule_affinity`
+   |
+help: there is a crate or module with a similar name
+   |
+84 -     use astersql_pd_schedule_affinity::{manager::Manager,group::Group,ranges::{GroupKeyRanges,make_label_rule}};
+84 +     use astersql_pd_schedule_config::{manager::Manager,group::Group,ranges::{GroupKeyRanges,make_label_rule}};
+   |
+
+error[E0432]: unresolved import `astersql_pd_schedule_labeler`
+  --> pkg/schedule/filter/task_010_test.rs:85:9
+   |
+85 |     use astersql_pd_schedule_labeler::RegionLabeler;
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ use of unresolved module or unlinked crate `astersql_pd_schedule_labeler`
+   |
+help: there is a crate or module with a similar name
+   |
+85 -     use astersql_pd_schedule_labeler::RegionLabeler;
+85 +     use astersql_pd_schedule_placement::RegionLabeler;
+   |
+
+error[E0433]: cannot find module or crate `astersql_pd_keyutil` in this scope
+  --> pkg/schedule/filter/task_010_test.rs:88:68
+   |
+88 |     let ranges=GroupKeyRanges{group_id:"g1".into(),key_ranges:vec![astersql_pd_keyutil::KeyRange::new(b"a".to_vec(),b"z".to_vec())]};
+   |                                                                    ^^^^^^^^^^^^^^^^^^^ use of unresolved module or unlinked crate `astersql_pd_keyutil`
+   |
+help: there is a crate or module with a similar name
+   |
+88 -     let ranges=GroupKeyRanges{group_id:"g1".into(),key_ranges:vec![astersql_pd_keyutil::KeyRange::new(b"a".to_vec(),b"z".to_vec())]};
+88 +     let ranges=GroupKeyRanges{group_id:"g1".into(),key_ranges:vec![astersql_pd_keypath::KeyRange::new(b"a".to_vec(),b"z".to_vec())]};
+   |
+
+error[E0425]: cannot find value `RegionPendingFilter` in this scope
+  --> pkg/schedule/filter/task_010_test.rs:34:23
+   |
+34 |                 check(RegionPendingFilter.select(&r),&c["statuses"][0]);check(RegionDownFilter.select(&r),&c["statuses"][1]);
+   |                       ^^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find value `RegionDownFilter` in this scope
+  --> pkg/schedule/filter/task_010_test.rs:34:79
+   |
+34 |                 check(RegionPendingFilter.select(&r),&c["statuses"][0]);check(RegionDownFilter.select(&r),&c["statuses"][1]);
+   |                                                                               ^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `RegionReplicationContext` in this scope
+  --> pkg/schedule/filter/task_010_test.rs:38:29
+   |
+38 |                 let context=RegionReplicationContext{conf:&conf,stores:&stores,manager:RefCell::new(&mut m),now:0};
+   |                             ^^^^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `RegionEmptyFilter` in this scope
+  --> pkg/schedule/filter/task_010_test.rs:45:19
+   |
+45 |             check(RegionEmptyFilter{total_region_count:c["total"].as_i64().unwrap()}.select(&Arc::new(r)),&c["statuses"][0]);
+   |                   ^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `RegionWitnessFilter` in this scope
+  --> pkg/schedule/filter/task_010_test.rs:48:19
+   |
+48 |             check(RegionWitnessFilter{store_id:c["store"].as_u64().unwrap()}.select(&r),&c["statuses"][0]);
+   |                   ^^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `RegionReplicationContext` in this scope
+  --> pkg/schedule/filter/task_010_test.rs:62:44
+   |
+62 |     let filter=RegionReplicatedFilter::new(RegionReplicationContext{conf:&conf,stores:&stores,manager:RefCell::new(&mut m),now:0});
+   |                                            ^^^^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find value `RegionPendingFilter` in this scope
+  --> pkg/schedule/filter/task_010_test.rs:66:45
+   |
+66 |     let selected=select_regions(&regions,&[&RegionPendingFilter,&RegionDownFilter]);assert_eq!(selected.len(),2);assert!(Arc::ptr_eq...
+   |                                             ^^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find value `RegionDownFilter` in this scope
+  --> pkg/schedule/filter/task_010_test.rs:66:66
+   |
+66 |     let selected=select_regions(&regions,&[&RegionPendingFilter,&RegionDownFilter]);assert_eq!(selected.len(),2);assert!(Arc::ptr_eq...
+   |                                                                  ^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find value `RegionPendingFilter` in this scope
+  --> pkg/schedule/filter/task_010_test.rs:68:64
+   |
+68 |     let one=select_one_region(&regions,Some(&mut collector),&[&RegionPendingFilter,&RegionDownFilter]).unwrap();assert!(Arc::ptr_eq(...
+   |                                                                ^^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find value `RegionDownFilter` in this scope
+  --> pkg/schedule/filter/task_010_test.rs:68:85
+   |
+68 |     let one=select_one_region(&regions,Some(&mut collector),&[&RegionPendingFilter,&RegionDownFilter]).unwrap();assert!(Arc::ptr_eq(...
+   |                                                                                     ^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `AffinityFilter` in this scope
+  --> pkg/schedule/filter/task_010_test.rs:94:15
+   |
+94 | ...   check(AffinityFilter{manager:Some(&manager),labels:&labels,now:0}.select(&r),&c["statuses"][0]);assert!(AffinityFilter{manager...
+   |             ^^^^^^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `AffinityFilter` in this scope
+  --> pkg/schedule/filter/task_010_test.rs:94:113
+   |
+94 | ...now:0}.select(&r),&c["statuses"][0]);assert!(AffinityFilter{manager:None,labels:&labels,now:0}.select(&r).is_ok());count+=1;
+   |                                                 ^^^^^^^^^^^^^^ not found in this scope
+
+warning: unused import: `super::*`
+ --> pkg/schedule/filter/task_010_test.rs:2:5
+  |
+2 | use super::*;
+  |     ^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+error[E0308]: mismatched types
+   --> pkg/schedule/filter/task_010_test.rs:20:38
+    |
+ 20 |     m.initialize(3,&[],"",false,conf,stores).await.unwrap();m
+    |       ----------                     ^^^^^^ expected `&[StoreInfo]`, found `&[Arc<StoreInfo>]`
+    |       |
+    |       arguments to this method are incorrect
+    |
+    = note: expected reference `&[StoreInfo]`
+               found reference `&[Arc<StoreInfo>]`
+note: method defined here
+   --> pkg/schedule/placement/rule_manager.rs:149:18
+    |
+149 |     pub async fn initialize<C: SharedConfigProvider + ?Sized>(
+    |                  ^^^^^^^^^^
+
+error[E0609]: no field `code` on type `Status`
+  --> pkg/schedule/filter/task_010_test.rs:22:61
+   |
+22 | fn check(status:Status, expected:&Value) {assert_eq!(status.code.0,expected["code"].as_i64().unwrap());assert_eq!(status.detailed_re...
+   |                                                             ^^^^ unknown field
+   |
+   = note: available fields are: `status_code`, `detailed_reason`
+
+error[E0425]: cannot find function `is_region_healthy` in this scope
+  --> pkg/schedule/filter/task_010_test.rs:32:28
+   |
+32 |                 assert_eq!(is_region_healthy(&r),c["bools"][0].as_bool().unwrap(),"{}",c["id"]);
+   |                            ^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `is_region_healthy_allow_pending` in this scope
+  --> pkg/schedule/filter/task_010_test.rs:33:28
+   |
+33 |                 assert_eq!(is_region_healthy_allow_pending(&r),c["bools"][1].as_bool().unwrap());
+   |                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `is_region_replicated` in this scope
+  --> pkg/schedule/filter/task_010_test.rs:39:28
+   |
+39 |                 assert_eq!(is_region_replicated(&context,&r),c["bools"][0].as_bool().unwrap());
+   |                            ^^^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0433]: cannot find type `RegionReplicatedFilter` in this scope
+  --> pkg/schedule/filter/task_010_test.rs:40:28
+   |
+40 |                 let filter=RegionReplicatedFilter::new(context);check(filter.select(&r),&c["statuses"][0]);
+   |                            ^^^^^^^^^^^^^^^^^^^^^^ use of undeclared type `RegionReplicatedFilter`
+
+error[E0433]: cannot find type `SnapshotSenderFilter` in this scope
+  --> pkg/schedule/filter/task_010_test.rs:52:24
+   |
+52 |             let filter=SnapshotSenderFilter::new(&[Arc::new(store)],PriorityLevel::MEDIUM).await;
+   |                        ^^^^^^^^^^^^^^^^^^^^ use of undeclared type `SnapshotSenderFilter`
+
+error[E0433]: cannot find type `RegionReplicatedFilter` in this scope
+  --> pkg/schedule/filter/task_010_test.rs:62:16
+   |
+62 |     let filter=RegionReplicatedFilter::new(RegionReplicationContext{conf:&conf,stores:&stores,manager:RefCell::new(&mut m),now:0});
+   |                ^^^^^^^^^^^^^^^^^^^^^^ use of undeclared type `RegionReplicatedFilter`
+
+error[E0425]: cannot find function `select_regions` in this scope
+  --> pkg/schedule/filter/task_010_test.rs:66:18
+   |
+66 |     let selected=select_regions(&regions,&[&RegionPendingFilter,&RegionDownFilter]);assert_eq!(selected.len(),2);assert!(Arc::ptr_eq...
+   |                  ^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `select_one_region` in this scope
+  --> pkg/schedule/filter/task_010_test.rs:68:13
+   |
+68 |     let one=select_one_region(&regions,Some(&mut collector),&[&RegionPendingFilter,&RegionDownFilter]).unwrap();assert!(Arc::ptr_eq(...
+   |             ^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0609]: no field `code` on type `Status`
+  --> pkg/schedule/filter/task_010_test.rs:69:100
+   |
+69 |     let plans=collector.get_plans();assert_eq!(plans.len(),2);assert!(plans.iter().all(|p|p.status.code==StatusCode::REGION_UNHEALTH...
+   |                                                                                                    ^^^^ unknown field
+   |
+   = note: available fields are: `status_code`, `detailed_reason`
+
+error[E0425]: cannot find function `select_one_region` in this scope
+  --> pkg/schedule/filter/task_010_test.rs:70:13
+   |
+70 |     assert!(select_one_region(&[],None,&[]).is_none());assert!(select_regions(&[],&[]).is_empty());assert_eq!(select_regions(&region...
+   |             ^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `select_regions` in this scope
+  --> pkg/schedule/filter/task_010_test.rs:70:64
+   |
+70 |     assert!(select_one_region(&[],None,&[]).is_none());assert!(select_regions(&[],&[]).is_empty());assert_eq!(select_regions(&region...
+   |                                                                ^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `select_regions` in this scope
+  --> pkg/schedule/filter/task_010_test.rs:70:111
+   |
+70 | ...lect_regions(&[],&[]).is_empty());assert_eq!(select_regions(&regions,&[]).len(),4);
+   |                                                 ^^^^^^^^^^^^^^ not found in this scope
+
+error[E0433]: cannot find type `SnapshotSenderFilter` in this scope
+  --> pkg/schedule/filter/task_010_test.rs:75:16
+   |
+75 |     let filter=SnapshotSenderFilter::new(&[Arc::new(store.clone())],PriorityLevel::MEDIUM).await;assert!(filter.select(&r).is_ok());
+   |                ^^^^^^^^^^^^^^^^^^^^ use of undeclared type `SnapshotSenderFilter`
+
+error[E0433]: cannot find type `SnapshotSenderFilter` in this scope
+  --> pkg/schedule/filter/task_010_test.rs:77:49
+   |
+77 |     assert!(filter.select(&r).is_ok());assert!(!SnapshotSenderFilter::new(&[Arc::new(store)],PriorityLevel::MEDIUM).await.select(&r)...
+   |                                                 ^^^^^^^^^^^^^^^^^^^^ use of undeclared type `SnapshotSenderFilter`
+
+error[E0433]: cannot find type `SnapshotSenderFilter` in this scope
+  --> pkg/schedule/filter/task_010_test.rs:78:152
+   |
+78 | ....Default::default()});assert!(!SnapshotSenderFilter::new(&[Arc::new(busy)],PriorityLevel::MEDIUM).await.select(&r).is_ok());
+   |                                   ^^^^^^^^^^^^^^^^^^^^ use of undeclared type `SnapshotSenderFilter`
+
+error[E0433]: cannot find type `SnapshotSenderFilter` in this scope
+  --> pkg/schedule/filter/task_010_test.rs:79:14
+   |
+79 |     assert!(!SnapshotSenderFilter::new(&[],PriorityLevel::MEDIUM).await.select(&r).is_ok());
+   |              ^^^^^^^^^^^^^^^^^^^^ use of undeclared type `SnapshotSenderFilter`
+
+Some errors have detailed explanations: E0308, E0422, E0425, E0432, E0433, E0609.
+For more information about an error, try `rustc --explain E0308`.
+warning: `astersql-pd-schedule-filter` (lib test) generated 1 warning
+error: could not compile `astersql-pd-schedule-filter` (lib test) due to 33 previous errors; 1 warning emitted
+command_exit_code=101

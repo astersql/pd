@@ -33,3 +33,10 @@ mod task_009_test;
 
 mod placement_guard;
 pub use placement_guard::*;
+
+#[cfg(test)]
+#[path = "task_010_test.rs"]
+mod task_010_test;
+
+mod region_health;
+pub use region_health::*;
