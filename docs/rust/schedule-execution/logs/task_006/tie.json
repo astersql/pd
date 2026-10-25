@@ -1,0 +1,29 @@
+{
+  "argv": [
+    "docker",
+    "run",
+    "--rm",
+    "--cap-add",
+    "SYS_PTRACE",
+    "--security-opt",
+    "seccomp=unconfined",
+    "-v",
+    "/tmp/pd-sched005:/oracle:ro",
+    "alpine:3.22",
+    "timeout",
+    "60",
+    "/oracle/dlv",
+    "--check-go-version=false",
+    "exec",
+    "/oracle/checker.test",
+    "--allow-non-terminal-interactive",
+    "--init=/oracle/task006.commands",
+    "--",
+    "-test.run",
+    "^TestReplicaCheckerTestSuite$/^(TestBasic|TestDistinctScore)$",
+    "-test.timeout=55s"
+  ],
+  "exit_code": 0,
+  "stdout": "Type 'help' for list of commands.\nBreakpoint 1 set at 0x1576498 for github.com/tikv/pd/pkg/schedule/filter.RegionScoreComparer.func1() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/comparer.go:30\n[2026/10/25 09:22:05.469 +00:00] [INFO] [labeler.go:65] [\"new region labeler created\"] [label-rules-count=0]\n[2026/10/25 09:22:05.469 +00:00] [INFO] [txn.go:756] [\"rebuilt group-label mapping\"] [total-groups=0] [total-ranges=0]\n[2026/10/25 09:22:05.469 +00:00] [INFO] [policy.go:158] [\"affinity manager availability check loop started\"] [interval=10s]\n[2026/10/25 09:22:05.469 +00:00] [INFO] [manager.go:137] [\"affinity manager initialized\"] [group-count=0]\n[2026/10/25 09:22:05.470 +00:00] [INFO] [labeler.go:65] [\"new region labeler created\"] [label-rules-count=0]\n[2026/10/25 09:22:05.470 +00:00] [INFO] [txn.go:756] [\"rebuilt group-label mapping\"] [total-groups=0] [total-ranges=0]\n[2026/10/25 09:22:05.470 +00:00] [INFO] [policy.go:158] [\"affinity manager availability check loop started\"] [interval=10s]\n[2026/10/25 09:22:05.470 +00:00] [INFO] [manager.go:137] [\"affinity manager initialized\"] [group-count=0]\n> [Breakpoint 1] github.com/tikv/pd/pkg/schedule/filter.RegionScoreComparer.func1() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/comparer.go:30 (hits goroutine(256):1 total:1) (PC: 0x1576498)\nBreakpoint 1 cleared at 0x1576498 for github.com/tikv/pd/pkg/schedule/filter.RegionScoreComparer.func1() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/comparer.go:30\n> github.com/tikv/pd/pkg/schedule/filter.RegionScoreComparer.func1() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/comparer.go:30 (PC: 0x1576498)\n192\n> github.com/tikv/pd/pkg/schedule/filter.(*StoreCandidates).PickTheTopStore() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/candidates.go:90 (PC: 0x1576284)\nValues returned:\n\t~r0: 0\n\n",
+  "stderr": ""
+}

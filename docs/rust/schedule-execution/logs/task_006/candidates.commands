@@ -1,0 +1,48 @@
+config max-variable-recurse 0
+config max-array-values 12
+trace candidates_test.go:85
+on 1 print "LINE 85"
+on 1 print cs.Stores
+trace candidates_test.go:94
+on 2 print "LINE 94"
+on 2 print minStore.meta.Id
+on 2 print maxStore.meta.Id
+trace candidates_test.go:97
+on 3 print "LINE 97"
+on 3 print cs.Stores
+on 3 print cs.Stores[0].meta.Id
+on 3 print cs.Stores[1].meta.Id
+on 3 print cs.Stores[2].meta.Id
+on 3 print cs.Stores[3].meta.Id
+on 3 print cs.Stores[4].meta.Id
+on 3 print cs.Stores[5].meta.Id
+on 3 print cs.Stores[6].meta.Id
+trace candidates_test.go:103
+on 4 print "LINE 103"
+on 4 print cs.Stores
+on 4 print cs.Stores[0].meta.Id
+on 4 print cs.Stores[1].meta.Id
+on 4 print cs.Stores[2].meta.Id
+on 4 print cs.Stores[3].meta.Id
+on 4 print cs.Stores[4].meta.Id
+on 4 print cs.Stores[5].meta.Id
+on 4 print cs.Stores[6].meta.Id
+trace candidates_test.go:106
+on 5 print "LINE 106"
+on 5 print store.meta.Id
+trace candidates_test.go:111
+on 6 print "LINE 111"
+on 6 print cs.Stores
+on 6 print cs.Stores[0].meta.Id
+on 6 print cs.Stores[1].meta.Id
+on 6 print cs.Stores[2].meta.Id
+trace candidates_test.go:115
+on 7 print "LINE 115"
+on 7 print cs.Stores
+on 7 print cs.Stores[0].meta.Id
+on 7 print cs.Stores[1].meta.Id
+trace math/rand/v2/rand.go:246
+on 8 print i
+on 8 print j
+continue
+exit

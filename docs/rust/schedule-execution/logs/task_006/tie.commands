@@ -1,0 +1,7 @@
+break filter/comparer.go:30
+continue
+clearall
+call -unsafe b = a
+print a.regionSize
+stepout
+exit

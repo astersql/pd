@@ -1,0 +1,74 @@
+[
+  {
+    "name": "reverse-region-score",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_006",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "passed": 2,
+    "failed": 1
+  },
+  {
+    "name": "reverse-isolation",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_006",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "passed": 2,
+    "failed": 1
+  },
+  {
+    "name": "discard-top-ties",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_006",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "passed": 1,
+    "failed": 2
+  },
+  {
+    "name": "reverse-shuffle",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_006",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "passed": 2,
+    "failed": 1
+  }
+]

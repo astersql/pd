@@ -1,0 +1,19 @@
+{
+  "fixture_sha256": "302c6f592a8d77ef333c6510dc3c831d34339daae9a6b8bc45fbf61e50abe0b6",
+  "go_files_unchanged": true,
+  "read_only_plans_unchanged": true,
+  "production_dependencies_valid": true,
+  "cargo_manifests_lock_unchanged": true,
+  "go_behavior_tests": 3,
+  "comparer_cases": 23,
+  "region_self_tie": 1,
+  "deterministic_candidate_checks": 5,
+  "random_shuffle_steps": 6,
+  "random_pick_cases": 1,
+  "mutation_failures": 4,
+  "rust_focused_tests": 3,
+  "rust_package_tests": 6,
+  "rust_workspace_tests": 1332,
+  "rust_workspace_ignored": 1,
+  "production_sha256": "7b9b35b40aaf16f2e6dff3a44d2e7eb97ac290d57486b3ce78f017a754d1c045"
+}

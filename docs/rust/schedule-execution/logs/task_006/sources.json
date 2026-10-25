@@ -1,0 +1,22 @@
+[
+  {
+    "path": "pkg/schedule/filter/candidates.go",
+    "sha256": "2ee5704d3f38c6a5675a9654409bd5df1532ad019dd30bdfd1105315c5f9ac12"
+  },
+  {
+    "path": "pkg/schedule/filter/comparer.go",
+    "sha256": "acbce00d2e9492b121818972f28af831534f7fad2e4e2b97fb8f0ef1429d294d"
+  },
+  {
+    "path": "pkg/schedule/filter/candidates_test.go",
+    "sha256": "f40241c4defd8b264abfe01f042352d3703602814331fd89b5c5c2c285622ed0"
+  },
+  {
+    "path": "pkg/schedule/checker/replica_strategy.go",
+    "sha256": "0223f654c145abbcd6bf330cd42501766c415b85b60221692428ed13b7002c43"
+  },
+  {
+    "path": "pkg/schedule/checker/replica_checker_test.go",
+    "sha256": "45b842a3b3fd84e72c175115df9d4105753bd6a6d4be350c77e77f2be98fe75d"
+  }
+]

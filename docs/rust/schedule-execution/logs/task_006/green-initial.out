@@ -1,0 +1,25 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=sh -c 'cargo fmt --all && cargo test -p astersql-pd-schedule-filter --locked --lib task_006 -- --nocapture'
+   Compiling astersql-pd-schedule-filter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.01s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_filter-81fe3b72e6fedf72)
+
+running 3 tests
+test task_006_test::task_006_boundaries_and_filter_chain ... ok
+test task_006_test::task_006_random_replay_and_faults ... ok
+
+thread 'task_006_test::task_006_behavior_cases' (161299445) panicked at pkg/schedule/filter/task_006_test.rs:100:9:
+assertion `left == right` failed: {"a":{"available":106971529216,"capacity":107374182400,"id":4,"labels":{"host":"h1","rack":"r1","zone":"z1"},"size":384,"used":402653184,"weight":1},"b":{"available":106870865920,"capacity":107374182400,"id":5,"labels":{"host":"h2","rack":"r1","zone":"z1"},"size":480,"used":503316480,"weight":1},"expected":-1,"kind":"Isolation","labels":[],"region_stores":[{"id":1,"labels":{"host":"h1","rack":"r1","zone":"z1"}},{"id":2,"labels":{"host":"h1","rack":"r1","zone":"z1"}}],"scores":[0,2]}
+  left: 0
+ right: -1
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test task_006_test::task_006_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_006_test::task_006_behavior_cases
+
+test result: FAILED. 2 passed; 1 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-filter --lib`
+command_exit_code=101

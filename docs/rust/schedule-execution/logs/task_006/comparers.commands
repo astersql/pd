@@ -1,0 +1,136 @@
+config max-variable-recurse 3
+config max-array-values 12
+break filter/comparer.go:34
+continue
+call conf.GetRegionScoreFormulaVersion()
+call conf.GetHighSpaceRatio()
+call conf.GetLowSpaceRatio()
+clearall
+trace filter/comparer.go:34
+on 2 print "RETURN 1"
+on 2 print sa
+on 2 print sb
+on 2 print a.meta.Id
+on 2 print a.meta.Labels
+on 2 print a.regionSize
+on 2 print a.regionWeight
+on 2 print a.storeStats.rawStats.Capacity
+on 2 print a.storeStats.rawStats.Available
+on 2 print a.storeStats.rawStats.UsedSize
+on 2 print b.meta.Id
+on 2 print b.meta.Labels
+on 2 print b.regionSize
+on 2 print b.regionWeight
+on 2 print b.storeStats.rawStats.Capacity
+on 2 print b.storeStats.rawStats.Available
+on 2 print b.storeStats.rawStats.UsedSize
+trace filter/comparer.go:36
+on 3 print "RETURN -1"
+on 3 print sa
+on 3 print sb
+on 3 print a.meta.Id
+on 3 print a.meta.Labels
+on 3 print a.regionSize
+on 3 print a.regionWeight
+on 3 print a.storeStats.rawStats.Capacity
+on 3 print a.storeStats.rawStats.Available
+on 3 print a.storeStats.rawStats.UsedSize
+on 3 print b.meta.Id
+on 3 print b.meta.Labels
+on 3 print b.regionSize
+on 3 print b.regionWeight
+on 3 print b.storeStats.rawStats.Capacity
+on 3 print b.storeStats.rawStats.Available
+on 3 print b.storeStats.rawStats.UsedSize
+trace filter/comparer.go:38
+on 4 print "RETURN 0"
+on 4 print sa
+on 4 print sb
+on 4 print a.meta.Id
+on 4 print a.meta.Labels
+on 4 print a.regionSize
+on 4 print a.regionWeight
+on 4 print a.storeStats.rawStats.Capacity
+on 4 print a.storeStats.rawStats.Available
+on 4 print a.storeStats.rawStats.UsedSize
+on 4 print b.meta.Id
+on 4 print b.meta.Labels
+on 4 print b.regionSize
+on 4 print b.regionWeight
+on 4 print b.storeStats.rawStats.Capacity
+on 4 print b.storeStats.rawStats.Available
+on 4 print b.storeStats.rawStats.UsedSize
+trace filter/comparer.go:50
+on 5 print "RETURN 1"
+on 5 print sa
+on 5 print sb
+on 5 print a.meta.Id
+on 5 print a.meta.Labels
+on 5 print a.regionSize
+on 5 print a.regionWeight
+on 5 print a.storeStats.rawStats.Capacity
+on 5 print a.storeStats.rawStats.Available
+on 5 print a.storeStats.rawStats.UsedSize
+on 5 print b.meta.Id
+on 5 print b.meta.Labels
+on 5 print b.regionSize
+on 5 print b.regionWeight
+on 5 print b.storeStats.rawStats.Capacity
+on 5 print b.storeStats.rawStats.Available
+on 5 print b.storeStats.rawStats.UsedSize
+condition 5 len(regionStores) == 2
+on 5 print locationLabels
+on 5 print regionStores[0].meta.Id
+on 5 print regionStores[0].meta.Labels
+on 5 print regionStores[1].meta.Id
+on 5 print regionStores[1].meta.Labels
+trace filter/comparer.go:52
+on 6 print "RETURN -1"
+on 6 print sa
+on 6 print sb
+on 6 print a.meta.Id
+on 6 print a.meta.Labels
+on 6 print a.regionSize
+on 6 print a.regionWeight
+on 6 print a.storeStats.rawStats.Capacity
+on 6 print a.storeStats.rawStats.Available
+on 6 print a.storeStats.rawStats.UsedSize
+on 6 print b.meta.Id
+on 6 print b.meta.Labels
+on 6 print b.regionSize
+on 6 print b.regionWeight
+on 6 print b.storeStats.rawStats.Capacity
+on 6 print b.storeStats.rawStats.Available
+on 6 print b.storeStats.rawStats.UsedSize
+condition 6 len(regionStores) == 2
+on 6 print locationLabels
+on 6 print regionStores[0].meta.Id
+on 6 print regionStores[0].meta.Labels
+on 6 print regionStores[1].meta.Id
+on 6 print regionStores[1].meta.Labels
+trace filter/comparer.go:54
+on 7 print "RETURN 0"
+on 7 print sa
+on 7 print sb
+on 7 print a.meta.Id
+on 7 print a.meta.Labels
+on 7 print a.regionSize
+on 7 print a.regionWeight
+on 7 print a.storeStats.rawStats.Capacity
+on 7 print a.storeStats.rawStats.Available
+on 7 print a.storeStats.rawStats.UsedSize
+on 7 print b.meta.Id
+on 7 print b.meta.Labels
+on 7 print b.regionSize
+on 7 print b.regionWeight
+on 7 print b.storeStats.rawStats.Capacity
+on 7 print b.storeStats.rawStats.Available
+on 7 print b.storeStats.rawStats.UsedSize
+condition 7 len(regionStores) == 2
+on 7 print locationLabels
+on 7 print regionStores[0].meta.Id
+on 7 print regionStores[0].meta.Labels
+on 7 print regionStores[1].meta.Id
+on 7 print regionStores[1].meta.Labels
+continue
+exit

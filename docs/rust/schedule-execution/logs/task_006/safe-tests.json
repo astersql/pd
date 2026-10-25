@@ -1,0 +1,38 @@
+[
+  {
+    "argv": [
+      "docker",
+      "run",
+      "--rm",
+      "-v",
+      "/tmp/pd-sched005:/oracle:ro",
+      "alpine:3.22",
+      "/oracle/filter.test",
+      "-test.run",
+      "^TestCandidates$",
+      "-test.v",
+      "-test.timeout=60s"
+    ],
+    "exit_code": 0,
+    "stdout": "=== RUN   TestCandidates\n--- PASS: TestCandidates (0.00s)\nPASS\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "docker",
+      "run",
+      "--rm",
+      "-v",
+      "/tmp/pd-sched005:/oracle:ro",
+      "alpine:3.22",
+      "/oracle/checker.test",
+      "-test.run",
+      "^TestReplicaCheckerTestSuite$/^(TestBasic|TestDistinctScore)$",
+      "-test.v",
+      "-test.timeout=60s"
+    ],
+    "exit_code": 0,
+    "stdout": "=== RUN   TestReplicaCheckerTestSuite\n=== RUN   TestReplicaCheckerTestSuite/TestBasic\n[2026/10/25 09:25:01.029 +00:00] [INFO] [labeler.go:65] [\"new region labeler created\"] [label-rules-count=0]\n[2026/10/25 09:25:01.030 +00:00] [INFO] [txn.go:756] [\"rebuilt group-label mapping\"] [total-groups=0] [total-ranges=0]\n[2026/10/25 09:25:01.030 +00:00] [INFO] [policy.go:158] [\"affinity manager availability check loop started\"] [interval=10s]\n[2026/10/25 09:25:01.030 +00:00] [INFO] [manager.go:137] [\"affinity manager initialized\"] [group-count=0]\n[2026/10/25 09:25:01.034 +00:00] [INFO] [labeler.go:65] [\"new region labeler created\"] [label-rules-count=0]\n[2026/10/25 09:25:01.034 +00:00] [INFO] [txn.go:756] [\"rebuilt group-label mapping\"] [total-groups=0] [total-ranges=0]\n[2026/10/25 09:25:01.034 +00:00] [INFO] [policy.go:158] [\"affinity manager availability check loop started\"] [interval=10s]\n[2026/10/25 09:25:01.034 +00:00] [INFO] [manager.go:137] [\"affinity manager initialized\"] [group-count=0]\n=== RUN   TestReplicaCheckerTestSuite/TestDistinctScore\n[2026/10/25 09:25:01.040 +00:00] [INFO] [policy.go:151] [\"affinity manager availability check loop stopped\"]\n[2026/10/25 09:25:01.040 +00:00] [INFO] [labeler.go:81] [\"region labeler GC stopped\"]\n[2026/10/25 09:25:01.040 +00:00] [INFO] [policy.go:151] [\"affinity manager availability check loop stopped\"]\n[2026/10/25 09:25:01.040 +00:00] [INFO] [labeler.go:81] [\"region labeler GC stopped\"]\n[2026/10/25 09:25:01.040 +00:00] [INFO] [labeler.go:65] [\"new region labeler created\"] [label-rules-count=0]\n[2026/10/25 09:25:01.040 +00:00] [INFO] [txn.go:756] [\"rebuilt group-label mapping\"] [total-groups=0] [total-ranges=0]\n[2026/10/25 09:25:01.040 +00:00] [INFO] [policy.go:158] [\"affinity manager availability check loop started\"] [interval=10s]\n[2026/10/25 09:25:01.040 +00:00] [INFO] [manager.go:137] [\"affinity manager initialized\"] [group-count=0]\n[2026/10/25 09:25:01.040 +00:00] [INFO] [labeler.go:65] [\"new region labeler created\"] [label-rules-count=0]\n[2026/10/25 09:25:01.040 +00:00] [INFO] [txn.go:756] [\"rebuilt group-label mapping\"] [total-groups=0] [total-ranges=0]\n[2026/10/25 09:25:01.040 +00:00] [INFO] [policy.go:158] [\"affinity manager availability check loop started\"] [interval=10s]\n[2026/10/25 09:25:01.040 +00:00] [INFO] [manager.go:137] [\"affinity manager initialized\"] [group-count=0]\n--- PASS: TestReplicaCheckerTestSuite (0.02s)\n    --- PASS: TestReplicaCheckerTestSuite/TestBasic (0.02s)\n    --- PASS: TestReplicaCheckerTestSuite/TestDistinctScore (0.00s)\n[2026/10/25 09:25:01.041 +00:00] [INFO] [policy.go:151] [\"affinity manager availability check loop stopped\"]\n[2026/10/25 09:25:01.041 +00:00] [INFO] [labeler.go:81] [\"region labeler GC stopped\"]\n[2026/10/25 09:25:01.041 +00:00] [INFO] [labeler.go:81] [\"region labeler GC stopped\"]\n[2026/10/25 09:25:01.041 +00:00] [INFO] [policy.go:151] [\"affinity manager availability check loop stopped\"]\nPASS\n",
+    "stderr": ""
+  }
+]

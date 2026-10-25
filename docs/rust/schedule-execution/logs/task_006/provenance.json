@@ -1,0 +1,35 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "dependency_commit": "82e885286",
+  "mode": "classic/default; linux-arm64 test binaries in alpine:3.22",
+  "binaries": {
+    "filter.test": "ea96e2e54834ad026432b60327b63e986d8a388d4c580c41137ab7e0fd1dba53",
+    "checker.test": "b99f75075671504c659eae703cbdeb291fa07676f5109307871747d50f89bd8c",
+    "dlv": "dcd0463a4350f0660412f5c766d31077370eec10ac8055cf0d786377e0d6340e"
+  },
+  "checker_compilation": {
+    "argv": [
+      "go",
+      "test",
+      "-c",
+      "-gcflags=all=-N -l",
+      "-o",
+      "/tmp/pd-sched005/checker.test",
+      "./pkg/schedule/checker"
+    ],
+    "env": {
+      "GOOS": "linux",
+      "GOARCH": "arm64",
+      "GOFLAGS": "-mod=readonly",
+      "GOPROXY": "off",
+      "CGO_ENABLED": "0"
+    },
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "filter_compilation": "../task_005/compilation.json",
+  "safety": "Read-only compilation writes only external cache and test binary, no generator or failpoint injection. TestCandidates/TestBasic/TestDistinctScore, setup, teardown and WaitForEtcdConnections/TestMain reviewed. No failpoint imports in selected checker/strategy/mockcluster paths; these selected assertions do not need failpoint injection. Complete targeted tests passed.",
+  "oracle": "Trace actual comparator return branches with sa/sb, canonical input store stats and labels; config getters observed v2/0.7/0.8. Isolation traces restrict regionStores length 2 and retain both reference IDs and labels. Trace actual TestCandidates checkpoints and RNG bounded samples. tie.json sets only input b=a before score computation, steps out observing return 0, then exits modified test; tie is API execution evidence, not whole-test PASS.",
+  "normalization": "normalize.py only reads frozen Go transcripts. Domain values/order retained; store pointers and log timestamps excluded. Actual random index tape is replayed at host randomness boundary; no same-seed or PRNG sequence compatibility claim."
+}
