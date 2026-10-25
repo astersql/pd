@@ -1,0 +1,117 @@
+break filters.go:498
+continue
+clearall
+config max-variable-recurse 3
+print store.meta.Labels
+call conf.CheckLabelProperty("reject-leader", store.meta.Labels)
+set store.meta.LastHeartbeat = 9000000000000000000
+call -unsafe store.limiter = storelimit.NewStoreRateLimit(0.0)
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE reject/leader"
+call -unsafe f.Source(conf,store)
+print f.Reason
+call -unsafe f.Target(conf,store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE reject/region"
+call -unsafe f.Source(conf,store)
+print f.Reason
+call -unsafe f.Target(conf,store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE reject/both"
+call -unsafe f.Source(conf,store)
+print f.Reason
+call -unsafe f.Target(conf,store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE reject/temporary_region"
+call -unsafe f.Source(conf,store)
+print f.Reason
+call -unsafe f.Target(conf,store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE reject/temporary_leader"
+call -unsafe f.Source(conf,store)
+print f.Reason
+call -unsafe f.Target(conf,store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 3
+set f.Reason = 0
+print "CASE reject/urgent"
+call -unsafe f.Source(conf,store)
+print f.Reason
+call -unsafe f.Target(conf,store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = true
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE reject/scatter"
+call -unsafe f.Source(conf,store)
+print f.Reason
+call -unsafe f.Target(conf,store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = true
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE reject/fast"
+call -unsafe f.Source(conf,store)
+print f.Reason
+call -unsafe f.Target(conf,store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE reject/none"
+call -unsafe f.Source(conf,store)
+print f.Reason
+call -unsafe f.Target(conf,store)
+print f.Reason
+exit

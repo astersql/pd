@@ -12,3 +12,10 @@ mod task_005_test;
 #[cfg(test)]
 #[path = "task_006_test.rs"]
 mod task_006_test;
+
+mod store_state;
+pub use store_state::*;
+
+#[cfg(test)]
+#[path = "task_007_test.rs"]
+mod task_007_test;

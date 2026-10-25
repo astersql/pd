@@ -1,0 +1,15 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "dependency_commit": "3e51c6818",
+  "binaries": {
+    "filter.test": "ea96e2e54834ad026432b60327b63e986d8a388d4c580c41137ab7e0fd1dba53",
+    "checker.test": "b99f75075671504c659eae703cbdeb291fa07676f5109307871747d50f89bd8c",
+    "dlv": "dcd0463a4350f0660412f5c766d31077370eec10ac8055cf0d786377e0d6340e"
+  },
+  "binary_compilation": "Reuse task_005 filter/dlv and task_006 checker; no new Go build, generated source, failpoint injection or module rewrite.",
+  "safety": "Selected StoreStateFilter/Reason/SendStateFilter and ReplicaChecker TestReplaceOfflinePeer with TestMain/setup/teardown inspected. These existing selected assertions require no failpoint injection. PersistOptions getters and label-property operations on this path contain no relevant failpoint; no Go source or module modifications.",
+  "runtime": "alpine:3.22 linux-arm64 existing test binaries; dlv only changes explicit store/filter input values, and reads actual production return values. API probes exit before altered full-test assertions; safe-tests/checker-safe-test are separate unmodified complete-test runs.",
+  "normalization": "No status, detailed reason or filter reason normalized. Clock is explicit in Rust. Go healthy uses future heartbeat 9000000000000000000; down uses 0; disconnected uses host observation minus 5 minutes, safely away from strict 20-second/30-minute boundaries. Exact elapsed equalities are additional Rust source-contract tests. Memory addresses, debugger frames and timestamps omitted from fixture. Reject inputs reuse real checker noleader=true labels and matching configuration property; healthy heartbeat is explicitly replaced before calls.",
+  "cases": 243,
+  "outputs": 486
+}

@@ -449,9 +449,12 @@ name = "astersql-pd-schedule-filter"
 version = "0.1.0"
 dependencies = [
  "astersql-pd-core",
+ "astersql-pd-core-constant",
  "astersql-pd-schedule-config",
  "astersql-pd-schedule-plan",
+ "astersql-pd-storelimit",
  "serde_json",
+ "tokio",
 ]
 
 [[package]]

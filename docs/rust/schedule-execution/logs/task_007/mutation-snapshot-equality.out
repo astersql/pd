@@ -1,0 +1,31 @@
+
+running 5 tests
+test task_007_test::task_007_clock_budget_and_boundaries ... ok
+test task_007_test::task_007_collector_resource_fault - should panic ... ok
+test task_007_test::task_007_async_chain_and_diagnostics ... ok
+test task_007_test::task_007_nil_limiter_fault - should panic ... ok
+test task_007_test::task_007_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_007_test::task_007_behavior_cases
+
+test result: FAILED. 4 passed; 1 failed; 0 ignored; 0 measured; 6 filtered out; finished in 0.01s
+
+   Compiling astersql-pd-schedule-filter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.56s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_filter-b3343d0a4dad09ad)
+
+thread 'task_007_test::task_007_nil_limiter_fault' (161413369) panicked at pkg/core/store_limit.rs:108:14:
+nil store limiter
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'task_007_test::task_007_behavior_cases' (161413366) panicked at pkg/schedule/filter/task_007_test.rs:110:13:
+assertion `left == right` failed: "snap_equal/region" source=true
+  left: StatusCode(200)
+ right: StatusCode(0)
+
+thread 'task_007_test::task_007_collector_resource_fault' (161413368) panicked at pkg/schedule/plan/balance_plan.rs:41:27:
+resource type does not match balance step
+error: test failed, to rerun pass `-p astersql-pd-schedule-filter --lib`

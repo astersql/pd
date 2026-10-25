@@ -1,0 +1,42 @@
+[
+  {
+    "path": "pkg/schedule/filter/filters.go",
+    "sha256": "2e72100da29ddac7d371c59898ef10a562cda9bf4eec666cc4e4e0c7c8edc0a4"
+  },
+  {
+    "path": "pkg/schedule/filter/filters_test.go",
+    "sha256": "7675a55b6d20d983416b5b0d0e215fa0e1033f5dfc0367f73c0e73f7e9f52e05"
+  },
+  {
+    "path": "pkg/schedule/filter/status.go",
+    "sha256": "9517ad53b6b90dd79634d4eb37548e9c72cdc8b26ee41427ec5b562bdac51dfd"
+  },
+  {
+    "path": "pkg/schedule/filter/counter.go",
+    "sha256": "a291b8960207ce0af627bf83bcd2730043c969520d1804caef8a788ef7e2c809"
+  },
+  {
+    "path": "pkg/schedule/filter/candidates_test.go",
+    "sha256": "f40241c4defd8b264abfe01f042352d3703602814331fd89b5c5c2c285622ed0"
+  },
+  {
+    "path": "pkg/schedule/checker/replica_checker_test.go",
+    "sha256": "45b842a3b3fd84e72c175115df9d4105753bd6a6d4be350c77e77f2be98fe75d"
+  },
+  {
+    "path": "pkg/mock/mockcluster/mockcluster.go",
+    "sha256": "7e93c4a25b9ab59449a4323a9595caec8e94081f787ff00ca1c0a0ace5b5ea48"
+  },
+  {
+    "path": "pkg/core/store.go",
+    "sha256": "686a3bd66c7deceb3fd79b2c83be359487088993d20e649ba2a533db298ad605"
+  },
+  {
+    "path": "pkg/core/storelimit/store_limit.go",
+    "sha256": "1556e3bee72d2d5e218a425938c43505385a2c6af5c91cd3d26bde9ccd507651"
+  },
+  {
+    "path": "server/config/persist_options.go",
+    "sha256": "d49284b2eee7f9a509f32598ed69fe47bdccda674cb4940d80c2ac7ad10b62ff"
+  }
+]

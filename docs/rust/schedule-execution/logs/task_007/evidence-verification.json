@@ -1,0 +1,16 @@
+{
+  "fixture_sha256": "3f53ded1654638a6fdcc77d31849bccb3d7161106fd5f5e370c332a69af7420c",
+  "go_files_unchanged": true,
+  "readonly_plans_checked": 17,
+  "oracle_cases": 243,
+  "oracle_source_target_results": 486,
+  "complete_go_behavior_tests": 4,
+  "mutation_failures": 3,
+  "rust_focused_tests": 5,
+  "rust_package_tests": 11,
+  "rust_workspace_tests": 1337,
+  "rust_workspace_ignored": 1,
+  "production_dependencies_valid": true,
+  "registry_dependencies_unchanged": true,
+  "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+}

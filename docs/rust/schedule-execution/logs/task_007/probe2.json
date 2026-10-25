@@ -1,0 +1,29 @@
+{
+  "argv": [
+    "docker",
+    "run",
+    "--rm",
+    "--cap-add",
+    "SYS_PTRACE",
+    "--security-opt",
+    "seccomp=unconfined",
+    "-v",
+    "/tmp/pd-sched005:/oracle:ro",
+    "alpine:3.22",
+    "timeout",
+    "60",
+    "/oracle/dlv",
+    "--check-go-version=false",
+    "exec",
+    "/oracle/filter.test",
+    "--allow-non-terminal-interactive",
+    "--init=/oracle/task007.commands",
+    "--",
+    "-test.run",
+    "^TestStoreStateFilter$",
+    "-test.timeout=55s"
+  ],
+  "exit_code": 0,
+  "stdout": "Type 'help' for list of commands.\nBreakpoint 1 set at 0x15f5d5c for github.com/tikv/pd/pkg/schedule/filter.(*StoreStateFilter).Source() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/filters.go:563\n> [Breakpoint 1] github.com/tikv/pd/pkg/schedule/filter.(*StoreStateFilter).Source() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/filters.go:563 (hits goroutine(211):1 total:1) (PC: 0x15f5d5c)\nBreakpoint 1 cleared at 0x15f5d5c for github.com/tikv/pd/pkg/schedule/filter.(*StoreStateFilter).Source() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/filters.go:563\n> github.com/tikv/pd/pkg/schedule/filter.(*StoreStateFilter).Source() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/filters.go:563 (PC: 0x15f5d5c)\nValues returned:\n\tstatus: (\"*github.com/tikv/pd/pkg/schedule/plan.Status\")(0x3e56b5cdb248)\n*github.com/tikv/pd/pkg/schedule/plan.Status {StatusCode: StatusOK (0), DetailedReason: \"\"}\n\nstoreStateOK (10)\n> github.com/tikv/pd/pkg/schedule/filter.(*StoreStateFilter).Source() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/filters.go:563 (PC: 0x15f5d5c)\nValues returned:\n\tstatus: (\"*github.com/tikv/pd/pkg/schedule/plan.Status\")(0x3e56b5cdb248)\n*github.com/tikv/pd/pkg/schedule/plan.Status {StatusCode: StatusOK (0), DetailedReason: \"\"}\n\nstoreStateOK (10)\n> github.com/tikv/pd/pkg/schedule/filter.(*StoreStateFilter).Source() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/filters.go:563 (PC: 0x15f5d5c)\nValues returned:\n\t~r0: github.com/tikv/pd/pkg/utils/etcdutil.etcdServerOfflineTimeout (1800000000000)\n\n",
+  "stderr": ""
+}

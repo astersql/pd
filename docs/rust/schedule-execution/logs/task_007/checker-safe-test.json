@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "/tmp/pd-sched005:/oracle:ro",
+    "alpine:3.22",
+    "/oracle/checker.test",
+    "-test.run",
+    "^TestReplicaCheckerTestSuite$/^TestReplaceOfflinePeer$",
+    "-test.v",
+    "-test.timeout=60s"
+  ],
+  "exit_code": 0,
+  "stdout": "=== RUN   TestReplicaCheckerTestSuite\n=== RUN   TestReplicaCheckerTestSuite/TestReplaceOfflinePeer\n[2026/10/25 09:44:28.209 +00:00] [INFO] [labeler.go:65] [\"new region labeler created\"] [label-rules-count=0]\n[2026/10/25 09:44:28.209 +00:00] [INFO] [txn.go:756] [\"rebuilt group-label mapping\"] [total-groups=0] [total-ranges=0]\n[2026/10/25 09:44:28.209 +00:00] [INFO] [policy.go:158] [\"affinity manager availability check loop started\"] [interval=10s]\n[2026/10/25 09:44:28.209 +00:00] [INFO] [manager.go:137] [\"affinity manager initialized\"] [group-count=0]\n--- PASS: TestReplicaCheckerTestSuite (0.01s)\n    --- PASS: TestReplicaCheckerTestSuite/TestReplaceOfflinePeer (0.00s)\nPASS\n[2026/10/25 09:44:28.211 +00:00] [INFO] [policy.go:151] [\"affinity manager availability check loop stopped\"]\n[2026/10/25 09:44:28.211 +00:00] [INFO] [labeler.go:81] [\"region labeler GC stopped\"]\n",
+  "stderr": ""
+}

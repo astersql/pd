@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "/tmp/pd-sched005:/oracle:ro",
+    "alpine:3.22",
+    "/oracle/filter.test",
+    "-test.run",
+    "^(TestStoreStateFilter|TestStoreStateFilterReason|TestSendStateFilter)$",
+    "-test.v",
+    "-test.timeout=60s"
+  ],
+  "exit_code": 0,
+  "stdout": "=== RUN   TestSendStateFilter\n--- PASS: TestSendStateFilter (0.00s)\n=== RUN   TestStoreStateFilter\n--- PASS: TestStoreStateFilter (0.00s)\n=== RUN   TestStoreStateFilterReason\n--- PASS: TestStoreStateFilterReason (0.00s)\nPASS\n",
+  "stderr": ""
+}

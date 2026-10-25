@@ -1,0 +1,53 @@
+[
+  {
+    "name": "removed-bypass",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_007",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "passed": 1,
+    "failed": 4
+  },
+  {
+    "name": "snapshot-equality",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_007",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "passed": 4,
+    "failed": 1
+  },
+  {
+    "name": "leader-budget-bypass",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_007",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "passed": 3,
+    "failed": 2
+  }
+]

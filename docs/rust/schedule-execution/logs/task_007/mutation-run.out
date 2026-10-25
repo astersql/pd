@@ -1,0 +1,55 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=python3 docs/rust/schedule-execution/logs/task_007/mutation.py
+[
+  {
+    "name": "removed-bypass",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_007",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "passed": 1,
+    "failed": 4
+  },
+  {
+    "name": "snapshot-equality",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_007",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "passed": 4,
+    "failed": 1
+  },
+  {
+    "name": "leader-budget-bypass",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_007",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "passed": 3,
+    "failed": 2
+  }
+]
+command_exit_code=0

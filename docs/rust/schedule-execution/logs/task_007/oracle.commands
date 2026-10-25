@@ -1,0 +1,3212 @@
+break filters.go:563
+continue
+clearall
+config max-variable-recurse 1
+call conf.GetMaxStoreDownTime()
+call conf.GetMaxSnapshotCount()
+call conf.GetMaxPendingPeerCount()
+set store.meta.NodeState = 0
+set store.storeStats.rawStats.IsBusy = false
+set store.pauseLeaderTransferIn.v = 0
+set store.pauseLeaderTransferOut.v = 0
+set store.slowStoreEvicted.v = 0
+set store.stoppingStoreEvicted.v = 0
+set store.slowTrendEvicted.v = 0
+set store.storeStats.rawStats.SendingSnapCount = 0
+set store.storeStats.rawStats.ReceivingSnapCount = 0
+set store.storeStats.rawStats.ApplyingSnapCount = 0
+set store.pendingPeerCount = 0
+set store.networkSlowTriggers = 0
+set store.storeStats.rawStats.SlowScore = 0
+set store.meta.LastHeartbeat = 9000000000000000000
+call -unsafe store.limiter = storelimit.NewStoreRateLimit(0.0)
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE healthy/leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE healthy/region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE healthy/both"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE healthy/temporary_region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE healthy/temporary_leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 3
+set f.Reason = 0
+print "CASE healthy/urgent"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = true
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE healthy/scatter"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = true
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE healthy/fast"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE healthy/none"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set store.meta.NodeState = 3
+set store.storeStats.rawStats.IsBusy = false
+set store.pauseLeaderTransferIn.v = 0
+set store.pauseLeaderTransferOut.v = 0
+set store.slowStoreEvicted.v = 0
+set store.stoppingStoreEvicted.v = 0
+set store.slowTrendEvicted.v = 0
+set store.storeStats.rawStats.SendingSnapCount = 0
+set store.storeStats.rawStats.ReceivingSnapCount = 0
+set store.storeStats.rawStats.ApplyingSnapCount = 0
+set store.pendingPeerCount = 0
+set store.networkSlowTriggers = 0
+set store.storeStats.rawStats.SlowScore = 0
+set store.meta.LastHeartbeat = 9000000000000000000
+call -unsafe store.limiter = storelimit.NewStoreRateLimit(0.0)
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE removed/leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE removed/region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE removed/both"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE removed/temporary_region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE removed/temporary_leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 3
+set f.Reason = 0
+print "CASE removed/urgent"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = true
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE removed/scatter"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = true
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE removed/fast"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE removed/none"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set store.meta.NodeState = 2
+set store.storeStats.rawStats.IsBusy = false
+set store.pauseLeaderTransferIn.v = 0
+set store.pauseLeaderTransferOut.v = 0
+set store.slowStoreEvicted.v = 0
+set store.stoppingStoreEvicted.v = 0
+set store.slowTrendEvicted.v = 0
+set store.storeStats.rawStats.SendingSnapCount = 0
+set store.storeStats.rawStats.ReceivingSnapCount = 0
+set store.storeStats.rawStats.ApplyingSnapCount = 0
+set store.pendingPeerCount = 0
+set store.networkSlowTriggers = 0
+set store.storeStats.rawStats.SlowScore = 0
+set store.meta.LastHeartbeat = 9000000000000000000
+call -unsafe store.limiter = storelimit.NewStoreRateLimit(0.0)
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE removing/leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE removing/region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE removing/both"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE removing/temporary_region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE removing/temporary_leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 3
+set f.Reason = 0
+print "CASE removing/urgent"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = true
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE removing/scatter"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = true
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE removing/fast"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE removing/none"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set store.meta.NodeState = 0
+set store.storeStats.rawStats.IsBusy = false
+set store.pauseLeaderTransferIn.v = 0
+set store.pauseLeaderTransferOut.v = 0
+set store.slowStoreEvicted.v = 0
+set store.stoppingStoreEvicted.v = 0
+set store.slowTrendEvicted.v = 0
+set store.storeStats.rawStats.SendingSnapCount = 0
+set store.storeStats.rawStats.ReceivingSnapCount = 0
+set store.storeStats.rawStats.ApplyingSnapCount = 0
+set store.pendingPeerCount = 0
+set store.networkSlowTriggers = 0
+set store.storeStats.rawStats.SlowScore = 0
+set store.meta.LastHeartbeat = 0
+call -unsafe store.limiter = storelimit.NewStoreRateLimit(0.0)
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE down/leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE down/region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE down/both"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE down/temporary_region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE down/temporary_leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 3
+set f.Reason = 0
+print "CASE down/urgent"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = true
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE down/scatter"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = true
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE down/fast"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE down/none"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set store.meta.NodeState = 0
+set store.storeStats.rawStats.IsBusy = false
+set store.pauseLeaderTransferIn.v = 0
+set store.pauseLeaderTransferOut.v = 0
+set store.slowStoreEvicted.v = 0
+set store.stoppingStoreEvicted.v = 0
+set store.slowTrendEvicted.v = 0
+set store.storeStats.rawStats.SendingSnapCount = 0
+set store.storeStats.rawStats.ReceivingSnapCount = 0
+set store.storeStats.rawStats.ApplyingSnapCount = 0
+set store.pendingPeerCount = 0
+set store.networkSlowTriggers = 0
+set store.storeStats.rawStats.SlowScore = 0
+set store.meta.LastHeartbeat = 1792920998577463000
+call -unsafe store.limiter = storelimit.NewStoreRateLimit(0.0)
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE disconnected/leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE disconnected/region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE disconnected/both"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE disconnected/temporary_region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE disconnected/temporary_leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 3
+set f.Reason = 0
+print "CASE disconnected/urgent"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = true
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE disconnected/scatter"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = true
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE disconnected/fast"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE disconnected/none"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set store.meta.NodeState = 0
+set store.storeStats.rawStats.IsBusy = true
+set store.pauseLeaderTransferIn.v = 0
+set store.pauseLeaderTransferOut.v = 0
+set store.slowStoreEvicted.v = 0
+set store.stoppingStoreEvicted.v = 0
+set store.slowTrendEvicted.v = 0
+set store.storeStats.rawStats.SendingSnapCount = 0
+set store.storeStats.rawStats.ReceivingSnapCount = 0
+set store.storeStats.rawStats.ApplyingSnapCount = 0
+set store.pendingPeerCount = 0
+set store.networkSlowTriggers = 0
+set store.storeStats.rawStats.SlowScore = 0
+set store.meta.LastHeartbeat = 9000000000000000000
+call -unsafe store.limiter = storelimit.NewStoreRateLimit(0.0)
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE busy/leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE busy/region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE busy/both"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE busy/temporary_region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE busy/temporary_leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 3
+set f.Reason = 0
+print "CASE busy/urgent"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = true
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE busy/scatter"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = true
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE busy/fast"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE busy/none"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set store.meta.NodeState = 0
+set store.storeStats.rawStats.IsBusy = false
+set store.pauseLeaderTransferIn.v = 1
+set store.pauseLeaderTransferOut.v = 0
+set store.slowStoreEvicted.v = 0
+set store.stoppingStoreEvicted.v = 0
+set store.slowTrendEvicted.v = 0
+set store.storeStats.rawStats.SendingSnapCount = 0
+set store.storeStats.rawStats.ReceivingSnapCount = 0
+set store.storeStats.rawStats.ApplyingSnapCount = 0
+set store.pendingPeerCount = 0
+set store.networkSlowTriggers = 0
+set store.storeStats.rawStats.SlowScore = 0
+set store.meta.LastHeartbeat = 9000000000000000000
+call -unsafe store.limiter = storelimit.NewStoreRateLimit(0.0)
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pause_in/leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pause_in/region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pause_in/both"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pause_in/temporary_region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pause_in/temporary_leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 3
+set f.Reason = 0
+print "CASE pause_in/urgent"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = true
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pause_in/scatter"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = true
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pause_in/fast"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pause_in/none"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set store.meta.NodeState = 0
+set store.storeStats.rawStats.IsBusy = false
+set store.pauseLeaderTransferIn.v = 0
+set store.pauseLeaderTransferOut.v = 1
+set store.slowStoreEvicted.v = 0
+set store.stoppingStoreEvicted.v = 0
+set store.slowTrendEvicted.v = 0
+set store.storeStats.rawStats.SendingSnapCount = 0
+set store.storeStats.rawStats.ReceivingSnapCount = 0
+set store.storeStats.rawStats.ApplyingSnapCount = 0
+set store.pendingPeerCount = 0
+set store.networkSlowTriggers = 0
+set store.storeStats.rawStats.SlowScore = 0
+set store.meta.LastHeartbeat = 9000000000000000000
+call -unsafe store.limiter = storelimit.NewStoreRateLimit(0.0)
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pause_out/leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pause_out/region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pause_out/both"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pause_out/temporary_region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pause_out/temporary_leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 3
+set f.Reason = 0
+print "CASE pause_out/urgent"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = true
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pause_out/scatter"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = true
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pause_out/fast"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pause_out/none"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set store.meta.NodeState = 0
+set store.storeStats.rawStats.IsBusy = false
+set store.pauseLeaderTransferIn.v = 1
+set store.pauseLeaderTransferOut.v = 1
+set store.slowStoreEvicted.v = 0
+set store.stoppingStoreEvicted.v = 0
+set store.slowTrendEvicted.v = 0
+set store.storeStats.rawStats.SendingSnapCount = 0
+set store.storeStats.rawStats.ReceivingSnapCount = 0
+set store.storeStats.rawStats.ApplyingSnapCount = 0
+set store.pendingPeerCount = 0
+set store.networkSlowTriggers = 0
+set store.storeStats.rawStats.SlowScore = 0
+set store.meta.LastHeartbeat = 9000000000000000000
+call -unsafe store.limiter = storelimit.NewStoreRateLimit(0.0)
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pause_both/leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pause_both/region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pause_both/both"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pause_both/temporary_region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pause_both/temporary_leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 3
+set f.Reason = 0
+print "CASE pause_both/urgent"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = true
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pause_both/scatter"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = true
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pause_both/fast"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pause_both/none"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set store.meta.NodeState = 0
+set store.storeStats.rawStats.IsBusy = false
+set store.pauseLeaderTransferIn.v = 0
+set store.pauseLeaderTransferOut.v = 0
+set store.slowStoreEvicted.v = 1
+set store.stoppingStoreEvicted.v = 0
+set store.slowTrendEvicted.v = 0
+set store.storeStats.rawStats.SendingSnapCount = 0
+set store.storeStats.rawStats.ReceivingSnapCount = 0
+set store.storeStats.rawStats.ApplyingSnapCount = 0
+set store.pendingPeerCount = 0
+set store.networkSlowTriggers = 0
+set store.storeStats.rawStats.SlowScore = 0
+set store.meta.LastHeartbeat = 9000000000000000000
+call -unsafe store.limiter = storelimit.NewStoreRateLimit(0.0)
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE slow/leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE slow/region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE slow/both"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE slow/temporary_region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE slow/temporary_leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 3
+set f.Reason = 0
+print "CASE slow/urgent"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = true
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE slow/scatter"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = true
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE slow/fast"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE slow/none"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set store.meta.NodeState = 0
+set store.storeStats.rawStats.IsBusy = false
+set store.pauseLeaderTransferIn.v = 0
+set store.pauseLeaderTransferOut.v = 0
+set store.slowStoreEvicted.v = 0
+set store.stoppingStoreEvicted.v = 1
+set store.slowTrendEvicted.v = 0
+set store.storeStats.rawStats.SendingSnapCount = 0
+set store.storeStats.rawStats.ReceivingSnapCount = 0
+set store.storeStats.rawStats.ApplyingSnapCount = 0
+set store.pendingPeerCount = 0
+set store.networkSlowTriggers = 0
+set store.storeStats.rawStats.SlowScore = 0
+set store.meta.LastHeartbeat = 9000000000000000000
+call -unsafe store.limiter = storelimit.NewStoreRateLimit(0.0)
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE stopping/leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE stopping/region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE stopping/both"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE stopping/temporary_region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE stopping/temporary_leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 3
+set f.Reason = 0
+print "CASE stopping/urgent"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = true
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE stopping/scatter"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = true
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE stopping/fast"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE stopping/none"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set store.meta.NodeState = 0
+set store.storeStats.rawStats.IsBusy = false
+set store.pauseLeaderTransferIn.v = 0
+set store.pauseLeaderTransferOut.v = 0
+set store.slowStoreEvicted.v = 0
+set store.stoppingStoreEvicted.v = 0
+set store.slowTrendEvicted.v = 1
+set store.storeStats.rawStats.SendingSnapCount = 0
+set store.storeStats.rawStats.ReceivingSnapCount = 0
+set store.storeStats.rawStats.ApplyingSnapCount = 0
+set store.pendingPeerCount = 0
+set store.networkSlowTriggers = 0
+set store.storeStats.rawStats.SlowScore = 0
+set store.meta.LastHeartbeat = 9000000000000000000
+call -unsafe store.limiter = storelimit.NewStoreRateLimit(0.0)
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE trend/leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE trend/region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE trend/both"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE trend/temporary_region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE trend/temporary_leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 3
+set f.Reason = 0
+print "CASE trend/urgent"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = true
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE trend/scatter"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = true
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE trend/fast"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE trend/none"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set store.meta.NodeState = 0
+set store.storeStats.rawStats.IsBusy = false
+set store.pauseLeaderTransferIn.v = 0
+set store.pauseLeaderTransferOut.v = 0
+set store.slowStoreEvicted.v = 0
+set store.stoppingStoreEvicted.v = 0
+set store.slowTrendEvicted.v = 0
+set store.storeStats.rawStats.SendingSnapCount = 0
+set store.storeStats.rawStats.ReceivingSnapCount = 0
+set store.storeStats.rawStats.ApplyingSnapCount = 0
+set store.pendingPeerCount = 0
+set store.networkSlowTriggers = 1
+set store.storeStats.rawStats.SlowScore = 0
+set store.meta.LastHeartbeat = 9000000000000000000
+call -unsafe store.limiter = storelimit.NewStoreRateLimit(0.0)
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE network_only/leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE network_only/region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE network_only/both"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE network_only/temporary_region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE network_only/temporary_leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 3
+set f.Reason = 0
+print "CASE network_only/urgent"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = true
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE network_only/scatter"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = true
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE network_only/fast"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE network_only/none"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set store.meta.NodeState = 0
+set store.storeStats.rawStats.IsBusy = false
+set store.pauseLeaderTransferIn.v = 0
+set store.pauseLeaderTransferOut.v = 0
+set store.slowStoreEvicted.v = 0
+set store.stoppingStoreEvicted.v = 0
+set store.slowTrendEvicted.v = 0
+set store.storeStats.rawStats.SendingSnapCount = 0
+set store.storeStats.rawStats.ReceivingSnapCount = 0
+set store.storeStats.rawStats.ApplyingSnapCount = 0
+set store.pendingPeerCount = 0
+set store.networkSlowTriggers = 0
+set store.storeStats.rawStats.SlowScore = 100
+set store.meta.LastHeartbeat = 9000000000000000000
+call -unsafe store.limiter = storelimit.NewStoreRateLimit(0.0)
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE slow_score_only/leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE slow_score_only/region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE slow_score_only/both"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE slow_score_only/temporary_region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE slow_score_only/temporary_leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 3
+set f.Reason = 0
+print "CASE slow_score_only/urgent"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = true
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE slow_score_only/scatter"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = true
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE slow_score_only/fast"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE slow_score_only/none"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set store.meta.NodeState = 0
+set store.storeStats.rawStats.IsBusy = false
+set store.pauseLeaderTransferIn.v = 0
+set store.pauseLeaderTransferOut.v = 0
+set store.slowStoreEvicted.v = 0
+set store.stoppingStoreEvicted.v = 0
+set store.slowTrendEvicted.v = 0
+set store.storeStats.rawStats.SendingSnapCount = 64
+set store.storeStats.rawStats.ReceivingSnapCount = 64
+set store.storeStats.rawStats.ApplyingSnapCount = 0
+set store.pendingPeerCount = 0
+set store.networkSlowTriggers = 0
+set store.storeStats.rawStats.SlowScore = 0
+set store.meta.LastHeartbeat = 9000000000000000000
+call -unsafe store.limiter = storelimit.NewStoreRateLimit(0.0)
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE snap_equal/leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE snap_equal/region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE snap_equal/both"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE snap_equal/temporary_region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE snap_equal/temporary_leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 3
+set f.Reason = 0
+print "CASE snap_equal/urgent"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = true
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE snap_equal/scatter"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = true
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE snap_equal/fast"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE snap_equal/none"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set store.meta.NodeState = 0
+set store.storeStats.rawStats.IsBusy = false
+set store.pauseLeaderTransferIn.v = 0
+set store.pauseLeaderTransferOut.v = 0
+set store.slowStoreEvicted.v = 0
+set store.stoppingStoreEvicted.v = 0
+set store.slowTrendEvicted.v = 0
+set store.storeStats.rawStats.SendingSnapCount = 65
+set store.storeStats.rawStats.ReceivingSnapCount = 0
+set store.storeStats.rawStats.ApplyingSnapCount = 0
+set store.pendingPeerCount = 0
+set store.networkSlowTriggers = 0
+set store.storeStats.rawStats.SlowScore = 0
+set store.meta.LastHeartbeat = 9000000000000000000
+call -unsafe store.limiter = storelimit.NewStoreRateLimit(0.0)
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE snap_send_over/leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE snap_send_over/region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE snap_send_over/both"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE snap_send_over/temporary_region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE snap_send_over/temporary_leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 3
+set f.Reason = 0
+print "CASE snap_send_over/urgent"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = true
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE snap_send_over/scatter"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = true
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE snap_send_over/fast"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE snap_send_over/none"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set store.meta.NodeState = 0
+set store.storeStats.rawStats.IsBusy = false
+set store.pauseLeaderTransferIn.v = 0
+set store.pauseLeaderTransferOut.v = 0
+set store.slowStoreEvicted.v = 0
+set store.stoppingStoreEvicted.v = 0
+set store.slowTrendEvicted.v = 0
+set store.storeStats.rawStats.SendingSnapCount = 0
+set store.storeStats.rawStats.ReceivingSnapCount = 65
+set store.storeStats.rawStats.ApplyingSnapCount = 0
+set store.pendingPeerCount = 0
+set store.networkSlowTriggers = 0
+set store.storeStats.rawStats.SlowScore = 0
+set store.meta.LastHeartbeat = 9000000000000000000
+call -unsafe store.limiter = storelimit.NewStoreRateLimit(0.0)
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE snap_receive_over/leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE snap_receive_over/region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE snap_receive_over/both"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE snap_receive_over/temporary_region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE snap_receive_over/temporary_leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 3
+set f.Reason = 0
+print "CASE snap_receive_over/urgent"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = true
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE snap_receive_over/scatter"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = true
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE snap_receive_over/fast"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE snap_receive_over/none"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set store.meta.NodeState = 0
+set store.storeStats.rawStats.IsBusy = false
+set store.pauseLeaderTransferIn.v = 0
+set store.pauseLeaderTransferOut.v = 0
+set store.slowStoreEvicted.v = 0
+set store.stoppingStoreEvicted.v = 0
+set store.slowTrendEvicted.v = 0
+set store.storeStats.rawStats.SendingSnapCount = 0
+set store.storeStats.rawStats.ReceivingSnapCount = 0
+set store.storeStats.rawStats.ApplyingSnapCount = 100
+set store.pendingPeerCount = 0
+set store.networkSlowTriggers = 0
+set store.storeStats.rawStats.SlowScore = 0
+set store.meta.LastHeartbeat = 9000000000000000000
+call -unsafe store.limiter = storelimit.NewStoreRateLimit(0.0)
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE applying_only/leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE applying_only/region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE applying_only/both"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE applying_only/temporary_region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE applying_only/temporary_leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 3
+set f.Reason = 0
+print "CASE applying_only/urgent"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = true
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE applying_only/scatter"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = true
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE applying_only/fast"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE applying_only/none"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set store.meta.NodeState = 0
+set store.storeStats.rawStats.IsBusy = false
+set store.pauseLeaderTransferIn.v = 0
+set store.pauseLeaderTransferOut.v = 0
+set store.slowStoreEvicted.v = 0
+set store.stoppingStoreEvicted.v = 0
+set store.slowTrendEvicted.v = 0
+set store.storeStats.rawStats.SendingSnapCount = 0
+set store.storeStats.rawStats.ReceivingSnapCount = 0
+set store.storeStats.rawStats.ApplyingSnapCount = 0
+set store.pendingPeerCount = 64
+set store.networkSlowTriggers = 0
+set store.storeStats.rawStats.SlowScore = 0
+set store.meta.LastHeartbeat = 9000000000000000000
+call -unsafe store.limiter = storelimit.NewStoreRateLimit(0.0)
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pending_equal/leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pending_equal/region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pending_equal/both"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pending_equal/temporary_region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pending_equal/temporary_leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 3
+set f.Reason = 0
+print "CASE pending_equal/urgent"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = true
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pending_equal/scatter"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = true
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pending_equal/fast"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pending_equal/none"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set store.meta.NodeState = 0
+set store.storeStats.rawStats.IsBusy = false
+set store.pauseLeaderTransferIn.v = 0
+set store.pauseLeaderTransferOut.v = 0
+set store.slowStoreEvicted.v = 0
+set store.stoppingStoreEvicted.v = 0
+set store.slowTrendEvicted.v = 0
+set store.storeStats.rawStats.SendingSnapCount = 0
+set store.storeStats.rawStats.ReceivingSnapCount = 0
+set store.storeStats.rawStats.ApplyingSnapCount = 0
+set store.pendingPeerCount = 65
+set store.networkSlowTriggers = 0
+set store.storeStats.rawStats.SlowScore = 0
+set store.meta.LastHeartbeat = 9000000000000000000
+call -unsafe store.limiter = storelimit.NewStoreRateLimit(0.0)
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pending_over/leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pending_over/region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pending_over/both"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pending_over/temporary_region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pending_over/temporary_leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 3
+set f.Reason = 0
+print "CASE pending_over/urgent"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = true
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pending_over/scatter"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = true
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pending_over/fast"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pending_over/none"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set store.meta.NodeState = 3
+set store.storeStats.rawStats.IsBusy = true
+set store.pauseLeaderTransferIn.v = 0
+set store.pauseLeaderTransferOut.v = 0
+set store.slowStoreEvicted.v = 0
+set store.stoppingStoreEvicted.v = 0
+set store.slowTrendEvicted.v = 0
+set store.storeStats.rawStats.SendingSnapCount = 0
+set store.storeStats.rawStats.ReceivingSnapCount = 0
+set store.storeStats.rawStats.ApplyingSnapCount = 0
+set store.pendingPeerCount = 0
+set store.networkSlowTriggers = 0
+set store.storeStats.rawStats.SlowScore = 0
+set store.meta.LastHeartbeat = 0
+call -unsafe store.limiter = storelimit.NewStoreRateLimit(0.0)
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE removed_busy_down/leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE removed_busy_down/region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE removed_busy_down/both"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE removed_busy_down/temporary_region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE removed_busy_down/temporary_leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 3
+set f.Reason = 0
+print "CASE removed_busy_down/urgent"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = true
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE removed_busy_down/scatter"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = true
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE removed_busy_down/fast"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE removed_busy_down/none"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set store.meta.NodeState = 2
+set store.storeStats.rawStats.IsBusy = false
+set store.pauseLeaderTransferIn.v = 0
+set store.pauseLeaderTransferOut.v = 0
+set store.slowStoreEvicted.v = 0
+set store.stoppingStoreEvicted.v = 0
+set store.slowTrendEvicted.v = 0
+set store.storeStats.rawStats.SendingSnapCount = 0
+set store.storeStats.rawStats.ReceivingSnapCount = 0
+set store.storeStats.rawStats.ApplyingSnapCount = 0
+set store.pendingPeerCount = 0
+set store.networkSlowTriggers = 0
+set store.storeStats.rawStats.SlowScore = 0
+set store.meta.LastHeartbeat = 0
+call -unsafe store.limiter = storelimit.NewStoreRateLimit(0.0)
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE removing_down/leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE removing_down/region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE removing_down/both"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE removing_down/temporary_region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE removing_down/temporary_leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 3
+set f.Reason = 0
+print "CASE removing_down/urgent"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = true
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE removing_down/scatter"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = true
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE removing_down/fast"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE removing_down/none"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set store.meta.NodeState = 0
+set store.storeStats.rawStats.IsBusy = true
+set store.pauseLeaderTransferIn.v = 1
+set store.pauseLeaderTransferOut.v = 0
+set store.slowStoreEvicted.v = 1
+set store.stoppingStoreEvicted.v = 0
+set store.slowTrendEvicted.v = 0
+set store.storeStats.rawStats.SendingSnapCount = 0
+set store.storeStats.rawStats.ReceivingSnapCount = 0
+set store.storeStats.rawStats.ApplyingSnapCount = 0
+set store.pendingPeerCount = 0
+set store.networkSlowTriggers = 0
+set store.storeStats.rawStats.SlowScore = 0
+set store.meta.LastHeartbeat = 9000000000000000000
+call -unsafe store.limiter = storelimit.NewStoreRateLimit(0.0)
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pause_slow_busy/leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pause_slow_busy/region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pause_slow_busy/both"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pause_slow_busy/temporary_region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pause_slow_busy/temporary_leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 3
+set f.Reason = 0
+print "CASE pause_slow_busy/urgent"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = true
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pause_slow_busy/scatter"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = true
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pause_slow_busy/fast"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE pause_slow_busy/none"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set store.meta.NodeState = 0
+set store.storeStats.rawStats.IsBusy = false
+set store.pauseLeaderTransferIn.v = 0
+set store.pauseLeaderTransferOut.v = 0
+set store.slowStoreEvicted.v = 0
+set store.stoppingStoreEvicted.v = 0
+set store.slowTrendEvicted.v = 0
+set store.storeStats.rawStats.SendingSnapCount = 65
+set store.storeStats.rawStats.ReceivingSnapCount = 0
+set store.storeStats.rawStats.ApplyingSnapCount = 0
+set store.pendingPeerCount = 65
+set store.networkSlowTriggers = 0
+set store.storeStats.rawStats.SlowScore = 0
+set store.meta.LastHeartbeat = 9000000000000000000
+call -unsafe store.limiter = storelimit.NewStoreRateLimit(0.0)
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE snap_pending/leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE snap_pending/region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE snap_pending/both"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE snap_pending/temporary_region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE snap_pending/temporary_leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 3
+set f.Reason = 0
+print "CASE snap_pending/urgent"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = true
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE snap_pending/scatter"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = true
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE snap_pending/fast"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE snap_pending/none"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set store.meta.NodeState = 0
+set store.storeStats.rawStats.IsBusy = false
+set store.pauseLeaderTransferIn.v = 0
+set store.pauseLeaderTransferOut.v = 0
+set store.slowStoreEvicted.v = 0
+set store.stoppingStoreEvicted.v = 0
+set store.slowTrendEvicted.v = 0
+set store.storeStats.rawStats.SendingSnapCount = 0
+set store.storeStats.rawStats.ReceivingSnapCount = 0
+set store.storeStats.rawStats.ApplyingSnapCount = 0
+set store.pendingPeerCount = 0
+set store.networkSlowTriggers = 0
+set store.storeStats.rawStats.SlowScore = 0
+set store.meta.LastHeartbeat = 9000000000000000000
+call -unsafe store.limiter = storelimit.NewStoreRateLimit(0.000000001)
+call store.limiter.Take(1000, 0, 0)
+call store.limiter.Take(1000, 1, 0)
+call store.limiter.Take(1000, 3, 0)
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE limits/leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE limits/region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE limits/both"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE limits/temporary_region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE limits/temporary_leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 3
+set f.Reason = 0
+print "CASE limits/urgent"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = true
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE limits/scatter"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = true
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE limits/fast"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE limits/none"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set store.meta.NodeState = 0
+set store.storeStats.rawStats.IsBusy = false
+set store.pauseLeaderTransferIn.v = 0
+set store.pauseLeaderTransferOut.v = 0
+set store.slowStoreEvicted.v = 0
+set store.stoppingStoreEvicted.v = 0
+set store.slowTrendEvicted.v = 0
+set store.storeStats.rawStats.SendingSnapCount = 65
+set store.storeStats.rawStats.ReceivingSnapCount = 0
+set store.storeStats.rawStats.ApplyingSnapCount = 0
+set store.pendingPeerCount = 0
+set store.networkSlowTriggers = 0
+set store.storeStats.rawStats.SlowScore = 0
+set store.meta.LastHeartbeat = 9000000000000000000
+call -unsafe store.limiter = storelimit.NewStoreRateLimit(0.000000001)
+call store.limiter.Take(1000, 0, 0)
+call store.limiter.Take(1000, 1, 0)
+call store.limiter.Take(1000, 3, 0)
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE limits_snap/leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE limits_snap/region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE limits_snap/both"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE limits_snap/temporary_region"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = false
+set f.AllowTemporaryStates = true
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE limits_snap/temporary_leader"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = true
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 3
+set f.Reason = 0
+print "CASE limits_snap/urgent"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = true
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE limits_snap/scatter"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = true
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = true
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE limits_snap/fast"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+set f.TransferLeader = false
+set f.MoveRegion = false
+set f.AllowTemporaryStates = false
+set f.ScatterRegion = false
+set f.AllowFastFailover = false
+set f.OperatorLevel = 0
+set f.Reason = 0
+print "CASE limits_snap/none"
+call f.Source(conf, store)
+print f.Reason
+call f.Target(conf, store)
+print f.Reason
+exit
