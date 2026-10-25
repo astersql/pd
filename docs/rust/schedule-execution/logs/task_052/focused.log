@@ -1,0 +1,11 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.14s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-e09dbbdb4068a657)
+
+running 2 tests
+task_052: 7 prefix cases
+test task_052_test::task_052_prefix_boundaries ... ok
+task_052: 75 grouping cases
+test task_052_test::task_052_behavior_cases ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 27 filtered out; finished in 0.00s

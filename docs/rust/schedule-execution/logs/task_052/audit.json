@@ -1,0 +1,38 @@
+{
+  "go_module_files": 1101,
+  "go_hashes_unchanged": true,
+  "go_snapshot_sha256": "ae4ea1307f6a0074d7d6b706be224a1d139607a343ed2b2c6ea9068395425bd4",
+  "go_status_before": [],
+  "go_status_after": [],
+  "readonly_plan_sha256": {
+    ".plans/2026-10-22-pd-rust-渐进迁移主题/plan.md": "3803752d4e8c2d01dc5879e22c700ecd711abc62fb95af542727cfd7dc5304c0",
+    ".plans/2026-10-25-调度执行内核/00-准入/plan.md": "aa7677b51a7e49cffe6376f60f153263ee7785b4d18d5615efb47d81fa301e9b",
+    ".plans/2026-10-25-调度执行内核/01-调度核心契约/plan.md": "0f7091053b9a826bddb27976ff63961a6a3263f69439fdb4613c2f71ef779b47",
+    ".plans/2026-10-25-调度执行内核/02-过滤器/plan.md": "c7fc98b3bd6b7ad58475b7b158b5954251c2568c9273b332f99a7d330677136c",
+    ".plans/2026-10-25-调度执行内核/03-心跳命令/plan.md": "aed38d32c7d220fa659b59d2353c20001846f5814eaf552fe7ea6c0d21777681",
+    ".plans/2026-10-25-调度执行内核/04-操作器/plan.md": "909c658c2fac3ff3071bbe70712abc518e1bbee2f341da61881df9a0cd6e15af",
+    ".plans/2026-10-25-调度执行内核/05-检查器/plan.md": "2056ef5712fd2c07876860d4d59974e7944ebe710f182a5f1ba51dea5aea49c1",
+    ".plans/2026-10-25-调度执行内核/06-区域散射/plan.md": "729fde8e1e6d34e7ffa8644d6b7ee021af4e6843b89cf2aee99dc3831c6baee8",
+    ".plans/2026-10-25-调度执行内核/07-区域拆分/plan.md": "324c888abbb2a90defb1c33b02a6a701e26228842cb7e64232d7c26cded81d42",
+    ".plans/2026-10-25-调度执行内核/08-内置调度器/plan.md": "563e8e1244ccc606535c7884787437bc121ac112581a8273548d57b1efc2ae92",
+    ".plans/2026-10-25-调度执行内核/09-诊断管理/plan.md": "65a77cd9542755d1faaa9f078b3115816a6ddb622c1b32a57fd8e2c4ace8035e",
+    ".plans/2026-10-25-调度执行内核/10-调度门面/plan.md": "db6a177fa34317aee98ce3461a8a300247cd18ac5136fa1c0b732fe02a2c083f",
+    ".plans/2026-10-25-调度执行内核/11-调度管理/plan.md": "f50b2576b6d4399ec1f0db70345d86928f81fa9bd278f3ec10ea75f510b6c7d3",
+    ".plans/2026-10-25-调度执行内核/12-集群调度桥接/plan.md": "a3057a9350b7dd2117b4d76dceb49f9e3bb1ab5d6813ca97a6b796cf9ff4c37e",
+    ".plans/2026-10-25-调度执行内核/13-进度追踪/plan.md": "37e247fd4be20022849e421eb785b2bae87c110d700214aeac43940bd3fcb7d9",
+    ".plans/2026-10-25-调度执行内核/14-操作断言工具/plan.md": "d9348b974d09d45ce437a56cb06ed9c6f4f84916b562a73c26bf8f106a504e3e",
+    ".plans/2026-10-25-调度执行内核/15-主题验收/plan.md": "bfe79341080bf3d5e8ede91f60d8488056e7aaf4efb585a4c1d02c20bb2a9874",
+    ".plans/2026-10-25-调度执行内核/plan.md": "823d7db69c05899fe3b59884bb5fdd3e2fc715ad82ca4fe6eb89bc9b65fa6f58"
+  },
+  "readonly_plans_unchanged": true,
+  "own_slots_released": [
+    1
+  ],
+  "diff_check_exit": 0,
+  "local_links_checked": 14,
+  "workspace_tests": {
+    "passed": 1487,
+    "failed": 0,
+    "ignored": 1
+  }
+}

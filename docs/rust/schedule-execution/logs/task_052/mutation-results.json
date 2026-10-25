@@ -1,0 +1,27 @@
+[
+  {
+    "mutation": "inclusive-upper",
+    "exit_code": 101,
+    "behavior_assertion_detected": true
+  },
+  {
+    "mutation": "skip-validation",
+    "exit_code": 101,
+    "behavior_assertion_detected": true
+  },
+  {
+    "mutation": "malformed-index-fallback",
+    "exit_code": 101,
+    "behavior_assertion_detected": true
+  },
+  {
+    "mutation": "index-infinity",
+    "exit_code": 101,
+    "behavior_assertion_detected": true
+  },
+  {
+    "mutation": "prefix-no-truncation",
+    "exit_code": 101,
+    "behavior_assertion_detected": true
+  }
+]

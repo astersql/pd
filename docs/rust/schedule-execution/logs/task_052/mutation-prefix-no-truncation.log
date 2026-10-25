@@ -1,0 +1,28 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.24s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-e09dbbdb4068a657)
+
+running 2 tests
+
+thread 'task_052_test::task_052_prefix_boundaries' (164816168) panicked at pkg/schedule/checker/task_052_test.rs:72:9:
+assertion `left == right` failed
+  left: [97, 99, 255, 255]
+ right: [97, 99]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test task_052_test::task_052_prefix_boundaries ... FAILED
+
+thread 'task_052_test::task_052_behavior_cases' (164816167) panicked at pkg/schedule/checker/task_052_test.rs:54:9:
+assertion `left == right` failed: "signed ids 9223372036854775807 9223372036854775807"
+  left: SplitScatterRangeHint { start_key: [116, 255, 255, 255, 255, 255, 255, 255, 255, 255, 95, 105, 255, 255, 255, 255, 255, 255, 255, 255, 255, 0, 0, 0, 0, 0, 250], end_key: [116, 255, 255, 255, 255, 255, 255, 255, 255, 255, 95, 106, 255, 255, 255, 255, 255, 255, 255, 255, 255, 0, 0, 0, 0, 0, 250], scatter_group: "split-scatter-index-9223372036854775807-9223372036854775807" }
+ right: SplitScatterRangeHint { start_key: [116, 255, 255, 255, 255, 255, 255, 255, 255, 255, 95, 105, 255, 255, 255, 255, 255, 255, 255, 255, 255, 0, 0, 0, 0, 0, 250], end_key: [116, 255, 255, 255, 255, 255, 255, 255, 255, 255, 95, 106, 0, 0, 0, 0, 0, 250], scatter_group: "split-scatter-index-9223372036854775807-9223372036854775807" }
+test task_052_test::task_052_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_052_test::task_052_behavior_cases
+    task_052_test::task_052_prefix_boundaries
+
+test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 27 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-checker --lib`

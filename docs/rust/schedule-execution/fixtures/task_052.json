@@ -1,0 +1,962 @@
+{
+  "provenance": "source-derived; no Go runtime oracle",
+  "cases": [
+    {
+      "name": "classic index",
+      "start": "7480000000000000ff2a5f698000000000ff0000076100000000fb",
+      "end": "7480000000000000ff2a5f698000000000ff0000076d00000000fb",
+      "valid": null,
+      "expected": {
+        "start": "7480000000000000ff2a5f698000000000ff0000070000000000fa",
+        "end": "7480000000000000ff2a5f698000000000ff0000080000000000fa",
+        "group": "split-scatter-index-42-7"
+      }
+    },
+    {
+      "name": "record",
+      "start": "7480000000000000ff2a5f726100000000fb",
+      "end": "7480000000000000ff2a5f726d00000000fb",
+      "valid": null,
+      "expected": {
+        "start": "7480000000000000ff2a00000000000000f8",
+        "end": "7480000000000000ff2b00000000000000f8",
+        "group": "split-scatter-table-42"
+      }
+    },
+    {
+      "name": "bare table boundary",
+      "start": "7480000000000000ff2a00000000000000f8",
+      "end": "7480000000000000ff2a5f698000000000ff0000076d00000000fb",
+      "valid": null,
+      "expected": {
+        "start": "7480000000000000ff2a00000000000000f8",
+        "end": "7480000000000000ff2b00000000000000f8",
+        "group": "split-scatter-table-42"
+      }
+    },
+    {
+      "name": "cross entity",
+      "start": "7480000000000000ff2a5f698000000000ff0000076100000000fb",
+      "end": "7480000000000000ff2a5f726d00000000fb",
+      "valid": null,
+      "expected": {
+        "start": "7480000000000000ff2a00000000000000f8",
+        "end": "7480000000000000ff2b00000000000000f8",
+        "group": "split-scatter-table-42"
+      }
+    },
+    {
+      "name": "cross table from record",
+      "start": "7480000000000000ff2a5f726100000000fb",
+      "end": "7480000000000000ff2b00000000000000f8",
+      "valid": null,
+      "expected": {
+        "start": "7480000000000000ff2a00000000000000f8",
+        "end": "7480000000000000ff2b00000000000000f8",
+        "group": "split-scatter-table-42"
+      }
+    },
+    {
+      "name": "index end equals exclusive prefix",
+      "start": "7480000000000000ff2a5f698000000000ff0000076100000000fb",
+      "end": "7480000000000000ff2a5f698000000000ff0000080000000000fa",
+      "valid": null,
+      "expected": {
+        "start": "7480000000000000ff2a5f698000000000ff0000070000000000fa",
+        "end": "7480000000000000ff2a5f698000000000ff0000080000000000fa",
+        "group": "split-scatter-index-42-7"
+      }
+    },
+    {
+      "name": "index end beyond prefix",
+      "start": "7480000000000000ff2a5f698000000000ff0000076100000000fb",
+      "end": "7480000000000000ff2a5f698000000000ff0000086100000000fb",
+      "valid": null,
+      "expected": {
+        "start": "7480000000000000ff2a00000000000000f8",
+        "end": "7480000000000000ff2b00000000000000f8",
+        "group": "split-scatter-table-42"
+      }
+    },
+    {
+      "name": "index unbounded",
+      "start": "7480000000000000ff2a5f698000000000ff0000076100000000fb",
+      "end": "",
+      "valid": null,
+      "expected": {
+        "start": "7480000000000000ff2a00000000000000f8",
+        "end": "7480000000000000ff2b00000000000000f8",
+        "group": "split-scatter-table-42"
+      }
+    },
+    {
+      "name": "table unbounded",
+      "start": "7480000000000000ff2a00000000000000f8",
+      "end": "",
+      "valid": null,
+      "expected": {
+        "start": "7480000000000000ff2a00000000000000f8",
+        "end": "7480000000000000ff2b00000000000000f8",
+        "group": "split-scatter-table-42"
+      }
+    },
+    {
+      "name": "index crossing table",
+      "start": "7480000000000000ff2a5f698000000000ff0000070000000000fa",
+      "end": "7480000000000000ff2b00000000000000f8",
+      "valid": null,
+      "expected": {
+        "start": "7480000000000000ff2a00000000000000f8",
+        "end": "7480000000000000ff2b00000000000000f8",
+        "group": "split-scatter-table-42"
+      }
+    },
+    {
+      "name": "index prefix suffix accepted",
+      "start": "7480000000000000ff2a5f698000000000ff000007ffffffffffffffffffffff000000fc",
+      "end": "7480000000000000ff2a5f698000000000ff000007ffffffffffffffffffffffff0000fd",
+      "valid": null,
+      "expected": {
+        "start": "7480000000000000ff2a5f698000000000ff0000070000000000fa",
+        "end": "7480000000000000ff2a5f698000000000ff0000080000000000fa",
+        "group": "split-scatter-index-42-7"
+      }
+    },
+    {
+      "name": "txn 0 record",
+      "start": "7800000074800000ff000000002a5f7261ff0000000000000000f7",
+      "end": "7800000074800000ff000000002a5f726dff0000000000000000f7",
+      "valid": [
+        0
+      ],
+      "expected": {
+        "start": "7800000074800000ff000000002a000000fc",
+        "end": "7800000074800000ff000000002b000000fc",
+        "group": "split-scatter-keyspace-0-table-42"
+      }
+    },
+    {
+      "name": "txn 0 index",
+      "start": "7800000074800000ff000000002a5f6980ff0000000000000761ff0000000000000000f7",
+      "end": "7800000074800000ff000000002a5f6980ff000000000000076dff0000000000000000f7",
+      "valid": [
+        0
+      ],
+      "expected": {
+        "start": "7800000074800000ff000000002a5f6980ff0000000000000700fe",
+        "end": "7800000074800000ff000000002a5f6980ff0000000000000800fe",
+        "group": "split-scatter-keyspace-0-index-42-7"
+      }
+    },
+    {
+      "name": "txn 0 exact prefix upper",
+      "start": "7800000074800000ff000000002a5f6980ff0000000000000700fe",
+      "end": "7800000074800000ff000000002a5f6980ff0000000000000800fe",
+      "valid": [
+        0
+      ],
+      "expected": {
+        "start": "7800000074800000ff000000002a5f6980ff0000000000000700fe",
+        "end": "7800000074800000ff000000002a5f6980ff0000000000000800fe",
+        "group": "split-scatter-keyspace-0-index-42-7"
+      }
+    },
+    {
+      "name": "txn 0 cross keyspace",
+      "start": "7800000074800000ff000000002a5f6980ff0000000000000700fe",
+      "end": "7800000100000000fb",
+      "valid": [
+        0
+      ],
+      "expected": {
+        "start": "7800000074800000ff000000002a000000fc",
+        "end": "7800000074800000ff000000002b000000fc",
+        "group": "split-scatter-keyspace-0-table-42"
+      }
+    },
+    {
+      "name": "txn 0 no validator",
+      "start": "7800000074800000ff000000002a000000fc",
+      "end": "",
+      "valid": null,
+      "expected": {
+        "start": "",
+        "end": "",
+        "group": ""
+      }
+    },
+    {
+      "name": "txn 0 rejected validator",
+      "start": "7800000074800000ff000000002a000000fc",
+      "end": "",
+      "valid": [
+        1
+      ],
+      "expected": {
+        "start": "",
+        "end": "",
+        "group": ""
+      }
+    },
+    {
+      "name": "txn 1 record",
+      "start": "7800000174800000ff000000002a5f7261ff0000000000000000f7",
+      "end": "7800000174800000ff000000002a5f726dff0000000000000000f7",
+      "valid": [
+        1
+      ],
+      "expected": {
+        "start": "7800000174800000ff000000002a000000fc",
+        "end": "7800000174800000ff000000002b000000fc",
+        "group": "split-scatter-keyspace-1-table-42"
+      }
+    },
+    {
+      "name": "txn 1 index",
+      "start": "7800000174800000ff000000002a5f6980ff0000000000000761ff0000000000000000f7",
+      "end": "7800000174800000ff000000002a5f6980ff000000000000076dff0000000000000000f7",
+      "valid": [
+        1
+      ],
+      "expected": {
+        "start": "7800000174800000ff000000002a5f6980ff0000000000000700fe",
+        "end": "7800000174800000ff000000002a5f6980ff0000000000000800fe",
+        "group": "split-scatter-keyspace-1-index-42-7"
+      }
+    },
+    {
+      "name": "txn 1 exact prefix upper",
+      "start": "7800000174800000ff000000002a5f6980ff0000000000000700fe",
+      "end": "7800000174800000ff000000002a5f6980ff0000000000000800fe",
+      "valid": [
+        1
+      ],
+      "expected": {
+        "start": "7800000174800000ff000000002a5f6980ff0000000000000700fe",
+        "end": "7800000174800000ff000000002a5f6980ff0000000000000800fe",
+        "group": "split-scatter-keyspace-1-index-42-7"
+      }
+    },
+    {
+      "name": "txn 1 cross keyspace",
+      "start": "7800000174800000ff000000002a5f6980ff0000000000000700fe",
+      "end": "7800000200000000fb",
+      "valid": [
+        1
+      ],
+      "expected": {
+        "start": "7800000174800000ff000000002a000000fc",
+        "end": "7800000174800000ff000000002b000000fc",
+        "group": "split-scatter-keyspace-1-table-42"
+      }
+    },
+    {
+      "name": "txn 1 no validator",
+      "start": "7800000174800000ff000000002a000000fc",
+      "end": "",
+      "valid": null,
+      "expected": {
+        "start": "",
+        "end": "",
+        "group": ""
+      }
+    },
+    {
+      "name": "txn 1 rejected validator",
+      "start": "7800000174800000ff000000002a000000fc",
+      "end": "",
+      "valid": [
+        2
+      ],
+      "expected": {
+        "start": "",
+        "end": "",
+        "group": ""
+      }
+    },
+    {
+      "name": "txn 4242 record",
+      "start": "7800109274800000ff000000002a5f7261ff0000000000000000f7",
+      "end": "7800109274800000ff000000002a5f726dff0000000000000000f7",
+      "valid": [
+        4242
+      ],
+      "expected": {
+        "start": "7800109274800000ff000000002a000000fc",
+        "end": "7800109274800000ff000000002b000000fc",
+        "group": "split-scatter-keyspace-4242-table-42"
+      }
+    },
+    {
+      "name": "txn 4242 index",
+      "start": "7800109274800000ff000000002a5f6980ff0000000000000761ff0000000000000000f7",
+      "end": "7800109274800000ff000000002a5f6980ff000000000000076dff0000000000000000f7",
+      "valid": [
+        4242
+      ],
+      "expected": {
+        "start": "7800109274800000ff000000002a5f6980ff0000000000000700fe",
+        "end": "7800109274800000ff000000002a5f6980ff0000000000000800fe",
+        "group": "split-scatter-keyspace-4242-index-42-7"
+      }
+    },
+    {
+      "name": "txn 4242 exact prefix upper",
+      "start": "7800109274800000ff000000002a5f6980ff0000000000000700fe",
+      "end": "7800109274800000ff000000002a5f6980ff0000000000000800fe",
+      "valid": [
+        4242
+      ],
+      "expected": {
+        "start": "7800109274800000ff000000002a5f6980ff0000000000000700fe",
+        "end": "7800109274800000ff000000002a5f6980ff0000000000000800fe",
+        "group": "split-scatter-keyspace-4242-index-42-7"
+      }
+    },
+    {
+      "name": "txn 4242 cross keyspace",
+      "start": "7800109274800000ff000000002a5f6980ff0000000000000700fe",
+      "end": "7800109300000000fb",
+      "valid": [
+        4242
+      ],
+      "expected": {
+        "start": "7800109274800000ff000000002a000000fc",
+        "end": "7800109274800000ff000000002b000000fc",
+        "group": "split-scatter-keyspace-4242-table-42"
+      }
+    },
+    {
+      "name": "txn 4242 no validator",
+      "start": "7800109274800000ff000000002a000000fc",
+      "end": "",
+      "valid": null,
+      "expected": {
+        "start": "",
+        "end": "",
+        "group": ""
+      }
+    },
+    {
+      "name": "txn 4242 rejected validator",
+      "start": "7800109274800000ff000000002a000000fc",
+      "end": "",
+      "valid": [
+        4243
+      ],
+      "expected": {
+        "start": "",
+        "end": "",
+        "group": ""
+      }
+    },
+    {
+      "name": "txn 16777214 record",
+      "start": "78fffffe74800000ff000000002a5f7261ff0000000000000000f7",
+      "end": "78fffffe74800000ff000000002a5f726dff0000000000000000f7",
+      "valid": [
+        16777214
+      ],
+      "expected": {
+        "start": "78fffffe74800000ff000000002a000000fc",
+        "end": "78fffffe74800000ff000000002b000000fc",
+        "group": "split-scatter-keyspace-16777214-table-42"
+      }
+    },
+    {
+      "name": "txn 16777214 index",
+      "start": "78fffffe74800000ff000000002a5f6980ff0000000000000761ff0000000000000000f7",
+      "end": "78fffffe74800000ff000000002a5f6980ff000000000000076dff0000000000000000f7",
+      "valid": [
+        16777214
+      ],
+      "expected": {
+        "start": "78fffffe74800000ff000000002a5f6980ff0000000000000700fe",
+        "end": "78fffffe74800000ff000000002a5f6980ff0000000000000800fe",
+        "group": "split-scatter-keyspace-16777214-index-42-7"
+      }
+    },
+    {
+      "name": "txn 16777214 exact prefix upper",
+      "start": "78fffffe74800000ff000000002a5f6980ff0000000000000700fe",
+      "end": "78fffffe74800000ff000000002a5f6980ff0000000000000800fe",
+      "valid": [
+        16777214
+      ],
+      "expected": {
+        "start": "78fffffe74800000ff000000002a5f6980ff0000000000000700fe",
+        "end": "78fffffe74800000ff000000002a5f6980ff0000000000000800fe",
+        "group": "split-scatter-keyspace-16777214-index-42-7"
+      }
+    },
+    {
+      "name": "txn 16777214 cross keyspace",
+      "start": "78fffffe74800000ff000000002a5f6980ff0000000000000700fe",
+      "end": "78ffffff00000000fb",
+      "valid": [
+        16777214
+      ],
+      "expected": {
+        "start": "78fffffe74800000ff000000002a000000fc",
+        "end": "78fffffe74800000ff000000002b000000fc",
+        "group": "split-scatter-keyspace-16777214-table-42"
+      }
+    },
+    {
+      "name": "txn 16777214 no validator",
+      "start": "78fffffe74800000ff000000002a000000fc",
+      "end": "",
+      "valid": null,
+      "expected": {
+        "start": "",
+        "end": "",
+        "group": ""
+      }
+    },
+    {
+      "name": "txn 16777214 rejected validator",
+      "start": "78fffffe74800000ff000000002a000000fc",
+      "end": "",
+      "valid": [
+        16777215
+      ],
+      "expected": {
+        "start": "",
+        "end": "",
+        "group": ""
+      }
+    },
+    {
+      "name": "txn 16777215 record",
+      "start": "78ffffff74800000ff000000002a5f7261ff0000000000000000f7",
+      "end": "78ffffff74800000ff000000002a5f726dff0000000000000000f7",
+      "valid": [
+        16777215
+      ],
+      "expected": {
+        "start": "78ffffff74800000ff000000002a000000fc",
+        "end": "78ffffff74800000ff000000002b000000fc",
+        "group": "split-scatter-keyspace-16777215-table-42"
+      }
+    },
+    {
+      "name": "txn 16777215 index",
+      "start": "78ffffff74800000ff000000002a5f6980ff0000000000000761ff0000000000000000f7",
+      "end": "78ffffff74800000ff000000002a5f6980ff000000000000076dff0000000000000000f7",
+      "valid": [
+        16777215
+      ],
+      "expected": {
+        "start": "78ffffff74800000ff000000002a5f6980ff0000000000000700fe",
+        "end": "78ffffff74800000ff000000002a5f6980ff0000000000000800fe",
+        "group": "split-scatter-keyspace-16777215-index-42-7"
+      }
+    },
+    {
+      "name": "txn 16777215 exact prefix upper",
+      "start": "78ffffff74800000ff000000002a5f6980ff0000000000000700fe",
+      "end": "78ffffff74800000ff000000002a5f6980ff0000000000000800fe",
+      "valid": [
+        16777215
+      ],
+      "expected": {
+        "start": "78ffffff74800000ff000000002a5f6980ff0000000000000700fe",
+        "end": "78ffffff74800000ff000000002a5f6980ff0000000000000800fe",
+        "group": "split-scatter-keyspace-16777215-index-42-7"
+      }
+    },
+    {
+      "name": "txn 16777215 cross keyspace",
+      "start": "78ffffff74800000ff000000002a5f6980ff0000000000000700fe",
+      "end": "7900000000000000f8",
+      "valid": [
+        16777215
+      ],
+      "expected": {
+        "start": "78ffffff74800000ff000000002a000000fc",
+        "end": "78ffffff74800000ff000000002b000000fc",
+        "group": "split-scatter-keyspace-16777215-table-42"
+      }
+    },
+    {
+      "name": "txn 16777215 no validator",
+      "start": "78ffffff74800000ff000000002a000000fc",
+      "end": "",
+      "valid": null,
+      "expected": {
+        "start": "",
+        "end": "",
+        "group": ""
+      }
+    },
+    {
+      "name": "txn 16777215 rejected validator",
+      "start": "78ffffff74800000ff000000002a000000fc",
+      "end": "",
+      "valid": [
+        0
+      ],
+      "expected": {
+        "start": "",
+        "end": "",
+        "group": ""
+      }
+    },
+    {
+      "name": "raw keyspace never stripped",
+      "start": "7200109274800000ff000000002a5f7261ff0000000000000000f7",
+      "end": "",
+      "valid": [
+        4242
+      ],
+      "expected": {
+        "start": "",
+        "end": "",
+        "group": ""
+      }
+    },
+    {
+      "name": "non table",
+      "start": "68656c6c6f000000fc",
+      "end": "",
+      "valid": null,
+      "expected": {
+        "start": "",
+        "end": "",
+        "group": ""
+      }
+    },
+    {
+      "name": "unknown mode",
+      "start": "7a00000174800000ff000000002a000000fc",
+      "end": "",
+      "valid": [
+        1
+      ],
+      "expected": {
+        "start": "",
+        "end": "",
+        "group": ""
+      }
+    },
+    {
+      "name": "short keyspace",
+      "start": "7800010000000000fa",
+      "end": "",
+      "valid": [
+        1
+      ],
+      "expected": {
+        "start": "",
+        "end": "",
+        "group": ""
+      }
+    },
+    {
+      "name": "txn empty payload",
+      "start": "7800109200000000fb",
+      "end": "",
+      "valid": [
+        4242
+      ],
+      "expected": {
+        "start": "",
+        "end": "",
+        "group": ""
+      }
+    },
+    {
+      "name": "txn non table",
+      "start": "780010926d657461ff0000000000000000f7",
+      "end": "",
+      "valid": [
+        4242
+      ],
+      "expected": {
+        "start": "",
+        "end": "",
+        "group": ""
+      }
+    },
+    {
+      "name": "truncated table id 0",
+      "start": "7400000000000000f8",
+      "end": "",
+      "valid": null,
+      "expected": {
+        "start": "",
+        "end": "",
+        "group": ""
+      }
+    },
+    {
+      "name": "truncated index id 0",
+      "start": "7480000000000000ff2a5f690000000000fa",
+      "end": "",
+      "valid": null,
+      "expected": {
+        "start": "",
+        "end": "",
+        "group": ""
+      }
+    },
+    {
+      "name": "truncated table id 1",
+      "start": "7400000000000000f9",
+      "end": "",
+      "valid": null,
+      "expected": {
+        "start": "",
+        "end": "",
+        "group": ""
+      }
+    },
+    {
+      "name": "truncated index id 1",
+      "start": "7480000000000000ff2a5f690000000000fb",
+      "end": "",
+      "valid": null,
+      "expected": {
+        "start": "",
+        "end": "",
+        "group": ""
+      }
+    },
+    {
+      "name": "truncated table id 2",
+      "start": "7400000000000000fa",
+      "end": "",
+      "valid": null,
+      "expected": {
+        "start": "",
+        "end": "",
+        "group": ""
+      }
+    },
+    {
+      "name": "truncated index id 2",
+      "start": "7480000000000000ff2a5f690000000000fc",
+      "end": "",
+      "valid": null,
+      "expected": {
+        "start": "",
+        "end": "",
+        "group": ""
+      }
+    },
+    {
+      "name": "truncated table id 3",
+      "start": "7400000000000000fb",
+      "end": "",
+      "valid": null,
+      "expected": {
+        "start": "",
+        "end": "",
+        "group": ""
+      }
+    },
+    {
+      "name": "truncated index id 3",
+      "start": "7480000000000000ff2a5f690000000000fd",
+      "end": "",
+      "valid": null,
+      "expected": {
+        "start": "",
+        "end": "",
+        "group": ""
+      }
+    },
+    {
+      "name": "truncated table id 4",
+      "start": "7400000000000000fc",
+      "end": "",
+      "valid": null,
+      "expected": {
+        "start": "",
+        "end": "",
+        "group": ""
+      }
+    },
+    {
+      "name": "truncated index id 4",
+      "start": "7480000000000000ff2a5f690000000000fe",
+      "end": "",
+      "valid": null,
+      "expected": {
+        "start": "",
+        "end": "",
+        "group": ""
+      }
+    },
+    {
+      "name": "truncated table id 5",
+      "start": "7400000000000000fd",
+      "end": "",
+      "valid": null,
+      "expected": {
+        "start": "",
+        "end": "",
+        "group": ""
+      }
+    },
+    {
+      "name": "truncated index id 5",
+      "start": "7480000000000000ff2a5f690000000000ff0000000000000000f7",
+      "end": "",
+      "valid": null,
+      "expected": {
+        "start": "",
+        "end": "",
+        "group": ""
+      }
+    },
+    {
+      "name": "truncated table id 6",
+      "start": "7400000000000000fe",
+      "end": "",
+      "valid": null,
+      "expected": {
+        "start": "",
+        "end": "",
+        "group": ""
+      }
+    },
+    {
+      "name": "truncated index id 6",
+      "start": "7480000000000000ff2a5f690000000000ff0000000000000000f8",
+      "end": "",
+      "valid": null,
+      "expected": {
+        "start": "",
+        "end": "",
+        "group": ""
+      }
+    },
+    {
+      "name": "truncated table id 7",
+      "start": "7400000000000000ff0000000000000000f7",
+      "end": "",
+      "valid": null,
+      "expected": {
+        "start": "",
+        "end": "",
+        "group": ""
+      }
+    },
+    {
+      "name": "truncated index id 7",
+      "start": "7480000000000000ff2a5f690000000000ff0000000000000000f9",
+      "end": "",
+      "valid": null,
+      "expected": {
+        "start": "",
+        "end": "",
+        "group": ""
+      }
+    },
+    {
+      "name": "partial index separator is table",
+      "start": "7480000000000000ff2a5f000000000000f9",
+      "end": "",
+      "valid": null,
+      "expected": {
+        "start": "7480000000000000ff2a00000000000000f8",
+        "end": "7480000000000000ff2b00000000000000f8",
+        "group": "split-scatter-table-42"
+      }
+    },
+    {
+      "name": "different separator is table",
+      "start": "7480000000000000ff2a5f7a0000000000fa",
+      "end": "",
+      "valid": null,
+      "expected": {
+        "start": "7480000000000000ff2a00000000000000f8",
+        "end": "7480000000000000ff2b00000000000000f8",
+        "group": "split-scatter-table-42"
+      }
+    },
+    {
+      "name": "signed ids -1 -7",
+      "start": "747fffffffffffffffff5f697ffffffffffffffff90000000000fa",
+      "end": "747fffffffffffffffff5f697ffffffffffffffffa0000000000fa",
+      "valid": null,
+      "expected": {
+        "start": "747fffffffffffffffff5f697ffffffffffffffff90000000000fa",
+        "end": "747fffffffffffffffff5f697ffffffffffffffffa0000000000fa",
+        "group": "split-scatter-index--1--7"
+      }
+    },
+    {
+      "name": "signed ids -9223372036854775808 -9223372036854775808",
+      "start": "7400000000000000ff005f690000000000ff0000000000000000fa",
+      "end": "7400000000000000ff005f690000000000ff0000010000000000fa",
+      "valid": null,
+      "expected": {
+        "start": "7400000000000000ff005f690000000000ff0000000000000000fa",
+        "end": "7400000000000000ff005f690000000000ff0000010000000000fa",
+        "group": "split-scatter-index--9223372036854775808--9223372036854775808"
+      }
+    },
+    {
+      "name": "signed ids 9223372036854775807 9223372036854775807",
+      "start": "74ffffffffffffffffff5f69ffffffffffffffffff0000000000fa",
+      "end": "74ffffffffffffffffff5f6a0000000000fa",
+      "valid": null,
+      "expected": {
+        "start": "74ffffffffffffffffff5f69ffffffffffffffffff0000000000fa",
+        "end": "74ffffffffffffffffff5f6a0000000000fa",
+        "group": "split-scatter-index-9223372036854775807-9223372036854775807"
+      }
+    },
+    {
+      "name": "empty",
+      "start": "",
+      "end": "",
+      "valid": null,
+      "expected": {
+        "start": "",
+        "end": "",
+        "group": ""
+      }
+    },
+    {
+      "name": "short group",
+      "start": "616263",
+      "end": "",
+      "valid": null,
+      "expected": {
+        "start": "",
+        "end": "",
+        "group": ""
+      }
+    },
+    {
+      "name": "invalid marker",
+      "start": "000000000000000000",
+      "end": "",
+      "valid": null,
+      "expected": {
+        "start": "",
+        "end": "",
+        "group": ""
+      }
+    },
+    {
+      "name": "invalid padding",
+      "start": "7400000000000001f8",
+      "end": "",
+      "valid": null,
+      "expected": {
+        "start": "",
+        "end": "",
+        "group": ""
+      }
+    },
+    {
+      "name": "missing terminator",
+      "start": "3132333435363738ff",
+      "end": "",
+      "valid": null,
+      "expected": {
+        "start": "",
+        "end": "",
+        "group": ""
+      }
+    },
+    {
+      "name": "decoder ignores trailing encoded suffix",
+      "start": "7480000000000000ff2a5f698000000000ff0000076100000000fb747261696c696e67",
+      "end": "7480000000000000ff2a5f698000000000ff0000076d00000000fb",
+      "valid": null,
+      "expected": {
+        "start": "7480000000000000ff2a5f698000000000ff0000070000000000fa",
+        "end": "7480000000000000ff2a5f698000000000ff0000080000000000fa",
+        "group": "split-scatter-index-42-7"
+      }
+    },
+    {
+      "name": "malformed end within prefix",
+      "start": "7480000000000000ff2a5f698000000000ff0000076100000000fb",
+      "end": "01",
+      "valid": null,
+      "expected": {
+        "start": "7480000000000000ff2a5f698000000000ff0000070000000000fa",
+        "end": "7480000000000000ff2a5f698000000000ff0000080000000000fa",
+        "group": "split-scatter-index-42-7"
+      }
+    }
+  ],
+  "prefixes": [
+    {
+      "raw": "",
+      "next": "",
+      "keyspace": "78001092",
+      "expected": {
+        "start": "7800109200000000fb",
+        "end": "",
+        "group": "custom"
+      }
+    },
+    {
+      "raw": "ff",
+      "next": "",
+      "keyspace": "78001092",
+      "expected": {
+        "start": "78001092ff000000fc",
+        "end": "",
+        "group": "custom"
+      }
+    },
+    {
+      "raw": "ffff",
+      "next": "",
+      "keyspace": "78001092",
+      "expected": {
+        "start": "78001092ffff0000fd",
+        "end": "",
+        "group": "custom"
+      }
+    },
+    {
+      "raw": "6162ffff",
+      "next": "6163",
+      "keyspace": "78001092",
+      "expected": {
+        "start": "780010926162ffffff0000000000000000f7",
+        "end": "7800109261630000fd",
+        "group": "custom"
+      }
+    },
+    {
+      "raw": "00",
+      "next": "01",
+      "keyspace": "78001092",
+      "expected": {
+        "start": "7800109200000000fc",
+        "end": "7800109201000000fc",
+        "group": "custom"
+      }
+    },
+    {
+      "raw": "74ff",
+      "next": "75",
+      "keyspace": "78001092",
+      "expected": {
+        "start": "7800109274ff0000fd",
+        "end": "7800109275000000fc",
+        "group": "custom"
+      }
+    },
+    {
+      "raw": "74800000000000002a5f698000000000000007",
+      "next": "74800000000000002a5f698000000000000008",
+      "keyspace": "78001092",
+      "expected": {
+        "start": "7800109274800000ff000000002a5f6980ff0000000000000700fe",
+        "end": "7800109274800000ff000000002a5f6980ff0000000000000800fe",
+        "group": "custom"
+      }
+    }
+  ]
+}

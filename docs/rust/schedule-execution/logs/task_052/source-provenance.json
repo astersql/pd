@@ -1,0 +1,17 @@
+{
+  "source_commit": "7a6848e71413b4fbc10d68f05a62415e039d7f30",
+  "dependency_commit": "7a6848e71",
+  "basis": "Go source and tests; user waived runtime oracle requirement",
+  "go_output_sha256": null,
+  "fixture_sha256": "3c8b09524683fc4f98e1960988c0795d2556f6fd5e217e81cf3534525ecb2d92",
+  "sources": {
+    "pkg/schedule/checker/split_scatter_group.go": "b2f8465dd84ab486d3b526c6d308899b774b933bc75655ba2d49b78d901a4159",
+    "pkg/schedule/checker/split_scatter.go": "840875adc09bc99b054242df78c776e7454a8e1a2bf1f22960e767684aa9baf8",
+    "pkg/schedule/checker/split_scatter_test.go": "a70221653dfb877244a7351b632f0ea485d2b99484af508e354939bb6d272e9c",
+    "pkg/codec/codec.go": "4a470b8f0f87ae835a0caa297e17e175530f3e457c1f61bf3ed86b9540bc0f64",
+    "pkg/codec/codec_test.go": "6c4389cc293153fc3870db2c53f72bcb19fce7fa56cfee49dcd275f0a6e1391a",
+    "pkg/keyspace/constant/constant.go": "c9489b63673dff2185ec34b71d44b791c29798abe7e7fb959dc53c2a13049921"
+  },
+  "cases": 75,
+  "prefix_cases": 7
+}

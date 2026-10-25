@@ -63,3 +63,8 @@ mod priority_inspector;
 pub use priority_inspector::*;
 #[cfg(test)]
 mod task_051_test;
+
+mod split_scatter_group;
+pub use split_scatter_group::*;
+#[cfg(test)]
+mod task_052_test;
