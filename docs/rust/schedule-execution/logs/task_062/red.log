@@ -1,0 +1,26 @@
+   Compiling astersql-pd-schedule-splitter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/splitter)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.64s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_splitter-e3161b9242eb572e)
+
+running 2 tests
+
+thread 'task_062_test::task_062_refresh_after_split' (165349546) panicked at pkg/schedule/splitter/task_062_test.rs:187:22:
+no entry found for key
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test task_062_test::task_062_refresh_after_split ... FAILED
+
+thread 'task_062_test::task_062_behavior_cases' (165349545) panicked at pkg/schedule/splitter/task_062_test.rs:124:5:
+assertion `left == right` failed: "go_group_test"
+  left: Object {}
+ right: Object {"1": Array [String("bbb")], "2": Array [String("ddd")]}
+test task_062_test::task_062_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_062_test::task_062_behavior_cases
+    task_062_test::task_062_refresh_after_split
+
+test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-splitter --lib`

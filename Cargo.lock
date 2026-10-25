@@ -600,6 +600,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "astersql-pd-schedule-splitter"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-core",
+ "astersql-pd-keypath",
+ "astersql-pd-schedule-config",
+ "astersql-pd-schedule-filter",
+ "astersql-pd-schedule-placement",
+ "astersql-pd-storage-endpoint",
+ "astersql-pd-storage-kv",
+ "serde_json",
+ "tokio",
+]
+
+[[package]]
 name = "astersql-pd-schedule-types"
 version = "0.1.0"
 dependencies = [

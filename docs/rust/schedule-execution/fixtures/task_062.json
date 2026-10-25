@@ -1,0 +1,226 @@
+{
+  "evidence": "source-derived; no Go execution",
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "cases": [
+    {
+      "id": "empty",
+      "keys": [],
+      "groups": {}
+    },
+    {
+      "id": "go_group_test",
+      "keys": [
+        "bbb",
+        "ddd",
+        "fff",
+        "zzz"
+      ],
+      "groups": {
+        "1": [
+          "bbb"
+        ],
+        "2": [
+          "ddd"
+        ]
+      }
+    },
+    {
+      "id": "boundaries_holes",
+      "keys": [
+        "",
+        "aaa",
+        "ccc",
+        "eee",
+        "fff",
+        "ggg",
+        "zzz"
+      ],
+      "groups": {}
+    },
+    {
+      "id": "duplicates_unsorted",
+      "keys": [
+        "ddd",
+        "bbb",
+        "aab",
+        "bbb",
+        "ccd"
+      ],
+      "groups": {
+        "1": [
+          "bbb",
+          "aab",
+          "bbb"
+        ],
+        "2": [
+          "ddd",
+          "ccd"
+        ]
+      }
+    },
+    {
+      "id": "unbounded",
+      "unbounded": true,
+      "keys": [
+        "",
+        "a",
+        "z"
+      ],
+      "groups": {
+        "1": [
+          "a",
+          "z"
+        ]
+      }
+    },
+    {
+      "id": "underreplicated",
+      "peers": 2,
+      "keys": [
+        "bbb",
+        "bbb"
+      ],
+      "groups": {},
+      "suspect": [
+        1,
+        1
+      ]
+    },
+    {
+      "id": "overreplicated",
+      "peers": 4,
+      "keys": [
+        "bbb"
+      ],
+      "groups": {},
+      "suspect": [
+        1
+      ]
+    },
+    {
+      "id": "learner",
+      "learner": true,
+      "keys": [
+        "bbb"
+      ],
+      "groups": {},
+      "suspect": [
+        1
+      ]
+    },
+    {
+      "id": "no_leader",
+      "leader": false,
+      "keys": [
+        "bbb"
+      ],
+      "groups": {}
+    },
+    {
+      "id": "replication_before_leader",
+      "peers": 2,
+      "leader": false,
+      "keys": [
+        "aaa",
+        "bbb"
+      ],
+      "groups": {},
+      "suspect": [
+        1,
+        1
+      ]
+    },
+    {
+      "id": "pending_allowed",
+      "pending": true,
+      "keys": [
+        "bbb"
+      ],
+      "groups": {
+        "1": [
+          "bbb"
+        ]
+      }
+    },
+    {
+      "id": "down_allowed_legacy",
+      "down": true,
+      "keys": [
+        "bbb"
+      ],
+      "groups": {
+        "1": [
+          "bbb"
+        ]
+      }
+    },
+    {
+      "id": "rules_satisfied",
+      "rules": true,
+      "keys": [
+        "bbb"
+      ],
+      "groups": {
+        "1": [
+          "bbb"
+        ]
+      }
+    },
+    {
+      "id": "rules_underreplicated",
+      "rules": true,
+      "peers": 2,
+      "keys": [
+        "bbb"
+      ],
+      "groups": {},
+      "suspect": [
+        1
+      ]
+    },
+    {
+      "id": "rules_pending",
+      "rules": true,
+      "pending": true,
+      "keys": [
+        "bbb"
+      ],
+      "groups": {
+        "1": [
+          "bbb"
+        ]
+      }
+    },
+    {
+      "id": "rules_down",
+      "rules": true,
+      "down": true,
+      "keys": [
+        "bbb"
+      ],
+      "groups": {
+        "1": [
+          "bbb"
+        ]
+      }
+    },
+    {
+      "id": "missing_and_unhealthy",
+      "peers": 2,
+      "keys": [
+        "eee",
+        "bbb",
+        "zzz"
+      ],
+      "groups": {},
+      "suspect": [
+        1
+      ]
+    }
+  ],
+  "derivation_notes": [
+    "groupKeysByRegion preserves duplicates and input order; deduplication means excluding existing starts only",
+    "placement/fit.go IsSatisfied checks count/role/orphans; pending/down do not invalidate a fitting region",
+    "Go execution not performed; user waived runtime oracle admission"
+  ]
+}

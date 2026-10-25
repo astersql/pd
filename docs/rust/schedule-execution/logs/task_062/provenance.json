@@ -1,0 +1,20 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "dependency_commit": "d50c8d226fa814f0872ebb3197529bc54fd40788",
+  "evidence_mode": "source-derived Rust behavior validation; Go runtime oracle waived by user",
+  "go_binary_sha256": null,
+  "go_output_sha256": null,
+  "hashes": {
+    "pkg/schedule/splitter/region_splitter.go": "6b940638e508d361468417bd8612b2589637c1fe7d79f96ce0a0c65ecfc7681d",
+    "pkg/schedule/splitter/region_splitter_test.go": "a1d95e543bbd34251f0d60bdfb551dedf6bfb9b91d58d4ff9a721f0036a4256d",
+    "pkg/schedule/filter/healthy.go": "dc9137941fc887c15aaf744650235939e7c28704958e3b1c8d2c3970a5502c5d",
+    "pkg/schedule/placement/fit.go": "5e5c91601641ee4ffd1af5a7fedd3424bf5408d210fdb03b3956f52bb5da7b22",
+    "docs/rust/schedule-execution/fixtures/task_062.json": "65e628f28846ea024adecc846cab49e5a9a209d24f9a0b2ed0acac9d301e2634"
+  },
+  "go_sources_match_base": {
+    "pkg/schedule/splitter/region_splitter.go": true,
+    "pkg/schedule/splitter/region_splitter_test.go": true,
+    "pkg/schedule/filter/healthy.go": true,
+    "pkg/schedule/placement/fit.go": true
+  }
+}
