@@ -1,0 +1,102 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=sh -c 'cargo fmt --all && cargo test -p astersql-pd-schedule-operator --locked --lib task_020 -- --nocapture'
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+error[E0422]: cannot find struct, variant or union type `RemovePeer` in this scope
+  --> pkg/schedule/operator/task_020_test.rs:52:22
+   |
+52 |         let remove = RemovePeer {
+   |                      ^^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `DemoteVoter` in this scope
+  --> pkg/schedule/operator/task_020_test.rs:57:22
+   |
+57 |         let demote = DemoteVoter {
+   |                      ^^^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `DemoteVoter` in this scope
+  --> pkg/schedule/operator/task_020_test.rs:73:13
+   |
+73 |             DemoteVoter {
+   |             ^^^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `RemovePeer` in this scope
+  --> pkg/schedule/operator/task_020_test.rs:82:13
+   |
+82 |             RemovePeer {
+   |             ^^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `RemovePeer` in this scope
+  --> pkg/schedule/operator/task_020_test.rs:98:30
+   |
+98 |                 let remove = RemovePeer {
+   |                              ^^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `DemoteVoter` in this scope
+   --> pkg/schedule/operator/task_020_test.rs:103:30
+    |
+103 |                 let demote = DemoteVoter {
+    |                              ^^^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `RemovePeer` in this scope
+   --> pkg/schedule/operator/task_020_test.rs:177:38
+    |
+177 |                         let remove = RemovePeer {
+    |                                      ^^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `RemovePeer` in this scope
+   --> pkg/schedule/operator/task_020_test.rs:220:22
+    |
+220 |         let remove = RemovePeer {
+    |                      ^^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `DemoteVoter` in this scope
+   --> pkg/schedule/operator/task_020_test.rs:245:18
+    |
+245 |     let demote = DemoteVoter {
+    |                  ^^^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `RemovePeer` in this scope
+   --> pkg/schedule/operator/task_020_test.rs:255:18
+    |
+255 |     let remove = RemovePeer {
+    |                  ^^^^^^^^^^ not found in this scope
+
+error[E0433]: cannot find type `RemovePeer` in this scope
+   --> pkg/schedule/operator/task_020_test.rs:155:20
+    |
+155 |         assert_eq!(RemovePeer::default().timeout(size).as_secs(), seconds);
+    |                    ^^^^^^^^^^ use of undeclared type `RemovePeer`
+
+error[E0433]: cannot find type `DemoteVoter` in this scope
+   --> pkg/schedule/operator/task_020_test.rs:156:20
+    |
+156 |         assert_eq!(DemoteVoter::default().timeout(size).as_secs(), seconds);
+    |                    ^^^^^^^^^^^ use of undeclared type `DemoteVoter`
+
+error[E0433]: cannot find type `RemovePeerError` in this scope
+   --> pkg/schedule/operator/task_020_test.rs:228:25
+    |
+228 |                     Err(RemovePeerError::LeaderPeer)
+    |                         ^^^^^^^^^^^^^^^ use of undeclared type `RemovePeerError`
+
+error[E0433]: cannot find type `RemovePeerError` in this scope
+   --> pkg/schedule/operator/task_020_test.rs:236:9
+    |
+236 |         RemovePeerError::LeaderPeer.to_string(),
+    |         ^^^^^^^^^^^^^^^ use of undeclared type `RemovePeerError`
+
+error[E0433]: cannot find type `RemovePeer` in this scope
+   --> pkg/schedule/operator/task_020_test.rs:241:9
+    |
+241 |         RemovePeer::default().check_in_progress(&cluster, &cfg, &empty, false, 0),
+    |         ^^^^^^^^^^ use of undeclared type `RemovePeer`
+
+error[E0433]: cannot find type `RemovePeerError` in this scope
+   --> pkg/schedule/operator/task_020_test.rs:242:13
+    |
+242 |         Err(RemovePeerError::LeaderPeer)
+    |             ^^^^^^^^^^^^^^^ use of undeclared type `RemovePeerError`
+
+Some errors have detailed explanations: E0422, E0433.
+For more information about an error, try `rustc --explain E0422`.
+error: could not compile `astersql-pd-schedule-operator` (lib test) due to 16 previous errors
+command_exit_code=101

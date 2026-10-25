@@ -25,3 +25,8 @@ mod step_add;
 pub use step_add::*;
 #[cfg(test)]
 mod task_019_test;
+
+mod step_remove;
+pub use step_remove::*;
+#[cfg(test)]
+mod task_020_test;
