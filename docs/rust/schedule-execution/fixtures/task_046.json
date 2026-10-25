@@ -1,0 +1,998 @@
+{
+  "provenance": "Go source/test contract derived; no Go execution",
+  "cases": [
+    {
+      "name": "classic-diff/False/0",
+      "expected": false,
+      "layout": "classic-diff",
+      "cross": false,
+      "policy": 0
+    },
+    {
+      "name": "classic-diff/False/1",
+      "expected": true,
+      "layout": "classic-diff",
+      "cross": false,
+      "policy": 1
+    },
+    {
+      "name": "classic-diff/False/2",
+      "expected": true,
+      "layout": "classic-diff",
+      "cross": false,
+      "policy": 2
+    },
+    {
+      "name": "classic-diff/False/99",
+      "expected": false,
+      "layout": "classic-diff",
+      "cross": false,
+      "policy": 99
+    },
+    {
+      "name": "classic-diff/True/0",
+      "expected": true,
+      "layout": "classic-diff",
+      "cross": true,
+      "policy": 0
+    },
+    {
+      "name": "classic-diff/True/1",
+      "expected": true,
+      "layout": "classic-diff",
+      "cross": true,
+      "policy": 1
+    },
+    {
+      "name": "classic-diff/True/2",
+      "expected": true,
+      "layout": "classic-diff",
+      "cross": true,
+      "policy": 2
+    },
+    {
+      "name": "classic-diff/True/99",
+      "expected": false,
+      "layout": "classic-diff",
+      "cross": true,
+      "policy": 99
+    },
+    {
+      "name": "classic-same/False/0",
+      "expected": true,
+      "layout": "classic-same",
+      "cross": false,
+      "policy": 0
+    },
+    {
+      "name": "classic-same/False/1",
+      "expected": true,
+      "layout": "classic-same",
+      "cross": false,
+      "policy": 1
+    },
+    {
+      "name": "classic-same/False/2",
+      "expected": true,
+      "layout": "classic-same",
+      "cross": false,
+      "policy": 2
+    },
+    {
+      "name": "classic-same/False/99",
+      "expected": true,
+      "layout": "classic-same",
+      "cross": false,
+      "policy": 99
+    },
+    {
+      "name": "classic-same/True/0",
+      "expected": true,
+      "layout": "classic-same",
+      "cross": true,
+      "policy": 0
+    },
+    {
+      "name": "classic-same/True/1",
+      "expected": true,
+      "layout": "classic-same",
+      "cross": true,
+      "policy": 1
+    },
+    {
+      "name": "classic-same/True/2",
+      "expected": true,
+      "layout": "classic-same",
+      "cross": true,
+      "policy": 2
+    },
+    {
+      "name": "classic-same/True/99",
+      "expected": true,
+      "layout": "classic-same",
+      "cross": true,
+      "policy": 99
+    },
+    {
+      "name": "ks-same/False/0",
+      "expected": true,
+      "layout": "ks-same",
+      "cross": false,
+      "policy": 0
+    },
+    {
+      "name": "ks-same/False/1",
+      "expected": true,
+      "layout": "ks-same",
+      "cross": false,
+      "policy": 1
+    },
+    {
+      "name": "ks-same/False/2",
+      "expected": true,
+      "layout": "ks-same",
+      "cross": false,
+      "policy": 2
+    },
+    {
+      "name": "ks-same/False/99",
+      "expected": true,
+      "layout": "ks-same",
+      "cross": false,
+      "policy": 99
+    },
+    {
+      "name": "ks-same/True/0",
+      "expected": true,
+      "layout": "ks-same",
+      "cross": true,
+      "policy": 0
+    },
+    {
+      "name": "ks-same/True/1",
+      "expected": true,
+      "layout": "ks-same",
+      "cross": true,
+      "policy": 1
+    },
+    {
+      "name": "ks-same/True/2",
+      "expected": true,
+      "layout": "ks-same",
+      "cross": true,
+      "policy": 2
+    },
+    {
+      "name": "ks-same/True/99",
+      "expected": true,
+      "layout": "ks-same",
+      "cross": true,
+      "policy": 99
+    },
+    {
+      "name": "ks-table-diff/False/0",
+      "expected": false,
+      "layout": "ks-table-diff",
+      "cross": false,
+      "policy": 0
+    },
+    {
+      "name": "ks-table-diff/False/1",
+      "expected": true,
+      "layout": "ks-table-diff",
+      "cross": false,
+      "policy": 1
+    },
+    {
+      "name": "ks-table-diff/False/2",
+      "expected": true,
+      "layout": "ks-table-diff",
+      "cross": false,
+      "policy": 2
+    },
+    {
+      "name": "ks-table-diff/False/99",
+      "expected": false,
+      "layout": "ks-table-diff",
+      "cross": false,
+      "policy": 99
+    },
+    {
+      "name": "ks-table-diff/True/0",
+      "expected": true,
+      "layout": "ks-table-diff",
+      "cross": true,
+      "policy": 0
+    },
+    {
+      "name": "ks-table-diff/True/1",
+      "expected": true,
+      "layout": "ks-table-diff",
+      "cross": true,
+      "policy": 1
+    },
+    {
+      "name": "ks-table-diff/True/2",
+      "expected": true,
+      "layout": "ks-table-diff",
+      "cross": true,
+      "policy": 2
+    },
+    {
+      "name": "ks-table-diff/True/99",
+      "expected": false,
+      "layout": "ks-table-diff",
+      "cross": true,
+      "policy": 99
+    },
+    {
+      "name": "ks-diff/False/0",
+      "expected": false,
+      "layout": "ks-diff",
+      "cross": false,
+      "policy": 0
+    },
+    {
+      "name": "ks-diff/False/1",
+      "expected": true,
+      "layout": "ks-diff",
+      "cross": false,
+      "policy": 1
+    },
+    {
+      "name": "ks-diff/False/2",
+      "expected": true,
+      "layout": "ks-diff",
+      "cross": false,
+      "policy": 2
+    },
+    {
+      "name": "ks-diff/False/99",
+      "expected": false,
+      "layout": "ks-diff",
+      "cross": false,
+      "policy": 99
+    },
+    {
+      "name": "ks-diff/True/0",
+      "expected": true,
+      "layout": "ks-diff",
+      "cross": true,
+      "policy": 0
+    },
+    {
+      "name": "ks-diff/True/1",
+      "expected": true,
+      "layout": "ks-diff",
+      "cross": true,
+      "policy": 1
+    },
+    {
+      "name": "ks-diff/True/2",
+      "expected": true,
+      "layout": "ks-diff",
+      "cross": true,
+      "policy": 2
+    },
+    {
+      "name": "ks-diff/True/99",
+      "expected": false,
+      "layout": "ks-diff",
+      "cross": true,
+      "policy": 99
+    },
+    {
+      "name": "ks-both-diff/False/0",
+      "expected": false,
+      "layout": "ks-both-diff",
+      "cross": false,
+      "policy": 0
+    },
+    {
+      "name": "ks-both-diff/False/1",
+      "expected": true,
+      "layout": "ks-both-diff",
+      "cross": false,
+      "policy": 1
+    },
+    {
+      "name": "ks-both-diff/False/2",
+      "expected": true,
+      "layout": "ks-both-diff",
+      "cross": false,
+      "policy": 2
+    },
+    {
+      "name": "ks-both-diff/False/99",
+      "expected": false,
+      "layout": "ks-both-diff",
+      "cross": false,
+      "policy": 99
+    },
+    {
+      "name": "ks-both-diff/True/0",
+      "expected": true,
+      "layout": "ks-both-diff",
+      "cross": true,
+      "policy": 0
+    },
+    {
+      "name": "ks-both-diff/True/1",
+      "expected": true,
+      "layout": "ks-both-diff",
+      "cross": true,
+      "policy": 1
+    },
+    {
+      "name": "ks-both-diff/True/2",
+      "expected": true,
+      "layout": "ks-both-diff",
+      "cross": true,
+      "policy": 2
+    },
+    {
+      "name": "ks-both-diff/True/99",
+      "expected": false,
+      "layout": "ks-both-diff",
+      "cross": true,
+      "policy": 99
+    },
+    {
+      "name": "classic-ks0/False/0",
+      "expected": false,
+      "layout": "classic-ks0",
+      "cross": false,
+      "policy": 0
+    },
+    {
+      "name": "classic-ks0/False/1",
+      "expected": true,
+      "layout": "classic-ks0",
+      "cross": false,
+      "policy": 1
+    },
+    {
+      "name": "classic-ks0/False/2",
+      "expected": true,
+      "layout": "classic-ks0",
+      "cross": false,
+      "policy": 2
+    },
+    {
+      "name": "classic-ks0/False/99",
+      "expected": false,
+      "layout": "classic-ks0",
+      "cross": false,
+      "policy": 99
+    },
+    {
+      "name": "classic-ks0/True/0",
+      "expected": true,
+      "layout": "classic-ks0",
+      "cross": true,
+      "policy": 0
+    },
+    {
+      "name": "classic-ks0/True/1",
+      "expected": true,
+      "layout": "classic-ks0",
+      "cross": true,
+      "policy": 1
+    },
+    {
+      "name": "classic-ks0/True/2",
+      "expected": true,
+      "layout": "classic-ks0",
+      "cross": true,
+      "policy": 2
+    },
+    {
+      "name": "classic-ks0/True/99",
+      "expected": false,
+      "layout": "classic-ks0",
+      "cross": true,
+      "policy": 99
+    },
+    {
+      "name": "negative-table/False/0",
+      "expected": true,
+      "layout": "negative-table",
+      "cross": false,
+      "policy": 0
+    },
+    {
+      "name": "negative-table/False/1",
+      "expected": true,
+      "layout": "negative-table",
+      "cross": false,
+      "policy": 1
+    },
+    {
+      "name": "negative-table/False/2",
+      "expected": true,
+      "layout": "negative-table",
+      "cross": false,
+      "policy": 2
+    },
+    {
+      "name": "negative-table/False/99",
+      "expected": true,
+      "layout": "negative-table",
+      "cross": false,
+      "policy": 99
+    },
+    {
+      "name": "negative-table/True/0",
+      "expected": true,
+      "layout": "negative-table",
+      "cross": true,
+      "policy": 0
+    },
+    {
+      "name": "negative-table/True/1",
+      "expected": true,
+      "layout": "negative-table",
+      "cross": true,
+      "policy": 1
+    },
+    {
+      "name": "negative-table/True/2",
+      "expected": true,
+      "layout": "negative-table",
+      "cross": true,
+      "policy": 2
+    },
+    {
+      "name": "negative-table/True/99",
+      "expected": true,
+      "layout": "negative-table",
+      "cross": true,
+      "policy": 99
+    },
+    {
+      "name": "invalid/False/0",
+      "expected": true,
+      "layout": "invalid",
+      "cross": false,
+      "policy": 0
+    },
+    {
+      "name": "invalid/False/1",
+      "expected": true,
+      "layout": "invalid",
+      "cross": false,
+      "policy": 1
+    },
+    {
+      "name": "invalid/False/2",
+      "expected": true,
+      "layout": "invalid",
+      "cross": false,
+      "policy": 2
+    },
+    {
+      "name": "invalid/False/99",
+      "expected": true,
+      "layout": "invalid",
+      "cross": false,
+      "policy": 99
+    },
+    {
+      "name": "invalid/True/0",
+      "expected": true,
+      "layout": "invalid",
+      "cross": true,
+      "policy": 0
+    },
+    {
+      "name": "invalid/True/1",
+      "expected": true,
+      "layout": "invalid",
+      "cross": true,
+      "policy": 1
+    },
+    {
+      "name": "invalid/True/2",
+      "expected": true,
+      "layout": "invalid",
+      "cross": true,
+      "policy": 2
+    },
+    {
+      "name": "invalid/True/99",
+      "expected": true,
+      "layout": "invalid",
+      "cross": true,
+      "policy": 99
+    },
+    {
+      "name": "invalid-table/False/0",
+      "expected": false,
+      "layout": "invalid-table",
+      "cross": false,
+      "policy": 0
+    },
+    {
+      "name": "invalid-table/False/1",
+      "expected": true,
+      "layout": "invalid-table",
+      "cross": false,
+      "policy": 1
+    },
+    {
+      "name": "invalid-table/False/2",
+      "expected": true,
+      "layout": "invalid-table",
+      "cross": false,
+      "policy": 2
+    },
+    {
+      "name": "invalid-table/False/99",
+      "expected": false,
+      "layout": "invalid-table",
+      "cross": false,
+      "policy": 99
+    },
+    {
+      "name": "invalid-table/True/0",
+      "expected": true,
+      "layout": "invalid-table",
+      "cross": true,
+      "policy": 0
+    },
+    {
+      "name": "invalid-table/True/1",
+      "expected": true,
+      "layout": "invalid-table",
+      "cross": true,
+      "policy": 1
+    },
+    {
+      "name": "invalid-table/True/2",
+      "expected": true,
+      "layout": "invalid-table",
+      "cross": true,
+      "policy": 2
+    },
+    {
+      "name": "invalid-table/True/99",
+      "expected": false,
+      "layout": "invalid-table",
+      "cross": true,
+      "policy": 99
+    },
+    {
+      "name": "forward",
+      "expected": true,
+      "policy": 1
+    },
+    {
+      "name": "reverse",
+      "expected": true,
+      "policy": 1,
+      "reverse": true
+    },
+    {
+      "name": "gap",
+      "expected": false,
+      "policy": 1,
+      "range": "gap"
+    },
+    {
+      "name": "overlap",
+      "expected": false,
+      "policy": 1,
+      "range": "overlap"
+    },
+    {
+      "name": "empty-seam",
+      "expected": false,
+      "policy": 1,
+      "range": "empty"
+    },
+    {
+      "name": "unbounded",
+      "expected": true,
+      "policy": 1,
+      "range": "unbounded"
+    },
+    {
+      "name": "rules-missing",
+      "expected": false,
+      "policy": 1,
+      "rules": true,
+      "missing_rules": true
+    },
+    {
+      "name": "rules-no-split",
+      "expected": true,
+      "policy": 1,
+      "rules": true
+    },
+    {
+      "name": "rule-interior",
+      "expected": false,
+      "policy": 1,
+      "rules": true,
+      "rule_start": "62"
+    },
+    {
+      "name": "rule-at-start",
+      "expected": true,
+      "policy": 1,
+      "rules": true,
+      "rule_start": "61"
+    },
+    {
+      "name": "rule-at-end",
+      "expected": true,
+      "policy": 1,
+      "rules": true,
+      "rule_start": "64"
+    },
+    {
+      "name": "rules-disabled",
+      "expected": true,
+      "policy": 1,
+      "rule_start": "62"
+    },
+    {
+      "name": "label-split",
+      "expected": false,
+      "policy": 1,
+      "label_start": "62",
+      "label_end": "64",
+      "label_value": "allow"
+    },
+    {
+      "name": "label-deny",
+      "expected": false,
+      "policy": 1,
+      "label_start": "",
+      "label_end": "",
+      "label_value": "deny"
+    },
+    {
+      "name": "label-case",
+      "expected": true,
+      "policy": 1,
+      "label_start": "",
+      "label_end": "",
+      "label_value": "Deny"
+    },
+    {
+      "name": "label-other",
+      "expected": true,
+      "policy": 1,
+      "label_start": "",
+      "label_end": "",
+      "label_value": "other"
+    },
+    {
+      "name": "label-source",
+      "expected": false,
+      "policy": 1,
+      "label_start": "61",
+      "label_end": "62",
+      "label_value": "deny"
+    },
+    {
+      "name": "label-target",
+      "expected": false,
+      "policy": 1,
+      "label_start": "62",
+      "label_end": "64",
+      "label_value": "deny"
+    },
+    {
+      "name": "label-at-start",
+      "policy": 1,
+      "label_start": "61",
+      "label_end": "",
+      "label_value": "allow",
+      "expected": true
+    },
+    {
+      "name": "label-at-end",
+      "policy": 1,
+      "label_start": "64",
+      "label_end": "",
+      "label_value": "allow",
+      "expected": true
+    },
+    {
+      "name": "label-outside",
+      "policy": 1,
+      "label_start": "65",
+      "label_end": "66",
+      "label_value": "allow",
+      "expected": true
+    },
+    {
+      "name": "live-deny",
+      "policy": 1,
+      "label_start": "",
+      "label_end": "",
+      "label_value": "deny",
+      "ttl": "1s",
+      "now": 1000000000,
+      "expected": false
+    },
+    {
+      "name": "expired-deny",
+      "policy": 1,
+      "label_start": "",
+      "label_end": "",
+      "label_value": "deny",
+      "ttl": "1s",
+      "now": 1000000001,
+      "expected": true
+    }
+  ],
+  "targets": [
+    {
+      "name": "healthy",
+      "ids": [
+        1,
+        2,
+        3
+      ],
+      "fault": "",
+      "state": 0,
+      "rules": false,
+      "expected": true
+    },
+    {
+      "name": "missing-shared",
+      "ids": [
+        1,
+        2,
+        3
+      ],
+      "fault": "",
+      "state": 1,
+      "rules": false,
+      "expected": true
+    },
+    {
+      "name": "removing-shared",
+      "ids": [
+        1,
+        2,
+        3
+      ],
+      "fault": "",
+      "state": 2,
+      "rules": false,
+      "expected": true
+    },
+    {
+      "name": "missing-new",
+      "ids": [
+        1,
+        2,
+        4
+      ],
+      "fault": "",
+      "state": 1,
+      "rules": false,
+      "expected": false
+    },
+    {
+      "name": "removing-new",
+      "ids": [
+        1,
+        2,
+        4
+      ],
+      "fault": "",
+      "state": 2,
+      "rules": false,
+      "expected": false
+    },
+    {
+      "name": "new-up",
+      "ids": [
+        1,
+        2,
+        4
+      ],
+      "fault": "",
+      "state": 0,
+      "rules": false,
+      "expected": true
+    },
+    {
+      "name": "down",
+      "ids": [
+        1,
+        2,
+        3
+      ],
+      "fault": "down",
+      "state": 0,
+      "rules": false,
+      "expected": false
+    },
+    {
+      "name": "pending",
+      "ids": [
+        1,
+        2,
+        3
+      ],
+      "fault": "pending",
+      "state": 0,
+      "rules": false,
+      "expected": false
+    },
+    {
+      "name": "learner",
+      "ids": [
+        1,
+        2,
+        3
+      ],
+      "fault": "learner",
+      "state": 0,
+      "rules": false,
+      "expected": false
+    },
+    {
+      "name": "too-few",
+      "ids": [
+        1,
+        2
+      ],
+      "fault": "",
+      "state": 0,
+      "rules": false,
+      "expected": false
+    },
+    {
+      "name": "too-many",
+      "ids": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "fault": "",
+      "state": 0,
+      "rules": false,
+      "expected": false
+    },
+    {
+      "name": "healthy",
+      "ids": [
+        1,
+        2,
+        3
+      ],
+      "fault": "",
+      "state": 0,
+      "rules": true,
+      "expected": true
+    },
+    {
+      "name": "missing-shared",
+      "ids": [
+        1,
+        2,
+        3
+      ],
+      "fault": "",
+      "state": 1,
+      "rules": true,
+      "expected": false
+    },
+    {
+      "name": "removing-shared",
+      "ids": [
+        1,
+        2,
+        3
+      ],
+      "fault": "",
+      "state": 2,
+      "rules": true,
+      "expected": true
+    },
+    {
+      "name": "missing-new",
+      "ids": [
+        1,
+        2,
+        4
+      ],
+      "fault": "",
+      "state": 1,
+      "rules": true,
+      "expected": false
+    },
+    {
+      "name": "removing-new",
+      "ids": [
+        1,
+        2,
+        4
+      ],
+      "fault": "",
+      "state": 2,
+      "rules": true,
+      "expected": false
+    },
+    {
+      "name": "new-up",
+      "ids": [
+        1,
+        2,
+        4
+      ],
+      "fault": "",
+      "state": 0,
+      "rules": true,
+      "expected": true
+    },
+    {
+      "name": "down",
+      "ids": [
+        1,
+        2,
+        3
+      ],
+      "fault": "down",
+      "state": 0,
+      "rules": true,
+      "expected": false
+    },
+    {
+      "name": "pending",
+      "ids": [
+        1,
+        2,
+        3
+      ],
+      "fault": "pending",
+      "state": 0,
+      "rules": true,
+      "expected": false
+    },
+    {
+      "name": "learner",
+      "ids": [
+        1,
+        2,
+        3
+      ],
+      "fault": "learner",
+      "state": 0,
+      "rules": true,
+      "expected": false
+    },
+    {
+      "name": "too-few",
+      "ids": [
+        1,
+        2
+      ],
+      "fault": "",
+      "state": 0,
+      "rules": true,
+      "expected": false
+    },
+    {
+      "name": "too-many",
+      "ids": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "fault": "",
+      "state": 0,
+      "rules": true,
+      "expected": false
+    }
+  ]
+}

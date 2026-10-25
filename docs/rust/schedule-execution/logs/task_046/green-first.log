@@ -1,0 +1,26 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.06s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-38bccce6d4aa2e7c)
+
+running 2 tests
+
+thread 'task_046_test::task_046_target_safety' (164305486) panicked at pkg/schedule/checker/task_046_test.rs:241:13:
+assertion `left == right` failed: removing-shared, rules=true
+  left: true
+ right: false
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test task_046_test::task_046_target_safety ... FAILED
+
+thread 'task_046_test::task_046_behavior_cases' (164305485) panicked at pkg/schedule/checker/task_046_test.rs:140:14:
+called `Result::unwrap()` on an `Err` value: Content("invalid role ")
+test task_046_test::task_046_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_046_test::task_046_behavior_cases
+    task_046_test::task_046_target_safety
+
+test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 16 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-checker --lib`

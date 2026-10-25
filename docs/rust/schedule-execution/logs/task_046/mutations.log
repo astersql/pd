@@ -1,0 +1,8 @@
+{'name': 'empty-seam', 'command': ['cargo', 'test', '-p', 'astersql-pd-schedule-checker', '--locked', '--lib', 'task_046', '--', '--nocapture'], 'exit_code': 101, 'assertion_failure': True}
+{'name': 'table-identity', 'command': ['cargo', 'test', '-p', 'astersql-pd-schedule-checker', '--locked', '--lib', 'task_046', '--', '--nocapture'], 'exit_code': 101, 'assertion_failure': True}
+{'name': 'placement', 'command': ['cargo', 'test', '-p', 'astersql-pd-schedule-checker', '--locked', '--lib', 'task_046', '--', '--nocapture'], 'exit_code': 101, 'assertion_failure': True}
+{'name': 'label-split', 'command': ['cargo', 'test', '-p', 'astersql-pd-schedule-checker', '--locked', '--lib', 'task_046', '--', '--nocapture'], 'exit_code': 101, 'assertion_failure': True}
+{'name': 'label-deny', 'command': ['cargo', 'test', '-p', 'astersql-pd-schedule-checker', '--locked', '--lib', 'task_046', '--', '--nocapture'], 'exit_code': 101, 'assertion_failure': True}
+{'name': 'peer-store', 'command': ['cargo', 'test', '-p', 'astersql-pd-schedule-checker', '--locked', '--lib', 'task_046', '--', '--nocapture'], 'exit_code': 101, 'assertion_failure': True}
+{'name': 'health', 'command': ['cargo', 'test', '-p', 'astersql-pd-schedule-checker', '--locked', '--lib', 'task_046', '--', '--nocapture'], 'exit_code': 101, 'assertion_failure': True}
+{'name': 'replication', 'command': ['cargo', 'test', '-p', 'astersql-pd-schedule-checker', '--locked', '--lib', 'task_046', '--', '--nocapture'], 'exit_code': 101, 'assertion_failure': True}

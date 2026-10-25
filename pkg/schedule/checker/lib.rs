@@ -34,3 +34,8 @@ mod rule_location;
 pub use rule_location::*;
 #[cfg(test)]
 mod task_045_test;
+
+mod merge_guard;
+pub use merge_guard::*;
+#[cfg(test)]
+mod task_046_test;

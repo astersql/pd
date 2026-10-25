@@ -1,0 +1,14 @@
+{
+  "source_commit": "0b6fc9acd978ab784cac27a51b314c6ac1705203",
+  "mode": "readonly Go source/test-derived expectations; Rust execution only; Go runtime waived by user",
+  "sha256": {
+    "pkg/schedule/checker/merge_checker.go": "cd5480a1c1a39e7bab3c10e51d4c9de7399e0e2a36a32614796c41f55f12aa75",
+    "pkg/schedule/checker/merge_checker_test.go": "23c71ea5e72f71550dce735cab1f9f9ab8a4e25db6dcb76882adb9fdf858f0de",
+    "pkg/codec/codec.go": "4a470b8f0f87ae835a0caa297e17e175530f3e457c1f61bf3ed86b9540bc0f64",
+    "pkg/codec/codec_test.go": "6c4389cc293153fc3870db2c53f72bcb19fce7fa56cfee49dcd275f0a6e1391a",
+    "pkg/schedule/filter/healthy.go": "dc9137941fc887c15aaf744650235939e7c28704958e3b1c8d2c3970a5502c5d",
+    "pkg/schedule/placement/fit.go": "5e5c91601641ee4ffd1af5a7fedd3424bf5408d210fdb03b3956f52bb5da7b22",
+    "pkg/schedule/labeler/labeler.go": "d05b46f49fe1eaa5c3cd6bff2d06c3c17ddcda13b15d064f34edaccf133a54fc",
+    "docs/rust/schedule-execution/fixtures/task_046.json": "1a27fe6ae00689855dcf6b80a2258a6413d0fca65ea2f6cc0c46644d71fa7525"
+  }
+}

@@ -1,0 +1,130 @@
+[
+  {
+    "name": "empty-seam",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_046",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "assertion_failure": true
+  },
+  {
+    "name": "table-identity",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_046",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "assertion_failure": true
+  },
+  {
+    "name": "placement",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_046",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "assertion_failure": true
+  },
+  {
+    "name": "label-split",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_046",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "assertion_failure": true
+  },
+  {
+    "name": "label-deny",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_046",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "assertion_failure": true
+  },
+  {
+    "name": "peer-store",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_046",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "assertion_failure": true
+  },
+  {
+    "name": "health",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_046",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "assertion_failure": true
+  },
+  {
+    "name": "replication",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_046",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "assertion_failure": true
+  }
+]

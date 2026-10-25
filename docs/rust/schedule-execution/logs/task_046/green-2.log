@@ -1,0 +1,18 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+error[E0277]: the trait bound `PeerRoleType: From<&str>` is not satisfied
+   --> pkg/schedule/checker/task_046_test.rs:132:35
+    |
+132 |                     role: "voter".into(),
+    |                                   ^^^^ the trait `From<&str>` is not implemented for `PeerRoleType`
+    |
+help: the trait `From<&str>` is not implemented for `PeerRoleType`
+      but trait `From<std::string::String>` is implemented for it
+   --> pkg/schedule/placement/rule.rs:23:1
+    |
+ 23 | impl From<String> for PeerRoleType {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    = help: for that trait implementation, expected `std::string::String`, found `&str`
+    = note: required for `&str` to implement `Into<PeerRoleType>`
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `astersql-pd-schedule-checker` (lib test) due to 1 previous error

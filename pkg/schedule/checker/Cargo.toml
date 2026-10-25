@@ -17,6 +17,9 @@ astersql-pd-schedule-config.workspace = true
 astersql-pd-schedule-filter.workspace = true
 astersql-pd-schedule-placement.workspace = true
 
+astersql-pd-codec.workspace = true
+astersql-pd-schedule-labeler.workspace = true
+
 [dev-dependencies]
 serde_json.workspace = true
 tokio.workspace = true
