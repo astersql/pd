@@ -1,0 +1,105 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "evidence_kind": "source_assertion",
+  "go_execution": false,
+  "sources": {
+    "pkg/schedule/operator/influence.go": "28181ccd446b1309976e1aa2d55c56ab6bfec2f3dd57dd5d0b724c9fc0605622",
+    "pkg/core/storelimit/store_limit.go": "1556e3bee72d2d5e218a425938c43505385a2c6af5c91cd3d26bde9ccd507651",
+    "pkg/core/region.go": "be6ed0dc77537d62926d21d9e4eef080ea0dbcc7dc97efb4dc26269a172f99d8",
+    "pkg/schedule/operator/operator_test.go": "96bc7513e10013b3495b42b3aeb4425f4e04f415712a472fe1a457e0d08f71e9"
+  },
+  "cost_cases": [
+    [
+      1,
+      0,
+      0
+    ],
+    [
+      1,
+      1,
+      200
+    ],
+    [
+      1,
+      2,
+      200
+    ],
+    [
+      2,
+      1,
+      200
+    ],
+    [
+      20,
+      0,
+      200
+    ],
+    [
+      21,
+      0,
+      1000
+    ],
+    [
+      0,
+      0,
+      0
+    ],
+    [
+      -1,
+      0,
+      0
+    ],
+    [
+      0,
+      -1,
+      200
+    ]
+  ],
+  "property_cases": [
+    [
+      0,
+      0,
+      4
+    ],
+    [
+      0,
+      1,
+      30
+    ],
+    [
+      0,
+      99,
+      0
+    ],
+    [
+      1,
+      0,
+      2
+    ],
+    [
+      1,
+      1,
+      10
+    ],
+    [
+      1,
+      99,
+      10
+    ],
+    [
+      2,
+      0,
+      5
+    ],
+    [
+      2,
+      99,
+      5
+    ],
+    [
+      99,
+      0,
+      0
+    ]
+  ]
+}

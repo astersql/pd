@@ -510,6 +510,9 @@ dependencies = [
 name = "astersql-pd-schedule-operator"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-core",
+ "astersql-pd-core-constant",
+ "astersql-pd-storelimit",
  "serde_json",
 ]
 
