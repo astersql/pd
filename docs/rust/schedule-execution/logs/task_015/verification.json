@@ -1,0 +1,28 @@
+{
+  "evidence_kind": "source_assertion_and_actual_rust_tests",
+  "go_execution": false,
+  "fixture_sha256": "905a108aad374417aeac63985ed95a5e9405362f75e423716e2ba494c06f1cbd",
+  "source_cases": {
+    "kinds": 20,
+    "kind_strings": 15,
+    "statuses": 10,
+    "transitions": 70,
+    "merge": 10
+  },
+  "total_source_cases": 125,
+  "allowed_edges": 7,
+  "focused_tests": 4,
+  "package_tests": 4,
+  "workspace_tests": 1367,
+  "workspace_ignored": 1,
+  "behavioral_mutations": 5,
+  "readonly_files": 1119,
+  "go_module_plan_hashes_unchanged": true,
+  "diff_check_exit_code": 0,
+  "slot": 1,
+  "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+  "own_slot_lock_released": true,
+  "lockfile_remote_packages_unchanged": true,
+  "existing_etcd_fixture_reuses": 23,
+  "go_build_requests_intercepted": true
+}

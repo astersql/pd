@@ -1,0 +1,15 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=sh -c 'cargo fmt --all && cargo test -p astersql-pd-schedule-operator --locked --lib task_015 -- --nocapture'
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.19s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_operator-8dca8090e28d4485)
+
+running 4 tests
+test task_015_test::task_015_expiration_timeout_and_times ... ok
+test task_015_test::task_015_concurrent_terminal_transition ... ok
+task_015: 20 parse + 15 display + 10 status + 70 transition source-derived cases
+test task_015_test::task_015_behavior_cases ... ok
+test task_015_test::task_015_additional_merge_information ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+command_exit_code=0

@@ -1,0 +1,230 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=sh -c 'cargo fmt --all && cargo test -p astersql-pd-schedule-operator --locked --lib task_015 -- --nocapture'
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+error[E0405]: cannot find trait `Clock` in this scope
+  --> pkg/schedule/operator/task_015_test.rs:25:6
+   |
+25 | impl Clock for ManualClock {
+   |      ^^^^^ not found in this scope
+
+error[E0425]: cannot find type `OpStatusTracker` in this scope
+  --> pkg/schedule/operator/task_015_test.rs:30:18
+   |
+30 | fn tracker() -> (OpStatusTracker, Arc<ManualClock>) {
+   |                  ^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find type `OpStatusTracker` in this scope
+  --> pkg/schedule/operator/task_015_test.rs:34:31
+   |
+34 | fn at_status(status: u32) -> (OpStatusTracker, Arc<ManualClock>) {
+   |                               ^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find value `STARTED` in this scope
+  --> pkg/schedule/operator/task_015_test.rs:37:28
+   |
+37 |         assert!(tracker.to(STARTED));
+   |                            ^^^^^^^ not found in this scope
+
+error[E0425]: cannot find type `OpKind` in this scope
+  --> pkg/schedule/operator/task_015_test.rs:51:62
+   |
+51 |         let actual = case["input"].as_str().unwrap().parse::<OpKind>();
+   |                                                              ^^^^^^ not found in this scope
+   |
+help: you might be missing a type parameter
+   |
+46 | fn task_015_behavior_cases<OpKind>() {
+   |                           ++++++++
+
+error[E0425]: cannot find value `CREATED` in this scope
+  --> pkg/schedule/operator/task_015_test.rs:78:45
+   |
+78 |         let created = tracker.reach_time_of(CREATED);
+   |                                             ^^^^^^^ not found in this scope
+
+error[E0425]: cannot find value `CREATED` in this scope
+  --> pkg/schedule/operator/task_015_test.rs:93:42
+   |
+93 |         assert_eq!(tracker.reach_time_of(CREATED), created);
+   |                                          ^^^^^^^
+   |
+help: a local variable with a similar name exists
+   |
+93 -         assert_eq!(tracker.reach_time_of(CREATED), created);
+93 +         assert_eq!(tracker.reach_time_of(created), created);
+   |
+
+error[E0425]: cannot find value `STARTED` in this scope
+  --> pkg/schedule/operator/task_015_test.rs:98:86
+   |
+98 |                     && (from == 1 || [2, 4, 6].contains(&from) || (changed && dst == STARTED)))
+   |                                                                                      ^^^^^^^ not found in this scope
+
+error[E0425]: cannot find value `CREATED` in this scope
+   --> pkg/schedule/operator/task_015_test.rs:114:34
+    |
+114 |     assert_eq!(tracker.status(), CREATED);
+    |                                  ^^^^^^^ not found in this scope
+
+error[E0425]: cannot find value `STARTED` in this scope
+   --> pkg/schedule/operator/task_015_test.rs:136:24
+    |
+136 |     assert!(tracker.to(STARTED));
+    |                        ^^^^^^^ not found in this scope
+
+error[E0425]: cannot find value `TIMEOUT` in this scope
+   --> pkg/schedule/operator/task_015_test.rs:142:34
+    |
+142 |     assert_eq!(tracker.status(), TIMEOUT);
+    |                                  ^^^^^^^ not found in this scope
+
+error[E0425]: cannot find value `SUCCESS` in this scope
+   --> pkg/schedule/operator/task_015_test.rs:144:35
+    |
+144 |     assert!(tracker.reach_time_of(SUCCESS).is_none());
+    |                                   ^^^^^^^ not found in this scope
+
+error[E0425]: cannot find value `RELATED_MERGE_REGION` in this scope
+   --> pkg/schedule/operator/task_015_test.rs:161:18
+    |
+161 |         info.set(RELATED_MERGE_REGION, case["input"].as_str().unwrap());
+    |                  ^^^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find value `STARTED` in this scope
+   --> pkg/schedule/operator/task_015_test.rs:187:24
+    |
+187 |     assert!(tracker.to(STARTED));
+    |                        ^^^^^^^ not found in this scope
+
+error[E0425]: cannot find value `SUCCESS` in this scope
+   --> pkg/schedule/operator/task_015_test.rs:190:30
+    |
+190 |         let joins: Vec<_> = [SUCCESS, CANCELED, REPLACED, TIMEOUT]
+    |                              ^^^^^^^ not found in this scope
+
+error[E0425]: cannot find value `CANCELED` in this scope
+   --> pkg/schedule/operator/task_015_test.rs:190:39
+    |
+190 |         let joins: Vec<_> = [SUCCESS, CANCELED, REPLACED, TIMEOUT]
+    |                                       ^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find value `REPLACED` in this scope
+   --> pkg/schedule/operator/task_015_test.rs:190:49
+    |
+190 |         let joins: Vec<_> = [SUCCESS, CANCELED, REPLACED, TIMEOUT]
+    |                                                 ^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find value `TIMEOUT` in this scope
+   --> pkg/schedule/operator/task_015_test.rs:190:59
+    |
+190 |         let joins: Vec<_> = [SUCCESS, CANCELED, REPLACED, TIMEOUT]
+    |                                                           ^^^^^^^ not found in this scope
+
+error[E0425]: cannot find value `STARTED` in this scope
+   --> pkg/schedule/operator/task_015_test.rs:208:25
+    |
+208 |     assert!(!tracker.to(STARTED));
+    |                         ^^^^^^^ not found in this scope
+
+warning: unused import: `status::*`
+ --> pkg/schedule/operator/lib.rs:6:9
+  |
+6 | pub use status::*;
+  |         ^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `crate::*`
+  --> pkg/schedule/operator/task_015_test.rs:10:5
+   |
+10 | use crate::*;
+   |     ^^^^^^^^
+
+error[E0433]: cannot find type `OpStatusTracker` in this scope
+  --> pkg/schedule/operator/task_015_test.rs:32:6
+   |
+32 |     (OpStatusTracker::with_clock(clock.clone()), clock)
+   |      ^^^^^^^^^^^^^^^ use of undeclared type `OpStatusTracker`
+
+error[E0433]: cannot find type `OpKind` in this scope
+  --> pkg/schedule/operator/task_015_test.rs:64:20
+   |
+64 |     let mut kind = OpKind::ADMIN;
+   |                    ^^^^^^ use of undeclared type `OpKind`
+
+error[E0433]: cannot find type `OpKind` in this scope
+  --> pkg/schedule/operator/task_015_test.rs:65:13
+   |
+65 |     kind |= OpKind::LEADER;
+   |             ^^^^^^ use of undeclared type `OpKind`
+
+error[E0433]: cannot find type `OpKind` in this scope
+  --> pkg/schedule/operator/task_015_test.rs:67:16
+   |
+67 |     assert_eq!(OpKind::REPLICA | OpKind::LEADER, OpKind(272));
+   |                ^^^^^^ use of undeclared type `OpKind`
+
+error[E0433]: cannot find type `OpKind` in this scope
+  --> pkg/schedule/operator/task_015_test.rs:67:34
+   |
+67 |     assert_eq!(OpKind::REPLICA | OpKind::LEADER, OpKind(272));
+   |                                  ^^^^^^ use of undeclared type `OpKind`
+
+error[E0433]: cannot find type `OpStatusTracker` in this scope
+   --> pkg/schedule/operator/task_015_test.rs:148:19
+    |
+148 |     let tracker = OpStatusTracker::default();
+    |                   ^^^^^^^^^^^^^^^ use of undeclared type `OpStatusTracker`
+
+error[E0433]: cannot find type `AdditionalInfo` in this scope
+   --> pkg/schedule/operator/task_015_test.rs:155:25
+    |
+155 |     let info = Arc::new(AdditionalInfo::default());
+    |                         ^^^^^^^^^^^^^^ use of undeclared type `AdditionalInfo`
+
+error[E0425]: cannot find function, tuple struct or tuple variant `OpStatus` in this scope
+  --> pkg/schedule/operator/task_015_test.rs:40:28
+   |
+40 |         assert!(tracker.to(OpStatus(status)));
+   |                            ^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function, tuple struct or tuple variant `OpKind` in this scope
+  --> pkg/schedule/operator/task_015_test.rs:60:13
+   |
+60 |             OpKind(case["bits"].as_u64().unwrap() as u32).to_string(),
+   |             ^^^^^^ not found in this scope
+
+error[E0425]: cannot find function, tuple struct or tuple variant `OpKind` in this scope
+  --> pkg/schedule/operator/task_015_test.rs:67:50
+   |
+67 |     assert_eq!(OpKind::REPLICA | OpKind::LEADER, OpKind(272));
+   |                                                  ^^^^^^ not found in this scope
+
+error[E0425]: cannot find function, tuple struct or tuple variant `OpStatus` in this scope
+  --> pkg/schedule/operator/task_015_test.rs:69:22
+   |
+69 |         let status = OpStatus(case["input"].as_u64().unwrap() as u32);
+   |                      ^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function, tuple struct or tuple variant `OpStatus` in this scope
+  --> pkg/schedule/operator/task_015_test.rs:75:19
+   |
+75 |         let dst = OpStatus(case["to"].as_u64().unwrap() as u32);
+   |                   ^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function, tuple struct or tuple variant `OpStatus` in this scope
+  --> pkg/schedule/operator/task_015_test.rs:95:46
+   |
+95 |             let time = tracker.reach_time_of(OpStatus(raw));
+   |                                              ^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function, tuple struct or tuple variant `OpStatus` in this scope
+  --> pkg/schedule/operator/task_015_test.rs:99:33
+   |
+99 |                 || (raw >= 2 && OpStatus(raw) == tracker.status());
+   |                                 ^^^^^^^^ not found in this scope
+
+Some errors have detailed explanations: E0405, E0425, E0433.
+For more information about an error, try `rustc --explain E0405`.
+warning: `astersql-pd-schedule-operator` (lib test) generated 2 warnings
+error: could not compile `astersql-pd-schedule-operator` (lib test) due to 33 previous errors; 2 warnings emitted
+command_exit_code=101

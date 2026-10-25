@@ -1,0 +1,685 @@
+{
+  "evidence_kind": "source_assertion",
+  "go_execution": false,
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "sources": {
+    "pkg/schedule/operator/kind.go": "b9fad78bd44d1f0e2077bc8d22dc875aedb1ab8fb6a160086dd2a166c217a133",
+    "pkg/schedule/operator/status.go": "74455d16a6a9ff42cb97ac7791edf2ef46077013a7959d6da82259b8f8942090",
+    "pkg/schedule/operator/status_tracker.go": "7d573156bbd05679f4929b26081983b450ffa190494826da2f7ff1fcbb342ffb",
+    "pkg/schedule/operator/status_test.go": "ec3755ceff6e47e7feaa66bd91d357d30ac70caeae29334f1855555acfaa2756",
+    "pkg/schedule/operator/status_tracker_test.go": "a627197d6a59fb19eaf8f7edd53c94832ea9dc4d633874dd644b9f8649e9af1b"
+  },
+  "authorization": "User waived required Go runtime oracle; source contracts plus actual Rust tests suffice.",
+  "kinds": [
+    {
+      "input": "admin",
+      "bits": 1
+    },
+    {
+      "input": "affinity",
+      "bits": 2
+    },
+    {
+      "input": "merge",
+      "bits": 4
+    },
+    {
+      "input": "range",
+      "bits": 8
+    },
+    {
+      "input": "replica",
+      "bits": 16
+    },
+    {
+      "input": "split",
+      "bits": 32
+    },
+    {
+      "input": "hot-region",
+      "bits": 64
+    },
+    {
+      "input": "region",
+      "bits": 128
+    },
+    {
+      "input": "leader",
+      "bits": 256
+    },
+    {
+      "input": "witness-leader",
+      "bits": 512
+    },
+    {
+      "input": "split-scatter",
+      "bits": 2048
+    },
+    {
+      "input": "admin,leader",
+      "bits": 257
+    },
+    {
+      "input": "region,admin,region",
+      "bits": 129
+    },
+    {
+      "input": "witness",
+      "error": "unknown flag name: witness"
+    },
+    {
+      "input": "",
+      "error": "unknown flag name: "
+    },
+    {
+      "input": "leader, region",
+      "error": "unknown flag name:  region"
+    },
+    {
+      "input": "affinity,split-scatter",
+      "bits": 2050
+    },
+    {
+      "input": "bogus",
+      "error": "unknown flag name: bogus"
+    },
+    {
+      "input": "leader,",
+      "error": "unknown flag name: "
+    },
+    {
+      "input": "Leader",
+      "error": "unknown flag name: Leader"
+    }
+  ],
+  "kind_strings": [
+    {
+      "bits": 0,
+      "output": "unknown"
+    },
+    {
+      "bits": 1,
+      "output": "admin"
+    },
+    {
+      "bits": 2,
+      "output": "affinity"
+    },
+    {
+      "bits": 4,
+      "output": "merge"
+    },
+    {
+      "bits": 8,
+      "output": "range"
+    },
+    {
+      "bits": 16,
+      "output": "replica"
+    },
+    {
+      "bits": 32,
+      "output": "split"
+    },
+    {
+      "bits": 64,
+      "output": "hot-region"
+    },
+    {
+      "bits": 128,
+      "output": "region"
+    },
+    {
+      "bits": 256,
+      "output": "leader"
+    },
+    {
+      "bits": 512,
+      "output": "witness-leader"
+    },
+    {
+      "bits": 1024,
+      "output": "witness"
+    },
+    {
+      "bits": 2048,
+      "output": "split-scatter"
+    },
+    {
+      "bits": 4096,
+      "output": "unknown"
+    },
+    {
+      "bits": 8191,
+      "output": "admin,affinity,merge,range,replica,split,hot-region,region,leader,witness-leader,witness,split-scatter"
+    }
+  ],
+  "statuses": [
+    {
+      "input": 0,
+      "end": false,
+      "name": "Created"
+    },
+    {
+      "input": 1,
+      "end": false,
+      "name": "Started"
+    },
+    {
+      "input": 2,
+      "end": true,
+      "name": "Success"
+    },
+    {
+      "input": 3,
+      "end": true,
+      "name": "Canceled"
+    },
+    {
+      "input": 4,
+      "end": true,
+      "name": "Replaced"
+    },
+    {
+      "input": 5,
+      "end": true,
+      "name": "Expired"
+    },
+    {
+      "input": 6,
+      "end": true,
+      "name": "Timeout"
+    },
+    {
+      "input": 7,
+      "end": false,
+      "name": "Unknown"
+    },
+    {
+      "input": 100,
+      "end": false,
+      "name": "Unknown"
+    },
+    {
+      "input": 4294967295,
+      "end": false,
+      "name": "Unknown"
+    }
+  ],
+  "transitions": [
+    {
+      "from": 0,
+      "to": 0,
+      "changed": false,
+      "after": 0
+    },
+    {
+      "from": 0,
+      "to": 1,
+      "changed": true,
+      "after": 1
+    },
+    {
+      "from": 0,
+      "to": 2,
+      "changed": false,
+      "after": 0
+    },
+    {
+      "from": 0,
+      "to": 3,
+      "changed": true,
+      "after": 3
+    },
+    {
+      "from": 0,
+      "to": 4,
+      "changed": false,
+      "after": 0
+    },
+    {
+      "from": 0,
+      "to": 5,
+      "changed": true,
+      "after": 5
+    },
+    {
+      "from": 0,
+      "to": 6,
+      "changed": false,
+      "after": 0
+    },
+    {
+      "from": 0,
+      "to": 7,
+      "changed": false,
+      "after": 0
+    },
+    {
+      "from": 0,
+      "to": 8,
+      "changed": false,
+      "after": 0
+    },
+    {
+      "from": 0,
+      "to": 4294967295,
+      "changed": false,
+      "after": 0
+    },
+    {
+      "from": 1,
+      "to": 0,
+      "changed": false,
+      "after": 1
+    },
+    {
+      "from": 1,
+      "to": 1,
+      "changed": false,
+      "after": 1
+    },
+    {
+      "from": 1,
+      "to": 2,
+      "changed": true,
+      "after": 2
+    },
+    {
+      "from": 1,
+      "to": 3,
+      "changed": true,
+      "after": 3
+    },
+    {
+      "from": 1,
+      "to": 4,
+      "changed": true,
+      "after": 4
+    },
+    {
+      "from": 1,
+      "to": 5,
+      "changed": false,
+      "after": 1
+    },
+    {
+      "from": 1,
+      "to": 6,
+      "changed": true,
+      "after": 6
+    },
+    {
+      "from": 1,
+      "to": 7,
+      "changed": false,
+      "after": 1
+    },
+    {
+      "from": 1,
+      "to": 8,
+      "changed": false,
+      "after": 1
+    },
+    {
+      "from": 1,
+      "to": 4294967295,
+      "changed": false,
+      "after": 1
+    },
+    {
+      "from": 2,
+      "to": 0,
+      "changed": false,
+      "after": 2
+    },
+    {
+      "from": 2,
+      "to": 1,
+      "changed": false,
+      "after": 2
+    },
+    {
+      "from": 2,
+      "to": 2,
+      "changed": false,
+      "after": 2
+    },
+    {
+      "from": 2,
+      "to": 3,
+      "changed": false,
+      "after": 2
+    },
+    {
+      "from": 2,
+      "to": 4,
+      "changed": false,
+      "after": 2
+    },
+    {
+      "from": 2,
+      "to": 5,
+      "changed": false,
+      "after": 2
+    },
+    {
+      "from": 2,
+      "to": 6,
+      "changed": false,
+      "after": 2
+    },
+    {
+      "from": 2,
+      "to": 7,
+      "changed": false,
+      "after": 2
+    },
+    {
+      "from": 2,
+      "to": 8,
+      "changed": false,
+      "after": 2
+    },
+    {
+      "from": 2,
+      "to": 4294967295,
+      "changed": false,
+      "after": 2
+    },
+    {
+      "from": 3,
+      "to": 0,
+      "changed": false,
+      "after": 3
+    },
+    {
+      "from": 3,
+      "to": 1,
+      "changed": false,
+      "after": 3
+    },
+    {
+      "from": 3,
+      "to": 2,
+      "changed": false,
+      "after": 3
+    },
+    {
+      "from": 3,
+      "to": 3,
+      "changed": false,
+      "after": 3
+    },
+    {
+      "from": 3,
+      "to": 4,
+      "changed": false,
+      "after": 3
+    },
+    {
+      "from": 3,
+      "to": 5,
+      "changed": false,
+      "after": 3
+    },
+    {
+      "from": 3,
+      "to": 6,
+      "changed": false,
+      "after": 3
+    },
+    {
+      "from": 3,
+      "to": 7,
+      "changed": false,
+      "after": 3
+    },
+    {
+      "from": 3,
+      "to": 8,
+      "changed": false,
+      "after": 3
+    },
+    {
+      "from": 3,
+      "to": 4294967295,
+      "changed": false,
+      "after": 3
+    },
+    {
+      "from": 4,
+      "to": 0,
+      "changed": false,
+      "after": 4
+    },
+    {
+      "from": 4,
+      "to": 1,
+      "changed": false,
+      "after": 4
+    },
+    {
+      "from": 4,
+      "to": 2,
+      "changed": false,
+      "after": 4
+    },
+    {
+      "from": 4,
+      "to": 3,
+      "changed": false,
+      "after": 4
+    },
+    {
+      "from": 4,
+      "to": 4,
+      "changed": false,
+      "after": 4
+    },
+    {
+      "from": 4,
+      "to": 5,
+      "changed": false,
+      "after": 4
+    },
+    {
+      "from": 4,
+      "to": 6,
+      "changed": false,
+      "after": 4
+    },
+    {
+      "from": 4,
+      "to": 7,
+      "changed": false,
+      "after": 4
+    },
+    {
+      "from": 4,
+      "to": 8,
+      "changed": false,
+      "after": 4
+    },
+    {
+      "from": 4,
+      "to": 4294967295,
+      "changed": false,
+      "after": 4
+    },
+    {
+      "from": 5,
+      "to": 0,
+      "changed": false,
+      "after": 5
+    },
+    {
+      "from": 5,
+      "to": 1,
+      "changed": false,
+      "after": 5
+    },
+    {
+      "from": 5,
+      "to": 2,
+      "changed": false,
+      "after": 5
+    },
+    {
+      "from": 5,
+      "to": 3,
+      "changed": false,
+      "after": 5
+    },
+    {
+      "from": 5,
+      "to": 4,
+      "changed": false,
+      "after": 5
+    },
+    {
+      "from": 5,
+      "to": 5,
+      "changed": false,
+      "after": 5
+    },
+    {
+      "from": 5,
+      "to": 6,
+      "changed": false,
+      "after": 5
+    },
+    {
+      "from": 5,
+      "to": 7,
+      "changed": false,
+      "after": 5
+    },
+    {
+      "from": 5,
+      "to": 8,
+      "changed": false,
+      "after": 5
+    },
+    {
+      "from": 5,
+      "to": 4294967295,
+      "changed": false,
+      "after": 5
+    },
+    {
+      "from": 6,
+      "to": 0,
+      "changed": false,
+      "after": 6
+    },
+    {
+      "from": 6,
+      "to": 1,
+      "changed": false,
+      "after": 6
+    },
+    {
+      "from": 6,
+      "to": 2,
+      "changed": false,
+      "after": 6
+    },
+    {
+      "from": 6,
+      "to": 3,
+      "changed": false,
+      "after": 6
+    },
+    {
+      "from": 6,
+      "to": 4,
+      "changed": false,
+      "after": 6
+    },
+    {
+      "from": 6,
+      "to": 5,
+      "changed": false,
+      "after": 6
+    },
+    {
+      "from": 6,
+      "to": 6,
+      "changed": false,
+      "after": 6
+    },
+    {
+      "from": 6,
+      "to": 7,
+      "changed": false,
+      "after": 6
+    },
+    {
+      "from": 6,
+      "to": 8,
+      "changed": false,
+      "after": 6
+    },
+    {
+      "from": 6,
+      "to": 4294967295,
+      "changed": false,
+      "after": 6
+    }
+  ],
+  "merge": [
+    {
+      "input": "",
+      "has": false,
+      "id": 0
+    },
+    {
+      "input": "42",
+      "has": true,
+      "id": 42
+    },
+    {
+      "input": "0",
+      "has": true,
+      "id": 0
+    },
+    {
+      "input": "+42",
+      "has": true,
+      "id": 0
+    },
+    {
+      "input": "-1",
+      "has": true,
+      "id": 0
+    },
+    {
+      "input": "abc",
+      "has": true,
+      "id": 0
+    },
+    {
+      "input": "18446744073709551615",
+      "has": true,
+      "id": 18446744073709551615
+    },
+    {
+      "input": "18446744073709551616",
+      "has": true,
+      "id": 0
+    },
+    {
+      "input": " 42",
+      "has": true,
+      "id": 0
+    },
+    {
+      "input": "00042",
+      "has": true,
+      "id": 42
+    }
+  ],
+  "merge_log": "{\"related merge region\":\"00042\"}",
+  "escaped_log": "{\"escape\":\"\\u003c\\u003e\\u0026\\u2028\\u2029\",\"related merge region\":\"00042\"}"
+}

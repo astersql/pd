@@ -507,6 +507,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "astersql-pd-schedule-operator"
+version = "0.1.0"
+dependencies = [
+ "serde_json",
+]
+
+[[package]]
 name = "astersql-pd-schedule-placement"
 version = "0.1.0"
 dependencies = [

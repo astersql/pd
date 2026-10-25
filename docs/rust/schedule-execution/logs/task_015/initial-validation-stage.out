@@ -1,0 +1,9 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=python3 docs/rust/schedule-execution/logs/task_015/validation.py
+{'argv': ['cargo', 'fmt', '--all'], 'exit_code': 0, 'passed': 0, 'failed': 0, 'ignored': 0, 'cargo_target_dir': '/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1', 'log': 'validation-0.out'}
+{'argv': ['cargo', 'test', '-p', 'astersql-pd-schedule-operator', '--locked', '--lib', 'task_015', '--', '--nocapture'], 'exit_code': 0, 'passed': 4, 'failed': 0, 'ignored': 0, 'cargo_target_dir': '/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1', 'log': 'validation-1.out'}
+{'argv': ['cargo', 'test', '-p', 'astersql-pd-schedule-operator', '--locked'], 'exit_code': 0, 'passed': 4, 'failed': 0, 'ignored': 0, 'cargo_target_dir': '/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1', 'log': 'validation-2.out'}
+{'argv': ['cargo', 'metadata', '--format-version', '1', '--no-deps'], 'exit_code': 0, 'passed': 0, 'failed': 0, 'ignored': 0, 'cargo_target_dir': '/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1', 'log': 'validation-3.out'}
+{'argv': ['cargo', 'fmt', '--all', '--', '--check'], 'exit_code': 0, 'passed': 0, 'failed': 0, 'ignored': 0, 'cargo_target_dir': '/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1', 'log': 'validation-4.out'}
+{'argv': ['cargo', 'check', '--workspace', '--locked'], 'exit_code': 0, 'passed': 0, 'failed': 0, 'ignored': 0, 'cargo_target_dir': '/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1', 'log': 'validation-5.out'}
+{'argv': ['cargo', 'test', '--workspace', '--locked'], 'exit_code': 0, 'passed': 1367, 'failed': 0, 'ignored': 1, 'cargo_target_dir': '/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1', 'log': 'validation-6.out'}
+command_exit_code=0
