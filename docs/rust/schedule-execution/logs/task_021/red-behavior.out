@@ -1,0 +1,21 @@
+
+running 1 test
+test task_021_test::task_021_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_021_test::task_021_behavior_cases
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 25 filtered out; finished in 0.00s
+
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.58s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_operator-495e634b90917395)
+
+thread 'task_021_test::task_021_behavior_cases' (162690998) panicked at pkg/schedule/operator/task_021_test.rs:74:13:
+assertion `left == right` failed: ["pending-data",12,false,true,false,0,false,1] Voter
+  left: (true, 1)
+ right: (false, 1)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+error: test failed, to rerun pass `-p astersql-pd-schedule-operator --lib`

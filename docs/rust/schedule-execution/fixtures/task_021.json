@@ -1,0 +1,175 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "evidence_kind": "source_assertion",
+  "go_execution": false,
+  "normalization": "none",
+  "sources": {
+    "pkg/schedule/operator/step.go": "9338b311dca1940cd76bbe3903f0d2545cfc258f88a20eedb391ab59e243eac5",
+    "pkg/schedule/operator/step_test.go": "cc353a5b70022385630b93ce77f8a8e637c4a51c7724dc9c29ae3ef696c56c7b",
+    "pkg/core/region.go": "be6ed0dc77537d62926d21d9e4eef080ea0dbcc7dc97efb4dc26269a172f99d8",
+    "pkg/schedule/operator/influence.go": "28181ccd446b1309976e1aa2d55c56ab6bfec2f3dd57dd5d0b724c9fc0605622",
+    "pkg/core/storelimit/store_limit.go": "1556e3bee72d2d5e218a425938c43505385a2c6af5c91cd3d26bde9ccd507651"
+  },
+  "completion_columns": [
+    "name",
+    "id",
+    "witness",
+    "pending",
+    "w_finish",
+    "w_conf",
+    "nw_finish",
+    "nw_conf"
+  ],
+  "completion": [
+    [
+      "absent",
+      null,
+      false,
+      false,
+      false,
+      0,
+      false,
+      0
+    ],
+    [
+      "data",
+      12,
+      false,
+      false,
+      false,
+      0,
+      true,
+      1
+    ],
+    [
+      "witness",
+      12,
+      true,
+      false,
+      true,
+      1,
+      false,
+      0
+    ],
+    [
+      "pending-data",
+      12,
+      false,
+      true,
+      false,
+      0,
+      false,
+      1
+    ],
+    [
+      "pending-witness",
+      12,
+      true,
+      true,
+      true,
+      1,
+      false,
+      0
+    ],
+    [
+      "wrong-data",
+      99,
+      false,
+      false,
+      false,
+      0,
+      false,
+      0
+    ],
+    [
+      "wrong-witness",
+      99,
+      true,
+      false,
+      false,
+      0,
+      false,
+      0
+    ]
+  ],
+  "costs": [
+    [
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      1,
+      200
+    ],
+    [
+      1,
+      2,
+      200
+    ],
+    [
+      20,
+      200,
+      200
+    ],
+    [
+      21,
+      200,
+      1000
+    ],
+    [
+      -1,
+      200,
+      200
+    ]
+  ],
+  "timeouts": [
+    [
+      -1,
+      60,
+      600
+    ],
+    [
+      0,
+      60,
+      600
+    ],
+    [
+      99,
+      60,
+      600
+    ],
+    [
+      100,
+      60,
+      600
+    ],
+    [
+      101,
+      60,
+      606
+    ],
+    [
+      601,
+      360,
+      3606
+    ],
+    [
+      9223372036854775807,
+      60,
+      600
+    ]
+  ],
+  "cost_columns": [
+    "region_size",
+    "region_keys",
+    "add_or_remove_cost"
+  ],
+  "timeout_columns": [
+    "region_size",
+    "fast_seconds",
+    "slow_seconds"
+  ],
+  "provenance": "step.go BecomeWitness/BecomeNonWitness/BatchSwitchWitness and helpers; step_test.go TestSwitchToWitness and TestNeedStoreHealthCheck; source-derived expectations only, user waived runtime Go oracle"
+}

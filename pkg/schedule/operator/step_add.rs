@@ -61,7 +61,7 @@ impl fmt::Display for PeerStepError {
     }
 }
 impl std::error::Error for PeerStepError {}
-fn validate<C: SharedConfigProvider>(
+pub(super) fn validate<C: SharedConfigProvider>(
     cluster: &BasicCluster,
     config: &C,
     to: u64,
@@ -150,7 +150,7 @@ fn add_influence(
         inf.update_store(send, |s| s.add_step_cost(Type::SEND_SNAPSHOT, size))
     }
 }
-fn slow_timeout(size: i64) -> Duration {
+pub(super) fn slow_timeout(size: i64) -> Duration {
     Duration::from_nanos(
         size.wrapping_mul(6)
             .wrapping_mul(1_000_000_000)
