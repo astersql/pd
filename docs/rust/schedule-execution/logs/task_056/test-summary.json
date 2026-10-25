@@ -1,0 +1,32 @@
+{
+  "focused-final": {
+    "passed": 8,
+    "failed": 0,
+    "ignored": 0,
+    "exit_code": 0
+  },
+  "focused-provenance": {
+    "passed": 8,
+    "failed": 0,
+    "ignored": 0,
+    "exit_code": 0
+  },
+  "package-final": {
+    "passed": 52,
+    "failed": 0,
+    "ignored": 0,
+    "exit_code": 0
+  },
+  "workspace-test": {
+    "passed": 1510,
+    "failed": 0,
+    "ignored": 1,
+    "exit_code": 0
+  },
+  "task_056": {
+    "test_functions": 8,
+    "frozen_scan_limit_cases": 7,
+    "lifecycle_stories": 10,
+    "mutations_rejected": 3
+  }
+}

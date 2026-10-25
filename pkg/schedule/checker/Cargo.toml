@@ -9,6 +9,10 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
+async-trait.workspace = true
+futures-util.workspace = true
+tokio.workspace = true
+tokio-util.workspace = true
 astersql-pd-cache.workspace = true
 astersql-pd-schedule-hbstream.workspace = true
 astersql-pd-core.workspace = true
@@ -27,9 +31,6 @@ astersql-pd-codec.workspace = true
 astersql-pd-schedule-labeler.workspace = true
 
 [dev-dependencies]
-async-trait.workspace = true
 astersql-pd-keyutil.workspace = true
 serde_json.workspace = true
-tokio.workspace = true
 astersql-pd-storage-kv.workspace = true
-tokio-util.workspace = true

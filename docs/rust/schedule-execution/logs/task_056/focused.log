@@ -1,0 +1,16 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+error[E0282]: type annotations needed
+   --> pkg/schedule/checker/patrol.rs:113:80
+    |
+113 |                     Some(result) = workers.next(), if !workers.is_empty() => { result.map_err(PatrolError::Host)?; },
+    |                                                                                ^^^^^^ cannot infer type
+
+error[E0599]: no associated function or constant named `new` found for struct `Manager` in the current scope
+   --> pkg/schedule/checker/task_056_test.rs:137:36
+    |
+137 |                 affinity: Manager::new(storage.clone(), paths.clone(), 0),
+    |                                    ^^^ associated function or constant not found in `Manager`
+
+Some errors have detailed explanations: E0282, E0599.
+For more information about an error, try `rustc --explain E0282`.
+error: could not compile `astersql-pd-schedule-checker` (lib test) due to 2 previous errors

@@ -1,0 +1,19 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.02s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-09c25f305b3e17e1)
+
+running 1 test
+
+thread 'task_056_test::task_056_real_priority_pending_and_scan_order' (165190507) panicked at pkg/schedule/checker/task_056_test.rs:377:9:
+priority/pending/scan phases missing: ["Pending:2", "split-scatter", "scan", "labels:2"]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test task_056_test::task_056_real_priority_pending_and_scan_order ... FAILED
+
+failures:
+
+failures:
+    task_056_test::task_056_real_priority_pending_and_scan_order
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 51 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-checker --lib`

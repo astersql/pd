@@ -1,0 +1,2510 @@
+warning: use of deprecated field `astersql_pd_proto::pdpb::RegionHeartbeatRequest::cpu_usage`
+   --> pkg/server/core_region_adapter.rs:134:30
+    |
+134 |     r.set_response_cpu_usage(p.cpu_usage);
+    |                              ^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: `astersql-pd-server` (lib) generated 1 warning
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+warning: use of deprecated field `astersql_pd_proto::pdpb::RegionHeartbeatRequest::cpu_usage`
+  --> pkg/server/core_region_adapter_test.rs:88:13
+   |
+88 |             cpu_usage: 77,
+   |             ^^^^^^^^^^^^^
+
+warning: `astersql-pd-server` (lib test) generated 2 warnings (1 duplicate)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.41s
+     Running unittests pkg/lib.rs (target/rust-slot-1/debug/deps/astersql_pd-d88c74ce8a05f741)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_balancer-2b4a90ef22198dfa)
+
+running 5 tests
+test balancer_test::concurrent_membership ... ok
+test balancer_test::policy_and_membership ... ok
+test balancer_test::round_robin_next ... ok
+test balancer_test::round_robin_next_concurrent ... ok
+test balancer_test::delete_duplicate_and_concurrency ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_btree-e8b849aefbddd8e1)
+
+running 12 tests
+test tests::clear_releases_payloads_and_reuses_empty_buffers ... ok
+test tests::clone_clear_and_freelist ... ok
+test tests::ascending_iteration ... ok
+test tests::delete_min_max ... ok
+test tests::descending_iteration ... ok
+test tests::descending_order ... ok
+test tests::insert_get_and_len ... ok
+test tests::invalid_degree - should panic ... ok
+test tests::delete_and_rebalance ... ok
+test tests::split_replace_min_max ... ok
+test tests::zero_degree - should panic ... ok
+test tests::order_statistics ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.87s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_cache-5b73eb89b75b127b)
+
+running 17 tests
+test cache_test::fifo_behavior ... ok
+test cache_test::fifo_behavior_concurrent_insertion ... ok
+test cache_test::fifo_last_same_group ... ok
+test cache_test::fifo_behavior_empty_remove_panics - should panic ... ok
+test cache_test::lru_behavior ... ok
+test cache_test::priority_queue_put_update ... ok
+test cache_test::priority_queue_query_remove ... ok
+test cache_test::thread_safe_cache_factory ... ok
+test cache_test::lru_behavior_unbounded_and_shared_values ... ok
+test cache_test::two_queue_behavior ... ok
+test cache_test::two_queue_behavior_ghost_capacity_and_ratios ... ok
+test ttl_test::ttl_cache_lifecycle_concurrent_put_pop ... ok
+test ttl_test::ttl_cache_lifecycle_drop_releases_values_and_preserves_parent ... ok
+test ttl_test::ttl_cache_lifecycle_expiration_boundaries ... ok
+test ttl_test::ttl_cache_lifecycle_gc_restarts_and_cancels ... ok
+test ttl_test::ttl_cache_lifecycle_update_and_revival ... ok
+test cache_test::thread_safe_cache_factory_concurrent_access ... ok
+
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_cluster-06cab2633352867f)
+
+running 46 tests
+test bucket_heartbeat_test::state_task_45_bucket_heartbeat_closed_worker_keeps_commit ... ok
+test bucket_heartbeat_test::state_task_45_bucket_heartbeat_compatibility_and_stale_metadata ... ok
+test bucket_heartbeat_test::state_task_45_bucket_heartbeat_missing_leader_store_allowed ... ok
+test bucket_heartbeat_test::state_task_45_bucket_heartbeat_competing_versions ... ok
+test bucket_heartbeat_test::state_task_45_bucket_heartbeat_three_attempt_boundary_real_core_cas ... ok
+test bucket_heartbeat_test::state_task_45_bucket_heartbeat_missing_removed_never_enqueue ... ok
+test bucket_heartbeat_test::state_task_45_bucket_heartbeat_versions_and_worker_payload ... ok
+test heartbeat_effects_test::state_task_46_heartbeat_effects_bucket_peer_epoch_and_stale ... ok
+test heartbeat_effects_test::state_task_46_heartbeat_effects_delayed_stats_refresh_root ... ok
+test heartbeat_effects_test::state_task_46_heartbeat_effects_duplicate_config_and_root_only ... ok
+test heartbeat_effects_test::state_task_46_heartbeat_effects_delete_failure_continues_then_save_failure ... ok
+test heartbeat_effects_test::state_task_46_heartbeat_effects_guide_snapshots ... ok
+test heartbeat_effects_test::state_task_46_heartbeat_effects_queue_cancel_and_duplicate_repair ... ok
+test heartbeat_effects_test::state_task_46_heartbeat_effects_retained_admission_and_stopped_runner ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:62472
+isolated etcd 3.5.15 ready at http://127.0.0.1:62470
+test heartbeat_effects_test::state_task_46_heartbeat_effects_split_merge_etcd ... ok
+test heartbeat_effects_test::state_task_46_heartbeat_effects_split_merge_memory ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_accept_duplicate_inherit ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_concurrent_precheck_merge_commit ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_delayed_duplicate_cannot_resurrect ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_duplicate_repairs_subtree ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_epoch_term_rejection ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_flow_size_and_leader ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_membership_and_recovery ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_prepared_overlap_recheck ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_same_id_recheck_and_last_write ... ok
+test region_overlap_test::state_task_44_region_overlap_go_repeated_split_merge_sequence ... ok
+test region_overlap_test::state_task_44_region_overlap_hot_history_uses_normal_ttl ... ok
+test region_overlap_test::state_task_44_region_overlap_merge_offline_cross_store_and_replay ... ok
+test region_overlap_test::state_task_44_region_overlap_optional_statistics_and_duplicate_label_cleanup ... ok
+test region_overlap_test::state_task_44_region_overlap_split_left_then_right_and_empty_end ... ok
+test removed_store_test::state_task_42_removed_store_between_check_and_commit ... ok
+test removed_store_test::state_task_42_removed_store_commit_preserves_current_metadata ... ok
+test removed_store_test::state_task_42_removed_store_deleted_between_check_and_commit ... ok
+test removed_store_test::state_task_42_removed_store_routine_noop ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:62482
+test state_pipeline_test::state_task_52_state_pipeline_etcd_replay ... ok
+test state_pipeline_test::state_task_52_state_pipeline_hot_flow_and_owned_snapshots ... ok
+test state_pipeline_test::state_task_52_state_pipeline_memory_replay ... ok
+test store_heartbeat_test::state_task_41_store_heartbeat_closed_queue_keeps_core_update ... ok
+test store_heartbeat_test::state_task_41_store_heartbeat_cpu_query_and_filters ... ok
+test store_heartbeat_test::state_task_41_store_heartbeat_existing_and_missing ... ok
+test store_heartbeat_test::state_task_41_store_heartbeat_go_hot_cold_sequence ... ok
+test store_heartbeat_test::state_task_41_store_heartbeat_intervals_and_independent ... ok
+test store_heartbeat_test::state_task_41_store_heartbeat_raw_oracle_rates ... ok
+test store_heartbeat_test::state_task_41_store_heartbeat_removed_and_unhealthy ... ok
+test store_heartbeat_test::state_task_41_store_heartbeat_reported_missing_peer_is_not_cold ... ok
+test heartbeat_effects_test::state_task_46_heartbeat_effects_etcd_disconnect_keeps_cache_and_history ... ok
+
+test result: ok. 46 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 8.38s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_cmd_pd_server-da269df662c3b01d)
+
+running 1 test
+isolated etcd 3.5.15 ready at http://127.0.0.1:62508
+test main_test::standalone_runtime_lifecycle ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.02s
+
+     Running unittests bin_main.rs (target/rust-slot-1/debug/deps/pd_server-1e57c58b6d72efe5)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_codec-ef31fa85b3d7cbad)
+
+running 7 tests
+test keyspace_test::encoded_keyspace_boundary ... ok
+test bytes_test::memcomparable_bytes ... ok
+test keyspace_test::raw_keyspace_prefix ... ok
+test keyspace_test::supported_keyspace_modes ... ok
+test number_test::comparable_i64 ... ok
+test table_test::record_and_index_keys ... ok
+test table_test::table_identity_and_meta ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_compat_tests-c1dd120c841c9d10)
+
+running 10 tests
+test schedule_foundation_test::schedule_foundation_dependency_direction ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:62526
+isolated etcd 3.5.15 ready at http://127.0.0.1:62528
+test schedule_foundation_test::schedule_foundation_etcd_io_failure ... ok
+test schedule_foundation_test::schedule_foundation_memory ... ok
+test state_regression_test::state_theme_diff_reports_field ... ok
+test state_regression_test::state_theme_fault_recovery ... ok
+test schedule_foundation_test::schedule_foundation_etcd ... ok
+test state_regression_test::state_theme_history_saved_go_snapshot ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:62549
+test state_regression_test::state_theme_replay ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:62561
+test state_regression_test::state_theme_fault_recovery_etcd ... ok
+test state_regression_test::state_theme_replay_etcd ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 9.90s
+
+     Running health_member_test.rs (target/rust-slot-1/debug/deps/health_member-adf6918159ef4811)
+
+running 10 tests
+test detects_semantic_difference ... ok
+test failed_start_cleans_directory ... ok
+test health_member_processes ... ok
+test metric_values_and_types_are_semantic ... ok
+test minimal_member_preserves_semantics_and_rejects_unknown_fields ... ok
+test normalization_does_not_hide_equal_valued_config ... ok
+test normalization_preserves_semantics ... ok
+test protobuf_clock_offset_preserves_logical_difference ... ok
+test early_exit_is_reported_and_cleaned ... ok
+test readiness_timeout_cleans_process_and_data ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.34s
+
+     Running tso_test.rs (target/rust-slot-1/debug/deps/tso-445aae082985025b)
+
+running 1 test
+test tso_processes ... ignored, requires Go/Rust process binaries; run scripts/run-pd-compat.sh
+
+test result: ok. 0 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_configutil-85c3137e46504819)
+
+running 15 tests
+test config_adjust_test::config_adjust_duration ... ok
+test config_adjust_test::config_adjust_bool ... ok
+test config_adjust_test::config_adjust_float64 ... ok
+test config_adjust_test::config_adjust_integers ... ok
+test config_adjust_test::config_adjust_string ... ok
+test config_metadata_test::config_metadata_absent_and_empty_metadata ... ok
+test config_metadata_test::config_metadata_child_does_not_mutate_parent_or_siblings ... ok
+test config_metadata_test::config_metadata_explicit_zero_values_and_missing ... ok
+test config_metadata_test::config_metadata_literal_segments_case_and_empty_keys ... ok
+test config_metadata_test::config_metadata_nested_prefixes_and_missing_paths ... ok
+test config_unknown_test::config_unknown_absent_and_empty_metadata ... ok
+test config_unknown_test::config_unknown_child_uses_global_metadata ... ok
+test config_unknown_test::config_unknown_nested_paths_and_document_order ... ok
+test config_unknown_test::config_unknown_preserves_parser_display_verbatim ... ok
+test config_unknown_test::config_unknown_warning_leaves_values_and_views_usable ... ok
+
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_core-f75d13634a223c2d)
+
+running 160 tests
+test basic_cluster_rates_test::core_task_58_empty_and_missing_store ... ok
+test basic_cluster_test::core_task_57_leader_lookup_absent_paths ... ok
+test basic_cluster_rates_test::core_task_58_alignment_roles_removed_and_deletion ... ok
+test basic_cluster_test::core_task_57_removal_clears_status ... ok
+test peer_test::core_task_09_default_and_identity ... ok
+test basic_cluster_test::core_task_57_status_and_snapshot ... ok
+test peer_test::core_task_09_joint_and_empty ... ok
+test peer_test::core_task_09_roles_and_witness ... ok
+test region_buckets_test::core_task_34_absent_and_zero ... ok
+test peer_test::core_task_09_unknown_role ... ok
+test region_buckets_test::core_task_34_identity_and_clear ... ok
+test region_buckets_test::core_task_34_meta_priority_and_clone ... ok
+test region_buckets_test::core_task_34_competing_snapshots ... ok
+test region_buckets_test::core_task_34_versions ... ok
+test region_clone_test::core_task_29_peers_and_absent_candidates ... ok
+test region_clone_test::core_task_29_epoch_boundaries ... ok
+test region_clone_test::core_task_29_snapshot_options ... ok
+test region_clone_test::core_task_68_clone_option_coverage ... ok
+test region_flow_test::core_task_30_invalid_flow_pairs ... ok
+test region_flow_test::core_task_30_rounding ... ok
+test region_flow_test::core_task_30_sizes_and_clone ... ok
+test region_flow_test::core_task_68_raw_stat_options_preserve_signed_values_and_source ... ok
+test region_flow_test::core_task_68_store_peer_statistics ... ok
+test region_format_test::core_task_36_peer_diffs ... ok
+test region_format_test::core_task_36_peer_order_duplicates_and_roles ... ok
+test region_format_test::core_task_36_rule_codec ... ok
+test region_guide_test::core_task_35_branch_matrix ... ok
+test region_guide_test::core_task_35_new_region ... ok
+test region_inherit_test::core_task_33_bucket_conditions_and_sharing ... ok
+test region_inherit_test::core_task_33_size_keys_fixture ... ok
+test region_inherit_test::core_task_33_sources_and_flow_remain_local ... ok
+test region_format_test::core_task_36_keys_and_meta ... ok
+test region_merge_policy_test::core_task_32_thresholds_and_empty_sentinels ... ok
+test region_merge_test::core_task_38_absent_unselected_epoch ... ok
+test region_merge_test::core_task_38_empty_and_odd_tail ... ok
+test region_merge_test::core_task_38_pair_metadata_and_epoch_side_effects ... ok
+test region_meta_test::core_task_10_defaults_preserve_absent_epoch ... ok
+test region_meta_test::core_task_10_key_ranges ... ok
+test region_meta_test::core_task_10_owned_metadata_and_u64_boundaries ... ok
+test region_merge_test::core_task_38_absent_selected_epoch - should panic ... ok
+test region_query_test::core_task_31_query_merge_reset ... ok
+test region_query_test::core_task_31_loads_and_rates ... ok
+test region_split_test::core_task_37_absent_epoch_panics_like_go - should panic ... ok
+test region_split_test::core_task_37_empty_and_batch_offsets ... ok
+test region_split_test::core_task_37_boundaries_epoch_ids_and_owned_clones ... ok
+test region_stale_test::core_task_45_error_precedence_and_payloads ... ok
+test region_stale_test::core_task_45_nil_epoch_and_unsigned_limits ... ok
+test region_test::core_task_28_classification_and_queries ... ok
+test region_test::core_task_28_duplicate_store_lookup_order ... ok
+test region_test::core_task_28_empty_and_missing ... ok
+test region_stale_test::core_task_45_fixture_checks ... ok
+test region_tree_random_test::core_task_43_continuous_ranges ... ok
+test region_tree_random_test::core_task_43_empty_duplicate_and_identity ... ok
+test region_tree_random_test::core_task_43_invalid_random_index - should panic ... ok
+test region_tree_random_test::core_task_43_retry_boundaries ... ok
+test region_tree_scan_test::core_task_42_callback_stops_immediately ... ok
+test region_tree_random_test::core_task_43_ranges_and_candidates ... ok
+test region_tree_scan_test::core_task_42_count_rank_semantics ... ok
+test region_tree_scan_test::core_task_42_empty_and_no_candidate ... ok
+test region_tree_scan_test::core_task_42_scan_holes_and_boundaries ... ok
+test region_tree_stats_test::core_task_41_in_place_and_uncounted ... ok
+test region_tree_stats_test::core_task_41_go_size_sequence_and_multi_overlap ... ok
+test region_tree_stats_test::core_task_41_missing_removal_and_overlap ... ok
+test region_tree_stats_test::core_task_41_replace_remove ... ok
+test region_tree_test::core_task_39_adjacent_and_ordering ... ok
+test region_tree_test::core_task_39_binary_bounds_and_shared_identity ... ok
+test region_tree_test::core_task_39_fixture_queries ... ok
+test region_tree_update_test::core_task_40_fixture_mutations ... ok
+test regions_atomic_test::core_task_46_fixture_all_entries ... ok
+test regions_atomic_test::core_task_46_precheck_snapshot_cannot_authorize_stale_commit ... ok
+test regions_atomic_test::core_task_46_shared_owners_preserve_newest_version ... ok
+test regions_atomic_test::core_task_68_combined_put_updates_roles_but_root_only_does_not ... ok
+test regions_batch_scan_test::core_task_52_fixture_behavior ... ok
+test regions_batch_scan_test::core_task_52_go_limit_matrix ... ok
+test regions_query_test::core_task_50_batch_boundaries_duplicates_and_buckets ... ok
+test regions_query_test::core_task_50_distinct_ids_across_batches ... ok
+test regions_query_test::core_task_50_empty_and_no_candidates ... ok
+test regions_query_test::core_task_50_mixed_fixture ... ok
+test regions_random_test::core_task_55_distinct_candidates_and_injected_randomness ... ok
+test regions_random_test::core_task_55_role_changes_remove_old_candidates ... ok
+test regions_random_test::core_task_55_roles_ranges_and_absence ... ok
+test regions_random_test::core_task_55_witness_leader ... ok
+test regions_range_stats_test::core_task_54_counts ... ok
+test regions_range_stats_test::core_task_54_holes_and_neighbors ... ok
+test regions_range_stats_test::core_task_54_size_across_go_scan_batches ... ok
+test regions_range_stats_test::core_task_54_sizes ... ok
+test regions_reset_test::core_task_49_flow_replacement_and_reset ... ok
+test region_tree_update_test::core_task_40_repeated_split_merge ... ok
+test regions_reset_test::core_task_49_remove_split_and_missing ... ok
+test regions_reset_test::core_task_49_reset_and_reinsert ... ok
+test regions_scan_test::core_task_51_empty_and_finite_tail ... ok
+test regions_scan_test::core_task_51_iterator_identity_and_stop ... ok
+test regions_scan_test::core_task_51_ranges_and_limits ... ok
+test regions_stats_test::core_task_53_prepared_threshold_and_empty ... ok
+test regions_stats_test::core_task_53_roles_updates_and_removal ... ok
+test regions_subtree_order_test::core_task_48_eventual_repair_with_barrier ... ok
+test regions_subtree_order_test::core_task_48_missing_root_and_overlap_recheck ... ok
+test regions_subtree_order_test::core_task_48_stale_and_recreated ... ok
+test regions_subtree_test::core_task_47_overlap_fallback_and_empty_membership ... ok
+test regions_subtree_test::core_task_47_same_range_payload_and_nil_leader ... ok
+test regions_subtree_test::core_task_47_roles_and_range_changes ... ok
+test regions_subtree_test::core_task_47_same_range_role_changes_and_explicit_overlap ... ok
+test regions_test::core_task_44_snapshot_ownership ... ok
+test regions_test::core_task_44_fixture_replacements ... ok
+test store_clone_test::core_task_16_concurrent_stats ... ok
+test store_clone_test::core_task_16_metadata_boundaries ... ok
+test store_clone_test::core_task_16_shared_limiter ... ok
+test store_clone_test::core_task_16_shared_stats_and_smoothing ... ok
+test store_clone_test::core_task_16_zero_value ... ok
+test store_control_test::core_task_18_clone_counters_are_independent ... ok
+test store_control_test::core_task_18_invalid_direction_is_noop ... ok
+test store_control_test::core_task_18_source_scenarios ... ok
+test store_health_test::core_task_23_resolved ... ok
+test store_health_test::core_task_23_slow ... ok
+test store_health_test::core_task_68_witness_score_delta_and_wrapping ... ok
+test store_health_test::core_task_23_space ... ok
+test store_labels_test::core_task_13_engine_fixture ... ok
+test store_labels_test::core_task_13_lookup_and_absent_meta ... ok
+test store_labels_test::core_task_13_go_simple_fold_orbits ... ok
+test store_labels_test::core_task_13_unicode_and_error_escaping ... ok
+test store_labels_test::core_task_13_merge_fixture ... ok
+test store_limit_test::core_task_19_assembly_reset_and_clone ... ok
+test store_limit_test::core_task_19_v2_priority_feedback_and_replacement ... ok
+test store_location_test::core_task_24_empty_and_same_id ... ok
+test store_limit_test::core_task_19_unknown_type_panics - should panic ... ok
+test store_location_test::core_task_24_location_fixture ... ok
+test store_meta_test::core_task_11_absent_metadata_and_zero_value ... ok
+test store_meta_test::core_task_11_metadata_roundtrip ... ok
+test store_meta_test::core_task_68_store_metadata_options_detach_and_preserve_identity ... ok
+test store_resource_test::core_task_20_fixture_scores ... ok
+test store_resource_test::core_task_20_resources_and_clone ... ok
+test store_resource_test::core_task_20_weight_edges ... ok
+test store_score_v1_test::core_task_21_fixture_scores ... ok
+test store_score_v1_test::core_task_21_zero_used_regression_and_nan_weight ... ok
+test store_score_v2_test::core_task_22_average_nan_and_wrapping ... ok
+test store_score_v2_test::core_task_22_existing_go_ordering ... ok
+test store_score_v2_test::core_task_22_fixture_and_routing ... ok
+test store_state_test::core_task_12_absent_metadata_defaults ... ok
+test store_state_test::core_task_12_offline_requires_flag - should panic ... ok
+test store_state_test::core_task_12_state_matrix ... ok
+test store_state_test::core_task_12_transitions ... ok
+test store_stats_average_test::core_task_15_clamp ... ok
+test store_stats_average_test::core_task_15_sequences ... ok
+test store_stats_average_test::core_task_15_unsmoothed_zero_value ... ok
+test store_location_test::core_task_24_go_grid ... ok
+test store_stats_test::core_task_14_dfs_owned_counters ... ok
+test store_stats_average_test::core_task_15_window_rollover_and_negative_overshoot ... ok
+test store_stats_test::core_task_68_new_store_stats_detaches_smoothing ... ok
+test store_time_test::core_task_17_clone_and_clock_progression ... ok
+test store_stats_test::core_task_14_raw_stats_fixture ... ok
+test store_time_test::core_task_17_time_contract ... ok
+test store_topology_test::core_task_25_topology_fixtures ... ok
+test stores_control_test::core_task_27_controls_and_snapshots ... ok
+test stores_control_test::core_task_27_missing_and_limit ... ok
+test stores_control_test::core_task_27_network_current_membership ... ok
+test stores_region_test::core_task_56_handles_survive_replacement_and_deletion ... ok
+test stores_region_test::core_task_56_membership_intersects_registry ... ok
+test stores_test::core_task_26_registry_snapshots ... ok
+test stores_test::core_task_26_zero_id_and_absent_metadata ... ok
+test stores_test::core_task_26_patch_current_and_concurrent_updates ... ok
+
+test result: ok. 160 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running unittests kind.rs (target/rust-slot-1/debug/deps/astersql_pd_core_constant-9ecdb4a21559637c)
+
+running 4 tests
+test kind_test::direction_display ... ok
+test kind_test::priority_and_resource_kind ... ok
+test kind_test::key_type_round_trip ... ok
+test kind_test::schedule_policy_round_trip ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_election-29a01eeb0934e411)
+
+running 19 tests
+test campaign_key_test::campaign_key_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:62651
+test leader_delete_test::leader_delete_etcd ... ok
+test leader_delete_test::leader_delete_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:62650
+test campaign_key_test::campaign_key_etcd ... ok
+test leader_watch_test::leader_watch_healthy_idle_reopen ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:62660
+test leader_watch_test::leader_watch_memory ... ok
+test leader_watch_test::leader_watch_unhealthy_timeout ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:62670
+test leadership_test::leadership_move_etcd ... ok
+test leadership_test::leadership_move_memory ... ok
+test lease_expiry_test::lease_expiry_boundaries ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:62680
+test leader_watch_test::leader_watch_etcd ... ok
+test lease_expiry_test::lease_expiry_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:62690
+test lease_expiry_test::lease_expiry_etcd ... ok
+test lease_keep_test::lease_keep_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:62736
+test watch_reset_test::watch_reset_etcd ... ok
+test watch_reset_test::watch_reset_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:62745
+test watch_reset_test::watch_reset_race_etcd ... ok
+test watch_reset_test::watch_reset_race_memory ... ok
+test lease_keep_test::lease_keep_etcd ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 16.28s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_encryption-901a69c2281c9589)
+
+running 2 tests
+test config_test::encryption_defaults_and_methods ... ok
+test config_test::encryption_errors_preserve_code_precedence_and_partial_defaults ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_errs-e429f02db16c1b90)
+
+running 7 tests
+test catalog_test::catalog_foundation_domains ... ok
+test catalog_test::catalog_completeness ... ok
+test catalog_test::catalog_infrastructure_domains ... ok
+test catalog_test::catalog_scheduling_domains ... ok
+test error_test::leader_changed_classification ... ok
+test error_test::typed_error_core ... ok
+test catalog_test::catalog_service_domains ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_etcdutil-f46aadaee21b482a)
+
+running 12 tests
+test snapshot_loader_test::snapshot_loader_memory ... ok
+test snapshot_loader_test::snapshot_loader_values ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:62778
+isolated etcd 3.5.15 ready at http://127.0.0.1:62777
+test snapshot_loader_test::snapshot_loader_etcd ... ok
+test snapshot_watch_test::snapshot_watch_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:62789
+test snapshot_watch_test::snapshot_watch_etcd ... ok
+test ttl_put_test::ttl_put_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:62833
+test ttl_put_test::ttl_put_etcd ... ok
+test watch_control_test::watch_control_initial_force_interval ... ok
+test watch_control_test::watch_control_etcd ... ok
+test watch_control_test::watch_control_memory ... ok
+test watch_reconcile_test::watch_reconcile_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:62858
+test watch_reconcile_test::watch_reconcile_etcd ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 15.58s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_grpcutil-408f27123d98e533)
+
+running 1 test
+test config_test::tls_bytes_null_empty_and_base64 ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_id-522d8bc03720f60b)
+
+running 9 tests
+test allocate_count_test::allocate_count_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:62879
+isolated etcd 3.5.15 ready at http://127.0.0.1:62878
+test allocator_base_test::allocator_base_etcd ... ok
+test allocator_base_test::allocator_base_memory ... ok
+test allocate_count_test::allocate_count_etcd ... ok
+test allocator_namespace_test::allocator_namespace_memory ... ok
+test allocator_namespace_test::allocator_namespace_values ... ok
+test allocator_test::memory_concurrency_restart_fencing ... ok
+test allocator_test::memory_corrupt_and_exhausted_boundary ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:62898
+test allocator_namespace_test::allocator_namespace_etcd ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 7.37s
+
+     Running etcd_behavior_test.rs (target/rust-slot-1/debug/deps/etcd_behavior-d51890af520aab4d)
+
+running 5 tests
+isolated etcd 3.5.15 ready at http://127.0.0.1:62926
+isolated etcd 3.5.15 ready at http://127.0.0.1:62928
+test real_etcd_boundaries ... ok
+test real_etcd_behavior ... ok
+test scenario::memory_concurrency_restart_fencing ... ok
+test scenario::memory_corrupt_and_exhausted_boundary ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:62940
+test real_etcd_wal_restart ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 5.61s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_jsonutil-9183623d0a1734c1)
+
+running 5 tests
+test jsonutil_test::add_key_value_existing_null_and_nested_unknown ... ok
+test jsonutil_test::add_key_value_flags ... ok
+test jsonutil_test::merge_json_object_fields_and_flags ... ok
+test jsonutil_test::merge_json_object_invalid_inputs_are_unchanged ... ok
+test jsonutil_test::merge_json_object_serialization_failure ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_kerneltype-244aaf9ef19a655c)
+
+running 2 tests
+test kerneltype_test::classic_kernel_default ... ok
+test kerneltype_test::nextgen_kernel_feature ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_keypath-041a3051b85eb517)
+
+running 13 tests
+test cluster_paths_test::cluster_paths_go_store_parsing ... ok
+test cluster_paths_test::cluster_paths_go_bytes ... ok
+test cluster_paths_test::cluster_paths_independent_contexts ... ok
+test gc_paths_test::gc_paths_context_and_aliases ... ok
+test keyspace_time_paths_test::keyspace_time_paths_go_bytes ... ok
+test keyspace_time_paths_test::keyspace_time_paths_isolation_and_order ... ok
+test gc_paths_test::gc_paths_go_byte_oracle ... ok
+test member_config_paths_test::member_config_paths_independent_contexts ... ok
+test registry_marker_paths_test::registry_marker_paths_boundaries_and_isolation ... ok
+test member_config_paths_test::member_config_paths_go_oracle ... ok
+test registry_marker_paths_test::registry_marker_paths_go_bytes ... ok
+test rule_resource_paths_test::rule_resource_paths_prefixes_and_roundtrips ... ok
+test rule_resource_paths_test::rule_resource_paths_go_byte_oracle ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_keyspace_constant-0592fae75f4857a2)
+
+running 2 tests
+test constant_test::base_keyspace_ids ... ok
+test constant_test::reserved_keyspaces_and_labels ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_keyutil-8e0cc28578b386fe)
+
+running 10 tests
+test http_test::decode_http_key_ranges_invalid_arguments ... ok
+test http_test::decode_http_key_ranges_escape_errors ... ok
+test http_test::decode_http_key_ranges_success ... ok
+test key_range_test::delete_key_ranges ... ok
+test key_range_test::key_ranges_collection_lifecycle ... ok
+test key_range_test::key_range_codec_and_overlap ... ok
+test key_range_test::sort_deduce_and_merge ... ok
+test key_range_test::subtract_key_ranges ... ok
+test util::tests::key_boundary_comparison ... ok
+test util::tests::key_range_map_builders ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_logutil-1818a768b8b5a020)
+
+running 2 tests
+test config_test::log_defaults_and_presence ... ok
+test config_test::redact_accepted_types_and_errors ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_mcs_constant-e401ddffaf41d90b)
+
+running 3 tests
+test constant_test::keyspace_group_limits ... ok
+test constant_test::network_and_timing_defaults ... ok
+test constant_test::service_names_and_root ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_member-98ecb1f42f89b796)
+
+running 9 tests
+isolated etcd 3.5.15 ready at http://127.0.0.1:62971
+isolated etcd 3.5.15 ready at http://127.0.0.1:62973
+test leader_priority_test::leader_priority_etcd ... ok
+test leader_priority_test::leader_priority_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:62986
+test member_info_test::member_info_etcd ... ok
+test leader_priority_test::leader_priority_etcd_io_failure ... ok
+test member_info_test::member_info_memory ... ok
+test member_info_test::member_info_pending_io_cancel ... ok
+test member_test::memory_bootstrap_and_lease_loss ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:62996
+test member_test::memory_natural_expiry ... ok
+test member_info_test::member_info_etcd_io_failure_and_cancellation ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 6.21s
+
+     Running etcd_behavior_test.rs (target/rust-slot-1/debug/deps/etcd_behavior-50f240a5164d8cb5)
+
+running 5 tests
+isolated etcd 3.5.15 ready at http://127.0.0.1:63033
+test real_etcd_behavior ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63032
+isolated etcd 3.5.15 ready at http://127.0.0.1:63042
+test real_etcd_identity_recovery ... ok
+test scenario::memory_bootstrap_and_lease_loss ... ok
+test real_etcd_natural_expiry ... ok
+test scenario::memory_natural_expiry ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 5.95s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_metering_config-11be5f03214fb44f)
+
+running 1 test
+test config_test::metering_provider_values_and_omitempty ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_metricutil-cfa905f37790024b)
+
+running 1 test
+test config_test::metric_invalid_interval_and_job_defaults ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_movingaverage-6dd462f965154c63)
+
+running 17 tests
+test avg_over_time_test::avg_over_time_state_set_clear_clone ... ok
+test avg_over_time_test::avg_over_time_state_unstable_and_signed_intervals ... ok
+test avg_over_time_test::avg_over_time_window_fractional_margin_and_eviction ... ok
+test avg_over_time_test::avg_over_time_window_min_filled_and_pulse ... ok
+test max_filter_test::max_filter_go_sequence_set_reset ... ok
+test max_filter_test::max_filter_ieee_comparison_order ... ok
+test max_filter_test::max_filter_negative_values_and_window_expiry ... ok
+test max_filter_test::max_filter_invalid_and_empty_windows ... ok
+test moving_average_test::ema_behavior ... ok
+test moving_average_test::median_filter_empty_and_invalid_windows ... ok
+test moving_average_test::median_filter_go_sequence ... ok
+test moving_average_test::median_filter_windows_and_clone ... ok
+test moving_average_test::time_median_report_intervals ... ok
+test moving_average_test::time_median_set_clone_and_zero_interval ... ok
+test moving_average_test::hma_behavior ... ok
+test weight_allocator_test::weight_allocator ... ok
+test moving_average_test::wma_behavior ... ok
+
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_proto-66c99b0720ac04ed)
+
+running 8 tests
+test proto_compat_test::proto_compat_error_enum ... ok
+test proto_compat_test::proto_compat_member_response ... ok
+test proto_compat_test::proto_compat_oneof_preserves_explicit_zero ... ok
+test proto_compat_test::proto_compat_region_heartbeat ... ok
+test proto_compat_test::proto_compat_request_header ... ok
+test proto_compat_test::proto_compat_tso_request ... ok
+test proto_compat_test::proto_compat_tso_response ... ok
+test proto_compat_test::proto_compat_descriptors_and_streams ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_raft_prototype-a0081436f8c5a5de)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_rangetree-cbe3d6318504198d)
+
+running 7 tests
+test tests::overlap_query ... ok
+test tests::owned_range_tree_can_move_to_host_worker ... ok
+test tests::remove_scan_and_adjacent ... ok
+test tests::update_with_debris ... ok
+test tests::update_with_debris_filters_invalid_children_and_inserts_new_last ... ok
+test tests::find_len_and_index ... ok
+test tests::update_with_debris_unbounded_and_many_overlaps ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_ratelimit-e525d2c27bc138df)
+
+running 29 tests
+test concurrency_test::concurrency_allow_release ... ok
+test concurrency_test::concurrency_tokens ... ok
+test concurrency_test::concurrency_tokens_cancel_head ... ok
+test concurrency_test::concurrency_allow_release_parallel ... ok
+test controller_test::controller_labels_and_allowlist ... ok
+test controller_test::controller_labels_and_allowlist_parallel ... ok
+test concurrency_test::concurrency_tokens_parallel ... ok
+test limiter_test::combined_limiter_allow ... ok
+test controller_test::controller_qps_and_metrics ... ok
+test limiter_test::limiter_config_updates ... ok
+test rate_limiter_test::token_bucket_available_does_not_consume_on_running_clock ... ok
+test limiter_test::combined_limiter_allow_parallel ... ok
+test rate_limiter_test::token_bucket_fractional_refill_and_burst_growth ... ok
+test rate_limiter_test::token_bucket_oracle_and_updates ... ok
+test rate_limiter_test::token_bucket_wait_cancel_deadline_and_refund ... ok
+test rate_limiter_test::token_bucket_wait_serializes_and_drop_refunds ... ok
+test rate_limiter_test::token_bucket_zero_infinite_and_concurrency ... ok
+test runner::tests::runner_dedup_and_queue_age_retained_capacity ... ok
+test runner::tests::runner_dedup_and_queue_unlimited_dispatches_without_completion ... ok
+test runner::tests::runner_lifecycle_completion_schedules_next ... ok
+test runner::tests::runner_lifecycle_dispatch_and_release ... ok
+test runner::tests::runner_lifecycle_panic_releases_token ... ok
+test runner::tests::runner_lifecycle_stop_during_acquire_and_restart ... ok
+test runner::tests::runner_lifecycle_sync ... ok
+test runner::tests::runner_lifecycle_unlimited_and_parent_cancel ... ok
+test runner::tests::runner_timeout_and_cancellation_age_boundary ... ok
+test runner::tests::runner_timeout_and_cancellation_burst_cleanup ... ok
+test runner::tests::runner_timeout_and_cancellation_concurrent_burst_drains ... ok
+test runner::tests::runner_dedup_and_queue_storage_reuse_release_fifo ... ok
+
+test result: ok. 29 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_reflectutil-8b1147fa0c5d5647)
+
+running 3 tests
+test tag_test::full_tag_by_child_tag ... ok
+test tag_test::field_type_by_json_path ... ok
+test tag_test::same_fields_by_json ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_response-045df2c33a04adf5)
+
+running 19 tests
+test peer_test::core_task_63_nil_and_default ... ok
+test peer_test::core_task_63_down_peer_conversion ... ok
+test peer_test::core_task_63_stats ... ok
+test peer_test::core_task_63_peer_roles_and_boundaries ... ok
+test region_test::core_task_64_empty_and_absent ... ok
+test region_test::core_task_64_present_zero_and_unknown_replication ... ok
+test region_test::core_task_64_full_and_reuse ... ok
+test region_test::core_task_64_zero_epoch_signed_and_clone ... ok
+test region_test::core_task_68_single_region_cancellation ... ok
+test regions_test::core_task_65_cancel_before_or_during_list_discards_output ... ok
+test regions_test::core_task_65_empty_even_when_cancelled ... ok
+test store_state_test::core_task_67_caller_clock_progression ... ok
+test regions_test::core_task_65_order_duplicates_and_reuse ... ok
+test store_state_test::core_task_67_state_names_and_thresholds ... ok
+test store_test::core_task_66_defaults_and_empty_list ... ok
+test store_test::core_task_66_full_status ... ok
+test store_test::core_task_66_metadata_pause_and_invalid_encoding ... ok
+test store_test::core_task_66_time_boundaries_and_presence ... ok
+test store_test::core_task_66_config_and_calendar_boundaries ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_rm_server-52e2db6d6b31053d)
+
+running 2 tests
+test config_test::controller_presence_costs_and_push ... ok
+test config_test::ru_policy_validation_lookup_clone_and_omission ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_runtime-248afa46bd776b50)
+
+running 3 tests
+isolated etcd 3.5.15 ready at http://127.0.0.1:63077
+isolated etcd 3.5.15 ready at http://127.0.0.1:63076
+test node_test::lease_loss_stops_admission_and_reports_failure ... ok
+test node_test::shared_runtime_network_lifecycle ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63095
+test node_test::startup_failure_releases_term_and_listener ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.92s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_affinity-1f9e3e4faae616c7)
+
+running 44 tests
+test affinity_availability_test::affinity_availability_eviction_sources ... ok
+test affinity_availability_test::affinity_availability_priority_and_boundaries ... ok
+test affinity_availability_test::affinity_availability_store_collection ... ok
+test affinity_availability_test::affinity_availability_transitions ... ok
+test affinity_availability_test::affinity_availability_memory_manager ... ok
+test affinity_cache_sync_test::affinity_cache_sync_buffer_and_reassignment ... ok
+test affinity_cache_sync_test::affinity_cache_sync_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63114
+isolated etcd 3.5.15 ready at http://127.0.0.1:63116
+test affinity_cache_sync_test::affinity_cache_sync_etcd ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63128
+test affinity_create_delete_test::affinity_create_delete_fault_etcd ... ok
+test affinity_create_delete_test::affinity_create_delete_fault_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63132
+test affinity_create_delete_test::affinity_create_delete_label_batch_etcd ... ok
+test affinity_create_delete_test::affinity_create_delete_label_batch_memory ... ok
+test affinity_create_delete_test::affinity_create_delete_memory ... ok
+test affinity_create_delete_test::affinity_create_delete_validation_duplicates ... ok
+test affinity_lifecycle_test::affinity_lifecycle_cancel_waiting_lock_and_registration_failure ... ok
+test affinity_lifecycle_test::affinity_lifecycle_initialization_failure_and_drop_cleanup ... ok
+test affinity_lifecycle_test::affinity_lifecycle_nonzero_cache_metrics_and_deletion ... ok
+test affinity_lifecycle_test::affinity_lifecycle_periodic_metrics_and_two_shutdowns ... ok
+test affinity_lifecycle_test::affinity_lifecycle_split_deny_metric ... ok
+test affinity_ranges_test::affinity_ranges_go_runtime_fixture ... ok
+test affinity_ranges_test::affinity_ranges_hex ... ok
+test affinity_ranges_test::affinity_ranges_identity ... ok
+test affinity_ranges_test::affinity_ranges_label_roundtrip ... ok
+test affinity_ranges_test::affinity_ranges_overlap ... ok
+test affinity_ranges_test::affinity_ranges_remove ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63136
+test affinity_create_delete_test::affinity_create_delete_etcd ... ok
+test affinity_restore_test::affinity_restore_memory ... ok
+test affinity_restore_test::affinity_restore_null_and_empty_rules ... ok
+test affinity_restore_test::affinity_restore_overlap_rejected ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63147
+test affinity_restore_test::affinity_restore_storage_failure ... ok
+test affinity_restore_test::affinity_restore_unadjusted_rule_skipped ... ok
+test affinity_split_test::affinity_split_thresholds_and_states ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63155
+test affinity_restore_test::affinity_restore_etcd_wal ... ok
+test affinity_update_peers_test::affinity_update_peers_memory ... ok
+test affinity_update_peers_test::affinity_update_peers_etcd ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63165
+test affinity_update_ranges_test::affinity_update_ranges_etcd ... ok
+test affinity_update_ranges_test::affinity_update_ranges_fault_memory ... ok
+test affinity_update_ranges_test::affinity_update_ranges_memory ... ok
+test affinity_values_test::affinity_values_availability_phase ... ok
+test affinity_values_test::affinity_values_collection ... ok
+test affinity_values_test::affinity_values_go_runtime_fixture ... ok
+test affinity_values_test::affinity_values_ids_and_queries ... ok
+test affinity_values_test::affinity_values_json ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63167
+test affinity_update_ranges_test::affinity_update_ranges_fault_etcd ... ok
+
+test result: ok. 44 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 7.18s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-46da1ce2585125fa)
+
+running 52 tests
+test task_039_test::task_039_pause_boundaries_and_concurrent_resume ... ok
+test task_040_test::task_040_behavior_cases ... ok
+test task_039_test::task_039_behavior_cases ... ok
+test task_040_test::task_040_witness_version_gate ... ok
+test task_040_test::task_040_better_location_comparison_boundaries ... ok
+test task_042_test::task_042_behavior_cases ... ok
+test task_041_test::task_041_behavior_cases ... ok
+test task_043_test::task_043_cache_invalidation ... ok
+test task_043_test::task_043_multiple_rules_and_swap ... ok
+test task_043_test::task_043_behavior_cases ... ok
+test task_044_test::task_044_cooldown_and_leader_health ... ok
+test task_044_test::task_044_behavior_cases ... ok
+test task_044_test::task_044_recorder_and_leader_replacement ... ok
+test task_044_test::task_044_tiflash_down_and_offline_preflight ... ok
+test task_045_test::task_045_offline_recorder_refresh_uses_store_ids ... ok
+test task_045_test::task_045_behavior_cases ... ok
+test task_046_test::task_046_target_safety ... ok
+test task_046_test::task_046_behavior_cases ... ok
+test task_047_test::task_047_config_update_before_startup_gate ... ok
+test task_047_test::task_047_behavior_cases ... ok
+test task_047_test::task_047_split_cooldown ... ok
+test task_048_test::task_048_behavior_cases ... ok
+test task_049_test::task_049_virtual_placement_and_success_cache ... ok
+test task_049_test::task_049_behavior_cases ... ok
+test task_051_test::task_051_behavior_cases ... ok
+test task_051_test::task_051_concurrent_removal ... ok
+test task_050_test::task_050_behavior_cases ... ok
+test task_052_test::task_052_prefix_boundaries ... ok
+test task_053_test::task_053_behavior_cases ... ok
+test task_052_test::task_052_behavior_cases ... ok
+test task_053_test::task_053_identity_fields ... ok
+test task_053_test::task_053_partial_and_repeated_batches ... ok
+test task_053_test::task_053_txn_bounds ... ok
+test task_054_test::task_054_behavior_cases ... ok
+test task_054_test::task_054_heartbeat_and_range_group ... ok
+test task_054_test::task_054_dispatch_outcomes ... ok
+test task_054_test::task_054_missing_backoff_expiration_and_stale_identity ... ok
+test task_054_test::task_054_real_labels_store_budget_and_sequential_admission ... ok
+test task_055_test::task_055_behavior_cases ... ok
+test task_054_test::task_054_order_capacity_and_running_operator ... ok
+test task_055_test::task_055_queue_rejection_existing_and_absent ... ok
+test task_055_test::task_055_store_budget_after_planning ... ok
+test task_055_test::task_055_success_callback ... ok
+test task_056_test::task_056_behavior_cases ... ok
+test task_056_test::task_056_cursor_backlog_dynamic_tick_and_workers ... ok
+test task_056_test::task_056_priority_merge_and_pending_admission_contracts ... ok
+test task_056_test::task_056_real_priority_pending_and_scan_order ... ok
+test task_056_test::task_056_round_boundary_updates_limit_and_duration ... ok
+test task_055_test::task_055_pending_capacity_ttl_and_pause ... ok
+test task_056_test::task_056_shutdown_and_resize_wait_for_inflight ... ok
+test task_056_test::task_056_worker_fault_and_invalid_config ... ok
+test task_056_test::task_056_saturation_halt_and_cancel ... ok
+
+test result: ok. 52 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.10s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_config-f969d5b86e9e0b8c)
+
+running 20 tests
+test config_provider_test::config_provider_flags_rates_and_integer_boundaries ... ok
+test config_provider_test::config_provider_registry_and_scheduler_first_match ... ok
+test config_provider_test::config_provider_shared_generation_and_store_delegation ... ok
+test config_provider_test::config_provider_reject_leader_exact_or_matching ... ok
+test config_test::replication_labels_and_isolation ... ok
+test config_test::schedule_defaults_presence_reload_and_snapshot ... ok
+test config_test::schedule_five_deprecated_flag_truth_tables ... ok
+test config_test::schedule_all_validation_branches ... ok
+test config_test::schedule_store_migration_and_json_inheritance ... ok
+test config_values_test::config_values_clone_owned_collections ... ok
+test config_values_test::config_values_go_snapshots_round_trip ... ok
+test config_values_test::config_values_json_document_boundary ... ok
+test config_values_test::config_values_json_null_numbers ... ok
+test config_values_test::config_values_label_keys_go_table ... ok
+test config_values_test::config_values_label_values_and_first_error ... ok
+test store_config_test::store_config_clone_equal_readpool_and_engine ... ok
+test store_config_test::store_config_json_null_and_cache_exclusion ... ok
+test store_config_test::store_config_merge_go_table_and_boundaries ... ok
+test store_config_test::store_config_units_adjust_and_bucket ... ok
+test config_values_test::config_values_go_toml_defaults_presence_and_errors ... ok
+
+test result: ok. 20 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_core-8ee85e330fbdfbd4)
+
+running 14 tests
+test task_002_test::task_002_key_lookup_hole_and_boundary ... ok
+test task_002_test::task_002_membership_queries ... ok
+test task_002_test::task_002_behavior_cases ... ok
+test task_002_test::task_002_store_controls_and_errors ... ok
+test task_002_test::task_002_shared_source_target_views ... ok
+test task_003_test::task_003_behavior_cases ... ok
+test task_003_test::task_003_classic_count_and_leadership_fault ... ok
+test task_003_test::task_003_halt_and_prepare_error ... ok
+test task_003_test::task_003_id_allocation_success_and_failure ... ok
+test task_003_test::task_003_local_prepare_count_uses_canonical_regions ... ok
+test task_003_test::task_003_remote_allocation_error_is_preserved ... ok
+test task_004_test::task_004_checker_label_updates ... ok
+test task_004_test::task_004_behavior_cases ... ok
+test task_004_test::task_004_config_and_typed_faults ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_filter-1073fe57fad78621)
+
+running 27 tests
+test task_005_test::task_005_behavior_cases ... ok
+test task_005_test::task_005_order_and_boundaries ... ok
+test task_006_test::task_006_behavior_cases ... ok
+test task_006_test::task_006_boundaries_and_filter_chain ... ok
+test task_005_test::task_005_collector_resource_fault ... ok
+test task_006_test::task_006_random_replay_and_faults ... ok
+test task_007_test::task_007_async_chain_and_diagnostics ... ok
+test task_007_test::task_007_behavior_cases ... ok
+test task_007_test::task_007_clock_budget_and_boundaries ... ok
+test task_007_test::task_007_collector_resource_fault - should panic ... ok
+test task_008_test::task_008_behavior_cases ... ok
+test task_007_test::task_007_nil_limiter_fault - should panic ... ok
+test task_008_test::task_008_invalid_isolation_locations_fault - should panic ... ok
+test task_008_test::task_008_chain_and_constructor_boundaries ... ok
+test task_009_test::task_009_empty_location_input_panics ... ok
+test task_009_test::task_009_factories_and_reusable_fit ... ok
+test task_009_test::task_009_temporary_region_is_independent ... ok
+test task_010_test::task_010_affinity_real_manager ... ok
+test task_009_test::task_009_behavior_cases ... ok
+test task_010_test::task_010_behavior_cases ... ok
+test task_010_test::task_010_snapshot_busy_missing_leader_and_snapshot_capture ... ok
+test task_010_test::task_010_fit_retains_last_success_and_selection_order ... ok
+test task_011_test::task_011_negative_filter_identity - should panic ... ok
+test task_011_test::task_011_registry_isolation_and_registration_rollback ... ok
+test task_011_test::task_011_removed_pending_never_reappears ... ok
+test task_011_test::task_011_behavior_cases ... ok
+test task_011_test::task_011_shared_metrics_concurrent_batches ... ok
+
+test result: ok. 27 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_hbstream-b188fa44f0bfe241)
+
+running 10 tests
+test task_012_test::task_012_owned_snapshot_and_enum_domain ... ok
+test task_013_test::task_013_behavior_cases ... ok
+test task_012_test::task_012_behavior_cases ... ok
+test task_013_test::task_013_rebind_waits_for_inflight_send ... ok
+test task_014_test::task_014_behavior_cases ... ok
+test task_014_test::task_014_drop_and_keepalive_failure ... ok
+test task_014_test::task_014_keepalive_join_and_metric_registry ... ok
+test task_014_test::task_014_router_oracle_bindings ... ok
+test task_013_test::task_013_bounded_queue_order_and_errors ... ok
+test task_014_test::task_014_saturated_cancel_and_join ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_keyrange-0041b5d72ddfe213)
+
+running 12 tests
+test manager::range_append_test::range_append_copies_input_and_keeps_disjoint_ranges_sorted ... ok
+test manager::range_append_test::range_append_duplicates_and_overlaps_are_retained ... ok
+test manager::range_append_test::range_append_empty ... ok
+test manager::range_append_test::range_append_concurrent_batches_are_atomic ... ok
+test manager::range_append_test::range_append_empty_boundaries_follow_keyutil ... ok
+test manager::range_append_test::range_append_normalizes_across_batches ... ok
+test manager::range_append_test::range_append_unsorted_adjacent ... ok
+test manager::range_subtract_test::range_subtract_append_normalization_precedes_delete ... ok
+test manager::range_subtract_test::range_subtract_batch_holes_and_owned_reads ... ok
+test manager::range_subtract_test::range_subtract_go_complement_cases ... ok
+test manager::range_subtract_test::range_subtract_go_delete_cases ... ok
+test manager::range_subtract_test::range_subtract_concurrent_batch_is_atomic ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_labeler-821a9da456bddcbc)
+
+running 37 tests
+test label_gc_test::label_gc_background_cancellation_and_cadence ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63190
+isolated etcd 3.5.15 ready at http://127.0.0.1:63189
+test label_gc_test::label_gc_etcd_io_failure ... ok
+test label_gc_test::label_gc_etcd_expiry_restart ... ok
+test label_gc_test::label_gc_go_runtime_fixture ... ok
+test label_gc_test::label_gc_memory_expiry_restart ... ok
+test label_gc_test::label_gc_memory_io_failure ... ok
+test label_gc_test::label_gc_metrics_host_registry ... ok
+test label_index_test::label_index_delete_and_replace_publish ... ok
+test label_index_test::label_index_expiry_snapshot_refresh ... ok
+test label_index_test::label_index_go_boundaries_and_priority ... ok
+test label_index_test::label_index_multi_ranges_overlap_and_snapshot ... ok
+test label_keyspace_test::label_keyspace_actual_go_runtime_fixture ... ok
+test label_keyspace_test::label_keyspace_boundaries_and_incomplete_prefixes ... ok
+test label_keyspace_test::label_keyspace_canonical_shape_and_ids ... ok
+test label_keyspace_test::label_keyspace_generic_equivalence_and_transitions ... ok
+test label_keyspace_test::label_keyspace_legacy_range_equivalence ... ok
+test label_keyspace_test::label_keyspace_ownership_and_atomic_replace ... ok
+test label_query_test::label_query_expired_snapshots_and_duplicate_labels ... ok
+test label_query_test::label_query_go_runtime_fixture ... ok
+test label_query_test::label_query_priority_boundaries_and_ttl ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63205
+isolated etcd 3.5.15 ready at http://127.0.0.1:63207
+test label_gc_test::label_gc_etcd_same_wal_restart ... ok
+test label_restore_test::label_restore_etcd_contract_and_same_wal ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63229
+isolated etcd 3.5.15 ready at http://127.0.0.1:63233
+test label_restore_test::label_restore_etcd_pages_expiry_and_keyspaces ... ok
+test label_restore_test::label_restore_memory_contract ... ok
+test label_restore_test::label_restore_memory_io_failures ... ok
+test label_restore_test::label_restore_memory_pages_expiry_and_keyspaces ... ok
+test label_rule_test::label_rule_auto_start_roundtrip_precision ... ok
+test label_rule_test::label_rule_expiration_boundary_and_minimum ... ok
+test label_rule_test::label_rule_go_oracle_cases ... ok
+test label_rule_test::label_rule_hex_bytes_and_case_preservation ... ok
+test label_rule_test::label_rule_json_null_case_and_duplicate_fields ... ok
+test label_rule_test::label_rule_timezone_and_calendar_expiry ... ok
+test label_rule_test::label_rule_ttl_signed_zero_and_explicit_start ... ok
+test label_rule_test::label_rule_unchecked_and_json_errors ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63249
+test label_txn_test::label_txn_etcd_contract ... ok
+test label_txn_test::label_txn_memory_contract ... ok
+test label_restore_test::label_restore_etcd_io_failures ... ok
+
+test result: ok. 37 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 8.68s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_operator-4e6c0c62140e404e)
+
+running 95 tests
+test builder_simple::leader::task_028_test::task_028_current_leader_admission ... ok
+test builder_simple::leader::task_028_test::task_028_preference_vectors ... ok
+test builder_simple::leader::task_028_test::task_028_behavior_cases ... ok
+test task_015_test::task_015_additional_merge_information ... ok
+test task_015_test::task_015_concurrent_terminal_transition ... ok
+test task_015_test::task_015_expiration_timeout_and_times ... ok
+test task_015_test::task_015_behavior_cases ... ok
+test task_016_test::task_016_behavior_cases ... ok
+test task_016_test::task_016_delayed_start_uses_started_time ... ok
+test task_017_test::task_017_aggregation_and_snapshot_ownership ... ok
+test task_017_test::task_017_behavior_cases ... ok
+test task_016_test::task_016_concurrent_deadline_and_terminal_transition ... ok
+test task_017_test::task_017_invalid_small_cost_is_programmer_error ... ok
+test task_017_test::task_017_wrapping_and_reciprocal_adds ... ok
+test task_017_test::task_017_concurrent_snapshots ... ok
+test task_018_test::task_018_behavior_cases ... ok
+test task_018_test::task_018_candidate_health_and_errors ... ok
+test task_018_test::task_018_role_and_signed_boundaries ... ok
+test task_018_test::task_018_influence_and_timeout ... ok
+test task_019_test::task_019_behavior_cases ... ok
+test task_019_test::task_019_heartbeat_and_boundaries ... ok
+test task_019_test::task_019_validation_faults ... ok
+test task_020_test::task_020_behavior_cases ... ok
+test task_020_test::task_020_commands_and_timeouts ... ok
+test task_019_test::task_019_commands_and_costs ... ok
+test task_020_test::task_020_costs_and_faults ... ok
+test task_021_test::task_021_behavior_cases ... ok
+test task_021_test::task_021_store_faults ... ok
+test task_021_test::task_021_commands_costs_timeouts ... ok
+test task_022_test::task_022_commands_empty_single_and_cost ... ok
+test task_023_test::task_023_behavior_cases ... ok
+test task_022_test::task_022_behavior_cases ... ok
+test task_023_test::task_023_influence_counts_and_fault_inputs ... ok
+test task_023_test::task_023_commands_and_timeout ... ok
+test task_024_test::task_024_behavior_cases ... ok
+test task_024_test::task_024_influence_and_confver ... ok
+test task_024_test::task_024_terminal_and_clock_boundaries ... ok
+test task_025_test::task_025_behavior_cases ... ok
+test task_025_test::task_025_duration_saturation ... ok
+test task_024_test::task_024_concurrent_heartbeats ... ok
+test task_025_test::task_025_history_record_and_output ... ok
+test task_025_test::task_025_output_boundaries ... ok
+test task_025_test::task_025_terminal_once_and_metadata_race ... ok
+test task_026_test::task_026_multi_target_and_ownership ... ok
+test task_026_test::task_026_behavior_cases ... ok
+test task_027_test::task_027_safe_intermediate_configurations ... ok
+test task_027_test::task_027_behavior_cases ... ok
+test task_029_test::task_029_behavior_cases ... ok
+test task_030_test::task_030_behavior_cases ... ok
+test task_031_test::task_031_behavior_cases ... ok
+test task_032_test::task_032_membership_matching ... ok
+test task_033_test::task_033_behavior_cases ... ok
+test task_032_test::task_032_behavior_cases ... ok
+test task_033_test::task_033_counts ... ok
+test task_033_test::task_033_heap ... ok
+test task_033_test::task_033_merge_and_faults ... ok
+test task_034_test::task_034_behavior_cases ... ok
+test task_033_test::task_033_concurrent_push_pop ... ok
+test task_034_test::task_034_expiry_and_invalid_batch ... ok
+test task_034_test::task_034_factory_merge_and_affinity ... ok
+test task_034_test::task_034_merge_atomicity ... ok
+test task_034_test::task_034_replace_and_identity_remove ... ok
+test task_034_test::task_034_retry_expired_pairs_and_queue_errors ... ok
+test task_034_test::task_034_waiting_promote ... ok
+test task_035_test::task_035_batch_and_missing_store ... ok
+test task_035_test::task_035_behavior_cases ... ok
+test task_035_test::task_035_concurrent_add_and_reset ... ok
+test task_035_test::task_035_fast_and_timeout ... ok
+test task_035_test::task_035_partial_and_cached_total ... ok
+test task_035_test::task_035_range_options ... ok
+test task_035_test::task_035_small_token_boundary ... ok
+test task_035_test::task_035_snapshot_ack_and_replacement ... ok
+test task_035_test::task_035_tokens_rejection_and_removal ... ok
+test task_035_test::task_035_waiting_limit ... ok
+test task_036_test::task_036_behavior_cases ... ok
+test task_036_test::task_036_command_versions_and_suppression ... ok
+test task_036_test::task_036_health_mask_and_down_rejection ... ok
+test task_036_test::task_036_merge_light_check_and_missing_region ... ok
+test task_036_test::task_036_pending_peer_no_duplicate_command ... ok
+test task_036_test::task_036_progress_and_confver_budget ... ok
+test task_036_test::task_036_retry_deadlines_disconnect_rebind ... ok
+test task_036_test::task_036_slow_retry_replacement_and_success_hook ... ok
+test task_036_test::task_036_stale_target_and_health_opt_in ... ok
+test task_036_test::task_036_timeout_and_closed_routing ... ok
+test task_037_test::task_037_behavior_cases ... ok
+test task_034_test::task_034_concurrent_admission_remove ... ok
+test task_037_test::task_037_dispatch_outcome_and_reentrant_callback ... ok
+test task_037_test::task_037_concurrent_burial_and_callback_failure ... ok
+test task_037_test::task_037_merge_cleanup_and_live_precedence ... ok
+test task_037_test::task_037_real_dispatch_archival ... ok
+test task_038_test::task_038_apply_full_and_store_status ... ok
+test task_038_test::task_038_behavior_cases ... ok
+test task_038_test::task_038_source_quirks_and_terminal_noop ... ok
+test task_038_test::task_038_invalid_membership_panics ... ok
+test task_038_test::task_038_unsupported_steps_and_failed_publication ... ok
+
+test result: ok. 95 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_placement-81b986ab7c99a7ce)
+
+running 44 tests
+test placement_batch_test::placement_batch_go_regexp_ascii_classes ... ok
+test placement_batch_test::placement_batch_go_runtime_fixture ... ok
+test placement_batch_test::placement_batch_memory_contract ... ok
+test placement_cache_test::placement_cache_changes_and_eligibility ... ok
+test placement_cache_test::placement_cache_manager_matches_uncached ... ok
+test placement_cache_test::placement_cache_promotion_invalidation_and_stale_store ... ok
+test placement_isolation_test::placement_isolation_hierarchy_and_extra_count ... ok
+test placement_isolation_test::placement_isolation_replace_go_test_cases ... ok
+test placement_isolation_test::placement_isolation_role_exchange_and_lookup ... ok
+test placement_manager_test::placement_manager_empty_explicit_group_bundle_keeps_null_rules ... ok
+test placement_manager_test::placement_manager_go_keys_and_boundaries ... ok
+test placement_manager_test::placement_manager_priority_and_reconcile_snapshots ... ok
+test placement_manager_test::placement_manager_query_fit_cache_and_mutation ... ok
+test placement_order_test::placement_order_go_runtime_fixture ... ok
+test placement_order_test::placement_order_priority_and_override ... ok
+test placement_order_test::placement_order_role_errors_and_gap ... ok
+test placement_order_test::placement_order_rule_override_and_ties ... ok
+test placement_patch_test::placement_patch_engine_restrictions ... ok
+test placement_patch_test::placement_patch_go_runtime_fixture ... ok
+test placement_patch_test::placement_patch_json_trim_and_default_groups ... ok
+test placement_patch_test::placement_patch_preview_engine_summary ... ok
+test placement_patch_test::placement_patch_snapshot_and_versions ... ok
+test placement_region_fit_test::placement_region_fit_empty_rules_and_missing_stores ... ok
+test placement_region_fit_test::placement_region_fit_go_runtime_fixture ... ok
+test placement_region_fit_test::placement_region_fit_ties_and_large_peer_set_early_exit ... ok
+test placement_restore_test::placement_restore_defaults_skip_witness ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63268
+isolated etcd 3.5.15 ready at http://127.0.0.1:63267
+test placement_batch_test::placement_batch_etcd_contract ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63279
+test placement_restore_test::placement_restore_etcd_io_failures ... ok
+test placement_restore_test::placement_restore_go_runtime_fixture ... ok
+test placement_restore_test::placement_restore_memory_history_and_restart ... ok
+test placement_restore_test::placement_restore_memory_io_failures ... ok
+test placement_restore_test::placement_restore_validation_rejects_without_publish ... ok
+test placement_role_fit_test::placement_role_fit_comparison_location_and_witness_load ... ok
+test placement_role_fit_test::placement_role_fit_constraints_missing_and_health ... ok
+test placement_role_fit_test::placement_role_fit_go_runtime_fixture ... ok
+test placement_role_fit_test::placement_role_fit_nil_leader_unknown_and_witness ... ok
+test placement_values_test::placement_values_go_constraint_matrix ... ok
+test placement_values_test::placement_values_go_runtime_fixture ... ok
+test placement_values_test::placement_values_go_runtime_matching ... ok
+test placement_values_test::placement_values_json_null_duplicate_fields ... ok
+test placement_values_test::placement_values_roles_and_operators ... ok
+test placement_values_test::placement_values_rule_json_clone_store_key ... ok
+test placement_values_test::placement_values_store_constraints ... ok
+test placement_restore_test::placement_restore_etcd_history_and_restart ... ok
+
+test result: ok. 44 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 4.72s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_plan-84f5567ede20d1c8)
+
+running 19 tests
+test plan_collect_test::plan_collect_completed_steps_only ... ok
+test plan_collect_test::plan_collect_default_and_invalid_resources ... ok
+test plan_collect_test::plan_collect_options_and_isolation ... ok
+test plan_collect_test::plan_collect_order_and_owned_results ... ok
+test plan_status_test::plan_status_codes_and_text ... ok
+test plan_status_test::plan_status_priority_boundaries ... ok
+test plan_status_test::plan_status_runtime_go_oracle ... ok
+test plan_status_test::plan_status_reason_and_flags ... ok
+test plan_summary_test::plan_summary_analyzer1 ... ok
+test plan_summary_test::plan_summary_analyzer2 ... ok
+test plan_summary_test::plan_summary_analyzer3 ... ok
+test plan_summary_test::plan_summary_analyzer4 ... ok
+test plan_summary_test::plan_summary_analyzer5 ... ok
+test plan_summary_test::plan_summary_analyzer6 ... ok
+test plan_summary_test::plan_summary_depth_and_order ... ok
+test plan_summary_test::plan_summary_empty_success ... ok
+test plan_summary_test::plan_summary_invalid_plan ... ok
+test plan_summary_test::plan_summary_reason_counts_and_owned_output ... ok
+test plan_summary_test::plan_summary_selection ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_rangelist-08c0100503a46c0d)
+
+running 10 tests
+test range_build_test::range_build_comparator_equal_and_reverse ... ok
+test range_build_test::range_build_empty_and_unbounded ... ok
+test range_build_test::range_build_equal_comparator_preserves_event_order ... ok
+test range_build_test::range_build_go_overlap_comparator ... ok
+test range_build_test::range_build_shared_events_duplicates_and_snapshot ... ok
+test range_queries_test::range_queries_boundaries_and_gaps ... ok
+test range_queries_test::range_queries_empty_and_unbounded ... ok
+test range_queries_test::range_queries_go_key_and_range ... ok
+test range_queries_test::range_queries_go_splits ... ok
+test range_build_test::range_build_large_event_sort_preserves_permutation ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_types-bba7715c748a3d4c)
+
+running 5 tests
+test types_contract_test::types_contract_checker_constants_and_strings ... ok
+test types_contract_test::types_contract_legacy_and_scatter_alias_boundaries ... ok
+test types_contract_test::types_contract_kernel_defaults ... ok
+test types_contract_test::types_contract_unknown_strings_are_preserved_not_classified ... ok
+test types_contract_test::types_contract_runtime_conversion_maps ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_server-defb5ddb001c09bb)
+
+running 48 tests
+test bucket_heartbeat_adapter_test::state_task_49_bucket_heartbeat_adapter_cancel_and_disconnect ... ok
+test bucket_heartbeat_adapter_test::state_task_49_bucket_heartbeat_adapter_applied_old_versions_missing_removed ... ok
+test bucket_heartbeat_adapter_test::state_task_49_bucket_heartbeat_adapter_competing_streams ... ok
+test bucket_heartbeat_adapter_test::state_task_49_bucket_heartbeat_adapter_defaults_errors_and_empty ... ok
+test bucket_heartbeat_adapter_test::state_task_49_bucket_heartbeat_adapter_same_stream_continues_unknown_store ... ok
+test bucket_heartbeat_adapter_test::state_task_49_bucket_heartbeat_adapter_wire_versions_and_loads ... ok
+test core_region_adapter_test::core_task_61_heartbeat_fields ... ok
+test core_region_adapter_test::core_task_61_metadata_roles ... ok
+test core_region_adapter_test::core_task_61_missing_fields ... ok
+test core_region_adapter_test::core_task_61_sizes ... ok
+test core_store_adapter_test::core_task_60_defaults_and_presence ... ok
+test core_store_adapter_test::core_task_60_full_store ... ok
+test core_store_adapter_test::core_task_60_full_store_stats ... ok
+test core_store_adapter_test::core_task_60_nested_presence_order_and_unsigned_limits ... ok
+test core_store_adapter_test::core_task_60_unknown_enums_and_signed_extremes ... ok
+test core_trace_test::core_task_59_each_stage_and_clock_regression ... ok
+test core_trace_test::core_task_59_registry_ownership ... ok
+test core_trace_test::core_task_59_save_cache_resets_and_recovery ... ok
+test region_heartbeat_adapter_test::state_task_48_region_heartbeat_adapter_cancel_inflight ... ok
+test region_heartbeat_adapter_test::state_task_48_region_heartbeat_adapter_defaults_and_epoch ... ok
+test region_heartbeat_adapter_test::state_task_48_region_heartbeat_adapter_disconnect ... ok
+test region_heartbeat_adapter_test::state_task_48_region_heartbeat_adapter_errors_and_close ... ok
+test region_heartbeat_adapter_test::state_task_48_region_heartbeat_adapter_loopback ... ok
+test store_heartbeat_adapter_test::state_task_47_store_heartbeat_adapter_defaults ... ok
+test store_heartbeat_adapter_test::state_task_47_store_heartbeat_adapter_multi_peer_network ... ok
+test store_heartbeat_adapter_test::state_task_47_store_heartbeat_adapter_opt_in_and_bootstrap ... ok
+test store_heartbeat_adapter_test::state_task_47_store_heartbeat_adapter_presence_and_controller_boundary ... ok
+test store_heartbeat_adapter_test::state_task_47_store_heartbeat_adapter_response_state_and_errors ... ok
+test store_heartbeat_adapter_test::state_task_47_store_heartbeat_adapter_state ... ok
+test store_heartbeat_adapter_test::state_task_47_store_heartbeat_adapter_wire_errors ... ok
+test sync_codec_test::state_task_50_sync_codec_error_header_and_keepalive ... ok
+test sync_codec_test::state_task_50_sync_codec_go_wire ... ok
+test sync_codec_test::state_task_50_sync_codec_lossless_pinned_response_fields ... ok
+test sync_codec_test::state_task_50_sync_codec_mismatch_go_application ... ok
+test sync_codec_test::state_task_50_sync_codec_request_presence_and_all_member_fields ... ok
+test sync_codec_test::state_task_50_sync_codec_send_matches_go_raw_wire ... ok
+test bucket_heartbeat_adapter_test::state_task_49_bucket_heartbeat_adapter_open_stream_has_no_ack ... ok
+test sync_codec_test::state_task_50_sync_codec_snapshot_offsets_and_incremental ... ok
+test sync_transport_test::state_task_51_sync_transport_follower_error_and_eof ... ok
+test sync_transport_test::state_task_51_sync_transport_follower_leader_reconnect ... ok
+test sync_transport_test::state_task_51_sync_transport_full_and_incremental ... ok
+test sync_transport_test::state_task_51_sync_transport_independent_slow_reader_and_final_state ... ok
+test sync_transport_test::state_task_51_sync_transport_replacement_and_reconnect ... ok
+test sync_transport_test::state_task_51_sync_transport_send_failure_cancellation_and_join ... ok
+test sync_transport_test::state_task_51_sync_transport_snapshot_batches_and_publish_during_scan ... ok
+test sync_transport_test::state_task_51_sync_transport_stop_before_first_request ... ok
+test sync_transport_test::state_task_52_state_pipeline_real_region_syncer ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63356
+test sync_transport_test::state_task_51_sync_transport_etcd_follower_persistence ... ok
+
+test result: ok. 48 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.92s
+
+     Running server_test.rs (target/rust-slot-1/debug/deps/server-d996419422a25d5d)
+
+running 1 test
+isolated etcd 3.5.15 ready at http://127.0.0.1:63377
+test validation_and_open_stream_shutdown ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.81s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_server_config-f965a121659ddb74)
+
+running 93 tests
+test config_decode_test::config_decode_format_specific_names ... ok
+test config_decode_test::config_decode_go_toml_input_to_json ... ok
+test config_decode_test::config_decode_presence_before_defaults ... ok
+test config_decode_test::config_decode_type_errors_and_unknown_fields ... ok
+test config_defaults_test::config_defaults_absent_metadata_overwrites_sizes ... ok
+test config_decode_test::config_decode_go_json_bytes ... ok
+test config_defaults_test::config_defaults_duration_boundaries ... ok
+test config_defaults_test::config_defaults_decoded_durations_and_labels ... ok
+test config_defaults_test::config_defaults_explicit_values_preserved ... ok
+test config_defaults_test::config_defaults_inherits_addresses_and_preserves_other_owners ... ok
+test config_defaults_test::config_defaults_missing_values ... ok
+test config_defaults_test::config_defaults_presence_zero_and_false ... ok
+test config_hot_update_test::config_hot_update_cancel_restores_before_next_writer ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63396
+isolated etcd 3.5.15 ready at http://127.0.0.1:63394
+test config_hot_update_test::config_hot_update_etcd_publication_and_rollback ... ok
+test config_hot_update_test::config_hot_update_memory_concurrent_read_modify_persist ... ok
+test config_hot_update_test::config_hot_update_memory_publication_and_rollback ... ok
+test config_hot_update_test::config_hot_update_noop_error_and_clone_isolation ... ok
+test config_hot_update_test::config_hot_update_queued_writer_and_persist_wait_for_rollback ... ok
+test config_hot_update_test::config_hot_update_etcd_concurrent_read_modify_persist ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63410
+test config_persist_test::config_persist_etcd_reload_and_roundtrip ... ok
+test config_persist_test::config_persist_go_snapshot_differential ... ok
+test config_persist_test::config_persist_legacy_limits_null_and_flags ... ok
+test config_persist_test::config_persist_memory_reload_upgrade ... ok
+test config_persist_test::config_persist_memory_roundtrip ... ok
+test config_persist_test::config_persist_rejects_malformed_migration_fields ... ok
+test config_tso_test::config_tso_decoded_values_normalize ... ok
+test config_tso_test::config_tso_physical_interval_clamps ... ok
+test config_tso_test::config_tso_positive_save_and_timeout_preserved ... ok
+test config_tso_test::config_tso_proxy_count_preserves_negative_unlimited ... ok
+test config_tso_test::config_tso_zero_and_negative_defaults ... ok
+test config_urls_test::config_urls_join_matches_go_cases ... ok
+test config_urls_test::config_urls_list_preserves_parse_not_request_semantics ... ok
+test config_urls_test::config_urls_request_and_join_boundaries ... ok
+test config_urls_test::config_urls_scheme_matches_go_table ... ok
+test dashboard_config_test::dashboard_config_custom_values_and_toml_roundtrip ... ok
+test dashboard_config_test::dashboard_config_existing_go_json_bytes ... ok
+test dashboard_config_test::dashboard_config_nested_metadata_and_missing_toml ... ok
+test dashboard_config_test::dashboard_config_presence_and_host_defaults ... ok
+test dashboard_config_test::dashboard_config_scalar_types_and_null ... ok
+test deprecated_config_test::deprecated_config_existing_go_bytes_after_ignored_legacy_key ... ok
+test deprecated_config_test::deprecated_config_learner_presence_including_false ... ok
+test deprecated_config_test::deprecated_config_log_mapping_and_warning_order ... ok
+test deprecated_config_test::deprecated_config_raw_kv_split_is_ignored ... ok
+test deprecated_config_test::deprecated_config_trace_presence_always_conflicts ... ok
+test keyspace_config_test::keyspace_config_clone_and_accessors ... ok
+test keyspace_config_test::keyspace_config_defaults_and_presence ... ok
+test keyspace_config_test::keyspace_config_existing_go_json_bytes ... ok
+test keyspace_config_test::keyspace_config_group_ids_and_atomic_errors ... ok
+test keyspace_config_test::keyspace_config_group_mapping_and_adjust_failure ... ok
+test keyspace_config_test::keyspace_config_split_validation_boundaries ... ok
+test microservice_config_test::microservice_config_clone_and_getters ... ok
+test microservice_config_test::microservice_config_existing_go_json_bytes ... ok
+test microservice_config_test::microservice_config_json_roundtrip_and_types ... ok
+test microservice_config_test::microservice_config_nested_metadata ... ok
+test microservice_config_test::microservice_config_presence_all_combinations ... ok
+test microservice_config_test::microservice_config_toml_presence_and_types ... ok
+test middleware_config_test::middleware_config_clone_map_ownership ... ok
+test middleware_config_test::middleware_config_constructor_go_bytes ... ok
+test middleware_config_test::middleware_config_dimension_and_decode ... ok
+test middleware_config_test::middleware_config_populated_go_bytes ... ok
+test middleware_config_test::middleware_config_qps_number_encoding ... ok
+test middleware_config_test::middleware_config_zero_and_nil_clone ... ok
+test nested_config_test::nested_config_defaults ... ok
+test nested_config_test::nested_config_error_precedence ... ok
+test nested_config_test::nested_config_go_captured_values_and_errors ... ok
+test nested_config_test::nested_config_go_full_json_decode ... ok
+test nested_config_test::nested_config_go_raw_nested_bytes ... ok
+test nested_config_test::nested_config_json_toml_types_and_float_boundaries ... ok
+test nested_config_test::nested_config_order_reload_presence_and_no_side_effects ... ok
+test nested_config_test::nested_config_paths_semver_and_warnings ... ok
+test pd_server_defaults_test::pd_server_defaults_bounds ... ok
+test pd_server_defaults_test::pd_server_defaults_explicit_zero ... ok
+test pd_server_defaults_test::pd_server_defaults_float_boundaries_and_nonfinite_encoding ... ok
+test pd_server_defaults_test::pd_server_defaults_go_bytes ... ok
+test pd_server_defaults_test::pd_server_defaults_preserve_and_replace ... ok
+test pd_server_defaults_test::pd_server_defaults_string_encoding ... ok
+test pd_server_defaults_test::pd_server_defaults_toml_presence_and_types ... ok
+test pd_server_gc_test::pd_server_gc_defaults_and_valid_combinations ... ok
+test pd_server_gc_test::pd_server_gc_explicit_boundaries_and_errors ... ok
+test pd_server_gc_test::pd_server_gc_first_error_and_no_implicit_adjustment ... ok
+test pd_server_gc_test::pd_server_gc_reload_candidate_values ... ok
+test pd_server_validate_test::pd_server_validate_dashboard ... ok
+test pd_server_validate_test::pd_server_validate_decode_adjust_and_unchecked_fields ... ok
+test pd_server_validate_test::pd_server_validate_error_order ... ok
+test pd_server_validate_test::pd_server_validate_float_boundaries ... ok
+test pd_server_validate_test::pd_server_validate_key_and_flow ... ok
+test replication_config_test::replication_config_clone_independent ... ok
+test replication_config_test::replication_config_codec_types_and_roundtrip ... ok
+test replication_config_test::replication_config_defaults_and_presence ... ok
+test replication_config_test::replication_config_existing_go_json_bytes ... ok
+test replication_config_test::replication_config_normalize_and_preserve_mode ... ok
+test replication_config_test::replication_config_toml_dr_values ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63414
+test config_persist_test::config_persist_etcd_restart_and_backend_errors ... ok
+
+test result: ok. 93 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 6.16s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_slice-1f39b3cf152c8147)
+
+running 4 tests
+test slice_test::contains_and_remove ... ok
+test slice_test::multiset_equal_and_sorted_duplicate ... ok
+test slice_test::predicate_quantifiers ... ok
+test slice_test::split_into_batches ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics-f9d9b37722178265)
+
+running 124 tests
+test cpu_test::state_task_09_cpu_peer_go_oracle_and_missing ... ok
+test cpu_test::state_task_09_cpu_peer_ignores_scheduler ... ok
+test cpu_test::state_task_09_cpu_store_prefix_and_multiple_records ... ok
+test cpu_test::state_task_09_cpu_store_go_oracle ... ok
+test cpu_test::state_task_09_cpu_store_wraps_before_float_conversion ... ok
+test engine_load_test::state_task_24_engine_load_summary_ragged_history_and_no_hot_peers ... ok
+test engine_load_test::state_task_24_engine_load_collectors_and_pending ... ok
+test engine_load_test::state_task_24_engine_load_summary_store_infos ... ok
+test engine_load_test::state_task_24_engine_load_tiflash_compute_excluded ... ok
+test engine_load_test::state_task_24_engine_load_tikv_not_affected_by_compute ... ok
+test engine_load_test::state_task_24_engine_load_zero_cpu_stddev ... ok
+test engine_load_test::state_task_24_engine_load_transfer_filter_and_removed_history ... ok
+test hot_expire_test::state_task_22_hot_expire_cold_write_and_default_ttl ... ok
+test hot_expire_test::state_task_22_hot_expire_missing_report_partial_window_and_isolation ... ok
+test hot_expire_test::state_task_22_hot_expire_region_disappearance_and_threshold_recompute ... ok
+test hot_expire_test::state_task_22_hot_expire_removed_store_and_threshold_only_store ... ok
+test hot_expire_test::state_task_22_hot_expire_ttl_refresh_boundary_and_rollback ... ok
+test hot_inherit_test::state_task_21_hot_inherit_cache_inherit_new_flow ... ok
+test hot_inherit_test::state_task_21_hot_inherit_cold_peer_reentry_and_replica_changes ... ok
+test hot_inherit_test::state_task_21_hot_inherit_leader_read_write_cooldown ... ok
+test hot_inherit_test::state_task_21_hot_inherit_lookup_and_final_miss ... ok
+test hot_inherit_test::state_task_21_hot_inherit_partial_clone_resets_delta ... ok
+test hot_inherit_test::state_task_21_hot_inherit_replacement_preserves_window_and_isolation ... ok
+test hot_inherit_test::state_task_21_hot_inherit_write_skip_keeps_pending_window_and_dynamic_clock ... ok
+test hot_peer_test::state_task_18_hot_peer_bounds_and_missing_rolling ... ok
+test hot_peer_test::state_task_18_hot_peer_cooldown_boundaries ... ok
+test hot_peer_test::state_task_18_hot_peer_cpu_last_average ... ok
+test hot_peer_test::state_task_18_hot_peer_snapshot_and_topn ... ok
+test hot_peer_test::state_task_18_hot_peer_window_full_clear_and_clone ... ok
+test hot_peer_update_test::state_task_19_hot_peer_update_denoising_action_isolation ... ok
+test hot_peer_update_test::state_task_19_hot_peer_update_heat_cold_remove ... ok
+test hot_peer_update_test::state_task_19_hot_peer_update_recovery_and_cpu ... ok
+test hot_peer_update_test::state_task_19_hot_peer_update_report_intervals_and_explicit_peers ... ok
+test hot_peer_update_test::state_task_19_hot_peer_update_unstable_data ... ok
+test hot_projection_test::state_task_25_hot_projection_collect_oracle ... ok
+test hot_projection_test::state_task_25_hot_projection_detail_current_rates_and_owned_values ... ok
+test hot_projection_test::state_task_25_hot_projection_empty_and_missing ... ok
+test hot_projection_test::state_task_25_hot_projection_ids_and_cold_only ... ok
+test hot_projection_test::state_task_25_hot_projection_status_oracle_and_learner ... ok
+test hot_stat_test::state_task_29_hot_stat_cancel_joins_all_children ... ok
+test hot_stat_test::state_task_29_hot_stat_empty_and_registration_conflict ... ok
+test hot_stat_test::state_task_29_hot_stat_full_and_abandoned_snapshot ... ok
+test hot_stat_test::state_task_29_hot_stat_interrupted_shutdown_retains_joins ... ok
+test hot_stat_test::state_task_29_hot_stat_pending_snapshot_cancel_and_bucket_selection ... ok
+test hot_stat_test::state_task_29_hot_stat_reports_and_isolated_snapshot ... ok
+test hot_stat_test::state_task_29_hot_stat_unfiltered_informer_and_filter_contract ... ok
+test hot_threshold_test::state_task_20_hot_threshold_clock_boundary ... ok
+test hot_threshold_test::state_task_20_hot_threshold_cpu_last_average_and_dynamic_admission ... ok
+test hot_expire_test::state_task_22_hot_expire_fixed_replica_moves_and_cold_reports ... ok
+test hot_threshold_test::state_task_20_hot_threshold_rank_replacement_remove_and_stores ... ok
+test hot_threshold_test::state_task_20_hot_threshold_go_topn_and_refresh ... ok
+test hot_worker_test::state_task_23_hot_worker_admission_cancel_shutdown_join ... ok
+test hot_worker_test::state_task_23_hot_worker_captured_fields ... ok
+test hot_worker_test::state_task_23_hot_worker_fifo_partial_admission_and_snapshot_filters ... ok
+test hot_worker_test::state_task_23_hot_worker_flow_matches_original_all_peer_counts ... ok
+test hot_worker_test::state_task_23_hot_worker_queued_read_cold_expiry_fifo_and_owned_fields ... ok
+test hot_worker_test::state_task_23_hot_worker_read_queries_and_cold ... ok
+test hot_worker_test::state_task_23_hot_worker_runtime_loss_and_drop_are_not_applied ... ok
+test hot_worker_test::state_task_23_hot_worker_shared_host_cancel_race ... ok
+test label_statistics_test::state_task_17_label_statistics_defunct_lifecycle ... ok
+test label_statistics_test::state_task_17_label_statistics_empty_missing_and_keys ... ok
+test label_statistics_test::state_task_17_label_statistics_go_case_insensitive ... ok
+test label_statistics_test::state_task_17_label_statistics_go_levels_and_reobservation ... ok
+test load_values_test::state_task_13_load_values_go_pending_sequence ... ok
+test load_values_test::state_task_13_load_values_ieee_extrema ... ok
+test load_values_test::state_task_13_load_values_min_max_pending_diff ... ok
+test load_values_test::state_task_13_load_values_predictions_and_snapshot_isolation ... ok
+test load_values_test::state_task_13_load_values_slice_contracts ... ok
+test load_values_test::state_task_13_load_values_weighted_influence ... ok
+test metrics_test::state_task_28_metrics_delete_cluster_status_and_global_reset ... ok
+test metrics_test::state_task_28_metrics_discarded_collection_reconciles_labels ... ok
+test metrics_test::state_task_28_metrics_explicit_gc_and_reactivated_store ... ok
+test metrics_test::state_task_28_metrics_go_reset_snapshot ... ok
+test metrics_test::state_task_28_metrics_hot_threshold_actions_gc_and_reset ... ok
+test metrics_test::state_task_28_metrics_idle_worker_gc_and_shutdown ... ok
+test metrics_test::state_task_28_metrics_independent_registry_and_duplicate ... ok
+test metrics_test::state_task_28_metrics_real_store_collect_transfer_limit_and_recreate ... ok
+test metrics_test::state_task_28_metrics_region_label_and_flows ... ok
+test metrics_test::state_task_28_metrics_registration_rollback_and_schema ... ok
+test metrics_test::state_task_28_metrics_resets ... ok
+test metrics_test::state_task_28_metrics_store_reset ... ok
+test region_classify_test::state_task_15_region_classify_clear_query_witness ... ok
+test region_classify_test::state_task_15_region_classify_durations_and_reset ... ok
+test region_classify_test::state_task_15_region_classify_go_sequence ... ok
+test region_classify_test::state_task_15_region_classify_special_transitions_and_rule_boundary ... ok
+test region_classify_test::state_task_15_region_classify_thresholds_and_config ... ok
+test region_placement_test::state_task_16_region_placement_boundary_and_rule_update ... ok
+test region_placement_test::state_task_16_region_placement_go_sequence ... ok
+test region_placement_test::state_task_16_region_placement_learner_and_voter_duration ... ok
+test region_placement_test::state_task_16_region_placement_nonlearner_roles_and_empty_rules ... ok
+test region_placement_test::state_task_16_region_placement_uninitialized_and_config_update ... ok
+test region_totals_test::state_task_14_region_totals_accumulation_and_wrapping ... ok
+test region_totals_test::state_task_14_region_totals_empty_uses_keys ... ok
+test region_totals_test::state_task_14_region_totals_go_api_distribution ... ok
+test region_totals_test::state_task_14_region_totals_go_api_hot_filter ... ok
+test region_totals_test::state_task_14_region_totals_ia_cap_and_nil_leader ... ok
+test region_totals_test::state_task_14_region_totals_witness_tiflash_and_no_leader ... ok
+test slow_stat_test::state_task_26_slow_stat_concurrent_same_store_parity ... ok
+test slow_stat_test::state_task_26_slow_stat_go_event_replay ... ok
+test slow_stat_test::state_task_26_slow_stat_repeated_true_removes ... ok
+test slow_stat_test::state_task_26_slow_stat_store_and_container_isolation ... ok
+test store_collection_test::state_task_27_store_collection_exact_clock_boundaries ... ok
+test store_collection_test::state_task_27_store_collection_go_health_priority ... ok
+test store_collection_test::state_task_27_store_collection_go_snapshots ... ok
+test store_collection_test::state_task_27_store_collection_group_config_isolation ... ok
+test store_collection_test::state_task_27_store_collection_low_space_and_removed_retention ... ok
+test store_collection_test::state_task_27_store_collection_resource_samples ... ok
+test store_collection_test::state_task_27_store_collection_space_predicate_and_windows ... ok
+test store_history_test::state_task_12_store_history_gc_does_not_readd_removed ... ok
+test store_history_test::state_task_12_store_history_go_loads ... ok
+test store_history_test::state_task_12_store_history_interval_wrap_and_snapshot ... ok
+test store_history_test::state_task_12_store_history_isolation_and_config ... ok
+test store_rolling_test::state_task_10_store_rolling_all_kinds_and_unknown ... ok
+test store_rolling_test::state_task_10_store_rolling_distinct_windows_and_recent_max ... ok
+test store_rolling_test::state_task_10_store_rolling_go_cpu_time_median ... ok
+test store_rolling_test::state_task_10_store_rolling_partial_intervals_and_median_eviction ... ok
+test store_rolling_test::state_task_10_store_rolling_set_preserves_time_history ... ok
+test store_rolling_test::state_task_10_store_rolling_unsigned_set_and_duration_wrap ... ok
+test store_rolling_test::state_task_10_store_rolling_zero_interval_and_collect_overflow ... ok
+test stores_test::state_task_11_stores_concurrent_snapshots_and_removal ... ok
+test stores_test::state_task_11_stores_creation_deletion_and_snapshots ... ok
+test stores_test::state_task_11_stores_go_filter_unhealthy ... ok
+test stores_test::state_task_11_stores_health_boundary_recovery_and_empty ... ok
+test hot_threshold_test::state_task_20_hot_threshold_report_intervals ... ok
+
+test result: ok. 124 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.11s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics_buckets-f472b8de5f1e8220)
+
+running 31 tests
+test bucket_degree_test::state_task_07_bucket_degree_go_calculate ... ok
+test bucket_degree_test::state_task_07_bucket_degree_go_collect ... ok
+test bucket_degree_test::state_task_07_bucket_degree_query_snapshot_and_archive ... ok
+test bucket_degree_test::state_task_07_bucket_degree_thresholds_and_bounds ... ok
+test bucket_inherit_test::state_task_06_bucket_inherit_archive_split_merge ... ok
+test bucket_inherit_test::state_task_06_bucket_inherit_cold_hot_merge_and_existing_degree ... ok
+test bucket_inherit_test::state_task_06_bucket_inherit_disjoint_partial_and_empty ... ok
+test bucket_inherit_test::state_task_06_bucket_inherit_go_matrix ... ok
+test bucket_inherit_test::state_task_06_bucket_inherit_source_empty_end_comparisons ... ok
+test bucket_range_test::state_task_05_bucket_range_double_debris_and_archive_index ... ok
+test bucket_range_test::state_task_05_bucket_range_empty_end_factory_contract ... ok
+test bucket_range_test::state_task_05_bucket_range_go_clone_and_owned_stats ... ok
+test bucket_range_test::state_task_05_bucket_range_go_put_sequence ... ok
+test bucket_range_test::state_task_05_bucket_range_go_queries_and_adjacency ... ok
+test bucket_degree_test::state_task_07_bucket_degree_go_repeated_and_transition ... ok
+test bucket_values_test::state_task_04_bucket_values_deep_clone ... ok
+test bucket_values_test::state_task_04_bucket_values_go_conversion ... ok
+test bucket_values_test::state_task_04_bucket_values_intervals_and_wrap ... ok
+test bucket_values_test::state_task_04_bucket_values_normalize ... ok
+test bucket_values_test::state_task_04_bucket_values_runtime_snapshots ... ok
+test bucket_worker_test::state_task_08_bucket_worker_cancel_wait_and_drop_reply ... ok
+test bucket_worker_test::state_task_08_bucket_worker_duplicate_registry_no_spawn ... ok
+test bucket_values_test::state_task_04_bucket_values_array_boundaries ... ok
+test bucket_worker_test::state_task_08_bucket_worker_full_and_pending_shutdown ... ok
+test bucket_worker_test::state_task_08_bucket_worker_go_check_fifo ... ok
+test bucket_worker_test::state_task_08_bucket_worker_go_collect_snapshot ... ok
+test bucket_worker_test::state_task_08_bucket_worker_panic_propagates_and_unblocks ... ok
+test bucket_worker_test::state_task_08_bucket_worker_parent_cancel_and_drop ... ok
+test bucket_worker_test::state_task_08_bucket_worker_shared_host_concurrent_producers ... ok
+test bucket_worker_test::state_task_08_bucket_worker_shutdown_wait_is_cancel_safe ... ok
+test bucket_worker_test::state_task_08_bucket_worker_full_rejection_has_no_effect ... ok
+
+test result: ok. 31 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_statistics_utils-cbee0e2127547f2d)
+
+running 16 tests
+test kind_test::state_task_01_kind_complete_integer_mappings ... ok
+test kind_test::state_task_01_kind_names_and_defaults ... ok
+test kind_test::state_task_01_kind_rates_and_zero_interval ... ok
+test kind_test::state_task_01_kind_rw_order_inverse_and_intervals ... ok
+test kind_test::state_task_01_kind_set_rates_preserves_other_direction ... ok
+test kind_test::state_task_01_kind_short_slices_follow_accessed_indexes ... ok
+test kind_test::state_task_01_kind_single_owned_label ... ok
+test topn_test::state_task_02_topn_cross_rank_updates_and_removals ... ok
+test topn_test::state_task_02_topn_equal_loads_n_boundaries_and_max_id ... ok
+test topn_test::state_task_02_topn_invalid_arguments ... ok
+test topn_test::state_task_02_topn_repeated_heap_repairs ... ok
+test topn_ttl_test::state_task_03_topn_ttl_boundary_and_explicit_cleanup ... ok
+test topn_ttl_test::state_task_03_topn_ttl_go_test_ttl_contract ... ok
+test topn_ttl_test::state_task_03_topn_ttl_remove_reinsert_and_partial_batch ... ok
+test topn_ttl_test::state_task_03_topn_ttl_renewal_never_deletes_latest_version ... ok
+test topn_test::state_task_02_topn_go_put_remove_contract ... ok
+
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.13s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_storage-227926d69e70ae6d)
+
+running 17 tests
+test facade_test::facade_memory ... ok
+test meta_store_test::cas_atomic_revision ... ok
+test meta_store_test::compaction_recovery ... ok
+test meta_store_test::election_fencing ... ok
+test meta_store_test::invalid_atomic ... ok
+test meta_store_test::lease_expiry ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63447
+test facade_test::facade_etcd ... ok
+test meta_store_test::snapshot_scan ... ok
+test meta_store_test::watch_cancel ... ok
+test meta_store_test::watch_replay ... ok
+test meta_store_test::lease_renew_revoke ... ok
+test region_lifecycle_test::region_lifecycle_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63459
+isolated etcd 3.5.15 ready at http://127.0.0.1:63457
+isolated etcd 3.5.15 ready at http://127.0.0.1:63462
+test region_load_once_test::region_load_once_etcd ... ok
+test region_load_once_test::region_load_once_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63469
+isolated etcd 3.5.15 ready at http://127.0.0.1:63480
+test region_switch_test::region_switch_etcd ... ok
+test region_switch_test::region_switch_memory ... ok
+test region_lifecycle_test::region_lifecycle_etcd ... ok
+
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 5.20s
+
+     Running kv/etcd_store_test.rs (target/rust-slot-1/debug/deps/etcd_contract-999fa55ba2851929)
+
+running 10 tests
+isolated etcd 3.5.15 ready at http://127.0.0.1:63508
+test cas_atomic_revision ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63505
+test compaction_recovery ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63516
+isolated etcd 3.5.15 ready at http://127.0.0.1:63524
+test election_fencing ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63543
+test invalid_atomic ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63551
+test lease_expiry ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63568
+test disconnect_restart_resume_and_cancel ... ok
+test lease_renew_revoke ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63592
+test snapshot_scan ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63598
+isolated etcd 3.5.15 ready at http://127.0.0.1:63594
+test watch_replay ... ok
+test watch_cancel ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 14.69s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_storage_endpoint-df00c299dc086364)
+
+running 103 tests
+test affinity_endpoint_test::affinity_endpoint_go_bytes ... ok
+test affinity_endpoint_test::affinity_endpoint_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63634
+isolated etcd 3.5.15 ready at http://127.0.0.1:63633
+test batch_ops_test::batch_ops_etcd ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63655
+test batch_ops_test::batch_ops_inflight_cancel_etcd ... ok
+test batch_ops_test::batch_ops_limit ... ok
+test batch_ops_test::batch_ops_memory ... ok
+test cluster_id_test::cluster_id_candidate_values ... ok
+test affinity_endpoint_test::affinity_endpoint_etcd ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63666
+isolated etcd 3.5.15 ready at http://127.0.0.1:63676
+test cluster_id_test::cluster_id_etcd ... ok
+test cluster_id_test::cluster_id_etcd_cancel_inflight_read ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63695
+test cluster_id_test::cluster_id_memory ... ok
+test cluster_meta_test::cluster_meta_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63713
+test cluster_meta_test::cluster_meta_etcd ... ok
+test config_endpoint_test::config_endpoint_go_bytes ... ok
+test config_endpoint_test::config_endpoint_memory ... ok
+test config_endpoint_test::config_endpoint_etcd ... ok
+test endpoint_codec_test::endpoint_codec_go_json_fixture ... ok
+test endpoint_codec_test::endpoint_codec_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63724
+test endpoint_codec_test::endpoint_codec_etcd ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63731
+test gc_barrier_read_test::gc_barrier_read_memory ... ok
+test gc_barrier_read_test::gc_barrier_read_values ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63741
+test gc_barrier_txn_test::gc_barrier_txn_etcd ... ok
+test gc_barrier_txn_test::gc_barrier_txn_go_values ... ok
+test gc_barrier_txn_test::gc_barrier_txn_memory ... ok
+test gc_barrier_value_test::gc_barrier_value_errors_and_escaping ... ok
+test gc_barrier_value_test::gc_barrier_value_global_json_compatibility ... ok
+test gc_barrier_value_test::gc_barrier_value_go_bytes ... ok
+test gc_barrier_value_test::gc_barrier_value_legacy_keyspace_and_sentinels ... ok
+test gc_barrier_value_test::gc_barrier_value_rounding_and_input_mutation ... ok
+test gc_barrier_value_test::gc_barrier_value_strict_expiration ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63757
+test gc_batch_read_test::gc_batch_read_etcd ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63791
+test gc_batch_read_test::gc_batch_read_inflight_cancel_etcd ... ok
+test gc_batch_read_test::gc_batch_read_memory ... ok
+test gc_batch_read_test::gc_batch_read_response_validation ... ok
+test gc_barrier_read_test::gc_barrier_read_etcd ... ok
+test gc_safepoint_read_test::gc_safepoint_read_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63812
+isolated etcd 3.5.15 ready at http://127.0.0.1:63807
+test gc_safepoint_read_test::gc_safepoint_read_etcd ... ok
+test gc_state_txn_test::gc_state_txn_go_encoding ... ok
+test gc_state_txn_test::gc_state_txn_memory ... ok
+test keyspace_group_state_test::keyspace_group_state_go_split_json ... ok
+test keyspace_group_state_test::keyspace_group_state_json_boundaries ... ok
+test keyspace_group_state_test::keyspace_group_state_merge_roles ... ok
+test keyspace_group_state_test::keyspace_group_state_nil_and_absent ... ok
+test keyspace_group_state_test::keyspace_group_state_repeated_and_null_json ... ok
+test keyspace_group_state_test::keyspace_group_state_split_roles ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63831
+isolated etcd 3.5.15 ready at http://127.0.0.1:63840
+test gc_state_txn_test::gc_state_txn_etcd ... ok
+test keyspace_group_store_test::keyspace_group_store_go_wire ... ok
+test keyspace_group_store_test::keyspace_group_store_memory ... ok
+test keyspace_group_value_test::keyspace_group_value_addresses ... ok
+test keyspace_group_value_test::keyspace_group_value_member_json ... ok
+test keyspace_group_value_test::keyspace_group_value_user_kinds ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63859
+test keyspace_group_store_test::keyspace_group_store_etcd ... ok
+test keyspace_meta_test::keyspace_meta_memory ... ok
+test keyspace_meta_test::keyspace_meta_values ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63876
+test keyspace_meta_test::keyspace_meta_etcd ... ok
+test keyspace_scan_test::keyspace_scan_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63888
+test keyspace_scan_test::keyspace_scan_etcd ... ok
+test maintenance_delete_test::maintenance_delete_go_wire ... ok
+test maintenance_delete_test::maintenance_delete_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63906
+test maintenance_start_test::maintenance_start_etcd ... ok
+test maintenance_start_test::maintenance_start_go_wire ... ok
+test maintenance_start_test::maintenance_start_memory ... ok
+test maintenance_delete_test::maintenance_delete_etcd ... ok
+test meta_service_group_test::meta_service_group_go_wire ... ok
+test meta_service_group_test::meta_service_group_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63927
+isolated etcd 3.5.15 ready at http://127.0.0.1:63937
+test meta_service_group_test::meta_service_group_etcd ... ok
+test region_meta_test::region_meta_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63959
+test region_meta_test::region_meta_etcd ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63969
+test region_scan_test::region_scan_etcd ... ok
+test region_scan_test::region_scan_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63979
+test region_scan_test::region_scan_etcd_adaptive_and_io_failure ... ok
+test replication_endpoint_test::replication_endpoint_go_bytes ... ok
+test replication_endpoint_test::replication_endpoint_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:63995
+test replication_endpoint_test::replication_endpoint_etcd ... ok
+test resource_settings_test::resource_settings_go_bytes ... ok
+test resource_settings_test::resource_settings_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:64010
+test resource_settings_test::resource_settings_etcd ... ok
+test resource_states_test::resource_states_go_bytes ... ok
+test resource_states_test::resource_states_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:64046
+test resource_states_test::resource_states_etcd ... ok
+test rule_endpoint_test::rule_endpoint_go_bytes ... ok
+test rule_endpoint_test::rule_endpoint_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:64064
+test scheduler_endpoint_test::scheduler_endpoint_etcd ... ok
+test scheduler_endpoint_test::scheduler_endpoint_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:64095
+test rule_endpoint_test::rule_endpoint_etcd ... ok
+test service_limits_test::service_limits_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:64117
+test store_meta_test::store_meta_etcd ... ok
+test store_meta_test::store_meta_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:64136
+test service_limits_test::service_limits_etcd ... ok
+test store_weights_test::store_weights_float_boundaries ... ok
+test store_weights_test::store_weights_memory ... ok
+test store_weights_test::store_weights_etcd ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:64162
+isolated etcd 3.5.15 ready at http://127.0.0.1:64168
+test timestamp_fenced_save_test::timestamp_fenced_save_etcd_races ... ok
+test timestamp_fenced_save_test::timestamp_fenced_save_go_bytes ... ok
+test timestamp_fenced_save_test::timestamp_fenced_save_memory ... ok
+test timestamp_fenced_save_test::timestamp_fenced_save_memory_races ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:64178
+test timestamp_fenced_save_test::timestamp_fenced_save_etcd ... ok
+test timestamp_values_test::timestamp_values_go_bytes ... ok
+test timestamp_values_test::timestamp_values_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:64192
+test timestamp_values_test::timestamp_values_etcd ... ok
+test timestamp_window_test::timestamp_window_go_bytes ... ok
+test timestamp_window_test::timestamp_window_memory ... ok
+test timestamp_window_test::timestamp_window_etcd ... ok
+
+test result: ok. 103 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 66.90s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_storage_kv-2049f5823e531cf2)
+
+running 30 tests
+test base_kv_test::base_kv_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:64231
+test base_kv_test::base_kv_etcd ... ok
+test bounded_range_test::bounded_range_memory ... ok
+test bounded_range_test::bounded_range_request ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:64229
+test bounded_range_test::bounded_range_etcd ... ok
+test callback_txn_test::callback_txn_memory ... ok
+test meta_store_test::cas_atomic_revision ... ok
+test meta_store_test::compaction_recovery ... ok
+test meta_store_test::election_fencing ... ok
+test meta_store_test::invalid_atomic ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:64235
+test callback_txn_test::callback_txn_etcd ... ok
+test meta_store_test::lease_expiry ... ok
+test meta_store_test::snapshot_scan ... ok
+test meta_store_test::watch_cancel ... ok
+test meta_store_test::watch_replay ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:64250
+test raw_branches_test::raw_branches_etcd ... ok
+test raw_branches_test::raw_branches_memory ... ok
+test meta_store_test::lease_renew_revoke ... ok
+test raw_compare_test::raw_compare_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:64258
+isolated etcd 3.5.15 ready at http://127.0.0.1:64267
+test raw_get_test::raw_get_etcd ... ok
+test raw_get_test::raw_get_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:64272
+test raw_range_test::raw_range_etcd ... ok
+test raw_range_test::raw_range_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:64282
+test revision_txn_test::revision_txn_etcd ... ok
+test revision_txn_test::revision_txn_memory ... ok
+test txn_cancel_test::txn_cancel_error_categories ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:64294
+test raw_compare_test::raw_compare_etcd ... ok
+test txn_cancel_test::txn_cancel_etcd ... ok
+test txn_cancel_test::txn_cancel_memory ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:64314
+test txn_cancel_test::txn_cancel_malformed_response ... ok
+
+test result: ok. 30 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 11.20s
+
+     Running etcd_store_test.rs (target/rust-slot-1/debug/deps/etcd_contract-4485a081d13338f5)
+
+running 10 tests
+isolated etcd 3.5.15 ready at http://127.0.0.1:64332
+isolated etcd 3.5.15 ready at http://127.0.0.1:64334
+test cas_atomic_revision ... ok
+test compaction_recovery ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:64348
+isolated etcd 3.5.15 ready at http://127.0.0.1:64350
+test election_fencing ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:64362
+test invalid_atomic ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:64370
+test lease_expiry ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:64393
+test disconnect_restart_resume_and_cancel ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:64411
+test lease_renew_revoke ... ok
+test snapshot_scan ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:64422
+isolated etcd 3.5.15 ready at http://127.0.0.1:64424
+test watch_cancel ... ok
+test watch_replay ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 12.73s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_storelimit-1f8073a62199dbfb)
+
+running 21 tests
+test limit_types_test::core_task_02_influence_and_version_constants ... ok
+test limit_types_test::core_task_02_name_lookup_and_unknowns ... ok
+test limit_types_test::core_task_02_type_values_and_names ... ok
+test rate_limit_test::core_task_03_capacity_query_consumption_and_isolation ... ok
+test rate_limit_test::core_task_03_invalid_available_type_panics - should panic ... ok
+test rate_limit_test::core_task_03_invalid_take_type_panics - should panic ... ok
+test rate_limit_test::core_task_03_minimum_capacity_and_snapshot_bypass ... ok
+test rate_reset_test::core_task_04_changed_rate_rebuilds_target ... ok
+test rate_reset_test::core_task_04_invalid_reset_type_panics - should panic ... ok
+test rate_reset_test::core_task_04_fractional_refill_and_capacity ... ok
+test rate_reset_test::core_task_04_reset_preserves_other_bucket ... ok
+test rate_reset_test::core_task_04_same_rate_preserves_balance ... ok
+test rate_reset_test::core_task_04_snapshot_reset_is_noop ... ok
+test rate_reset_test::core_task_04_unlimited_threshold ... ok
+test rate_reset_test::core_task_04_zero_initial_and_reset ... ok
+test window_feedback_test::core_task_07_all_priority_capacities_and_usage_survive_feedback ... ok
+test sliding_windows_test::core_task_06_priority_snapshot_oracle ... ok
+test window_feedback_test::core_task_07_go_feedback_sequence ... ok
+test window_test::core_task_05_boundary ... ok
+test window_test::core_task_05_minimum_and_overshoot ... ok
+test window_test::core_task_05_reset_preserves_used ... ok
+
+test result: ok. 21 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_syncer-f91ec29d817c7d1a)
+
+running 85 tests
+test client_apply_test::state_task_37_client_apply_error_does_not_mutate ... ok
+test client_apply_test::state_task_37_client_apply_checkpoint_failure_keeps_assigned_record ... ok
+test client_apply_test::state_task_37_client_apply_full_sync_positional_completion ... ok
+test client_apply_test::state_task_37_client_apply_memory_overlap_oracle ... ok
+test client_apply_test::state_task_37_client_apply_missing_arrays_and_zero_leader ... ok
+test client_apply_test::state_task_37_client_apply_overlong_arrays_discarded ... ok
+test client_apply_test::state_task_37_client_apply_persistent_history_cadence ... ok
+test client_apply_test::state_task_37_client_apply_raw_stats_and_unchanged_meta ... ok
+test client_apply_test::state_task_37_client_apply_storage_failures_keep_cache_and_cleanup ... ok
+test client_ready_test::state_task_38_client_ready_empty_snapshot_catchup_completion ... ok
+test client_ready_test::state_task_38_client_ready_empty_snapshot_without_catchup ... ok
+test client_ready_test::state_task_38_client_ready_error_and_leader_reconnect ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:64444
+isolated etcd 3.5.15 ready at http://127.0.0.1:64445
+test client_apply_test::state_task_37_client_apply_etcd_overlap_oracle ... ok
+test client_ready_test::state_task_38_client_ready_old_leader_keepalive ... ok
+test client_ready_test::state_task_38_client_ready_waits_for_full_sync_completion ... ok
+test downstream_test::state_task_36_downstream_append_and_other_stream_progress_when_busy ... ok
+test downstream_test::state_task_36_downstream_buffered_then_live_matches_go ... ok
+test downstream_test::state_task_36_downstream_cancel_blocked_send_and_rebind ... ok
+test downstream_test::state_task_36_downstream_drain_serially_and_batch ... ok
+test downstream_test::state_task_36_downstream_drains_records_appended_during_keepalive ... ok
+test downstream_test::state_task_36_downstream_history_gap_and_future_index ... ok
+test downstream_test::state_task_36_downstream_independent_indexes ... ok
+test downstream_test::state_task_36_downstream_keepalive_after_pending_records ... ok
+test downstream_test::state_task_36_downstream_removes_only_failed ... ok
+test downstream_test::state_task_36_downstream_send_failure_preserves_last_success ... ok
+test full_catchup_test::state_task_35_full_catchup_empty_scan_positions_and_completion ... ok
+test full_catchup_test::state_task_35_full_catchup_keeps_live_records ... ok
+test full_catchup_test::state_task_35_full_catchup_no_changes_still_completes ... ok
+test full_catchup_test::state_task_35_full_catchup_overflow_disconnects_and_requires_resync ... ok
+test full_catchup_test::state_task_35_full_catchup_send_failure_closes_and_releases ... ok
+test full_snapshot_test::state_task_34_full_snapshot_bind_waits_for_append_boundary ... ok
+test full_snapshot_test::state_task_34_full_snapshot_buffers_live_records ... ok
+test full_snapshot_test::state_task_34_full_snapshot_failure_releases_retain ... ok
+test full_snapshot_test::state_task_34_full_snapshot_offsets_and_empty ... ok
+test full_snapshot_test::state_task_34_full_snapshot_retain_is_bounded_and_unwind_safe ... ok
+test history_buffer_test::state_task_30_history_buffer_101_records ... ok
+test history_buffer_test::state_task_30_history_buffer_empty_and_reset ... ok
+test history_buffer_test::state_task_30_history_buffer_go_snapshot ... ok
+test history_buffer_test::state_task_30_history_buffer_index_exhaustion ... ok
+test history_buffer_test::state_task_30_history_buffer_normalization ... ok
+test history_buffer_test::state_task_30_history_buffer_releases_overwritten_and_reset_records ... ok
+test history_buffer_test::state_task_30_history_buffer_wrapped_intervals ... ok
+test history_persist_test::state_task_32_history_persist_adaptive_window_reset ... ok
+test history_persist_test::state_task_32_history_persist_cancel_write ... ok
+test history_persist_test::state_task_32_history_persist_decimal_and_corruption ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:64462
+test history_persist_test::state_task_32_history_persist_etcd_failure_and_restart ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:64480
+test history_persist_test::state_task_32_history_persist_etcd_go_snapshot ... ok
+test history_persist_test::state_task_32_history_persist_memory_go_snapshot ... ok
+test history_persist_test::state_task_32_history_persist_next_index_only_and_exhaustion ... ok
+test history_persist_test::state_task_32_history_persist_reset_and_flush_boundary ... ok
+test history_replay_test::state_task_33_history_replay_caps_batch_and_observes_window ... ok
+test history_replay_test::state_task_33_history_replay_custom_batch_and_snapshot_survive_overwrite ... ok
+test history_replay_test::state_task_33_history_replay_equal_and_keepalive_do_not_skip ... ok
+test history_replay_test::state_task_33_history_replay_falls_back_when_history_missing ... ok
+test history_replay_test::state_task_33_history_replay_split_batches ... ok
+test history_replay_test::state_task_33_history_replay_stops_at_sync_start_index ... ok
+test history_window_test::state_task_31_history_window_cancelled_future_releases_guard ... ok
+test history_window_test::state_task_31_history_window_duplicate_guards_and_error_cancel ... ok
+test history_window_test::state_task_31_history_window_failed_append_preserves_retained_snapshot ... ok
+test history_window_test::state_task_31_history_window_full_sync_priority ... ok
+test history_window_test::state_task_31_history_window_gap_at_maximum_and_invalid_indexes ... ok
+test history_window_test::state_task_31_history_window_high_resets_streak_and_overflow_safe ... ok
+test history_window_test::state_task_31_history_window_normalization_and_missing_past ... ok
+test history_window_test::state_task_31_history_window_observed_required_window ... ok
+test history_window_test::state_task_31_history_window_oldest_guard_and_wrap_growth ... ok
+test history_window_test::state_task_31_history_window_reset_invalidates_old_guards ... ok
+test history_window_test::state_task_31_history_window_retain_keeps_catch_up_records ... ok
+test history_window_test::state_task_31_history_window_shrinks_one_step_after_low_window ... ok
+test lifecycle_test::state_task_40_lifecycle_cancel_before_request_poll ... ok
+test lifecycle_test::state_task_40_lifecycle_cancel_during_retry_wait ... ok
+test lifecycle_test::state_task_40_lifecycle_cancel_while_waiting_first_request ... ok
+test lifecycle_test::state_task_40_lifecycle_complete_releases_and_metrics_match_history ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:64488
+test lifecycle_test::state_task_40_lifecycle_etcd_watch_and_persistence ... ok
+test lifecycle_test::state_task_40_lifecycle_memory_watch_and_persistence ... ok
+test lifecycle_test::state_task_40_lifecycle_retry_serially_then_cancel ... ok
+test lifecycle_test::state_task_40_lifecycle_stop_joins_all_blocked_sends ... ok
+test lifecycle_test::state_task_40_lifecycle_timeout_closes_stream_without_parallel_send ... ok
+test lifecycle_test::state_task_40_lifecycle_worker_panic_still_joins_other_workers ... ok
+test lifecycle_test::state_task_40_lifecycle_zero_deadline_uses_go_default ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:64496
+test metadata_watch_test::state_task_39_metadata_watch_etcd ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:64504
+test metadata_watch_test::state_task_39_metadata_watch_etcd_empty_and_pages ... ok
+test client_ready_test::state_task_38_client_ready_etcd_completion ... ok
+test metadata_watch_test::state_task_39_metadata_watch_memory ... ok
+test metadata_watch_test::state_task_39_metadata_watch_memory_empty_and_pages ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:64514
+test metadata_watch_test::state_task_39_metadata_watch_etcd_restart ... ok
+
+test result: ok. 85 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 12.60s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_syncutil-b99436bd85d86c91)
+
+running 9 tests
+test lock_group_test::lock_group_cleanup ... ok
+test lock_group_test::lock_group_serialization ... ok
+test ordered_single_flight_test::singleflight_cancellation_last_waiter ... ok
+test ordered_single_flight_test::singleflight_cancellation_noncooperative_execution_keeps_order ... ok
+test ordered_single_flight_test::singleflight_cancellation_pending_can_be_reused ... ok
+test ordered_single_flight_test::singleflight_cancellation_shared_waiters ... ok
+test ordered_single_flight_test::singleflight_coalesce_and_order ... ok
+test mutex_test::mutex_boundary ... ok
+test ordered_single_flight_test::singleflight_randomized ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_timerutil-37f9a13599cc7777)
+
+running 2 tests
+test pool_test::timer_checkout_and_expiry ... ok
+test pool_test::timer_reuse_and_cancel ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_tso-158b5fae92c2de0b)
+
+running 3 tests
+test oracle_test::memory_boundaries ... ok
+test restart_test::memory_restart ... ok
+test oracle_test::memory_behavior ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running etcd_behavior_test.rs (target/rust-slot-1/debug/deps/etcd_behavior-3a5388bd2d181f2c)
+
+running 9 tests
+test oracle_test::memory_boundaries ... ok
+test oracle_test::memory_behavior ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:64544
+isolated etcd 3.5.15 ready at http://127.0.0.1:64545
+test real_etcd_boundaries ... ok
+test real_etcd_behavior ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:64558
+test real_etcd_oracle_process_restart ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:64570
+test real_etcd_restart ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:64574
+isolated etcd 3.5.15 ready at http://127.0.0.1:64556
+test real_etcd_wal_restart_and_outage ... ok
+test restart_test::memory_restart ... ok
+test real_etcd_natural_lease_expiry ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 7.07s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_typeutil-4bf759f994a91fc5)
+
+running 10 tests
+test clone_test::deep_clone_contract_codec_errors ... ok
+test clone_test::deep_clone_contract ... ok
+test comparison_test::comparison_helpers ... ok
+test conversion_test::conversion_helpers ... ok
+test duration_test::duration_serde_and_saturation ... ok
+test size_test::byte_size_serde_text_and_mb_fallback ... ok
+test string_slice_test::string_slice_json ... ok
+test time_test::timestamp_and_wall_clock_differences ... ok
+test time_test::time_optional_json ... ok
+test time_test::timestamp_and_wall_clock_parse ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests window.rs (target/rust-slot-1/debug/deps/astersql_pd_window-286a8925e6608fa1)
+
+running 10 tests
+test counter_test::rolling_counter_aggregates ... ok
+test counter_test::rolling_counter_aggregates_integer_conversion ... ok
+test counter_test::rolling_counter_aggregates_concurrent ... ok
+test policy_test::rolling_policy_reduce_expiry ... ok
+test policy_test::rolling_policy_rotation ... ok
+test reduce_test::iterator_and_reducers ... ok
+test window_test::bucket_add_requires_existing_point - should panic ... ok
+test window_test::empty_window_bucket_panics_like_go - should panic ... ok
+test window_test::window_bucket_mutations ... ok
+test counter_test::rolling_counter_concurrency ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+   Doc-tests astersql_pd
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_balancer
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_btree
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_cache
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_cluster
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_cmd_pd_server
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_codec
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_compat_tests
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_configutil
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_core
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_core_constant
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_election
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_encryption
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_errs
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_etcdutil
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_grpcutil
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_id
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_jsonutil
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_kerneltype
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_keypath
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_keyspace_constant
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_keyutil
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_logutil
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_mcs_constant
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_member
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_metering_config
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_metricutil
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_movingaverage
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_proto
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_raft_prototype
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_rangetree
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_ratelimit
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_reflectutil
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_response
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_rm_server
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_runtime
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_schedule_affinity
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_schedule_checker
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_schedule_config
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_schedule_core
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_schedule_filter
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_schedule_hbstream
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_schedule_keyrange
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_schedule_labeler
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_schedule_operator
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_schedule_placement
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_schedule_plan
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_schedule_rangelist
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_schedule_types
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_server
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_server_config
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_slice
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_statistics
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_statistics_buckets
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_statistics_utils
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_storage
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_storage_endpoint
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_storage_kv
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_storelimit
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_syncer
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_syncutil
+
+running 2 tests
+test pkg/utils/syncutil/lib.rs - asynchronous (line 34) - compile fail ... ok
+test pkg/utils/syncutil/lib.rs - blocking (line 17) - compile fail ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.07s
+
+   Doc-tests astersql_pd_timerutil
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_tso
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_typeutil
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_window
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

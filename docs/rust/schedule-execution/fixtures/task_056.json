@@ -1,0 +1,89 @@
+{
+  "provenance": "read-only Go checker_controller.go source derivation; no Go execution",
+  "go_output": null,
+  "normalization": [],
+  "scan_limits": [
+    [
+      0,
+      128
+    ],
+    [
+      131071,
+      128
+    ],
+    [
+      131072,
+      128
+    ],
+    [
+      132096,
+      129
+    ],
+    [
+      1024000,
+      1000
+    ],
+    [
+      8388608,
+      8192
+    ],
+    [
+      999999999,
+      8192
+    ]
+  ],
+  "phase_order": [
+    "priority",
+    "pending",
+    "split-scatter",
+    "scan",
+    "labels"
+  ],
+  "channel_capacity": 8192,
+  "cursor_contract": "last scanned end key; empty scan resets cursor without updating duration/limit",
+  "shutdown_contract": "cancel idle workers; await all in-flight checks before clearing split-scatter",
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "source_sha256": "48d03fd259b5762da0381ce8976057098d0b9d83a0527666c3bbc738862fd56d",
+  "scenarios": [
+    {
+      "name": "priority-pending-scan",
+      "contract": "priority removes absent IDs; pending absent IDs retained; split-scatter then scan then label stats"
+    },
+    {
+      "name": "cursor-backlog",
+      "contract": "128 regions then 2 then empty; cursor 129 then 131 then empty; backlog skips work"
+    },
+    {
+      "name": "dynamic-config",
+      "contract": "0->2 workers; interval 10ms->25ms resets next deadline"
+    },
+    {
+      "name": "shutdown-resize",
+      "contract": "two blocked in-flight checks finish before cleanup or replacement 2->1 workers"
+    },
+    {
+      "name": "saturation-halt",
+      "contract": "8192 queued with zero workers; backlog skips; halt drains; resume scans; full queue cancellation terminates"
+    },
+    {
+      "name": "worker-error",
+      "contract": "typed injected worker error joins all workers and clears split-scatter"
+    },
+    {
+      "name": "invalid-interval",
+      "contract": "initial and dynamic zero interval return typed error"
+    },
+    {
+      "name": "round-boundary",
+      "contract": "count 130->132096 only updates scan limit 128->129 at nonempty terminal region; 30ms duration resets on cancellation"
+    },
+    {
+      "name": "priority-merge",
+      "contract": "real merge pair skipped in priority and admitted from scan"
+    },
+    {
+      "name": "priority-admission",
+      "contract": "enqueue rejection preserves priority pending but ordinary pending recheck removes it"
+    }
+  ]
+}

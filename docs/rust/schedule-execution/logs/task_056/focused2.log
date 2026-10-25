@@ -1,0 +1,31 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.87s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-09c25f305b3e17e1)
+
+running 6 tests
+task_056: 7 frozen scan limit cases
+test task_056_test::task_056_behavior_cases ... ok
+task_056: typed worker fault joins cleanup; initial and dynamic zero interval errors
+test task_056_test::task_056_worker_fault_and_invalid_config ... ok
+
+thread 'task_056_test::task_056_real_priority_pending_and_scan_order' (165184022) panicked at pkg/schedule/checker/task_056_test.rs:333:9:
+assertion `left == right` failed
+  left: ["remove:99", "Pending:2", "split-scatter", "scan", "labels:2", "Scan:1"]
+ right: ["Priority:1", "remove:99", "Pending:2", "split-scatter", "scan", "labels:2"]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+task_056: shutdown and 2->1 resize join both blocked in-flight real checks before cleanup/restart
+test task_056_test::task_056_shutdown_and_resize_wait_for_inflight ... ok
+test task_056_test::task_056_real_priority_pending_and_scan_order ... FAILED
+task_056: cursor across 128+2+empty, backlog skip, workers 0->2, interval 10->25ms and reset deadline
+test task_056_test::task_056_cursor_backlog_dynamic_tick_and_workers ... ok
+task_056: full 8192 channel with zero workers, backlog skip, halt drains, resume scans, cancel full channel
+test task_056_test::task_056_saturation_halt_and_cancel ... ok
+
+failures:
+
+failures:
+    task_056_test::task_056_real_priority_pending_and_scan_order
+
+test result: FAILED. 5 passed; 1 failed; 0 ignored; 0 measured; 44 filtered out; finished in 0.05s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-checker --lib`

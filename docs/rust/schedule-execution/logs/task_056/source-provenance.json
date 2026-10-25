@@ -1,0 +1,27 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "implementation_parent_commit": "5afa1bfce7e62000b0efd4bc9397eb850555b25a",
+  "source_sha256": "48d03fd259b5762da0381ce8976057098d0b9d83a0527666c3bbc738862fd56d",
+  "fixture_sha256": "b76c6ecc1f89e910121d31d07938bae8f27c282fe36ee929f6624815bd4e682c",
+  "evidence_kind": "Go read-only source/test contract derivation + executed Rust behavioral tests",
+  "go_execution": false,
+  "go_output": null,
+  "go_output_sha256": null,
+  "normalization": [],
+  "dependency": {
+    "task": 55,
+    "commit": "5afa1bfce",
+    "evidence": "docs/rust/schedule-execution/task-055.md"
+  },
+  "go_contracts": [
+    "calculateScanLimit",
+    "PatrolRegions",
+    "checkRegions",
+    "checkPriorityRegions",
+    "checkPendingProcessedRegions",
+    "updateTickerIfNeeded",
+    "updatePatrolWorkersIfNeeded",
+    "PatrolRegionContext.stop",
+    "PatrolRegionContext.startPatrolRegionWorkers"
+  ]
+}

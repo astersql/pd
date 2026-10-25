@@ -1,0 +1,17 @@
+[
+  {
+    "name": "priority",
+    "exit_code": 101,
+    "assertion_failure": true
+  },
+  {
+    "name": "cursor",
+    "exit_code": 101,
+    "assertion_failure": true
+  },
+  {
+    "name": "join",
+    "exit_code": 101,
+    "assertion_failure": true
+  }
+]

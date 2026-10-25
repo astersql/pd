@@ -1,0 +1,23 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.83s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-09c25f305b3e17e1)
+
+running 8 tests
+task_056: 7 frozen scan limit cases
+test task_056_test::task_056_behavior_cases ... ok
+task_056: typed worker fault joins cleanup; initial and dynamic zero interval errors
+task_056: count snapshot changes 130->132096; limit refresh only at terminal region; exact 30ms duration and cancel reset
+test task_056_test::task_056_worker_fault_and_invalid_config ... ok
+task_056: real priority removal, pending recheck/absent retention, queue promotion steps, phase order
+test task_056_test::task_056_round_boundary_updates_limit_and_duration ... ok
+test task_056_test::task_056_real_priority_pending_and_scan_order ... ok
+task_056: real merge pair excluded from priority/admitted from scan; priority preserves pending on admission rejection, ordinary recheck removes it
+test task_056_test::task_056_priority_merge_and_pending_admission_contracts ... ok
+task_056: shutdown and 2->1 resize join both blocked in-flight real checks before cleanup/restart
+test task_056_test::task_056_shutdown_and_resize_wait_for_inflight ... ok
+task_056: cursor across 128+2+empty, backlog skip, workers 0->2, interval 10->25ms and reset deadline
+test task_056_test::task_056_cursor_backlog_dynamic_tick_and_workers ... ok
+task_056: full 8192 channel with zero workers, backlog skip, halt drains, resume scans, cancel full channel
+test task_056_test::task_056_saturation_halt_and_cancel ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 44 filtered out; finished in 0.06s

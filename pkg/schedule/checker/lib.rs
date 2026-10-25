@@ -83,3 +83,8 @@ mod checker_dispatch;
 pub use checker_dispatch::*;
 #[cfg(test)]
 mod task_055_test;
+
+mod patrol;
+pub use patrol::*;
+#[cfg(test)]
+mod task_056_test;
