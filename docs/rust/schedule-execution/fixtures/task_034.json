@@ -1,0 +1,306 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "evidence_kind": "source_assertion",
+  "go_execution": false,
+  "sources": {
+    "pkg/schedule/operator/operator_controller.go": "173d8e3e5fd5e4b1128ba24a954055d2d1ef7ea7a6676f6d3aa7cc7a37672ba1",
+    "pkg/schedule/operator/operator_controller_test.go": "18e953a9c41e84c3dba9dc381ebce462f652b27d0f7ab83de22413bc84e21501"
+  },
+  "cases": [
+    {
+      "name": "normal",
+      "region": 1,
+      "priority": 1,
+      "old_priority": null,
+      "setup": "",
+      "expected": "accepted"
+    },
+    {
+      "name": "missing",
+      "region": 9,
+      "priority": 1,
+      "old_priority": null,
+      "setup": "",
+      "expected": "region not found"
+    },
+    {
+      "name": "version",
+      "region": 1,
+      "priority": 1,
+      "old_priority": null,
+      "setup": "stale-version",
+      "expected": "epoch not match"
+    },
+    {
+      "name": "confver",
+      "region": 1,
+      "priority": 1,
+      "old_priority": null,
+      "setup": "stale-confver",
+      "expected": "epoch not match"
+    },
+    {
+      "name": "nil-epoch",
+      "region": 1,
+      "priority": 1,
+      "old_priority": null,
+      "setup": "nil-epoch",
+      "expected": "epoch not match"
+    },
+    {
+      "name": "same",
+      "region": 1,
+      "priority": 1,
+      "old_priority": 1,
+      "setup": "",
+      "expected": "already exist"
+    },
+    {
+      "name": "lower",
+      "region": 1,
+      "priority": 0,
+      "old_priority": 1,
+      "setup": "",
+      "expected": "already exist"
+    },
+    {
+      "name": "higher",
+      "region": 1,
+      "priority": 2,
+      "old_priority": 1,
+      "setup": "",
+      "expected": "accepted"
+    },
+    {
+      "name": "started",
+      "region": 1,
+      "priority": 1,
+      "old_priority": null,
+      "setup": "started",
+      "expected": "not in create status"
+    },
+    {
+      "name": "canceled",
+      "region": 1,
+      "priority": 1,
+      "old_priority": null,
+      "setup": "canceled",
+      "expected": "not in create status"
+    },
+    {
+      "name": "waiting-full",
+      "region": 1,
+      "priority": 1,
+      "old_priority": null,
+      "setup": "waiting-full",
+      "expected": "exceed wait limit"
+    }
+  ],
+  "contracts": {
+    "pair": "check all members before insert; replacing/removing one removes related region; expose atomic batch snapshot",
+    "identity": "stale operator cannot delete replacement",
+    "expiration": "all members checked in final expiry pass",
+    "waiting": "count batches by first description; bypass waiting limit on promote; retry rejected batches",
+    "scope": "admission and removal only; dispatch and store limits deferred"
+  },
+  "scenarios": [
+    {
+      "name": "identity-remove",
+      "inputs": {
+        "old_priority": 1,
+        "new_priority": 2,
+        "remove": "old Arc"
+      },
+      "expected": {
+        "old_status": "REPLACED",
+        "remaining": "new Arc",
+        "count_region": 1
+      }
+    },
+    {
+      "name": "merge-reject",
+      "inputs": {
+        "existing_pair": [
+          1,
+          2
+        ],
+        "incoming_pair": [
+          3,
+          9
+        ],
+        "missing_region": 9
+      },
+      "expected": {
+        "incoming_status": [
+          "CANCELED",
+          "CANCELED"
+        ],
+        "running": [
+          1,
+          2
+        ],
+        "count_region": 2
+      }
+    },
+    {
+      "name": "merge-replace",
+      "inputs": {
+        "old_pair": [
+          1,
+          2
+        ],
+        "new_pair": [
+          1,
+          3
+        ],
+        "old_priority": 1,
+        "new_priority": 2
+      },
+      "expected": {
+        "old_status": [
+          "REPLACED",
+          "CANCELED"
+        ],
+        "partner_reason": "related merge region",
+        "running": [
+          1,
+          3
+        ]
+      }
+    },
+    {
+      "name": "remove-pair",
+      "inputs": {
+        "pair": [
+          1,
+          3
+        ],
+        "remove": 3
+      },
+      "expected": {
+        "remaining": [],
+        "statuses": [
+          "CANCELED",
+          "CANCELED"
+        ],
+        "count_region": 0
+      }
+    },
+    {
+      "name": "waiting",
+      "inputs": {
+        "limit": 1,
+        "enqueue_region": 1,
+        "enqueue_rejected_region": 2,
+        "sample": 0.0
+      },
+      "expected": {
+        "queued_batches": 1,
+        "rejection": "exceed wait limit",
+        "promote_region": 1,
+        "final_waiting": 0
+      }
+    },
+    {
+      "name": "retry-stale",
+      "inputs": {
+        "queued": [
+          1,
+          2
+        ],
+        "region1_version_after_enqueue": 4,
+        "sample": 0.0
+      },
+      "expected": {
+        "first_reason": "epoch not match",
+        "promoted": 2,
+        "final_waiting": 0
+      }
+    },
+    {
+      "name": "expired-pair",
+      "inputs": {
+        "pair": [
+          1,
+          2
+        ],
+        "elapsed_seconds": 3
+      },
+      "expected": {
+        "statuses": [
+          "EXPIRED",
+          "EXPIRED"
+        ],
+        "running": []
+      }
+    },
+    {
+      "name": "queue-fault",
+      "inputs": {
+        "sample": "NaN",
+        "queued_pair": [
+          1,
+          2
+        ]
+      },
+      "expected": {
+        "error": "InvalidRandom",
+        "queued_batches": 1
+      }
+    },
+    {
+      "name": "invalid-priority",
+      "inputs": {
+        "priority": 4
+      },
+      "expected": {
+        "queue_error": "InvalidPriority(4)",
+        "queued_batches": 0
+      }
+    },
+    {
+      "name": "concurrent-pairs",
+      "inputs": {
+        "threads": 8,
+        "iterations_each": 100,
+        "pair": [
+          1,
+          2
+        ]
+      },
+      "expected": {
+        "snapshot_size": [
+          0,
+          2
+        ],
+        "counts_equal_snapshot": true,
+        "after_drain": 0
+      }
+    },
+    {
+      "name": "factory-products",
+      "inputs": {
+        "factory": "RangeOperatorFactory.create_merge",
+        "regions": [
+          1,
+          2
+        ],
+        "kinds": [
+          "MERGE",
+          "AFFINITY"
+        ],
+        "waiting_limit": 1
+      },
+      "expected": {
+        "active_passive_steps": [
+          false,
+          true
+        ],
+        "queued_batches": 1,
+        "running_count_by_primary_kind": 2,
+        "removed": 2,
+        "remaining_count": 0
+      }
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "cargo",
+    "test",
+    "-p",
+    "astersql-pd-schedule-operator",
+    "--locked",
+    "--lib",
+    "task_034",
+    "--",
+    "--nocapture"
+  ],
+  "exit_code": 101,
+  "mutation": "allow equal priority to replace existing operator"
+}

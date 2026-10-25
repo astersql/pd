@@ -1,0 +1,16 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=python3 -
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.28s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_operator-3c432df009ee920c)
+
+running 6 tests
+test task_034_test::task_034_replace_and_identity_remove ... ok
+test task_034_test::task_034_expiry_and_invalid_batch ... ok
+test task_034_test::task_034_merge_atomicity ... ok
+test task_034_test::task_034_waiting_promote ... ok
+test task_034_test::task_034_behavior_cases ... ok
+test task_034_test::task_034_concurrent_admission_remove ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 57 filtered out; finished in 0.01s
+
+command_exit_code=0

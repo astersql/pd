@@ -91,3 +91,9 @@ mod queues;
 pub use queues::*;
 #[cfg(test)]
 mod task_033_test;
+
+#[cfg(test)]
+mod task_034_test;
+
+mod controller_admission;
+pub use controller_admission::*;

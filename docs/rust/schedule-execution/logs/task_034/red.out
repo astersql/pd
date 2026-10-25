@@ -1,0 +1,26 @@
+
+running 8 tests
+test task_034_test::task_034_expiry_and_invalid_batch ... ok
+test task_034_test::task_034_replace_and_identity_remove ... ok
+test task_034_test::task_034_waiting_promote ... ok
+test task_034_test::task_034_retry_expired_pairs_and_queue_errors ... ok
+test task_034_test::task_034_merge_atomicity ... ok
+test task_034_test::task_034_factory_merge_and_affinity ... ok
+test task_034_test::task_034_behavior_cases ... FAILED
+test task_034_test::task_034_concurrent_admission_remove ... ok
+
+failures:
+
+failures:
+    task_034_test::task_034_behavior_cases
+
+test result: FAILED. 7 passed; 1 failed; 0 ignored; 0 measured; 57 filtered out; finished in 0.01s
+
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.05s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_operator-3c432df009ee920c)
+
+thread 'task_034_test::task_034_behavior_cases' (163325946) panicked at pkg/schedule/operator/task_034_test.rs:138:36:
+must reject
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+error: test failed, to rerun pass `-p astersql-pd-schedule-operator --lib`
