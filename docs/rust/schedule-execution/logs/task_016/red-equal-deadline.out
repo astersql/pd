@@ -1,0 +1,27 @@
+
+running 3 tests
+test task_016_test::task_016_delayed_start_uses_started_time ... FAILED
+test task_016_test::task_016_behavior_cases ... FAILED
+test task_016_test::task_016_concurrent_deadline_and_terminal_transition ... ok
+
+failures:
+
+failures:
+    task_016_test::task_016_behavior_cases
+    task_016_test::task_016_delayed_start_uses_started_time
+
+test result: FAILED. 1 passed; 2 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.60s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_operator-8dca8090e28d4485)
+
+thread 'task_016_test::task_016_delayed_start_uses_started_time' (162558681) panicked at pkg/schedule/operator/task_016_test.rs:111:5:
+assertion failed: tracker.check_timeout(Duration::from_nanos(10))
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'task_016_test::task_016_behavior_cases' (162558679) panicked at pkg/schedule/operator/task_016_test.rs:63:9:
+assertion `left == right` failed: {"after":5,"changed":true,"duration_ns":10,"elapsed_ns":10,"method":"expired","result":true,"status":0}
+  left: false
+ right: true
+error: test failed, to rerun pass `-p astersql-pd-schedule-operator --lib`

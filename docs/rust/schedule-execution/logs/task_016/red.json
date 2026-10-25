@@ -1,0 +1,34 @@
+[
+  {
+    "mutation": "equal-deadline",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-operator",
+      "--locked",
+      "--lib",
+      "task_016",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "log": "red-equal-deadline.out"
+  },
+  {
+    "mutation": "creation-instead-of-start",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-operator",
+      "--locked",
+      "--lib",
+      "task_016",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "log": "red-creation-instead-of-start.out"
+  }
+]

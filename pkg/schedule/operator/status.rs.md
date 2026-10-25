@@ -42,3 +42,11 @@ Rust使用非负`Duration`；若适配Go有符号时长，非正值应转为零�
 [任务证据](../../../docs/rust/schedule-execution/task-015.md)。
 这证明本任务领域行为通过Rust实测，不声称完整Operator/步骤/Controller已经迁移，
 也不声称Go/Rust运行差分或wire适配已经验收。
+
+任务16在同一canonical实现上补充超时契约，未创建重复的`status_timeout.rs`。
+`check_expired`以创建时间为基准，`check_timeout`以启动时间为基准；延迟启动不消耗
+运行时限。状态读取、检查和终态转换持有同一锁，deadline与取消并发时只保留一个
+终态及其首次到达时间。零时限立即触发对应起始状态，终态不能重新开启。
+[task_016_test.rs](task_016_test.rs)通过44个固定输入案例、独立延迟启动案例及
+两组16线程竞争验证这些边界；[任务16证据](../../../docs/rust/schedule-execution/task-016.md)
+保存源码推导、变异失败与回归结果。没有真实sleep、步骤timeout或Operator控制器扩展。

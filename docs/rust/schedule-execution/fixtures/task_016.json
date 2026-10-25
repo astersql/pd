@@ -1,0 +1,408 @@
+{
+  "evidence_kind": "source_assertion",
+  "go_execution": false,
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "sources": {
+    "pkg/schedule/operator/status_tracker.go": "7d573156bbd05679f4929b26081983b450ffa190494826da2f7ff1fcbb342ffb",
+    "pkg/schedule/operator/status_tracker_test.go": "a627197d6a59fb19eaf8f7edd53c94832ea9dc4d633874dd644b9f8649e9af1b"
+  },
+  "normalization": "All times are explicit nonnegative nanosecond offsets from a monotonic test epoch. No state, boolean or timestamp differences ignored.",
+  "cases": [
+    {
+      "status": 0,
+      "method": "expired",
+      "elapsed_ns": 9,
+      "duration_ns": 10,
+      "result": false,
+      "after": 0,
+      "changed": false
+    },
+    {
+      "status": 0,
+      "method": "expired",
+      "elapsed_ns": 10,
+      "duration_ns": 10,
+      "result": true,
+      "after": 5,
+      "changed": true
+    },
+    {
+      "status": 0,
+      "method": "expired",
+      "elapsed_ns": 11,
+      "duration_ns": 10,
+      "result": true,
+      "after": 5,
+      "changed": true
+    },
+    {
+      "status": 0,
+      "method": "timeout",
+      "elapsed_ns": 9,
+      "duration_ns": 10,
+      "result": false,
+      "after": 0,
+      "changed": false
+    },
+    {
+      "status": 0,
+      "method": "timeout",
+      "elapsed_ns": 10,
+      "duration_ns": 10,
+      "result": false,
+      "after": 0,
+      "changed": false
+    },
+    {
+      "status": 0,
+      "method": "timeout",
+      "elapsed_ns": 11,
+      "duration_ns": 10,
+      "result": false,
+      "after": 0,
+      "changed": false
+    },
+    {
+      "status": 1,
+      "method": "expired",
+      "elapsed_ns": 9,
+      "duration_ns": 10,
+      "result": false,
+      "after": 1,
+      "changed": false
+    },
+    {
+      "status": 1,
+      "method": "expired",
+      "elapsed_ns": 10,
+      "duration_ns": 10,
+      "result": false,
+      "after": 1,
+      "changed": false
+    },
+    {
+      "status": 1,
+      "method": "expired",
+      "elapsed_ns": 11,
+      "duration_ns": 10,
+      "result": false,
+      "after": 1,
+      "changed": false
+    },
+    {
+      "status": 1,
+      "method": "timeout",
+      "elapsed_ns": 9,
+      "duration_ns": 10,
+      "result": false,
+      "after": 1,
+      "changed": false
+    },
+    {
+      "status": 1,
+      "method": "timeout",
+      "elapsed_ns": 10,
+      "duration_ns": 10,
+      "result": true,
+      "after": 6,
+      "changed": true
+    },
+    {
+      "status": 1,
+      "method": "timeout",
+      "elapsed_ns": 11,
+      "duration_ns": 10,
+      "result": true,
+      "after": 6,
+      "changed": true
+    },
+    {
+      "status": 2,
+      "method": "expired",
+      "elapsed_ns": 9,
+      "duration_ns": 10,
+      "result": false,
+      "after": 2,
+      "changed": false
+    },
+    {
+      "status": 2,
+      "method": "expired",
+      "elapsed_ns": 10,
+      "duration_ns": 10,
+      "result": false,
+      "after": 2,
+      "changed": false
+    },
+    {
+      "status": 2,
+      "method": "expired",
+      "elapsed_ns": 11,
+      "duration_ns": 10,
+      "result": false,
+      "after": 2,
+      "changed": false
+    },
+    {
+      "status": 2,
+      "method": "timeout",
+      "elapsed_ns": 9,
+      "duration_ns": 10,
+      "result": false,
+      "after": 2,
+      "changed": false
+    },
+    {
+      "status": 2,
+      "method": "timeout",
+      "elapsed_ns": 10,
+      "duration_ns": 10,
+      "result": false,
+      "after": 2,
+      "changed": false
+    },
+    {
+      "status": 2,
+      "method": "timeout",
+      "elapsed_ns": 11,
+      "duration_ns": 10,
+      "result": false,
+      "after": 2,
+      "changed": false
+    },
+    {
+      "status": 3,
+      "method": "expired",
+      "elapsed_ns": 9,
+      "duration_ns": 10,
+      "result": false,
+      "after": 3,
+      "changed": false
+    },
+    {
+      "status": 3,
+      "method": "expired",
+      "elapsed_ns": 10,
+      "duration_ns": 10,
+      "result": false,
+      "after": 3,
+      "changed": false
+    },
+    {
+      "status": 3,
+      "method": "expired",
+      "elapsed_ns": 11,
+      "duration_ns": 10,
+      "result": false,
+      "after": 3,
+      "changed": false
+    },
+    {
+      "status": 3,
+      "method": "timeout",
+      "elapsed_ns": 9,
+      "duration_ns": 10,
+      "result": false,
+      "after": 3,
+      "changed": false
+    },
+    {
+      "status": 3,
+      "method": "timeout",
+      "elapsed_ns": 10,
+      "duration_ns": 10,
+      "result": false,
+      "after": 3,
+      "changed": false
+    },
+    {
+      "status": 3,
+      "method": "timeout",
+      "elapsed_ns": 11,
+      "duration_ns": 10,
+      "result": false,
+      "after": 3,
+      "changed": false
+    },
+    {
+      "status": 4,
+      "method": "expired",
+      "elapsed_ns": 9,
+      "duration_ns": 10,
+      "result": false,
+      "after": 4,
+      "changed": false
+    },
+    {
+      "status": 4,
+      "method": "expired",
+      "elapsed_ns": 10,
+      "duration_ns": 10,
+      "result": false,
+      "after": 4,
+      "changed": false
+    },
+    {
+      "status": 4,
+      "method": "expired",
+      "elapsed_ns": 11,
+      "duration_ns": 10,
+      "result": false,
+      "after": 4,
+      "changed": false
+    },
+    {
+      "status": 4,
+      "method": "timeout",
+      "elapsed_ns": 9,
+      "duration_ns": 10,
+      "result": false,
+      "after": 4,
+      "changed": false
+    },
+    {
+      "status": 4,
+      "method": "timeout",
+      "elapsed_ns": 10,
+      "duration_ns": 10,
+      "result": false,
+      "after": 4,
+      "changed": false
+    },
+    {
+      "status": 4,
+      "method": "timeout",
+      "elapsed_ns": 11,
+      "duration_ns": 10,
+      "result": false,
+      "after": 4,
+      "changed": false
+    },
+    {
+      "status": 5,
+      "method": "expired",
+      "elapsed_ns": 9,
+      "duration_ns": 10,
+      "result": true,
+      "after": 5,
+      "changed": false
+    },
+    {
+      "status": 5,
+      "method": "expired",
+      "elapsed_ns": 10,
+      "duration_ns": 10,
+      "result": true,
+      "after": 5,
+      "changed": false
+    },
+    {
+      "status": 5,
+      "method": "expired",
+      "elapsed_ns": 11,
+      "duration_ns": 10,
+      "result": true,
+      "after": 5,
+      "changed": false
+    },
+    {
+      "status": 5,
+      "method": "timeout",
+      "elapsed_ns": 9,
+      "duration_ns": 10,
+      "result": false,
+      "after": 5,
+      "changed": false
+    },
+    {
+      "status": 5,
+      "method": "timeout",
+      "elapsed_ns": 10,
+      "duration_ns": 10,
+      "result": false,
+      "after": 5,
+      "changed": false
+    },
+    {
+      "status": 5,
+      "method": "timeout",
+      "elapsed_ns": 11,
+      "duration_ns": 10,
+      "result": false,
+      "after": 5,
+      "changed": false
+    },
+    {
+      "status": 6,
+      "method": "expired",
+      "elapsed_ns": 9,
+      "duration_ns": 10,
+      "result": false,
+      "after": 6,
+      "changed": false
+    },
+    {
+      "status": 6,
+      "method": "expired",
+      "elapsed_ns": 10,
+      "duration_ns": 10,
+      "result": false,
+      "after": 6,
+      "changed": false
+    },
+    {
+      "status": 6,
+      "method": "expired",
+      "elapsed_ns": 11,
+      "duration_ns": 10,
+      "result": false,
+      "after": 6,
+      "changed": false
+    },
+    {
+      "status": 6,
+      "method": "timeout",
+      "elapsed_ns": 9,
+      "duration_ns": 10,
+      "result": true,
+      "after": 6,
+      "changed": false
+    },
+    {
+      "status": 6,
+      "method": "timeout",
+      "elapsed_ns": 10,
+      "duration_ns": 10,
+      "result": true,
+      "after": 6,
+      "changed": false
+    },
+    {
+      "status": 6,
+      "method": "timeout",
+      "elapsed_ns": 11,
+      "duration_ns": 10,
+      "result": true,
+      "after": 6,
+      "changed": false
+    },
+    {
+      "status": 0,
+      "method": "expired",
+      "elapsed_ns": 0,
+      "duration_ns": 0,
+      "result": true,
+      "after": 5,
+      "changed": true
+    },
+    {
+      "status": 1,
+      "method": "timeout",
+      "elapsed_ns": 0,
+      "duration_ns": 0,
+      "result": true,
+      "after": 6,
+      "changed": true
+    }
+  ]
+}

@@ -217,9 +217,13 @@ impl OpStatusTracker {
     pub fn to(&self, destination: OpStatus) -> bool {
         self.lock().transition(destination, self.clock.now())
     }
+    /// Expires only CREATED operators once elapsed creation time is >= duration.
+    /// Repeated checks return true for EXPIRED without changing its reach time.
     pub fn check_expired(&self, duration: Duration) -> bool {
         self.check_duration(CREATED, EXPIRED, duration)
     }
+    /// Times out only STARTED operators, measuring from start rather than creation.
+    /// Equality and zero duration trigger timeout; other terminal states are preserved.
     pub fn check_timeout(&self, duration: Duration) -> bool {
         self.check_duration(STARTED, TIMEOUT, duration)
     }

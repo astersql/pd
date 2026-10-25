@@ -1,0 +1,21 @@
+{
+  "go_after": {
+    "files": 1101,
+    "sha256": "ed2539ab3ab676c44897f32a06c21649392a93042a28e5c98841bdca3e8f659e",
+    "status": ""
+  },
+  "plans_unchanged": true,
+  "source_commit_verified": true,
+  "fixture_sha256": "a34aca36ed504914fd6671f5a46327a9588b583c17e88dc73425cc377119ac09",
+  "fixture_cases": 44,
+  "mutations_rejected": 2,
+  "focused_passed": 3,
+  "package_passed": 7,
+  "workspace_passed": 1370,
+  "workspace_ignored": 1,
+  "cargo_lock_unchanged": true,
+  "slot": 1,
+  "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+  "slot_released": true,
+  "etcd_reuse_requests": 23
+}
