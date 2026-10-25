@@ -1,0 +1,11 @@
+{
+  "rule": "rstrip trailing whitespace and redundant final blank lines only",
+  "files": [
+    "green-4.log",
+    "validation-6.log",
+    "validation-4.log",
+    "validation-0.log",
+    "validation-1.log",
+    "validation-2.log"
+  ]
+}

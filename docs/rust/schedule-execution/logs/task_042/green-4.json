@@ -1,0 +1,11 @@
+{
+  "command": [
+    "python3",
+    "-c",
+    "import subprocess; subprocess.run([\"cargo\",\"fmt\",\"--all\"],check=True); subprocess.run([\"cargo\",\"test\",\"-p\",\"astersql-pd-schedule-checker\",\"--locked\",\"--lib\",\"task_042\",\"--\",\"--nocapture\"],check=True)"
+  ],
+  "exit_code": 0,
+  "slot": 1,
+  "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+  "test_env": {}
+}

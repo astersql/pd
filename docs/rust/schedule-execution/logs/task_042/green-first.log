@@ -1,0 +1,28 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+error[E0277]: a value of type `astersql_pd_typeutil::string_slice::StringSlice` cannot be built from an iterator over elements of type `std::string::String`
+   --> pkg/schedule/checker/task_042_test.rs:113:14
+    |
+113 |             .collect();
+    |              ^^^^^^^ value of type `astersql_pd_typeutil::string_slice::StringSlice` cannot be built from `std::iter::Iterator<Item=std::string::String>`
+    |
+    = help: the trait `FromIterator<std::string::String>` is not implemented for `astersql_pd_typeutil::string_slice::StringSlice`
+note: the method call chain might not have had the expected associated types
+   --> pkg/schedule/checker/task_042_test.rs:112:14
+    |
+108 |         conf.replication.location_labels = c["labels"]
+    |                                            ----------- this expression has type `Value`
+...
+111 |             .iter()
+    |              ------ `Iterator::Item` is `&Value` here
+112 |             .map(|v| v.as_str().unwrap().to_owned())
+    |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `Iterator::Item` changed to `String` here
+note: required by a bound in `collect`
+   --> /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/core/src/iter/traits/iterator.rs:2073:4
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `astersql-pd-schedule-checker` (lib test) due to 1 previous error
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/opt/homebrew/Cellar/python@3.12/3.12.11/Frameworks/Python.framework/Versions/3.12/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['cargo', 'test', '-p', 'astersql-pd-schedule-checker', '--locked', '--lib', 'task_042', '--', '--nocapture']' returned non-zero exit status 101.

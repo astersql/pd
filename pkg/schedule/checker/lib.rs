@@ -14,3 +14,8 @@ mod replica_fault;
 pub use replica_fault::*;
 #[cfg(test)]
 mod task_041_test;
+
+mod replica_shape;
+pub use replica_shape::*;
+#[cfg(test)]
+mod task_042_test;

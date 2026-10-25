@@ -1,0 +1,1035 @@
+{
+  "provenance": "source-derived contract; user waived Go runtime admission",
+  "go_execution": false,
+  "source_commit": "a9bf41cb9d82cb9da2be99ca42134d21cc72d812",
+  "sources": {
+    "pkg/schedule/checker/replica_checker.go": "d0fd075ff8c7128cc1cac06857533acee19b99cb8da89ef3707b27f0cbccefa4",
+    "pkg/schedule/checker/replica_checker_test.go": "45b842a3b3fd84e72c175115df9d4105753bd6a6d4be350c77e77f2be98fe75d",
+    "pkg/schedule/checker/replica_strategy.go": "0223f654c145abbcd6bf330cd42501766c415b85b60221692428ed13b7002c43",
+    "pkg/schedule/operator/create_operator.go": "43a938c72992f4ce81501c40ab85c1e79c08670383acd47f22655e779524b927",
+    "pkg/schedule/operator/builder.go": "2c74830947c401ea8c4d46e8066e4c85aecd02beea035d0bb9eb4aab8cee8f83"
+  },
+  "normalization": "none; clock 10000 seconds; allocator ID 1000; leader counts equal store IDs (unique leader-score minimum)",
+  "cases": [
+    {
+      "peers": [
+        1,
+        2
+      ],
+      "learners": [],
+      "leader": 1,
+      "max": 3,
+      "add": true,
+      "remove": true,
+      "location": false,
+      "paused": false,
+      "allocation_error": false,
+      "target": "healthy",
+      "zones": [
+        "a",
+        "a",
+        "b",
+        "c"
+      ],
+      "sizes": [
+        40,
+        30,
+        20,
+        10
+      ],
+      "store_count": 4,
+      "labels": [],
+      "desc": "make-up-replica",
+      "priority": "high",
+      "kind": 144,
+      "steps": [
+        [
+          "add",
+          4,
+          1000
+        ],
+        [
+          "promote",
+          4,
+          1000
+        ]
+      ],
+      "pending": false,
+      "error": null,
+      "name": "make-up"
+    },
+    {
+      "peers": [
+        1,
+        2
+      ],
+      "learners": [],
+      "leader": 1,
+      "max": 3,
+      "add": false,
+      "remove": true,
+      "location": false,
+      "paused": false,
+      "allocation_error": false,
+      "target": "healthy",
+      "zones": [
+        "a",
+        "a",
+        "b",
+        "c"
+      ],
+      "sizes": [
+        40,
+        30,
+        20,
+        10
+      ],
+      "store_count": 4,
+      "labels": [],
+      "desc": null,
+      "priority": "high",
+      "kind": 144,
+      "steps": [],
+      "pending": false,
+      "error": null,
+      "name": "add-disabled"
+    },
+    {
+      "peers": [
+        1,
+        2
+      ],
+      "learners": [],
+      "leader": 1,
+      "max": 3,
+      "add": true,
+      "remove": true,
+      "location": false,
+      "paused": true,
+      "allocation_error": false,
+      "target": "healthy",
+      "zones": [
+        "a",
+        "a",
+        "b",
+        "c"
+      ],
+      "sizes": [
+        40,
+        30,
+        20,
+        10
+      ],
+      "store_count": 4,
+      "labels": [],
+      "desc": null,
+      "priority": "high",
+      "kind": 144,
+      "steps": [],
+      "pending": false,
+      "error": null,
+      "name": "paused"
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "learners": [],
+      "leader": 1,
+      "max": 3,
+      "add": true,
+      "remove": true,
+      "location": false,
+      "paused": false,
+      "allocation_error": false,
+      "target": "healthy",
+      "zones": [
+        "a",
+        "a",
+        "b",
+        "c"
+      ],
+      "sizes": [
+        40,
+        30,
+        20,
+        10
+      ],
+      "store_count": 4,
+      "labels": [],
+      "desc": null,
+      "priority": "high",
+      "kind": 144,
+      "steps": [],
+      "pending": false,
+      "error": null,
+      "name": "enough"
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "learners": [
+        3
+      ],
+      "leader": 1,
+      "max": 3,
+      "add": true,
+      "remove": true,
+      "location": false,
+      "paused": false,
+      "allocation_error": false,
+      "target": "healthy",
+      "zones": [
+        "a",
+        "a",
+        "b",
+        "c"
+      ],
+      "sizes": [
+        40,
+        30,
+        20,
+        10
+      ],
+      "store_count": 4,
+      "labels": [],
+      "desc": null,
+      "priority": "high",
+      "kind": 144,
+      "steps": [],
+      "pending": false,
+      "error": null,
+      "name": "learner-counts-for-add"
+    },
+    {
+      "peers": [
+        1,
+        2
+      ],
+      "learners": [
+        2
+      ],
+      "leader": 1,
+      "max": 3,
+      "add": true,
+      "remove": true,
+      "location": false,
+      "paused": false,
+      "allocation_error": false,
+      "target": "healthy",
+      "zones": [
+        "a",
+        "a",
+        "b",
+        "c"
+      ],
+      "sizes": [
+        40,
+        30,
+        20,
+        10
+      ],
+      "store_count": 4,
+      "labels": [],
+      "desc": "make-up-replica",
+      "priority": "high",
+      "kind": 144,
+      "steps": [
+        [
+          "add",
+          4,
+          1000
+        ],
+        [
+          "promote",
+          4,
+          1000
+        ]
+      ],
+      "pending": false,
+      "error": null,
+      "name": "learner-still-under-target"
+    },
+    {
+      "peers": [
+        1,
+        2
+      ],
+      "learners": [],
+      "leader": 1,
+      "max": 3,
+      "add": true,
+      "remove": true,
+      "location": false,
+      "paused": false,
+      "allocation_error": false,
+      "target": "healthy",
+      "zones": [
+        "a",
+        "a",
+        "b",
+        "c"
+      ],
+      "sizes": [
+        40,
+        30,
+        20,
+        10
+      ],
+      "store_count": 2,
+      "labels": [],
+      "desc": null,
+      "priority": "high",
+      "kind": 144,
+      "steps": [],
+      "pending": false,
+      "error": null,
+      "name": "no-target"
+    },
+    {
+      "peers": [
+        1,
+        2
+      ],
+      "learners": [],
+      "leader": 1,
+      "max": 3,
+      "add": true,
+      "remove": true,
+      "location": false,
+      "paused": false,
+      "allocation_error": false,
+      "target": "busy",
+      "zones": [
+        "a",
+        "a",
+        "b",
+        "c"
+      ],
+      "sizes": [
+        40,
+        30,
+        20,
+        10
+      ],
+      "store_count": 3,
+      "labels": [],
+      "desc": null,
+      "priority": "high",
+      "kind": 144,
+      "steps": [],
+      "pending": true,
+      "error": null,
+      "name": "temporary-target"
+    },
+    {
+      "peers": [
+        1,
+        2
+      ],
+      "learners": [],
+      "leader": 1,
+      "max": 3,
+      "add": true,
+      "remove": true,
+      "location": false,
+      "paused": false,
+      "allocation_error": false,
+      "target": "removed",
+      "zones": [
+        "a",
+        "a",
+        "b",
+        "c"
+      ],
+      "sizes": [
+        40,
+        30,
+        20,
+        10
+      ],
+      "store_count": 3,
+      "labels": [],
+      "desc": null,
+      "priority": "high",
+      "kind": 144,
+      "steps": [],
+      "pending": false,
+      "error": null,
+      "name": "permanent-target"
+    },
+    {
+      "peers": [
+        1,
+        2
+      ],
+      "learners": [],
+      "leader": 1,
+      "max": 3,
+      "add": true,
+      "remove": true,
+      "location": false,
+      "paused": false,
+      "allocation_error": false,
+      "target": "healthy",
+      "zones": [
+        "a",
+        "a",
+        "b",
+        "a"
+      ],
+      "sizes": [
+        40,
+        30,
+        20,
+        10
+      ],
+      "store_count": 4,
+      "labels": [
+        "zone"
+      ],
+      "desc": "make-up-replica",
+      "priority": "high",
+      "kind": 144,
+      "steps": [
+        [
+          "add",
+          3,
+          1000
+        ],
+        [
+          "promote",
+          3,
+          1000
+        ]
+      ],
+      "pending": false,
+      "error": null,
+      "name": "add-diversity-before-load"
+    },
+    {
+      "peers": [
+        1,
+        2
+      ],
+      "learners": [],
+      "leader": 1,
+      "max": 3,
+      "add": true,
+      "remove": true,
+      "location": false,
+      "paused": false,
+      "allocation_error": true,
+      "target": "healthy",
+      "zones": [
+        "a",
+        "a",
+        "b",
+        "c"
+      ],
+      "sizes": [
+        40,
+        30,
+        20,
+        10
+      ],
+      "store_count": 4,
+      "labels": [],
+      "desc": null,
+      "priority": "high",
+      "kind": 144,
+      "steps": [],
+      "pending": false,
+      "error": "Allocation(\"injected allocator failure\")",
+      "name": "allocation-error"
+    },
+    {
+      "peers": [
+        1,
+        2
+      ],
+      "learners": [],
+      "leader": 0,
+      "max": 3,
+      "add": true,
+      "remove": true,
+      "location": false,
+      "paused": false,
+      "allocation_error": false,
+      "target": "healthy",
+      "zones": [
+        "a",
+        "a",
+        "b",
+        "c"
+      ],
+      "sizes": [
+        40,
+        30,
+        20,
+        10
+      ],
+      "store_count": 4,
+      "labels": [],
+      "desc": null,
+      "priority": "high",
+      "kind": 144,
+      "steps": [],
+      "pending": false,
+      "error": "NoLeader",
+      "name": "missing-leader"
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "learners": [],
+      "leader": 2,
+      "max": 3,
+      "add": true,
+      "remove": true,
+      "location": false,
+      "paused": false,
+      "allocation_error": false,
+      "target": "healthy",
+      "zones": [
+        "a",
+        "a",
+        "b",
+        "c"
+      ],
+      "sizes": [
+        40,
+        30,
+        20,
+        10
+      ],
+      "store_count": 4,
+      "labels": [],
+      "desc": "remove-extra-replica",
+      "priority": "medium",
+      "kind": 144,
+      "steps": [
+        [
+          "remove",
+          1,
+          101
+        ]
+      ],
+      "pending": false,
+      "error": null,
+      "name": "remove-extra"
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "learners": [],
+      "leader": 1,
+      "max": 3,
+      "add": true,
+      "remove": true,
+      "location": false,
+      "paused": false,
+      "allocation_error": false,
+      "target": "healthy",
+      "zones": [
+        "a",
+        "a",
+        "b",
+        "c"
+      ],
+      "sizes": [
+        40,
+        30,
+        20,
+        10
+      ],
+      "store_count": 4,
+      "labels": [],
+      "desc": "remove-extra-replica",
+      "priority": "medium",
+      "kind": 400,
+      "steps": [
+        [
+          "transfer",
+          1,
+          2
+        ],
+        [
+          "remove",
+          1,
+          101
+        ]
+      ],
+      "pending": false,
+      "error": null,
+      "name": "remove-leader"
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "learners": [],
+      "leader": 1,
+      "max": 3,
+      "add": true,
+      "remove": false,
+      "location": false,
+      "paused": false,
+      "allocation_error": false,
+      "target": "healthy",
+      "zones": [
+        "a",
+        "a",
+        "b",
+        "c"
+      ],
+      "sizes": [
+        40,
+        30,
+        20,
+        10
+      ],
+      "store_count": 4,
+      "labels": [],
+      "desc": null,
+      "priority": "high",
+      "kind": 144,
+      "steps": [],
+      "pending": false,
+      "error": null,
+      "name": "remove-disabled"
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "learners": [
+        4
+      ],
+      "leader": 1,
+      "max": 3,
+      "add": true,
+      "remove": true,
+      "location": false,
+      "paused": false,
+      "allocation_error": false,
+      "target": "healthy",
+      "zones": [
+        "a",
+        "a",
+        "b",
+        "c"
+      ],
+      "sizes": [
+        40,
+        30,
+        20,
+        10
+      ],
+      "store_count": 4,
+      "labels": [],
+      "desc": null,
+      "priority": "high",
+      "kind": 144,
+      "steps": [],
+      "pending": false,
+      "error": null,
+      "name": "learner-not-extra-voter"
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "learners": [],
+      "leader": 2,
+      "max": 3,
+      "add": true,
+      "remove": true,
+      "location": false,
+      "paused": false,
+      "allocation_error": true,
+      "target": "healthy",
+      "zones": [
+        "a",
+        "a",
+        "b",
+        "c"
+      ],
+      "sizes": [
+        40,
+        30,
+        20,
+        10
+      ],
+      "store_count": 4,
+      "labels": [],
+      "desc": "remove-extra-replica",
+      "priority": "medium",
+      "kind": 144,
+      "steps": [
+        [
+          "remove",
+          1,
+          101
+        ]
+      ],
+      "pending": false,
+      "error": null,
+      "name": "remove-needs-no-allocation"
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "learners": [],
+      "leader": 1,
+      "max": 3,
+      "add": true,
+      "remove": true,
+      "location": false,
+      "paused": false,
+      "allocation_error": false,
+      "target": "healthy",
+      "zones": [
+        "a",
+        "a",
+        "b",
+        "c"
+      ],
+      "sizes": [
+        1,
+        2,
+        3,
+        40
+      ],
+      "store_count": 4,
+      "labels": [],
+      "desc": "remove-extra-replica",
+      "priority": "medium",
+      "kind": 144,
+      "steps": [
+        [
+          "remove",
+          4,
+          104
+        ]
+      ],
+      "pending": false,
+      "error": null,
+      "name": "remove-unhealthy-source",
+      "unhealthy": 4
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "learners": [],
+      "leader": 1,
+      "max": 3,
+      "add": true,
+      "remove": true,
+      "location": false,
+      "paused": false,
+      "allocation_error": false,
+      "target": "healthy",
+      "zones": [
+        "a",
+        "a",
+        "b",
+        "c"
+      ],
+      "sizes": [
+        40,
+        30,
+        20,
+        10
+      ],
+      "store_count": 4,
+      "labels": [],
+      "desc": null,
+      "priority": "high",
+      "kind": 144,
+      "steps": [],
+      "pending": true,
+      "error": null,
+      "name": "no-removable-source",
+      "source_busy": true
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "learners": [],
+      "leader": 2,
+      "max": 3,
+      "add": true,
+      "remove": true,
+      "location": true,
+      "paused": false,
+      "allocation_error": false,
+      "target": "healthy",
+      "zones": [
+        "a",
+        "a",
+        "b",
+        "c"
+      ],
+      "sizes": [
+        40,
+        30,
+        20,
+        10
+      ],
+      "store_count": 4,
+      "labels": [
+        "zone"
+      ],
+      "desc": "move-to-better-location",
+      "priority": "medium",
+      "kind": 144,
+      "steps": [
+        [
+          "add",
+          4,
+          1000
+        ],
+        [
+          "promote",
+          4,
+          1000
+        ],
+        [
+          "remove",
+          1,
+          101
+        ]
+      ],
+      "pending": false,
+      "error": null,
+      "name": "location-improvement"
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "learners": [],
+      "leader": 1,
+      "max": 3,
+      "add": true,
+      "remove": true,
+      "location": false,
+      "paused": false,
+      "allocation_error": false,
+      "target": "healthy",
+      "zones": [
+        "a",
+        "a",
+        "b",
+        "c"
+      ],
+      "sizes": [
+        40,
+        30,
+        20,
+        10
+      ],
+      "store_count": 4,
+      "labels": [
+        "zone"
+      ],
+      "desc": null,
+      "priority": "high",
+      "kind": 144,
+      "steps": [],
+      "pending": false,
+      "error": null,
+      "name": "location-disabled"
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "learners": [],
+      "leader": 1,
+      "max": 3,
+      "add": true,
+      "remove": true,
+      "location": true,
+      "paused": false,
+      "allocation_error": false,
+      "target": "healthy",
+      "zones": [
+        "a",
+        "b",
+        "c",
+        "c"
+      ],
+      "sizes": [
+        40,
+        30,
+        20,
+        10
+      ],
+      "store_count": 4,
+      "labels": [
+        "zone"
+      ],
+      "desc": null,
+      "priority": "high",
+      "kind": 144,
+      "steps": [],
+      "pending": false,
+      "error": null,
+      "name": "no-strict-improvement"
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "learners": [],
+      "leader": 1,
+      "max": 3,
+      "add": true,
+      "remove": true,
+      "location": true,
+      "paused": false,
+      "allocation_error": false,
+      "target": "healthy",
+      "zones": [
+        "a",
+        "a",
+        "b",
+        "c"
+      ],
+      "sizes": [
+        40,
+        30,
+        20,
+        10
+      ],
+      "store_count": 4,
+      "labels": [],
+      "desc": null,
+      "priority": "high",
+      "kind": 144,
+      "steps": [],
+      "pending": false,
+      "error": null,
+      "name": "no-label-improvement"
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "learners": [],
+      "leader": 1,
+      "max": 3,
+      "add": true,
+      "remove": true,
+      "location": true,
+      "paused": false,
+      "allocation_error": false,
+      "target": "busy",
+      "zones": [
+        "a",
+        "a",
+        "b",
+        "c"
+      ],
+      "sizes": [
+        40,
+        30,
+        20,
+        10
+      ],
+      "store_count": 4,
+      "labels": [
+        "zone"
+      ],
+      "desc": null,
+      "priority": "high",
+      "kind": 144,
+      "steps": [],
+      "pending": false,
+      "error": null,
+      "name": "temporary-improvement-is-not-pending"
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "learners": [],
+      "leader": 1,
+      "max": 3,
+      "add": true,
+      "remove": true,
+      "location": true,
+      "paused": false,
+      "allocation_error": true,
+      "target": "healthy",
+      "zones": [
+        "a",
+        "a",
+        "b",
+        "c"
+      ],
+      "sizes": [
+        40,
+        30,
+        20,
+        10
+      ],
+      "store_count": 4,
+      "labels": [
+        "zone"
+      ],
+      "desc": null,
+      "priority": "high",
+      "kind": 144,
+      "steps": [],
+      "pending": false,
+      "error": "Allocation(\"injected allocator failure\")",
+      "name": "move-allocation-error"
+    }
+  ]
+}
