@@ -1,0 +1,13 @@
+{
+  "effective_tests": 5,
+  "fixture_cases": 18,
+  "distinct_semantic_cases": 26,
+  "successful_semantic_cases": 21,
+  "error_cases": 5,
+  "deterministic_evaluations": 22,
+  "selection_evaluations": 48,
+  "workspace_non_doc_passed": 1527,
+  "workspace_total_passed": 1529,
+  "workspace_failed": 0,
+  "workspace_ignored": 1
+}

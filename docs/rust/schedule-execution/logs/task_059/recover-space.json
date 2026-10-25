@@ -1,0 +1,10 @@
+{
+  "command": [
+    "python3",
+    "-c",
+    "import pathlib,shutil,time,json; r=pathlib.Path(\"target/rust-slot-1/debug/incremental\"); removed=[]; cutoff=time.time()-86400; dirs=sorted((p for p in r.iterdir() if p.is_dir() and p.stat().st_mtime<cutoff),key=lambda p:p.stat().st_mtime); print(\"recover only inactive stale slot-1 incremental cache\"); [(removed.append(str(p)),shutil.rmtree(p)) for p in dirs if shutil.disk_usage(\".\").free<8*1024**3]; print(json.dumps(dict(removed=removed,free=shutil.disk_usage(\".\").free)))"
+  ],
+  "exit_code": 0,
+  "slot": 1,
+  "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+}

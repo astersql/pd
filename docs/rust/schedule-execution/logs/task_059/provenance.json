@@ -1,0 +1,14 @@
+{
+  "source_commit": "60b4b588e8c9db61a2fda867a1f5147b5d972e57",
+  "source_baseline": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "go_execution": false,
+  "go_output": null,
+  "go_output_sha256": null,
+  "evidence_kind": "source-derived contract plus executed Rust behavior; no Go runtime differential",
+  "sha256": {
+    "pkg/schedule/scatter/region_scatterer.go": "9f2f77a2ca302d6896d8dbffc7a736d411133d8df078807fcb8188b1fc75d3f6",
+    "pkg/schedule/scatter/region_scatterer_test.go": "c1e78eab5795f607cd1fe83b6130d57f77257daf694b93bcedc25e9aa4dfe67e",
+    "docs/rust/schedule-execution/fixtures/task_059.json": "6797db85bb0fde4551efd894457ead401e749cfc6ec5b856dd86edfb53e91d0a"
+  },
+  "normalization": "explicit store and peer input order realizes a legal Go map order; no error/role/witness/target fields dropped"
+}

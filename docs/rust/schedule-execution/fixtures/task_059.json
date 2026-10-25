@@ -1,0 +1,469 @@
+{
+  "source_commit": "60b4b588e8c9db61a2fda867a1f5147b5d972e57",
+  "go_execution": false,
+  "go_output": null,
+  "provenance": "read-only Go source/test contract; explicit peer and store iteration order",
+  "cases": [
+    {
+      "name": "equal counts retain all peers",
+      "counts": {},
+      "leader_counts": {},
+      "expected": [
+        1,
+        2,
+        3
+      ],
+      "leader": 1
+    },
+    {
+      "name": "move overloaded source",
+      "counts": {
+        "1": 5,
+        "2": 0,
+        "3": 0
+      },
+      "expected": [
+        2,
+        3,
+        4
+      ],
+      "leader": 4
+    },
+    {
+      "name": "equal origin minimum stays",
+      "counts": {
+        "1": 0,
+        "2": 3,
+        "3": 3,
+        "4": 0
+      },
+      "expected": [
+        1,
+        4,
+        5
+      ],
+      "leader": 1
+    },
+    {
+      "name": "avoid target",
+      "counts": {
+        "1": 5,
+        "2": 0,
+        "3": 0
+      },
+      "avoid": [
+        4
+      ],
+      "expected": [
+        2,
+        3,
+        5
+      ],
+      "leader": 5
+    },
+    {
+      "name": "no feasible move keeps origin",
+      "counts": {
+        "1": 5,
+        "2": 0,
+        "3": 0
+      },
+      "avoid": [
+        4,
+        5,
+        6
+      ],
+      "expected": [
+        1,
+        2,
+        3
+      ],
+      "leader": 1
+    },
+    {
+      "name": "leader least selected",
+      "counts": {},
+      "leader_counts": {
+        "1": 8,
+        "2": 1,
+        "3": 2
+      },
+      "expected": [
+        1,
+        2,
+        3
+      ],
+      "leader": 2
+    },
+    {
+      "name": "other group history ignored",
+      "counts": {},
+      "other_group_counts": {
+        "1": 100
+      },
+      "expected": [
+        1,
+        2,
+        3
+      ],
+      "leader": 1
+    },
+    {
+      "name": "special engine and learner preserved",
+      "counts": {
+        "1": 5,
+        "2": 0,
+        "3": 0
+      },
+      "special": [
+        3,
+        6
+      ],
+      "learner": [
+        3
+      ],
+      "expected": [
+        2,
+        4,
+        6
+      ],
+      "leader": 4,
+      "special_counts": {
+        "3": 5
+      }
+    },
+    {
+      "name": "learner never leader",
+      "counts": {},
+      "learner": [
+        2
+      ],
+      "leader_counts": {
+        "1": 3,
+        "3": 2
+      },
+      "expected": [
+        1,
+        2,
+        3
+      ],
+      "leader": 3
+    },
+    {
+      "name": "witness never leader",
+      "counts": {},
+      "witness": [
+        2
+      ],
+      "leader_counts": {
+        "1": 3,
+        "3": 2
+      },
+      "expected": [
+        1,
+        2,
+        3
+      ],
+      "leader": 3
+    },
+    {
+      "name": "missing source",
+      "counts": {},
+      "missing": [
+        3
+      ],
+      "error": "MissingSourceStore(3)"
+    },
+    {
+      "name": "no leader",
+      "counts": {},
+      "no_leader": true,
+      "error": "NoLeader"
+    },
+    {
+      "name": "no ordinary leader",
+      "counts": {},
+      "special": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "error": "NoTargetLeader"
+    },
+    {
+      "name": "removed candidate filtered",
+      "counts": {
+        "1": 5,
+        "2": 0,
+        "3": 0
+      },
+      "removed": [
+        4
+      ],
+      "expected": [
+        2,
+        3,
+        5
+      ],
+      "leader": 5
+    },
+    {
+      "name": "busy candidate filtered",
+      "counts": {
+        "1": 5,
+        "2": 0,
+        "3": 0
+      },
+      "busy": [
+        4
+      ],
+      "expected": [
+        2,
+        3,
+        5
+      ],
+      "leader": 5
+    },
+    {
+      "name": "follower rule cannot lead",
+      "counts": {},
+      "follower": [
+        2
+      ],
+      "leader_counts": {
+        "1": 3,
+        "3": 2
+      },
+      "expected": [
+        1,
+        2,
+        3
+      ],
+      "leader": 3
+    },
+    {
+      "name": "demoting voter cannot lead",
+      "counts": {},
+      "demoting": [
+        2
+      ],
+      "leader_counts": {
+        "1": 3,
+        "3": 2
+      },
+      "expected": [
+        1,
+        2,
+        3
+      ],
+      "leader": 3
+    },
+    {
+      "name": "incoming voter can lead",
+      "counts": {},
+      "incoming": [
+        2
+      ],
+      "leader_counts": {
+        "1": 3,
+        "3": 2
+      },
+      "expected": [
+        1,
+        2,
+        3
+      ],
+      "leader": 2
+    }
+  ],
+  "defaults": {
+    "stores": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "store_order": "ascending ID",
+    "peer_order": [
+      1,
+      2,
+      3
+    ],
+    "peer_ids": [
+      101,
+      102,
+      103
+    ],
+    "leader_store": 1,
+    "zone_by_store": {
+      "1": "a",
+      "2": "b",
+      "3": "c",
+      "4": "a",
+      "5": "b",
+      "6": "c"
+    },
+    "normal_engine_label": "tikv",
+    "special_engine_label": "tiflash",
+    "heartbeat_and_now_unix_nanos": 1000000000,
+    "capacity": 1000000000000,
+    "available": 900000000000,
+    "used_size": 100000000000,
+    "placement_enabled": false,
+    "location_labels": [],
+    "rule_count_per_zone": 1,
+    "rule_engine_constraint": "match source engine",
+    "group": "g",
+    "absent_count": 0
+  },
+  "placement_matrix": [
+    {
+      "placement_enabled": false,
+      "store_zones": [
+        "a",
+        "b",
+        "c",
+        "d",
+        "d",
+        "d"
+      ],
+      "peer_counts": {
+        "1": 10,
+        "2": 10,
+        "3": 10
+      },
+      "location_labels": [
+        "zone"
+      ],
+      "voter_rule_count": 3,
+      "expected_stores": [
+        2,
+        3,
+        4
+      ],
+      "expected_distinct_zones": 3
+    },
+    {
+      "placement_enabled": false,
+      "store_zones": [
+        "a",
+        "b",
+        "c",
+        "d",
+        "d",
+        "d",
+        "e",
+        "f"
+      ],
+      "peer_counts": {
+        "1": 10,
+        "2": 10,
+        "3": 10
+      },
+      "location_labels": [
+        "zone"
+      ],
+      "voter_rule_count": 3,
+      "expected_stores": [
+        4,
+        7,
+        8
+      ],
+      "expected_distinct_zones": 3
+    },
+    {
+      "placement_enabled": true,
+      "store_zones": [
+        "a",
+        "b",
+        "c",
+        "d",
+        "d",
+        "d"
+      ],
+      "peer_counts": {
+        "1": 10,
+        "2": 10,
+        "3": 10
+      },
+      "location_labels": [
+        "zone"
+      ],
+      "voter_rule_count": 3,
+      "expected_stores": [
+        2,
+        3,
+        4
+      ],
+      "expected_distinct_zones": 3
+    },
+    {
+      "placement_enabled": true,
+      "store_zones": [
+        "a",
+        "b",
+        "c",
+        "d",
+        "d",
+        "d",
+        "e",
+        "f"
+      ],
+      "peer_counts": {
+        "1": 10,
+        "2": 10,
+        "3": 10
+      },
+      "location_labels": [
+        "zone"
+      ],
+      "voter_rule_count": 3,
+      "expected_stores": [
+        4,
+        7,
+        8
+      ],
+      "expected_distinct_zones": 3
+    }
+  ],
+  "additional_contracts": {
+    "reservation": {
+      "source_count": 5,
+      "counts": {
+        "2": 0,
+        "3": 0,
+        "4": 1,
+        "5": 2,
+        "6": 2
+      },
+      "learner": [
+        2
+      ],
+      "witness": [
+        3
+      ],
+      "expected_stores": [
+        2,
+        3,
+        4
+      ],
+      "leader": 4
+    },
+    "invalid_source_store_ids": [
+      0,
+      2
+    ],
+    "fixed_order_repeat_count": 20,
+    "reversed_peer_order": [
+      3,
+      2,
+      1
+    ],
+    "reversed_equal_count_leader": 3
+  }
+}

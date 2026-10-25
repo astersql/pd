@@ -581,6 +581,20 @@ name = "astersql-pd-schedule-rangelist"
 version = "0.1.0"
 
 [[package]]
+name = "astersql-pd-schedule-scatter"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-core",
+ "astersql-pd-core-constant",
+ "astersql-pd-schedule-config",
+ "astersql-pd-schedule-filter",
+ "astersql-pd-schedule-operator",
+ "astersql-pd-schedule-placement",
+ "serde_json",
+ "tokio",
+]
+
+[[package]]
 name = "astersql-pd-schedule-types"
 version = "0.1.0"
 dependencies = [
