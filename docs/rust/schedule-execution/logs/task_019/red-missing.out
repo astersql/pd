@@ -1,0 +1,150 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=cargo test -p astersql-pd-schedule-operator --locked --lib task_019 -- --nocapture
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+error[E0583]: file not found for module `step_add`
+  --> pkg/schedule/operator/lib.rs:24:1
+   |
+24 | mod step_add;
+   | ^^^^^^^^^^^^^
+   |
+   = help: to create the module `step_add`, create file "pkg/schedule/operator/step_add.rs" or "pkg/schedule/operator/step_add/mod.rs"
+   = note: if there is a `mod step_add` elsewhere in the crate already, import it with `use crate::...` instead
+
+error[E0422]: cannot find struct, variant or union type `AddPeer` in this scope
+  --> pkg/schedule/operator/task_019_test.rs:17:8
+   |
+17 |  let a=AddPeer{to_store:2,peer_id:12,..Default::default()};let l=AddLearner{to_store:2,peer_id:12,..Default::default()};let p=Promot...
+   |        ^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `AddLearner` in this scope
+  --> pkg/schedule/operator/task_019_test.rs:17:66
+   |
+17 |  let a=AddPeer{to_store:2,peer_id:12,..Default::default()};let l=AddLearner{to_store:2,peer_id:12,..Default::default()};let p=Promot...
+   |                                                                  ^^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `PromoteLearner` in this scope
+  --> pkg/schedule/operator/task_019_test.rs:17:127
+   |
+17 | ...ore:2,peer_id:12,..Default::default()};let p=PromoteLearner{to_store:2,peer_id:12,..Default::default()};
+   |                                                 ^^^^^^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `AddPeer` in this scope
+  --> pkg/schedule/operator/task_019_test.rs:28:8
+   |
+28 |  let a=AddPeer{to_store:2,peer_id:12,is_witness:w,..Default::default()};let l=AddLearner{to_store:2,peer_id:12,is_witness:w,..Defaul...
+   |        ^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `AddLearner` in this scope
+  --> pkg/schedule/operator/task_019_test.rs:28:79
+   |
+28 |  let a=AddPeer{to_store:2,peer_id:12,is_witness:w,..Default::default()};let l=AddLearner{to_store:2,peer_id:12,is_witness:w,..Defaul...
+   |                                                                               ^^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `PromoteLearner` in this scope
+  --> pkg/schedule/operator/task_019_test.rs:28:153
+   |
+28 | ...:12,is_witness:w,..Default::default()};let p=PromoteLearner{to_store:2,peer_id:12,is_witness:w};
+   |                                                 ^^^^^^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `AddPeer` in this scope
+  --> pkg/schedule/operator/task_019_test.rs:39:8
+   |
+39 |  let a=AddPeer{to_store:2,peer_id:12,is_light_weight:light,is_witness:w};let l=AddLearner{to_store:2,peer_id:12,send_store:send,is_l...
+   |        ^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `AddLearner` in this scope
+  --> pkg/schedule/operator/task_019_test.rs:39:80
+   |
+39 |  let a=AddPeer{to_store:2,peer_id:12,is_light_weight:light,is_witness:w};let l=AddLearner{to_store:2,peer_id:12,send_store:send,is_l...
+   |                                                                                ^^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `AddPeer` in this scope
+  --> pkg/schedule/operator/task_019_test.rs:57:96
+   |
+57 |  for (id,role) in [(12,0),(12,1),(99,0)] {let r=region(vec![peer(role,id,false)],vec![]);let a=AddPeer{to_store:2,peer_id:12,..Defau...
+   |                                                                                                ^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `AddLearner` in this scope
+  --> pkg/schedule/operator/task_019_test.rs:57:154
+   |
+57 | ...store:2,peer_id:12,..Default::default()};let l=AddLearner{to_store:2,peer_id:12,..Default::default()};
+   |                                                   ^^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `PromoteLearner` in this scope
+  --> pkg/schedule/operator/task_019_test.rs:61:13
+   |
+61 |  assert_eq!(PromoteLearner{to_store:2,peer_id:12,is_witness:false}.check_in_progress(&cluster,&cfg,&r,health,0).is_ok(),id==12);
+   |             ^^^^^^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `PromoteLearner` in this scope
+  --> pkg/schedule/operator/task_019_test.rs:64:70
+   |
+64 |  let cluster=BasicCluster::new();let r=region(vec![],vec![]);assert!(PromoteLearner{to_store:2,peer_id:12,is_witness:false}.check_in...
+   |                                                                      ^^^^^^^^^^^^^^ not found in this scope
+
+warning: unused import: `step_add::*`
+  --> pkg/schedule/operator/lib.rs:25:9
+   |
+25 | pub use step_add::*;
+   |         ^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+error[E0433]: cannot find type `PromoteLearner` in this scope
+  --> pkg/schedule/operator/task_019_test.rs:45:28
+   |
+45 |  let before=inf.snapshot();PromoteLearner::default().influence(&inf,&r);assert_eq!(inf.snapshot(),before);
+   |                            ^^^^^^^^^^^^^^ use of undeclared type `PromoteLearner`
+
+error[E0433]: cannot find type `AddPeer` in this scope
+  --> pkg/schedule/operator/task_019_test.rs:49:13
+   |
+49 |  assert_eq!(AddPeer::default().timeout(size).as_secs(),slow);assert_eq!(AddLearner::default().timeout(size).as_secs(),slow);assert_e...
+   |             ^^^^^^^ use of undeclared type `AddPeer`
+
+error[E0433]: cannot find type `AddLearner` in this scope
+  --> pkg/schedule/operator/task_019_test.rs:49:73
+   |
+49 |  assert_eq!(AddPeer::default().timeout(size).as_secs(),slow);assert_eq!(AddLearner::default().timeout(size).as_secs(),slow);assert_e...
+   |                                                                         ^^^^^^^^^^ use of undeclared type `AddLearner`
+
+error[E0433]: cannot find type `PromoteLearner` in this scope
+  --> pkg/schedule/operator/task_019_test.rs:49:136
+   |
+49 | ...out(size).as_secs(),slow);assert_eq!(PromoteLearner::default().timeout(size).as_secs(),fast);
+   |                                         ^^^^^^^^^^^^^^ use of undeclared type `PromoteLearner`
+
+error[E0433]: cannot find type `AddPeer` in this scope
+  --> pkg/schedule/operator/task_019_test.rs:66:13
+   |
+66 |  assert_eq!(AddPeer::default().conf_ver_changed(&r),1);assert_eq!(AddLearner::default().conf_ver_changed(&r),1);assert_eq!(PromoteLe...
+   |             ^^^^^^^ use of undeclared type `AddPeer`
+
+error[E0433]: cannot find type `AddLearner` in this scope
+  --> pkg/schedule/operator/task_019_test.rs:66:67
+   |
+66 |  assert_eq!(AddPeer::default().conf_ver_changed(&r),1);assert_eq!(AddLearner::default().conf_ver_changed(&r),1);assert_eq!(PromoteLe...
+   |                                                                   ^^^^^^^^^^ use of undeclared type `AddLearner`
+
+error[E0433]: cannot find type `PromoteLearner` in this scope
+  --> pkg/schedule/operator/task_019_test.rs:66:124
+   |
+66 | ...).conf_ver_changed(&r),1);assert_eq!(PromoteLearner::default().conf_ver_changed(&r),1);assert!(!PromoteLearner::default().is_fini...
+   |                                         ^^^^^^^^^^^^^^ use of undeclared type `PromoteLearner`
+
+error[E0433]: cannot find type `PromoteLearner` in this scope
+  --> pkg/schedule/operator/task_019_test.rs:66:183
+   |
+66 | ...t().conf_ver_changed(&r),1);assert!(!PromoteLearner::default().is_finish(&r));assert!(PromoteLearner::default().check_in_progress...
+   |                                         ^^^^^^^^^^^^^^ use of undeclared type `PromoteLearner`
+
+error[E0433]: cannot find type `PromoteLearner` in this scope
+  --> pkg/schedule/operator/task_019_test.rs:66:232
+   |
+66 | ...er::default().is_finish(&r));assert!(PromoteLearner::default().check_in_progress(&cluster,&cfg,&r,true,0).is_ok());
+   |                                         ^^^^^^^^^^^^^^ use of undeclared type `PromoteLearner`
+
+Some errors have detailed explanations: E0422, E0433, E0583.
+For more information about an error, try `rustc --explain E0422`.
+warning: `astersql-pd-schedule-operator` (lib test) generated 1 warning
+error: could not compile `astersql-pd-schedule-operator` (lib test) due to 22 previous errors; 1 warning emitted
+command_exit_code=101

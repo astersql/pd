@@ -1,0 +1,25 @@
+
+running 3 tests
+test task_019_test::task_019_behavior_cases ... ok
+test task_019_test::task_019_validation_faults ... ok
+test task_019_test::task_019_commands_and_costs ... FAILED
+
+failures:
+
+failures:
+    task_019_test::task_019_commands_and_costs
+
+test result: FAILED. 2 passed; 1 failed; 0 ignored; 0 measured; 16 filtered out; finished in 0.00s
+
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.05s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_operator-495e634b90917395)
+
+thread 'task_019_test::task_019_commands_and_costs' (162642538) panicked at pkg/schedule/operator/task_019_test.rs:201:25:
+assertion `left == right` failed
+  left: 0
+ right: 200
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+error: test failed, to rerun pass `-p astersql-pd-schedule-operator --lib`
+
+Review: zero and negative size with zero keys are empty per core.IsEmptyRegion; fixed source-derived cost expectations from 200 to 0.

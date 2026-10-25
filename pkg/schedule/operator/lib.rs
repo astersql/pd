@@ -20,3 +20,8 @@ mod step_leader;
 pub use step_leader::*;
 #[cfg(test)]
 mod task_018_test;
+
+mod step_add;
+pub use step_add::*;
+#[cfg(test)]
+mod task_019_test;
