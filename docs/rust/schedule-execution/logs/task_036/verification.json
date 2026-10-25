@@ -1,0 +1,194 @@
+{
+  "go_files": 1101,
+  "go_hashes_unchanged": true,
+  "go_git_status": "",
+  "readonly_plans_unchanged": true,
+  "source_matches_commit": true,
+  "fixture_sha256": "09305ce5eb81d4147eb0a8a3192a05ee865f9709a5a4f553c937fe8e9da5d6fc",
+  "diff_check_exit_code": 0,
+  "markdown_links_valid": true,
+  "commands": {
+    "fmt": {
+      "command": [
+        "cargo",
+        "fmt",
+        "--all"
+      ],
+      "exit_code": 0,
+      "slot": 1,
+      "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+      "test_env": {},
+      "tests": {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      }
+    },
+    "focused": {
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "astersql-pd-schedule-operator",
+        "--locked",
+        "--lib",
+        "task_036",
+        "--",
+        "--nocapture"
+      ],
+      "exit_code": 0,
+      "slot": 1,
+      "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+      "test_env": {},
+      "tests": {
+        "passed": 10,
+        "failed": 0,
+        "ignored": 0
+      }
+    },
+    "package": {
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "astersql-pd-schedule-operator",
+        "--locked"
+      ],
+      "exit_code": 0,
+      "slot": 1,
+      "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+      "tests": {
+        "passed": 85,
+        "failed": 0,
+        "ignored": 0
+      }
+    },
+    "metadata": {
+      "command": [
+        "cargo",
+        "metadata",
+        "--format-version",
+        "1",
+        "--no-deps"
+      ],
+      "exit_code": 0,
+      "slot": 1,
+      "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+      "tests": {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      }
+    },
+    "fmt-check": {
+      "command": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "exit_code": 0,
+      "slot": 1,
+      "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+      "tests": {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      }
+    },
+    "workspace-check": {
+      "command": [
+        "cargo",
+        "check",
+        "--workspace",
+        "--locked"
+      ],
+      "exit_code": 0,
+      "slot": 1,
+      "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+      "tests": {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      }
+    },
+    "workspace-test": {
+      "command": [
+        "cargo",
+        "test",
+        "--workspace",
+        "--locked"
+      ],
+      "exit_code": 0,
+      "slot": 1,
+      "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+      "test_env": {
+        "RUST_TEST_THREADS": "2"
+      },
+      "tests": {
+        "passed": 1448,
+        "failed": 0,
+        "ignored": 1
+      }
+    },
+    "tso-two-threads": {
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "astersql-pd-tso",
+        "--locked",
+        "--test",
+        "etcd_behavior",
+        "real_etcd_oracle_process_restart",
+        "--",
+        "--nocapture"
+      ],
+      "exit_code": 0,
+      "slot": 1,
+      "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+      "test_env": {
+        "RUST_TEST_THREADS": "2"
+      },
+      "tests": {
+        "passed": 1,
+        "failed": 0,
+        "ignored": 0
+      }
+    }
+  },
+  "own_cargo_slots_released": true,
+  "log_eof_normalization_reconstructs_raw": true,
+  "parallel_regression_failure": {
+    "command": [
+      "cargo",
+      "test",
+      "--workspace",
+      "--locked"
+    ],
+    "exit_code": 101,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+  },
+  "single_thread_regression_failure": {
+    "command": [
+      "cargo",
+      "test",
+      "--workspace",
+      "--locked"
+    ],
+    "exit_code": 101,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {
+      "RUST_TEST_THREADS": "1"
+    }
+  },
+  "rust_sha256": {
+    "pkg/schedule/operator/controller_dispatch.rs": "3820b7657012d3986167fdd83cdc3c0b9dfbe538251d8cdadf6c64daf88828e2",
+    "pkg/schedule/operator/task_036_test.rs": "828b809b7c378b90592ca9ad3a81eabead7975abd8690fc120bc0cddbbf2d86b",
+    "pkg/schedule/operator/controller_admission.rs": "d2935d6119e1d5deb222d82b7cd55713cd0341aa5e0faf2ca31d1be7604e6883",
+    "pkg/schedule/operator/lib.rs": "08584bb80503ee19465ca81d65d167593f87b0c6cacb3da01f983a84421f95e4"
+  }
+}

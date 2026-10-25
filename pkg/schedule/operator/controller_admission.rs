@@ -241,6 +241,13 @@ impl ControllerAdmission {
     }
     /// Identity comparison prevents an old dispatch from deleting a replacement.
     pub fn remove_operator(&self, op: &Arc<Operator>, reason: CancelReason) -> Vec<Arc<Operator>> {
+        self.detach_operator(op, &[reason])
+    }
+    pub(super) fn detach_operator(
+        &self,
+        op: &Arc<Operator>,
+        reasons: &[CancelReason],
+    ) -> Vec<Arc<Operator>> {
         let mut state = self.state.lock().expect("admission poisoned");
         if !state
             .operators
@@ -251,7 +258,7 @@ impl ControllerAdmission {
         }
         let mut removed = vec![state.detach(op.region_id()).expect("matched above")];
         state.detach_related(op, &mut removed);
-        op.cancel_with_reasons(&[reason]);
+        op.cancel_with_reasons(reasons);
         removed
     }
     pub fn remove_operators(&self, reason: CancelReason) -> Vec<Arc<Operator>> {

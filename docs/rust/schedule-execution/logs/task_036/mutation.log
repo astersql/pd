@@ -1,0 +1,30 @@
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.78s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_operator-3c432df009ee920c)
+
+running 10 tests
+test task_036_test::task_036_pending_peer_no_duplicate_command ... ok
+test task_036_test::task_036_command_versions_and_suppression ... ok
+
+thread 'task_036_test::task_036_behavior_cases' (163546746) panicked at pkg/schedule/operator/task_036_test.rs:113:9:
+assertion `left == right` failed: {"conf_ver":5,"leader":1,"name":"stale","reason":"epoch not match","send":false,"source":"heartbeat","status":"canceled"}
+  left: true
+ right: false
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test task_036_test::task_036_timeout_and_closed_routing ... ok
+test task_036_test::task_036_retry_deadlines_disconnect_rebind ... ok
+test task_036_test::task_036_slow_retry_replacement_and_success_hook ... ok
+test task_036_test::task_036_progress_and_confver_budget ... ok
+test task_036_test::task_036_health_mask_and_down_rejection ... ok
+test task_036_test::task_036_stale_target_and_health_opt_in ... ok
+test task_036_test::task_036_merge_light_check_and_missing_region ... ok
+test task_036_test::task_036_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_036_test::task_036_behavior_cases
+
+test result: FAILED. 9 passed; 1 failed; 0 ignored; 0 measured; 75 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-operator --lib`

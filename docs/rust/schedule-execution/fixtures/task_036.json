@@ -1,0 +1,69 @@
+{
+  "evidence_kind": "source_assertion",
+  "go_execution": false,
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "source_sha256": {
+    "pkg/schedule/operator/operator_controller.go": "173d8e3e5fd5e4b1128ba24a954055d2d1ef7ea7a6676f6d3aa7cc7a37672ba1",
+    "pkg/schedule/operator/operator_controller_test.go": "18e953a9c41e84c3dba9dc381ebce462f652b27d0f7ab83de22413bc84e21501"
+  },
+  "cases": [
+    {
+      "name": "current",
+      "source": "heartbeat",
+      "leader": 1,
+      "conf_ver": 4,
+      "send": true,
+      "status": "started"
+    },
+    {
+      "name": "stale",
+      "source": "heartbeat",
+      "leader": 1,
+      "conf_ver": 5,
+      "send": false,
+      "status": "canceled",
+      "reason": "epoch not match"
+    },
+    {
+      "name": "older-wrap",
+      "source": "heartbeat",
+      "leader": 1,
+      "conf_ver": 3,
+      "send": false,
+      "status": "canceled",
+      "reason": "epoch not match"
+    },
+    {
+      "name": "create-bypass",
+      "source": "create",
+      "leader": 1,
+      "conf_ver": 5,
+      "send": true,
+      "status": "started"
+    },
+    {
+      "name": "notifier-bypass",
+      "source": "notifier",
+      "leader": 1,
+      "conf_ver": 5,
+      "send": true,
+      "status": "started"
+    },
+    {
+      "name": "success-before-stale",
+      "source": "heartbeat",
+      "leader": 2,
+      "conf_ver": 9,
+      "send": false,
+      "status": "success"
+    },
+    {
+      "name": "no-leader",
+      "source": "create",
+      "leader": 0,
+      "conf_ver": 4,
+      "send": false,
+      "status": "started"
+    }
+  ]
+}

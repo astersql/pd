@@ -1,0 +1,148 @@
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+error[E0599]: no method named `set_store` found for struct `StoresInfo` in the current scope
+  --> pkg/schedule/operator/task_036_test.rs:15:32
+   |
+15 |     for id in 1..=3 { c.stores.set_store(Arc::new(StoreInfo::new(StoreMeta{id,..Default::default()}))); }
+   |                                ^^^^^^^^^
+   |
+help: there is a method `get_store` with a similar name
+   |
+15 -     for id in 1..=3 { c.stores.set_store(Arc::new(StoreInfo::new(StoreMeta{id,..Default::default()}))); }
+15 +     for id in 1..=3 { c.stores.get_store(Arc::new(StoreInfo::new(StoreMeta{id,..Default::default()}))); }
+   |
+
+error[E0599]: no method named `clone` found for struct `StoresInfo` in the current scope
+  --> pkg/schedule/operator/task_036_test.rs:28:55
+   |
+28 |         let (h,mut router)=StreamRouter::new(c.stores.clone());
+   |                                                       ^^^^^ method not found in `StoresInfo`
+
+error[E0433]: cannot find type `ControllerDispatch` in this scope
+  --> pkg/schedule/operator/task_036_test.rs:31:15
+   |
+31 |         let d=ControllerDispatch::new(&a,&c,&cfg,&h,42);
+   |               ^^^^^^^^^^^^^^^^^^ use of undeclared type `ControllerDispatch`
+
+error[E0433]: cannot find type `DispatchSource` in this scope
+  --> pkg/schedule/operator/task_036_test.rs:33:69
+   |
+33 | ...   let src=match case["source"].as_str().unwrap(){"heartbeat"=>DispatchSource::Heartbeat,"create"=>DispatchSource::Create,_=>Disp...
+   |                                                                   ^^^^^^^^^^^^^^ use of undeclared type `DispatchSource`
+
+error[E0433]: cannot find type `DispatchSource` in this scope
+  --> pkg/schedule/operator/task_036_test.rs:33:105
+   |
+33 | ...>DispatchSource::Heartbeat,"create"=>DispatchSource::Create,_=>DispatchSource::Notifier};
+   |                                         ^^^^^^^^^^^^^^ use of undeclared type `DispatchSource`
+
+error[E0433]: cannot find type `DispatchSource` in this scope
+  --> pkg/schedule/operator/task_036_test.rs:33:131
+   |
+33 | ...,"create"=>DispatchSource::Create,_=>DispatchSource::Notifier};
+   |                                         ^^^^^^^^^^^^^^ use of undeclared type `DispatchSource`
+
+error[E0599]: no method named `clone` found for struct `StoresInfo` in the current scope
+  --> pkg/schedule/operator/task_036_test.rs:51:138
+   |
+51 | ...:new(10);let(h,_)=StreamRouter::new(c.stores.clone());let d=ControllerDispatch::new(&a,&c,&cfg,&h,1);
+   |                                                 ^^^^^ method not found in `StoresInfo`
+
+error[E0433]: cannot find type `ControllerDispatch` in this scope
+  --> pkg/schedule/operator/task_036_test.rs:51:153
+   |
+51 | ...ter::new(c.stores.clone());let d=ControllerDispatch::new(&a,&c,&cfg,&h,1);
+   |                                     ^^^^^^^^^^^^^^^^^^ use of undeclared type `ControllerDispatch`
+
+error[E0433]: cannot find type `DispatchSource` in this scope
+  --> pkg/schedule/operator/task_036_test.rs:53:41
+   |
+53 |         let out=d.dispatch(&region(1,4),DispatchSource::Heartbeat,Instant::now(),30_000_000_000,true).await.unwrap();
+   |                                         ^^^^^^^^^^^^^^ use of undeclared type `DispatchSource`
+
+error[E0599]: no method named `clone` found for struct `StoresInfo` in the current scope
+  --> pkg/schedule/operator/task_036_test.rs:56:134
+   |
+56 | ...:new(10);let(h,_)=StreamRouter::new(c.stores.clone());let d=ControllerDispatch::new(&a,&c,&cfg,&h,1);
+   |                                                 ^^^^^ method not found in `StoresInfo`
+
+error[E0433]: cannot find type `ControllerDispatch` in this scope
+  --> pkg/schedule/operator/task_036_test.rs:56:149
+   |
+56 | ...ter::new(c.stores.clone());let d=ControllerDispatch::new(&a,&c,&cfg,&h,1);
+   |                                     ^^^^^^^^^^^^^^^^^^ use of undeclared type `ControllerDispatch`
+
+error[E0433]: cannot find type `DispatchSource` in this scope
+  --> pkg/schedule/operator/task_036_test.rs:58:37
+   |
+58 |     let out=d.dispatch(&region(1,4),DispatchSource::Heartbeat,Instant::now(),0,true).await.unwrap();
+   |                                     ^^^^^^^^^^^^^^ use of undeclared type `DispatchSource`
+
+error[E0599]: no method named `clone` found for struct `StoresInfo` in the current scope
+  --> pkg/schedule/operator/task_036_test.rs:64:143
+   |
+64 | ...let(h,mut router)=StreamRouter::new(c.stores.clone());let d=ControllerDispatch::new(&a,&c,&cfg,&h,7);
+   |                                                 ^^^^^ method not found in `StoresInfo`
+
+error[E0433]: cannot find type `ControllerDispatch` in this scope
+  --> pkg/schedule/operator/task_036_test.rs:64:158
+   |
+64 | ...ter::new(c.stores.clone());let d=ControllerDispatch::new(&a,&c,&cfg,&h,7);
+   |                                     ^^^^^^^^^^^^^^^^^^ use of undeclared type `ControllerDispatch`
+
+error[E0433]: cannot find type `DispatchSource` in this scope
+  --> pkg/schedule/operator/task_036_test.rs:67:45
+   |
+67 |     let r=region(2,4);let out=d.dispatch(&r,DispatchSource::Heartbeat,Instant::now(),0,true).await.unwrap();assert!(out.enqueued);as...
+   |                                             ^^^^^^^^^^^^^^ use of undeclared type `DispatchSource`
+
+error[E0433]: cannot find type `DispatchSource` in this scope
+  --> pkg/schedule/operator/task_036_test.rs:71:34
+   |
+71 |     let out=d.dispatch(&finished,DispatchSource::Heartbeat,Instant::now(),0,true).await.unwrap();assert_eq!(o.status(),SUCCESS);asse...
+   |                                  ^^^^^^^^^^^^^^ use of undeclared type `DispatchSource`
+
+error[E0599]: no method named `clone` found for struct `StoresInfo` in the current scope
+  --> pkg/schedule/operator/task_036_test.rs:77:143
+   |
+77 | ...let(h,mut router)=StreamRouter::new(c.stores.clone());let d=ControllerDispatch::new(&a,&c,&cfg,&h,42);
+   |                                                 ^^^^^ method not found in `StoresInfo`
+
+error[E0433]: cannot find type `ControllerDispatch` in this scope
+  --> pkg/schedule/operator/task_036_test.rs:77:158
+   |
+77 | ...ter::new(c.stores.clone());let d=ControllerDispatch::new(&a,&c,&cfg,&h,42);
+   |                                     ^^^^^^^^^^^^^^^^^^ use of undeclared type `ControllerDispatch`
+
+error[E0599]: no method named `clone` found for struct `StoresInfo` in the current scope
+  --> pkg/schedule/operator/task_036_test.rs:91:139
+   |
+91 | ...10);let(h,router)=StreamRouter::new(c.stores.clone());drop(router);let d=ControllerDispatch::new(&a,&c,&cfg,&h,1);
+   |                                                 ^^^^^ method not found in `StoresInfo`
+
+error[E0433]: cannot find type `ControllerDispatch` in this scope
+  --> pkg/schedule/operator/task_036_test.rs:91:167
+   |
+91 | ...ores.clone());drop(router);let d=ControllerDispatch::new(&a,&c,&cfg,&h,1);
+   |                                     ^^^^^^^^^^^^^^^^^^ use of undeclared type `ControllerDispatch`
+
+error[E0433]: cannot find type `DispatchSource` in this scope
+  --> pkg/schedule/operator/task_036_test.rs:93:37
+   |
+93 |     assert!(d.dispatch(&region(1,4),DispatchSource::Create,Instant::now(),0,true).await.is_err());assert_eq!(o.status(),STARTED);
+   |                                     ^^^^^^^^^^^^^^ use of undeclared type `DispatchSource`
+
+error[E0433]: cannot find type `DispatchSource` in this scope
+  --> pkg/schedule/operator/task_036_test.rs:95:37
+   |
+95 |     let out=d.dispatch(&region(1,4),DispatchSource::Heartbeat,clock.now(),0,true).await.unwrap();assert!(!out.enqueued);assert_eq!(o...
+   |                                     ^^^^^^^^^^^^^^ use of undeclared type `DispatchSource`
+
+error[E0433]: cannot find type `DispatchStepError` in this scope
+  --> pkg/schedule/operator/task_036_test.rs:59:66
+   |
+59 |     assert!(!out.enqueued);assert!(matches!(out.stale_error,Some(DispatchStepError::Leader(_))));assert_eq!(reason(&o).as_deref(),So...
+   |                                                                  ^^^^^^^^^^^^^^^^^ use of undeclared type `DispatchStepError`
+
+Some errors have detailed explanations: E0433, E0599.
+For more information about an error, try `rustc --explain E0433`.
+error: could not compile `astersql-pd-schedule-operator` (lib test) due to 23 previous errors

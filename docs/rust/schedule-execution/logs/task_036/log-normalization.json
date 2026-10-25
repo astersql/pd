@@ -1,0 +1,58 @@
+{
+  "workspace-test.log": {
+    "raw_sha256": "8e01c246e2fa31d097ca6359bf7d0dad5e9167950493c83d8f2164a53f0405a4",
+    "removed_eof_newlines": 1
+  },
+  "fmt.log": {
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "removed_eof_newlines": 0
+  },
+  "red.log": {
+    "raw_sha256": "cbf4915dd6ad8040bcb6aca3d3665cf91ef9d39b9af6aaf5b60686f406486725",
+    "removed_eof_newlines": 0
+  },
+  "workspace-single-thread-failure.log": {
+    "raw_sha256": "8569a8fa10de2caa674bf8a85d921d26d4479abc617282e7cbd72e48cb1098bb",
+    "removed_eof_newlines": 0
+  },
+  "green.log": {
+    "raw_sha256": "c2f6682b5aa4612eec1c7e8f82b943d61c5c21e8bfce70ce9879f834fd100194",
+    "removed_eof_newlines": 0
+  },
+  "mutation-fmt.log": {
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "removed_eof_newlines": 0
+  },
+  "workspace-check.log": {
+    "raw_sha256": "7465b8d12018be23898e08c3f11bcaa8fbeb0b7045796f9f7acb7ebf0ff86032",
+    "removed_eof_newlines": 0
+  },
+  "fmt-check.log": {
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "removed_eof_newlines": 0
+  },
+  "metadata.log": {
+    "raw_sha256": "a6f605c4646e5b14b39b924c9bd1010f9517814234d0a2648220e8c95b019d46",
+    "removed_eof_newlines": 0
+  },
+  "tso-two-threads.log": {
+    "raw_sha256": "d7376812f92dfbc9fd4ac605273f9e86dfd11bc8fd67df4daed7c21e643e56fb",
+    "removed_eof_newlines": 1
+  },
+  "mutation.log": {
+    "raw_sha256": "aef7017d3d2f54909aba096d8ff324f7919b9d5eee9413c7f5b2d74fd32cc7f2",
+    "removed_eof_newlines": 0
+  },
+  "focused.log": {
+    "raw_sha256": "7d7da662fd08859fc7fd64c048ddd34a8dcb0de2b2540e75b77b65e96b85a3aa",
+    "removed_eof_newlines": 1
+  },
+  "workspace-parallel-failure.log": {
+    "raw_sha256": "8962fbd66b70fe93a434255ffff2c75fa73e5754a96c0f1f305dba15b8b6df60",
+    "removed_eof_newlines": 0
+  },
+  "package.log": {
+    "raw_sha256": "eb00b66e03279ce45dbdeac02f2bfbe14deb27fe1afc2ce65f4a97436672f5ea",
+    "removed_eof_newlines": 1
+  }
+}
