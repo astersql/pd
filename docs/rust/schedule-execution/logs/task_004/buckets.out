@@ -1,0 +1,50 @@
+Type 'help' for list of commands.
+Breakpoint 1 set at 0xc1f9b0 for github.com/tikv/pd/pkg/statistics/buckets.TestCheckBucketsTask() .Users/Shared/work/dir/data/codes/pd/pkg/statistics/buckets/hot_bucket_task_test.go:81
+=== RUN   TestCheckBucketsTask
+> [Breakpoint 1] github.com/tikv/pd/pkg/statistics/buckets.TestCheckBucketsTask() .Users/Shared/work/dir/data/codes/pd/pkg/statistics/buckets/hot_bucket_task_test.go:81 (hits goroutine(29):1 total:1) (PC: 0xc1f9b0)
+"CASE buckets_first"
+> github.com/tikv/pd/pkg/statistics/buckets.TestCheckBucketsTask() .Users/Shared/work/dir/data/codes/pd/pkg/statistics/buckets/hot_bucket_task_test.go:81 (PC: 0xc1f9b0)
+Values returned:
+    ~r0: map[uint64][]*github.com/tikv/pd/pkg/statistics/buckets.BucketStat [
+        1: [
+            *{
+                RegionID: 1,
+                StartKey: []uint8 len: 2, cap: 2, [49,48],
+                EndKey: []uint8 len: 2, cap: 2, [50,48],
+                HotDegree: -1,
+                Interval: 1000,
+                Loads: []uint64 len: 6, cap: 6, [0,0,0,0,0,0],},
+            *{
+                RegionID: 1,
+                StartKey: []uint8 len: 2, cap: 2, [50,48],
+                EndKey: []uint8 len: 2, cap: 2, [51,48],
+                HotDegree: -1,
+                Interval: 1000,
+                Loads: []uint64 len: 6, cap: 6, [0,0,0,0,0,0],},
+        ],
+    ]
+
+> github.com/tikv/pd/pkg/statistics/buckets.TestCheckBucketsTask() .Users/Shared/work/dir/data/codes/pd/pkg/statistics/buckets/hot_bucket_task_test.go:81 (PC: 0xc1f9b0)
+Values returned:
+    ~r0: map[uint64][]*github.com/tikv/pd/pkg/statistics/buckets.BucketStat []
+
+"CASE buckets_second"
+Breakpoint 2 set at 0xc1fcc8 for github.com/tikv/pd/pkg/statistics/buckets.TestCheckBucketsTask() .Users/Shared/work/dir/data/codes/pd/pkg/statistics/buckets/hot_bucket_task_test.go:95
+> [Breakpoint 2] github.com/tikv/pd/pkg/statistics/buckets.TestCheckBucketsTask() .Users/Shared/work/dir/data/codes/pd/pkg/statistics/buckets/hot_bucket_task_test.go:95 (hits goroutine(29):1 total:1) (PC: 0xc1fcc8)
+> github.com/tikv/pd/pkg/statistics/buckets.TestCheckBucketsTask() .Users/Shared/work/dir/data/codes/pd/pkg/statistics/buckets/hot_bucket_task_test.go:95 (PC: 0xc1fcc8)
+Values returned:
+    ~r0: map[uint64][]*github.com/tikv/pd/pkg/statistics/buckets.BucketStat [
+        2: [
+            *{
+                RegionID: 2,
+                StartKey: []uint8 len: 2, cap: 2, [50,48],
+                EndKey: []uint8 len: 2, cap: 2, [51,48],
+                HotDegree: -2,
+                Interval: 1000,
+                Loads: []uint64 len: 6, cap: 6, [0,0,0,0,0,0],},
+        ],
+    ]
+
+> github.com/tikv/pd/pkg/statistics/buckets.TestCheckBucketsTask() .Users/Shared/work/dir/data/codes/pd/pkg/statistics/buckets/hot_bucket_task_test.go:95 (PC: 0xc1fcc8)
+Values returned:
+    ~r0: map[uint64][]*github.com/tikv/pd/pkg/statistics/buckets.BucketStat []

@@ -1,0 +1,16 @@
+{
+  "domain_dependency_direction_valid": true,
+  "fixture_sha256": "e4ed75e169dd44ddd795ae058e0054b7e8b878fabb2e4584da13a9eae7b17501",
+  "raw_output_hashes_valid": true,
+  "source_hashes_valid": true,
+  "reused_binary_hash_valid": true,
+  "safe_go_tests": 3,
+  "mutation_checks": 4,
+  "frozen_observation_groups": 14,
+  "rust_focused_tests": 3,
+  "rust_package_tests": 14,
+  "rust_workspace_tests": 1326,
+  "rust_workspace_ignored": 1,
+  "only_local_lock_dependencies_changed": true,
+  "document_links_valid": true
+}

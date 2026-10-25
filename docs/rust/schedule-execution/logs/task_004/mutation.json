@@ -1,0 +1,78 @@
+[
+  {
+    "mutation": "store",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-core",
+      "--locked",
+      "--lib",
+      "task_004",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "passed": 2,
+    "failed": 1,
+    "assertion_test": "task_004_behavior_cases",
+    "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+  },
+  {
+    "mutation": "bucket",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-core",
+      "--locked",
+      "--lib",
+      "task_004",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "passed": 2,
+    "failed": 1,
+    "assertion_test": "task_004_behavior_cases",
+    "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+  },
+  {
+    "mutation": "tiflash",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-core",
+      "--locked",
+      "--lib",
+      "task_004",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "passed": 2,
+    "failed": 1,
+    "assertion_test": "task_004_checker_label_updates",
+    "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+  },
+  {
+    "mutation": "defunct",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-core",
+      "--locked",
+      "--lib",
+      "task_004",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "passed": 2,
+    "failed": 1,
+    "assertion_test": "task_004_checker_label_updates",
+    "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+  }
+]

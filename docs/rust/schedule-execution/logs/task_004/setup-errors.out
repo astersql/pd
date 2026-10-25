@@ -1,0 +1,31 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=cargo test -p astersql-pd-schedule-core --locked --lib task_004 -- --nocapture
+   Compiling astersql-pd-schedule-core v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.15s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_core-a553df08ec68aacf)
+
+running 3 tests
+
+thread 'task_004_test::task_004_config_and_typed_faults' (160298015) panicked at pkg/schedule/core/task_004_test.rs:320:9:
+assertion `left == right` failed
+  left: Object {"max_merge_region_size": Number(0), "max_replicas": Number(0), "region_max_size": Number(144)}
+ right: Object {"max_merge_region_size": Number(54), "max_replicas": Number(3), "region_max_size": Number(144)}
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'task_004_test::task_004_behavior_cases' (160298013) panicked at pkg/schedule/core/task_004_test.rs:189:9:
+assertion `left == right` failed
+  left: Object {"1": Array [Number(0.0), Number(0.0), Number(0.0), Number(0.0), Number(0.0), Number(0.0), Number(0.0), Number(0.0), Number(0.0), Number(0.0), Number(0.0), Number(0.0)], "2": Array [Number(0.0), Number(0.0), Number(0.0), Number(0.0), Number(0.0), Number(0.0), Number(0.0), Number(0.0), Number(0.0), Number(0.0), Number(0.0), Number(0.0)], "3": Array [Number(0.0), Number(0.0), Number(0.0), Number(0.0), Number(0.0), Number(0.0), Number(0.0), Number(0.0), Number(0.0), Number(0.0), Number(0.0), Number(0.0)], "4": Array [Number(0.0), Number(0.0), Number(0.0), Number(0.0), Number(0.0), Number(0.0), Number(0.0), Number(0.0), Number(0.0), Number(0.0), Number(0.0), Number(0.0)]}
+ right: Object {"1": Array [Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0)], "2": Array [Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0)], "3": Array [Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0)], "4": Array [Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0)]}
+test task_004_test::task_004_checker_label_updates ... ok
+test task_004_test::task_004_config_and_typed_faults ... FAILED
+test task_004_test::task_004_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_004_test::task_004_behavior_cases
+    task_004_test::task_004_config_and_typed_faults
+
+test result: FAILED. 1 passed; 2 failed; 0 ignored; 0 measured; 11 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-core --lib`
+command_exit_code=101

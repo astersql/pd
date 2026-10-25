@@ -1,0 +1,33 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "binaries": {
+    "cluster.test": "8781f08225e2b8b746217d79fe78e3ff072369cc8ae8941cc8d616a8a77986d9",
+    "buckets.test": "352b63a5533356d8b20a6efabc31d7860a9a887584cb63208e9e01515d2d4f93",
+    "dlv": "dcd0463a4350f0660412f5c766d31077370eec10ac8055cf0d786377e0d6340e"
+  },
+  "cluster_compilation": "../task_003/compilation.json",
+  "bucket_compilation": {
+    "argv": [
+      "go",
+      "test",
+      "-c",
+      "-gcflags=all=-N -l",
+      "-o",
+      "/tmp/pd-sched004/buckets.test",
+      "./pkg/statistics/buckets"
+    ],
+    "env": {
+      "GOOS": "linux",
+      "GOARCH": "arm64",
+      "GOFLAGS": "-mod=readonly",
+      "GOPROXY": "off",
+      "CGO_ENABLED": "0"
+    },
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "",
+    "executed_tests": 0
+  },
+  "execution": "Debugger observations at existing-test breakpoints; not full-test PASS",
+  "safety": "Selected TestRegionLabelIsolationLevel and TestCheckBucketsTask, helpers and TestMain do not require failpoint branches; compilation writes only external binary/cache, never Go sources or modules"
+}

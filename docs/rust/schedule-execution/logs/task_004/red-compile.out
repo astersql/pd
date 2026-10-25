@@ -1,0 +1,17 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=cargo test -p astersql-pd-schedule-core --locked --lib task_004 -- --nocapture
+   Compiling astersql-pd-schedule-core v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/core)
+error[E0432]: unresolved imports `crate::BucketQueryError`, `crate::CheckerCluster`, `crate::ClusterViews`, `crate::SchedulerCluster`, `crate::StoreConfigCluster`
+ --> pkg/schedule/core/task_004_test.rs:3:19
+  |
+3 |     BasicCluster, BucketQueryError, CheckerCluster, ClusterViews, IdAllocation, SchedulerCluster,
+  |                   ^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^  ^^^^^^^^^^^^                ^^^^^^^^^^^^^^^^ no `SchedulerCluster` in the root
+  |                   |                 |               |
+  |                   |                 |               no `ClusterViews` in the root
+  |                   |                 no `CheckerCluster` in the root
+  |                   no `BucketQueryError` in the root
+4 |     SharedCluster, SharedClusterView, StoreConfigCluster,
+  |                                       ^^^^^^^^^^^^^^^^^^ no `StoreConfigCluster` in the root
+
+For more information about this error, try `rustc --explain E0432`.
+error: could not compile `astersql-pd-schedule-core` (lib test) due to 1 previous error
+command_exit_code=101

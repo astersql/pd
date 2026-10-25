@@ -1,0 +1,42 @@
+[
+  {
+    "path": "pkg/schedule/core/cluster_informer.go",
+    "sha256": "657dd1208bb79c0ffd6820d8bdc558b6ca17f15cba4917e86d325978344bfe78",
+    "matches_source": true
+  },
+  {
+    "path": "server/cluster/cluster_test.go",
+    "sha256": "11c9f4767ab374ee4920d7a54e4411c031afbec9be61af191102e0b8cea4f71d",
+    "matches_source": true
+  },
+  {
+    "path": "server/cluster/scheduling_controller.go",
+    "sha256": "210d8ff39676da2fa94a0cfa15b37049b0f667ab8d2045bfbaa4a14559a4d678",
+    "matches_source": true
+  },
+  {
+    "path": "server/config/persist_options.go",
+    "sha256": "d49284b2eee7f9a509f32598ed69fe47bdccda674cb4940d80c2ac7ad10b62ff",
+    "matches_source": true
+  },
+  {
+    "path": "pkg/statistics/store.go",
+    "sha256": "6375f9aaaabb2b69c703c0c3eb674c2d0aab7ac2d93c6713d1a46ab770ace2df",
+    "matches_source": true
+  },
+  {
+    "path": "pkg/statistics/buckets/hot_bucket_task_test.go",
+    "sha256": "68275a309fb85a5dd0882e73dbd01e495b3aed96be2340b8dd709dc7479a6835",
+    "matches_source": true
+  },
+  {
+    "path": "pkg/statistics/buckets/hot_bucket_cache_test.go",
+    "sha256": "a23e10516b4465da9fe42cd8de881cd4f6608d6a662bbf7bec91f390591f7d40",
+    "matches_source": true
+  },
+  {
+    "path": "pkg/statistics/buckets/hot_bucket_cache.go",
+    "sha256": "f3dbef4b0ca2ff6cee1a5b98c19db7a136101fa1673f141503f7d4c33d6720a8",
+    "matches_source": true
+  }
+]

@@ -1,0 +1,28 @@
+
+running 14 tests
+test task_002_test::task_002_store_controls_and_errors ... ok
+test task_002_test::task_002_membership_queries ... ok
+test task_002_test::task_002_key_lookup_hole_and_boundary ... ok
+test task_002_test::task_002_shared_source_target_views ... ok
+test task_002_test::task_002_behavior_cases ... ok
+test task_003_test::task_003_halt_and_prepare_error ... ok
+test task_003_test::task_003_classic_count_and_leadership_fault ... ok
+test task_003_test::task_003_local_prepare_count_uses_canonical_regions ... ok
+test task_003_test::task_003_id_allocation_success_and_failure ... ok
+test task_003_test::task_003_remote_allocation_error_is_preserved ... ok
+test task_003_test::task_003_behavior_cases ... ok
+test task_004_test::task_004_config_and_typed_faults ... ok
+test task_004_test::task_004_checker_label_updates ... ok
+test task_004_test::task_004_behavior_cases ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Compiling astersql-pd-schedule-core v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.50s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_core-a553df08ec68aacf)
+   Doc-tests astersql_pd_schedule_core

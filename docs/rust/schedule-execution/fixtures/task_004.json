@@ -1,0 +1,325 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "provenance": {
+    "path": "logs/task_004/provenance.json",
+    "outputs": {
+      "label": "a710305455736a15322d5716482c0c4dd80be122817df9a8cc805f8b01d1071f",
+      "buckets": "01972918aa84ded2c79c50efb7ce7541be8b6a6d480110cd4e96d1e9c8337cf3"
+    }
+  },
+  "mode": "classic; bucket cache also shared with scheduling microservice",
+  "normalization": {
+    "maps": "sort numeric IDs; JSON decimal keys; label absence preserved",
+    "bytes": "ASCII byte slices decoded as strings",
+    "addresses": "pointer identity checked within one run only",
+    "errors": "Go ErrCheckerMergeAgain size mapped to existing MergeAgainError::Size; stack excluded",
+    "store_loads": "Go StoreKindLoads is float64[12]; JSON encodes all values as f64, preserving every dimension"
+  },
+  "inputs": {
+    "store_ids": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "store_zones": [
+      "1",
+      "2",
+      "3",
+      "3"
+    ],
+    "tiflash_store": 4,
+    "regions": [
+      9,
+      10
+    ],
+    "labels": [
+      "zone"
+    ],
+    "regions_write": [
+      30,
+      40
+    ],
+    "config_update": {
+      "max_replicas": 5,
+      "max_merge_region_size": 7,
+      "diagnostic": false
+    },
+    "bucket_reports": [
+      {
+        "region_id": 1,
+        "keys": [
+          "10",
+          "20",
+          "30"
+        ]
+      },
+      {
+        "region_id": 2,
+        "keys": [
+          "20",
+          "30"
+        ]
+      }
+    ],
+    "config_initial": {
+      "max_replicas": 3,
+      "max_merge_region_size": 54,
+      "diagnostic": true
+    }
+  },
+  "outputs": {
+    "stores_initial": {
+      "1": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "2": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "3": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "4": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "stores_updated": {
+      "1": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        30.0,
+        40.0,
+        0.0
+      ],
+      "2": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "3": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "4": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "stores_removed": {
+      "2": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "3": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "4": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "label_counters": [
+      {
+        "zone": 1
+      },
+      {
+        "zone": 2
+      },
+      {
+        "zone": 1
+      }
+    ],
+    "configs": [
+      {
+        "max_replicas": 3,
+        "max_merge_region_size": 54,
+        "region_max_size": 144,
+        "diagnostic": true
+      },
+      {
+        "max_replicas": 5,
+        "max_merge_region_size": 7,
+        "region_max_size": 144,
+        "diagnostic": false
+      }
+    ],
+    "store_checks": [
+      {
+        "size": 200,
+        "merge": 20,
+        "error": "Size"
+      },
+      {
+        "size": 150,
+        "merge": 20,
+        "error": null
+      }
+    ],
+    "buckets_first": {
+      "1": [
+        {
+          "region_id": 1,
+          "start_key": "10",
+          "end_key": "20",
+          "hot_degree": -1,
+          "interval": 1000,
+          "loads": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "region_id": 1,
+          "start_key": "20",
+          "end_key": "30",
+          "hot_degree": -1,
+          "interval": 1000,
+          "loads": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    "buckets_degree_zero": {},
+    "buckets_selected": {
+      "2": [
+        {
+          "region_id": 2,
+          "start_key": "20",
+          "end_key": "30",
+          "hot_degree": -2,
+          "interval": 1000,
+          "loads": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    "buckets_missing": {}
+  }
+}

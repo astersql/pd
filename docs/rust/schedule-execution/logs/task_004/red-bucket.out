@@ -1,0 +1,23 @@
+
+running 3 tests
+test task_004_test::task_004_config_and_typed_faults ... ok
+test task_004_test::task_004_checker_label_updates ... ok
+test task_004_test::task_004_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_004_test::task_004_behavior_cases
+
+test result: FAILED. 2 passed; 1 failed; 0 ignored; 0 measured; 11 filtered out; finished in 0.00s
+
+   Compiling astersql-pd-schedule-core v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.75s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_core-a553df08ec68aacf)
+
+thread 'task_004_test::task_004_behavior_cases' (160330000) panicked at pkg/schedule/core/task_004_test.rs:221:5:
+assertion `left == right` failed
+  left: Object {}
+ right: Object {"1": Array [Object {"end_key": String("20"), "hot_degree": Number(-1), "interval": Number(1000), "loads": Array [Number(0), Number(0), Number(0), Number(0), Number(0), Number(0)], "region_id": Number(1), "start_key": String("10")}, Object {"end_key": String("30"), "hot_degree": Number(-1), "interval": Number(1000), "loads": Array [Number(0), Number(0), Number(0), Number(0), Number(0), Number(0)], "region_id": Number(1), "start_key": String("20")}]}
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+error: test failed, to rerun pass `-p astersql-pd-schedule-core --lib`

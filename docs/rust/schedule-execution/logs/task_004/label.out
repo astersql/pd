@@ -1,0 +1,315 @@
+Type 'help' for list of commands.
+Breakpoint 1 set at 0x1919c18 for github.com/tikv/pd/server/cluster.TestRegionLabelIsolationLevel() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1552
+=== RUN   TestRegionLabelIsolationLevel
+> [Breakpoint 1] github.com/tikv/pd/server/cluster.TestRegionLabelIsolationLevel() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1552 (hits goroutine(261):1 total:1) (PC: 0x1919c18)
+"CASE label_one"
+> github.com/tikv/pd/server/cluster.TestRegionLabelIsolationLevel() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1552 (PC: 0x1919c18)
+Values returned:
+    ~r0: map[string]int [
+        "zone": 1,
+    ]
+
+"CASE stores_empty"
+> github.com/tikv/pd/server/cluster.TestRegionLabelIsolationLevel() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1552 (PC: 0x1919c18)
+Values returned:
+    ~r0: map[uint64]github.com/tikv/pd/pkg/statistics.StoreKindLoads [
+        1: [0,0,0,0,0,0,0,0,0,0,0,0],
+        2: [0,0,0,0,0,0,0,0,0,0,0,0],
+        3: [0,0,0,0,0,0,0,0,0,0,0,0],
+        4: [0,0,0,0,0,0,0,0,0,0,0,0],
+    ]
+
+> github.com/tikv/pd/server/cluster.TestRegionLabelIsolationLevel() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1552 (PC: 0x1919c18)
+Values returned:
+    ~r0: ("*github.com/tikv/pd/pkg/statistics.RollingStoreStats")(0x3e35b5286ba0)
+*github.com/tikv/pd/pkg/statistics.RollingStoreStats {
+        RWMutex: github.com/tikv/pd/pkg/utils/syncutil.RWMutex {
+            RWMutex: sync.RWMutex {
+                w: sync.Mutex {
+                    _: sync.noCopy {},
+                    mu: (*"internal/sync.Mutex")(0x3e35b5286ba0),},
+                writerSem: 0,
+                readerSem: 0,
+                readerCount: sync/atomic.Int32 {
+                    _: sync/atomic.noCopy {},
+                    v: 0,},
+                readerWait: sync/atomic.Int32 {
+                    _: sync/atomic.noCopy {},
+                    v: 0,},},},
+        timeMedians: []*github.com/tikv/pd/pkg/movingaverage.TimeMedian len: 12, cap: 12, [
+            *{
+                aot: *github.com/tikv/pd/pkg/movingaverage.AvgOverTime {
+                    que: *(*"github.com/phf/go-queue/queue.Queue")(0x3e35b5498e40),
+                    margin: (*"github.com/tikv/pd/pkg/movingaverage.deltaWithInterval")(0x3e35b5498e78),
+                    deltaSum: 0,
+                    intervalSum: github.com/tikv/pd/pkg/utils/metricutil.zeroDuration (0),
+                    avgInterval: github.com/tikv/pd/pkg/cgroup.refreshInterval (10000000000),},
+                mf: *github.com/tikv/pd/pkg/movingaverage.MedianFilter {
+                    records: []float64 len: 5, cap: 5, [0,0,0,0,0],
+                    size: 5,
+                    count: 0,
+                    result: 0,},},
+            *{
+                aot: *github.com/tikv/pd/pkg/movingaverage.AvgOverTime {
+                    que: *(*"github.com/phf/go-queue/queue.Queue")(0x3e35b5498ed0),
+                    margin: (*"github.com/tikv/pd/pkg/movingaverage.deltaWithInterval")(0x3e35b5498f08),
+                    deltaSum: 0,
+                    intervalSum: github.com/tikv/pd/pkg/utils/metricutil.zeroDuration (0),
+                    avgInterval: github.com/tikv/pd/pkg/cgroup.refreshInterval (10000000000),},
+                mf: *github.com/tikv/pd/pkg/movingaverage.MedianFilter {
+                    records: []float64 len: 5, cap: 5, [0,0,0,0,0],
+                    size: 5,
+                    count: 0,
+                    result: 0,},},
+            *{
+                aot: *github.com/tikv/pd/pkg/movingaverage.AvgOverTime {
+                    que: *(*"github.com/phf/go-queue/queue.Queue")(0x3e35b5499080),
+                    margin: (*"github.com/tikv/pd/pkg/movingaverage.deltaWithInterval")(0x3e35b54990b8),
+                    deltaSum: 0,
+                    intervalSum: github.com/tikv/pd/pkg/utils/metricutil.zeroDuration (0),
+                    avgInterval: github.com/tikv/pd/pkg/cgroup.refreshInterval (10000000000),},
+                mf: *github.com/tikv/pd/pkg/movingaverage.MedianFilter {
+                    records: []float64 len: 5, cap: 5, [0,0,0,0,0],
+                    size: 5,
+                    count: 0,
+                    result: 0,},},
+            *{
+                aot: *github.com/tikv/pd/pkg/movingaverage.AvgOverTime {
+                    que: *(*"github.com/phf/go-queue/queue.Queue")(0x3e35b5499110),
+                    margin: (*"github.com/tikv/pd/pkg/movingaverage.deltaWithInterval")(0x3e35b5499148),
+                    deltaSum: 0,
+                    intervalSum: github.com/tikv/pd/pkg/utils/metricutil.zeroDuration (0),
+                    avgInterval: github.com/tikv/pd/pkg/cgroup.refreshInterval (10000000000),},
+                mf: *github.com/tikv/pd/pkg/movingaverage.MedianFilter {
+                    records: []float64 len: 5, cap: 5, [0,0,0,0,0],
+                    size: 5,
+                    count: 0,
+                    result: 0,},},
+            *{
+                aot: *github.com/tikv/pd/pkg/movingaverage.AvgOverTime {
+                    que: *(*"github.com/phf/go-queue/queue.Queue")(0x3e35b5498f60),
+                    margin: (*"github.com/tikv/pd/pkg/movingaverage.deltaWithInterval")(0x3e35b5498f98),
+                    deltaSum: 0,
+                    intervalSum: github.com/tikv/pd/pkg/utils/metricutil.zeroDuration (0),
+                    avgInterval: github.com/tikv/pd/pkg/cgroup.refreshInterval (10000000000),},
+                mf: *github.com/tikv/pd/pkg/movingaverage.MedianFilter {
+                    records: []float64 len: 5, cap: 5, [0,0,0,0,0],
+                    size: 5,
+                    count: 0,
+                    result: 0,},},
+            *{
+                aot: *github.com/tikv/pd/pkg/movingaverage.AvgOverTime {
+                    que: *(*"github.com/phf/go-queue/queue.Queue")(0x3e35b54991a0),
+                    margin: (*"github.com/tikv/pd/pkg/movingaverage.deltaWithInterval")(0x3e35b54991d8),
+                    deltaSum: 0,
+                    intervalSum: github.com/tikv/pd/pkg/utils/metricutil.zeroDuration (0),
+                    avgInterval: github.com/tikv/pd/pkg/cgroup.refreshInterval (10000000000),},
+                mf: *github.com/tikv/pd/pkg/movingaverage.MedianFilter {
+                    records: []float64 len: 5, cap: 5, [0,0,0,0,0],
+                    size: 5,
+                    count: 0,
+                    result: 0,},},
+            *nil,
+            *nil,
+            *nil,
+            *nil,
+            *nil,
+            *{
+                aot: *github.com/tikv/pd/pkg/movingaverage.AvgOverTime {
+                    que: *(*"github.com/phf/go-queue/queue.Queue")(0x3e35b5498ff0),
+                    margin: (*"github.com/tikv/pd/pkg/movingaverage.deltaWithInterval")(0x3e35b5499028),
+                    deltaSum: 0,
+                    intervalSum: github.com/tikv/pd/pkg/utils/metricutil.zeroDuration (0),
+                    avgInterval: github.com/tikv/pd/pkg/cgroup.refreshInterval (10000000000),},
+                mf: *github.com/tikv/pd/pkg/movingaverage.MedianFilter {
+                    records: []float64 len: 5, cap: 5, [0,0,0,0,0],
+                    size: 5,
+                    count: 0,
+                    result: 0,},},
+        ],
+        movingAvgs: []github.com/tikv/pd/pkg/movingaverage.MovingAvg len: 12, cap: 12, [
+            nil,
+            nil,
+            nil,
+            nil,
+            nil,
+            nil,
+            *github.com/tikv/pd/pkg/movingaverage.MedianFilter {
+                records: []float64 len: 5, cap: 5, [0,0,0,0,0],
+                size: 5,
+                count: 0,
+                result: 0,},
+            *github.com/tikv/pd/pkg/movingaverage.MedianFilter {
+                records: []float64 len: 3, cap: 3, [0,0,0],
+                size: 3,
+                count: 0,
+                result: 0,},
+            *github.com/tikv/pd/pkg/movingaverage.MedianFilter {
+                records: []float64 len: 3, cap: 3, [0,0,0],
+                size: 3,
+                count: 0,
+                result: 0,},
+            *github.com/tikv/pd/pkg/movingaverage.MedianFilter {
+                records: []float64 len: 9, cap: 9, [0,0,0,0,0,0,0,0,0],
+                size: 9,
+                count: 0,
+                result: 0,},
+            *github.com/tikv/pd/pkg/movingaverage.MedianFilter {
+                records: []float64 len: 9, cap: 9, [0,0,0,0,0,0,0,0,0],
+                size: 9,
+                count: 0,
+                result: 0,},
+            nil,
+        ],
+        readCPURecentMax: github.com/tikv/pd/pkg/movingaverage.MovingAvg(*github.com/tikv/pd/pkg/movingaverage.MaxFilter) *{
+            records: []float64 len: 18, cap: 18, [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            size: 18,
+            count: 0,},}
+
+> github.com/tikv/pd/server/cluster.TestRegionLabelIsolationLevel() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1552 (PC: 0x1919c18)
+Values returned:
+
+"CASE stores_updated"
+> github.com/tikv/pd/server/cluster.TestRegionLabelIsolationLevel() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1552 (PC: 0x1919c18)
+Values returned:
+    ~r0: map[uint64]github.com/tikv/pd/pkg/statistics.StoreKindLoads [
+        3: [0,0,0,0,0,0,0,0,0,0,0,0],
+        4: [0,0,0,0,0,0,0,0,0,0,0,0],
+        1: [0,0,0,0,0,0,0,0,0,30,40,0],
+        2: [0,0,0,0,0,0,0,0,0,0,0,0],
+    ]
+
+> github.com/tikv/pd/server/cluster.TestRegionLabelIsolationLevel() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1552 (PC: 0x1919c18)
+Values returned:
+
+"CASE stores_removed"
+> github.com/tikv/pd/server/cluster.TestRegionLabelIsolationLevel() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1552 (PC: 0x1919c18)
+Values returned:
+    ~r0: map[uint64]github.com/tikv/pd/pkg/statistics.StoreKindLoads [
+        2: [0,0,0,0,0,0,0,0,0,0,0,0],
+        3: [0,0,0,0,0,0,0,0,0,0,0,0],
+        4: [0,0,0,0,0,0,0,0,0,0,0,0],
+    ]
+
+"CASE config_before"
+> github.com/tikv/pd/server/cluster.TestRegionLabelIsolationLevel() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1552 (PC: 0x1919c18)
+Values returned:
+    ~r0: github.com/tikv/pd/pkg/schedule/config.SchedulerConfigProvider(*github.com/tikv/pd/server/config.PersistOptions) *{
+        persistMu: (*sync.Mutex)(0x3e35b567d540),
+        ttl: *github.com/tikv/pd/pkg/cache.TTLString nil,
+        schedule: (*"sync/atomic.Value")(0x3e35b567d550),
+        replication: (*"sync/atomic.Value")(0x3e35b567d560),
+        pdServerConfig: (*"sync/atomic.Value")(0x3e35b567d570),
+        replicationMode: (*"sync/atomic.Value")(0x3e35b567d580),
+        labelProperty: (*"sync/atomic.Value")(0x3e35b567d590),
+        keyspace: (*"sync/atomic.Value")(0x3e35b567d5a0),
+        microservice: (*"sync/atomic.Value")(0x3e35b567d5b0),
+        storeConfig: (*"sync/atomic.Value")(0x3e35b567d5c0),
+        clusterVersion: unsafe.Pointer(0x3e35b545ba00),}
+
+> github.com/tikv/pd/server/cluster.TestRegionLabelIsolationLevel() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1552 (PC: 0x1919c18)
+Values returned:
+    ~r0: github.com/tikv/pd/pkg/schedule/config.CheckerConfigProvider(*github.com/tikv/pd/server/config.PersistOptions) *{
+        persistMu: (*sync.Mutex)(0x3e35b567d540),
+        ttl: *github.com/tikv/pd/pkg/cache.TTLString nil,
+        schedule: (*"sync/atomic.Value")(0x3e35b567d550),
+        replication: (*"sync/atomic.Value")(0x3e35b567d560),
+        pdServerConfig: (*"sync/atomic.Value")(0x3e35b567d570),
+        replicationMode: (*"sync/atomic.Value")(0x3e35b567d580),
+        labelProperty: (*"sync/atomic.Value")(0x3e35b567d590),
+        keyspace: (*"sync/atomic.Value")(0x3e35b567d5a0),
+        microservice: (*"sync/atomic.Value")(0x3e35b567d5b0),
+        storeConfig: (*"sync/atomic.Value")(0x3e35b567d5c0),
+        clusterVersion: unsafe.Pointer(0x3e35b545ba00),}
+
+> github.com/tikv/pd/server/cluster.TestRegionLabelIsolationLevel() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1552 (PC: 0x1919c18)
+Values returned:
+    ~r0: github.com/tikv/pd/pkg/schedule/config.StoreConfigProvider(*github.com/tikv/pd/server/config.PersistOptions) *{
+        persistMu: (*sync.Mutex)(0x3e35b567d540),
+        ttl: *github.com/tikv/pd/pkg/cache.TTLString nil,
+        schedule: (*"sync/atomic.Value")(0x3e35b567d550),
+        replication: (*"sync/atomic.Value")(0x3e35b567d560),
+        pdServerConfig: (*"sync/atomic.Value")(0x3e35b567d570),
+        replicationMode: (*"sync/atomic.Value")(0x3e35b567d580),
+        labelProperty: (*"sync/atomic.Value")(0x3e35b567d590),
+        keyspace: (*"sync/atomic.Value")(0x3e35b567d5a0),
+        microservice: (*"sync/atomic.Value")(0x3e35b567d5b0),
+        storeConfig: (*"sync/atomic.Value")(0x3e35b567d5c0),
+        clusterVersion: unsafe.Pointer(0x3e35b545ba00),}
+
+> github.com/tikv/pd/server/cluster.TestRegionLabelIsolationLevel() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1552 (PC: 0x1919c18)
+Values returned:
+    ~r0: 3
+
+> github.com/tikv/pd/server/cluster.TestRegionLabelIsolationLevel() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1552 (PC: 0x1919c18)
+Values returned:
+    ~r0: 54
+
+> github.com/tikv/pd/server/cluster.TestRegionLabelIsolationLevel() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1552 (PC: 0x1919c18)
+Values returned:
+    ~r0: 144
+
+> github.com/tikv/pd/server/cluster.TestRegionLabelIsolationLevel() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1552 (PC: 0x1919c18)
+Values returned:
+    ~r0: true
+
+> github.com/tikv/pd/server/cluster.TestRegionLabelIsolationLevel() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1552 (PC: 0x1919c18)
+Values returned:
+    ~r0: error(*github.com/pingcap/errors.withStack) *{
+        error: error(*github.com/pingcap/errors.Error) *{
+            code: 0,
+            codeText: "PD:checker:ErrCheckerMergeAgain",
+            message: "region will be merged again, %s",
+            redactArgsPos: []int len: 0, cap: 0, nil,
+            cause: error nil,
+            args: []interface {} len: 1, cap: 1, [
+                "the smallest region of the split regions is less than max-merge-region-size, it will be merged again",
+            ],
+            file: "",
+            line: 0,},
+        stack: *github.com/pingcap/errors.stack len: 0, cap: 0, nil,}
+
+> github.com/tikv/pd/server/cluster.TestRegionLabelIsolationLevel() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1552 (PC: 0x1919c18)
+Values returned:
+    ~r0: error nil
+
+"CASE config_update"
+> github.com/tikv/pd/server/cluster.TestRegionLabelIsolationLevel() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1552 (PC: 0x1919c18)
+Values returned:
+
+> github.com/tikv/pd/server/cluster.TestRegionLabelIsolationLevel() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1552 (PC: 0x1919c18)
+Values returned:
+
+> github.com/tikv/pd/server/cluster.TestRegionLabelIsolationLevel() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1552 (PC: 0x1919c18)
+Values returned:
+
+> github.com/tikv/pd/server/cluster.TestRegionLabelIsolationLevel() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1552 (PC: 0x1919c18)
+Values returned:
+    ~r0: 5
+
+> github.com/tikv/pd/server/cluster.TestRegionLabelIsolationLevel() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1552 (PC: 0x1919c18)
+Values returned:
+    ~r0: 7
+
+> github.com/tikv/pd/server/cluster.TestRegionLabelIsolationLevel() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1552 (PC: 0x1919c18)
+Values returned:
+    ~r0: false
+
+"CASE label_two"
+Breakpoint 2 set at 0x1919f3c for github.com/tikv/pd/server/cluster.TestRegionLabelIsolationLevel() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1566
+> [Breakpoint 2] github.com/tikv/pd/server/cluster.TestRegionLabelIsolationLevel() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1566 (hits goroutine(261):1 total:1) (PC: 0x1919f3c)
+> github.com/tikv/pd/server/cluster.TestRegionLabelIsolationLevel() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1566 (PC: 0x1919f3c)
+Values returned:
+    ~r0: map[string]int [
+        "zone": 2,
+    ]
+
+"CASE label_defunct"
+Breakpoint 3 set at 0x191a150 for github.com/tikv/pd/server/cluster.TestRegionLabelIsolationLevel() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1581
+[2026/10/25 05:08:31.166 +00:00] [INFO] [region.go:915] ["leader changed"] [region-id=9] [from=1] [to=4]
+> [Breakpoint 3] github.com/tikv/pd/server/cluster.TestRegionLabelIsolationLevel() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1581 (hits goroutine(261):1 total:1) (PC: 0x191a150)
+> github.com/tikv/pd/server/cluster.TestRegionLabelIsolationLevel() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:1581 (PC: 0x191a150)
+Values returned:
+    ~r0: map[string]int [
+        "zone": 1,
+    ]

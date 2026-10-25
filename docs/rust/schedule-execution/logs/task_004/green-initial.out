@@ -1,0 +1,13 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=cargo test -p astersql-pd-schedule-core --locked --lib task_004 -- --nocapture
+   Compiling astersql-pd-schedule-core v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.82s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_core-a553df08ec68aacf)
+
+running 3 tests
+test task_004_test::task_004_config_and_typed_faults ... ok
+test task_004_test::task_004_checker_label_updates ... ok
+test task_004_test::task_004_behavior_cases ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 11 filtered out; finished in 0.00s
+
+command_exit_code=0

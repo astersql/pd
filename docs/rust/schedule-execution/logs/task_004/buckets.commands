@@ -1,0 +1,15 @@
+break hot_bucket_task_test.go:81
+continue
+config max-variable-recurse 4
+config max-array-values 20
+print "CASE buckets_first"
+call hotCache.BucketsStats(-20, nil)
+call hotCache.BucketsStats(0, nil)
+print "CASE buckets_second"
+break hot_bucket_task_test.go:95
+continue
+set buckets.Stats.ReadBytes[0] = 2
+call hotCache.BucketsStats(-20, buckets.Stats.ReadBytes)
+set buckets.Stats.ReadBytes[0] = 999
+call hotCache.BucketsStats(-20, buckets.Stats.ReadBytes)
+exit

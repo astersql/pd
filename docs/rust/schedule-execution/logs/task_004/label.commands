@@ -1,0 +1,44 @@
+break cluster_test.go:1552
+continue
+config max-variable-recurse 3
+config max-array-values 20
+config max-string-len 1024
+print "CASE label_one"
+call cluster.labelStats.GetLabelCounter()
+print "CASE stores_empty"
+call cluster.GetStoresLoads()
+call cluster.hotStat.StoresStats.GetOrCreateRollingStoreStats(1)
+call cluster.hotStat.StoresStats.rollingStoresStats[1].SetRegionsStats(30,40)
+print "CASE stores_updated"
+call cluster.GetStoresLoads()
+call cluster.hotStat.StoresStats.RemoveRollingStoreStats(1)
+print "CASE stores_removed"
+call cluster.GetStoresLoads()
+print "CASE config_before"
+config max-variable-recurse 0
+call cluster.GetSchedulerConfig()
+call cluster.GetCheckerConfig()
+call cluster.GetStoreConfig()
+config max-variable-recurse 3
+call opt.GetMaxReplicas()
+call opt.GetMaxMergeRegionSize()
+call opt.GetRegionMaxSize()
+call opt.IsDiagnosticAllowed()
+call opt.CheckRegionSize(200,20)
+call opt.CheckRegionSize(150,20)
+print "CASE config_update"
+call opt.SetEnableDiagnostic(false)
+call opt.SetMaxReplicas(5)
+call opt.SetMaxMergeRegionSize(7)
+call opt.GetMaxReplicas()
+call opt.GetMaxMergeRegionSize()
+call opt.IsDiagnosticAllowed()
+print "CASE label_two"
+break cluster_test.go:1566
+continue
+call cluster.labelStats.GetLabelCounter()
+print "CASE label_defunct"
+break cluster_test.go:1581
+continue
+call cluster.labelStats.GetLabelCounter()
+exit

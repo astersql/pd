@@ -1,0 +1,38 @@
+[
+  {
+    "argv": [
+      "docker",
+      "run",
+      "--rm",
+      "-v",
+      "/tmp/pd-sched004:/oracle:ro",
+      "alpine:3.22",
+      "/oracle/cluster.test",
+      "-test.run",
+      "^TestRegionLabelIsolationLevel$",
+      "-test.v",
+      "-test.timeout=60s"
+    ],
+    "exit_code": 0,
+    "stdout": "=== RUN   TestRegionLabelIsolationLevel\n[2026/10/25 05:07:38.921 +00:00] [INFO] [region.go:915] [\"leader changed\"] [region-id=9] [from=1] [to=4]\n--- PASS: TestRegionLabelIsolationLevel (0.02s)\nPASS\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "docker",
+      "run",
+      "--rm",
+      "-v",
+      "/tmp/pd-sched004:/oracle:ro",
+      "alpine:3.22",
+      "/oracle/buckets.test",
+      "-test.run",
+      "^(TestCheckBucketsTask|TestCollectBucketStatsTask)$",
+      "-test.v",
+      "-test.timeout=60s"
+    ],
+    "exit_code": 0,
+    "stdout": "=== RUN   TestCheckBucketsTask\n--- PASS: TestCheckBucketsTask (0.03s)\n=== RUN   TestCollectBucketStatsTask\n--- PASS: TestCollectBucketStatsTask (0.02s)\nPASS\n",
+    "stderr": ""
+  }
+]

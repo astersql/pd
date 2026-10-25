@@ -1,0 +1,23 @@
+
+running 3 tests
+test task_004_test::task_004_config_and_typed_faults ... ok
+test task_004_test::task_004_behavior_cases ... ok
+test task_004_test::task_004_checker_label_updates ... FAILED
+
+failures:
+
+failures:
+    task_004_test::task_004_checker_label_updates
+
+test result: FAILED. 2 passed; 1 failed; 0 ignored; 0 measured; 11 filtered out; finished in 0.00s
+
+   Compiling astersql-pd-schedule-core v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.70s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_core-a553df08ec68aacf)
+
+thread 'task_004_test::task_004_checker_label_updates' (160331095) panicked at pkg/schedule/core/task_004_test.rs:285:5:
+assertion `left == right` failed
+  left: Object {"zone": Number(2)}
+ right: Object {"zone": Number(1)}
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+error: test failed, to rerun pass `-p astersql-pd-schedule-core --lib`
