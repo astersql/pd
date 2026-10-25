@@ -1,0 +1,9 @@
+break cluster_test.go:98
+continue
+config max-variable-recurse 1
+print "CASE local_prepare_count"
+call cluster.GetPrepareRegionCount()
+print "CASE local_basic_identity"
+call cluster.GetBasicCluster()
+print cluster.BasicCluster
+exit

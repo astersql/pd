@@ -1,0 +1,92 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "mode": "classic Go default; explicit counted allocator contract; no Cargo feature",
+  "provenance": {
+    "shared-final.json": "039befcc33502e8aa19d22b4a8198a4a5f0c68343ac951af1fea0212c4c02e69",
+    "rules-run.json": "79a6aab6e1cd87a00114ab466f6fdb13ef882f21a566385bc74e0eb1829b4001",
+    "id-final.json": "83a8405bcdb7cdfe8f186e4de7606e18099a6749e7de8835c23b17505f5a7c0f",
+    "classic-final.json": "80b59a5f6e5d91480647313e6d8fe1e045b4d65796ce446cc634120edc2ca610"
+  },
+  "inputs": {
+    "group_id": "g1",
+    "start": "a",
+    "end": "z",
+    "now": 1792903617,
+    "allocator_base": 16777212,
+    "allocator_step": 1,
+    "local_region_count": 3
+  },
+  "outputs": {
+    "placement_default": {
+      "group": "pd",
+      "id": "default",
+      "role": "voter",
+      "count": 3
+    },
+    "placement_missing": null,
+    "label_missing": null,
+    "affinity_missing": null,
+    "keyrange_empty": true,
+    "keyrange_populated": false,
+    "keyrange_covered": [],
+    "halt": [
+      false,
+      true,
+      false
+    ],
+    "affinity": {
+      "id": "g1",
+      "phase": "pending",
+      "range_count": 1,
+      "region_count": 0,
+      "affinity_region_count": 0,
+      "regular_scheduling_allowed": true,
+      "affinity_scheduling_allowed": false,
+      "version": 2
+    },
+    "label": {
+      "id": "affinity_group/g1",
+      "key": "affinity_group",
+      "value": "g1",
+      "start": "61",
+      "end": "7a"
+    },
+    "prepare_error": {
+      "operation": "Get",
+      "url": "/pd/api/v1/regions/count",
+      "cause": "unsupported protocol scheme \"\""
+    },
+    "allocation": [
+      [
+        16777212,
+        0
+      ],
+      [
+        16777214,
+        2
+      ],
+      [
+        16777215,
+        1
+      ]
+    ],
+    "allocation_error": {
+      "code": "PD:idalloc:ErrIDExhausted",
+      "message": "id exhausted"
+    },
+    "local_prepare_count": 3,
+    "remote_allocation_error": "PD leader is not found"
+  },
+  "normalization": {
+    "addresses": "pointer addresses are not compared; Rust pointer identity is separately asserted",
+    "group_time": "creation timestamp normalized to supplied now; no expiry TTL labels used; phase observed immediately in both",
+    "errors": "Go ErrIDExhausted maps to canonical AllocatorError::Exhausted; prepare structured operation/url/cause preserved unchanged",
+    "collections": "nil and empty slices normalized to empty; no business fields suppressed"
+  },
+  "source_contracts": {
+    "classic_alloc_id": "server/cluster/cluster.go delegates Alloc(1), ignoring request count; canonical Alloc(1) runtime recorded, wrapper mapping checked separately",
+    "prepare_local": "server/cluster/cluster.go returns canonical total region count, nil",
+    "recovery_halt": "server/cluster/cluster.go ORs config halt with unsafe recovery running"
+  },
+  "oracle_kind": "existing Go test debuggee actual method outputs; exits at breakpoint, not full-test PASS"
+}

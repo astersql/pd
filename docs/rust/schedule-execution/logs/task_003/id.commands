@@ -1,0 +1,15 @@
+break id_test.go:115
+continue
+clear 1
+config max-variable-recurse 2
+print "CASE allocator_base"
+print initialBaseValue
+print "CASE allocator_zero"
+call keyspaceAllocator.Alloc(0)
+print "CASE allocator_batch"
+call keyspaceAllocator.Alloc(2)
+print "CASE allocator_single"
+call keyspaceAllocator.Alloc(1)
+print "CASE allocator_exhausted"
+call keyspaceAllocator.Alloc(1)
+exit

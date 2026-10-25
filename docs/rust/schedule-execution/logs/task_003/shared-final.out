@@ -1,0 +1,159 @@
+Type 'help' for list of commands.
+Breakpoint 1 set at 0x1684fc0 for github.com/tikv/pd/pkg/mcs/scheduling/server.TestAskBatchSplitRejectsAffinityAutoSplit() .Users/Shared/work/dir/data/codes/pd/pkg/mcs/scheduling/server/grpc_service_test.go:109
+=== RUN   TestAskBatchSplitRejectsAffinityAutoSplit
+[2026/10/25 04:49:31.997 +00:00] [INFO] [labeler.go:65] ["new region labeler created"] [label-rules-count=0]
+[2026/10/25 04:49:31.998 +00:00] [INFO] [txn.go:756] ["rebuilt group-label mapping"] [total-groups=0] [total-ranges=0]
+[2026/10/25 04:49:31.998 +00:00] [INFO] [policy.go:158] ["affinity manager availability check loop started"] [interval=10s]
+[2026/10/25 04:49:31.998 +00:00] [INFO] [manager.go:137] ["affinity manager initialized"] [group-count=0]
+> [Breakpoint 1] github.com/tikv/pd/pkg/mcs/scheduling/server.TestAskBatchSplitRejectsAffinityAutoSplit() .Users/Shared/work/dir/data/codes/pd/pkg/mcs/scheduling/server/grpc_service_test.go:109 (hits goroutine(247):1 total:1) (PC: 0x1684fc0)
+"CASE placement_initialize"
+> github.com/tikv/pd/pkg/mcs/scheduling/server.TestAskBatchSplitRejectsAffinityAutoSplit() .Users/Shared/work/dir/data/codes/pd/pkg/mcs/scheduling/server/grpc_service_test.go:109 (PC: 0x1684fc0)
+Values returned:
+    ~r0: error nil
+
+"CASE placement_default"
+> github.com/tikv/pd/pkg/mcs/scheduling/server.TestAskBatchSplitRejectsAffinityAutoSplit() .Users/Shared/work/dir/data/codes/pd/pkg/mcs/scheduling/server/grpc_service_test.go:109 (PC: 0x1684fc0)
+Values returned:
+    ~r0: *github.com/tikv/pd/pkg/schedule/placement.Rule nil
+
+"CASE label_missing"
+> github.com/tikv/pd/pkg/mcs/scheduling/server.TestAskBatchSplitRejectsAffinityAutoSplit() .Users/Shared/work/dir/data/codes/pd/pkg/mcs/scheduling/server/grpc_service_test.go:109 (PC: 0x1684fc0)
+Values returned:
+    ~r0: *github.com/tikv/pd/pkg/schedule/labeler.LabelRule nil
+
+"CASE affinity_missing"
+> github.com/tikv/pd/pkg/mcs/scheduling/server.TestAskBatchSplitRejectsAffinityAutoSplit() .Users/Shared/work/dir/data/codes/pd/pkg/mcs/scheduling/server/grpc_service_test.go:109 (PC: 0x1684fc0)
+Values returned:
+    ~r0: *github.com/tikv/pd/pkg/schedule/affinity.GroupState nil
+
+"CASE keyrange_empty"
+> github.com/tikv/pd/pkg/mcs/scheduling/server.TestAskBatchSplitRejectsAffinityAutoSplit() .Users/Shared/work/dir/data/codes/pd/pkg/mcs/scheduling/server/grpc_service_test.go:109 (PC: 0x1684fc0)
+Values returned:
+    ~r0: true
+
+"CASE halt"
+> github.com/tikv/pd/pkg/mcs/scheduling/server.TestAskBatchSplitRejectsAffinityAutoSplit() .Users/Shared/work/dir/data/codes/pd/pkg/mcs/scheduling/server/grpc_service_test.go:109 (PC: 0x1684fc0)
+Values returned:
+    ~r0: false
+
+> github.com/tikv/pd/pkg/mcs/scheduling/server.TestAskBatchSplitRejectsAffinityAutoSplit() .Users/Shared/work/dir/data/codes/pd/pkg/mcs/scheduling/server/grpc_service_test.go:109 (PC: 0x1684fc0)
+Values returned:
+
+> github.com/tikv/pd/pkg/mcs/scheduling/server.TestAskBatchSplitRejectsAffinityAutoSplit() .Users/Shared/work/dir/data/codes/pd/pkg/mcs/scheduling/server/grpc_service_test.go:109 (PC: 0x1684fc0)
+Values returned:
+    ~r0: true
+
+> github.com/tikv/pd/pkg/mcs/scheduling/server.TestAskBatchSplitRejectsAffinityAutoSplit() .Users/Shared/work/dir/data/codes/pd/pkg/mcs/scheduling/server/grpc_service_test.go:109 (PC: 0x1684fc0)
+Values returned:
+
+> github.com/tikv/pd/pkg/mcs/scheduling/server.TestAskBatchSplitRejectsAffinityAutoSplit() .Users/Shared/work/dir/data/codes/pd/pkg/mcs/scheduling/server/grpc_service_test.go:109 (PC: 0x1684fc0)
+Values returned:
+    ~r0: false
+
+"CASE prepare_error"
+> github.com/tikv/pd/pkg/mcs/scheduling/server.TestAskBatchSplitRejectsAffinityAutoSplit() .Users/Shared/work/dir/data/codes/pd/pkg/mcs/scheduling/server/grpc_service_test.go:109 (PC: 0x1684fc0)
+Values returned:
+    ~r0: 0
+    ~r1: error(*net/url.Error) *{
+        Op: "Get",
+        URL: "/pd/api/v1/regions/count",
+        Err: error(*errors.errorString) *{
+            s: "unsupported protocol scheme \"\"",},}
+
+"CASE alloc_error"
+> github.com/tikv/pd/pkg/mcs/scheduling/server.TestAskBatchSplitRejectsAffinityAutoSplit() .Users/Shared/work/dir/data/codes/pd/pkg/mcs/scheduling/server/grpc_service_test.go:109 (PC: 0x1684fc0)
+Values returned:
+    ~r0: 0
+    ~r1: 0
+    ~r2: error(*github.com/pingcap/errors.fundamental) *{
+        msg: "PD leader is not found",
+        stack: *github.com/pingcap/errors.stack len: 5, cap: 32, [23575536,23574112,184596,184444,659620],}
+
+Breakpoint 2 set at 0x168518c for github.com/tikv/pd/pkg/mcs/scheduling/server.TestAskBatchSplitRejectsAffinityAutoSplit() .Users/Shared/work/dir/data/codes/pd/pkg/mcs/scheduling/server/grpc_service_test.go:118
+[2026/10/25 04:49:32.311 +00:00] [INFO] [txn.go:200] ["affinity group added"] [group="{\"id\":\"g1\",\"create_timestamp\":1792903772}"]
+> [Breakpoint 2] github.com/tikv/pd/pkg/mcs/scheduling/server.TestAskBatchSplitRejectsAffinityAutoSplit() .Users/Shared/work/dir/data/codes/pd/pkg/mcs/scheduling/server/grpc_service_test.go:118 (hits goroutine(247):1 total:1) (PC: 0x168518c)
+"CASE affinity_created"
+> github.com/tikv/pd/pkg/mcs/scheduling/server.TestAskBatchSplitRejectsAffinityAutoSplit() .Users/Shared/work/dir/data/codes/pd/pkg/mcs/scheduling/server/grpc_service_test.go:118 (PC: 0x168518c)
+Values returned:
+    ~r0: ("*github.com/tikv/pd/pkg/schedule/affinity.GroupState")(0x3e3203f70100)
+*github.com/tikv/pd/pkg/schedule/affinity.GroupState {
+        Group: github.com/tikv/pd/pkg/schedule/affinity.Group {
+            ID: "g1",
+            CreateTimestamp: 1792903772,
+            LeaderStoreID: 0,
+            VoterStoreIDs: []uint64 len: 0, cap: 0, nil,},
+        RegularSchedulingAllowed: true,
+        AffinitySchedulingAllowed: false,
+        Phase: "pending",
+        RangeCount: 1,
+        RegionCount: 0,
+        AffinityRegionCount: 0,
+        affinityVer: 2,
+        groupInfoPtr: *github.com/tikv/pd/pkg/schedule/affinity.runtimeGroupInfo {
+            Group: github.com/tikv/pd/pkg/schedule/affinity.Group {
+                ID: "g1",
+                CreateTimestamp: 1792903772,
+                LeaderStoreID: 0,
+                VoterStoreIDs: []uint64 len: 0, cap: 0, nil,},
+            availability: groupDegraded (1),
+            degradedExpiredAt: 1792904372,
+            AffinityVer: 2,
+            AffinityRegionCount: 0,
+            Regions: map[uint64]github.com/tikv/pd/pkg/schedule/affinity.regionCache [],
+            LabelRule: *github.com/tikv/pd/pkg/schedule/labeler.LabelRule {
+                ID: "affinity_group/g1",
+                Index: 0,
+                Labels: []github.com/tikv/pd/pkg/schedule/labeler.RegionLabel len: 1, cap: 1, [
+                    (*"github.com/tikv/pd/pkg/schedule/labeler.RegionLabel")(0x3e3203e06500),
+                ],
+                RuleType: "key-range",
+                Data: interface {}([]*github.com/tikv/pd/pkg/schedule/labeler.KeyRangeRule) [
+                    *(*"github.com/tikv/pd/pkg/schedule/labeler.KeyRangeRule")(0x3e3203e065f0),
+                ],
+                minExpire: *time.Time nil,},
+            RangeCount: 1,},}
+
+> github.com/tikv/pd/pkg/mcs/scheduling/server.TestAskBatchSplitRejectsAffinityAutoSplit() .Users/Shared/work/dir/data/codes/pd/pkg/mcs/scheduling/server/grpc_service_test.go:118 (PC: 0x168518c)
+Values returned:
+    ~r0: []*github.com/tikv/pd/pkg/schedule/labeler.LabelRule len: 1, cap: 1, [
+        *{
+            ID: "affinity_group/g1",
+            Index: 0,
+            Labels: []github.com/tikv/pd/pkg/schedule/labeler.RegionLabel len: 1, cap: 1, [
+                {
+                    Key: "affinity_group",
+                    Value: "g1",
+                    TTL: "",
+                    StartAt: "",
+                    expire: *time.Time nil,},
+            ],
+            RuleType: "key-range",
+            Data: interface {}([]*github.com/tikv/pd/pkg/schedule/labeler.KeyRangeRule) [
+                *{
+                    StartKey: []uint8 len: 1, cap: 1, [97],
+                    StartKeyHex: "61",
+                    EndKey: []uint8 len: 1, cap: 1, [122],
+                    EndKeyHex: "7a",},
+            ],
+            minExpire: *time.Time nil,},
+    ]
+
+"CASE label_region"
+> github.com/tikv/pd/pkg/mcs/scheduling/server.TestAskBatchSplitRejectsAffinityAutoSplit() .Users/Shared/work/dir/data/codes/pd/pkg/mcs/scheduling/server/grpc_service_test.go:118 (PC: 0x168518c)
+Values returned:
+    ~r0: "g1"
+
+"CASE keyrange_populated"
+> github.com/tikv/pd/pkg/mcs/scheduling/server.TestAskBatchSplitRejectsAffinityAutoSplit() .Users/Shared/work/dir/data/codes/pd/pkg/mcs/scheduling/server/grpc_service_test.go:118 (PC: 0x168518c)
+Values returned:
+
+> github.com/tikv/pd/pkg/mcs/scheduling/server.TestAskBatchSplitRejectsAffinityAutoSplit() .Users/Shared/work/dir/data/codes/pd/pkg/mcs/scheduling/server/grpc_service_test.go:118 (PC: 0x168518c)
+Values returned:
+
+> github.com/tikv/pd/pkg/mcs/scheduling/server.TestAskBatchSplitRejectsAffinityAutoSplit() .Users/Shared/work/dir/data/codes/pd/pkg/mcs/scheduling/server/grpc_service_test.go:118 (PC: 0x168518c)
+Values returned:
+    ~r0: false
+
+> github.com/tikv/pd/pkg/mcs/scheduling/server.TestAskBatchSplitRejectsAffinityAutoSplit() .Users/Shared/work/dir/data/codes/pd/pkg/mcs/scheduling/server/grpc_service_test.go:118 (PC: 0x168518c)
+Values returned:
+    ~r0: []github.com/tikv/pd/pkg/utils/keyutil.KeyRange len: 0, cap: 0, []

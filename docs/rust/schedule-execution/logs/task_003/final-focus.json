@@ -1,0 +1,30 @@
+[
+  {
+    "argv": [
+      "cargo",
+      "fmt",
+      "--all"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "",
+    "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+  },
+  {
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-core",
+      "--locked",
+      "--lib",
+      "task_003",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 0,
+    "stdout": "\nrunning 6 tests\ntask_003_classic_count_and_leadership_fault: 3 source-contract/fault scenarios passed\ntask_003_halt_and_prepare_error: 4 oracle observations; recovery/local count source contracts passed\ntest task_003_test::task_003_classic_count_and_leadership_fault ... ok\ntask_003_id_allocation_success_and_failure: 4 oracle scenarios passed; post-error base retained\ntest task_003_test::task_003_remote_allocation_error_is_preserved ... ok\ntest task_003_test::task_003_halt_and_prepare_error ... ok\ntest task_003_test::task_003_id_allocation_success_and_failure ... ok\ntest task_003_test::task_003_local_prepare_count_uses_canonical_regions ... ok\ntask_003_behavior_cases: 9 oracle scenarios passed; canonical owner identity checked\ntest task_003_test::task_003_behavior_cases ... ok\n\ntest result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s\n\n",
+    "stderr": "   Compiling astersql-pd-schedule-core v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/core)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.35s\n     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_core-6bbcb054608e6b71)\n",
+    "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+  }
+]

@@ -1,0 +1,13 @@
+break evict_leader_test.go:91
+continue
+config max-variable-recurse 2
+print "CASE placement_rule"
+call tc.RuleManager.GetRule("pd", "default")
+print "CASE placement_missing"
+call tc.RuleManager.GetRule("pd", "missing")
+print "CASE basic_shared"
+call tc.GetBasicCluster()
+print tc.BasicCluster
+print "CASE prepare_count"
+call tc.GetPrepareRegionCount()
+exit

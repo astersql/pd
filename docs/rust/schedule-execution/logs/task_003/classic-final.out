@@ -1,0 +1,48 @@
+Type 'help' for list of commands.
+Breakpoint 1 set at 0x1907c50 for github.com/tikv/pd/server/cluster.TestStoreHeartbeat() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:98
+=== RUN   TestStoreHeartbeat
+> [Breakpoint 1] github.com/tikv/pd/server/cluster.TestStoreHeartbeat() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:98 (hits goroutine(287):1 total:1) (PC: 0x1907c50)
+"CASE local_prepare_count"
+> github.com/tikv/pd/server/cluster.TestStoreHeartbeat() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:98 (PC: 0x1907c50)
+Values returned:
+    ~r0: 3
+    ~r1: error nil
+
+"CASE local_basic_identity"
+> github.com/tikv/pd/server/cluster.TestStoreHeartbeat() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:98 (PC: 0x1907c50)
+Values returned:
+    ~r0: ("*github.com/tikv/pd/pkg/core.BasicCluster")(0x36a9b886d140)
+*github.com/tikv/pd/pkg/core.BasicCluster {
+        StoresInfo: *github.com/tikv/pd/pkg/core.StoresInfo {
+            RWMutex: (*"github.com/tikv/pd/pkg/utils/syncutil.RWMutex")(0x36a9b887a8c0),
+            stores: map[uint64]*github.com/tikv/pd/pkg/core.StoreInfo [],},
+        RegionsInfo: *github.com/tikv/pd/pkg/core.RegionsInfo {
+            t: (*"github.com/tikv/pd/pkg/core.RWLockStats")(0x36a9b843db00),
+            tree: *(*"github.com/tikv/pd/pkg/core.regionTree")(0x36a9b886f830),
+            regions: map[uint64]*github.com/tikv/pd/pkg/core.regionItem [...],
+            st: (*"github.com/tikv/pd/pkg/core.RWLockStats")(0x36a9b843db48),
+            subRegions: map[uint64]*github.com/tikv/pd/pkg/core.regionItem [...],
+            leaders: map[uint64]*github.com/tikv/pd/pkg/core.regionTree [...],
+            followers: map[uint64]*github.com/tikv/pd/pkg/core.regionTree [...],
+            learners: map[uint64]*github.com/tikv/pd/pkg/core.regionTree [],
+            witnesses: map[uint64]*github.com/tikv/pd/pkg/core.regionTree [],
+            pendingPeers: map[uint64]*github.com/tikv/pd/pkg/core.regionTree [],
+            overlapTree: *(*"github.com/tikv/pd/pkg/core.regionTree")(0x36a9b886f9b0),},}
+
+("*github.com/tikv/pd/pkg/core.BasicCluster")(0x36a9b886d140)
+*github.com/tikv/pd/pkg/core.BasicCluster {
+    StoresInfo: *github.com/tikv/pd/pkg/core.StoresInfo {
+        RWMutex: (*"github.com/tikv/pd/pkg/utils/syncutil.RWMutex")(0x36a9b887a8c0),
+        stores: map[uint64]*github.com/tikv/pd/pkg/core.StoreInfo [],},
+    RegionsInfo: *github.com/tikv/pd/pkg/core.RegionsInfo {
+        t: (*"github.com/tikv/pd/pkg/core.RWLockStats")(0x36a9b843db00),
+        tree: *(*"github.com/tikv/pd/pkg/core.regionTree")(0x36a9b886f830),
+        regions: map[uint64]*github.com/tikv/pd/pkg/core.regionItem [...],
+        st: (*"github.com/tikv/pd/pkg/core.RWLockStats")(0x36a9b843db48),
+        subRegions: map[uint64]*github.com/tikv/pd/pkg/core.regionItem [...],
+        leaders: map[uint64]*github.com/tikv/pd/pkg/core.regionTree [...],
+        followers: map[uint64]*github.com/tikv/pd/pkg/core.regionTree [...],
+        learners: map[uint64]*github.com/tikv/pd/pkg/core.regionTree [],
+        witnesses: map[uint64]*github.com/tikv/pd/pkg/core.regionTree [],
+        pendingPeers: map[uint64]*github.com/tikv/pd/pkg/core.regionTree [],
+        overlapTree: *(*"github.com/tikv/pd/pkg/core.regionTree")(0x36a9b886f9b0),},}

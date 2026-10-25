@@ -1,0 +1,25 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "all_match_baseline": true,
+  "sha256": {
+    "pkg/schedule/core/cluster_informer.go": "657dd1208bb79c0ffd6820d8bdc558b6ca17f15cba4917e86d325978344bfe78",
+    "pkg/schedule/schedulers/evict_leader_test.go": "eb9288a2cb678c8e7911b876788b537fdce89e13ff0aa1d7543c760e74454b21",
+    "pkg/schedule/schedulers/scheduler_test.go": "55b18eda7e1834ed5090cf360f2cbac1048b0b164e4e84dcf06cbfbbdc8162fc",
+    "pkg/mock/mockcluster/mockcluster.go": "7e93c4a25b9ab59449a4323a9595caec8e94081f787ff00ca1c0a0ace5b5ea48",
+    "pkg/mcs/scheduling/server/grpc_service_test.go": "efc47f7efff49fa03c6bbba2fff43a7af6f8db1da777a0cc1ebf4c5e370dc943",
+    "pkg/mcs/scheduling/server/cluster.go": "0d21815324aab7f6a4c4941d2fc75fe32bad06fb9a38c7c4d86c3e9d19e5ebbc",
+    "pkg/mcs/scheduling/server/config/config.go": "f2bf62bdf11d9d844cc01063308496046fc885707022a17718495d2ec223317d",
+    "pkg/schedule/placement/rule_manager.go": "d601f3dba8f99d21b24141a01836d5898edc1e3d72ef093b4a4f1a96d4dbc235",
+    "pkg/schedule/affinity/manager.go": "65c9eed5ad88ab7eea50554317967f25c7161d86eff365451cf2d96fb281c31b",
+    "pkg/schedule/affinity/txn.go": "26d83586a853bcef47525daba734a0aaaf821925e5f462fb79f84e75b6ed7ca4",
+    "pkg/schedule/labeler/labeler.go": "d05b46f49fe1eaa5c3cd6bff2d06c3c17ddcda13b15d064f34edaccf133a54fc",
+    "pkg/schedule/keyrange/manager.go": "8d44a24d69e190dc63ae9b92d092a3b384c1662570db865961d98a653e03a985",
+    "pkg/utils/keyutil/keyrange.go": "bf3f4c9a134c67e165d80b4bcf9c01d5b5c6b377f29c0ed87b2d40143251ee21",
+    "pkg/id/id.go": "ce6835b3aba6b281e44197ef36b17a20c9e2e7857d30d4cd999e26a15cd01c84",
+    "pkg/id/id_test.go": "1fe8e34a2e5dfce53e9ce008754a4b9c32d590992fc7d105eccf9d70edf7a9ed",
+    "pkg/utils/etcdutil/testutil.go": "4046c4ac53b229268e4f0de1090fb6d6464626073f47892e89d9f7c8d489110e",
+    "pkg/utils/testutil/leak.go": "a269d3582084e8676a46b10299f377752ae7f831a456effcc05c0df6f31836ca",
+    "server/cluster/cluster.go": "a6bc285063b31d56ce4db42bf26f9409144ea35d05a90a7f0dace98a8add291e",
+    "server/cluster/cluster_test.go": "11c9f4767ab374ee4920d7a54e4411c031afbec9be61af191102e0b8cea4f71d"
+  }
+}

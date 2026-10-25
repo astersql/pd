@@ -1,0 +1,19 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=sh -c cargo\ fmt\ --all\ \&\&\ cargo\ test\ -p\ astersql-pd-schedule-core\ --locked\ --lib\ task_003\ --\ --nocapture
+   Compiling astersql-pd-schedule-core v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/core)
+error[E0599]: no method named `unwrap` found for struct `Vec<Arc<RegionInfo>>` in the current scope
+   --> pkg/schedule/core/task_003_test.rs:339:14
+    |
+323 | /         state
+324 | |             .core
+325 | |             .regions
+326 | |             .check_and_put_region(Arc::new(RegionInfo::new(
+...   |
+338 | |             )))
+339 | |             .unwrap();
+    | |_____________-^^^^^^
+    |
+help: there is a method `swap` with a similar name, but with different arguments
+   --> /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/core/src/slice/mod.rs:908:4
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `astersql-pd-schedule-core` (lib test) due to 1 previous error

@@ -1,0 +1,37 @@
+break grpc_service_test.go:109
+continue
+config max-variable-recurse 3
+config max-array-values 12
+print "CASE placement_initialize"
+call cluster.ruleManager.Initialize(3, nil, "", false)
+print "CASE placement_default"
+call cluster.ruleManager.GetRule("pd", "default")
+print "CASE label_missing"
+call cluster.labelerManager.GetLabelRule("missing")
+print "CASE affinity_missing"
+call cluster.affinityManager.GetAffinityGroupState("missing")
+print "CASE keyrange_empty"
+call cluster.keyRangeManager.IsEmpty()
+print "CASE halt"
+call cluster.IsSchedulingHalted()
+call cluster.persistConfig.SetHaltScheduling(true, "task003")
+call cluster.IsSchedulingHalted()
+call cluster.persistConfig.SetHaltScheduling(false, "task003")
+call cluster.IsSchedulingHalted()
+print "CASE prepare_error"
+call cluster.GetPrepareRegionCount()
+print "CASE alloc_error"
+call cluster.AllocID(3)
+break grpc_service_test.go:118
+continue
+print "CASE affinity_created"
+call cluster.affinityManager.GetAffinityGroupState("g1")
+call cluster.labelerManager.GetAllLabelRules()
+print "CASE label_region"
+call cluster.labelerManager.GetRegionLabel(region, "affinity_group")
+print "CASE keyrange_populated"
+call cluster.keyRangeManager.sortedKeyRanges.Append(region.meta.StartKey, region.meta.EndKey)
+call cluster.keyRangeManager.sortedKeyRanges.SortAndDeduce()
+call cluster.keyRangeManager.IsEmpty()
+call cluster.keyRangeManager.GetNonOverlappingKeyRanges(cluster.keyRangeManager.sortedKeyRanges.krs[0])
+exit

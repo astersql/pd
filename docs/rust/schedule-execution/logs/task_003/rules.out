@@ -1,0 +1,151 @@
+Type 'help' for list of commands.
+Breakpoint 1 set at 0x174a6e0 for github.com/tikv/pd/pkg/schedule/schedulers.TestEvictLeaderWithUnhealthyPeer() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers/evict_leader_test.go:91
+=== RUN   TestEvictLeaderWithUnhealthyPeer
+[2026/10/25 04:55:19.764 +00:00] [INFO] [labeler.go:65] ["new region labeler created"] [label-rules-count=0]
+[2026/10/25 04:55:19.764 +00:00] [INFO] [txn.go:756] ["rebuilt group-label mapping"] [total-groups=0] [total-ranges=0]
+[2026/10/25 04:55:19.764 +00:00] [INFO] [policy.go:158] ["affinity manager availability check loop started"] [interval=10s]
+[2026/10/25 04:55:19.764 +00:00] [INFO] [manager.go:137] ["affinity manager initialized"] [group-count=0]
+> [Breakpoint 1] github.com/tikv/pd/pkg/schedule/schedulers.TestEvictLeaderWithUnhealthyPeer() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers/evict_leader_test.go:91 (hits goroutine(268):1 total:1) (PC: 0x174a6e0)
+"CASE placement_rule"
+> github.com/tikv/pd/pkg/schedule/schedulers.TestEvictLeaderWithUnhealthyPeer() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers/evict_leader_test.go:91 (PC: 0x174a6e0)
+Values returned:
+    ~r0: ("*github.com/tikv/pd/pkg/schedule/placement.Rule")(0x5d3bd0419100)
+*github.com/tikv/pd/pkg/schedule/placement.Rule {
+        GroupID: "pd",
+        ID: "default",
+        Index: 0,
+        Override: false,
+        StartKey: []uint8 len: 0, cap: 0, nil,
+        StartKeyHex: "",
+        EndKey: []uint8 len: 0, cap: 0, nil,
+        EndKeyHex: "",
+        Role: "voter",
+        IsWitness: false,
+        Count: 3,
+        LabelConstraints: []github.com/tikv/pd/pkg/schedule/placement.LabelConstraint len: 0, cap: 0, nil,
+        LocationLabels: []string len: 0, cap: 0, nil,
+        IsolationLevel: "",
+        Version: 0,
+        CreateTimestamp: 0,
+        group: *github.com/tikv/pd/pkg/schedule/placement.RuleGroup nil,}
+
+"CASE placement_missing"
+> github.com/tikv/pd/pkg/schedule/schedulers.TestEvictLeaderWithUnhealthyPeer() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers/evict_leader_test.go:91 (PC: 0x174a6e0)
+Values returned:
+    ~r0: *github.com/tikv/pd/pkg/schedule/placement.Rule nil
+
+"CASE basic_shared"
+> github.com/tikv/pd/pkg/schedule/schedulers.TestEvictLeaderWithUnhealthyPeer() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers/evict_leader_test.go:91 (PC: 0x174a6e0)
+Values returned:
+    ~r0: ("*github.com/tikv/pd/pkg/core.BasicCluster")(0x5d3bd0987470)
+*github.com/tikv/pd/pkg/core.BasicCluster {
+        StoresInfo: *github.com/tikv/pd/pkg/core.StoresInfo {
+            RWMutex: github.com/tikv/pd/pkg/utils/syncutil.RWMutex {
+                RWMutex: (*sync.RWMutex)(0x5d3bd0984aa0),},
+            stores: map[uint64]*github.com/tikv/pd/pkg/core.StoreInfo [
+                1: *(*"github.com/tikv/pd/pkg/core.StoreInfo")(0x5d3bd0671790),
+                2: *(*"github.com/tikv/pd/pkg/core.StoreInfo")(0x5d3bd0671860),
+                3: *(*"github.com/tikv/pd/pkg/core.StoreInfo")(0x5d3bd0671930),
+            ],},
+        RegionsInfo: *github.com/tikv/pd/pkg/core.RegionsInfo {
+            t: github.com/tikv/pd/pkg/core.RWLockStats {
+                RWMutex: (*"github.com/tikv/pd/pkg/utils/syncutil.RWMutex")(0x5d3bd0a2c600),
+                totalWaitTime: 125,
+                lockCount: 1,
+                lastLockCount: 0,
+                lastTotalWaitTime: 0,},
+            tree: *github.com/tikv/pd/pkg/core.regionTree {
+                tree: *(*"github.com/tikv/pd/pkg/btree.BTreeG[*github.com/tikv/pd/pkg/core.regionItem]")(0x5d3bd0984ae0),
+                totalSize: 96,
+                totalWriteBytesRate: 0,
+                totalWriteKeysRate: 0,
+                notFromStorageRegionsCnt: 0,
+                countRef: true,},
+            regions: map[uint64]*github.com/tikv/pd/pkg/core.regionItem [
+                1: *(*"github.com/tikv/pd/pkg/core.regionItem")(0x5d3bd0586c18),
+            ],
+            st: github.com/tikv/pd/pkg/core.RWLockStats {
+                RWMutex: (*"github.com/tikv/pd/pkg/utils/syncutil.RWMutex")(0x5d3bd0a2c648),
+                totalWaitTime: 42,
+                lockCount: 1,
+                lastLockCount: 0,
+                lastTotalWaitTime: 0,},
+            subRegions: map[uint64]*github.com/tikv/pd/pkg/core.regionItem [
+                1: *(*"github.com/tikv/pd/pkg/core.regionItem")(0x5d3bd0586c30),
+            ],
+            leaders: map[uint64]*github.com/tikv/pd/pkg/core.regionTree [
+                1: *(*"github.com/tikv/pd/pkg/core.regionTree")(0x5d3bd093bd40),
+            ],
+            followers: map[uint64]*github.com/tikv/pd/pkg/core.regionTree [
+                2: *(*"github.com/tikv/pd/pkg/core.regionTree")(0x5d3bd093bd70),
+                3: *(*"github.com/tikv/pd/pkg/core.regionTree")(0x5d3bd093bda0),
+            ],
+            learners: map[uint64]*github.com/tikv/pd/pkg/core.regionTree [],
+            witnesses: map[uint64]*github.com/tikv/pd/pkg/core.regionTree [],
+            pendingPeers: map[uint64]*github.com/tikv/pd/pkg/core.regionTree [],
+            overlapTree: *github.com/tikv/pd/pkg/core.regionTree {
+                tree: *(*"github.com/tikv/pd/pkg/btree.BTreeG[*github.com/tikv/pd/pkg/core.regionItem]")(0x5d3bd0984b20),
+                totalSize: 96,
+                totalWriteBytesRate: 0,
+                totalWriteKeysRate: 0,
+                notFromStorageRegionsCnt: 0,
+                countRef: true,},},}
+
+("*github.com/tikv/pd/pkg/core.BasicCluster")(0x5d3bd0987470)
+*github.com/tikv/pd/pkg/core.BasicCluster {
+    StoresInfo: *github.com/tikv/pd/pkg/core.StoresInfo {
+        RWMutex: github.com/tikv/pd/pkg/utils/syncutil.RWMutex {
+            RWMutex: (*sync.RWMutex)(0x5d3bd0984aa0),},
+        stores: map[uint64]*github.com/tikv/pd/pkg/core.StoreInfo [
+            1: *(*"github.com/tikv/pd/pkg/core.StoreInfo")(0x5d3bd0671790),
+            2: *(*"github.com/tikv/pd/pkg/core.StoreInfo")(0x5d3bd0671860),
+            3: *(*"github.com/tikv/pd/pkg/core.StoreInfo")(0x5d3bd0671930),
+        ],},
+    RegionsInfo: *github.com/tikv/pd/pkg/core.RegionsInfo {
+        t: github.com/tikv/pd/pkg/core.RWLockStats {
+            RWMutex: (*"github.com/tikv/pd/pkg/utils/syncutil.RWMutex")(0x5d3bd0a2c600),
+            totalWaitTime: 125,
+            lockCount: 1,
+            lastLockCount: 0,
+            lastTotalWaitTime: 0,},
+        tree: *github.com/tikv/pd/pkg/core.regionTree {
+            tree: *(*"github.com/tikv/pd/pkg/btree.BTreeG[*github.com/tikv/pd/pkg/core.regionItem]")(0x5d3bd0984ae0),
+            totalSize: 96,
+            totalWriteBytesRate: 0,
+            totalWriteKeysRate: 0,
+            notFromStorageRegionsCnt: 0,
+            countRef: true,},
+        regions: map[uint64]*github.com/tikv/pd/pkg/core.regionItem [
+            1: *(*"github.com/tikv/pd/pkg/core.regionItem")(0x5d3bd0586c18),
+        ],
+        st: github.com/tikv/pd/pkg/core.RWLockStats {
+            RWMutex: (*"github.com/tikv/pd/pkg/utils/syncutil.RWMutex")(0x5d3bd0a2c648),
+            totalWaitTime: 42,
+            lockCount: 1,
+            lastLockCount: 0,
+            lastTotalWaitTime: 0,},
+        subRegions: map[uint64]*github.com/tikv/pd/pkg/core.regionItem [
+            1: *(*"github.com/tikv/pd/pkg/core.regionItem")(0x5d3bd0586c30),
+        ],
+        leaders: map[uint64]*github.com/tikv/pd/pkg/core.regionTree [
+            1: *(*"github.com/tikv/pd/pkg/core.regionTree")(0x5d3bd093bd40),
+        ],
+        followers: map[uint64]*github.com/tikv/pd/pkg/core.regionTree [
+            2: *(*"github.com/tikv/pd/pkg/core.regionTree")(0x5d3bd093bd70),
+            3: *(*"github.com/tikv/pd/pkg/core.regionTree")(0x5d3bd093bda0),
+        ],
+        learners: map[uint64]*github.com/tikv/pd/pkg/core.regionTree [],
+        witnesses: map[uint64]*github.com/tikv/pd/pkg/core.regionTree [],
+        pendingPeers: map[uint64]*github.com/tikv/pd/pkg/core.regionTree [],
+        overlapTree: *github.com/tikv/pd/pkg/core.regionTree {
+            tree: *(*"github.com/tikv/pd/pkg/btree.BTreeG[*github.com/tikv/pd/pkg/core.regionItem]")(0x5d3bd0984b20),
+            totalSize: 96,
+            totalWriteBytesRate: 0,
+            totalWriteKeysRate: 0,
+            notFromStorageRegionsCnt: 0,
+            countRef: true,},},}
+"CASE prepare_count"
+> github.com/tikv/pd/pkg/schedule/schedulers.TestEvictLeaderWithUnhealthyPeer() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers/evict_leader_test.go:91 (PC: 0x174a6e0)
+Values returned:
+    ~r0: 0
+    ~r1: error nil

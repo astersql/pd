@@ -1,0 +1,25 @@
+    Blocking waiting for file lock on package cache
+   Compiling astersql-pd-proto v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/proto)
+   Compiling astersql-pd-election v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/election)
+   Compiling astersql-pd-schedule-keyrange v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/keyrange)
+   Compiling astersql-pd-schedule-config v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/config)
+   Compiling astersql-pd-member v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/member)
+   Compiling astersql-pd-id v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/id)
+   Compiling astersql-pd-storage-endpoint v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/storage/endpoint)
+   Compiling astersql-pd-schedule-placement v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/placement)
+   Compiling astersql-pd-schedule-labeler v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler)
+   Compiling astersql-pd-schedule-affinity v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/affinity)
+   Compiling astersql-pd-statistics v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics)
+   Compiling astersql-pd-schedule-core v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/core)
+error[E0432]: unresolved imports `crate::IdAllocation`, `crate::PrepareRegionCount`, `crate::SharedCluster`, `crate::SharedClusterView`
+ --> pkg/schedule/core/task_003_test.rs:2:27
+  |
+2 | use crate::{BasicCluster, IdAllocation, PrepareRegionCount, SharedCluster, SharedClusterView};
+  |                           ^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^ no `SharedClusterView` in the root
+  |                           |             |                   |
+  |                           |             |                   no `SharedCluster` in the root
+  |                           |             no `PrepareRegionCount` in the root
+  |                           no `IdAllocation` in the root
+
+For more information about this error, try `rustc --explain E0432`.
+error: could not compile `astersql-pd-schedule-core` (lib test) due to 1 previous error

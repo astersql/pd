@@ -1,0 +1,18 @@
+{
+  "mutation": "always return false for halt",
+  "argv": [
+    "cargo",
+    "test",
+    "-p",
+    "astersql-pd-schedule-core",
+    "--locked",
+    "--lib",
+    "task_003",
+    "--",
+    "--nocapture"
+  ],
+  "exit_code": 101,
+  "expected_failure": "task_003_halt_and_prepare_error; true != false",
+  "stdout": "\nrunning 6 tests\ntask_003_classic_count_and_leadership_fault: 3 source-contract/fault scenarios passed\ntest task_003_test::task_003_classic_count_and_leadership_fault ... ok\ntask_003_id_allocation_success_and_failure: 4 oracle scenarios passed; post-error base retained\ntest task_003_test::task_003_remote_allocation_error_is_preserved ... ok\ntest task_003_test::task_003_local_prepare_count_uses_canonical_regions ... ok\ntest task_003_test::task_003_id_allocation_success_and_failure ... ok\ntask_003_behavior_cases: 9 oracle scenarios passed; canonical owner identity checked\ntest task_003_test::task_003_behavior_cases ... ok\ntest task_003_test::task_003_halt_and_prepare_error ... FAILED\n\nfailures:\n\nfailures:\n    task_003_test::task_003_halt_and_prepare_error\n\ntest result: FAILED. 5 passed; 1 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s\n\n",
+  "stderr": "   Compiling astersql-pd-schedule-core v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/core)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.65s\n     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_core-6bbcb054608e6b71)\n\nthread 'task_003_test::task_003_halt_and_prepare_error' (160256889) panicked at pkg/schedule/core/task_003_test.rs:239:9:\nassertion `left == right` failed\n  left: Bool(false)\n right: Bool(true)\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nerror: test failed, to rerun pass `-p astersql-pd-schedule-core --lib`\n"
+}

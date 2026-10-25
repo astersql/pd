@@ -1,0 +1,86 @@
+[
+  {
+    "package": "./pkg/mcs/scheduling/server",
+    "argv": [
+      "go",
+      "test",
+      "-c",
+      "-gcflags=all=-N -l",
+      "-o",
+      "/tmp/pd-sched003/scheduling.test",
+      "./pkg/mcs/scheduling/server"
+    ],
+    "env": {
+      "GOOS": "linux",
+      "GOARCH": "arm64",
+      "GOFLAGS": "-mod=readonly",
+      "GOPROXY": "off",
+      "CGO_ENABLED": "0"
+    },
+    "exit_code": 0,
+    "binary_sha256": "ccf6c1e653a03afc5fba227b0942b30b8d66346269db2084b2117e39bd3c8bbd"
+  },
+  {
+    "package": "./pkg/schedule/schedulers",
+    "argv": [
+      "go",
+      "test",
+      "-c",
+      "-gcflags=all=-N -l",
+      "-o",
+      "/tmp/pd-sched003/schedulers.test",
+      "./pkg/schedule/schedulers"
+    ],
+    "env": {
+      "GOOS": "linux",
+      "GOARCH": "arm64",
+      "GOFLAGS": "-mod=readonly",
+      "GOPROXY": "off",
+      "CGO_ENABLED": "0"
+    },
+    "exit_code": 0,
+    "binary_sha256": "be084116f4781d659008fca257645da66f10f59fc424db02a2655c2f293b9f3f"
+  },
+  {
+    "package": "./pkg/id",
+    "argv": [
+      "go",
+      "test",
+      "-c",
+      "-gcflags=all=-N -l",
+      "-o",
+      "/tmp/pd-sched003/id.test",
+      "./pkg/id"
+    ],
+    "env": {
+      "GOOS": "linux",
+      "GOARCH": "arm64",
+      "GOFLAGS": "-mod=readonly",
+      "GOPROXY": "off",
+      "CGO_ENABLED": "0"
+    },
+    "exit_code": 0,
+    "binary_sha256": "27e3d24bbb828d9f730442dc36e5e2d0e8412d059585817a7583238ed0a79c89"
+  },
+  {
+    "package": "./server/cluster",
+    "argv": [
+      "go",
+      "test",
+      "-c",
+      "-gcflags=all=-N -l",
+      "-o",
+      "/tmp/pd-sched003/cluster.test",
+      "./server/cluster"
+    ],
+    "env": {
+      "GOOS": "linux",
+      "GOARCH": "arm64",
+      "GOFLAGS": "-mod=readonly",
+      "GOPROXY": "off",
+      "CGO_ENABLED": "0"
+    },
+    "exit_code": 0,
+    "binary_sha256": "8781f08225e2b8b746217d79fe78e3ff072369cc8ae8941cc8d616a8a77986d9"
+  }
+]
