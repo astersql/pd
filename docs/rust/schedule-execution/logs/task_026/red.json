@@ -1,0 +1,69 @@
+{
+  "results": [
+    {
+      "mutation": "duplicate-accepted",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "astersql-pd-schedule-operator",
+        "--locked",
+        "--lib",
+        "task_026",
+        "--",
+        "--nocapture"
+      ],
+      "exit_code": 101,
+      "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+    },
+    {
+      "mutation": "force-bypasses-missing-store",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "astersql-pd-schedule-operator",
+        "--locked",
+        "--lib",
+        "task_026",
+        "--",
+        "--nocapture"
+      ],
+      "exit_code": 101,
+      "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+    },
+    {
+      "mutation": "placement-unchecked",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "astersql-pd-schedule-operator",
+        "--locked",
+        "--lib",
+        "task_026",
+        "--",
+        "--nocapture"
+      ],
+      "exit_code": 101,
+      "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+    },
+    {
+      "mutation": "all-leaders-accepted",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "astersql-pd-schedule-operator",
+        "--locked",
+        "--lib",
+        "task_026",
+        "--",
+        "--nocapture"
+      ],
+      "exit_code": 101,
+      "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+    }
+  ],
+  "restored_sha256": "d78ec7efc749c0fd465e97ef303532600687ca733d73247f296ad04760f1ef7f"
+}

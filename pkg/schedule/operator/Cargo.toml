@@ -15,3 +15,8 @@ astersql-pd-core-constant.workspace = true
 astersql-pd-storelimit.workspace = true
 astersql-pd-schedule-hbstream.workspace = true
 astersql-pd-schedule-config.workspace = true
+astersql-pd-schedule-filter.workspace = true
+astersql-pd-schedule-placement.workspace = true
+
+[dev-dependencies]
+tokio.workspace = true

@@ -1,0 +1,26 @@
+
+running 2 tests
+test task_026_test::task_026_multi_target_and_ownership ... FAILED
+test task_026_test::task_026_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_026_test::task_026_behavior_cases
+    task_026_test::task_026_multi_target_and_ownership
+
+test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 40 filtered out; finished in 0.00s
+
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.87s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_operator-3c432df009ee920c)
+
+thread 'task_026_test::task_026_multi_target_and_ownership' (162911271) panicked at pkg/schedule/operator/task_026_test.rs:260:9:
+assertion failed: !b.allow_leader(&Peer { role, ..peer(1) }, true).await
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'task_026_test::task_026_behavior_cases' (162911270) panicked at pkg/schedule/operator/task_026_test.rs:196:9:
+assertion `left == right` failed: witness-target
+  left: None
+ right: Some("LeaderNotAllowed")
+error: test failed, to rerun pass `-p astersql-pd-schedule-operator --lib`

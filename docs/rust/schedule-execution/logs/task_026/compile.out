@@ -1,0 +1,53 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=python3 docs/rust/schedule-execution/logs/task_026/compile.py
+     Locking 200 packages to highest Rust 1.85 compatible versions
+      Adding base64 v0.22.1 (available: v0.23.1)
+      Adding chrono v0.4.42 (available: v0.4.45)
+      Adding etcd-client v0.17.0 (available: v0.19.0)
+      Adding prost v0.14.1 (available: v0.14.4)
+      Adding prost-build v0.14.1 (available: v0.14.4)
+      Adding prost-types v0.14.1 (available: v0.14.4)
+      Adding protobuf v2.28.0 (available: v3.7.2)
+      Adding protoc-bin-vendored v3.2.0 (available: v3.3.0)
+      Adding protoc-bin-vendored-linux-aarch_64 v3.2.0 (available: v3.3.0)
+      Adding protoc-bin-vendored-linux-ppcle_64 v3.2.0 (available: v3.3.0)
+      Adding protoc-bin-vendored-linux-s390_64 v3.2.0 (available: v3.3.0)
+      Adding protoc-bin-vendored-linux-x86_32 v3.2.0 (available: v3.3.0)
+      Adding protoc-bin-vendored-linux-x86_64 v3.2.0 (available: v3.3.0)
+      Adding protoc-bin-vendored-macos-aarch_64 v3.2.0 (available: v3.3.0)
+      Adding protoc-bin-vendored-macos-x86_64 v3.2.0 (available: v3.3.0)
+      Adding protoc-bin-vendored-win32 v3.2.0 (available: v3.3.0)
+      Adding serde_json v1.0.145 (available: v1.0.151)
+      Adding sha2 v0.10.9 (available: v0.11.0)
+      Adding tokio v1.48.0 (available: v1.53.2)
+      Adding tokio-macros v2.6.1 (available: v2.7.2)
+      Adding tokio-util v0.7.17 (available: v0.7.19)
+      Adding toml v0.9.8 (available: v0.9.11+spec-1.1.0)
+      Adding tonic v0.14.2 (available: v0.14.5)
+      Adding tonic-build v0.14.5 (available: v0.14.6, requires Rust 1.88)
+      Adding tonic-prost v0.14.2 (available: v0.14.5)
+      Adding tonic-prost-build v0.14.2 (available: v0.14.6, requires Rust 1.88)
+   Compiling astersql-pd-schedule-filter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter)
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+error[E0308]: mismatched types
+   --> pkg/schedule/operator/builder_target.rs:319:48
+    |
+319 |                     && match_label_constraints(&store, &r.label_constraints)
+    |                        ----------------------- ^^^^^^ expected `Option<&StoreInfo>`, found `&Arc<StoreInfo>`
+    |                        |
+    |                        arguments to this function are incorrect
+    |
+    = note:   expected enum `Option<&StoreInfo>`
+            found reference `&Arc<StoreInfo>`
+note: function defined here
+   --> pkg/schedule/placement/label_constraint.rs:80:8
+    |
+ 80 | pub fn match_label_constraints(store: Option<&StoreInfo>, constraints: &[LabelConstraint]) -> bool {
+    |        ^^^^^^^^^^^^^^^^^^^^^^^
+help: try wrapping the expression in `Some`
+    |
+319 |                     && match_label_constraints(Some(&store), &r.label_constraints)
+    |                                                +++++      +
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `astersql-pd-schedule-operator` (lib test) due to 1 previous error
+command_exit_code=101

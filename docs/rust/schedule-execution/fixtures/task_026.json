@@ -1,0 +1,595 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "evidence_kind": "source_assertion",
+  "go_execution": false,
+  "normalization": "typed domain errors preserve source branch identity; protobuf text not compared; no time/random normalization",
+  "source_sha256": {
+    "pkg/schedule/operator/builder.go": "2c74830947c401ea8c4d46e8066e4c85aecd02beea035d0bb9eb4aab8cee8f83",
+    "pkg/schedule/operator/builder_test.go": "3c3e8b4681b988523e129dd3a0452e9f03c14273b118666984268432dbb4c953"
+  },
+  "cases": [
+    {
+      "name": "unchanged",
+      "actions": [],
+      "error": null,
+      "build": "NoSteps"
+    },
+    {
+      "name": "add-remove-cancel",
+      "actions": [
+        [
+          "add",
+          4
+        ],
+        [
+          "remove",
+          4
+        ]
+      ],
+      "error": null,
+      "build": "NoSteps"
+    },
+    {
+      "name": "duplicate-add",
+      "actions": [
+        [
+          "add",
+          1
+        ]
+      ],
+      "error": "DuplicatePeer(1)"
+    },
+    {
+      "name": "duplicate-remove",
+      "actions": [
+        [
+          "remove",
+          2
+        ],
+        [
+          "remove",
+          2
+        ]
+      ],
+      "error": "MissingPeer(2)"
+    },
+    {
+      "name": "missing-remove",
+      "actions": [
+        [
+          "remove",
+          9
+        ]
+      ],
+      "error": "MissingPeer(9)"
+    },
+    {
+      "name": "nil-add",
+      "actions": [
+        [
+          "nil"
+        ]
+      ],
+      "error": "InvalidPeer"
+    },
+    {
+      "name": "zero-store",
+      "actions": [
+        [
+          "add",
+          0
+        ]
+      ],
+      "error": "InvalidPeer"
+    },
+    {
+      "name": "joint-add",
+      "actions": [
+        [
+          "joint",
+          4
+        ]
+      ],
+      "error": "JointPeer"
+    },
+    {
+      "name": "missing-leader",
+      "actions": [
+        [
+          "leader",
+          9
+        ]
+      ],
+      "error": "MissingPeer(9)"
+    },
+    {
+      "name": "learner-leader",
+      "actions": [
+        [
+          "leader",
+          3
+        ]
+      ],
+      "error": "NotVoter(3)"
+    },
+    {
+      "name": "target-remove",
+      "actions": [
+        [
+          "leader",
+          2
+        ],
+        [
+          "remove",
+          2
+        ]
+      ],
+      "error": "TargetLeaderRemoval(2)"
+    },
+    {
+      "name": "missing-store-target",
+      "actions": [
+        [
+          "add",
+          9
+        ],
+        [
+          "leader",
+          9
+        ]
+      ],
+      "error": "LeaderNotAllowed"
+    },
+    {
+      "name": "force-missing",
+      "actions": [
+        [
+          "add",
+          9
+        ],
+        [
+          "leader",
+          9
+        ],
+        [
+          "force"
+        ]
+      ],
+      "error": "LeaderNotAllowed"
+    },
+    {
+      "name": "healthy-target",
+      "actions": [
+        [
+          "leader",
+          2
+        ]
+      ],
+      "error": null,
+      "build": "PlanningRequired"
+    },
+    {
+      "name": "down-target",
+      "actions": [
+        [
+          "leader",
+          2
+        ]
+      ],
+      "error": "LeaderNotAllowed",
+      "down": true
+    },
+    {
+      "name": "force-down",
+      "actions": [
+        [
+          "leader",
+          2
+        ],
+        [
+          "force"
+        ]
+      ],
+      "error": null,
+      "down": true,
+      "build": "PlanningRequired"
+    },
+    {
+      "name": "skip-does-not-skip-store",
+      "actions": [
+        [
+          "leader",
+          2
+        ]
+      ],
+      "error": "LeaderNotAllowed",
+      "down": true,
+      "skip_rules": true
+    },
+    {
+      "name": "witness-target",
+      "actions": [
+        [
+          "witness",
+          2
+        ],
+        [
+          "leader",
+          2
+        ],
+        [
+          "force"
+        ]
+      ],
+      "error": "LeaderNotAllowed"
+    },
+    {
+      "name": "invalid-map",
+      "actions": [
+        [
+          "badmap"
+        ]
+      ],
+      "error": "InvalidPeerMap"
+    },
+    {
+      "name": "no-voter",
+      "actions": [
+        [
+          "learners"
+        ]
+      ],
+      "error": "NoVoter"
+    },
+    {
+      "name": "leader-cleared-on-setpeers",
+      "actions": [
+        [
+          "leader",
+          2
+        ],
+        [
+          "only",
+          1
+        ]
+      ],
+      "error": null,
+      "leader": 0,
+      "build": "PlanningRequired"
+    },
+    {
+      "name": "demoted-leader-reset",
+      "actions": [
+        [
+          "leader",
+          2
+        ],
+        [
+          "demote",
+          2
+        ]
+      ],
+      "error": null,
+      "leader": 0
+    },
+    {
+      "name": "roles-two-leaders",
+      "actions": [
+        [
+          "two_leaders"
+        ]
+      ],
+      "error": "MultipleLeaders"
+    },
+    {
+      "name": "roles-no-voter",
+      "actions": [
+        [
+          "followers"
+        ]
+      ],
+      "error": "NoExpectedVoter"
+    },
+    {
+      "name": "roles-follower-clears",
+      "actions": [
+        [
+          "leader",
+          2
+        ],
+        [
+          "roles"
+        ]
+      ],
+      "error": null,
+      "leader": 0
+    },
+    {
+      "name": "roles-missing-leader-reset",
+      "actions": [
+        [
+          "missing_role"
+        ]
+      ],
+      "error": null,
+      "leader": 0
+    },
+    {
+      "name": "origin-no-leader",
+      "actions": [],
+      "error": "NoLeader",
+      "no_leader": true
+    },
+    {
+      "name": "origin-joint",
+      "actions": [],
+      "error": "OriginJoint",
+      "joint": true
+    },
+    {
+      "name": "skip-origin-joint",
+      "actions": [],
+      "error": null,
+      "joint": true,
+      "skip_joint": true
+    },
+    {
+      "name": "rules-no-match",
+      "actions": [],
+      "error": "NoPlacementRule",
+      "rules": "empty"
+    },
+    {
+      "name": "skip-no-rules",
+      "actions": [],
+      "error": null,
+      "rules": "empty",
+      "skip_rules": true
+    },
+    {
+      "name": "rule-target-rejected",
+      "actions": [
+        [
+          "leader",
+          2
+        ]
+      ],
+      "error": "LeaderNotAllowed",
+      "rules": "leader-zone"
+    },
+    {
+      "name": "force-rule-target",
+      "actions": [
+        [
+          "leader",
+          2
+        ],
+        [
+          "force"
+        ]
+      ],
+      "error": null,
+      "rules": "leader-zone"
+    },
+    {
+      "name": "skip-rule-target",
+      "actions": [
+        [
+          "leader",
+          2
+        ]
+      ],
+      "error": null,
+      "rules": "leader-zone",
+      "skip_rules": true
+    },
+    {
+      "name": "current-leader-bypass",
+      "actions": [
+        [
+          "leader",
+          1
+        ]
+      ],
+      "error": null,
+      "rules": "follower",
+      "down": true
+    },
+    {
+      "name": "sticky-first-error",
+      "actions": [
+        [
+          "remove",
+          9
+        ],
+        [
+          "add",
+          4
+        ]
+      ],
+      "error": "MissingPeer(9)"
+    },
+    {
+      "name": "pending-leader",
+      "actions": [
+        [
+          "leader",
+          2
+        ]
+      ],
+      "error": "Unhealthy(2)",
+      "pending": true
+    },
+    {
+      "name": "down-peer-promotion",
+      "actions": [
+        [
+          "promote",
+          3
+        ]
+      ],
+      "error": "Unhealthy(3)",
+      "down_peer": true
+    },
+    {
+      "name": "promote-voter",
+      "actions": [
+        [
+          "promote",
+          1
+        ]
+      ],
+      "error": "NotLearner(1)"
+    },
+    {
+      "name": "promote-missing",
+      "actions": [
+        [
+          "promote",
+          9
+        ]
+      ],
+      "error": "MissingPeer(9)"
+    },
+    {
+      "name": "promote-valid",
+      "actions": [
+        [
+          "promote",
+          3
+        ],
+        [
+          "leader",
+          3
+        ]
+      ],
+      "error": null
+    },
+    {
+      "name": "demote-learner",
+      "actions": [
+        [
+          "demote",
+          3
+        ]
+      ],
+      "error": "AlreadyLearner(3)"
+    },
+    {
+      "name": "origin-zero-store",
+      "actions": [],
+      "error": "InvalidOriginPeer",
+      "zero_origin": true
+    },
+    {
+      "name": "skip-joint-keeps-placement",
+      "actions": [],
+      "error": "NoPlacementRule",
+      "joint": true,
+      "skip_joint": true,
+      "rules": "empty"
+    },
+    {
+      "name": "skip-placement-keeps-joint",
+      "actions": [],
+      "error": "OriginJoint",
+      "joint": true,
+      "skip_rules": true,
+      "rules": "empty"
+    },
+    {
+      "name": "force-pending-still-rejected",
+      "actions": [
+        [
+          "leader",
+          2
+        ],
+        [
+          "force"
+        ]
+      ],
+      "error": "Unhealthy(2)",
+      "pending": true
+    },
+    {
+      "name": "down-peer-leader",
+      "actions": [
+        [
+          "leader",
+          2
+        ]
+      ],
+      "error": "Unhealthy(2)",
+      "down_voter": true
+    },
+    {
+      "name": "pending-promotion",
+      "actions": [
+        [
+          "promote",
+          3
+        ]
+      ],
+      "error": "Unhealthy(3)",
+      "pending_learner": true
+    },
+    {
+      "name": "setpeers-joint",
+      "actions": [
+        [
+          "jointmap"
+        ]
+      ],
+      "error": "InvalidPeerMap"
+    },
+    {
+      "name": "setpeers-zero",
+      "actions": [
+        [
+          "zeromap"
+        ]
+      ],
+      "error": "InvalidPeerMap"
+    },
+    {
+      "name": "setpeers-empty",
+      "actions": [
+        [
+          "empty"
+        ]
+      ],
+      "error": "NoVoter"
+    },
+    {
+      "name": "promote-demote-roundtrip",
+      "actions": [
+        [
+          "promote",
+          3
+        ],
+        [
+          "demote",
+          3
+        ]
+      ],
+      "error": null,
+      "build": "NoSteps"
+    },
+    {
+      "name": "force-demoting-rejected",
+      "actions": [
+        [
+          "leader",
+          2
+        ],
+        [
+          "force"
+        ]
+      ],
+      "error": "LeaderNotAllowed",
+      "joint": true,
+      "demoting": true,
+      "skip_joint": true
+    }
+  ]
+}
