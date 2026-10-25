@@ -28,7 +28,8 @@ Rust Peer 无 nil 表示，AddPeer 用 Option 暴露 nil 边界，origin 的 nil
 `validate_targets` 在规划前拒绝无 voter 或非法 leader，且失败保持 sticky。
 `build` 本阶段仅实现无变化（包含仅改 peer ID）时的 NoSteps，其他有效变更返回明确
 PlanningRequired 交给后续规划任务；不生成空步骤 Operator，不分配 ID，不进行 I/O。
-BecomeWitness 的步骤规划、peer 分配和后续 joint/non-joint 规划均由后续任务扩展。
+普通规划现通过显式 `build_simple` 入口接入，复用目标校验并由宿主提供 ID 分配；
+其范围和验证见 [普通规划](builder_simple.rs.md)。witness 转换和 joint 规划仍属后续行为族。
 不存在存储读写，因此不添加 MetaStore 桩或持久化故障测试。
 
 验证入口为独立注册 task_026_test.rs：53个 fixture 案例，以及多目标、所有权、

@@ -1,0 +1,1267 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "provenance": "source_assertion",
+  "go_execution": false,
+  "source_sha256": {
+    "pkg/schedule/operator/builder.go": "2c74830947c401ea8c4d46e8066e4c85aecd02beea035d0bb9eb4aab8cee8f83",
+    "pkg/schedule/operator/builder_test.go": "3c3e8b4681b988523e129dd3a0452e9f03c14273b118666984268432dbb4c953"
+  },
+  "normalization": {},
+  "cases": [
+    {
+      "name": "add-voter",
+      "origin": [
+        [
+          1,
+          "v",
+          11
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "v",
+          11
+        ],
+        [
+          2,
+          "v",
+          12
+        ]
+      ],
+      "steps": [
+        [
+          "add",
+          2,
+          12
+        ],
+        [
+          "promote",
+          2,
+          12
+        ]
+      ],
+      "error": null
+    },
+    {
+      "name": "add-learner",
+      "origin": [
+        [
+          1,
+          "v",
+          11
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "v",
+          11
+        ],
+        [
+          2,
+          "l",
+          12
+        ]
+      ],
+      "steps": [
+        [
+          "add",
+          2,
+          12
+        ]
+      ],
+      "error": null
+    },
+    {
+      "name": "promote-id-preserved",
+      "origin": [
+        [
+          1,
+          "v",
+          11
+        ],
+        [
+          2,
+          "l",
+          12
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "v",
+          11
+        ],
+        [
+          2,
+          "v",
+          999
+        ]
+      ],
+      "steps": [
+        [
+          "promote",
+          2,
+          12
+        ]
+      ],
+      "error": null
+    },
+    {
+      "name": "remove-follower",
+      "origin": [
+        [
+          1,
+          "v",
+          11
+        ],
+        [
+          2,
+          "v",
+          12
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "v",
+          11
+        ]
+      ],
+      "steps": [
+        [
+          "remove",
+          2,
+          12
+        ]
+      ],
+      "error": null
+    },
+    {
+      "name": "remove-leader",
+      "origin": [
+        [
+          1,
+          "v",
+          11
+        ],
+        [
+          2,
+          "v",
+          12
+        ]
+      ],
+      "target": [
+        [
+          2,
+          "v",
+          12
+        ]
+      ],
+      "steps": [
+        [
+          "transfer",
+          1,
+          2
+        ],
+        [
+          "remove",
+          1,
+          11
+        ]
+      ],
+      "error": null
+    },
+    {
+      "name": "replace-only-leader",
+      "origin": [
+        [
+          1,
+          "v",
+          11
+        ]
+      ],
+      "target": [
+        [
+          2,
+          "v",
+          12
+        ]
+      ],
+      "steps": [
+        [
+          "add",
+          2,
+          12
+        ],
+        [
+          "promote",
+          2,
+          12
+        ],
+        [
+          "transfer",
+          1,
+          2
+        ],
+        [
+          "remove",
+          1,
+          11
+        ]
+      ],
+      "error": null
+    },
+    {
+      "name": "replace-many",
+      "origin": [
+        [
+          1,
+          "v",
+          11
+        ],
+        [
+          2,
+          "v",
+          12
+        ],
+        [
+          3,
+          "v",
+          13
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "v",
+          11
+        ],
+        [
+          4,
+          "v",
+          14
+        ],
+        [
+          5,
+          "v",
+          15
+        ]
+      ],
+      "steps": [
+        [
+          "add",
+          4,
+          14
+        ],
+        [
+          "promote",
+          4,
+          14
+        ],
+        [
+          "remove",
+          2,
+          12
+        ],
+        [
+          "add",
+          5,
+          15
+        ],
+        [
+          "promote",
+          5,
+          15
+        ],
+        [
+          "remove",
+          3,
+          13
+        ]
+      ],
+      "error": null
+    },
+    {
+      "name": "demote-follower",
+      "origin": [
+        [
+          1,
+          "v",
+          11
+        ],
+        [
+          2,
+          "v",
+          12
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "v",
+          11
+        ],
+        [
+          2,
+          "l",
+          12
+        ]
+      ],
+      "steps": [
+        [
+          "remove",
+          2,
+          12
+        ],
+        [
+          "add",
+          2,
+          12
+        ]
+      ],
+      "error": null
+    },
+    {
+      "name": "demote-leader",
+      "origin": [
+        [
+          1,
+          "v",
+          11
+        ],
+        [
+          2,
+          "v",
+          12
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "l",
+          11
+        ],
+        [
+          2,
+          "v",
+          12
+        ]
+      ],
+      "steps": [
+        [
+          "transfer",
+          1,
+          2
+        ],
+        [
+          "remove",
+          1,
+          11
+        ],
+        [
+          "add",
+          1,
+          11
+        ]
+      ],
+      "error": null
+    },
+    {
+      "name": "leader-only",
+      "origin": [
+        [
+          1,
+          "v",
+          11
+        ],
+        [
+          2,
+          "v",
+          12
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "v",
+          11
+        ],
+        [
+          2,
+          "v",
+          12
+        ]
+      ],
+      "steps": [
+        [
+          "transfer",
+          1,
+          2
+        ]
+      ],
+      "error": null,
+      "leader": 2
+    },
+    {
+      "name": "no-op",
+      "origin": [
+        [
+          1,
+          "v",
+          11
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "v",
+          999
+        ]
+      ],
+      "steps": null,
+      "error": "NoSteps"
+    },
+    {
+      "name": "no-voter",
+      "origin": [
+        [
+          1,
+          "v",
+          11
+        ]
+      ],
+      "target": [
+        [
+          2,
+          "l",
+          12
+        ]
+      ],
+      "steps": null,
+      "error": "NoVoter"
+    },
+    {
+      "name": "no-legal-leader",
+      "origin": [
+        [
+          1,
+          "v",
+          11
+        ]
+      ],
+      "target": [
+        [
+          2,
+          "v",
+          12
+        ]
+      ],
+      "steps": null,
+      "error": "NoValidLeader",
+      "missing": [
+        2
+      ]
+    },
+    {
+      "name": "light-replace",
+      "origin": [
+        [
+          1,
+          "v",
+          11
+        ],
+        [
+          2,
+          "v",
+          12
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "v",
+          11
+        ],
+        [
+          3,
+          "v",
+          13
+        ]
+      ],
+      "steps": [
+        [
+          "add",
+          3,
+          13
+        ],
+        [
+          "promote",
+          3,
+          13
+        ],
+        [
+          "remove",
+          2,
+          12
+        ]
+      ],
+      "error": null,
+      "light": true
+    },
+    {
+      "name": "allocate-id",
+      "origin": [
+        [
+          1,
+          "v",
+          11
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "v",
+          11
+        ],
+        [
+          2,
+          "v",
+          0
+        ]
+      ],
+      "steps": [
+        [
+          "add",
+          2,
+          100
+        ],
+        [
+          "promote",
+          2,
+          100
+        ]
+      ],
+      "error": null,
+      "allocated": 1
+    },
+    {
+      "name": "allocator-fault",
+      "origin": [
+        [
+          1,
+          "v",
+          11
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "v",
+          11
+        ],
+        [
+          2,
+          "v",
+          0
+        ]
+      ],
+      "steps": null,
+      "error": "Allocation(\"injected\")",
+      "allocation_fault": true,
+      "allocated": 1
+    },
+    {
+      "name": "new-target-leader",
+      "origin": [
+        [
+          1,
+          "v",
+          11
+        ],
+        [
+          2,
+          "v",
+          12
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "v",
+          11
+        ],
+        [
+          3,
+          "v",
+          13
+        ]
+      ],
+      "steps": [
+        [
+          "add",
+          3,
+          13
+        ],
+        [
+          "promote",
+          3,
+          13
+        ],
+        [
+          "remove",
+          2,
+          12
+        ],
+        [
+          "transfer",
+          1,
+          3
+        ]
+      ],
+      "error": null,
+      "leader": 3
+    },
+    {
+      "name": "promote-before-remove",
+      "origin": [
+        [
+          1,
+          "v",
+          11
+        ],
+        [
+          2,
+          "l",
+          12
+        ]
+      ],
+      "target": [
+        [
+          2,
+          "v",
+          12
+        ]
+      ],
+      "steps": [
+        [
+          "promote",
+          2,
+          12
+        ],
+        [
+          "transfer",
+          1,
+          2
+        ],
+        [
+          "remove",
+          1,
+          11
+        ]
+      ],
+      "error": null
+    },
+    {
+      "name": "replace-learner",
+      "origin": [
+        [
+          1,
+          "v",
+          11
+        ],
+        [
+          2,
+          "l",
+          12
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "v",
+          11
+        ],
+        [
+          3,
+          "l",
+          13
+        ]
+      ],
+      "steps": [
+        [
+          "add",
+          3,
+          13
+        ],
+        [
+          "remove",
+          2,
+          12
+        ]
+      ],
+      "error": null
+    },
+    {
+      "name": "no-legal-snapshot-source",
+      "origin": [
+        [
+          1,
+          "v",
+          11
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "v",
+          11
+        ],
+        [
+          2,
+          "v",
+          12
+        ]
+      ],
+      "steps": null,
+      "error": "NoValidLeader",
+      "origin_witness": true
+    },
+    {
+      "name": "down-removal",
+      "origin": [
+        [
+          1,
+          "v",
+          11
+        ],
+        [
+          2,
+          "v",
+          12
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "v",
+          11
+        ]
+      ],
+      "steps": [
+        [
+          "remove",
+          2,
+          12
+        ]
+      ],
+      "error": null,
+      "down": [
+        2
+      ]
+    },
+    {
+      "name": "nearest-replacement",
+      "origin": [
+        [
+          1,
+          "v",
+          11
+        ],
+        [
+          2,
+          "v",
+          12
+        ],
+        [
+          3,
+          "v",
+          13
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "v",
+          11
+        ],
+        [
+          4,
+          "v",
+          14
+        ],
+        [
+          5,
+          "v",
+          15
+        ]
+      ],
+      "steps": [
+        [
+          "add",
+          4,
+          14
+        ],
+        [
+          "promote",
+          4,
+          14
+        ],
+        [
+          "remove",
+          3,
+          13
+        ],
+        [
+          "add",
+          5,
+          15
+        ],
+        [
+          "promote",
+          5,
+          15
+        ],
+        [
+          "remove",
+          2,
+          12
+        ]
+      ],
+      "error": null,
+      "zones": {
+        "2": "a",
+        "3": "b",
+        "4": "b",
+        "5": "a"
+      }
+    },
+    {
+      "name": "mixed-promote-demote-add",
+      "origin": [
+        [
+          1,
+          "v",
+          11
+        ],
+        [
+          2,
+          "l",
+          12
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "l",
+          11
+        ],
+        [
+          2,
+          "v",
+          12
+        ],
+        [
+          3,
+          "l",
+          13
+        ]
+      ],
+      "steps": [
+        [
+          "add",
+          3,
+          13
+        ],
+        [
+          "promote",
+          2,
+          12
+        ],
+        [
+          "transfer",
+          1,
+          2
+        ],
+        [
+          "remove",
+          1,
+          11
+        ],
+        [
+          "add",
+          1,
+          11
+        ]
+      ],
+      "error": null
+    },
+    {
+      "name": "replace-all-old-leader-preference",
+      "origin": [
+        [
+          1,
+          "v",
+          11
+        ],
+        [
+          2,
+          "v",
+          12
+        ]
+      ],
+      "target": [
+        [
+          3,
+          "v",
+          13
+        ],
+        [
+          4,
+          "v",
+          14
+        ]
+      ],
+      "steps": [
+        [
+          "add",
+          3,
+          13
+        ],
+        [
+          "promote",
+          3,
+          13
+        ],
+        [
+          "remove",
+          2,
+          12
+        ],
+        [
+          "add",
+          4,
+          14
+        ],
+        [
+          "promote",
+          4,
+          14
+        ],
+        [
+          "transfer",
+          1,
+          3
+        ],
+        [
+          "remove",
+          1,
+          11
+        ]
+      ],
+      "error": null
+    },
+    {
+      "name": "promote-only-no-region-kind",
+      "origin": [
+        [
+          1,
+          "v",
+          11
+        ],
+        [
+          2,
+          "l",
+          12
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "v",
+          11
+        ],
+        [
+          2,
+          "v",
+          12
+        ]
+      ],
+      "steps": [
+        [
+          "promote",
+          2,
+          12
+        ]
+      ],
+      "error": null
+    },
+    {
+      "name": "new-zero-id-learner",
+      "origin": [
+        [
+          1,
+          "v",
+          11
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "v",
+          11
+        ],
+        [
+          2,
+          "l",
+          0
+        ]
+      ],
+      "steps": [
+        [
+          "add",
+          2,
+          100
+        ]
+      ],
+      "error": null,
+      "allocated": 1
+    },
+    {
+      "name": "invalid-explicit-leader",
+      "origin": [
+        [
+          1,
+          "v",
+          11
+        ],
+        [
+          2,
+          "v",
+          12
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "v",
+          11
+        ],
+        [
+          2,
+          "v",
+          12
+        ]
+      ],
+      "leader": 2,
+      "missing": [
+        2
+      ],
+      "steps": null,
+      "error": "LeaderNotAllowed"
+    },
+    {
+      "name": "source-mixed-demote-removal-boundary",
+      "origin": [
+        [
+          1,
+          "v",
+          11
+        ],
+        [
+          2,
+          "v",
+          12
+        ],
+        [
+          3,
+          "l",
+          13
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "l",
+          11
+        ],
+        [
+          2,
+          "v",
+          12
+        ]
+      ],
+      "steps": [
+        [
+          "add",
+          1,
+          11
+        ],
+        [
+          "transfer",
+          1,
+          2
+        ],
+        [
+          "remove",
+          3,
+          13
+        ],
+        [
+          "remove",
+          1,
+          11
+        ]
+      ],
+      "error": null,
+      "execution_boundary": "existing-voter-rejects-add-learner",
+      "source_reason": "planReplace pairs learner add1/remove3; planPreferOldPeerAsLeader penalizes selecting the newly re-added store1 before removal, so leaderBeforeRemove=2, yielding transfer before remove3"
+    },
+    {
+      "name": "explicit-leader-add-demote-remove-learner",
+      "origin": [
+        [
+          1,
+          "v",
+          11
+        ],
+        [
+          2,
+          "l",
+          12
+        ]
+      ],
+      "target": [
+        [
+          3,
+          "v",
+          13
+        ],
+        [
+          1,
+          "l",
+          11
+        ]
+      ],
+      "leader": 3,
+      "steps": [
+        [
+          "add",
+          3,
+          13
+        ],
+        [
+          "promote",
+          3,
+          13
+        ],
+        [
+          "transfer",
+          1,
+          3
+        ],
+        [
+          "remove",
+          1,
+          11
+        ],
+        [
+          "add",
+          1,
+          11
+        ],
+        [
+          "remove",
+          2,
+          12
+        ]
+      ],
+      "error": null
+    },
+    {
+      "name": "nearest-unicode-fold",
+      "origin": [
+        [
+          1,
+          "v",
+          11
+        ],
+        [
+          2,
+          "v",
+          12
+        ],
+        [
+          3,
+          "v",
+          13
+        ]
+      ],
+      "target": [
+        [
+          1,
+          "v",
+          11
+        ],
+        [
+          4,
+          "v",
+          14
+        ],
+        [
+          5,
+          "v",
+          15
+        ]
+      ],
+      "steps": [
+        [
+          "add",
+          4,
+          14
+        ],
+        [
+          "promote",
+          4,
+          14
+        ],
+        [
+          "remove",
+          3,
+          13
+        ],
+        [
+          "add",
+          5,
+          15
+        ],
+        [
+          "promote",
+          5,
+          15
+        ],
+        [
+          "remove",
+          2,
+          12
+        ]
+      ],
+      "error": null,
+      "zones": {
+        "2": "a",
+        "3": "Σ",
+        "4": "ς",
+        "5": "a"
+      },
+      "source_reason": "labelMatch uses strings.EqualFold, so capital sigma and final sigma match at the zone prefix"
+    }
+  ],
+  "source_boundary": {
+    "admission": "Builder SetPeers admits the mixed demote/remove input; no missing precondition was found",
+    "planning": "planReplace pairs added learner1 with removed learner3 before removing voter1",
+    "execution": "AddLearner.IsFinish requires learner; CheckInProgress rejects existing voter; GetCmd returns nil for existing peer. Operator does not advance on unchanged heartbeat.",
+    "normalization": "none; source_assertion only, no Go execution",
+    "preservation": "retain source planner order and step-level rejection; universal target reachability is not a Go Builder guarantee"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "binary": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+  "binary_sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+  "source": "scripts/rust-etcd-fixture/main.go",
+  "source_sha256": "5140c93bc8df9ca8a6d888806c2e7a30b35a49512a70222caf32b57e0800cede",
+  "binary_vcs_revision": "e064eee5ca1a50c6bb917855e425e87e31ad5ebe",
+  "scope": "existing external etcd I/O fixture only; no operator oracle; no Go compilation"
+}

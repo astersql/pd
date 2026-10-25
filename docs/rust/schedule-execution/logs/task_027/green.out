@@ -1,0 +1,23 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=cargo test -p astersql-pd-schedule-operator --locked --lib task_027 -- --nocapture
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.82s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_operator-3c432df009ee920c)
+
+running 2 tests
+
+thread 'task_027_test::task_027_safe_intermediate_configurations' (162953696) panicked at pkg/schedule/operator/task_027_test.rs:273:29:
+assertion failed: !current.contains_key(&s.to_store)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test task_027_test::task_027_safe_intermediate_configurations ... FAILED
+task027: 27 fixed source-derived cases passed
+test task_027_test::task_027_behavior_cases ... ok
+
+failures:
+
+failures:
+    task_027_test::task_027_safe_intermediate_configurations
+
+test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 42 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-operator --lib`
+command_exit_code=101

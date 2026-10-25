@@ -1,0 +1,10 @@
+{
+  "readonly_files": 1119,
+  "go_module_files": 1101,
+  "readonly_changes": {},
+  "readonly_status_equal": true,
+  "diff_check_exit_code": 0,
+  "fixture_sha256": "33525f2278733a4494ebc45b3fc8d278ca4196bc506d041a62e249ae8bf01740",
+  "production_sha256": "f416dd0b270dcaefd67b3ccb8b38f9bc3b091580e48d8bf4d174af2e7050ffbb",
+  "mutation_restored": true
+}

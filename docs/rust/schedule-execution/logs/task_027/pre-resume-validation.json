@@ -1,0 +1,105 @@
+{
+  "scope": "historical pre-resume command aggregates, not final verification",
+  "commands": [
+    {
+      "argv": [
+        "cargo",
+        "fmt",
+        "--all"
+      ],
+      "exit_code": 0,
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0,
+      "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+    },
+    {
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "astersql-pd-schedule-operator",
+        "--locked",
+        "--lib",
+        "task_027",
+        "--",
+        "--nocapture"
+      ],
+      "exit_code": 101,
+      "passed": 1,
+      "failed": 1,
+      "ignored": 0,
+      "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+    },
+    {
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "astersql-pd-schedule-operator",
+        "--locked"
+      ],
+      "exit_code": 101,
+      "passed": 43,
+      "failed": 1,
+      "ignored": 0,
+      "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+    },
+    {
+      "argv": [
+        "cargo",
+        "metadata",
+        "--format-version",
+        "1",
+        "--no-deps"
+      ],
+      "exit_code": 0,
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0,
+      "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+    },
+    {
+      "argv": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "exit_code": 0,
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0,
+      "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+    },
+    {
+      "argv": [
+        "cargo",
+        "check",
+        "--workspace",
+        "--locked"
+      ],
+      "exit_code": 0,
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0,
+      "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+    },
+    {
+      "argv": [
+        "cargo",
+        "test",
+        "--workspace",
+        "--locked"
+      ],
+      "exit_code": 101,
+      "passed": 690,
+      "failed": 1,
+      "ignored": 1,
+      "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+    }
+  ],
+  "note": "Original per-command validation logs were superseded by final validation. The original safety assertion output remains preserved in safety-investigation.out and green.out.",
+  "preserved_failure_log": "safety-investigation.out"
+}

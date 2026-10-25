@@ -1,0 +1,77 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=cargo test -p astersql-pd-schedule-operator --locked --lib task_027 -- --nocapture
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+error[E0422]: cannot find struct, variant or union type `SimpleBuildOptions` in this scope
+  --> pkg/schedule/operator/task_027_test.rs:30:43
+   |
+30 |   let result=b.build_simple(OpKind::ADMIN,SimpleBuildOptions{add_light_peer:c["light"]==true,remove_light_peer:c["light"]==true},|| ...
+   |                                           ^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0308]: mismatched types
+  --> pkg/schedule/operator/task_027_test.rs:19:109
+   |
+19 |    st.set_last_heartbeat_unix_nanos(if c["down"].as_array().is_some_and(|v|v.contains(&s.into())) {1} else {now});
+   |                                                                                                             ^^^ expected `i64`, found `i128`
+   |
+help: you can convert an `i128` to an `i64` and panic if the converted value doesn't fit
+   |
+19 |    st.set_last_heartbeat_unix_nanos(if c["down"].as_array().is_some_and(|v|v.contains(&s.into())) {1} else {now.try_into().unwrap()});
+   |                                                                                                                ++++++++++++++++++++
+
+error[E0308]: mismatched types
+  --> pkg/schedule/operator/task_027_test.rs:22:88
+   |
+22 |   let mut config=ProviderSnapshot::<()>::default(); config.replication.location_labels=vec!["zone".into()];
+   |                                                     ---------------------------------- ^^^^^^^^^^^^^^^^^^^ expected `StringSlice`, found `Vec<_>`
+   |                                                     |
+   |                                                     expected due to the type of this binding
+   |
+   = note: expected struct `astersql_pd_typeutil::string_slice::StringSlice`
+              found struct `Vec<_>`
+help: call `Into::into` on this expression to convert `Vec<_>` into `astersql_pd_typeutil::string_slice::StringSlice`
+   |
+22 |   let mut config=ProviderSnapshot::<()>::default(); config.replication.location_labels=vec!["zone".into()].into();
+   |                                                                                                           +++++++
+
+error[E0308]: mismatched types
+  --> pkg/schedule/operator/task_027_test.rs:23:39
+   |
+23 |   config.schedule.max_store_down_time=std::time::Duration::from_secs(100);
+   |   ----------------------------------- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `astersql_pd_typeutil::duration::Duration`, found `Duration`
+   |   |
+   |   expected due to the type of this binding
+   |
+   = note: `Duration` and `astersql_pd_typeutil::duration::Duration` have similar names, but are actually distinct types
+note: `Duration` is defined in crate `core`
+  --> /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/core/src/time.rs:81:0
+note: `astersql_pd_typeutil::duration::Duration` is defined in crate `astersql_pd_typeutil`
+  --> pkg/utils/typeutil/duration.rs:15:1
+   |
+15 | pub struct Duration(i64);
+   | ^^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no method named `build_simple` found for struct `builder_target::Builder<'a, V>` in the current scope
+  --> pkg/schedule/operator/task_027_test.rs:30:16
+   |
+30 |   let result=b.build_simple(OpKind::ADMIN,SimpleBuildOptions{add_light_peer:c["light"]==true,remove_light_peer:c["light"]==true},|| ...
+   |                ^^^^^^^^^^^^ method not found in `builder_target::Builder<'_, ()>`
+   |
+  ::: pkg/schedule/operator/builder_target.rs:70:1
+   |
+70 | pub struct Builder<'a, V> {
+   | ------------------------- method `build_simple` not found for this struct
+
+error[E0599]: no variant, associated function, or constant named `Allocation` found for enum `builder_target::BuilderError` in the current scope
+  --> pkg/schedule/operator/task_027_test.rs:30:201
+   |
+30 | ...r(BuilderError::Allocation("injected".into()))} else {Ok(99+allocations)} }).await;
+   |                    ^^^^^^^^^^ variant, associated function, or constant not found in `builder_target::BuilderError`
+   |
+  ::: pkg/schedule/operator/builder_target.rs:30:1
+   |
+30 | pub enum BuilderError {
+   | --------------------- variant, associated function, or constant `Allocation` not found for this enum
+
+Some errors have detailed explanations: E0308, E0422, E0599.
+For more information about an error, try `rustc --explain E0308`.
+error: could not compile `astersql-pd-schedule-operator` (lib test) due to 6 previous errors
+command_exit_code=101

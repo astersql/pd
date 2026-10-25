@@ -47,6 +47,8 @@ pub enum BuilderError {
     NoVoter,
     LeaderNotAllowed,
     NoSteps,
+    NoValidLeader,
+    Allocation(String),
     /// Target validation succeeded; step planning belongs to subsequent tasks.
     PlanningRequired,
 }
@@ -78,13 +80,15 @@ pub struct Builder<'a, V> {
     unhealthy: BTreeSet<u64>,
     rules: Vec<Arc<Rule>>,
     options: BuilderOptions,
-    force_target_leader: bool,
+    pub(crate) force_target_leader: bool,
+    pub(crate) description: String,
+    pub(crate) region: RegionInfo,
     error: Option<BuilderError>,
 }
 impl<'a, V> Builder<'a, V> {
     /// Freeze origin peers and the applicable fitted rules for this build.
     pub fn new(
-        _description: &str,
+        description: &str,
         context: BuilderContext<'a, V>,
         region: &RegionInfo,
         options: BuilderOptions,
@@ -130,6 +134,8 @@ impl<'a, V> Builder<'a, V> {
             .collect();
         Self {
             context,
+            description: description.into(),
+            region: region.clone(),
             target_peers: origin_peers.clone(),
             origin_peers,
             origin_leader,
@@ -155,7 +161,7 @@ impl<'a, V> Builder<'a, V> {
     pub fn target_leaders(&self) -> &[u64] {
         &self.target_leaders
     }
-    fn reject(&mut self, error: BuilderError) {
+    pub(crate) fn reject(&mut self, error: BuilderError) {
         self.error = Some(error);
     }
     pub fn add_peer(&mut self, peer: Option<Peer>) -> &mut Self {

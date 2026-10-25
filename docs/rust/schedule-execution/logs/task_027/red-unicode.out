@@ -1,0 +1,25 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=cargo test -p astersql-pd-schedule-operator --locked --lib task_027 -- --nocapture
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.52s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_operator-3c432df009ee920c)
+
+running 2 tests
+task027: 32 target configurations preserve leader safety and acknowledge every step
+test task_027_test::task_027_safe_intermediate_configurations ... ok
+
+thread 'task_027_test::task_027_behavior_cases' (163004629) panicked at pkg/schedule/operator/task_027_test.rs:162:13:
+assertion `left == right` failed: nearest-unicode-fold
+  left: Array [Array [String("add"), Number(5), Number(15)], Array [String("promote"), Number(5), Number(15)], Array [String("remove"), Number(2), Number(12)], Array [String("add"), Number(4), Number(14)], Array [String("promote"), Number(4), Number(14)], Array [String("remove"), Number(3), Number(13)]]
+ right: Array [Array [String("add"), Number(4), Number(14)], Array [String("promote"), Number(4), Number(14)], Array [String("remove"), Number(3), Number(13)], Array [String("add"), Number(5), Number(15)], Array [String("promote"), Number(5), Number(15)], Array [String("remove"), Number(2), Number(12)]]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test task_027_test::task_027_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_027_test::task_027_behavior_cases
+
+test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 42 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-operator --lib`
+command_exit_code=101

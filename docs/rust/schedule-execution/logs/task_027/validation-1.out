@@ -1,0 +1,12 @@
+
+running 2 tests
+task027: 32 target configurations preserve leader safety and acknowledge every step
+test task_027_test::task_027_safe_intermediate_configurations ... ok
+task027: 30 fixed source-derived cases passed
+test task_027_test::task_027_behavior_cases ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 42 filtered out; finished in 0.00s
+
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.12s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_operator-3c432df009ee920c)
