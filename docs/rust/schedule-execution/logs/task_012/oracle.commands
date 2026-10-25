@@ -1,0 +1,1173 @@
+break cluster_test.go:300
+continue
+clearall
+config max-variable-recurse 12
+config max-array-values 10000
+config max-string-len 10000
+call "runtime/debug".SetGCPercent(-1)
+call -unsafe hbstream.NewTestHeartbeatStreams(cluster.ctx,nil,false)
+set (*hbstream.HeartbeatStreams)(0x186270b66310).clusterID = 123
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x1862711a6000).Id = 55
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x1862711a7000).ConfVer = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x1862711a7000).Version = 456
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x1862711a6000).RegionEpoch = (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x1862711a7000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711a8000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711a8000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711a8000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711a8000).IsWitness = true
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x1862708ce000).meta = (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x1862711a6000)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x1862708ce000).leader = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711a8000)
+call runtime.mallocgc(4096,nil,true)
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270b66310).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x1862708ce000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x1862708cf000))
+print (*hbstream.HeartbeatStreams)(0x186270b66310).msgCh.buf[0]
+call -unsafe "encoding/json".Marshal((*hbstream.HeartbeatStreams)(0x186270b66310).msgCh.buf[0])
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270b66310).Drain(1)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270a38000).Id = 55
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270a39000).ConfVer = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270a39000).Version = 456
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270a38000).RegionEpoch = (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270a39000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270ace000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270ace000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270ace000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270ace000).IsWitness = true
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270acf000).meta = (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270a38000)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270acf000).leader = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270ace000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270a61000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270a61000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270a61000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270a61000).IsWitness = true
+set (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x186270a60000).Peer = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270a61000)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x186270a60000).ChangeType = 2
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x1862711a9000).ChangePeer = (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x186270a60000)
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270b66310).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270acf000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x1862711a9000))
+print (*hbstream.HeartbeatStreams)(0x186270b66310).msgCh.buf[1]
+call -unsafe "encoding/json".Marshal((*hbstream.HeartbeatStreams)(0x186270b66310).msgCh.buf[1])
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270b66310).Drain(1)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x1862711aa000).Id = 55
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x1862711ab000).ConfVer = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x1862711ab000).Version = 456
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x1862711aa000).RegionEpoch = (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x1862711ab000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711ac000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711ac000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711ac000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711ac000).IsWitness = true
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270af0000).meta = (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x1862711aa000)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270af0000).leader = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711ac000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270af3000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270af3000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270af3000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270af3000).IsWitness = true
+set (*"github.com/pingcap/kvproto/pkg/pdpb.TransferLeader")(0x186270af2000).Peer = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270af3000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270af5000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270af5000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270af5000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270af5000).IsWitness = true
+set (*"[2]*github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270af4000)[0] = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270af5000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270af6000).Id = 8
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270af6000).StoreId = 9
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270af6000).Role = 37
+set (*"[2]*github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270af4000)[1] = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270af6000)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.TransferLeader")(0x186270af2000).Peers = (*(*"[2]*github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270af4000))[:]
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186270af1000).TransferLeader = (*"github.com/pingcap/kvproto/pkg/pdpb.TransferLeader")(0x186270af2000)
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270b66310).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270af0000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186270af1000))
+print (*hbstream.HeartbeatStreams)(0x186270b66310).msgCh.buf[2]
+call -unsafe "encoding/json".Marshal((*hbstream.HeartbeatStreams)(0x186270b66310).msgCh.buf[2])
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270b66310).Drain(1)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270a62000).Id = 55
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270a63000).ConfVer = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270a63000).Version = 456
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270a62000).RegionEpoch = (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270a63000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270a64000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270a64000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270a64000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270a64000).IsWitness = true
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270a65000).meta = (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270a62000)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270a65000).leader = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270a64000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270b08000).Id = 99
+call runtime.mallocgc(4096,nil,true)
+set (*"[2]uint8")(0x186270b09000)[0] = 0
+set (*"[2]uint8")(0x186270b09000)[1] = 255
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270b08000).StartKey = (*(*"[2]uint8")(0x186270b09000))[:]
+call runtime.mallocgc(4096,nil,true)
+set (*"[2]uint8")(0x186270b0a000)[0] = 255
+set (*"[2]uint8")(0x186270b0a000)[1] = 0
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270b08000).EndKey = (*(*"[2]uint8")(0x186270b0a000))[:]
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270b0b000).ConfVer = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270b0b000).Version = 456
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270b08000).RegionEpoch = (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270b0b000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270b0d000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270b0d000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270b0d000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270b0d000).IsWitness = true
+set (*"[2]*github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270b0c000)[0] = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270b0d000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270b7e000).Id = 8
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270b7e000).StoreId = 9
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270b7e000).Role = 37
+set (*"[2]*github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270b0c000)[1] = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270b7e000)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270b08000).Peers = (*(*"[2]*github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270b0c000))[:]
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/encryptionpb.EncryptionMeta")(0x186270b7f000).KeyId = 13
+call runtime.mallocgc(4096,nil,true)
+set (*"[3]uint8")(0x186270bfa000)[0] = 0
+set (*"[3]uint8")(0x186270bfa000)[1] = 255
+set (*"[3]uint8")(0x186270bfa000)[2] = 1
+set (*"github.com/pingcap/kvproto/pkg/encryptionpb.EncryptionMeta")(0x186270b7f000).Iv = (*(*"[3]uint8")(0x186270bfa000))[:]
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270b08000).EncryptionMeta = (*"github.com/pingcap/kvproto/pkg/encryptionpb.EncryptionMeta")(0x186270b7f000)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270b08000).IsInFlashback = true
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270b08000).FlashbackStartTs = 987
+set (*"github.com/pingcap/kvproto/pkg/pdpb.Merge")(0x186270a67000).Target = (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270b08000)
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186270a66000).Merge = (*"github.com/pingcap/kvproto/pkg/pdpb.Merge")(0x186270a67000)
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270b66310).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270a65000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186270a66000))
+print (*hbstream.HeartbeatStreams)(0x186270b66310).msgCh.buf[3]
+call -unsafe "encoding/json".Marshal((*hbstream.HeartbeatStreams)(0x186270b66310).msgCh.buf[3])
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270b66310).Drain(1)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270bfb000).Id = 55
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270bfc000).ConfVer = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270bfc000).Version = 456
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270bfb000).RegionEpoch = (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270bfc000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270bfd000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270bfd000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270bfd000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270bfd000).IsWitness = true
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270bfe000).meta = (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270bfb000)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270bfe000).leader = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270bfd000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.SplitRegion")(0x186270c04000).Policy = 2
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"[2]uint8")(0x186270c68000)[0] = 0
+set (*"[2]uint8")(0x186270c68000)[1] = 255
+set (*"[4][]uint8")(0x186270c05000)[0] = (*(*"[2]uint8")(0x186270c68000))[:]
+set (*"[4][]uint8")(0x186270c05000)[1] = nil
+call runtime.mallocgc(4096,nil,true)
+set (*"[3]uint8")(0x186270c69000)[0] = 97
+set (*"[3]uint8")(0x186270c69000)[1] = 98
+set (*"[3]uint8")(0x186270c69000)[2] = 99
+set (*"[4][]uint8")(0x186270c05000)[2] = (*(*"[3]uint8")(0x186270c69000))[:]
+call runtime.mallocgc(4096,nil,true)
+set (*"[2]uint8")(0x186270c6c000)[0] = 0
+set (*"[2]uint8")(0x186270c6c000)[1] = 255
+set (*"[4][]uint8")(0x186270c05000)[3] = (*(*"[2]uint8")(0x186270c6c000))[:]
+set (*"github.com/pingcap/kvproto/pkg/pdpb.SplitRegion")(0x186270c04000).Keys = (*(*"[4][]uint8")(0x186270c05000))[:]
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186270bff000).SplitRegion = (*"github.com/pingcap/kvproto/pkg/pdpb.SplitRegion")(0x186270c04000)
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270b66310).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270bfe000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186270bff000))
+print (*hbstream.HeartbeatStreams)(0x186270b66310).msgCh.buf[4]
+call -unsafe "encoding/json".Marshal((*hbstream.HeartbeatStreams)(0x186270b66310).msgCh.buf[4])
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270b66310).Drain(1)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270c6d000).Id = 55
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270c9c000).ConfVer = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270c9c000).Version = 456
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270c6d000).RegionEpoch = (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270c9c000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270c9d000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270c9d000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270c9d000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270c9d000).IsWitness = true
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270c9e000).meta = (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270c6d000)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270c9e000).leader = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270c9d000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711b0000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711b0000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711b0000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711b0000).IsWitness = true
+set (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x1862711af000).Peer = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711b0000)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x1862711af000).ChangeType = 1
+set (*"[3]*github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x1862711ae000)[0] = (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x1862711af000)
+set (*"[3]*github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x1862711ae000)[1] = nil
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x1862711b1000).Peer = nil
+set (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x1862711b1000).ChangeType = -7
+set (*"[3]*github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x1862711ae000)[2] = (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x1862711b1000)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeerV2")(0x1862711ad000).Changes = (*(*"[3]*github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x1862711ae000))[:]
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186270c9f000).ChangePeerV2 = (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeerV2")(0x1862711ad000)
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270b66310).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270c9e000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186270c9f000))
+print (*hbstream.HeartbeatStreams)(0x186270b66310).msgCh.buf[5]
+call -unsafe "encoding/json".Marshal((*hbstream.HeartbeatStreams)(0x186270b66310).msgCh.buf[5])
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270b66310).Drain(1)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x1862711b2000).Id = 55
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x1862711b3000).ConfVer = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x1862711b3000).Version = 456
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x1862711b2000).RegionEpoch = (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x1862711b3000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270ca0000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270ca0000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270ca0000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270ca0000).IsWitness = true
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270ca1000).meta = (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x1862711b2000)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270ca1000).leader = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270ca0000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.SwitchWitness")(0x186270cad000).PeerId = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/pdpb.SwitchWitness")(0x186270cad000).IsWitness = true
+set (*"[3]*github.com/pingcap/kvproto/pkg/pdpb.SwitchWitness")(0x186270cac000)[0] = (*"github.com/pingcap/kvproto/pkg/pdpb.SwitchWitness")(0x186270cad000)
+set (*"[3]*github.com/pingcap/kvproto/pkg/pdpb.SwitchWitness")(0x186270cac000)[1] = nil
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.SwitchWitness")(0x186270af7000).PeerId = 4
+set (*"github.com/pingcap/kvproto/pkg/pdpb.SwitchWitness")(0x186270af7000).IsWitness = false
+set (*"[3]*github.com/pingcap/kvproto/pkg/pdpb.SwitchWitness")(0x186270cac000)[2] = (*"github.com/pingcap/kvproto/pkg/pdpb.SwitchWitness")(0x186270af7000)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.BatchSwitchWitness")(0x186270cab000).SwitchWitnesses = (*(*"[3]*github.com/pingcap/kvproto/pkg/pdpb.SwitchWitness")(0x186270cac000))[:]
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186270caa000).SwitchWitnesses = (*"github.com/pingcap/kvproto/pkg/pdpb.BatchSwitchWitness")(0x186270cab000)
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270b66310).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270ca1000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186270caa000))
+print (*hbstream.HeartbeatStreams)(0x186270b66310).msgCh.buf[6]
+call -unsafe "encoding/json".Marshal((*hbstream.HeartbeatStreams)(0x186270b66310).msgCh.buf[6])
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270b66310).Drain(1)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x1862711b6000).Id = 55
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x1862711b7000).ConfVer = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x1862711b7000).Version = 456
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x1862711b6000).RegionEpoch = (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x1862711b7000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711b8000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711b8000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711b8000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711b8000).IsWitness = true
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270cae000).meta = (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x1862711b6000)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270cae000).leader = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711b8000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.ChangeSplit")(0x186270cb0000).AutoSplitEnabled = true
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186270caf000).ChangeSplit = (*"github.com/pingcap/kvproto/pkg/pdpb.ChangeSplit")(0x186270cb0000)
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270b66310).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270cae000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186270caf000))
+print (*hbstream.HeartbeatStreams)(0x186270b66310).msgCh.buf[7]
+call -unsafe "encoding/json".Marshal((*hbstream.HeartbeatStreams)(0x186270b66310).msgCh.buf[7])
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270b66310).Drain(1)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270cb1000).Id = 55
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270cb8000).ConfVer = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270cb8000).Version = 456
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270cb1000).RegionEpoch = (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270cb8000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270cb9000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270cb9000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270cb9000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270cb9000).IsWitness = true
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270cba000).meta = (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270cb1000)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270cba000).leader = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270cb9000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270cbf000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270cbf000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270cbf000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270cbf000).IsWitness = true
+set (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x186270cbe000).Peer = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270cbf000)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x186270cbe000).ChangeType = 2
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186270cbb000).ChangePeer = (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x186270cbe000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270cc5000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270cc5000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270cc5000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270cc5000).IsWitness = true
+set (*"github.com/pingcap/kvproto/pkg/pdpb.TransferLeader")(0x186270cc4000).Peer = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270cc5000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270cc7000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270cc7000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270cc7000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270cc7000).IsWitness = true
+set (*"[2]*github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270cc6000)[0] = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270cc7000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270cc8000).Id = 8
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270cc8000).StoreId = 9
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270cc8000).Role = 37
+set (*"[2]*github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270cc6000)[1] = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270cc8000)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.TransferLeader")(0x186270cc4000).Peers = (*(*"[2]*github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270cc6000))[:]
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186270cbb000).TransferLeader = (*"github.com/pingcap/kvproto/pkg/pdpb.TransferLeader")(0x186270cc4000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270cca000).Id = 99
+call runtime.mallocgc(4096,nil,true)
+set (*"[2]uint8")(0x186270ccb000)[0] = 0
+set (*"[2]uint8")(0x186270ccb000)[1] = 255
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270cca000).StartKey = (*(*"[2]uint8")(0x186270ccb000))[:]
+call runtime.mallocgc(4096,nil,true)
+set (*"[2]uint8")(0x186270ccc000)[0] = 255
+set (*"[2]uint8")(0x186270ccc000)[1] = 0
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270cca000).EndKey = (*(*"[2]uint8")(0x186270ccc000))[:]
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270ccd000).ConfVer = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270ccd000).Version = 456
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270cca000).RegionEpoch = (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270ccd000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270ccf000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270ccf000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270ccf000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270ccf000).IsWitness = true
+set (*"[2]*github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270cce000)[0] = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270ccf000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270cd0000).Id = 8
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270cd0000).StoreId = 9
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270cd0000).Role = 37
+set (*"[2]*github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270cce000)[1] = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270cd0000)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270cca000).Peers = (*(*"[2]*github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270cce000))[:]
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/encryptionpb.EncryptionMeta")(0x186270cd1000).KeyId = 13
+call runtime.mallocgc(4096,nil,true)
+set (*"[3]uint8")(0x186270cd4000)[0] = 0
+set (*"[3]uint8")(0x186270cd4000)[1] = 255
+set (*"[3]uint8")(0x186270cd4000)[2] = 1
+set (*"github.com/pingcap/kvproto/pkg/encryptionpb.EncryptionMeta")(0x186270cd1000).Iv = (*(*"[3]uint8")(0x186270cd4000))[:]
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270cca000).EncryptionMeta = (*"github.com/pingcap/kvproto/pkg/encryptionpb.EncryptionMeta")(0x186270cd1000)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270cca000).IsInFlashback = true
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270cca000).FlashbackStartTs = 987
+set (*"github.com/pingcap/kvproto/pkg/pdpb.Merge")(0x186270cc9000).Target = (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270cca000)
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186270cbb000).Merge = (*"github.com/pingcap/kvproto/pkg/pdpb.Merge")(0x186270cc9000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.SplitRegion")(0x186270cd5000).Policy = 2
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"[2]uint8")(0x186270cd7000)[0] = 0
+set (*"[2]uint8")(0x186270cd7000)[1] = 255
+set (*"[4][]uint8")(0x186270cd6000)[0] = (*(*"[2]uint8")(0x186270cd7000))[:]
+set (*"[4][]uint8")(0x186270cd6000)[1] = nil
+call runtime.mallocgc(4096,nil,true)
+set (*"[3]uint8")(0x1862711b9000)[0] = 97
+set (*"[3]uint8")(0x1862711b9000)[1] = 98
+set (*"[3]uint8")(0x1862711b9000)[2] = 99
+set (*"[4][]uint8")(0x186270cd6000)[2] = (*(*"[3]uint8")(0x1862711b9000))[:]
+call runtime.mallocgc(4096,nil,true)
+set (*"[2]uint8")(0x1862711ba000)[0] = 0
+set (*"[2]uint8")(0x1862711ba000)[1] = 255
+set (*"[4][]uint8")(0x186270cd6000)[3] = (*(*"[2]uint8")(0x1862711ba000))[:]
+set (*"github.com/pingcap/kvproto/pkg/pdpb.SplitRegion")(0x186270cd5000).Keys = (*(*"[4][]uint8")(0x186270cd6000))[:]
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186270cbb000).SplitRegion = (*"github.com/pingcap/kvproto/pkg/pdpb.SplitRegion")(0x186270cd5000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711be000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711be000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711be000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711be000).IsWitness = true
+set (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x1862711bd000).Peer = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711be000)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x1862711bd000).ChangeType = 1
+set (*"[3]*github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x1862711bc000)[0] = (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x1862711bd000)
+set (*"[3]*github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x1862711bc000)[1] = nil
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x186270cd8000).Peer = nil
+set (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x186270cd8000).ChangeType = -7
+set (*"[3]*github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x1862711bc000)[2] = (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x186270cd8000)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeerV2")(0x1862711bb000).Changes = (*(*"[3]*github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x1862711bc000))[:]
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186270cbb000).ChangePeerV2 = (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeerV2")(0x1862711bb000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.SwitchWitness")(0x186270cdb000).PeerId = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/pdpb.SwitchWitness")(0x186270cdb000).IsWitness = true
+set (*"[3]*github.com/pingcap/kvproto/pkg/pdpb.SwitchWitness")(0x186270cda000)[0] = (*"github.com/pingcap/kvproto/pkg/pdpb.SwitchWitness")(0x186270cdb000)
+set (*"[3]*github.com/pingcap/kvproto/pkg/pdpb.SwitchWitness")(0x186270cda000)[1] = nil
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.SwitchWitness")(0x186270cdc000).PeerId = 4
+set (*"github.com/pingcap/kvproto/pkg/pdpb.SwitchWitness")(0x186270cdc000).IsWitness = false
+set (*"[3]*github.com/pingcap/kvproto/pkg/pdpb.SwitchWitness")(0x186270cda000)[2] = (*"github.com/pingcap/kvproto/pkg/pdpb.SwitchWitness")(0x186270cdc000)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.BatchSwitchWitness")(0x186270cd9000).SwitchWitnesses = (*(*"[3]*github.com/pingcap/kvproto/pkg/pdpb.SwitchWitness")(0x186270cda000))[:]
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186270cbb000).SwitchWitnesses = (*"github.com/pingcap/kvproto/pkg/pdpb.BatchSwitchWitness")(0x186270cd9000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.ChangeSplit")(0x1862711bf000).AutoSplitEnabled = true
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186270cbb000).ChangeSplit = (*"github.com/pingcap/kvproto/pkg/pdpb.ChangeSplit")(0x1862711bf000)
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270b66310).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270cba000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186270cbb000))
+print (*hbstream.HeartbeatStreams)(0x186270b66310).msgCh.buf[8]
+call -unsafe "encoding/json".Marshal((*hbstream.HeartbeatStreams)(0x186270b66310).msgCh.buf[8])
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270b66310).Drain(1)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x1862711c0000).Id = 55
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x1862711c1000).ConfVer = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x1862711c1000).Version = 456
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x1862711c0000).RegionEpoch = (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x1862711c1000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711c2000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711c2000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711c2000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711c2000).IsWitness = true
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x1862711c3000).meta = (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x1862711c0000)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x1862711c3000).leader = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711c2000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x1862711c4000).ChangePeer = (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x1862711c5000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x1862711c4000).TransferLeader = (*"github.com/pingcap/kvproto/pkg/pdpb.TransferLeader")(0x1862711c6000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x1862711c4000).Merge = (*"github.com/pingcap/kvproto/pkg/pdpb.Merge")(0x1862711c7000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x1862711c4000).SplitRegion = (*"github.com/pingcap/kvproto/pkg/pdpb.SplitRegion")(0x1862711c8000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x1862711c4000).ChangePeerV2 = (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeerV2")(0x1862711c9000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x1862711c4000).SwitchWitnesses = (*"github.com/pingcap/kvproto/pkg/pdpb.BatchSwitchWitness")(0x1862711ca000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x1862711c4000).ChangeSplit = (*"github.com/pingcap/kvproto/pkg/pdpb.ChangeSplit")(0x1862711cb000)
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270b66310).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x1862711c3000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x1862711c4000))
+print (*hbstream.HeartbeatStreams)(0x186270b66310).msgCh.buf[9]
+call -unsafe "encoding/json".Marshal((*hbstream.HeartbeatStreams)(0x186270b66310).msgCh.buf[9])
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270b66310).Drain(1)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x1862711cc000).Id = 55
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x1862711cd000).ConfVer = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x1862711cd000).Version = 456
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x1862711cc000).RegionEpoch = (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x1862711cd000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270cdd000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270cdd000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270cdd000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270cdd000).IsWitness = true
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270cde000).meta = (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x1862711cc000)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270cde000).leader = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270cdd000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x186270ce0000).ChangeType = -7
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186270cdf000).ChangePeer = (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x186270ce0000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.SplitRegion")(0x186270ce1000).Policy = 37
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186270cdf000).SplitRegion = (*"github.com/pingcap/kvproto/pkg/pdpb.SplitRegion")(0x186270ce1000)
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270b66310).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270cde000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186270cdf000))
+print (*hbstream.HeartbeatStreams)(0x186270b66310).msgCh.buf[10]
+call -unsafe "encoding/json".Marshal((*hbstream.HeartbeatStreams)(0x186270b66310).msgCh.buf[10])
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270b66310).Drain(1)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270d0a000).Id = 55
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270d0b000).ConfVer = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270d0b000).Version = 456
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270d0a000).RegionEpoch = (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270d0b000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d18000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d18000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d18000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d18000).IsWitness = true
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270d19000).meta = (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270d0a000)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270d19000).leader = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d18000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.ChangeSplit")(0x186270d1b000).AutoSplitEnabled = false
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186270d1a000).ChangeSplit = (*"github.com/pingcap/kvproto/pkg/pdpb.ChangeSplit")(0x186270d1b000)
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270b66310).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270d19000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186270d1a000))
+print (*hbstream.HeartbeatStreams)(0x186270b66310).msgCh.buf[11]
+call -unsafe "encoding/json".Marshal((*hbstream.HeartbeatStreams)(0x186270b66310).msgCh.buf[11])
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270b66310).Drain(1)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x1862711ce000).Id = 55
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x1862711ce000).RegionEpoch = nil
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711cf000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711cf000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711cf000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711cf000).IsWitness = true
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x1862711d0000).meta = (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x1862711ce000)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x1862711d0000).leader = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711cf000)
+call runtime.mallocgc(4096,nil,true)
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270b66310).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x1862711d0000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x1862711d1000))
+print (*hbstream.HeartbeatStreams)(0x186270b66310).msgCh.buf[12]
+call -unsafe "encoding/json".Marshal((*hbstream.HeartbeatStreams)(0x186270b66310).msgCh.buf[12])
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270b66310).Drain(1)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x1862711da000).Id = 55
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x1862711da000).RegionEpoch = (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x1862711db000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711dc000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711dc000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711dc000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711dc000).IsWitness = true
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x1862711dd000).meta = (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x1862711da000)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x1862711dd000).leader = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711dc000)
+call runtime.mallocgc(4096,nil,true)
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270b66310).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x1862711dd000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x1862711de000))
+print (*hbstream.HeartbeatStreams)(0x186270b66310).msgCh.buf[13]
+call -unsafe "encoding/json".Marshal((*hbstream.HeartbeatStreams)(0x186270b66310).msgCh.buf[13])
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270b66310).Drain(1)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270afa000).Id = 55
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270afb000).ConfVer = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270afb000).Version = 456
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270afa000).RegionEpoch = (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270afb000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x1862711e0000).meta = (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270afa000)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x1862711e0000).leader = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711df000)
+call runtime.mallocgc(4096,nil,true)
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270b66310).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x1862711e0000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x1862711e1000))
+print (*hbstream.HeartbeatStreams)(0x186270b66310).msgCh.buf[14]
+call -unsafe "encoding/json".Marshal((*hbstream.HeartbeatStreams)(0x186270b66310).msgCh.buf[14])
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270b66310).Drain(1)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x1862711e2000).Id = 55
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x1862711e3000).ConfVer = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x1862711e3000).Version = 456
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x1862711e2000).RegionEpoch = (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x1862711e3000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711e6000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711e6000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711e6000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711e6000).IsWitness = true
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x1862711e7000).meta = (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x1862711e2000)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x1862711e7000).leader = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711e6000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"[3]*github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270afc000)[0] = nil
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270afd000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270afd000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270afd000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270afd000).IsWitness = true
+set (*"[3]*github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270afc000)[1] = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270afd000)
+set (*"[3]*github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270afc000)[2] = nil
+set (*"github.com/pingcap/kvproto/pkg/pdpb.TransferLeader")(0x1862711e9000).Peers = (*(*"[3]*github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270afc000))[:]
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x1862711e8000).TransferLeader = (*"github.com/pingcap/kvproto/pkg/pdpb.TransferLeader")(0x1862711e9000)
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270b66310).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x1862711e7000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x1862711e8000))
+print (*hbstream.HeartbeatStreams)(0x186270b66310).msgCh.buf[15]
+call -unsafe "encoding/json".Marshal((*hbstream.HeartbeatStreams)(0x186270b66310).msgCh.buf[15])
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270b66310).Drain(1)
+call runtime.mallocgc(4096,nil,true)
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270b66310).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270d80000),nil)
+call (*hbstream.HeartbeatStreams)(0x186270b66310).MsgLength()
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270b66310).Close()
+call -unsafe hbstream.NewTestHeartbeatStreams(cluster.ctx,nil,false)
+set (*hbstream.HeartbeatStreams)(0x186270d20150).clusterID = 123
+call (*hbstream.HeartbeatStreams)(0x186270d20150).typ = "scheduling"
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270d81000).Id = 55
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270d82000).ConfVer = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270d82000).Version = 456
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270d81000).RegionEpoch = (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270d82000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d83000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d83000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d83000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d83000).IsWitness = true
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270d84000).meta = (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270d81000)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270d84000).leader = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d83000)
+call runtime.mallocgc(4096,nil,true)
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270d20150).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270d84000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186270d85000))
+print (*hbstream.HeartbeatStreams)(0x186270d20150).msgCh.buf[0]
+call -unsafe "encoding/json".Marshal((*hbstream.HeartbeatStreams)(0x186270d20150).msgCh.buf[0])
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270d20150).Drain(1)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x1862711fe000).Id = 55
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x1862711ff000).ConfVer = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x1862711ff000).Version = 456
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x1862711fe000).RegionEpoch = (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x1862711ff000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d1c000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d1c000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d1c000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d1c000).IsWitness = true
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270d1d000).meta = (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x1862711fe000)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270d1d000).leader = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d1c000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d34000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d34000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d34000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d34000).IsWitness = true
+set (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x186270d33000).Peer = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d34000)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x186270d33000).ChangeType = 2
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186270d32000).ChangePeer = (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x186270d33000)
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270d20150).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270d1d000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186270d32000))
+print (*hbstream.HeartbeatStreams)(0x186270d20150).msgCh.buf[1]
+call -unsafe "encoding/json".Marshal((*hbstream.HeartbeatStreams)(0x186270d20150).msgCh.buf[1])
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270d20150).Drain(1)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270d35000).Id = 55
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270d52000).ConfVer = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270d52000).Version = 456
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270d35000).RegionEpoch = (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270d52000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d53000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d53000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d53000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d53000).IsWitness = true
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270d54000).meta = (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270d35000)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270d54000).leader = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d53000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d57000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d57000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d57000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d57000).IsWitness = true
+set (*"github.com/pingcap/kvproto/pkg/pdpb.TransferLeader")(0x186270d56000).Peer = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d57000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270e03000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270e03000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270e03000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270e03000).IsWitness = true
+set (*"[2]*github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270e02000)[0] = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270e03000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270e18000).Id = 8
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270e18000).StoreId = 9
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270e18000).Role = 37
+set (*"[2]*github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270e02000)[1] = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270e18000)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.TransferLeader")(0x186270d56000).Peers = (*(*"[2]*github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270e02000))[:]
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186270d55000).TransferLeader = (*"github.com/pingcap/kvproto/pkg/pdpb.TransferLeader")(0x186270d56000)
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270d20150).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270d54000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186270d55000))
+print (*hbstream.HeartbeatStreams)(0x186270d20150).msgCh.buf[2]
+call -unsafe "encoding/json".Marshal((*hbstream.HeartbeatStreams)(0x186270d20150).msgCh.buf[2])
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270d20150).Drain(1)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270e19000).Id = 55
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270e1a000).ConfVer = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270e1a000).Version = 456
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270e19000).RegionEpoch = (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270e1a000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d86000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d86000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d86000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d86000).IsWitness = true
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270d87000).meta = (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270e19000)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270d87000).leader = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d86000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270da6000).Id = 99
+call runtime.mallocgc(4096,nil,true)
+set (*"[2]uint8")(0x186270d72000)[0] = 0
+set (*"[2]uint8")(0x186270d72000)[1] = 255
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270da6000).StartKey = (*(*"[2]uint8")(0x186270d72000))[:]
+call runtime.mallocgc(4096,nil,true)
+set (*"[2]uint8")(0x186270d73000)[0] = 255
+set (*"[2]uint8")(0x186270d73000)[1] = 0
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270da6000).EndKey = (*(*"[2]uint8")(0x186270d73000))[:]
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270d74000).ConfVer = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270d74000).Version = 456
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270da6000).RegionEpoch = (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270d74000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d76000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d76000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d76000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d76000).IsWitness = true
+set (*"[2]*github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d75000)[0] = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d76000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d77000).Id = 8
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d77000).StoreId = 9
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d77000).Role = 37
+set (*"[2]*github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d75000)[1] = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d77000)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270da6000).Peers = (*(*"[2]*github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270d75000))[:]
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/encryptionpb.EncryptionMeta")(0x186270f70000).KeyId = 13
+call runtime.mallocgc(4096,nil,true)
+set (*"[3]uint8")(0x186270f71000)[0] = 0
+set (*"[3]uint8")(0x186270f71000)[1] = 255
+set (*"[3]uint8")(0x186270f71000)[2] = 1
+set (*"github.com/pingcap/kvproto/pkg/encryptionpb.EncryptionMeta")(0x186270f70000).Iv = (*(*"[3]uint8")(0x186270f71000))[:]
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270da6000).EncryptionMeta = (*"github.com/pingcap/kvproto/pkg/encryptionpb.EncryptionMeta")(0x186270f70000)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270da6000).IsInFlashback = true
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270da6000).FlashbackStartTs = 987
+set (*"github.com/pingcap/kvproto/pkg/pdpb.Merge")(0x186270d99000).Target = (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270da6000)
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186270d98000).Merge = (*"github.com/pingcap/kvproto/pkg/pdpb.Merge")(0x186270d99000)
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270d20150).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270d87000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186270d98000))
+print (*hbstream.HeartbeatStreams)(0x186270d20150).msgCh.buf[3]
+call -unsafe "encoding/json".Marshal((*hbstream.HeartbeatStreams)(0x186270d20150).msgCh.buf[3])
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270d20150).Drain(1)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270e1b000).Id = 55
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270e1c000).ConfVer = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270e1c000).Version = 456
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270e1b000).RegionEpoch = (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270e1c000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270f72000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270f72000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270f72000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270f72000).IsWitness = true
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270f73000).meta = (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270e1b000)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270f73000).leader = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270f72000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.SplitRegion")(0x186270da7000).Policy = 2
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"[2]uint8")(0x186270da9000)[0] = 0
+set (*"[2]uint8")(0x186270da9000)[1] = 255
+set (*"[4][]uint8")(0x186270da8000)[0] = (*(*"[2]uint8")(0x186270da9000))[:]
+set (*"[4][]uint8")(0x186270da8000)[1] = nil
+call runtime.mallocgc(4096,nil,true)
+set (*"[3]uint8")(0x186270daa000)[0] = 97
+set (*"[3]uint8")(0x186270daa000)[1] = 98
+set (*"[3]uint8")(0x186270daa000)[2] = 99
+set (*"[4][]uint8")(0x186270da8000)[2] = (*(*"[3]uint8")(0x186270daa000))[:]
+call runtime.mallocgc(4096,nil,true)
+set (*"[2]uint8")(0x186270dab000)[0] = 0
+set (*"[2]uint8")(0x186270dab000)[1] = 255
+set (*"[4][]uint8")(0x186270da8000)[3] = (*(*"[2]uint8")(0x186270dab000))[:]
+set (*"github.com/pingcap/kvproto/pkg/pdpb.SplitRegion")(0x186270da7000).Keys = (*(*"[4][]uint8")(0x186270da8000))[:]
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186270f74000).SplitRegion = (*"github.com/pingcap/kvproto/pkg/pdpb.SplitRegion")(0x186270da7000)
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270d20150).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270f73000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186270f74000))
+print (*hbstream.HeartbeatStreams)(0x186270d20150).msgCh.buf[4]
+call -unsafe "encoding/json".Marshal((*hbstream.HeartbeatStreams)(0x186270d20150).msgCh.buf[4])
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270d20150).Drain(1)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270dac000).Id = 55
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270dad000).ConfVer = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270dad000).Version = 456
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270dac000).RegionEpoch = (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270dad000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270dbc000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270dbc000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270dbc000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270dbc000).IsWitness = true
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270dbd000).meta = (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270dac000)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270dbd000).leader = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270dbc000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270df8000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270df8000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270df8000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270df8000).IsWitness = true
+set (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x186270deb000).Peer = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270df8000)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x186270deb000).ChangeType = 1
+set (*"[3]*github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x186270dea000)[0] = (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x186270deb000)
+set (*"[3]*github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x186270dea000)[1] = nil
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x186270f75000).Peer = nil
+set (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x186270f75000).ChangeType = -7
+set (*"[3]*github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x186270dea000)[2] = (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x186270f75000)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeerV2")(0x186270dbf000).Changes = (*(*"[3]*github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x186270dea000))[:]
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186270dbe000).ChangePeerV2 = (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeerV2")(0x186270dbf000)
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270d20150).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270dbd000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186270dbe000))
+print (*hbstream.HeartbeatStreams)(0x186270d20150).msgCh.buf[5]
+call -unsafe "encoding/json".Marshal((*hbstream.HeartbeatStreams)(0x186270d20150).msgCh.buf[5])
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270d20150).Drain(1)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270f76000).Id = 55
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270f77000).ConfVer = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270f77000).Version = 456
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270f76000).RegionEpoch = (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270f77000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270f78000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270f78000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270f78000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270f78000).IsWitness = true
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270f79000).meta = (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186270f76000)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270f79000).leader = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270f78000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.SwitchWitness")(0x186270e1f000).PeerId = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/pdpb.SwitchWitness")(0x186270e1f000).IsWitness = true
+set (*"[3]*github.com/pingcap/kvproto/pkg/pdpb.SwitchWitness")(0x186270e1e000)[0] = (*"github.com/pingcap/kvproto/pkg/pdpb.SwitchWitness")(0x186270e1f000)
+set (*"[3]*github.com/pingcap/kvproto/pkg/pdpb.SwitchWitness")(0x186270e1e000)[1] = nil
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.SwitchWitness")(0x1862711f4000).PeerId = 4
+set (*"github.com/pingcap/kvproto/pkg/pdpb.SwitchWitness")(0x1862711f4000).IsWitness = false
+set (*"[3]*github.com/pingcap/kvproto/pkg/pdpb.SwitchWitness")(0x186270e1e000)[2] = (*"github.com/pingcap/kvproto/pkg/pdpb.SwitchWitness")(0x1862711f4000)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.BatchSwitchWitness")(0x186270e1d000).SwitchWitnesses = (*(*"[3]*github.com/pingcap/kvproto/pkg/pdpb.SwitchWitness")(0x186270e1e000))[:]
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186270f7a000).SwitchWitnesses = (*"github.com/pingcap/kvproto/pkg/pdpb.BatchSwitchWitness")(0x186270e1d000)
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270d20150).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270f79000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186270f7a000))
+print (*hbstream.HeartbeatStreams)(0x186270d20150).msgCh.buf[6]
+call -unsafe "encoding/json".Marshal((*hbstream.HeartbeatStreams)(0x186270d20150).msgCh.buf[6])
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270d20150).Drain(1)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x1862711f5000).Id = 55
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270f7b000).ConfVer = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270f7b000).Version = 456
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x1862711f5000).RegionEpoch = (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186270f7b000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270f7c000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270f7c000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270f7c000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270f7c000).IsWitness = true
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270f7d000).meta = (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x1862711f5000)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270f7d000).leader = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186270f7c000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.ChangeSplit")(0x186270f7f000).AutoSplitEnabled = true
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186270f7e000).ChangeSplit = (*"github.com/pingcap/kvproto/pkg/pdpb.ChangeSplit")(0x186270f7f000)
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270d20150).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186270f7d000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186270f7e000))
+print (*hbstream.HeartbeatStreams)(0x186270d20150).msgCh.buf[7]
+call -unsafe "encoding/json".Marshal((*hbstream.HeartbeatStreams)(0x186270d20150).msgCh.buf[7])
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270d20150).Drain(1)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186271200000).Id = 55
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x1862711f6000).ConfVer = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x1862711f6000).Version = 456
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186271200000).RegionEpoch = (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x1862711f6000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711f7000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711f7000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711f7000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711f7000).IsWitness = true
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x1862711f8000).meta = (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186271200000)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x1862711f8000).leader = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711f7000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711fb000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711fb000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711fb000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711fb000).IsWitness = true
+set (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x1862711fa000).Peer = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x1862711fb000)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x1862711fa000).ChangeType = 2
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x1862711f9000).ChangePeer = (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x1862711fa000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271281000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271281000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271281000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271281000).IsWitness = true
+set (*"github.com/pingcap/kvproto/pkg/pdpb.TransferLeader")(0x186271280000).Peer = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271281000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271283000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271283000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271283000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271283000).IsWitness = true
+set (*"[2]*github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271282000)[0] = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271283000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271284000).Id = 8
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271284000).StoreId = 9
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271284000).Role = 37
+set (*"[2]*github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271282000)[1] = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271284000)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.TransferLeader")(0x186271280000).Peers = (*(*"[2]*github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271282000))[:]
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x1862711f9000).TransferLeader = (*"github.com/pingcap/kvproto/pkg/pdpb.TransferLeader")(0x186271280000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186271286000).Id = 99
+call runtime.mallocgc(4096,nil,true)
+set (*"[2]uint8")(0x186271201000)[0] = 0
+set (*"[2]uint8")(0x186271201000)[1] = 255
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186271286000).StartKey = (*(*"[2]uint8")(0x186271201000))[:]
+call runtime.mallocgc(4096,nil,true)
+set (*"[2]uint8")(0x186271202000)[0] = 255
+set (*"[2]uint8")(0x186271202000)[1] = 0
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186271286000).EndKey = (*(*"[2]uint8")(0x186271202000))[:]
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186271203000).ConfVer = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186271203000).Version = 456
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186271286000).RegionEpoch = (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186271203000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271288000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271288000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271288000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271288000).IsWitness = true
+set (*"[2]*github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271287000)[0] = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271288000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271289000).Id = 8
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271289000).StoreId = 9
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271289000).Role = 37
+set (*"[2]*github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271287000)[1] = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271289000)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186271286000).Peers = (*(*"[2]*github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271287000))[:]
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/encryptionpb.EncryptionMeta")(0x18627128a000).KeyId = 13
+call runtime.mallocgc(4096,nil,true)
+set (*"[3]uint8")(0x18627128b000)[0] = 0
+set (*"[3]uint8")(0x18627128b000)[1] = 255
+set (*"[3]uint8")(0x18627128b000)[2] = 1
+set (*"github.com/pingcap/kvproto/pkg/encryptionpb.EncryptionMeta")(0x18627128a000).Iv = (*(*"[3]uint8")(0x18627128b000))[:]
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186271286000).EncryptionMeta = (*"github.com/pingcap/kvproto/pkg/encryptionpb.EncryptionMeta")(0x18627128a000)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186271286000).IsInFlashback = true
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186271286000).FlashbackStartTs = 987
+set (*"github.com/pingcap/kvproto/pkg/pdpb.Merge")(0x186271285000).Target = (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186271286000)
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x1862711f9000).Merge = (*"github.com/pingcap/kvproto/pkg/pdpb.Merge")(0x186271285000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.SplitRegion")(0x18627128c000).Policy = 2
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"[2]uint8")(0x186271204000)[0] = 0
+set (*"[2]uint8")(0x186271204000)[1] = 255
+set (*"[4][]uint8")(0x18627128d000)[0] = (*(*"[2]uint8")(0x186271204000))[:]
+set (*"[4][]uint8")(0x18627128d000)[1] = nil
+call runtime.mallocgc(4096,nil,true)
+set (*"[3]uint8")(0x186271205000)[0] = 97
+set (*"[3]uint8")(0x186271205000)[1] = 98
+set (*"[3]uint8")(0x186271205000)[2] = 99
+set (*"[4][]uint8")(0x18627128d000)[2] = (*(*"[3]uint8")(0x186271205000))[:]
+call runtime.mallocgc(4096,nil,true)
+set (*"[2]uint8")(0x186271206000)[0] = 0
+set (*"[2]uint8")(0x186271206000)[1] = 255
+set (*"[4][]uint8")(0x18627128d000)[3] = (*(*"[2]uint8")(0x186271206000))[:]
+set (*"github.com/pingcap/kvproto/pkg/pdpb.SplitRegion")(0x18627128c000).Keys = (*(*"[4][]uint8")(0x18627128d000))[:]
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x1862711f9000).SplitRegion = (*"github.com/pingcap/kvproto/pkg/pdpb.SplitRegion")(0x18627128c000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x18627120a000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x18627120a000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x18627120a000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x18627120a000).IsWitness = true
+set (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x186271209000).Peer = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x18627120a000)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x186271209000).ChangeType = 1
+set (*"[3]*github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x186271208000)[0] = (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x186271209000)
+set (*"[3]*github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x186271208000)[1] = nil
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x18627120b000).Peer = nil
+set (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x18627120b000).ChangeType = -7
+set (*"[3]*github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x186271208000)[2] = (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x18627120b000)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeerV2")(0x186271207000).Changes = (*(*"[3]*github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x186271208000))[:]
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x1862711f9000).ChangePeerV2 = (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeerV2")(0x186271207000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.SwitchWitness")(0x186270df9000).PeerId = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/pdpb.SwitchWitness")(0x186270df9000).IsWitness = true
+set (*"[3]*github.com/pingcap/kvproto/pkg/pdpb.SwitchWitness")(0x18627128f000)[0] = (*"github.com/pingcap/kvproto/pkg/pdpb.SwitchWitness")(0x186270df9000)
+set (*"[3]*github.com/pingcap/kvproto/pkg/pdpb.SwitchWitness")(0x18627128f000)[1] = nil
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.SwitchWitness")(0x186270dfa000).PeerId = 4
+set (*"github.com/pingcap/kvproto/pkg/pdpb.SwitchWitness")(0x186270dfa000).IsWitness = false
+set (*"[3]*github.com/pingcap/kvproto/pkg/pdpb.SwitchWitness")(0x18627128f000)[2] = (*"github.com/pingcap/kvproto/pkg/pdpb.SwitchWitness")(0x186270dfa000)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.BatchSwitchWitness")(0x18627128e000).SwitchWitnesses = (*(*"[3]*github.com/pingcap/kvproto/pkg/pdpb.SwitchWitness")(0x18627128f000))[:]
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x1862711f9000).SwitchWitnesses = (*"github.com/pingcap/kvproto/pkg/pdpb.BatchSwitchWitness")(0x18627128e000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.ChangeSplit")(0x186270dfb000).AutoSplitEnabled = true
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x1862711f9000).ChangeSplit = (*"github.com/pingcap/kvproto/pkg/pdpb.ChangeSplit")(0x186270dfb000)
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270d20150).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x1862711f8000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x1862711f9000))
+print (*hbstream.HeartbeatStreams)(0x186270d20150).msgCh.buf[8]
+call -unsafe "encoding/json".Marshal((*hbstream.HeartbeatStreams)(0x186270d20150).msgCh.buf[8])
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270d20150).Drain(1)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186271300000).Id = 55
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186271301000).ConfVer = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186271301000).Version = 456
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186271300000).RegionEpoch = (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186271301000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271302000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271302000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271302000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271302000).IsWitness = true
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186271303000).meta = (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186271300000)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186271303000).leader = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271302000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186271304000).ChangePeer = (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x18627120c000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186271304000).TransferLeader = (*"github.com/pingcap/kvproto/pkg/pdpb.TransferLeader")(0x18627120d000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186271304000).Merge = (*"github.com/pingcap/kvproto/pkg/pdpb.Merge")(0x18627120e000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186271304000).SplitRegion = (*"github.com/pingcap/kvproto/pkg/pdpb.SplitRegion")(0x18627120f000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186271304000).ChangePeerV2 = (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeerV2")(0x186271210000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186271304000).SwitchWitnesses = (*"github.com/pingcap/kvproto/pkg/pdpb.BatchSwitchWitness")(0x186271211000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186271304000).ChangeSplit = (*"github.com/pingcap/kvproto/pkg/pdpb.ChangeSplit")(0x186271212000)
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270d20150).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186271303000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186271304000))
+print (*hbstream.HeartbeatStreams)(0x186270d20150).msgCh.buf[9]
+call -unsafe "encoding/json".Marshal((*hbstream.HeartbeatStreams)(0x186270d20150).msgCh.buf[9])
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270d20150).Drain(1)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186271290000).Id = 55
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186271291000).ConfVer = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186271291000).Version = 456
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186271290000).RegionEpoch = (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186271291000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271292000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271292000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271292000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271292000).IsWitness = true
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186271293000).meta = (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186271290000)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186271293000).leader = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271292000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x186271306000).ChangeType = -7
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186271305000).ChangePeer = (*"github.com/pingcap/kvproto/pkg/pdpb.ChangePeer")(0x186271306000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.SplitRegion")(0x186271307000).Policy = 37
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186271305000).SplitRegion = (*"github.com/pingcap/kvproto/pkg/pdpb.SplitRegion")(0x186271307000)
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270d20150).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186271293000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186271305000))
+print (*hbstream.HeartbeatStreams)(0x186270d20150).msgCh.buf[10]
+call -unsafe "encoding/json".Marshal((*hbstream.HeartbeatStreams)(0x186270d20150).msgCh.buf[10])
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270d20150).Drain(1)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186271294000).Id = 55
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186271295000).ConfVer = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186271295000).Version = 456
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186271294000).RegionEpoch = (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186271295000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271296000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271296000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271296000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271296000).IsWitness = true
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186271297000).meta = (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186271294000)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186271297000).leader = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271296000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/pdpb.ChangeSplit")(0x186271309000).AutoSplitEnabled = false
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186271308000).ChangeSplit = (*"github.com/pingcap/kvproto/pkg/pdpb.ChangeSplit")(0x186271309000)
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270d20150).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186271297000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186271308000))
+print (*hbstream.HeartbeatStreams)(0x186270d20150).msgCh.buf[11]
+call -unsafe "encoding/json".Marshal((*hbstream.HeartbeatStreams)(0x186270d20150).msgCh.buf[11])
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270d20150).Drain(1)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186271213000).Id = 55
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186271213000).RegionEpoch = nil
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271214000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271214000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271214000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271214000).IsWitness = true
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186271215000).meta = (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186271213000)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186271215000).leader = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271214000)
+call runtime.mallocgc(4096,nil,true)
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270d20150).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186271215000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186271216000))
+print (*hbstream.HeartbeatStreams)(0x186270d20150).msgCh.buf[12]
+call -unsafe "encoding/json".Marshal((*hbstream.HeartbeatStreams)(0x186270d20150).msgCh.buf[12])
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270d20150).Drain(1)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186271217000).Id = 55
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186271217000).RegionEpoch = (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x186271218000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271219000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271219000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271219000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271219000).IsWitness = true
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x18627121a000).meta = (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186271217000)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x18627121a000).leader = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271219000)
+call runtime.mallocgc(4096,nil,true)
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270d20150).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x18627121a000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x18627121b000))
+print (*hbstream.HeartbeatStreams)(0x186270d20150).msgCh.buf[13]
+call -unsafe "encoding/json".Marshal((*hbstream.HeartbeatStreams)(0x186270d20150).msgCh.buf[13])
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270d20150).Drain(1)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x18627121c000).Id = 55
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x18627121d000).ConfVer = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x18627121d000).Version = 456
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x18627121c000).RegionEpoch = (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x18627121d000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x18627121f000).meta = (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x18627121c000)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x18627121f000).leader = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x18627121e000)
+call runtime.mallocgc(4096,nil,true)
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270d20150).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x18627121f000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x186271220000))
+print (*hbstream.HeartbeatStreams)(0x186270d20150).msgCh.buf[14]
+call -unsafe "encoding/json".Marshal((*hbstream.HeartbeatStreams)(0x186270d20150).msgCh.buf[14])
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270d20150).Drain(1)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186271221000).Id = 55
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x18627122a000).ConfVer = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x18627122a000).Version = 456
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186271221000).RegionEpoch = (*"github.com/pingcap/kvproto/pkg/metapb.RegionEpoch")(0x18627122a000)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271298000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271298000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271298000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271298000).IsWitness = true
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186271299000).meta = (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x186271221000)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186271299000).leader = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x186271298000)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"[3]*github.com/pingcap/kvproto/pkg/metapb.Peer")(0x18627129c000)[0] = nil
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x18627129d000).Id = 18446744073709551615
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x18627129d000).StoreId = 77
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x18627129d000).Role = 3
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x18627129d000).IsWitness = true
+set (*"[3]*github.com/pingcap/kvproto/pkg/metapb.Peer")(0x18627129c000)[1] = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x18627129d000)
+set (*"[3]*github.com/pingcap/kvproto/pkg/metapb.Peer")(0x18627129c000)[2] = nil
+set (*"github.com/pingcap/kvproto/pkg/pdpb.TransferLeader")(0x18627129b000).Peers = (*(*"[3]*github.com/pingcap/kvproto/pkg/metapb.Peer")(0x18627129c000))[:]
+set (*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x18627129a000).TransferLeader = (*"github.com/pingcap/kvproto/pkg/pdpb.TransferLeader")(0x18627129b000)
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270d20150).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x186271299000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x18627129a000))
+print (*hbstream.HeartbeatStreams)(0x186270d20150).msgCh.buf[15]
+call -unsafe "encoding/json".Marshal((*hbstream.HeartbeatStreams)(0x186270d20150).msgCh.buf[15])
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270d20150).Drain(1)
+call runtime.mallocgc(4096,nil,true)
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270d20150).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x18627129e000),nil)
+call (*hbstream.HeartbeatStreams)(0x186270d20150).MsgLength()
+call -unsafe (*hbstream.HeartbeatStreams)(0x186270d20150).Close()
+exit

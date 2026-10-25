@@ -1,0 +1,26 @@
+
+running 2 tests
+test task_012_test::task_012_owned_snapshot_and_enum_domain ... FAILED
+test task_012_test::task_012_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_012_test::task_012_behavior_cases
+    task_012_test::task_012_owned_snapshot_and_enum_domain
+
+test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Compiling astersql-pd-schedule-hbstream v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/hbstream)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.56s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_hbstream-0f2100bf8de7f29d)
+
+thread 'task_012_test::task_012_owned_snapshot_and_enum_domain' (161805752) panicked at pkg/schedule/hbstream/task_012_test.rs:175:60:
+index out of bounds: the len is 0 but the index is 0
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'task_012_test::task_012_behavior_cases' (161805751) panicked at pkg/schedule/hbstream/task_012_test.rs:136:9:
+assertion `left == right` failed: "classic_split_region"
+  left: Some(HeartbeatCommand { cluster_id: 123, region_id: 55, region_epoch: Some(RegionEpoch { conf_ver: 18446744073709551615, version: 456 }), target_peer: Peer { id: 18446744073709551615, store_id: 77, role: DemotingVoter, is_witness: true }, operation: Operation { change_peer: None, transfer_leader: None, merge: None, split_region: Some(SplitRegion { policy: UseKey, keys: [[], [0, 255], [0, 255], [97, 98, 99]] }), change_peer_v2: None, switch_witnesses: None, change_split: None } })
+ right: Some(HeartbeatCommand { cluster_id: 123, region_id: 55, region_epoch: Some(RegionEpoch { conf_ver: 18446744073709551615, version: 456 }), target_peer: Peer { id: 18446744073709551615, store_id: 77, role: DemotingVoter, is_witness: true }, operation: Operation { change_peer: None, transfer_leader: None, merge: None, split_region: Some(SplitRegion { policy: UseKey, keys: [[0, 255], [], [97, 98, 99], [0, 255]] }), change_peer_v2: None, switch_witnesses: None, change_split: None } })
+error: test failed, to rerun pass `-p astersql-pd-schedule-hbstream --lib`

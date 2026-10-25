@@ -1,0 +1,229 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=sh -c 'cargo generate-lockfile --offline && cargo test -p astersql-pd-schedule-hbstream --locked --lib task_012 -- --nocapture'
+     Locking 200 packages to highest Rust 1.85 compatible versions
+      Adding base64 v0.22.1 (available: v0.23.1)
+      Adding chrono v0.4.42 (available: v0.4.45)
+      Adding etcd-client v0.17.0 (available: v0.19.0)
+      Adding prost v0.14.1 (available: v0.14.4)
+      Adding prost-build v0.14.1 (available: v0.14.4)
+      Adding prost-types v0.14.1 (available: v0.14.4)
+      Adding protobuf v2.28.0 (available: v3.7.2)
+      Adding protoc-bin-vendored v3.2.0 (available: v3.3.0)
+      Adding protoc-bin-vendored-linux-aarch_64 v3.2.0 (available: v3.3.0)
+      Adding protoc-bin-vendored-linux-ppcle_64 v3.2.0 (available: v3.3.0)
+      Adding protoc-bin-vendored-linux-s390_64 v3.2.0 (available: v3.3.0)
+      Adding protoc-bin-vendored-linux-x86_32 v3.2.0 (available: v3.3.0)
+      Adding protoc-bin-vendored-linux-x86_64 v3.2.0 (available: v3.3.0)
+      Adding protoc-bin-vendored-macos-aarch_64 v3.2.0 (available: v3.3.0)
+      Adding protoc-bin-vendored-macos-x86_64 v3.2.0 (available: v3.3.0)
+      Adding protoc-bin-vendored-win32 v3.2.0 (available: v3.3.0)
+      Adding serde_json v1.0.145 (available: v1.0.151)
+      Adding sha2 v0.10.9 (available: v0.11.0)
+      Adding tokio v1.48.0 (available: v1.53.2)
+      Adding tokio-macros v2.6.1 (available: v2.7.2)
+      Adding tokio-util v0.7.17 (available: v0.7.19)
+      Adding toml v0.9.8 (available: v0.9.11+spec-1.1.0)
+      Adding tonic v0.14.2 (available: v0.14.5)
+      Adding tonic-build v0.14.5 (available: v0.14.6, requires Rust 1.88)
+      Adding tonic-prost v0.14.2 (available: v0.14.5)
+      Adding tonic-prost-build v0.14.2 (available: v0.14.6, requires Rust 1.88)
+   Compiling astersql-pd-core v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/core)
+   Compiling astersql-pd-schedule-hbstream v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/hbstream)
+error[E0583]: file not found for module `operation`
+ --> pkg/schedule/hbstream/lib.rs:3:1
+  |
+3 | pub mod operation;
+  | ^^^^^^^^^^^^^^^^^^
+  |
+  = help: to create the module `operation`, create file "pkg/schedule/hbstream/operation.rs" or "pkg/schedule/hbstream/operation/mod.rs"
+  = note: if there is a `mod operation` elsewhere in the crate already, import it with `use crate::...` instead
+
+error[E0425]: cannot find type `ChangePeer` in this scope
+  --> pkg/schedule/hbstream/task_012_test.rs:26:25
+   |
+26 | fn change(v: &Value) -> ChangePeer { ChangePeer { peer: optional(v,"peer",peer), change_type: ChangeType::from_raw(raw(v,"change_typ...
+   |                         ^^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `ChangePeer` in this scope
+  --> pkg/schedule/hbstream/task_012_test.rs:26:38
+   |
+26 | fn change(v: &Value) -> ChangePeer { ChangePeer { peer: optional(v,"peer",peer), change_type: ChangeType::from_raw(raw(v,"change_typ...
+   |                                      ^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find type `Operation` in this scope
+  --> pkg/schedule/hbstream/task_012_test.rs:27:28
+   |
+27 | fn operation(v: &Value) -> Operation {
+   |                            ^^^^^^^^^
+   |
+  --> /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/core/src/option.rs:598:0
+   |
+   = note: similarly named enum `Option` defined here
+help: an enum with a similar name exists
+   |
+27 - fn operation(v: &Value) -> Operation {
+27 + fn operation(v: &Value) -> Option {
+   |
+
+error[E0422]: cannot find struct, variant or union type `Operation` in this scope
+  --> pkg/schedule/hbstream/task_012_test.rs:28:5
+   |
+28 |     Operation {
+   |     ^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `TransferLeader` in this scope
+  --> pkg/schedule/hbstream/task_012_test.rs:30:59
+   |
+30 | ...   transfer_leader: optional(v,"transfer_leader",|x| TransferLeader { peer: optional(x,"peer",peer), peers: list(x,"peers",|p| (!...
+   |                                                         ^^^^^^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `Merge` in this scope
+  --> pkg/schedule/hbstream/task_012_test.rs:31:39
+   |
+31 |         merge: optional(v,"merge",|x| Merge { target: optional(x,"target",region) }),
+   |                                       ^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `SplitRegion` in this scope
+  --> pkg/schedule/hbstream/task_012_test.rs:32:53
+   |
+32 | ...   split_region: optional(v,"split_region",|x| SplitRegion { policy: SplitPolicy::from_raw(raw(x,"policy")), keys: list(x,"keys",...
+   |                                                   ^^^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `ChangePeerV2` in this scope
+  --> pkg/schedule/hbstream/task_012_test.rs:33:57
+   |
+33 | ...   change_peer_v2: optional(v,"change_peer_v2",|x| ChangePeerV2 { changes: list(x,"changes",|p| (!p.is_null()).then(|| change(p))...
+   |                                                       ^^^^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `BatchSwitchWitness` in this scope
+  --> pkg/schedule/hbstream/task_012_test.rs:34:61
+   |
+34 | ...   switch_witnesses: optional(v,"switch_witnesses",|x| BatchSwitchWitness { switch_witnesses: list(x,"switch_witnesses",|p| (!p.i...
+   |                                                           ^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `SwitchWitness` in this scope
+  --> pkg/schedule/hbstream/task_012_test.rs:34:153
+   |
+34 | ..."switch_witnesses",|p| (!p.is_null()).then(|| SwitchWitness { peer_id: number(p,"peer_id"), is_witness: flag(p,"is_witness") })) }),
+   |                                                  ^^^^^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `ChangeSplit` in this scope
+  --> pkg/schedule/hbstream/task_012_test.rs:35:53
+   |
+35 |         change_split: optional(v,"change_split",|x| ChangeSplit { auto_split_enabled: flag(x,"auto_split_enabled") }),
+   |                                                     ^^^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `HeartbeatCommand` in this scope
+  --> pkg/schedule/hbstream/task_012_test.rs:51:52
+   |
+51 | ...   let expected = (!output.is_null()).then(|| HeartbeatCommand { cluster_id: number(&output["header"],"cluster_id"), region_id: n...
+   |                                                  ^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `Operation` in this scope
+  --> pkg/schedule/hbstream/task_012_test.rs:65:18
+   |
+65 |     let mut op = Operation { split_region: Some(SplitRegion { policy: SplitPolicy::UseKey, keys: vec![vec![0,255],vec![]] }), ..Defa...
+   |                  ^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `SplitRegion` in this scope
+  --> pkg/schedule/hbstream/task_012_test.rs:65:49
+   |
+65 |     let mut op = Operation { split_region: Some(SplitRegion { policy: SplitPolicy::UseKey, keys: vec![vec![0,255],vec![]] }), ..Defa...
+   |                                                 ^^^^^^^^^^^ not found in this scope
+
+warning: unused import: `operation::*`
+ --> pkg/schedule/hbstream/lib.rs:4:9
+  |
+4 | pub use operation::*;
+  |         ^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `super::*`
+ --> pkg/schedule/hbstream/task_012_test.rs:2:5
+  |
+2 | use super::*;
+  |     ^^^^^^^^
+
+error[E0433]: cannot find type `ChangeType` in this scope
+  --> pkg/schedule/hbstream/task_012_test.rs:26:95
+   |
+26 | ...r: optional(v,"peer",peer), change_type: ChangeType::from_raw(raw(v,"change_type")) } }
+   |                                             ^^^^^^^^^^ use of undeclared type `ChangeType`
+
+error[E0433]: cannot find type `SplitPolicy` in this scope
+  --> pkg/schedule/hbstream/task_012_test.rs:32:75
+   |
+32 | ...   split_region: optional(v,"split_region",|x| SplitRegion { policy: SplitPolicy::from_raw(raw(x,"policy")), keys: list(x,"keys",...
+   |                                                                         ^^^^^^^^^^^ use of undeclared type `SplitPolicy`
+
+error[E0433]: cannot find type `HeartbeatCommand` in this scope
+  --> pkg/schedule/hbstream/task_012_test.rs:49:22
+   |
+49 |         let actual = HeartbeatCommand::for_region(123,&source,op);
+   |                      ^^^^^^^^^^^^^^^^ use of undeclared type `HeartbeatCommand`
+
+error[E0433]: cannot find type `ChangeType` in this scope
+  --> pkg/schedule/hbstream/task_012_test.rs:60:20
+   |
+60 |         assert_eq!(ChangeType::from_raw(n).as_raw(),n);
+   |                    ^^^^^^^^^^ use of undeclared type `ChangeType`
+
+error[E0433]: cannot find type `SplitPolicy` in this scope
+  --> pkg/schedule/hbstream/task_012_test.rs:61:20
+   |
+61 |         assert_eq!(SplitPolicy::from_raw(n).as_raw(),n);
+   |                    ^^^^^^^^^^^ use of undeclared type `SplitPolicy`
+
+error[E0433]: cannot find type `SplitPolicy` in this scope
+  --> pkg/schedule/hbstream/task_012_test.rs:65:71
+   |
+65 |     let mut op = Operation { split_region: Some(SplitRegion { policy: SplitPolicy::UseKey, keys: vec![vec![0,255],vec![]] }), ..Defa...
+   |                                                                       ^^^^^^^^^^^ use of undeclared type `SplitPolicy`
+
+error[E0433]: cannot find type `HeartbeatCommand` in this scope
+  --> pkg/schedule/hbstream/task_012_test.rs:66:19
+   |
+66 |     let command = HeartbeatCommand::for_region(u64::MAX,&source,op.clone()).unwrap();
+   |                   ^^^^^^^^^^^^^^^^ use of undeclared type `HeartbeatCommand`
+
+error[E0433]: cannot find type `HeartbeatCommand` in this scope
+  --> pkg/schedule/hbstream/task_012_test.rs:76:13
+   |
+76 |     assert!(HeartbeatCommand::for_region(0,&no_leader,Operation::default()).is_none());
+   |             ^^^^^^^^^^^^^^^^ use of undeclared type `HeartbeatCommand`
+
+error[E0433]: cannot find type `Operation` in this scope
+  --> pkg/schedule/hbstream/task_012_test.rs:76:55
+   |
+76 |     assert!(HeartbeatCommand::for_region(0,&no_leader,Operation::default()).is_none());
+   |                                                       ^^^^^^^^^ use of undeclared type `Operation`
+   |
+help: an enum with a similar name exists
+   |
+76 -     assert!(HeartbeatCommand::for_region(0,&no_leader,Operation::default()).is_none());
+76 +     assert!(HeartbeatCommand::for_region(0,&no_leader,Option::default()).is_none());
+   |
+
+error[E0433]: cannot find type `HeartbeatCommand` in this scope
+  --> pkg/schedule/hbstream/task_012_test.rs:78:17
+   |
+78 |     let command=HeartbeatCommand::for_region(0,&source,Operation::default()).unwrap();
+   |                 ^^^^^^^^^^^^^^^^ use of undeclared type `HeartbeatCommand`
+
+error[E0433]: cannot find type `Operation` in this scope
+  --> pkg/schedule/hbstream/task_012_test.rs:78:56
+   |
+78 |     let command=HeartbeatCommand::for_region(0,&source,Operation::default()).unwrap();
+   |                                                        ^^^^^^^^^ use of undeclared type `Operation`
+   |
+help: an enum with a similar name exists
+   |
+78 -     let command=HeartbeatCommand::for_region(0,&source,Operation::default()).unwrap();
+78 +     let command=HeartbeatCommand::for_region(0,&source,Option::default()).unwrap();
+   |
+
+Some errors have detailed explanations: E0422, E0425, E0433, E0583.
+For more information about an error, try `rustc --explain E0422`.
+warning: `astersql-pd-schedule-hbstream` (lib test) generated 2 warnings
+error: could not compile `astersql-pd-schedule-hbstream` (lib test) due to 26 previous errors; 2 warnings emitted
+command_exit_code=101

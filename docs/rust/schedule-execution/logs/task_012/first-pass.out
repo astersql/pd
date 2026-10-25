@@ -1,0 +1,23 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=sh -c 'cargo fmt --all && cargo test -p astersql-pd-schedule-hbstream --locked --lib task_012 -- --nocapture'
+    Blocking waiting for file lock on package cache
+   Compiling astersql-pd-schedule-hbstream v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/hbstream)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.87s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_hbstream-0f2100bf8de7f29d)
+
+running 2 tests
+test task_012_test::task_012_owned_snapshot_and_enum_domain ... ok
+
+thread 'task_012_test::task_012_behavior_cases' (161791869) panicked at pkg/schedule/hbstream/task_012_test.rs:84:66:
+called `Option::unwrap()` on a `None` value
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test task_012_test::task_012_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_012_test::task_012_behavior_cases
+
+test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-hbstream --lib`
+command_exit_code=101

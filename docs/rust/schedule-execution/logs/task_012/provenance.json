@@ -1,0 +1,19 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "dependency_commit": "b8d2b4759",
+  "binaries": {
+    "/tmp/pd-sched003/cluster.test": "8781f08225e2b8b746217d79fe78e3ff072369cc8ae8941cc8d616a8a77986d9",
+    "/tmp/pd-sched003/dlv": "dcd0463a4350f0660412f5c766d31077370eec10ac8055cf0d786377e0d6340e"
+  },
+  "sources": {
+    "pkg/schedule/hbstream/heartbeat_streams.go": "e9388f1dd8e1ab906c273df018a2446b36450f6894bdc3ad2e0a70ec0a999489",
+    "pkg/core/region.go": "be6ed0dc77537d62926d21d9e4eef080ea0dbcc7dc97efb4dc26269a172f99d8",
+    "server/cluster/cluster_test.go": "11c9f4767ab374ee4920d7a54e4411c031afbec9be61af191102e0b8cea4f71d",
+    "pkg/mcs/utils/constant/constant.go": "b5787f511e3950ccce623c0ff0eef006d7d387d48ae54dac9044e23eb44083a6"
+  },
+  "fixture_sha256": "015fc4f672f7cdc3215467a7a4870dc06ba9d8e71b8d220e1b694e9583fb5184",
+  "mode": "Go classic and scheduling response branches; Rust default features",
+  "safety": "Reuse readonly existing cluster.test/dlv. TestSetOfflineStore setup through line 300 was audited in task011; no required failpoints. Inject only data allocations and real SendMsg calls; source and binaries mounted readonly. GC disabled in isolated debugger process to retain raw input allocations; no Go compilation or edits.",
+  "normalization": "encoding/json.Marshal of real queued Go response. Decode byte arrays exactly; nil/empty byte slices normalize to empty bytes. Restore omitted scalar defaults. Keep optional messages, nil repeated message entries, ordering, unknown enums, and every domain field. Exclude debugger addresses/runtime channel state only.",
+  "scope": "Full modified Go test not claimed to pass. Scheduling mode selected by actual typ=\"scheduling\", resulting dynamic response type checked in oracle output via Marshal receiver type audit; network conversion remains later task."
+}

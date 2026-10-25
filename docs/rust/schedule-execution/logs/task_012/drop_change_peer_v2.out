@@ -1,0 +1,22 @@
+
+running 2 tests
+test task_012_test::task_012_owned_snapshot_and_enum_domain ... ok
+test task_012_test::task_012_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_012_test::task_012_behavior_cases
+
+test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Compiling astersql-pd-schedule-hbstream v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/hbstream)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.51s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_hbstream-0f2100bf8de7f29d)
+
+thread 'task_012_test::task_012_behavior_cases' (161803121) panicked at pkg/schedule/hbstream/task_012_test.rs:136:9:
+assertion `left == right` failed: "classic_change_peer_v2"
+  left: Some(HeartbeatCommand { cluster_id: 123, region_id: 55, region_epoch: Some(RegionEpoch { conf_ver: 18446744073709551615, version: 456 }), target_peer: Peer { id: 18446744073709551615, store_id: 77, role: DemotingVoter, is_witness: true }, operation: Operation { change_peer: None, transfer_leader: None, merge: None, split_region: None, change_peer_v2: None, switch_witnesses: None, change_split: None } })
+ right: Some(HeartbeatCommand { cluster_id: 123, region_id: 55, region_epoch: Some(RegionEpoch { conf_ver: 18446744073709551615, version: 456 }), target_peer: Peer { id: 18446744073709551615, store_id: 77, role: DemotingVoter, is_witness: true }, operation: Operation { change_peer: None, transfer_leader: None, merge: None, split_region: None, change_peer_v2: Some(ChangePeerV2 { changes: [Some(ChangePeer { peer: Some(Peer { id: 18446744073709551615, store_id: 77, role: DemotingVoter, is_witness: true }), change_type: RemoveNode }), None, Some(ChangePeer { peer: None, change_type: Unknown(-7) })] }), switch_witnesses: None, change_split: None } })
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+error: test failed, to rerun pass `-p astersql-pd-schedule-hbstream --lib`

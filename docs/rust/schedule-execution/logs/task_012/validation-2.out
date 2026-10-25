@@ -1,0 +1,16 @@
+
+running 2 tests
+test task_012_test::task_012_owned_snapshot_and_enum_domain ... ok
+test task_012_test::task_012_behavior_cases ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Compiling astersql-pd-schedule-hbstream v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/hbstream)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.49s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_hbstream-0f2100bf8de7f29d)
+   Doc-tests astersql_pd_schedule_hbstream

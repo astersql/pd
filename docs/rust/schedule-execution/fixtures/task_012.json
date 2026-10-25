@@ -1,0 +1,1949 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "cases": [
+    {
+      "id": "classic_empty",
+      "mode": "classic",
+      "region_id": 55,
+      "region_epoch": {
+        "conf_ver": 18446744073709551615,
+        "version": 456
+      },
+      "target_peer": {
+        "id": 18446744073709551615,
+        "store_id": 77,
+        "role": 3,
+        "is_witness": true
+      },
+      "operation": {},
+      "output": {
+        "header": {
+          "cluster_id": 123
+        },
+        "region_id": 55,
+        "region_epoch": {
+          "conf_ver": 18446744073709551615,
+          "version": 456
+        },
+        "target_peer": {
+          "id": 18446744073709551615,
+          "store_id": 77,
+          "role": 3,
+          "is_witness": true
+        }
+      }
+    },
+    {
+      "id": "classic_change_peer",
+      "mode": "classic",
+      "region_id": 55,
+      "region_epoch": {
+        "conf_ver": 18446744073709551615,
+        "version": 456
+      },
+      "target_peer": {
+        "id": 18446744073709551615,
+        "store_id": 77,
+        "role": 3,
+        "is_witness": true
+      },
+      "operation": {
+        "change_peer": {
+          "peer": {
+            "id": 18446744073709551615,
+            "store_id": 77,
+            "role": 3,
+            "is_witness": true
+          },
+          "change_type": 2
+        }
+      },
+      "output": {
+        "header": {
+          "cluster_id": 123
+        },
+        "change_peer": {
+          "peer": {
+            "id": 18446744073709551615,
+            "store_id": 77,
+            "role": 3,
+            "is_witness": true
+          },
+          "change_type": 2
+        },
+        "region_id": 55,
+        "region_epoch": {
+          "conf_ver": 18446744073709551615,
+          "version": 456
+        },
+        "target_peer": {
+          "id": 18446744073709551615,
+          "store_id": 77,
+          "role": 3,
+          "is_witness": true
+        }
+      }
+    },
+    {
+      "id": "classic_transfer_leader",
+      "mode": "classic",
+      "region_id": 55,
+      "region_epoch": {
+        "conf_ver": 18446744073709551615,
+        "version": 456
+      },
+      "target_peer": {
+        "id": 18446744073709551615,
+        "store_id": 77,
+        "role": 3,
+        "is_witness": true
+      },
+      "operation": {
+        "transfer_leader": {
+          "peer": {
+            "id": 18446744073709551615,
+            "store_id": 77,
+            "role": 3,
+            "is_witness": true
+          },
+          "peers": [
+            {
+              "id": 18446744073709551615,
+              "store_id": 77,
+              "role": 3,
+              "is_witness": true
+            },
+            {
+              "id": 8,
+              "store_id": 9,
+              "role": 37
+            }
+          ]
+        }
+      },
+      "output": {
+        "header": {
+          "cluster_id": 123
+        },
+        "transfer_leader": {
+          "peer": {
+            "id": 18446744073709551615,
+            "store_id": 77,
+            "role": 3,
+            "is_witness": true
+          },
+          "peers": [
+            {
+              "id": 18446744073709551615,
+              "store_id": 77,
+              "role": 3,
+              "is_witness": true
+            },
+            {
+              "id": 8,
+              "store_id": 9,
+              "role": 37
+            }
+          ]
+        },
+        "region_id": 55,
+        "region_epoch": {
+          "conf_ver": 18446744073709551615,
+          "version": 456
+        },
+        "target_peer": {
+          "id": 18446744073709551615,
+          "store_id": 77,
+          "role": 3,
+          "is_witness": true
+        }
+      }
+    },
+    {
+      "id": "classic_merge",
+      "mode": "classic",
+      "region_id": 55,
+      "region_epoch": {
+        "conf_ver": 18446744073709551615,
+        "version": 456
+      },
+      "target_peer": {
+        "id": 18446744073709551615,
+        "store_id": 77,
+        "role": 3,
+        "is_witness": true
+      },
+      "operation": {
+        "merge": {
+          "target": {
+            "id": 99,
+            "start_key": "AP8=",
+            "end_key": "/wA=",
+            "region_epoch": {
+              "conf_ver": 18446744073709551615,
+              "version": 456
+            },
+            "peers": [
+              {
+                "id": 18446744073709551615,
+                "store_id": 77,
+                "role": 3,
+                "is_witness": true
+              },
+              {
+                "id": 8,
+                "store_id": 9,
+                "role": 37
+              }
+            ],
+            "encryption_meta": {
+              "key_id": 13,
+              "iv": "AP8B"
+            },
+            "is_in_flashback": true,
+            "flashback_start_ts": 987
+          }
+        }
+      },
+      "output": {
+        "header": {
+          "cluster_id": 123
+        },
+        "region_id": 55,
+        "region_epoch": {
+          "conf_ver": 18446744073709551615,
+          "version": 456
+        },
+        "target_peer": {
+          "id": 18446744073709551615,
+          "store_id": 77,
+          "role": 3,
+          "is_witness": true
+        },
+        "merge": {
+          "target": {
+            "id": 99,
+            "start_key": "AP8=",
+            "end_key": "/wA=",
+            "region_epoch": {
+              "conf_ver": 18446744073709551615,
+              "version": 456
+            },
+            "peers": [
+              {
+                "id": 18446744073709551615,
+                "store_id": 77,
+                "role": 3,
+                "is_witness": true
+              },
+              {
+                "id": 8,
+                "store_id": 9,
+                "role": 37
+              }
+            ],
+            "encryption_meta": {
+              "key_id": 13,
+              "iv": "AP8B"
+            },
+            "is_in_flashback": true,
+            "flashback_start_ts": 987
+          }
+        }
+      }
+    },
+    {
+      "id": "classic_split_region",
+      "mode": "classic",
+      "region_id": 55,
+      "region_epoch": {
+        "conf_ver": 18446744073709551615,
+        "version": 456
+      },
+      "target_peer": {
+        "id": 18446744073709551615,
+        "store_id": 77,
+        "role": 3,
+        "is_witness": true
+      },
+      "operation": {
+        "split_region": {
+          "policy": 2,
+          "keys": [
+            "AP8=",
+            "",
+            "YWJj",
+            "AP8="
+          ]
+        }
+      },
+      "output": {
+        "header": {
+          "cluster_id": 123
+        },
+        "region_id": 55,
+        "region_epoch": {
+          "conf_ver": 18446744073709551615,
+          "version": 456
+        },
+        "target_peer": {
+          "id": 18446744073709551615,
+          "store_id": 77,
+          "role": 3,
+          "is_witness": true
+        },
+        "split_region": {
+          "policy": 2,
+          "keys": [
+            "AP8=",
+            null,
+            "YWJj",
+            "AP8="
+          ]
+        }
+      }
+    },
+    {
+      "id": "classic_change_peer_v2",
+      "mode": "classic",
+      "region_id": 55,
+      "region_epoch": {
+        "conf_ver": 18446744073709551615,
+        "version": 456
+      },
+      "target_peer": {
+        "id": 18446744073709551615,
+        "store_id": 77,
+        "role": 3,
+        "is_witness": true
+      },
+      "operation": {
+        "change_peer_v2": {
+          "changes": [
+            {
+              "peer": {
+                "id": 18446744073709551615,
+                "store_id": 77,
+                "role": 3,
+                "is_witness": true
+              },
+              "change_type": 1
+            },
+            null,
+            {
+              "peer": null,
+              "change_type": -7
+            }
+          ]
+        }
+      },
+      "output": {
+        "header": {
+          "cluster_id": 123
+        },
+        "region_id": 55,
+        "region_epoch": {
+          "conf_ver": 18446744073709551615,
+          "version": 456
+        },
+        "target_peer": {
+          "id": 18446744073709551615,
+          "store_id": 77,
+          "role": 3,
+          "is_witness": true
+        },
+        "change_peer_v2": {
+          "changes": [
+            {
+              "peer": {
+                "id": 18446744073709551615,
+                "store_id": 77,
+                "role": 3,
+                "is_witness": true
+              },
+              "change_type": 1
+            },
+            null,
+            {
+              "change_type": -7
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "classic_switch_witnesses",
+      "mode": "classic",
+      "region_id": 55,
+      "region_epoch": {
+        "conf_ver": 18446744073709551615,
+        "version": 456
+      },
+      "target_peer": {
+        "id": 18446744073709551615,
+        "store_id": 77,
+        "role": 3,
+        "is_witness": true
+      },
+      "operation": {
+        "switch_witnesses": {
+          "switch_witnesses": [
+            {
+              "peer_id": 18446744073709551615,
+              "is_witness": true
+            },
+            null,
+            {
+              "peer_id": 4,
+              "is_witness": false
+            }
+          ]
+        }
+      },
+      "output": {
+        "header": {
+          "cluster_id": 123
+        },
+        "region_id": 55,
+        "region_epoch": {
+          "conf_ver": 18446744073709551615,
+          "version": 456
+        },
+        "target_peer": {
+          "id": 18446744073709551615,
+          "store_id": 77,
+          "role": 3,
+          "is_witness": true
+        },
+        "switch_witnesses": {
+          "switch_witnesses": [
+            {
+              "peer_id": 18446744073709551615,
+              "is_witness": true
+            },
+            null,
+            {
+              "peer_id": 4
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "classic_change_split",
+      "mode": "classic",
+      "region_id": 55,
+      "region_epoch": {
+        "conf_ver": 18446744073709551615,
+        "version": 456
+      },
+      "target_peer": {
+        "id": 18446744073709551615,
+        "store_id": 77,
+        "role": 3,
+        "is_witness": true
+      },
+      "operation": {
+        "change_split": {
+          "auto_split_enabled": true
+        }
+      },
+      "output": {
+        "header": {
+          "cluster_id": 123
+        },
+        "region_id": 55,
+        "region_epoch": {
+          "conf_ver": 18446744073709551615,
+          "version": 456
+        },
+        "target_peer": {
+          "id": 18446744073709551615,
+          "store_id": 77,
+          "role": 3,
+          "is_witness": true
+        },
+        "change_split": {
+          "auto_split_enabled": true
+        }
+      }
+    },
+    {
+      "id": "classic_all",
+      "mode": "classic",
+      "region_id": 55,
+      "region_epoch": {
+        "conf_ver": 18446744073709551615,
+        "version": 456
+      },
+      "target_peer": {
+        "id": 18446744073709551615,
+        "store_id": 77,
+        "role": 3,
+        "is_witness": true
+      },
+      "operation": {
+        "change_peer": {
+          "peer": {
+            "id": 18446744073709551615,
+            "store_id": 77,
+            "role": 3,
+            "is_witness": true
+          },
+          "change_type": 2
+        },
+        "transfer_leader": {
+          "peer": {
+            "id": 18446744073709551615,
+            "store_id": 77,
+            "role": 3,
+            "is_witness": true
+          },
+          "peers": [
+            {
+              "id": 18446744073709551615,
+              "store_id": 77,
+              "role": 3,
+              "is_witness": true
+            },
+            {
+              "id": 8,
+              "store_id": 9,
+              "role": 37
+            }
+          ]
+        },
+        "merge": {
+          "target": {
+            "id": 99,
+            "start_key": "AP8=",
+            "end_key": "/wA=",
+            "region_epoch": {
+              "conf_ver": 18446744073709551615,
+              "version": 456
+            },
+            "peers": [
+              {
+                "id": 18446744073709551615,
+                "store_id": 77,
+                "role": 3,
+                "is_witness": true
+              },
+              {
+                "id": 8,
+                "store_id": 9,
+                "role": 37
+              }
+            ],
+            "encryption_meta": {
+              "key_id": 13,
+              "iv": "AP8B"
+            },
+            "is_in_flashback": true,
+            "flashback_start_ts": 987
+          }
+        },
+        "split_region": {
+          "policy": 2,
+          "keys": [
+            "AP8=",
+            "",
+            "YWJj",
+            "AP8="
+          ]
+        },
+        "change_peer_v2": {
+          "changes": [
+            {
+              "peer": {
+                "id": 18446744073709551615,
+                "store_id": 77,
+                "role": 3,
+                "is_witness": true
+              },
+              "change_type": 1
+            },
+            null,
+            {
+              "peer": null,
+              "change_type": -7
+            }
+          ]
+        },
+        "switch_witnesses": {
+          "switch_witnesses": [
+            {
+              "peer_id": 18446744073709551615,
+              "is_witness": true
+            },
+            null,
+            {
+              "peer_id": 4,
+              "is_witness": false
+            }
+          ]
+        },
+        "change_split": {
+          "auto_split_enabled": true
+        }
+      },
+      "output": {
+        "header": {
+          "cluster_id": 123
+        },
+        "change_peer": {
+          "peer": {
+            "id": 18446744073709551615,
+            "store_id": 77,
+            "role": 3,
+            "is_witness": true
+          },
+          "change_type": 2
+        },
+        "transfer_leader": {
+          "peer": {
+            "id": 18446744073709551615,
+            "store_id": 77,
+            "role": 3,
+            "is_witness": true
+          },
+          "peers": [
+            {
+              "id": 18446744073709551615,
+              "store_id": 77,
+              "role": 3,
+              "is_witness": true
+            },
+            {
+              "id": 8,
+              "store_id": 9,
+              "role": 37
+            }
+          ]
+        },
+        "region_id": 55,
+        "region_epoch": {
+          "conf_ver": 18446744073709551615,
+          "version": 456
+        },
+        "target_peer": {
+          "id": 18446744073709551615,
+          "store_id": 77,
+          "role": 3,
+          "is_witness": true
+        },
+        "merge": {
+          "target": {
+            "id": 99,
+            "start_key": "AP8=",
+            "end_key": "/wA=",
+            "region_epoch": {
+              "conf_ver": 18446744073709551615,
+              "version": 456
+            },
+            "peers": [
+              {
+                "id": 18446744073709551615,
+                "store_id": 77,
+                "role": 3,
+                "is_witness": true
+              },
+              {
+                "id": 8,
+                "store_id": 9,
+                "role": 37
+              }
+            ],
+            "encryption_meta": {
+              "key_id": 13,
+              "iv": "AP8B"
+            },
+            "is_in_flashback": true,
+            "flashback_start_ts": 987
+          }
+        },
+        "split_region": {
+          "policy": 2,
+          "keys": [
+            "AP8=",
+            null,
+            "YWJj",
+            "AP8="
+          ]
+        },
+        "change_peer_v2": {
+          "changes": [
+            {
+              "peer": {
+                "id": 18446744073709551615,
+                "store_id": 77,
+                "role": 3,
+                "is_witness": true
+              },
+              "change_type": 1
+            },
+            null,
+            {
+              "change_type": -7
+            }
+          ]
+        },
+        "switch_witnesses": {
+          "switch_witnesses": [
+            {
+              "peer_id": 18446744073709551615,
+              "is_witness": true
+            },
+            null,
+            {
+              "peer_id": 4
+            }
+          ]
+        },
+        "change_split": {
+          "auto_split_enabled": true
+        }
+      }
+    },
+    {
+      "id": "classic_present_empty",
+      "mode": "classic",
+      "region_id": 55,
+      "region_epoch": {
+        "conf_ver": 18446744073709551615,
+        "version": 456
+      },
+      "target_peer": {
+        "id": 18446744073709551615,
+        "store_id": 77,
+        "role": 3,
+        "is_witness": true
+      },
+      "operation": {
+        "change_peer": {},
+        "transfer_leader": {},
+        "merge": {},
+        "split_region": {},
+        "change_peer_v2": {},
+        "switch_witnesses": {},
+        "change_split": {}
+      },
+      "output": {
+        "header": {
+          "cluster_id": 123
+        },
+        "change_peer": {},
+        "transfer_leader": {},
+        "region_id": 55,
+        "region_epoch": {
+          "conf_ver": 18446744073709551615,
+          "version": 456
+        },
+        "target_peer": {
+          "id": 18446744073709551615,
+          "store_id": 77,
+          "role": 3,
+          "is_witness": true
+        },
+        "merge": {},
+        "split_region": {},
+        "change_peer_v2": {},
+        "switch_witnesses": {},
+        "change_split": {}
+      }
+    },
+    {
+      "id": "classic_unknown_enums",
+      "mode": "classic",
+      "region_id": 55,
+      "region_epoch": {
+        "conf_ver": 18446744073709551615,
+        "version": 456
+      },
+      "target_peer": {
+        "id": 18446744073709551615,
+        "store_id": 77,
+        "role": 3,
+        "is_witness": true
+      },
+      "operation": {
+        "change_peer": {
+          "change_type": -7
+        },
+        "split_region": {
+          "policy": 37
+        }
+      },
+      "output": {
+        "header": {
+          "cluster_id": 123
+        },
+        "change_peer": {
+          "change_type": -7
+        },
+        "region_id": 55,
+        "region_epoch": {
+          "conf_ver": 18446744073709551615,
+          "version": 456
+        },
+        "target_peer": {
+          "id": 18446744073709551615,
+          "store_id": 77,
+          "role": 3,
+          "is_witness": true
+        },
+        "split_region": {
+          "policy": 37
+        }
+      }
+    },
+    {
+      "id": "classic_split_disabled",
+      "mode": "classic",
+      "region_id": 55,
+      "region_epoch": {
+        "conf_ver": 18446744073709551615,
+        "version": 456
+      },
+      "target_peer": {
+        "id": 18446744073709551615,
+        "store_id": 77,
+        "role": 3,
+        "is_witness": true
+      },
+      "operation": {
+        "change_split": {
+          "auto_split_enabled": false
+        }
+      },
+      "output": {
+        "header": {
+          "cluster_id": 123
+        },
+        "region_id": 55,
+        "region_epoch": {
+          "conf_ver": 18446744073709551615,
+          "version": 456
+        },
+        "target_peer": {
+          "id": 18446744073709551615,
+          "store_id": 77,
+          "role": 3,
+          "is_witness": true
+        },
+        "change_split": {}
+      }
+    },
+    {
+      "id": "classic_absent_epoch",
+      "mode": "classic",
+      "region_id": 55,
+      "region_epoch": null,
+      "target_peer": {
+        "id": 18446744073709551615,
+        "store_id": 77,
+        "role": 3,
+        "is_witness": true
+      },
+      "operation": {},
+      "output": {
+        "header": {
+          "cluster_id": 123
+        },
+        "region_id": 55,
+        "target_peer": {
+          "id": 18446744073709551615,
+          "store_id": 77,
+          "role": 3,
+          "is_witness": true
+        }
+      }
+    },
+    {
+      "id": "classic_zero_epoch",
+      "mode": "classic",
+      "region_id": 55,
+      "region_epoch": {},
+      "target_peer": {
+        "id": 18446744073709551615,
+        "store_id": 77,
+        "role": 3,
+        "is_witness": true
+      },
+      "operation": {},
+      "output": {
+        "header": {
+          "cluster_id": 123
+        },
+        "region_id": 55,
+        "region_epoch": {},
+        "target_peer": {
+          "id": 18446744073709551615,
+          "store_id": 77,
+          "role": 3,
+          "is_witness": true
+        }
+      }
+    },
+    {
+      "id": "classic_zero_peer",
+      "mode": "classic",
+      "region_id": 55,
+      "region_epoch": {
+        "conf_ver": 18446744073709551615,
+        "version": 456
+      },
+      "target_peer": {},
+      "operation": {},
+      "output": {
+        "header": {
+          "cluster_id": 123
+        },
+        "region_id": 55,
+        "region_epoch": {
+          "conf_ver": 18446744073709551615,
+          "version": 456
+        },
+        "target_peer": {}
+      }
+    },
+    {
+      "id": "classic_nil_entries",
+      "mode": "classic",
+      "region_id": 55,
+      "region_epoch": {
+        "conf_ver": 18446744073709551615,
+        "version": 456
+      },
+      "target_peer": {
+        "id": 18446744073709551615,
+        "store_id": 77,
+        "role": 3,
+        "is_witness": true
+      },
+      "operation": {
+        "transfer_leader": {
+          "peers": [
+            null,
+            {
+              "id": 18446744073709551615,
+              "store_id": 77,
+              "role": 3,
+              "is_witness": true
+            },
+            null
+          ]
+        }
+      },
+      "output": {
+        "header": {
+          "cluster_id": 123
+        },
+        "transfer_leader": {
+          "peers": [
+            null,
+            {
+              "id": 18446744073709551615,
+              "store_id": 77,
+              "role": 3,
+              "is_witness": true
+            },
+            null
+          ]
+        },
+        "region_id": 55,
+        "region_epoch": {
+          "conf_ver": 18446744073709551615,
+          "version": 456
+        },
+        "target_peer": {
+          "id": 18446744073709551615,
+          "store_id": 77,
+          "role": 3,
+          "is_witness": true
+        }
+      }
+    },
+    {
+      "id": "classic_no_leader",
+      "mode": "classic",
+      "region_id": 0,
+      "region_epoch": null,
+      "target_peer": null,
+      "operation": null,
+      "output": null
+    },
+    {
+      "id": "scheduling_empty",
+      "mode": "scheduling",
+      "region_id": 55,
+      "region_epoch": {
+        "conf_ver": 18446744073709551615,
+        "version": 456
+      },
+      "target_peer": {
+        "id": 18446744073709551615,
+        "store_id": 77,
+        "role": 3,
+        "is_witness": true
+      },
+      "operation": {},
+      "output": {
+        "header": {
+          "cluster_id": 123
+        },
+        "region_id": 55,
+        "region_epoch": {
+          "conf_ver": 18446744073709551615,
+          "version": 456
+        },
+        "target_peer": {
+          "id": 18446744073709551615,
+          "store_id": 77,
+          "role": 3,
+          "is_witness": true
+        }
+      }
+    },
+    {
+      "id": "scheduling_change_peer",
+      "mode": "scheduling",
+      "region_id": 55,
+      "region_epoch": {
+        "conf_ver": 18446744073709551615,
+        "version": 456
+      },
+      "target_peer": {
+        "id": 18446744073709551615,
+        "store_id": 77,
+        "role": 3,
+        "is_witness": true
+      },
+      "operation": {
+        "change_peer": {
+          "peer": {
+            "id": 18446744073709551615,
+            "store_id": 77,
+            "role": 3,
+            "is_witness": true
+          },
+          "change_type": 2
+        }
+      },
+      "output": {
+        "header": {
+          "cluster_id": 123
+        },
+        "region_id": 55,
+        "region_epoch": {
+          "conf_ver": 18446744073709551615,
+          "version": 456
+        },
+        "target_peer": {
+          "id": 18446744073709551615,
+          "store_id": 77,
+          "role": 3,
+          "is_witness": true
+        },
+        "change_peer": {
+          "peer": {
+            "id": 18446744073709551615,
+            "store_id": 77,
+            "role": 3,
+            "is_witness": true
+          },
+          "change_type": 2
+        }
+      }
+    },
+    {
+      "id": "scheduling_transfer_leader",
+      "mode": "scheduling",
+      "region_id": 55,
+      "region_epoch": {
+        "conf_ver": 18446744073709551615,
+        "version": 456
+      },
+      "target_peer": {
+        "id": 18446744073709551615,
+        "store_id": 77,
+        "role": 3,
+        "is_witness": true
+      },
+      "operation": {
+        "transfer_leader": {
+          "peer": {
+            "id": 18446744073709551615,
+            "store_id": 77,
+            "role": 3,
+            "is_witness": true
+          },
+          "peers": [
+            {
+              "id": 18446744073709551615,
+              "store_id": 77,
+              "role": 3,
+              "is_witness": true
+            },
+            {
+              "id": 8,
+              "store_id": 9,
+              "role": 37
+            }
+          ]
+        }
+      },
+      "output": {
+        "header": {
+          "cluster_id": 123
+        },
+        "region_id": 55,
+        "region_epoch": {
+          "conf_ver": 18446744073709551615,
+          "version": 456
+        },
+        "target_peer": {
+          "id": 18446744073709551615,
+          "store_id": 77,
+          "role": 3,
+          "is_witness": true
+        },
+        "transfer_leader": {
+          "peer": {
+            "id": 18446744073709551615,
+            "store_id": 77,
+            "role": 3,
+            "is_witness": true
+          },
+          "peers": [
+            {
+              "id": 18446744073709551615,
+              "store_id": 77,
+              "role": 3,
+              "is_witness": true
+            },
+            {
+              "id": 8,
+              "store_id": 9,
+              "role": 37
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "scheduling_merge",
+      "mode": "scheduling",
+      "region_id": 55,
+      "region_epoch": {
+        "conf_ver": 18446744073709551615,
+        "version": 456
+      },
+      "target_peer": {
+        "id": 18446744073709551615,
+        "store_id": 77,
+        "role": 3,
+        "is_witness": true
+      },
+      "operation": {
+        "merge": {
+          "target": {
+            "id": 99,
+            "start_key": "AP8=",
+            "end_key": "/wA=",
+            "region_epoch": {
+              "conf_ver": 18446744073709551615,
+              "version": 456
+            },
+            "peers": [
+              {
+                "id": 18446744073709551615,
+                "store_id": 77,
+                "role": 3,
+                "is_witness": true
+              },
+              {
+                "id": 8,
+                "store_id": 9,
+                "role": 37
+              }
+            ],
+            "encryption_meta": {
+              "key_id": 13,
+              "iv": "AP8B"
+            },
+            "is_in_flashback": true,
+            "flashback_start_ts": 987
+          }
+        }
+      },
+      "output": {
+        "header": {
+          "cluster_id": 123
+        },
+        "region_id": 55,
+        "region_epoch": {
+          "conf_ver": 18446744073709551615,
+          "version": 456
+        },
+        "target_peer": {
+          "id": 18446744073709551615,
+          "store_id": 77,
+          "role": 3,
+          "is_witness": true
+        },
+        "merge": {
+          "target": {
+            "id": 99,
+            "start_key": "AP8=",
+            "end_key": "/wA=",
+            "region_epoch": {
+              "conf_ver": 18446744073709551615,
+              "version": 456
+            },
+            "peers": [
+              {
+                "id": 18446744073709551615,
+                "store_id": 77,
+                "role": 3,
+                "is_witness": true
+              },
+              {
+                "id": 8,
+                "store_id": 9,
+                "role": 37
+              }
+            ],
+            "encryption_meta": {
+              "key_id": 13,
+              "iv": "AP8B"
+            },
+            "is_in_flashback": true,
+            "flashback_start_ts": 987
+          }
+        }
+      }
+    },
+    {
+      "id": "scheduling_split_region",
+      "mode": "scheduling",
+      "region_id": 55,
+      "region_epoch": {
+        "conf_ver": 18446744073709551615,
+        "version": 456
+      },
+      "target_peer": {
+        "id": 18446744073709551615,
+        "store_id": 77,
+        "role": 3,
+        "is_witness": true
+      },
+      "operation": {
+        "split_region": {
+          "policy": 2,
+          "keys": [
+            "AP8=",
+            "",
+            "YWJj",
+            "AP8="
+          ]
+        }
+      },
+      "output": {
+        "header": {
+          "cluster_id": 123
+        },
+        "region_id": 55,
+        "region_epoch": {
+          "conf_ver": 18446744073709551615,
+          "version": 456
+        },
+        "target_peer": {
+          "id": 18446744073709551615,
+          "store_id": 77,
+          "role": 3,
+          "is_witness": true
+        },
+        "split_region": {
+          "policy": 2,
+          "keys": [
+            "AP8=",
+            null,
+            "YWJj",
+            "AP8="
+          ]
+        }
+      }
+    },
+    {
+      "id": "scheduling_change_peer_v2",
+      "mode": "scheduling",
+      "region_id": 55,
+      "region_epoch": {
+        "conf_ver": 18446744073709551615,
+        "version": 456
+      },
+      "target_peer": {
+        "id": 18446744073709551615,
+        "store_id": 77,
+        "role": 3,
+        "is_witness": true
+      },
+      "operation": {
+        "change_peer_v2": {
+          "changes": [
+            {
+              "peer": {
+                "id": 18446744073709551615,
+                "store_id": 77,
+                "role": 3,
+                "is_witness": true
+              },
+              "change_type": 1
+            },
+            null,
+            {
+              "peer": null,
+              "change_type": -7
+            }
+          ]
+        }
+      },
+      "output": {
+        "header": {
+          "cluster_id": 123
+        },
+        "region_id": 55,
+        "region_epoch": {
+          "conf_ver": 18446744073709551615,
+          "version": 456
+        },
+        "target_peer": {
+          "id": 18446744073709551615,
+          "store_id": 77,
+          "role": 3,
+          "is_witness": true
+        },
+        "change_peer_v2": {
+          "changes": [
+            {
+              "peer": {
+                "id": 18446744073709551615,
+                "store_id": 77,
+                "role": 3,
+                "is_witness": true
+              },
+              "change_type": 1
+            },
+            null,
+            {
+              "change_type": -7
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "scheduling_switch_witnesses",
+      "mode": "scheduling",
+      "region_id": 55,
+      "region_epoch": {
+        "conf_ver": 18446744073709551615,
+        "version": 456
+      },
+      "target_peer": {
+        "id": 18446744073709551615,
+        "store_id": 77,
+        "role": 3,
+        "is_witness": true
+      },
+      "operation": {
+        "switch_witnesses": {
+          "switch_witnesses": [
+            {
+              "peer_id": 18446744073709551615,
+              "is_witness": true
+            },
+            null,
+            {
+              "peer_id": 4,
+              "is_witness": false
+            }
+          ]
+        }
+      },
+      "output": {
+        "header": {
+          "cluster_id": 123
+        },
+        "region_id": 55,
+        "region_epoch": {
+          "conf_ver": 18446744073709551615,
+          "version": 456
+        },
+        "target_peer": {
+          "id": 18446744073709551615,
+          "store_id": 77,
+          "role": 3,
+          "is_witness": true
+        },
+        "switch_witnesses": {
+          "switch_witnesses": [
+            {
+              "peer_id": 18446744073709551615,
+              "is_witness": true
+            },
+            null,
+            {
+              "peer_id": 4
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "scheduling_change_split",
+      "mode": "scheduling",
+      "region_id": 55,
+      "region_epoch": {
+        "conf_ver": 18446744073709551615,
+        "version": 456
+      },
+      "target_peer": {
+        "id": 18446744073709551615,
+        "store_id": 77,
+        "role": 3,
+        "is_witness": true
+      },
+      "operation": {
+        "change_split": {
+          "auto_split_enabled": true
+        }
+      },
+      "output": {
+        "header": {
+          "cluster_id": 123
+        },
+        "region_id": 55,
+        "region_epoch": {
+          "conf_ver": 18446744073709551615,
+          "version": 456
+        },
+        "target_peer": {
+          "id": 18446744073709551615,
+          "store_id": 77,
+          "role": 3,
+          "is_witness": true
+        },
+        "change_split": {
+          "auto_split_enabled": true
+        }
+      }
+    },
+    {
+      "id": "scheduling_all",
+      "mode": "scheduling",
+      "region_id": 55,
+      "region_epoch": {
+        "conf_ver": 18446744073709551615,
+        "version": 456
+      },
+      "target_peer": {
+        "id": 18446744073709551615,
+        "store_id": 77,
+        "role": 3,
+        "is_witness": true
+      },
+      "operation": {
+        "change_peer": {
+          "peer": {
+            "id": 18446744073709551615,
+            "store_id": 77,
+            "role": 3,
+            "is_witness": true
+          },
+          "change_type": 2
+        },
+        "transfer_leader": {
+          "peer": {
+            "id": 18446744073709551615,
+            "store_id": 77,
+            "role": 3,
+            "is_witness": true
+          },
+          "peers": [
+            {
+              "id": 18446744073709551615,
+              "store_id": 77,
+              "role": 3,
+              "is_witness": true
+            },
+            {
+              "id": 8,
+              "store_id": 9,
+              "role": 37
+            }
+          ]
+        },
+        "merge": {
+          "target": {
+            "id": 99,
+            "start_key": "AP8=",
+            "end_key": "/wA=",
+            "region_epoch": {
+              "conf_ver": 18446744073709551615,
+              "version": 456
+            },
+            "peers": [
+              {
+                "id": 18446744073709551615,
+                "store_id": 77,
+                "role": 3,
+                "is_witness": true
+              },
+              {
+                "id": 8,
+                "store_id": 9,
+                "role": 37
+              }
+            ],
+            "encryption_meta": {
+              "key_id": 13,
+              "iv": "AP8B"
+            },
+            "is_in_flashback": true,
+            "flashback_start_ts": 987
+          }
+        },
+        "split_region": {
+          "policy": 2,
+          "keys": [
+            "AP8=",
+            "",
+            "YWJj",
+            "AP8="
+          ]
+        },
+        "change_peer_v2": {
+          "changes": [
+            {
+              "peer": {
+                "id": 18446744073709551615,
+                "store_id": 77,
+                "role": 3,
+                "is_witness": true
+              },
+              "change_type": 1
+            },
+            null,
+            {
+              "peer": null,
+              "change_type": -7
+            }
+          ]
+        },
+        "switch_witnesses": {
+          "switch_witnesses": [
+            {
+              "peer_id": 18446744073709551615,
+              "is_witness": true
+            },
+            null,
+            {
+              "peer_id": 4,
+              "is_witness": false
+            }
+          ]
+        },
+        "change_split": {
+          "auto_split_enabled": true
+        }
+      },
+      "output": {
+        "header": {
+          "cluster_id": 123
+        },
+        "region_id": 55,
+        "region_epoch": {
+          "conf_ver": 18446744073709551615,
+          "version": 456
+        },
+        "target_peer": {
+          "id": 18446744073709551615,
+          "store_id": 77,
+          "role": 3,
+          "is_witness": true
+        },
+        "change_peer": {
+          "peer": {
+            "id": 18446744073709551615,
+            "store_id": 77,
+            "role": 3,
+            "is_witness": true
+          },
+          "change_type": 2
+        },
+        "transfer_leader": {
+          "peer": {
+            "id": 18446744073709551615,
+            "store_id": 77,
+            "role": 3,
+            "is_witness": true
+          },
+          "peers": [
+            {
+              "id": 18446744073709551615,
+              "store_id": 77,
+              "role": 3,
+              "is_witness": true
+            },
+            {
+              "id": 8,
+              "store_id": 9,
+              "role": 37
+            }
+          ]
+        },
+        "merge": {
+          "target": {
+            "id": 99,
+            "start_key": "AP8=",
+            "end_key": "/wA=",
+            "region_epoch": {
+              "conf_ver": 18446744073709551615,
+              "version": 456
+            },
+            "peers": [
+              {
+                "id": 18446744073709551615,
+                "store_id": 77,
+                "role": 3,
+                "is_witness": true
+              },
+              {
+                "id": 8,
+                "store_id": 9,
+                "role": 37
+              }
+            ],
+            "encryption_meta": {
+              "key_id": 13,
+              "iv": "AP8B"
+            },
+            "is_in_flashback": true,
+            "flashback_start_ts": 987
+          }
+        },
+        "split_region": {
+          "policy": 2,
+          "keys": [
+            "AP8=",
+            null,
+            "YWJj",
+            "AP8="
+          ]
+        },
+        "change_peer_v2": {
+          "changes": [
+            {
+              "peer": {
+                "id": 18446744073709551615,
+                "store_id": 77,
+                "role": 3,
+                "is_witness": true
+              },
+              "change_type": 1
+            },
+            null,
+            {
+              "change_type": -7
+            }
+          ]
+        },
+        "switch_witnesses": {
+          "switch_witnesses": [
+            {
+              "peer_id": 18446744073709551615,
+              "is_witness": true
+            },
+            null,
+            {
+              "peer_id": 4
+            }
+          ]
+        },
+        "change_split": {
+          "auto_split_enabled": true
+        }
+      }
+    },
+    {
+      "id": "scheduling_present_empty",
+      "mode": "scheduling",
+      "region_id": 55,
+      "region_epoch": {
+        "conf_ver": 18446744073709551615,
+        "version": 456
+      },
+      "target_peer": {
+        "id": 18446744073709551615,
+        "store_id": 77,
+        "role": 3,
+        "is_witness": true
+      },
+      "operation": {
+        "change_peer": {},
+        "transfer_leader": {},
+        "merge": {},
+        "split_region": {},
+        "change_peer_v2": {},
+        "switch_witnesses": {},
+        "change_split": {}
+      },
+      "output": {
+        "header": {
+          "cluster_id": 123
+        },
+        "region_id": 55,
+        "region_epoch": {
+          "conf_ver": 18446744073709551615,
+          "version": 456
+        },
+        "target_peer": {
+          "id": 18446744073709551615,
+          "store_id": 77,
+          "role": 3,
+          "is_witness": true
+        },
+        "change_peer": {},
+        "transfer_leader": {},
+        "merge": {},
+        "split_region": {},
+        "change_peer_v2": {},
+        "switch_witnesses": {},
+        "change_split": {}
+      }
+    },
+    {
+      "id": "scheduling_unknown_enums",
+      "mode": "scheduling",
+      "region_id": 55,
+      "region_epoch": {
+        "conf_ver": 18446744073709551615,
+        "version": 456
+      },
+      "target_peer": {
+        "id": 18446744073709551615,
+        "store_id": 77,
+        "role": 3,
+        "is_witness": true
+      },
+      "operation": {
+        "change_peer": {
+          "change_type": -7
+        },
+        "split_region": {
+          "policy": 37
+        }
+      },
+      "output": {
+        "header": {
+          "cluster_id": 123
+        },
+        "region_id": 55,
+        "region_epoch": {
+          "conf_ver": 18446744073709551615,
+          "version": 456
+        },
+        "target_peer": {
+          "id": 18446744073709551615,
+          "store_id": 77,
+          "role": 3,
+          "is_witness": true
+        },
+        "change_peer": {
+          "change_type": -7
+        },
+        "split_region": {
+          "policy": 37
+        }
+      }
+    },
+    {
+      "id": "scheduling_split_disabled",
+      "mode": "scheduling",
+      "region_id": 55,
+      "region_epoch": {
+        "conf_ver": 18446744073709551615,
+        "version": 456
+      },
+      "target_peer": {
+        "id": 18446744073709551615,
+        "store_id": 77,
+        "role": 3,
+        "is_witness": true
+      },
+      "operation": {
+        "change_split": {
+          "auto_split_enabled": false
+        }
+      },
+      "output": {
+        "header": {
+          "cluster_id": 123
+        },
+        "region_id": 55,
+        "region_epoch": {
+          "conf_ver": 18446744073709551615,
+          "version": 456
+        },
+        "target_peer": {
+          "id": 18446744073709551615,
+          "store_id": 77,
+          "role": 3,
+          "is_witness": true
+        },
+        "change_split": {}
+      }
+    },
+    {
+      "id": "scheduling_absent_epoch",
+      "mode": "scheduling",
+      "region_id": 55,
+      "region_epoch": null,
+      "target_peer": {
+        "id": 18446744073709551615,
+        "store_id": 77,
+        "role": 3,
+        "is_witness": true
+      },
+      "operation": {},
+      "output": {
+        "header": {
+          "cluster_id": 123
+        },
+        "region_id": 55,
+        "target_peer": {
+          "id": 18446744073709551615,
+          "store_id": 77,
+          "role": 3,
+          "is_witness": true
+        }
+      }
+    },
+    {
+      "id": "scheduling_zero_epoch",
+      "mode": "scheduling",
+      "region_id": 55,
+      "region_epoch": {},
+      "target_peer": {
+        "id": 18446744073709551615,
+        "store_id": 77,
+        "role": 3,
+        "is_witness": true
+      },
+      "operation": {},
+      "output": {
+        "header": {
+          "cluster_id": 123
+        },
+        "region_id": 55,
+        "region_epoch": {},
+        "target_peer": {
+          "id": 18446744073709551615,
+          "store_id": 77,
+          "role": 3,
+          "is_witness": true
+        }
+      }
+    },
+    {
+      "id": "scheduling_zero_peer",
+      "mode": "scheduling",
+      "region_id": 55,
+      "region_epoch": {
+        "conf_ver": 18446744073709551615,
+        "version": 456
+      },
+      "target_peer": {},
+      "operation": {},
+      "output": {
+        "header": {
+          "cluster_id": 123
+        },
+        "region_id": 55,
+        "region_epoch": {
+          "conf_ver": 18446744073709551615,
+          "version": 456
+        },
+        "target_peer": {}
+      }
+    },
+    {
+      "id": "scheduling_nil_entries",
+      "mode": "scheduling",
+      "region_id": 55,
+      "region_epoch": {
+        "conf_ver": 18446744073709551615,
+        "version": 456
+      },
+      "target_peer": {
+        "id": 18446744073709551615,
+        "store_id": 77,
+        "role": 3,
+        "is_witness": true
+      },
+      "operation": {
+        "transfer_leader": {
+          "peers": [
+            null,
+            {
+              "id": 18446744073709551615,
+              "store_id": 77,
+              "role": 3,
+              "is_witness": true
+            },
+            null
+          ]
+        }
+      },
+      "output": {
+        "header": {
+          "cluster_id": 123
+        },
+        "region_id": 55,
+        "region_epoch": {
+          "conf_ver": 18446744073709551615,
+          "version": 456
+        },
+        "target_peer": {
+          "id": 18446744073709551615,
+          "store_id": 77,
+          "role": 3,
+          "is_witness": true
+        },
+        "transfer_leader": {
+          "peers": [
+            null,
+            {
+              "id": 18446744073709551615,
+              "store_id": 77,
+              "role": 3,
+              "is_witness": true
+            },
+            null
+          ]
+        }
+      }
+    },
+    {
+      "id": "scheduling_no_leader",
+      "mode": "scheduling",
+      "region_id": 0,
+      "region_epoch": null,
+      "target_peer": null,
+      "operation": null,
+      "output": null
+    }
+  ]
+}

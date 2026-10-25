@@ -1,0 +1,14 @@
+{
+  "go_and_plan_hashes_unchanged": 1119,
+  "go_module_differences": 0,
+  "go_runtime_cases": 34,
+  "go_classic_outputs": 16,
+  "go_scheduling_outputs": 16,
+  "no_leader_suppressed": 2,
+  "rust_tests": 2,
+  "mutation_assertion_failures": 12,
+  "workspace_passed": 1355,
+  "workspace_ignored": 1,
+  "remote_dependencies_unchanged": true,
+  "task_locks_released": true
+}
