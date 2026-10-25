@@ -404,6 +404,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "astersql-pd-schedule-checker"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-core",
+ "astersql-pd-core-constant",
+ "astersql-pd-schedule-config",
+ "astersql-pd-schedule-operator",
+ "serde_json",
+ "tokio",
+]
+
+[[package]]
 name = "astersql-pd-schedule-config"
 version = "0.1.0"
 dependencies = [

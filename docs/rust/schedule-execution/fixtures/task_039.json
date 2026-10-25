@@ -1,0 +1,502 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "evidence_kind": "source_assertion",
+  "go_execution": false,
+  "normalization": "none; explicit whole-second clock input; RegionInfo sorts learners by peer ID; frozen load selects store 2 in transfer case",
+  "sources": {
+    "pkg/schedule/checker/checker_pause.go": "c977895f300a94a87135be0203614aa9be867c1c1f98ddde7cd72dc9164815c6",
+    "pkg/schedule/checker/learner_checker.go": "99b7eadd147e3b5078a453575148c02ad3badcfa40283ed605dde2f74fba2349",
+    "pkg/schedule/checker/joint_state_checker.go": "ffacb80b2f8420a33f3def7e78064a66ddf528639132a0e8ea2ea750e39f92be",
+    "pkg/schedule/checker/learner_checker_test.go": "5b9f5282e3755d9be7b74610025e660d75bdfbc73765b3f58465d51b96905cc8",
+    "pkg/schedule/checker/joint_state_checker_test.go": "bef12b07b2d05a029efd8d08db6fdacb0bcf04e99340e2a0a0746da20577bad2",
+    "pkg/schedule/operator/create_operator.go": "43a938c72992f4ce81501c40ab85c1e79c08670383acd47f22655e779524b927",
+    "pkg/schedule/operator/builder.go": "2c74830947c401ea8c4d46e8066e4c85aecd02beea035d0bb9eb4aab8cee8f83",
+    "pkg/core/region.go": "be6ed0dc77537d62926d21d9e4eef080ea0dbcc7dc97efb4dc26269a172f99d8"
+  },
+  "cases": [
+    {
+      "name": "healthy learner",
+      "checker": "learner",
+      "roles": [
+        "v",
+        "v",
+        "l"
+      ],
+      "steps": [
+        [
+          "promote",
+          3,
+          103,
+          false
+        ]
+      ],
+      "errors": [],
+      "kind": 0
+    },
+    {
+      "name": "pending learner",
+      "checker": "learner",
+      "roles": [
+        "v",
+        "v",
+        "l"
+      ],
+      "steps": null,
+      "errors": [
+        "Unhealthy(3)"
+      ],
+      "pending": [
+        3
+      ]
+    },
+    {
+      "name": "skip pending then promote",
+      "checker": "learner",
+      "roles": [
+        "v",
+        "l",
+        "l"
+      ],
+      "steps": [
+        [
+          "promote",
+          3,
+          103,
+          false
+        ]
+      ],
+      "errors": [
+        "Unhealthy(2)"
+      ],
+      "pending": [
+        2
+      ],
+      "kind": 0
+    },
+    {
+      "name": "sorted learner IDs despite metadata order",
+      "checker": "learner",
+      "roles": [
+        "v",
+        "l",
+        "l"
+      ],
+      "steps": [
+        [
+          "promote",
+          2,
+          102,
+          false
+        ]
+      ],
+      "errors": [],
+      "order": [
+        1,
+        3,
+        2
+      ],
+      "kind": 0
+    },
+    {
+      "name": "normal learner noop",
+      "checker": "learner",
+      "roles": [
+        "v",
+        "v",
+        "v"
+      ],
+      "steps": null,
+      "errors": []
+    },
+    {
+      "name": "learner missing leader",
+      "checker": "learner",
+      "roles": [
+        "v",
+        "v",
+        "l"
+      ],
+      "steps": null,
+      "errors": [
+        "NoLeader"
+      ],
+      "leader": 0
+    },
+    {
+      "name": "learner placement failure",
+      "checker": "learner",
+      "roles": [
+        "v",
+        "v",
+        "l"
+      ],
+      "steps": null,
+      "errors": [
+        "NoPlacementRule"
+      ],
+      "placement": true
+    },
+    {
+      "name": "learner rejects joint origin",
+      "checker": "learner",
+      "roles": [
+        "v",
+        "i",
+        "l"
+      ],
+      "steps": null,
+      "errors": [
+        "OriginJoint"
+      ]
+    },
+    {
+      "name": "paused learner",
+      "checker": "learner",
+      "roles": [
+        "v",
+        "v",
+        "l"
+      ],
+      "steps": null,
+      "errors": [],
+      "pause": 10
+    },
+    {
+      "name": "ttl expired learner",
+      "checker": "learner",
+      "roles": [
+        "v",
+        "v",
+        "l"
+      ],
+      "steps": [
+        [
+          "promote",
+          3,
+          103,
+          false
+        ]
+      ],
+      "errors": [],
+      "pause": 10,
+      "elapsed": 10,
+      "kind": 0
+    },
+    {
+      "name": "joint both",
+      "checker": "joint",
+      "roles": [
+        "v",
+        "d",
+        "i"
+      ],
+      "steps": [
+        [
+          "leave",
+          [
+            [
+              3,
+              103,
+              false
+            ]
+          ],
+          [
+            [
+              2,
+              102,
+              false
+            ]
+          ]
+        ]
+      ],
+      "errors": [],
+      "kind": 0
+    },
+    {
+      "name": "joint incoming",
+      "checker": "joint",
+      "roles": [
+        "v",
+        "v",
+        "i"
+      ],
+      "steps": [
+        [
+          "leave",
+          [
+            [
+              3,
+              103,
+              false
+            ]
+          ],
+          []
+        ]
+      ],
+      "errors": [],
+      "kind": 0
+    },
+    {
+      "name": "joint demoting",
+      "checker": "joint",
+      "roles": [
+        "v",
+        "d",
+        "v"
+      ],
+      "steps": [
+        [
+          "leave",
+          [],
+          [
+            [
+              2,
+              102,
+              false
+            ]
+          ]
+        ]
+      ],
+      "errors": [],
+      "kind": 0
+    },
+    {
+      "name": "demoting leader transfer",
+      "checker": "joint",
+      "roles": [
+        "d",
+        "v",
+        "v"
+      ],
+      "steps": [
+        [
+          "transfer",
+          1,
+          2,
+          []
+        ],
+        [
+          "leave",
+          [],
+          [
+            [
+              1,
+              101,
+              false
+            ]
+          ]
+        ]
+      ],
+      "errors": [],
+      "kind": 256
+    },
+    {
+      "name": "joint normal noop",
+      "checker": "joint",
+      "roles": [
+        "v",
+        "v",
+        "v"
+      ],
+      "steps": null,
+      "errors": []
+    },
+    {
+      "name": "joint learner noop",
+      "checker": "joint",
+      "roles": [
+        "v",
+        "v",
+        "l"
+      ],
+      "steps": null,
+      "errors": []
+    },
+    {
+      "name": "paused joint",
+      "checker": "joint",
+      "roles": [
+        "v",
+        "d",
+        "i"
+      ],
+      "steps": null,
+      "errors": [],
+      "pause": 10
+    },
+    {
+      "name": "ttl expired joint",
+      "checker": "joint",
+      "roles": [
+        "v",
+        "d",
+        "i"
+      ],
+      "steps": [
+        [
+          "leave",
+          [
+            [
+              3,
+              103,
+              false
+            ]
+          ],
+          [
+            [
+              2,
+              102,
+              false
+            ]
+          ]
+        ]
+      ],
+      "errors": [],
+      "pause": 10,
+      "elapsed": 10,
+      "kind": 0
+    },
+    {
+      "name": "joint missing leader",
+      "checker": "joint",
+      "roles": [
+        "v",
+        "d",
+        "i"
+      ],
+      "steps": null,
+      "errors": [
+        "NoLeader"
+      ],
+      "leader": 0
+    },
+    {
+      "name": "joint skips placement",
+      "checker": "joint",
+      "roles": [
+        "v",
+        "d",
+        "i"
+      ],
+      "steps": [
+        [
+          "leave",
+          [
+            [
+              3,
+              103,
+              false
+            ]
+          ],
+          [
+            [
+              2,
+              102,
+              false
+            ]
+          ]
+        ]
+      ],
+      "errors": [],
+      "placement": true,
+      "kind": 0
+    },
+    {
+      "name": "joint no transfer candidate source quirk",
+      "checker": "joint",
+      "roles": [
+        "d",
+        "l",
+        "l"
+      ],
+      "steps": [
+        [
+          "leave",
+          [],
+          [
+            [
+              1,
+              101,
+              false
+            ]
+          ]
+        ]
+      ],
+      "errors": [],
+      "kind": 0
+    },
+    {
+      "name": "learner joint capability",
+      "checker": "learner",
+      "roles": [
+        "v",
+        "v",
+        "l"
+      ],
+      "steps": [
+        [
+          "promote",
+          3,
+          103,
+          false
+        ]
+      ],
+      "errors": [],
+      "joint": true,
+      "kind": 0
+    },
+    {
+      "name": "explicit resume learner",
+      "checker": "learner",
+      "roles": [
+        "v",
+        "v",
+        "l"
+      ],
+      "steps": [
+        [
+          "promote",
+          3,
+          103,
+          false
+        ]
+      ],
+      "errors": [],
+      "pause": 10,
+      "resume": 0,
+      "kind": 0
+    },
+    {
+      "name": "negative resume joint",
+      "checker": "joint",
+      "roles": [
+        "v",
+        "d",
+        "i"
+      ],
+      "steps": [
+        [
+          "leave",
+          [
+            [
+              3,
+              103,
+              false
+            ]
+          ],
+          [
+            [
+              2,
+              102,
+              false
+            ]
+          ]
+        ]
+      ],
+      "errors": [],
+      "pause": 10,
+      "resume": -1,
+      "kind": 0
+    }
+  ]
+}

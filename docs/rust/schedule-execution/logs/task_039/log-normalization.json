@@ -1,0 +1,37 @@
+[
+  {
+    "file": "green-3.log",
+    "raw_sha256": "74a5b69e4f7fc70aa8783dc00e31d2187a9b376889219e58c80f8aa820e287c1",
+    "normalized_sha256": "cfc4172a154780f32bdce7ae0dc0672bdf065843d63f3c055f710a22a36d1f2d",
+    "changed_lines": [],
+    "trailing_original_base64": "Cg=="
+  },
+  {
+    "file": "lifecycle.log",
+    "raw_sha256": "1726f97842cdf61b13fd3a6fea74b80b3e2487449c89cc9707712263bcb4b468",
+    "normalized_sha256": "803e13d22178336ecd251b14902f7f8be6e0101ddc596e7fb7e463bbec218a64",
+    "changed_lines": [],
+    "trailing_original_base64": "Cg=="
+  },
+  {
+    "file": "mutation.log",
+    "raw_sha256": "f800c644af8933c90b0878b3e6417fc4cbe6595a61b664944b308a4aed9d766e",
+    "normalized_sha256": "ab392569d03afe881fda14e2c86f7e39c7f160473a9970fa7c2abfb9a2dbccbd",
+    "changed_lines": [],
+    "trailing_original_base64": "Cg=="
+  },
+  {
+    "file": "syncutil-retry.log",
+    "raw_sha256": "2636d4cee0fdf71414159c9eb73a6fce750d7c3e0666a322514b30f2ae1cd0d6",
+    "normalized_sha256": "27056e47e1b859157251a8c4130e70d237a2e97248612a0972794854a4c77e0e",
+    "changed_lines": [],
+    "trailing_original_base64": "Cg=="
+  },
+  {
+    "file": "validation.log",
+    "raw_sha256": "1d8add27989f60e6575ef13b9659640f9cc8d61eefd993e64599ebc04001c8c2",
+    "normalized_sha256": "7079eff3bde859ed3de08dcb520072deeee1cf4ba736c4a89aaa9baca3631ecb",
+    "changed_lines": [],
+    "trailing_original_base64": "Cg=="
+  }
+]

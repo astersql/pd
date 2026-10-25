@@ -1,0 +1,11 @@
+{
+  "green.log": {
+    "mistaken_expectation": "promotion adds OpRegion (128)",
+    "source_correction": "builder.go buildStepsWithoutJointConsensus calls execPromoteLearner without changing kind; prepareBuild disables joint for a single change; corrected kind to 0"
+  },
+  "green-2.log": {
+    "mistaken_expectation": "learner iteration preserves metadata peer ordering",
+    "source_correction": "core/region.go classifyVoterAndLearner sorts learners by peer ID; corrected shuffled-metadata case to select peer 102 on store 2"
+  },
+  "provenance": "Expectations corrected by reading Go sources, not by accepting Rust output as oracle; final mutations use corrected fixed fixture"
+}

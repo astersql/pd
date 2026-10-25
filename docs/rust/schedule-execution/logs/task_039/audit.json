@@ -1,0 +1,63 @@
+{
+  "checked_go_module_files": 1101,
+  "contents_unchanged": true,
+  "status_unchanged": true,
+  "status": "",
+  "fixture_sha256": "c075af2e6cf57a63ab9f12aab8f4c84625311fe8185c00c4fc971d19d870403c",
+  "sources": [
+    {
+      "path": "pkg/schedule/checker/checker_pause.go",
+      "current_sha256": "c977895f300a94a87135be0203614aa9be867c1c1f98ddde7cd72dc9164815c6",
+      "source_commit_sha256": "c977895f300a94a87135be0203614aa9be867c1c1f98ddde7cd72dc9164815c6",
+      "matches_baseline": true
+    },
+    {
+      "path": "pkg/schedule/checker/learner_checker.go",
+      "current_sha256": "99b7eadd147e3b5078a453575148c02ad3badcfa40283ed605dde2f74fba2349",
+      "source_commit_sha256": "99b7eadd147e3b5078a453575148c02ad3badcfa40283ed605dde2f74fba2349",
+      "matches_baseline": true
+    },
+    {
+      "path": "pkg/schedule/checker/joint_state_checker.go",
+      "current_sha256": "ffacb80b2f8420a33f3def7e78064a66ddf528639132a0e8ea2ea750e39f92be",
+      "source_commit_sha256": "ffacb80b2f8420a33f3def7e78064a66ddf528639132a0e8ea2ea750e39f92be",
+      "matches_baseline": true
+    },
+    {
+      "path": "pkg/schedule/checker/learner_checker_test.go",
+      "current_sha256": "5b9f5282e3755d9be7b74610025e660d75bdfbc73765b3f58465d51b96905cc8",
+      "source_commit_sha256": "5b9f5282e3755d9be7b74610025e660d75bdfbc73765b3f58465d51b96905cc8",
+      "matches_baseline": true
+    },
+    {
+      "path": "pkg/schedule/checker/joint_state_checker_test.go",
+      "current_sha256": "bef12b07b2d05a029efd8d08db6fdacb0bcf04e99340e2a0a0746da20577bad2",
+      "source_commit_sha256": "bef12b07b2d05a029efd8d08db6fdacb0bcf04e99340e2a0a0746da20577bad2",
+      "matches_baseline": true
+    },
+    {
+      "path": "pkg/schedule/operator/create_operator.go",
+      "current_sha256": "43a938c72992f4ce81501c40ab85c1e79c08670383acd47f22655e779524b927",
+      "source_commit_sha256": "43a938c72992f4ce81501c40ab85c1e79c08670383acd47f22655e779524b927",
+      "matches_baseline": true
+    },
+    {
+      "path": "pkg/schedule/operator/builder.go",
+      "current_sha256": "2c74830947c401ea8c4d46e8066e4c85aecd02beea035d0bb9eb4aab8cee8f83",
+      "source_commit_sha256": "2c74830947c401ea8c4d46e8066e4c85aecd02beea035d0bb9eb4aab8cee8f83",
+      "matches_baseline": true
+    },
+    {
+      "path": "pkg/core/region.go",
+      "current_sha256": "be6ed0dc77537d62926d21d9e4eef080ea0dbcc7dc97efb4dc26269a172f99d8",
+      "source_commit_sha256": "be6ed0dc77537d62926d21d9e4eef080ea0dbcc7dc97efb4dc26269a172f99d8",
+      "matches_baseline": true
+    }
+  ],
+  "readonly_plans_unchanged": [
+    ".plans/2026-10-25-\u8c03\u5ea6\u6267\u884c\u5185\u6838/plan.md",
+    ".plans/2026-10-25-\u8c03\u5ea6\u6267\u884c\u5185\u6838/05-\u68c0\u67e5\u5668/plan.md"
+  ],
+  "go_execution": false,
+  "evidence_kind": "source_assertion"
+}

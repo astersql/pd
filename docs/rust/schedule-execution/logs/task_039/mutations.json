@@ -1,0 +1,47 @@
+[
+  {
+    "name": "ignore-learner-pause",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_039",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101
+  },
+  {
+    "name": "joint-priority",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_039",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101
+  },
+  {
+    "name": "stop-at-rejected-learner",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_039",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101
+  }
+]
