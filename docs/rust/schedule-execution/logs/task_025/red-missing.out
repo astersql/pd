@@ -1,0 +1,290 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=cargo test -p astersql-pd-schedule-operator --locked --lib task_025 -- --nocapture
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+error[E0599]: no method named `scheduler_kind` found for struct `operator::Operator` in the current scope
+   --> pkg/schedule/operator/task_025_test.rs:14:144
+    |
+ 14 | ...ec![leader()],clock());assert_eq!(o.scheduler_kind().0,v[1].as_u64().unwrap() as u32);}
+    |                                        ^^^^^^^^^^^^^^ method not found in `operator::Operator`
+    |
+   ::: pkg/schedule/operator/operator.rs:164:1
+    |
+164 | pub struct Operator {
+    | ------------------- method `scheduler_kind` not found for this struct
+
+error[E0599]: no method named `cancel_with_reasons` found for struct `operator::Operator` in the current scope
+   --> pkg/schedule/operator/task_025_test.rs:16:12
+    |
+ 16 |  assert!(o.cancel_with_reasons(&[CancelReason::AdminStop,CancelReason::Unknown]));
+    |            ^^^^^^^^^^^^^^^^^^^ method not found in `operator::Operator`
+    |
+   ::: pkg/schedule/operator/operator.rs:164:1
+    |
+164 | pub struct Operator {
+    | ------------------- method `cancel_with_reasons` not found for this struct
+
+error[E0433]: cannot find type `CancelReason` in this scope
+  --> pkg/schedule/operator/task_025_test.rs:16:34
+   |
+16 |  assert!(o.cancel_with_reasons(&[CancelReason::AdminStop,CancelReason::Unknown]));
+   |                                  ^^^^^^^^^^^^ use of undeclared type `CancelReason`
+
+error[E0433]: cannot find type `CancelReason` in this scope
+  --> pkg/schedule/operator/task_025_test.rs:16:58
+   |
+16 |  assert!(o.cancel_with_reasons(&[CancelReason::AdminStop,CancelReason::Unknown]));
+   |                                                          ^^^^^^^^^^^^ use of undeclared type `CancelReason`
+
+error[E0599]: no method named `cancel_with_reasons` found for struct `operator::Operator` in the current scope
+   --> pkg/schedule/operator/task_025_test.rs:17:13
+    |
+ 17 |  assert!(!o.cancel_with_reasons(&[CancelReason::EpochNotMatch]));
+    |             ^^^^^^^^^^^^^^^^^^^ method not found in `operator::Operator`
+    |
+   ::: pkg/schedule/operator/operator.rs:164:1
+    |
+164 | pub struct Operator {
+    | ------------------- method `cancel_with_reasons` not found for this struct
+
+error[E0433]: cannot find type `CancelReason` in this scope
+  --> pkg/schedule/operator/task_025_test.rs:17:35
+   |
+17 |  assert!(!o.cancel_with_reasons(&[CancelReason::EpochNotMatch]));
+   |                                   ^^^^^^^^^^^^ use of undeclared type `CancelReason`
+
+error[E0599]: no method named `additional_info` found for struct `operator::Operator` in the current scope
+   --> pkg/schedule/operator/task_025_test.rs:18:15
+    |
+ 18 |  assert_eq!(o.additional_info().get("cancel-reason").as_deref(),Some("admin stop"));
+    |               ^^^^^^^^^^^^^^^ method not found in `operator::Operator`
+    |
+   ::: pkg/schedule/operator/operator.rs:164:1
+    |
+164 | pub struct Operator {
+    | ------------------- method `additional_info` not found for this struct
+
+error[E0599]: no method named `to_json_object` found for struct `operator::Operator` in the current scope
+   --> pkg/schedule/operator/task_025_test.rs:20:15
+    |
+ 20 |  assert_eq!(o.to_json_object()["status"],"Canceled");
+    |               ^^^^^^^^^^^^^^ method not found in `operator::Operator`
+    |
+   ::: pkg/schedule/operator/operator.rs:164:1
+    |
+164 | pub struct Operator {
+    | ------------------- method `to_json_object` not found for this struct
+
+error[E0599]: no method named `cancel_with_reasons` found for struct `operator::Operator` in the current scope
+   --> pkg/schedule/operator/task_025_test.rs:21:83
+    |
+ 21 | ...));assert!(o.cancel());assert!(!o.cancel_with_reasons(&[CancelReason::Unknown]));assert_eq!(o.additional_info().get("cancel-reas...
+    |                                      ^^^^^^^^^^^^^^^^^^^ method not found in `operator::Operator`
+    |
+   ::: pkg/schedule/operator/operator.rs:164:1
+    |
+164 | pub struct Operator {
+    | ------------------- method `cancel_with_reasons` not found for this struct
+
+error[E0433]: cannot find type `CancelReason` in this scope
+  --> pkg/schedule/operator/task_025_test.rs:21:105
+   |
+21 | ...el());assert!(!o.cancel_with_reasons(&[CancelReason::Unknown]));assert_eq!(o.additional_info().get("cancel-reason").as_deref(),So...
+   |                                           ^^^^^^^^^^^^ use of undeclared type `CancelReason`
+
+error[E0599]: no method named `additional_info` found for struct `operator::Operator` in the current scope
+   --> pkg/schedule/operator/task_025_test.rs:21:143
+    |
+ 21 | ...ncelReason::Unknown]));assert_eq!(o.additional_info().get("cancel-reason").as_deref(),Some("unknown"));
+    |                                        ^^^^^^^^^^^^^^^ method not found in `operator::Operator`
+    |
+   ::: pkg/schedule/operator/operator.rs:164:1
+    |
+164 | pub struct Operator {
+    | ------------------- method `additional_info` not found for this struct
+
+error[E0599]: no method named `sync` found for struct `operator::Operator` in the current scope
+   --> pkg/schedule/operator/task_025_test.rs:22:117
+    |
+ 22 | ...b","b",99,None,OpKind::MERGE,1,vec![]);a.sync(&b);assert_eq!(a.timeout_nanos(),0);assert_eq!(a.additional_info().related_merge_r...
+    |                                             ^^^^ method not found in `operator::Operator`
+    |
+   ::: pkg/schedule/operator/operator.rs:164:1
+    |
+164 | pub struct Operator {
+    | ------------------- method `sync` not found for this struct
+
+error[E0599]: no method named `additional_info` found for struct `operator::Operator` in the current scope
+   --> pkg/schedule/operator/task_025_test.rs:22:171
+    |
+ 22 | ...!(a.timeout_nanos(),0);assert_eq!(a.additional_info().related_merge_region(),99);assert_eq!(b.additional_info().related_merge_re...
+    |                                        ^^^^^^^^^^^^^^^ method not found in `operator::Operator`
+    |
+   ::: pkg/schedule/operator/operator.rs:164:1
+    |
+164 | pub struct Operator {
+    | ------------------- method `additional_info` not found for this struct
+
+error[E0599]: no method named `additional_info` found for struct `operator::Operator` in the current scope
+   --> pkg/schedule/operator/task_025_test.rs:22:229
+    |
+ 22 | ...ted_merge_region(),99);assert_eq!(b.additional_info().related_merge_region(),1);
+    |                                        ^^^^^^^^^^^^^^^ method not found in `operator::Operator`
+    |
+   ::: pkg/schedule/operator/operator.rs:164:1
+    |
+164 | pub struct Operator {
+    | ------------------- method `additional_info` not found for this struct
+
+error[E0599]: no method named `cancel_with_reasons` found for struct `operator::Operator` in the current scope
+   --> pkg/schedule/operator/task_025_test.rs:23:108
+    |
+ 23 | ...);assert!(a.replace());assert!(!a.cancel_with_reasons(&[CancelReason::StaleStatus]));assert_eq!(a.status(),REPLACED);assert_eq!(...
+    |                                      ^^^^^^^^^^^^^^^^^^^ method not found in `operator::Operator`
+    |
+   ::: pkg/schedule/operator/operator.rs:164:1
+    |
+164 | pub struct Operator {
+    | ------------------- method `cancel_with_reasons` not found for this struct
+
+error[E0433]: cannot find type `CancelReason` in this scope
+  --> pkg/schedule/operator/task_025_test.rs:23:130
+   |
+23 | ...ce());assert!(!a.cancel_with_reasons(&[CancelReason::StaleStatus]));assert_eq!(a.status(),REPLACED);assert_eq!(a.to_json_object()...
+   |                                           ^^^^^^^^^^^^ use of undeclared type `CancelReason`
+
+error[E0599]: no method named `to_json_object` found for struct `operator::Operator` in the current scope
+   --> pkg/schedule/operator/task_025_test.rs:23:204
+    |
+ 23 | ...!(a.status(),REPLACED);assert_eq!(a.to_json_object()["status"],"Replaced");
+    |                                        ^^^^^^^^^^^^^^ method not found in `operator::Operator`
+    |
+   ::: pkg/schedule/operator/operator.rs:164:1
+    |
+164 | pub struct Operator {
+    | ------------------- method `to_json_object` not found for this struct
+
+error[E0599]: no method named `history_at` found for struct `operator::Operator` in the current scope
+   --> pkg/schedule/operator/task_025_test.rs:29:10
+    |
+ 29 |  let h=o.history_at(now);for (h,v) in h.iter().zip(fixture()["history"].as_array().unwrap()){assert_eq!((h.from,h.to,h.kind.as_i32(...
+    |          ^^^^^^^^^^ method not found in `operator::Operator`
+    |
+   ::: pkg/schedule/operator/operator.rs:164:1
+    |
+164 | pub struct Operator {
+    | ------------------- method `history_at` not found for this struct
+
+error[E0599]: no method named `record` found for struct `operator::Operator` in the current scope
+   --> pkg/schedule/operator/task_025_test.rs:33:12
+    |
+ 33 |  let rec=o.record(c.now());assert_eq!(rec.duration_nanos,Some(3_000_000_000));assert_eq!(rec.finish_time,c.now());
+    |            ^^^^^^ method not found in `operator::Operator`
+    |
+   ::: pkg/schedule/operator/operator.rs:164:1
+    |
+164 | pub struct Operator {
+    | ------------------- method `record` not found for this struct
+
+error[E0599]: no method named `render` found for struct `operator::Operator` in the current scope
+   --> pkg/schedule/operator/task_025_test.rs:35:13
+    |
+ 35 |  let text=o.render(&render);assert!(text.contains("kind:region,leader, region:1(0, 0), createAt:TIME, startAt:TIME, currentStep:1"));
+    |             ^^^^^^ method not found in `operator::Operator`
+    |
+   ::: pkg/schedule/operator/operator.rs:164:1
+    |
+164 | pub struct Operator {
+    | ------------------- method `render` not found for this struct
+
+error[E0599]: no method named `json_string` found for struct `operator::Operator` in the current scope
+   --> pkg/schedule/operator/task_025_test.rs:36:47
+    |
+ 36 |  assert_eq!(serde_json::from_str::<String>(&o.json_string(&render)).unwrap(),text);
+    |                                               ^^^^^^^^^^^ method not found in `operator::Operator`
+    |
+   ::: pkg/schedule/operator/operator.rs:164:1
+    |
+164 | pub struct Operator {
+    | ------------------- method `json_string` not found for this struct
+
+error[E0599]: no method named `record` found for struct `operator::Operator` in the current scope
+   --> pkg/schedule/operator/task_025_test.rs:38:63
+    |
+ 38 |  let fresh=op(OpKind::LEADER,vec![],clock());assert_eq!(fresh.record(Instant::now()).duration_nanos,None);fresh.start();fresh.check...
+    |                                                               ^^^^^^ method not found in `operator::Operator`
+    |
+   ::: pkg/schedule/operator/operator.rs:164:1
+    |
+164 | pub struct Operator {
+    | ------------------- method `record` not found for this struct
+
+error[E0599]: no method named `render` found for struct `operator::Operator` in the current scope
+   --> pkg/schedule/operator/task_025_test.rs:38:157
+    |
+ 38 | ...t();fresh.check_success();assert!(fresh.render(&render).ends_with(" finished"));assert_eq!(fresh.to_json_object()["status"],"Suc...
+    |                                            ^^^^^^ method not found in `operator::Operator`
+    |
+   ::: pkg/schedule/operator/operator.rs:164:1
+    |
+164 | pub struct Operator {
+    | ------------------- method `render` not found for this struct
+
+error[E0599]: no method named `to_json_object` found for struct `operator::Operator` in the current scope
+   --> pkg/schedule/operator/task_025_test.rs:38:214
+    |
+ 38 | ...with(" finished"));assert_eq!(fresh.to_json_object()["status"],"Success");assert!(fresh.record(fresh.reach_time_of(STARTED).unwr...
+    |                                        ^^^^^^^^^^^^^^ method not found in `operator::Operator`
+    |
+   ::: pkg/schedule/operator/operator.rs:164:1
+    |
+164 | pub struct Operator {
+    | ------------------- method `to_json_object` not found for this struct
+
+error[E0599]: no method named `record` found for struct `operator::Operator` in the current scope
+   --> pkg/schedule/operator/task_025_test.rs:38:266
+    |
+ 38 | ...ct()["status"],"Success");assert!(fresh.record(fresh.reach_time_of(STARTED).unwrap()-Duration::from_secs(1)).duration_nanos.unwr...
+    |                                            ^^^^^^ method not found in `operator::Operator`
+    |
+   ::: pkg/schedule/operator/operator.rs:164:1
+    |
+164 | pub struct Operator {
+    | ------------------- method `record` not found for this struct
+
+error[E0599]: no method named `cancel_with_reasons` found for reference `&operator::Operator` in the current scope
+  --> pkg/schedule/operator/task_025_test.rs:43:104
+   |
+43 | ...et o=&o;s.spawn(move||if i%2==0{o.cancel_with_reasons(&[CancelReason::AdminStop])}else{o.replace()})}).collect();handles.into_ite...
+   |                                      ^^^^^^^^^^^^^^^^^^^ method not found in `&operator::Operator`
+
+error[E0433]: cannot find type `CancelReason` in this scope
+  --> pkg/schedule/operator/task_025_test.rs:43:126
+   |
+43 | ...ove||if i%2==0{o.cancel_with_reasons(&[CancelReason::AdminStop])}else{o.replace()})}).collect();handles.into_iter().filter(|h|h.t...
+   |                                           ^^^^^^^^^^^^ use of undeclared type `CancelReason`
+
+error[E0599]: no method named `additional_info` found for struct `operator::Operator` in the current scope
+   --> pkg/schedule/operator/task_025_test.rs:45:4
+    |
+ 45 |  o.additional_info().set("x","\"<&\n");assert!(o.additional_info().log().contains("\\u003c"));
+    |    ^^^^^^^^^^^^^^^ method not found in `operator::Operator`
+    |
+   ::: pkg/schedule/operator/operator.rs:164:1
+    |
+164 | pub struct Operator {
+    | ------------------- method `additional_info` not found for this struct
+
+error[E0599]: no method named `additional_info` found for struct `operator::Operator` in the current scope
+   --> pkg/schedule/operator/task_025_test.rs:45:50
+    |
+ 45 |  o.additional_info().set("x","\"<&\n");assert!(o.additional_info().log().contains("\\u003c"));
+    |                                                  ^^^^^^^^^^^^^^^ method not found in `operator::Operator`
+    |
+   ::: pkg/schedule/operator/operator.rs:164:1
+    |
+164 | pub struct Operator {
+    | ------------------- method `additional_info` not found for this struct
+
+Some errors have detailed explanations: E0433, E0599.
+For more information about an error, try `rustc --explain E0433`.
+error: could not compile `astersql-pd-schedule-operator` (lib test) due to 29 previous errors
+command_exit_code=101

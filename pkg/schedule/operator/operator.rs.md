@@ -27,3 +27,6 @@ Go 源码和相邻测试只读。按用户授权，证据为源码/测试契约�
 [任务024证据](../../../docs/rust/schedule-execution/task-024.md) 和
 [固定fixture](../../../docs/rust/schedule-execution/fixtures/task_024.json)。
 本对象不访问持久化或外部 I/O，无适用的 MetaStore 故障注入点。
+
+任务25在同一 Operator 组合 AdditionalInfo，增加有原因取消与 merge Sync；
+历史/记录/JSON 的扩展实现见 [operator_record.rs.md](operator_record.rs.md)。

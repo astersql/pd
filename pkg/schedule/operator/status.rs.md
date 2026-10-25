@@ -50,3 +50,6 @@ Rust使用非负`Duration`；若适配Go有符号时长，非正值应转为零�
 [task_016_test.rs](task_016_test.rs)通过44个固定输入案例、独立延迟启动案例及
 两组16线程竞争验证这些边界；[任务16证据](../../../docs/rust/schedule-execution/task-016.md)
 保存源码推导、变异失败与回归结果。没有真实sleep、步骤timeout或Operator控制器扩展。
+
+任务25增加 `set_if_absent`，在一次写锁下检查并插入，供 Operator 保留首个取消原因。
+已有 `set` 仍允许显式覆盖元数据，且不参与 Operator 的状态转换。

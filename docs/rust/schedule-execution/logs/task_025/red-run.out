@@ -1,0 +1,22 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=python3 docs/rust/schedule-execution/logs/task_025/red-behavior.py
+
+running 5 tests
+test task_025_test::task_025_duration_saturation ... FAILED
+test task_025_test::task_025_history_record_and_output ... FAILED
+test task_025_test::task_025_output_boundaries ... FAILED
+test task_025_test::task_025_behavior_cases ... FAILED
+test task_025_test::task_025_terminal_once_and_metadata_race ... FAILED
+
+failures:
+
+failures:
+    task_025_test::task_025_behavior_cases
+    task_025_test::task_025_duration_saturation
+    task_025_test::task_025_history_record_and_output
+    task_025_test::task_025_output_boundaries
+    task_025_test::task_025_terminal_once_and_metadata_race
+
+test result: FAILED. 0 passed; 5 failed; 0 ignored; 0 measured; 35 filtered out; finished in 0.00s
+
+
+command_exit_code=0

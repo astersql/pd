@@ -1,0 +1,13 @@
+
+running 5 tests
+test task_025_test::task_025_duration_saturation ... ok
+test task_025_test::task_025_behavior_cases ... ok
+test task_025_test::task_025_output_boundaries ... ok
+test task_025_test::task_025_history_record_and_output ... ok
+test task_025_test::task_025_terminal_once_and_metadata_race ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 35 filtered out; finished in 0.00s
+
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.81s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_operator-495e634b90917395)

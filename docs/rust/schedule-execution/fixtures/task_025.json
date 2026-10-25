@@ -1,0 +1,88 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "evidence_kind": "source_assertion",
+  "go_execution": false,
+  "sources": {
+    "pkg/schedule/operator/operator.go": "ad287d89ee51f9d8d94985b45f11b2c4baddae0acb59c2f7899bc607fca860ba",
+    "pkg/schedule/operator/operator_test.go": "96bc7513e10013b3495b42b3aeb4425f4e04f415712a472fe1a457e0d08f71e9"
+  },
+  "scheduler_cases": [
+    [
+      0,
+      0
+    ],
+    [
+      133,
+      1
+    ],
+    [
+      388,
+      4
+    ],
+    [
+      144,
+      16
+    ],
+    [
+      160,
+      32
+    ],
+    [
+      136,
+      8
+    ],
+    [
+      448,
+      64
+    ],
+    [
+      384,
+      128
+    ],
+    [
+      256,
+      256
+    ],
+    [
+      130,
+      2
+    ],
+    [
+      2176,
+      2048
+    ],
+    [
+      2177,
+      1
+    ],
+    [
+      258,
+      2
+    ],
+    [
+      134,
+      2
+    ],
+    [
+      131,
+      1
+    ]
+  ],
+  "history": [
+    [
+      1,
+      2,
+      0
+    ],
+    [
+      5,
+      3,
+      1
+    ],
+    [
+      6,
+      4,
+      1
+    ]
+  ]
+}

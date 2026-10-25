@@ -1,0 +1,25 @@
+{
+  "argv": [
+    "cargo",
+    "test",
+    "-p",
+    "astersql-pd-schedule-operator",
+    "--locked",
+    "--lib",
+    "task_025",
+    "--",
+    "--nocapture"
+  ],
+  "exit_code": 101,
+  "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+  "mutations": [
+    "scheduler low bit becomes zero",
+    "history becomes empty",
+    "record duration becomes zero",
+    "cancel always reports success"
+  ],
+  "restored_sha256": {
+    "pkg/schedule/operator/operator_record.rs": "531b8f0873e295ade9c705f48f5c0b8602f518c7b4107f5d5706d3d2a093d637",
+    "pkg/schedule/operator/operator.rs": "88d330ca780a3ff79c47951db79e1c31973a63cd9a14866e67643d2a260cc0a2"
+  }
+}

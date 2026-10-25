@@ -52,3 +52,8 @@ mod operator;
 pub use operator::*;
 #[cfg(test)]
 mod task_024_test;
+
+mod operator_record;
+#[cfg(test)]
+mod task_025_test;
+pub use operator_record::*;

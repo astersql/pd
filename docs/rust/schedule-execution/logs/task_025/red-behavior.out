@@ -1,0 +1,56 @@
+
+running 5 tests
+test task_025_test::task_025_duration_saturation ... FAILED
+test task_025_test::task_025_history_record_and_output ... FAILED
+test task_025_test::task_025_output_boundaries ... FAILED
+test task_025_test::task_025_behavior_cases ... FAILED
+test task_025_test::task_025_terminal_once_and_metadata_race ... FAILED
+
+failures:
+
+failures:
+    task_025_test::task_025_behavior_cases
+    task_025_test::task_025_duration_saturation
+    task_025_test::task_025_history_record_and_output
+    task_025_test::task_025_output_boundaries
+    task_025_test::task_025_terminal_once_and_metadata_race
+
+test result: FAILED. 0 passed; 5 failed; 0 ignored; 0 measured; 35 filtered out; finished in 0.00s
+
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+warning: function `signed_duration` is never used
+  --> pkg/schedule/operator/operator_record.rs:61:4
+   |
+61 | fn signed_duration(end: Instant, start: Instant) -> i64 {
+   |    ^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `astersql-pd-schedule-operator` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.03s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_operator-495e634b90917395)
+
+thread 'task_025_test::task_025_duration_saturation' (162873273) panicked at pkg/schedule/operator/task_025_test.rs:321:5:
+assertion `left == right` failed
+  left: Some(0)
+ right: Some(9223372036854775807)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'task_025_test::task_025_history_record_and_output' (162873274) panicked at pkg/schedule/operator/task_025_test.rs:123:5:
+assertion `left == right` failed
+  left: 0
+ right: 3
+
+thread 'task_025_test::task_025_behavior_cases' (162873272) panicked at pkg/schedule/operator/task_025_test.rs:43:9:
+assertion `left == right` failed
+  left: 0
+ right: 4
+
+thread 'task_025_test::task_025_output_boundaries' (162873275) panicked at pkg/schedule/operator/task_025_test.rs:249:5:
+assertion failed: o.history_at(Instant::now()).len() == 1
+
+thread 'task_025_test::task_025_terminal_once_and_metadata_race' (162873276) panicked at pkg/schedule/operator/task_025_test.rs:221:5:
+assertion `left == right` failed
+  left: 16
+ right: 1
+error: test failed, to rerun pass `-p astersql-pd-schedule-operator --lib`

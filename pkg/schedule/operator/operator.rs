@@ -163,6 +163,7 @@ struct Execution {
 /// No runtime, transport, global clock or storage backend is installed by this library.
 pub struct Operator {
     desc: String,
+    additional_info: AdditionalInfo,
     brief: String,
     region_id: u64,
     region_epoch: Option<RegionEpoch>,
@@ -244,6 +245,7 @@ impl Operator {
         });
         Self {
             desc,
+            additional_info: AdditionalInfo::default(),
             brief,
             region_id,
             region_epoch,
@@ -323,8 +325,26 @@ impl Operator {
         self.reach_time_of(STARTED).is_some()
     }
     pub fn cancel(&self) -> bool {
+        self.cancel_with_reasons(&[])
+    }
+    pub fn cancel_with_reasons(&self, reasons: &[CancelReason]) -> bool {
         let _guard = self.execution();
+        if let Some(reason) = reasons.first() {
+            self.additional_info
+                .set_if_absent("cancel-reason", reason.as_str());
+        }
         self.status.to(CANCELED)
+    }
+    pub fn additional_info(&self) -> &AdditionalInfo {
+        &self.additional_info
+    }
+    pub fn sync(&mut self, other: &Operator) {
+        self.timeout_nanos = other.timeout_nanos;
+        self.additional_info
+            .set(RELATED_MERGE_REGION, other.region_id.to_string());
+        other
+            .additional_info
+            .set(RELATED_MERGE_REGION, self.region_id.to_string());
     }
     pub fn replace(&self) -> bool {
         let _guard = self.execution();

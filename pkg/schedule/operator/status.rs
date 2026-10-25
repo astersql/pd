@@ -255,6 +255,13 @@ pub struct AdditionalInfo {
     values: RwLock<BTreeMap<String, String>>,
 }
 impl AdditionalInfo {
+    pub fn set_if_absent(&self, key: &str, value: &str) {
+        self.values
+            .write()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .entry(key.to_owned())
+            .or_insert_with(|| value.to_owned());
+    }
     pub fn set(&self, key: impl Into<String>, value: impl Into<String>) {
         self.values
             .write()
