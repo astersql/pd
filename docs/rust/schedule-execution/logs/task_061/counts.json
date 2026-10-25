@@ -1,0 +1,22 @@
+{
+  "red-accounting": {
+    "passed": 0,
+    "failed": 4,
+    "ignored": 0
+  },
+  "focused": {
+    "passed": 4,
+    "failed": 0,
+    "ignored": 0
+  },
+  "package": {
+    "passed": 12,
+    "failed": 0,
+    "ignored": 0
+  },
+  "workspace-test": {
+    "passed": 1536,
+    "failed": 0,
+    "ignored": 1
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "source_commit": "077cfd8655c2e60ae5f11fd97ae7e6376ac1c8c1",
+  "evidence_kind": "source-derived; executed Rust tests; no executed Go oracle",
+  "go_output": null,
+  "go_binary_hash": null,
+  "files": {
+    "pkg/schedule/scatter/region_scatterer.go": "9f2f77a2ca302d6896d8dbffc7a736d411133d8df078807fcb8188b1fc75d3f6",
+    "pkg/schedule/scatter/region_scatterer_test.go": "c1e78eab5795f607cd1fe83b6130d57f77257daf694b93bcedc25e9aa4dfe67e",
+    "pkg/schedule/scatter/metrics.go": "f43418291a7bd618e02b5e01d206772d6252225e6dbb0d07cff4ab651762a37d",
+    "docs/rust/schedule-execution/oracle-index.json": "2d1a930742291e7047a864aa2246e7e22c612cb6583249b7edb42945b494b450",
+    "docs/rust/schedule-execution/fixtures/task_061.json": "7d59337a285c53c8a745e1ca539ee3a7e44e011941df418d6953b282b0a64197"
+  },
+  "normalization": {
+    "iteration": "Ascending region/store IDs explicitly realize one unspecified Go map/tie order; no claim of identical random targets.",
+    "time": "Tokio paused test clock; durations asserted without wall-clock sleep.",
+    "errors": "Typed variants asserted, not ignored."
+  }
+}

@@ -1,0 +1,94 @@
+   Compiling astersql-pd-schedule-scatter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/scatter)
+error[E0422]: cannot find struct, variant or union type `ScatterBatch` in this scope
+  --> pkg/schedule/scatter/task_061_test.rs:50:25
+   |
+50 | ...   let mut batch = ScatterBatch { cluster: &c, config: &conf, rules: &mut mgr, controller: &ctl, counts: &mut counts, affinity: N...
+   |                       ^^^^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `ScatterBatch` in this scope
+  --> pkg/schedule/scatter/task_061_test.rs:77:25
+   |
+77 | ...   let mut batch = ScatterBatch { cluster: &c, config: &conf, rules: &mut mgr, controller: &ctl, counts: &mut counts, affinity: N...
+   |                       ^^^^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `ScatterBatch` in this scope
+   --> pkg/schedule/scatter/task_061_test.rs:102:23
+    |
+102 | ...   let mut batch=ScatterBatch { cluster:&c, config:&conf,rules:&mut mgr,controller:&ctl,counts:&mut counts,affinity:None,hot_reg...
+    |                     ^^^^^^^^^^^^ not found in this scope
+
+error[E0433]: cannot find type `ScatterBatchMetrics` in this scope
+  --> pkg/schedule/scatter/task_061_test.rs:49:23
+   |
+49 |         let metrics = ScatterBatchMetrics::new(&prometheus::Registry::new()).unwrap();
+   |                       ^^^^^^^^^^^^^^^^^^^ use of undeclared type `ScatterBatchMetrics`
+
+error[E0433]: cannot find type `ScatterBatchRequest` in this scope
+  --> pkg/schedule/scatter/task_061_test.rs:51:119
+   |
+51 | ...ec![1], end: vec![3] } } else { ScatterBatchRequest::Ids(case["ids"].as_array().unwrap().iter().map(|id| id.as_u64().unwrap()).co...
+   |                                    ^^^^^^^^^^^^^^^^^^^ use of undeclared type `ScatterBatchRequest`
+
+error[E0433]: cannot find type `ScatterBatchMetrics` in this scope
+  --> pkg/schedule/scatter/task_061_test.rs:75:23
+   |
+75 |         let metrics = ScatterBatchMetrics::new(&prometheus::Registry::new()).unwrap();
+   |                       ^^^^^^^^^^^^^^^^^^^ use of undeclared type `ScatterBatchMetrics`
+
+error[E0433]: cannot find type `ScatterBatchRequest` in this scope
+  --> pkg/schedule/scatter/task_061_test.rs:80:36
+   |
+80 |         let result = batch.scatter(ScatterBatchRequest::Ids(vec![1]),"g",2,true,&token,|| {
+   |                                    ^^^^^^^^^^^^^^^^^^^ use of undeclared type `ScatterBatchRequest`
+
+error[E0599]: no method named `steps` found for struct `Arc<Operator>` in the current scope
+   --> pkg/schedule/scatter/task_061_test.rs:94:212
+    |
+ 94 | ...ority_level(),PriorityLevel::HIGH); assert!(op.steps().iter().any(|s| matches!(s, astersql_pd_schedule_operator::OpStep::AddLear...
+    |                                                   ^^^^^ private field, not a method
+    |
+help: there is a method `step` with a similar name, but with different arguments
+   --> pkg/schedule/operator/operator.rs:298:5
+    |
+298 |     pub fn step(&self, index: usize) -> Option<&OpStep> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0433]: cannot find type `ScatterBatchMetrics` in this scope
+   --> pkg/schedule/scatter/task_061_test.rs:101:21
+    |
+101 | ...   let metrics=ScatterBatchMetrics::new(&prometheus::Registry::new()).unwrap(); let hot=[1].into(); let token=CancellationToken:...
+    |                   ^^^^^^^^^^^^^^^^^^^ use of undeclared type `ScatterBatchMetrics`
+
+error[E0433]: cannot find type `ScatterBatchRequest` in this scope
+   --> pkg/schedule/scatter/task_061_test.rs:104:52
+    |
+104 |         let (result,())=tokio::join!(batch.scatter(ScatterBatchRequest::Ids(vec![1,2]),"g",99,false,&token,|| Ok(900)),cancel_wait);
+    |                                                    ^^^^^^^^^^^^^^^^^^^ use of undeclared type `ScatterBatchRequest`
+
+error[E0433]: cannot find type `ScatterBatchFailure` in this scope
+   --> pkg/schedule/scatter/task_061_test.rs:108:46
+    |
+108 |         assert!(matches!(result.failures[&1],ScatterBatchFailure::Hot));
+    |                                              ^^^^^^^^^^^^^^^^^^^ use of undeclared type `ScatterBatchFailure`
+
+error[E0433]: cannot find type `ScatterBatchRequest` in this scope
+  --> pkg/schedule/scatter/task_061_test.rs:51:50
+   |
+51 | ...   let request = if case["range"] == true { ScatterBatchRequest::Range { start: vec![1], end: vec![3] } } else { ScatterBatchRequ...
+   |                                                ^^^^^^^^^^^^^^^^^^^ use of undeclared type `ScatterBatchRequest`
+
+error[E0433]: cannot find type `ScatterBatchFailure` in this scope
+  --> pkg/schedule/scatter/task_061_test.rs:93:59
+   |
+93 | ...   if reject { assert!(matches!(result.failures[&1], ScatterBatchFailure::Admission(_))); assert!(result.pending.is_empty()); ass...
+   |                                                         ^^^^^^^^^^^^^^^^^^^ use of undeclared type `ScatterBatchFailure`
+
+error[E0433]: cannot find type `ScatterBatchFailure` in this scope
+  --> pkg/schedule/scatter/task_061_test.rs:92:141
+   |
+92 | ...t!(matches!(result.failures[&1],ScatterBatchFailure::Operator(ScatterOperatorError::Build(BuilderError::Allocation(_))))); }
+   |                                    ^^^^^^^^^^^^^^^^^^^ use of undeclared type `ScatterBatchFailure`
+
+Some errors have detailed explanations: E0422, E0433, E0599.
+For more information about an error, try `rustc --explain E0422`.
+error: could not compile `astersql-pd-schedule-scatter` (lib test) due to 14 previous errors

@@ -11,3 +11,9 @@ mod task_060_test;
 
 mod scatter_operator;
 pub use scatter_operator::*;
+
+#[cfg(test)]
+mod task_061_test;
+
+mod scatter_batch;
+pub use scatter_batch::*;

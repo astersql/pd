@@ -1,0 +1,45 @@
+   Compiling astersql-pd-schedule-scatter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/scatter)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.96s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_scatter-bc7e9d1cfd0c21c1)
+
+running 4 tests
+case "empty" passed
+case "missing-single" passed
+
+thread 'task_061_test::task_061_cancellation_during_backoff_and_retry_cap' (165329618) panicked at pkg/schedule/scatter/task_061_test.rs:365:9:
+assertion `left == right` failed
+  left: 0
+ right: 1
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+case "missing-all" passed
+
+thread 'task_061_test::task_061_existing_group_and_region_faults' (165329619) panicked at pkg/schedule/scatter/task_061_test.rs:415:9:
+assertion `left == right` failed
+  left: 0
+ right: 1
+
+thread 'task_061_test::task_061_retry_allocation_and_controller_rejection' (165329620) panicked at pkg/schedule/scatter/task_061_test.rs:269:9:
+assertion `left == right` failed
+  left: (0, 0)
+ right: (1, 0)
+
+thread 'task_061_test::task_061_behavior_cases' (165329617) panicked at pkg/schedule/scatter/task_061_test.rs:154:13:
+assertion `left == right` failed: {"created":0,"failures":[99],"ids":[1,99],"missing":1,"name":"mixed","pending_ids":[],"processed":1,"retry":0,"unnecessary":1}
+  left: 0
+ right: 1
+test task_061_test::task_061_cancellation_during_backoff_and_retry_cap ... FAILED
+test task_061_test::task_061_retry_allocation_and_controller_rejection ... FAILED
+test task_061_test::task_061_existing_group_and_region_faults ... FAILED
+test task_061_test::task_061_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_061_test::task_061_behavior_cases
+    task_061_test::task_061_cancellation_during_backoff_and_retry_cap
+    task_061_test::task_061_existing_group_and_region_faults
+    task_061_test::task_061_retry_allocation_and_controller_rejection
+
+test result: FAILED. 0 passed; 4 failed; 0 ignored; 0 measured; 8 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-scatter --lib`

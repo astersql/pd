@@ -1,0 +1,21 @@
+   Compiling astersql-pd-schedule-scatter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/scatter)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.99s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_scatter-bc7e9d1cfd0c21c1)
+
+running 4 tests
+case "empty" passed
+case "missing-single" passed
+case "missing-all" passed
+case "mixed" passed
+case "deduplicate" passed
+test task_061_test::task_061_existing_group_and_region_faults ... ok
+case "range" passed
+case "pending-peer" passed
+case "negative" passed
+case "hot-retry" passed
+test task_061_test::task_061_retry_allocation_and_controller_rejection ... ok
+case "cancelled" passed
+test task_061_test::task_061_behavior_cases ... ok
+test task_061_test::task_061_cancellation_during_backoff_and_retry_cap ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 8 filtered out; finished in 0.00s

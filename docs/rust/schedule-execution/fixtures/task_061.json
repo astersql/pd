@@ -1,0 +1,137 @@
+{
+  "evidence_kind": "source-derived; no Go runtime oracle",
+  "source_commit": "077cfd865",
+  "cases": [
+    {
+      "name": "empty",
+      "ids": [],
+      "retry": 0,
+      "error": "EmptyRegion"
+    },
+    {
+      "name": "missing-single",
+      "ids": [
+        99
+      ],
+      "retry": 0,
+      "error": "RegionNotFound(99)",
+      "missing": 1
+    },
+    {
+      "name": "missing-all",
+      "ids": [
+        99,
+        98
+      ],
+      "retry": 0,
+      "error": "EmptyRegion",
+      "missing": 2
+    },
+    {
+      "name": "mixed",
+      "ids": [
+        1,
+        99
+      ],
+      "retry": 0,
+      "processed": 1,
+      "failures": [
+        99
+      ],
+      "pending_ids": [],
+      "missing": 1,
+      "unnecessary": 1,
+      "created": 0
+    },
+    {
+      "name": "deduplicate",
+      "ids": [
+        1,
+        1
+      ],
+      "retry": 0,
+      "processed": 1,
+      "failures": [],
+      "pending_ids": [],
+      "unnecessary": 1,
+      "created": 0
+    },
+    {
+      "name": "range",
+      "ids": [],
+      "retry": 0,
+      "processed": 2,
+      "failures": [],
+      "pending_ids": [],
+      "range": true,
+      "unnecessary": 1,
+      "created": 1
+    },
+    {
+      "name": "pending-peer",
+      "ids": [
+        1
+      ],
+      "retry": 0,
+      "processed": 1,
+      "failures": [],
+      "pending_ids": [],
+      "pending": true,
+      "unnecessary": 1,
+      "created": 0
+    },
+    {
+      "name": "negative",
+      "ids": [
+        1
+      ],
+      "retry": -1,
+      "processed": 0,
+      "failures": [],
+      "pending_ids": [
+        1
+      ],
+      "unnecessary": 0,
+      "created": 0
+    },
+    {
+      "name": "hot-retry",
+      "ids": [
+        1,
+        2
+      ],
+      "retry": 2,
+      "processed": 1,
+      "failures": [
+        1
+      ],
+      "pending_ids": [
+        1
+      ],
+      "hot": true,
+      "hot_attempts": 3,
+      "unnecessary": 1,
+      "created": 0
+    },
+    {
+      "name": "cancelled",
+      "ids": [
+        1,
+        2
+      ],
+      "retry": 0,
+      "processed": 0,
+      "failures": [
+        1,
+        2
+      ],
+      "pending_ids": [
+        1,
+        2
+      ],
+      "cancel": true,
+      "unnecessary": 0,
+      "created": 0
+    }
+  ]
+}

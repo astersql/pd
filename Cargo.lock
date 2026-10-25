@@ -586,12 +586,17 @@ version = "0.1.0"
 dependencies = [
  "astersql-pd-core",
  "astersql-pd-core-constant",
+ "astersql-pd-keypath",
  "astersql-pd-schedule-config",
  "astersql-pd-schedule-filter",
  "astersql-pd-schedule-operator",
  "astersql-pd-schedule-placement",
+ "astersql-pd-storage-endpoint",
+ "astersql-pd-storage-kv",
+ "prometheus",
  "serde_json",
  "tokio",
+ "tokio-util",
 ]
 
 [[package]]
