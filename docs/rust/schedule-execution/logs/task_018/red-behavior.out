@@ -1,0 +1,23 @@
+
+running 3 tests
+test task_018_test::task_018_candidate_health_and_errors ... ok
+test task_018_test::task_018_behavior_cases ... FAILED
+test task_018_test::task_018_influence_and_timeout ... ok
+
+failures:
+
+failures:
+    task_018_test::task_018_behavior_cases
+
+test result: FAILED. 2 passed; 1 failed; 0 ignored; 0 measured; 12 filtered out; finished in 0.00s
+
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.54s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_operator-495e634b90917395)
+
+thread 'task_018_test::task_018_behavior_cases' (162623210) panicked at pkg/schedule/operator/task_018_test.rs:50:9:
+assertion `left == right` failed: {"candidates":[3],"finished":true,"leader":3,"to":2}
+  left: false
+ right: true
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+error: test failed, to rerun pass `-p astersql-pd-schedule-operator --lib`

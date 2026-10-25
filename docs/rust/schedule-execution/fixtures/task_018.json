@@ -1,0 +1,444 @@
+{
+  "evidence_kind": "source_assertion",
+  "go_execution": false,
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "sources": {
+    "pkg/schedule/operator/step.go": "9338b311dca1940cd76bbe3903f0d2545cfc258f88a20eedb391ab59e243eac5",
+    "pkg/schedule/operator/step_test.go": "cc353a5b70022385630b93ce77f8a8e637c4a51c7724dc9c29ae3ef696c56c7b",
+    "pkg/core/storelimit/store_limit.go": "1556e3bee72d2d5e218a425938c43505385a2c6af5c91cd3d26bde9ccd507651",
+    "pkg/core/store.go": "686a3bd66c7deceb3fd79b2c83be359487088993d20e649ba2a533db298ad605"
+  },
+  "normalization": "none; explicit clock in Unix nanoseconds; missing peers retained as null",
+  "completion": [
+    {
+      "to": 2,
+      "candidates": [],
+      "leader": 1,
+      "finished": false
+    },
+    {
+      "to": 2,
+      "candidates": [],
+      "leader": 2,
+      "finished": true
+    },
+    {
+      "to": 2,
+      "candidates": [],
+      "leader": 3,
+      "finished": false
+    },
+    {
+      "to": 2,
+      "candidates": [
+        3
+      ],
+      "leader": 3,
+      "finished": true
+    },
+    {
+      "to": 2,
+      "candidates": [
+        3
+      ],
+      "leader": 2,
+      "finished": true
+    },
+    {
+      "to": 2,
+      "candidates": [
+        3
+      ],
+      "leader": 0,
+      "finished": false
+    },
+    {
+      "to": 0,
+      "candidates": [],
+      "leader": 0,
+      "finished": true
+    },
+    {
+      "to": 2,
+      "candidates": [
+        0
+      ],
+      "leader": 0,
+      "finished": true
+    }
+  ],
+  "validation": [
+    {
+      "to": 2,
+      "candidates": [],
+      "peers": [
+        [
+          2,
+          false
+        ]
+      ],
+      "stores": [
+        [
+          2,
+          0
+        ]
+      ],
+      "health": true,
+      "error": null
+    },
+    {
+      "to": 2,
+      "candidates": [],
+      "peers": [],
+      "stores": [],
+      "health": true,
+      "error": "[peer does not existed]"
+    },
+    {
+      "to": 2,
+      "candidates": [],
+      "peers": [
+        [
+          2,
+          true
+        ]
+      ],
+      "stores": [],
+      "health": true,
+      "error": "[peer already is a learner]"
+    },
+    {
+      "to": 2,
+      "candidates": [],
+      "peers": [
+        [
+          2,
+          false
+        ]
+      ],
+      "stores": [],
+      "health": true,
+      "error": "[target store does not exist]"
+    },
+    {
+      "to": 2,
+      "candidates": [],
+      "peers": [
+        [
+          2,
+          false
+        ]
+      ],
+      "stores": [
+        [
+          2,
+          660000000000
+        ]
+      ],
+      "health": false,
+      "error": null
+    },
+    {
+      "to": 2,
+      "candidates": [],
+      "peers": [
+        [
+          2,
+          false
+        ]
+      ],
+      "stores": [
+        [
+          2,
+          660000000000
+        ]
+      ],
+      "health": true,
+      "error": "[target store is unhealthy]"
+    },
+    {
+      "to": 2,
+      "candidates": [],
+      "peers": [
+        [
+          2,
+          false
+        ]
+      ],
+      "stores": [
+        [
+          2,
+          1800000000001
+        ]
+      ],
+      "health": false,
+      "error": "[target store is down]"
+    },
+    {
+      "to": 2,
+      "candidates": [],
+      "peers": [
+        [
+          2,
+          false
+        ]
+      ],
+      "stores": [
+        [
+          2,
+          1800000000000
+        ]
+      ],
+      "health": false,
+      "error": null
+    },
+    {
+      "to": 2,
+      "candidates": [],
+      "peers": [
+        [
+          2,
+          false
+        ]
+      ],
+      "stores": [
+        [
+          2,
+          600000000000
+        ]
+      ],
+      "health": true,
+      "error": null
+    },
+    {
+      "to": 2,
+      "candidates": [],
+      "peers": [
+        [
+          2,
+          false
+        ]
+      ],
+      "stores": [
+        [
+          2,
+          600000000001
+        ]
+      ],
+      "health": true,
+      "error": "[target store is unhealthy]"
+    },
+    {
+      "to": 4,
+      "candidates": [
+        2
+      ],
+      "peers": [
+        [
+          2,
+          false
+        ]
+      ],
+      "stores": [
+        [
+          2,
+          0
+        ]
+      ],
+      "health": true,
+      "error": null
+    },
+    {
+      "to": 11,
+      "candidates": [
+        5
+      ],
+      "peers": [
+        [
+          11,
+          false
+        ]
+      ],
+      "stores": [
+        [
+          5,
+          0
+        ],
+        [
+          11,
+          660000000000
+        ]
+      ],
+      "health": true,
+      "error": "[peer does not existed target store is unhealthy]"
+    },
+    {
+      "to": 2,
+      "candidates": [
+        3,
+        3
+      ],
+      "peers": [
+        [
+          2,
+          false
+        ],
+        [
+          3,
+          true
+        ]
+      ],
+      "stores": [
+        [
+          2,
+          0
+        ]
+      ],
+      "health": true,
+      "error": null
+    },
+    {
+      "to": 2,
+      "candidates": [
+        3,
+        3
+      ],
+      "peers": [
+        [
+          2,
+          true
+        ],
+        [
+          3,
+          true
+        ]
+      ],
+      "stores": [],
+      "health": true,
+      "error": "[peer already is a learner peer already is a learner peer already is a learner]"
+    },
+    {
+      "to": 2,
+      "candidates": [],
+      "peers": [
+        [
+          2,
+          false
+        ]
+      ],
+      "stores": [
+        [
+          2,
+          -1
+        ]
+      ],
+      "health": true,
+      "error": null
+    }
+  ],
+  "influence": [
+    {
+      "to": 2,
+      "candidates": [
+        2,
+        3,
+        3,
+        1
+      ],
+      "expected": [
+        [
+          1,
+          -50,
+          -1,
+          1000
+        ],
+        [
+          2,
+          50,
+          1,
+          1000
+        ],
+        [
+          3,
+          0,
+          0,
+          1000
+        ]
+      ]
+    },
+    {
+      "to": 1,
+      "candidates": [
+        1,
+        1,
+        3
+      ],
+      "expected": [
+        [
+          1,
+          0,
+          0,
+          1000
+        ],
+        [
+          3,
+          0,
+          0,
+          1000
+        ]
+      ]
+    },
+    {
+      "to": 2,
+      "candidates": [],
+      "expected": [
+        [
+          1,
+          -50,
+          -1,
+          0
+        ],
+        [
+          2,
+          50,
+          1,
+          1000
+        ]
+      ]
+    }
+  ],
+  "timeouts": [
+    [
+      -1,
+      60000000000
+    ],
+    [
+      0,
+      60000000000
+    ],
+    [
+      100,
+      60000000000
+    ],
+    [
+      101,
+      60000000000
+    ],
+    [
+      102,
+      61000000000
+    ],
+    [
+      1000,
+      600000000000
+    ],
+    [
+      9223372036854775807,
+      60000000000
+    ]
+  ],
+  "config": {
+    "max_store_down_time_nanos": 1800000000000,
+    "now_unix_nanos": 2000000000000
+  }
+}
