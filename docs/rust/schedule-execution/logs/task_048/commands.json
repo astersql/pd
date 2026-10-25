@@ -1,0 +1,402 @@
+[
+  {
+    "name": "drop-boundary-fmt",
+    "command": [
+      "cargo",
+      "fmt",
+      "--all"
+    ],
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {},
+    "test_counts": {
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0
+    }
+  },
+  {
+    "name": "drop-boundary",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_048",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {},
+    "test_counts": {
+      "passed": 0,
+      "failed": 1,
+      "ignored": 0
+    }
+  },
+  {
+    "name": "fmt-check",
+    "command": [
+      "cargo",
+      "fmt",
+      "--all",
+      "--",
+      "--check"
+    ],
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {},
+    "test_counts": {
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0
+    }
+  },
+  {
+    "name": "fmt-final",
+    "command": [
+      "cargo",
+      "fmt",
+      "--all"
+    ],
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {},
+    "test_counts": {
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0
+    }
+  },
+  {
+    "name": "fmt-red",
+    "command": [
+      "cargo",
+      "fmt",
+      "--all"
+    ],
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {},
+    "test_counts": {
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0
+    }
+  },
+  {
+    "name": "fmt",
+    "command": [
+      "cargo",
+      "fmt",
+      "--all"
+    ],
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {},
+    "test_counts": {
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0
+    }
+  },
+  {
+    "name": "green-final",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_048",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {},
+    "test_counts": {
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0
+    },
+    "behavior_cases": 23
+  },
+  {
+    "name": "green",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_048",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {},
+    "test_counts": {
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0
+    },
+    "behavior_cases": 23
+  },
+  {
+    "name": "ignore-config-fmt",
+    "command": [
+      "cargo",
+      "fmt",
+      "--all"
+    ],
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {},
+    "test_counts": {
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0
+    }
+  },
+  {
+    "name": "ignore-config",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_048",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {},
+    "test_counts": {
+      "passed": 0,
+      "failed": 1,
+      "ignored": 0
+    }
+  },
+  {
+    "name": "ignore-pause-fmt",
+    "command": [
+      "cargo",
+      "fmt",
+      "--all"
+    ],
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {},
+    "test_counts": {
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0
+    }
+  },
+  {
+    "name": "ignore-pause",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_048",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {},
+    "test_counts": {
+      "passed": 0,
+      "failed": 1,
+      "ignored": 0
+    }
+  },
+  {
+    "name": "lose-label-priority-fmt",
+    "command": [
+      "cargo",
+      "fmt",
+      "--all"
+    ],
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {},
+    "test_counts": {
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0
+    }
+  },
+  {
+    "name": "lose-label-priority",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_048",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {},
+    "test_counts": {
+      "passed": 0,
+      "failed": 1,
+      "ignored": 0
+    }
+  },
+  {
+    "name": "metadata",
+    "command": [
+      "cargo",
+      "metadata",
+      "--format-version",
+      "1",
+      "--no-deps"
+    ],
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {},
+    "test_counts": {
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0
+    }
+  },
+  {
+    "name": "package",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked"
+    ],
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {},
+    "test_counts": {
+      "passed": 22,
+      "failed": 0,
+      "ignored": 0
+    }
+  },
+  {
+    "name": "red-formatted",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_048",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {},
+    "test_counts": {
+      "passed": 0,
+      "failed": 1,
+      "ignored": 0
+    }
+  },
+  {
+    "name": "red",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_048",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {},
+    "test_counts": {
+      "passed": 0,
+      "failed": 1,
+      "ignored": 0
+    }
+  },
+  {
+    "name": "workspace-check",
+    "command": [
+      "cargo",
+      "check",
+      "--workspace",
+      "--locked"
+    ],
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {},
+    "test_counts": {
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0
+    }
+  },
+  {
+    "name": "workspace-test",
+    "command": [
+      "cargo",
+      "test",
+      "--workspace",
+      "--locked"
+    ],
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {
+      "RUST_TEST_THREADS": "2"
+    },
+    "test_counts": {
+      "passed": 1480,
+      "failed": 0,
+      "ignored": 1
+    }
+  }
+]

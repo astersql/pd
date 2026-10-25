@@ -1,0 +1,22 @@
+[
+  {
+    "mutation": "ignore-pause",
+    "exit_code": 101,
+    "behavior_assertion_failed": true
+  },
+  {
+    "mutation": "ignore-config",
+    "exit_code": 101,
+    "behavior_assertion_failed": true
+  },
+  {
+    "mutation": "lose-label-priority",
+    "exit_code": 101,
+    "behavior_assertion_failed": true
+  },
+  {
+    "mutation": "drop-boundary",
+    "exit_code": 101,
+    "behavior_assertion_failed": true
+  }
+]

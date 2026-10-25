@@ -1,0 +1,17 @@
+{
+  "source_commit": "69e47ea84d7ca76fde858de6cb3df04096f9cc23",
+  "provenance": "source-derived; Go runtime oracle waived by user; no Go executed",
+  "go_output_sha256": null,
+  "source_hashes": {
+    "pkg/schedule/checker/split_checker.go": "aa4b3e7558cde3f471e11335bcd24cac4b981682d785f602fae5cef50db0687c",
+    "pkg/schedule/checker/split_checker_test.go": "adcef649e2c1035e6bdd7490194ddde5347f443b61c79fb1697148f1b5f72d25",
+    "pkg/schedule/placement/rule_manager.go": "d601f3dba8f99d21b24141a01836d5898edc1e3d72ef093b4a4f1a96d4dbc235",
+    "pkg/schedule/labeler/labeler.go": "d05b46f49fe1eaa5c3cd6bff2d06c3c17ddcda13b15d064f34edaccf133a54fc",
+    "pkg/schedule/operator/create_operator.go": "43a938c72992f4ce81501c40ab85c1e79c08670383acd47f22655e779524b927",
+    "pkg/schedule/rangelist/range_list.go": "45f760a442af79612819cda2e9dc155870beb5c1186eb4215c46e25d7e2e3314",
+    "pkg/schedule/labeler/rule_index.go": "0a142100a9293d2944c446f13b740bf264f17a282892adc5d4a0c29d4805d15f"
+  },
+  "fixture_sha256": "42a7bdeef0742355c5b22f2d67df7d5a92b35e958e58930bac71bb1d319ad005",
+  "normalization": "none; literal binary keys, fixed host Unix seconds",
+  "dependency_commit": "69e47ea84"
+}

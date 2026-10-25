@@ -1,0 +1,452 @@
+{
+  "provenance": "Go source-derived; no Go execution/output",
+  "cases": [
+    {
+      "name": "go-placement",
+      "start": "",
+      "end": "",
+      "rules": true,
+      "placement": [
+        [
+          "aa",
+          "cc"
+        ]
+      ],
+      "labels": [],
+      "now": 0,
+      "keys": [
+        "aa",
+        "cc"
+      ],
+      "desc": "rule-split-region"
+    },
+    {
+      "name": "go-label-priority",
+      "start": "",
+      "end": "",
+      "rules": true,
+      "placement": [
+        [
+          "aa",
+          "cc"
+        ]
+      ],
+      "labels": [
+        [
+          "bb",
+          "dd"
+        ]
+      ],
+      "now": 0,
+      "keys": [
+        "bb",
+        "dd"
+      ],
+      "desc": "labeler-split-region"
+    },
+    {
+      "name": "no-boundaries",
+      "start": "",
+      "end": "",
+      "rules": true,
+      "placement": [],
+      "labels": [],
+      "now": 0,
+      "keys": null,
+      "desc": null
+    },
+    {
+      "name": "disabled",
+      "start": "",
+      "end": "",
+      "rules": false,
+      "placement": [
+        [
+          "aa",
+          "cc"
+        ]
+      ],
+      "labels": [],
+      "now": 0,
+      "keys": null,
+      "desc": null
+    },
+    {
+      "name": "labels-when-disabled",
+      "start": "",
+      "end": "",
+      "rules": false,
+      "placement": [
+        [
+          "aa",
+          "cc"
+        ]
+      ],
+      "labels": [
+        [
+          "bb",
+          "dd"
+        ]
+      ],
+      "now": 0,
+      "keys": [
+        "bb",
+        "dd"
+      ],
+      "desc": "labeler-split-region"
+    },
+    {
+      "name": "same-boundaries-label-priority",
+      "start": "",
+      "end": "",
+      "rules": true,
+      "placement": [
+        [
+          "aa",
+          "cc"
+        ]
+      ],
+      "labels": [
+        [
+          "aa",
+          "cc"
+        ]
+      ],
+      "now": 0,
+      "keys": [
+        "aa",
+        "cc"
+      ],
+      "desc": "labeler-split-region"
+    },
+    {
+      "name": "duplicate-label-keys",
+      "start": "",
+      "end": "",
+      "rules": true,
+      "placement": [
+        [
+          "aa",
+          "cc"
+        ]
+      ],
+      "labels": [
+        [
+          "aa",
+          "bb"
+        ],
+        [
+          "bb",
+          "cc"
+        ],
+        [
+          "aa",
+          "bb"
+        ]
+      ],
+      "now": 0,
+      "keys": [
+        "aa",
+        "bb",
+        "cc"
+      ],
+      "desc": "labeler-split-region"
+    },
+    {
+      "name": "duplicate-placement-keys",
+      "start": "",
+      "end": "",
+      "rules": true,
+      "placement": [
+        [
+          "aa",
+          "bb"
+        ],
+        [
+          "bb",
+          "cc"
+        ],
+        [
+          "aa",
+          "bb"
+        ]
+      ],
+      "labels": [],
+      "now": 0,
+      "keys": [
+        "aa",
+        "bb",
+        "cc"
+      ],
+      "desc": "rule-split-region"
+    },
+    {
+      "name": "strict-endpoints",
+      "start": "aa",
+      "end": "cc",
+      "rules": true,
+      "placement": [
+        [
+          "aa",
+          "cc"
+        ]
+      ],
+      "labels": [],
+      "now": 0,
+      "keys": null,
+      "desc": null
+    },
+    {
+      "name": "inside",
+      "start": "bb",
+      "end": "dd",
+      "rules": true,
+      "placement": [
+        [
+          "aa",
+          "cc"
+        ]
+      ],
+      "labels": [],
+      "now": 0,
+      "keys": [
+        "cc"
+      ],
+      "desc": "rule-split-region"
+    },
+    {
+      "name": "outside-before",
+      "start": "",
+      "end": "99",
+      "rules": true,
+      "placement": [
+        [
+          "aa",
+          "cc"
+        ]
+      ],
+      "labels": [],
+      "now": 0,
+      "keys": null,
+      "desc": null
+    },
+    {
+      "name": "outside-after",
+      "start": "dd",
+      "end": "",
+      "rules": true,
+      "placement": [
+        [
+          "aa",
+          "cc"
+        ]
+      ],
+      "labels": [],
+      "now": 0,
+      "keys": null,
+      "desc": null
+    },
+    {
+      "name": "open-end",
+      "start": "",
+      "end": "",
+      "rules": true,
+      "placement": [
+        [
+          "aa",
+          ""
+        ]
+      ],
+      "labels": [],
+      "now": 0,
+      "keys": [
+        "aa"
+      ],
+      "desc": "rule-split-region"
+    },
+    {
+      "name": "open-start",
+      "start": "",
+      "end": "",
+      "rules": true,
+      "placement": [
+        [
+          "",
+          "cc"
+        ]
+      ],
+      "labels": [],
+      "now": 0,
+      "keys": [
+        "cc"
+      ],
+      "desc": "rule-split-region"
+    },
+    {
+      "name": "whole-range-no-cut",
+      "start": "",
+      "end": "",
+      "rules": true,
+      "placement": [
+        [
+          "",
+          ""
+        ]
+      ],
+      "labels": [],
+      "now": 0,
+      "keys": null,
+      "desc": null
+    },
+    {
+      "name": "binary-lexicographic",
+      "start": "",
+      "end": "",
+      "rules": true,
+      "placement": [
+        [
+          "00ff",
+          "ff00"
+        ]
+      ],
+      "labels": [],
+      "now": 0,
+      "keys": [
+        "00ff",
+        "ff00"
+      ],
+      "desc": "rule-split-region"
+    },
+    {
+      "name": "labels-outside-fallback",
+      "start": "",
+      "end": "dd",
+      "rules": true,
+      "placement": [
+        [
+          "aa",
+          "cc"
+        ]
+      ],
+      "labels": [
+        [
+          "ee",
+          "ff"
+        ]
+      ],
+      "now": 0,
+      "keys": [
+        "aa",
+        "cc"
+      ],
+      "desc": "rule-split-region"
+    },
+    {
+      "name": "paused",
+      "start": "",
+      "end": "",
+      "rules": true,
+      "placement": [
+        [
+          "aa",
+          "cc"
+        ]
+      ],
+      "labels": [],
+      "now": 9,
+      "keys": null,
+      "desc": null,
+      "pause": 10
+    },
+    {
+      "name": "pause-equality",
+      "start": "",
+      "end": "",
+      "rules": true,
+      "placement": [
+        [
+          "aa",
+          "cc"
+        ]
+      ],
+      "labels": [],
+      "now": 10,
+      "keys": [
+        "aa",
+        "cc"
+      ],
+      "desc": "rule-split-region",
+      "pause": 10
+    },
+    {
+      "name": "resume",
+      "start": "",
+      "end": "",
+      "rules": true,
+      "placement": [
+        [
+          "aa",
+          "cc"
+        ]
+      ],
+      "labels": [],
+      "now": 0,
+      "keys": [
+        "aa",
+        "cc"
+      ],
+      "desc": "rule-split-region",
+      "pause": 0
+    },
+    {
+      "name": "joint-error",
+      "start": "",
+      "end": "",
+      "rules": true,
+      "placement": [
+        [
+          "aa",
+          "cc"
+        ]
+      ],
+      "labels": [],
+      "now": 0,
+      "keys": null,
+      "desc": null,
+      "joint": true,
+      "error": "OriginJoint"
+    },
+    {
+      "name": "joint-without-boundaries",
+      "start": "",
+      "end": "",
+      "rules": true,
+      "placement": [],
+      "labels": [],
+      "now": 0,
+      "keys": null,
+      "desc": null,
+      "joint": true
+    },
+    {
+      "name": "no-leader",
+      "start": "",
+      "end": "",
+      "rules": true,
+      "placement": [
+        [
+          "aa",
+          "cc"
+        ]
+      ],
+      "labels": [],
+      "now": 0,
+      "keys": [
+        "aa",
+        "cc"
+      ],
+      "desc": "rule-split-region",
+      "leader": false
+    }
+  ]
+}
