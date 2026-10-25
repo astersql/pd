@@ -1,0 +1,12 @@
+{
+  "command": [
+    "cargo",
+    "metadata",
+    "--format-version",
+    "1",
+    "--no-deps"
+  ],
+  "exit_code": 0,
+  "slot": 1,
+  "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+}

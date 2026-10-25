@@ -1,0 +1,39 @@
+{
+  "provenance": "Go source contract derived; not runtime differential",
+  "source_commit": "0dc510f1f",
+  "cases": [
+    {
+      "name": "move-limit",
+      "move": true,
+      "accounted_store": 4
+    },
+    {
+      "name": "move-skip-limit",
+      "move": true,
+      "skip": true,
+      "accounted_store": 4
+    },
+    {
+      "name": "same-layout",
+      "accounted_store": 1
+    },
+    {
+      "name": "allocation-failure",
+      "move": true,
+      "allocation_fail": true,
+      "accounted_store": 1
+    },
+    {
+      "name": "invalid-count",
+      "move": true,
+      "invalid": true,
+      "accounted_store": 1
+    },
+    {
+      "name": "missing-target-leader",
+      "move": true,
+      "no_leader": true,
+      "accounted_store": 1
+    }
+  ]
+}

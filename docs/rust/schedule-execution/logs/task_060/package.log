@@ -1,0 +1,21 @@
+   Compiling astersql-pd-schedule-scatter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/scatter)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.71s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_scatter-c4fa460c36bf5956)
+
+running 8 tests
+test task_060_test::task_060_accounting_boundaries ... ok
+test task_060_test::task_060_invalid_roles_and_identity ... ok
+test task_059_test::task_059_reserved_peer_keeps_its_role ... ok
+test task_060_test::task_060_behavior_cases ... ok
+test task_059_test::task_059_target_consumed_by_real_operator ... ok
+test task_059_test::task_059_planned_placement_is_refitted ... ok
+test task_059_test::task_059_behavior_cases ... ok
+test task_059_test::task_059_invalid_layout_and_fixed_order ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_schedule_scatter
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

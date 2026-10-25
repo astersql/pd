@@ -1,0 +1,10 @@
+{
+  "passed": 1532,
+  "failed": 0,
+  "ignored": 1,
+  "non_doc_passed": 1530,
+  "compile_fail_doctests": 2,
+  "task_060_tests": 3,
+  "task_060_scenarios": 14,
+  "package_tests": 8
+}

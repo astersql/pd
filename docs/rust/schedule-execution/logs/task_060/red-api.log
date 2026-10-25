@@ -1,0 +1,22 @@
+   Compiling astersql-pd-schedule-scatter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/scatter)
+error[E0425]: cannot find function `create_scatter_operator` in this scope
+  --> pkg/schedule/scatter/task_060_test.rs:41:22
+   |
+41 |         let result = create_scatter_operator(context, &region, &target, "g", case["skip"] == true, false, &mut counts, || {
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0433]: cannot find type `ScatterOperatorError` in this scope
+  --> pkg/schedule/scatter/task_060_test.rs:46:42
+   |
+46 |             assert!(matches!(result, Err(ScatterOperatorError::InvalidTarget)), "{name}");
+   |                                          ^^^^^^^^^^^^^^^^^^^^ use of undeclared type `ScatterOperatorError`
+
+error[E0433]: cannot find type `ScatterOperatorError` in this scope
+  --> pkg/schedule/scatter/task_060_test.rs:48:42
+   |
+48 |             assert!(matches!(result, Err(ScatterOperatorError::Build(BuilderError::Allocation(_)))), "{name}");
+   |                                          ^^^^^^^^^^^^^^^^^^^^ use of undeclared type `ScatterOperatorError`
+
+Some errors have detailed explanations: E0425, E0433.
+For more information about an error, try `rustc --explain E0425`.
+error: could not compile `astersql-pd-schedule-scatter` (lib test) due to 3 previous errors
