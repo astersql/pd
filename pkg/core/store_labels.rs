@@ -17,7 +17,8 @@ pub struct StoreLabel {
 }
 
 // Go EqualFold uses Unicode simple folding, not full folding (ß != ss).
-pub(crate) fn equal_fold(a: &str, b: &str) -> bool {
+/// Compare strings using Go-compatible Unicode simple folding.
+pub fn equal_fold(a: &str, b: &str) -> bool {
     fn fold(c: char) -> char {
         // Uppercase then lowercase closes simple-fold classes such as Greek
         // symbol variants and micro sign. Never expand a character to a string.

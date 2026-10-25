@@ -1,0 +1,62 @@
+[
+  {
+    "log": "red-compile.out",
+    "exit_code": 101,
+    "effective_tests": 0,
+    "reason": "Registered task_008 tests reference missing static-constraint APIs",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_008",
+      "--",
+      "--nocapture"
+    ],
+    "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "slot": 1
+  },
+  {
+    "log": "first-green.out",
+    "exit_code": 101,
+    "passed": 2,
+    "failed": 1,
+    "reason": "Test configuration omitted Go low-space ratio 0.8; fixed by explicitly constructing equivalent input, no production change",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_008",
+      "--",
+      "--nocapture"
+    ],
+    "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "slot": 1
+  },
+  {
+    "log": "green.out",
+    "exit_code": 0,
+    "passed": 3,
+    "failed": 0,
+    "oracle_cases": 131,
+    "reason": "First behavior pass before adding seven constructor fixtures; final validation uses all 138 cases",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_008",
+      "--",
+      "--nocapture"
+    ],
+    "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "slot": 1
+  }
+]

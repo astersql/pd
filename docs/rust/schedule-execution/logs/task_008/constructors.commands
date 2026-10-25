@@ -1,0 +1,26 @@
+break filters_test.go:464
+continue
+clearall
+config max-variable-recurse 1
+print "CASE constructors/131"
+call -unsafe NewIsolationFilter("task008", "zone", opt.GetLocationLabels(), testCluster.BasicCluster.StoresInfo.GetRegionStores(testCase.region)).Source(nil,testCluster.BasicCluster.StoresInfo.GetStore(1))
+call -unsafe NewIsolationFilter("task008", "zone", opt.GetLocationLabels(), testCluster.BasicCluster.StoresInfo.GetRegionStores(testCase.region)).Target(nil,testCluster.BasicCluster.StoresInfo.GetStore(1))
+print "CASE constructors/132"
+call -unsafe NewIsolationFilter("task008", "rack", opt.GetLocationLabels(), testCluster.BasicCluster.StoresInfo.GetRegionStores(testCase.region)).Source(nil,testCluster.BasicCluster.StoresInfo.GetStore(1))
+call -unsafe NewIsolationFilter("task008", "rack", opt.GetLocationLabels(), testCluster.BasicCluster.StoresInfo.GetRegionStores(testCase.region)).Target(nil,testCluster.BasicCluster.StoresInfo.GetStore(1))
+print "CASE constructors/133"
+call -unsafe NewIsolationFilter("task008", "host", opt.GetLocationLabels(), testCluster.BasicCluster.StoresInfo.GetRegionStores(testCase.region)).Source(nil,testCluster.BasicCluster.StoresInfo.GetStore(1))
+call -unsafe NewIsolationFilter("task008", "host", opt.GetLocationLabels(), testCluster.BasicCluster.StoresInfo.GetRegionStores(testCase.region)).Target(nil,testCluster.BasicCluster.StoresInfo.GetStore(1))
+print "CASE constructors/134"
+call -unsafe NewIsolationFilter("task008", "unknown", opt.GetLocationLabels(), testCluster.BasicCluster.StoresInfo.GetRegionStores(testCase.region)).Source(nil,testCluster.BasicCluster.StoresInfo.GetStore(1))
+call -unsafe NewIsolationFilter("task008", "unknown", opt.GetLocationLabels(), testCluster.BasicCluster.StoresInfo.GetRegionStores(testCase.region)).Target(nil,testCluster.BasicCluster.StoresInfo.GetStore(1))
+print "CASE constructors/135"
+call -unsafe NewIsolationFilter("task008", "", opt.GetLocationLabels(), testCluster.BasicCluster.StoresInfo.GetRegionStores(testCase.region)).Source(nil,testCluster.BasicCluster.StoresInfo.GetStore(1))
+call -unsafe NewIsolationFilter("task008", "", opt.GetLocationLabels(), testCluster.BasicCluster.StoresInfo.GetRegionStores(testCase.region)).Target(nil,testCluster.BasicCluster.StoresInfo.GetStore(1))
+print "CASE constructors/136"
+call -unsafe NewIsolationFilter("task008", "ZONE", opt.GetLocationLabels(), testCluster.BasicCluster.StoresInfo.GetRegionStores(testCase.region)).Source(nil,testCluster.BasicCluster.StoresInfo.GetStore(1))
+call -unsafe NewIsolationFilter("task008", "ZONE", opt.GetLocationLabels(), testCluster.BasicCluster.StoresInfo.GetRegionStores(testCase.region)).Target(nil,testCluster.BasicCluster.StoresInfo.GetStore(1))
+print "CASE constructors/137"
+call -unsafe NewIsolationFilter("task008", "", nil, nil).Source(nil,testCluster.BasicCluster.StoresInfo.GetStore(1))
+call -unsafe NewIsolationFilter("task008", "", nil, nil).Target(nil,testCluster.BasicCluster.StoresInfo.GetStore(1))
+exit

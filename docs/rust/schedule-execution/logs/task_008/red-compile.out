@@ -1,0 +1,88 @@
+   Compiling astersql-pd-schedule-filter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter)
+error[E0433]: cannot find type `StorageThresholdFilter` in this scope
+  --> pkg/schedule/filter/task_008_test.rs:51:32
+   |
+51 |         "storage" => (Box::new(StorageThresholdFilter::new("task008")), 1),
+   |                                ^^^^^^^^^^^^^^^^^^^^^^ use of undeclared type `StorageThresholdFilter`
+
+error[E0433]: cannot find type `EngineFilter` in this scope
+  --> pkg/schedule/filter/task_008_test.rs:53:22
+   |
+53 |             Box::new(EngineFilter::new(
+   |                      ^^^^^^^^^^^^ use of undeclared type `EngineFilter`
+
+error[E0425]: cannot find function `special_engines` in this scope
+  --> pkg/schedule/filter/task_008_test.rs:56:21
+   |
+56 |                     special_engines()
+   |                     ^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `not_special_engines` in this scope
+  --> pkg/schedule/filter/task_008_test.rs:58:21
+   |
+58 |                     not_special_engines()
+   |                     ^^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0433]: cannot find type `HotRegionEvictedTargetFilter` in this scope
+  --> pkg/schedule/filter/task_008_test.rs:63:28
+   |
+63 |         "hot" => (Box::new(HotRegionEvictedTargetFilter::new("task008")), 9),
+   |                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ use of undeclared type `HotRegionEvictedTargetFilter`
+
+error[E0433]: cannot find type `SpecialUseFilter` in this scope
+  --> pkg/schedule/filter/task_008_test.rs:66:23
+   |
+66 |             (Box::new(SpecialUseFilter::new("task008", &allow)), 7)
+   |                       ^^^^^^^^^^^^^^^^ use of undeclared type `SpecialUseFilter`
+
+error[E0433]: cannot find type `LabelConstraintFilter` in this scope
+  --> pkg/schedule/filter/task_008_test.rs:71:23
+   |
+71 |             (Box::new(LabelConstraintFilter::new("task008", cs)), 3)
+   |                       ^^^^^^^^^^^^^^^^^^^^^ use of undeclared type `LabelConstraintFilter`
+   |
+help: a struct with a similar name exists
+   |
+71 -             (Box::new(LabelConstraintFilter::new("task008", cs)), 3)
+71 +             (Box::new(LabelConstraint::new("task008", cs)), 3)
+   |
+
+error[E0433]: cannot find type `IsolationFilter` in this scope
+  --> pkg/schedule/filter/task_008_test.rs:87:26
+   |
+87 |                 Box::new(IsolationFilter::new(
+   |                          ^^^^^^^^^^^^^^^ use of undeclared type `IsolationFilter`
+
+error[E0433]: cannot find type `StorageThresholdFilter` in this scope
+   --> pkg/schedule/filter/task_008_test.rs:150:20
+    |
+150 |     let capacity = StorageThresholdFilter::new("chain");
+    |                    ^^^^^^^^^^^^^^^^^^^^^^ use of undeclared type `StorageThresholdFilter`
+
+error[E0433]: cannot find type `IsolationFilter` in this scope
+   --> pkg/schedule/filter/task_008_test.rs:170:19
+    |
+170 |         let iso = IsolationFilter::new("scope", level, locations.clone(), &[&region]);
+    |                   ^^^^^^^^^^^^^^^ use of undeclared type `IsolationFilter`
+
+error[E0433]: cannot find type `IsolationFilter` in this scope
+   --> pkg/schedule/filter/task_008_test.rs:174:15
+    |
+174 |     let iso = IsolationFilter::new("scope", "", vec![], &[]);
+    |               ^^^^^^^^^^^^^^^ use of undeclared type `IsolationFilter`
+
+error[E0433]: cannot find type `SpecialUseFilter` in this scope
+   --> pkg/schedule/filter/task_008_test.rs:176:19
+    |
+176 |     let special = SpecialUseFilter::new(
+    |                   ^^^^^^^^^^^^^^^^ use of undeclared type `SpecialUseFilter`
+
+error[E0433]: cannot find type `IsolationFilter` in this scope
+   --> pkg/schedule/filter/task_008_test.rs:191:13
+    |
+191 |     let _ = IsolationFilter::new("scope", "", vec![], &[&s]);
+    |             ^^^^^^^^^^^^^^^ use of undeclared type `IsolationFilter`
+
+Some errors have detailed explanations: E0425, E0433.
+For more information about an error, try `rustc --explain E0425`.
+error: could not compile `astersql-pd-schedule-filter` (lib test) due to 13 previous errors

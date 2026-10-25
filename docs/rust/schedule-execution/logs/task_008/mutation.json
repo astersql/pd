@@ -1,0 +1,104 @@
+[
+  {
+    "name": "capacity-bypass",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_008",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "passed": 1,
+    "failed": 2
+  },
+  {
+    "name": "label-bypass",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_008",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "passed": 2,
+    "failed": 1
+  },
+  {
+    "name": "engine-inverted",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_008",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "passed": 2,
+    "failed": 1
+  },
+  {
+    "name": "special-source-no-evacuation",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_008",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "passed": 2,
+    "failed": 1
+  },
+  {
+    "name": "isolation-case-sensitive",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_008",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "passed": 2,
+    "failed": 1
+  },
+  {
+    "name": "hot-stopping-bypass",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_008",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "passed": 2,
+    "failed": 1
+  }
+]

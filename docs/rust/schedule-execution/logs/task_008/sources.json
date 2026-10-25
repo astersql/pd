@@ -1,0 +1,34 @@
+[
+  {
+    "path": "pkg/schedule/filter/filters.go",
+    "sha256": "2e72100da29ddac7d371c59898ef10a562cda9bf4eec666cc4e4e0c7c8edc0a4"
+  },
+  {
+    "path": "pkg/schedule/filter/filters_test.go",
+    "sha256": "7675a55b6d20d983416b5b0d0e215fa0e1033f5dfc0367f73c0e73f7e9f52e05"
+  },
+  {
+    "path": "pkg/schedule/filter/counter.go",
+    "sha256": "a291b8960207ce0af627bf83bcd2730043c969520d1804caef8a788ef7e2c809"
+  },
+  {
+    "path": "pkg/schedule/filter/candidates_test.go",
+    "sha256": "f40241c4defd8b264abfe01f042352d3703602814331fd89b5c5c2c285622ed0"
+  },
+  {
+    "path": "pkg/core/store.go",
+    "sha256": "686a3bd66c7deceb3fd79b2c83be359487088993d20e649ba2a533db298ad605"
+  },
+  {
+    "path": "pkg/schedule/placement/label_constraint.go",
+    "sha256": "335872cd9d2add785207e4d3d8e5cfe4a64d1ef8badc847fed904da797db7982"
+  },
+  {
+    "path": "pkg/mock/mockcluster/mockcluster.go",
+    "sha256": "7e93c4a25b9ab59449a4323a9595caec8e94081f787ff00ca1c0a0ace5b5ea48"
+  },
+  {
+    "path": "pkg/utils/testutil/leak.go",
+    "sha256": "a269d3582084e8676a46b10299f377752ae7f831a456effcc05c0df6f31836ca"
+  }
+]

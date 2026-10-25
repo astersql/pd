@@ -1,0 +1,167 @@
+break filters.go:655
+continue
+clearall
+config max-variable-recurse 1
+call -unsafe store.meta.Labels[0].Key = "id"
+call -unsafe store.meta.Labels[0].Value = "1"
+call -unsafe f.constraints[0].Op = "in"
+print "CASE labels/058"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe f.constraints[0].Op = "notIn"
+print "CASE labels/059"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe f.constraints[0].Op = "exists"
+print "CASE labels/060"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe f.constraints[0].Op = "notExists"
+print "CASE labels/061"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe f.constraints[0].Op = "invalid"
+print "CASE labels/062"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe store.meta.Labels[0].Key = "ID"
+call -unsafe store.meta.Labels[0].Value = "1"
+call -unsafe f.constraints[0].Op = "in"
+print "CASE labels/063"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe f.constraints[0].Op = "notIn"
+print "CASE labels/064"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe f.constraints[0].Op = "exists"
+print "CASE labels/065"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe f.constraints[0].Op = "notExists"
+print "CASE labels/066"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe f.constraints[0].Op = "invalid"
+print "CASE labels/067"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe store.meta.Labels[0].Key = "id"
+call -unsafe store.meta.Labels[0].Value = "2"
+call -unsafe f.constraints[0].Op = "in"
+print "CASE labels/068"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe f.constraints[0].Op = "notIn"
+print "CASE labels/069"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe f.constraints[0].Op = "exists"
+print "CASE labels/070"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe f.constraints[0].Op = "notExists"
+print "CASE labels/071"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe f.constraints[0].Op = "invalid"
+print "CASE labels/072"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe store.meta.Labels[0].Key = "id"
+call -unsafe store.meta.Labels[0].Value = ""
+call -unsafe f.constraints[0].Op = "in"
+print "CASE labels/073"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe f.constraints[0].Op = "notIn"
+print "CASE labels/074"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe f.constraints[0].Op = "exists"
+print "CASE labels/075"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe f.constraints[0].Op = "notExists"
+print "CASE labels/076"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe f.constraints[0].Op = "invalid"
+print "CASE labels/077"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe store.meta.Labels[0].Key = "engine"
+call -unsafe store.meta.Labels[0].Value = "tikv"
+call -unsafe f.constraints[0].Op = "in"
+print "CASE labels/078"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe f.constraints[0].Op = "notIn"
+print "CASE labels/079"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe f.constraints[0].Op = "exists"
+print "CASE labels/080"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe f.constraints[0].Op = "notExists"
+print "CASE labels/081"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe f.constraints[0].Op = "invalid"
+print "CASE labels/082"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe store.meta.Labels[0].Key = "$x"
+call -unsafe store.meta.Labels[0].Value = "1"
+call -unsafe f.constraints[0].Op = "in"
+print "CASE labels/083"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe f.constraints[0].Op = "notIn"
+print "CASE labels/084"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe f.constraints[0].Op = "exists"
+print "CASE labels/085"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe f.constraints[0].Op = "notExists"
+print "CASE labels/086"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe f.constraints[0].Op = "invalid"
+print "CASE labels/087"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe store.meta.Labels[0].Key = "exclusive"
+call -unsafe store.meta.Labels[0].Value = "1"
+call -unsafe f.constraints[0].Op = "in"
+print "CASE labels/088"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe f.constraints[0].Op = "notIn"
+print "CASE labels/089"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe f.constraints[0].Op = "exists"
+print "CASE labels/090"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe f.constraints[0].Op = "notExists"
+print "CASE labels/091"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe f.constraints[0].Op = "invalid"
+print "CASE labels/092"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+set f.constraints = f.constraints[:0]
+print "CASE labels/093"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+set store.meta.Labels = store.meta.Labels[:0]
+print "CASE labels/094"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+exit

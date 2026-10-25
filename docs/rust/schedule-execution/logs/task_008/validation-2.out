@@ -1,0 +1,27 @@
+   Compiling astersql-pd-schedule-filter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.72s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_filter-1ebb194760ed8e1f)
+
+running 14 tests
+test task_005_test::task_005_order_and_boundaries ... ok
+test task_006_test::task_006_boundaries_and_filter_chain ... ok
+test task_005_test::task_005_collector_resource_fault ... ok
+test task_005_test::task_005_behavior_cases ... ok
+test task_008_test::task_008_invalid_isolation_locations_fault - should panic ... ok
+test task_006_test::task_006_random_replay_and_faults ... ok
+test task_006_test::task_006_behavior_cases ... ok
+test task_008_test::task_008_chain_and_constructor_boundaries ... ok
+test task_008_test::task_008_behavior_cases ... ok
+test task_007_test::task_007_collector_resource_fault - should panic ... ok
+test task_007_test::task_007_nil_limiter_fault - should panic ... ok
+test task_007_test::task_007_async_chain_and_diagnostics ... ok
+test task_007_test::task_007_clock_budget_and_boundaries ... ok
+test task_007_test::task_007_behavior_cases ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+   Doc-tests astersql_pd_schedule_filter
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

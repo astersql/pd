@@ -1,0 +1,6 @@
+break filters_test.go:464
+continue
+clearall
+config max-variable-recurse 2
+call NewIsolationFilter("task008", "", nil, testCluster.BasicCluster.StoresInfo.GetRegionStores(testCase.region))
+exit

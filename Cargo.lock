@@ -452,6 +452,7 @@ dependencies = [
  "astersql-pd-core-constant",
  "astersql-pd-schedule-config",
  "astersql-pd-schedule-plan",
+ "astersql-pd-schedule-placement",
  "astersql-pd-storelimit",
  "serde_json",
  "tokio",

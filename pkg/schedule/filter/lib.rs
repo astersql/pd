@@ -19,3 +19,10 @@ pub use store_state::*;
 #[cfg(test)]
 #[path = "task_007_test.rs"]
 mod task_007_test;
+
+#[cfg(test)]
+#[path = "task_008_test.rs"]
+mod task_008_test;
+
+mod store_constraints;
+pub use store_constraints::*;

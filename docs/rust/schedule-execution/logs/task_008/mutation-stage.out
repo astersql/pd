@@ -1,0 +1,8 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=python3 docs/rust/schedule-execution/logs/task_008/mutation.py
+capacity-bypass rejected
+label-bypass rejected
+engine-inverted rejected
+special-source-no-evacuation rejected
+isolation-case-sensitive rejected
+hot-stopping-bypass rejected
+command_exit_code=0

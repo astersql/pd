@@ -1,0 +1,12 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "dependency_commit": "c6de386d2",
+  "binaries": {
+    "filter.test": "ea96e2e54834ad026432b60327b63e986d8a388d4c580c41137ab7e0fd1dba53",
+    "checker.test": "b99f75075671504c659eae703cbdeb291fa07676f5109307871747d50f89bd8c",
+    "dlv": "dcd0463a4350f0660412f5c766d31077370eec10ac8055cf0d786377e0d6340e",
+    "schedulers.test": "be084116f4781d659008fca257645da66f10f59fc424db02a2655c2f293b9f3f"
+  },
+  "safety": "Reuse readonly binaries; selected filter TestMain, test setup and assertion paths inspected: no selected assertions require failpoint injection. No Go build, generation or source rewrite.",
+  "normalization": "Retain source/target status code and detailed reason; omit debugger pointers, frames and log timestamps only. Domain inputs recorded verbatim. API probes stop before altered whole-test assertions; safe-tests is a separate unmodified complete run."
+}

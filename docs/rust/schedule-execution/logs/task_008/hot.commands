@@ -1,0 +1,53 @@
+break filters.go:626
+continue
+clearall
+config max-variable-recurse 1
+set store.slowStoreEvicted.v = 0
+set store.stoppingStoreEvicted.v = 0
+set store.slowTrendEvicted.v = 0
+print "CASE hot/050"
+call -unsafe NewHotRegionEvictedTargetFilter("task008").Source(nil,store)
+call -unsafe NewHotRegionEvictedTargetFilter("task008").Target(nil,store)
+set store.slowStoreEvicted.v = 1
+set store.stoppingStoreEvicted.v = 0
+set store.slowTrendEvicted.v = 0
+print "CASE hot/051"
+call -unsafe NewHotRegionEvictedTargetFilter("task008").Source(nil,store)
+call -unsafe NewHotRegionEvictedTargetFilter("task008").Target(nil,store)
+set store.slowStoreEvicted.v = 0
+set store.stoppingStoreEvicted.v = 1
+set store.slowTrendEvicted.v = 0
+print "CASE hot/052"
+call -unsafe NewHotRegionEvictedTargetFilter("task008").Source(nil,store)
+call -unsafe NewHotRegionEvictedTargetFilter("task008").Target(nil,store)
+set store.slowStoreEvicted.v = 1
+set store.stoppingStoreEvicted.v = 1
+set store.slowTrendEvicted.v = 0
+print "CASE hot/053"
+call -unsafe NewHotRegionEvictedTargetFilter("task008").Source(nil,store)
+call -unsafe NewHotRegionEvictedTargetFilter("task008").Target(nil,store)
+set store.slowStoreEvicted.v = 0
+set store.stoppingStoreEvicted.v = 0
+set store.slowTrendEvicted.v = 1
+print "CASE hot/054"
+call -unsafe NewHotRegionEvictedTargetFilter("task008").Source(nil,store)
+call -unsafe NewHotRegionEvictedTargetFilter("task008").Target(nil,store)
+set store.slowStoreEvicted.v = 1
+set store.stoppingStoreEvicted.v = 0
+set store.slowTrendEvicted.v = 1
+print "CASE hot/055"
+call -unsafe NewHotRegionEvictedTargetFilter("task008").Source(nil,store)
+call -unsafe NewHotRegionEvictedTargetFilter("task008").Target(nil,store)
+set store.slowStoreEvicted.v = 0
+set store.stoppingStoreEvicted.v = 1
+set store.slowTrendEvicted.v = 1
+print "CASE hot/056"
+call -unsafe NewHotRegionEvictedTargetFilter("task008").Source(nil,store)
+call -unsafe NewHotRegionEvictedTargetFilter("task008").Target(nil,store)
+set store.slowStoreEvicted.v = 1
+set store.stoppingStoreEvicted.v = 1
+set store.slowTrendEvicted.v = 1
+print "CASE hot/057"
+call -unsafe NewHotRegionEvictedTargetFilter("task008").Source(nil,store)
+call -unsafe NewHotRegionEvictedTargetFilter("task008").Target(nil,store)
+exit

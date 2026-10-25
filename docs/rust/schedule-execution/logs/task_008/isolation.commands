@@ -1,0 +1,98 @@
+break filters.go:1035
+continue
+clearall
+config max-variable-recurse 1
+print f
+print store.meta.Labels
+call -unsafe store.meta.Labels[0].Key = "zone"
+call -unsafe store.meta.Labels[1].Key = "rack"
+call -unsafe store.meta.Labels[2].Key = "host"
+call -unsafe store.meta.Labels[1].Value = "r1"
+call -unsafe store.meta.Labels[2].Value = "h1"
+call -unsafe store.meta.Labels[0].Value = "z1"
+print "CASE isolation/095"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe store.meta.Labels[0].Value = "Z1"
+print "CASE isolation/096"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe store.meta.Labels[0].Value = "z2"
+print "CASE isolation/097"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe store.meta.Labels[0].Value = "z3"
+print "CASE isolation/098"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe store.meta.Labels[0].Value = ""
+print "CASE isolation/099"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe store.meta.Labels[0].Value = "K"
+print "CASE isolation/100"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe store.meta.Labels[0].Value = "k"
+print "CASE isolation/101"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe store.meta.Labels[0].Value = "Σ"
+print "CASE isolation/102"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe store.meta.Labels[0].Value = "ς"
+print "CASE isolation/103"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe store.meta.Labels[0].Value = "ß"
+print "CASE isolation/104"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe store.meta.Labels[0].Value = "ss"
+print "CASE isolation/105"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe store.meta.Labels[0].Value = "İ"
+print "CASE isolation/106"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe store.meta.Labels[0].Value = "i"
+print "CASE isolation/107"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe f.constraintSet[0][0] = "K"
+call -unsafe store.meta.Labels[0].Value = "k"
+print "CASE isolation/108"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe f.constraintSet[0][0] = "Σ"
+call -unsafe store.meta.Labels[0].Value = "ς"
+print "CASE isolation/109"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe f.constraintSet[0][0] = "ß"
+call -unsafe store.meta.Labels[0].Value = "ss"
+print "CASE isolation/110"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe f.constraintSet[0][0] = "İ"
+call -unsafe store.meta.Labels[0].Value = "i"
+print "CASE isolation/111"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe f.constraintSet[0][0] = ""
+call -unsafe store.meta.Labels[0].Value = ""
+print "CASE isolation/112"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe f.constraintSet[0][0] = ""
+call -unsafe store.meta.Labels[0].Value = "z3"
+print "CASE isolation/113"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+set f.constraintSet = f.constraintSet[:0]
+print "CASE isolation/114"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+exit

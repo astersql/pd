@@ -1,0 +1,273 @@
+break filters.go:498
+continue
+clearall
+config max-variable-recurse 1
+call conf.GetLowSpaceRatio()
+set store.storeStats.rawStats.Capacity = 0
+set store.storeStats.rawStats.Available = 0
+set store.regionCount = 100
+print "CASE constraints/000"
+call -unsafe filter.NewStorageThresholdFilter("task008").Source(conf,store)
+call -unsafe filter.NewStorageThresholdFilter("task008").Target(conf,store)
+set store.storeStats.rawStats.Capacity = 1000
+set store.storeStats.rawStats.Available = 199
+set store.regionCount = 100
+print "CASE constraints/001"
+call -unsafe filter.NewStorageThresholdFilter("task008").Source(conf,store)
+call -unsafe filter.NewStorageThresholdFilter("task008").Target(conf,store)
+set store.storeStats.rawStats.Capacity = 1000
+set store.storeStats.rawStats.Available = 200
+set store.regionCount = 100
+print "CASE constraints/002"
+call -unsafe filter.NewStorageThresholdFilter("task008").Source(conf,store)
+call -unsafe filter.NewStorageThresholdFilter("task008").Target(conf,store)
+set store.storeStats.rawStats.Capacity = 1000
+set store.storeStats.rawStats.Available = 201
+set store.regionCount = 100
+print "CASE constraints/003"
+call -unsafe filter.NewStorageThresholdFilter("task008").Source(conf,store)
+call -unsafe filter.NewStorageThresholdFilter("task008").Target(conf,store)
+set store.storeStats.rawStats.Capacity = 107374182400
+set store.storeStats.rawStats.Available = 8589934591
+set store.regionCount = 99
+print "CASE constraints/004"
+call -unsafe filter.NewStorageThresholdFilter("task008").Source(conf,store)
+call -unsafe filter.NewStorageThresholdFilter("task008").Target(conf,store)
+set store.storeStats.rawStats.Capacity = 107374182400
+set store.storeStats.rawStats.Available = 8589934592
+set store.regionCount = 99
+print "CASE constraints/005"
+call -unsafe filter.NewStorageThresholdFilter("task008").Source(conf,store)
+call -unsafe filter.NewStorageThresholdFilter("task008").Target(conf,store)
+set store.storeStats.rawStats.Capacity = 107374182400
+set store.storeStats.rawStats.Available = 8589934593
+set store.regionCount = 99
+print "CASE constraints/006"
+call -unsafe filter.NewStorageThresholdFilter("task008").Source(conf,store)
+call -unsafe filter.NewStorageThresholdFilter("task008").Target(conf,store)
+set store.storeStats.rawStats.Capacity = 107374182400
+set store.storeStats.rawStats.Available = 8589934593
+set store.regionCount = 100
+print "CASE constraints/007"
+call -unsafe filter.NewStorageThresholdFilter("task008").Source(conf,store)
+call -unsafe filter.NewStorageThresholdFilter("task008").Target(conf,store)
+set store.storeStats.rawStats.Capacity = 1000
+set store.storeStats.rawStats.Available = 0
+set store.regionCount = 0
+print "CASE constraints/008"
+call -unsafe filter.NewStorageThresholdFilter("task008").Source(conf,store)
+call -unsafe filter.NewStorageThresholdFilter("task008").Target(conf,store)
+set store.storeStats.rawStats.Capacity = 1000
+set store.storeStats.rawStats.Available = 1001
+set store.regionCount = 100
+print "CASE constraints/009"
+call -unsafe filter.NewStorageThresholdFilter("task008").Source(conf,store)
+call -unsafe filter.NewStorageThresholdFilter("task008").Target(conf,store)
+set store.storeStats.rawStats.Capacity = 107374182400
+set store.storeStats.rawStats.Available = 107374182400
+set store.regionCount = 100
+call -unsafe store.meta.Labels[0].Key = "engine"
+call -unsafe store.meta.Labels[0].Value = "tiflash"
+call -unsafe filter.NotSpecialEngines.Op = "in"
+print "CASE constraints/010"
+call -unsafe filter.NewEngineFilter("task008", filter.NotSpecialEngines).Source(conf,store)
+call -unsafe filter.NewEngineFilter("task008", filter.NotSpecialEngines).Target(conf,store)
+call -unsafe filter.NotSpecialEngines.Op = "notIn"
+print "CASE constraints/011"
+call -unsafe filter.NewEngineFilter("task008", filter.NotSpecialEngines).Source(conf,store)
+call -unsafe filter.NewEngineFilter("task008", filter.NotSpecialEngines).Target(conf,store)
+call -unsafe store.meta.Labels[0].Key = "engine"
+call -unsafe store.meta.Labels[0].Value = "tikv"
+call -unsafe filter.NotSpecialEngines.Op = "in"
+print "CASE constraints/012"
+call -unsafe filter.NewEngineFilter("task008", filter.NotSpecialEngines).Source(conf,store)
+call -unsafe filter.NewEngineFilter("task008", filter.NotSpecialEngines).Target(conf,store)
+call -unsafe filter.NotSpecialEngines.Op = "notIn"
+print "CASE constraints/013"
+call -unsafe filter.NewEngineFilter("task008", filter.NotSpecialEngines).Source(conf,store)
+call -unsafe filter.NewEngineFilter("task008", filter.NotSpecialEngines).Target(conf,store)
+call -unsafe store.meta.Labels[0].Key = "engine"
+call -unsafe store.meta.Labels[0].Value = ""
+call -unsafe filter.NotSpecialEngines.Op = "in"
+print "CASE constraints/014"
+call -unsafe filter.NewEngineFilter("task008", filter.NotSpecialEngines).Source(conf,store)
+call -unsafe filter.NewEngineFilter("task008", filter.NotSpecialEngines).Target(conf,store)
+call -unsafe filter.NotSpecialEngines.Op = "notIn"
+print "CASE constraints/015"
+call -unsafe filter.NewEngineFilter("task008", filter.NotSpecialEngines).Source(conf,store)
+call -unsafe filter.NewEngineFilter("task008", filter.NotSpecialEngines).Target(conf,store)
+call -unsafe store.meta.Labels[0].Key = "engine"
+call -unsafe store.meta.Labels[0].Value = "TiFlash"
+call -unsafe filter.NotSpecialEngines.Op = "in"
+print "CASE constraints/016"
+call -unsafe filter.NewEngineFilter("task008", filter.NotSpecialEngines).Source(conf,store)
+call -unsafe filter.NewEngineFilter("task008", filter.NotSpecialEngines).Target(conf,store)
+call -unsafe filter.NotSpecialEngines.Op = "notIn"
+print "CASE constraints/017"
+call -unsafe filter.NewEngineFilter("task008", filter.NotSpecialEngines).Source(conf,store)
+call -unsafe filter.NewEngineFilter("task008", filter.NotSpecialEngines).Target(conf,store)
+call -unsafe store.meta.Labels[0].Key = "engine"
+call -unsafe store.meta.Labels[0].Value = "unknown"
+call -unsafe filter.NotSpecialEngines.Op = "in"
+print "CASE constraints/018"
+call -unsafe filter.NewEngineFilter("task008", filter.NotSpecialEngines).Source(conf,store)
+call -unsafe filter.NewEngineFilter("task008", filter.NotSpecialEngines).Target(conf,store)
+call -unsafe filter.NotSpecialEngines.Op = "notIn"
+print "CASE constraints/019"
+call -unsafe filter.NewEngineFilter("task008", filter.NotSpecialEngines).Source(conf,store)
+call -unsafe filter.NewEngineFilter("task008", filter.NotSpecialEngines).Target(conf,store)
+call -unsafe store.meta.Labels[0].Key = "specialUse"
+call -unsafe store.meta.Labels[0].Value = ""
+set store.storeStats.rawStats.Capacity = 107374182400
+set store.storeStats.rawStats.Available = 107374182400
+set store.regionCount = 100
+print "CASE constraints/020"
+call -unsafe filter.NewSpecialUseFilter("task008", nil).Source(conf,store)
+call -unsafe filter.NewSpecialUseFilter("task008", nil).Target(conf,store)
+call -unsafe filter.NotSpecialEngines.Values[0] = "reserved"
+print "CASE constraints/021"
+call -unsafe filter.NewSpecialUseFilter("task008", filter.NotSpecialEngines.Values).Source(conf,store)
+call -unsafe filter.NewSpecialUseFilter("task008", filter.NotSpecialEngines.Values).Target(conf,store)
+call -unsafe filter.NotSpecialEngines.Values[0] = "hotRegion"
+print "CASE constraints/022"
+call -unsafe filter.NewSpecialUseFilter("task008", filter.NotSpecialEngines.Values).Source(conf,store)
+call -unsafe filter.NewSpecialUseFilter("task008", filter.NotSpecialEngines.Values).Target(conf,store)
+set store.storeStats.rawStats.Capacity = 107374182400
+set store.storeStats.rawStats.Available = 0
+set store.regionCount = 100
+print "CASE constraints/023"
+call -unsafe filter.NewSpecialUseFilter("task008", nil).Source(conf,store)
+call -unsafe filter.NewSpecialUseFilter("task008", nil).Target(conf,store)
+call -unsafe filter.NotSpecialEngines.Values[0] = "reserved"
+print "CASE constraints/024"
+call -unsafe filter.NewSpecialUseFilter("task008", filter.NotSpecialEngines.Values).Source(conf,store)
+call -unsafe filter.NewSpecialUseFilter("task008", filter.NotSpecialEngines.Values).Target(conf,store)
+call -unsafe filter.NotSpecialEngines.Values[0] = "hotRegion"
+print "CASE constraints/025"
+call -unsafe filter.NewSpecialUseFilter("task008", filter.NotSpecialEngines.Values).Source(conf,store)
+call -unsafe filter.NewSpecialUseFilter("task008", filter.NotSpecialEngines.Values).Target(conf,store)
+call -unsafe store.meta.Labels[0].Key = "specialUse"
+call -unsafe store.meta.Labels[0].Value = "hotRegion"
+set store.storeStats.rawStats.Capacity = 107374182400
+set store.storeStats.rawStats.Available = 107374182400
+set store.regionCount = 100
+print "CASE constraints/026"
+call -unsafe filter.NewSpecialUseFilter("task008", nil).Source(conf,store)
+call -unsafe filter.NewSpecialUseFilter("task008", nil).Target(conf,store)
+call -unsafe filter.NotSpecialEngines.Values[0] = "reserved"
+print "CASE constraints/027"
+call -unsafe filter.NewSpecialUseFilter("task008", filter.NotSpecialEngines.Values).Source(conf,store)
+call -unsafe filter.NewSpecialUseFilter("task008", filter.NotSpecialEngines.Values).Target(conf,store)
+call -unsafe filter.NotSpecialEngines.Values[0] = "hotRegion"
+print "CASE constraints/028"
+call -unsafe filter.NewSpecialUseFilter("task008", filter.NotSpecialEngines.Values).Source(conf,store)
+call -unsafe filter.NewSpecialUseFilter("task008", filter.NotSpecialEngines.Values).Target(conf,store)
+set store.storeStats.rawStats.Capacity = 107374182400
+set store.storeStats.rawStats.Available = 0
+set store.regionCount = 100
+print "CASE constraints/029"
+call -unsafe filter.NewSpecialUseFilter("task008", nil).Source(conf,store)
+call -unsafe filter.NewSpecialUseFilter("task008", nil).Target(conf,store)
+call -unsafe filter.NotSpecialEngines.Values[0] = "reserved"
+print "CASE constraints/030"
+call -unsafe filter.NewSpecialUseFilter("task008", filter.NotSpecialEngines.Values).Source(conf,store)
+call -unsafe filter.NewSpecialUseFilter("task008", filter.NotSpecialEngines.Values).Target(conf,store)
+call -unsafe filter.NotSpecialEngines.Values[0] = "hotRegion"
+print "CASE constraints/031"
+call -unsafe filter.NewSpecialUseFilter("task008", filter.NotSpecialEngines.Values).Source(conf,store)
+call -unsafe filter.NewSpecialUseFilter("task008", filter.NotSpecialEngines.Values).Target(conf,store)
+call -unsafe store.meta.Labels[0].Key = "specialUse"
+call -unsafe store.meta.Labels[0].Value = "reserved"
+set store.storeStats.rawStats.Capacity = 107374182400
+set store.storeStats.rawStats.Available = 107374182400
+set store.regionCount = 100
+print "CASE constraints/032"
+call -unsafe filter.NewSpecialUseFilter("task008", nil).Source(conf,store)
+call -unsafe filter.NewSpecialUseFilter("task008", nil).Target(conf,store)
+call -unsafe filter.NotSpecialEngines.Values[0] = "reserved"
+print "CASE constraints/033"
+call -unsafe filter.NewSpecialUseFilter("task008", filter.NotSpecialEngines.Values).Source(conf,store)
+call -unsafe filter.NewSpecialUseFilter("task008", filter.NotSpecialEngines.Values).Target(conf,store)
+call -unsafe filter.NotSpecialEngines.Values[0] = "hotRegion"
+print "CASE constraints/034"
+call -unsafe filter.NewSpecialUseFilter("task008", filter.NotSpecialEngines.Values).Source(conf,store)
+call -unsafe filter.NewSpecialUseFilter("task008", filter.NotSpecialEngines.Values).Target(conf,store)
+set store.storeStats.rawStats.Capacity = 107374182400
+set store.storeStats.rawStats.Available = 0
+set store.regionCount = 100
+print "CASE constraints/035"
+call -unsafe filter.NewSpecialUseFilter("task008", nil).Source(conf,store)
+call -unsafe filter.NewSpecialUseFilter("task008", nil).Target(conf,store)
+call -unsafe filter.NotSpecialEngines.Values[0] = "reserved"
+print "CASE constraints/036"
+call -unsafe filter.NewSpecialUseFilter("task008", filter.NotSpecialEngines.Values).Source(conf,store)
+call -unsafe filter.NewSpecialUseFilter("task008", filter.NotSpecialEngines.Values).Target(conf,store)
+call -unsafe filter.NotSpecialEngines.Values[0] = "hotRegion"
+print "CASE constraints/037"
+call -unsafe filter.NewSpecialUseFilter("task008", filter.NotSpecialEngines.Values).Source(conf,store)
+call -unsafe filter.NewSpecialUseFilter("task008", filter.NotSpecialEngines.Values).Target(conf,store)
+call -unsafe store.meta.Labels[0].Key = "specialUse"
+call -unsafe store.meta.Labels[0].Value = "unknown"
+set store.storeStats.rawStats.Capacity = 107374182400
+set store.storeStats.rawStats.Available = 107374182400
+set store.regionCount = 100
+print "CASE constraints/038"
+call -unsafe filter.NewSpecialUseFilter("task008", nil).Source(conf,store)
+call -unsafe filter.NewSpecialUseFilter("task008", nil).Target(conf,store)
+call -unsafe filter.NotSpecialEngines.Values[0] = "reserved"
+print "CASE constraints/039"
+call -unsafe filter.NewSpecialUseFilter("task008", filter.NotSpecialEngines.Values).Source(conf,store)
+call -unsafe filter.NewSpecialUseFilter("task008", filter.NotSpecialEngines.Values).Target(conf,store)
+call -unsafe filter.NotSpecialEngines.Values[0] = "hotRegion"
+print "CASE constraints/040"
+call -unsafe filter.NewSpecialUseFilter("task008", filter.NotSpecialEngines.Values).Source(conf,store)
+call -unsafe filter.NewSpecialUseFilter("task008", filter.NotSpecialEngines.Values).Target(conf,store)
+set store.storeStats.rawStats.Capacity = 107374182400
+set store.storeStats.rawStats.Available = 0
+set store.regionCount = 100
+print "CASE constraints/041"
+call -unsafe filter.NewSpecialUseFilter("task008", nil).Source(conf,store)
+call -unsafe filter.NewSpecialUseFilter("task008", nil).Target(conf,store)
+call -unsafe filter.NotSpecialEngines.Values[0] = "reserved"
+print "CASE constraints/042"
+call -unsafe filter.NewSpecialUseFilter("task008", filter.NotSpecialEngines.Values).Source(conf,store)
+call -unsafe filter.NewSpecialUseFilter("task008", filter.NotSpecialEngines.Values).Target(conf,store)
+call -unsafe filter.NotSpecialEngines.Values[0] = "hotRegion"
+print "CASE constraints/043"
+call -unsafe filter.NewSpecialUseFilter("task008", filter.NotSpecialEngines.Values).Source(conf,store)
+call -unsafe filter.NewSpecialUseFilter("task008", filter.NotSpecialEngines.Values).Target(conf,store)
+call -unsafe store.meta.Labels[0].Key = "specialUse"
+call -unsafe store.meta.Labels[0].Value = "HotRegion"
+set store.storeStats.rawStats.Capacity = 107374182400
+set store.storeStats.rawStats.Available = 107374182400
+set store.regionCount = 100
+print "CASE constraints/044"
+call -unsafe filter.NewSpecialUseFilter("task008", nil).Source(conf,store)
+call -unsafe filter.NewSpecialUseFilter("task008", nil).Target(conf,store)
+call -unsafe filter.NotSpecialEngines.Values[0] = "reserved"
+print "CASE constraints/045"
+call -unsafe filter.NewSpecialUseFilter("task008", filter.NotSpecialEngines.Values).Source(conf,store)
+call -unsafe filter.NewSpecialUseFilter("task008", filter.NotSpecialEngines.Values).Target(conf,store)
+call -unsafe filter.NotSpecialEngines.Values[0] = "hotRegion"
+print "CASE constraints/046"
+call -unsafe filter.NewSpecialUseFilter("task008", filter.NotSpecialEngines.Values).Source(conf,store)
+call -unsafe filter.NewSpecialUseFilter("task008", filter.NotSpecialEngines.Values).Target(conf,store)
+set store.storeStats.rawStats.Capacity = 107374182400
+set store.storeStats.rawStats.Available = 0
+set store.regionCount = 100
+print "CASE constraints/047"
+call -unsafe filter.NewSpecialUseFilter("task008", nil).Source(conf,store)
+call -unsafe filter.NewSpecialUseFilter("task008", nil).Target(conf,store)
+call -unsafe filter.NotSpecialEngines.Values[0] = "reserved"
+print "CASE constraints/048"
+call -unsafe filter.NewSpecialUseFilter("task008", filter.NotSpecialEngines.Values).Source(conf,store)
+call -unsafe filter.NewSpecialUseFilter("task008", filter.NotSpecialEngines.Values).Target(conf,store)
+call -unsafe filter.NotSpecialEngines.Values[0] = "hotRegion"
+print "CASE constraints/049"
+call -unsafe filter.NewSpecialUseFilter("task008", filter.NotSpecialEngines.Values).Source(conf,store)
+call -unsafe filter.NewSpecialUseFilter("task008", filter.NotSpecialEngines.Values).Target(conf,store)
+call -unsafe filter.NotSpecialEngines.Values[0] = "tiflash"
+set store.storeStats.rawStats.Capacity = 107374182400
+set store.storeStats.rawStats.Available = 107374182400
+set store.regionCount = 100
+exit

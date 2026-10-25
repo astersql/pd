@@ -1,0 +1,58 @@
+break filters.go:1035
+condition 1 len(f.constraintSet[0]) == 3
+continue
+clearall
+config max-variable-recurse 1
+print f
+call -unsafe store.meta.Labels[0].Key = "zone"
+call -unsafe store.meta.Labels[1].Key = "rack"
+call -unsafe store.meta.Labels[2].Key = "host"
+call -unsafe store.meta.Labels[0].Value = "z1"
+call -unsafe store.meta.Labels[1].Value = "r1"
+call -unsafe store.meta.Labels[2].Value = "h1"
+print "CASE isolation_host/123"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe store.meta.Labels[0].Value = "Z1"
+call -unsafe store.meta.Labels[1].Value = "R1"
+call -unsafe store.meta.Labels[2].Value = "H1"
+print "CASE isolation_host/124"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe store.meta.Labels[0].Value = "z1"
+call -unsafe store.meta.Labels[1].Value = "r1"
+call -unsafe store.meta.Labels[2].Value = "h2"
+print "CASE isolation_host/125"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe store.meta.Labels[0].Value = "z1"
+call -unsafe store.meta.Labels[1].Value = "r2"
+call -unsafe store.meta.Labels[2].Value = "h1"
+print "CASE isolation_host/126"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe store.meta.Labels[0].Value = "z1"
+call -unsafe store.meta.Labels[1].Value = "r3"
+call -unsafe store.meta.Labels[2].Value = "h1"
+print "CASE isolation_host/127"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe store.meta.Labels[0].Value = "z2"
+call -unsafe store.meta.Labels[1].Value = "r1"
+call -unsafe store.meta.Labels[2].Value = "h1"
+print "CASE isolation_host/128"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe store.meta.Labels[0].Value = "z3"
+call -unsafe store.meta.Labels[1].Value = "r3"
+call -unsafe store.meta.Labels[2].Value = "h1"
+print "CASE isolation_host/129"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+call -unsafe store.meta.Labels[0].Value = ""
+call -unsafe store.meta.Labels[1].Value = ""
+call -unsafe store.meta.Labels[2].Value = ""
+print "CASE isolation_host/130"
+call -unsafe f.Source(nil,store)
+call -unsafe f.Target(nil,store)
+exit

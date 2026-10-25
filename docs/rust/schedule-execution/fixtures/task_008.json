@@ -1,0 +1,5382 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "mode": "classic/default",
+  "low_space_ratio": 0.8,
+  "routes": [
+    {
+      "name": "constraints",
+      "sha256": "681cbd59f7bc41124e57e42421d0af36e206b2003d175788d84c5dee528edb02",
+      "cases": 50
+    },
+    {
+      "name": "hot",
+      "sha256": "2fe857e746222eb474006b19fa0b5308350643b9f38c701d166ebe45018b2753",
+      "cases": 8
+    },
+    {
+      "name": "labels",
+      "sha256": "2a130082779b537f0f614460afeae98bb4f4367315616b6c67b7eaf1a954ef6a",
+      "cases": 37
+    },
+    {
+      "name": "isolation",
+      "sha256": "8ba8288ceed80fed6a608d7458a81afea5b005603ac9543417c20c9c8b9fc746",
+      "cases": 20
+    },
+    {
+      "name": "isolation_rack",
+      "sha256": "318a8b1b970c6f6374241fa979336b4ecf35ee388916032f019616ef66bde3a7",
+      "cases": 8
+    },
+    {
+      "name": "isolation_host",
+      "sha256": "d7cd7ee60e11073f3471311c89c291cb3376c9fc057c8c86f06eac58b4402a65",
+      "cases": 8
+    },
+    {
+      "name": "constructors",
+      "sha256": "6ce68890385faeaabdec60076b582e9806bad73c54b8298cefe728baaafe560a",
+      "cases": 7
+    }
+  ],
+  "cases": [
+    {
+      "id": "constraints/000",
+      "route": "constraints",
+      "kind": "storage",
+      "store": {
+        "labels": [
+          {
+            "key": "noleader",
+            "value": "true"
+          }
+        ],
+        "capacity": 0,
+        "available": 0,
+        "regions": 100
+      },
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/001",
+      "route": "constraints",
+      "kind": "storage",
+      "store": {
+        "labels": [
+          {
+            "key": "noleader",
+            "value": "true"
+          }
+        ],
+        "capacity": 1000,
+        "available": 199,
+        "regions": 100
+      },
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 500,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/002",
+      "route": "constraints",
+      "kind": "storage",
+      "store": {
+        "labels": [
+          {
+            "key": "noleader",
+            "value": "true"
+          }
+        ],
+        "capacity": 1000,
+        "available": 200,
+        "regions": 100
+      },
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/003",
+      "route": "constraints",
+      "kind": "storage",
+      "store": {
+        "labels": [
+          {
+            "key": "noleader",
+            "value": "true"
+          }
+        ],
+        "capacity": 1000,
+        "available": 201,
+        "regions": 100
+      },
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/004",
+      "route": "constraints",
+      "kind": "storage",
+      "store": {
+        "labels": [
+          {
+            "key": "noleader",
+            "value": "true"
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 8589934591,
+        "regions": 99
+      },
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 500,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/005",
+      "route": "constraints",
+      "kind": "storage",
+      "store": {
+        "labels": [
+          {
+            "key": "noleader",
+            "value": "true"
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 8589934592,
+        "regions": 99
+      },
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 500,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/006",
+      "route": "constraints",
+      "kind": "storage",
+      "store": {
+        "labels": [
+          {
+            "key": "noleader",
+            "value": "true"
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 8589934593,
+        "regions": 99
+      },
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/007",
+      "route": "constraints",
+      "kind": "storage",
+      "store": {
+        "labels": [
+          {
+            "key": "noleader",
+            "value": "true"
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 8589934593,
+        "regions": 100
+      },
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 500,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/008",
+      "route": "constraints",
+      "kind": "storage",
+      "store": {
+        "labels": [
+          {
+            "key": "noleader",
+            "value": "true"
+          }
+        ],
+        "capacity": 1000,
+        "available": 0,
+        "regions": 0
+      },
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 500,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/009",
+      "route": "constraints",
+      "kind": "storage",
+      "store": {
+        "labels": [
+          {
+            "key": "noleader",
+            "value": "true"
+          }
+        ],
+        "capacity": 1000,
+        "available": 1001,
+        "regions": 100
+      },
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/010",
+      "route": "constraints",
+      "kind": "engine",
+      "store": {
+        "labels": [
+          {
+            "key": "engine",
+            "value": "tiflash"
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 107374182400,
+        "regions": 100
+      },
+      "special": true,
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/011",
+      "route": "constraints",
+      "kind": "engine",
+      "store": {
+        "labels": [
+          {
+            "key": "engine",
+            "value": "tiflash"
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 107374182400,
+        "regions": 100
+      },
+      "special": false,
+      "expected": [
+        {
+          "status": 102,
+          "detail": ""
+        },
+        {
+          "status": 102,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/012",
+      "route": "constraints",
+      "kind": "engine",
+      "store": {
+        "labels": [
+          {
+            "key": "engine",
+            "value": "tikv"
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 107374182400,
+        "regions": 100
+      },
+      "special": true,
+      "expected": [
+        {
+          "status": 102,
+          "detail": ""
+        },
+        {
+          "status": 102,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/013",
+      "route": "constraints",
+      "kind": "engine",
+      "store": {
+        "labels": [
+          {
+            "key": "engine",
+            "value": "tikv"
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 107374182400,
+        "regions": 100
+      },
+      "special": false,
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/014",
+      "route": "constraints",
+      "kind": "engine",
+      "store": {
+        "labels": [
+          {
+            "key": "engine",
+            "value": ""
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 107374182400,
+        "regions": 100
+      },
+      "special": true,
+      "expected": [
+        {
+          "status": 102,
+          "detail": ""
+        },
+        {
+          "status": 102,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/015",
+      "route": "constraints",
+      "kind": "engine",
+      "store": {
+        "labels": [
+          {
+            "key": "engine",
+            "value": ""
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 107374182400,
+        "regions": 100
+      },
+      "special": false,
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/016",
+      "route": "constraints",
+      "kind": "engine",
+      "store": {
+        "labels": [
+          {
+            "key": "engine",
+            "value": "TiFlash"
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 107374182400,
+        "regions": 100
+      },
+      "special": true,
+      "expected": [
+        {
+          "status": 102,
+          "detail": ""
+        },
+        {
+          "status": 102,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/017",
+      "route": "constraints",
+      "kind": "engine",
+      "store": {
+        "labels": [
+          {
+            "key": "engine",
+            "value": "TiFlash"
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 107374182400,
+        "regions": 100
+      },
+      "special": false,
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/018",
+      "route": "constraints",
+      "kind": "engine",
+      "store": {
+        "labels": [
+          {
+            "key": "engine",
+            "value": "unknown"
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 107374182400,
+        "regions": 100
+      },
+      "special": true,
+      "expected": [
+        {
+          "status": 102,
+          "detail": ""
+        },
+        {
+          "status": 102,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/019",
+      "route": "constraints",
+      "kind": "engine",
+      "store": {
+        "labels": [
+          {
+            "key": "engine",
+            "value": "unknown"
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 107374182400,
+        "regions": 100
+      },
+      "special": false,
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/020",
+      "route": "constraints",
+      "kind": "special_use",
+      "store": {
+        "labels": [
+          {
+            "key": "specialUse",
+            "value": ""
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 107374182400,
+        "regions": 100
+      },
+      "allow": [],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/021",
+      "route": "constraints",
+      "kind": "special_use",
+      "store": {
+        "labels": [
+          {
+            "key": "specialUse",
+            "value": ""
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 107374182400,
+        "regions": 100
+      },
+      "allow": [
+        "reserved"
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/022",
+      "route": "constraints",
+      "kind": "special_use",
+      "store": {
+        "labels": [
+          {
+            "key": "specialUse",
+            "value": ""
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 107374182400,
+        "regions": 100
+      },
+      "allow": [
+        "hotRegion"
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/023",
+      "route": "constraints",
+      "kind": "special_use",
+      "store": {
+        "labels": [
+          {
+            "key": "specialUse",
+            "value": ""
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 0,
+        "regions": 100
+      },
+      "allow": [],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/024",
+      "route": "constraints",
+      "kind": "special_use",
+      "store": {
+        "labels": [
+          {
+            "key": "specialUse",
+            "value": ""
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 0,
+        "regions": 100
+      },
+      "allow": [
+        "reserved"
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/025",
+      "route": "constraints",
+      "kind": "special_use",
+      "store": {
+        "labels": [
+          {
+            "key": "specialUse",
+            "value": ""
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 0,
+        "regions": 100
+      },
+      "allow": [
+        "hotRegion"
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/026",
+      "route": "constraints",
+      "kind": "special_use",
+      "store": {
+        "labels": [
+          {
+            "key": "specialUse",
+            "value": "hotRegion"
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 107374182400,
+        "regions": 100
+      },
+      "allow": [],
+      "expected": [
+        {
+          "status": 102,
+          "detail": ""
+        },
+        {
+          "status": 102,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/027",
+      "route": "constraints",
+      "kind": "special_use",
+      "store": {
+        "labels": [
+          {
+            "key": "specialUse",
+            "value": "hotRegion"
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 107374182400,
+        "regions": 100
+      },
+      "allow": [
+        "reserved"
+      ],
+      "expected": [
+        {
+          "status": 102,
+          "detail": ""
+        },
+        {
+          "status": 102,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/028",
+      "route": "constraints",
+      "kind": "special_use",
+      "store": {
+        "labels": [
+          {
+            "key": "specialUse",
+            "value": "hotRegion"
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 107374182400,
+        "regions": 100
+      },
+      "allow": [
+        "hotRegion"
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/029",
+      "route": "constraints",
+      "kind": "special_use",
+      "store": {
+        "labels": [
+          {
+            "key": "specialUse",
+            "value": "hotRegion"
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 0,
+        "regions": 100
+      },
+      "allow": [],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 102,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/030",
+      "route": "constraints",
+      "kind": "special_use",
+      "store": {
+        "labels": [
+          {
+            "key": "specialUse",
+            "value": "hotRegion"
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 0,
+        "regions": 100
+      },
+      "allow": [
+        "reserved"
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 102,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/031",
+      "route": "constraints",
+      "kind": "special_use",
+      "store": {
+        "labels": [
+          {
+            "key": "specialUse",
+            "value": "hotRegion"
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 0,
+        "regions": 100
+      },
+      "allow": [
+        "hotRegion"
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/032",
+      "route": "constraints",
+      "kind": "special_use",
+      "store": {
+        "labels": [
+          {
+            "key": "specialUse",
+            "value": "reserved"
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 107374182400,
+        "regions": 100
+      },
+      "allow": [],
+      "expected": [
+        {
+          "status": 102,
+          "detail": ""
+        },
+        {
+          "status": 102,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/033",
+      "route": "constraints",
+      "kind": "special_use",
+      "store": {
+        "labels": [
+          {
+            "key": "specialUse",
+            "value": "reserved"
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 107374182400,
+        "regions": 100
+      },
+      "allow": [
+        "reserved"
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/034",
+      "route": "constraints",
+      "kind": "special_use",
+      "store": {
+        "labels": [
+          {
+            "key": "specialUse",
+            "value": "reserved"
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 107374182400,
+        "regions": 100
+      },
+      "allow": [
+        "hotRegion"
+      ],
+      "expected": [
+        {
+          "status": 102,
+          "detail": ""
+        },
+        {
+          "status": 102,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/035",
+      "route": "constraints",
+      "kind": "special_use",
+      "store": {
+        "labels": [
+          {
+            "key": "specialUse",
+            "value": "reserved"
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 0,
+        "regions": 100
+      },
+      "allow": [],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 102,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/036",
+      "route": "constraints",
+      "kind": "special_use",
+      "store": {
+        "labels": [
+          {
+            "key": "specialUse",
+            "value": "reserved"
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 0,
+        "regions": 100
+      },
+      "allow": [
+        "reserved"
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/037",
+      "route": "constraints",
+      "kind": "special_use",
+      "store": {
+        "labels": [
+          {
+            "key": "specialUse",
+            "value": "reserved"
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 0,
+        "regions": 100
+      },
+      "allow": [
+        "hotRegion"
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 102,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/038",
+      "route": "constraints",
+      "kind": "special_use",
+      "store": {
+        "labels": [
+          {
+            "key": "specialUse",
+            "value": "unknown"
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 107374182400,
+        "regions": 100
+      },
+      "allow": [],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/039",
+      "route": "constraints",
+      "kind": "special_use",
+      "store": {
+        "labels": [
+          {
+            "key": "specialUse",
+            "value": "unknown"
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 107374182400,
+        "regions": 100
+      },
+      "allow": [
+        "reserved"
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/040",
+      "route": "constraints",
+      "kind": "special_use",
+      "store": {
+        "labels": [
+          {
+            "key": "specialUse",
+            "value": "unknown"
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 107374182400,
+        "regions": 100
+      },
+      "allow": [
+        "hotRegion"
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/041",
+      "route": "constraints",
+      "kind": "special_use",
+      "store": {
+        "labels": [
+          {
+            "key": "specialUse",
+            "value": "unknown"
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 0,
+        "regions": 100
+      },
+      "allow": [],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/042",
+      "route": "constraints",
+      "kind": "special_use",
+      "store": {
+        "labels": [
+          {
+            "key": "specialUse",
+            "value": "unknown"
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 0,
+        "regions": 100
+      },
+      "allow": [
+        "reserved"
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/043",
+      "route": "constraints",
+      "kind": "special_use",
+      "store": {
+        "labels": [
+          {
+            "key": "specialUse",
+            "value": "unknown"
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 0,
+        "regions": 100
+      },
+      "allow": [
+        "hotRegion"
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/044",
+      "route": "constraints",
+      "kind": "special_use",
+      "store": {
+        "labels": [
+          {
+            "key": "specialUse",
+            "value": "HotRegion"
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 107374182400,
+        "regions": 100
+      },
+      "allow": [],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/045",
+      "route": "constraints",
+      "kind": "special_use",
+      "store": {
+        "labels": [
+          {
+            "key": "specialUse",
+            "value": "HotRegion"
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 107374182400,
+        "regions": 100
+      },
+      "allow": [
+        "reserved"
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/046",
+      "route": "constraints",
+      "kind": "special_use",
+      "store": {
+        "labels": [
+          {
+            "key": "specialUse",
+            "value": "HotRegion"
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 107374182400,
+        "regions": 100
+      },
+      "allow": [
+        "hotRegion"
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/047",
+      "route": "constraints",
+      "kind": "special_use",
+      "store": {
+        "labels": [
+          {
+            "key": "specialUse",
+            "value": "HotRegion"
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 0,
+        "regions": 100
+      },
+      "allow": [],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/048",
+      "route": "constraints",
+      "kind": "special_use",
+      "store": {
+        "labels": [
+          {
+            "key": "specialUse",
+            "value": "HotRegion"
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 0,
+        "regions": 100
+      },
+      "allow": [
+        "reserved"
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constraints/049",
+      "route": "constraints",
+      "kind": "special_use",
+      "store": {
+        "labels": [
+          {
+            "key": "specialUse",
+            "value": "HotRegion"
+          }
+        ],
+        "capacity": 107374182400,
+        "available": 0,
+        "regions": 100
+      },
+      "allow": [
+        "hotRegion"
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "hot/050",
+      "route": "hot",
+      "kind": "hot",
+      "store": {
+        "labels": [],
+        "evicted": 0
+      },
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "hot/051",
+      "route": "hot",
+      "kind": "hot",
+      "store": {
+        "labels": [],
+        "evicted": 1
+      },
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 300,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "hot/052",
+      "route": "hot",
+      "kind": "hot",
+      "store": {
+        "labels": [],
+        "evicted": 2
+      },
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 300,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "hot/053",
+      "route": "hot",
+      "kind": "hot",
+      "store": {
+        "labels": [],
+        "evicted": 3
+      },
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 300,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "hot/054",
+      "route": "hot",
+      "kind": "hot",
+      "store": {
+        "labels": [],
+        "evicted": 4
+      },
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 300,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "hot/055",
+      "route": "hot",
+      "kind": "hot",
+      "store": {
+        "labels": [],
+        "evicted": 5
+      },
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 300,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "hot/056",
+      "route": "hot",
+      "kind": "hot",
+      "store": {
+        "labels": [],
+        "evicted": 6
+      },
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 300,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "hot/057",
+      "route": "hot",
+      "kind": "hot",
+      "store": {
+        "labels": [],
+        "evicted": 7
+      },
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 300,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "labels/058",
+      "route": "labels",
+      "kind": "label",
+      "store": {
+        "labels": [
+          {
+            "key": "id",
+            "value": "1"
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "key": "id",
+          "op": "in",
+          "values": [
+            "1"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "labels/059",
+      "route": "labels",
+      "kind": "label",
+      "store": {
+        "labels": [
+          {
+            "key": "id",
+            "value": "1"
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "key": "id",
+          "op": "notIn",
+          "values": [
+            "1"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "status": 102,
+          "detail": ""
+        },
+        {
+          "status": 102,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "labels/060",
+      "route": "labels",
+      "kind": "label",
+      "store": {
+        "labels": [
+          {
+            "key": "id",
+            "value": "1"
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "key": "id",
+          "op": "exists",
+          "values": [
+            "1"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "labels/061",
+      "route": "labels",
+      "kind": "label",
+      "store": {
+        "labels": [
+          {
+            "key": "id",
+            "value": "1"
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "key": "id",
+          "op": "notExists",
+          "values": [
+            "1"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "status": 102,
+          "detail": ""
+        },
+        {
+          "status": 102,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "labels/062",
+      "route": "labels",
+      "kind": "label",
+      "store": {
+        "labels": [
+          {
+            "key": "id",
+            "value": "1"
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "key": "id",
+          "op": "invalid",
+          "values": [
+            "1"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "status": 102,
+          "detail": ""
+        },
+        {
+          "status": 102,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "labels/063",
+      "route": "labels",
+      "kind": "label",
+      "store": {
+        "labels": [
+          {
+            "key": "ID",
+            "value": "1"
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "key": "id",
+          "op": "in",
+          "values": [
+            "1"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "labels/064",
+      "route": "labels",
+      "kind": "label",
+      "store": {
+        "labels": [
+          {
+            "key": "ID",
+            "value": "1"
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "key": "id",
+          "op": "notIn",
+          "values": [
+            "1"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "status": 102,
+          "detail": ""
+        },
+        {
+          "status": 102,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "labels/065",
+      "route": "labels",
+      "kind": "label",
+      "store": {
+        "labels": [
+          {
+            "key": "ID",
+            "value": "1"
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "key": "id",
+          "op": "exists",
+          "values": [
+            "1"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "labels/066",
+      "route": "labels",
+      "kind": "label",
+      "store": {
+        "labels": [
+          {
+            "key": "ID",
+            "value": "1"
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "key": "id",
+          "op": "notExists",
+          "values": [
+            "1"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "status": 102,
+          "detail": ""
+        },
+        {
+          "status": 102,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "labels/067",
+      "route": "labels",
+      "kind": "label",
+      "store": {
+        "labels": [
+          {
+            "key": "ID",
+            "value": "1"
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "key": "id",
+          "op": "invalid",
+          "values": [
+            "1"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "status": 102,
+          "detail": ""
+        },
+        {
+          "status": 102,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "labels/068",
+      "route": "labels",
+      "kind": "label",
+      "store": {
+        "labels": [
+          {
+            "key": "id",
+            "value": "2"
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "key": "id",
+          "op": "in",
+          "values": [
+            "1"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "status": 102,
+          "detail": ""
+        },
+        {
+          "status": 102,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "labels/069",
+      "route": "labels",
+      "kind": "label",
+      "store": {
+        "labels": [
+          {
+            "key": "id",
+            "value": "2"
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "key": "id",
+          "op": "notIn",
+          "values": [
+            "1"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "labels/070",
+      "route": "labels",
+      "kind": "label",
+      "store": {
+        "labels": [
+          {
+            "key": "id",
+            "value": "2"
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "key": "id",
+          "op": "exists",
+          "values": [
+            "1"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "labels/071",
+      "route": "labels",
+      "kind": "label",
+      "store": {
+        "labels": [
+          {
+            "key": "id",
+            "value": "2"
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "key": "id",
+          "op": "notExists",
+          "values": [
+            "1"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "status": 102,
+          "detail": ""
+        },
+        {
+          "status": 102,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "labels/072",
+      "route": "labels",
+      "kind": "label",
+      "store": {
+        "labels": [
+          {
+            "key": "id",
+            "value": "2"
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "key": "id",
+          "op": "invalid",
+          "values": [
+            "1"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "status": 102,
+          "detail": ""
+        },
+        {
+          "status": 102,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "labels/073",
+      "route": "labels",
+      "kind": "label",
+      "store": {
+        "labels": [
+          {
+            "key": "id",
+            "value": ""
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "key": "id",
+          "op": "in",
+          "values": [
+            "1"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "status": 102,
+          "detail": ""
+        },
+        {
+          "status": 102,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "labels/074",
+      "route": "labels",
+      "kind": "label",
+      "store": {
+        "labels": [
+          {
+            "key": "id",
+            "value": ""
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "key": "id",
+          "op": "notIn",
+          "values": [
+            "1"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "labels/075",
+      "route": "labels",
+      "kind": "label",
+      "store": {
+        "labels": [
+          {
+            "key": "id",
+            "value": ""
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "key": "id",
+          "op": "exists",
+          "values": [
+            "1"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "status": 102,
+          "detail": ""
+        },
+        {
+          "status": 102,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "labels/076",
+      "route": "labels",
+      "kind": "label",
+      "store": {
+        "labels": [
+          {
+            "key": "id",
+            "value": ""
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "key": "id",
+          "op": "notExists",
+          "values": [
+            "1"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "labels/077",
+      "route": "labels",
+      "kind": "label",
+      "store": {
+        "labels": [
+          {
+            "key": "id",
+            "value": ""
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "key": "id",
+          "op": "invalid",
+          "values": [
+            "1"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "status": 102,
+          "detail": ""
+        },
+        {
+          "status": 102,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "labels/078",
+      "route": "labels",
+      "kind": "label",
+      "store": {
+        "labels": [
+          {
+            "key": "engine",
+            "value": "tikv"
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "key": "id",
+          "op": "in",
+          "values": [
+            "1"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "status": 102,
+          "detail": ""
+        },
+        {
+          "status": 102,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "labels/079",
+      "route": "labels",
+      "kind": "label",
+      "store": {
+        "labels": [
+          {
+            "key": "engine",
+            "value": "tikv"
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "key": "id",
+          "op": "notIn",
+          "values": [
+            "1"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "status": 102,
+          "detail": ""
+        },
+        {
+          "status": 102,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "labels/080",
+      "route": "labels",
+      "kind": "label",
+      "store": {
+        "labels": [
+          {
+            "key": "engine",
+            "value": "tikv"
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "key": "id",
+          "op": "exists",
+          "values": [
+            "1"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "status": 102,
+          "detail": ""
+        },
+        {
+          "status": 102,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "labels/081",
+      "route": "labels",
+      "kind": "label",
+      "store": {
+        "labels": [
+          {
+            "key": "engine",
+            "value": "tikv"
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "key": "id",
+          "op": "notExists",
+          "values": [
+            "1"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "status": 102,
+          "detail": ""
+        },
+        {
+          "status": 102,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "labels/082",
+      "route": "labels",
+      "kind": "label",
+      "store": {
+        "labels": [
+          {
+            "key": "engine",
+            "value": "tikv"
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "key": "id",
+          "op": "invalid",
+          "values": [
+            "1"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "status": 102,
+          "detail": ""
+        },
+        {
+          "status": 102,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "labels/083",
+      "route": "labels",
+      "kind": "label",
+      "store": {
+        "labels": [
+          {
+            "key": "$x",
+            "value": "1"
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "key": "id",
+          "op": "in",
+          "values": [
+            "1"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "status": 102,
+          "detail": ""
+        },
+        {
+          "status": 102,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "labels/084",
+      "route": "labels",
+      "kind": "label",
+      "store": {
+        "labels": [
+          {
+            "key": "$x",
+            "value": "1"
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "key": "id",
+          "op": "notIn",
+          "values": [
+            "1"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "status": 102,
+          "detail": ""
+        },
+        {
+          "status": 102,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "labels/085",
+      "route": "labels",
+      "kind": "label",
+      "store": {
+        "labels": [
+          {
+            "key": "$x",
+            "value": "1"
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "key": "id",
+          "op": "exists",
+          "values": [
+            "1"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "status": 102,
+          "detail": ""
+        },
+        {
+          "status": 102,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "labels/086",
+      "route": "labels",
+      "kind": "label",
+      "store": {
+        "labels": [
+          {
+            "key": "$x",
+            "value": "1"
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "key": "id",
+          "op": "notExists",
+          "values": [
+            "1"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "status": 102,
+          "detail": ""
+        },
+        {
+          "status": 102,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "labels/087",
+      "route": "labels",
+      "kind": "label",
+      "store": {
+        "labels": [
+          {
+            "key": "$x",
+            "value": "1"
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "key": "id",
+          "op": "invalid",
+          "values": [
+            "1"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "status": 102,
+          "detail": ""
+        },
+        {
+          "status": 102,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "labels/088",
+      "route": "labels",
+      "kind": "label",
+      "store": {
+        "labels": [
+          {
+            "key": "exclusive",
+            "value": "1"
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "key": "id",
+          "op": "in",
+          "values": [
+            "1"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "status": 102,
+          "detail": ""
+        },
+        {
+          "status": 102,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "labels/089",
+      "route": "labels",
+      "kind": "label",
+      "store": {
+        "labels": [
+          {
+            "key": "exclusive",
+            "value": "1"
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "key": "id",
+          "op": "notIn",
+          "values": [
+            "1"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "status": 102,
+          "detail": ""
+        },
+        {
+          "status": 102,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "labels/090",
+      "route": "labels",
+      "kind": "label",
+      "store": {
+        "labels": [
+          {
+            "key": "exclusive",
+            "value": "1"
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "key": "id",
+          "op": "exists",
+          "values": [
+            "1"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "status": 102,
+          "detail": ""
+        },
+        {
+          "status": 102,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "labels/091",
+      "route": "labels",
+      "kind": "label",
+      "store": {
+        "labels": [
+          {
+            "key": "exclusive",
+            "value": "1"
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "key": "id",
+          "op": "notExists",
+          "values": [
+            "1"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "status": 102,
+          "detail": ""
+        },
+        {
+          "status": 102,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "labels/092",
+      "route": "labels",
+      "kind": "label",
+      "store": {
+        "labels": [
+          {
+            "key": "exclusive",
+            "value": "1"
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "key": "id",
+          "op": "invalid",
+          "values": [
+            "1"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "status": 102,
+          "detail": ""
+        },
+        {
+          "status": 102,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "labels/093",
+      "route": "labels",
+      "kind": "label",
+      "store": {
+        "labels": [
+          {
+            "key": "exclusive",
+            "value": "1"
+          }
+        ]
+      },
+      "constraints": [],
+      "expected": [
+        {
+          "status": 102,
+          "detail": ""
+        },
+        {
+          "status": 102,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "labels/094",
+      "route": "labels",
+      "kind": "label",
+      "store": {
+        "labels": []
+      },
+      "constraints": [],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "isolation/095",
+      "route": "isolation",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "zone",
+      "region_labels": [
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z2"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 301,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "isolation/096",
+      "route": "isolation",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": "Z1"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "zone",
+      "region_labels": [
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z2"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 301,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "isolation/097",
+      "route": "isolation",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": "z2"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "zone",
+      "region_labels": [
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z2"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 301,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "isolation/098",
+      "route": "isolation",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": "z3"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "zone",
+      "region_labels": [
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z2"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "isolation/099",
+      "route": "isolation",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": ""
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "zone",
+      "region_labels": [
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z2"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "isolation/100",
+      "route": "isolation",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": "K"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "zone",
+      "region_labels": [
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z2"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "isolation/101",
+      "route": "isolation",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": "k"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "zone",
+      "region_labels": [
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z2"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "isolation/102",
+      "route": "isolation",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": "Σ"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "zone",
+      "region_labels": [
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z2"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "isolation/103",
+      "route": "isolation",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": "ς"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "zone",
+      "region_labels": [
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z2"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "isolation/104",
+      "route": "isolation",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": "ß"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "zone",
+      "region_labels": [
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z2"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "isolation/105",
+      "route": "isolation",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": "ss"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "zone",
+      "region_labels": [
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z2"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "isolation/106",
+      "route": "isolation",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": "İ"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "zone",
+      "region_labels": [
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z2"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "isolation/107",
+      "route": "isolation",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": "i"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "zone",
+      "region_labels": [
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z2"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "isolation/108",
+      "route": "isolation",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": "k"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "zone",
+      "region_labels": [
+        [
+          {
+            "key": "zone",
+            "value": "K"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z2"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 301,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "isolation/109",
+      "route": "isolation",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": "ς"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "zone",
+      "region_labels": [
+        [
+          {
+            "key": "zone",
+            "value": "Σ"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z2"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 301,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "isolation/110",
+      "route": "isolation",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": "ss"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "zone",
+      "region_labels": [
+        [
+          {
+            "key": "zone",
+            "value": "ß"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z2"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "isolation/111",
+      "route": "isolation",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": "i"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "zone",
+      "region_labels": [
+        [
+          {
+            "key": "zone",
+            "value": "İ"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z2"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "isolation/112",
+      "route": "isolation",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": ""
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "zone",
+      "region_labels": [
+        [
+          {
+            "key": "zone",
+            "value": ""
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z2"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 301,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "isolation/113",
+      "route": "isolation",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": "z3"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "zone",
+      "region_labels": [
+        [
+          {
+            "key": "zone",
+            "value": ""
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z2"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "isolation/114",
+      "route": "isolation",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": "z3"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "zone",
+      "region_labels": [],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 301,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "isolation_rack/115",
+      "route": "isolation_rack",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "rack",
+      "region_labels": [
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r2"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z3"
+          },
+          {
+            "key": "rack",
+            "value": "r3"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 301,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "isolation_rack/116",
+      "route": "isolation_rack",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": "Z1"
+          },
+          {
+            "key": "rack",
+            "value": "R1"
+          },
+          {
+            "key": "host",
+            "value": "H1"
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "rack",
+      "region_labels": [
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r2"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z3"
+          },
+          {
+            "key": "rack",
+            "value": "r3"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 301,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "isolation_rack/117",
+      "route": "isolation_rack",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h2"
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "rack",
+      "region_labels": [
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r2"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z3"
+          },
+          {
+            "key": "rack",
+            "value": "r3"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 301,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "isolation_rack/118",
+      "route": "isolation_rack",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r2"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "rack",
+      "region_labels": [
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r2"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z3"
+          },
+          {
+            "key": "rack",
+            "value": "r3"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 301,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "isolation_rack/119",
+      "route": "isolation_rack",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r3"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "rack",
+      "region_labels": [
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r2"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z3"
+          },
+          {
+            "key": "rack",
+            "value": "r3"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "isolation_rack/120",
+      "route": "isolation_rack",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": "z2"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "rack",
+      "region_labels": [
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r2"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z3"
+          },
+          {
+            "key": "rack",
+            "value": "r3"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "isolation_rack/121",
+      "route": "isolation_rack",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": "z3"
+          },
+          {
+            "key": "rack",
+            "value": "r3"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "rack",
+      "region_labels": [
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r2"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z3"
+          },
+          {
+            "key": "rack",
+            "value": "r3"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 301,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "isolation_rack/122",
+      "route": "isolation_rack",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": ""
+          },
+          {
+            "key": "rack",
+            "value": ""
+          },
+          {
+            "key": "host",
+            "value": ""
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "rack",
+      "region_labels": [
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r2"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z3"
+          },
+          {
+            "key": "rack",
+            "value": "r3"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "isolation_host/123",
+      "route": "isolation_host",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "host",
+      "region_labels": [
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r2"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z2"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 301,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "isolation_host/124",
+      "route": "isolation_host",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": "Z1"
+          },
+          {
+            "key": "rack",
+            "value": "R1"
+          },
+          {
+            "key": "host",
+            "value": "H1"
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "host",
+      "region_labels": [
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r2"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z2"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 301,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "isolation_host/125",
+      "route": "isolation_host",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h2"
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "host",
+      "region_labels": [
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r2"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z2"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "isolation_host/126",
+      "route": "isolation_host",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r2"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "host",
+      "region_labels": [
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r2"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z2"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 301,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "isolation_host/127",
+      "route": "isolation_host",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r3"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "host",
+      "region_labels": [
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r2"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z2"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "isolation_host/128",
+      "route": "isolation_host",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": "z2"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "host",
+      "region_labels": [
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r2"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z2"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 301,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "isolation_host/129",
+      "route": "isolation_host",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": "z3"
+          },
+          {
+            "key": "rack",
+            "value": "r3"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "host",
+      "region_labels": [
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r2"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z2"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "isolation_host/130",
+      "route": "isolation_host",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": ""
+          },
+          {
+            "key": "rack",
+            "value": ""
+          },
+          {
+            "key": "host",
+            "value": ""
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "host",
+      "region_labels": [
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r2"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z2"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 0,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constructors/131",
+      "route": "constructors",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "zone",
+      "region_labels": [
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z2"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 301,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constructors/132",
+      "route": "constructors",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "rack",
+      "region_labels": [
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z2"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 301,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constructors/133",
+      "route": "constructors",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "host",
+      "region_labels": [
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z2"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 301,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constructors/134",
+      "route": "constructors",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "unknown",
+      "region_labels": [
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z2"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 301,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constructors/135",
+      "route": "constructors",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "",
+      "region_labels": [
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z2"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 301,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constructors/136",
+      "route": "constructors",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      },
+      "locations": [
+        "zone",
+        "rack",
+        "host"
+      ],
+      "level": "ZONE",
+      "region_labels": [
+        [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ],
+        [
+          {
+            "key": "zone",
+            "value": "z2"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 301,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "constructors/137",
+      "route": "constructors",
+      "kind": "isolation",
+      "store": {
+        "labels": [
+          {
+            "key": "zone",
+            "value": "z1"
+          },
+          {
+            "key": "rack",
+            "value": "r1"
+          },
+          {
+            "key": "host",
+            "value": "h1"
+          }
+        ]
+      },
+      "locations": [],
+      "level": "",
+      "region_labels": [],
+      "expected": [
+        {
+          "status": 0,
+          "detail": ""
+        },
+        {
+          "status": 301,
+          "detail": ""
+        }
+      ]
+    }
+  ]
+}

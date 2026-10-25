@@ -1,0 +1,25 @@
+{
+  "fixture_sha256": "4e7b4a258f995119f89c67efa82fe3e3e828e5eec07bc62dcbcf74d489f20221",
+  "go_files_unchanged": true,
+  "go_files_checked": 3012,
+  "readonly_plans_checked": 17,
+  "oracle_cases": 138,
+  "oracle_source_target_results": 276,
+  "complete_go_behavior_tests": 10,
+  "constructor_bounds_fault": true,
+  "mutation_failures": 6,
+  "rust_focused_tests": 3,
+  "rust_package_tests": 14,
+  "rust_workspace_tests": 1340,
+  "rust_workspace_ignored": 1,
+  "no_server_runtime_dependency": true,
+  "filter_domain_api_without_protocol_types": true,
+  "existing_transitive_protocol_path": [
+    "astersql-pd-schedule-filter",
+    "astersql-pd-schedule-placement",
+    "astersql-pd-storage-endpoint",
+    "astersql-pd-proto"
+  ],
+  "registry_dependencies_unchanged": true,
+  "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+}
