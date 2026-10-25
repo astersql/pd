@@ -35,3 +35,9 @@ mod step_witness;
 pub use step_witness::*;
 #[cfg(test)]
 mod task_021_test;
+
+#[cfg(test)]
+mod task_022_test;
+
+mod step_joint;
+pub use step_joint::*;

@@ -1,0 +1,20 @@
+{
+  "readonly_inventory_count": 1119,
+  "readonly_inventory_sha256": "8bbe64e47bce2411db740598d57cb0dde6f10ba1e1ac1a65b4155eacd5426bda",
+  "go_and_module_files_unchanged": 1101,
+  "plans_unchanged": true,
+  "fixture_sha256": "cc2604697d6894212e934da945e322710cfa315cac2e819b2995a6bcb54d0de8",
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "evidence_kind": "source_assertion",
+  "go_execution": false,
+  "focused_tests": 2,
+  "package_tests": 28,
+  "workspace_tests": 1391,
+  "workspace_ignored": 1,
+  "slots": [
+    1
+  ],
+  "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+  "slot_released": true,
+  "diff_check_exit_code": 0
+}

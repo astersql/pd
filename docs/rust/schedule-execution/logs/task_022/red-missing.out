@@ -1,0 +1,98 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=cargo test -p astersql-pd-schedule-operator --locked --lib task_022 -- --nocapture
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+error[E0425]: cannot find type `ChangePeerV2Enter` in this scope
+  --> pkg/schedule/operator/task_022_test.rs:14:16
+   |
+14 | fn steps() -> (ChangePeerV2Enter,ChangePeerV2Leave) {
+   |                ^^^^^^^^^^^^^^^^^
+   |
+  ::: pkg/schedule/hbstream/operation.rs:86:1
+   |
+86 | pub struct ChangePeerV2 {
+   | ----------------------- similarly named struct `ChangePeerV2` defined here
+   |
+help: a struct with a similar name exists
+   |
+14 - fn steps() -> (ChangePeerV2Enter,ChangePeerV2Leave) {
+14 + fn steps() -> (ChangePeerV2,ChangePeerV2Leave) {
+   |
+
+error[E0425]: cannot find type `ChangePeerV2Leave` in this scope
+  --> pkg/schedule/operator/task_022_test.rs:14:34
+   |
+14 | fn steps() -> (ChangePeerV2Enter,ChangePeerV2Leave) {
+   |                                  ^^^^^^^^^^^^^^^^^
+   |
+  ::: pkg/schedule/hbstream/operation.rs:86:1
+   |
+86 | pub struct ChangePeerV2 {
+   | ----------------------- similarly named struct `ChangePeerV2` defined here
+   |
+help: a struct with a similar name exists
+   |
+14 - fn steps() -> (ChangePeerV2Enter,ChangePeerV2Leave) {
+14 + fn steps() -> (ChangePeerV2Enter,ChangePeerV2) {
+   |
+
+error[E0422]: cannot find struct, variant or union type `ChangePeerV2Enter` in this scope
+  --> pkg/schedule/operator/task_022_test.rs:17:6
+   |
+17 |     (ChangePeerV2Enter{promote_learners:p.clone(),demote_voters:d.clone()},ChangePeerV2Leave{promote_learners:p,demote_voters:d})
+   |      ^^^^^^^^^^^^^^^^^
+   |
+  ::: pkg/schedule/hbstream/operation.rs:86:1
+   |
+86 | pub struct ChangePeerV2 {
+   | ----------------------- similarly named struct `ChangePeerV2` defined here
+   |
+help: a struct with a similar name exists
+   |
+17 -     (ChangePeerV2Enter{promote_learners:p.clone(),demote_voters:d.clone()},ChangePeerV2Leave{promote_learners:p,demote_voters:d})
+17 +     (ChangePeerV2{promote_learners:p.clone(),demote_voters:d.clone()},ChangePeerV2Leave{promote_learners:p,demote_voters:d})
+   |
+
+error[E0422]: cannot find struct, variant or union type `ChangePeerV2Leave` in this scope
+  --> pkg/schedule/operator/task_022_test.rs:17:76
+   |
+17 |     (ChangePeerV2Enter{promote_learners:p.clone(),demote_voters:d.clone()},ChangePeerV2Leave{promote_learners:p,demote_voters:d})
+   |                                                                            ^^^^^^^^^^^^^^^^^
+   |
+  ::: pkg/schedule/hbstream/operation.rs:86:1
+   |
+86 | pub struct ChangePeerV2 {
+   | ----------------------- similarly named struct `ChangePeerV2` defined here
+   |
+help: a struct with a similar name exists
+   |
+17 -     (ChangePeerV2Enter{promote_learners:p.clone(),demote_voters:d.clone()},ChangePeerV2Leave{promote_learners:p,demote_voters:d})
+17 +     (ChangePeerV2Enter{promote_learners:p.clone(),demote_voters:d.clone()},ChangePeerV2{promote_learners:p,demote_voters:d})
+   |
+
+error[E0433]: cannot find type `ChangePeerV2Enter` in this scope
+  --> pkg/schedule/operator/task_022_test.rs:63:4
+   |
+63 |  e=ChangePeerV2Enter::default();l=ChangePeerV2Leave::default();
+   |    ^^^^^^^^^^^^^^^^^ use of undeclared type `ChangePeerV2Enter`
+   |
+help: a struct with a similar name exists
+   |
+63 -  e=ChangePeerV2Enter::default();l=ChangePeerV2Leave::default();
+63 +  e=ChangePeerV2::default();l=ChangePeerV2Leave::default();
+   |
+
+error[E0433]: cannot find type `ChangePeerV2Leave` in this scope
+  --> pkg/schedule/operator/task_022_test.rs:63:35
+   |
+63 |  e=ChangePeerV2Enter::default();l=ChangePeerV2Leave::default();
+   |                                   ^^^^^^^^^^^^^^^^^ use of undeclared type `ChangePeerV2Leave`
+   |
+help: a struct with a similar name exists
+   |
+63 -  e=ChangePeerV2Enter::default();l=ChangePeerV2Leave::default();
+63 +  e=ChangePeerV2Enter::default();l=ChangePeerV2::default();
+   |
+
+Some errors have detailed explanations: E0422, E0425, E0433.
+For more information about an error, try `rustc --explain E0422`.
+error: could not compile `astersql-pd-schedule-operator` (lib test) due to 6 previous errors
+command_exit_code=101

@@ -1,0 +1,734 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "evidence_kind": "source_assertion",
+  "go_execution": false,
+  "normalization": "none",
+  "sources": {
+    "pkg/schedule/operator/step.go": "9338b311dca1940cd76bbe3903f0d2545cfc258f88a20eedb391ab59e243eac5",
+    "pkg/schedule/operator/step_test.go": "cc353a5b70022385630b93ce77f8a8e637c4a51c7724dc9c29ae3ef696c56c7b",
+    "pkg/core/peer.go": "cc1895b62828225902a4e9d39febd9f019dbb5fd0b5bcfea30d2e10807ec153d",
+    "pkg/core/region.go": "be6ed0dc77537d62926d21d9e4eef080ea0dbcc7dc97efb4dc26269a172f99d8"
+  },
+  "cases": [
+    {
+      "name": "roles-0-0",
+      "p": 0,
+      "d": 0,
+      "enter": [
+        0,
+        false,
+        null
+      ],
+      "leave": [
+        0,
+        false,
+        "peer is still a voter"
+      ],
+      "extra": null,
+      "leader": 0,
+      "witness": false,
+      "pid": 11,
+      "did": 12
+    },
+    {
+      "name": "roles-0-1",
+      "p": 0,
+      "d": 1,
+      "enter": [
+        2,
+        true,
+        null
+      ],
+      "leave": [
+        2,
+        true,
+        null
+      ],
+      "extra": null,
+      "leader": 0,
+      "witness": false,
+      "pid": 11,
+      "did": 12
+    },
+    {
+      "name": "roles-0-2",
+      "p": 0,
+      "d": 2,
+      "enter": [
+        0,
+        false,
+        "cannot demote a incoming voter"
+      ],
+      "leave": [
+        0,
+        false,
+        "cannot demote a incoming voter"
+      ],
+      "extra": null,
+      "leader": 0,
+      "witness": false,
+      "pid": 11,
+      "did": 12
+    },
+    {
+      "name": "roles-0-3",
+      "p": 0,
+      "d": 3,
+      "enter": [
+        2,
+        true,
+        "non-atomic joint consensus"
+      ],
+      "leave": [
+        0,
+        false,
+        "non-atomic joint consensus"
+      ],
+      "extra": null,
+      "leader": 0,
+      "witness": false,
+      "pid": 11,
+      "did": 12
+    },
+    {
+      "name": "roles-0-9",
+      "p": 0,
+      "d": 9,
+      "enter": [
+        0,
+        false,
+        "unexpected peer role"
+      ],
+      "leave": [
+        0,
+        false,
+        "unexpected peer role"
+      ],
+      "extra": null,
+      "leader": 0,
+      "witness": false,
+      "pid": 11,
+      "did": 12
+    },
+    {
+      "name": "roles-1-0",
+      "p": 1,
+      "d": 0,
+      "enter": [
+        0,
+        false,
+        null
+      ],
+      "leave": [
+        0,
+        false,
+        "peer is still a learner"
+      ],
+      "extra": null,
+      "leader": 0,
+      "witness": false,
+      "pid": 11,
+      "did": 12
+    },
+    {
+      "name": "roles-1-1",
+      "p": 1,
+      "d": 1,
+      "enter": [
+        0,
+        false,
+        null
+      ],
+      "leave": [
+        0,
+        false,
+        "peer is still a learner"
+      ],
+      "extra": null,
+      "leader": 0,
+      "witness": false,
+      "pid": 11,
+      "did": 12
+    },
+    {
+      "name": "roles-1-2",
+      "p": 1,
+      "d": 2,
+      "enter": [
+        0,
+        false,
+        "cannot demote a incoming voter"
+      ],
+      "leave": [
+        0,
+        false,
+        "peer is still a learner"
+      ],
+      "extra": null,
+      "leader": 0,
+      "witness": false,
+      "pid": 11,
+      "did": 12
+    },
+    {
+      "name": "roles-1-3",
+      "p": 1,
+      "d": 3,
+      "enter": [
+        0,
+        false,
+        "non-atomic joint consensus"
+      ],
+      "leave": [
+        0,
+        false,
+        "peer is still a learner"
+      ],
+      "extra": null,
+      "leader": 0,
+      "witness": false,
+      "pid": 11,
+      "did": 12
+    },
+    {
+      "name": "roles-1-9",
+      "p": 1,
+      "d": 9,
+      "enter": [
+        0,
+        false,
+        "unexpected peer role"
+      ],
+      "leave": [
+        0,
+        false,
+        "peer is still a learner"
+      ],
+      "extra": null,
+      "leader": 0,
+      "witness": false,
+      "pid": 11,
+      "did": 12
+    },
+    {
+      "name": "roles-2-0",
+      "p": 2,
+      "d": 0,
+      "enter": [
+        0,
+        false,
+        "non-atomic joint consensus"
+      ],
+      "leave": [
+        0,
+        false,
+        "peer is still a voter"
+      ],
+      "extra": null,
+      "leader": 0,
+      "witness": false,
+      "pid": 11,
+      "did": 12
+    },
+    {
+      "name": "roles-2-1",
+      "p": 2,
+      "d": 1,
+      "enter": [
+        2,
+        true,
+        "non-atomic joint consensus"
+      ],
+      "leave": [
+        0,
+        false,
+        "non-atomic joint consensus"
+      ],
+      "extra": null,
+      "leader": 0,
+      "witness": false,
+      "pid": 11,
+      "did": 12
+    },
+    {
+      "name": "roles-2-2",
+      "p": 2,
+      "d": 2,
+      "enter": [
+        0,
+        false,
+        "cannot demote a incoming voter"
+      ],
+      "leave": [
+        0,
+        false,
+        "cannot demote a incoming voter"
+      ],
+      "extra": null,
+      "leader": 0,
+      "witness": false,
+      "pid": 11,
+      "did": 12
+    },
+    {
+      "name": "roles-2-3",
+      "p": 2,
+      "d": 3,
+      "enter": [
+        2,
+        true,
+        null
+      ],
+      "leave": [
+        0,
+        false,
+        null
+      ],
+      "extra": null,
+      "leader": 0,
+      "witness": false,
+      "pid": 11,
+      "did": 12
+    },
+    {
+      "name": "roles-2-9",
+      "p": 2,
+      "d": 9,
+      "enter": [
+        0,
+        false,
+        "unexpected peer role"
+      ],
+      "leave": [
+        0,
+        false,
+        "unexpected peer role"
+      ],
+      "extra": null,
+      "leader": 0,
+      "witness": false,
+      "pid": 11,
+      "did": 12
+    },
+    {
+      "name": "roles-3-0",
+      "p": 3,
+      "d": 0,
+      "enter": [
+        0,
+        false,
+        "cannot promote a demoting voter"
+      ],
+      "leave": [
+        0,
+        false,
+        "cannot promote a demoting voter"
+      ],
+      "extra": null,
+      "leader": 0,
+      "witness": false,
+      "pid": 11,
+      "did": 12
+    },
+    {
+      "name": "roles-3-1",
+      "p": 3,
+      "d": 1,
+      "enter": [
+        0,
+        false,
+        "cannot promote a demoting voter"
+      ],
+      "leave": [
+        0,
+        false,
+        "cannot promote a demoting voter"
+      ],
+      "extra": null,
+      "leader": 0,
+      "witness": false,
+      "pid": 11,
+      "did": 12
+    },
+    {
+      "name": "roles-3-2",
+      "p": 3,
+      "d": 2,
+      "enter": [
+        0,
+        false,
+        "cannot promote a demoting voter"
+      ],
+      "leave": [
+        0,
+        false,
+        "cannot promote a demoting voter"
+      ],
+      "extra": null,
+      "leader": 0,
+      "witness": false,
+      "pid": 11,
+      "did": 12
+    },
+    {
+      "name": "roles-3-3",
+      "p": 3,
+      "d": 3,
+      "enter": [
+        0,
+        false,
+        "cannot promote a demoting voter"
+      ],
+      "leave": [
+        0,
+        false,
+        "cannot promote a demoting voter"
+      ],
+      "extra": null,
+      "leader": 0,
+      "witness": false,
+      "pid": 11,
+      "did": 12
+    },
+    {
+      "name": "roles-3-9",
+      "p": 3,
+      "d": 9,
+      "enter": [
+        0,
+        false,
+        "cannot promote a demoting voter"
+      ],
+      "leave": [
+        0,
+        false,
+        "cannot promote a demoting voter"
+      ],
+      "extra": null,
+      "leader": 0,
+      "witness": false,
+      "pid": 11,
+      "did": 12
+    },
+    {
+      "name": "roles-9-0",
+      "p": 9,
+      "d": 0,
+      "enter": [
+        0,
+        false,
+        "unexpected peer role"
+      ],
+      "leave": [
+        0,
+        false,
+        "unexpected peer role"
+      ],
+      "extra": null,
+      "leader": 0,
+      "witness": false,
+      "pid": 11,
+      "did": 12
+    },
+    {
+      "name": "roles-9-1",
+      "p": 9,
+      "d": 1,
+      "enter": [
+        0,
+        false,
+        "unexpected peer role"
+      ],
+      "leave": [
+        0,
+        false,
+        "unexpected peer role"
+      ],
+      "extra": null,
+      "leader": 0,
+      "witness": false,
+      "pid": 11,
+      "did": 12
+    },
+    {
+      "name": "roles-9-2",
+      "p": 9,
+      "d": 2,
+      "enter": [
+        0,
+        false,
+        "unexpected peer role"
+      ],
+      "leave": [
+        0,
+        false,
+        "unexpected peer role"
+      ],
+      "extra": null,
+      "leader": 0,
+      "witness": false,
+      "pid": 11,
+      "did": 12
+    },
+    {
+      "name": "roles-9-3",
+      "p": 9,
+      "d": 3,
+      "enter": [
+        0,
+        false,
+        "unexpected peer role"
+      ],
+      "leave": [
+        0,
+        false,
+        "unexpected peer role"
+      ],
+      "extra": null,
+      "leader": 0,
+      "witness": false,
+      "pid": 11,
+      "did": 12
+    },
+    {
+      "name": "roles-9-9",
+      "p": 9,
+      "d": 9,
+      "enter": [
+        0,
+        false,
+        "unexpected peer role"
+      ],
+      "leave": [
+        0,
+        false,
+        "unexpected peer role"
+      ],
+      "extra": null,
+      "leader": 0,
+      "witness": false,
+      "pid": 11,
+      "did": 12
+    },
+    {
+      "name": "missing-promote",
+      "p": null,
+      "d": 1,
+      "enter": [
+        0,
+        false,
+        "peer does not exist"
+      ],
+      "leave": [
+        0,
+        false,
+        "peer does not exist"
+      ],
+      "extra": null,
+      "leader": 0,
+      "witness": false,
+      "pid": 11,
+      "did": 12
+    },
+    {
+      "name": "missing-demote",
+      "p": 0,
+      "d": null,
+      "enter": [
+        2,
+        false,
+        "peer does not exist"
+      ],
+      "leave": [
+        2,
+        false,
+        "peer does not exist"
+      ],
+      "extra": null,
+      "leader": 0,
+      "witness": false,
+      "pid": 11,
+      "did": 12
+    },
+    {
+      "name": "replaced-promote",
+      "p": 0,
+      "d": 1,
+      "enter": [
+        0,
+        false,
+        "peer does not exist"
+      ],
+      "leave": [
+        0,
+        false,
+        "peer does not exist"
+      ],
+      "extra": null,
+      "leader": 0,
+      "witness": false,
+      "pid": 99,
+      "did": 12
+    },
+    {
+      "name": "replaced-demote",
+      "p": 0,
+      "d": 1,
+      "enter": [
+        0,
+        false,
+        "peer does not exist"
+      ],
+      "leave": [
+        0,
+        false,
+        "peer does not exist"
+      ],
+      "extra": null,
+      "leader": 0,
+      "witness": false,
+      "pid": 11,
+      "did": 99
+    },
+    {
+      "name": "other-joint-before",
+      "p": 1,
+      "d": 0,
+      "enter": [
+        0,
+        false,
+        "some other peers are in joint state, when the region is in joint state"
+      ],
+      "leave": [
+        0,
+        false,
+        "peer is still a learner"
+      ],
+      "extra": 2,
+      "leader": 0,
+      "witness": false,
+      "pid": 11,
+      "did": 12
+    },
+    {
+      "name": "other-joint-during",
+      "p": 2,
+      "d": 3,
+      "enter": [
+        2,
+        true,
+        "some other peers are in joint state, when the region is not in joint state"
+      ],
+      "leave": [
+        0,
+        false,
+        "some other peers are in joint state, when the region is not in joint state"
+      ],
+      "extra": 3,
+      "leader": 0,
+      "witness": false,
+      "pid": 11,
+      "did": 12
+    },
+    {
+      "name": "other-joint-after",
+      "p": 0,
+      "d": 1,
+      "enter": [
+        2,
+        true,
+        "some other peers are in joint state, when the region is in joint state"
+      ],
+      "leave": [
+        2,
+        false,
+        "some other peers are in joint state, when the region is in joint state"
+      ],
+      "extra": 2,
+      "leader": 0,
+      "witness": false,
+      "pid": 11,
+      "did": 12
+    },
+    {
+      "name": "demote-leader",
+      "p": 2,
+      "d": 3,
+      "enter": [
+        2,
+        true,
+        null
+      ],
+      "leave": [
+        0,
+        false,
+        "cannot demote leader peer"
+      ],
+      "extra": null,
+      "leader": 2,
+      "witness": false,
+      "pid": 11,
+      "did": 12
+    },
+    {
+      "name": "atomic-before-leader-error",
+      "p": 0,
+      "d": 3,
+      "enter": [
+        2,
+        true,
+        "non-atomic joint consensus"
+      ],
+      "leave": [
+        0,
+        false,
+        "non-atomic joint consensus"
+      ],
+      "extra": null,
+      "leader": 2,
+      "witness": false,
+      "pid": 11,
+      "did": 12
+    },
+    {
+      "name": "witness-converted",
+      "p": 0,
+      "d": 0,
+      "enter": [
+        2,
+        false,
+        null
+      ],
+      "leave": [
+        2,
+        false,
+        "peer is still a voter"
+      ],
+      "extra": null,
+      "leader": 0,
+      "witness": true,
+      "pid": 11,
+      "did": 12
+    },
+    {
+      "name": "witness-replaced",
+      "p": 0,
+      "d": 0,
+      "enter": [
+        0,
+        false,
+        "peer does not exist"
+      ],
+      "leave": [
+        2,
+        false,
+        "peer does not exist"
+      ],
+      "extra": null,
+      "leader": 0,
+      "witness": true,
+      "pid": 11,
+      "did": 99
+    }
+  ]
+}

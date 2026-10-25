@@ -1,0 +1,34 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=python3 -
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+error[E0283]: type annotations needed for `ProviderSnapshot<_>`
+  --> pkg/schedule/operator/task_022_test.rs:76:17
+   |
+76 |             let cfg = ProviderSnapshot::default();
+   |                 ^^^   ---------------- type must be known at this point
+   |
+   = note: the type must implement `Default`
+   = note: required for `ProviderSnapshot<_>` to implement `Default`
+help: consider giving `cfg` an explicit type, where the type for type parameter `V` is specified
+   |
+76 |             let cfg: ProviderSnapshot<V> = ProviderSnapshot::default();
+   |                    +++++++++++++++++++++
+
+error[E0283]: type annotations needed
+   --> pkg/schedule/operator/task_022_test.rs:201:11
+    |
+201 |         e.check_in_progress(
+    |           ^^^^^^^^^^^^^^^^^ cannot infer type of the type parameter `C` declared on the method `check_in_progress`
+202 |             &BasicCluster::new(),
+203 |             &ProviderSnapshot::default(),
+    |              ---------------- type must be known at this point
+    |
+    = note: the type must implement `Default`
+    = note: required for `ProviderSnapshot<_>` to implement `Default`
+help: consider specifying a concrete type for the type parameter `C`
+    |
+201 |         e.check_in_progress::</* Type */>(
+    |                            ++++++++++++++
+
+For more information about this error, try `rustc --explain E0283`.
+error: could not compile `astersql-pd-schedule-operator` (lib test) due to 2 previous errors
+command_exit_code=101
