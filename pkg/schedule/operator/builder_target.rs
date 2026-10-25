@@ -297,10 +297,19 @@ impl<'a, V> Builder<'a, V> {
     }
     /// Current leader bypasses store/placement checks, but never role/witness checks.
     pub async fn allow_leader(&self, peer: &Peer, ignore_cluster_limit: bool) -> bool {
+        self.allow_leader_at(peer, ignore_cluster_limit, self.origin_leader)
+            .await
+    }
+    pub(crate) async fn allow_leader_at(
+        &self,
+        peer: &Peer,
+        ignore_cluster_limit: bool,
+        current_leader: u64,
+    ) -> bool {
         if matches!(peer.role, PeerRole::Learner | PeerRole::DemotingVoter) || peer.is_witness {
             return false;
         }
-        if peer.store_id == self.origin_leader {
+        if peer.store_id == current_leader {
             return true;
         }
         let Some(store) = self.context.stores.get_store(peer.store_id) else {

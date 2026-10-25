@@ -1,0 +1,24 @@
+
+running 3 tests
+task028: 3 leader vectors, 5 plan vectors and 2 comparisons passed
+test builder_simple::leader::task_028_test::task_028_current_leader_admission ... ok
+test builder_simple::leader::task_028_test::task_028_preference_vectors ... ok
+test builder_simple::leader::task_028_test::task_028_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    builder_simple::leader::task_028_test::task_028_behavior_cases
+
+test result: FAILED. 2 passed; 1 failed; 0 ignored; 0 measured; 44 filtered out; finished in 0.00s
+
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.91s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_operator-3c432df009ee920c)
+
+thread 'builder_simple::leader::task_028_test::task_028_behavior_cases' (163047241) panicked at pkg/schedule/operator/task_028_test.rs:193:13:
+assertion `left == right` failed: followers-excluded-count-tie
+  left: Array [Array [String("transfer"), Number(1), Number(2)]]
+ right: Array [Array [String("transfer"), Number(1), Number(3)]]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+error: test failed, to rerun pass `-p astersql-pd-schedule-operator --lib`

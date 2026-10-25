@@ -14,10 +14,10 @@ Builder 冻结 description 与 RegionInfo，生成真实 Operator 的 region ID�
 替换优先于独立 promote/remove/add；替换枚举现存 leader、晋升后 leader、新增 voter，
 按位置标签前缀（复用 core 的 Unicode equal_fold）、up store、旧 peer、提前加入目标 leader、目标 leader、减少迁移次数
 进行字典序评分，相同评分保留 store ID 顺序较早的方案。最终 leader 排除 ExpectedRoles
-中的 Follower，按角色/up/current/old 和 count/size leader score 选择。添加的 SendStore
+中的 Follower，按角色/up/current/keep voter/old 和 count/size leader score 选择。添加的 SendStore
 始终使用 origin leader；移除携带 down-store 与 light 标记；只有 add/remove 才增加
 REGION kind，独立 promote 保留来源不自动增加 REGION 的行为。leader 变化增加 LEADER。
-多候选 leader 原顺序透传到 TransferLeader。
+多候选 leader 使用 SetLeaders 排序并过滤后保存的顺序，构建时不再次过滤，透传到 TransferLeader。
 
 `NoValidLeader` 表示无法生成下一项合法计划；`NoSteps` 表示无变化（仅 ID 变化也无步）。
 role/witness 的 target 校验复用前序 API；已有 peer 的 witness 转换显式返回
@@ -42,3 +42,6 @@ leader 的相关输入中，planReplace 可先配对 AddLearner(store1)/RemovePe
 固定 fixture 独立冻结该反例和正常混合降级次序；枚举32种无降级 Add/Remove/Promote
 目标则检查每一步真实完成语义、leader 存活和最终目标一致。之前65组合的无条件
 可达性断言超出了 Go 规划契约，失败证据保留，未作为生产缺陷绕过或忽略测试。
+
+领导者与替换评分的 canonical 实现集中在 [builder_leader.rs](builder_leader.rs.md)。
+规划过程的 leader 准入使用当前 leader；prepare 阶段仍使用 origin leader。

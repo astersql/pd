@@ -1,0 +1,32 @@
+
+running 3 tests
+task028: 3 leader vectors, 5 plan vectors and 2 comparisons passed
+test builder_simple::leader::task_028_test::task_028_preference_vectors ... ok
+test builder_simple::leader::task_028_test::task_028_current_leader_admission ... FAILED
+task028: 17 fixed source-derived cases passed
+test builder_simple::leader::task_028_test::task_028_behavior_cases ... ok
+
+failures:
+
+failures:
+    builder_simple::leader::task_028_test::task_028_current_leader_admission
+
+test result: FAILED. 2 passed; 1 failed; 0 ignored; 0 measured; 44 filtered out; finished in 0.00s
+
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+warning: unused variable: `current_leader`
+   --> pkg/schedule/operator/builder_target.rs:307:9
+    |
+307 |         current_leader: u64,
+    |         ^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_current_leader`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: `astersql-pd-schedule-operator` (lib test) generated 1 warning (run `cargo fix --lib -p astersql-pd-schedule-operator --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.55s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_operator-3c432df009ee920c)
+
+thread 'builder_simple::leader::task_028_test::task_028_current_leader_admission' (163046736) panicked at pkg/schedule/operator/task_028_test.rs:268:5:
+former leader must pass store filter after transfer
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+error: test failed, to rerun pass `-p astersql-pd-schedule-operator --lib`

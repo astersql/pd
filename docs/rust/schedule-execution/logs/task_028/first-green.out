@@ -1,0 +1,9 @@
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+error[E0433]: cannot find type `PeerRoleType` in this scope
+   --> pkg/schedule/operator/builder_simple.rs:154:57
+    |
+154 |                 if self.expected_roles.get(&s) == Some(&PeerRoleType::Follower)
+    |                                                         ^^^^^^^^^^^^ use of undeclared type `PeerRoleType`
+
+For more information about this error, try `rustc --explain E0433`.
+error: could not compile `astersql-pd-schedule-operator` (lib test) due to 1 previous error

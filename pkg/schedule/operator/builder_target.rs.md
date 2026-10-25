@@ -36,3 +36,7 @@ PlanningRequired 交给后续规划任务；不生成空步骤 Operator，不分
 候选准入和 no-step 测试。四种行为变异分别证明重复添加、force/store、placement
 和角色/witness 错误会被断言捕获。运行命令、有效数量和共享槽位见
 [任务证据](../../../docs/rust/schedule-execution/task-026.md)。
+
+任务28增加内部 `allow_leader_at(peer, force, current_leader)`，规划阶段豁免当前
+leader，避免把已转出的原 leader 永久豁免。公开 `allow_leader` 和 prepare 校验继续
+使用 origin leader，角色/witness 检查始终先于豁免。
