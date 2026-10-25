@@ -1,0 +1,15 @@
+
+running 5 tests
+test task_033_test::task_033_counts ... ok
+test task_033_test::task_033_merge_and_faults ... ok
+test task_033_test::task_033_heap ... ok
+task033: 10 weighted fixture cases + listing/FIFO/drain scenario passed
+test task_033_test::task_033_behavior_cases ... ok
+task033: 400 merge/affinity batches, 800 heap entries, 4 producers + 4 consumers passed
+test task_033_test::task_033_concurrent_push_pop ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 52 filtered out; finished in 0.00s
+
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.16s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_operator-3c432df009ee920c)

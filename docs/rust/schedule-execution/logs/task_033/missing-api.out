@@ -1,0 +1,114 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=cargo test -p astersql-pd-schedule-operator --locked --lib task_033 -- --nocapture
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+error[E0583]: file not found for module `queues`
+  --> pkg/schedule/operator/lib.rs:90:1
+   |
+90 | mod queues;
+   | ^^^^^^^^^^^
+   |
+   = help: to create the module `queues`, create file "pkg/schedule/operator/queues.rs" or "pkg/schedule/operator/queues/mod.rs"
+   = note: if there is a `mod queues` elsewhere in the crate already, import it with `use crate::...` instead
+
+error[E0422]: cannot find struct, variant or union type `OperatorWithTime` in this scope
+   --> pkg/schedule/operator/task_033_test.rs:106:16
+    |
+106 |         q.push(OperatorWithTime{op:op(row[0].as_u64().unwrap(),0),deadline:base+Duration::from_nanos(row[1].as_u64().unwrap())});
+    |                ^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `OperatorWithTime` in this scope
+   --> pkg/schedule/operator/task_033_test.rs:114:12
+    |
+114 |     q.push(OperatorWithTime{op:op(8,0),deadline:base+Duration::from_secs(100)});
+    |            ^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `OperatorWithTime` in this scope
+   --> pkg/schedule/operator/task_033_test.rs:131:45
+    |
+131 | ...   for op in batch { heap.push(OperatorWithTime{op,deadline:base+Duration::from_nanos(id%7)});counts.inc_count("shared"); }
+    |                                   ^^^^^^^^^^^^^^^^ not found in this scope
+
+warning: unused import: `queues::*`
+  --> pkg/schedule/operator/lib.rs:91:9
+   |
+91 | pub use queues::*;
+   |         ^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+error[E0433]: cannot find type `RandBuckets` in this scope
+  --> pkg/schedule/operator/task_033_test.rs:29:19
+   |
+29 |         let queue=RandBuckets::default();
+   |                   ^^^^^^^^^^^ use of undeclared type `RandBuckets`
+
+error[E0433]: cannot find type `RandBuckets` in this scope
+  --> pkg/schedule/operator/task_033_test.rs:45:15
+   |
+45 |     let queue=RandBuckets::default();
+   |               ^^^^^^^^^^^ use of undeclared type `RandBuckets`
+
+error[E0433]: cannot find type `RandBuckets` in this scope
+  --> pkg/schedule/operator/task_033_test.rs:56:11
+   |
+56 |     let q=RandBuckets::default();
+   |           ^^^^^^^^^^^ use of undeclared type `RandBuckets`
+
+error[E0433]: cannot find type `QueueError` in this scope
+  --> pkg/schedule/operator/task_033_test.rs:71:45
+   |
+71 |     assert_eq!(q.put_operator(op(1,-1)),Err(QueueError::InvalidPriority(-1)));
+   |                                             ^^^^^^^^^^ use of undeclared type `QueueError`
+
+error[E0433]: cannot find type `QueueError` in this scope
+  --> pkg/schedule/operator/task_033_test.rs:72:44
+   |
+72 |     assert_eq!(q.put_operator(op(1,4)),Err(QueueError::InvalidPriority(4)));
+   |                                            ^^^^^^^^^^ use of undeclared type `QueueError`
+
+error[E0433]: cannot find type `WaitingOperatorStatus` in this scope
+  --> pkg/schedule/operator/task_033_test.rs:88:11
+   |
+88 |     let s=WaitingOperatorStatus::default();
+   |           ^^^^^^^^^^^^^^^^^^^^^ use of undeclared type `WaitingOperatorStatus`
+
+error[E0433]: cannot find type `ConcurrentHeapOpQueue` in this scope
+   --> pkg/schedule/operator/task_033_test.rs:102:11
+    |
+102 |     let q=ConcurrentHeapOpQueue::default();
+    |           ^^^^^^^^^^^^^^^^^^^^^ use of undeclared type `ConcurrentHeapOpQueue`
+
+error[E0433]: cannot find type `RandBuckets` in this scope
+   --> pkg/schedule/operator/task_033_test.rs:120:11
+    |
+120 |     let q=RandBuckets::default();let heap=ConcurrentHeapOpQueue::default();let counts=WaitingOperatorStatus::default();
+    |           ^^^^^^^^^^^ use of undeclared type `RandBuckets`
+
+error[E0433]: cannot find type `ConcurrentHeapOpQueue` in this scope
+   --> pkg/schedule/operator/task_033_test.rs:120:43
+    |
+120 |     let q=RandBuckets::default();let heap=ConcurrentHeapOpQueue::default();let counts=WaitingOperatorStatus::default();
+    |                                           ^^^^^^^^^^^^^^^^^^^^^ use of undeclared type `ConcurrentHeapOpQueue`
+
+error[E0433]: cannot find type `WaitingOperatorStatus` in this scope
+   --> pkg/schedule/operator/task_033_test.rs:120:87
+    |
+120 |     let q=RandBuckets::default();let heap=ConcurrentHeapOpQueue::default();let counts=WaitingOperatorStatus::default();
+    |                                                                                       ^^^^^^^^^^^^^^^^^^^^^ use of undeclared type `WaitingOperatorStatus`
+
+error[E0433]: cannot find type `QueueError` in this scope
+  --> pkg/schedule/operator/task_033_test.rs:80:46
+   |
+80 |     assert!(matches!(q.get_operator(0.0),Err(QueueError::UnpairedOperator)));
+   |                                              ^^^^^^^^^^ use of undeclared type `QueueError`
+
+error[E0433]: cannot find type `QueueError` in this scope
+  --> pkg/schedule/operator/task_033_test.rs:75:48
+   |
+75 |         assert!(matches!(q.get_operator(r),Err(QueueError::InvalidRandom)));
+   |                                                ^^^^^^^^^^ use of undeclared type `QueueError`
+
+Some errors have detailed explanations: E0422, E0433, E0583.
+For more information about an error, try `rustc --explain E0422`.
+warning: `astersql-pd-schedule-operator` (lib test) generated 1 warning
+error: could not compile `astersql-pd-schedule-operator` (lib test) due to 16 previous errors; 1 warning emitted
+command_exit_code=101
