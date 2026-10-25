@@ -9,7 +9,7 @@ assert after==json.loads((out/'go-before.json').read_text())
 assert subprocess.check_output(['git','status','--porcelain','--','*.go','go.mod','go.sum','go.work','go.work.sum'])==json.loads((out/'go-status-before.json').read_text()).encode()
 for p,h in json.loads((out/'readonly-before.json').read_text()).items():
  if p!='Cargo.lock':assert sha(p)==h,p
-lockdiff=subprocess.check_output(['git','diff','--','Cargo.lock'],text=True)
+lockdiff=subprocess.check_output(['git','diff','5fbe374ab','--','Cargo.lock'],text=True)
 assert [s for s in lockdiff.splitlines() if s.startswith('+') and not s.startswith('+++')]==['+ "astersql-pd-core",','+ "astersql-pd-core-constant",','+ "astersql-pd-storelimit",']
 fixture=Path('docs/rust/schedule-execution/fixtures/task_017.json');data=json.loads(fixture.read_text())
 assert not data['go_execution'] and data['evidence_kind']=='source_assertion'
