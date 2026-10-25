@@ -1,0 +1,66 @@
+
+running 4 tests
+test task_024_test::task_024_terminal_and_clock_boundaries ... FAILED
+test task_024_test::task_024_behavior_cases ... FAILED
+test task_024_test::task_024_influence_and_confver ... FAILED
+test task_024_test::task_024_concurrent_heartbeats ... FAILED
+
+failures:
+
+failures:
+    task_024_test::task_024_behavior_cases
+    task_024_test::task_024_concurrent_heartbeats
+    task_024_test::task_024_influence_and_confver
+    task_024_test::task_024_terminal_and_clock_boundaries
+
+test result: FAILED. 0 passed; 4 failed; 0 ignored; 0 measured; 31 filtered out; finished in 0.00s
+
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.20s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_operator-495e634b90917395)
+
+thread 'task_024_test::task_024_terminal_and_clock_boundaries' (162783084) panicked at pkg/schedule/operator/task_024_test.rs:151:5:
+assertion failed: before.check(&region(&[1], 1, 50, 50)).is_none()
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'task_024_test::task_024_behavior_cases' (162783081) panicked at pkg/schedule/operator/task_024_test.rs:111:9:
+assertion `left == right` failed
+  left: Some(AddPeer(AddPeer { to_store: 1, peer_id: 1, is_light_weight: false, is_witness: false }))
+ right: Some(TransferLeader(TransferLeader { from_store: 2, to_store: 1, to_stores: [] }))
+
+thread 'task_024_test::task_024_influence_and_confver' (162783083) panicked at pkg/schedule/operator/task_024_test.rs:233:9:
+assertion failed: matches!(o.check(&acknowledged), Some(OpStep::RemovePeer(_)))
+
+thread '<unnamed>' (162783085) panicked at pkg/schedule/operator/task_024_test.rs:266:21:
+assertion failed: o.check(r).is_none()
+
+thread '<unnamed>' (162783086) panicked at pkg/schedule/operator/task_024_test.rs:266:21:
+assertion failed: o.check(r).is_none()
+
+thread '<unnamed>' (162783087) panicked at pkg/schedule/operator/task_024_test.rs:266:21:
+assertion failed: o.check(r).is_none()
+
+thread '<unnamed>' (162783088) panicked at pkg/schedule/operator/task_024_test.rs:266:21:
+assertion failed: o.check(r).is_none()
+
+thread '<unnamed>' (162783089) panicked at pkg/schedule/operator/task_024_test.rs:266:21:
+assertion failed: o.check(r).is_none()
+
+thread '<unnamed>' (162783090) panicked at pkg/schedule/operator/task_024_test.rs:266:21:
+assertion failed: o.check(r).is_none()
+
+thread '<unnamed>' (162783091) panicked at pkg/schedule/operator/task_024_test.rs:266:21:
+assertion failed: o.check(r).is_none()
+
+thread '<unnamed>' (162783092) panicked at pkg/schedule/operator/task_024_test.rs:266:21:
+assertion failed: o.check(r).is_none()
+
+thread '<unnamed>' (162783094) panicked at pkg/schedule/operator/task_024_test.rs:266:21:
+assertion failed: o.check(r).is_none()
+
+thread '<unnamed>' (162783093) panicked at pkg/schedule/operator/task_024_test.rs:266:21:
+assertion failed: o.check(r).is_none()
+
+thread 'task_024_test::task_024_concurrent_heartbeats' (162783082) panicked at pkg/schedule/operator/task_024_test.rs:260:5:
+a scoped thread panicked
+error: test failed, to rerun pass `-p astersql-pd-schedule-operator --lib`

@@ -1,0 +1,79 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=cargo test -p astersql-pd-schedule-operator --locked --lib task_024 -- --nocapture
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+error[E0583]: file not found for module `operator`
+  --> pkg/schedule/operator/lib.rs:51:1
+   |
+51 | mod operator;
+   | ^^^^^^^^^^^^^
+   |
+   = help: to create the module `operator`, create file "pkg/schedule/operator/operator.rs" or "pkg/schedule/operator/operator/mod.rs"
+   = note: if there is a `mod operator` elsewhere in the crate already, import it with `use crate::...` instead
+
+error[E0425]: cannot find type `OpStep` in this scope
+  --> pkg/schedule/operator/task_024_test.rs:15:19
+   |
+15 | fn steps() -> Vec<OpStep> { vec![AddPeer{to_store:1,peer_id:1,..Default::default()}.into(), TransferLeader{from_store:2,to_store:1,....
+   |                   ^^^^^^ not found in this scope
+   |
+help: you might be missing a type parameter
+   |
+15 | fn steps<OpStep>() -> Vec<OpStep> { vec![AddPeer{to_store:1,peer_id:1,..Default::default()}.into(), TransferLeader{from_store:2,to_store:1,..Default::default()}.into(), RemovePeer{from_store:2,peer_id:2,..Default::default()}.into()] }
+   |         ++++++++
+
+error[E0425]: cannot find type `OpStep` in this scope
+  --> pkg/schedule/operator/task_024_test.rs:16:32
+   |
+16 | fn op(kind: OpKind, steps: Vec<OpStep>, clock: Arc<dyn Clock>) -> Operator {
+   |                                ^^^^^^ not found in this scope
+   |
+help: you might be missing a type parameter
+   |
+16 | fn op<OpStep>(kind: OpKind, steps: Vec<OpStep>, clock: Arc<dyn Clock>) -> Operator {
+   |      ++++++++
+
+error[E0425]: cannot find type `Operator` in this scope
+  --> pkg/schedule/operator/task_024_test.rs:16:67
+   |
+16 | fn op(kind: OpKind, steps: Vec<OpStep>, clock: Arc<dyn Clock>) -> Operator {
+   |                                                                   ^^^^^^^^
+   |
+  --> /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/core/src/iter/traits/iterator.rs:42:0
+   |
+   = note: similarly named trait `Iterator` defined here
+help: a trait with a similar name exists
+   |
+16 - fn op(kind: OpKind, steps: Vec<OpStep>, clock: Arc<dyn Clock>) -> Operator {
+16 + fn op(kind: OpKind, steps: Vec<OpStep>, clock: Arc<dyn Clock>) -> Iterator {
+   |
+
+warning: unused import: `operator::*`
+  --> pkg/schedule/operator/lib.rs:52:9
+   |
+52 | pub use operator::*;
+   |         ^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+error[E0433]: cannot find type `Operator` in this scope
+  --> pkg/schedule/operator/task_024_test.rs:17:5
+   |
+17 |     Operator::with_clock("test", "test", 1, Some(RegionEpoch{version:3,conf_ver:4}), kind, 50, steps, clock)
+   |     ^^^^^^^^ use of undeclared type `Operator`
+   |
+help: a trait with a similar name exists
+   |
+17 -     Operator::with_clock("test", "test", 1, Some(RegionEpoch{version:3,conf_ver:4}), kind, 50, steps, clock)
+17 +     Iterator::with_clock("test", "test", 1, Some(RegionEpoch{version:3,conf_ver:4}), kind, 50, steps, clock)
+   |
+
+error[E0433]: cannot find type `OpStep` in this scope
+  --> pkg/schedule/operator/task_024_test.rs:75:54
+   |
+75 |         assert!(matches!(o.check(&acknowledged),Some(OpStep::RemovePeer(_))));
+   |                                                      ^^^^^^ use of undeclared type `OpStep`
+
+Some errors have detailed explanations: E0425, E0433, E0583.
+For more information about an error, try `rustc --explain E0425`.
+warning: `astersql-pd-schedule-operator` (lib test) generated 1 warning
+error: could not compile `astersql-pd-schedule-operator` (lib test) due to 6 previous errors; 1 warning emitted
+command_exit_code=101

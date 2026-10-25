@@ -1,0 +1,108 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "evidence_kind": "source_assertion",
+  "go_execution": false,
+  "normalization": "none; time is a monotonic clock boundary",
+  "sources": {
+    "pkg/schedule/operator/operator.go": "ad287d89ee51f9d8d94985b45f11b2c4baddae0acb59c2f7899bc607fca860ba",
+    "pkg/schedule/operator/operator_test.go": "96bc7513e10013b3495b42b3aeb4425f4e04f415712a472fe1a457e0d08f71e9"
+  },
+  "cases": [
+    {
+      "leader": 2,
+      "stores": [
+        1,
+        2
+      ],
+      "current": 1,
+      "confver": 1
+    },
+    {
+      "leader": 2,
+      "stores": [
+        1,
+        2
+      ],
+      "current": 1,
+      "confver": 1
+    },
+    {
+      "leader": 1,
+      "stores": [
+        1,
+        2
+      ],
+      "current": 2,
+      "confver": 1
+    },
+    {
+      "leader": 1,
+      "stores": [
+        1
+      ],
+      "current": 3,
+      "confver": 2
+    },
+    {
+      "leader": 1,
+      "stores": [
+        1,
+        2
+      ],
+      "current": 3,
+      "confver": 1
+    }
+  ],
+  "contracts": {
+    "steps": [
+      "AddPeer(store=1,id=1)",
+      "TransferLeader(from=2,to=1)",
+      "RemovePeer(store=2,id=2)"
+    ],
+    "start": "CREATED -> STARTED only; repeated Start false",
+    "check": "stop at first unfinished; no rewind; terminal returns None; completion beats timeout",
+    "empty": "CREATED cannot succeed; STARTED can succeed; confver zero",
+    "priority": {
+      "default": "medium",
+      "admin": "urgent",
+      "override": "high"
+    },
+    "influence_cases": [
+      {
+        "size": 1,
+        "keys": 0,
+        "add_cost": 0
+      },
+      {
+        "size": 1,
+        "keys": 2,
+        "add_cost": 200
+      },
+      {
+        "size": 21,
+        "keys": 2,
+        "add_cost": 1000
+      }
+    ],
+    "time_cases": {
+      "expiration_seconds": 3,
+      "transfer_timeout_seconds": 60,
+      "before_timeout_seconds": 59
+    },
+    "concurrency": {
+      "threads": 10,
+      "checks_per_thread": 100
+    },
+    "source_tests": [
+      "operatorTestSuite.TestOperator",
+      "operatorTestSuite.TestCheckSuccess",
+      "operatorTestSuite.TestStart",
+      "operatorTestSuite.TestCheck",
+      "operatorTestSuite.TestInfluence",
+      "TestAdjustStepCostUsesRegionKeys",
+      "TestPeerInfluenceUsesRegionKeys",
+      "TestOperatorCheckConcurrently",
+      "TestOperatorStoreHealthCheck"
+    ]
+  }
+}
