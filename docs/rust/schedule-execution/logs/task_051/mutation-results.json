@@ -1,0 +1,27 @@
+[
+  {
+    "name": "red-behavior",
+    "exit_code": 101,
+    "behavior_assertion_detected": true
+  },
+  {
+    "name": "mutation-due",
+    "exit_code": 101,
+    "behavior_assertion_detected": true
+  },
+  {
+    "name": "mutation-learner",
+    "exit_code": 101,
+    "behavior_assertion_detected": true
+  },
+  {
+    "name": "mutation-recovery",
+    "exit_code": 101,
+    "behavior_assertion_detected": true
+  },
+  {
+    "name": "mutation-backoff",
+    "exit_code": 101,
+    "behavior_assertion_detected": true
+  }
+]

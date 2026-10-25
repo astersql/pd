@@ -58,3 +58,8 @@ mod task_049_test;
 mod affinity_merge;
 #[cfg(test)]
 mod task_050_test;
+
+mod priority_inspector;
+pub use priority_inspector::*;
+#[cfg(test)]
+mod task_051_test;

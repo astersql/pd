@@ -1,0 +1,22 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.20s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-e09dbbdb4068a657)
+
+running 2 tests
+
+thread 'task_051_test::task_051_behavior_cases' (164737237) panicked at pkg/schedule/checker/task_051_test.rs:143:17:
+assertion `left == right` failed: "replica-lifecycle" action 6
+  left: 2
+ right: 1
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test task_051_test::task_051_concurrent_removal ... ok
+test task_051_test::task_051_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_051_test::task_051_behavior_cases
+
+test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 25 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-checker --lib`

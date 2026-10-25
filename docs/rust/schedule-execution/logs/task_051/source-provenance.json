@@ -1,0 +1,15 @@
+{
+  "source_commit": "a95fac07e9e7937560f8a6bafe76cbe5be68b9aa",
+  "basis": "read-only Go source and test contracts; no Go oracle execution",
+  "go_output_sha256": null,
+  "normalization": "host-supplied monotonic nanoseconds, no other normalization",
+  "sources": {
+    "pkg/schedule/checker/priority_inspector.go": "07a0b462eb215b6cd6902a22a12f306c0d51fff58adf582df0b3eb4ddcab51a2",
+    "pkg/schedule/checker/priority_inspector_test.go": "1df8b6627ebe6ce142ed60ca0ede27089d98d341568529b200ec17968e00cccc",
+    "pkg/cache/priority_queue.go": "97cec02eed8b451fe61ff7a4733faad39635deff81ba3861fb59e6d73ac4afe3",
+    "pkg/schedule/placement/fit.go": "5e5c91601641ee4ffd1af5a7fedd3424bf5408d210fdb03b3956f52bb5da7b22"
+  },
+  "plan_source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "dependency_commit": "a95fac07e",
+  "fixture_sha256": "0ddda3de58a4bed72c830879c96dfdb8fa58029cdd9392b45f6f232f93517998"
+}

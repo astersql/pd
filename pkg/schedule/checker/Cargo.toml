@@ -9,6 +9,7 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
+astersql-pd-cache.workspace = true
 astersql-pd-schedule-hbstream.workspace = true
 astersql-pd-core.workspace = true
 astersql-pd-core-constant.workspace = true

@@ -407,6 +407,7 @@ dependencies = [
 name = "astersql-pd-schedule-checker"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-cache",
  "astersql-pd-codec",
  "astersql-pd-core",
  "astersql-pd-core-constant",
