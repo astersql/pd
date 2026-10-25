@@ -1,0 +1,44 @@
+[
+  {
+    "mutation": "pause",
+    "exit_code": 101,
+    "assertion_failure": true,
+    "compile_error": false
+  },
+  {
+    "mutation": "learner",
+    "exit_code": 101,
+    "assertion_failure": true,
+    "compile_error": false
+  },
+  {
+    "mutation": "normalize",
+    "exit_code": 101,
+    "assertion_failure": true,
+    "compile_error": false
+  },
+  {
+    "mutation": "location",
+    "exit_code": 101,
+    "assertion_failure": true,
+    "compile_error": false
+  },
+  {
+    "mutation": "leader-evict",
+    "exit_code": 101,
+    "assertion_failure": true,
+    "compile_error": false
+  },
+  {
+    "mutation": "ttl-boundary",
+    "exit_code": 101,
+    "assertion_failure": true,
+    "compile_error": false
+  },
+  {
+    "mutation": "success-cache",
+    "exit_code": 101,
+    "assertion_failure": true,
+    "compile_error": false
+  }
+]

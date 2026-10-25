@@ -1,0 +1,610 @@
+{
+  "provenance": "Go source/test contract derived; no Go runtime output",
+  "normalization": [],
+  "cases": [
+    {
+      "current": [
+        1,
+        2,
+        3
+      ],
+      "target": [
+        1,
+        2,
+        3
+      ],
+      "leader": 2,
+      "learners": [],
+      "op": true,
+      "name": "transfer"
+    },
+    {
+      "current": [
+        1,
+        2,
+        4
+      ],
+      "target": [
+        1,
+        2,
+        3
+      ],
+      "leader": 1,
+      "learners": [],
+      "op": true,
+      "name": "move"
+    },
+    {
+      "current": [
+        4,
+        2,
+        3
+      ],
+      "target": [
+        1,
+        2,
+        3
+      ],
+      "leader": 2,
+      "learners": [],
+      "op": true,
+      "name": "combo"
+    },
+    {
+      "current": [
+        1,
+        2,
+        3
+      ],
+      "target": [
+        2,
+        3,
+        4
+      ],
+      "leader": 4,
+      "learners": [],
+      "op": true,
+      "name": "new-leader"
+    },
+    {
+      "current": [
+        1,
+        2,
+        3
+      ],
+      "target": [
+        1,
+        2,
+        3
+      ],
+      "leader": 2,
+      "learners": [
+        5
+      ],
+      "op": true,
+      "name": "preserve-learner"
+    },
+    {
+      "current": [
+        1,
+        2,
+        4
+      ],
+      "target": [
+        1,
+        2,
+        3
+      ],
+      "leader": 1,
+      "learners": [
+        5,
+        6
+      ],
+      "op": true,
+      "name": "preserve-multiple-learners"
+    },
+    {
+      "current": [
+        1,
+        2,
+        3
+      ],
+      "target": [
+        1,
+        2,
+        3
+      ],
+      "leader": 1,
+      "learners": [],
+      "op": false,
+      "name": "aligned"
+    },
+    {
+      "current": [
+        1,
+        2,
+        3
+      ],
+      "target": [
+        1,
+        2,
+        3
+      ],
+      "leader": 2,
+      "learners": [],
+      "op": false,
+      "name": "no_group",
+      "no_group": true
+    },
+    {
+      "current": [
+        1,
+        2,
+        3
+      ],
+      "target": [
+        1,
+        2,
+        3
+      ],
+      "leader": 2,
+      "learners": [],
+      "op": false,
+      "name": "outside",
+      "outside": true
+    },
+    {
+      "current": [
+        1,
+        2,
+        3
+      ],
+      "target": [
+        1,
+        2,
+        3
+      ],
+      "leader": 2,
+      "learners": [],
+      "op": false,
+      "name": "overlap",
+      "overlap": true
+    },
+    {
+      "current": [
+        1,
+        2,
+        3
+      ],
+      "target": [
+        1,
+        2,
+        3
+      ],
+      "leader": 2,
+      "learners": [],
+      "op": false,
+      "name": "disabled",
+      "disabled": true
+    },
+    {
+      "current": [
+        1,
+        2,
+        3
+      ],
+      "target": [
+        1,
+        2,
+        3
+      ],
+      "leader": 2,
+      "learners": [],
+      "op": false,
+      "name": "no_leader",
+      "no_leader": true
+    },
+    {
+      "current": [
+        1,
+        2,
+        3
+      ],
+      "target": [
+        1,
+        2,
+        3
+      ],
+      "leader": 2,
+      "learners": [],
+      "op": false,
+      "name": "pending",
+      "pending": true
+    },
+    {
+      "current": [
+        1,
+        2,
+        3
+      ],
+      "target": [
+        1,
+        2,
+        3
+      ],
+      "leader": 2,
+      "learners": [],
+      "op": false,
+      "name": "paused",
+      "paused": true
+    },
+    {
+      "current": [
+        1,
+        2,
+        3
+      ],
+      "target": [
+        1,
+        2,
+        3
+      ],
+      "leader": 2,
+      "learners": [],
+      "op": false,
+      "name": "deleted",
+      "deleted": true
+    },
+    {
+      "current": [
+        1,
+        2,
+        3
+      ],
+      "target": [
+        1,
+        2,
+        3
+      ],
+      "leader": 2,
+      "learners": [],
+      "op": false,
+      "name": "evict",
+      "evict": 2
+    },
+    {
+      "current": [
+        1,
+        2,
+        3
+      ],
+      "target": [
+        1,
+        2,
+        3
+      ],
+      "leader": 2,
+      "learners": [],
+      "op": false,
+      "name": "reject",
+      "reject": 2
+    },
+    {
+      "current": [
+        1,
+        2,
+        3
+      ],
+      "target": [
+        1,
+        2,
+        3
+      ],
+      "leader": 2,
+      "learners": [],
+      "op": false,
+      "name": "missing-leader-store",
+      "missing": 2
+    },
+    {
+      "current": [
+        1,
+        2,
+        4
+      ],
+      "target": [
+        1,
+        2,
+        3
+      ],
+      "leader": 2,
+      "learners": [],
+      "op": false,
+      "name": "degraded-different",
+      "degraded": true
+    },
+    {
+      "current": [
+        1,
+        2,
+        3
+      ],
+      "target": [
+        1,
+        2,
+        3
+      ],
+      "leader": 2,
+      "learners": [],
+      "op": false,
+      "name": "degraded-same",
+      "degraded": true,
+      "normalize": true
+    },
+    {
+      "current": [
+        1,
+        2,
+        3
+      ],
+      "target": [
+        1,
+        2,
+        3
+      ],
+      "leader": 2,
+      "learners": [],
+      "op": false,
+      "name": "expired-normalize",
+      "expired": true,
+      "normalize": true
+    },
+    {
+      "current": [
+        1,
+        2,
+        3
+      ],
+      "target": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "leader": 2,
+      "learners": [],
+      "op": false,
+      "name": "count-mismatch-normalize",
+      "normalize": true
+    },
+    {
+      "current": [
+        1,
+        2,
+        3
+      ],
+      "target": [
+        1,
+        2,
+        3
+      ],
+      "leader": 4,
+      "learners": [],
+      "op": false,
+      "name": "invalid-leader-normalize",
+      "normalize": true
+    },
+    {
+      "current": [
+        1,
+        2,
+        3
+      ],
+      "target": [
+        1,
+        2,
+        5
+      ],
+      "leader": 2,
+      "learners": [
+        5
+      ],
+      "op": false,
+      "name": "learner-conflict"
+    },
+    {
+      "current": [
+        1,
+        2
+      ],
+      "target": [
+        1,
+        2,
+        3
+      ],
+      "leader": 2,
+      "learners": [],
+      "op": false,
+      "name": "current-placement-mismatch"
+    },
+    {
+      "current": [
+        1,
+        2,
+        4
+      ],
+      "target": [
+        1,
+        2,
+        3
+      ],
+      "leader": 2,
+      "learners": [],
+      "op": false,
+      "name": "better-location",
+      "location": true
+    },
+    {
+      "current": [
+        1,
+        2,
+        4
+      ],
+      "target": [
+        1,
+        2,
+        3
+      ],
+      "leader": 2,
+      "learners": [],
+      "op": false,
+      "name": "isolation-unmet",
+      "location": true,
+      "isolation": true
+    },
+    {
+      "current": [
+        1,
+        2,
+        3
+      ],
+      "target": [
+        1,
+        2,
+        4
+      ],
+      "leader": 2,
+      "learners": [],
+      "op": false,
+      "name": "target-location-normalize",
+      "location": true,
+      "normalize": true
+    },
+    {
+      "current": [
+        1,
+        2,
+        4
+      ],
+      "target": [
+        1,
+        2,
+        3
+      ],
+      "leader": 1,
+      "learners": [],
+      "op": true,
+      "name": "allocation-fault",
+      "allocation_fail": true
+    },
+    {
+      "current": [
+        1,
+        2,
+        4
+      ],
+      "target": [
+        1,
+        2,
+        3
+      ],
+      "leader": 2,
+      "learners": [],
+      "op": true,
+      "name": "group-health-recovery",
+      "degraded": true,
+      "recover": true
+    },
+    {
+      "current": [
+        1,
+        2,
+        3
+      ],
+      "target": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "leader": 2,
+      "learners": [],
+      "op": false,
+      "name": "observation-storage-fault-retry",
+      "storage_fail": true
+    },
+    {
+      "current": [
+        1,
+        2,
+        3
+      ],
+      "target": [
+        1,
+        2,
+        5
+      ],
+      "leader": 2,
+      "learners": [
+        5
+      ],
+      "op": false,
+      "direct": true,
+      "name": "direct-learner-conflict"
+    },
+    {
+      "current": [
+        1,
+        2,
+        3
+      ],
+      "target": [
+        1,
+        2,
+        3
+      ],
+      "leader": 2,
+      "learners": [],
+      "op": false,
+      "direct": true,
+      "name": "direct-evict",
+      "evict": 2
+    },
+    {
+      "current": [
+        1,
+        2,
+        3
+      ],
+      "target": [
+        1,
+        2,
+        3
+      ],
+      "leader": 2,
+      "learners": [],
+      "op": false,
+      "direct": true,
+      "name": "direct-reject",
+      "reject": 2
+    },
+    {
+      "current": [
+        1,
+        2,
+        3
+      ],
+      "target": [
+        1,
+        2,
+        6
+      ],
+      "leader": 6,
+      "learners": [],
+      "op": false,
+      "direct": true,
+      "name": "direct-missing",
+      "missing": 6
+    }
+  ]
+}

@@ -1,0 +1,429 @@
+[
+  {
+    "command": [
+      "cargo",
+      "fmt",
+      "--all",
+      "--",
+      "--check"
+    ],
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {},
+    "acceptance": true
+  },
+  {
+    "command": [
+      "cargo",
+      "fmt",
+      "--all"
+    ],
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {},
+    "acceptance": true
+  },
+  {
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_049",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {},
+    "test_results": {
+      "passed": 2,
+      "failed": 0,
+      "ignored": 0
+    },
+    "acceptance": true
+  },
+  {
+    "command": [
+      "cargo",
+      "metadata",
+      "--format-version",
+      "1",
+      "--no-deps"
+    ],
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {},
+    "acceptance": true
+  },
+  {
+    "command": [
+      "cargo",
+      "fmt",
+      "--all"
+    ],
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {},
+    "acceptance": false
+  },
+  {
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_049",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {},
+    "test_results": {
+      "passed": 1,
+      "failed": 1,
+      "ignored": 0
+    },
+    "acceptance": false
+  },
+  {
+    "command": [
+      "cargo",
+      "fmt",
+      "--all"
+    ],
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {},
+    "acceptance": false
+  },
+  {
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_049",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {},
+    "test_results": {
+      "passed": 1,
+      "failed": 1,
+      "ignored": 0
+    },
+    "acceptance": false
+  },
+  {
+    "command": [
+      "cargo",
+      "fmt",
+      "--all"
+    ],
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {},
+    "acceptance": false
+  },
+  {
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_049",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {},
+    "test_results": {
+      "passed": 1,
+      "failed": 1,
+      "ignored": 0
+    },
+    "acceptance": false
+  },
+  {
+    "command": [
+      "cargo",
+      "fmt",
+      "--all"
+    ],
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {},
+    "acceptance": false
+  },
+  {
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_049",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {},
+    "test_results": {
+      "passed": 1,
+      "failed": 1,
+      "ignored": 0
+    },
+    "acceptance": false
+  },
+  {
+    "command": [
+      "cargo",
+      "fmt",
+      "--all"
+    ],
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {},
+    "acceptance": false
+  },
+  {
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_049",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {},
+    "test_results": {
+      "passed": 1,
+      "failed": 1,
+      "ignored": 0
+    },
+    "acceptance": false
+  },
+  {
+    "command": [
+      "cargo",
+      "fmt",
+      "--all"
+    ],
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {},
+    "acceptance": false
+  },
+  {
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_049",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {},
+    "test_results": {
+      "passed": 1,
+      "failed": 1,
+      "ignored": 0
+    },
+    "acceptance": false
+  },
+  {
+    "command": [
+      "cargo",
+      "fmt",
+      "--all"
+    ],
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {},
+    "acceptance": false
+  },
+  {
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_049",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {},
+    "test_results": {
+      "passed": 1,
+      "failed": 1,
+      "ignored": 0
+    },
+    "acceptance": false
+  },
+  {
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked"
+    ],
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {},
+    "test_results": {
+      "passed": 24,
+      "failed": 0,
+      "ignored": 0
+    },
+    "acceptance": true
+  },
+  {
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_049",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {},
+    "test_results": {
+      "passed": 0,
+      "failed": 1,
+      "ignored": 0
+    },
+    "acceptance": false
+  },
+  {
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_049",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {},
+    "test_results": {
+      "passed": 1,
+      "failed": 1,
+      "ignored": 0
+    },
+    "acceptance": false
+  },
+  {
+    "command": [
+      "cargo",
+      "check",
+      "--workspace",
+      "--locked"
+    ],
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {},
+    "acceptance": true
+  },
+  {
+    "command": [
+      "cargo",
+      "test",
+      "--workspace",
+      "--locked"
+    ],
+    "exit_code": 130,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {
+      "RUST_TEST_THREADS": "2"
+    },
+    "reason": "Stopped own runner to repair source-derived exact TTL expiry boundary; not acceptance evidence; process group terminated and waited, lock released",
+    "test_results": {
+      "passed": 893,
+      "failed": 0,
+      "ignored": 1
+    },
+    "acceptance": false
+  },
+  {
+    "command": [
+      "cargo",
+      "test",
+      "--workspace",
+      "--locked"
+    ],
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "test_env": {
+      "RUST_TEST_THREADS": "2"
+    },
+    "test_results": {
+      "passed": 1482,
+      "failed": 0,
+      "ignored": 1
+    },
+    "acceptance": true
+  }
+]

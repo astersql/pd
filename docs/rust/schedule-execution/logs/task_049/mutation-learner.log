@@ -1,0 +1,31 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+warning: variable does not need to be mutable
+   --> pkg/schedule/checker/affinity_peer.rs:154:13
+    |
+154 |         let mut roles: BTreeMap<_, _> = target
+    |             ----^^^^^
+    |             |
+    |             help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: `astersql-pd-schedule-checker` (lib test) generated 1 warning (run `cargo fix --lib -p astersql-pd-schedule-checker --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.18s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-d1c5150b30e010c2)
+
+running 2 tests
+test task_049_test::task_049_virtual_placement_and_success_cache ... ok
+
+thread 'task_049_test::task_049_behavior_cases' (164576744) panicked at pkg/schedule/checker/task_049_test.rs:382:25:
+learner removed
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test task_049_test::task_049_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_049_test::task_049_behavior_cases
+
+test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 22 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-checker --lib`

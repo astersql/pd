@@ -1,0 +1,37 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.90s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-d1c5150b30e010c2)
+
+running 24 tests
+test task_040_test::task_040_witness_version_gate ... ok
+test task_039_test::task_039_pause_boundaries_and_concurrent_resume ... ok
+test task_044_test::task_044_cooldown_and_leader_health ... ok
+test task_040_test::task_040_better_location_comparison_boundaries ... ok
+test task_044_test::task_044_tiflash_down_and_offline_preflight ... ok
+test task_043_test::task_043_cache_invalidation ... ok
+test task_043_test::task_043_multiple_rules_and_swap ... ok
+test task_039_test::task_039_behavior_cases ... ok
+test task_044_test::task_044_recorder_and_leader_replacement ... ok
+test task_047_test::task_047_config_update_before_startup_gate ... ok
+test task_041_test::task_041_behavior_cases ... ok
+test task_043_test::task_043_behavior_cases ... ok
+test task_040_test::task_040_behavior_cases ... ok
+test task_046_test::task_046_target_safety ... ok
+test task_049_test::task_049_virtual_placement_and_success_cache ... ok
+test task_044_test::task_044_behavior_cases ... ok
+test task_047_test::task_047_split_cooldown ... ok
+test task_045_test::task_045_offline_recorder_refresh_uses_store_ids ... ok
+test task_042_test::task_042_behavior_cases ... ok
+test task_045_test::task_045_behavior_cases ... ok
+test task_047_test::task_047_behavior_cases ... ok
+test task_048_test::task_048_behavior_cases ... ok
+test task_046_test::task_046_behavior_cases ... ok
+test task_049_test::task_049_behavior_cases ... ok
+
+test result: ok. 24 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+   Doc-tests astersql_pd_schedule_checker
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

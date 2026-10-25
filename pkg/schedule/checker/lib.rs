@@ -49,3 +49,8 @@ mod split_checker;
 pub use split_checker::*;
 #[cfg(test)]
 mod task_048_test;
+
+mod affinity_peer;
+pub use affinity_peer::*;
+#[cfg(test)]
+mod task_049_test;
