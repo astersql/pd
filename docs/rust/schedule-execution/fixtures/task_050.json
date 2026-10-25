@@ -1,0 +1,216 @@
+{
+  "provenance": "readonly Go source/test contract; no Go runtime oracle",
+  "normalization": {},
+  "cases": [
+    {
+      "name": "same-group-next",
+      "expected": 3
+    },
+    {
+      "name": "smaller-prev",
+      "prev_size": 1,
+      "expected": 2
+    },
+    {
+      "name": "tie-next",
+      "expected": 3
+    },
+    {
+      "name": "one-way",
+      "prev_size": 1,
+      "one_way": true,
+      "expected": 3
+    },
+    {
+      "name": "startup",
+      "expected": 0,
+      "now_ns": 59999999999
+    },
+    {
+      "name": "no-next",
+      "expected": 0,
+      "no_next": true,
+      "one_way": true
+    },
+    {
+      "name": "different-group",
+      "expected": 0,
+      "other_group": true,
+      "one_way": true
+    },
+    {
+      "name": "incomplete-group-range",
+      "expected": 0,
+      "incomplete": true,
+      "one_way": true
+    },
+    {
+      "name": "not-affine-target",
+      "expected": 0,
+      "target_leader": 2,
+      "one_way": true
+    },
+    {
+      "name": "unhealthy-target",
+      "expected": 0,
+      "pending": true,
+      "one_way": true
+    },
+    {
+      "name": "target-placement",
+      "expected": 0,
+      "target_missing": true,
+      "one_way": true
+    },
+    {
+      "name": "gap",
+      "expected": 0,
+      "gap": true,
+      "one_way": true
+    },
+    {
+      "name": "label-split",
+      "expected": 0,
+      "label_split": true,
+      "one_way": true
+    },
+    {
+      "name": "placement-split",
+      "expected": 0,
+      "rule_split": true,
+      "one_way": true
+    },
+    {
+      "name": "affinity-disabled",
+      "expected": 0,
+      "limit": 0
+    },
+    {
+      "name": "global-disabled",
+      "expected": 0,
+      "global_size": 0
+    },
+    {
+      "name": "schedule-disabled",
+      "expected": 0,
+      "schedule_limit": 0
+    },
+    {
+      "name": "source-too-large",
+      "expected": 0,
+      "size": 11
+    },
+    {
+      "name": "source-too-many-keys",
+      "expected": 0,
+      "keys": 100001
+    },
+    {
+      "name": "combined-size",
+      "expected": 0,
+      "next_size": 9,
+      "one_way": true
+    },
+    {
+      "name": "combined-keys",
+      "expected": 0,
+      "next_keys": 90001,
+      "one_way": true
+    },
+    {
+      "name": "selected-target-cached-no-fallback",
+      "expected": 0,
+      "cache_target": true
+    },
+    {
+      "name": "cached-source",
+      "expected": 0,
+      "cache_source": true
+    },
+    {
+      "name": "source-pending",
+      "expected": 0,
+      "source_pending": true
+    },
+    {
+      "name": "paused",
+      "expected": 0,
+      "paused": true
+    },
+    {
+      "name": "source-deleted",
+      "expected": 0,
+      "deleted": true
+    },
+    {
+      "name": "placement-disabled",
+      "expected": 0,
+      "disabled": true
+    },
+    {
+      "name": "combined-boundary",
+      "size": 5,
+      "next_size": 5,
+      "keys": 50000,
+      "next_keys": 50000,
+      "expected": 3,
+      "one_way": true
+    },
+    {
+      "name": "startup-boundary",
+      "now_ns": 60000000000,
+      "expected": 3
+    },
+    {
+      "name": "deny-ignored",
+      "deny": true,
+      "expected": 3
+    },
+    {
+      "name": "global-size-is-enable-gate",
+      "global_size": 1,
+      "expected": 3
+    },
+    {
+      "name": "cache-ttl-equality",
+      "cache_source": true,
+      "now_ns": 160000000000,
+      "expected": 0
+    },
+    {
+      "name": "cache-expired",
+      "cache_source": true,
+      "now_ns": 161000000000,
+      "expected": 3
+    },
+    {
+      "name": "target-isolation",
+      "target_isolation": true,
+      "one_way": true,
+      "expected": 0
+    },
+    {
+      "name": "learner-allocation-failure",
+      "learners": true,
+      "allocation_fail": true,
+      "one_way": true,
+      "error": "allocation"
+    },
+    {
+      "name": "learner-alignment",
+      "learners": true,
+      "one_way": true,
+      "expected": 3
+    },
+    {
+      "name": "explicit-startup",
+      "start_ns": 100000000000,
+      "expected": 0
+    },
+    {
+      "name": "explicit-startup-boundary",
+      "start_ns": 40000000000,
+      "expected": 3
+    }
+  ]
+}

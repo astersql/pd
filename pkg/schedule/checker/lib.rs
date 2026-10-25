@@ -54,3 +54,7 @@ mod affinity_peer;
 pub use affinity_peer::*;
 #[cfg(test)]
 mod task_049_test;
+
+mod affinity_merge;
+#[cfg(test)]
+mod task_050_test;

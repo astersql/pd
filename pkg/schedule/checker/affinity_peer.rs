@@ -31,6 +31,7 @@ pub struct AffinityContext<'a, C: CheckerConfigProvider> {
 #[derive(Default)]
 pub struct AffinityChecker {
     pub pause: PauseController,
+    pub(crate) start_time: i128,
     recent_merges: BTreeMap<u64, u64>,
 }
 impl AffinityChecker {
@@ -52,6 +53,22 @@ impl AffinityChecker {
         C: CheckerConfigProvider,
         F: FnMut() -> Result<u64, BuilderError>,
     {
+        let Some((group, affinity)) = self.prepare_group(ctx, rules, manager, region).await else {
+            return Ok(None);
+        };
+        if affinity {
+            return Ok(None);
+        }
+        self.create_affinity_operator(ctx, rules, region, &group, allocate)
+            .await
+    }
+    pub(crate) async fn prepare_group<C: CheckerConfigProvider>(
+        &self,
+        ctx: &AffinityContext<'_, C>,
+        rules: &mut RuleManager,
+        manager: &mut Manager,
+        region: &Arc<RegionInfo>,
+    ) -> Option<(GroupState, bool)> {
         let now = ctx.rules.replica.now_unix_nanos.div_euclid(1_000_000_000) as u64;
         if self.pause.is_paused_at(now as i64)
             || !ctx.rules.replica.config.is_placement_rules_enabled()
@@ -59,15 +76,15 @@ impl AffinityChecker {
             || !is_region_healthy(region)
             || manager.groups.is_empty()
         {
-            return Ok(None);
+            return None;
         }
         let (group, mut affinity) =
             manager.get_and_cache_region_affinity_group_state(ctx.labels, Some(region), now);
         let Some(mut group) = group else {
-            return Ok(None);
+            return None;
         };
         if !best_location(ctx, rules, region, true).await {
-            return Ok(None);
+            return None;
         }
         let mut refetch = !group.affinity_scheduling_allowed;
         if group.affinity_scheduling_allowed && !affinity {
@@ -112,20 +129,19 @@ impl AffinityChecker {
             let (updated, matched) =
                 manager.get_and_cache_region_affinity_group_state(ctx.labels, Some(region), now);
             let Some(updated) = updated else {
-                return Ok(None);
+                return None;
             };
             group = updated;
             affinity = matched;
         }
         if !ctx.region_exists {
             manager.invalid_cache(region.meta().id);
-            return Ok(None);
+            return None;
         }
-        if !group.affinity_scheduling_allowed || affinity {
-            return Ok(None);
+        if !group.affinity_scheduling_allowed {
+            return None;
         }
-        self.create_affinity_operator(ctx, rules, region, &group, allocate)
-            .await
+        Some((group, affinity))
     }
     /// Build a single combo operation; learner/voter conflicts abort instead of
     /// silently promoting a learner (including TiFlash replicas).
@@ -222,7 +238,7 @@ impl AffinityChecker {
             .is_some_and(|expiry| now <= *expiry)
     }
 }
-async fn best_location<C: CheckerConfigProvider>(
+pub(crate) async fn best_location<C: CheckerConfigProvider>(
     ctx: &AffinityContext<'_, C>,
     manager: &mut RuleManager,
     region: &RegionInfo,

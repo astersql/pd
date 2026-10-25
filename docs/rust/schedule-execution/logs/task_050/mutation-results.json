@@ -1,0 +1,27 @@
+[
+  {
+    "mutation": "startup",
+    "exit_code": 101,
+    "behavior_failure": true
+  },
+  {
+    "mutation": "size",
+    "exit_code": 101,
+    "behavior_failure": true
+  },
+  {
+    "mutation": "target-cache",
+    "exit_code": 101,
+    "behavior_failure": true
+  },
+  {
+    "mutation": "one-way",
+    "exit_code": 101,
+    "behavior_failure": true
+  },
+  {
+    "mutation": "kind",
+    "exit_code": 101,
+    "behavior_failure": true
+  }
+]

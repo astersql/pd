@@ -40,3 +40,7 @@ normalization, injects allocation/storage faults only at external boundaries, an
 checks virtual placement and success-cache expiry. See
 [task-049 evidence](../../../docs/rust/schedule-execution/task-049.md) for commands,
 mutation evidence, provenance, and shared Cargo slot records.
+
+任务50将共同Check门禁提取为crate内`prepare_group`，供原有仅修复入口与
+`check_with_neighbors`完整入口复用。启动时间和合并选择见
+[affinity_merge.rs.md](affinity_merge.rs.md)；原有修复与成功回调契约保持不变。

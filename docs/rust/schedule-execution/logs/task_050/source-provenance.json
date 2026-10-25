@@ -1,0 +1,17 @@
+{
+  "source_commit": "df6cfb23a165705c2bc88e616b67e0c3cbb7c0ec",
+  "dependency_commit": "df6cfb23a",
+  "mode": "default",
+  "provenance": "read-only Go source/test contract inference; user waived runtime oracle admission",
+  "go_executed": false,
+  "go_output_sha256": null,
+  "normalization": {},
+  "sha256": {
+    "pkg/schedule/checker/affinity_checker.go": "e5b617a82f68abd5fda4fd30eb341a7bd588cb8187ff2cfef21446f8ee1bffbf",
+    "pkg/schedule/checker/affinity_checker_test.go": "fadc0e9679ec16020e95291f35c491b23a6a69d0b41e1eb9334c1a8f60446597",
+    "pkg/schedule/operator/create_operator.go": "43a938c72992f4ce81501c40ab85c1e79c08670383acd47f22655e779524b927",
+    "docs/rust/schedule-execution/fixtures/task_050.json": "bddf94ab5872234f0901f87f84bbf38ed32843f790cdafb911e205c6248dd70c",
+    ".plans/2026-10-25-调度执行内核/plan.md": "823d7db69c05899fe3b59884bb5fdd3e2fc715ad82ca4fe6eb89bc9b65fa6f58",
+    ".plans/2026-10-25-调度执行内核/05-检查器/plan.md": "2056ef5712fd2c07876860d4d59974e7944ebe710f182a5f1ba51dea5aea49c1"
+  }
+}
