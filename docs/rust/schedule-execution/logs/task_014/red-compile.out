@@ -1,0 +1,184 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=cargo test -p astersql-pd-schedule-hbstream --locked --lib task_014 -- --nocapture
+   Compiling astersql-pd-schedule-hbstream v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/hbstream)
+error[E0583]: file not found for module `stream_lifecycle`
+  --> pkg/schedule/hbstream/lib.rs:15:1
+   |
+15 | pub mod stream_lifecycle;
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: to create the module `stream_lifecycle`, create file "pkg/schedule/hbstream/stream_lifecycle.rs" or "pkg/schedule/hbstream/stream_lifecycle/mod.rs"
+   = note: if there is a `mod stream_lifecycle` elsewhere in the crate already, import it with `use crate::...` instead
+
+error: couldn't read `pkg/schedule/hbstream/../../../docs/rust/schedule-execution/fixtures/task_014.json`: No such file or directory (os error 2)
+  --> pkg/schedule/hbstream/task_014_test.rs:30:47
+   |
+30 |     let fixture: Value = serde_json::from_str(include_str!("../../../docs/rust/schedule-execution/fixtures/task_014.json")).unwrap();
+   |                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0432]: unresolved import `prometheus`
+ --> pkg/schedule/hbstream/task_014_test.rs:4:5
+  |
+4 | use prometheus::Registry;
+  |     ^^^^^^^^^^ use of unresolved module or unlinked crate `prometheus`
+  |
+  = help: if you wanted to use a crate named `prometheus`, use `cargo add prometheus` to add it to your `Cargo.toml`
+
+error[E0425]: cannot find type `HeartbeatMessage` in this scope
+  --> pkg/schedule/hbstream/task_014_test.rs:35:41
+   |
+35 |     let (good,mut rx) = mpsc::channel::<HeartbeatMessage>(2048);
+   |                                         ^^^^^^^^^^^^^^^^ not found in this scope
+   |
+help: you might be missing a type parameter
+   |
+29 | async fn task_014_behavior_cases<HeartbeatMessage>() {
+   |                                 ++++++++++++++++++
+
+error[E0425]: cannot find type `HeartbeatMessage` in this scope
+  --> pkg/schedule/hbstream/task_014_test.rs:36:40
+   |
+36 |     let (bad,bad_rx) = mpsc::channel::<HeartbeatMessage>(1); drop(bad_rx);
+   |                                        ^^^^^^^^^^^^^^^^ not found in this scope
+   |
+help: you might be missing a type parameter
+   |
+29 | async fn task_014_behavior_cases<HeartbeatMessage>() {
+   |                                 ++++++++++++++++++
+
+error[E0425]: cannot find type `HeartbeatMessage` in this scope
+  --> pkg/schedule/hbstream/task_014_test.rs:69:36
+   |
+69 |     let(tx,mut rx)=mpsc::channel::<HeartbeatMessage>(1);
+   |                                    ^^^^^^^^^^^^^^^^ not found in this scope
+   |
+help: you might be missing a type parameter
+   |
+66 | async fn task_014_saturated_cancel_and_join<HeartbeatMessage>() {
+   |                                            ++++++++++++++++++
+
+error[E0425]: cannot find type `HeartbeatMessage` in this scope
+  --> pkg/schedule/hbstream/task_014_test.rs:96:36
+   |
+96 |     let(tx,mut rx)=mpsc::channel::<HeartbeatMessage>(1);
+   |                                    ^^^^^^^^^^^^^^^^ not found in this scope
+   |
+help: you might be missing a type parameter
+   |
+93 | async fn task_014_drop_and_keepalive_failure<HeartbeatMessage>() {
+   |                                             ++++++++++++++++++
+
+warning: unused import: `stream_lifecycle::*`
+ --> pkg/schedule/hbstream/task_014_test.rs:2:54
+  |
+2 | use crate::{HeartbeatCommand, Operation, routing::*, stream_lifecycle::*};
+  |                                                      ^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+error[E0433]: cannot find type `HeartbeatMetrics` in this scope
+  --> pkg/schedule/hbstream/task_014_test.rs:32:28
+   |
+32 |     let metrics = Arc::new(HeartbeatMetrics::new(&registry).unwrap());
+   |                            ^^^^^^^^^^^^^^^^ use of undeclared type `HeartbeatMetrics`
+   |
+help: a trait with a similar name exists
+   |
+32 -     let metrics = Arc::new(HeartbeatMetrics::new(&registry).unwrap());
+32 +     let metrics = Arc::new(HeartbeatStream::new(&registry).unwrap());
+   |
+
+error[E0433]: cannot find type `HeartbeatStreams` in this scope
+  --> pkg/schedule/hbstream/task_014_test.rs:34:22
+   |
+34 |     let mut worker = HeartbeatStreams::start(router,123,metrics.clone(),&tokio::runtime::Handle::current());
+   |                      ^^^^^^^^^^^^^^^^ use of undeclared type `HeartbeatStreams`
+   |
+help: a trait with a similar name exists
+   |
+34 -     let mut worker = HeartbeatStreams::start(router,123,metrics.clone(),&tokio::runtime::Handle::current());
+34 +     let mut worker = HeartbeatStream::start(router,123,metrics.clone(),&tokio::runtime::Handle::current());
+   |
+
+error[E0433]: cannot find type `HeartbeatMessage` in this scope
+  --> pkg/schedule/hbstream/task_014_test.rs:42:41
+   |
+42 |     assert_eq!(rx.recv().await.unwrap(),HeartbeatMessage::Command(command(1)));
+   |                                         ^^^^^^^^^^^^^^^^ use of undeclared type `HeartbeatMessage`
+
+error[E0433]: cannot find type `HeartbeatMetrics` in this scope
+  --> pkg/schedule/hbstream/task_014_test.rs:67:55
+   |
+67 |     let registry=Registry::new();let metrics=Arc::new(HeartbeatMetrics::new(&registry).unwrap());
+   |                                                       ^^^^^^^^^^^^^^^^ use of undeclared type `HeartbeatMetrics`
+   |
+help: a trait with a similar name exists
+   |
+67 -     let registry=Registry::new();let metrics=Arc::new(HeartbeatMetrics::new(&registry).unwrap());
+67 +     let registry=Registry::new();let metrics=Arc::new(HeartbeatStream::new(&registry).unwrap());
+   |
+
+error[E0433]: cannot find type `HeartbeatMessage` in this scope
+  --> pkg/schedule/hbstream/task_014_test.rs:70:13
+   |
+70 |     tx.send(HeartbeatMessage::Command(command(1))).await.unwrap();
+   |             ^^^^^^^^^^^^^^^^ use of undeclared type `HeartbeatMessage`
+
+error[E0433]: cannot find type `HeartbeatStreams` in this scope
+  --> pkg/schedule/hbstream/task_014_test.rs:73:20
+   |
+73 |     let mut worker=HeartbeatStreams::start(router,123,metrics,&tokio::runtime::Handle::current());settle().await;
+   |                    ^^^^^^^^^^^^^^^^ use of undeclared type `HeartbeatStreams`
+   |
+help: a trait with a similar name exists
+   |
+73 -     let mut worker=HeartbeatStreams::start(router,123,metrics,&tokio::runtime::Handle::current());settle().await;
+73 +     let mut worker=HeartbeatStream::start(router,123,metrics,&tokio::runtime::Handle::current());settle().await;
+   |
+
+error[E0433]: cannot find type `HeartbeatMessage` in this scope
+  --> pkg/schedule/hbstream/task_014_test.rs:86:41
+   |
+86 |     assert_eq!(rx.recv().await.unwrap(),HeartbeatMessage::Command(command(1)));
+   |                                         ^^^^^^^^^^^^^^^^ use of undeclared type `HeartbeatMessage`
+
+error[E0433]: cannot find type `HeartbeatMetrics` in this scope
+  --> pkg/schedule/hbstream/task_014_test.rs:94:55
+   |
+94 |     let registry=Registry::new();let metrics=Arc::new(HeartbeatMetrics::new(&registry).unwrap());
+   |                                                       ^^^^^^^^^^^^^^^^ use of undeclared type `HeartbeatMetrics`
+   |
+help: a trait with a similar name exists
+   |
+94 -     let registry=Registry::new();let metrics=Arc::new(HeartbeatMetrics::new(&registry).unwrap());
+94 +     let registry=Registry::new();let metrics=Arc::new(HeartbeatStream::new(&registry).unwrap());
+   |
+
+error[E0433]: cannot find type `HeartbeatStreams` in this scope
+  --> pkg/schedule/hbstream/task_014_test.rs:98:16
+   |
+98 |     let worker=HeartbeatStreams::start(router,123,metrics,&tokio::runtime::Handle::current());
+   |                ^^^^^^^^^^^^^^^^ use of undeclared type `HeartbeatStreams`
+   |
+help: a trait with a similar name exists
+   |
+98 -     let worker=HeartbeatStreams::start(router,123,metrics,&tokio::runtime::Handle::current());
+98 +     let worker=HeartbeatStream::start(router,123,metrics,&tokio::runtime::Handle::current());
+   |
+
+error[E0433]: cannot find type `HeartbeatMessage` in this scope
+   --> pkg/schedule/hbstream/task_014_test.rs:100:41
+    |
+100 |     assert_eq!(rx.recv().await.unwrap(),HeartbeatMessage::KeepAlive{cluster_id:123});
+    |                                         ^^^^^^^^^^^^^^^^ use of undeclared type `HeartbeatMessage`
+
+error[E0433]: cannot find type `HeartbeatMessage` in this scope
+  --> pkg/schedule/hbstream/task_014_test.rs:53:24
+   |
+53 |     assert_eq!(message,HeartbeatMessage::KeepAlive{cluster_id:fixture["keepalive"]["header"]["cluster_id"].as_u64().unwrap()});
+   |                        ^^^^^^^^^^^^^^^^ use of undeclared type `HeartbeatMessage`
+
+Some errors have detailed explanations: E0425, E0432, E0433, E0583.
+For more information about an error, try `rustc --explain E0425`.
+warning: `astersql-pd-schedule-hbstream` (lib test) generated 1 warning
+error: could not compile `astersql-pd-schedule-hbstream` (lib test) due to 18 previous errors; 1 warning emitted
+command_exit_code=101

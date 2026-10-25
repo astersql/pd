@@ -11,6 +11,8 @@ path = "lib.rs"
 [dependencies]
 astersql-pd-core.workspace = true
 tokio.workspace = true
+tokio-util.workspace = true
+prometheus.workspace = true
 
 [dev-dependencies]
 serde_json.workspace = true

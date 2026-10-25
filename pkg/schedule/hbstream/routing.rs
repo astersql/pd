@@ -1,9 +1,13 @@
 // Copyright 2026 AsterSQL.
 //! Serial routing against the host's current canonical store registry.
-use crate::HeartbeatCommand;
+use crate::{
+    HeartbeatCommand,
+    stream_lifecycle::{HeartbeatMessage, HeartbeatMetrics, KeepAliveUnsupported},
+};
 use astersql_pd_core::StoresInfo;
 use std::{collections::HashMap, future::Future, pin::Pin, sync::Arc};
 use tokio::sync::mpsc;
+use tokio_util::sync::CancellationToken;
 
 /// Go's bounded command queue capacity.
 pub const HEARTBEAT_CHANNEL_CAPACITY: usize = 1024;
@@ -16,6 +20,9 @@ pub type StreamSend<'a> = Pin<Box<dyn Future<Output = Result<(), StreamError>> +
 /// External transport boundary; domain commands carry no wire types.
 pub trait HeartbeatStream: Send + Sync {
     fn send(&self, command: HeartbeatCommand) -> StreamSend<'_>;
+    fn keep_alive(&self, _cluster_id: u64) -> StreamSend<'_> {
+        Box::pin(async { Err(Box::new(KeepAliveUnsupported) as StreamError) })
+    }
 }
 impl HeartbeatStream for mpsc::Sender<HeartbeatCommand> {
     fn send(&self, command: HeartbeatCommand) -> StreamSend<'_> {
@@ -23,6 +30,27 @@ impl HeartbeatStream for mpsc::Sender<HeartbeatCommand> {
             self.send(command)
                 .await
                 .map_err(|err| Box::new(err) as StreamError)
+        })
+    }
+}
+
+/// Channel transport carrying both commands and header-only keepalive.
+pub struct MessageStream(pub mpsc::Sender<HeartbeatMessage>);
+impl HeartbeatStream for MessageStream {
+    fn send(&self, command: HeartbeatCommand) -> StreamSend<'_> {
+        Box::pin(async move {
+            self.0
+                .send(HeartbeatMessage::Command(command))
+                .await
+                .map_err(|e| Box::new(e) as StreamError)
+        })
+    }
+    fn keep_alive(&self, cluster_id: u64) -> StreamSend<'_> {
+        Box::pin(async move {
+            self.0
+                .send(HeartbeatMessage::KeepAlive { cluster_id })
+                .await
+                .map_err(|e| Box::new(e) as StreamError)
         })
     }
 }
@@ -37,6 +65,7 @@ struct StreamUpdate {
 pub struct RoutingHandle {
     commands: mpsc::Sender<HeartbeatCommand>,
     updates: mpsc::Sender<StreamUpdate>,
+    cancel: CancellationToken,
 }
 impl RoutingHandle {
     /// Enqueue a replacement; updates have capacity one, as in Go BindStream.
@@ -46,23 +75,34 @@ impl RoutingHandle {
         store_id: u64,
         stream: Arc<dyn HeartbeatStream>,
     ) -> Result<(), RoutingClosed> {
-        self.updates
-            .send(StreamUpdate { store_id, stream })
-            .await
-            .map_err(|_| RoutingClosed)
+        tokio::select! {
+            biased;
+            _ = self.cancel.cancelled() => Err(RoutingClosed),
+            result = self.updates.send(StreamUpdate { store_id, stream }) => result.map_err(|_| RoutingClosed),
+        }
     }
     /// Queue an owned command, waiting for capacity.
     pub async fn send(
         &self,
         command: HeartbeatCommand,
     ) -> Result<(), mpsc::error::SendError<HeartbeatCommand>> {
-        self.commands.send(command).await
+        tokio::select! {
+            biased;
+            _ = self.cancel.cancelled() => Err(mpsc::error::SendError(command)),
+            permit = self.commands.reserve() => match permit {
+                Ok(permit) => { permit.send(command); Ok(()) },
+                Err(_) => Err(mpsc::error::SendError(command)),
+            },
+        }
     }
     /// Nonblocking enqueue preserving Tokio's full/closed distinction and payload.
     pub fn try_send(
         &self,
         command: HeartbeatCommand,
     ) -> Result<(), mpsc::error::TrySendError<HeartbeatCommand>> {
+        if self.cancel.is_cancelled() {
+            return Err(mpsc::error::TrySendError::Closed(command));
+        }
         self.commands.try_send(command)
     }
 }
@@ -95,21 +135,27 @@ pub struct StreamRouter {
     streams: HashMap<u64, Arc<dyn HeartbeatStream>>,
     commands: mpsc::Receiver<HeartbeatCommand>,
     updates: mpsc::Receiver<StreamUpdate>,
+    cancel: CancellationToken,
+    metrics: Option<Arc<HeartbeatMetrics>>,
 }
 impl StreamRouter {
     pub fn new(stores: Arc<StoresInfo>) -> (RoutingHandle, Self) {
+        let cancel = CancellationToken::new();
         let (commands_tx, commands) = mpsc::channel(HEARTBEAT_CHANNEL_CAPACITY);
         let (updates_tx, updates) = mpsc::channel(1);
         (
             RoutingHandle {
                 commands: commands_tx,
                 updates: updates_tx,
+                cancel: cancel.clone(),
             },
             Self {
                 stores,
                 streams: HashMap::new(),
                 commands,
                 updates,
+                cancel,
+                metrics: None,
             },
         )
     }
@@ -134,6 +180,56 @@ impl StreamRouter {
             else => None,
         }
     }
+    pub(crate) fn cancel_token(&self) -> CancellationToken {
+        self.cancel.clone()
+    }
+    pub(crate) fn set_metrics(&mut self, metrics: Arc<HeartbeatMetrics>) {
+        self.metrics = Some(metrics);
+    }
+    pub(crate) async fn lifecycle_step(
+        &mut self,
+        cluster_id: u64,
+        ticker: &mut tokio::time::Interval,
+    ) -> bool {
+        // Cancellation is selected only before dispatch. Once Send starts we await
+        // it, matching Go Close's waitgroup barrier rather than abandoning I/O.
+        if self.cancel.is_cancelled() {
+            return false;
+        }
+        tokio::select! {
+            _ = self.cancel.cancelled() => false,
+            Some(update) = self.updates.recv() => { self.streams.insert(update.store_id,update.stream); true },
+            Some(command) = self.commands.recv() => { self.route(command).await; true },
+            _ = ticker.tick() => { self.keep_alive(cluster_id).await; true },
+        }
+    }
+    fn record_metrics(&self, id: u64, address: &str, kind: &'static str, status: &'static str) {
+        // I/O may span store burial. Do not recreate a deleted store's series.
+        if self.stores.get_store(id).is_some_and(|s| !s.is_removed()) {
+            if let Some(metrics) = &self.metrics {
+                metrics.record_metrics(address, id, kind, status);
+            }
+        }
+    }
+    pub(crate) async fn keep_alive(&mut self, cluster_id: u64) {
+        let ids = self.bound_stores();
+        for id in ids {
+            let Some(store) = self.stores.get_store(id).filter(|s| !s.is_removed()) else {
+                self.streams.remove(&id);
+                continue;
+            };
+            let result = self.streams[&id].keep_alive(cluster_id).await;
+            self.record_metrics(
+                id,
+                store.address(),
+                "keepalive",
+                if result.is_ok() { "ok" } else { "err" },
+            );
+            if result.is_err() {
+                self.streams.remove(&id);
+            }
+        }
+    }
     async fn route(&mut self, command: HeartbeatCommand) -> RouteEvent {
         let id = command.target_peer.store_id;
         let Some(store) = self.stores.get_store(id) else {
@@ -145,11 +241,16 @@ impl StreamRouter {
             return RouteEvent::RemovedStore(id);
         }
         let Some(stream) = self.streams.get(&id) else {
+            self.record_metrics(id, store.address(), "push", "skip");
             return RouteEvent::Unbound(id);
         };
         match stream.send(command).await {
-            Ok(()) => RouteEvent::Sent(id),
+            Ok(()) => {
+                self.record_metrics(id, store.address(), "push", "ok");
+                RouteEvent::Sent(id)
+            }
             Err(error) => {
+                self.record_metrics(id, store.address(), "push", "err");
                 self.streams.remove(&id);
                 RouteEvent::SendFailed {
                     store_id: id,

@@ -2,8 +2,9 @@
 
 `StreamRouter::new(Arc<StoresInfo>)` 返回可克隆 `RoutingHandle` 和宿主驱动的单消费者。
 领域命令复用 `HeartbeatCommand`；没有 wire/operator/server/runtime 反向依赖、私有
-运行时、后台任务或存储副本。`HeartbeatStream::send` 是唯一外部传输边界，默认实现
-支持真实 Tokio `mpsc::Sender<HeartbeatCommand>`，错误保留在 `RouteEvent::SendFailed`。
+运行时或存储副本。`HeartbeatStream::send` 与 `keep_alive` 是外部传输边界；命令传输
+支持真实 Tokio `mpsc::Sender<HeartbeatCommand>`，完整消息传输使用 `MessageStream`；
+命令错误保留在 `RouteEvent::SendFailed`，不支持保活的命令传输返回类型化错误。
 
 `bind` 排队更新，容量1；成功入队不代表已经生效。`step` 应用更新时替换同store的
 旧流。命令队列容量1024，FIFO；两个队列之间选择不保证先后，与 Go select 一致。
@@ -15,7 +16,9 @@
 未绑定时跳过；成功发送保留绑定，失败删除且不重试。发送等待期间不会应用重绑。
 已开始的发送可能跨越store移除；与 Go 一样，成功发送不撤回，下一命令再次检查。
 取消一个正在传输中的 `step` 会放弃该次失败清理，因此宿主需等待发送完成；保活、
-取消/join和指标由任务14接续，不在此处创建第二个runner或新的feature。
+取消/join和指标由 [stream_lifecycle](stream_lifecycle.rs.md) 提供；其单一串行消费者
+运行在宿主 Handle 上。`RoutingHandle` 等待入队可被 stop 唤醒并返回 closed 错误；
+任务14新增发送后 store 检查，避免 bury 期间重建已删除指标。
 
 [任务13证据](../../../docs/rust/schedule-execution/task-013.md) 记录实际 Go 输出、
 二进制/源码/fixture哈希、红绿验证和工作区基线。9组运行差分覆盖未绑定、初绑、替换、

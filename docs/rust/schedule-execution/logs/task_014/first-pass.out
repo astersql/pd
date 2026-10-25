@@ -1,0 +1,16 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=cargo test -p astersql-pd-schedule-hbstream --locked --lib task_014 -- --nocapture
+   Compiling astersql-pd-schedule-hbstream v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/hbstream)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.82s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_hbstream-d9e8983db0ff0972)
+
+running 5 tests
+test task_014_test::task_014_keepalive_join_and_metric_registry ... ok
+test task_014_test::task_014_router_oracle_bindings ... ok
+test task_014_test::task_014_drop_and_keepalive_failure ... ok
+test task_014_test::task_014_saturated_cancel_and_join ... ok
+task_014 Go oracle: 5 lifecycle/metrics cases + 1 saturated close case
+test task_014_test::task_014_behavior_cases ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s
+
+command_exit_code=0

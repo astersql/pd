@@ -1,0 +1,170 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "cases": [
+    {
+      "id": "push_skip",
+      "metrics": [
+        {
+          "address": "mock://tikv-1:1",
+          "store": "1",
+          "kind": "push",
+          "status": "skip",
+          "value": 1
+        }
+      ],
+      "bound_stores": [],
+      "delivered": 0
+    },
+    {
+      "id": "push_ok",
+      "metrics": [
+        {
+          "address": "mock://tikv-1:1",
+          "store": "1",
+          "kind": "push",
+          "status": "ok",
+          "value": 1
+        },
+        {
+          "address": "mock://tikv-1:1",
+          "store": "1",
+          "kind": "push",
+          "status": "skip",
+          "value": 1
+        }
+      ],
+      "bound_stores": [
+        1
+      ],
+      "delivered": 1
+    },
+    {
+      "id": "push_err",
+      "metrics": [
+        {
+          "address": "mock://tikv-1:1",
+          "store": "1",
+          "kind": "push",
+          "status": "err",
+          "value": 1
+        },
+        {
+          "address": "mock://tikv-1:1",
+          "store": "1",
+          "kind": "push",
+          "status": "ok",
+          "value": 1
+        },
+        {
+          "address": "mock://tikv-1:1",
+          "store": "1",
+          "kind": "push",
+          "status": "skip",
+          "value": 1
+        }
+      ],
+      "bound_stores": [],
+      "delivered": 1
+    },
+    {
+      "id": "keepalive",
+      "metrics": [
+        {
+          "address": "mock://tikv-1:1",
+          "store": "1",
+          "kind": "keepalive",
+          "status": "ok",
+          "value": 1
+        },
+        {
+          "address": "mock://tikv-1:1",
+          "store": "1",
+          "kind": "push",
+          "status": "err",
+          "value": 1
+        },
+        {
+          "address": "mock://tikv-1:1",
+          "store": "1",
+          "kind": "push",
+          "status": "ok",
+          "value": 1
+        },
+        {
+          "address": "mock://tikv-1:1",
+          "store": "1",
+          "kind": "push",
+          "status": "skip",
+          "value": 1
+        },
+        {
+          "address": "mock://tikv-2:2",
+          "store": "2",
+          "kind": "keepalive",
+          "status": "err",
+          "value": 1
+        }
+      ],
+      "bound_stores": [
+        1
+      ],
+      "delivered": 2
+    },
+    {
+      "id": "closed_twice",
+      "metrics": [
+        {
+          "address": "mock://tikv-1:1",
+          "store": "1",
+          "kind": "keepalive",
+          "status": "ok",
+          "value": 1
+        },
+        {
+          "address": "mock://tikv-1:1",
+          "store": "1",
+          "kind": "push",
+          "status": "err",
+          "value": 1
+        },
+        {
+          "address": "mock://tikv-1:1",
+          "store": "1",
+          "kind": "push",
+          "status": "ok",
+          "value": 1
+        },
+        {
+          "address": "mock://tikv-1:1",
+          "store": "1",
+          "kind": "push",
+          "status": "skip",
+          "value": 1
+        },
+        {
+          "address": "mock://tikv-2:2",
+          "store": "2",
+          "kind": "keepalive",
+          "status": "err",
+          "value": 1
+        }
+      ],
+      "bound_stores": [
+        1
+      ],
+      "delivered": 2
+    }
+  ],
+  "keepalive": {
+    "header": {
+      "cluster_id": 123
+    }
+  },
+  "saturated_queue": {
+    "before": 1024,
+    "after": 1024,
+    "close_calls": 2,
+    "send_after_close_returned": true
+  },
+  "descriptor": "(\"*github.com/prometheus/client_golang/prometheus.Desc\")(0x26bfc4709440)\n*github.com/prometheus/client_golang/prometheus.Desc {\n\tfqName: \"pd_hbstream_region_message\",\n\thelp: \"Counter of message hbstream sent.\",\n\tconstLabelPairs: []*github.com/prometheus/client_model/go.LabelPair len: 0, cap: 0, [],\n\tvariableLabels: *github.com/prometheus/client_golang/prometheus.compiledLabels {\n\t\tnames: []string len: 4, cap: 4, [\"address\",\"store\",\"type\",\"status\"],\n\t\tlabelConstraints: map[string]github.com/prometheus/client_golang/prometheus.LabelConstraint nil,},\n\tid: 7093908200086971957,\n\tdimHash: 15624599868960740750,\n\terr: error nil,}\n(dlv) "
+}

@@ -472,8 +472,10 @@ version = "0.1.0"
 dependencies = [
  "astersql-pd-core",
  "base64",
+ "prometheus",
  "serde_json",
  "tokio",
+ "tokio-util",
 ]
 
 [[package]]

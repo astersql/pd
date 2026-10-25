@@ -1,0 +1,20 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "dependency_commit": "e064eee5c",
+  "binaries": {
+    "/tmp/pd-sched003/cluster.test": "8781f08225e2b8b746217d79fe78e3ff072369cc8ae8941cc8d616a8a77986d9",
+    "/tmp/pd-sched003/dlv": "dcd0463a4350f0660412f5c766d31077370eec10ac8055cf0d786377e0d6340e"
+  },
+  "sources": {
+    "pkg/schedule/hbstream/heartbeat_streams.go": "e9388f1dd8e1ab906c273df018a2446b36450f6894bdc3ad2e0a70ec0a999489",
+    "pkg/mock/mockhbstream/mockhbstream.go": "d70209da4a9dcea7a6127c05774c37e777cf2f768e06735cbcb99e6d453f453c",
+    "server/cluster/cluster_test.go": "11c9f4767ab374ee4920d7a54e4411c031afbec9be61af191102e0b8cea4f71d",
+    "pkg/schedule/hbstream/metric.go": "ff4b8689ae09cac77e99f529681d0624f94400b564d6b08329c83a782517267d"
+  },
+  "fixture_sha256": "afde1cdca9dd74d941c790711b799eeed6c63d548e584ecdf3b96add40c2b16c",
+  "itab_symbol": "1f192e0 R go:itab.github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream,github.com/tikv/pd/pkg/schedule/hbstream.HeartbeatStream",
+  "mode": "classic run; protocol-independent routing common to scheduling branch",
+  "normalization": "Keep every metric label/value, queue length, binding identity and keepalive payload. Debugger addresses/scheduler observation timing are provenance only and not compared. Go map iteration order sorted. Classic run only; header-only response wire conversion remains adapter-owned.",
+  "safety": "Existing read-only cluster.test/dlv mount. Audited TestSetOfflineStore setup through line300 from task011/012; no required failpoints. Actual production run/BindStream/SendMsg, existing mockhbstream.Send as transport boundary. Construct domain interface using binary itab with direct-interface channel representation; no substituted function, Go writes, compilation or injected returns. nil transport channel triggers actual one-second timeout. Sleeper uses existing Recv on nil channel; no production time patched. No Go compilation, source mutation or failpoint operations. Saturation uses 1024 actual SendMsg calls on a fresh no-consumer instance. All selected Go sources match the pinned source commit.",
+  "scope": "Actual production run, BindStream, SendMsg, Close (twice each on live and saturated no-run instance). Nil external transport yields actual one-second Send timeout. Existing mock Recv supplies 10ms waits; no production clock/code edits. Pause after audited setup and debugger exit; full original Go test is not claimed."
+}

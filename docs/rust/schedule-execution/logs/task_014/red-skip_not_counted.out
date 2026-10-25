@@ -1,0 +1,31 @@
+
+running 5 tests
+test task_014_test::task_014_keepalive_join_and_metric_registry ... ok
+test task_014_test::task_014_router_oracle_bindings ... FAILED
+test task_014_test::task_014_behavior_cases ... FAILED
+test task_014_test::task_014_drop_and_keepalive_failure ... ok
+test task_014_test::task_014_saturated_cancel_and_join ... ok
+
+failures:
+
+failures:
+    task_014_test::task_014_behavior_cases
+    task_014_test::task_014_router_oracle_bindings
+
+test result: FAILED. 3 passed; 2 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s
+
+   Compiling astersql-pd-schedule-hbstream v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/hbstream)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.77s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_hbstream-d9e8983db0ff0972)
+
+thread 'task_014_test::task_014_router_oracle_bindings' (161971982) panicked at pkg/schedule/hbstream/task_014_test.rs:380:9:
+assertion `left == right` failed
+  left: Array []
+ right: Array [Object {"address": String("mock://tikv-1:1"), "kind": String("push"), "status": String("skip"), "store": String("1"), "value": Number(1)}]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'task_014_test::task_014_behavior_cases' (161971979) panicked at pkg/schedule/hbstream/task_014_test.rs:82:5:
+assertion `left == right` failed
+  left: Array []
+ right: Array [Object {"address": String("mock://tikv-1:1"), "kind": String("push"), "status": String("skip"), "store": String("1"), "value": Number(1)}]
+error: test failed, to rerun pass `-p astersql-pd-schedule-hbstream --lib`
