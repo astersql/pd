@@ -1,0 +1,134 @@
+[
+  {
+    "path": "target/rust-slot-1/etcd-contract-99176-1",
+    "holder_pid": 99176,
+    "holder_absent": true,
+    "bytes": 128000000
+  },
+  {
+    "path": "target/rust-slot-1/etcd-contract-91197-0",
+    "holder_pid": 91197,
+    "holder_absent": true,
+    "bytes": 80891926
+  },
+  {
+    "path": "target/rust-slot-1/etcd-contract-95217-0",
+    "holder_pid": 95217,
+    "holder_absent": true,
+    "bytes": 80891926
+  },
+  {
+    "path": "target/rust-slot-1/etcd-contract-96767-0",
+    "holder_pid": 96767,
+    "holder_absent": true,
+    "bytes": 80805910
+  },
+  {
+    "path": "target/rust-slot-1/etcd-contract-85200-0",
+    "holder_pid": 85200,
+    "holder_absent": true,
+    "bytes": 80805910
+  },
+  {
+    "path": "target/rust-slot-1/etcd-contract-94858-0",
+    "holder_pid": 94858,
+    "holder_absent": true,
+    "bytes": 80805910
+  },
+  {
+    "path": "target/rust-slot-1/etcd-contract-88192-0",
+    "holder_pid": 88192,
+    "holder_absent": true,
+    "bytes": 80805910
+  },
+  {
+    "path": "target/rust-slot-1/etcd-contract-89952-0",
+    "holder_pid": 89952,
+    "holder_absent": true,
+    "bytes": 80891926
+  },
+  {
+    "path": "target/rust-slot-1/etcd-contract-97831-0",
+    "holder_pid": 97831,
+    "holder_absent": true,
+    "bytes": 80891926
+  },
+  {
+    "path": "target/rust-slot-1/etcd-contract-91694-0",
+    "holder_pid": 91694,
+    "holder_absent": true,
+    "bytes": 80805910
+  },
+  {
+    "path": "target/rust-slot-1/etcd-contract-91633-0",
+    "holder_pid": 91633,
+    "holder_absent": true,
+    "bytes": 80805910
+  },
+  {
+    "path": "target/rust-slot-1/etcd-contract-86717-0",
+    "holder_pid": 86717,
+    "holder_absent": true,
+    "bytes": 80891926
+  },
+  {
+    "path": "target/rust-slot-1/etcd-contract-81661-0",
+    "holder_pid": 81661,
+    "holder_absent": true,
+    "bytes": 80891926
+  },
+  {
+    "path": "target/rust-slot-1/etcd-contract-936-0",
+    "holder_pid": 936,
+    "holder_absent": true,
+    "bytes": 80805910
+  },
+  {
+    "path": "target/rust-slot-1/etcd-contract-96396-0",
+    "holder_pid": 96396,
+    "holder_absent": true,
+    "bytes": 80891926
+  },
+  {
+    "path": "target/rust-slot-1/etcd-contract-98537-0",
+    "holder_pid": 98537,
+    "holder_absent": true,
+    "bytes": 80891926
+  },
+  {
+    "path": "target/rust-slot-1/etcd-contract-8208-0",
+    "holder_pid": 8208,
+    "holder_absent": true,
+    "bytes": 80891926
+  },
+  {
+    "path": "target/rust-slot-1/etcd-contract-97195-0",
+    "holder_pid": 97195,
+    "holder_absent": true,
+    "bytes": 80891926
+  },
+  {
+    "path": "target/rust-slot-1/etcd-contract-97643-0",
+    "holder_pid": 97643,
+    "holder_absent": true,
+    "bytes": 80891926
+  },
+  {
+    "path": "target/rust-slot-1/etcd-contract-82290-0",
+    "holder_pid": 82290,
+    "holder_absent": true,
+    "bytes": 0
+  },
+  {
+    "path": "target/rust-slot-1/etcd-contract-94932-0",
+    "holder_pid": 94932,
+    "holder_absent": true,
+    "bytes": 80891926
+  },
+  {
+    "path": "target/rust-slot-1/etcd-contract-81867-0",
+    "holder_pid": 81867,
+    "holder_absent": true,
+    "bytes": 80805910
+  }
+]

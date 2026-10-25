@@ -112,6 +112,12 @@ impl SplitScatterObserver {
         self.pending.remove(&expected.region_id);
         true
     }
+    pub(crate) fn snapshot(&self) -> Vec<SplitScatterPendingItem> {
+        self.pending.values().cloned().collect()
+    }
+    pub(crate) fn clear(&mut self) {
+        self.pending.clear();
+    }
     /// Ready items in region-ID order, without consuming or requiring all siblings.
     pub fn ready(&self, regions: &RegionsInfo) -> Vec<SplitScatterPendingItem> {
         self.pending

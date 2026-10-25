@@ -1,0 +1,50 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.87s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-e09dbbdb4068a657)
+
+running 6 tests
+
+thread 'task_054_test::task_054_missing_backoff_expiration_and_stale_identity' (165070025) panicked at pkg/schedule/checker/task_054_test.rs:117:5:
+assertion `left == right` failed
+  left: 2
+ right: 0
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'task_054_test::task_054_behavior_cases' (165070022) panicked at pkg/schedule/checker/task_054_test.rs:64:9:
+assertion `left == right` failed: "ttl-inclusive"
+  left: [100, 101]
+ right: []
+test task_054_test::task_054_heartbeat_and_range_group ... ok
+test task_054_test::task_054_missing_backoff_expiration_and_stale_identity ... FAILED
+test task_054_test::task_054_behavior_cases ... FAILED
+
+thread 'task_054_test::task_054_real_labels_store_budget_and_sequential_admission' (165070027) panicked at pkg/schedule/checker/task_054_test.rs:564:5:
+assertion `left == right` failed
+  left: 0
+ right: 1
+
+thread 'task_054_test::task_054_dispatch_outcomes' (165070023) panicked at pkg/schedule/checker/task_054_test.rs:426:9:
+assertion `left == right` failed
+  left: 0
+ right: 2
+test task_054_test::task_054_real_labels_store_budget_and_sequential_admission ... FAILED
+test task_054_test::task_054_dispatch_outcomes ... FAILED
+
+thread 'task_054_test::task_054_order_capacity_and_running_operator' (165070026) panicked at pkg/schedule/checker/task_054_test.rs:199:5:
+assertion `left == right` failed
+  left: 4096
+ right: 4
+test task_054_test::task_054_order_capacity_and_running_operator ... FAILED
+
+failures:
+
+failures:
+    task_054_test::task_054_behavior_cases
+    task_054_test::task_054_dispatch_outcomes
+    task_054_test::task_054_missing_backoff_expiration_and_stale_identity
+    task_054_test::task_054_order_capacity_and_running_operator
+    task_054_test::task_054_real_labels_store_budget_and_sequential_admission
+
+test result: FAILED. 1 passed; 5 failed; 0 ignored; 0 measured; 33 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-checker --lib`

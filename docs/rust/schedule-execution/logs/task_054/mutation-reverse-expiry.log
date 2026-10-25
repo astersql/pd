@@ -1,0 +1,30 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.21s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-e09dbbdb4068a657)
+
+running 6 tests
+
+thread 'task_054_test::task_054_order_capacity_and_running_operator' (165072700) panicked at pkg/schedule/checker/task_054_test.rs:167:5:
+assertion `left == right` failed
+  left: 100
+ right: 200
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+task_054: missing-result/source, exact 10s retry, TTL attempted split, replacement identity, old/stale versions
+task_054: 5 frozen top-pending/TTL cases
+test task_054_test::task_054_missing_backoff_expiration_and_stale_identity ... ok
+test task_054_test::task_054_behavior_cases ... ok
+test task_054_test::task_054_heartbeat_and_range_group ... ok
+test task_054_test::task_054_order_capacity_and_running_operator ... FAILED
+task_054: real label deny, store-token rejection, sequential running delta and capacity-limited attempt accounting
+test task_054_test::task_054_real_labels_store_budget_and_sequential_admission ... ok
+task_054: 7 dispatch outcomes plus replication, disabled, global limit, cleanup ordering, cancellation and empty-pass backoff
+test task_054_test::task_054_dispatch_outcomes ... ok
+
+failures:
+
+failures:
+    task_054_test::task_054_order_capacity_and_running_operator
+
+test result: FAILED. 5 passed; 1 failed; 0 ignored; 0 measured; 33 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-checker --lib`

@@ -1,0 +1,13 @@
+{
+  "evidence_kind": "source_assertion",
+  "go_runtime_output": null,
+  "source": "pkg/schedule/checker/split_scatter.go",
+  "normalization": "host monotonic seconds map to Go time.Time; zero expiry means absent; exact deadlines inclusive",
+  "cases": [
+    {"name":"all-ready", "now":0, "limit":2, "ids":[100,101]},
+    {"name":"top-one", "now":0, "limit":1, "ids":[100]},
+    {"name":"zero-limit", "now":1800, "limit":0, "ids":[]},
+    {"name":"before-ttl", "now":1799, "limit":2, "ids":[100,101]},
+    {"name":"ttl-inclusive", "now":1800, "limit":2, "ids":[]}
+  ]
+}

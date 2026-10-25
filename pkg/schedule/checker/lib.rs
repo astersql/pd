@@ -73,3 +73,8 @@ mod split_scatter_observe;
 pub use split_scatter_observe::*;
 #[cfg(test)]
 mod task_053_test;
+
+mod split_scatter_retry;
+pub use split_scatter_retry::*;
+#[cfg(test)]
+mod task_054_test;

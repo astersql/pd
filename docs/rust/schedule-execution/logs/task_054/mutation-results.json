@@ -1,0 +1,22 @@
+[
+  {
+    "mutation": "ttl-exclusive",
+    "exit_code": 101,
+    "behavior_assertion_failed": true
+  },
+  {
+    "mutation": "no-backoff",
+    "exit_code": 101,
+    "behavior_assertion_failed": true
+  },
+  {
+    "mutation": "never-attempted",
+    "exit_code": 101,
+    "behavior_assertion_failed": true
+  },
+  {
+    "mutation": "reverse-expiry",
+    "exit_code": 101,
+    "behavior_assertion_failed": true
+  }
+]

@@ -1,0 +1,36 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+warning: methods `snapshot` and `clear` are never used
+   --> pkg/schedule/checker/split_scatter_observe.rs:115:19
+    |
+ 63 | impl SplitScatterObserver {
+    | ------------------------- methods in this implementation
+...
+115 |     pub(crate) fn snapshot(&self) -> Vec<SplitScatterPendingItem> {
+    |                   ^^^^^^^^
+...
+118 |     pub(crate) fn clear(&mut self) {
+    |                   ^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `astersql-pd-schedule-checker` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.31s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-e09dbbdb4068a657)
+
+running 1 test
+
+thread 'task_054_test::task_054_behavior_cases' (165010842) panicked at pkg/schedule/checker/task_054_test.rs:54:9:
+assertion `left == right` failed: "ttl-inclusive"
+  left: [100, 101]
+ right: []
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test task_054_test::task_054_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_054_test::task_054_behavior_cases
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 33 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-checker --lib`

@@ -1,0 +1,13 @@
+{
+  "go_files": 1101,
+  "go_file_list_and_hashes_equal": true,
+  "go_changes": [],
+  "go_status": [],
+  "readonly_plans_unchanged": {
+    ".plans/2026-10-25-调度执行内核/plan.md": true,
+    ".plans/2026-10-25-调度执行内核/05-检查器/plan.md": true
+  },
+  "broken_links": [],
+  "diff_check_exit": 0,
+  "diff_check_output": ""
+}

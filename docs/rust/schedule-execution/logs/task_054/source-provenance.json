@@ -1,0 +1,17 @@
+{
+  "source_commit": "5b5c8ef85ec071da1a43d825e6327296ff57d32b",
+  "dependency_commit": "5b5c8ef85",
+  "evidence_kind": "source_assertion",
+  "go_runtime_output": null,
+  "go_output_sha256": null,
+  "sha256": {
+    "pkg/schedule/checker/split_scatter.go": "840875adc09bc99b054242df78c776e7454a8e1a2bf1f22960e767684aa9baf8",
+    "pkg/schedule/checker/split_scatter_test.go": "a70221653dfb877244a7351b632f0ea485d2b99484af508e354939bb6d272e9c",
+    "pkg/schedule/scatter/region_scatterer.go": "9f2f77a2ca302d6896d8dbffc7a736d411133d8df078807fcb8188b1fc75d3f6",
+    "docs/rust/schedule-execution/fixtures/task_054.json": "11f32bc630ad7a7daca27da68c90f84c2bd603d0d4d6610f375be111d4c1198e"
+  },
+  "rust_sha256": {
+    "pkg/schedule/checker/split_scatter_retry.rs": "c06e6dcee775434f65559e57cccccc9dccccca7eeb7f884ab3e2002a4f431d0c",
+    "pkg/schedule/checker/task_054_test.rs": "72dfbf2ca58ff72cdafbccb532033430a58d76d244910516bb734033551d4ffe"
+  }
+}

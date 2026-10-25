@@ -20,6 +20,8 @@ split version 一起构成身份。`is_current` / `remove_if_current` 防止旧�
 TTL 回收、capacity 管理、operator 创建或 gauge 更新；这些策略属于后继任务54。
 派发前调用者须再次读取 region/source 并校验 `is_current`，避免跨读取间隔使用旧状态。
 观察 API 采用独占可变借用更新，宿主负责共享锁及跨组件调用的串行化。
+任务54的重试控制器通过包内 `snapshot` 获取拥有身份的快照，通过包内 `clear`
+清空同一 canonical 身份表；策略 metadata 与指标由重试控制器同步维护。
 
 `has_split_scatter_txn_keyspace_bounds` 复用 canonical codec 的 keyspace boundary，
 从真实 registry 验证两个精确 start key；仅包含某个 bound 或以它为 end key 不足以
