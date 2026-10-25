@@ -68,3 +68,8 @@ mod split_scatter_group;
 pub use split_scatter_group::*;
 #[cfg(test)]
 mod task_052_test;
+
+mod split_scatter_observe;
+pub use split_scatter_observe::*;
+#[cfg(test)]
+mod task_053_test;

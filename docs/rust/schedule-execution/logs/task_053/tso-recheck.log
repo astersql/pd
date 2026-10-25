@@ -1,0 +1,19 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.21s
+     Running etcd_behavior_test.rs (target/rust-slot-1/debug/deps/etcd_behavior-f74cecf085805eed)
+
+running 1 test
+test real_etcd_oracle_process_restart ... isolated etcd 3.5.15 ready at http://127.0.0.1:55301
+
+thread 'real_etcd_oracle_process_restart' (164966499) panicked at pkg/tso/etcd_behavior_test.rs:193:14:
+child allocated a timestamp
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    real_etcd_oracle_process_restart
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 8 filtered out; finished in 7.67s
+
+error: test failed, to rerun pass `-p astersql-pd-tso --test etcd_behavior`

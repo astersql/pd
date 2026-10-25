@@ -1,0 +1,22 @@
+[
+  {
+    "mutation": "source-equality",
+    "exit_code": 101,
+    "behavior_assertion_failed": true
+  },
+  {
+    "mutation": "stale-ready",
+    "exit_code": 101,
+    "behavior_assertion_failed": true
+  },
+  {
+    "mutation": "ignore-deadline",
+    "exit_code": 101,
+    "behavior_assertion_failed": true
+  },
+  {
+    "mutation": "one-bound",
+    "exit_code": 101,
+    "behavior_assertion_failed": true
+  }
+]

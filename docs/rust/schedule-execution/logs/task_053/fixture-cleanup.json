@@ -1,0 +1,196 @@
+{
+  "slot": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+  "removed": [
+    {
+      "name": "etcd-contract-27295-27",
+      "pid_not_running": 27295,
+      "bytes": 80805910
+    },
+    {
+      "name": "etcd-contract-55630-0",
+      "pid_not_running": 55630,
+      "bytes": 80805910
+    },
+    {
+      "name": "etcd-contract-55977-0",
+      "pid_not_running": 55977,
+      "bytes": 80805910
+    },
+    {
+      "name": "etcd-contract-56208-0",
+      "pid_not_running": 56208,
+      "bytes": 80805910
+    },
+    {
+      "name": "etcd-contract-58916-0",
+      "pid_not_running": 58916,
+      "bytes": 80805910
+    },
+    {
+      "name": "etcd-contract-59260-0",
+      "pid_not_running": 59260,
+      "bytes": 80891926
+    },
+    {
+      "name": "etcd-contract-61019-0",
+      "pid_not_running": 61019,
+      "bytes": 80805910
+    },
+    {
+      "name": "etcd-contract-61412-0",
+      "pid_not_running": 61412,
+      "bytes": 80805910
+    },
+    {
+      "name": "etcd-contract-62802-0",
+      "pid_not_running": 62802,
+      "bytes": 80805910
+    },
+    {
+      "name": "etcd-contract-63336-0",
+      "pid_not_running": 63336,
+      "bytes": 80805910
+    },
+    {
+      "name": "etcd-contract-63336-1",
+      "pid_not_running": 63336,
+      "bytes": 80805910
+    },
+    {
+      "name": "etcd-contract-63517-0",
+      "pid_not_running": 63517,
+      "bytes": 80805910
+    },
+    {
+      "name": "etcd-contract-63517-1",
+      "pid_not_running": 63517,
+      "bytes": 80805910
+    },
+    {
+      "name": "etcd-contract-63680-0",
+      "pid_not_running": 63680,
+      "bytes": 80805910
+    },
+    {
+      "name": "etcd-contract-65120-0",
+      "pid_not_running": 65120,
+      "bytes": 80805910
+    },
+    {
+      "name": "etcd-contract-65281-0",
+      "pid_not_running": 65281,
+      "bytes": 80805910
+    },
+    {
+      "name": "etcd-contract-655-0",
+      "pid_not_running": 655,
+      "bytes": 80805910
+    },
+    {
+      "name": "etcd-contract-6823-0",
+      "pid_not_running": 6823,
+      "bytes": 80805910
+    },
+    {
+      "name": "etcd-contract-68312-0",
+      "pid_not_running": 68312,
+      "bytes": 80805910
+    },
+    {
+      "name": "etcd-contract-68454-0",
+      "pid_not_running": 68454,
+      "bytes": 80805910
+    },
+    {
+      "name": "etcd-contract-69509-0",
+      "pid_not_running": 69509,
+      "bytes": 80805910
+    },
+    {
+      "name": "etcd-contract-69671-0",
+      "pid_not_running": 69671,
+      "bytes": 80805910
+    },
+    {
+      "name": "etcd-contract-69671-1",
+      "pid_not_running": 69671,
+      "bytes": 80805912
+    },
+    {
+      "name": "etcd-contract-69867-1",
+      "pid_not_running": 69867,
+      "bytes": 80805910
+    },
+    {
+      "name": "etcd-contract-6987-0",
+      "pid_not_running": 6987,
+      "bytes": 80805910
+    },
+    {
+      "name": "etcd-contract-71700-0",
+      "pid_not_running": 71700,
+      "bytes": 80805910
+    },
+    {
+      "name": "etcd-contract-71878-0",
+      "pid_not_running": 71878,
+      "bytes": 80805910
+    },
+    {
+      "name": "etcd-contract-72082-0",
+      "pid_not_running": 72082,
+      "bytes": 144805888
+    },
+    {
+      "name": "etcd-contract-72082-1",
+      "pid_not_running": 72082,
+      "bytes": 144805910
+    },
+    {
+      "name": "etcd-contract-7228-0",
+      "pid_not_running": 7228,
+      "bytes": 80805914
+    },
+    {
+      "name": "etcd-contract-7473-0",
+      "pid_not_running": 7473,
+      "bytes": 80805910
+    },
+    {
+      "name": "etcd-contract-74901-0",
+      "pid_not_running": 74901,
+      "bytes": 80805910
+    },
+    {
+      "name": "etcd-contract-75118-0",
+      "pid_not_running": 75118,
+      "bytes": 80805910
+    },
+    {
+      "name": "etcd-contract-75252-0",
+      "pid_not_running": 75252,
+      "bytes": 80805910
+    },
+    {
+      "name": "etcd-contract-75367-0",
+      "pid_not_running": 75367,
+      "bytes": 80891926
+    },
+    {
+      "name": "etcd-contract-76806-1",
+      "pid_not_running": 76806,
+      "bytes": 128000000
+    },
+    {
+      "name": "etcd-contract-77582-0",
+      "pid_not_running": 77582,
+      "bytes": 80891926
+    },
+    {
+      "name": "etcd-contract-78349-0",
+      "pid_not_running": 78349,
+      "bytes": 80805910
+    }
+  ],
+  "bytes": 3246076702
+}

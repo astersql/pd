@@ -1,0 +1,22 @@
+{
+  "workspace": {
+    "passed": 1491,
+    "failed": 0,
+    "ignored": 1,
+    "runtime_tests_passed": 1489,
+    "compile_fail_doctests_passed": 2
+  },
+  "focused": {
+    "passed": 4,
+    "failed": 0
+  },
+  "package": {
+    "passed": 33,
+    "failed": 0
+  },
+  "fixture_gate_cases": 13,
+  "txn_boundary_states": 15,
+  "grouping_integrations": 5,
+  "independent_stale_identity_fields": 5,
+  "lifecycle_scenarios": 1
+}

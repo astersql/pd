@@ -1,0 +1,14 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.44s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-e09dbbdb4068a657)
+
+running 4 tests
+task_053: 5 independent stale identity fields and identical rerecord
+test task_053_test::task_053_identity_fields ... ok
+task_053: 13 frozen version/missing cases
+task_053: 5 keyspaces x 3 boundary states plus grouping integration
+test task_053_test::task_053_behavior_cases ... ok
+test task_053_test::task_053_txn_bounds ... ok
+test task_053_test::task_053_partial_and_repeated_batches ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 29 filtered out; finished in 0.00s

@@ -1,0 +1,15 @@
+{
+  "source_commit": "7b680e69cfebf143f061fa861fe93e85cfd1d9b3",
+  "dependency_commit": "7b680e69c",
+  "oracle_kind": "source-derived under explicit user waiver",
+  "go_execution": false,
+  "go_output_hash": null,
+  "source_sha256": {
+    "pkg/schedule/checker/split_scatter.go": "840875adc09bc99b054242df78c776e7454a8e1a2bf1f22960e767684aa9baf8",
+    "pkg/schedule/checker/split_scatter_test.go": "a70221653dfb877244a7351b632f0ea485d2b99484af508e354939bb6d272e9c",
+    "pkg/keyspace/util.go": "540f61336ae0fb177498f6594500fd838149476ab4e87ff5e7abbf3700b5d06b",
+    "pkg/schedule/checker/split_scatter_group.go": "b2f8465dd84ab486d3b526c6d308899b774b933bc75655ba2d49b78d901a4159"
+  },
+  "fixture_sha256": "9821f3579cac8aa491a701ac3151cb3fc8ad858817e4838d64b2a8ab589b6df8",
+  "oracle_index_sha256": "2d1a930742291e7047a864aa2246e7e22c612cb6583249b7edb42945b494b450"
+}

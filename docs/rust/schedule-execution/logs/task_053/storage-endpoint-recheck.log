@@ -1,0 +1,10 @@
+   Compiling astersql-pd-proto v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/proto)
+   Compiling astersql-pd-storage-endpoint v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/storage/endpoint)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 15.43s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_storage_endpoint-0aa71e8a6813943a)
+
+running 1 test
+test rule_endpoint_test::rule_endpoint_etcd ... isolated etcd 3.5.15 ready at http://127.0.0.1:51898
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 102 filtered out; finished in 12.75s

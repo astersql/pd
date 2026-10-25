@@ -1,0 +1,84 @@
+{
+  "provenance": "source-derived; no Go execution; user waiver applies",
+  "go_output_hash": null,
+  "cases": [
+    {
+      "name": "missing-both",
+      "result": null,
+      "source": null,
+      "expected": "MissingResult"
+    },
+    {
+      "name": "missing-source",
+      "result": 6,
+      "source": null,
+      "expected": "MissingSource"
+    },
+    {
+      "name": "old-result",
+      "result": 5,
+      "source": 6,
+      "expected": "AwaitingResult"
+    },
+    {
+      "name": "old-result-missing-source",
+      "result": 5,
+      "source": null,
+      "expected": "AwaitingResult"
+    },
+    {
+      "name": "stale-result",
+      "result": 7,
+      "source": 6,
+      "expected": "StaleResult"
+    },
+    {
+      "name": "stale-missing-source",
+      "result": 7,
+      "source": null,
+      "expected": "StaleResult"
+    },
+    {
+      "name": "source-old",
+      "result": 6,
+      "source": 5,
+      "expected": "AwaitingSource"
+    },
+    {
+      "name": "matched",
+      "result": 6,
+      "source": 6,
+      "expected": "Ready"
+    },
+    {
+      "name": "source-newer",
+      "result": 6,
+      "source": 7,
+      "expected": "Ready"
+    },
+    {
+      "name": "no-result-epoch",
+      "result": -1,
+      "source": 6,
+      "expected": "AwaitingResult"
+    },
+    {
+      "name": "no-source-epoch",
+      "result": 6,
+      "source": -1,
+      "expected": "AwaitingSource"
+    },
+    {
+      "name": "zero-result",
+      "result": 0,
+      "source": 6,
+      "expected": "AwaitingResult"
+    },
+    {
+      "name": "max-result",
+      "result": 18446744073709551615,
+      "source": 6,
+      "expected": "StaleResult"
+    }
+  ]
+}

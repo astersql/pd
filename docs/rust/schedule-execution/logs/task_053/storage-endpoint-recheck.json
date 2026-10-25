@@ -1,0 +1,20 @@
+{
+  "command": [
+    "cargo",
+    "test",
+    "-p",
+    "astersql-pd-storage-endpoint",
+    "--locked",
+    "--lib",
+    "rule_endpoint_test::rule_endpoint_etcd",
+    "--",
+    "--exact",
+    "--nocapture"
+  ],
+  "exit_code": 0,
+  "slot": 1,
+  "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+  "test_env": {
+    "RUST_TEST_THREADS": "1"
+  }
+}
