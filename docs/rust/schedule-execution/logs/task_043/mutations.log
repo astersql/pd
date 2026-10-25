@@ -1,0 +1,5 @@
+{"name": "skip-missing", "exit_code": 101, "behavior_assertion_failed": true}
+{"name": "learner-as-voter", "exit_code": 101, "behavior_assertion_failed": true}
+{"name": "lose-priority", "exit_code": 101, "behavior_assertion_failed": true}
+{"name": "lose-pending", "exit_code": 101, "behavior_assertion_failed": true}
+{"name": "tiflash-accept-compute", "exit_code": 101, "behavior_assertion_failed": true}

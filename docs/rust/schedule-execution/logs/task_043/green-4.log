@@ -1,0 +1,15 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+error[E0599]: no method named `set_label_value` found for struct `StoreInfo` in the current scope
+   --> pkg/schedule/checker/task_043_test.rs:486:7
+    |
+486 |     s.set_label_value("zone", "b");
+    |       ^^^^^^^^^^^^^^^
+    |
+help: there is a method `label_value` with a similar name, but with different arguments
+   --> pkg/core/store_labels.rs:136:5
+    |
+136 |     pub fn label_value(&self, key: &str) -> &str {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `astersql-pd-schedule-checker` (lib test) due to 1 previous error

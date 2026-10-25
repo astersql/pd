@@ -1,0 +1,31 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.08s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-78902705b86d3ebf)
+
+running 3 tests
+
+thread 'task_043_test::task_043_behavior_cases' (164129293) panicked at pkg/schedule/checker/task_043_test.rs:266:13:
+voter missing: missing operator
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'task_043_test::task_043_multiple_rules_and_swap' (164129295) panicked at pkg/schedule/checker/task_043_test.rs:397:5:
+assertion `left == right` failed
+  left: []
+ right: [NoStoreToAdd]
+
+thread 'task_043_test::task_043_cache_invalidation' (164129294) panicked at pkg/schedule/checker/task_043_test.rs:324:29:
+called `Option::unwrap()` on a `None` value
+test task_043_test::task_043_cache_invalidation ... FAILED
+test task_043_test::task_043_multiple_rules_and_swap ... FAILED
+test task_043_test::task_043_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_043_test::task_043_behavior_cases
+    task_043_test::task_043_cache_invalidation
+    task_043_test::task_043_multiple_rules_and_swap
+
+test result: FAILED. 0 passed; 3 failed; 0 ignored; 0 measured; 7 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-checker --lib`

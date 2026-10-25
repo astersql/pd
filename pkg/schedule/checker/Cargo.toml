@@ -20,3 +20,6 @@ astersql-pd-schedule-placement.workspace = true
 [dev-dependencies]
 serde_json.workspace = true
 tokio.workspace = true
+astersql-pd-storage-endpoint.workspace = true
+astersql-pd-storage-kv.workspace = true
+astersql-pd-keypath.workspace = true

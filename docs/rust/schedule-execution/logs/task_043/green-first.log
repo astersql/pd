@@ -1,0 +1,26 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.80s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-e85b3907dc5ce567)
+
+running 2 tests
+
+thread 'task_043_test::task_043_behavior_cases' (164124290) panicked at pkg/schedule/checker/task_043_test.rs:200:9:
+assertion `left == right` failed: voter missing: pending
+  left: true
+ right: false
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'task_043_test::task_043_cache_invalidation' (164124291) panicked at pkg/schedule/checker/task_043_test.rs:301:5:
+assertion failed: m.is_region_fit_cached(&stores.get_stores(), &region, NOW)
+test task_043_test::task_043_cache_invalidation ... FAILED
+test task_043_test::task_043_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_043_test::task_043_behavior_cases
+    task_043_test::task_043_cache_invalidation
+
+test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 7 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-checker --lib`

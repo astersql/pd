@@ -1,0 +1,674 @@
+{
+  "source_commit": "d40dabb0c22d3fd7c02663e01719f48b13c7bdf6",
+  "go_execution": false,
+  "provenance": "readonly Go source/test contract; user waived runtime oracle admission",
+  "source_sha256": {
+    "pkg/schedule/checker/rule_checker.go": "b2cccb0a8ac670aa5957a5728998e1a7cf4b35dff3f43dd1cfc4a699dae6fc61",
+    "pkg/schedule/checker/rule_checker_test.go": "ac05aa4b43b98e29ca3772c35c152bc9748cc8ad34557d94a9b8050deeaeaee1",
+    "pkg/schedule/operator/create_operator.go": "43a938c72992f4ce81501c40ab85c1e79c08670383acd47f22655e779524b927",
+    "pkg/schedule/operator/builder.go": "2c74830947c401ea8c4d46e8066e4c85aecd02beea035d0bb9eb4aab8cee8f83"
+  },
+  "cases": [
+    {
+      "name": "voter missing",
+      "role": "voter",
+      "count": 3,
+      "peers": [
+        1,
+        2
+      ],
+      "stores": 3,
+      "target": 3,
+      "witness": false,
+      "witness_enabled": false,
+      "engine": "",
+      "zone": "",
+      "isolation": "",
+      "paused": false,
+      "no_leader": false,
+      "allocation_error": false,
+      "temporary": false,
+      "pending": false,
+      "error": null,
+      "entry": "fit",
+      "steps": [
+        [
+          "add",
+          3,
+          1000,
+          false
+        ],
+        [
+          "promote",
+          3,
+          1000,
+          false
+        ]
+      ],
+      "desc": "add-rule-peer"
+    },
+    {
+      "name": "check entry",
+      "role": "voter",
+      "count": 3,
+      "peers": [
+        1,
+        2
+      ],
+      "stores": 3,
+      "target": 3,
+      "witness": false,
+      "witness_enabled": false,
+      "engine": "",
+      "zone": "",
+      "isolation": "",
+      "paused": false,
+      "no_leader": false,
+      "allocation_error": false,
+      "temporary": false,
+      "pending": false,
+      "error": null,
+      "entry": "check",
+      "steps": [
+        [
+          "add",
+          3,
+          1000,
+          false
+        ],
+        [
+          "promote",
+          3,
+          1000,
+          false
+        ]
+      ],
+      "desc": "add-rule-peer"
+    },
+    {
+      "name": "learner missing",
+      "role": "learner",
+      "count": 3,
+      "peers": [
+        1,
+        2
+      ],
+      "stores": 3,
+      "target": 3,
+      "witness": false,
+      "witness_enabled": false,
+      "engine": "",
+      "zone": "",
+      "isolation": "",
+      "paused": false,
+      "no_leader": false,
+      "allocation_error": false,
+      "temporary": false,
+      "pending": false,
+      "error": null,
+      "entry": "fit",
+      "steps": [
+        [
+          "add",
+          3,
+          1000,
+          false
+        ]
+      ],
+      "desc": "add-rule-peer"
+    },
+    {
+      "name": "follower missing",
+      "role": "follower",
+      "count": 3,
+      "peers": [
+        1,
+        2
+      ],
+      "stores": 3,
+      "target": 3,
+      "witness": false,
+      "witness_enabled": false,
+      "engine": "",
+      "zone": "",
+      "isolation": "",
+      "paused": false,
+      "no_leader": false,
+      "allocation_error": false,
+      "temporary": false,
+      "pending": false,
+      "error": null,
+      "entry": "fit",
+      "steps": [
+        [
+          "add",
+          3,
+          1000,
+          false
+        ],
+        [
+          "promote",
+          3,
+          1000,
+          false
+        ]
+      ],
+      "desc": "add-rule-peer"
+    },
+    {
+      "name": "leader missing",
+      "role": "leader",
+      "count": 1,
+      "peers": [
+        1,
+        2
+      ],
+      "stores": 3,
+      "target": 3,
+      "witness": false,
+      "witness_enabled": false,
+      "engine": "tikv",
+      "zone": "",
+      "isolation": "",
+      "paused": false,
+      "no_leader": false,
+      "allocation_error": false,
+      "temporary": false,
+      "pending": false,
+      "error": null,
+      "entry": "fit",
+      "steps": [
+        [
+          "add",
+          3,
+          1000,
+          false
+        ],
+        [
+          "promote",
+          3,
+          1000,
+          false
+        ]
+      ],
+      "desc": "add-rule-peer"
+    },
+    {
+      "name": "witness enabled",
+      "role": "voter",
+      "count": 3,
+      "peers": [
+        1,
+        2
+      ],
+      "stores": 3,
+      "target": 3,
+      "witness": true,
+      "witness_enabled": true,
+      "engine": "",
+      "zone": "",
+      "isolation": "",
+      "paused": false,
+      "no_leader": false,
+      "allocation_error": false,
+      "temporary": false,
+      "pending": false,
+      "error": null,
+      "entry": "fit",
+      "steps": [
+        [
+          "add",
+          3,
+          1000,
+          true
+        ],
+        [
+          "promote",
+          3,
+          1000,
+          true
+        ]
+      ],
+      "desc": "add-rule-peer"
+    },
+    {
+      "name": "witness version gate",
+      "role": "voter",
+      "count": 3,
+      "peers": [
+        1,
+        2
+      ],
+      "stores": 3,
+      "target": 3,
+      "witness": true,
+      "witness_enabled": false,
+      "engine": "",
+      "zone": "",
+      "isolation": "",
+      "paused": false,
+      "no_leader": false,
+      "allocation_error": false,
+      "temporary": false,
+      "pending": false,
+      "error": null,
+      "entry": "fit",
+      "steps": [
+        [
+          "add",
+          3,
+          1000,
+          false
+        ],
+        [
+          "promote",
+          3,
+          1000,
+          false
+        ]
+      ],
+      "desc": "add-rule-peer"
+    },
+    {
+      "name": "tiflash learner",
+      "role": "learner",
+      "count": 1,
+      "peers": [
+        1,
+        2
+      ],
+      "stores": 3,
+      "target": 3,
+      "witness": false,
+      "witness_enabled": false,
+      "engine": "tiflash",
+      "zone": "",
+      "isolation": "",
+      "paused": false,
+      "no_leader": false,
+      "allocation_error": false,
+      "temporary": false,
+      "pending": false,
+      "error": null,
+      "entry": "fit",
+      "steps": [
+        [
+          "add",
+          3,
+          1000,
+          false
+        ]
+      ],
+      "desc": "add-rule-peer"
+    },
+    {
+      "name": "tiflash helper",
+      "role": "learner",
+      "count": 1,
+      "peers": [
+        1,
+        2
+      ],
+      "stores": 3,
+      "target": 3,
+      "witness": false,
+      "witness_enabled": false,
+      "engine": "tiflash",
+      "zone": "",
+      "isolation": "",
+      "paused": false,
+      "no_leader": false,
+      "allocation_error": false,
+      "temporary": false,
+      "pending": false,
+      "error": null,
+      "entry": "tiflash",
+      "steps": [
+        [
+          "add",
+          3,
+          1000,
+          false
+        ]
+      ],
+      "desc": "add-rule-peer"
+    },
+    {
+      "name": "no store",
+      "role": "voter",
+      "count": 3,
+      "peers": [
+        1,
+        2
+      ],
+      "stores": 2,
+      "target": 0,
+      "witness": false,
+      "witness_enabled": false,
+      "engine": "",
+      "zone": "",
+      "isolation": "",
+      "paused": false,
+      "no_leader": false,
+      "allocation_error": false,
+      "temporary": false,
+      "pending": true,
+      "error": "NoStoreToAdd",
+      "entry": "fit",
+      "steps": [],
+      "desc": null
+    },
+    {
+      "name": "busy store",
+      "role": "voter",
+      "count": 3,
+      "peers": [
+        1,
+        2
+      ],
+      "stores": 3,
+      "target": 0,
+      "witness": false,
+      "witness_enabled": false,
+      "engine": "",
+      "zone": "",
+      "isolation": "",
+      "paused": false,
+      "no_leader": false,
+      "allocation_error": false,
+      "temporary": true,
+      "pending": false,
+      "error": "NoStoreToAdd",
+      "entry": "fit",
+      "steps": [],
+      "desc": null
+    },
+    {
+      "name": "paused",
+      "role": "voter",
+      "count": 3,
+      "peers": [
+        1,
+        2
+      ],
+      "stores": 3,
+      "target": 0,
+      "witness": false,
+      "witness_enabled": false,
+      "engine": "",
+      "zone": "",
+      "isolation": "",
+      "paused": true,
+      "no_leader": false,
+      "allocation_error": false,
+      "temporary": false,
+      "pending": false,
+      "error": null,
+      "entry": "fit",
+      "steps": [],
+      "desc": null
+    },
+    {
+      "name": "no leader",
+      "role": "voter",
+      "count": 3,
+      "peers": [
+        1,
+        2
+      ],
+      "stores": 3,
+      "target": 0,
+      "witness": false,
+      "witness_enabled": false,
+      "engine": "",
+      "zone": "",
+      "isolation": "",
+      "paused": false,
+      "no_leader": true,
+      "allocation_error": false,
+      "temporary": false,
+      "pending": false,
+      "error": null,
+      "entry": "fit",
+      "steps": [],
+      "desc": null
+    },
+    {
+      "name": "disabled fit",
+      "role": "voter",
+      "count": 3,
+      "peers": [
+        1,
+        2
+      ],
+      "stores": 3,
+      "target": 0,
+      "witness": false,
+      "witness_enabled": false,
+      "engine": "",
+      "zone": "",
+      "isolation": "",
+      "paused": false,
+      "no_leader": false,
+      "allocation_error": false,
+      "temporary": false,
+      "pending": false,
+      "error": null,
+      "entry": "none",
+      "steps": [],
+      "desc": null
+    },
+    {
+      "name": "satisfied",
+      "role": "voter",
+      "count": 2,
+      "peers": [
+        1,
+        2
+      ],
+      "stores": 3,
+      "target": 0,
+      "witness": false,
+      "witness_enabled": false,
+      "engine": "",
+      "zone": "",
+      "isolation": "",
+      "paused": false,
+      "no_leader": false,
+      "allocation_error": false,
+      "temporary": false,
+      "pending": false,
+      "error": null,
+      "entry": "fit",
+      "steps": [],
+      "desc": null
+    },
+    {
+      "name": "allocator fails",
+      "role": "voter",
+      "count": 3,
+      "peers": [
+        1,
+        2
+      ],
+      "stores": 3,
+      "target": 0,
+      "witness": false,
+      "witness_enabled": false,
+      "engine": "",
+      "zone": "",
+      "isolation": "",
+      "paused": false,
+      "no_leader": false,
+      "allocation_error": true,
+      "temporary": false,
+      "pending": false,
+      "error": "allocation",
+      "entry": "fit",
+      "steps": [],
+      "desc": null
+    },
+    {
+      "name": "isolation rejects",
+      "role": "voter",
+      "count": 3,
+      "peers": [
+        1,
+        2
+      ],
+      "stores": 3,
+      "target": 0,
+      "witness": false,
+      "witness_enabled": false,
+      "engine": "",
+      "zone": "a",
+      "isolation": "zone",
+      "paused": false,
+      "no_leader": false,
+      "allocation_error": false,
+      "temporary": false,
+      "pending": true,
+      "error": "NoStoreToAdd",
+      "entry": "fit",
+      "steps": [],
+      "desc": null
+    },
+    {
+      "name": "label rejects",
+      "role": "voter",
+      "count": 3,
+      "peers": [
+        1,
+        2
+      ],
+      "stores": 3,
+      "target": 0,
+      "witness": false,
+      "witness_enabled": false,
+      "engine": "",
+      "zone": "absent",
+      "isolation": "",
+      "paused": false,
+      "no_leader": false,
+      "allocation_error": false,
+      "temporary": false,
+      "pending": true,
+      "error": "NoStoreToAdd",
+      "entry": "fit",
+      "steps": [],
+      "desc": null
+    },
+    {
+      "name": "helper does not enqueue",
+      "role": "learner",
+      "count": 1,
+      "peers": [
+        1,
+        2
+      ],
+      "stores": 2,
+      "target": 0,
+      "witness": false,
+      "witness_enabled": false,
+      "engine": "tiflash",
+      "zone": "",
+      "isolation": "",
+      "paused": false,
+      "no_leader": false,
+      "allocation_error": false,
+      "temporary": false,
+      "pending": false,
+      "error": "NoStoreToAdd",
+      "entry": "tiflash",
+      "steps": [],
+      "desc": null
+    },
+    {
+      "name": "helper ignores compute",
+      "role": "learner",
+      "count": 1,
+      "peers": [
+        1,
+        2
+      ],
+      "stores": 3,
+      "target": 0,
+      "witness": false,
+      "witness_enabled": false,
+      "engine": "tiflash_compute",
+      "zone": "",
+      "isolation": "",
+      "paused": false,
+      "no_leader": false,
+      "allocation_error": false,
+      "temporary": false,
+      "pending": false,
+      "error": null,
+      "entry": "tiflash",
+      "steps": [],
+      "desc": null
+    },
+    {
+      "name": "helper ignores voter",
+      "role": "voter",
+      "count": 3,
+      "peers": [
+        1,
+        2
+      ],
+      "stores": 3,
+      "target": 0,
+      "witness": false,
+      "witness_enabled": false,
+      "engine": "tiflash",
+      "zone": "",
+      "isolation": "",
+      "paused": false,
+      "no_leader": false,
+      "allocation_error": false,
+      "temporary": false,
+      "pending": false,
+      "error": null,
+      "entry": "tiflash",
+      "steps": [],
+      "desc": null
+    },
+    {
+      "name": "empty rules",
+      "role": "voter",
+      "count": 3,
+      "peers": [
+        1,
+        2
+      ],
+      "stores": 3,
+      "target": 0,
+      "witness": false,
+      "witness_enabled": false,
+      "engine": "",
+      "zone": "",
+      "isolation": "",
+      "paused": false,
+      "no_leader": false,
+      "allocation_error": false,
+      "temporary": false,
+      "pending": false,
+      "error": null,
+      "entry": "empty",
+      "steps": [],
+      "desc": null
+    }
+  ],
+  "additional_scenarios": [
+    "cache candidate and promoted hit; rule update evicts; missing after update",
+    "two TiFlash rules: first unavailable, second available; helper keeps retry caches untouched",
+    "swap-fit: constrained occupied store freed by moving satisfied learner rule",
+    "ordinary multi-rule check retains first NoStoreToAdd diagnostic but clears pending on next successful learner add"
+  ],
+  "normalization": {
+    "now_unix_nanos": 10000000000000,
+    "allocated_peer_id": 1000,
+    "ordering": "unique region sizes and leader counts; no output fields ignored",
+    "steps": "[action, store ID, peer ID, witness]; complete ordered commands"
+  }
+}

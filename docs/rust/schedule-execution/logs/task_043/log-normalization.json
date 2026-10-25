@@ -1,0 +1,13 @@
+{
+  "rule": "rstrip line whitespace and excess terminal blank lines; semantic output unchanged",
+  "files": [
+    "fmt.log",
+    "green-2.log",
+    "green-5.log",
+    "validation-0.log",
+    "validation-1.log",
+    "validation-2.log",
+    "validation-4.log",
+    "validation-6.log"
+  ]
+}

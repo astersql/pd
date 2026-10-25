@@ -1,0 +1,23 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.83s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-78902705b86d3ebf)
+
+running 10 tests
+test task_039_test::task_039_pause_boundaries_and_concurrent_resume ... ok
+test task_039_test::task_039_behavior_cases ... ok
+test task_040_test::task_040_better_location_comparison_boundaries ... ok
+test task_040_test::task_040_witness_version_gate ... ok
+test task_040_test::task_040_behavior_cases ... ok
+test task_041_test::task_041_behavior_cases ... ok
+test task_042_test::task_042_behavior_cases ... ok
+test task_043_test::task_043_cache_invalidation ... ok
+test task_043_test::task_043_multiple_rules_and_swap ... ok
+test task_043_test::task_043_behavior_cases ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_schedule_checker
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

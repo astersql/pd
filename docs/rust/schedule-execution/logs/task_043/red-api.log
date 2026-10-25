@@ -1,0 +1,57 @@
+   Compiling astersql-pd-schedule-placement v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/placement)
+   Compiling astersql-pd-statistics v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics)
+   Compiling astersql-pd-schedule-core v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/core)
+   Compiling astersql-pd-schedule-filter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter)
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+error[E0583]: file not found for module `rule_missing`
+  --> pkg/schedule/checker/lib.rs:23:1
+   |
+23 | mod rule_missing;
+   | ^^^^^^^^^^^^^^^^^
+   |
+   = help: to create the module `rule_missing`, create file "pkg/schedule/checker/rule_missing.rs" or "pkg/schedule/checker/rule_missing/mod.rs"
+   = note: if there is a `mod rule_missing` elsewhere in the crate already, import it with `use crate::...` instead
+
+error[E0422]: cannot find struct, variant or union type `RuleMissingContext` in this scope
+  --> pkg/schedule/checker/task_043_test.rs:46:10
+   |
+46 |  let ctx=RuleMissingContext{replica:ReplicaFaultContext{config:&conf,stores:&stores,rules:&rules,now_unix_nanos:NOW,supports_conf_ch...
+   |          ^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `RuleMissingContext` in this scope
+  --> pkg/schedule/checker/task_043_test.rs:70:27
+   |
+70 |  let rules=vec![];let ctx=RuleMissingContext{replica:ReplicaFaultContext{config:&conf,stores:&stores,rules:&rules,now_unix_nanos:NOW...
+   |                           ^^^^^^^^^^^^^^^^^^ not found in this scope
+
+warning: unused import: `rule_missing::*`
+  --> pkg/schedule/checker/lib.rs:24:9
+   |
+24 | pub use rule_missing::*;
+   |         ^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+error[E0433]: cannot find type `RuleMissingChecker` in this scope
+  --> pkg/schedule/checker/task_043_test.rs:45:14
+   |
+45 |  let checker=RuleMissingChecker::default();if c["paused"]==true {checker.pause.pause_or_resume_at(10,10000);}
+   |              ^^^^^^^^^^^^^^^^^^ use of undeclared type `RuleMissingChecker`
+
+error[E0433]: cannot find type `RuleMissingChecker` in this scope
+  --> pkg/schedule/checker/task_043_test.rs:69:84
+   |
+69 | ...;let region=region();let checker=RuleMissingChecker::default();let mut m=manager();m.initialize(2,&[],"",false,&conf,&[]).await.u...
+   |                                     ^^^^^^^^^^^^^^^^^^ use of undeclared type `RuleMissingChecker`
+
+error[E0433]: cannot find type `RuleMissingError` in this scope
+  --> pkg/schedule/checker/task_043_test.rs:55:54
+   |
+55 |  let errors:Vec<_>=out.errors.iter().map(|e|match e {RuleMissingError::Builder(BuilderError::Allocation(_))=>"allocation".to_string(...
+   |                                                      ^^^^^^^^^^^^^^^^ use of undeclared type `RuleMissingError`
+
+Some errors have detailed explanations: E0422, E0433, E0583.
+For more information about an error, try `rustc --explain E0422`.
+warning: `astersql-pd-schedule-checker` (lib test) generated 1 warning
+error: could not compile `astersql-pd-schedule-checker` (lib test) due to 6 previous errors; 1 warning emitted

@@ -1,0 +1,34 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.15s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-78902705b86d3ebf)
+
+running 3 tests
+
+thread 'task_043_test::task_043_multiple_rules_and_swap' (164129719) panicked at pkg/schedule/checker/task_043_test.rs:384:5:
+assertion `left == right` failed
+  left: Array [Array [String("add"), Number(3), Number(1000), Bool(false)], Array [String("promote"), Number(3), Number(1000), Bool(false)]]
+ right: Array [Array [String("add"), Number(3), Number(1000), Bool(false)]]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+case passed: voter missing
+case passed: check entry
+
+thread 'task_043_test::task_043_behavior_cases' (164129717) panicked at pkg/schedule/checker/task_043_test.rs:228:13:
+assertion `left == right` failed: learner missing: steps
+  left: Array [Array [String("add"), Number(3), Number(1000), Bool(false)], Array [String("promote"), Number(3), Number(1000), Bool(false)]]
+ right: Array [Array [String("add"), Number(3), Number(1000), Bool(false)]]
+test task_043_test::task_043_cache_invalidation ... ok
+test task_043_test::task_043_multiple_rules_and_swap ... FAILED
+test task_043_test::task_043_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_043_test::task_043_behavior_cases
+    task_043_test::task_043_multiple_rules_and_swap
+
+test result: FAILED. 1 passed; 2 failed; 0 ignored; 0 measured; 7 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-checker --lib`

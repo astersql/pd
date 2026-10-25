@@ -1,0 +1,42 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.31s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-78902705b86d3ebf)
+
+running 2 tests
+case passed: voter missing
+
+thread 'task_043_test::task_043_cache_invalidation' (164126061) panicked at pkg/schedule/checker/task_043_test.rs:307:29:
+called `Option::unwrap()` on a `None` value
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+case passed: check entry
+case passed: learner missing
+case passed: follower missing
+case passed: leader missing
+case passed: witness enabled
+test task_043_test::task_043_cache_invalidation ... FAILED
+case passed: witness version gate
+case passed: tiflash learner
+case passed: tiflash helper
+case passed: no store
+case passed: busy store
+case passed: paused
+case passed: no leader
+case passed: disabled fit
+case passed: satisfied
+case passed: allocator fails
+case passed: isolation rejects
+case passed: label rejects
+case passed: helper does not enqueue
+case passed: helper ignores compute
+case passed: helper ignores voter
+case passed: empty rules
+test task_043_test::task_043_behavior_cases ... ok
+
+failures:
+
+failures:
+    task_043_test::task_043_cache_invalidation
+
+test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 7 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-checker --lib`

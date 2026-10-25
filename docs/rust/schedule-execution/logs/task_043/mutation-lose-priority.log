@@ -1,0 +1,23 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.91s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-78902705b86d3ebf)
+
+running 3 tests
+
+thread 'task_043_test::task_043_behavior_cases' (164130120) panicked at pkg/schedule/checker/task_043_test.rs:224:13:
+assertion `left == right` failed
+  left: PriorityLevel(1)
+ right: PriorityLevel(2)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test task_043_test::task_043_multiple_rules_and_swap ... ok
+test task_043_test::task_043_cache_invalidation ... ok
+test task_043_test::task_043_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_043_test::task_043_behavior_cases
+
+test result: FAILED. 2 passed; 1 failed; 0 ignored; 0 measured; 7 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-checker --lib`

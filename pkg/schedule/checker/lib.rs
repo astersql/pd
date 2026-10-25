@@ -19,3 +19,8 @@ mod replica_shape;
 pub use replica_shape::*;
 #[cfg(test)]
 mod task_042_test;
+
+mod rule_missing;
+pub use rule_missing::*;
+#[cfg(test)]
+mod task_043_test;

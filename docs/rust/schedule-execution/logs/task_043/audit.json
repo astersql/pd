@@ -1,0 +1,9 @@
+{
+  "go_files": 1101,
+  "go_differences": [],
+  "go_aggregate_sha256": "ae4ea1307f6a0074d7d6b706be224a1d139607a343ed2b2c6ea9068395425bd4",
+  "readonly_plans_unchanged": true,
+  "fixture_sha256": "3dac51931b5c141f063df683eab53d8f00036ccd737e12f194b101213f4ba126",
+  "go_git_status": "",
+  "diff_check_exit": 0
+}
