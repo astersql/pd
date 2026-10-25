@@ -1,0 +1,7 @@
+[
+  {
+    "mutation": "threshold",
+    "exit_code": 101,
+    "assertion_failure": false
+  }
+]

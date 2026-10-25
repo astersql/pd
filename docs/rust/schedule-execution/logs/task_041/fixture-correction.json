@@ -1,0 +1,11 @@
+[
+  {
+    "case": "down-leader",
+    "reason": "Go builder.go planPreferUpStoreAsLeader checks node lifecycle, not heartbeat health; planPreferLessLeaderTransfer delays transfer until after add/promote when old down leader is still Serving. Offline leader transfers before add.",
+    "source": "pkg/schedule/operator/builder.go:1255-1284"
+  },
+  {
+    "case": "down-learner",
+    "reason": "Go builder.go:1005-1053 only pairs removal/addition of identical roles; peerPlan removes learner before adding a voter."
+  }
+]

@@ -1,0 +1,107 @@
+[
+  {
+    "command": [
+      "cargo",
+      "fmt",
+      "--all"
+    ],
+    "exit_code": 0,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "RUST_TEST_THREADS": "2",
+    "passed": 0,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_041",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 0,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "RUST_TEST_THREADS": "2",
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked"
+    ],
+    "exit_code": 0,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "RUST_TEST_THREADS": "2",
+    "passed": 6,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "command": [
+      "cargo",
+      "metadata",
+      "--format-version",
+      "1",
+      "--no-deps"
+    ],
+    "exit_code": 0,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "RUST_TEST_THREADS": "2",
+    "passed": 0,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "command": [
+      "cargo",
+      "fmt",
+      "--all",
+      "--",
+      "--check"
+    ],
+    "exit_code": 0,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "RUST_TEST_THREADS": "2",
+    "passed": 0,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "command": [
+      "cargo",
+      "check",
+      "--workspace",
+      "--locked"
+    ],
+    "exit_code": 0,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "RUST_TEST_THREADS": "2",
+    "passed": 0,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "command": [
+      "cargo",
+      "test",
+      "--workspace",
+      "--locked"
+    ],
+    "exit_code": 0,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "RUST_TEST_THREADS": "2",
+    "passed": 1464,
+    "failed": 0,
+    "ignored": 1
+  }
+]

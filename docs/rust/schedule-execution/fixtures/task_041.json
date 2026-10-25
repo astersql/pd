@@ -1,0 +1,1181 @@
+{
+  "evidence_kind": "source_assertion",
+  "go_execution": false,
+  "source_commit": "704e7055d2b5c1075f574ca2ee01d5fd9c19852d",
+  "sources": {
+    "pkg/schedule/checker/replica_checker.go": "d0fd075ff8c7128cc1cac06857533acee19b99cb8da89ef3707b27f0cbccefa4",
+    "pkg/schedule/checker/replica_checker_test.go": "45b842a3b3fd84e72c175115df9d4105753bd6a6d4be350c77e77f2be98fe75d",
+    "pkg/schedule/checker/replica_strategy.go": "0223f654c145abbcd6bf330cd42501766c415b85b60221692428ed13b7002c43",
+    "pkg/schedule/operator/create_operator.go": "43a938c72992f4ce81501c40ab85c1e79c08670383acd47f22655e779524b927",
+    "pkg/schedule/operator/builder.go": "2c74830947c401ea8c4d46e8066e4c85aecd02beea035d0bb9eb4aab8cee8f83"
+  },
+  "normalization": "none; clock 10000 seconds and allocator ID 1000 are explicit inputs",
+  "cases": [
+    {
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "leader": 1,
+      "down": [
+        3
+      ],
+      "age_ns": 1800000000000,
+      "offline": [],
+      "learners": [],
+      "max": 3,
+      "remove_down": true,
+      "replace_offline": true,
+      "paused": false,
+      "target": "healthy",
+      "missing": [],
+      "allocation_error": false,
+      "desc": "replace-down-replica",
+      "old": 3,
+      "error": null,
+      "pending": false,
+      "name": "down-at-threshold",
+      "steps": [
+        [
+          "add",
+          4,
+          1000
+        ],
+        [
+          "promote",
+          4,
+          1000
+        ],
+        [
+          "remove",
+          3,
+          103
+        ]
+      ],
+      "kind": 144
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "leader": 1,
+      "down": [
+        3
+      ],
+      "age_ns": 1799999999999,
+      "offline": [],
+      "learners": [],
+      "max": 3,
+      "remove_down": true,
+      "replace_offline": true,
+      "paused": false,
+      "target": "healthy",
+      "missing": [],
+      "allocation_error": false,
+      "desc": null,
+      "old": 3,
+      "error": null,
+      "pending": false,
+      "name": "down-before-threshold",
+      "steps": null,
+      "kind": null
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "leader": 1,
+      "down": [
+        3
+      ],
+      "age_ns": 1800000000001,
+      "offline": [],
+      "learners": [],
+      "max": 3,
+      "remove_down": true,
+      "replace_offline": true,
+      "paused": false,
+      "target": "healthy",
+      "missing": [],
+      "allocation_error": false,
+      "desc": "replace-down-replica",
+      "old": 3,
+      "error": null,
+      "pending": false,
+      "name": "down-after-threshold",
+      "steps": [
+        [
+          "add",
+          4,
+          1000
+        ],
+        [
+          "promote",
+          4,
+          1000
+        ],
+        [
+          "remove",
+          3,
+          103
+        ]
+      ],
+      "kind": 144
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "leader": 1,
+      "down": [
+        3
+      ],
+      "age_ns": 0,
+      "offline": [],
+      "learners": [],
+      "max": 3,
+      "remove_down": true,
+      "replace_offline": true,
+      "paused": false,
+      "target": "healthy",
+      "missing": [],
+      "allocation_error": false,
+      "desc": null,
+      "old": 3,
+      "error": null,
+      "pending": false,
+      "name": "down-seconds-ignored",
+      "down_seconds": 999999,
+      "steps": null,
+      "kind": null
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "leader": 1,
+      "down": [
+        3
+      ],
+      "age_ns": -1,
+      "offline": [],
+      "learners": [],
+      "max": 3,
+      "remove_down": true,
+      "replace_offline": true,
+      "paused": false,
+      "target": "healthy",
+      "missing": [],
+      "allocation_error": false,
+      "desc": null,
+      "old": 3,
+      "error": null,
+      "pending": false,
+      "name": "future-heartbeat",
+      "steps": null,
+      "kind": null
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "leader": 1,
+      "down": [],
+      "age_ns": 1800000000000,
+      "offline": [
+        3
+      ],
+      "learners": [],
+      "max": 3,
+      "remove_down": true,
+      "replace_offline": true,
+      "paused": false,
+      "target": "healthy",
+      "missing": [],
+      "allocation_error": false,
+      "desc": "replace-offline-replica",
+      "old": 3,
+      "error": null,
+      "pending": false,
+      "name": "offline-follower",
+      "steps": [
+        [
+          "add",
+          4,
+          1000
+        ],
+        [
+          "promote",
+          4,
+          1000
+        ],
+        [
+          "remove",
+          3,
+          103
+        ]
+      ],
+      "kind": 144
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "leader": 1,
+      "down": [],
+      "age_ns": 1800000000000,
+      "offline": [
+        1
+      ],
+      "learners": [],
+      "max": 3,
+      "remove_down": true,
+      "replace_offline": true,
+      "paused": false,
+      "target": "healthy",
+      "missing": [],
+      "allocation_error": false,
+      "desc": "replace-offline-replica",
+      "old": 1,
+      "error": null,
+      "pending": false,
+      "name": "offline-leader",
+      "steps": [
+        [
+          "transfer",
+          1,
+          2
+        ],
+        [
+          "add",
+          4,
+          1000
+        ],
+        [
+          "promote",
+          4,
+          1000
+        ],
+        [
+          "remove",
+          1,
+          101
+        ]
+      ],
+      "kind": 400
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "leader": 1,
+      "down": [
+        1
+      ],
+      "age_ns": 1800000000000,
+      "offline": [],
+      "learners": [],
+      "max": 3,
+      "remove_down": true,
+      "replace_offline": true,
+      "paused": false,
+      "target": "healthy",
+      "missing": [],
+      "allocation_error": false,
+      "desc": "replace-down-replica",
+      "old": 1,
+      "error": null,
+      "pending": false,
+      "name": "down-leader",
+      "steps": [
+        [
+          "add",
+          4,
+          1000
+        ],
+        [
+          "promote",
+          4,
+          1000
+        ],
+        [
+          "transfer",
+          1,
+          2
+        ],
+        [
+          "remove",
+          1,
+          101
+        ]
+      ],
+      "kind": 400
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "leader": 1,
+      "down": [],
+      "age_ns": 1800000000000,
+      "offline": [
+        3
+      ],
+      "learners": [
+        2
+      ],
+      "max": 3,
+      "remove_down": true,
+      "replace_offline": true,
+      "paused": false,
+      "target": "healthy",
+      "missing": [],
+      "allocation_error": false,
+      "desc": null,
+      "old": 3,
+      "error": null,
+      "pending": false,
+      "name": "offline-skips-learner",
+      "steps": null,
+      "kind": null
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "leader": 1,
+      "down": [
+        3
+      ],
+      "age_ns": 1800000000000,
+      "offline": [],
+      "learners": [
+        2
+      ],
+      "max": 3,
+      "remove_down": true,
+      "replace_offline": true,
+      "paused": false,
+      "target": "healthy",
+      "missing": [],
+      "allocation_error": false,
+      "desc": "replace-down-replica",
+      "old": 3,
+      "error": null,
+      "pending": false,
+      "name": "down-with-learner",
+      "steps": [
+        [
+          "add",
+          4,
+          1000
+        ],
+        [
+          "promote",
+          4,
+          1000
+        ],
+        [
+          "remove",
+          3,
+          103
+        ]
+      ],
+      "kind": 144
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "leader": 1,
+      "down": [
+        3
+      ],
+      "age_ns": 1800000000000,
+      "offline": [],
+      "learners": [
+        3
+      ],
+      "max": 3,
+      "remove_down": true,
+      "replace_offline": true,
+      "paused": false,
+      "target": "healthy",
+      "missing": [],
+      "allocation_error": false,
+      "desc": "replace-down-replica",
+      "old": 3,
+      "error": null,
+      "pending": false,
+      "name": "down-learner",
+      "steps": [
+        [
+          "remove",
+          3,
+          103
+        ],
+        [
+          "add",
+          4,
+          1000
+        ],
+        [
+          "promote",
+          4,
+          1000
+        ]
+      ],
+      "kind": 144
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "leader": 1,
+      "down": [
+        3
+      ],
+      "age_ns": 1800000000000,
+      "offline": [],
+      "learners": [],
+      "max": 2,
+      "remove_down": true,
+      "replace_offline": true,
+      "paused": false,
+      "target": "healthy",
+      "missing": [],
+      "allocation_error": false,
+      "desc": "remove-extra-down-replica",
+      "old": 3,
+      "error": null,
+      "pending": false,
+      "name": "remove-extra-down",
+      "steps": [
+        [
+          "remove",
+          3,
+          103
+        ]
+      ],
+      "kind": 144
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "leader": 1,
+      "down": [],
+      "age_ns": 1800000000000,
+      "offline": [
+        3
+      ],
+      "learners": [],
+      "max": 2,
+      "remove_down": true,
+      "replace_offline": true,
+      "paused": false,
+      "target": "healthy",
+      "missing": [],
+      "allocation_error": false,
+      "desc": "remove-extra-offline-replica",
+      "old": 3,
+      "error": null,
+      "pending": false,
+      "name": "remove-extra-offline",
+      "steps": [
+        [
+          "remove",
+          3,
+          103
+        ]
+      ],
+      "kind": 144
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "leader": 1,
+      "down": [
+        3
+      ],
+      "age_ns": 1800000000000,
+      "offline": [],
+      "learners": [
+        2
+      ],
+      "max": 2,
+      "remove_down": true,
+      "replace_offline": true,
+      "paused": false,
+      "target": "healthy",
+      "missing": [],
+      "allocation_error": false,
+      "desc": "replace-down-replica",
+      "old": 3,
+      "error": null,
+      "pending": false,
+      "name": "voter-count-not-peer-count",
+      "steps": [
+        [
+          "add",
+          4,
+          1000
+        ],
+        [
+          "promote",
+          4,
+          1000
+        ],
+        [
+          "remove",
+          3,
+          103
+        ]
+      ],
+      "kind": 144
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "leader": 1,
+      "down": [
+        3
+      ],
+      "age_ns": 1800000000000,
+      "offline": [],
+      "learners": [],
+      "max": 3,
+      "remove_down": true,
+      "replace_offline": true,
+      "paused": false,
+      "target": "absent",
+      "missing": [],
+      "allocation_error": false,
+      "desc": null,
+      "old": 3,
+      "error": null,
+      "pending": false,
+      "name": "no-target",
+      "steps": null,
+      "kind": null
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "leader": 1,
+      "down": [
+        3
+      ],
+      "age_ns": 1800000000000,
+      "offline": [],
+      "learners": [],
+      "max": 3,
+      "remove_down": true,
+      "replace_offline": true,
+      "paused": false,
+      "target": "busy",
+      "missing": [],
+      "allocation_error": false,
+      "desc": null,
+      "old": 3,
+      "error": null,
+      "pending": true,
+      "name": "temporary-target",
+      "steps": null,
+      "kind": null
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "leader": 1,
+      "down": [
+        3
+      ],
+      "age_ns": 1800000000000,
+      "offline": [],
+      "learners": [],
+      "max": 3,
+      "remove_down": true,
+      "replace_offline": true,
+      "paused": false,
+      "target": "removed",
+      "missing": [],
+      "allocation_error": false,
+      "desc": null,
+      "old": 3,
+      "error": null,
+      "pending": false,
+      "name": "permanent-target",
+      "steps": null,
+      "kind": null
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "leader": 1,
+      "down": [
+        3
+      ],
+      "age_ns": 1800000000000,
+      "offline": [],
+      "learners": [],
+      "max": 3,
+      "remove_down": true,
+      "replace_offline": true,
+      "paused": true,
+      "target": "healthy",
+      "missing": [],
+      "allocation_error": false,
+      "desc": null,
+      "old": 3,
+      "error": null,
+      "pending": false,
+      "name": "paused",
+      "steps": null,
+      "kind": null
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "leader": 1,
+      "down": [
+        3
+      ],
+      "age_ns": 1800000000000,
+      "offline": [
+        2
+      ],
+      "learners": [],
+      "max": 3,
+      "remove_down": true,
+      "replace_offline": true,
+      "paused": false,
+      "target": "healthy",
+      "missing": [],
+      "allocation_error": false,
+      "desc": "replace-down-replica",
+      "old": 3,
+      "error": null,
+      "pending": false,
+      "name": "down-before-offline",
+      "steps": [
+        [
+          "add",
+          4,
+          1000
+        ],
+        [
+          "promote",
+          4,
+          1000
+        ],
+        [
+          "remove",
+          3,
+          103
+        ]
+      ],
+      "kind": 144
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "leader": 1,
+      "down": [
+        3
+      ],
+      "age_ns": 1800000000000,
+      "offline": [
+        2
+      ],
+      "learners": [],
+      "max": 3,
+      "remove_down": false,
+      "replace_offline": true,
+      "paused": false,
+      "target": "healthy",
+      "missing": [],
+      "allocation_error": false,
+      "desc": "replace-offline-replica",
+      "old": 2,
+      "error": null,
+      "pending": false,
+      "name": "down-disabled-falls-offline",
+      "steps": [
+        [
+          "add",
+          4,
+          1000
+        ],
+        [
+          "promote",
+          4,
+          1000
+        ],
+        [
+          "remove",
+          2,
+          102
+        ]
+      ],
+      "kind": 144
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "leader": 1,
+      "down": [
+        3
+      ],
+      "age_ns": 1800000000000,
+      "offline": [
+        2
+      ],
+      "learners": [],
+      "max": 3,
+      "remove_down": false,
+      "replace_offline": false,
+      "paused": false,
+      "target": "healthy",
+      "missing": [],
+      "allocation_error": false,
+      "desc": null,
+      "old": 3,
+      "error": null,
+      "pending": false,
+      "name": "both-disabled",
+      "steps": null,
+      "kind": null
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "leader": 1,
+      "down": [],
+      "age_ns": 1800000000000,
+      "offline": [
+        3
+      ],
+      "learners": [],
+      "max": 3,
+      "remove_down": true,
+      "replace_offline": false,
+      "paused": false,
+      "target": "healthy",
+      "missing": [],
+      "allocation_error": false,
+      "desc": null,
+      "old": 3,
+      "error": null,
+      "pending": false,
+      "name": "offline-disabled",
+      "steps": null,
+      "kind": null
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "leader": 1,
+      "down": [
+        3
+      ],
+      "age_ns": 1800000000000,
+      "offline": [],
+      "learners": [],
+      "max": 3,
+      "remove_down": true,
+      "replace_offline": true,
+      "paused": false,
+      "target": "healthy",
+      "missing": [
+        3
+      ],
+      "allocation_error": false,
+      "desc": null,
+      "old": 3,
+      "error": null,
+      "pending": false,
+      "name": "missing-down-store",
+      "steps": null,
+      "kind": null
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "leader": 1,
+      "down": [],
+      "age_ns": 1800000000000,
+      "offline": [
+        3
+      ],
+      "learners": [],
+      "max": 3,
+      "remove_down": true,
+      "replace_offline": true,
+      "paused": false,
+      "target": "healthy",
+      "missing": [
+        2
+      ],
+      "allocation_error": false,
+      "desc": null,
+      "old": 3,
+      "error": null,
+      "pending": false,
+      "name": "missing-store-offline-scan",
+      "steps": null,
+      "kind": null
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "leader": 1,
+      "down": [
+        3
+      ],
+      "age_ns": 1800000000000,
+      "offline": [],
+      "learners": [],
+      "max": 3,
+      "remove_down": true,
+      "replace_offline": true,
+      "paused": false,
+      "target": "healthy",
+      "missing": [],
+      "allocation_error": true,
+      "desc": null,
+      "old": 3,
+      "error": "Allocation(\"injected allocator failure\")",
+      "pending": false,
+      "name": "allocation-failure",
+      "steps": null,
+      "kind": null
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "leader": 0,
+      "down": [
+        3
+      ],
+      "age_ns": 1800000000000,
+      "offline": [],
+      "learners": [],
+      "max": 3,
+      "remove_down": true,
+      "replace_offline": true,
+      "paused": false,
+      "target": "healthy",
+      "missing": [],
+      "allocation_error": false,
+      "desc": null,
+      "old": 3,
+      "error": "NoLeader",
+      "pending": false,
+      "name": "missing-leader",
+      "steps": null,
+      "kind": null
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "leader": 1,
+      "down": [],
+      "age_ns": 1800000000000,
+      "offline": [],
+      "learners": [],
+      "max": 3,
+      "remove_down": true,
+      "replace_offline": true,
+      "paused": false,
+      "target": "healthy",
+      "missing": [],
+      "allocation_error": false,
+      "desc": null,
+      "old": 3,
+      "error": null,
+      "pending": false,
+      "name": "healthy-region",
+      "steps": null,
+      "kind": null
+    },
+    {
+      "peers": [
+        1
+      ],
+      "leader": 1,
+      "down": [],
+      "age_ns": 1800000000000,
+      "offline": [
+        1
+      ],
+      "learners": [],
+      "max": 1,
+      "remove_down": true,
+      "replace_offline": true,
+      "paused": false,
+      "target": "healthy",
+      "missing": [
+        2,
+        3
+      ],
+      "allocation_error": false,
+      "desc": "replace-offline-replica",
+      "old": 1,
+      "error": null,
+      "pending": false,
+      "name": "single-offline-leader",
+      "steps": [
+        [
+          "add",
+          4,
+          1000
+        ],
+        [
+          "promote",
+          4,
+          1000
+        ],
+        [
+          "transfer",
+          1,
+          4
+        ],
+        [
+          "remove",
+          1,
+          101
+        ]
+      ],
+      "kind": 400
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "leader": 1,
+      "down": [
+        3
+      ],
+      "age_ns": 1800000000000,
+      "offline": [],
+      "learners": [],
+      "max": 2,
+      "remove_down": true,
+      "replace_offline": true,
+      "paused": false,
+      "target": "absent",
+      "missing": [],
+      "allocation_error": true,
+      "desc": "remove-extra-down-replica",
+      "old": 3,
+      "error": null,
+      "pending": false,
+      "name": "extra-down-needs-no-target",
+      "steps": [
+        [
+          "remove",
+          3,
+          103
+        ]
+      ],
+      "kind": 144
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "leader": 1,
+      "down": [],
+      "age_ns": 1800000000000,
+      "offline": [
+        3
+      ],
+      "learners": [],
+      "max": 2,
+      "remove_down": true,
+      "replace_offline": true,
+      "paused": false,
+      "target": "absent",
+      "missing": [],
+      "allocation_error": true,
+      "desc": "remove-extra-offline-replica",
+      "old": 3,
+      "error": null,
+      "pending": false,
+      "name": "extra-offline-needs-no-target",
+      "steps": [
+        [
+          "remove",
+          3,
+          103
+        ]
+      ],
+      "kind": 144
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "leader": 1,
+      "down": [
+        2,
+        3
+      ],
+      "age_ns": 1800000000000,
+      "offline": [],
+      "learners": [],
+      "max": 3,
+      "remove_down": true,
+      "replace_offline": true,
+      "paused": false,
+      "target": "healthy",
+      "missing": [],
+      "allocation_error": false,
+      "desc": "replace-down-replica",
+      "old": 2,
+      "error": null,
+      "pending": false,
+      "name": "first-down-peer-only",
+      "steps": [
+        [
+          "add",
+          4,
+          1000
+        ],
+        [
+          "promote",
+          4,
+          1000
+        ],
+        [
+          "remove",
+          2,
+          102
+        ]
+      ],
+      "kind": 144
+    },
+    {
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "leader": 1,
+      "down": [
+        3
+      ],
+      "age_ns": 1800000000000,
+      "offline": [
+        2
+      ],
+      "learners": [],
+      "max": 3,
+      "remove_down": true,
+      "replace_offline": true,
+      "paused": false,
+      "target": "healthy",
+      "missing": [
+        3
+      ],
+      "allocation_error": false,
+      "desc": "replace-offline-replica",
+      "old": 2,
+      "error": null,
+      "pending": false,
+      "name": "missing-down-allows-offline-fallback",
+      "steps": [
+        [
+          "add",
+          4,
+          1000
+        ],
+        [
+          "promote",
+          4,
+          1000
+        ],
+        [
+          "remove",
+          2,
+          102
+        ]
+      ],
+      "kind": 144
+    }
+  ]
+}

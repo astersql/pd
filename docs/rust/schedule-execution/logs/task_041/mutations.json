@@ -1,0 +1,27 @@
+[
+  {
+    "mutation": "threshold",
+    "exit_code": 101,
+    "assertion_failure": true
+  },
+  {
+    "mutation": "learner-guard",
+    "exit_code": 101,
+    "assertion_failure": true
+  },
+  {
+    "mutation": "voter-count",
+    "exit_code": 101,
+    "assertion_failure": true
+  },
+  {
+    "mutation": "priority",
+    "exit_code": 101,
+    "assertion_failure": true
+  },
+  {
+    "mutation": "down-precedence",
+    "exit_code": 101,
+    "assertion_failure": true
+  }
+]

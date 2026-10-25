@@ -9,3 +9,8 @@ mod replica_strategy;
 pub use replica_strategy::*;
 #[cfg(test)]
 mod task_040_test;
+
+mod replica_fault;
+pub use replica_fault::*;
+#[cfg(test)]
+mod task_041_test;

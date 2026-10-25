@@ -1,0 +1,14 @@
+{
+  "fixture_cases": 32,
+  "successful_operations": 17,
+  "no_operation_cases": 15,
+  "mutation_assertion_failures": 5,
+  "focused_tests": 1,
+  "crate_tests": 6,
+  "workspace_passed": 1464,
+  "workspace_failed": 0,
+  "workspace_existing_ignored": 1,
+  "slot": 1,
+  "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+  "slot_released": true
+}
