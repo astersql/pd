@@ -1,0 +1,28 @@
+{
+  "validation.log": {
+    "raw_sha256": "2fbb0c75e81c5a5b3ffd0967bcffae6d610863daaf7858ac2abd944e2483fbb4",
+    "trailing_newlines_removed": 1
+  },
+  "fmt.log": {
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trailing_newlines_removed": 0
+  },
+  "red.log": {
+    "raw_sha256": "76e13c56f315e0af1219de0427ecdbb75fc25d847e84f745848537ab4cd818df",
+    "trailing_newlines_removed": 0
+  },
+  "mutation.log": {
+    "raw_sha256": "b626d4adf7198b316bf9fefe4d0fdc5a8670ca12c7238e043ef9906f6edaff2c",
+    "trailing_newlines_removed": 0,
+    "trailing_spaces_removed": [
+      {
+        "line": 57,
+        "suffix": " "
+      }
+    ]
+  },
+  "focused.log": {
+    "raw_sha256": "208d9f0eae1745fea37683b160f02be2d2e9d9de288b0f8d379bf0ab55c398cf",
+    "trailing_newlines_removed": 1
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "go_module_files": 1101,
+  "go_modules_unchanged": true,
+  "manifest_sha256": "ae4ea1307f6a0074d7d6b706be224a1d139607a343ed2b2c6ea9068395425bd4",
+  "sources": {
+    "pkg/schedule/operator/test_util.go": {
+      "sha256": "ddce7bfda595016a6c8fcb9ca655e5d02a6773b74b06b7821b10723b6e791395",
+      "matches_source_commit": true
+    },
+    "pkg/mock/mockcluster/mockcluster.go": {
+      "sha256": "7e93c4a25b9ab59449a4323a9595caec8e94081f787ff00ca1c0a0ace5b5ea48",
+      "matches_source_commit": true
+    },
+    "pkg/schedule/operator/operator.go": {
+      "sha256": "ad287d89ee51f9d8d94985b45f11b2c4baddae0acb59c2f7899bc607fca860ba",
+      "matches_source_commit": true
+    },
+    "pkg/core/region_option.go": {
+      "sha256": "275af41444105d04b6526bd401892d81f4babdefb8a5b31f86088d53dc67a8f9",
+      "matches_source_commit": true
+    }
+  },
+  "fixture_sha256": "0d3a0bc1a057be9d75210cdf4e6f603f59f97b2a6de63d44514aae4d3b754d0d",
+  "readonly_plans_unchanged": true
+}

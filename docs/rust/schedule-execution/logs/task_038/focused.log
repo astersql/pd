@@ -1,0 +1,51 @@
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.12s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_operator-3c432df009ee920c)
+
+running 4 tests
+
+thread 'task_038_test::task_038_unsupported_steps_and_failed_publication' (163693345) panicked at pkg/schedule/operator/apply_steps.rs:67:14:
+Unknown operator step
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'task_038_test::task_038_invalid_membership_panics' (163693344) panicked at pkg/schedule/operator/apply_steps.rs:20:13:
+Add peer that exists
+test task_038_test::task_038_apply_full_and_store_status ... ok
+test task_038_test::task_038_behavior_cases ... ok
+
+thread 'task_038_test::task_038_unsupported_steps_and_failed_publication' (163693345) panicked at pkg/schedule/operator/apply_steps.rs:67:14:
+Unknown operator step
+
+thread 'task_038_test::task_038_invalid_membership_panics' (163693344) panicked at pkg/schedule/operator/apply_steps.rs:31:13:
+Add learner that exists
+
+thread 'task_038_test::task_038_invalid_membership_panics' (163693344) panicked at pkg/schedule/operator/apply_steps.rs:43:13:
+Promote peer that doesn't exist
+
+thread 'task_038_test::task_038_unsupported_steps_and_failed_publication' (163693345) panicked at pkg/schedule/operator/apply_steps.rs:67:14:
+Unknown operator step
+
+thread 'task_038_test::task_038_invalid_membership_panics' (163693344) panicked at pkg/schedule/operator/apply_steps.rs:61:13:
+Cannot remove the leader peer
+
+thread 'task_038_test::task_038_unsupported_steps_and_failed_publication' (163693345) panicked at pkg/schedule/operator/apply_steps.rs:67:14:
+Unknown operator step
+
+thread 'task_038_test::task_038_invalid_membership_panics' (163693344) panicked at pkg/schedule/operator/apply_steps.rs:20:13:
+Add peer that exists
+
+thread 'task_038_test::task_038_unsupported_steps_and_failed_publication' (163693345) panicked at pkg/schedule/operator/apply_steps.rs:67:14:
+Unknown operator step
+
+thread 'task_038_test::task_038_unsupported_steps_and_failed_publication' (163693345) panicked at pkg/schedule/operator/apply_steps.rs:67:14:
+Unknown operator step
+test task_038_test::task_038_invalid_membership_panics ... ok
+
+thread 'task_038_test::task_038_unsupported_steps_and_failed_publication' (163693345) panicked at pkg/schedule/operator/apply_steps.rs:67:14:
+Unknown operator step
+
+thread 'task_038_test::task_038_unsupported_steps_and_failed_publication' (163693345) panicked at pkg/schedule/operator/apply_steps.rs:67:14:
+Unknown operator step
+test task_038_test::task_038_unsupported_steps_and_failed_publication ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 90 filtered out; finished in 0.00s

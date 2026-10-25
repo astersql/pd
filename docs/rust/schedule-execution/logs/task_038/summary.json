@@ -1,0 +1,17 @@
+{
+  "cargo test -p astersql-pd-schedule-operator --locked --lib task_038 -- --nocapture": {
+    "passed": 5,
+    "failed": 0,
+    "ignored": 0
+  },
+  "cargo test -p astersql-pd-schedule-operator --locked": {
+    "passed": 95,
+    "failed": 0,
+    "ignored": 0
+  },
+  "cargo test --workspace --locked": {
+    "passed": 1458,
+    "failed": 0,
+    "ignored": 1
+  }
+}

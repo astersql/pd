@@ -1,0 +1,74 @@
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.11s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_operator-3c432df009ee920c)
+
+running 5 tests
+
+thread 'task_038_test::task_038_unsupported_steps_and_failed_publication' (163694412) panicked at pkg/schedule/operator/apply_steps.rs:67:14:
+Unknown operator step
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'task_038_test::task_038_invalid_membership_panics' (163694410) panicked at pkg/schedule/operator/apply_steps.rs:20:13:
+Add peer that exists
+
+thread 'task_038_test::task_038_source_quirks_and_terminal_noop' (163694411) panicked at pkg/schedule/operator/apply_steps.rs:20:13:
+Add peer that exists
+
+thread 'task_038_test::task_038_apply_full_and_store_status' (163694408) panicked at pkg/schedule/operator/apply_steps.rs:31:13:
+Add learner that exists
+
+thread 'task_038_test::task_038_unsupported_steps_and_failed_publication' (163694412) panicked at pkg/schedule/operator/apply_steps.rs:67:14:
+Unknown operator step
+
+thread 'task_038_test::task_038_source_quirks_and_terminal_noop' (163694411) panicked at pkg/schedule/operator/apply_steps.rs:31:13:
+Add learner that exists
+
+thread 'task_038_test::task_038_invalid_membership_panics' (163694410) panicked at pkg/schedule/operator/apply_steps.rs:31:13:
+Add learner that exists
+
+thread 'task_038_test::task_038_behavior_cases' (163694409) panicked at pkg/schedule/operator/task_038_test.rs:132:9:
+assertion `left == right` failed: learner
+  left: Array [Array [Number(1), Number(11), String("v")], Array [Number(2), Number(22), String("v")], Array [Number(3), Number(33), String("v")]]
+ right: Array [Array [Number(1), Number(11), String("v")], Array [Number(2), Number(22), String("v")], Array [Number(3), Number(33), String("l")]]
+
+thread 'task_038_test::task_038_unsupported_steps_and_failed_publication' (163694412) panicked at pkg/schedule/operator/apply_steps.rs:67:14:
+Unknown operator step
+
+thread 'task_038_test::task_038_invalid_membership_panics' (163694410) panicked at pkg/schedule/operator/apply_steps.rs:43:13:
+Promote peer that doesn't exist
+test task_038_test::task_038_apply_full_and_store_status ... FAILED
+thread 'task_038_test::task_038_unsupported_steps_and_failed_publication' (163694412) panicked at pkg/schedule/operator/apply_steps.rs:67:14:
+Unknown operator step
+
+
+thread 'task_038_test::task_038_invalid_membership_panics' (163694410) panicked at pkg/schedule/operator/apply_steps.rs:61:13:
+Cannot remove the leader peer
+test task_038_test::task_038_source_quirks_and_terminal_noop ... ok
+
+thread 'task_038_test::task_038_unsupported_steps_and_failed_publication' (163694412) panicked at pkg/schedule/operator/apply_steps.rs:67:14:
+Unknown operator step
+test task_038_test::task_038_behavior_cases ... FAILED
+thread 'task_038_test::task_038_invalid_membership_panics' (163694410) panicked at pkg/schedule/operator/apply_steps.rs:20:13:
+Add peer that exists
+
+
+thread 'task_038_test::task_038_unsupported_steps_and_failed_publication' (163694412) panicked at pkg/schedule/operator/apply_steps.rs:67:14:
+Unknown operator step
+test task_038_test::task_038_invalid_membership_panics ...
+thread 'task_038_test::task_038_unsupported_steps_and_failed_publication' (163694412) panicked at pkg/schedule/operator/apply_steps.rs:67:14:
+Unknown operator step
+ok
+
+thread 'task_038_test::task_038_unsupported_steps_and_failed_publication' (163694412) panicked at pkg/schedule/operator/apply_steps.rs:67:14:
+Unknown operator step
+test task_038_test::task_038_unsupported_steps_and_failed_publication ... ok
+
+failures:
+
+failures:
+    task_038_test::task_038_apply_full_and_store_status
+    task_038_test::task_038_behavior_cases
+
+test result: FAILED. 3 passed; 2 failed; 0 ignored; 0 measured; 90 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-operator --lib`
