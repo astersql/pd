@@ -1,0 +1,14 @@
+COMMAND ["cargo", "fmt", "--all"]
+EXIT 0
+COMMAND ["cargo", "test", "-p", "astersql-pd-schedule-checker", "--locked", "--lib", "task_040", "--", "--nocapture"]
+EXIT 0
+COMMAND ["cargo", "test", "-p", "astersql-pd-schedule-checker", "--locked"]
+EXIT 0
+COMMAND ["cargo", "metadata", "--format-version", "1", "--no-deps"]
+EXIT 0
+COMMAND ["cargo", "fmt", "--all", "--", "--check"]
+EXIT 0
+COMMAND ["cargo", "check", "--workspace", "--locked"]
+EXIT 0
+COMMAND ["cargo", "test", "--workspace", "--locked"]
+EXIT 0

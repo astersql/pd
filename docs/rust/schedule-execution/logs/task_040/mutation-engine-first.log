@@ -1,0 +1,20 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+warning: unused variable: `source`
+   --> pkg/schedule/checker/replica_strategy.rs:200:18
+    |
+200 |         let Some(source) = self.store(old) else {
+    |                  ^^^^^^ help: if this is intentional, prefix it with an underscore: `_source`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: `astersql-pd-schedule-checker` (lib test) generated 1 warning (run `cargo fix --lib -p astersql-pd-schedule-checker --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.90s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-2444a017b71e5cd9)
+
+running 3 tests
+test task_040_test::task_040_witness_version_gate ... ok
+test task_040_test::task_040_better_location_comparison_boundaries ... ok
+task_040: 40 source-derived behavior cases passed
+test task_040_test::task_040_behavior_cases ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s

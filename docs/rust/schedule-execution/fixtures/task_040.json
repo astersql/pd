@@ -1,0 +1,3058 @@
+{
+  "evidence_kind": "source_assertion",
+  "go_execution": false,
+  "source_commit": "269a5dc88c8c07868b5ca620f868637db0f06135",
+  "sources": {
+    "pkg/schedule/checker/replica_strategy.go": "0223f654c145abbcd6bf330cd42501766c415b85b60221692428ed13b7002c43",
+    "pkg/schedule/checker/replica_checker_test.go": "45b842a3b3fd84e72c175115df9d4105753bd6a6d4be350c77e77f2be98fe75d",
+    "pkg/schedule/checker/rule_checker_test.go": "ac05aa4b43b98e29ca3772c35c152bc9748cc8ad34557d94a9b8050deeaeaee1",
+    "pkg/schedule/checker/affinity_checker_test.go": "fadc0e9679ec16020e95291f35c491b23a6a69d0b41e1eb9334c1a8f60446597",
+    "pkg/schedule/filter/filters.go": "2e72100da29ddac7d371c59898ef10a562cda9bf4eec666cc4e4e0c7c8edc0a4",
+    "pkg/schedule/filter/candidates.go": "2ee5704d3f38c6a5675a9654409bd5df1532ad019dd30bdfd1105315c5f9ac12",
+    "pkg/versioninfo/feature.go": "00cd81ebee2bde4c4875fc6fcda75b5bd5599fccc96950794d8dc0f81e6a87d8",
+    "pkg/versioninfo/versioninfo.go": "a3ad298959c45bb3d57d73fb566075065bb9dbf6fb1c678eef816410d065901b",
+    "pkg/core/store.go": "686a3bd66c7deceb3fd79b2c83be359487088993d20e649ba2a533db298ad605",
+    "pkg/schedule/placement/label_constraint.go": "335872cd9d2add785207e4d3d8e5cfe4a64d1ef8badc847fed904da797db7982",
+    "pkg/schedule/placement/fit.go": "5e5c91601641ee4ffd1af5a7fedd3424bf5408d210fdb03b3956f52bb5da7b22",
+    "pkg/schedule/checker/rule_checker.go": "b2cccb0a8ac670aa5957a5728998e1a7cf4b35dff3f43dd1cfc4a699dae6fc61"
+  },
+  "cases": [
+    {
+      "name": "add prefers diversity over load",
+      "op": "add",
+      "stores": [
+        [
+          1,
+          "a",
+          10,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          2,
+          "a",
+          20,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          3,
+          "b",
+          30,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          4,
+          "c",
+          40,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          5,
+          "a",
+          1,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ]
+      ],
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "co": [
+        1,
+        2,
+        3
+      ],
+      "old": 2,
+      "labels": [
+        "zone"
+      ],
+      "isolation": "",
+      "fast": false,
+      "expected": [
+        4,
+        false
+      ]
+    },
+    {
+      "name": "temporary best target waits",
+      "op": "add",
+      "stores": [
+        [
+          1,
+          "a",
+          10,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          2,
+          "a",
+          20,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          3,
+          "b",
+          30,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          4,
+          "c",
+          40,
+          true,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          5,
+          "a",
+          1,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ]
+      ],
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "co": [
+        1,
+        2,
+        3
+      ],
+      "old": 2,
+      "labels": [
+        "zone"
+      ],
+      "isolation": "",
+      "fast": false,
+      "expected": [
+        0,
+        true
+      ]
+    },
+    {
+      "name": "permanent best target permits lower diversity",
+      "op": "add",
+      "stores": [
+        [
+          1,
+          "a",
+          10,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          2,
+          "a",
+          20,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          3,
+          "b",
+          30,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          4,
+          "c",
+          40,
+          false,
+          "removed",
+          "",
+          "",
+          0
+        ],
+        [
+          5,
+          "a",
+          1,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ]
+      ],
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "co": [
+        1,
+        2,
+        3
+      ],
+      "old": 2,
+      "labels": [
+        "zone"
+      ],
+      "isolation": "",
+      "fast": false,
+      "expected": [
+        5,
+        false
+      ]
+    },
+    {
+      "name": "reserved target excluded",
+      "op": "add",
+      "stores": [
+        [
+          1,
+          "a",
+          10,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          2,
+          "a",
+          20,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          3,
+          "b",
+          30,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          4,
+          "c",
+          40,
+          false,
+          "up",
+          "reserved",
+          "",
+          0
+        ],
+        [
+          5,
+          "a",
+          1,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ]
+      ],
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "co": [
+        1,
+        2,
+        3
+      ],
+      "old": 2,
+      "labels": [
+        "zone"
+      ],
+      "isolation": "",
+      "fast": false,
+      "expected": [
+        5,
+        false
+      ]
+    },
+    {
+      "name": "snapshot best target waits",
+      "op": "add",
+      "stores": [
+        [
+          1,
+          "a",
+          10,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          2,
+          "a",
+          20,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          3,
+          "b",
+          30,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          4,
+          "c",
+          40,
+          false,
+          "up",
+          "",
+          "",
+          1000
+        ],
+        [
+          5,
+          "a",
+          1,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ]
+      ],
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "co": [
+        1,
+        2,
+        3
+      ],
+      "old": 2,
+      "labels": [
+        "zone"
+      ],
+      "isolation": "",
+      "fast": false,
+      "expected": [
+        0,
+        true
+      ]
+    },
+    {
+      "name": "fast failover bypasses snapshot",
+      "op": "add",
+      "stores": [
+        [
+          1,
+          "a",
+          10,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          2,
+          "a",
+          20,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          3,
+          "b",
+          30,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          4,
+          "c",
+          40,
+          false,
+          "up",
+          "",
+          "",
+          1000
+        ],
+        [
+          5,
+          "a",
+          1,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ]
+      ],
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "co": [
+        1,
+        2,
+        3
+      ],
+      "old": 2,
+      "labels": [
+        "zone"
+      ],
+      "isolation": "",
+      "fast": true,
+      "expected": [
+        4,
+        false
+      ]
+    },
+    {
+      "name": "fast failover still rejects busy",
+      "op": "add",
+      "stores": [
+        [
+          1,
+          "a",
+          10,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          2,
+          "a",
+          20,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          3,
+          "b",
+          30,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          4,
+          "c",
+          40,
+          true,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          5,
+          "a",
+          1,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ]
+      ],
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "co": [
+        1,
+        2,
+        3
+      ],
+      "old": 2,
+      "labels": [
+        "zone"
+      ],
+      "isolation": "",
+      "fast": true,
+      "expected": [
+        0,
+        true
+      ]
+    },
+    {
+      "name": "region exclusion no target",
+      "op": "add",
+      "stores": [
+        [
+          1,
+          "a",
+          10,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          2,
+          "a",
+          20,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          3,
+          "b",
+          30,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          4,
+          "c",
+          40,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          5,
+          "a",
+          1,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ]
+      ],
+      "peers": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "co": [
+        1,
+        2,
+        3
+      ],
+      "old": 2,
+      "labels": [
+        "zone"
+      ],
+      "isolation": "",
+      "fast": false,
+      "expected": [
+        0,
+        false
+      ]
+    },
+    {
+      "name": "isolation demands new zone",
+      "op": "add",
+      "stores": [
+        [
+          1,
+          "a",
+          10,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          2,
+          "a",
+          20,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          3,
+          "b",
+          30,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          4,
+          "c",
+          40,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          5,
+          "a",
+          1,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ]
+      ],
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "co": [
+        1,
+        2,
+        3
+      ],
+      "old": 2,
+      "labels": [
+        "zone"
+      ],
+      "isolation": "zone",
+      "fast": false,
+      "expected": [
+        4,
+        false
+      ]
+    },
+    {
+      "name": "isolation unavailable",
+      "op": "add",
+      "stores": [
+        [
+          1,
+          "a",
+          10,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          2,
+          "a",
+          20,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          3,
+          "b",
+          30,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          4,
+          "a",
+          40,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          5,
+          "a",
+          1,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ]
+      ],
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "co": [
+        1,
+        2,
+        3
+      ],
+      "old": 2,
+      "labels": [
+        "zone"
+      ],
+      "isolation": "zone",
+      "fast": false,
+      "expected": [
+        0,
+        false
+      ]
+    },
+    {
+      "name": "no labels load first",
+      "op": "add",
+      "stores": [
+        [
+          1,
+          "a",
+          10,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          2,
+          "a",
+          20,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          3,
+          "b",
+          30,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          4,
+          "c",
+          40,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          5,
+          "a",
+          1,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ]
+      ],
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "co": [
+        1,
+        2,
+        3
+      ],
+      "old": 2,
+      "labels": [],
+      "isolation": "",
+      "fast": false,
+      "expected": [
+        5,
+        false
+      ]
+    },
+    {
+      "name": "fix removes old from comparison",
+      "op": "fix",
+      "stores": [
+        [
+          1,
+          "a",
+          10,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          2,
+          "a",
+          20,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          3,
+          "b",
+          30,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          4,
+          "c",
+          40,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          5,
+          "a",
+          1,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ]
+      ],
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "co": [
+        1,
+        2,
+        3
+      ],
+      "old": 2,
+      "labels": [
+        "zone"
+      ],
+      "isolation": "",
+      "fast": false,
+      "expected": [
+        4,
+        false
+      ]
+    },
+    {
+      "name": "fix empty",
+      "op": "fix",
+      "stores": [
+        [
+          1,
+          "a",
+          10,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          2,
+          "a",
+          20,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          3,
+          "b",
+          30,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          4,
+          "c",
+          40,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          5,
+          "a",
+          1,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ]
+      ],
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "co": [],
+      "old": 2,
+      "labels": [
+        "zone"
+      ],
+      "isolation": "",
+      "fast": false,
+      "expected": [
+        0,
+        false
+      ]
+    },
+    {
+      "name": "fix singleton retains old comparison",
+      "op": "fix",
+      "stores": [
+        [
+          1,
+          "a",
+          10,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          2,
+          "a",
+          20,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          3,
+          "b",
+          30,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          4,
+          "c",
+          40,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          5,
+          "a",
+          1,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ]
+      ],
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "co": [
+        2
+      ],
+      "old": 2,
+      "labels": [
+        "zone"
+      ],
+      "isolation": "",
+      "fast": false,
+      "expected": [
+        4,
+        false
+      ]
+    },
+    {
+      "name": "improve strict diversity",
+      "op": "improve",
+      "stores": [
+        [
+          1,
+          "a",
+          10,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          2,
+          "a",
+          20,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          3,
+          "b",
+          30,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          4,
+          "c",
+          40,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          5,
+          "a",
+          1,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ]
+      ],
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "co": [
+        1,
+        2,
+        3
+      ],
+      "old": 2,
+      "labels": [
+        "zone"
+      ],
+      "isolation": "",
+      "fast": false,
+      "expected": [
+        4,
+        false
+      ]
+    },
+    {
+      "name": "improve missing old",
+      "op": "improve",
+      "stores": [
+        [
+          1,
+          "a",
+          10,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          2,
+          "a",
+          20,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          3,
+          "b",
+          30,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          4,
+          "c",
+          40,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          5,
+          "a",
+          1,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ]
+      ],
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "co": [
+        1,
+        2,
+        3
+      ],
+      "old": 99,
+      "labels": [
+        "zone"
+      ],
+      "isolation": "",
+      "fast": false,
+      "expected": [
+        0,
+        false
+      ]
+    },
+    {
+      "name": "improve empty",
+      "op": "improve",
+      "stores": [
+        [
+          1,
+          "a",
+          10,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          2,
+          "a",
+          20,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          3,
+          "b",
+          30,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          4,
+          "c",
+          40,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          5,
+          "a",
+          1,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ]
+      ],
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "co": [],
+      "old": 2,
+      "labels": [
+        "zone"
+      ],
+      "isolation": "",
+      "fast": false,
+      "expected": [
+        0,
+        false
+      ]
+    },
+    {
+      "name": "improve no labels no improvement",
+      "op": "improve",
+      "stores": [
+        [
+          1,
+          "a",
+          10,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          2,
+          "a",
+          20,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          3,
+          "b",
+          30,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          4,
+          "c",
+          40,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          5,
+          "a",
+          1,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ]
+      ],
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "co": [
+        1,
+        2,
+        3
+      ],
+      "old": 2,
+      "labels": [],
+      "isolation": "",
+      "fast": false,
+      "expected": [
+        0,
+        false
+      ]
+    },
+    {
+      "name": "improve equal is rejected",
+      "op": "improve",
+      "stores": [
+        [
+          1,
+          "a",
+          10,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          2,
+          "a",
+          20,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          3,
+          "b",
+          30,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          4,
+          "a",
+          40,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          5,
+          "a",
+          1,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ]
+      ],
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "co": [
+        1,
+        2,
+        3
+      ],
+      "old": 2,
+      "labels": [
+        "zone"
+      ],
+      "isolation": "",
+      "fast": false,
+      "expected": [
+        0,
+        false
+      ]
+    },
+    {
+      "name": "remove lowest diversity then highest load",
+      "op": "remove",
+      "stores": [
+        [
+          1,
+          "a",
+          10,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          2,
+          "a",
+          20,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          3,
+          "b",
+          30,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          4,
+          "c",
+          40,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          5,
+          "a",
+          1,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ]
+      ],
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "co": [
+        1,
+        2,
+        3
+      ],
+      "old": 2,
+      "labels": [
+        "zone"
+      ],
+      "isolation": "",
+      "fast": false,
+      "expected": [
+        2,
+        false
+      ]
+    },
+    {
+      "name": "remove strict before ranking",
+      "op": "remove",
+      "stores": [
+        [
+          1,
+          "a",
+          10,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          2,
+          "a",
+          20,
+          true,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          3,
+          "b",
+          30,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          4,
+          "c",
+          40,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          5,
+          "a",
+          1,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ]
+      ],
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "co": [
+        1,
+        2,
+        3
+      ],
+      "old": 2,
+      "labels": [
+        "zone"
+      ],
+      "isolation": "",
+      "fast": false,
+      "expected": [
+        1,
+        false
+      ]
+    },
+    {
+      "name": "remove temporary keeps best source",
+      "op": "remove_temp",
+      "stores": [
+        [
+          1,
+          "a",
+          10,
+          true,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          2,
+          "a",
+          20,
+          true,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          3,
+          "b",
+          30,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          4,
+          "c",
+          40,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          5,
+          "a",
+          1,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ]
+      ],
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "co": [
+        1,
+        2,
+        3
+      ],
+      "old": 2,
+      "labels": [
+        "zone"
+      ],
+      "isolation": "",
+      "fast": false,
+      "expected": [
+        2,
+        true
+      ]
+    },
+    {
+      "name": "remove temp healthy tied source",
+      "op": "remove_temp",
+      "stores": [
+        [
+          1,
+          "a",
+          10,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          2,
+          "a",
+          20,
+          true,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          3,
+          "b",
+          30,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          4,
+          "c",
+          40,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          5,
+          "a",
+          1,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ]
+      ],
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "co": [
+        1,
+        2,
+        3
+      ],
+      "old": 2,
+      "labels": [
+        "zone"
+      ],
+      "isolation": "",
+      "fast": false,
+      "expected": [
+        1,
+        false
+      ]
+    },
+    {
+      "name": "remove empty",
+      "op": "remove_temp",
+      "stores": [
+        [
+          1,
+          "a",
+          10,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          2,
+          "a",
+          20,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          3,
+          "b",
+          30,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          4,
+          "c",
+          40,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          5,
+          "a",
+          1,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ]
+      ],
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "co": [],
+      "old": 2,
+      "labels": [
+        "zone"
+      ],
+      "isolation": "",
+      "fast": false,
+      "expected": [
+        0,
+        false
+      ]
+    },
+    {
+      "name": "removed source remains eligible",
+      "op": "remove_temp",
+      "stores": [
+        [
+          1,
+          "a",
+          10,
+          false,
+          "removed",
+          "",
+          "",
+          0
+        ],
+        [
+          2,
+          "a",
+          20,
+          false,
+          "removed",
+          "",
+          "",
+          0
+        ],
+        [
+          3,
+          "b",
+          30,
+          false,
+          "removed",
+          "",
+          "",
+          0
+        ],
+        [
+          4,
+          "c",
+          40,
+          false,
+          "removed",
+          "",
+          "",
+          0
+        ],
+        [
+          5,
+          "a",
+          1,
+          false,
+          "removed",
+          "",
+          "",
+          0
+        ]
+      ],
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "co": [
+        1,
+        2,
+        3
+      ],
+      "old": 2,
+      "labels": [
+        "zone"
+      ],
+      "isolation": "",
+      "fast": false,
+      "expected": [
+        2,
+        false
+      ]
+    },
+    {
+      "name": "extra target exclusion",
+      "op": "extra",
+      "stores": [
+        [
+          1,
+          "a",
+          10,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          2,
+          "a",
+          20,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          3,
+          "b",
+          30,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          4,
+          "c",
+          40,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          5,
+          "a",
+          1,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ]
+      ],
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "co": [
+        1,
+        2,
+        3
+      ],
+      "old": 2,
+      "labels": [
+        "zone"
+      ],
+      "isolation": "",
+      "fast": false,
+      "expected": [
+        5,
+        false
+      ]
+    },
+    {
+      "name": "better location",
+      "op": "better",
+      "stores": [
+        [
+          1,
+          "a",
+          10,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          2,
+          "a",
+          20,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          3,
+          "b",
+          30,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          4,
+          "c",
+          40,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          5,
+          "a",
+          1,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ]
+      ],
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "co": [
+        1,
+        2,
+        3
+      ],
+      "old": 2,
+      "labels": [
+        "zone"
+      ],
+      "isolation": "",
+      "fast": false,
+      "expected": [
+        2,
+        4,
+        false
+      ]
+    },
+    {
+      "name": "better temp source suppresses move",
+      "op": "better",
+      "stores": [
+        [
+          1,
+          "a",
+          10,
+          true,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          2,
+          "a",
+          20,
+          true,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          3,
+          "b",
+          30,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          4,
+          "c",
+          40,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          5,
+          "a",
+          1,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ]
+      ],
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "co": [
+        1,
+        2,
+        3
+      ],
+      "old": 2,
+      "labels": [
+        "zone"
+      ],
+      "isolation": "",
+      "fast": false,
+      "expected": [
+        0,
+        0,
+        true
+      ]
+    },
+    {
+      "name": "better temp source no improvement",
+      "op": "better",
+      "stores": [
+        [
+          1,
+          "a",
+          10,
+          true,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          2,
+          "a",
+          20,
+          true,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          3,
+          "b",
+          30,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          4,
+          "a",
+          40,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          5,
+          "a",
+          1,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ]
+      ],
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "co": [
+        1,
+        2,
+        3
+      ],
+      "old": 2,
+      "labels": [
+        "zone"
+      ],
+      "isolation": "",
+      "fast": false,
+      "expected": [
+        0,
+        0,
+        false
+      ]
+    },
+    {
+      "name": "better engine comparison only",
+      "op": "better",
+      "stores": [
+        [
+          1,
+          "a",
+          10,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          2,
+          "a",
+          20,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          3,
+          "b",
+          30,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          4,
+          "a",
+          40,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          5,
+          "c",
+          1,
+          false,
+          "up",
+          "",
+          "tiflash",
+          0
+        ]
+      ],
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "co": [
+        1,
+        2,
+        3
+      ],
+      "old": 2,
+      "labels": [
+        "zone"
+      ],
+      "isolation": "",
+      "fast": false,
+      "expected": [
+        2,
+        0,
+        false
+      ]
+    },
+    {
+      "name": "better temporary target",
+      "op": "better",
+      "stores": [
+        [
+          1,
+          "a",
+          10,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          2,
+          "a",
+          20,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          3,
+          "b",
+          30,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          4,
+          "c",
+          40,
+          true,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          5,
+          "a",
+          1,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ]
+      ],
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "co": [
+        1,
+        2,
+        3
+      ],
+      "old": 2,
+      "labels": [
+        "zone"
+      ],
+      "isolation": "",
+      "fast": false,
+      "expected": [
+        2,
+        0,
+        true
+      ]
+    },
+    {
+      "name": "better both temporary",
+      "op": "better",
+      "stores": [
+        [
+          1,
+          "a",
+          10,
+          true,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          2,
+          "a",
+          20,
+          true,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          3,
+          "b",
+          30,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          4,
+          "c",
+          40,
+          true,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          5,
+          "a",
+          1,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ]
+      ],
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "co": [
+        1,
+        2,
+        3
+      ],
+      "old": 2,
+      "labels": [
+        "zone"
+      ],
+      "isolation": "",
+      "fast": false,
+      "expected": [
+        0,
+        0,
+        true
+      ]
+    },
+    {
+      "name": "fix missing source keeps Go first-drop behavior",
+      "op": "fix",
+      "stores": [
+        [
+          1,
+          "a",
+          10,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          2,
+          "a",
+          20,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          3,
+          "b",
+          30,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          4,
+          "c",
+          40,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          5,
+          "a",
+          1,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ]
+      ],
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "co": [
+        1,
+        2,
+        3
+      ],
+      "old": 99,
+      "labels": [
+        "zone"
+      ],
+      "isolation": "",
+      "fast": false,
+      "expected": [
+        4,
+        false
+      ]
+    },
+    {
+      "name": "improve singleton no strict improvement",
+      "op": "improve",
+      "stores": [
+        [
+          1,
+          "a",
+          10,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          2,
+          "a",
+          20,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          3,
+          "b",
+          30,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          4,
+          "c",
+          40,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          5,
+          "a",
+          1,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ]
+      ],
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "co": [
+        2
+      ],
+      "old": 2,
+      "labels": [
+        "zone"
+      ],
+      "isolation": "",
+      "fast": false,
+      "expected": [
+        0,
+        false
+      ]
+    },
+    {
+      "name": "isolation empty comparison rejects all",
+      "op": "add",
+      "stores": [
+        [
+          1,
+          "a",
+          10,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          2,
+          "a",
+          20,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          3,
+          "b",
+          30,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          4,
+          "c",
+          40,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          5,
+          "a",
+          1,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ]
+      ],
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "co": [],
+      "old": 2,
+      "labels": [
+        "zone"
+      ],
+      "isolation": "zone",
+      "fast": false,
+      "expected": [
+        0,
+        false
+      ]
+    },
+    {
+      "name": "load chooses least among equal diversity",
+      "op": "add",
+      "stores": [
+        [
+          1,
+          "a",
+          10,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          2,
+          "a",
+          20,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          3,
+          "b",
+          30,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          4,
+          "c",
+          40,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          5,
+          "c",
+          1,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ]
+      ],
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "co": [
+        1,
+        2,
+        3
+      ],
+      "old": 2,
+      "labels": [
+        "zone"
+      ],
+      "isolation": "",
+      "fast": false,
+      "expected": [
+        5,
+        false
+      ]
+    },
+    {
+      "name": "tied best location healthy alternative",
+      "op": "add",
+      "stores": [
+        [
+          1,
+          "a",
+          10,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          2,
+          "a",
+          20,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          3,
+          "b",
+          30,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          4,
+          "c",
+          40,
+          true,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          5,
+          "c",
+          1,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ]
+      ],
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "co": [
+        1,
+        2,
+        3
+      ],
+      "old": 2,
+      "labels": [
+        "zone"
+      ],
+      "isolation": "",
+      "fast": false,
+      "expected": [
+        5,
+        false
+      ]
+    },
+    {
+      "name": "remove all temporary strict no source",
+      "op": "remove",
+      "stores": [
+        [
+          1,
+          "a",
+          10,
+          true,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          2,
+          "a",
+          20,
+          true,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          3,
+          "b",
+          30,
+          true,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          4,
+          "c",
+          40,
+          true,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          5,
+          "a",
+          1,
+          true,
+          "up",
+          "",
+          "",
+          0
+        ]
+      ],
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "co": [
+        1,
+        2,
+        3
+      ],
+      "old": 2,
+      "labels": [
+        "zone"
+      ],
+      "isolation": "",
+      "fast": false,
+      "expected": [
+        0,
+        false
+      ]
+    },
+    {
+      "name": "stable ties retain candidate order",
+      "op": "add",
+      "stores": [
+        [
+          1,
+          "a",
+          10,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          2,
+          "a",
+          20,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          3,
+          "b",
+          30,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          4,
+          "c",
+          40,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          5,
+          "a",
+          40,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ]
+      ],
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "co": [
+        1,
+        2,
+        3
+      ],
+      "old": 2,
+      "labels": [],
+      "isolation": "",
+      "fast": false,
+      "expected": [
+        4,
+        false
+      ]
+    },
+    {
+      "name": "fix may worsen placement",
+      "op": "fix",
+      "stores": [
+        [
+          1,
+          "a",
+          10,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          2,
+          "a",
+          20,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          3,
+          "b",
+          30,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ],
+        [
+          4,
+          "c",
+          40,
+          false,
+          "removed",
+          "",
+          "",
+          0
+        ],
+        [
+          5,
+          "a",
+          1,
+          false,
+          "up",
+          "",
+          "",
+          0
+        ]
+      ],
+      "peers": [
+        1,
+        2,
+        3
+      ],
+      "co": [
+        1,
+        3
+      ],
+      "old": 3,
+      "labels": [
+        "zone"
+      ],
+      "isolation": "",
+      "fast": false,
+      "expected": [
+        5,
+        false
+      ]
+    }
+  ],
+  "configuration": {
+    "region-score-formula-version": "v2",
+    "high-space-ratio": 0.7,
+    "low-space-ratio": 0.8,
+    "max-snapshot-count": 64
+  },
+  "test_input_notes": [
+    "Empty labels omitted: engine is exclusive even with empty value (placement/label_constraint.go).",
+    "Explicit v2/high=0.7/low=0.8/snapshot=64 configuration; unadjusted zero configuration is not the production defaults.",
+    "Better-location tests supply the caller engine extra filter; comparison engine gate is distinct from destination filtering.",
+    "Removed sources remain removable (filter regionSource = busy/removeLimit/snapshots)."
+  ],
+  "additional_rust_scenarios": {
+    "comparison_boundaries": 3,
+    "witness_version_gate": 6
+  }
+}

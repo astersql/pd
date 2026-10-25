@@ -1,0 +1,6 @@
+{
+  "green-2": "Input correction: explicitly set the intended production scoring configuration; no expected outputs changed.",
+  "green-3": "Expected removed source 0 corrected to 2 based on Go regionSource conditions and TestRemoveExtraReplicaKeepsUnhealthySource.",
+  "green-4": "Input correction: omit absent labels and supply caller engine filter in better-location scenarios.",
+  "mutation-first": "Engine regression survived because role already excluded the peer; strengthen engine scenario with a same-role TiFlash rule, leaving expected result unchanged."
+}

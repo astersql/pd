@@ -1,0 +1,22 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.01s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-2444a017b71e5cd9)
+
+running 2 tests
+test task_040_test::task_040_witness_version_gate ... ok
+
+thread 'task_040_test::task_040_behavior_cases' (163899095) panicked at pkg/schedule/checker/task_040_test.rs:146:9:
+assertion `left == right` failed: "no removable source"
+  left: Array [Number(2), Bool(false)]
+ right: Array [Number(0), Bool(false)]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test task_040_test::task_040_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_040_test::task_040_behavior_cases
+
+test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-checker --lib`

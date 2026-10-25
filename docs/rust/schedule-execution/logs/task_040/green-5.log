@@ -1,0 +1,10 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.95s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-2444a017b71e5cd9)
+
+running 2 tests
+test task_040_test::task_040_witness_version_gate ... ok
+task_040: 30 source-derived behavior cases passed
+test task_040_test::task_040_behavior_cases ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s

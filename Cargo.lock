@@ -410,7 +410,9 @@ dependencies = [
  "astersql-pd-core",
  "astersql-pd-core-constant",
  "astersql-pd-schedule-config",
+ "astersql-pd-schedule-filter",
  "astersql-pd-schedule-operator",
+ "astersql-pd-schedule-placement",
  "serde_json",
  "tokio",
 ]

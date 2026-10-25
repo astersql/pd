@@ -1,0 +1,14 @@
+   Compiling astersql-pd-schedule-placement v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/placement)
+error[E0592]: duplicate definitions with name `rules`
+   --> pkg/schedule/placement/fit.rs:139:5
+    |
+139 |     pub fn rules(&self) -> &[Arc<Rule>] {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ duplicate definitions for `rules`
+    |
+   ::: pkg/schedule/placement/fit_isolation.rs:78:5
+    |
+ 78 |     pub fn rules(&self) -> &[Arc<Rule>] {
+    |     ----------------------------------- other definition for `rules`
+
+For more information about this error, try `rustc --explain E0592`.
+error: could not compile `astersql-pd-schedule-placement` (lib) due to 1 previous error

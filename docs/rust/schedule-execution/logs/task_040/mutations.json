@@ -1,0 +1,62 @@
+[
+  {
+    "name": "allow_suboptimal_temporary_target",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_040",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101
+  },
+  {
+    "name": "ignore_temporary_source",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_040",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101
+  },
+  {
+    "name": "witness_wrong_version",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_040",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101
+  },
+  {
+    "name": "ignore_comparison_engine",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_040",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101
+  }
+]
