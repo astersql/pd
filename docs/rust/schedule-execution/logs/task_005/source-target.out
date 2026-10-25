@@ -1,0 +1,35 @@
+
+running 2 tests
+test task_005_test::task_005_order_and_boundaries ... ok
+test task_005_test::task_005_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_005_test::task_005_behavior_cases
+
+test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Compiling astersql-pd-schedule-filter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter)
+warning: field `sources` is never read
+  --> pkg/schedule/filter/selection.rs:33:5
+   |
+31 | pub struct ExcludedFilter {
+   |            -------------- field in this struct
+32 |     scope: String,
+33 |     sources: BTreeSet<u64>,
+   |     ^^^^^^^
+   |
+   = note: `ExcludedFilter` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `astersql-pd-schedule-filter` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.57s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_filter-81fe3b72e6fedf72)
+
+thread 'task_005_test::task_005_behavior_cases' (161123138) panicked at pkg/schedule/filter/task_005_test.rs:75:9:
+assertion `left == right` failed: excluded_source
+  left: [1, 3, 4]
+ right: [2, 3, 4]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+error: test failed, to rerun pass `-p astersql-pd-schedule-filter --lib`

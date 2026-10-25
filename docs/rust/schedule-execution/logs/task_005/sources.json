@@ -1,0 +1,67 @@
+[
+  {
+    "path": "pkg/schedule/filter/status.go",
+    "sha256": "9517ad53b6b90dd79634d4eb37548e9c72cdc8b26ee41427ec5b562bdac51dfd",
+    "matches_source": true
+  },
+  {
+    "path": "pkg/schedule/filter/filters.go",
+    "sha256": "2e72100da29ddac7d371c59898ef10a562cda9bf4eec666cc4e4e0c7c8edc0a4",
+    "matches_source": true
+  },
+  {
+    "path": "pkg/schedule/filter/filters_test.go",
+    "sha256": "7675a55b6d20d983416b5b0d0e215fa0e1033f5dfc0367f73c0e73f7e9f52e05",
+    "matches_source": true
+  },
+  {
+    "path": "pkg/schedule/filter/candidates.go",
+    "sha256": "2ee5704d3f38c6a5675a9654409bd5df1532ad019dd30bdfd1105315c5f9ac12",
+    "matches_source": true
+  },
+  {
+    "path": "pkg/schedule/filter/candidates_test.go",
+    "sha256": "f40241c4defd8b264abfe01f042352d3703602814331fd89b5c5c2c285622ed0",
+    "matches_source": true
+  },
+  {
+    "path": "pkg/schedule/filter/region_filters.go",
+    "sha256": "ab08b272ad1e1ff1f044e40ba0091f13678d3d31f09bbf9c61b2a009f8903915",
+    "matches_source": true
+  },
+  {
+    "path": "pkg/schedule/plan/plan.go",
+    "sha256": "2b1edee3759a54db2784854b28b743d4ae996b5ba2e197f9818ac88150c0f34c",
+    "matches_source": true
+  },
+  {
+    "path": "pkg/schedule/plan/balance_plan.go",
+    "sha256": "4f861f5afdf2fd71af0b1ea0aef20eab3d7dc40e2165a330487a2ffcca2e118f",
+    "matches_source": true
+  },
+  {
+    "path": "pkg/schedule/schedulers/balance_leader.go",
+    "sha256": "904edff2c88b23fc228cd7d54b5054067c82254adc64855e47d1503e074c7a9f",
+    "matches_source": true
+  },
+  {
+    "path": "pkg/schedule/schedulers/balance_leader_test.go",
+    "sha256": "c9b79231c539c2d0e8322f372ea1df30c950e41213cdd313e7e4f679a2858bb5",
+    "matches_source": true
+  },
+  {
+    "path": "pkg/mock/mockconfig/mockconfig.go",
+    "sha256": "226bfbb2194392eb292a2db6259c9e54ba46f00dc1639e95dc0f594acb29af3d",
+    "matches_source": true
+  },
+  {
+    "path": "pkg/mock/mockcluster/mockcluster.go",
+    "sha256": "7e93c4a25b9ab59449a4323a9595caec8e94081f787ff00ca1c0a0ace5b5ea48",
+    "matches_source": true
+  },
+  {
+    "path": "pkg/utils/testutil/leak.go",
+    "sha256": "a269d3582084e8676a46b10299f377752ae7f831a456effcc05c0df6f31836ca",
+    "matches_source": true
+  }
+]

@@ -1,0 +1,17 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "dependency_commit": "9f430953c",
+  "binaries": {
+    "filter.test": "ea96e2e54834ad026432b60327b63e986d8a388d4c580c41137ab7e0fd1dba53",
+    "schedulers.test": "be084116f4781d659008fca257645da66f10f59fc424db02a2655c2f293b9f3f",
+    "dlv": "dcd0463a4350f0660412f5c766d31077370eec10ac8055cf0d786377e0d6340e"
+  },
+  "filter_compilation": "compilation.json",
+  "scheduler_compilation": "../task_003/compilation.json",
+  "mode": "classic/default; existing linux-arm64 Go test binaries under alpine:3.22",
+  "safety": "Go compilation uses readonly modules and external binary/cache. Selected five filter tests plus TestCandidates and TestBalanceLimit setup/helpers/TestMain reviewed: no selected assertion requires failpoint injection; no failpoint tool or source rewrite invoked.",
+  "oracle": "Existing TestBalanceLimit dry-run frame, stores with observed IDs; debugger calls real constructors, selectors and collector. SnapshotSenderFilter constructor supplies real ID maps. -unsafe only permits existing stack-backed slice arguments to these synchronous calls. Domain input NodeState=3 is set for the removed input. Filter[0] replaced with real excluded; preserved real StoreStateFilter used as later comparator. No algorithm, return status or assertion patched. Debugger exits before the modified original test continues; this is API output evidence, not whole-test PASS.",
+  "normalization": "See fixtures/task_005.json. Raw stdout/stderr retained in oracle.json and fault.json.",
+  "extra_observation": "first_state=401 belongs to future state-filter task, not claimed as Rust parity; first_excluded compares executed excluded prefix with separately verified rejection index.",
+  "fault": "Step 1 Store input to target selection causes actual runtime.TypeAssertionError; source assertion identifies Store->Region cast. Dlv does not render Error() text, so exact panic strings are not compared."
+}

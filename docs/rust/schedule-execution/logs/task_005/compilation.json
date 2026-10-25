@@ -1,0 +1,21 @@
+{
+  "argv": [
+    "go",
+    "test",
+    "-c",
+    "-gcflags=all=-N -l",
+    "-o",
+    "/tmp/pd-sched005/filter.test",
+    "./pkg/schedule/filter"
+  ],
+  "env": {
+    "GOOS": "linux",
+    "GOARCH": "arm64",
+    "GOFLAGS": "-mod=readonly",
+    "GOPROXY": "off",
+    "CGO_ENABLED": "0"
+  },
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": ""
+}

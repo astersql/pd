@@ -1,0 +1,128 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=cargo test -p astersql-pd-schedule-filter --locked --lib task_005 -- --nocapture
+   Compiling astersql-pd-schedule-plan v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/plan)
+   Compiling astersql-pd-schedule-config v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/config)
+   Compiling astersql-pd-schedule-filter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter)
+error[E0583]: file not found for module `selection`
+ --> pkg/schedule/filter/lib.rs:3:1
+  |
+3 | mod selection;
+  | ^^^^^^^^^^^^^^
+  |
+  = help: to create the module `selection`, create file "pkg/schedule/filter/selection.rs" or "pkg/schedule/filter/selection/mod.rs"
+  = note: if there is a `mod selection` elsewhere in the crate already, import it with `use crate::...` instead
+
+error[E0405]: cannot find trait `Filter` in this scope
+  --> pkg/schedule/filter/task_005_test.rs:27:31
+   |
+27 |         let filters: Vec<&dyn Filter<u64>> = vec![&excluded; case["filters"].as_u64().unwrap() as usize];
+   |                               ^^^^^^ not found in this scope
+
+error[E0405]: cannot find trait `Filter` in this scope
+  --> pkg/schedule/filter/task_005_test.rs:58:24
+   |
+58 |     let filters: [&dyn Filter<u64>; 2] = [&first, &later];
+   |                        ^^^^^^ not found in this scope
+
+error[E0405]: cannot find trait `Filter` in this scope
+  --> pkg/schedule/filter/task_005_test.rs:66:35
+   |
+66 |     assert_eq!(<ExcludedFilter as Filter<u64>>::filter_type(&first), FilterType::EXCLUDED);
+   |                                   ^^^^^^ not found in this scope
+
+error[E0425]: cannot find type `ExcludedFilter` in this scope
+  --> pkg/schedule/filter/task_005_test.rs:66:17
+   |
+66 |     assert_eq!(<ExcludedFilter as Filter<u64>>::filter_type(&first), FilterType::EXCLUDED);
+   |                 ^^^^^^^^^^^^^^ not found in this scope
+
+error[E0405]: cannot find trait `Filter` in this scope
+  --> pkg/schedule/filter/task_005_test.rs:72:22
+   |
+72 |     let chain: [&dyn Filter<u64>; 2] = [&pass, &first];
+   |                      ^^^^^^ not found in this scope
+
+warning: unused import: `selection::*`
+ --> pkg/schedule/filter/lib.rs:4:9
+  |
+4 | pub use selection::*;
+  |         ^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `super::*`
+ --> pkg/schedule/filter/task_005_test.rs:2:5
+  |
+2 | use super::*;
+  |     ^^^^^^^^
+
+error[E0433]: cannot find type `ExcludedFilter` in this scope
+  --> pkg/schedule/filter/task_005_test.rs:24:24
+   |
+24 |         let excluded = ExcludedFilter::new("task005", ids(&case["source_exclusions"]), ids(&case["target_exclusions"]));
+   |                        ^^^^^^^^^^^^^^ use of undeclared type `ExcludedFilter`
+
+error[E0433]: cannot find type `ExcludedFilter` in this scope
+  --> pkg/schedule/filter/task_005_test.rs:56:17
+   |
+56 |     let first = ExcludedFilter::new("first", [u64::MAX], [u64::MAX]);
+   |                 ^^^^^^^^^^^^^^ use of undeclared type `ExcludedFilter`
+
+error[E0433]: cannot find type `ExcludedFilter` in this scope
+  --> pkg/schedule/filter/task_005_test.rs:57:17
+   |
+57 |     let later = ExcludedFilter::new("later", [u64::MAX], [u64::MAX]);
+   |                 ^^^^^^^^^^^^^^ use of undeclared type `ExcludedFilter`
+
+error[E0433]: cannot find type `ExcludedFilter` in this scope
+  --> pkg/schedule/filter/task_005_test.rs:71:16
+   |
+71 |     let pass = ExcludedFilter::new("pass", [], []);
+   |                ^^^^^^^^^^^^^^ use of undeclared type `ExcludedFilter`
+
+error[E0433]: cannot find type `FilterType` in this scope
+  --> pkg/schedule/filter/task_005_test.rs:66:70
+   |
+66 |     assert_eq!(<ExcludedFilter as Filter<u64>>::filter_type(&first), FilterType::EXCLUDED);
+   |                                                                      ^^^^^^^^^^ use of undeclared type `FilterType`
+
+error[E0425]: cannot find function `select_source_stores` in this scope
+  --> pkg/schedule/filter/task_005_test.rs:31:25
+   |
+31 |             "Source" => select_source_stores(&stores, &filters, &conf, Some(&mut collector)),
+   |                         ^^^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `select_target_stores` in this scope
+  --> pkg/schedule/filter/task_005_test.rs:32:25
+   |
+32 |             "Target" => select_target_stores(&stores, &filters, &conf, Some(&mut collector)),
+   |                         ^^^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `select_unavailable_target_stores` in this scope
+  --> pkg/schedule/filter/task_005_test.rs:33:36
+   |
+33 |             "UnavailableTarget" => select_unavailable_target_stores(&stores, &filters, &conf, Some(&mut collector)),
+   |                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `select_unavailable_target_stores` in this scope
+  --> pkg/schedule/filter/task_005_test.rs:68:16
+   |
+68 |     assert_eq!(select_unavailable_target_stores(&stores, &filters, &conf, None).iter().map(|s| s.id()).collect::<Vec<_>>(), [u64::MA...
+   |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `select_source_stores` in this scope
+  --> pkg/schedule/filter/task_005_test.rs:69:16
+   |
+69 |     assert_eq!(select_source_stores(&stores, &[], &conf, None).iter().map(|s| s.id()).collect::<Vec<_>>(), [u64::MAX, 0, u64::MAX]);
+   |                ^^^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `select_target_stores` in this scope
+  --> pkg/schedule/filter/task_005_test.rs:70:13
+   |
+70 |     assert!(select_target_stores(&[], &filters, &conf, None).is_empty());
+   |             ^^^^^^^^^^^^^^^^^^^^ not found in this scope
+
+Some errors have detailed explanations: E0405, E0425, E0433, E0583.
+For more information about an error, try `rustc --explain E0405`.
+warning: `astersql-pd-schedule-filter` (lib test) generated 2 warnings
+error: could not compile `astersql-pd-schedule-filter` (lib test) due to 17 previous errors; 2 warnings emitted
+command_exit_code=101

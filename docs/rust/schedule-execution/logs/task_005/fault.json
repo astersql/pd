@@ -1,0 +1,29 @@
+{
+  "argv": [
+    "docker",
+    "run",
+    "--rm",
+    "--cap-add",
+    "SYS_PTRACE",
+    "--security-opt",
+    "seccomp=unconfined",
+    "-v",
+    "/tmp/pd-sched005:/oracle:ro",
+    "alpine:3.22",
+    "timeout",
+    "60",
+    "/oracle/dlv",
+    "--check-go-version=false",
+    "exec",
+    "/oracle/schedulers.test",
+    "--allow-non-terminal-interactive",
+    "--init=/oracle/fault.commands",
+    "--",
+    "-test.run",
+    "^TestBalanceLeaderSchedulerTestSuite$/^TestBalanceLimit$",
+    "-test.timeout=55s"
+  ],
+  "exit_code": 0,
+  "stdout": "Type 'help' for list of commands.\nBreakpoint 1 set at 0x1592a30 for github.com/tikv/pd/pkg/schedule/filter.SelectSourceStores() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/filters.go:39\n[2026/10/25 08:15:33.386 +00:00] [INFO] [labeler.go:65] [\"new region labeler created\"] [label-rules-count=0]\n[2026/10/25 08:15:33.386 +00:00] [INFO] [txn.go:756] [\"rebuilt group-label mapping\"] [total-groups=0] [total-ranges=0]\n[2026/10/25 08:15:33.386 +00:00] [INFO] [policy.go:158] [\"affinity manager availability check loop started\"] [interval=10s]\n[2026/10/25 08:15:33.386 +00:00] [INFO] [manager.go:137] [\"affinity manager initialized\"] [group-count=0]\n> [Breakpoint 1] github.com/tikv/pd/pkg/schedule/filter.SelectSourceStores() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/filters.go:39 (hits goroutine(253):1 total:1) (PC: 0x1592a30)\nBreakpoint 1 cleared at 0x1592a30 for github.com/tikv/pd/pkg/schedule/filter.SelectSourceStores() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/filters.go:39\n\"INPUT stores\"\n[]*github.com/tikv/pd/pkg/core.StoreInfo len: 4, cap: 4, [\n\t*(*\"github.com/tikv/pd/pkg/core.StoreInfo\")(0x6aa2eb34bba0),\n\t*(*\"github.com/tikv/pd/pkg/core.StoreInfo\")(0x6aa2eb34bc70),\n\t*(*\"github.com/tikv/pd/pkg/core.StoreInfo\")(0x6aa2eb34bd40),\n\t*(*\"github.com/tikv/pd/pkg/core.StoreInfo\")(0x6aa2eb34be10),\n]\n> github.com/tikv/pd/pkg/schedule/filter.SelectSourceStores() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/filters.go:39 (PC: 0x1592a30)\nValues returned:\n\t~r0: 1\n\n> github.com/tikv/pd/pkg/schedule/filter.SelectSourceStores() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/filters.go:39 (PC: 0x1592a30)\nValues returned:\n\t~r0: 2\n\n> github.com/tikv/pd/pkg/schedule/filter.SelectSourceStores() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/filters.go:39 (PC: 0x1592a30)\nValues returned:\n\t~r0: 3\n\n> github.com/tikv/pd/pkg/schedule/filter.SelectSourceStores() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/filters.go:39 (PC: 0x1592a30)\nValues returned:\n\t~r0: 4\n\n> github.com/tikv/pd/pkg/schedule/filter.SelectSourceStores() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/filters.go:39 (PC: 0x1592a30)\n> github.com/tikv/pd/pkg/schedule/filter.SelectSourceStores() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/filters.go:39 (PC: 0x1592a30)\n> github.com/tikv/pd/pkg/schedule/filter.SelectSourceStores() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/filters.go:39 (PC: 0x1592a30)\n> github.com/tikv/pd/pkg/schedule/filter.SelectSourceStores() .Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter/filters.go:39 (PC: 0x1592a30)\nValues returned:\n\t~panic: interface {}(*runtime.TypeAssertionError) *{\n\t\t_interface: *(*\"internal/abi.Type\")(0x1a0f620),\n\t\tconcrete: *(*\"internal/abi.Type\")(0x1c84aa0),\n\t\tasserted: *(*\"internal/abi.Type\")(0x1c80540),\n\t\tmissingMethod: \"\",}\n\n",
+  "stderr": ""
+}

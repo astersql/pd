@@ -1,0 +1,16 @@
+{
+  "fixture_sha256": "7b8a2c8a020796c73b3af10eb3560e80ed92e5f767993891895b7293b64d56d0",
+  "go_files_unchanged": true,
+  "read_only_plans_unchanged": true,
+  "only_local_lockfile_package_added": true,
+  "production_dependency_direction_valid": true,
+  "go_tests": 6,
+  "go_selection_cases": 8,
+  "go_state_filter_context_only": 1,
+  "go_resource_fault_cases": 1,
+  "rust_focused_tests": 3,
+  "rust_package_tests": 3,
+  "rust_workspace_tests": 1329,
+  "rust_workspace_ignored": 1,
+  "mutation_checks": 4
+}

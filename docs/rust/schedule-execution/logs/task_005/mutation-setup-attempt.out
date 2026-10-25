@@ -1,0 +1,8 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=python3 docs/rust/schedule-execution/logs/task_005/mutation.py
+{'name': 'source-target', 'argv': ['cargo', 'test', '-p', 'astersql-pd-schedule-filter', '--locked', '--lib', 'task_005', '--', '--nocapture'], 'exit_code': 101, 'cargo_target_dir': '/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1', 'passed': 1, 'failed': 1}
+Traceback (most recent call last):
+  File "/Users/Shared/work/dir/data/codes/pd/docs/rust/schedule-execution/logs/task_005/mutation.py", line 15, in <module>
+    assert original.count(old)==1,(name,old)
+           ^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('last-rejection', '.enumerate()\n        .find_map')
+command_exit_code=1

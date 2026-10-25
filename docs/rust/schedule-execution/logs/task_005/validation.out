@@ -1,0 +1,16 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=python3 docs/rust/schedule-execution/logs/task_005/validate.py
+RUN cargo fmt --all
+{"argv": ["cargo", "fmt", "--all"], "exit_code": 0, "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1", "output": "validation-0.out", "passed": 0, "failed": 0, "ignored": 0}
+RUN cargo test -p astersql-pd-schedule-filter --locked --lib task_005 -- --nocapture
+{"argv": ["cargo", "test", "-p", "astersql-pd-schedule-filter", "--locked", "--lib", "task_005", "--", "--nocapture"], "exit_code": 0, "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1", "output": "validation-1.out", "passed": 3, "failed": 0, "ignored": 0}
+RUN cargo test -p astersql-pd-schedule-filter --locked
+{"argv": ["cargo", "test", "-p", "astersql-pd-schedule-filter", "--locked"], "exit_code": 0, "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1", "output": "validation-2.out", "passed": 3, "failed": 0, "ignored": 0}
+RUN cargo metadata --format-version 1 --no-deps
+{"argv": ["cargo", "metadata", "--format-version", "1", "--no-deps"], "exit_code": 0, "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1", "output": "validation-3.out", "passed": 0, "failed": 0, "ignored": 0}
+RUN cargo fmt --all -- --check
+{"argv": ["cargo", "fmt", "--all", "--", "--check"], "exit_code": 0, "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1", "output": "validation-4.out", "passed": 0, "failed": 0, "ignored": 0}
+RUN cargo check --workspace --locked
+{"argv": ["cargo", "check", "--workspace", "--locked"], "exit_code": 0, "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1", "output": "validation-5.out", "passed": 0, "failed": 0, "ignored": 0}
+RUN cargo test --workspace --locked
+{"argv": ["cargo", "test", "--workspace", "--locked"], "exit_code": 0, "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1", "output": "validation-6.out", "passed": 1329, "failed": 0, "ignored": 1}
+command_exit_code=0

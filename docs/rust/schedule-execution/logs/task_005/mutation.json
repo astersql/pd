@@ -1,0 +1,74 @@
+[
+  {
+    "name": "source-target",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_005",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "passed": 1,
+    "failed": 1
+  },
+  {
+    "name": "last-rejection",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_005",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "passed": 1,
+    "failed": 1
+  },
+  {
+    "name": "target-step",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_005",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "passed": 1,
+    "failed": 1
+  },
+  {
+    "name": "selection-inversion",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_005",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "passed": 0,
+    "failed": 2
+  }
+]

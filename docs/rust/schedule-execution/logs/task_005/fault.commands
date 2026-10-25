@@ -1,0 +1,18 @@
+break *0x1592a30
+condition 1 collector != nil
+continue
+clearall
+config max-variable-recurse 0
+config max-array-values 10
+print "INPUT stores"
+print stores
+call stores[0].GetID()
+call stores[1].GetID()
+call stores[2].GetID()
+call stores[3].GetID()
+call -unsafe filters[1] = filters[0]
+call -unsafe filters[0] = filter.NewExcludedFilter("task005", filter.NewSnapshotSendFilter(stores[:1], 1).(*filter.SnapshotSenderFilter).senders, filter.NewSnapshotSendFilter(stores[1:2], 1).(*filter.SnapshotSenderFilter).senders)
+call -unsafe collector = plan.NewCollector(collector.basePlan)
+set collector.basePlan.(*plan.BalanceSchedulerPlan).Step = 1
+call -unsafe filter.SelectTargetStores(stores, filters[:1], conf, collector, nil)
+exit

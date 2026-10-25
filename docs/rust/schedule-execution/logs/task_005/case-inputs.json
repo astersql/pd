@@ -1,0 +1,65 @@
+[
+  {
+    "name": "source_empty",
+    "mode": "Source",
+    "filters": 0,
+    "base_step": 0,
+    "removed": false
+  },
+  {
+    "name": "target_empty",
+    "mode": "Target",
+    "filters": 0,
+    "base_step": 0,
+    "removed": false
+  },
+  {
+    "name": "unavailable_empty",
+    "mode": "UnavailableTarget",
+    "filters": 0,
+    "base_step": 0,
+    "removed": false
+  },
+  {
+    "name": "excluded_source",
+    "mode": "Source",
+    "filters": 1,
+    "base_step": 0,
+    "removed": false
+  },
+  {
+    "name": "excluded_target",
+    "mode": "Target",
+    "filters": 1,
+    "base_step": 0,
+    "removed": false
+  },
+  {
+    "name": "excluded_unavailable",
+    "mode": "UnavailableTarget",
+    "filters": 1,
+    "base_step": 0,
+    "removed": false
+  },
+  {
+    "name": "target_step2",
+    "mode": "Target",
+    "filters": 1,
+    "base_step": 2,
+    "removed": false
+  },
+  {
+    "name": "first_excluded",
+    "mode": "Target",
+    "filters": 2,
+    "base_step": 2,
+    "removed": true
+  },
+  {
+    "name": "first_state",
+    "mode": "Target",
+    "filters": 2,
+    "base_step": 2,
+    "removed": true
+  }
+]
