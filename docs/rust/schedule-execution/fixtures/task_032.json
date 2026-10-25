@@ -1,0 +1,2582 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "evidence_kind": "source_assertion",
+  "go_execution": false,
+  "normalization": [],
+  "sources": {
+    "pkg/schedule/operator/create_operator.go": "43a938c72992f4ce81501c40ab85c1e79c08670383acd47f22655e779524b927",
+    "pkg/schedule/operator/create_operator_test.go": "919a902cd88c9ced64be15c154b409dccd56de584266f6f41137caa963bfbb3c",
+    "pkg/schedule/operator/builder.go": "2c74830947c401ea8c4d46e8066e4c85aecd02beea035d0bb9eb4aab8cee8f83"
+  },
+  "cases": [
+    {
+      "name": "split-policy-0",
+      "op": "split",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "steps": [
+        [
+          "split",
+          0,
+          [
+            [
+              0,
+              255
+            ],
+            [
+              0,
+              255
+            ],
+            []
+          ]
+        ]
+      ],
+      "kind": 32,
+      "error": null,
+      "joint": true,
+      "policy": 0,
+      "final_peers": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "final_leader": 1
+    },
+    {
+      "name": "split-policy-1",
+      "op": "split",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "steps": [
+        [
+          "split",
+          1,
+          [
+            [
+              0,
+              255
+            ],
+            [
+              0,
+              255
+            ],
+            []
+          ]
+        ]
+      ],
+      "kind": 32,
+      "error": null,
+      "joint": true,
+      "policy": 1,
+      "final_peers": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "final_leader": 1
+    },
+    {
+      "name": "split-policy-2",
+      "op": "split",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "steps": [
+        [
+          "split",
+          2,
+          [
+            [
+              0,
+              255
+            ],
+            [
+              0,
+              255
+            ],
+            []
+          ]
+        ]
+      ],
+      "kind": 32,
+      "error": null,
+      "joint": true,
+      "policy": 2,
+      "final_peers": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "final_leader": 1
+    },
+    {
+      "name": "split-policy-99",
+      "op": "split",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "steps": [
+        [
+          "split",
+          99,
+          [
+            [
+              0,
+              255
+            ],
+            [
+              0,
+              255
+            ],
+            []
+          ]
+        ]
+      ],
+      "kind": 32,
+      "error": null,
+      "joint": true,
+      "policy": 99,
+      "final_peers": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "final_leader": 1
+    },
+    {
+      "name": "split-joint-i",
+      "op": "split",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "i",
+          2,
+          false
+        ]
+      ],
+      "steps": [],
+      "kind": 0,
+      "error": "OriginJoint",
+      "joint": true,
+      "policy": 0
+    },
+    {
+      "name": "split-joint-d",
+      "op": "split",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "d",
+          2,
+          false
+        ]
+      ],
+      "steps": [],
+      "kind": 0,
+      "error": "OriginJoint",
+      "joint": true,
+      "policy": 0
+    },
+    {
+      "name": "split-empty",
+      "op": "split",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "steps": [
+        [
+          "split",
+          2,
+          []
+        ]
+      ],
+      "kind": 32,
+      "error": null,
+      "joint": true,
+      "policy": 2,
+      "keys": [],
+      "final_peers": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "final_leader": 1
+    },
+    {
+      "name": "merge-match",
+      "op": "merge",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "steps": [
+        [
+          "merge",
+          false
+        ]
+      ],
+      "kind": 4,
+      "error": null,
+      "joint": true,
+      "target": [
+        [
+          3,
+          "v",
+          99,
+          false
+        ],
+        [
+          2,
+          "v",
+          98,
+          false
+        ],
+        [
+          1,
+          "v",
+          97,
+          false
+        ]
+      ],
+      "final_peers": [
+        [
+          3,
+          "v",
+          3,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          1,
+          "v",
+          1,
+          false
+        ]
+      ],
+      "final_leader": 1
+    },
+    {
+      "name": "merge-reverse",
+      "op": "merge",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "steps": [
+        [
+          "merge",
+          false
+        ]
+      ],
+      "kind": 4,
+      "error": null,
+      "joint": true,
+      "target": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "reverse": true,
+      "final_peers": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "final_leader": 1
+    },
+    {
+      "name": "merge-source-joint",
+      "op": "merge",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "i",
+          2,
+          false
+        ]
+      ],
+      "steps": [],
+      "kind": 0,
+      "error": "OriginJoint",
+      "joint": true,
+      "target": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ]
+    },
+    {
+      "name": "merge-target-joint",
+      "op": "merge",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "steps": [],
+      "kind": 0,
+      "error": "OriginJoint",
+      "joint": true,
+      "target": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "d",
+          2,
+          false
+        ]
+      ]
+    },
+    {
+      "name": "merge-replace",
+      "op": "merge",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "steps": [
+        [
+          "add",
+          4,
+          101,
+          false,
+          false
+        ],
+        [
+          "transfer",
+          1,
+          2
+        ],
+        [
+          "enter",
+          [
+            [
+              4,
+              101,
+              false
+            ]
+          ],
+          [
+            [
+              1,
+              1,
+              false
+            ]
+          ]
+        ],
+        [
+          "leave",
+          [
+            [
+              4,
+              101,
+              false
+            ]
+          ],
+          [
+            [
+              1,
+              1,
+              false
+            ]
+          ]
+        ],
+        [
+          "remove",
+          1,
+          1,
+          false
+        ],
+        [
+          "merge",
+          false
+        ]
+      ],
+      "kind": 388,
+      "error": null,
+      "joint": true,
+      "target": [
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ],
+        [
+          4,
+          "v",
+          4,
+          false
+        ]
+      ],
+      "allocated": 1,
+      "final_peers": [
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ],
+        [
+          4,
+          "v",
+          101,
+          false
+        ]
+      ],
+      "final_leader": 2
+    },
+    {
+      "name": "merge-allocation-failure",
+      "op": "merge",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "steps": [],
+      "kind": 0,
+      "error": "Allocation(\"injected\")",
+      "joint": true,
+      "target": [
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ],
+        [
+          4,
+          "v",
+          4,
+          false
+        ]
+      ],
+      "fault": true,
+      "allocated": 1
+    },
+    {
+      "name": "merge-witness-diff",
+      "op": "merge",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "steps": [
+        [
+          "witness",
+          2,
+          2
+        ],
+        [
+          "merge",
+          false
+        ]
+      ],
+      "kind": 132,
+      "error": null,
+      "joint": true,
+      "target": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          true
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "final_peers": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          true
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "final_leader": 1
+    },
+    {
+      "name": "scatter-transfer-True",
+      "op": "scatter",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "steps": [
+        [
+          "transfer",
+          1,
+          2
+        ]
+      ],
+      "kind": 257,
+      "error": null,
+      "joint": true,
+      "target": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "leader": 2,
+      "admin": true,
+      "final_peers": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "final_leader": 2
+    },
+    {
+      "name": "scatter-limit-True",
+      "op": "scatter",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "steps": [
+        [
+          "transfer",
+          1,
+          2
+        ]
+      ],
+      "kind": 257,
+      "error": null,
+      "joint": true,
+      "target": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "leader": 2,
+      "admin": true,
+      "blocked": [
+        2
+      ],
+      "final_peers": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "final_leader": 2
+    },
+    {
+      "name": "scatter-transfer-False",
+      "op": "scatter",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "steps": [
+        [
+          "transfer",
+          1,
+          2
+        ]
+      ],
+      "kind": 2304,
+      "error": null,
+      "joint": true,
+      "target": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "leader": 2,
+      "admin": false,
+      "final_peers": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "final_leader": 2
+    },
+    {
+      "name": "scatter-limit-False",
+      "op": "scatter",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "steps": [],
+      "kind": 0,
+      "error": "LeaderNotAllowed",
+      "joint": true,
+      "target": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "leader": 2,
+      "admin": false,
+      "blocked": [
+        2
+      ]
+    },
+    {
+      "name": "scatter-random",
+      "op": "scatter",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "steps": [
+        [
+          "transfer",
+          1,
+          3
+        ]
+      ],
+      "kind": 2304,
+      "error": null,
+      "joint": true,
+      "target": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "index": 2,
+      "final_peers": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "final_leader": 3
+    },
+    {
+      "name": "scatter-no-voter",
+      "op": "scatter",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "steps": [],
+      "kind": 0,
+      "error": "MissingPeer(0)",
+      "joint": true,
+      "target": [
+        [
+          1,
+          "l",
+          1,
+          false
+        ]
+      ]
+    },
+    {
+      "name": "scatter-noop",
+      "op": "scatter",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "steps": [],
+      "kind": 0,
+      "error": "NoSteps",
+      "joint": true,
+      "target": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "leader": 1
+    },
+    {
+      "name": "scatter-light-False",
+      "op": "scatter",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "steps": [
+        [
+          "add",
+          4,
+          4,
+          false,
+          true
+        ],
+        [
+          "enter",
+          [
+            [
+              4,
+              4,
+              false
+            ]
+          ],
+          [
+            [
+              3,
+              3,
+              false
+            ]
+          ]
+        ],
+        [
+          "leave",
+          [
+            [
+              4,
+              4,
+              false
+            ]
+          ],
+          [
+            [
+              3,
+              3,
+              false
+            ]
+          ]
+        ],
+        [
+          "remove",
+          3,
+          3,
+          false
+        ]
+      ],
+      "kind": 2176,
+      "error": null,
+      "joint": true,
+      "target": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          4,
+          "v",
+          4,
+          false
+        ]
+      ],
+      "leader": 1,
+      "skip": false,
+      "final_peers": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          4,
+          "v",
+          4,
+          false
+        ]
+      ],
+      "final_leader": 1
+    },
+    {
+      "name": "scatter-light-True",
+      "op": "scatter",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "steps": [
+        [
+          "add",
+          4,
+          4,
+          false,
+          true
+        ],
+        [
+          "enter",
+          [
+            [
+              4,
+              4,
+              false
+            ]
+          ],
+          [
+            [
+              3,
+              3,
+              false
+            ]
+          ]
+        ],
+        [
+          "leave",
+          [
+            [
+              4,
+              4,
+              false
+            ]
+          ],
+          [
+            [
+              3,
+              3,
+              false
+            ]
+          ]
+        ],
+        [
+          "remove",
+          3,
+          3,
+          true
+        ]
+      ],
+      "kind": 2176,
+      "error": null,
+      "joint": true,
+      "target": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          4,
+          "v",
+          4,
+          false
+        ]
+      ],
+      "leader": 1,
+      "skip": true,
+      "final_peers": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          4,
+          "v",
+          4,
+          false
+        ]
+      ],
+      "final_leader": 1
+    },
+    {
+      "name": "witness-voter",
+      "op": "witness",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "steps": [
+        [
+          "witness",
+          2,
+          2
+        ]
+      ],
+      "kind": 1152,
+      "error": null,
+      "joint": true,
+      "store": 2,
+      "witness": true,
+      "final_peers": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          true
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "final_leader": 1
+    },
+    {
+      "name": "witness-learner",
+      "op": "witness",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "l",
+          2,
+          false
+        ]
+      ],
+      "steps": [
+        [
+          "witness",
+          2,
+          2
+        ]
+      ],
+      "kind": 1152,
+      "error": null,
+      "joint": true,
+      "store": 2,
+      "witness": true,
+      "final_peers": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "l",
+          2,
+          true
+        ]
+      ],
+      "final_leader": 1
+    },
+    {
+      "name": "nonwitness-learner",
+      "op": "witness",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "l",
+          2,
+          true
+        ]
+      ],
+      "steps": [
+        [
+          "nonwitness",
+          2,
+          2,
+          1
+        ]
+      ],
+      "kind": 1152,
+      "error": null,
+      "joint": true,
+      "store": 2,
+      "witness": false,
+      "final_peers": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "l",
+          2,
+          false
+        ]
+      ],
+      "final_leader": 1
+    },
+    {
+      "name": "nonwitness-voter",
+      "op": "witness",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          true
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "steps": [
+        [
+          "enter",
+          [],
+          [
+            [
+              2,
+              2,
+              true
+            ]
+          ]
+        ],
+        [
+          "batch",
+          [],
+          [
+            [
+              2,
+              2,
+              1
+            ]
+          ]
+        ],
+        [
+          "enter",
+          [
+            [
+              2,
+              2,
+              false
+            ]
+          ],
+          []
+        ]
+      ],
+      "kind": 1152,
+      "error": null,
+      "joint": true,
+      "store": 2,
+      "witness": false,
+      "final_peers": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "final_leader": 1
+    },
+    {
+      "name": "witness-missing",
+      "op": "witness",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "steps": [],
+      "kind": 0,
+      "error": "MissingPeer(9)",
+      "joint": true,
+      "store": 9,
+      "witness": true
+    },
+    {
+      "name": "witness-already",
+      "op": "witness",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          true
+        ]
+      ],
+      "steps": [],
+      "kind": 0,
+      "error": "AlreadyWitness(2)",
+      "joint": true,
+      "store": 2,
+      "witness": true
+    },
+    {
+      "name": "nonwitness-already",
+      "op": "witness",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "steps": [],
+      "kind": 0,
+      "error": "AlreadyNonWitness(2)",
+      "joint": true,
+      "store": 2,
+      "witness": false
+    },
+    {
+      "name": "witness-joint-origin",
+      "op": "witness",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "i",
+          2,
+          false
+        ]
+      ],
+      "steps": [],
+      "kind": 0,
+      "error": "OriginJoint",
+      "joint": true,
+      "store": 2,
+      "witness": true
+    },
+    {
+      "name": "move-witness",
+      "op": "move_witness",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "l",
+          2,
+          true
+        ],
+        [
+          3,
+          "l",
+          3,
+          false
+        ]
+      ],
+      "steps": [
+        [
+          "batch",
+          [
+            [
+              3,
+              3
+            ]
+          ],
+          [
+            [
+              2,
+              2,
+              1
+            ]
+          ]
+        ]
+      ],
+      "kind": 1024,
+      "error": null,
+      "joint": true,
+      "store": 2,
+      "target_store": 3,
+      "final_peers": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "l",
+          2,
+          false
+        ],
+        [
+          3,
+          "l",
+          3,
+          true
+        ]
+      ],
+      "final_leader": 1
+    },
+    {
+      "name": "leave-stay",
+      "op": "leave",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "d",
+          2,
+          false
+        ],
+        [
+          3,
+          "i",
+          3,
+          false
+        ]
+      ],
+      "steps": [
+        [
+          "leave",
+          [
+            [
+              3,
+              3,
+              false
+            ]
+          ],
+          [
+            [
+              2,
+              2,
+              false
+            ]
+          ]
+        ]
+      ],
+      "kind": 0,
+      "error": null,
+      "joint": true,
+      "blocked": [],
+      "placement": false,
+      "load": false,
+      "final_peers": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "l",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "final_leader": 1
+    },
+    {
+      "name": "leave-demoting",
+      "op": "leave",
+      "origin": [
+        [
+          1,
+          "d",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "i",
+          3,
+          false
+        ]
+      ],
+      "steps": [
+        [
+          "transfer",
+          1,
+          2
+        ],
+        [
+          "leave",
+          [
+            [
+              3,
+              3,
+              false
+            ]
+          ],
+          [
+            [
+              1,
+              1,
+              false
+            ]
+          ]
+        ]
+      ],
+      "kind": 256,
+      "error": null,
+      "joint": true,
+      "blocked": [],
+      "placement": false,
+      "load": false,
+      "final_peers": [
+        [
+          1,
+          "l",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "final_leader": 2
+    },
+    {
+      "name": "leave-incoming",
+      "op": "leave",
+      "origin": [
+        [
+          1,
+          "i",
+          1,
+          false
+        ],
+        [
+          2,
+          "d",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "steps": [
+        [
+          "leave",
+          [
+            [
+              1,
+              1,
+              false
+            ]
+          ],
+          [
+            [
+              2,
+              2,
+              false
+            ]
+          ]
+        ]
+      ],
+      "kind": 0,
+      "error": null,
+      "joint": true,
+      "blocked": [],
+      "placement": false,
+      "load": false,
+      "final_peers": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "l",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "final_leader": 1
+    },
+    {
+      "name": "leave-offline",
+      "op": "leave",
+      "origin": [
+        [
+          1,
+          "d",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "i",
+          3,
+          false
+        ]
+      ],
+      "steps": [
+        [
+          "transfer",
+          1,
+          3
+        ],
+        [
+          "leave",
+          [
+            [
+              3,
+              3,
+              false
+            ]
+          ],
+          [
+            [
+              1,
+              1,
+              false
+            ]
+          ]
+        ]
+      ],
+      "kind": 256,
+      "error": null,
+      "joint": true,
+      "blocked": [
+        2
+      ],
+      "placement": false,
+      "load": false,
+      "final_peers": [
+        [
+          1,
+          "l",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "final_leader": 3
+    },
+    {
+      "name": "leave-force",
+      "op": "leave",
+      "origin": [
+        [
+          1,
+          "d",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "i",
+          3,
+          false
+        ]
+      ],
+      "steps": [
+        [
+          "transfer",
+          1,
+          2
+        ],
+        [
+          "leave",
+          [
+            [
+              3,
+              3,
+              false
+            ]
+          ],
+          [
+            [
+              1,
+              1,
+              false
+            ]
+          ]
+        ]
+      ],
+      "kind": 256,
+      "error": null,
+      "joint": true,
+      "blocked": [
+        1,
+        2,
+        3
+      ],
+      "placement": false,
+      "load": false,
+      "final_peers": [
+        [
+          1,
+          "l",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "final_leader": 2
+    },
+    {
+      "name": "leave-no-target",
+      "op": "leave",
+      "origin": [
+        [
+          1,
+          "d",
+          1,
+          false
+        ],
+        [
+          2,
+          "i",
+          2,
+          true
+        ]
+      ],
+      "steps": [
+        [
+          "leave",
+          [
+            [
+              2,
+              2,
+              true
+            ]
+          ],
+          [
+            [
+              1,
+              1,
+              false
+            ]
+          ]
+        ]
+      ],
+      "kind": 0,
+      "error": null,
+      "joint": true,
+      "blocked": [],
+      "placement": false,
+      "load": false,
+      "final_peers": [
+        [
+          1,
+          "l",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          true
+        ]
+      ],
+      "final_leader": 1
+    },
+    {
+      "name": "leave-without-fit",
+      "op": "leave",
+      "origin": [
+        [
+          1,
+          "d",
+          1,
+          false
+        ],
+        [
+          2,
+          "i",
+          2,
+          false
+        ]
+      ],
+      "steps": [
+        [
+          "transfer",
+          1,
+          2
+        ],
+        [
+          "leave",
+          [
+            [
+              2,
+              2,
+              false
+            ]
+          ],
+          [
+            [
+              1,
+              1,
+              false
+            ]
+          ]
+        ]
+      ],
+      "kind": 256,
+      "error": null,
+      "joint": true,
+      "blocked": [],
+      "placement": true,
+      "load": false,
+      "final_peers": [
+        [
+          1,
+          "l",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ]
+      ],
+      "final_leader": 2
+    },
+    {
+      "name": "leave-load",
+      "op": "leave",
+      "origin": [
+        [
+          1,
+          "d",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "steps": [
+        [
+          "transfer",
+          1,
+          3
+        ],
+        [
+          "leave",
+          [],
+          [
+            [
+              1,
+              1,
+              false
+            ]
+          ]
+        ]
+      ],
+      "kind": 256,
+      "error": null,
+      "joint": true,
+      "blocked": [],
+      "placement": false,
+      "load": true,
+      "final_peers": [
+        [
+          1,
+          "l",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "final_leader": 3
+    },
+    {
+      "name": "leave-not-joint",
+      "op": "leave",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "steps": [],
+      "kind": 0,
+      "error": "NotJoint",
+      "joint": true
+    },
+    {
+      "name": "leave-no-leader",
+      "op": "leave",
+      "origin": [
+        [
+          1,
+          "v",
+          1,
+          false
+        ],
+        [
+          2,
+          "v",
+          2,
+          false
+        ],
+        [
+          3,
+          "v",
+          3,
+          false
+        ]
+      ],
+      "steps": [],
+      "kind": 0,
+      "error": "NoLeader",
+      "joint": true,
+      "no_leader": true
+    }
+  ]
+}

@@ -28,3 +28,9 @@ execChangePeerV2，以及 `builder_test.go::TestBuild`。固定 fixture 的 prov
 is_finish/conf_ver_changed、leader 资格和最终非 joint 状态。单成员自动稳定是
 显式模拟的外部 TiKV 心跳行为，未启动 TiKV 或声称分布式 Raft 验证。
 失败、通过和 workspace 证据见 docs/rust/schedule-execution/task-029.md。
+
+任务32补充 crate 内部 `Builder::build_leave_joint`，由
+[范围工厂](create_range.rs.md) 的恢复入口调用。它复用 Planner 的 leader 选择，
+先普通 admission，找不到时仅放宽集群限制；保留角色和 witness 禁令。根据 origin
+的 incoming/demoting 集合直接生成 leave，必要时先转移 leader，不重复 enter。
+placement/origin-joint 豁免由工厂显式装配；正常 build_joint 行为不变。

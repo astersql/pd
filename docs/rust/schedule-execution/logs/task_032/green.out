@@ -1,0 +1,61 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=cargo test -p astersql-pd-schedule-operator --locked --lib task_032 -- --nocapture
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.24s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_operator-3c432df009ee920c)
+
+running 2 tests
+test task_032_test::task_032_membership_matching ... ok
+
+thread 'task_032_test::task_032_behavior_cases' (163223158) panicked at pkg/schedule/operator/task_032_test.rs:228:9:
+assertion `left == right` failed: scatter-no-voter error
+  left: Some("MissingPeer(0)")
+ right: Some("NoVoter")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test task_032_test::task_032_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_032_test::task_032_behavior_cases
+
+test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 50 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-operator --lib`
+command_exit_code=101
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=cargo test -p astersql-pd-schedule-operator --locked --lib task_032 -- --nocapture
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.09s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_operator-3c432df009ee920c)
+
+running 2 tests
+test task_032_test::task_032_membership_matching ... ok
+
+thread 'task_032_test::task_032_behavior_cases' (163224137) panicked at pkg/schedule/operator/task_032_test.rs:253:9:
+assertion `left == right` failed: nonwitness-voter steps
+  left: Array [Array [String("enter"), Array [], Array [Array [Number(2), Number(2), Bool(true)]]], Array [String("batch"), Array [], Array [Array [Number(2), Number(2), Number(1)]]], Array [String("enter"), Array [Array [Number(2), Number(2), Bool(false)]], Array []]]
+ right: Array [Array [String("enter"), Array [], Array [Array [Number(2), Number(2), Bool(true)]]], Array [String("nonwitness"), Number(2), Number(2), Number(1)], Array [String("enter"), Array [Array [Number(2), Number(2), Bool(false)]], Array []]]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test task_032_test::task_032_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_032_test::task_032_behavior_cases
+
+test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 50 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-operator --lib`
+command_exit_code=101
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=cargo test -p astersql-pd-schedule-operator --locked --lib task_032 -- --nocapture
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.60s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_operator-3c432df009ee920c)
+
+running 2 tests
+test task_032_test::task_032_membership_matching ... ok
+task032: 28 successful cases, 14 expected errors
+test task_032_test::task_032_behavior_cases ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 50 filtered out; finished in 0.00s
+
+command_exit_code=0

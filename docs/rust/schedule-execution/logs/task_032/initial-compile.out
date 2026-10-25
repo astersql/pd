@@ -1,0 +1,79 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=cargo test -p astersql-pd-schedule-operator --locked --lib task_032 -- --nocapture
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+warning: unused import: `PeerRole`
+ --> pkg/schedule/operator/create_range.rs:4:30
+  |
+4 | use astersql_pd_core::{Peer, PeerRole, RegionInfo, is_in_joint_state};
+  |                              ^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+error[E0560]: struct `RegionMeta` has no field named `start_key`
+  --> pkg/schedule/operator/task_032_test.rs:33:13
+   |
+33 |             start_key: if reverse { b"m".to_vec() } else { vec![0, 128] },
+   |             ^^^^^^^^^ `RegionMeta` does not have this field
+   |
+   = note: available fields are: `key_range`, `encryption_meta`, `is_in_flashback`, `flashback_start_ts`
+
+error[E0560]: struct `RegionMeta` has no field named `end_key`
+  --> pkg/schedule/operator/task_032_test.rs:34:13
+   |
+34 |             end_key: if reverse { vec![] } else { b"m".to_vec() },
+   |             ^^^^^^^ `RegionMeta` does not have this field
+   |
+   = note: available fields are: `key_range`, `encryption_meta`, `is_in_flashback`, `flashback_start_ts`
+
+error[E0609]: no field `start_key` on type `&RegionMeta`
+   --> pkg/schedule/operator/task_032_test.rs:284:46
+    |
+284 |             assert_eq!(s.start_key, r.meta().start_key);
+    |                                              ^^^^^^^^^ unknown field
+    |
+help: one of the expressions' fields has a field of the same name
+    |
+284 |             assert_eq!(s.start_key, r.meta().key_range.start_key);
+    |                                              ++++++++++
+
+error[E0609]: no field `end_key` on type `&RegionMeta`
+   --> pkg/schedule/operator/task_032_test.rs:285:44
+    |
+285 |             assert_eq!(s.end_key, r.meta().end_key);
+    |                                            ^^^^^^^ unknown field
+    |
+help: one of the expressions' fields has a field of the same name
+    |
+285 |             assert_eq!(s.end_key, r.meta().key_range.end_key);
+    |                                            ++++++++++
+
+warning: unused variable: `description`
+  --> pkg/schedule/operator/create_range.rs:24:5
+   |
+24 |     description: &str,
+   |     ^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_description`
+   |
+   = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `kind`
+  --> pkg/schedule/operator/create_range.rs:26:5
+   |
+26 |     kind: OpKind,
+   |     ^^^^ help: if this is intentional, prefix it with an underscore: `_kind`
+
+warning: unused variable: `policy`
+  --> pkg/schedule/operator/create_range.rs:27:5
+   |
+27 |     policy: SplitPolicy,
+   |     ^^^^^^ help: if this is intentional, prefix it with an underscore: `_policy`
+
+warning: unused variable: `keys`
+  --> pkg/schedule/operator/create_range.rs:28:5
+   |
+28 |     keys: Vec<Vec<u8>>,
+   |     ^^^^ help: if this is intentional, prefix it with an underscore: `_keys`
+
+Some errors have detailed explanations: E0560, E0609.
+For more information about an error, try `rustc --explain E0560`.
+warning: `astersql-pd-schedule-operator` (lib test) generated 5 warnings
+error: could not compile `astersql-pd-schedule-operator` (lib test) due to 4 previous errors; 5 warnings emitted
+command_exit_code=101

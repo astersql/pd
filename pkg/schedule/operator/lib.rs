@@ -81,3 +81,8 @@ mod create_peer;
 pub use create_peer::*;
 #[cfg(test)]
 mod task_031_test;
+
+mod create_range;
+pub use create_range::*;
+#[cfg(test)]
+mod task_032_test;

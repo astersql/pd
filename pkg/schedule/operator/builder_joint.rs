@@ -230,3 +230,111 @@ impl<V> Builder<'_, V> {
         Ok(op)
     }
 }
+
+impl<V> Builder<'_, V> {
+    pub(crate) async fn build_leave_joint(&mut self) -> Result<Operator, BuilderError> {
+        if let Some(e) = self.error() {
+            return Err(e.clone());
+        }
+        if !astersql_pd_core::is_in_joint_state(&self.region.meta().peers) {
+            return Err(BuilderError::NotJoint);
+        }
+        self.target_leader = if let Some(peer) = self.origin_peers.get(&self.origin_leader) {
+            if self.allow_leader(peer, true).await {
+                self.origin_leader
+            } else {
+                0
+            }
+        } else {
+            0
+        };
+        let mut target = 0;
+        for force in [false, true] {
+            self.force_target_leader = force;
+            let p = Planner {
+                builder: self,
+                current: self.origin_peers.clone(),
+                add: BTreeMap::new(),
+                remove: BTreeMap::new(),
+                promote: self
+                    .origin_peers
+                    .iter()
+                    .filter(|(_, p)| p.role == astersql_pd_core::PeerRole::IncomingVoter)
+                    .map(|(&s, p)| (s, p.clone()))
+                    .collect(),
+                added: BTreeMap::new(),
+                leader: self.origin_leader,
+                steps: vec![],
+                kind: OpKind(0),
+                options: SimpleBuildOptions::default(),
+            };
+            target = p.select_target_leader().await;
+            if target != 0 {
+                break;
+            }
+        }
+        let leave = ChangePeerV2Leave {
+            promote_learners: self
+                .origin_peers
+                .values()
+                .filter(|p| p.role == astersql_pd_core::PeerRole::IncomingVoter)
+                .map(|p| PromoteLearner {
+                    to_store: p.store_id,
+                    peer_id: p.id,
+                    is_witness: p.is_witness,
+                })
+                .collect(),
+            demote_voters: self
+                .origin_peers
+                .values()
+                .filter(|p| p.role == astersql_pd_core::PeerRole::DemotingVoter)
+                .map(|p| DemoteVoter {
+                    to_store: p.store_id,
+                    peer_id: p.id,
+                    is_witness: p.is_witness,
+                })
+                .collect(),
+        };
+        let (label, stores) = if !leave.promote_learners.is_empty() {
+            (
+                "promote",
+                leave
+                    .promote_learners
+                    .iter()
+                    .map(|p| p.to_store.to_string())
+                    .collect::<Vec<_>>(),
+            )
+        } else {
+            (
+                "demote",
+                leave
+                    .demote_voters
+                    .iter()
+                    .map(|p| p.to_store.to_string())
+                    .collect(),
+            )
+        };
+        let brief = format!("{label} peer: store [{}]", stores.join(" "));
+        let mut steps = vec![];
+        let mut kind = OpKind(0);
+        // Go still emits leave when no candidate exists, suppressing transfer.
+        if target != 0 && target != self.origin_leader {
+            steps.push(OpStep::TransferLeader(TransferLeader {
+                from_store: self.origin_leader,
+                to_store: target,
+                to_stores: vec![],
+            }));
+            kind |= OpKind::LEADER;
+        }
+        steps.push(OpStep::ChangePeerV2Leave(leave));
+        Ok(Operator::new(
+            &self.description,
+            &brief,
+            self.region.meta().id,
+            self.region.meta().epoch.clone(),
+            kind,
+            self.region.stats().approximate_size,
+            steps,
+        ))
+    }
+}
