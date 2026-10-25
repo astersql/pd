@@ -1,0 +1,20 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "dependency_commit": "08a268883",
+  "fixture_sha256": "ada76e26785936ce7c6cc270f0fa0bd0d9d2a11ece1630741bde1991413f8446",
+  "go_cases": 10,
+  "go_complete_tests": 2,
+  "go_files_checked": 3012,
+  "go_unchanged": true,
+  "readonly_plans_checked": 18,
+  "mutations_rejected": 10,
+  "focused_tests": 5,
+  "package_tests": 27,
+  "workspace_tests": 1353,
+  "workspace_ignored": 1,
+  "cargo_slot": 1,
+  "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+  "own_lock_released": true,
+  "cache_retained": true,
+  "remote_dependencies_unchanged": true
+}

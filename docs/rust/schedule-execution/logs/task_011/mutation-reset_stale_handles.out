@@ -1,0 +1,48 @@
+
+running 5 tests
+test task_011_test::task_011_negative_filter_identity - should panic ... ok
+test task_011_test::task_011_removed_pending_never_reappears ... ok
+test task_011_test::task_011_registry_isolation_and_registration_rollback ... FAILED
+task_011: 10 frozen lifecycle cases; 26 filter names
+test task_011_test::task_011_behavior_cases ... ok
+test task_011_test::task_011_shared_metrics_concurrent_batches ... ok
+
+failures:
+
+failures:
+    task_011_test::task_011_registry_isolation_and_registration_rollback
+
+test result: FAILED. 4 passed; 1 failed; 0 ignored; 0 measured; 22 filtered out; finished in 0.00s
+
+   Compiling astersql-pd-schedule-filter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter)
+warning: variable does not need to be mutable
+   --> pkg/schedule/filter/filter_metrics.rs:126:13
+    |
+126 |         let mut series = self.inner.series.lock().unwrap();
+    |             ----^^^^^^
+    |             |
+    |             help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `series`
+   --> pkg/schedule/filter/filter_metrics.rs:126:13
+    |
+126 |         let mut series = self.inner.series.lock().unwrap();
+    |             ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_series`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: `astersql-pd-schedule-filter` (lib test) generated 2 warnings (run `cargo fix --lib -p astersql-pd-schedule-filter --tests` to apply 2 suggestions)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.81s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_filter-bf1a010302ed4778)
+
+thread 'task_011_test::task_011_negative_filter_identity' (161756703) panicked at pkg/schedule/filter/filter_metrics.rs:44:50:
+negative Go filter identity: TryFromIntError(NegOverflow)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'task_011_test::task_011_registry_isolation_and_registration_rollback' (161756704) panicked at pkg/schedule/filter/task_011_test.rs:161:5:
+assertion `left == right` failed
+  left: Null
+ right: 1
+error: test failed, to rerun pass `-p astersql-pd-schedule-filter --lib`

@@ -1,0 +1,447 @@
+{
+  "argv": [
+    "docker",
+    "run",
+    "--rm",
+    "-i",
+    "--cap-add",
+    "SYS_PTRACE",
+    "--security-opt",
+    "seccomp=unconfined",
+    "-v",
+    "/tmp/pd-sched003:/oracle:ro",
+    "alpine:3.22",
+    "timeout",
+    "180",
+    "/oracle/dlv",
+    "--check-go-version=false",
+    "exec",
+    "/oracle/cluster.test",
+    "--allow-non-terminal-interactive",
+    "--",
+    "-test.run",
+    "^TestSetOfflineStore$",
+    "-test.timeout=175s"
+  ],
+  "exit_code": 0,
+  "commands": [
+    "break cluster_test.go:300",
+    "continue",
+    "clearall",
+    "config max-variable-recurse 3",
+    "config max-array-values 100",
+    "config max-string-len 1000",
+    "call -unsafe filter.NewCounter(\"balance-leader-scheduler\")",
+    "print filter.filters",
+    "call -unsafe filter.ResetFilterMetrics()",
+    "call -unsafe (*filter.Counter)(0x6f7712cf0a50).inc(filter.source,filter.filterType(11),1)",
+    "call -unsafe (*filter.Counter)(0x6f7712cf0a50).inc(filter.target,filter.filterType(11),2)",
+    "print filter.filterSourceCounter.MetricVec.metricMap.metrics",
+    "print filter.filterTargetCounter.MetricVec.metricMap.metrics",
+    "print (*filter.Counter)(0x6f7712cf0a50).counter[0][11][1]",
+    "print (*filter.Counter)(0x6f7712cf0a50).counter[1][11][2]",
+    "call -unsafe (*filter.Counter)(0x6f7712cf0a50).inc(filter.source,filter.filterType(11),1)",
+    "call -unsafe (*filter.Counter)(0x6f7712cf0a50).Flush(nil)",
+    "print filter.filterSourceCounter.MetricVec.metricMap.metrics",
+    "print filter.filterTargetCounter.MetricVec.metricMap.metrics",
+    "print (*filter.Counter)(0x6f7712cf0a50).counter[0][11][1]",
+    "print (*filter.Counter)(0x6f7712cf0a50).counter[1][11][2]",
+    "call -unsafe (*filter.Counter)(0x6f7712cf0a50).Flush(nil)",
+    "print filter.filterSourceCounter.MetricVec.metricMap.metrics",
+    "print filter.filterTargetCounter.MetricVec.metricMap.metrics",
+    "print (*filter.Counter)(0x6f7712cf0a50).counter[0][11][1]",
+    "print (*filter.Counter)(0x6f7712cf0a50).counter[1][11][2]",
+    "call -unsafe (*filter.Counter)(0x6f7712cf0a50).inc(filter.source,filter.filterType(11),1)",
+    "call -unsafe (*filter.Counter)(0x6f7712cf0a50).scope = \"renamed\"",
+    "call -unsafe (*filter.Counter)(0x6f7712cf0a50).inc(filter.target,filter.filterType(0),1)",
+    "call -unsafe (*filter.Counter)(0x6f7712cf0a50).Flush(nil)",
+    "print filter.filterSourceCounter.MetricVec.metricMap.metrics",
+    "print filter.filterTargetCounter.MetricVec.metricMap.metrics",
+    "print (*filter.Counter)(0x6f7712cf0a50).counter[0][11][1]",
+    "print (*filter.Counter)(0x6f7712cf0a50).counter[1][11][2]",
+    "call -unsafe filter.DeleteStoreMetrics(\"1\")",
+    "print filter.filterSourceCounter.MetricVec.metricMap.metrics",
+    "print filter.filterTargetCounter.MetricVec.metricMap.metrics",
+    "print (*filter.Counter)(0x6f7712cf0a50).counter[0][11][1]",
+    "print (*filter.Counter)(0x6f7712cf0a50).counter[1][11][2]",
+    "call -unsafe filter.DeleteStoreMetrics(\"1\")",
+    "call -unsafe filter.DeleteStoreMetrics(\"99\")",
+    "print filter.filterSourceCounter.MetricVec.metricMap.metrics",
+    "print filter.filterTargetCounter.MetricVec.metricMap.metrics",
+    "print (*filter.Counter)(0x6f7712cf0a50).counter[0][11][1]",
+    "print (*filter.Counter)(0x6f7712cf0a50).counter[1][11][2]",
+    "call -unsafe filter.ResetFilterMetrics()",
+    "print filter.filterSourceCounter.MetricVec.metricMap.metrics",
+    "print filter.filterTargetCounter.MetricVec.metricMap.metrics",
+    "print (*filter.Counter)(0x6f7712cf0a50).counter[0][11][1]",
+    "print (*filter.Counter)(0x6f7712cf0a50).counter[1][11][2]",
+    "call -unsafe (*filter.Counter)(0x6f7712cf0a50).scope = \"lifecycle\"",
+    "call -unsafe (*filter.Counter)(0x6f7712cf0a50).inc(filter.source,filter.filterType(0),1)",
+    "call -unsafe (*filter.Counter)(0x6f7712cf0a50).inc(filter.target,filter.filterType(0),2)",
+    "call -unsafe (*filter.Counter)(0x6f7712cf0a50).inc(filter.source,filter.filterType(0),99)",
+    "call -unsafe (*filter.Counter)(0x6f7712cf0a50).Flush(cluster.ruleManager.storeSetInformer)",
+    "print filter.filterSourceCounter.MetricVec.metricMap.metrics",
+    "print filter.filterTargetCounter.MetricVec.metricMap.metrics",
+    "print (*filter.Counter)(0x6f7712cf0a50).counter[0][0][1]",
+    "print (*filter.Counter)(0x6f7712cf0a50).counter[1][0][2]",
+    "print (*filter.Counter)(0x6f7712cf0a50).counter[0][0][99]",
+    "call -unsafe (*filter.Counter)(0x6f7712cf0a50).inc(filter.source,filter.filterType(0),1)",
+    "call -unsafe (*filter.Counter)(0x6f7712cf0a50).inc(filter.target,filter.filterType(0),1)",
+    "call -unsafe (*filter.Counter)(0x6f7712cf0a50).inc(filter.target,filter.filterType(0),2)",
+    "call -unsafe (*filter.Counter)(0x6f7712cf0a50).inc(filter.target,filter.filterType(0),99)",
+    "print cluster.BasicCluster.StoresInfo.stores[1].meta",
+    "set cluster.BasicCluster.StoresInfo.stores[1].meta.NodeState = 3",
+    "print cluster.BasicCluster.StoresInfo.stores[1].meta.NodeState",
+    "call -unsafe filter.DeleteStoreMetrics(\"1\")",
+    "call -unsafe (*filter.Counter)(0x6f7712cf0a50).Flush(cluster.ruleManager.storeSetInformer)",
+    "print filter.filterSourceCounter.MetricVec.metricMap.metrics",
+    "print filter.filterTargetCounter.MetricVec.metricMap.metrics",
+    "print (*filter.Counter)(0x6f7712cf0a50).counter[0][0][1]",
+    "print (*filter.Counter)(0x6f7712cf0a50).counter[1][0][2]",
+    "print (*filter.Counter)(0x6f7712cf0a50).counter[0][0][99]",
+    "call -unsafe (*filter.Counter)(0x6f7712cf0a50).Flush(nil)",
+    "print filter.filterSourceCounter.MetricVec.metricMap.metrics",
+    "print filter.filterTargetCounter.MetricVec.metricMap.metrics",
+    "print (*filter.Counter)(0x6f7712cf0a50).counter[0][0][1]",
+    "print (*filter.Counter)(0x6f7712cf0a50).counter[1][0][2]",
+    "print (*filter.Counter)(0x6f7712cf0a50).counter[0][0][99]",
+    "print filter.filterSourceCounter.MetricVec.metricMap.desc",
+    "print filter.filterTargetCounter.MetricVec.metricMap.desc",
+    "exit"
+  ],
+  "exchanges": [
+    {
+      "command": "break cluster_test.go:300",
+      "output": "Breakpoint 1 set at 0x190a518 for github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300\n(dlv) "
+    },
+    {
+      "command": "continue",
+      "output": "[2026/10/25 10:47:08.421 +00:00] [INFO] [cluster.go:2586] [\"store limit added\"] [store-id=1]\n[2026/10/25 10:47:08.421 +00:00] [INFO] [cluster.go:2586] [\"store limit added\"] [store-id=2]\n[2026/10/25 10:47:08.421 +00:00] [INFO] [cluster.go:2586] [\"store limit added\"] [store-id=3]\n[2026/10/25 10:47:08.421 +00:00] [INFO] [cluster.go:2586] [\"store limit added\"] [store-id=4]\n[2026/10/25 10:47:08.421 +00:00] [INFO] [cluster.go:2586] [\"store limit added\"] [store-id=5]\n[2026/10/25 10:47:08.421 +00:00] [INFO] [cluster.go:2586] [\"store limit added\"] [store-id=6]\n> [Breakpoint 1] github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (hits goroutine(298):1 total:1) (PC: 0x190a518)\n(dlv) "
+    },
+    {
+      "command": "clearall",
+      "output": "Breakpoint 1 cleared at 0x190a518 for github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300\n(dlv) "
+    },
+    {
+      "command": "config max-variable-recurse 3",
+      "output": "(dlv) "
+    },
+    {
+      "command": "config max-array-values 100",
+      "output": "(dlv) "
+    },
+    {
+      "command": "config max-string-len 1000",
+      "output": "(dlv) "
+    },
+    {
+      "command": "call -unsafe filter.NewCounter(\"balance-leader-scheduler\")",
+      "output": "> github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\t~r0: (\"*github.com/tikv/pd/pkg/schedule/filter.Counter\")(0x6f7712cf0a50)\n*github.com/tikv/pd/pkg/schedule/filter.Counter {\n\t\tscope: \"balance-leader-scheduler\",\n\t\tcounter: [][]map[uint64]int len: 2, cap: 2, [\n\t\t\t[\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t],\n\t\t\t[\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t],\n\t\t],}\n\n(dlv) "
+    },
+    {
+      "command": "print filter.filters",
+      "output": "[26]string [\n\t\"exclude-filter\",\n\t\"storage-threshold-filter\",\n\t\"distinct-filter\",\n\t\"label-constraint-filter\",\n\t\"rule-fit-filter\",\n\t\"rule-fit-leader-filter\",\n\t\"engine-filter\",\n\t\"special-use-filter\",\n\t\"isolation-filter\",\n\t\"leader-evicted-filter\",\n\t\"store-state-ok-filter\",\n\t\"store-state-tombstone-filter\",\n\t\"store-state-down-filter\",\n\t\"store-state-offline-filter\",\n\t\"store-state-pause-leader-filter\",\n\t\"store-state-slow-filter\",\n\t\"store-state-stopping-filter\",\n\t\"store-state-disconnect-filter\",\n\t\"store-state-busy-filter\",\n\t\"store-state-exceed-remove-limit-filter\",\n\t\"store-state-exceed-add-limit-filter\",\n\t\"store-state-exceed-transfer-leader-in-limit-filter\",\n\t\"store-state-too-many-snapshots-filter\",\n\t\"store-state-too-many-pending-peers-filter\",\n\t\"store-state-reject-leader-filter\",\n\t\"store-state-slow-trend-filter\",\n]\n(dlv) "
+    },
+    {
+      "command": "call -unsafe filter.ResetFilterMetrics()",
+      "output": "> github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) "
+    },
+    {
+      "command": "call -unsafe (*filter.Counter)(0x6f7712cf0a50).inc(filter.source,filter.filterType(11),1)",
+      "output": "> github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) "
+    },
+    {
+      "command": "call -unsafe (*filter.Counter)(0x6f7712cf0a50).inc(filter.target,filter.filterType(11),2)",
+      "output": "> github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) "
+    },
+    {
+      "command": "print filter.filterSourceCounter.MetricVec.metricMap.metrics",
+      "output": "map[uint64][]github.com/prometheus/client_golang/prometheus.metricWithLabelValues []\n(dlv) "
+    },
+    {
+      "command": "print filter.filterTargetCounter.MetricVec.metricMap.metrics",
+      "output": "map[uint64][]github.com/prometheus/client_golang/prometheus.metricWithLabelValues []\n(dlv) "
+    },
+    {
+      "command": "print (*filter.Counter)(0x6f7712cf0a50).counter[0][11][1]",
+      "output": "1\n(dlv) "
+    },
+    {
+      "command": "print (*filter.Counter)(0x6f7712cf0a50).counter[1][11][2]",
+      "output": "1\n(dlv) "
+    },
+    {
+      "command": "call -unsafe (*filter.Counter)(0x6f7712cf0a50).inc(filter.source,filter.filterType(11),1)",
+      "output": "> github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) "
+    },
+    {
+      "command": "call -unsafe (*filter.Counter)(0x6f7712cf0a50).Flush(nil)",
+      "output": "> github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) "
+    },
+    {
+      "command": "print filter.filterSourceCounter.MetricVec.metricMap.metrics",
+      "output": "map[uint64][]github.com/prometheus/client_golang/prometheus.metricWithLabelValues [\n\t10845489721773914001: [\n\t\t{\n\t\t\tvalues: []string len: 3, cap: 3, [\n\t\t\t\t\"balance-leader-scheduler\",\n\t\t\t\t\"store-state-tombstone-filter\",\n\t\t\t\t\"1\",\n\t\t\t],\n\t\t\tmetric: github.com/prometheus/client_golang/prometheus.Metric(*github.com/prometheus/client_golang/prometheus.counter) *{\n\t\t\t\tvalBits: 0,\n\t\t\t\tvalInt: 2,\n\t\t\t\tselfCollector: (*\"github.com/prometheus/client_golang/prometheus.selfCollector\")(0x6f7712c38730),\n\t\t\t\tdesc: *(*\"github.com/prometheus/client_golang/prometheus.Desc\")(0x6f771275c720),\n\t\t\t\tcreatedTs: *(*\"google.golang.org/protobuf/types/known/timestamppb.Timestamp\")(0x6f77128692c0),\n\t\t\t\tlabelPairs: []*github.com/prometheus/client_model/go.LabelPair len: 3, cap: 3, [\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869200),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869280),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869240),\n\t\t\t\t],\n\t\t\t\texemplar: (*\"sync/atomic.Value\")(0x6f7712c38768),\n\t\t\t\tnow: time.Now,},},\n\t], \n]\n(dlv) "
+    },
+    {
+      "command": "print filter.filterTargetCounter.MetricVec.metricMap.metrics",
+      "output": "map[uint64][]github.com/prometheus/client_golang/prometheus.metricWithLabelValues [\n\t10848304471541566486: [\n\t\t{\n\t\t\tvalues: []string len: 3, cap: 3, [\n\t\t\t\t\"balance-leader-scheduler\",\n\t\t\t\t\"store-state-tombstone-filter\",\n\t\t\t\t\"2\",\n\t\t\t],\n\t\t\tmetric: github.com/prometheus/client_golang/prometheus.Metric(*github.com/prometheus/client_golang/prometheus.counter) *{\n\t\t\t\tvalBits: 0,\n\t\t\t\tvalInt: 1,\n\t\t\t\tselfCollector: (*\"github.com/prometheus/client_golang/prometheus.selfCollector\")(0x6f7712c38790),\n\t\t\t\tdesc: *(*\"github.com/prometheus/client_golang/prometheus.Desc\")(0x6f771275c780),\n\t\t\t\tcreatedTs: *(*\"google.golang.org/protobuf/types/known/timestamppb.Timestamp\")(0x6f77128693c0),\n\t\t\t\tlabelPairs: []*github.com/prometheus/client_model/go.LabelPair len: 3, cap: 3, [\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869300),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869380),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869340),\n\t\t\t\t],\n\t\t\t\texemplar: (*\"sync/atomic.Value\")(0x6f7712c387c8),\n\t\t\t\tnow: time.Now,},},\n\t], \n]\n(dlv) "
+    },
+    {
+      "command": "print (*filter.Counter)(0x6f7712cf0a50).counter[0][11][1]",
+      "output": "0\n(dlv) "
+    },
+    {
+      "command": "print (*filter.Counter)(0x6f7712cf0a50).counter[1][11][2]",
+      "output": "0\n(dlv) "
+    },
+    {
+      "command": "call -unsafe (*filter.Counter)(0x6f7712cf0a50).Flush(nil)",
+      "output": "> github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) "
+    },
+    {
+      "command": "print filter.filterSourceCounter.MetricVec.metricMap.metrics",
+      "output": "map[uint64][]github.com/prometheus/client_golang/prometheus.metricWithLabelValues [\n\t10845489721773914001: [\n\t\t{\n\t\t\tvalues: []string len: 3, cap: 3, [\n\t\t\t\t\"balance-leader-scheduler\",\n\t\t\t\t\"store-state-tombstone-filter\",\n\t\t\t\t\"1\",\n\t\t\t],\n\t\t\tmetric: github.com/prometheus/client_golang/prometheus.Metric(*github.com/prometheus/client_golang/prometheus.counter) *{\n\t\t\t\tvalBits: 0,\n\t\t\t\tvalInt: 2,\n\t\t\t\tselfCollector: (*\"github.com/prometheus/client_golang/prometheus.selfCollector\")(0x6f7712c38730),\n\t\t\t\tdesc: *(*\"github.com/prometheus/client_golang/prometheus.Desc\")(0x6f771275c720),\n\t\t\t\tcreatedTs: *(*\"google.golang.org/protobuf/types/known/timestamppb.Timestamp\")(0x6f77128692c0),\n\t\t\t\tlabelPairs: []*github.com/prometheus/client_model/go.LabelPair len: 3, cap: 3, [\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869200),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869280),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869240),\n\t\t\t\t],\n\t\t\t\texemplar: (*\"sync/atomic.Value\")(0x6f7712c38768),\n\t\t\t\tnow: time.Now,},},\n\t], \n]\n(dlv) "
+    },
+    {
+      "command": "print filter.filterTargetCounter.MetricVec.metricMap.metrics",
+      "output": "map[uint64][]github.com/prometheus/client_golang/prometheus.metricWithLabelValues [\n\t10848304471541566486: [\n\t\t{\n\t\t\tvalues: []string len: 3, cap: 3, [\n\t\t\t\t\"balance-leader-scheduler\",\n\t\t\t\t\"store-state-tombstone-filter\",\n\t\t\t\t\"2\",\n\t\t\t],\n\t\t\tmetric: github.com/prometheus/client_golang/prometheus.Metric(*github.com/prometheus/client_golang/prometheus.counter) *{\n\t\t\t\tvalBits: 0,\n\t\t\t\tvalInt: 1,\n\t\t\t\tselfCollector: (*\"github.com/prometheus/client_golang/prometheus.selfCollector\")(0x6f7712c38790),\n\t\t\t\tdesc: *(*\"github.com/prometheus/client_golang/prometheus.Desc\")(0x6f771275c780),\n\t\t\t\tcreatedTs: *(*\"google.golang.org/protobuf/types/known/timestamppb.Timestamp\")(0x6f77128693c0),\n\t\t\t\tlabelPairs: []*github.com/prometheus/client_model/go.LabelPair len: 3, cap: 3, [\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869300),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869380),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869340),\n\t\t\t\t],\n\t\t\t\texemplar: (*\"sync/atomic.Value\")(0x6f7712c387c8),\n\t\t\t\tnow: time.Now,},},\n\t], \n]\n(dlv) "
+    },
+    {
+      "command": "print (*filter.Counter)(0x6f7712cf0a50).counter[0][11][1]",
+      "output": "0\n(dlv) "
+    },
+    {
+      "command": "print (*filter.Counter)(0x6f7712cf0a50).counter[1][11][2]",
+      "output": "0\n(dlv) "
+    },
+    {
+      "command": "call -unsafe (*filter.Counter)(0x6f7712cf0a50).inc(filter.source,filter.filterType(11),1)",
+      "output": "> github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) "
+    },
+    {
+      "command": "call -unsafe (*filter.Counter)(0x6f7712cf0a50).scope = \"renamed\"",
+      "output": "> github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\n(dlv) "
+    },
+    {
+      "command": "call -unsafe (*filter.Counter)(0x6f7712cf0a50).inc(filter.target,filter.filterType(0),1)",
+      "output": "> github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) "
+    },
+    {
+      "command": "call -unsafe (*filter.Counter)(0x6f7712cf0a50).Flush(nil)",
+      "output": "> github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) "
+    },
+    {
+      "command": "print filter.filterSourceCounter.MetricVec.metricMap.metrics",
+      "output": "map[uint64][]github.com/prometheus/client_golang/prometheus.metricWithLabelValues [\n\t10845489721773914001: [\n\t\t{\n\t\t\tvalues: []string len: 3, cap: 3, [\n\t\t\t\t\"balance-leader-scheduler\",\n\t\t\t\t\"store-state-tombstone-filter\",\n\t\t\t\t\"1\",\n\t\t\t],\n\t\t\tmetric: github.com/prometheus/client_golang/prometheus.Metric(*github.com/prometheus/client_golang/prometheus.counter) *{\n\t\t\t\tvalBits: 0,\n\t\t\t\tvalInt: 2,\n\t\t\t\tselfCollector: (*\"github.com/prometheus/client_golang/prometheus.selfCollector\")(0x6f7712c38730),\n\t\t\t\tdesc: *(*\"github.com/prometheus/client_golang/prometheus.Desc\")(0x6f771275c720),\n\t\t\t\tcreatedTs: *(*\"google.golang.org/protobuf/types/known/timestamppb.Timestamp\")(0x6f77128692c0),\n\t\t\t\tlabelPairs: []*github.com/prometheus/client_model/go.LabelPair len: 3, cap: 3, [\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869200),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869280),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869240),\n\t\t\t\t],\n\t\t\t\texemplar: (*\"sync/atomic.Value\")(0x6f7712c38768),\n\t\t\t\tnow: time.Now,},},\n\t], \n\t1923561849658761987: [\n\t\t{\n\t\t\tvalues: []string len: 3, cap: 3, [\n\t\t\t\t\"renamed\",\n\t\t\t\t\"store-state-tombstone-filter\",\n\t\t\t\t\"1\",\n\t\t\t],\n\t\t\tmetric: github.com/prometheus/client_golang/prometheus.Metric(*github.com/prometheus/client_golang/prometheus.counter) *{\n\t\t\t\tvalBits: 0,\n\t\t\t\tvalInt: 1,\n\t\t\t\tselfCollector: (*\"github.com/prometheus/client_golang/prometheus.selfCollector\")(0x6f771275de10),\n\t\t\t\tdesc: *(*\"github.com/prometheus/client_golang/prometheus.Desc\")(0x6f771275c720),\n\t\t\t\tcreatedTs: *(*\"google.golang.org/protobuf/types/known/timestamppb.Timestamp\")(0x6f7712a16380),\n\t\t\t\tlabelPairs: []*github.com/prometheus/client_model/go.LabelPair len: 3, cap: 3, [\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712a16000),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712a16340),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712a16300),\n\t\t\t\t],\n\t\t\t\texemplar: (*\"sync/atomic.Value\")(0x6f771275de48),\n\t\t\t\tnow: time.Now,},},\n\t], \n]\n(dlv) "
+    },
+    {
+      "command": "print filter.filterTargetCounter.MetricVec.metricMap.metrics",
+      "output": "map[uint64][]github.com/prometheus/client_golang/prometheus.metricWithLabelValues [\n\t10848304471541566486: [\n\t\t{\n\t\t\tvalues: []string len: 3, cap: 3, [\n\t\t\t\t\"balance-leader-scheduler\",\n\t\t\t\t\"store-state-tombstone-filter\",\n\t\t\t\t\"2\",\n\t\t\t],\n\t\t\tmetric: github.com/prometheus/client_golang/prometheus.Metric(*github.com/prometheus/client_golang/prometheus.counter) *{\n\t\t\t\tvalBits: 0,\n\t\t\t\tvalInt: 1,\n\t\t\t\tselfCollector: (*\"github.com/prometheus/client_golang/prometheus.selfCollector\")(0x6f7712c38790),\n\t\t\t\tdesc: *(*\"github.com/prometheus/client_golang/prometheus.Desc\")(0x6f771275c780),\n\t\t\t\tcreatedTs: *(*\"google.golang.org/protobuf/types/known/timestamppb.Timestamp\")(0x6f77128693c0),\n\t\t\t\tlabelPairs: []*github.com/prometheus/client_model/go.LabelPair len: 3, cap: 3, [\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869300),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869380),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869340),\n\t\t\t\t],\n\t\t\t\texemplar: (*\"sync/atomic.Value\")(0x6f7712c387c8),\n\t\t\t\tnow: time.Now,},},\n\t], \n\t5350098377075740130: [\n\t\t{\n\t\t\tvalues: []string len: 3, cap: 3, [\n\t\t\t\t\"renamed\",\n\t\t\t\t\"exclude-filter\",\n\t\t\t\t\"1\",\n\t\t\t],\n\t\t\tmetric: github.com/prometheus/client_golang/prometheus.Metric(*github.com/prometheus/client_golang/prometheus.counter) *{\n\t\t\t\tvalBits: 0,\n\t\t\t\tvalInt: 1,\n\t\t\t\tselfCollector: (*\"github.com/prometheus/client_golang/prometheus.selfCollector\")(0x6f771275de70),\n\t\t\t\tdesc: *(*\"github.com/prometheus/client_golang/prometheus.Desc\")(0x6f771275c780),\n\t\t\t\tcreatedTs: *(*\"google.golang.org/protobuf/types/known/timestamppb.Timestamp\")(0x6f7712a165c0),\n\t\t\t\tlabelPairs: []*github.com/prometheus/client_model/go.LabelPair len: 3, cap: 3, [\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712a16440),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712a16580),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712a164c0),\n\t\t\t\t],\n\t\t\t\texemplar: (*\"sync/atomic.Value\")(0x6f771275dea8),\n\t\t\t\tnow: time.Now,},},\n\t], \n]\n(dlv) "
+    },
+    {
+      "command": "print (*filter.Counter)(0x6f7712cf0a50).counter[0][11][1]",
+      "output": "0\n(dlv) "
+    },
+    {
+      "command": "print (*filter.Counter)(0x6f7712cf0a50).counter[1][11][2]",
+      "output": "0\n(dlv) "
+    },
+    {
+      "command": "call -unsafe filter.DeleteStoreMetrics(\"1\")",
+      "output": "> github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) "
+    },
+    {
+      "command": "print filter.filterSourceCounter.MetricVec.metricMap.metrics",
+      "output": "map[uint64][]github.com/prometheus/client_golang/prometheus.metricWithLabelValues []\n(dlv) "
+    },
+    {
+      "command": "print filter.filterTargetCounter.MetricVec.metricMap.metrics",
+      "output": "map[uint64][]github.com/prometheus/client_golang/prometheus.metricWithLabelValues [\n\t10848304471541566486: [\n\t\t{\n\t\t\tvalues: []string len: 3, cap: 3, [\n\t\t\t\t\"balance-leader-scheduler\",\n\t\t\t\t\"store-state-tombstone-filter\",\n\t\t\t\t\"2\",\n\t\t\t],\n\t\t\tmetric: github.com/prometheus/client_golang/prometheus.Metric(*github.com/prometheus/client_golang/prometheus.counter) *{\n\t\t\t\tvalBits: 0,\n\t\t\t\tvalInt: 1,\n\t\t\t\tselfCollector: (*\"github.com/prometheus/client_golang/prometheus.selfCollector\")(0x6f7712c38790),\n\t\t\t\tdesc: *(*\"github.com/prometheus/client_golang/prometheus.Desc\")(0x6f771275c780),\n\t\t\t\tcreatedTs: *(*\"google.golang.org/protobuf/types/known/timestamppb.Timestamp\")(0x6f77128693c0),\n\t\t\t\tlabelPairs: []*github.com/prometheus/client_model/go.LabelPair len: 3, cap: 3, [\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869300),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869380),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869340),\n\t\t\t\t],\n\t\t\t\texemplar: (*\"sync/atomic.Value\")(0x6f7712c387c8),\n\t\t\t\tnow: time.Now,},},\n\t], \n]\n(dlv) "
+    },
+    {
+      "command": "print (*filter.Counter)(0x6f7712cf0a50).counter[0][11][1]",
+      "output": "0\n(dlv) "
+    },
+    {
+      "command": "print (*filter.Counter)(0x6f7712cf0a50).counter[1][11][2]",
+      "output": "0\n(dlv) "
+    },
+    {
+      "command": "call -unsafe filter.DeleteStoreMetrics(\"1\")",
+      "output": "> github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) "
+    },
+    {
+      "command": "call -unsafe filter.DeleteStoreMetrics(\"99\")",
+      "output": "> github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) "
+    },
+    {
+      "command": "print filter.filterSourceCounter.MetricVec.metricMap.metrics",
+      "output": "map[uint64][]github.com/prometheus/client_golang/prometheus.metricWithLabelValues []\n(dlv) "
+    },
+    {
+      "command": "print filter.filterTargetCounter.MetricVec.metricMap.metrics",
+      "output": "map[uint64][]github.com/prometheus/client_golang/prometheus.metricWithLabelValues [\n\t10848304471541566486: [\n\t\t{\n\t\t\tvalues: []string len: 3, cap: 3, [\n\t\t\t\t\"balance-leader-scheduler\",\n\t\t\t\t\"store-state-tombstone-filter\",\n\t\t\t\t\"2\",\n\t\t\t],\n\t\t\tmetric: github.com/prometheus/client_golang/prometheus.Metric(*github.com/prometheus/client_golang/prometheus.counter) *{\n\t\t\t\tvalBits: 0,\n\t\t\t\tvalInt: 1,\n\t\t\t\tselfCollector: (*\"github.com/prometheus/client_golang/prometheus.selfCollector\")(0x6f7712c38790),\n\t\t\t\tdesc: *(*\"github.com/prometheus/client_golang/prometheus.Desc\")(0x6f771275c780),\n\t\t\t\tcreatedTs: *(*\"google.golang.org/protobuf/types/known/timestamppb.Timestamp\")(0x6f77128693c0),\n\t\t\t\tlabelPairs: []*github.com/prometheus/client_model/go.LabelPair len: 3, cap: 3, [\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869300),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869380),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869340),\n\t\t\t\t],\n\t\t\t\texemplar: (*\"sync/atomic.Value\")(0x6f7712c387c8),\n\t\t\t\tnow: time.Now,},},\n\t], \n]\n(dlv) "
+    },
+    {
+      "command": "print (*filter.Counter)(0x6f7712cf0a50).counter[0][11][1]",
+      "output": "0\n(dlv) "
+    },
+    {
+      "command": "print (*filter.Counter)(0x6f7712cf0a50).counter[1][11][2]",
+      "output": "0\n(dlv) "
+    },
+    {
+      "command": "call -unsafe filter.ResetFilterMetrics()",
+      "output": "> github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) "
+    },
+    {
+      "command": "print filter.filterSourceCounter.MetricVec.metricMap.metrics",
+      "output": "map[uint64][]github.com/prometheus/client_golang/prometheus.metricWithLabelValues []\n(dlv) "
+    },
+    {
+      "command": "print filter.filterTargetCounter.MetricVec.metricMap.metrics",
+      "output": "map[uint64][]github.com/prometheus/client_golang/prometheus.metricWithLabelValues []\n(dlv) "
+    },
+    {
+      "command": "print (*filter.Counter)(0x6f7712cf0a50).counter[0][11][1]",
+      "output": "0\n(dlv) "
+    },
+    {
+      "command": "print (*filter.Counter)(0x6f7712cf0a50).counter[1][11][2]",
+      "output": "0\n(dlv) "
+    },
+    {
+      "command": "call -unsafe (*filter.Counter)(0x6f7712cf0a50).scope = \"lifecycle\"",
+      "output": "> github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\n(dlv) "
+    },
+    {
+      "command": "call -unsafe (*filter.Counter)(0x6f7712cf0a50).inc(filter.source,filter.filterType(0),1)",
+      "output": "> github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) "
+    },
+    {
+      "command": "call -unsafe (*filter.Counter)(0x6f7712cf0a50).inc(filter.target,filter.filterType(0),2)",
+      "output": "> github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) "
+    },
+    {
+      "command": "call -unsafe (*filter.Counter)(0x6f7712cf0a50).inc(filter.source,filter.filterType(0),99)",
+      "output": "> github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) "
+    },
+    {
+      "command": "call -unsafe (*filter.Counter)(0x6f7712cf0a50).Flush(cluster.ruleManager.storeSetInformer)",
+      "output": "> github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) "
+    },
+    {
+      "command": "print filter.filterSourceCounter.MetricVec.metricMap.metrics",
+      "output": "map[uint64][]github.com/prometheus/client_golang/prometheus.metricWithLabelValues [\n\t14008831098992744764: [\n\t\t{\n\t\t\tvalues: []string len: 3, cap: 3, [\n\t\t\t\t\"lifecycle\",\n\t\t\t\t\"exclude-filter\",\n\t\t\t\t\"1\",\n\t\t\t],\n\t\t\tmetric: github.com/prometheus/client_golang/prometheus.Metric(*github.com/prometheus/client_golang/prometheus.counter) *{\n\t\t\t\tvalBits: 0,\n\t\t\t\tvalInt: 1,\n\t\t\t\tselfCollector: (*\"github.com/prometheus/client_golang/prometheus.selfCollector\")(0x6f7712c387f0),\n\t\t\t\tdesc: *(*\"github.com/prometheus/client_golang/prometheus.Desc\")(0x6f771275c720),\n\t\t\t\tcreatedTs: *(*\"google.golang.org/protobuf/types/known/timestamppb.Timestamp\")(0x6f77128694c0),\n\t\t\t\tlabelPairs: []*github.com/prometheus/client_model/go.LabelPair len: 3, cap: 3, [\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869400),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869480),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869440),\n\t\t\t\t],\n\t\t\t\texemplar: (*\"sync/atomic.Value\")(0x6f7712c38828),\n\t\t\t\tnow: time.Now,},},\n\t], \n]\n(dlv) "
+    },
+    {
+      "command": "print filter.filterTargetCounter.MetricVec.metricMap.metrics",
+      "output": "map[uint64][]github.com/prometheus/client_golang/prometheus.metricWithLabelValues [\n\t14009394048946199571: [\n\t\t{\n\t\t\tvalues: []string len: 3, cap: 3, [\n\t\t\t\t\"lifecycle\",\n\t\t\t\t\"exclude-filter\",\n\t\t\t\t\"2\",\n\t\t\t],\n\t\t\tmetric: github.com/prometheus/client_golang/prometheus.Metric(*github.com/prometheus/client_golang/prometheus.counter) *{\n\t\t\t\tvalBits: 0,\n\t\t\t\tvalInt: 1,\n\t\t\t\tselfCollector: (*\"github.com/prometheus/client_golang/prometheus.selfCollector\")(0x6f7712c38850),\n\t\t\t\tdesc: *(*\"github.com/prometheus/client_golang/prometheus.Desc\")(0x6f771275c780),\n\t\t\t\tcreatedTs: *(*\"google.golang.org/protobuf/types/known/timestamppb.Timestamp\")(0x6f77128695c0),\n\t\t\t\tlabelPairs: []*github.com/prometheus/client_model/go.LabelPair len: 3, cap: 3, [\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869500),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869580),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869540),\n\t\t\t\t],\n\t\t\t\texemplar: (*\"sync/atomic.Value\")(0x6f7712c38888),\n\t\t\t\tnow: time.Now,},},\n\t], \n]\n(dlv) "
+    },
+    {
+      "command": "print (*filter.Counter)(0x6f7712cf0a50).counter[0][0][1]",
+      "output": "0\n(dlv) "
+    },
+    {
+      "command": "print (*filter.Counter)(0x6f7712cf0a50).counter[1][0][2]",
+      "output": "0\n(dlv) "
+    },
+    {
+      "command": "print (*filter.Counter)(0x6f7712cf0a50).counter[0][0][99]",
+      "output": "0\n(dlv) "
+    },
+    {
+      "command": "call -unsafe (*filter.Counter)(0x6f7712cf0a50).inc(filter.source,filter.filterType(0),1)",
+      "output": "> github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) "
+    },
+    {
+      "command": "call -unsafe (*filter.Counter)(0x6f7712cf0a50).inc(filter.target,filter.filterType(0),1)",
+      "output": "> github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) "
+    },
+    {
+      "command": "call -unsafe (*filter.Counter)(0x6f7712cf0a50).inc(filter.target,filter.filterType(0),2)",
+      "output": "> github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) "
+    },
+    {
+      "command": "call -unsafe (*filter.Counter)(0x6f7712cf0a50).inc(filter.target,filter.filterType(0),99)",
+      "output": "> github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) "
+    },
+    {
+      "command": "print cluster.BasicCluster.StoresInfo.stores[1].meta",
+      "output": "(\"*github.com/pingcap/kvproto/pkg/metapb.Store\")(0x6f77128c3080)\n*github.com/pingcap/kvproto/pkg/metapb.Store {\n\tId: 1,\n\tAddress: \"mock://tikv-1:1\",\n\tState: StoreState_Up (0),\n\tLabels: []*github.com/pingcap/kvproto/pkg/metapb.StoreLabel len: 0, cap: 0, nil,\n\tVersion: \"2.0.0\",\n\tPeerAddress: \"\",\n\tStatusAddress: \"mock://tikv-1:2\",\n\tGitHash: \"\",\n\tStartTimestamp: 0,\n\tDeployPath: \"test/store1\",\n\tLastHeartbeat: 0,\n\tPhysicallyDestroyed: false,\n\tNodeState: NodeState_Serving (1),\n\tTxnProtocolVersionRange: *github.com/pingcap/kvproto/pkg/metapb.TxnProtocolVersionRange nil,}\n(dlv) "
+    },
+    {
+      "command": "set cluster.BasicCluster.StoresInfo.stores[1].meta.NodeState = 3",
+      "output": "(dlv) "
+    },
+    {
+      "command": "print cluster.BasicCluster.StoresInfo.stores[1].meta.NodeState",
+      "output": "NodeState_Removed (3)\n(dlv) "
+    },
+    {
+      "command": "call -unsafe filter.DeleteStoreMetrics(\"1\")",
+      "output": "> github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) "
+    },
+    {
+      "command": "call -unsafe (*filter.Counter)(0x6f7712cf0a50).Flush(cluster.ruleManager.storeSetInformer)",
+      "output": "> github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) "
+    },
+    {
+      "command": "print filter.filterSourceCounter.MetricVec.metricMap.metrics",
+      "output": "map[uint64][]github.com/prometheus/client_golang/prometheus.metricWithLabelValues []\n(dlv) "
+    },
+    {
+      "command": "print filter.filterTargetCounter.MetricVec.metricMap.metrics",
+      "output": "map[uint64][]github.com/prometheus/client_golang/prometheus.metricWithLabelValues [\n\t14009394048946199571: [\n\t\t{\n\t\t\tvalues: []string len: 3, cap: 3, [\n\t\t\t\t\"lifecycle\",\n\t\t\t\t\"exclude-filter\",\n\t\t\t\t\"2\",\n\t\t\t],\n\t\t\tmetric: github.com/prometheus/client_golang/prometheus.Metric(*github.com/prometheus/client_golang/prometheus.counter) *{\n\t\t\t\tvalBits: 0,\n\t\t\t\tvalInt: 2,\n\t\t\t\tselfCollector: (*\"github.com/prometheus/client_golang/prometheus.selfCollector\")(0x6f7712c38850),\n\t\t\t\tdesc: *(*\"github.com/prometheus/client_golang/prometheus.Desc\")(0x6f771275c780),\n\t\t\t\tcreatedTs: *(*\"google.golang.org/protobuf/types/known/timestamppb.Timestamp\")(0x6f77128695c0),\n\t\t\t\tlabelPairs: []*github.com/prometheus/client_model/go.LabelPair len: 3, cap: 3, [\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869500),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869580),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869540),\n\t\t\t\t],\n\t\t\t\texemplar: (*\"sync/atomic.Value\")(0x6f7712c38888),\n\t\t\t\tnow: time.Now,},},\n\t], \n]\n(dlv) "
+    },
+    {
+      "command": "print (*filter.Counter)(0x6f7712cf0a50).counter[0][0][1]",
+      "output": "0\n(dlv) "
+    },
+    {
+      "command": "print (*filter.Counter)(0x6f7712cf0a50).counter[1][0][2]",
+      "output": "0\n(dlv) "
+    },
+    {
+      "command": "print (*filter.Counter)(0x6f7712cf0a50).counter[0][0][99]",
+      "output": "0\n(dlv) "
+    },
+    {
+      "command": "call -unsafe (*filter.Counter)(0x6f7712cf0a50).Flush(nil)",
+      "output": "> github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) "
+    },
+    {
+      "command": "print filter.filterSourceCounter.MetricVec.metricMap.metrics",
+      "output": "map[uint64][]github.com/prometheus/client_golang/prometheus.metricWithLabelValues []\n(dlv) "
+    },
+    {
+      "command": "print filter.filterTargetCounter.MetricVec.metricMap.metrics",
+      "output": "map[uint64][]github.com/prometheus/client_golang/prometheus.metricWithLabelValues [\n\t14009394048946199571: [\n\t\t{\n\t\t\tvalues: []string len: 3, cap: 3, [\n\t\t\t\t\"lifecycle\",\n\t\t\t\t\"exclude-filter\",\n\t\t\t\t\"2\",\n\t\t\t],\n\t\t\tmetric: github.com/prometheus/client_golang/prometheus.Metric(*github.com/prometheus/client_golang/prometheus.counter) *{\n\t\t\t\tvalBits: 0,\n\t\t\t\tvalInt: 2,\n\t\t\t\tselfCollector: (*\"github.com/prometheus/client_golang/prometheus.selfCollector\")(0x6f7712c38850),\n\t\t\t\tdesc: *(*\"github.com/prometheus/client_golang/prometheus.Desc\")(0x6f771275c780),\n\t\t\t\tcreatedTs: *(*\"google.golang.org/protobuf/types/known/timestamppb.Timestamp\")(0x6f77128695c0),\n\t\t\t\tlabelPairs: []*github.com/prometheus/client_model/go.LabelPair len: 3, cap: 3, [\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869500),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869580),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869540),\n\t\t\t\t],\n\t\t\t\texemplar: (*\"sync/atomic.Value\")(0x6f7712c38888),\n\t\t\t\tnow: time.Now,},},\n\t], \n]\n(dlv) "
+    },
+    {
+      "command": "print (*filter.Counter)(0x6f7712cf0a50).counter[0][0][1]",
+      "output": "0\n(dlv) "
+    },
+    {
+      "command": "print (*filter.Counter)(0x6f7712cf0a50).counter[1][0][2]",
+      "output": "0\n(dlv) "
+    },
+    {
+      "command": "print (*filter.Counter)(0x6f7712cf0a50).counter[0][0][99]",
+      "output": "0\n(dlv) "
+    },
+    {
+      "command": "print filter.filterSourceCounter.MetricVec.metricMap.desc",
+      "output": "(\"*github.com/prometheus/client_golang/prometheus.Desc\")(0x6f771275c720)\n*github.com/prometheus/client_golang/prometheus.Desc {\n\tfqName: \"pd_schedule_source_filter\",\n\thelp: \"Counter of the source filter\",\n\tconstLabelPairs: []*github.com/prometheus/client_model/go.LabelPair len: 0, cap: 0, [],\n\tvariableLabels: *github.com/prometheus/client_golang/prometheus.compiledLabels {\n\t\tnames: []string len: 3, cap: 3, [\"scope\",\"type\",\"source\"],\n\t\tlabelConstraints: map[string]github.com/prometheus/client_golang/prometheus.LabelConstraint nil,},\n\tid: 5244787840925183734,\n\tdimHash: 17481765951216774991,\n\terr: error nil,}\n(dlv) "
+    },
+    {
+      "command": "print filter.filterTargetCounter.MetricVec.metricMap.desc",
+      "output": "(\"*github.com/prometheus/client_golang/prometheus.Desc\")(0x6f771275c780)\n*github.com/prometheus/client_golang/prometheus.Desc {\n\tfqName: \"pd_schedule_target_filter\",\n\thelp: \"Counter of the target filter\",\n\tconstLabelPairs: []*github.com/prometheus/client_model/go.LabelPair len: 0, cap: 0, [],\n\tvariableLabels: *github.com/prometheus/client_golang/prometheus.compiledLabels {\n\t\tnames: []string len: 3, cap: 3, [\"scope\",\"type\",\"target\"],\n\t\tlabelConstraints: map[string]github.com/prometheus/client_golang/prometheus.LabelConstraint nil,},\n\tid: 8952313543528385662,\n\tdimHash: 15572377699055180402,\n\terr: error nil,}\n(dlv) "
+    },
+    {
+      "command": "exit",
+      "output": ""
+    }
+  ],
+  "stdout": "Type 'help' for list of commands.\n(dlv) Breakpoint 1 set at 0x190a518 for github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300\n(dlv) [2026/10/25 10:47:08.421 +00:00] [INFO] [cluster.go:2586] [\"store limit added\"] [store-id=1]\n[2026/10/25 10:47:08.421 +00:00] [INFO] [cluster.go:2586] [\"store limit added\"] [store-id=2]\n[2026/10/25 10:47:08.421 +00:00] [INFO] [cluster.go:2586] [\"store limit added\"] [store-id=3]\n[2026/10/25 10:47:08.421 +00:00] [INFO] [cluster.go:2586] [\"store limit added\"] [store-id=4]\n[2026/10/25 10:47:08.421 +00:00] [INFO] [cluster.go:2586] [\"store limit added\"] [store-id=5]\n[2026/10/25 10:47:08.421 +00:00] [INFO] [cluster.go:2586] [\"store limit added\"] [store-id=6]\n> [Breakpoint 1] github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (hits goroutine(298):1 total:1) (PC: 0x190a518)\n(dlv) Breakpoint 1 cleared at 0x190a518 for github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300\n(dlv) (dlv) (dlv) (dlv) > github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\t~r0: (\"*github.com/tikv/pd/pkg/schedule/filter.Counter\")(0x6f7712cf0a50)\n*github.com/tikv/pd/pkg/schedule/filter.Counter {\n\t\tscope: \"balance-leader-scheduler\",\n\t\tcounter: [][]map[uint64]int len: 2, cap: 2, [\n\t\t\t[\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t],\n\t\t\t[\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t\t[],\n\t\t\t],\n\t\t],}\n\n(dlv) [26]string [\n\t\"exclude-filter\",\n\t\"storage-threshold-filter\",\n\t\"distinct-filter\",\n\t\"label-constraint-filter\",\n\t\"rule-fit-filter\",\n\t\"rule-fit-leader-filter\",\n\t\"engine-filter\",\n\t\"special-use-filter\",\n\t\"isolation-filter\",\n\t\"leader-evicted-filter\",\n\t\"store-state-ok-filter\",\n\t\"store-state-tombstone-filter\",\n\t\"store-state-down-filter\",\n\t\"store-state-offline-filter\",\n\t\"store-state-pause-leader-filter\",\n\t\"store-state-slow-filter\",\n\t\"store-state-stopping-filter\",\n\t\"store-state-disconnect-filter\",\n\t\"store-state-busy-filter\",\n\t\"store-state-exceed-remove-limit-filter\",\n\t\"store-state-exceed-add-limit-filter\",\n\t\"store-state-exceed-transfer-leader-in-limit-filter\",\n\t\"store-state-too-many-snapshots-filter\",\n\t\"store-state-too-many-pending-peers-filter\",\n\t\"store-state-reject-leader-filter\",\n\t\"store-state-slow-trend-filter\",\n]\n(dlv) > github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) > github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) > github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) map[uint64][]github.com/prometheus/client_golang/prometheus.metricWithLabelValues []\n(dlv) map[uint64][]github.com/prometheus/client_golang/prometheus.metricWithLabelValues []\n(dlv) 1\n(dlv) 1\n(dlv) > github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) > github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) map[uint64][]github.com/prometheus/client_golang/prometheus.metricWithLabelValues [\n\t10845489721773914001: [\n\t\t{\n\t\t\tvalues: []string len: 3, cap: 3, [\n\t\t\t\t\"balance-leader-scheduler\",\n\t\t\t\t\"store-state-tombstone-filter\",\n\t\t\t\t\"1\",\n\t\t\t],\n\t\t\tmetric: github.com/prometheus/client_golang/prometheus.Metric(*github.com/prometheus/client_golang/prometheus.counter) *{\n\t\t\t\tvalBits: 0,\n\t\t\t\tvalInt: 2,\n\t\t\t\tselfCollector: (*\"github.com/prometheus/client_golang/prometheus.selfCollector\")(0x6f7712c38730),\n\t\t\t\tdesc: *(*\"github.com/prometheus/client_golang/prometheus.Desc\")(0x6f771275c720),\n\t\t\t\tcreatedTs: *(*\"google.golang.org/protobuf/types/known/timestamppb.Timestamp\")(0x6f77128692c0),\n\t\t\t\tlabelPairs: []*github.com/prometheus/client_model/go.LabelPair len: 3, cap: 3, [\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869200),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869280),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869240),\n\t\t\t\t],\n\t\t\t\texemplar: (*\"sync/atomic.Value\")(0x6f7712c38768),\n\t\t\t\tnow: time.Now,},},\n\t], \n]\n(dlv) map[uint64][]github.com/prometheus/client_golang/prometheus.metricWithLabelValues [\n\t10848304471541566486: [\n\t\t{\n\t\t\tvalues: []string len: 3, cap: 3, [\n\t\t\t\t\"balance-leader-scheduler\",\n\t\t\t\t\"store-state-tombstone-filter\",\n\t\t\t\t\"2\",\n\t\t\t],\n\t\t\tmetric: github.com/prometheus/client_golang/prometheus.Metric(*github.com/prometheus/client_golang/prometheus.counter) *{\n\t\t\t\tvalBits: 0,\n\t\t\t\tvalInt: 1,\n\t\t\t\tselfCollector: (*\"github.com/prometheus/client_golang/prometheus.selfCollector\")(0x6f7712c38790),\n\t\t\t\tdesc: *(*\"github.com/prometheus/client_golang/prometheus.Desc\")(0x6f771275c780),\n\t\t\t\tcreatedTs: *(*\"google.golang.org/protobuf/types/known/timestamppb.Timestamp\")(0x6f77128693c0),\n\t\t\t\tlabelPairs: []*github.com/prometheus/client_model/go.LabelPair len: 3, cap: 3, [\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869300),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869380),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869340),\n\t\t\t\t],\n\t\t\t\texemplar: (*\"sync/atomic.Value\")(0x6f7712c387c8),\n\t\t\t\tnow: time.Now,},},\n\t], \n]\n(dlv) 0\n(dlv) 0\n(dlv) > github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) map[uint64][]github.com/prometheus/client_golang/prometheus.metricWithLabelValues [\n\t10845489721773914001: [\n\t\t{\n\t\t\tvalues: []string len: 3, cap: 3, [\n\t\t\t\t\"balance-leader-scheduler\",\n\t\t\t\t\"store-state-tombstone-filter\",\n\t\t\t\t\"1\",\n\t\t\t],\n\t\t\tmetric: github.com/prometheus/client_golang/prometheus.Metric(*github.com/prometheus/client_golang/prometheus.counter) *{\n\t\t\t\tvalBits: 0,\n\t\t\t\tvalInt: 2,\n\t\t\t\tselfCollector: (*\"github.com/prometheus/client_golang/prometheus.selfCollector\")(0x6f7712c38730),\n\t\t\t\tdesc: *(*\"github.com/prometheus/client_golang/prometheus.Desc\")(0x6f771275c720),\n\t\t\t\tcreatedTs: *(*\"google.golang.org/protobuf/types/known/timestamppb.Timestamp\")(0x6f77128692c0),\n\t\t\t\tlabelPairs: []*github.com/prometheus/client_model/go.LabelPair len: 3, cap: 3, [\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869200),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869280),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869240),\n\t\t\t\t],\n\t\t\t\texemplar: (*\"sync/atomic.Value\")(0x6f7712c38768),\n\t\t\t\tnow: time.Now,},},\n\t], \n]\n(dlv) map[uint64][]github.com/prometheus/client_golang/prometheus.metricWithLabelValues [\n\t10848304471541566486: [\n\t\t{\n\t\t\tvalues: []string len: 3, cap: 3, [\n\t\t\t\t\"balance-leader-scheduler\",\n\t\t\t\t\"store-state-tombstone-filter\",\n\t\t\t\t\"2\",\n\t\t\t],\n\t\t\tmetric: github.com/prometheus/client_golang/prometheus.Metric(*github.com/prometheus/client_golang/prometheus.counter) *{\n\t\t\t\tvalBits: 0,\n\t\t\t\tvalInt: 1,\n\t\t\t\tselfCollector: (*\"github.com/prometheus/client_golang/prometheus.selfCollector\")(0x6f7712c38790),\n\t\t\t\tdesc: *(*\"github.com/prometheus/client_golang/prometheus.Desc\")(0x6f771275c780),\n\t\t\t\tcreatedTs: *(*\"google.golang.org/protobuf/types/known/timestamppb.Timestamp\")(0x6f77128693c0),\n\t\t\t\tlabelPairs: []*github.com/prometheus/client_model/go.LabelPair len: 3, cap: 3, [\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869300),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869380),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869340),\n\t\t\t\t],\n\t\t\t\texemplar: (*\"sync/atomic.Value\")(0x6f7712c387c8),\n\t\t\t\tnow: time.Now,},},\n\t], \n]\n(dlv) 0\n(dlv) 0\n(dlv) > github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) > github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\n(dlv) > github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) > github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) map[uint64][]github.com/prometheus/client_golang/prometheus.metricWithLabelValues [\n\t10845489721773914001: [\n\t\t{\n\t\t\tvalues: []string len: 3, cap: 3, [\n\t\t\t\t\"balance-leader-scheduler\",\n\t\t\t\t\"store-state-tombstone-filter\",\n\t\t\t\t\"1\",\n\t\t\t],\n\t\t\tmetric: github.com/prometheus/client_golang/prometheus.Metric(*github.com/prometheus/client_golang/prometheus.counter) *{\n\t\t\t\tvalBits: 0,\n\t\t\t\tvalInt: 2,\n\t\t\t\tselfCollector: (*\"github.com/prometheus/client_golang/prometheus.selfCollector\")(0x6f7712c38730),\n\t\t\t\tdesc: *(*\"github.com/prometheus/client_golang/prometheus.Desc\")(0x6f771275c720),\n\t\t\t\tcreatedTs: *(*\"google.golang.org/protobuf/types/known/timestamppb.Timestamp\")(0x6f77128692c0),\n\t\t\t\tlabelPairs: []*github.com/prometheus/client_model/go.LabelPair len: 3, cap: 3, [\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869200),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869280),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869240),\n\t\t\t\t],\n\t\t\t\texemplar: (*\"sync/atomic.Value\")(0x6f7712c38768),\n\t\t\t\tnow: time.Now,},},\n\t], \n\t1923561849658761987: [\n\t\t{\n\t\t\tvalues: []string len: 3, cap: 3, [\n\t\t\t\t\"renamed\",\n\t\t\t\t\"store-state-tombstone-filter\",\n\t\t\t\t\"1\",\n\t\t\t],\n\t\t\tmetric: github.com/prometheus/client_golang/prometheus.Metric(*github.com/prometheus/client_golang/prometheus.counter) *{\n\t\t\t\tvalBits: 0,\n\t\t\t\tvalInt: 1,\n\t\t\t\tselfCollector: (*\"github.com/prometheus/client_golang/prometheus.selfCollector\")(0x6f771275de10),\n\t\t\t\tdesc: *(*\"github.com/prometheus/client_golang/prometheus.Desc\")(0x6f771275c720),\n\t\t\t\tcreatedTs: *(*\"google.golang.org/protobuf/types/known/timestamppb.Timestamp\")(0x6f7712a16380),\n\t\t\t\tlabelPairs: []*github.com/prometheus/client_model/go.LabelPair len: 3, cap: 3, [\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712a16000),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712a16340),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712a16300),\n\t\t\t\t],\n\t\t\t\texemplar: (*\"sync/atomic.Value\")(0x6f771275de48),\n\t\t\t\tnow: time.Now,},},\n\t], \n]\n(dlv) map[uint64][]github.com/prometheus/client_golang/prometheus.metricWithLabelValues [\n\t10848304471541566486: [\n\t\t{\n\t\t\tvalues: []string len: 3, cap: 3, [\n\t\t\t\t\"balance-leader-scheduler\",\n\t\t\t\t\"store-state-tombstone-filter\",\n\t\t\t\t\"2\",\n\t\t\t],\n\t\t\tmetric: github.com/prometheus/client_golang/prometheus.Metric(*github.com/prometheus/client_golang/prometheus.counter) *{\n\t\t\t\tvalBits: 0,\n\t\t\t\tvalInt: 1,\n\t\t\t\tselfCollector: (*\"github.com/prometheus/client_golang/prometheus.selfCollector\")(0x6f7712c38790),\n\t\t\t\tdesc: *(*\"github.com/prometheus/client_golang/prometheus.Desc\")(0x6f771275c780),\n\t\t\t\tcreatedTs: *(*\"google.golang.org/protobuf/types/known/timestamppb.Timestamp\")(0x6f77128693c0),\n\t\t\t\tlabelPairs: []*github.com/prometheus/client_model/go.LabelPair len: 3, cap: 3, [\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869300),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869380),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869340),\n\t\t\t\t],\n\t\t\t\texemplar: (*\"sync/atomic.Value\")(0x6f7712c387c8),\n\t\t\t\tnow: time.Now,},},\n\t], \n\t5350098377075740130: [\n\t\t{\n\t\t\tvalues: []string len: 3, cap: 3, [\n\t\t\t\t\"renamed\",\n\t\t\t\t\"exclude-filter\",\n\t\t\t\t\"1\",\n\t\t\t],\n\t\t\tmetric: github.com/prometheus/client_golang/prometheus.Metric(*github.com/prometheus/client_golang/prometheus.counter) *{\n\t\t\t\tvalBits: 0,\n\t\t\t\tvalInt: 1,\n\t\t\t\tselfCollector: (*\"github.com/prometheus/client_golang/prometheus.selfCollector\")(0x6f771275de70),\n\t\t\t\tdesc: *(*\"github.com/prometheus/client_golang/prometheus.Desc\")(0x6f771275c780),\n\t\t\t\tcreatedTs: *(*\"google.golang.org/protobuf/types/known/timestamppb.Timestamp\")(0x6f7712a165c0),\n\t\t\t\tlabelPairs: []*github.com/prometheus/client_model/go.LabelPair len: 3, cap: 3, [\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712a16440),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712a16580),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712a164c0),\n\t\t\t\t],\n\t\t\t\texemplar: (*\"sync/atomic.Value\")(0x6f771275dea8),\n\t\t\t\tnow: time.Now,},},\n\t], \n]\n(dlv) 0\n(dlv) 0\n(dlv) > github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) map[uint64][]github.com/prometheus/client_golang/prometheus.metricWithLabelValues []\n(dlv) map[uint64][]github.com/prometheus/client_golang/prometheus.metricWithLabelValues [\n\t10848304471541566486: [\n\t\t{\n\t\t\tvalues: []string len: 3, cap: 3, [\n\t\t\t\t\"balance-leader-scheduler\",\n\t\t\t\t\"store-state-tombstone-filter\",\n\t\t\t\t\"2\",\n\t\t\t],\n\t\t\tmetric: github.com/prometheus/client_golang/prometheus.Metric(*github.com/prometheus/client_golang/prometheus.counter) *{\n\t\t\t\tvalBits: 0,\n\t\t\t\tvalInt: 1,\n\t\t\t\tselfCollector: (*\"github.com/prometheus/client_golang/prometheus.selfCollector\")(0x6f7712c38790),\n\t\t\t\tdesc: *(*\"github.com/prometheus/client_golang/prometheus.Desc\")(0x6f771275c780),\n\t\t\t\tcreatedTs: *(*\"google.golang.org/protobuf/types/known/timestamppb.Timestamp\")(0x6f77128693c0),\n\t\t\t\tlabelPairs: []*github.com/prometheus/client_model/go.LabelPair len: 3, cap: 3, [\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869300),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869380),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869340),\n\t\t\t\t],\n\t\t\t\texemplar: (*\"sync/atomic.Value\")(0x6f7712c387c8),\n\t\t\t\tnow: time.Now,},},\n\t], \n]\n(dlv) 0\n(dlv) 0\n(dlv) > github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) > github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) map[uint64][]github.com/prometheus/client_golang/prometheus.metricWithLabelValues []\n(dlv) map[uint64][]github.com/prometheus/client_golang/prometheus.metricWithLabelValues [\n\t10848304471541566486: [\n\t\t{\n\t\t\tvalues: []string len: 3, cap: 3, [\n\t\t\t\t\"balance-leader-scheduler\",\n\t\t\t\t\"store-state-tombstone-filter\",\n\t\t\t\t\"2\",\n\t\t\t],\n\t\t\tmetric: github.com/prometheus/client_golang/prometheus.Metric(*github.com/prometheus/client_golang/prometheus.counter) *{\n\t\t\t\tvalBits: 0,\n\t\t\t\tvalInt: 1,\n\t\t\t\tselfCollector: (*\"github.com/prometheus/client_golang/prometheus.selfCollector\")(0x6f7712c38790),\n\t\t\t\tdesc: *(*\"github.com/prometheus/client_golang/prometheus.Desc\")(0x6f771275c780),\n\t\t\t\tcreatedTs: *(*\"google.golang.org/protobuf/types/known/timestamppb.Timestamp\")(0x6f77128693c0),\n\t\t\t\tlabelPairs: []*github.com/prometheus/client_model/go.LabelPair len: 3, cap: 3, [\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869300),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869380),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869340),\n\t\t\t\t],\n\t\t\t\texemplar: (*\"sync/atomic.Value\")(0x6f7712c387c8),\n\t\t\t\tnow: time.Now,},},\n\t], \n]\n(dlv) 0\n(dlv) 0\n(dlv) > github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) map[uint64][]github.com/prometheus/client_golang/prometheus.metricWithLabelValues []\n(dlv) map[uint64][]github.com/prometheus/client_golang/prometheus.metricWithLabelValues []\n(dlv) 0\n(dlv) 0\n(dlv) > github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\n(dlv) > github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) > github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) > github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) > github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) map[uint64][]github.com/prometheus/client_golang/prometheus.metricWithLabelValues [\n\t14008831098992744764: [\n\t\t{\n\t\t\tvalues: []string len: 3, cap: 3, [\n\t\t\t\t\"lifecycle\",\n\t\t\t\t\"exclude-filter\",\n\t\t\t\t\"1\",\n\t\t\t],\n\t\t\tmetric: github.com/prometheus/client_golang/prometheus.Metric(*github.com/prometheus/client_golang/prometheus.counter) *{\n\t\t\t\tvalBits: 0,\n\t\t\t\tvalInt: 1,\n\t\t\t\tselfCollector: (*\"github.com/prometheus/client_golang/prometheus.selfCollector\")(0x6f7712c387f0),\n\t\t\t\tdesc: *(*\"github.com/prometheus/client_golang/prometheus.Desc\")(0x6f771275c720),\n\t\t\t\tcreatedTs: *(*\"google.golang.org/protobuf/types/known/timestamppb.Timestamp\")(0x6f77128694c0),\n\t\t\t\tlabelPairs: []*github.com/prometheus/client_model/go.LabelPair len: 3, cap: 3, [\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869400),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869480),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869440),\n\t\t\t\t],\n\t\t\t\texemplar: (*\"sync/atomic.Value\")(0x6f7712c38828),\n\t\t\t\tnow: time.Now,},},\n\t], \n]\n(dlv) map[uint64][]github.com/prometheus/client_golang/prometheus.metricWithLabelValues [\n\t14009394048946199571: [\n\t\t{\n\t\t\tvalues: []string len: 3, cap: 3, [\n\t\t\t\t\"lifecycle\",\n\t\t\t\t\"exclude-filter\",\n\t\t\t\t\"2\",\n\t\t\t],\n\t\t\tmetric: github.com/prometheus/client_golang/prometheus.Metric(*github.com/prometheus/client_golang/prometheus.counter) *{\n\t\t\t\tvalBits: 0,\n\t\t\t\tvalInt: 1,\n\t\t\t\tselfCollector: (*\"github.com/prometheus/client_golang/prometheus.selfCollector\")(0x6f7712c38850),\n\t\t\t\tdesc: *(*\"github.com/prometheus/client_golang/prometheus.Desc\")(0x6f771275c780),\n\t\t\t\tcreatedTs: *(*\"google.golang.org/protobuf/types/known/timestamppb.Timestamp\")(0x6f77128695c0),\n\t\t\t\tlabelPairs: []*github.com/prometheus/client_model/go.LabelPair len: 3, cap: 3, [\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869500),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869580),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869540),\n\t\t\t\t],\n\t\t\t\texemplar: (*\"sync/atomic.Value\")(0x6f7712c38888),\n\t\t\t\tnow: time.Now,},},\n\t], \n]\n(dlv) 0\n(dlv) 0\n(dlv) 0\n(dlv) > github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) > github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) > github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) > github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) (\"*github.com/pingcap/kvproto/pkg/metapb.Store\")(0x6f77128c3080)\n*github.com/pingcap/kvproto/pkg/metapb.Store {\n\tId: 1,\n\tAddress: \"mock://tikv-1:1\",\n\tState: StoreState_Up (0),\n\tLabels: []*github.com/pingcap/kvproto/pkg/metapb.StoreLabel len: 0, cap: 0, nil,\n\tVersion: \"2.0.0\",\n\tPeerAddress: \"\",\n\tStatusAddress: \"mock://tikv-1:2\",\n\tGitHash: \"\",\n\tStartTimestamp: 0,\n\tDeployPath: \"test/store1\",\n\tLastHeartbeat: 0,\n\tPhysicallyDestroyed: false,\n\tNodeState: NodeState_Serving (1),\n\tTxnProtocolVersionRange: *github.com/pingcap/kvproto/pkg/metapb.TxnProtocolVersionRange nil,}\n(dlv) (dlv) NodeState_Removed (3)\n(dlv) > github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) > github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) map[uint64][]github.com/prometheus/client_golang/prometheus.metricWithLabelValues []\n(dlv) map[uint64][]github.com/prometheus/client_golang/prometheus.metricWithLabelValues [\n\t14009394048946199571: [\n\t\t{\n\t\t\tvalues: []string len: 3, cap: 3, [\n\t\t\t\t\"lifecycle\",\n\t\t\t\t\"exclude-filter\",\n\t\t\t\t\"2\",\n\t\t\t],\n\t\t\tmetric: github.com/prometheus/client_golang/prometheus.Metric(*github.com/prometheus/client_golang/prometheus.counter) *{\n\t\t\t\tvalBits: 0,\n\t\t\t\tvalInt: 2,\n\t\t\t\tselfCollector: (*\"github.com/prometheus/client_golang/prometheus.selfCollector\")(0x6f7712c38850),\n\t\t\t\tdesc: *(*\"github.com/prometheus/client_golang/prometheus.Desc\")(0x6f771275c780),\n\t\t\t\tcreatedTs: *(*\"google.golang.org/protobuf/types/known/timestamppb.Timestamp\")(0x6f77128695c0),\n\t\t\t\tlabelPairs: []*github.com/prometheus/client_model/go.LabelPair len: 3, cap: 3, [\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869500),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869580),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869540),\n\t\t\t\t],\n\t\t\t\texemplar: (*\"sync/atomic.Value\")(0x6f7712c38888),\n\t\t\t\tnow: time.Now,},},\n\t], \n]\n(dlv) 0\n(dlv) 0\n(dlv) 0\n(dlv) > github.com/tikv/pd/server/cluster.TestSetOfflineStore() .Users/Shared/work/dir/data/codes/pd/server/cluster/cluster_test.go:300 (PC: 0x190a518)\nValues returned:\n\n(dlv) map[uint64][]github.com/prometheus/client_golang/prometheus.metricWithLabelValues []\n(dlv) map[uint64][]github.com/prometheus/client_golang/prometheus.metricWithLabelValues [\n\t14009394048946199571: [\n\t\t{\n\t\t\tvalues: []string len: 3, cap: 3, [\n\t\t\t\t\"lifecycle\",\n\t\t\t\t\"exclude-filter\",\n\t\t\t\t\"2\",\n\t\t\t],\n\t\t\tmetric: github.com/prometheus/client_golang/prometheus.Metric(*github.com/prometheus/client_golang/prometheus.counter) *{\n\t\t\t\tvalBits: 0,\n\t\t\t\tvalInt: 2,\n\t\t\t\tselfCollector: (*\"github.com/prometheus/client_golang/prometheus.selfCollector\")(0x6f7712c38850),\n\t\t\t\tdesc: *(*\"github.com/prometheus/client_golang/prometheus.Desc\")(0x6f771275c780),\n\t\t\t\tcreatedTs: *(*\"google.golang.org/protobuf/types/known/timestamppb.Timestamp\")(0x6f77128695c0),\n\t\t\t\tlabelPairs: []*github.com/prometheus/client_model/go.LabelPair len: 3, cap: 3, [\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869500),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869580),\n\t\t\t\t\t*(*\"github.com/prometheus/client_model/go.LabelPair\")(0x6f7712869540),\n\t\t\t\t],\n\t\t\t\texemplar: (*\"sync/atomic.Value\")(0x6f7712c38888),\n\t\t\t\tnow: time.Now,},},\n\t], \n]\n(dlv) 0\n(dlv) 0\n(dlv) 0\n(dlv) (\"*github.com/prometheus/client_golang/prometheus.Desc\")(0x6f771275c720)\n*github.com/prometheus/client_golang/prometheus.Desc {\n\tfqName: \"pd_schedule_source_filter\",\n\thelp: \"Counter of the source filter\",\n\tconstLabelPairs: []*github.com/prometheus/client_model/go.LabelPair len: 0, cap: 0, [],\n\tvariableLabels: *github.com/prometheus/client_golang/prometheus.compiledLabels {\n\t\tnames: []string len: 3, cap: 3, [\"scope\",\"type\",\"source\"],\n\t\tlabelConstraints: map[string]github.com/prometheus/client_golang/prometheus.LabelConstraint nil,},\n\tid: 5244787840925183734,\n\tdimHash: 17481765951216774991,\n\terr: error nil,}\n(dlv) (\"*github.com/prometheus/client_golang/prometheus.Desc\")(0x6f771275c780)\n*github.com/prometheus/client_golang/prometheus.Desc {\n\tfqName: \"pd_schedule_target_filter\",\n\thelp: \"Counter of the target filter\",\n\tconstLabelPairs: []*github.com/prometheus/client_model/go.LabelPair len: 0, cap: 0, [],\n\tvariableLabels: *github.com/prometheus/client_golang/prometheus.compiledLabels {\n\t\tnames: []string len: 3, cap: 3, [\"scope\",\"type\",\"target\"],\n\t\tlabelConstraints: map[string]github.com/prometheus/client_golang/prometheus.LabelConstraint nil,},\n\tid: 8952313543528385662,\n\tdimHash: 15572377699055180402,\n\terr: error nil,}\n(dlv) "
+}

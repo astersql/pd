@@ -1,0 +1,534 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "initial_stores": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "cases": [
+    {
+      "id": "pending",
+      "operations": [
+        [
+          "inc",
+          "source",
+          11,
+          1
+        ],
+        [
+          "inc",
+          "target",
+          11,
+          2
+        ]
+      ],
+      "pending_keys": [
+        [
+          0,
+          11,
+          1
+        ],
+        [
+          1,
+          11,
+          2
+        ]
+      ],
+      "pending": [
+        1,
+        1
+      ],
+      "metrics": []
+    },
+    {
+      "id": "flush",
+      "operations": [
+        [
+          "inc",
+          "source",
+          11,
+          1
+        ],
+        [
+          "flush",
+          false
+        ]
+      ],
+      "pending_keys": [
+        [
+          0,
+          11,
+          1
+        ],
+        [
+          1,
+          11,
+          2
+        ]
+      ],
+      "pending": [
+        0,
+        0
+      ],
+      "metrics": [
+        {
+          "direction": "source",
+          "scope": "balance-leader-scheduler",
+          "filter": "store-state-tombstone-filter",
+          "store": "1",
+          "value": 2
+        },
+        {
+          "direction": "target",
+          "scope": "balance-leader-scheduler",
+          "filter": "store-state-tombstone-filter",
+          "store": "2",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "id": "empty_flush",
+      "operations": [
+        [
+          "flush",
+          false
+        ]
+      ],
+      "pending_keys": [
+        [
+          0,
+          11,
+          1
+        ],
+        [
+          1,
+          11,
+          2
+        ]
+      ],
+      "pending": [
+        0,
+        0
+      ],
+      "metrics": [
+        {
+          "direction": "source",
+          "scope": "balance-leader-scheduler",
+          "filter": "store-state-tombstone-filter",
+          "store": "1",
+          "value": 2
+        },
+        {
+          "direction": "target",
+          "scope": "balance-leader-scheduler",
+          "filter": "store-state-tombstone-filter",
+          "store": "2",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "id": "scope",
+      "operations": [
+        [
+          "inc",
+          "source",
+          11,
+          1
+        ],
+        [
+          "scope",
+          "renamed"
+        ],
+        [
+          "inc",
+          "target",
+          0,
+          1
+        ],
+        [
+          "flush",
+          false
+        ]
+      ],
+      "pending_keys": [
+        [
+          0,
+          11,
+          1
+        ],
+        [
+          1,
+          11,
+          2
+        ]
+      ],
+      "pending": [
+        0,
+        0
+      ],
+      "metrics": [
+        {
+          "direction": "source",
+          "scope": "balance-leader-scheduler",
+          "filter": "store-state-tombstone-filter",
+          "store": "1",
+          "value": 2
+        },
+        {
+          "direction": "source",
+          "scope": "renamed",
+          "filter": "store-state-tombstone-filter",
+          "store": "1",
+          "value": 1
+        },
+        {
+          "direction": "target",
+          "scope": "balance-leader-scheduler",
+          "filter": "store-state-tombstone-filter",
+          "store": "2",
+          "value": 1
+        },
+        {
+          "direction": "target",
+          "scope": "renamed",
+          "filter": "exclude-filter",
+          "store": "1",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "id": "delete",
+      "operations": [
+        [
+          "delete",
+          "1"
+        ]
+      ],
+      "pending_keys": [
+        [
+          0,
+          11,
+          1
+        ],
+        [
+          1,
+          11,
+          2
+        ]
+      ],
+      "pending": [
+        0,
+        0
+      ],
+      "metrics": [
+        {
+          "direction": "target",
+          "scope": "balance-leader-scheduler",
+          "filter": "store-state-tombstone-filter",
+          "store": "2",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "id": "delete_again",
+      "operations": [
+        [
+          "delete",
+          "1"
+        ],
+        [
+          "delete",
+          "99"
+        ]
+      ],
+      "pending_keys": [
+        [
+          0,
+          11,
+          1
+        ],
+        [
+          1,
+          11,
+          2
+        ]
+      ],
+      "pending": [
+        0,
+        0
+      ],
+      "metrics": [
+        {
+          "direction": "target",
+          "scope": "balance-leader-scheduler",
+          "filter": "store-state-tombstone-filter",
+          "store": "2",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "id": "reset",
+      "operations": [
+        [
+          "reset"
+        ]
+      ],
+      "pending_keys": [
+        [
+          0,
+          11,
+          1
+        ],
+        [
+          1,
+          11,
+          2
+        ]
+      ],
+      "pending": [
+        0,
+        0
+      ],
+      "metrics": []
+    },
+    {
+      "id": "live_and_missing",
+      "operations": [
+        [
+          "scope",
+          "lifecycle"
+        ],
+        [
+          "inc",
+          "source",
+          0,
+          1
+        ],
+        [
+          "inc",
+          "target",
+          0,
+          2
+        ],
+        [
+          "inc",
+          "source",
+          0,
+          99
+        ],
+        [
+          "flush",
+          true
+        ]
+      ],
+      "pending_keys": [
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          1,
+          0,
+          2
+        ],
+        [
+          0,
+          0,
+          99
+        ]
+      ],
+      "pending": [
+        0,
+        0,
+        0
+      ],
+      "metrics": [
+        {
+          "direction": "source",
+          "scope": "lifecycle",
+          "filter": "exclude-filter",
+          "store": "1",
+          "value": 1
+        },
+        {
+          "direction": "target",
+          "scope": "lifecycle",
+          "filter": "exclude-filter",
+          "store": "2",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "id": "buried_before_flush",
+      "operations": [
+        [
+          "inc",
+          "source",
+          0,
+          1
+        ],
+        [
+          "inc",
+          "target",
+          0,
+          1
+        ],
+        [
+          "inc",
+          "target",
+          0,
+          2
+        ],
+        [
+          "inc",
+          "target",
+          0,
+          99
+        ],
+        [
+          "remove",
+          1
+        ],
+        [
+          "delete",
+          "1"
+        ],
+        [
+          "flush",
+          true
+        ]
+      ],
+      "pending_keys": [
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          1,
+          0,
+          2
+        ],
+        [
+          0,
+          0,
+          99
+        ]
+      ],
+      "pending": [
+        0,
+        0,
+        0
+      ],
+      "metrics": [
+        {
+          "direction": "target",
+          "scope": "lifecycle",
+          "filter": "exclude-filter",
+          "store": "2",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "id": "no_resurrection",
+      "operations": [
+        [
+          "flush",
+          false
+        ]
+      ],
+      "pending_keys": [
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          1,
+          0,
+          2
+        ],
+        [
+          0,
+          0,
+          99
+        ]
+      ],
+      "pending": [
+        0,
+        0,
+        0
+      ],
+      "metrics": [
+        {
+          "direction": "target",
+          "scope": "lifecycle",
+          "filter": "exclude-filter",
+          "store": "2",
+          "value": 2
+        }
+      ]
+    }
+  ],
+  "filter_names": [
+    "exclude-filter",
+    "storage-threshold-filter",
+    "distinct-filter",
+    "label-constraint-filter",
+    "rule-fit-filter",
+    "rule-fit-leader-filter",
+    "engine-filter",
+    "special-use-filter",
+    "isolation-filter",
+    "leader-evicted-filter",
+    "store-state-ok-filter",
+    "store-state-tombstone-filter",
+    "store-state-down-filter",
+    "store-state-offline-filter",
+    "store-state-pause-leader-filter",
+    "store-state-slow-filter",
+    "store-state-stopping-filter",
+    "store-state-disconnect-filter",
+    "store-state-busy-filter",
+    "store-state-exceed-remove-limit-filter",
+    "store-state-exceed-add-limit-filter",
+    "store-state-exceed-transfer-leader-in-limit-filter",
+    "store-state-too-many-snapshots-filter",
+    "store-state-too-many-pending-peers-filter",
+    "store-state-reject-leader-filter",
+    "store-state-slow-trend-filter"
+  ],
+  "descriptors": [
+    {
+      "name": "pd_schedule_source_filter",
+      "help": "Counter of the source filter",
+      "labels": [
+        "scope",
+        "type",
+        "source"
+      ],
+      "type": "COUNTER"
+    },
+    {
+      "name": "pd_schedule_target_filter",
+      "help": "Counter of the target filter",
+      "labels": [
+        "scope",
+        "type",
+        "target"
+      ],
+      "type": "COUNTER"
+    }
+  ]
+}

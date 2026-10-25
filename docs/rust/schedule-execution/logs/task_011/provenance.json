@@ -1,0 +1,25 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "dependency_commit": "08a268883",
+  "binaries": {
+    "/tmp/pd-sched003/cluster.test": "8781f08225e2b8b746217d79fe78e3ff072369cc8ae8941cc8d616a8a77986d9",
+    "/tmp/pd-sched003/dlv": "dcd0463a4350f0660412f5c766d31077370eec10ac8055cf0d786377e0d6340e",
+    "/tmp/pd-sched005/filter.test": "ea96e2e54834ad026432b60327b63e986d8a388d4c580c41137ab7e0fd1dba53"
+  },
+  "sources": {
+    "pkg/schedule/filter/counter.go": "a291b8960207ce0af627bf83bcd2730043c969520d1804caef8a788ef7e2c809",
+    "pkg/schedule/filter/metrics.go": "2b9fcd6a5491be91ec05e88d3515f798eabfdbe8dc8b8fdc4d7e73bbd9073788",
+    "pkg/schedule/filter/counter_test.go": "b761260498e2d42cb4e81b5a7e80de66194bc7e3f995e432bbcccd384229f61e",
+    "pkg/schedule/filter/candidates_test.go": "f40241c4defd8b264abfe01f042352d3703602814331fd89b5c5c2c285622ed0",
+    "pkg/utils/testutil/leak.go": "a269d3582084e8676a46b10299f377752ae7f831a456effcc05c0df6f31836ca",
+    "server/cluster/cluster_test.go": "11c9f4767ab374ee4920d7a54e4411c031afbec9be61af191102e0b8cea4f71d",
+    "server/cluster/cluster.go": "a6bc285063b31d56ce4db42bf26f9409144ea35d05a90a7f0dace98a8add291e",
+    "pkg/core/store.go": "686a3bd66c7deceb3fd79b2c83be359487088993d20e649ba2a533db298ad605"
+  },
+  "fixture_sha256": "ada76e26785936ce7c6cc270f0fa0bd0d9d2a11ece1630741bde1991413f8446",
+  "mode": "classic; existing without_dashboard Go binaries; Rust default features",
+  "normalization": "Compare all metric direction/scope/type/store/value fields and pending counts exactly. Sort maps/series only. Exclude debugger addresses, map hash keys, locks, internal descriptors IDs, protobuf caches and created timestamps, which are not exported by these legacy vectors. Retain metric name/help/type/label keys. No error or count differences ignored.",
+  "safety": "Read TestMain/WaitForEtcdConnections, TestString/TestCounter, TestSetOfflineStore setup through line 300, newTestRaftCluster/InitCluster and PutMetaStore. No required failpoint enables in these paths; optional Inject/InjectCall sites do not define this no-fault setup. Existing binaries run with source mounts read-only; no Go compilation, generators, formatting or failpoint instrumentation.",
+  "scope": "SetScope is linker-eliminated (no Go callers); verified one-line setter from source. Debugger changes only the scope domain input and actual Flush outputs are frozen. NodeState input is set through canonical store map, not by an injected chained GetStore assignment. Whole modified TestSetOfflineStore is not claimed to pass.",
+  "registry": "Go has process-global vectors; independent host Registry ownership, clone sharing, registration rollback, and concurrent Rust batches are Rust embedding contracts, explicitly separate from Go runtime differential."
+}

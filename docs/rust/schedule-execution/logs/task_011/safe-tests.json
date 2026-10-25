@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "/tmp/pd-sched005:/oracle:ro",
+    "alpine:3.22",
+    "/oracle/filter.test",
+    "-test.run",
+    "^(TestString|TestCounter)$",
+    "-test.v",
+    "-test.timeout=60s"
+  ],
+  "exit_code": 0,
+  "stdout": "=== RUN   TestString\n--- PASS: TestString (0.00s)\n=== RUN   TestCounter\n--- PASS: TestCounter (0.00s)\nPASS\n",
+  "stderr": ""
+}

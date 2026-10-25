@@ -1,0 +1,83 @@
+break cluster_test.go:300
+continue
+clearall
+config max-variable-recurse 3
+config max-array-values 100
+config max-string-len 1000
+call -unsafe filter.NewCounter("balance-leader-scheduler")
+print filter.filters
+call -unsafe filter.ResetFilterMetrics()
+call -unsafe (*filter.Counter)(0x6f7712cf0a50).inc(filter.source,filter.filterType(11),1)
+call -unsafe (*filter.Counter)(0x6f7712cf0a50).inc(filter.target,filter.filterType(11),2)
+print filter.filterSourceCounter.MetricVec.metricMap.metrics
+print filter.filterTargetCounter.MetricVec.metricMap.metrics
+print (*filter.Counter)(0x6f7712cf0a50).counter[0][11][1]
+print (*filter.Counter)(0x6f7712cf0a50).counter[1][11][2]
+call -unsafe (*filter.Counter)(0x6f7712cf0a50).inc(filter.source,filter.filterType(11),1)
+call -unsafe (*filter.Counter)(0x6f7712cf0a50).Flush(nil)
+print filter.filterSourceCounter.MetricVec.metricMap.metrics
+print filter.filterTargetCounter.MetricVec.metricMap.metrics
+print (*filter.Counter)(0x6f7712cf0a50).counter[0][11][1]
+print (*filter.Counter)(0x6f7712cf0a50).counter[1][11][2]
+call -unsafe (*filter.Counter)(0x6f7712cf0a50).Flush(nil)
+print filter.filterSourceCounter.MetricVec.metricMap.metrics
+print filter.filterTargetCounter.MetricVec.metricMap.metrics
+print (*filter.Counter)(0x6f7712cf0a50).counter[0][11][1]
+print (*filter.Counter)(0x6f7712cf0a50).counter[1][11][2]
+call -unsafe (*filter.Counter)(0x6f7712cf0a50).inc(filter.source,filter.filterType(11),1)
+call -unsafe (*filter.Counter)(0x6f7712cf0a50).scope = "renamed"
+call -unsafe (*filter.Counter)(0x6f7712cf0a50).inc(filter.target,filter.filterType(0),1)
+call -unsafe (*filter.Counter)(0x6f7712cf0a50).Flush(nil)
+print filter.filterSourceCounter.MetricVec.metricMap.metrics
+print filter.filterTargetCounter.MetricVec.metricMap.metrics
+print (*filter.Counter)(0x6f7712cf0a50).counter[0][11][1]
+print (*filter.Counter)(0x6f7712cf0a50).counter[1][11][2]
+call -unsafe filter.DeleteStoreMetrics("1")
+print filter.filterSourceCounter.MetricVec.metricMap.metrics
+print filter.filterTargetCounter.MetricVec.metricMap.metrics
+print (*filter.Counter)(0x6f7712cf0a50).counter[0][11][1]
+print (*filter.Counter)(0x6f7712cf0a50).counter[1][11][2]
+call -unsafe filter.DeleteStoreMetrics("1")
+call -unsafe filter.DeleteStoreMetrics("99")
+print filter.filterSourceCounter.MetricVec.metricMap.metrics
+print filter.filterTargetCounter.MetricVec.metricMap.metrics
+print (*filter.Counter)(0x6f7712cf0a50).counter[0][11][1]
+print (*filter.Counter)(0x6f7712cf0a50).counter[1][11][2]
+call -unsafe filter.ResetFilterMetrics()
+print filter.filterSourceCounter.MetricVec.metricMap.metrics
+print filter.filterTargetCounter.MetricVec.metricMap.metrics
+print (*filter.Counter)(0x6f7712cf0a50).counter[0][11][1]
+print (*filter.Counter)(0x6f7712cf0a50).counter[1][11][2]
+call -unsafe (*filter.Counter)(0x6f7712cf0a50).scope = "lifecycle"
+call -unsafe (*filter.Counter)(0x6f7712cf0a50).inc(filter.source,filter.filterType(0),1)
+call -unsafe (*filter.Counter)(0x6f7712cf0a50).inc(filter.target,filter.filterType(0),2)
+call -unsafe (*filter.Counter)(0x6f7712cf0a50).inc(filter.source,filter.filterType(0),99)
+call -unsafe (*filter.Counter)(0x6f7712cf0a50).Flush(cluster.ruleManager.storeSetInformer)
+print filter.filterSourceCounter.MetricVec.metricMap.metrics
+print filter.filterTargetCounter.MetricVec.metricMap.metrics
+print (*filter.Counter)(0x6f7712cf0a50).counter[0][0][1]
+print (*filter.Counter)(0x6f7712cf0a50).counter[1][0][2]
+print (*filter.Counter)(0x6f7712cf0a50).counter[0][0][99]
+call -unsafe (*filter.Counter)(0x6f7712cf0a50).inc(filter.source,filter.filterType(0),1)
+call -unsafe (*filter.Counter)(0x6f7712cf0a50).inc(filter.target,filter.filterType(0),1)
+call -unsafe (*filter.Counter)(0x6f7712cf0a50).inc(filter.target,filter.filterType(0),2)
+call -unsafe (*filter.Counter)(0x6f7712cf0a50).inc(filter.target,filter.filterType(0),99)
+print cluster.BasicCluster.StoresInfo.stores[1].meta
+set cluster.BasicCluster.StoresInfo.stores[1].meta.NodeState = 3
+print cluster.BasicCluster.StoresInfo.stores[1].meta.NodeState
+call -unsafe filter.DeleteStoreMetrics("1")
+call -unsafe (*filter.Counter)(0x6f7712cf0a50).Flush(cluster.ruleManager.storeSetInformer)
+print filter.filterSourceCounter.MetricVec.metricMap.metrics
+print filter.filterTargetCounter.MetricVec.metricMap.metrics
+print (*filter.Counter)(0x6f7712cf0a50).counter[0][0][1]
+print (*filter.Counter)(0x6f7712cf0a50).counter[1][0][2]
+print (*filter.Counter)(0x6f7712cf0a50).counter[0][0][99]
+call -unsafe (*filter.Counter)(0x6f7712cf0a50).Flush(nil)
+print filter.filterSourceCounter.MetricVec.metricMap.metrics
+print filter.filterTargetCounter.MetricVec.metricMap.metrics
+print (*filter.Counter)(0x6f7712cf0a50).counter[0][0][1]
+print (*filter.Counter)(0x6f7712cf0a50).counter[1][0][2]
+print (*filter.Counter)(0x6f7712cf0a50).counter[0][0][99]
+print filter.filterSourceCounter.MetricVec.metricMap.desc
+print filter.filterTargetCounter.MetricVec.metricMap.desc
+exit

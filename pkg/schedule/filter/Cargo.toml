@@ -9,6 +9,8 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
+prometheus.workspace = true
+astersql-pd-schedule-core.workspace = true
 astersql-pd-core.workspace = true
 astersql-pd-schedule-config.workspace = true
 astersql-pd-schedule-plan.workspace = true

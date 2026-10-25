@@ -1,0 +1,12 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=python3 docs/rust/schedule-execution/logs/task_011/mutation.py
+repeat_flush 4
+scope_ignored 1
+removed_resurrection 2
+missing_counted 2
+target_cleanup_skipped 2
+scope_cleanup_skipped 1
+source_reset_skipped 1
+reset_stale_handles 1
+registration_leak 1
+direction_swapped 2
+command_exit_code=0

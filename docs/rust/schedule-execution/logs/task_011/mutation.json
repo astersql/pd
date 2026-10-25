@@ -1,0 +1,172 @@
+[
+  {
+    "name": "repeat_flush",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_011",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "failed": 4,
+    "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+  },
+  {
+    "name": "scope_ignored",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_011",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "failed": 1,
+    "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+  },
+  {
+    "name": "removed_resurrection",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_011",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "failed": 2,
+    "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+  },
+  {
+    "name": "missing_counted",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_011",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "failed": 2,
+    "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+  },
+  {
+    "name": "target_cleanup_skipped",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_011",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "failed": 2,
+    "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+  },
+  {
+    "name": "scope_cleanup_skipped",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_011",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "failed": 1,
+    "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+  },
+  {
+    "name": "source_reset_skipped",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_011",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "failed": 1,
+    "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+  },
+  {
+    "name": "reset_stale_handles",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_011",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "failed": 1,
+    "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+  },
+  {
+    "name": "registration_leak",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_011",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "failed": 1,
+    "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+  },
+  {
+    "name": "direction_swapped",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-filter",
+      "--locked",
+      "--lib",
+      "task_011",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "failed": 2,
+    "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+  }
+]

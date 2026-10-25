@@ -1,0 +1,34 @@
+
+running 5 tests
+test task_011_test::task_011_negative_filter_identity - should panic ... ok
+test task_011_test::task_011_removed_pending_never_reappears ... ok
+test task_011_test::task_011_registry_isolation_and_registration_rollback ... ok
+test task_011_test::task_011_behavior_cases ... FAILED
+test task_011_test::task_011_shared_metrics_concurrent_batches ... FAILED
+
+failures:
+
+failures:
+    task_011_test::task_011_behavior_cases
+    task_011_test::task_011_shared_metrics_concurrent_batches
+
+test result: FAILED. 3 passed; 2 failed; 0 ignored; 0 measured; 22 filtered out; finished in 0.00s
+
+   Compiling astersql-pd-schedule-filter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.74s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_filter-bf1a010302ed4778)
+
+thread 'task_011_test::task_011_negative_filter_identity' (161754865) panicked at pkg/schedule/filter/filter_metrics.rs:44:50:
+negative Go filter identity: TryFromIntError(NegOverflow)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'task_011_test::task_011_behavior_cases' (161754864) panicked at pkg/schedule/filter/task_011_test.rs:91:9:
+assertion `left == right` failed: "delete"
+  left: Array [Object {"direction": String("target"), "filter": String("exclude-filter"), "scope": String("renamed"), "store": String("1"), "value": Number(1)}, Object {"direction": String("target"), "filter": String("store-state-tombstone-filter"), "scope": String("balance-leader-scheduler"), "store": String("2"), "value": Number(1)}]
+ right: Array [Object {"direction": String("target"), "filter": String("store-state-tombstone-filter"), "scope": String("balance-leader-scheduler"), "store": String("2"), "value": Number(1)}]
+
+thread 'task_011_test::task_011_shared_metrics_concurrent_batches' (161754868) panicked at pkg/schedule/filter/task_011_test.rs:241:5:
+assertion `left == right` failed
+  left: Array [Object {"direction": String("target"), "filter": String("exclude-filter"), "scope": String("0"), "store": String("1"), "value": Number(100)}, Object {"direction": String("target"), "filter": String("exclude-filter"), "scope": String("1"), "store": String("1"), "value": Number(100)}, Object {"direction": String("target"), "filter": String("exclude-filter"), "scope": String("2"), "store": String("1"), "value": Number(100)}, Object {"direction": String("target"), "filter": String("exclude-filter"), "scope": String("3"), "store": String("1"), "value": Number(100)}]
+ right: Array []
+error: test failed, to rerun pass `-p astersql-pd-schedule-filter --lib`

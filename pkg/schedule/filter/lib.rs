@@ -40,3 +40,10 @@ mod task_010_test;
 
 mod region_health;
 pub use region_health::*;
+
+#[cfg(test)]
+#[path = "task_011_test.rs"]
+mod task_011_test;
+
+mod filter_metrics;
+pub use filter_metrics::*;
