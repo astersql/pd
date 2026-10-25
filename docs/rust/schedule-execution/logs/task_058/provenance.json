@@ -1,0 +1,17 @@
+{
+  "source_commit": "2996f7078597c20278590e221aba972a9f8e13c9",
+  "dependency_task_057_commit": "2996f7078597c20278590e221aba972a9f8e13c9",
+  "evidence_kind": "source-derived contracts + actual Rust behavior; user waived Go run prerequisite",
+  "go_execution": false,
+  "go_output": null,
+  "go_output_sha256": null,
+  "sources_sha256": {
+    "pkg/schedule/checker/metrics.go": "43494888f446b18223eb46c47c9f27fb0b4f75ba63c4d4fbf559c6d33e454cb5",
+    "pkg/schedule/checker/checker_controller.go": "48d03fd259b5762da0381ce8976057098d0b9d83a0527666c3bbc738862fd56d",
+    "pkg/schedule/checker/joint_state_checker.go": "ffacb80b2f8420a33f3def7e78064a66ddf528639132a0e8ea2ea750e39f92be",
+    "pkg/schedule/checker/learner_checker.go": "99b7eadd147e3b5078a453575148c02ad3badcfa40283ed605dde2f74fba2349",
+    "pkg/schedule/checker/split_scatter.go": "840875adc09bc99b054242df78c776e7454a8e1a2bf1f22960e767684aa9baf8"
+  },
+  "fixture_sha256": "2eec0b2c61d5edc4eb3e6fb0de30ed30685c15601f9af4da68472e8561301354",
+  "normalization": "duration uses explicit monotonic time; metric names, labels, help, types, buckets, errors and state are not normalized"
+}

@@ -93,3 +93,9 @@ mod suspect_ranges;
 pub use suspect_ranges::*;
 #[cfg(test)]
 mod task_057_test;
+
+#[cfg(test)]
+mod task_058_test;
+
+mod checker_metrics;
+pub use checker_metrics::*;

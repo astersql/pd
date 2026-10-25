@@ -425,6 +425,7 @@ dependencies = [
  "astersql-pd-storage-kv",
  "async-trait",
  "futures-util",
+ "prometheus",
  "serde_json",
  "tokio",
  "tokio-util",

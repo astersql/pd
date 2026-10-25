@@ -1,0 +1,29 @@
+warning: use of deprecated field `astersql_pd_proto::pdpb::RegionHeartbeatRequest::cpu_usage`
+   --> pkg/server/core_region_adapter.rs:134:30
+    |
+134 |     r.set_response_cpu_usage(p.cpu_usage);
+    |                              ^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: `astersql-pd-server` (lib) generated 1 warning
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+warning: use of deprecated field `astersql_pd_proto::pdpb::RegionHeartbeatRequest::cpu_usage`
+  --> pkg/server/core_region_adapter_test.rs:88:13
+   |
+88 |             cpu_usage: 77,
+   |             ^^^^^^^^^^^^^
+
+warning: `astersql-pd-server` (lib test) generated 2 warnings (1 duplicate)
+rustc-LLVM ERROR: IO failure on output stream: No space left on device
+error: could not compile `astersql-pd-schedule-checker` (lib)
+
+Caused by:
+  failed to create file `/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/debug/.fingerprint/astersql-pd-schedule-checker-4742767a91b38f8d/output-lib-astersql_pd_schedule_checker`
+
+Caused by:
+  failed to parse process output: `/Users/xiangmin/.rustup/toolchains/1.99.0-aarch64-apple-darwin/bin/rustc --crate-name astersql_pd_schedule_checker --edition=2024 pkg/schedule/checker/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=d5bd9a509665e20e -C extra-filename=-4742767a91b38f8d --out-dir /Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/debug/deps -C incremental=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/debug/incremental -L dependency=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/debug/deps --extern astersql_pd_cache=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/debug/deps/libastersql_pd_cache-ebbdfab48187bde6.rmeta --extern astersql_pd_codec=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/debug/deps/libastersql_pd_codec-82e7a9be671bef67.rmeta --extern astersql_pd_core=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/debug/deps/libastersql_pd_core-bd4bffd5c5e0bf6f.rmeta --extern astersql_pd_core_constant=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/debug/deps/libastersql_pd_core_constant-7c5599646d8c2f8e.rmeta --extern astersql_pd_keypath=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/debug/deps/libastersql_pd_keypath-3222178adde0bddc.rmeta --extern astersql_pd_keyutil=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/debug/deps/libastersql_pd_keyutil-e42e25edd0d8b2d7.rmeta --extern astersql_pd_schedule_affinity=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/debug/deps/libastersql_pd_schedule_affinity-bb4648c8cb5e2baf.rmeta --extern astersql_pd_schedule_config=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/debug/deps/libastersql_pd_schedule_config-946c8dd049ec99b2.rmeta --extern astersql_pd_schedule_filter=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/debug/deps/libastersql_pd_schedule_filter-c7548257270b4db5.rmeta --extern astersql_pd_schedule_hbstream=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/debug/deps/libastersql_pd_schedule_hbstream-000d61fa7db1b628.rmeta --extern astersql_pd_schedule_labeler=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/debug/deps/libastersql_pd_schedule_labeler-81a71d081b3fb429.rmeta --extern astersql_pd_schedule_operator=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/debug/deps/libastersql_pd_schedule_operator-68d3edcd52e4982b.rmeta --extern astersql_pd_schedule_placement=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/debug/deps/libastersql_pd_schedule_placement-16b0449aa8a1fb6a.rmeta --extern astersql_pd_statistics=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/debug/deps/libastersql_pd_statistics-8d75cad682493cab.rmeta --extern astersql_pd_storage_endpoint=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/debug/deps/libastersql_pd_storage_endpoint-6792f4f5bf0bdfaf.rmeta --extern async_trait=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/debug/deps/libasync_trait-5500dd9bd14585c8.dylib --extern futures_util=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/debug/deps/libfutures_util-fe0b2277526aed6a.rmeta --extern prometheus=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/debug/deps/libprometheus-2eda812c468d465b.rmeta --extern tokio=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/debug/deps/libtokio-8b4984a17c939cbc.rmeta --extern tokio_util=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/debug/deps/libtokio_util-d65ec973e7d70454.rmeta -L native=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/debug/build/ring-a737784120419590/out` (exit status: 101)
+warning: build failed, waiting for other jobs to finish...
+error: couldn't create a temp dir: No space left on device (os error 28) at path "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/debug/deps/rmetajAssv2"
+
+error: could not compile `astersql-pd-schedule-checker` (lib test) due to 1 previous error

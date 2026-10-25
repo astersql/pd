@@ -45,6 +45,7 @@ pub struct CheckerDispatchOutcome {
 /// Owns checker state only. The host creates the shared three-minute TTL cache
 /// using its runtime/cancellation token and joins cache shutdown itself.
 pub struct CheckerDispatcher {
+    metrics: Option<CheckerMetrics>,
     joint: JointStateChecker,
     split: SplitChecker,
     learner: LearnerChecker,
@@ -63,6 +64,7 @@ pub struct CheckerDispatcher {
 impl CheckerDispatcher {
     pub fn new(pending: Arc<TTLUint64<()>>, now: i128, split_merge_interval: i64) -> Self {
         Self {
+            metrics: None,
             joint: JointStateChecker::default(),
             split: SplitChecker::default(),
             learner: LearnerChecker::default(),
@@ -78,6 +80,10 @@ impl CheckerDispatcher {
             pending,
             rule_pending: Cache::new_default(100_000),
         }
+    }
+    /// Attach one host Registry before dispatch starts; no global registration.
+    pub fn set_metrics(&mut self, metrics: CheckerMetrics) {
+        self.metrics = Some(metrics);
     }
     /// Stable Go checker names; unknown names are rejected without modifying state.
     pub fn pause_controller(&self, name: &str) -> Option<&PauseController> {
@@ -126,6 +132,7 @@ impl CheckerDispatcher {
         C: CheckerConfigProvider,
         F: FnMut() -> Result<u64, BuilderError>,
     {
+        let metrics = self.metrics.clone();
         let mut out = CheckerDispatchOutcome::default();
         let rep = &ctx.affinity.rules.replica;
         let conf = rep.config;
@@ -137,27 +144,68 @@ impl CheckerDispatcher {
             rules: &apply,
             now_unix_nanos: rep.now_unix_nanos,
         };
-        let result = self.joint.check(builder(), region).await;
-        out.errors
-            .extend(result.errors.into_iter().map(DispatchError::Builder));
-        if let Some(op) = result.operator {
-            out.operators.push(op);
-            return out;
-        }
-        match self
-            .split
-            .check(conf, rules, ctx.affinity.labels, region, seconds)
         {
-            Ok(Some(op)) => {
+            let _timer = metrics
+                .as_ref()
+                .map(|m| m.checker_metrics(CheckerMetricKind::Joint));
+            if let Some(m) = &metrics {
+                m.inc(CheckerMetricKind::Joint, "check");
+                if self.joint.pause.is_paused_at(seconds) {
+                    m.inc(CheckerMetricKind::Joint, "paused");
+                }
+            }
+            let result = self.joint.check(builder(), region).await;
+            if let Some(m) = &metrics {
+                if !result.errors.is_empty() {
+                    m.inc(CheckerMetricKind::Joint, "create-operator-fail");
+                }
+                if let Some(op) = &result.operator {
+                    m.inc(CheckerMetricKind::Joint, "new-operator");
+                    if op.len() > 1 {
+                        m.inc(CheckerMetricKind::Joint, "transfer-leader");
+                    }
+                }
+            }
+            out.errors
+                .extend(result.errors.into_iter().map(DispatchError::Builder));
+            if let Some(op) = result.operator {
                 out.operators.push(op);
                 return out;
             }
-            Err(e) => out.errors.push(DispatchError::Builder(e)),
-            _ => {}
+        }
+        {
+            let _timer = metrics
+                .as_ref()
+                .map(|m| m.checker_metrics(CheckerMetricKind::Split));
+            if let Some(m) = &metrics {
+                m.inc(CheckerMetricKind::Split, "check");
+                if self.split.pause.is_paused_at(seconds) {
+                    m.inc(CheckerMetricKind::Split, "paused");
+                }
+            }
+            match self
+                .split
+                .check(conf, rules, ctx.affinity.labels, region, seconds)
+            {
+                Ok(Some(op)) => {
+                    out.operators.push(op);
+                    return out;
+                }
+                Err(e) => out.errors.push(DispatchError::Builder(e)),
+                _ => {}
+            }
         }
         if conf.is_placement_rules_enabled() {
+            let _timer = metrics
+                .as_ref()
+                .map(|m| m.checker_metrics(CheckerMetricKind::Rule));
             out.rule_cache_hit = conf.is_placement_rules_cache_enabled()
                 && rules.is_region_fit_cached(&rep.stores.get_stores(), region, rep.now_unix_nanos);
+            if out.rule_cache_hit {
+                if let Some(m) = &metrics {
+                    m.inc(CheckerMetricKind::Rule, "get-cache");
+                }
+            }
             if !out.rule_cache_hit {
                 let fit = self.priority.inspect(
                     conf,
@@ -168,6 +216,15 @@ impl CheckerDispatcher {
                 );
                 if ctx.operators.operator_count(OpKind::REPLICA) < conf.get_replica_schedule_limit()
                 {
+                    if let Some(m) = &metrics {
+                        if self.rule_pause.is_paused_at(seconds) {
+                            m.inc(CheckerMetricKind::Rule, "paused");
+                        } else if region.leader().is_none() {
+                            m.inc(CheckerMetricKind::Rule, "region-no-leader");
+                        } else if fit.is_some() {
+                            m.inc(CheckerMetricKind::Rule, "check");
+                        }
+                    }
                     if !self.rule_pause.is_paused_at(seconds) && region.leader().is_some() {
                         if let Some(fit) = fit {
                             rules.invalid_cache(region.meta().id);
@@ -288,15 +345,34 @@ impl CheckerDispatcher {
                 }
             }
         } else {
-            let result = self
-                .learner
-                .check(builder(), region, rep.supports_conf_change_v2)
-                .await;
-            out.errors
-                .extend(result.errors.into_iter().map(DispatchError::Builder));
-            if let Some(op) = result.operator {
-                out.operators.push(op);
-                return out;
+            {
+                let _timer = metrics
+                    .as_ref()
+                    .map(|m| m.checker_metrics(CheckerMetricKind::Learner));
+                if self.learner.pause.is_paused_at(seconds) {
+                    if let Some(m) = &metrics {
+                        m.inc(CheckerMetricKind::Learner, "paused");
+                    }
+                }
+                let result = self
+                    .learner
+                    .check(builder(), region, rep.supports_conf_change_v2)
+                    .await;
+                out.errors
+                    .extend(result.errors.into_iter().map(DispatchError::Builder));
+                if let Some(op) = result.operator {
+                    out.operators.push(op);
+                    return out;
+                }
+            }
+            let _timer = metrics
+                .as_ref()
+                .map(|m| m.checker_metrics(CheckerMetricKind::Replica));
+            if let Some(m) = &metrics {
+                m.inc(CheckerMetricKind::Replica, "check");
+                if self.replica_pause.is_paused_at(seconds) {
+                    m.inc(CheckerMetricKind::Replica, "paused");
+                }
             }
             if !self.replica_pause.is_paused_at(seconds) {
                 let context = || ReplicaFaultContext {
@@ -327,6 +403,9 @@ impl CheckerDispatcher {
                         .extend(result.errors.into_iter().map(DispatchError::Builder));
                 }
                 if let Some(op) = result.operator {
+                    if let Some(m) = &metrics {
+                        m.inc(CheckerMetricKind::Replica, "new-operator");
+                    }
                     if ctx.operators.operator_count(OpKind::REPLICA)
                         < conf.get_replica_schedule_limit()
                     {
@@ -346,56 +425,83 @@ impl CheckerDispatcher {
             return out;
         }
         let (prev, next) = ctx.cluster.regions.get_adjacent_regions(region);
-        if ctx.operators.operator_count(OpKind::AFFINITY) < conf.get_affinity_schedule_limit() {
-            match self
-                .affinity
-                .check_with_neighbors(
-                    &ctx.affinity,
-                    rules,
-                    affinity,
-                    region,
-                    prev.as_ref(),
-                    next.as_ref(),
-                    allocate,
-                )
-                .await
-            {
-                Ok(ops) if !ops.is_empty() => {
-                    out.operators = ops;
-                    return out;
+        {
+            let _timer = metrics
+                .as_ref()
+                .map(|m| m.checker_metrics(CheckerMetricKind::Affinity));
+            if ctx.operators.operator_count(OpKind::AFFINITY) < conf.get_affinity_schedule_limit() {
+                if let Some(m) = &metrics {
+                    m.inc(CheckerMetricKind::Affinity, "check");
+                    if self.affinity.pause.is_paused_at(seconds) {
+                        m.inc(CheckerMetricKind::Affinity, "paused");
+                    }
                 }
-                Err(e) => out.errors.push(DispatchError::Builder(e)),
-                _ => {}
+                match self
+                    .affinity
+                    .check_with_neighbors(
+                        &ctx.affinity,
+                        rules,
+                        affinity,
+                        region,
+                        prev.as_ref(),
+                        next.as_ref(),
+                        allocate,
+                    )
+                    .await
+                {
+                    Ok(ops) if !ops.is_empty() => {
+                        out.operators = ops;
+                        return out;
+                    }
+                    Err(e) => out.errors.push(DispatchError::Builder(e)),
+                    _ => {}
+                }
             }
         }
-        if ctx.operators.operator_count(OpKind::MERGE) < conf.get_merge_schedule_limit() {
-            let snapshots = rep.stores.get_stores();
-            let replication = RegionReplicationContext {
-                conf,
-                stores: &snapshots,
-                manager: RefCell::new(rules),
-                now: rep.now_unix_nanos,
-            };
-            match self
-                .merge
-                .check(
-                    MergeCheckContext {
-                        replication: &replication,
-                        stores: rep.stores,
-                        labels: Some(ctx.affinity.labels),
-                        hot_regions: ctx.hot_regions,
-                        supports_conf_change_v2: rep.supports_conf_change_v2,
-                    },
-                    region,
-                    prev.as_deref(),
-                    next.as_deref(),
-                    allocate,
-                )
-                .await
-            {
-                Ok(Some(ops)) => out.operators.extend(ops),
-                Err(e) => out.errors.push(DispatchError::Builder(e)),
-                _ => {}
+        {
+            let _timer = metrics
+                .as_ref()
+                .map(|m| m.checker_metrics(CheckerMetricKind::Merge));
+            if ctx.operators.operator_count(OpKind::MERGE) < conf.get_merge_schedule_limit() {
+                if let Some(m) = &metrics {
+                    m.inc(CheckerMetricKind::Merge, "check");
+                    if self.merge.pause.is_paused_at(seconds) {
+                        m.inc(CheckerMetricKind::Merge, "paused");
+                    }
+                }
+                let snapshots = rep.stores.get_stores();
+                let replication = RegionReplicationContext {
+                    conf,
+                    stores: &snapshots,
+                    manager: RefCell::new(rules),
+                    now: rep.now_unix_nanos,
+                };
+                match self
+                    .merge
+                    .check(
+                        MergeCheckContext {
+                            replication: &replication,
+                            stores: rep.stores,
+                            labels: Some(ctx.affinity.labels),
+                            hot_regions: ctx.hot_regions,
+                            supports_conf_change_v2: rep.supports_conf_change_v2,
+                        },
+                        region,
+                        prev.as_deref(),
+                        next.as_deref(),
+                        allocate,
+                    )
+                    .await
+                {
+                    Ok(Some(ops)) => {
+                        if let Some(m) = &metrics {
+                            m.inc(CheckerMetricKind::Merge, "new-operator");
+                        }
+                        out.operators.extend(ops)
+                    }
+                    Err(e) => out.errors.push(DispatchError::Builder(e)),
+                    _ => {}
+                }
             }
         }
         out

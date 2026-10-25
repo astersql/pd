@@ -9,6 +9,8 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
+prometheus.workspace = true
+
 astersql-pd-keyutil.workspace = true
 async-trait.workspace = true
 futures-util.workspace = true

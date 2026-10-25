@@ -1,0 +1,16 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.49s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-7d35459320f34bf1)
+
+running 8 tests
+test task_058_test::task_058_behavior_cases ... ok
+test task_058_test::task_058_registry_isolation_and_collision_rollback ... ok
+test task_058_test::task_058_split_missing_event_and_attempted_expiration ... ok
+test task_058_test::task_058_host_failure_and_pre_cancel ... ok
+test task_058_test::task_058_queue_snapshots_and_backlog ... ok
+test task_058_test::task_058_real_dispatch_and_patrol_lifecycle ... ok
+test task_058_test::task_058_split_scatter_transitions ... ok
+task_058 schema: 9 families, 113 bounded events, 6 phases, 11 default buckets
+test task_058_test::task_058_schema_and_bounded_events ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 58 filtered out; finished in 0.02s

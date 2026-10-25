@@ -65,6 +65,7 @@ pub struct PatrolStatus {
 /// One patrol invocation owns its channel and worker futures. Dropping the run
 /// future is not graceful shutdown: cancel the supplied token and await run instead.
 pub struct Patrol {
+    metrics: Option<crate::CheckerMetrics>,
     status: watch::Sender<PatrolStatus>,
 }
 impl Default for Patrol {
@@ -75,8 +76,12 @@ impl Default for Patrol {
 impl Patrol {
     pub fn new() -> Self {
         Self {
+            metrics: None,
             status: watch::channel(PatrolStatus::default()).0,
         }
+    }
+    pub fn set_metrics(&mut self, metrics: crate::CheckerMetrics) {
+        self.metrics = Some(metrics);
     }
     pub fn subscribe(&self) -> watch::Receiver<PatrolStatus> {
         self.status.subscribe()
@@ -86,6 +91,7 @@ impl Patrol {
         host: &H,
         cancel: CancellationToken,
     ) -> Result<(), PatrolError<H::Error>> {
+        let metrics = self.metrics.clone();
         let initial = host.config().await;
         if initial.interval.is_zero() {
             return Err(PatrolError::InvalidInterval);
@@ -138,18 +144,36 @@ impl Patrol {
                         return Ok(());
                     }
                     // Do not advance the cursor or recheck lists while backlog remains.
-                    if tx.capacity() < PATROL_CHANNEL_CAPACITY { return Ok(()); }
-                    for id in host.priority_ids().await {
+                    if let Some(m) = &metrics { m.inner.channel_size.set((PATROL_CHANNEL_CAPACITY - tx.capacity()) as f64); }
+                    if tx.capacity() < PATROL_CHANNEL_CAPACITY {
+                        let _timer = metrics.as_ref().map(|m| m.phase_metrics("wait_for_channel"));
+                        return Ok(());
+                    }
+                    {
+                    let _timer = metrics.as_ref().map(|m| m.phase_metrics("check_priority"));
+                    let ids = host.priority_ids().await;
+                    if let Some(m) = &metrics { m.queue_metrics(true, ids.len()); }
+                    for id in ids {
                         if let Some(region) = host.region(id).await {
                             host.check(region, PatrolSource::Priority).await?;
                         } else { host.remove_priority(id).await; }
                     }
-                    for id in host.pending_ids().await {
+                    }
+                    {
+                    let _timer = metrics.as_ref().map(|m| m.phase_metrics("check_pending"));
+                    let ids = host.pending_ids().await;
+                    if let Some(m) = &metrics { m.queue_metrics(false, ids.len()); }
+                    for id in ids {
                         if let Some(region) = host.region(id).await {
                             host.check(region, PatrolSource::Pending).await?;
                         }
                     }
+                    }
+                    {
+                    let _timer = metrics.as_ref().map(|m| m.phase_metrics("dispatch_split_scatter"));
                     host.dispatch_split_scatter().await;
+                    }
+                    let scan_timer = metrics.as_ref().map(|m| m.phase_metrics("scan_regions"));
                     let regions = host.scan(&state.cursor, state.scan_limit).await;
                     if regions.is_empty() { state.cursor.clear(); return Ok(()); }
                     for region in &regions {
@@ -161,10 +185,15 @@ impl Patrol {
                             result = tx.send(region.clone()) => { if result.is_err() { return Ok(()); } }
                         }
                     }
+                    drop(scan_timer);
+                    {
+                    let _timer = metrics.as_ref().map(|m| m.phase_metrics("update_label_stats"));
                     host.update_label_stats(&regions).await;
+                    }
                     if state.cursor.is_empty() {
                         state.scan_limit = patrol_scan_limit(host.region_count().await);
                         state.last_round = start.elapsed();
+                        if let Some(m) = &metrics { m.inner.patrol_time.set(state.last_round.as_secs_f64()); }
                         state.rounds += 1;
                         start = Instant::now();
                     }
@@ -181,6 +210,9 @@ impl Patrol {
         host.clear_split_scatter().await;
         state.workers = 0;
         state.last_round = Duration::ZERO;
+        if let Some(m) = &metrics {
+            m.inner.patrol_time.set(0.0);
+        }
         self.status.send_replace(state);
         result.and(joined)
     }

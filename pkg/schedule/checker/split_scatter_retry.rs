@@ -69,12 +69,19 @@ struct RetryState {
 /// SplitScatterObserver; this map stores policy metadata for those same entries.
 #[derive(Default)]
 pub struct SplitScatterRetryController {
+    registry_metrics: Option<crate::CheckerMetrics>,
     observer: SplitScatterObserver,
     retry: BTreeMap<u64, RetryState>,
     next_dispatch_at: Duration,
     metrics: SplitScatterRetryMetrics,
 }
 impl SplitScatterRetryController {
+    /// Attach before accepting work. Existing pending state is published once.
+    /// Counter history remains owned by this controller and is never replayed.
+    pub fn set_metrics(&mut self, metrics: crate::CheckerMetrics) {
+        metrics.inner.split_pending.set(self.metrics.pending as f64);
+        self.registry_metrics = Some(metrics);
+    }
     pub fn metrics(&self) -> &SplitScatterRetryMetrics {
         &self.metrics
     }
@@ -96,6 +103,9 @@ impl SplitScatterRetryController {
         }
         self.retry.remove(&expected.region_id);
         self.metrics.pending = self.observer.len();
+        if let Some(m) = &self.registry_metrics {
+            m.inner.split_pending.set(self.metrics.pending as f64);
+        }
         true
     }
     pub fn delay(&mut self, expected: &SplitScatterPendingItem, now: Duration) -> bool {
@@ -113,6 +123,9 @@ impl SplitScatterRetryController {
         self.observer.clear();
         self.retry.clear();
         self.metrics.pending = 0;
+        if let Some(m) = &self.registry_metrics {
+            m.inner.split_pending.set(self.metrics.pending as f64);
+        }
         self.next_dispatch_at = Duration::ZERO;
     }
     pub fn cleanup_expired(&mut self, now: Duration) -> usize {
@@ -121,9 +134,19 @@ impl SplitScatterRetryController {
                 let attempted = self.retry.get(&p.region_id).is_some_and(|r| r.attempted);
                 if self.delete(&p) {
                     if attempted {
-                        self.metrics.expired_attempted += 1;
+                        {
+                            self.metrics.expired_attempted += 1;
+                            if let Some(m) = &self.registry_metrics {
+                                m.inner.expired_attempted.inc_by((1) as f64);
+                            }
+                        };
                     } else {
-                        self.metrics.expired_unattempted += 1;
+                        {
+                            self.metrics.expired_unattempted += 1;
+                            if let Some(m) = &self.registry_metrics {
+                                m.inner.expired_unattempted.inc_by((1) as f64);
+                            }
+                        };
                     }
                 }
             }
@@ -150,7 +173,12 @@ impl SplitScatterRetryController {
                 .filter(|&&id| self.observer.pending(id).is_none())
                 .count();
         if self.observer.len() + new_count > SPLIT_SCATTER_PENDING_LIMIT {
-            self.metrics.dropped += new_count as u64;
+            {
+                self.metrics.dropped += new_count as u64;
+                if let Some(m) = &self.registry_metrics {
+                    m.inner.dropped.inc_by((new_count as u64) as f64);
+                }
+            };
             return;
         }
         self.observer.record_batch(
@@ -164,6 +192,9 @@ impl SplitScatterRetryController {
             self.retry.insert(id, RetryState::default());
         }
         self.metrics.pending = self.observer.len();
+        if let Some(m) = &self.registry_metrics {
+            m.inner.split_pending.set(self.metrics.pending as f64);
+        }
         self.next_dispatch_at = Duration::ZERO;
     }
     /// Select by deadline, group, ID before applying limit; only selected results
@@ -204,7 +235,15 @@ impl SplitScatterRetryController {
             }
             match observe_split_scatter_result(&p, regions) {
                 SplitScatterObservation::MissingResult | SplitScatterObservation::MissingSource => {
-                    self.metrics.missing += 1;
+                    {
+                        self.metrics.missing += 1;
+                        if let Some(m) = &self.registry_metrics {
+                            m.inc(
+                                crate::CheckerMetricKind::SplitScatter,
+                                "dispatch-region-missing",
+                            );
+                        }
+                    };
                     self.delay(&p, now);
                 }
                 SplitScatterObservation::Ready => candidates.push(p),
@@ -250,7 +289,12 @@ impl SplitScatterRetryController {
             return errors;
         }
         if limit == 0 {
-            self.metrics.disabled += 1;
+            {
+                self.metrics.disabled += 1;
+                if let Some(m) = &self.registry_metrics {
+                    m.inc(crate::CheckerMetricKind::SplitScatter, "dispatch-disabled");
+                }
+            };
             self.clear();
             return errors;
         }
@@ -259,7 +303,15 @@ impl SplitScatterRetryController {
         }
         let running = operators.operator_count(OpKind::SPLIT_SCATTER);
         if running >= limit {
-            self.metrics.schedule_limit += 1;
+            {
+                self.metrics.schedule_limit += 1;
+                if let Some(m) = &self.registry_metrics {
+                    m.inc(
+                        crate::CheckerMetricKind::SplitScatter,
+                        "dispatch-schedule-limit",
+                    );
+                }
+            };
             self.next_dispatch_at = now + SPLIT_SCATTER_RETRY_BACKOFF;
             return errors;
         }
@@ -280,7 +332,15 @@ impl SplitScatterRetryController {
                     continue;
                 }
                 SplitScatterObservation::MissingResult | SplitScatterObservation::MissingSource => {
-                    self.metrics.missing += 1;
+                    {
+                        self.metrics.missing += 1;
+                        if let Some(m) = &self.registry_metrics {
+                            m.inc(
+                                crate::CheckerMetricKind::SplitScatter,
+                                "dispatch-region-missing",
+                            );
+                        }
+                    };
                     self.delay(&p, now);
                     continue;
                 }
@@ -289,12 +349,28 @@ impl SplitScatterRetryController {
             }
             let region = cluster.regions.get_region(p.region_id).unwrap();
             if labels.is_some_and(|l| l.schedule_disabled(&region, replication.now)) {
-                self.metrics.schedule_disabled += 1;
+                {
+                    self.metrics.schedule_disabled += 1;
+                    if let Some(m) = &self.registry_metrics {
+                        m.inc(
+                            crate::CheckerMetricKind::SplitScatter,
+                            "dispatch-schedule-disabled",
+                        );
+                    }
+                };
                 self.delay(&p, now);
                 continue;
             }
             if !is_region_replicated(replication, &region) {
-                self.metrics.not_replicated += 1;
+                {
+                    self.metrics.not_replicated += 1;
+                    if let Some(m) = &self.registry_metrics {
+                        m.inc(
+                            crate::CheckerMetricKind::SplitScatter,
+                            "dispatch-not-fully-replicated",
+                        );
+                    }
+                };
                 self.delay(&p, now);
                 continue;
             }
@@ -313,32 +389,88 @@ impl SplitScatterRetryController {
                         .await
                     {
                         Ok(_) => {
-                            self.metrics.operator_created += 1;
+                            {
+                                self.metrics.operator_created += 1;
+                                if let Some(m) = &self.registry_metrics {
+                                    m.inc(
+                                        crate::CheckerMetricKind::SplitScatter,
+                                        "dispatch-operator-created",
+                                    );
+                                }
+                            };
                             Ok(())
                         }
                         Err(e) => {
                             if e == AdmissionError::Rejected(CancelReason::ExceedStoreLimit) {
-                                self.metrics.store_limit += 1;
+                                {
+                                    self.metrics.store_limit += 1;
+                                    if let Some(m) = &self.registry_metrics {
+                                        m.inc(
+                                            crate::CheckerMetricKind::SplitScatter,
+                                            "dispatch-store-limit",
+                                        );
+                                    }
+                                };
                             } else {
-                                self.metrics.add_operator_failed += 1;
+                                {
+                                    self.metrics.add_operator_failed += 1;
+                                    if let Some(m) = &self.registry_metrics {
+                                        m.inc(
+                                            crate::CheckerMetricKind::SplitScatter,
+                                            "dispatch-add-operator-failed",
+                                        );
+                                    }
+                                };
                             }
                             Err(SplitScatterDispatchError::Admission(e))
                         }
                     }
                 }
                 Ok(None) => {
-                    self.metrics.no_operator_needed += 1;
+                    {
+                        self.metrics.no_operator_needed += 1;
+                        if let Some(m) = &self.registry_metrics {
+                            m.inc(
+                                crate::CheckerMetricKind::SplitScatter,
+                                "dispatch-no-operator-needed",
+                            );
+                        }
+                    };
                     Ok(())
                 }
                 Err(e) => {
                     match &e {
                         SplitScatterDispatchError::RetryLater(
                             SplitScatterRetryReason::HotRegion,
-                        ) => self.metrics.hot += 1,
+                        ) => {
+                            self.metrics.hot += 1;
+                            if let Some(m) = &self.registry_metrics {
+                                m.inc(
+                                    crate::CheckerMetricKind::SplitScatter,
+                                    "dispatch-hot-region",
+                                );
+                            }
+                        }
                         SplitScatterDispatchError::RetryLater(
                             SplitScatterRetryReason::BalancedReadCpu,
-                        ) => self.metrics.balanced_read_cpu += 1,
-                        _ => self.metrics.scatter_failed += 1,
+                        ) => {
+                            self.metrics.balanced_read_cpu += 1;
+                            if let Some(m) = &self.registry_metrics {
+                                m.inc(
+                                    crate::CheckerMetricKind::SplitScatter,
+                                    "dispatch-balanced-read-cpu",
+                                );
+                            }
+                        }
+                        _ => {
+                            self.metrics.scatter_failed += 1;
+                            if let Some(m) = &self.registry_metrics {
+                                m.inc(
+                                    crate::CheckerMetricKind::SplitScatter,
+                                    "dispatch-scatter-failed",
+                                );
+                            }
+                        }
                     }
                     Err(e)
                 }

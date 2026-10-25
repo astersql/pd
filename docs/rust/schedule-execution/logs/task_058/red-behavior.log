@@ -1,0 +1,61 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.48s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-7d35459320f34bf1)
+
+running 8 tests
+
+thread 'task_058_test::task_058_behavior_cases' (165249139) panicked at pkg/schedule/checker/task_058_test.rs:29:5:
+assertion `left == right` failed
+  left: 0.0
+ right: 1.0
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'task_058_test::task_058_schema_and_bounded_events' (165249144) panicked at pkg/schedule/checker/task_058_test.rs:162:9:
+assertion `left == right` failed
+  left: 0.0
+ right: 1.0
+
+thread 'task_058_test::task_058_registry_isolation_and_collision_rollback' (165249143) panicked at pkg/schedule/checker/task_058_test.rs:261:5:
+assertion `left == right` failed
+  left: 0.0
+ right: 2.0
+test task_058_test::task_058_behavior_cases ... FAILED
+test task_058_test::task_058_schema_and_bounded_events ... FAILED
+test task_058_test::task_058_registry_isolation_and_collision_rollback ... FAILED
+
+thread 'task_058_test::task_058_split_missing_event_and_attempted_expiration' (165249145) panicked at pkg/schedule/checker/task_058_test.rs:526:5:
+assertion `left == right` failed
+  left: 0.0
+ right: 2.0
+test task_058_test::task_058_split_missing_event_and_attempted_expiration ... FAILED
+
+thread 'task_058_test::task_058_real_dispatch_and_patrol_lifecycle' (165249142) panicked at pkg/schedule/checker/task_058_test.rs:72:13:
+assertion failed: metric(&registry, "pd_checker_event_count",
+                &[("type", "joint_state_checker"),
+                            ("name",
+                                if paused {
+                                    "paused"
+                                } else { "check" })]).get_counter().get_value() > 0.0
+
+thread 'task_058_test::task_058_queue_snapshots_and_backlog' (165249141) panicked at pkg/schedule/checker/task_058_test.rs:458:9:
+assertion `left == right` failed
+  left: 0.0
+ right: 2.0
+test task_058_test::task_058_real_dispatch_and_patrol_lifecycle ... FAILED
+test task_058_test::task_058_queue_snapshots_and_backlog ... FAILED
+test task_058_test::task_058_host_failure_and_pre_cancel ... ok
+test task_058_test::task_058_split_scatter_transitions ... ok
+
+failures:
+
+failures:
+    task_058_test::task_058_behavior_cases
+    task_058_test::task_058_queue_snapshots_and_backlog
+    task_058_test::task_058_real_dispatch_and_patrol_lifecycle
+    task_058_test::task_058_registry_isolation_and_collision_rollback
+    task_058_test::task_058_schema_and_bounded_events
+    task_058_test::task_058_split_missing_event_and_attempted_expiration
+
+test result: FAILED. 2 passed; 6 failed; 0 ignored; 0 measured; 58 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-checker --lib`

@@ -34,3 +34,7 @@ worker futures 在宿主执行器内并发轮询，不要求借用中的 checker
 测试冻结 count、phase order 和 lifecycle 场景，以真实 core、dispatcher、placement/affinity、
 MemoryStore、operator admission、label statistics、split-scatter 验证状态与操作。
 仅宿主时间、外部检查阻塞/故障以及聚合 region count 快照受控。
+
+任务58增加 `set_metrics(CheckerMetrics)`：取得列表时发布 queue gauge，按 Go
+controller 的阶段边界记录 duration，完整轮次发布耗时，joined shutdown 后归零。
+队列 gauge 保留最后采样值；halted tick 不更新它们。见 [指标说明](checker_metrics.rs.md)。

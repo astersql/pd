@@ -1,0 +1,17 @@
+{
+  "command": [
+    "cargo",
+    "test",
+    "--workspace",
+    "--locked"
+  ],
+  "exit_code": 101,
+  "slot": 1,
+  "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+  "record_recovery": "Cargo completed with rustc exit 101 (logged); run.py failed to persist JSON due to ENOSPC; lock was released in finally",
+  "recovery_attempts": [
+    "Removed only task-generated intermediate logs and temporary Python generators",
+    "Removed 77 unfinished rcgu.o objects (8398472 bytes) from the failed task058 rustc invocation; valid caches and other tasks untouched"
+  ],
+  "remaining_space_bytes": "Filesystem   1024-blocks      Used Available Capacity iused   ifree %iused  Mounted on\n/dev/disk3s5   971350180 942678212    128092   100% 7193707 1280920   85%   /System/Volumes/Data\n"
+}

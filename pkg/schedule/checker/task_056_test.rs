@@ -742,3 +742,59 @@ async fn task_056_priority_merge_and_pending_admission_contracts() {
         "task_056: real merge pair excluded from priority/admitted from scan; priority preserves pending on admission rejection, ordinary recheck removes it"
     );
 }
+
+impl Host {
+    pub(super) async fn install_checker_metrics(&self, metrics: CheckerMetrics, pause: bool) {
+        let mut domain = self.domain.lock().await;
+        domain.dispatcher.set_metrics(metrics.clone());
+        if pause {
+            for name in [
+                "joint-state",
+                "split",
+                "learner",
+                "replica",
+                "affinity",
+                "merge",
+            ] {
+                domain
+                    .dispatcher
+                    .pause_controller(name)
+                    .unwrap()
+                    .pause_or_resume_at(1000, 0);
+            }
+        }
+        self.split.borrow_mut().set_metrics(metrics);
+    }
+    pub(super) fn halt_for_metrics(&self, halted: bool) {
+        self.halt.set(halted);
+    }
+    pub(super) fn fail_for_metrics(&self) {
+        self.fail.set(true);
+    }
+}
+
+impl Host {
+    pub(super) async fn seed_metrics_queues(&self) {
+        let mut d = self.domain.lock().await;
+        let Domain {
+            dispatcher,
+            rules,
+            cluster,
+            config,
+            ..
+        } = &mut *d;
+        for id in [1, 99] {
+            // Distinct deficits avoid the canonical queue's priority-only tie equivalence.
+            config.replication.max_replicas = if id == 99 { 4 } else { 3 };
+            dispatcher.priority.inspect(
+                config,
+                rules,
+                &cluster.stores.get_stores(),
+                &region(id, true),
+                0,
+            );
+        }
+        config.replication.max_replicas = 3;
+        dispatcher.add_pending_processed_regions(false, &[1, 99]);
+    }
+}

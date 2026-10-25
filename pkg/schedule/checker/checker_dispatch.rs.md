@@ -62,3 +62,7 @@ rule 的永久失败集合使用 canonical 有界 2Q Cache，与临时 retry TTL
 [任务 055 证据](../../../docs/rust/schedule-execution/task-055.md)。
 独立测试文件 `task_055_test.rs` 显式注册，使用真实 core、placement、标签、
 affinity、内存 MetaStore、operator/records、TTL 和存储令牌。
+
+任务58增加 `set_metrics(CheckerMetrics)`，在既有分派阶段接入宿主 Registry 的
+checker duration 与调用、暂停及可观察结果事件；不改变领域选择、错误或队列决策。
+具体覆盖与有界事件 API 见 [指标说明](checker_metrics.rs.md)。

@@ -29,8 +29,9 @@ group、range hint 和实际 operator controller，输出真实 Operator 或类�
 `SplitScatterDispatchError`，不另建散射算法或伪造调度状态。测试在该边界注入
 RetryLater/规划错误，验证 pending、deadline、指标和实际准入结果，不以调用次数验收。
 HotRegion、BalancedReadCpu 单独计数，其它 retry/error 计 scatter_failed；准入错误保留
-原 AdmissionError 并区分 store_limit 与 add_operator_failed。宿主读取 metrics 快照导出
-累积计数，未引入 Prometheus 依赖或全局状态。
+原 AdmissionError 并区分 store_limit 与 add_operator_failed。任务58增加
+`set_metrics(CheckerMetrics)`，在每次真实变更时同步发布累计事件和 pending gauge；
+原 `metrics()` 快照 API 保留，无全局状态。宿主须在接受工作前接线，见 [指标说明](checker_metrics.rs.md)。
 
 来源是只读 `split_scatter.go` 与相邻测试，按用户授权以源码契约推导期望及 Rust
 行为测试验收，没有声称运行 Go oracle。证据、fixture、失败日志和 Cargo 槽位见
