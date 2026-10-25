@@ -1,0 +1,85 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=cargo test -p astersql-pd-schedule-operator --locked --lib task_031 -- --nocapture
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+error[E0433]: cannot find type `SimpleBuildOptions` in this scope
+  --> pkg/schedule/operator/create_peer.rs:51:36
+   |
+51 |                 .build_joint(kind, SimpleBuildOptions::default(), allocate)
+   |                                    ^^^^^^^^^^^^^^^^^^ use of undeclared type `SimpleBuildOptions`
+   |
+help: consider importing this struct through its public re-export
+   |
+ 3 + use crate::SimpleBuildOptions;
+   |
+
+error[E0433]: cannot find type `SimpleBuildOptions` in this scope
+  --> pkg/schedule/operator/create_peer.rs:55:37
+   |
+55 |                 .build_simple(kind, SimpleBuildOptions::default(), allocate)
+   |                                     ^^^^^^^^^^^^^^^^^^ use of undeclared type `SimpleBuildOptions`
+   |
+help: consider importing this struct through its public re-export
+   |
+ 3 + use crate::SimpleBuildOptions;
+   |
+
+For more information about this error, try `rustc --explain E0433`.
+error: could not compile `astersql-pd-schedule-operator` (lib test) due to 2 previous errors
+command_exit_code=101
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=cargo test -p astersql-pd-schedule-operator --locked --lib task_031 -- --nocapture
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.03s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_operator-3c432df009ee920c)
+
+running 1 test
+
+thread 'task_031_test::task_031_behavior_cases' (163192683) panicked at pkg/schedule/operator/task_031_test.rs:223:9:
+assertion `left == right` failed: force-transfer error
+  left: Some("LeaderNotAllowed")
+ right: None
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test task_031_test::task_031_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_031_test::task_031_behavior_cases
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 49 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-operator --lib`
+command_exit_code=101
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=cargo test -p astersql-pd-schedule-operator --locked --lib task_031 -- --nocapture
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.91s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_operator-3c432df009ee920c)
+
+running 1 test
+
+thread 'task_031_test::task_031_behavior_cases' (163193862) panicked at pkg/schedule/operator/task_031_test.rs:251:9:
+assertion `left == right` failed: move-leader steps
+  left: Array [Array [String("add"), Number(4), Number(14), Bool(false)], Array [String("promote"), Number(4), Number(14), Bool(false)], Array [String("transfer"), Number(1), Number(2), Array []], Array [String("remove"), Number(1), Number(11)], Array [String("transfer"), Number(2), Number(4), Array []]]
+ right: Array [Array [String("add"), Number(4), Number(14), Bool(false)], Array [String("promote"), Number(4), Number(14), Bool(false)], Array [String("transfer"), Number(1), Number(4), Array []], Array [String("remove"), Number(1), Number(11)]]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test task_031_test::task_031_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_031_test::task_031_behavior_cases
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 49 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-operator --lib`
+command_exit_code=101
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=cargo test -p astersql-pd-schedule-operator --locked --lib task_031 -- --nocapture
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.90s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_operator-3c432df009ee920c)
+
+running 1 test
+task031: 45 cases, 22 success, 23 expected errors; full steps, kind, identity, heartbeat replay
+test task_031_test::task_031_behavior_cases ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 49 filtered out; finished in 0.00s
+
+command_exit_code=0

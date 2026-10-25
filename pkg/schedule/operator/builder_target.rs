@@ -28,6 +28,7 @@ pub struct BuilderContext<'a, V> {
 /// Stable domain errors; no protocol-specific debug rendering is required.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum BuilderError {
+    JointConsensusDisabled,
     AlreadyWitness(u64),
     AlreadyNonWitness(u64),
     InvalidOriginPeer,

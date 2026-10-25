@@ -1,0 +1,2903 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "evidence_kind": "source_assertion",
+  "go_execution": false,
+  "normalization": {},
+  "source_sha256": {
+    "pkg/schedule/operator/create_operator.go": "43a938c72992f4ce81501c40ab85c1e79c08670383acd47f22655e779524b927",
+    "pkg/schedule/operator/create_operator_test.go": "919a902cd88c9ced64be15c154b409dccd56de584266f6f41137caa963bfbb3c",
+    "pkg/schedule/operator/builder.go": "2c74830947c401ea8c4d46e8066e4c85aecd02beea035d0bb9eb4aab8cee8f83"
+  },
+  "cases": [
+    {
+      "name": "add-voter",
+      "op": "add",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 2,
+      "peer": [
+        4,
+        "v",
+        14,
+        false
+      ],
+      "leader": 2,
+      "steps": [
+        [
+          "add",
+          4,
+          14,
+          false
+        ],
+        [
+          "promote",
+          4,
+          14,
+          false
+        ]
+      ],
+      "error": null,
+      "kind": 129,
+      "allocated": 0,
+      "joint": false,
+      "support": true,
+      "final_peers": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ],
+        [
+          4,
+          "v",
+          14,
+          false
+        ]
+      ],
+      "final_leader": 1
+    },
+    {
+      "name": "add-learner",
+      "op": "add",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 2,
+      "peer": [
+        4,
+        "l",
+        14,
+        false
+      ],
+      "leader": 2,
+      "steps": [
+        [
+          "add",
+          4,
+          14,
+          false
+        ]
+      ],
+      "error": null,
+      "kind": 129,
+      "allocated": 0,
+      "joint": false,
+      "support": true,
+      "final_peers": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ],
+        [
+          4,
+          "l",
+          14,
+          false
+        ]
+      ],
+      "final_leader": 1
+    },
+    {
+      "name": "add-allocate",
+      "op": "add",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 2,
+      "peer": [
+        4,
+        "v",
+        0,
+        false
+      ],
+      "leader": 2,
+      "steps": [
+        [
+          "add",
+          4,
+          101,
+          false
+        ],
+        [
+          "promote",
+          4,
+          101,
+          false
+        ]
+      ],
+      "error": null,
+      "kind": 129,
+      "allocated": 1,
+      "joint": false,
+      "support": true,
+      "final_peers": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ],
+        [
+          4,
+          "v",
+          101,
+          false
+        ]
+      ],
+      "final_leader": 1
+    },
+    {
+      "name": "remove-follower",
+      "op": "remove",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 2,
+      "peer": [
+        4,
+        "v",
+        14,
+        false
+      ],
+      "leader": 2,
+      "steps": [
+        [
+          "remove",
+          2,
+          12
+        ]
+      ],
+      "error": null,
+      "kind": 129,
+      "allocated": 0,
+      "joint": false,
+      "support": true,
+      "final_peers": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "final_leader": 1
+    },
+    {
+      "name": "remove-leader",
+      "op": "remove",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 1,
+      "old": 2,
+      "peer": [
+        4,
+        "v",
+        14,
+        false
+      ],
+      "leader": 2,
+      "steps": [
+        [
+          "transfer",
+          1,
+          2,
+          []
+        ],
+        [
+          "remove",
+          1,
+          11
+        ]
+      ],
+      "error": null,
+      "kind": 385,
+      "allocated": 0,
+      "joint": false,
+      "support": true,
+      "final_peers": [
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "final_leader": 2
+    },
+    {
+      "name": "promote",
+      "op": "promote",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 3,
+      "old": 2,
+      "peer": [
+        4,
+        "v",
+        14,
+        false
+      ],
+      "leader": 2,
+      "steps": [
+        [
+          "promote",
+          3,
+          13,
+          false
+        ]
+      ],
+      "error": null,
+      "kind": 0,
+      "allocated": 0,
+      "joint": false,
+      "support": true,
+      "final_peers": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "v",
+          13,
+          false
+        ]
+      ],
+      "final_leader": 1
+    },
+    {
+      "name": "demote-simple",
+      "op": "demote",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 2,
+      "peer": [
+        4,
+        "v",
+        14,
+        false
+      ],
+      "leader": 2,
+      "steps": [
+        [
+          "remove",
+          2,
+          12
+        ],
+        [
+          "add",
+          2,
+          12,
+          false
+        ]
+      ],
+      "error": null,
+      "kind": 128,
+      "allocated": 0,
+      "joint": false,
+      "support": true,
+      "final_peers": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "l",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "final_leader": 1
+    },
+    {
+      "name": "demote-joint",
+      "op": "demote",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 2,
+      "peer": [
+        4,
+        "v",
+        14,
+        false
+      ],
+      "leader": 2,
+      "steps": [
+        [
+          "enter",
+          [],
+          [
+            [
+              2,
+              12,
+              false
+            ]
+          ]
+        ]
+      ],
+      "error": null,
+      "kind": 0,
+      "allocated": 0,
+      "joint": true,
+      "support": true,
+      "final_peers": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "l",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "final_leader": 1
+    },
+    {
+      "name": "version-gates-joint",
+      "op": "demote",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 2,
+      "peer": [
+        4,
+        "v",
+        14,
+        false
+      ],
+      "leader": 2,
+      "steps": [
+        [
+          "remove",
+          2,
+          12
+        ],
+        [
+          "add",
+          2,
+          12,
+          false
+        ]
+      ],
+      "error": null,
+      "kind": 128,
+      "allocated": 0,
+      "joint": true,
+      "support": false,
+      "final_peers": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "l",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "final_leader": 1
+    },
+    {
+      "name": "transfer",
+      "op": "transfer",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 2,
+      "peer": [
+        4,
+        "v",
+        14,
+        false
+      ],
+      "leader": 2,
+      "steps": [
+        [
+          "transfer",
+          1,
+          2,
+          []
+        ]
+      ],
+      "error": null,
+      "kind": 257,
+      "allocated": 0,
+      "joint": false,
+      "support": true,
+      "final_peers": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "final_leader": 2
+    },
+    {
+      "name": "transfer-alternatives",
+      "op": "transfer",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 2,
+      "peer": [
+        4,
+        "v",
+        14,
+        false
+      ],
+      "leader": 2,
+      "steps": [
+        [
+          "transfer",
+          1,
+          2,
+          [
+            2
+          ]
+        ]
+      ],
+      "error": null,
+      "kind": 257,
+      "allocated": 0,
+      "joint": false,
+      "support": true,
+      "alternatives": [
+        3,
+        2,
+        4
+      ],
+      "final_peers": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "final_leader": 2
+    },
+    {
+      "name": "force-transfer",
+      "op": "force",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 2,
+      "peer": [
+        4,
+        "v",
+        14,
+        false
+      ],
+      "leader": 2,
+      "steps": [
+        [
+          "transfer",
+          1,
+          2,
+          []
+        ]
+      ],
+      "error": null,
+      "kind": 257,
+      "allocated": 0,
+      "joint": false,
+      "support": true,
+      "blocked_store": 2,
+      "final_peers": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "final_leader": 2
+    },
+    {
+      "name": "move-peer",
+      "op": "move",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 2,
+      "peer": [
+        4,
+        "v",
+        14,
+        false
+      ],
+      "leader": 2,
+      "steps": [
+        [
+          "add",
+          4,
+          14,
+          false
+        ],
+        [
+          "promote",
+          4,
+          14,
+          false
+        ],
+        [
+          "remove",
+          2,
+          12
+        ]
+      ],
+      "error": null,
+      "kind": 129,
+      "allocated": 0,
+      "joint": false,
+      "support": true,
+      "final_peers": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ],
+        [
+          4,
+          "v",
+          14,
+          false
+        ]
+      ],
+      "final_leader": 1
+    },
+    {
+      "name": "move-peer-joint",
+      "op": "move",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 2,
+      "peer": [
+        4,
+        "v",
+        14,
+        false
+      ],
+      "leader": 2,
+      "steps": [
+        [
+          "add",
+          4,
+          14,
+          false
+        ],
+        [
+          "enter",
+          [
+            [
+              4,
+              14,
+              false
+            ]
+          ],
+          [
+            [
+              2,
+              12,
+              false
+            ]
+          ]
+        ],
+        [
+          "leave",
+          [
+            [
+              4,
+              14,
+              false
+            ]
+          ],
+          [
+            [
+              2,
+              12,
+              false
+            ]
+          ]
+        ],
+        [
+          "remove",
+          2,
+          12
+        ]
+      ],
+      "error": null,
+      "kind": 129,
+      "allocated": 0,
+      "joint": true,
+      "support": true,
+      "final_peers": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ],
+        [
+          4,
+          "v",
+          14,
+          false
+        ]
+      ],
+      "final_leader": 1
+    },
+    {
+      "name": "move-leader",
+      "op": "move_leader",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 1,
+      "peer": [
+        4,
+        "v",
+        14,
+        false
+      ],
+      "leader": 2,
+      "steps": [
+        [
+          "add",
+          4,
+          14,
+          false
+        ],
+        [
+          "promote",
+          4,
+          14,
+          false
+        ],
+        [
+          "transfer",
+          1,
+          2,
+          []
+        ],
+        [
+          "remove",
+          1,
+          11
+        ],
+        [
+          "transfer",
+          2,
+          4,
+          []
+        ]
+      ],
+      "error": null,
+      "kind": 385,
+      "allocated": 0,
+      "joint": false,
+      "support": true,
+      "final_peers": [
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ],
+        [
+          4,
+          "v",
+          14,
+          false
+        ]
+      ],
+      "final_leader": 4
+    },
+    {
+      "name": "replace-leader-peer",
+      "op": "replace",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 1,
+      "peer": [
+        4,
+        "v",
+        14,
+        false
+      ],
+      "leader": 2,
+      "steps": [
+        [
+          "add",
+          4,
+          14,
+          false
+        ],
+        [
+          "promote",
+          4,
+          14,
+          false
+        ],
+        [
+          "transfer",
+          1,
+          2,
+          []
+        ],
+        [
+          "remove",
+          1,
+          11
+        ]
+      ],
+      "error": null,
+      "kind": 385,
+      "allocated": 0,
+      "joint": false,
+      "support": true,
+      "final_peers": [
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ],
+        [
+          4,
+          "v",
+          14,
+          false
+        ]
+      ],
+      "final_leader": 2
+    },
+    {
+      "name": "move-region",
+      "op": "region",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 2,
+      "peer": [
+        4,
+        "v",
+        0,
+        false
+      ],
+      "leader": 2,
+      "steps": [
+        [
+          "add",
+          4,
+          101,
+          false
+        ],
+        [
+          "promote",
+          4,
+          101,
+          false
+        ],
+        [
+          "remove",
+          2,
+          12
+        ]
+      ],
+      "error": null,
+      "kind": 129,
+      "allocated": 1,
+      "joint": false,
+      "support": true,
+      "roles": [
+        [
+          1,
+          "voter"
+        ],
+        [
+          3,
+          "learner"
+        ],
+        [
+          4,
+          "voter"
+        ]
+      ],
+      "final_peers": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ],
+        [
+          4,
+          "v",
+          101,
+          false
+        ]
+      ],
+      "final_leader": 1
+    },
+    {
+      "name": "move-region-retain-ids",
+      "op": "region",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 2,
+      "peer": [
+        4,
+        "v",
+        14,
+        false
+      ],
+      "leader": 2,
+      "steps": [
+        [
+          "transfer",
+          1,
+          2,
+          []
+        ]
+      ],
+      "error": null,
+      "kind": 257,
+      "allocated": 0,
+      "joint": false,
+      "support": true,
+      "roles": [
+        [
+          1,
+          "follower"
+        ],
+        [
+          2,
+          "leader"
+        ],
+        [
+          3,
+          "learner"
+        ]
+      ],
+      "final_peers": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "final_leader": 2
+    },
+    {
+      "name": "promote-remove",
+      "op": "promote_remove",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 3,
+      "old": 2,
+      "peer": [
+        4,
+        "v",
+        14,
+        false
+      ],
+      "leader": 2,
+      "steps": [
+        [
+          "promote",
+          3,
+          13,
+          false
+        ],
+        [
+          "remove",
+          2,
+          12
+        ]
+      ],
+      "error": null,
+      "kind": 128,
+      "allocated": 0,
+      "joint": false,
+      "support": true,
+      "final_peers": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          3,
+          "v",
+          13,
+          false
+        ]
+      ],
+      "final_leader": 1
+    },
+    {
+      "name": "demote-remove",
+      "op": "demote_remove",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 3,
+      "peer": [
+        4,
+        "v",
+        14,
+        false
+      ],
+      "leader": 2,
+      "steps": [
+        [
+          "enter",
+          [],
+          [
+            [
+              2,
+              12,
+              false
+            ]
+          ]
+        ],
+        [
+          "remove",
+          3,
+          13
+        ]
+      ],
+      "error": null,
+      "kind": 128,
+      "allocated": 0,
+      "joint": true,
+      "support": true,
+      "final_peers": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "l",
+          12,
+          false
+        ]
+      ],
+      "final_leader": 1
+    },
+    {
+      "name": "demote-remove-gate",
+      "op": "demote_remove",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 2,
+      "peer": [
+        4,
+        "v",
+        14,
+        false
+      ],
+      "leader": 2,
+      "steps": null,
+      "error": "JointConsensusDisabled",
+      "kind": 129,
+      "allocated": 0,
+      "joint": false,
+      "support": true
+    },
+    {
+      "name": "duplicate",
+      "op": "add",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 2,
+      "peer": [
+        2,
+        "v",
+        12,
+        false
+      ],
+      "leader": 2,
+      "steps": null,
+      "error": "DuplicatePeer(2)",
+      "kind": 129,
+      "allocated": 0,
+      "joint": false,
+      "support": true
+    },
+    {
+      "name": "nil-peer",
+      "op": "add",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 2,
+      "peer": null,
+      "leader": 2,
+      "steps": null,
+      "error": "InvalidPeer",
+      "kind": 129,
+      "allocated": 0,
+      "joint": false,
+      "support": true
+    },
+    {
+      "name": "missing-remove",
+      "op": "remove",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 9,
+      "old": 2,
+      "peer": [
+        4,
+        "v",
+        14,
+        false
+      ],
+      "leader": 2,
+      "steps": null,
+      "error": "MissingPeer(9)",
+      "kind": 129,
+      "allocated": 0,
+      "joint": false,
+      "support": true
+    },
+    {
+      "name": "already-voter",
+      "op": "promote",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 2,
+      "peer": [
+        4,
+        "v",
+        14,
+        false
+      ],
+      "leader": 2,
+      "steps": null,
+      "error": "NotLearner(2)",
+      "kind": 129,
+      "allocated": 0,
+      "joint": false,
+      "support": true
+    },
+    {
+      "name": "already-learner",
+      "op": "demote",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 3,
+      "old": 2,
+      "peer": [
+        4,
+        "v",
+        14,
+        false
+      ],
+      "leader": 2,
+      "steps": null,
+      "error": "AlreadyLearner(3)",
+      "kind": 129,
+      "allocated": 0,
+      "joint": false,
+      "support": true
+    },
+    {
+      "name": "transfer-self",
+      "op": "transfer",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 2,
+      "peer": [
+        4,
+        "v",
+        14,
+        false
+      ],
+      "leader": 1,
+      "steps": null,
+      "error": "NoSteps",
+      "kind": 129,
+      "allocated": 0,
+      "joint": false,
+      "support": true
+    },
+    {
+      "name": "transfer-learner",
+      "op": "transfer",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 2,
+      "peer": [
+        4,
+        "v",
+        14,
+        false
+      ],
+      "leader": 3,
+      "steps": null,
+      "error": "NotVoter(3)",
+      "kind": 129,
+      "allocated": 0,
+      "joint": false,
+      "support": true
+    },
+    {
+      "name": "transfer-missing",
+      "op": "transfer",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 2,
+      "peer": [
+        4,
+        "v",
+        14,
+        false
+      ],
+      "leader": 9,
+      "steps": null,
+      "error": "MissingPeer(9)",
+      "kind": 129,
+      "allocated": 0,
+      "joint": false,
+      "support": true
+    },
+    {
+      "name": "normal-transfer-missing-store",
+      "op": "transfer",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 2,
+      "peer": [
+        4,
+        "v",
+        14,
+        false
+      ],
+      "leader": 2,
+      "steps": null,
+      "error": "LeaderNotAllowed",
+      "kind": 129,
+      "allocated": 0,
+      "joint": false,
+      "support": true,
+      "missing_store": 2
+    },
+    {
+      "name": "force-retains-learner-check",
+      "op": "force",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 2,
+      "peer": [
+        4,
+        "v",
+        14,
+        false
+      ],
+      "leader": 3,
+      "steps": null,
+      "error": "NotVoter(3)",
+      "kind": 129,
+      "allocated": 0,
+      "joint": false,
+      "support": true
+    },
+    {
+      "name": "allocation-fault",
+      "op": "add",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 2,
+      "peer": [
+        4,
+        "v",
+        0,
+        false
+      ],
+      "leader": 2,
+      "steps": null,
+      "error": "Allocation(\"injected\")",
+      "kind": 129,
+      "allocated": 1,
+      "joint": false,
+      "support": true,
+      "fault": true
+    },
+    {
+      "name": "first-error-move",
+      "op": "move",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 9,
+      "peer": null,
+      "leader": 2,
+      "steps": null,
+      "error": "MissingPeer(9)",
+      "kind": 129,
+      "allocated": 0,
+      "joint": false,
+      "support": true
+    },
+    {
+      "name": "region-multiple-leaders",
+      "op": "region",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 2,
+      "peer": [
+        4,
+        "v",
+        14,
+        false
+      ],
+      "leader": 2,
+      "steps": null,
+      "error": "MultipleLeaders",
+      "kind": 129,
+      "allocated": 0,
+      "joint": false,
+      "support": true,
+      "roles": [
+        [
+          1,
+          "leader"
+        ],
+        [
+          2,
+          "leader"
+        ]
+      ]
+    },
+    {
+      "name": "region-no-voter",
+      "op": "region",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 2,
+      "peer": [
+        4,
+        "v",
+        14,
+        false
+      ],
+      "leader": 2,
+      "steps": null,
+      "error": "NoExpectedVoter",
+      "kind": 129,
+      "allocated": 0,
+      "joint": false,
+      "support": true,
+      "roles": [
+        [
+          1,
+          "follower"
+        ],
+        [
+          2,
+          "learner"
+        ]
+      ]
+    },
+    {
+      "name": "region-empty",
+      "op": "region",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 2,
+      "peer": [
+        4,
+        "v",
+        14,
+        false
+      ],
+      "leader": 2,
+      "steps": null,
+      "error": "NoExpectedVoter",
+      "kind": 129,
+      "allocated": 0,
+      "joint": false,
+      "support": true,
+      "roles": []
+    },
+    {
+      "name": "origin-joint-reject",
+      "op": "remove",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "i",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 2,
+      "peer": [
+        4,
+        "v",
+        14,
+        false
+      ],
+      "leader": 2,
+      "steps": null,
+      "error": "OriginJoint",
+      "kind": 129,
+      "allocated": 0,
+      "joint": false,
+      "support": true
+    },
+    {
+      "name": "transfer-incoming",
+      "op": "transfer",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "i",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 2,
+      "peer": [
+        4,
+        "v",
+        14,
+        false
+      ],
+      "leader": 2,
+      "steps": [
+        [
+          "transfer",
+          1,
+          2,
+          []
+        ]
+      ],
+      "error": null,
+      "kind": 257,
+      "allocated": 0,
+      "joint": false,
+      "support": true,
+      "final_peers": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "i",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "final_leader": 2
+    },
+    {
+      "name": "transfer-demoting-reject",
+      "op": "transfer",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "d",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 2,
+      "peer": [
+        4,
+        "v",
+        14,
+        false
+      ],
+      "leader": 2,
+      "steps": null,
+      "error": "LeaderNotAllowed",
+      "kind": 129,
+      "allocated": 0,
+      "joint": false,
+      "support": true
+    },
+    {
+      "name": "force-witness-reject",
+      "op": "force",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          true
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 2,
+      "peer": [
+        4,
+        "v",
+        14,
+        false
+      ],
+      "leader": 2,
+      "steps": null,
+      "error": "LeaderNotAllowed",
+      "kind": 129,
+      "allocated": 0,
+      "joint": false,
+      "support": true
+    },
+    {
+      "name": "force-placement-skip",
+      "op": "force",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 2,
+      "peer": [
+        4,
+        "v",
+        14,
+        false
+      ],
+      "leader": 2,
+      "steps": [
+        [
+          "transfer",
+          1,
+          2,
+          []
+        ]
+      ],
+      "error": null,
+      "kind": 257,
+      "allocated": 0,
+      "joint": false,
+      "support": true,
+      "placement": true,
+      "final_peers": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "final_leader": 2
+    },
+    {
+      "name": "normal-placement-fit-error",
+      "op": "transfer",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 2,
+      "peer": [
+        4,
+        "v",
+        14,
+        false
+      ],
+      "leader": 2,
+      "steps": null,
+      "error": "NoPlacementRule",
+      "kind": 129,
+      "allocated": 0,
+      "joint": false,
+      "support": true,
+      "placement": true
+    },
+    {
+      "name": "pending-force-reject",
+      "op": "force",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 2,
+      "peer": [
+        4,
+        "v",
+        14,
+        false
+      ],
+      "leader": 2,
+      "steps": null,
+      "error": "Unhealthy(2)",
+      "kind": 129,
+      "allocated": 0,
+      "joint": false,
+      "support": true,
+      "pending": 2
+    },
+    {
+      "name": "force-missing-store",
+      "op": "force",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 2,
+      "peer": [
+        4,
+        "v",
+        14,
+        false
+      ],
+      "leader": 2,
+      "steps": null,
+      "error": "LeaderNotAllowed",
+      "kind": 129,
+      "allocated": 0,
+      "joint": false,
+      "support": true,
+      "missing_store": 2
+    },
+    {
+      "name": "normal-transfer-stale-store",
+      "op": "transfer",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 2,
+      "peer": [
+        4,
+        "v",
+        14,
+        false
+      ],
+      "leader": 2,
+      "steps": null,
+      "error": "LeaderNotAllowed",
+      "kind": 129,
+      "allocated": 0,
+      "joint": false,
+      "support": true,
+      "blocked_store": 2
+    },
+    {
+      "name": "move-leader-joint",
+      "op": "move_leader",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 1,
+      "peer": [
+        4,
+        "v",
+        14,
+        false
+      ],
+      "leader": 2,
+      "steps": [
+        [
+          "add",
+          4,
+          14,
+          false
+        ],
+        [
+          "enter",
+          [
+            [
+              4,
+              14,
+              false
+            ]
+          ],
+          [
+            [
+              1,
+              11,
+              false
+            ]
+          ]
+        ],
+        [
+          "transfer",
+          1,
+          4,
+          []
+        ],
+        [
+          "leave",
+          [
+            [
+              4,
+              14,
+              false
+            ]
+          ],
+          [
+            [
+              1,
+              11,
+              false
+            ]
+          ]
+        ],
+        [
+          "remove",
+          1,
+          11
+        ]
+      ],
+      "error": null,
+      "kind": 385,
+      "allocated": 0,
+      "joint": true,
+      "support": true,
+      "final_peers": [
+        [
+          2,
+          "v",
+          12,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ],
+        [
+          4,
+          "v",
+          14,
+          false
+        ]
+      ],
+      "final_leader": 4
+    },
+    {
+      "name": "move-region-inherit-witness",
+      "op": "region",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          true
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 2,
+      "peer": [
+        4,
+        "v",
+        0,
+        false
+      ],
+      "leader": 2,
+      "steps": [
+        [
+          "add",
+          4,
+          101,
+          true
+        ],
+        [
+          "promote",
+          4,
+          101,
+          true
+        ],
+        [
+          "remove",
+          2,
+          12
+        ]
+      ],
+      "error": null,
+      "kind": 129,
+      "allocated": 1,
+      "joint": false,
+      "support": true,
+      "roles": [
+        [
+          1,
+          "leader"
+        ],
+        [
+          4,
+          "voter"
+        ],
+        [
+          3,
+          "learner"
+        ]
+      ],
+      "final_peers": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ],
+        [
+          4,
+          "v",
+          101,
+          true
+        ]
+      ],
+      "final_leader": 1
+    },
+    {
+      "name": "move-region-inherit-witness-joint",
+      "op": "region",
+      "origin": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          2,
+          "v",
+          12,
+          true
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ]
+      ],
+      "store": 2,
+      "old": 2,
+      "peer": [
+        4,
+        "v",
+        0,
+        false
+      ],
+      "leader": 2,
+      "steps": [
+        [
+          "add",
+          4,
+          101,
+          true
+        ],
+        [
+          "enter",
+          [
+            [
+              4,
+              101,
+              true
+            ]
+          ],
+          [
+            [
+              2,
+              12,
+              true
+            ]
+          ]
+        ],
+        [
+          "leave",
+          [
+            [
+              4,
+              101,
+              true
+            ]
+          ],
+          [
+            [
+              2,
+              12,
+              true
+            ]
+          ]
+        ],
+        [
+          "remove",
+          2,
+          12
+        ]
+      ],
+      "error": null,
+      "kind": 129,
+      "allocated": 1,
+      "joint": true,
+      "support": true,
+      "roles": [
+        [
+          1,
+          "leader"
+        ],
+        [
+          4,
+          "voter"
+        ],
+        [
+          3,
+          "learner"
+        ]
+      ],
+      "final_peers": [
+        [
+          1,
+          "v",
+          11,
+          false
+        ],
+        [
+          3,
+          "l",
+          13,
+          false
+        ],
+        [
+          4,
+          "v",
+          101,
+          true
+        ]
+      ],
+      "final_leader": 1
+    }
+  ]
+}

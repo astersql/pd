@@ -1,0 +1,9 @@
+
+running 1 test
+task031: 48 cases, 25 success, 23 expected errors; full steps, kind, identity, heartbeat replay
+test task_031_test::task_031_behavior_cases ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 49 filtered out; finished in 0.00s
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.06s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_operator-3c432df009ee920c)

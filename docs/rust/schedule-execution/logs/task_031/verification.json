@@ -1,0 +1,14 @@
+{
+  "protected_files": 1119,
+  "protected_hash_changes": [],
+  "protected_git_status": "",
+  "diff_check_exit_code": 0,
+  "links_checked": [
+    "docs/rust/schedule-execution/task-031.md",
+    "pkg/schedule/operator/create_peer.rs.md"
+  ],
+  "fixture_sha256": "d05ade9e9205d4c1c6e350c7e6060acc797939b174fd01c7548f896ade0db0ec",
+  "slot_lock_released": true,
+  "protected_hashes_rechecked_after_workspace": true,
+  "go_source_matches_base_commit": true
+}
