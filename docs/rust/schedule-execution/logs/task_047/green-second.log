@@ -1,0 +1,13 @@
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.11s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-38bccce6d4aa2e7c)
+
+running 3 tests
+task_047: 8 startup/config/repeated-split assertions
+test task_047_test::task_047_config_update_before_startup_gate ... ok
+task_047: 15 sequential cooldown assertions
+test task_047_test::task_047_split_cooldown ... ok
+task_047: 43 frozen behavior cases
+test task_047_test::task_047_behavior_cases ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 18 filtered out; finished in 0.00s

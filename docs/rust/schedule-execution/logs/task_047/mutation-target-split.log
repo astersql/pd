@@ -1,0 +1,25 @@
+
+running 3 tests
+task_047: 8 startup/config/repeated-split assertions
+test task_047_test::task_047_config_update_before_startup_gate ... ok
+test task_047_test::task_047_split_cooldown ... FAILED
+task_047: 43 frozen behavior cases
+test task_047_test::task_047_behavior_cases ... ok
+
+failures:
+
+failures:
+    task_047_test::task_047_split_cooldown
+
+test result: FAILED. 2 passed; 1 failed; 0 ignored; 0 measured; 18 filtered out; finished in 0.00s
+
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.06s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-38bccce6d4aa2e7c)
+
+thread 'task_047_test::task_047_split_cooldown' (164403979) panicked at pkg/schedule/checker/task_047_test.rs:224:5:
+assertion `left == right` failed
+  left: 3
+ right: 2
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+error: test failed, to rerun pass `-p astersql-pd-schedule-checker --lib`

@@ -1,0 +1,26 @@
+
+running 3 tests
+test task_047_test::task_047_config_update_before_startup_gate ... FAILED
+test task_047_test::task_047_split_cooldown ... FAILED
+task_047: 43 frozen behavior cases
+test task_047_test::task_047_behavior_cases ... ok
+
+failures:
+
+failures:
+    task_047_test::task_047_config_update_before_startup_gate
+    task_047_test::task_047_split_cooldown
+
+test result: FAILED. 1 passed; 2 failed; 0 ignored; 0 measured; 18 filtered out; finished in 0.00s
+
+   Compiling astersql-pd-schedule-checker v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/checker)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.55s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_checker-38bccce6d4aa2e7c)
+
+thread 'task_047_test::task_047_config_update_before_startup_gate' (164407179) panicked at pkg/schedule/checker/task_047_test.rs:268:5:
+assertion failed: evaluate(&mut checker, &c, 3).await.unwrap().is_none()
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'task_047_test::task_047_split_cooldown' (164407180) panicked at pkg/schedule/checker/task_047_test.rs:221:5:
+assertion failed: evaluate(&mut checker, &c, 20).await.unwrap().is_none()
+error: test failed, to rerun pass `-p astersql-pd-schedule-checker --lib`

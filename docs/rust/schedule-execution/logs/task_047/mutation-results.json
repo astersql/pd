@@ -1,0 +1,146 @@
+[
+  {
+    "mutation": "startup",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_047",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "behavior_assertion_failed": true
+  },
+  {
+    "mutation": "source-split",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_047",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "behavior_assertion_failed": true
+  },
+  {
+    "mutation": "target-split",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_047",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "behavior_assertion_failed": true
+  },
+  {
+    "mutation": "one-way",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_047",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "behavior_assertion_failed": true
+  },
+  {
+    "mutation": "target-order",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_047",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "behavior_assertion_failed": true
+  },
+  {
+    "mutation": "source-health",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_047",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "behavior_assertion_failed": true
+  },
+  {
+    "mutation": "ttl-boundary",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_047",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "behavior_assertion_failed": true
+  },
+  {
+    "mutation": "config-reset",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_047",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "behavior_assertion_failed": true
+  },
+  {
+    "mutation": "target-cap",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-checker",
+      "--locked",
+      "--lib",
+      "task_047",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "behavior_assertion_failed": true
+  }
+]

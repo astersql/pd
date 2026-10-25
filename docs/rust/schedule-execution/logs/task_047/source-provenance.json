@@ -1,0 +1,15 @@
+{
+  "source_commit": "70bb7240208e1e8d1dbf49e0c1365a80cfcc6a1e",
+  "dependency_commit": "70bb72402",
+  "mode": "source-derived contracts + executed Rust behavior; user waived Go runtime oracle gate",
+  "go_executed": false,
+  "go_output_hash": null,
+  "source_sha256": {
+    "pkg/schedule/checker/merge_checker.go": "cd5480a1c1a39e7bab3c10e51d4c9de7399e0e2a36a32614796c41f55f12aa75",
+    "pkg/schedule/checker/merge_checker_test.go": "23c71ea5e72f71550dce735cab1f9f9ab8a4e25db6dcb76882adb9fdf858f0de",
+    "pkg/cache/ttl.go": "d78e9bd14065b2a7442cc1ca63e7e81b95a930a8c90bc177651e1314a0818ce2",
+    "pkg/core/region.go": "be6ed0dc77537d62926d21d9e4eef080ea0dbcc7dc97efb4dc26269a172f99d8",
+    "pkg/schedule/config/store_config.go": "81060941f0cee6dbd46d052ff1f730cd236d04211155f2c28a43f7fb884596e9"
+  },
+  "fixture_sha256": "9704e7fd71955ed55078d73a85463a3c6488e5c9a4ea0f38abee30ebe76190eb"
+}

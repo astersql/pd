@@ -39,3 +39,8 @@ mod merge_guard;
 pub use merge_guard::*;
 #[cfg(test)]
 mod task_046_test;
+
+mod merge_decision;
+pub use merge_decision::*;
+#[cfg(test)]
+mod task_047_test;

@@ -1,0 +1,256 @@
+{
+  "provenance": "Go source/test contract derived; no Go execution",
+  "cases": [
+    {
+      "name": "tie-next",
+      "expected": 3
+    },
+    {
+      "name": "smaller-prev",
+      "expected": 2,
+      "prev_size": 1
+    },
+    {
+      "name": "smaller-next",
+      "expected": 3,
+      "prev_size": 4
+    },
+    {
+      "name": "one-way",
+      "expected": 3,
+      "one_way": true,
+      "prev_size": 1
+    },
+    {
+      "name": "one-way-no-next",
+      "expected": 0,
+      "one_way": true,
+      "next_absent": true
+    },
+    {
+      "name": "only-prev",
+      "expected": 2,
+      "next_absent": true
+    },
+    {
+      "name": "none",
+      "expected": 0,
+      "next_absent": true,
+      "prev_absent": true
+    },
+    {
+      "name": "size-equal",
+      "expected": 3,
+      "size": 2
+    },
+    {
+      "name": "size-over",
+      "expected": 0,
+      "size": 3
+    },
+    {
+      "name": "size-zero",
+      "expected": 3,
+      "size": 0
+    },
+    {
+      "name": "keys-equal",
+      "expected": 3,
+      "keys": 2
+    },
+    {
+      "name": "keys-over",
+      "expected": 0,
+      "keys": 3
+    },
+    {
+      "name": "keys-zero",
+      "expected": 3,
+      "keys": 0
+    },
+    {
+      "name": "disabled-threshold",
+      "expected": 0,
+      "max_size": 0
+    },
+    {
+      "name": "keys-fallback",
+      "expected": 3,
+      "max_keys": 0,
+      "keys": 20000
+    },
+    {
+      "name": "keys-fallback-over",
+      "expected": 0,
+      "max_keys": 0,
+      "keys": 20001
+    },
+    {
+      "name": "source-down",
+      "expected": 0,
+      "source_fault": "down"
+    },
+    {
+      "name": "source-pending",
+      "expected": 0,
+      "source_fault": "pending"
+    },
+    {
+      "name": "source-learner",
+      "expected": 0,
+      "source_fault": "learner"
+    },
+    {
+      "name": "source-missing",
+      "expected": 0,
+      "source_fault": "missing"
+    },
+    {
+      "name": "source-no-leader",
+      "expected": 0,
+      "source_fault": "no-leader"
+    },
+    {
+      "name": "target-down",
+      "expected": 2,
+      "next_fault": "down"
+    },
+    {
+      "name": "target-pending",
+      "expected": 2,
+      "next_fault": "pending"
+    },
+    {
+      "name": "target-learner",
+      "expected": 2,
+      "next_fault": "learner"
+    },
+    {
+      "name": "target-missing",
+      "expected": 2,
+      "next_fault": "missing"
+    },
+    {
+      "name": "hot-source",
+      "expected": 0,
+      "hot": [
+        1
+      ]
+    },
+    {
+      "name": "hot-next",
+      "expected": 2,
+      "hot": [
+        3
+      ]
+    },
+    {
+      "name": "hot-both",
+      "expected": 0,
+      "hot": [
+        2,
+        3
+      ]
+    },
+    {
+      "name": "paused",
+      "expected": 0,
+      "paused": true
+    },
+    {
+      "name": "cap-equal",
+      "expected": 3,
+      "next_size": 576,
+      "prev_absent": true,
+      "region_max": 144,
+      "size": 0
+    },
+    {
+      "name": "cap-over",
+      "expected": 0,
+      "next_size": 577,
+      "prev_absent": true
+    },
+    {
+      "name": "cap-floor-equal",
+      "expected": 3,
+      "next_size": 500,
+      "prev_absent": true,
+      "region_max": 100,
+      "size": 0
+    },
+    {
+      "name": "cap-floor-over",
+      "expected": 0,
+      "next_size": 501,
+      "prev_absent": true,
+      "region_max": 100
+    },
+    {
+      "name": "size-remerge",
+      "expected": 0,
+      "next_size": 95,
+      "prev_absent": true,
+      "region_max": 96,
+      "size": 2
+    },
+    {
+      "name": "keys-remerge",
+      "expected": 0,
+      "next_keys": 9,
+      "prev_absent": true,
+      "region_max_keys": 10,
+      "region_split_keys": 8,
+      "keys": 1
+    },
+    {
+      "name": "rules-enabled",
+      "expected": 3,
+      "rules": true
+    },
+    {
+      "name": "new-peer",
+      "expected": 3,
+      "next_new_peer": true
+    },
+    {
+      "name": "allocator-failure",
+      "expected": 0,
+      "next_new_peer": true,
+      "allocation_fail": true,
+      "error": true
+    },
+    {
+      "name": "empty-region-zero-threshold",
+      "expected": 3,
+      "size": 0,
+      "keys": 0,
+      "max_size": 0,
+      "max_keys": 0
+    },
+    {
+      "name": "target-no-leader",
+      "expected": 3,
+      "next_fault": "no-leader"
+    },
+    {
+      "name": "no-fallback-after-size-check",
+      "expected": 0,
+      "next_size": 577,
+      "prev_size": 578
+    },
+    {
+      "name": "source-larger-than-target",
+      "expected": 3,
+      "next_size": 1,
+      "prev_size": 4
+    },
+    {
+      "name": "threshold-float-overflow",
+      "expected": 0,
+      "next_size": 501,
+      "prev_absent": true,
+      "region_max": 9223372036854775807
+    }
+  ]
+}
