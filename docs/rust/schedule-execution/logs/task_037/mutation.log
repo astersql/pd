@@ -1,0 +1,34 @@
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.78s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_operator-3c432df009ee920c)
+
+running 5 tests
+
+thread 'task_037_test::task_037_behavior_cases' (163635604) panicked at pkg/schedule/operator/task_037_test.rs:83:9:
+assertion `left == right` failed
+  left: "cancel"
+ right: "finish"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test task_037_test::task_037_dispatch_outcome_and_reentrant_callback ... ok
+test task_037_test::task_037_merge_cleanup_and_live_precedence ... ok
+
+thread 'task_037_test::task_037_real_dispatch_archival' (163635608) panicked at pkg/schedule/operator/task_037_test.rs:345:5:
+assertion `left == right` failed
+  left: "cancel"
+ right: "finish"
+
+thread 'task_037_test::task_037_concurrent_burial_and_callback_failure' (163635605) panicked at pkg/schedule/operator/task_037_test.rs:293:58:
+host callback fault
+test task_037_test::task_037_behavior_cases ... FAILED
+test task_037_test::task_037_concurrent_burial_and_callback_failure ... ok
+test task_037_test::task_037_real_dispatch_archival ... FAILED
+
+failures:
+
+failures:
+    task_037_test::task_037_behavior_cases
+    task_037_test::task_037_real_dispatch_archival
+
+test result: FAILED. 3 passed; 2 failed; 0 ignored; 0 measured; 85 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-operator --lib`

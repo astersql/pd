@@ -1,0 +1,40 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "provenance": "source_assertion",
+  "go_execution": false,
+  "normalization": {
+    "clock": "explicit monotonic Instant; history uses query time, record uses insertion time"
+  },
+  "sources": {
+    "pkg/schedule/operator/operator_controller.go": "173d8e3e5fd5e4b1128ba24a954055d2d1ef7ea7a6676f6d3aa7cc7a37672ba1",
+    "pkg/schedule/operator/operator_controller_test.go": "18e953a9c41e84c3dba9dc381ebce462f652b27d0f7ab83de22413bc84e21501",
+    "pkg/schedule/operator/metrics.go": "59d651a15bbc27f6f8911291afa78e42f4e89e84c33da6bb3e78a22f874edf8a",
+    "pkg/cache/ttl.go": "d78e9bd14065b2a7442cc1ca63e7e81b95a930a8c90bc177651e1314a0818ce2"
+  },
+  "cases": [
+    {
+      "status": 0,
+      "event": "unexpected"
+    },
+    {
+      "status": 2,
+      "event": "finish"
+    },
+    {
+      "status": 3,
+      "event": "cancel"
+    },
+    {
+      "status": 4,
+      "event": "replace"
+    },
+    {
+      "status": 5,
+      "event": "expire"
+    },
+    {
+      "status": 6,
+      "event": "timeout"
+    }
+  ]
+}

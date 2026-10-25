@@ -1,0 +1,21 @@
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+warning: variable does not need to be mutable
+   --> pkg/schedule/operator/task_037_test.rs:164:9
+    |
+164 |     let mut records = ControllerRecords::default();
+    |         ----^^^^^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: `astersql-pd-schedule-operator` (lib test) generated 1 warning (run `cargo fix --lib -p astersql-pd-schedule-operator --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.00s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_operator-3c432df009ee920c)
+
+running 3 tests
+test task_037_test::task_037_dispatch_outcome_and_reentrant_callback ... ok
+test task_037_test::task_037_merge_cleanup_and_live_precedence ... ok
+test task_037_test::task_037_behavior_cases ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 85 filtered out; finished in 0.00s

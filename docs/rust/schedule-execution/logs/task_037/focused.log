@@ -1,0 +1,16 @@
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.85s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_operator-3c432df009ee920c)
+
+running 5 tests
+test task_037_test::task_037_merge_cleanup_and_live_precedence ... ok
+test task_037_test::task_037_dispatch_outcome_and_reentrant_callback ... ok
+test task_037_test::task_037_behavior_cases ... ok
+
+thread 'task_037_test::task_037_concurrent_burial_and_callback_failure' (163633106) panicked at pkg/schedule/operator/task_037_test.rs:293:58:
+host callback fault
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test task_037_test::task_037_real_dispatch_archival ... ok
+test task_037_test::task_037_concurrent_burial_and_callback_failure ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 85 filtered out; finished in 0.00s

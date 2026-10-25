@@ -1,0 +1,13 @@
+{
+  "command": [
+    "sh",
+    "-c",
+    "cargo fmt --all && cargo test -p astersql-pd-schedule-operator --locked --lib task_037 -- --nocapture && cargo test -p astersql-pd-schedule-operator --locked && cargo metadata --format-version 1 --no-deps && cargo fmt --all -- --check && cargo check --workspace --locked && RUST_TEST_THREADS=2 cargo test --workspace --locked"
+  ],
+  "exit_code": 0,
+  "slot": 1,
+  "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+  "test_env": {},
+  "raw_output_sha256": "1856c3f61ae5fac666a08d07afa64753208aed320caeb5f94ff336ca43bf428e",
+  "removed_trailing_newlines": 1
+}

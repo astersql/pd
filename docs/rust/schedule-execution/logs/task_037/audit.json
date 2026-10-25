@@ -1,0 +1,10 @@
+{
+  "go_files_and_module_files": 1101,
+  "before_manifest_sha256": "ae4ea1307f6a0074d7d6b706be224a1d139607a343ed2b2c6ea9068395425bd4",
+  "after_manifest_sha256": "ae4ea1307f6a0074d7d6b706be224a1d139607a343ed2b2c6ea9068395425bd4",
+  "go_status": "",
+  "fixture_sha256": "d960792be7de24c023df1e34c0f82c2c14e55c8a4e06975eb3cd85b922c1382b",
+  "source_commit_bytes_match": true,
+  "dependency_commit": "a1da40abc",
+  "readonly_plans_unchanged": true
+}
