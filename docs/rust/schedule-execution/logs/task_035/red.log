@@ -1,0 +1,448 @@
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+error[E0432]: unresolved import `astersql_pd_schedule_config::ConfigSnapshot`
+ --> pkg/schedule/operator/task_035_test.rs:5:5
+  |
+5 | use astersql_pd_schedule_config::ConfigSnapshot;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^--------------
+  |                                  |
+  |                                  no `ConfigSnapshot` in the root
+
+error[E0599]: no variant, associated function, or constant named `ApproximateSize` found for enum `RegionOption` in the current scope
+  --> pkg/schedule/operator/task_035_test.rs:13:40
+   |
+13 |             .clone_with([RegionOption::ApproximateSize(size),RegionOption::ApproximateKeys(100)]);
+   |                                        ^^^^^^^^^^^^^^^ variant, associated function, or constant not found in `RegionOption`
+
+error[E0599]: no variant, associated function, or constant named `ApproximateKeys` found for enum `RegionOption` in the current scope
+  --> pkg/schedule/operator/task_035_test.rs:13:76
+   |
+13 |             .clone_with([RegionOption::ApproximateSize(size),RegionOption::ApproximateKeys(100)]);
+   |                                                                            ^^^^^^^^^^^^^^^ variant, associated function, or constant not found in `RegionOption`
+
+error[E0599]: no method named `set_store` found for struct `StoresInfo` in the current scope
+  --> pkg/schedule/operator/task_035_test.rs:16:14
+   |
+16 |     c.stores.set_store(Arc::new(StoreInfo::new(StoreMeta{id:8,..Default::default()})));
+   |              ^^^^^^^^^
+   |
+help: there is a method `get_store` with a similar name
+   |
+16 -     c.stores.set_store(Arc::new(StoreInfo::new(StoreMeta{id:8,..Default::default()})));
+16 +     c.stores.get_store(Arc::new(StoreInfo::new(StoreMeta{id:8,..Default::default()})));
+   |
+
+error[E0425]: cannot find function `new_total_op_influence` in this scope
+  --> pkg/schedule/operator/task_035_test.rs:35:17
+   |
+35 |         let inf=new_total_op_influence(&[o.clone()],&c);
+   |                 ^^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0599]: no method named `add_limited_operators` found for struct `controller_admission::ControllerAdmission` in the current scope
+   --> pkg/schedule/operator/task_035_test.rs:38:13
+    |
+ 38 |         ctl.add_limited_operators(&c,&config(0.000001),&[o]).await.unwrap();
+    |             ^^^^^^^^^^^^^^^^^^^^^
+    |
+   ::: pkg/schedule/operator/controller_admission.rs:74:1
+    |
+ 74 | pub struct ControllerAdmission {
+    | ------------------------------ method `add_limited_operators` not found for this struct
+    |
+help: there is a method `add_operators` with a similar name, but with different arguments
+   --> pkg/schedule/operator/controller_admission.rs:190:5
+    |
+190 | /     pub fn add_operators(
+191 | |         &self,
+192 | |         cluster: &BasicCluster,
+193 | |         ops: &[Arc<Operator>],
+194 | |     ) -> Result<AdmissionOutcome, AdmissionError> {
+    | |_________________________________________________^
+
+error[E0425]: cannot find function `exceed_store_limit` in this scope
+  --> pkg/schedule/operator/task_035_test.rs:47:14
+   |
+47 |     assert!(!exceed_store_limit(&[a.clone()],&c,&cfg).await);
+   |              ^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `exceed_store_limit` in this scope
+  --> pkg/schedule/operator/task_035_test.rs:48:14
+   |
+48 |     assert!(!exceed_store_limit(&[a.clone()],&c,&cfg).await); // check consumes nothing
+   |              ^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0599]: no method named `add_limited_operators` found for struct `controller_admission::ControllerAdmission` in the current scope
+   --> pkg/schedule/operator/task_035_test.rs:49:9
+    |
+ 49 |     ctl.add_limited_operators(&c,&cfg,&[a.clone()]).await.unwrap();
+    |         ^^^^^^^^^^^^^^^^^^^^^
+    |
+   ::: pkg/schedule/operator/controller_admission.rs:74:1
+    |
+ 74 | pub struct ControllerAdmission {
+    | ------------------------------ method `add_limited_operators` not found for this struct
+    |
+help: there is a method `add_operators` with a similar name, but with different arguments
+   --> pkg/schedule/operator/controller_admission.rs:190:5
+    |
+190 | /     pub fn add_operators(
+191 | |         &self,
+192 | |         cluster: &BasicCluster,
+193 | |         ops: &[Arc<Operator>],
+194 | |     ) -> Result<AdmissionOutcome, AdmissionError> {
+    | |_________________________________________________^
+
+error[E0599]: no method named `get_op_influence` found for struct `controller_admission::ControllerAdmission` in the current scope
+  --> pkg/schedule/operator/task_035_test.rs:50:20
+   |
+50 |     assert_eq!(ctl.get_op_influence(Some(&c),&[]).get_store_influence(8).region_size,96);
+   |                    ^^^^^^^^^^^^^^^^ method not found in `controller_admission::ControllerAdmission`
+   |
+  ::: pkg/schedule/operator/controller_admission.rs:74:1
+   |
+74 | pub struct ControllerAdmission {
+   | ------------------------------ method `get_op_influence` not found for this struct
+
+error[E0599]: no method named `add_limited_operators` found for struct `controller_admission::ControllerAdmission` in the current scope
+   --> pkg/schedule/operator/task_035_test.rs:52:26
+    |
+ 52 |     assert!(matches!(ctl.add_limited_operators(&c,&cfg,&[b.clone()]).await,Err(AdmissionError::Rejected(CancelReason::ExceedStoreLi...
+    |                          ^^^^^^^^^^^^^^^^^^^^^
+    |
+   ::: pkg/schedule/operator/controller_admission.rs:74:1
+    |
+ 74 | pub struct ControllerAdmission {
+    | ------------------------------ method `add_limited_operators` not found for this struct
+    |
+help: there is a method `add_operators` with a similar name, but with different arguments
+   --> pkg/schedule/operator/controller_admission.rs:190:5
+    |
+190 | /     pub fn add_operators(
+191 | |         &self,
+192 | |         cluster: &BasicCluster,
+193 | |         ops: &[Arc<Operator>],
+194 | |     ) -> Result<AdmissionOutcome, AdmissionError> {
+    | |_________________________________________________^
+
+error[E0599]: no method named `get_op_influence` found for struct `controller_admission::ControllerAdmission` in the current scope
+  --> pkg/schedule/operator/task_035_test.rs:55:17
+   |
+55 |     assert!(ctl.get_op_influence(Some(&c),&[]).snapshot().is_empty());
+   |                 ^^^^^^^^^^^^^^^^ method not found in `controller_admission::ControllerAdmission`
+   |
+  ::: pkg/schedule/operator/controller_admission.rs:74:1
+   |
+74 | pub struct ControllerAdmission {
+   | ------------------------------ method `get_op_influence` not found for this struct
+
+error[E0425]: cannot find function `exceed_store_limit` in this scope
+  --> pkg/schedule/operator/task_035_test.rs:57:13
+   |
+57 |     assert!(exceed_store_limit(&[op(3,false)],&c,&cfg).await); // v1 no refund
+   |             ^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0599]: no method named `add_limited_operators` found for struct `controller_admission::ControllerAdmission` in the current scope
+   --> pkg/schedule/operator/task_035_test.rs:59:9
+    |
+ 59 |     ctl.add_limited_operators(&c,&cfg,&[urgent]).await.unwrap();
+    |         ^^^^^^^^^^^^^^^^^^^^^
+    |
+   ::: pkg/schedule/operator/controller_admission.rs:74:1
+    |
+ 74 | pub struct ControllerAdmission {
+    | ------------------------------ method `add_limited_operators` not found for this struct
+    |
+help: there is a method `add_operators` with a similar name, but with different arguments
+   --> pkg/schedule/operator/controller_admission.rs:190:5
+    |
+190 | /     pub fn add_operators(
+191 | |         &self,
+192 | |         cluster: &BasicCluster,
+193 | |         ops: &[Arc<Operator>],
+194 | |     ) -> Result<AdmissionOutcome, AdmissionError> {
+    | |_________________________________________________^
+
+error[E0599]: no method named `add_limited_operators` found for struct `controller_admission::ControllerAdmission` in the current scope
+   --> pkg/schedule/operator/task_035_test.rs:60:9
+    |
+ 60 |     ctl.add_limited_operators(&c,&cfg,&[op(4,true)]).await.unwrap();
+    |         ^^^^^^^^^^^^^^^^^^^^^
+    |
+   ::: pkg/schedule/operator/controller_admission.rs:74:1
+    |
+ 74 | pub struct ControllerAdmission {
+    | ------------------------------ method `add_limited_operators` not found for this struct
+    |
+help: there is a method `add_operators` with a similar name, but with different arguments
+   --> pkg/schedule/operator/controller_admission.rs:190:5
+    |
+190 | /     pub fn add_operators(
+191 | |         &self,
+192 | |         cluster: &BasicCluster,
+193 | |         ops: &[Arc<Operator>],
+194 | |     ) -> Result<AdmissionOutcome, AdmissionError> {
+    | |_________________________________________________^
+
+error[E0599]: no method named `add_limited_operators` found for struct `controller_admission::ControllerAdmission` in the current scope
+   --> pkg/schedule/operator/task_035_test.rs:61:9
+    |
+ 61 |     ctl.add_limited_operators(&c,&config(120.0),&[op(5,false)]).await.unwrap(); // rate reset refills
+    |         ^^^^^^^^^^^^^^^^^^^^^
+    |
+   ::: pkg/schedule/operator/controller_admission.rs:74:1
+    |
+ 74 | pub struct ControllerAdmission {
+    | ------------------------------ method `add_limited_operators` not found for this struct
+    |
+help: there is a method `add_operators` with a similar name, but with different arguments
+   --> pkg/schedule/operator/controller_admission.rs:190:5
+    |
+190 | /     pub fn add_operators(
+191 | |         &self,
+192 | |         cluster: &BasicCluster,
+193 | |         ops: &[Arc<Operator>],
+194 | |     ) -> Result<AdmissionOutcome, AdmissionError> {
+    | |_________________________________________________^
+
+error[E0425]: cannot find function `exceed_store_limit` in this scope
+  --> pkg/schedule/operator/task_035_test.rs:66:13
+   |
+66 |     assert!(exceed_store_limit(&[op(1,false),op(2,false)],&c,&cfg).await);
+   |             ^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `exceed_store_limit` in this scope
+  --> pkg/schedule/operator/task_035_test.rs:67:14
+   |
+67 |     assert!(!exceed_store_limit(&[],&c,&cfg).await);
+   |              ^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0599]: no method named `add_limited_operators` found for struct `controller_admission::ControllerAdmission` in the current scope
+   --> pkg/schedule/operator/task_035_test.rs:68:26
+    |
+ 68 |     assert!(matches!(ctl.add_limited_operators(&c,&cfg,&[]).await,Err(AdmissionError::InvalidBatch)));
+    |                          ^^^^^^^^^^^^^^^^^^^^^
+    |
+   ::: pkg/schedule/operator/controller_admission.rs:74:1
+    |
+ 74 | pub struct ControllerAdmission {
+    | ------------------------------ method `add_limited_operators` not found for this struct
+    |
+help: there is a method `add_operators` with a similar name, but with different arguments
+   --> pkg/schedule/operator/controller_admission.rs:190:5
+    |
+190 | /     pub fn add_operators(
+191 | |         &self,
+192 | |         cluster: &BasicCluster,
+193 | |         ops: &[Arc<Operator>],
+194 | |     ) -> Result<AdmissionOutcome, AdmissionError> {
+    | |_________________________________________________^
+
+error[E0425]: cannot find function `exceed_store_limit` in this scope
+  --> pkg/schedule/operator/task_035_test.rs:70:14
+   |
+70 |     assert!(!exceed_store_limit(&[op(1,false)],&absent,&cfg).await);
+   |              ^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0599]: no method named `add_limited_operators` found for struct `controller_admission::ControllerAdmission` in the current scope
+   --> pkg/schedule/operator/task_035_test.rs:72:17
+    |
+ 72 |     assert!(ctl.add_limited_operators(&c,&cfg,&[stale]).await.is_err());
+    |                 ^^^^^^^^^^^^^^^^^^^^^
+    |
+   ::: pkg/schedule/operator/controller_admission.rs:74:1
+    |
+ 74 | pub struct ControllerAdmission {
+    | ------------------------------ method `add_limited_operators` not found for this struct
+    |
+help: there is a method `add_operators` with a similar name, but with different arguments
+   --> pkg/schedule/operator/controller_admission.rs:190:5
+    |
+190 | /     pub fn add_operators(
+191 | |         &self,
+192 | |         cluster: &BasicCluster,
+193 | |         ops: &[Arc<Operator>],
+194 | |     ) -> Result<AdmissionOutcome, AdmissionError> {
+    | |_________________________________________________^
+
+error[E0599]: no method named `add_limited_operators` found for struct `controller_admission::ControllerAdmission` in the current scope
+   --> pkg/schedule/operator/task_035_test.rs:73:9
+    |
+ 73 |     ctl.add_limited_operators(&c,&cfg,&[op(1,false)]).await.unwrap(); // rejected admission didn't take
+    |         ^^^^^^^^^^^^^^^^^^^^^
+    |
+   ::: pkg/schedule/operator/controller_admission.rs:74:1
+    |
+ 74 | pub struct ControllerAdmission {
+    | ------------------------------ method `add_limited_operators` not found for this struct
+    |
+help: there is a method `add_operators` with a similar name, but with different arguments
+   --> pkg/schedule/operator/controller_admission.rs:190:5
+    |
+190 | /     pub fn add_operators(
+191 | |         &self,
+192 | |         cluster: &BasicCluster,
+193 | |         ops: &[Arc<Operator>],
+194 | |     ) -> Result<AdmissionOutcome, AdmissionError> {
+    | |_________________________________________________^
+
+error[E0425]: cannot find function `with_range_option` in this scope
+  --> pkg/schedule/operator/task_035_test.rs:80:14
+   |
+80 |     assert!(!with_range_option(&[range(0,1)],c.regions.get_region(1).as_deref()));
+   |              ^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `with_range_option` in this scope
+  --> pkg/schedule/operator/task_035_test.rs:81:13
+   |
+81 |     assert!(with_range_option(&[],c.regions.get_region(1).as_deref()));
+   |             ^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `with_range_option` in this scope
+  --> pkg/schedule/operator/task_035_test.rs:82:14
+   |
+82 |     assert!(!with_range_option(&[],None));
+   |              ^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `with_range_option` in this scope
+  --> pkg/schedule/operator/task_035_test.rs:84:35
+   |
+84 |         let option=|r:&RegionInfo|with_range_option(&ranges,Some(r));
+   |                                   ^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0599]: no method named `get_op_influence` found for struct `controller_admission::ControllerAdmission` in the current scope
+  --> pkg/schedule/operator/task_035_test.rs:85:25
+   |
+85 |         assert_eq!(!ctl.get_op_influence(Some(&c),&[Some(&option),None]).snapshot().is_empty(),expected);
+   |                         ^^^^^^^^^^^^^^^^ method not found in `controller_admission::ControllerAdmission`
+   |
+  ::: pkg/schedule/operator/controller_admission.rs:74:1
+   |
+74 | pub struct ControllerAdmission {
+   | ------------------------------ method `get_op_influence` not found for this struct
+
+error[E0599]: no method named `get_op_influence` found for struct `controller_admission::ControllerAdmission` in the current scope
+  --> pkg/schedule/operator/task_035_test.rs:87:17
+   |
+87 |     assert!(ctl.get_op_influence(None,&[]).snapshot().is_empty());
+   |                 ^^^^^^^^^^^^^^^^ method not found in `controller_admission::ControllerAdmission`
+   |
+  ::: pkg/schedule/operator/controller_admission.rs:74:1
+   |
+74 | pub struct ControllerAdmission {
+   | ------------------------------ method `get_op_influence` not found for this struct
+
+error[E0599]: no method named `get_op_influence` found for struct `controller_admission::ControllerAdmission` in the current scope
+  --> pkg/schedule/operator/task_035_test.rs:89:17
+   |
+89 |     assert!(ctl.get_op_influence(Some(&missing),&[]).snapshot().is_empty());
+   |                 ^^^^^^^^^^^^^^^^ method not found in `controller_admission::ControllerAdmission`
+   |
+  ::: pkg/schedule/operator/controller_admission.rs:74:1
+   |
+74 | pub struct ControllerAdmission {
+   | ------------------------------ method `get_op_influence` not found for this struct
+
+error[E0599]: no method named `get_op_influence` found for struct `controller_admission::ControllerAdmission` in the current scope
+  --> pkg/schedule/operator/task_035_test.rs:92:17
+   |
+92 |     assert!(ctl.get_op_influence(Some(&missing),&[]).snapshot().is_empty()); // finished step without Check
+   |                 ^^^^^^^^^^^^^^^^ method not found in `controller_admission::ControllerAdmission`
+   |
+  ::: pkg/schedule/operator/controller_admission.rs:74:1
+   |
+74 | pub struct ControllerAdmission {
+   | ------------------------------ method `get_op_influence` not found for this struct
+
+error[E0599]: no method named `get_op_influence` found for struct `controller_admission::ControllerAdmission` in the current scope
+  --> pkg/schedule/operator/task_035_test.rs:95:17
+   |
+95 |     assert!(ctl.get_op_influence(Some(&c),&[]).snapshot().is_empty());
+   |                 ^^^^^^^^^^^^^^^^ method not found in `controller_admission::ControllerAdmission`
+   |
+  ::: pkg/schedule/operator/controller_admission.rs:74:1
+   |
+74 | pub struct ControllerAdmission {
+   | ------------------------------ method `get_op_influence` not found for this struct
+
+error[E0599]: no method named `get_op_influence` found for struct `controller_admission::ControllerAdmission` in the current scope
+   --> pkg/schedule/operator/task_035_test.rs:106:17
+    |
+106 |     assert!(ctl.get_op_influence(Some(&c),&[]).snapshot().is_empty());assert_eq!(a.status(),TIMEOUT);
+    |                 ^^^^^^^^^^^^^^^^ method not found in `controller_admission::ControllerAdmission`
+    |
+   ::: pkg/schedule/operator/controller_admission.rs:74:1
+    |
+ 74 | pub struct ControllerAdmission {
+    | ------------------------------ method `get_op_influence` not found for this struct
+
+error[E0433]: cannot find type `FastOperatorInfluence` in this scope
+   --> pkg/schedule/operator/task_035_test.rs:107:14
+    |
+107 |     let fast=FastOperatorInfluence::default();let now=Instant::now();let b=op(2,true);
+    |              ^^^^^^^^^^^^^^^^^^^^^ use of undeclared type `FastOperatorInfluence`
+
+error[E0599]: no method named `add_limited_operators` found for struct `controller_admission::ControllerAdmission` in the current scope
+   --> pkg/schedule/operator/task_035_test.rs:118:9
+    |
+118 |     ctl.add_limited_operators(&c,&cfg,&[op(1,false)]).await.unwrap();
+    |         ^^^^^^^^^^^^^^^^^^^^^
+    |
+   ::: pkg/schedule/operator/controller_admission.rs:74:1
+    |
+ 74 | pub struct ControllerAdmission {
+    | ------------------------------ method `add_limited_operators` not found for this struct
+    |
+help: there is a method `add_operators` with a similar name, but with different arguments
+   --> pkg/schedule/operator/controller_admission.rs:190:5
+    |
+190 | /     pub fn add_operators(
+191 | |         &self,
+192 | |         cluster: &BasicCluster,
+193 | |         ops: &[Arc<Operator>],
+194 | |     ) -> Result<AdmissionOutcome, AdmissionError> {
+    | |_________________________________________________^
+
+error[E0599]: no method named `promote_limited_waiting` found for struct `controller_admission::ControllerAdmission` in the current scope
+   --> pkg/schedule/operator/task_035_test.rs:120:17
+    |
+120 |     assert!(ctl.promote_limited_waiting(&c,&cfg,0.0).await.unwrap().is_none());
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   ::: pkg/schedule/operator/controller_admission.rs:74:1
+    |
+ 74 | pub struct ControllerAdmission {
+    | ------------------------------ method `promote_limited_waiting` not found for this struct
+    |
+help: there is a method `promote_waiting` with a similar name, but with different arguments
+   --> pkg/schedule/operator/controller_admission.rs:226:5
+    |
+226 | /     pub fn promote_waiting(
+227 | |         &self,
+228 | |         cluster: &BasicCluster,
+229 | |         random: f64,
+230 | |     ) -> Result<Option<AdmissionOutcome>, AdmissionError> {
+    | |_________________________________________________________^
+
+error[E0599]: no method named `promote_limited_waiting` found for struct `controller_admission::ControllerAdmission` in the current scope
+   --> pkg/schedule/operator/task_035_test.rs:123:17
+    |
+123 |     assert!(ctl.promote_limited_waiting(&c,&cfg,0.0).await.unwrap().is_some());
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   ::: pkg/schedule/operator/controller_admission.rs:74:1
+    |
+ 74 | pub struct ControllerAdmission {
+    | ------------------------------ method `promote_limited_waiting` not found for this struct
+    |
+help: there is a method `promote_waiting` with a similar name, but with different arguments
+   --> pkg/schedule/operator/controller_admission.rs:226:5
+    |
+226 | /     pub fn promote_waiting(
+227 | |         &self,
+228 | |         cluster: &BasicCluster,
+229 | |         random: f64,
+230 | |     ) -> Result<Option<AdmissionOutcome>, AdmissionError> {
+    | |_________________________________________________________^
+
+Some errors have detailed explanations: E0425, E0432, E0433, E0599.
+For more information about an error, try `rustc --explain E0425`.
+error: could not compile `astersql-pd-schedule-operator` (lib test) due to 36 previous errors

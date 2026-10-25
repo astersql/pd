@@ -1,0 +1,17 @@
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.46s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_operator-3c432df009ee920c)
+
+running 10 tests
+test task_035_test::task_035_range_options ... ok
+test task_035_test::task_035_partial_and_cached_total ... ok
+test task_035_test::task_035_snapshot_ack_and_replacement ... ok
+test task_035_test::task_035_fast_and_timeout ... ok
+test task_035_test::task_035_tokens_rejection_and_removal ... ok
+test task_035_test::task_035_batch_and_missing_store ... ok
+test task_035_test::task_035_waiting_limit ... ok
+test task_035_test::task_035_small_token_boundary ... ok
+test task_035_test::task_035_behavior_cases ... ok
+test task_035_test::task_035_concurrent_add_and_reset ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 65 filtered out; finished in 0.00s

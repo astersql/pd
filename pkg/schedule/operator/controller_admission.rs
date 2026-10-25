@@ -39,11 +39,11 @@ pub struct AdmissionOutcome {
     pub removed: Vec<Arc<Operator>>,
 }
 #[derive(Default)]
-struct AdmissionState {
+pub(super) struct AdmissionState {
     operators: HashMap<u64, Arc<Operator>>,
     counts: HashMap<u32, u64>,
-    waiting: RandBuckets,
-    waiting_counts: WaitingOperatorStatus,
+    pub(super) waiting: RandBuckets,
+    pub(super) waiting_counts: WaitingOperatorStatus,
 }
 impl AdmissionState {
     fn detach(&mut self, id: u64) -> Option<Arc<Operator>> {
@@ -72,7 +72,7 @@ impl AdmissionState {
 /// callbacks must not reenter this controller. Dispatch, store budgets, history
 /// retention and transport belong to subsequent controller layers.
 pub struct ControllerAdmission {
-    state: Mutex<AdmissionState>,
+    pub(super) state: Mutex<AdmissionState>,
     max_waiting: u64,
 }
 impl ControllerAdmission {
@@ -100,7 +100,7 @@ impl ControllerAdmission {
                 })
         })
     }
-    fn reject(ops: &[Arc<Operator>], reason: CancelReason) -> AdmissionError {
+    pub(super) fn reject(ops: &[Arc<Operator>], reason: CancelReason) -> AdmissionError {
         for op in ops {
             op.cancel_with_reasons(&[reason]);
         }
@@ -152,7 +152,7 @@ impl ControllerAdmission {
         }
         Ok(())
     }
-    fn admit(
+    pub(super) fn admit(
         &self,
         state: &mut AdmissionState,
         cluster: &BasicCluster,

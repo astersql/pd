@@ -1,0 +1,45 @@
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.58s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_operator-3c432df009ee920c)
+
+running 10 tests
+
+thread 'task_035_test::task_035_batch_and_missing_store' (163392229) panicked at pkg/schedule/operator/task_035_test.rs:135:5:
+assertion failed: exceed_store_limit(&[op(1, false), op(2, false)], &c, &cfg).await
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'task_035_test::task_035_snapshot_ack_and_replacement' (163392236) panicked at pkg/schedule/operator/task_035_test.rs:319:5:
+assertion failed: exceed_store_limit(&[learner(2)], &c, &cfg).await
+
+thread 'task_035_test::task_035_tokens_rejection_and_removal' (163392237) panicked at pkg/schedule/operator/task_035_test.rs:106:5:
+assertion failed: matches!(ctl.add_limited_operators(&c, &cfg, &[b.clone()]).await,
+    Err(AdmissionError::Rejected(CancelReason::ExceedStoreLimit)))
+
+thread 'task_035_test::task_035_waiting_limit' (163392238) panicked at pkg/schedule/operator/task_035_test.rs:259:5:
+assertion failed: ctl.promote_limited_waiting(&c, &cfg, 0.0).await.unwrap().is_none()
+
+thread 'task_035_test::task_035_small_token_boundary' (163392235) panicked at pkg/schedule/operator/task_035_test.rs:387:5:
+assertion failed: exceed_store_limit(&[op(6, false)], &c, &cfg).await
+test task_035_test::task_035_fast_and_timeout ... ok
+test task_035_test::task_035_range_options ... ok
+test task_035_test::task_035_partial_and_cached_total ... ok
+test task_035_test::task_035_behavior_cases ... ok
+test task_035_test::task_035_batch_and_missing_store ... FAILED
+test task_035_test::task_035_small_token_boundary ... FAILED
+test task_035_test::task_035_waiting_limit ... FAILED
+test task_035_test::task_035_snapshot_ack_and_replacement ... FAILED
+test task_035_test::task_035_tokens_rejection_and_removal ... FAILED
+test task_035_test::task_035_concurrent_add_and_reset ... ok
+
+failures:
+
+failures:
+    task_035_test::task_035_batch_and_missing_store
+    task_035_test::task_035_small_token_boundary
+    task_035_test::task_035_snapshot_ack_and_replacement
+    task_035_test::task_035_tokens_rejection_and_removal
+    task_035_test::task_035_waiting_limit
+
+test result: FAILED. 5 passed; 5 failed; 0 ignored; 0 measured; 65 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-operator --lib`

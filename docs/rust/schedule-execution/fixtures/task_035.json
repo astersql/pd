@@ -1,0 +1,113 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "evidence_kind": "source_assertion",
+  "go_execution": false,
+  "sources": {
+    "pkg/schedule/operator/operator_controller.go": "173d8e3e5fd5e4b1128ba24a954055d2d1ef7ea7a6676f6d3aa7cc7a37672ba1",
+    "pkg/schedule/operator/operator_controller_test.go": "18e953a9c41e84c3dba9dc381ebce462f652b27d0f7ab83de22413bc84e21501",
+    "pkg/schedule/operator/step.go": "9338b311dca1940cd76bbe3903f0d2545cfc258f88a20eedb391ab59e243eac5",
+    "pkg/core/storelimit/store_limit.go": "1556e3bee72d2d5e218a425938c43505385a2c6af5c91cd3d26bde9ccd507651",
+    "pkg/core/storelimit/sliding_window.go": "3562c93bca2c168971110f2cfc1cc35df0ab432b2b1ec31ca6a82b3abec535ac",
+    "pkg/core/storelimit/limit.go": "83a78f086ffe4bd220338f9b37452441538ce5841d903ea67ca2dafc0991fb4c"
+  },
+  "cost_cases": [
+    {
+      "size": 96,
+      "light": false,
+      "cost": 1000,
+      "keys": 100
+    },
+    {
+      "size": 20,
+      "light": false,
+      "cost": 200,
+      "keys": 100
+    },
+    {
+      "size": 1,
+      "light": false,
+      "cost": 200,
+      "keys": 100
+    },
+    {
+      "size": 96,
+      "light": true,
+      "cost": 0,
+      "keys": 100
+    },
+    {
+      "size": 21,
+      "keys": 100,
+      "light": false,
+      "cost": 1000
+    },
+    {
+      "size": 20,
+      "keys": 100,
+      "light": true,
+      "cost": 0
+    },
+    {
+      "size": 0,
+      "keys": 0,
+      "light": false,
+      "cost": 0
+    }
+  ],
+  "normalization": {
+    "clock": "explicit monotonic clock only for timeout/TTL; no output fields ignored",
+    "mode": "domain cases represent classic/nextgen without new features",
+    "go_output": "not executed; expectations derived from frozen sources and tests"
+  },
+  "scenarios": [
+    {
+      "test": "task_035_tokens_rejection_and_removal",
+      "inputs": "96MiB add, v1 rate/min=0.000001; remove; urgent/light; reset rate/min=120",
+      "expected": "first fits 1000 tokens; second rejects, cancel reason exceed store limit; remove clears pending/count but not tokens; urgent/light accepted; reset refills"
+    },
+    {
+      "test": "task_035_small_token_boundary",
+      "inputs": "20MiB add, 200 each, 1000-token v1 capacity",
+      "expected": "five accepted, sixth rejected; bulk remove clears pending/count without v1 refund"
+    },
+    {
+      "test": "task_035_batch_and_missing_store",
+      "inputs": "two 1000-cost candidates, empty batch, absent region/store, failed admission",
+      "expected": "aggregate exceeds; empty check false/empty admission invalid batch; missing store false; rejected admission no debit"
+    },
+    {
+      "test": "task_035_range_options",
+      "inputs": "region [1,2], ranges [1,2], [0,3]&[2,4], [0,0]; nil cluster/option/region; finished step",
+      "expected": "true,false,false; nil option skipped; nil cluster/region empty; already-finished step empty"
+    },
+    {
+      "test": "task_035_fast_and_timeout",
+      "inputs": "operator elapsed timeout+1ns; fast light op at 9s/10s TTL",
+      "expected": "TIMEOUT and empty pending; region_size=96,cost=0 at 9s; empty at 10s"
+    },
+    {
+      "test": "task_035_snapshot_ack_and_replacement",
+      "inputs": "v2 LOW 96-size snapshot into 100-capacity window; higher priority replacement; stale/actual removal",
+      "expected": "96 used; next LOW rejects; replacement acks then takes96; stale removal no ack; actual removal used0"
+    },
+    {
+      "test": "task_035_partial_and_cached_total",
+      "inputs": "20MiB add learner/promote/transfer leader/remove; learner now present; region later missing",
+      "expected": "target pending region_size/count=0,leader_size/count=20/1,add_cost=0; source region_size=-20,remove_cost=200; total cached unchanged for fast/missing region"
+    },
+    {
+      "test": "task_035_waiting_limit",
+      "inputs": "v1 exhausted, queued regular then queued light",
+      "expected": "regular canceled/dequeued, wait_count=0; light promoted"
+    },
+    {
+      "test": "task_035_concurrent_add_and_reset",
+      "inputs": "two host threads each 100 add/remove attempts +100 resets between rates1/2",
+      "expected": "no panic/deadlock; terminal count=0 and pending empty"
+    }
+  ],
+  "ack_config_case": {
+    "input": "remove admitted operator using changed rate/min=120",
+    "expected": "v1 add-peer rate/sec becomes2; unchanged-rate Ack otherwise preserves token debt"
+  }
+}

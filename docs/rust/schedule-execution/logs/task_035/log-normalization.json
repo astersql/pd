@@ -1,0 +1,30 @@
+{
+  "workspace-test.log": {
+    "removed_eof_newlines": 1,
+    "raw_sha256": "f779d86e4b953dd72c0e614395441b2196a42f295963b2670dfbba6b0a4944ad"
+  },
+  "red.log": {
+    "removed_eof_newlines": 0,
+    "raw_sha256": "ed08e552f96887fa63f5543d39c4c7a3f6c1c4949055eb92f1cb8ce5be0eb77d"
+  },
+  "workspace-check.log": {
+    "removed_eof_newlines": 0,
+    "raw_sha256": "5b22ea6b09a8322148566a03d1db07d164e18daceb4d245e3c8bdebc1306c89c"
+  },
+  "metadata.log": {
+    "removed_eof_newlines": 0,
+    "raw_sha256": "a6f605c4646e5b14b39b924c9bd1010f9517814234d0a2648220e8c95b019d46"
+  },
+  "mutation.log": {
+    "removed_eof_newlines": 0,
+    "raw_sha256": "9babe8d1da2b69a48a9d4cdcf03e5571f2ce30c6ef3e8df5a21b87f5a8ac661e"
+  },
+  "focused.log": {
+    "removed_eof_newlines": 1,
+    "raw_sha256": "0ea2915125bb158221e8c6a25c4b9a2170e82564e940a27644ccc36d3257fbce"
+  },
+  "package.log": {
+    "removed_eof_newlines": 1,
+    "raw_sha256": "6d29a3beb8d32612e1394ed1dbf21d24328143ddd60331b21c659d0d4b4777ee"
+  }
+}
