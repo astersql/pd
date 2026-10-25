@@ -10,6 +10,7 @@ path = "lib.rs"
 
 [dependencies]
 astersql-pd-core.workspace = true
+tokio.workspace = true
 
 [dev-dependencies]
 serde_json.workspace = true

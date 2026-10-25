@@ -1,0 +1,239 @@
+break cluster_test.go:300
+continue
+clearall
+config max-variable-recurse 5
+config max-array-values 1100
+config max-string-len 10000
+call "runtime/debug".SetGCPercent(-1)
+call -unsafe hbstream.NewTestHeartbeatStreams(cluster.ctx,cluster.ruleManager.storeSetInformer,true)
+set (*hbstream.HeartbeatStreams)(0x5da31d700b60).clusterID = 123
+call -unsafe hbstream.NewTestHeartbeatStreams(cluster.ctx,cluster.ruleManager.storeSetInformer,false)
+call -unsafe hbstream.NewTestHeartbeatStreams(cluster.ctx,cluster.ruleManager.storeSetInformer,false)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d5a2000).ch = (*hbstream.HeartbeatStreams)(0x5da31d700e00).msgCh
+call runtime.mallocgc(4096,nil,true)
+set (*[2]uintptr)(0x5da31d5a3000)[0] = 0x1f192e0
+set (*[2]uintptr)(0x5da31d5a3000)[1] = (*[1]uintptr)(0x5da31d5a2000)[0]
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d656000).ch = (*hbstream.HeartbeatStreams)(0x5da31d701030).msgCh
+call runtime.mallocgc(4096,nil,true)
+set (*[2]uintptr)(0x5da31d657000)[0] = 0x1f192e0
+set (*[2]uintptr)(0x5da31d657000)[1] = (*[1]uintptr)(0x5da31d656000)[0]
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x5da31d742000).Id = 1
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x5da31d742000).StoreId = 1
+call runtime.mallocgc(4096,nil,true)
+call runtime.mallocgc(4096,nil,true)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x5da31d74c000).Id = 55
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x5da31d743000).meta = (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x5da31d74c000)
+set (*"github.com/tikv/pd/pkg/core.RegionInfo")(0x5da31d743000).leader = (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x5da31d742000)
+call runtime.mallocgc(4096,nil,true)
+print cap((*hbstream.HeartbeatStreams)(0x5da31d700b60).msgCh)
+print cap((*hbstream.HeartbeatStreams)(0x5da31d700b60).streamCh)
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x5da31d74c000).Id = 55
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x5da31d742000).StoreId = 1
+call -unsafe (*hbstream.HeartbeatStreams)(0x5da31d700b60).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x5da31d743000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x5da31d74d000))
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call (*hbstream.HeartbeatStreams)(0x5da31d700e00).MsgLength()
+call (*hbstream.HeartbeatStreams)(0x5da31d701030).MsgLength()
+print (*hbstream.HeartbeatStreams)(0x5da31d700b60).streams
+call -unsafe (*hbstream.HeartbeatStreams)(0x5da31d700b60).BindStream(1,*(*"github.com/tikv/pd/pkg/schedule/hbstream.HeartbeatStream")(0x5da31d5a3000))
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x5da31d74c000).Id = 55
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x5da31d742000).StoreId = 1
+call -unsafe (*hbstream.HeartbeatStreams)(0x5da31d700b60).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x5da31d743000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x5da31d74d000))
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call (*hbstream.HeartbeatStreams)(0x5da31d700e00).MsgLength()
+call (*hbstream.HeartbeatStreams)(0x5da31d701030).MsgLength()
+print (*hbstream.HeartbeatStreams)(0x5da31d700b60).streams
+call -unsafe "encoding/json".Marshal((*hbstream.HeartbeatStreams)(0x5da31d700e00).msgCh.buf[0])
+call -unsafe (*hbstream.HeartbeatStreams)(0x5da31d700b60).BindStream(1,*(*"github.com/tikv/pd/pkg/schedule/hbstream.HeartbeatStream")(0x5da31d657000))
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x5da31d74c000).Id = 56
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x5da31d742000).StoreId = 1
+call -unsafe (*hbstream.HeartbeatStreams)(0x5da31d700b60).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x5da31d743000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x5da31d74d000))
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call (*hbstream.HeartbeatStreams)(0x5da31d700e00).MsgLength()
+call (*hbstream.HeartbeatStreams)(0x5da31d701030).MsgLength()
+print (*hbstream.HeartbeatStreams)(0x5da31d700b60).streams
+call -unsafe "encoding/json".Marshal((*hbstream.HeartbeatStreams)(0x5da31d701030).msgCh.buf[0])
+call -unsafe (*hbstream.HeartbeatStreams)(0x5da31d700b60).BindStream(99,*(*"github.com/tikv/pd/pkg/schedule/hbstream.HeartbeatStream")(0x5da31d5a3000))
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x5da31d74c000).Id = 57
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x5da31d742000).StoreId = 99
+call -unsafe (*hbstream.HeartbeatStreams)(0x5da31d700b60).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x5da31d743000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x5da31d74d000))
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call (*hbstream.HeartbeatStreams)(0x5da31d700e00).MsgLength()
+call (*hbstream.HeartbeatStreams)(0x5da31d701030).MsgLength()
+print (*hbstream.HeartbeatStreams)(0x5da31d700b60).streams
+set cluster.BasicCluster.StoresInfo.stores[2].meta.NodeState = 3
+call -unsafe (*hbstream.HeartbeatStreams)(0x5da31d700b60).BindStream(2,*(*"github.com/tikv/pd/pkg/schedule/hbstream.HeartbeatStream")(0x5da31d5a3000))
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x5da31d74c000).Id = 58
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x5da31d742000).StoreId = 2
+call -unsafe (*hbstream.HeartbeatStreams)(0x5da31d700b60).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x5da31d743000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x5da31d74d000))
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call (*hbstream.HeartbeatStreams)(0x5da31d700e00).MsgLength()
+call (*hbstream.HeartbeatStreams)(0x5da31d701030).MsgLength()
+print (*hbstream.HeartbeatStreams)(0x5da31d700b60).streams
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x5da31d74c000).Id = 60
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x5da31d742000).StoreId = 1
+call -unsafe (*hbstream.HeartbeatStreams)(0x5da31d700b60).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x5da31d743000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x5da31d74d000))
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x5da31d74c000).Id = 61
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x5da31d742000).StoreId = 1
+call -unsafe (*hbstream.HeartbeatStreams)(0x5da31d700b60).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x5da31d743000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x5da31d74d000))
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x5da31d74c000).Id = 62
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x5da31d742000).StoreId = 1
+call -unsafe (*hbstream.HeartbeatStreams)(0x5da31d700b60).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x5da31d743000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x5da31d74d000))
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call (*hbstream.HeartbeatStreams)(0x5da31d700e00).MsgLength()
+call (*hbstream.HeartbeatStreams)(0x5da31d701030).MsgLength()
+print (*hbstream.HeartbeatStreams)(0x5da31d700b60).streams
+call -unsafe "encoding/json".Marshal((*hbstream.HeartbeatStreams)(0x5da31d701030).msgCh.buf[1])
+call -unsafe "encoding/json".Marshal((*hbstream.HeartbeatStreams)(0x5da31d701030).msgCh.buf[2])
+call -unsafe "encoding/json".Marshal((*hbstream.HeartbeatStreams)(0x5da31d701030).msgCh.buf[3])
+set (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d5a2000).ch = nil
+set (*[2]uintptr)(0x5da31d5a3000)[1] = 0
+call -unsafe (*hbstream.HeartbeatStreams)(0x5da31d700b60).BindStream(1,*(*"github.com/tikv/pd/pkg/schedule/hbstream.HeartbeatStream")(0x5da31d5a3000))
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x5da31d74c000).Id = 70
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x5da31d742000).StoreId = 1
+call -unsafe (*hbstream.HeartbeatStreams)(0x5da31d700b60).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x5da31d743000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x5da31d74d000))
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call (*hbstream.HeartbeatStreams)(0x5da31d700e00).MsgLength()
+call (*hbstream.HeartbeatStreams)(0x5da31d701030).MsgLength()
+print (*hbstream.HeartbeatStreams)(0x5da31d700b60).streams
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x5da31d74c000).Id = 71
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x5da31d742000).StoreId = 1
+call -unsafe (*hbstream.HeartbeatStreams)(0x5da31d700b60).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x5da31d743000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x5da31d74d000))
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call (*hbstream.HeartbeatStreams)(0x5da31d700e00).MsgLength()
+call (*hbstream.HeartbeatStreams)(0x5da31d701030).MsgLength()
+print (*hbstream.HeartbeatStreams)(0x5da31d700b60).streams
+call -unsafe (*hbstream.HeartbeatStreams)(0x5da31d700b60).BindStream(1,*(*"github.com/tikv/pd/pkg/schedule/hbstream.HeartbeatStream")(0x5da31d657000))
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+set (*"github.com/pingcap/kvproto/pkg/metapb.Region")(0x5da31d74c000).Id = 72
+set (*"github.com/pingcap/kvproto/pkg/metapb.Peer")(0x5da31d742000).StoreId = 1
+call -unsafe (*hbstream.HeartbeatStreams)(0x5da31d700b60).SendMsg((*"github.com/tikv/pd/pkg/core.RegionInfo")(0x5da31d743000),(*"github.com/tikv/pd/pkg/schedule/hbstream.Operation")(0x5da31d74d000))
+call -unsafe (*"github.com/tikv/pd/pkg/mock/mockhbstream.HeartbeatStream")(0x5da31d69c000).Recv()
+call (*hbstream.HeartbeatStreams)(0x5da31d700e00).MsgLength()
+call (*hbstream.HeartbeatStreams)(0x5da31d701030).MsgLength()
+print (*hbstream.HeartbeatStreams)(0x5da31d700b60).streams
+call -unsafe "encoding/json".Marshal((*hbstream.HeartbeatStreams)(0x5da31d701030).msgCh.buf[4])
+call -unsafe (*hbstream.HeartbeatStreams)(0x5da31d700b60).Close()
+call -unsafe (*hbstream.HeartbeatStreams)(0x5da31d700e00).Close()
+call -unsafe (*hbstream.HeartbeatStreams)(0x5da31d701030).Close()
+exit

@@ -1,0 +1,33 @@
+
+running 3 tests
+test task_013_test::task_013_behavior_cases ... FAILED
+test task_013_test::task_013_rebind_waits_for_inflight_send ... FAILED
+test task_013_test::task_013_bounded_queue_order_and_errors ... FAILED
+
+failures:
+
+failures:
+    task_013_test::task_013_behavior_cases
+    task_013_test::task_013_bounded_queue_order_and_errors
+    task_013_test::task_013_rebind_waits_for_inflight_send
+
+test result: FAILED. 0 passed; 3 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+   Compiling astersql-pd-schedule-hbstream v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/hbstream)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.81s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_hbstream-0a356223eda78747)
+
+thread 'task_013_test::task_013_rebind_waits_for_inflight_send' (161876581) panicked at pkg/schedule/hbstream/task_013_test.rs:184:5:
+assertion `left == right` failed
+  left: 0
+ right: 2
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'task_013_test::task_013_behavior_cases' (161876579) panicked at pkg/schedule/hbstream/task_013_test.rs:98:18:
+called `Option::unwrap()` on a `None` value
+
+thread 'task_013_test::task_013_bounded_queue_order_and_errors' (161876580) panicked at pkg/schedule/hbstream/task_013_test.rs:139:9:
+assertion `left == right` failed
+  left: 0
+ right: 1
+error: test failed, to rerun pass `-p astersql-pd-schedule-hbstream --lib`

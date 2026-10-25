@@ -1,0 +1,16 @@
+{
+  "go_exit_code": 0,
+  "go_fixture_cases": 9,
+  "go_delivered_messages": 6,
+  "focused_tests": 3,
+  "package_tests": 5,
+  "workspace_tests": 1358,
+  "workspace_ignored": 1,
+  "behavioral_mutations": 7,
+  "readonly_files": 1119,
+  "go_and_module_and_plan_hashes_unchanged": true,
+  "diff_check_exit_code": 0,
+  "slot": 1,
+  "cargo_target_dir": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+  "own_slot_lock_released": true
+}

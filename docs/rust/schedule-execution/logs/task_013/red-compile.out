@@ -1,0 +1,11 @@
+slot=1 CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1 command=cargo test -p astersql-pd-schedule-hbstream --locked --lib task_013 -- --nocapture
+   Compiling astersql-pd-schedule-hbstream v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/hbstream)
+error[E0432]: unresolved import `crate::routing`
+ --> pkg/schedule/hbstream/task_013_test.rs:2:42
+  |
+2 | use crate::{HeartbeatCommand, Operation, routing::*};
+  |                                          ^^^^^^^ could not find `routing` in the crate root
+
+For more information about this error, try `rustc --explain E0432`.
+error: could not compile `astersql-pd-schedule-hbstream` (lib test) due to 1 previous error
+command_exit_code=101

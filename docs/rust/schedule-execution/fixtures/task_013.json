@@ -1,0 +1,277 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "cases": [
+    {
+      "id": "unbound",
+      "operations": [
+        [
+          "send",
+          55,
+          1
+        ]
+      ],
+      "queue_lengths": {
+        "stream1": 0,
+        "stream2": 0
+      },
+      "bound_stores": [],
+      "messages": []
+    },
+    {
+      "id": "bound",
+      "operations": [
+        [
+          "bind",
+          1,
+          1
+        ],
+        [
+          "send",
+          55,
+          1
+        ]
+      ],
+      "queue_lengths": {
+        "stream1": 1,
+        "stream2": 0
+      },
+      "bound_stores": [
+        1
+      ],
+      "messages": [
+        {
+          "header": {
+            "cluster_id": 123
+          },
+          "region_id": 55,
+          "target_peer": {
+            "id": 1,
+            "store_id": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "replaced",
+      "operations": [
+        [
+          "bind",
+          1,
+          2
+        ],
+        [
+          "send",
+          56,
+          1
+        ]
+      ],
+      "queue_lengths": {
+        "stream1": 1,
+        "stream2": 1
+      },
+      "bound_stores": [
+        1
+      ],
+      "messages": [
+        {
+          "header": {
+            "cluster_id": 123
+          },
+          "region_id": 56,
+          "target_peer": {
+            "id": 1,
+            "store_id": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "missing",
+      "operations": [
+        [
+          "bind",
+          99,
+          1
+        ],
+        [
+          "send",
+          57,
+          99
+        ]
+      ],
+      "queue_lengths": {
+        "stream1": 1,
+        "stream2": 1
+      },
+      "bound_stores": [
+        1
+      ],
+      "messages": []
+    },
+    {
+      "id": "removed",
+      "operations": [
+        [
+          "remove",
+          2
+        ],
+        [
+          "bind",
+          2,
+          1
+        ],
+        [
+          "send",
+          58,
+          2
+        ]
+      ],
+      "queue_lengths": {
+        "stream1": 1,
+        "stream2": 1
+      },
+      "bound_stores": [
+        1
+      ],
+      "messages": []
+    },
+    {
+      "id": "ordered",
+      "operations": [
+        [
+          "send",
+          60,
+          1
+        ],
+        [
+          "send",
+          61,
+          1
+        ],
+        [
+          "send",
+          62,
+          1
+        ]
+      ],
+      "queue_lengths": {
+        "stream1": 1,
+        "stream2": 4
+      },
+      "bound_stores": [
+        1
+      ],
+      "messages": [
+        {
+          "header": {
+            "cluster_id": 123
+          },
+          "region_id": 60,
+          "target_peer": {
+            "id": 1,
+            "store_id": 1
+          }
+        },
+        {
+          "header": {
+            "cluster_id": 123
+          },
+          "region_id": 61,
+          "target_peer": {
+            "id": 1,
+            "store_id": 1
+          }
+        },
+        {
+          "header": {
+            "cluster_id": 123
+          },
+          "region_id": 62,
+          "target_peer": {
+            "id": 1,
+            "store_id": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "send_error",
+      "operations": [
+        [
+          "disconnect",
+          1
+        ],
+        [
+          "bind",
+          1,
+          1
+        ],
+        [
+          "send",
+          70,
+          1
+        ]
+      ],
+      "queue_lengths": {
+        "stream1": 1,
+        "stream2": 4
+      },
+      "bound_stores": [],
+      "messages": []
+    },
+    {
+      "id": "error_unbound",
+      "operations": [
+        [
+          "send",
+          71,
+          1
+        ]
+      ],
+      "queue_lengths": {
+        "stream1": 1,
+        "stream2": 4
+      },
+      "bound_stores": [],
+      "messages": []
+    },
+    {
+      "id": "recovered",
+      "operations": [
+        [
+          "bind",
+          1,
+          2
+        ],
+        [
+          "send",
+          72,
+          1
+        ]
+      ],
+      "queue_lengths": {
+        "stream1": 1,
+        "stream2": 5
+      },
+      "bound_stores": [
+        1
+      ],
+      "messages": [
+        {
+          "header": {
+            "cluster_id": 123
+          },
+          "region_id": 72,
+          "target_peer": {
+            "id": 1,
+            "store_id": 1
+          }
+        }
+      ]
+    }
+  ],
+  "capacities": {
+    "msgCh": 1024,
+    "streamCh": 1
+  }
+}

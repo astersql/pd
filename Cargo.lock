@@ -473,6 +473,7 @@ dependencies = [
  "astersql-pd-core",
  "base64",
  "serde_json",
+ "tokio",
 ]
 
 [[package]]

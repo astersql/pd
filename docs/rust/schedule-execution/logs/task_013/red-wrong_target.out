@@ -1,0 +1,27 @@
+
+running 3 tests
+test task_013_test::task_013_rebind_waits_for_inflight_send ... FAILED
+test task_013_test::task_013_behavior_cases ... FAILED
+test task_013_test::task_013_bounded_queue_order_and_errors ... ok
+
+failures:
+
+failures:
+    task_013_test::task_013_behavior_cases
+    task_013_test::task_013_rebind_waits_for_inflight_send
+
+test result: FAILED. 1 passed; 2 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+   Compiling astersql-pd-schedule-hbstream v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/hbstream)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.33s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_hbstream-0a356223eda78747)
+
+thread 'task_013_test::task_013_rebind_waits_for_inflight_send' (161872809) panicked at pkg/schedule/hbstream/task_013_test.rs:196:5:
+assertion failed: matches!(router.step().await, Some(RouteEvent::Sent(2)))
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'task_013_test::task_013_behavior_cases' (161872807) panicked at pkg/schedule/hbstream/task_013_test.rs:80:9:
+assertion `left == right` failed: "missing"
+  left: Object {"stream1": Number(1), "stream2": Number(2)}
+ right: Object {"stream1": Number(1), "stream2": Number(1)}
+error: test failed, to rerun pass `-p astersql-pd-schedule-hbstream --lib`

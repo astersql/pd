@@ -1,0 +1,12 @@
+
+running 3 tests
+test task_013_test::task_013_rebind_waits_for_inflight_send ... ok
+task_013 oracle: 9 cases passed, 0 failed
+test task_013_test::task_013_behavior_cases ... ok
+test task_013_test::task_013_bounded_queue_order_and_errors ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+   Compiling astersql-pd-schedule-hbstream v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/hbstream)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.32s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_hbstream-0a356223eda78747)
