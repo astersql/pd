@@ -1,0 +1,12 @@
+{
+  "production_files": 85,
+  "packages": 14,
+  "factories": 18,
+  "public_symbols": 1139,
+  "internal_symbols": 900,
+  "test_declarations": 576,
+  "failpoints": 25,
+  "metrics": 44,
+  "persistence_candidates": 24,
+  "asynchronous_sites": 17
+}

@@ -1,0 +1,9 @@
+break /Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers/config.go:53
+condition 1 failpoint.failpoints.reg["github.com/tikv/pd/pkg/schedule/schedulers/persistFail"] != nil
+continue
+print err
+call -unsafe err = errors.New("fail to persist")
+print err
+clear 1
+continue
+exit

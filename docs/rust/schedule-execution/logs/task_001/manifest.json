@@ -1,0 +1,192 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "go_env": {
+    "GOOS": "linux",
+    "GOARCH": "arm64",
+    "CGO_ENABLED": "0",
+    "GOFLAGS": "-mod=readonly",
+    "GOPROXY": "off"
+  },
+  "compilation": [
+    {
+      "argv": [
+        "go",
+        "test",
+        "-c",
+        "-gcflags=all=-N -l",
+        "-o",
+        "/var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/pd-admission-native-vh4arrqq/operator.test",
+        "./pkg/schedule/operator"
+      ],
+      "exit_code": 0,
+      "binary_sha256": "ec6dbe95c41eba0f032bd15eb2d5e813ae2e7e4dda8b353ec29ba46e67c56e99",
+      "tests_executed_during_compilation": 0
+    },
+    {
+      "argv": [
+        "go",
+        "test",
+        "-c",
+        "-gcflags=all=-N -l",
+        "-o",
+        "/var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/pd-admission-native-vh4arrqq/scatter.test",
+        "./pkg/schedule/scatter"
+      ],
+      "exit_code": 0,
+      "binary_sha256": "41b03e60005eff502fc898f900e66209ec7429aa505c5318a960bef60c3d01b4",
+      "tests_executed_during_compilation": 0
+    },
+    {
+      "argv": [
+        "go",
+        "test",
+        "-c",
+        "-gcflags=all=-N -l",
+        "-o",
+        "/var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/pd-admission-native-vh4arrqq/schedulers.test",
+        "./pkg/schedule/schedulers"
+      ],
+      "exit_code": 0,
+      "binary_sha256": "be084116f4781d659008fca257645da66f10f59fc424db02a2655c2f293b9f3f",
+      "tests_executed_during_compilation": 0
+    }
+  ],
+  "debugger": {
+    "version": "1.27.1",
+    "alpine_package": "delve-1.27.1-r0",
+    "sha256": "dcd0463a4350f0660412f5c766d31077370eec10ac8055cf0d786377e0d6340e"
+  },
+  "cases": [
+    {
+      "id": "operator_concurrent_replace",
+      "binary": "operator.test",
+      "commands": "operator.commands",
+      "test_filter": "^TestOperatorControllerTestSuite$/^TestConcurrentRemoveOperator$",
+      "effective_behavior_tests": [
+        "TestOperatorControllerTestSuite/TestConcurrentRemoveOperator"
+      ],
+      "tasks": [
+        34,
+        36
+      ],
+      "go_exit_code": 0,
+      "docker_exit_code": 0,
+      "stdout_stderr_sha256": "3d1930bacef12be99962b3f3f45fff95bc915e91f53000b4d26ea50667a3c3dc",
+      "display_output": "operator.out",
+      "exact_run_command": "docker run --rm --name pd-admission-operator-native --cap-add SYS_PTRACE --security-opt seccomp=unconfined -v /var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/pd-admission-native-vh4arrqq:/oracle:ro alpine:3.22 sh -c 'mkfifo /delay; (exec 3> /delay; sleep 0.5; echo x >&3; exec 3>&-) & apk add --no-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/community delve >/dev/null && timeout 60 dlv --check-go-version=false exec /oracle/operator.test --allow-non-terminal-interactive --init=/oracle/operator.commands -- -test.run \"^TestOperatorControllerTestSuite$/^TestConcurrentRemoveOperator$\" -test.v -test.timeout=40s'"
+    },
+    {
+      "id": "scatter_failure_accounting",
+      "binary": "scatter.test",
+      "commands": "scatter-full.commands",
+      "test_filter": "^TestScatterInternalPlanningFailureAccounting$",
+      "effective_behavior_tests": [
+        "TestScatterInternalPlanningFailureAccounting/seeded=false",
+        "TestScatterInternalPlanningFailureAccounting/seeded=true"
+      ],
+      "tasks": [
+        59,
+        60,
+        61
+      ],
+      "go_exit_code": 0,
+      "docker_exit_code": 0,
+      "stdout_stderr_sha256": "8e2c8e20f45a5e178aa2ebffe7cb4357d04b77f2cbb1d680977e513b370e8a5e",
+      "display_output": "scatter.out",
+      "exact_run_command": "docker run --rm --name pd-admission-scatter-native --cap-add SYS_PTRACE --security-opt seccomp=unconfined -v /var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/pd-admission-native-vh4arrqq:/oracle:ro alpine:3.22 sh -c 'apk add --no-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/community delve >/dev/null && timeout 90 dlv --check-go-version=false exec /oracle/scatter.test --allow-non-terminal-interactive --init=/oracle/scatter-full.commands -- -test.run \"^TestScatterInternalPlanningFailureAccounting$\" -test.v -test.timeout=70s'"
+    },
+    {
+      "id": "network_persist_rollback_retry",
+      "binary": "schedulers.test",
+      "commands": "persist-frame.commands",
+      "test_filter": "^TestEvictSlowStoreTestSuite$/^TestAddNetworkSlowStoreLockedSkipsGaugeOnPersistFailure$",
+      "effective_behavior_tests": [
+        "TestEvictSlowStoreTestSuite/TestAddNetworkSlowStoreLockedSkipsGaugeOnPersistFailure"
+      ],
+      "tasks": [
+        80,
+        81,
+        110
+      ],
+      "go_exit_code": 0,
+      "docker_exit_code": 0,
+      "stdout_stderr_sha256": "df313ddd42544d600ac661f6b091870fd5e6f7b5c847365aceb2f31ad9e09bab",
+      "display_output": "persist.out",
+      "exact_run_command": "docker run --rm --name pd-admission-persist-native --cap-add SYS_PTRACE --security-opt seccomp=unconfined -v /var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/pd-admission-native-vh4arrqq:/oracle:ro alpine:3.22 timeout 75 /oracle/dlv-linux-arm64 --check-go-version=false exec /oracle/schedulers.test --allow-non-terminal-interactive --init=/oracle/persist-frame.commands -- -test.run '^TestEvictSlowStoreTestSuite$/^TestAddNetworkSlowStoreLockedSkipsGaugeOnPersistFailure$' -test.v -test.timeout=55s"
+    },
+    {
+      "id": "native_progress_gc",
+      "tasks": [
+        130,
+        132
+      ],
+      "go_binary_sha256": "446a9ce18ed5ac513d4cc66306cfe276db44cd2198db2d9e4e53d20520040523",
+      "existing_rust_probe_sha256": "652b48661600825122a1b87e9d7f8d0dbdb2d29e858286493aea529f20e3837b",
+      "argv": [
+        "python3",
+        "-u",
+        "/var/folders/gr/w4kj8kxx1v53r3p8ycyv4s3c0000gn/T/pd-admission-native-vh4arrqq/native.py"
+      ],
+      "exit_code": 0,
+      "effective_scenarios": 1,
+      "raw_inputs_outputs": "native-events.json",
+      "observations": [
+        {
+          "kind": "completed_before_expiry",
+          "elapsed": 48.512,
+          "samples": [
+            "pd_cluster_eta{action=\"removing\",address=\"\",store=\"1\"} 1.7976931348623157e+308",
+            "pd_cluster_progress{action=\"removing\",address=\"\",store=\"1\"} 0",
+            "pd_cluster_speed{action=\"removing\",address=\"\",store=\"1\"} 0"
+          ]
+        },
+        {
+          "kind": "completed_retained",
+          "elapsed": 63.533,
+          "samples": [
+            "pd_cluster_eta{action=\"removing\",address=\"\",store=\"1\"} 1.7976931348623157e+308",
+            "pd_cluster_progress{action=\"removing\",address=\"\",store=\"1\"} 0",
+            "pd_cluster_speed{action=\"removing\",address=\"\",store=\"1\"} 0"
+          ]
+        },
+        {
+          "kind": "gc_deleted",
+          "elapsed": 127.988,
+          "samples": []
+        },
+        {
+          "kind": "joined",
+          "elapsed": 128.064,
+          "exit": 0
+        }
+      ],
+      "normalization": "elapsed is observation time only; no domain or metric labels/values removed"
+    }
+  ],
+  "failed_attempts": [
+    "startup health endpoint became healthy before PD serving; probes exited101, Go processes joined0",
+    "callback type parse first failed; caller stack pointer required reviewed Delve -unsafe; no assertion changed",
+    "persist marker parameter could not be decoded by Delve; direct caller-frame I/O error boundary succeeded",
+    "one transient APK install I/O failure; copied a subsequently installed debugger binary to reuse"
+  ],
+  "raw_output_file": "outputs.json",
+  "display_normalization": [
+    "ANSI CSI removed",
+    "tabs expanded to four spaces",
+    "trailing whitespace removed"
+  ],
+  "cargo_invoked": false,
+  "toolchain": "go version go1.26.8 darwin/amd64; cross targets linux/arm64",
+  "docker_image": {
+    "tag": "alpine:3.22",
+    "id": "sha256:f28fb2fa6085390a967d9b74491b91c53cf00dec45bf1c7defa6aae11a52e519",
+    "architecture": "arm64"
+  },
+  "container_isolation": {
+    "readonly_mount": "own artifact directory only",
+    "cap_add": "SYS_PTRACE",
+    "seccomp": "unconfined for own debuggee",
+    "network_services": "native private ephemeral ports; no shared PD service used",
+    "cleanup": "--rm containers; native subprocess TERM/wait=0 and private WAL removed"
+  }
+}

@@ -1,0 +1,9 @@
+break /Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator/operator_controller.go:154
+continue
+print op
+call os.ReadFile("/delay")
+call oc.GetOperator(1)
+print op
+clear 1
+continue
+exit

@@ -1,0 +1,40 @@
+break github.com/pingcap/failpoint.InjectCall
+continue
+print fpname
+call -unsafe (*failpoint.failpoints.reg["github.com/tikv/pd/pkg/schedule/scatter/scatterPeerOrder"].fn).Interface().(func(**metapb.Peer))(args[0].(**metapb.Peer))
+continue
+print fpname
+call -unsafe (*failpoint.failpoints.reg["github.com/tikv/pd/pkg/schedule/scatter/scatterPeerOrder"].fn).Interface().(func(**metapb.Peer))(args[0].(**metapb.Peer))
+continue
+print fpname
+call -unsafe (*failpoint.failpoints.reg["github.com/tikv/pd/pkg/schedule/scatter/scatterPeerOrder"].fn).Interface().(func(**metapb.Peer))(args[0].(**metapb.Peer))
+continue
+print fpname
+call -unsafe (*failpoint.failpoints.reg["github.com/tikv/pd/pkg/schedule/scatter/scatterPeerOrder"].fn).Interface().(func(**metapb.Peer))(args[0].(**metapb.Peer))
+continue
+print fpname
+call -unsafe (*failpoint.failpoints.reg["github.com/tikv/pd/pkg/schedule/scatter/scatterPeerOrder"].fn).Interface().(func(**metapb.Peer))(args[0].(**metapb.Peer))
+continue
+print fpname
+call -unsafe (*failpoint.failpoints.reg["github.com/tikv/pd/pkg/schedule/scatter/scatterPeerOrder"].fn).Interface().(func(**metapb.Peer))(args[0].(**metapb.Peer))
+continue
+print fpname
+call -unsafe (*failpoint.failpoints.reg["github.com/tikv/pd/pkg/schedule/scatter/scatterPeerOrder"].fn).Interface().(func(**metapb.Peer))(args[0].(**metapb.Peer))
+continue
+print fpname
+call -unsafe (*failpoint.failpoints.reg["github.com/tikv/pd/pkg/schedule/scatter/scatterPeerOrder"].fn).Interface().(func(**metapb.Peer))(args[0].(**metapb.Peer))
+continue
+print fpname
+call -unsafe (*failpoint.failpoints.reg["github.com/tikv/pd/pkg/schedule/scatter/scatterPeerOrder"].fn).Interface().(func(**metapb.Peer))(args[0].(**metapb.Peer))
+continue
+print fpname
+call -unsafe (*failpoint.failpoints.reg["github.com/tikv/pd/pkg/schedule/scatter/scatterPeerOrder"].fn).Interface().(func(**metapb.Peer))(args[0].(**metapb.Peer))
+continue
+print fpname
+call -unsafe (*failpoint.failpoints.reg["github.com/tikv/pd/pkg/schedule/scatter/scatterPeerOrder"].fn).Interface().(func(**metapb.Peer))(args[0].(**metapb.Peer))
+continue
+print fpname
+call -unsafe (*failpoint.failpoints.reg["github.com/tikv/pd/pkg/schedule/scatter/scatterPeerOrder"].fn).Interface().(func(**metapb.Peer))(args[0].(**metapb.Peer))
+clear 1
+continue
+exit
