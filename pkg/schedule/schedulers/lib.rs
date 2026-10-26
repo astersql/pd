@@ -119,3 +119,9 @@ mod hot_solution;
 pub use hot_solution::*;
 #[cfg(test)]
 mod task_086_test;
+
+#[cfg(test)]
+mod task_087_test;
+
+mod hot_rank_v1;
+pub use hot_rank_v1::*;

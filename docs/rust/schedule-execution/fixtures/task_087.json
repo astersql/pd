@@ -1,0 +1,358 @@
+{
+  "evidence_kind": "source_assertion",
+  "go_runtime_executed": false,
+  "source": "hot_region_rank_v1.go and hot_region_solver.go",
+  "normalization": "none; exact fixed rates, no clock or random input",
+  "cases": [
+    {
+      "name": "better-better",
+      "source": [
+        100,
+        100,
+        0,
+        0
+      ],
+      "destination": [
+        20,
+        20,
+        0,
+        0
+      ],
+      "peer": [
+        20,
+        20,
+        0,
+        0
+      ],
+      "rank": 4
+    },
+    {
+      "name": "better-neutral",
+      "source": [
+        100,
+        100,
+        0,
+        0
+      ],
+      "destination": [
+        20,
+        20,
+        0,
+        0
+      ],
+      "peer": [
+        20,
+        0,
+        0,
+        0
+      ],
+      "rank": 3
+    },
+    {
+      "name": "better-worse",
+      "source": [
+        100,
+        100,
+        0,
+        0
+      ],
+      "destination": [
+        20,
+        20,
+        0,
+        0
+      ],
+      "peer": [
+        20,
+        90,
+        0,
+        0
+      ],
+      "rank": 1
+    },
+    {
+      "name": "neutral-better",
+      "source": [
+        100,
+        100,
+        0,
+        0
+      ],
+      "destination": [
+        20,
+        20,
+        0,
+        0
+      ],
+      "peer": [
+        0,
+        20,
+        0,
+        0
+      ],
+      "rank": 2
+    },
+    {
+      "name": "neutral-neutral",
+      "source": [
+        100,
+        100,
+        0,
+        0
+      ],
+      "destination": [
+        20,
+        20,
+        0,
+        0
+      ],
+      "peer": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rank": -1
+    },
+    {
+      "name": "neutral-worse",
+      "source": [
+        100,
+        100,
+        0,
+        0
+      ],
+      "destination": [
+        20,
+        20,
+        0,
+        0
+      ],
+      "peer": [
+        0,
+        90,
+        0,
+        0
+      ],
+      "rank": -1
+    },
+    {
+      "name": "worse-better",
+      "source": [
+        100,
+        100,
+        0,
+        0
+      ],
+      "destination": [
+        20,
+        20,
+        0,
+        0
+      ],
+      "peer": [
+        90,
+        20,
+        0,
+        0
+      ],
+      "rank": 0
+    },
+    {
+      "name": "worse-neutral",
+      "source": [
+        100,
+        100,
+        0,
+        0
+      ],
+      "destination": [
+        20,
+        20,
+        0,
+        0
+      ],
+      "peer": [
+        90,
+        0,
+        0,
+        0
+      ],
+      "rank": -1
+    },
+    {
+      "name": "worse-worse",
+      "source": [
+        100,
+        100,
+        0,
+        0
+      ],
+      "destination": [
+        20,
+        20,
+        0,
+        0
+      ],
+      "peer": [
+        90,
+        90,
+        0,
+        0
+      ],
+      "rank": -1
+    },
+    {
+      "name": "below-minimum",
+      "source": [
+        100,
+        100,
+        0,
+        0
+      ],
+      "destination": [
+        20,
+        20,
+        0,
+        0
+      ],
+      "peer": [
+        9,
+        9,
+        0,
+        0
+      ],
+      "rank": -1
+    },
+    {
+      "name": "minimum-inclusive",
+      "source": [
+        100,
+        100,
+        0,
+        0
+      ],
+      "destination": [
+        20,
+        20,
+        0,
+        0
+      ],
+      "peer": [
+        10,
+        10,
+        0,
+        0
+      ],
+      "rank": 4
+    },
+    {
+      "name": "write-leader-equality",
+      "source": [
+        100,
+        100,
+        0,
+        0
+      ],
+      "destination": [
+        20,
+        20,
+        0,
+        0
+      ],
+      "peer": [
+        40,
+        90,
+        0,
+        0
+      ],
+      "rank": 3,
+      "write_leader": true
+    },
+    {
+      "name": "write-leader-crossing",
+      "source": [
+        100,
+        100,
+        0,
+        0
+      ],
+      "destination": [
+        20,
+        20,
+        0,
+        0
+      ],
+      "peer": [
+        41,
+        20,
+        0,
+        0
+      ],
+      "rank": -1,
+      "write_leader": true
+    },
+    {
+      "name": "pending-tolerance-blocks",
+      "source": [
+        100,
+        100,
+        0,
+        0
+      ],
+      "destination": [
+        20,
+        20,
+        0,
+        0
+      ],
+      "future_source": [
+        80,
+        80,
+        0,
+        0
+      ],
+      "future_destination": [
+        40,
+        40,
+        0,
+        0
+      ],
+      "peer": [
+        10,
+        10,
+        0,
+        0
+      ],
+      "rank": -1
+    },
+    {
+      "name": "negative-revert",
+      "source": [
+        20,
+        20,
+        0,
+        0
+      ],
+      "destination": [
+        100,
+        100,
+        0,
+        0
+      ],
+      "peer": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "revert": [
+        20,
+        20,
+        0,
+        0
+      ],
+      "rank": -1
+    }
+  ]
+}
