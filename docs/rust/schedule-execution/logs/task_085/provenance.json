@@ -1,0 +1,22 @@
+{
+  "source_commit": "92512140b3858d266be0e32e835d4f7130f8fb0c",
+  "baseline": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "expectation": "read-only source/test derivation; user waived Go runtime oracle; no Go execution",
+  "sources": {
+    "pkg/schedule/schedulers/hot_region_config.go": "189283bad7801de492dcf5e2866a37118e1802f37250583d775c22a484fbaa3b",
+    "pkg/schedule/schedulers/hot_region_config_test.go": "33fefec24efd470ff8d1bd70f15bf889b47148587636507cbc76ef4f57f5b87e",
+    "pkg/schedule/schedulers/hot_region.go": "2e34a6068d48c1ffed3a78764fc18843b20b6fab2943587df4e907acfe692ad6",
+    "pkg/schedule/schedulers/config.go": "64024b895d0b48c030acd9684c3879993710856796eebe11595d4108073b6409",
+    "pkg/statistics/store_load.go": "3a1ad6b343965b66a39472b4621f7c0d0812c1f206decb9359438b5c34587c45",
+    "pkg/statistics/utils/constant.go": "8a69cc80a5204d93979ff91a3ba419b57a884602ca1f772b8611aaff7a1e9804"
+  },
+  "baseline_comparison": {
+    "pkg/schedule/schedulers/hot_region_config.go": true,
+    "pkg/schedule/schedulers/hot_region_config_test.go": true,
+    "pkg/schedule/schedulers/hot_region.go": true,
+    "pkg/schedule/schedulers/config.go": true,
+    "pkg/statistics/store_load.go": true,
+    "pkg/statistics/utils/constant.go": true
+  },
+  "fixture_sha256": "8e834181407aea910f040c7afd4f88a54f299d3d6453c33897bc59ee65f7c1ee"
+}

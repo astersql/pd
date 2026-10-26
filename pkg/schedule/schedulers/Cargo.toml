@@ -9,6 +9,7 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
+astersql-pd-typeutil.workspace = true
 astersql-pd-statistics.workspace = true
 astersql-pd-schedule-filter.workspace = true
 astersql-pd-schedule-keyrange.workspace = true

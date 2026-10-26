@@ -1,0 +1,1254 @@
+{
+  "provenance": "Read-only Go source/test derivation, NOT Go execution. TestAdjustPrioritiesConfigCPUFallback covers 5 read cases; remaining cases derive production branches.",
+  "priority_cases": [
+    {
+      "scope": "read",
+      "query": false,
+      "cpu": false,
+      "origins": [],
+      "expected": [
+        "byte",
+        "key"
+      ]
+    },
+    {
+      "scope": "read",
+      "query": false,
+      "cpu": false,
+      "origins": [
+        "byte"
+      ],
+      "expected": [
+        "byte",
+        "key"
+      ]
+    },
+    {
+      "scope": "read",
+      "query": false,
+      "cpu": false,
+      "origins": [
+        "byte",
+        "byte"
+      ],
+      "expected": [
+        "byte",
+        "key"
+      ]
+    },
+    {
+      "scope": "read",
+      "query": false,
+      "cpu": false,
+      "origins": [
+        "wrong",
+        "key"
+      ],
+      "expected": [
+        "byte",
+        "key"
+      ]
+    },
+    {
+      "scope": "read",
+      "query": false,
+      "cpu": false,
+      "origins": [
+        "cpu",
+        "byte"
+      ],
+      "expected": [
+        "byte",
+        "key"
+      ]
+    },
+    {
+      "scope": "read",
+      "query": false,
+      "cpu": false,
+      "origins": [
+        "query",
+        "byte"
+      ],
+      "expected": [
+        "byte",
+        "key"
+      ]
+    },
+    {
+      "scope": "read",
+      "query": false,
+      "cpu": false,
+      "origins": [
+        "key",
+        "byte"
+      ],
+      "expected": [
+        "key",
+        "byte"
+      ]
+    },
+    {
+      "scope": "read",
+      "query": false,
+      "cpu": false,
+      "origins": [
+        "cpu",
+        "key",
+        "byte"
+      ],
+      "expected": [
+        "byte",
+        "key"
+      ]
+    },
+    {
+      "scope": "read",
+      "query": false,
+      "cpu": true,
+      "origins": [],
+      "expected": [
+        "byte",
+        "key"
+      ]
+    },
+    {
+      "scope": "read",
+      "query": false,
+      "cpu": true,
+      "origins": [
+        "byte"
+      ],
+      "expected": [
+        "byte",
+        "key"
+      ]
+    },
+    {
+      "scope": "read",
+      "query": false,
+      "cpu": true,
+      "origins": [
+        "byte",
+        "byte"
+      ],
+      "expected": [
+        "byte",
+        "key"
+      ]
+    },
+    {
+      "scope": "read",
+      "query": false,
+      "cpu": true,
+      "origins": [
+        "wrong",
+        "key"
+      ],
+      "expected": [
+        "byte",
+        "key"
+      ]
+    },
+    {
+      "scope": "read",
+      "query": false,
+      "cpu": true,
+      "origins": [
+        "cpu",
+        "byte"
+      ],
+      "expected": [
+        "byte",
+        "key"
+      ]
+    },
+    {
+      "scope": "read",
+      "query": false,
+      "cpu": true,
+      "origins": [
+        "query",
+        "byte"
+      ],
+      "expected": [
+        "byte",
+        "key"
+      ]
+    },
+    {
+      "scope": "read",
+      "query": false,
+      "cpu": true,
+      "origins": [
+        "key",
+        "byte"
+      ],
+      "expected": [
+        "key",
+        "byte"
+      ]
+    },
+    {
+      "scope": "read",
+      "query": false,
+      "cpu": true,
+      "origins": [
+        "cpu",
+        "key",
+        "byte"
+      ],
+      "expected": [
+        "byte",
+        "key"
+      ]
+    },
+    {
+      "scope": "read",
+      "query": true,
+      "cpu": false,
+      "origins": [],
+      "expected": [
+        "query",
+        "byte"
+      ]
+    },
+    {
+      "scope": "read",
+      "query": true,
+      "cpu": false,
+      "origins": [
+        "byte"
+      ],
+      "expected": [
+        "query",
+        "byte"
+      ]
+    },
+    {
+      "scope": "read",
+      "query": true,
+      "cpu": false,
+      "origins": [
+        "byte",
+        "byte"
+      ],
+      "expected": [
+        "query",
+        "byte"
+      ]
+    },
+    {
+      "scope": "read",
+      "query": true,
+      "cpu": false,
+      "origins": [
+        "wrong",
+        "key"
+      ],
+      "expected": [
+        "query",
+        "byte"
+      ]
+    },
+    {
+      "scope": "read",
+      "query": true,
+      "cpu": false,
+      "origins": [
+        "cpu",
+        "byte"
+      ],
+      "expected": [
+        "query",
+        "byte"
+      ]
+    },
+    {
+      "scope": "read",
+      "query": true,
+      "cpu": false,
+      "origins": [
+        "query",
+        "byte"
+      ],
+      "expected": [
+        "query",
+        "byte"
+      ]
+    },
+    {
+      "scope": "read",
+      "query": true,
+      "cpu": false,
+      "origins": [
+        "key",
+        "byte"
+      ],
+      "expected": [
+        "key",
+        "byte"
+      ]
+    },
+    {
+      "scope": "read",
+      "query": true,
+      "cpu": false,
+      "origins": [
+        "cpu",
+        "key",
+        "byte"
+      ],
+      "expected": [
+        "query",
+        "byte"
+      ]
+    },
+    {
+      "scope": "read",
+      "query": true,
+      "cpu": true,
+      "origins": [],
+      "expected": [
+        "cpu",
+        "byte"
+      ]
+    },
+    {
+      "scope": "read",
+      "query": true,
+      "cpu": true,
+      "origins": [
+        "byte"
+      ],
+      "expected": [
+        "cpu",
+        "byte"
+      ]
+    },
+    {
+      "scope": "read",
+      "query": true,
+      "cpu": true,
+      "origins": [
+        "byte",
+        "byte"
+      ],
+      "expected": [
+        "cpu",
+        "byte"
+      ]
+    },
+    {
+      "scope": "read",
+      "query": true,
+      "cpu": true,
+      "origins": [
+        "wrong",
+        "key"
+      ],
+      "expected": [
+        "cpu",
+        "byte"
+      ]
+    },
+    {
+      "scope": "read",
+      "query": true,
+      "cpu": true,
+      "origins": [
+        "cpu",
+        "byte"
+      ],
+      "expected": [
+        "cpu",
+        "byte"
+      ]
+    },
+    {
+      "scope": "read",
+      "query": true,
+      "cpu": true,
+      "origins": [
+        "query",
+        "byte"
+      ],
+      "expected": [
+        "query",
+        "byte"
+      ]
+    },
+    {
+      "scope": "read",
+      "query": true,
+      "cpu": true,
+      "origins": [
+        "key",
+        "byte"
+      ],
+      "expected": [
+        "key",
+        "byte"
+      ]
+    },
+    {
+      "scope": "read",
+      "query": true,
+      "cpu": true,
+      "origins": [
+        "cpu",
+        "key",
+        "byte"
+      ],
+      "expected": [
+        "cpu",
+        "byte"
+      ]
+    },
+    {
+      "scope": "write-leader",
+      "query": false,
+      "cpu": false,
+      "origins": [],
+      "expected": [
+        "key",
+        "byte"
+      ]
+    },
+    {
+      "scope": "write-leader",
+      "query": false,
+      "cpu": false,
+      "origins": [
+        "byte"
+      ],
+      "expected": [
+        "key",
+        "byte"
+      ]
+    },
+    {
+      "scope": "write-leader",
+      "query": false,
+      "cpu": false,
+      "origins": [
+        "byte",
+        "byte"
+      ],
+      "expected": [
+        "key",
+        "byte"
+      ]
+    },
+    {
+      "scope": "write-leader",
+      "query": false,
+      "cpu": false,
+      "origins": [
+        "wrong",
+        "key"
+      ],
+      "expected": [
+        "key",
+        "byte"
+      ]
+    },
+    {
+      "scope": "write-leader",
+      "query": false,
+      "cpu": false,
+      "origins": [
+        "cpu",
+        "byte"
+      ],
+      "expected": [
+        "key",
+        "byte"
+      ]
+    },
+    {
+      "scope": "write-leader",
+      "query": false,
+      "cpu": false,
+      "origins": [
+        "query",
+        "byte"
+      ],
+      "expected": [
+        "key",
+        "byte"
+      ]
+    },
+    {
+      "scope": "write-leader",
+      "query": false,
+      "cpu": false,
+      "origins": [
+        "key",
+        "byte"
+      ],
+      "expected": [
+        "key",
+        "byte"
+      ]
+    },
+    {
+      "scope": "write-leader",
+      "query": false,
+      "cpu": false,
+      "origins": [
+        "cpu",
+        "key",
+        "byte"
+      ],
+      "expected": [
+        "key",
+        "byte"
+      ]
+    },
+    {
+      "scope": "write-leader",
+      "query": false,
+      "cpu": true,
+      "origins": [],
+      "expected": [
+        "key",
+        "byte"
+      ]
+    },
+    {
+      "scope": "write-leader",
+      "query": false,
+      "cpu": true,
+      "origins": [
+        "byte"
+      ],
+      "expected": [
+        "key",
+        "byte"
+      ]
+    },
+    {
+      "scope": "write-leader",
+      "query": false,
+      "cpu": true,
+      "origins": [
+        "byte",
+        "byte"
+      ],
+      "expected": [
+        "key",
+        "byte"
+      ]
+    },
+    {
+      "scope": "write-leader",
+      "query": false,
+      "cpu": true,
+      "origins": [
+        "wrong",
+        "key"
+      ],
+      "expected": [
+        "key",
+        "byte"
+      ]
+    },
+    {
+      "scope": "write-leader",
+      "query": false,
+      "cpu": true,
+      "origins": [
+        "cpu",
+        "byte"
+      ],
+      "expected": [
+        "key",
+        "byte"
+      ]
+    },
+    {
+      "scope": "write-leader",
+      "query": false,
+      "cpu": true,
+      "origins": [
+        "query",
+        "byte"
+      ],
+      "expected": [
+        "key",
+        "byte"
+      ]
+    },
+    {
+      "scope": "write-leader",
+      "query": false,
+      "cpu": true,
+      "origins": [
+        "key",
+        "byte"
+      ],
+      "expected": [
+        "key",
+        "byte"
+      ]
+    },
+    {
+      "scope": "write-leader",
+      "query": false,
+      "cpu": true,
+      "origins": [
+        "cpu",
+        "key",
+        "byte"
+      ],
+      "expected": [
+        "key",
+        "byte"
+      ]
+    },
+    {
+      "scope": "write-leader",
+      "query": true,
+      "cpu": false,
+      "origins": [],
+      "expected": [
+        "query",
+        "byte"
+      ]
+    },
+    {
+      "scope": "write-leader",
+      "query": true,
+      "cpu": false,
+      "origins": [
+        "byte"
+      ],
+      "expected": [
+        "query",
+        "byte"
+      ]
+    },
+    {
+      "scope": "write-leader",
+      "query": true,
+      "cpu": false,
+      "origins": [
+        "byte",
+        "byte"
+      ],
+      "expected": [
+        "query",
+        "byte"
+      ]
+    },
+    {
+      "scope": "write-leader",
+      "query": true,
+      "cpu": false,
+      "origins": [
+        "wrong",
+        "key"
+      ],
+      "expected": [
+        "query",
+        "byte"
+      ]
+    },
+    {
+      "scope": "write-leader",
+      "query": true,
+      "cpu": false,
+      "origins": [
+        "cpu",
+        "byte"
+      ],
+      "expected": [
+        "query",
+        "byte"
+      ]
+    },
+    {
+      "scope": "write-leader",
+      "query": true,
+      "cpu": false,
+      "origins": [
+        "query",
+        "byte"
+      ],
+      "expected": [
+        "query",
+        "byte"
+      ]
+    },
+    {
+      "scope": "write-leader",
+      "query": true,
+      "cpu": false,
+      "origins": [
+        "key",
+        "byte"
+      ],
+      "expected": [
+        "key",
+        "byte"
+      ]
+    },
+    {
+      "scope": "write-leader",
+      "query": true,
+      "cpu": false,
+      "origins": [
+        "cpu",
+        "key",
+        "byte"
+      ],
+      "expected": [
+        "query",
+        "byte"
+      ]
+    },
+    {
+      "scope": "write-leader",
+      "query": true,
+      "cpu": true,
+      "origins": [],
+      "expected": [
+        "query",
+        "byte"
+      ]
+    },
+    {
+      "scope": "write-leader",
+      "query": true,
+      "cpu": true,
+      "origins": [
+        "byte"
+      ],
+      "expected": [
+        "query",
+        "byte"
+      ]
+    },
+    {
+      "scope": "write-leader",
+      "query": true,
+      "cpu": true,
+      "origins": [
+        "byte",
+        "byte"
+      ],
+      "expected": [
+        "query",
+        "byte"
+      ]
+    },
+    {
+      "scope": "write-leader",
+      "query": true,
+      "cpu": true,
+      "origins": [
+        "wrong",
+        "key"
+      ],
+      "expected": [
+        "query",
+        "byte"
+      ]
+    },
+    {
+      "scope": "write-leader",
+      "query": true,
+      "cpu": true,
+      "origins": [
+        "cpu",
+        "byte"
+      ],
+      "expected": [
+        "cpu",
+        "byte"
+      ]
+    },
+    {
+      "scope": "write-leader",
+      "query": true,
+      "cpu": true,
+      "origins": [
+        "query",
+        "byte"
+      ],
+      "expected": [
+        "query",
+        "byte"
+      ]
+    },
+    {
+      "scope": "write-leader",
+      "query": true,
+      "cpu": true,
+      "origins": [
+        "key",
+        "byte"
+      ],
+      "expected": [
+        "key",
+        "byte"
+      ]
+    },
+    {
+      "scope": "write-leader",
+      "query": true,
+      "cpu": true,
+      "origins": [
+        "cpu",
+        "key",
+        "byte"
+      ],
+      "expected": [
+        "query",
+        "byte"
+      ]
+    },
+    {
+      "scope": "write-peer",
+      "query": false,
+      "cpu": false,
+      "origins": [],
+      "expected": [
+        "byte",
+        "key"
+      ]
+    },
+    {
+      "scope": "write-peer",
+      "query": false,
+      "cpu": false,
+      "origins": [
+        "byte"
+      ],
+      "expected": [
+        "byte",
+        "key"
+      ]
+    },
+    {
+      "scope": "write-peer",
+      "query": false,
+      "cpu": false,
+      "origins": [
+        "byte",
+        "byte"
+      ],
+      "expected": [
+        "byte",
+        "key"
+      ]
+    },
+    {
+      "scope": "write-peer",
+      "query": false,
+      "cpu": false,
+      "origins": [
+        "wrong",
+        "key"
+      ],
+      "expected": [
+        "byte",
+        "key"
+      ]
+    },
+    {
+      "scope": "write-peer",
+      "query": false,
+      "cpu": false,
+      "origins": [
+        "cpu",
+        "byte"
+      ],
+      "expected": [
+        "byte",
+        "key"
+      ]
+    },
+    {
+      "scope": "write-peer",
+      "query": false,
+      "cpu": false,
+      "origins": [
+        "query",
+        "byte"
+      ],
+      "expected": [
+        "byte",
+        "key"
+      ]
+    },
+    {
+      "scope": "write-peer",
+      "query": false,
+      "cpu": false,
+      "origins": [
+        "key",
+        "byte"
+      ],
+      "expected": [
+        "key",
+        "byte"
+      ]
+    },
+    {
+      "scope": "write-peer",
+      "query": false,
+      "cpu": false,
+      "origins": [
+        "cpu",
+        "key",
+        "byte"
+      ],
+      "expected": [
+        "byte",
+        "key"
+      ]
+    },
+    {
+      "scope": "write-peer",
+      "query": false,
+      "cpu": true,
+      "origins": [],
+      "expected": [
+        "byte",
+        "key"
+      ]
+    },
+    {
+      "scope": "write-peer",
+      "query": false,
+      "cpu": true,
+      "origins": [
+        "byte"
+      ],
+      "expected": [
+        "byte",
+        "key"
+      ]
+    },
+    {
+      "scope": "write-peer",
+      "query": false,
+      "cpu": true,
+      "origins": [
+        "byte",
+        "byte"
+      ],
+      "expected": [
+        "byte",
+        "key"
+      ]
+    },
+    {
+      "scope": "write-peer",
+      "query": false,
+      "cpu": true,
+      "origins": [
+        "wrong",
+        "key"
+      ],
+      "expected": [
+        "byte",
+        "key"
+      ]
+    },
+    {
+      "scope": "write-peer",
+      "query": false,
+      "cpu": true,
+      "origins": [
+        "cpu",
+        "byte"
+      ],
+      "expected": [
+        "byte",
+        "key"
+      ]
+    },
+    {
+      "scope": "write-peer",
+      "query": false,
+      "cpu": true,
+      "origins": [
+        "query",
+        "byte"
+      ],
+      "expected": [
+        "byte",
+        "key"
+      ]
+    },
+    {
+      "scope": "write-peer",
+      "query": false,
+      "cpu": true,
+      "origins": [
+        "key",
+        "byte"
+      ],
+      "expected": [
+        "key",
+        "byte"
+      ]
+    },
+    {
+      "scope": "write-peer",
+      "query": false,
+      "cpu": true,
+      "origins": [
+        "cpu",
+        "key",
+        "byte"
+      ],
+      "expected": [
+        "byte",
+        "key"
+      ]
+    },
+    {
+      "scope": "write-peer",
+      "query": true,
+      "cpu": false,
+      "origins": [],
+      "expected": [
+        "byte",
+        "key"
+      ]
+    },
+    {
+      "scope": "write-peer",
+      "query": true,
+      "cpu": false,
+      "origins": [
+        "byte"
+      ],
+      "expected": [
+        "byte",
+        "key"
+      ]
+    },
+    {
+      "scope": "write-peer",
+      "query": true,
+      "cpu": false,
+      "origins": [
+        "byte",
+        "byte"
+      ],
+      "expected": [
+        "byte",
+        "key"
+      ]
+    },
+    {
+      "scope": "write-peer",
+      "query": true,
+      "cpu": false,
+      "origins": [
+        "wrong",
+        "key"
+      ],
+      "expected": [
+        "byte",
+        "key"
+      ]
+    },
+    {
+      "scope": "write-peer",
+      "query": true,
+      "cpu": false,
+      "origins": [
+        "cpu",
+        "byte"
+      ],
+      "expected": [
+        "byte",
+        "key"
+      ]
+    },
+    {
+      "scope": "write-peer",
+      "query": true,
+      "cpu": false,
+      "origins": [
+        "query",
+        "byte"
+      ],
+      "expected": [
+        "query",
+        "byte"
+      ]
+    },
+    {
+      "scope": "write-peer",
+      "query": true,
+      "cpu": false,
+      "origins": [
+        "key",
+        "byte"
+      ],
+      "expected": [
+        "key",
+        "byte"
+      ]
+    },
+    {
+      "scope": "write-peer",
+      "query": true,
+      "cpu": false,
+      "origins": [
+        "cpu",
+        "key",
+        "byte"
+      ],
+      "expected": [
+        "byte",
+        "key"
+      ]
+    },
+    {
+      "scope": "write-peer",
+      "query": true,
+      "cpu": true,
+      "origins": [],
+      "expected": [
+        "byte",
+        "key"
+      ]
+    },
+    {
+      "scope": "write-peer",
+      "query": true,
+      "cpu": true,
+      "origins": [
+        "byte"
+      ],
+      "expected": [
+        "byte",
+        "key"
+      ]
+    },
+    {
+      "scope": "write-peer",
+      "query": true,
+      "cpu": true,
+      "origins": [
+        "byte",
+        "byte"
+      ],
+      "expected": [
+        "byte",
+        "key"
+      ]
+    },
+    {
+      "scope": "write-peer",
+      "query": true,
+      "cpu": true,
+      "origins": [
+        "wrong",
+        "key"
+      ],
+      "expected": [
+        "byte",
+        "key"
+      ]
+    },
+    {
+      "scope": "write-peer",
+      "query": true,
+      "cpu": true,
+      "origins": [
+        "cpu",
+        "byte"
+      ],
+      "expected": [
+        "cpu",
+        "byte"
+      ]
+    },
+    {
+      "scope": "write-peer",
+      "query": true,
+      "cpu": true,
+      "origins": [
+        "query",
+        "byte"
+      ],
+      "expected": [
+        "query",
+        "byte"
+      ]
+    },
+    {
+      "scope": "write-peer",
+      "query": true,
+      "cpu": true,
+      "origins": [
+        "key",
+        "byte"
+      ],
+      "expected": [
+        "key",
+        "byte"
+      ]
+    },
+    {
+      "scope": "write-peer",
+      "query": true,
+      "cpu": true,
+      "origins": [
+        "cpu",
+        "key",
+        "byte"
+      ],
+      "expected": [
+        "byte",
+        "key"
+      ]
+    }
+  ],
+  "defaults": {
+    "min-hot-byte-rate": 100,
+    "min-hot-key-rate": 10,
+    "min-hot-query-rate": 10,
+    "min-hot-cpu-rate": 10,
+    "max-zombie-rounds": 3,
+    "pending-weight": 1,
+    "max-peer-number": 1000,
+    "byte-rate-rank-step-ratio": 0.05,
+    "key-rate-rank-step-ratio": 0.05,
+    "query-rate-rank-step-ratio": 0.05,
+    "cpu-rate-rank-step-ratio": 0.05,
+    "count-rank-step-ratio": 0.01,
+    "great-dec-ratio": 0.95,
+    "minor-dec-ratio": 0.99,
+    "src-tolerance-ratio": 1.05,
+    "dst-tolerance-ratio": 1.05,
+    "write-leader-priorities": [
+      "query",
+      "byte"
+    ],
+    "write-peer-priorities": [
+      "byte",
+      "key"
+    ],
+    "read-priorities": [
+      "cpu",
+      "byte"
+    ],
+    "strict-picking-store": "true",
+    "enable-for-tiflash": "true",
+    "rank-formula-version": "v2",
+    "forbid-rw-type": "none",
+    "split-thresholds": 0.2,
+    "history-sample-duration": "5m0s",
+    "history-sample-interval": "30s"
+  }
+}

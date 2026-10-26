@@ -108,3 +108,9 @@ mod task_084_test;
 
 mod slow_trend_recover;
 pub use slow_trend_recover::*;
+
+#[cfg(test)]
+mod task_085_test;
+
+mod hot_config;
+pub use hot_config::*;
