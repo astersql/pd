@@ -1,0 +1,135 @@
+{
+  "evidence": "read-only Go source-derived; no runtime oracle",
+  "cases": [
+    {
+      "name": "reject",
+      "target": 2
+    },
+    {
+      "name": "no-reject",
+      "reject": false,
+      "target": 0
+    },
+    {
+      "name": "no-region",
+      "missing": true,
+      "target": 0
+    },
+    {
+      "name": "pending-target",
+      "pending": [
+        2
+      ],
+      "target": 3
+    },
+    {
+      "name": "down-target",
+      "down": [
+        2
+      ],
+      "target": 3
+    },
+    {
+      "name": "all-unhealthy",
+      "pending": [
+        2
+      ],
+      "down": [
+        3
+      ],
+      "target": 0
+    },
+    {
+      "name": "reject-target",
+      "reject_target": true,
+      "target": 3
+    },
+    {
+      "name": "pause-target",
+      "pause": [
+        2
+      ],
+      "target": 3
+    },
+    {
+      "name": "no-target",
+      "pause": [
+        2,
+        3
+      ],
+      "target": 0
+    },
+    {
+      "name": "source-pause-out",
+      "pause_out": true,
+      "target": 2
+    },
+    {
+      "name": "range-miss",
+      "ranges": [
+        [
+          "b",
+          "c"
+        ]
+      ],
+      "target": 0
+    },
+    {
+      "name": "range-touch",
+      "ranges": [
+        [
+          "a",
+          "b"
+        ]
+      ],
+      "target": 2
+    },
+    {
+      "name": "partial-range",
+      "ranges": [
+        [
+          "a",
+          "az"
+        ]
+      ],
+      "target": 0
+    },
+    {
+      "name": "learner-target",
+      "learner": true,
+      "target": 3
+    },
+    {
+      "name": "witness-target",
+      "witness": true,
+      "target": 0,
+      "error": true
+    },
+    {
+      "name": "disconnected",
+      "disconnected": true,
+      "target": 3
+    },
+    {
+      "name": "leader-limit",
+      "limit": true,
+      "target": 3
+    },
+    {
+      "name": "placement-deny",
+      "placement": true,
+      "target": 0,
+      "error": true
+    },
+    {
+      "name": "placement-allow",
+      "placement_allow": true,
+      "target": 2
+    },
+    {
+      "name": "random-last",
+      "last": true,
+      "target": 3
+    }
+  ]
+}

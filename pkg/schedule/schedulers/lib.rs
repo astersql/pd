@@ -173,3 +173,8 @@ mod grant_hot;
 pub use grant_hot::*;
 #[cfg(test)]
 mod task_096_test;
+
+mod label;
+pub use label::*;
+#[cfg(test)]
+mod task_097_test;

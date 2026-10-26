@@ -1,0 +1,17 @@
+{
+  "source_commit": "f68ab214709adcb1a066ec878cbe940fc184c884",
+  "runtime_oracle": null,
+  "authorization": "source-derived + real Rust behavior/fault verification",
+  "sha256": {
+    "pkg/schedule/schedulers/label.go": "c6127510efb37ebafca5db1482dadc0a851b25532c99d1b5962e3f60dc0d25b6",
+    "pkg/schedule/schedulers/init.go": "09664f94f3ebe92a4cad1c9a435fb1f8619c72731e8fa55ec0c75c2818175a40",
+    "pkg/schedule/schedulers/scheduler_test.go": "55b18eda7e1834ed5090cf360f2cbac1048b0b164e4e84dcf06cbfbbdc8162fc",
+    "pkg/schedule/operator/create_operator.go": "43a938c72992f4ce81501c40ab85c1e79c08670383acd47f22655e779524b927",
+    "docs/rust/schedule-execution/oracle-index.json": "2d1a930742291e7047a864aa2246e7e22c612cb6583249b7edb42945b494b450",
+    "docs/rust/schedule-execution/fixtures/task_097.json": "00ea1b9f9ba708ec1da1d1424bba549b2ec6c7e414ec8c65adecd0d3c8df4371",
+    "pkg/core/region.go": "be6ed0dc77537d62926d21d9e4eef080ea0dbcc7dc97efb4dc26269a172f99d8",
+    "pkg/schedule/operator/builder.go": "2c74830947c401ea8c4d46e8066e4c85aecd02beea035d0bb9eb4aab8cee8f83",
+    "pkg/schedule/schedulers/config.go": "64024b895d0b48c030acd9684c3879993710856796eebe11595d4108073b6409"
+  },
+  "fixture_correction": "witness-target corrected before behavioral mutation: GetFollowers includes witness; builder rejects selected witness and terminates (LeaderNotAllowed)"
+}
