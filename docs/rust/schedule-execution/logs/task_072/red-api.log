@@ -1,0 +1,174 @@
+   Compiling astersql-pd-schedule-schedulers v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers)
+error[E0422]: cannot find struct, variant or union type `RegionBalanceContext` in this scope
+   --> pkg/schedule/schedulers/task_072_test.rs:68:21
+    |
+ 68 | ...   let mut ctx=RegionBalanceContext{cluster:&cluster,config:&config,rules:&mut rules,affinity:AffinityFilter{manager:None,labels...
+    |                   ^^^^^^^^^^^^^^^^^^^^
+    |
+   ::: pkg/schedule/schedulers/balance_leader.rs:195:1
+    |
+195 | pub struct LeaderBalanceContext<'a, C: BasicCluster, P: SchedulerConfigProvider> {
+    | -------------------------------------------------------------------------------- similarly named struct `LeaderBalanceContext` defined here
+    |
+help: a struct with a similar name exists
+    |
+ 68 -         let mut ctx=RegionBalanceContext{cluster:&cluster,config:&config,rules:&mut rules,affinity:AffinityFilter{manager:None,labels:&labels,now:1000},statistics:&statistics,hot_degree:1,key_ranges:&key_ranges,influence:&influence,now_unix_nanos:1_000_000_000_000,random_index:&mut random,shuffle:&mut shuffle,allocate:&mut allocate,supports_conf_change_v2:false,allow_empty_regions:case["range_view"]==true};
+ 68 +         let mut ctx=LeaderBalanceContext{cluster:&cluster,config:&config,rules:&mut rules,affinity:AffinityFilter{manager:None,labels:&labels,now:1000},statistics:&statistics,hot_degree:1,key_ranges:&key_ranges,influence:&influence,now_unix_nanos:1_000_000_000_000,random_index:&mut random,shuffle:&mut shuffle,allocate:&mut allocate,supports_conf_change_v2:false,allow_empty_regions:case["range_view"]==true};
+    |
+
+error[E0425]: cannot find type `BalanceRegionConfig` in this scope
+  --> pkg/schedule/schedulers/task_072_test.rs:93:61
+   |
+93 |     let encoded=encode_config(&config).unwrap();let decoded:BalanceRegionConfig=decode_config(&encoded).unwrap();assert_eq!(decoded....
+   |                                                             ^^^^^^^^^^^^^^^^^^^
+   |
+  ::: pkg/schedule/schedulers/balance_leader.rs:26:1
+   |
+26 | pub struct BalanceLeaderConfig {
+   | ------------------------------ similarly named struct `BalanceLeaderConfig` defined here
+   |
+help: a struct with a similar name exists
+   |
+93 -     let encoded=encode_config(&config).unwrap();let decoded:BalanceRegionConfig=decode_config(&encoded).unwrap();assert_eq!(decoded.ranges(),config.ranges());
+93 +     let encoded=encode_config(&config).unwrap();let decoded:BalanceLeaderConfig=decode_config(&encoded).unwrap();assert_eq!(decoded.ranges(),config.ranges());
+   |
+
+error[E0425]: cannot find type `BalanceRegionConfig` in this scope
+  --> pkg/schedule/schedulers/task_072_test.rs:94:29
+   |
+94 |     assert!(decode_config::<BalanceRegionConfig>(br#"{"ranges":[{"start-key":"xx","end-key":""}]}"#).is_err());
+   |                             ^^^^^^^^^^^^^^^^^^^
+   |
+  ::: pkg/schedule/schedulers/balance_leader.rs:26:1
+   |
+26 | pub struct BalanceLeaderConfig {
+   | ------------------------------ similarly named struct `BalanceLeaderConfig` defined here
+   |
+help: a struct with a similar name exists
+   |
+94 -     assert!(decode_config::<BalanceRegionConfig>(br#"{"ranges":[{"start-key":"xx","end-key":""}]}"#).is_err());
+94 +     assert!(decode_config::<BalanceLeaderConfig>(br#"{"ranges":[{"start-key":"xx","end-key":""}]}"#).is_err());
+   |
+help: you might be missing a type parameter
+   |
+90 | fn task_072_config_and_limits<BalanceRegionConfig>(){
+   |                              +++++++++++++++++++++
+
+error[E0308]: mismatched types
+  --> pkg/schedule/schedulers/task_072_test.rs:54:78
+   |
+54 |         if case["placement_block"]==true {config.replication.location_labels=vec!["zone".into()];}
+   |                                           ---------------------------------- ^^^^^^^^^^^^^^^^^^^ expected `StringSlice`, found `Vec<_>`
+   |                                           |
+   |                                           expected due to the type of this binding
+   |
+   = note: expected struct `astersql_pd_typeutil::string_slice::StringSlice`
+              found struct `Vec<_>`
+help: call `Into::into` on this expression to convert `Vec<_>` into `astersql_pd_typeutil::string_slice::StringSlice`
+   |
+54 |         if case["placement_block"]==true {config.replication.location_labels=vec!["zone".into()].into();}
+   |                                                                                                 +++++++
+
+error[E0308]: mismatched types
+   --> pkg/schedule/schedulers/task_072_test.rs:57:28
+    |
+ 57 |         rules.initialize(3,&config.replication.location_labels,"",false,&config,&[]).await.unwrap();
+    |               ----------   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `&[String]`, found `&StringSlice`
+    |               |
+    |               arguments to this method are incorrect
+    |
+    = note: expected reference `&[std::string::String]`
+               found reference `&astersql_pd_typeutil::string_slice::StringSlice`
+note: method defined here
+   --> pkg/schedule/placement/rule_manager.rs:149:18
+    |
+149 |     pub async fn initialize<C: SharedConfigProvider + ?Sized>(
+    |                  ^^^^^^^^^^
+
+error[E0433]: cannot find type `BalanceRegionScheduler` in this scope
+  --> pkg/schedule/schedulers/task_072_test.rs:69:27
+   |
+69 |         let mut scheduler=BalanceRegionScheduler::default();
+   |                           ^^^^^^^^^^^^^^^^^^^^^^ use of undeclared type `BalanceRegionScheduler`
+   |
+help: a struct with a similar name exists
+   |
+69 -         let mut scheduler=BalanceRegionScheduler::default();
+69 +         let mut scheduler=BalanceLeaderScheduler::default();
+   |
+
+error[E0433]: cannot find type `BalanceRegionConfig` in this scope
+  --> pkg/schedule/schedulers/task_072_test.rs:70:52
+   |
+70 | ...   if case["outside"]==true {scheduler.config=BalanceRegionConfig::new(vec![KeyRange{start_key:b"c".to_vec(),end_key:b"d".to_vec(...
+   |                                                  ^^^^^^^^^^^^^^^^^^^ use of undeclared type `BalanceRegionConfig`
+   |
+help: a struct with a similar name exists
+   |
+70 -         if case["outside"]==true {scheduler.config=BalanceRegionConfig::new(vec![KeyRange{start_key:b"c".to_vec(),end_key:b"d".to_vec()}]);}
+70 +         if case["outside"]==true {scheduler.config=BalanceLeaderConfig::new(vec![KeyRange{start_key:b"c".to_vec(),end_key:b"d".to_vec()}]);}
+   |
+
+error[E0433]: cannot find type `BalanceRegionScheduler` in this scope
+  --> pkg/schedule/schedulers/task_072_test.rs:91:13
+   |
+91 |     assert!(BalanceRegionScheduler::is_schedule_allowed(3,4));assert!(!BalanceRegionScheduler::is_schedule_allowed(4,4));assert!(!Ba...
+   |             ^^^^^^^^^^^^^^^^^^^^^^ use of undeclared type `BalanceRegionScheduler`
+   |
+help: a struct with a similar name exists
+   |
+91 -     assert!(BalanceRegionScheduler::is_schedule_allowed(3,4));assert!(!BalanceRegionScheduler::is_schedule_allowed(4,4));assert!(!BalanceRegionScheduler::is_schedule_allowed(0,0));
+91 +     assert!(BalanceLeaderScheduler::is_schedule_allowed(3,4));assert!(!BalanceRegionScheduler::is_schedule_allowed(4,4));assert!(!BalanceRegionScheduler::is_schedule_allowed(0,0));
+   |
+
+error[E0433]: cannot find type `BalanceRegionScheduler` in this scope
+  --> pkg/schedule/schedulers/task_072_test.rs:91:72
+   |
+91 | ...edule_allowed(3,4));assert!(!BalanceRegionScheduler::is_schedule_allowed(4,4));assert!(!BalanceRegionScheduler::is_schedule_allow...
+   |                                 ^^^^^^^^^^^^^^^^^^^^^^ use of undeclared type `BalanceRegionScheduler`
+   |
+help: a struct with a similar name exists
+   |
+91 -     assert!(BalanceRegionScheduler::is_schedule_allowed(3,4));assert!(!BalanceRegionScheduler::is_schedule_allowed(4,4));assert!(!BalanceRegionScheduler::is_schedule_allowed(0,0));
+91 +     assert!(BalanceRegionScheduler::is_schedule_allowed(3,4));assert!(!BalanceLeaderScheduler::is_schedule_allowed(4,4));assert!(!BalanceRegionScheduler::is_schedule_allowed(0,0));
+   |
+
+error[E0433]: cannot find type `BalanceRegionScheduler` in this scope
+  --> pkg/schedule/schedulers/task_072_test.rs:91:131
+   |
+91 | ...edule_allowed(4,4));assert!(!BalanceRegionScheduler::is_schedule_allowed(0,0));
+   |                                 ^^^^^^^^^^^^^^^^^^^^^^ use of undeclared type `BalanceRegionScheduler`
+   |
+help: a struct with a similar name exists
+   |
+91 -     assert!(BalanceRegionScheduler::is_schedule_allowed(3,4));assert!(!BalanceRegionScheduler::is_schedule_allowed(4,4));assert!(!BalanceRegionScheduler::is_schedule_allowed(0,0));
+91 +     assert!(BalanceRegionScheduler::is_schedule_allowed(3,4));assert!(!BalanceRegionScheduler::is_schedule_allowed(4,4));assert!(!BalanceLeaderScheduler::is_schedule_allowed(0,0));
+   |
+
+error[E0433]: cannot find type `BalanceRegionConfig` in this scope
+  --> pkg/schedule/schedulers/task_072_test.rs:92:16
+   |
+92 |     let config=BalanceRegionConfig::new(vec![KeyRange{start_key:vec![0,255],end_key:vec![255]}]);
+   |                ^^^^^^^^^^^^^^^^^^^ use of undeclared type `BalanceRegionConfig`
+   |
+help: a struct with a similar name exists
+   |
+92 -     let config=BalanceRegionConfig::new(vec![KeyRange{start_key:vec![0,255],end_key:vec![255]}]);
+92 +     let config=BalanceLeaderConfig::new(vec![KeyRange{start_key:vec![0,255],end_key:vec![255]}]);
+   |
+
+error[E0433]: cannot find type `BalanceRegionConfig` in this scope
+  --> pkg/schedule/schedulers/task_072_test.rs:95:16
+   |
+95 |     assert_eq!(BalanceRegionConfig::new(vec![]).ranges().len(),1);
+   |                ^^^^^^^^^^^^^^^^^^^ use of undeclared type `BalanceRegionConfig`
+   |
+help: a struct with a similar name exists
+   |
+95 -     assert_eq!(BalanceRegionConfig::new(vec![]).ranges().len(),1);
+95 +     assert_eq!(BalanceLeaderConfig::new(vec![]).ranges().len(),1);
+   |
+
+Some errors have detailed explanations: E0308, E0422, E0425, E0433.
+For more information about an error, try `rustc --explain E0308`.
+error: could not compile `astersql-pd-schedule-schedulers` (lib test) due to 12 previous errors

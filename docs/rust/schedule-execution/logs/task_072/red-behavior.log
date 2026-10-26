@@ -1,0 +1,24 @@
+   Compiling astersql-pd-schedule-schedulers v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.19s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_schedulers-46948a5a92bc5f3a)
+
+running 3 tests
+test task_072_test::task_072_influence_amp_and_candidate_margin ... ok
+test task_072_test::task_072_config_and_limits ... ok
+task_072 case ordinary: 1 operators, 0 errors
+
+thread 'task_072_test::task_072_behavior_cases' (165766575) panicked at pkg/schedule/schedulers/task_072_test.rs:218:9:
+assertion `left == right` failed: large-overshoot: []
+  left: 1
+ right: 0
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test task_072_test::task_072_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_072_test::task_072_behavior_cases
+
+test result: FAILED. 2 passed; 1 failed; 0 ignored; 0 measured; 26 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-schedulers --lib`

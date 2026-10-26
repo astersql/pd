@@ -1,0 +1,150 @@
+{
+  "provenance": "read-only Go source/test derived; no Go execution",
+  "sizes": [
+    288,
+    96,
+    96,
+    0
+  ],
+  "cases": [
+    {
+      "name": "ordinary",
+      "expected": 1
+    },
+    {
+      "name": "large-overshoot",
+      "sizes": [
+        150,
+        100,
+        100,
+        0
+      ],
+      "size": 100,
+      "ratio": 0.1,
+      "expected": 0
+    },
+    {
+      "name": "sole-region",
+      "sizes": [
+        96,
+        0,
+        0,
+        0
+      ],
+      "total": 10,
+      "expected": 0,
+      "repeat": 10
+    },
+    {
+      "name": "sole-region-reverse",
+      "sizes": [
+        96,
+        0,
+        0,
+        0
+      ],
+      "total": 10,
+      "reverse": true,
+      "repeat": 10,
+      "expected": 0
+    },
+    {
+      "name": "small",
+      "size": 10,
+      "expected": 1
+    },
+    {
+      "name": "empty",
+      "size": 0,
+      "total": 100,
+      "expected": 0
+    },
+    {
+      "name": "range-empty",
+      "size": 0,
+      "total": 100,
+      "range_view": true,
+      "expected": 1
+    },
+    {
+      "name": "range-outside",
+      "outside": true,
+      "expected": 0
+    },
+    {
+      "name": "managed-exclusion",
+      "exclude": true,
+      "expected": 0
+    },
+    {
+      "name": "placement",
+      "placement": true,
+      "expected": 1
+    },
+    {
+      "name": "placement-diversity",
+      "placement_block": true,
+      "expected": 0
+    },
+    {
+      "name": "pending-influence",
+      "influence": true,
+      "expected": 0
+    },
+    {
+      "name": "pending-source",
+      "pending": true,
+      "expected": 1
+    },
+    {
+      "name": "down",
+      "down": true,
+      "expected": 0
+    },
+    {
+      "name": "under-replicated",
+      "peers": 2,
+      "expected": 0
+    },
+    {
+      "name": "witness-source",
+      "witness": true,
+      "expected": 0
+    },
+    {
+      "name": "target-offline",
+      "blocked_target": true,
+      "expected": 0
+    },
+    {
+      "name": "hot",
+      "hot": true,
+      "expected": 0
+    },
+    {
+      "name": "no-leader",
+      "no_leader": true,
+      "expected": 0
+    },
+    {
+      "name": "leader-source",
+      "leader": 1,
+      "expected": 1
+    },
+    {
+      "name": "allocation-failure",
+      "allocation_fail": true,
+      "expected": 0
+    },
+    {
+      "name": "balanced",
+      "sizes": [
+        96,
+        96,
+        96,
+        96
+      ],
+      "expected": 0
+    }
+  ]
+}

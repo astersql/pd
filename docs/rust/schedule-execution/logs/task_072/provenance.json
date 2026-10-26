@@ -1,0 +1,20 @@
+{
+  "source_commit": "bb3c8d6e61c21582980365bf256fbae0f51e46d1",
+  "dependency_071": "bb3c8d6e6",
+  "evidence_kind": "read-only Go source/test derivation + actual Rust execution; user authorized",
+  "go_binary_sha256": null,
+  "go_output_sha256": null,
+  "normalization": {
+    "random": "explicit zero index and identity shuffle; exact move target=4 (reverse sole case swaps 1/4)",
+    "time": "fixed host Unix nanos 1000000000000; operator wall-clock timestamps not compared",
+    "ids": "allocator returns 1000; allocation-failure returns typed error",
+    "errors": "not normalized; typed Allocation required",
+    "operator": "actual steps, kind, priority, health check, membership, influence, confver checked"
+  },
+  "sha256": {
+    "pkg/schedule/schedulers/balance_region.go": "616ed0bb53b58909c013e10be1000822fe0ca72ff46d36ec0aaab1031213c1fc",
+    "pkg/schedule/schedulers/balance_region_test.go": "a0037629e3317d68ae59e4ed07ed9bb3859045aa57901151a7075707a17c4532",
+    "pkg/schedule/schedulers/utils.go": "41a551f1b4f95e31a0f48cfc262a125e1132dfa546a73a9300b8eb7bd18834e1",
+    "docs/rust/schedule-execution/fixtures/task_072.json": "933845b4a2803787ebddbf1546ff75383e25efbaa3c23b3e4b8f3fc09e3d4b6a"
+  }
+}

@@ -1,0 +1,32 @@
+   Compiling astersql-pd-schedule-schedulers v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.28s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_schedulers-46948a5a92bc5f3a)
+
+running 3 tests
+test task_072_test::task_072_influence_amp_and_candidate_margin ... ok
+test task_072_test::task_072_config_and_limits ... ok
+task_072 case ordinary: 1 operators, 0 errors
+task_072 case large-overshoot: 0 operators, 0 errors
+task_072 case sole-region: 0 operators, 0 errors
+task_072 case sole-region-reverse: 0 operators, 0 errors
+task_072 case small: 1 operators, 0 errors
+task_072 case empty: 0 operators, 0 errors
+task_072 case range-empty: 1 operators, 0 errors
+task_072 case range-outside: 0 operators, 0 errors
+task_072 case managed-exclusion: 0 operators, 0 errors
+task_072 case placement: 1 operators, 0 errors
+task_072 case placement-diversity: 0 operators, 0 errors
+task_072 case pending-influence: 0 operators, 0 errors
+task_072 case pending-source: 1 operators, 0 errors
+task_072 case down: 0 operators, 0 errors
+task_072 case under-replicated: 0 operators, 0 errors
+task_072 case witness-source: 0 operators, 0 errors
+task_072 case target-offline: 0 operators, 0 errors
+task_072 case hot: 0 operators, 0 errors
+task_072 case no-leader: 0 operators, 0 errors
+task_072 case leader-source: 1 operators, 0 errors
+task_072 case allocation-failure: 0 operators, 10 errors
+task_072 case balanced: 0 operators, 0 errors
+test task_072_test::task_072_behavior_cases ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 26 filtered out; finished in 0.01s
