@@ -1,0 +1,17 @@
+{
+  "focused": {
+    "passed": 6,
+    "failed": 0,
+    "ignored": 0
+  },
+  "crate": {
+    "passed": 46,
+    "failed": 0,
+    "ignored": 0
+  },
+  "workspace-test": {
+    "passed": 1595,
+    "failed": 0,
+    "ignored": 1
+  }
+}

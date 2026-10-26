@@ -1,0 +1,37 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "dependency_commit": "d90d1fbd9",
+  "oracle_kind": "readonly Go source and tests derived; authorized substitute",
+  "go_execution": null,
+  "go_output_hash": null,
+  "normalization": {
+    "store_map_order": "unordered JSON objects compared as domain maps",
+    "null_ranges": "null and [] normalize to empty domain Vec; serialize []",
+    "time_random": "not used"
+  },
+  "sources": {
+    "pkg/schedule/schedulers/grant_leader.go": {
+      "current_sha256": "4c1f9fda46d697bce4c22ce8dbb07b8a7f255d5d475028067e7c06c8c3aca95f",
+      "baseline_sha256": "4c1f9fda46d697bce4c22ce8dbb07b8a7f255d5d475028067e7c06c8c3aca95f"
+    },
+    "pkg/schedule/schedulers/grant_leader_test.go": {
+      "current_sha256": "f1763d8d73e99c470933119be6b42bcfc892a17b7e7782109bc7622c22b4cb32",
+      "baseline_sha256": "f1763d8d73e99c470933119be6b42bcfc892a17b7e7782109bc7622c22b4cb32"
+    },
+    "pkg/schedule/schedulers/utils.go": {
+      "current_sha256": "41a551f1b4f95e31a0f48cfc262a125e1132dfa546a73a9300b8eb7bd18834e1",
+      "baseline_sha256": "41a551f1b4f95e31a0f48cfc262a125e1132dfa546a73a9300b8eb7bd18834e1"
+    },
+    "pkg/utils/keyutil/keyrange.go": {
+      "current_sha256": "bf3f4c9a134c67e165d80b4bcf9c01d5b5c6b377f29c0ed87b2d40143251ee21",
+      "baseline_sha256": "bf3f4c9a134c67e165d80b4bcf9c01d5b5c6b377f29c0ed87b2d40143251ee21"
+    }
+  },
+  "fixture_sha256": "b339f9aa3148f52f739c64d8ffbe8a8b56a6b7f982eba54501903bc996147915",
+  "rust_sha256": {
+    "pkg/schedule/schedulers/grant_leader.rs": "4e272095fba349a193833a715438dcecf965e86e82988ea2f0796e37f7bd6291",
+    "pkg/schedule/schedulers/grant_leader_config.rs": "b2172b9525644db88f36e0b43249245d6086027f6f25756766a3de7dbe92b3c7",
+    "pkg/schedule/schedulers/task_078_test.rs": "37e16f9e56399af71838e3fb3b4e1f8d2f6360b55efc870869e5a57f42422c5d",
+    "pkg/schedule/schedulers/lib.rs": "eb8e3c4e1728ed399d2c9214a995b3e9dcb74b3fd54ab721f7f222fa40451222"
+  }
+}

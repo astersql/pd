@@ -1,0 +1,97 @@
+{
+  "red-api.log": {
+    "sha256": "c34fb80851d479b9f93adfa75d40fc9940887c673927869749f602bccae08340",
+    "encoding": "gzip",
+    "uncompressed_bytes": 28832
+  },
+  "workspace-test.log": {
+    "sha256": "cd7c70a5f4bd9c6edd3b81ef3294eb6619f5697746c514ccbe5bc556bff9e72e",
+    "encoding": "gzip",
+    "uncompressed_bytes": 143827
+  },
+  "fmt.log": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "encoding": "gzip",
+    "uncompressed_bytes": 0
+  },
+  "fmt-red.log": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "encoding": "gzip",
+    "uncompressed_bytes": 0
+  },
+  "focused-initial.log": {
+    "sha256": "024118878cac0b020796083199920467aa0c149ce52dfccdd7c9f038ff045091",
+    "encoding": "gzip",
+    "uncompressed_bytes": 1091
+  },
+  "fmt-mutation.log": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "encoding": "gzip",
+    "uncompressed_bytes": 0
+  },
+  "fmt-check-before-reparse.log": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "encoding": "gzip",
+    "uncompressed_bytes": 0
+  },
+  "red-behavior.log": {
+    "sha256": "c3710f91b2cd754343108a00b132e0fab67280ff061677a3ce06be90bff989cc",
+    "encoding": "gzip",
+    "uncompressed_bytes": 1103
+  },
+  "fmt-final.log": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "encoding": "gzip",
+    "uncompressed_bytes": 0
+  },
+  "workspace-check-before-reparse.log": {
+    "sha256": "b99dc568e5cb5de8fc41bd53e0ad87b29454193cd4f959fc36fd5c1a8b4e81bd",
+    "encoding": "gzip",
+    "uncompressed_bytes": 542
+  },
+  "fmt-impl.log": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "encoding": "gzip",
+    "uncompressed_bytes": 0
+  },
+  "workspace-check.log": {
+    "sha256": "cac817d144fdebb02c38453a1ae9a03822be12d993e0790a9129d07947953217",
+    "encoding": "gzip",
+    "uncompressed_bytes": 542
+  },
+  "fmt-check.log": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "encoding": "gzip",
+    "uncompressed_bytes": 0
+  },
+  "crate-before-reparse.log": {
+    "sha256": "63908b88988de81d6c6712d3f1e0017da20da0eaa6435c951c06fc6ee5d453b8",
+    "encoding": "gzip",
+    "uncompressed_bytes": 3140
+  },
+  "metadata.log": {
+    "sha256": "b5d85138715925e0025be7ed1ca41e691aaebc8bfa3834296dd4fa57cd23570a",
+    "encoding": "gzip",
+    "uncompressed_bytes": 167680
+  },
+  "focused-before-reparse.log": {
+    "sha256": "85471324b8b396d81883ffd497f57f4b19ad6f4ab3378f500ada789bafdac0b1",
+    "encoding": "gzip",
+    "uncompressed_bytes": 755
+  },
+  "workspace-test-before-reparse.log": {
+    "sha256": "f713d3352ffe77c07879bf90ff2f028346f4cc0f4bbdc68508161784261d3d11",
+    "encoding": "gzip",
+    "uncompressed_bytes": 143767
+  },
+  "crate.log": {
+    "sha256": "3b55fbbfcd7ef10188f46b975bc5f31a023686288bc35b04ee172d5128989a1e",
+    "encoding": "gzip",
+    "uncompressed_bytes": 3200
+  },
+  "focused.log": {
+    "sha256": "e520151a9caf5dea603db290912996b853cbb805ab913bfeb2d895acbc8516e5",
+    "encoding": "gzip",
+    "uncompressed_bytes": 865
+  }
+}

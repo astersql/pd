@@ -10,9 +10,13 @@ use std::collections::BTreeMap;
 use std::sync::Arc;
 
 /// Per-store contained key ranges. Empty ranges select no followers.
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
+#[serde(
+    from = "super::grant_leader_config::GrantConfigJson",
+    into = "super::grant_leader_config::GrantConfigJson"
+)]
 pub struct GrantLeaderConfig {
-    stores: BTreeMap<u64, Vec<KeyRange>>,
+    pub(super) stores: BTreeMap<u64, Vec<KeyRange>>,
 }
 impl GrantLeaderConfig {
     pub fn new(stores: BTreeMap<u64, Vec<KeyRange>>) -> Self {
@@ -27,7 +31,7 @@ pub type GrantLeaderContext<'a, C, P> = crate::EvictLeaderContext<'a, C, P>;
 /// Builder failures are retained for diagnostics; Go logs and skips them.
 pub type GrantLeaderResult = crate::EvictLeaderResult;
 pub struct GrantLeaderScheduler {
-    config: GrantLeaderConfig,
+    pub(super) config: GrantLeaderConfig,
 }
 impl GrantLeaderScheduler {
     pub fn new(config: GrantLeaderConfig) -> Self {
