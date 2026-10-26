@@ -97,3 +97,8 @@ mod task_082_test;
 
 mod evict_stopping;
 pub use evict_stopping::*;
+
+mod slow_trend_candidate;
+pub use slow_trend_candidate::*;
+#[cfg(test)]
+mod task_083_test;
