@@ -1,0 +1,160 @@
+{
+  "source_commit": "c337bbd33944ea88e4dfefaafb0556b4ea8fb826",
+  "provenance": "Go source/test derivation only; user-authorized; no Go runtime oracle",
+  "runtime_oracle": null,
+  "normalization": "none",
+  "size": [
+    {
+      "keys": [
+        "a",
+        "b",
+        "f"
+      ],
+      "expected": "b"
+    },
+    {
+      "keys": [
+        "",
+        "a",
+        ""
+      ],
+      "expected": null
+    },
+    {
+      "keys": [],
+      "expected": null
+    },
+    {
+      "keys": [
+        "b",
+        "c",
+        "d",
+        "e"
+      ],
+      "expected": "d"
+    }
+  ],
+  "load": [
+    {
+      "keys": [
+        "",
+        "b",
+        ""
+      ],
+      "loads": [
+        10,
+        10000
+      ],
+      "expected": "b",
+      "acc": 10,
+      "total": 10010
+    },
+    {
+      "keys": [
+        "",
+        "a",
+        ""
+      ],
+      "loads": [
+        10,
+        10000
+      ],
+      "expected": null
+    },
+    {
+      "keys": [
+        "b",
+        "c",
+        ""
+      ],
+      "loads": [
+        10,
+        10000
+      ],
+      "expected": "c",
+      "acc": 10,
+      "total": 10010
+    },
+    {
+      "keys": [
+        "",
+        "b",
+        "d",
+        ""
+      ],
+      "loads": [
+        2,
+        2,
+        20
+      ],
+      "expected": "d",
+      "acc": 4,
+      "total": 24
+    },
+    {
+      "keys": [
+        "b",
+        "c",
+        "d"
+      ],
+      "loads": [
+        0,
+        0
+      ],
+      "expected": null
+    },
+    {
+      "keys": [
+        "b",
+        "c"
+      ],
+      "loads": [
+        10
+      ],
+      "expected": null
+    },
+    {
+      "keys": [],
+      "loads": [],
+      "expected": null
+    }
+  ],
+  "dimensions": [
+    [
+      1,
+      0,
+      0,
+      4
+    ],
+    [
+      2,
+      0,
+      0,
+      5
+    ],
+    [
+      1,
+      0,
+      1,
+      1
+    ],
+    [
+      2,
+      0,
+      1,
+      2
+    ],
+    [
+      3,
+      2,
+      1,
+      2
+    ],
+    [
+      3,
+      3,
+      1,
+      0
+    ]
+  ]
+}

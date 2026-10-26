@@ -151,3 +151,9 @@ mod hot_solve;
 pub use hot_solve::*;
 #[cfg(test)]
 mod task_092_test;
+
+#[cfg(test)]
+mod task_093_test;
+
+mod hot_split;
+pub use hot_split::*;

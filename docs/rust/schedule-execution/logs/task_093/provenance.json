@@ -1,0 +1,13 @@
+{
+  "source_commit": "c337bbd33944ea88e4dfefaafb0556b4ea8fb826",
+  "kind": "Go source/test derivation only; user-authorized; no Go runtime oracle",
+  "hashes": {
+    "pkg/schedule/schedulers/hot_region_solver.go": "f71cb92668e2221aa0e6e9ff09004cafcea4ded55ad344d80e5d8f46a88df6ce",
+    "pkg/schedule/schedulers/hot_region.go": "2e34a6068d48c1ffed3a78764fc18843b20b6fab2943587df4e907acfe692ad6",
+    "pkg/schedule/schedulers/hot_region_solver_test.go": "80697f96cf32436ef1d26b2d592e6ccba1b3890fdc90eecb146fac7aee9f31c3",
+    "pkg/schedule/schedulers/hot_region_test.go": "20e49d3e00501845befb864375ed74b8e2da5f82dc8e71006c496463fb08a756",
+    "pkg/schedule/schedulers/hot_region_rank_v1.go": "d37b60b6506fd03d308e398a039dfe6884972103f1c58b268f11356e84d862df",
+    "pkg/schedule/schedulers/hot_region_rank_v2.go": "63fe4d9673afbd47d4905abb2c97e1d9590f9b34b61d3b37537469896f9a9e61",
+    "docs/rust/schedule-execution/fixtures/task_093.json": "251649e07becd0a1aa3a6bd77ab0bfc95c29f87feba82532789076cf917a1845"
+  }
+}
