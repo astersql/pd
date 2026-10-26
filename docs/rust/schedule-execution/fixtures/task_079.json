@@ -1,0 +1,120 @@
+{
+  "provenance": "Go read-only source-derived; no Go execution oracle",
+  "cases": [
+    {
+      "scores": [
+        0,
+        0,
+        0
+      ],
+      "evict": 0
+    },
+    {
+      "scores": [
+        79,
+        0,
+        0
+      ],
+      "evict": 0
+    },
+    {
+      "scores": [
+        80,
+        0,
+        0
+      ],
+      "evict": 0
+    },
+    {
+      "scores": [
+        99,
+        0,
+        0
+      ],
+      "evict": 0
+    },
+    {
+      "scores": [
+        100,
+        0,
+        0
+      ],
+      "evict": 1
+    },
+    {
+      "scores": [
+        101,
+        0,
+        0
+      ],
+      "evict": 1
+    },
+    {
+      "scores": [
+        100,
+        79,
+        0
+      ],
+      "evict": 1
+    },
+    {
+      "scores": [
+        100,
+        80,
+        0
+      ],
+      "evict": 0
+    },
+    {
+      "scores": [
+        100,
+        100,
+        0
+      ],
+      "evict": 0
+    },
+    {
+      "scores": [
+        0,
+        100,
+        0
+      ],
+      "evict": 2
+    },
+    {
+      "scores": [
+        0,
+        0,
+        100
+      ],
+      "evict": 3
+    },
+    {
+      "scores": [
+        100,
+        0,
+        0
+      ],
+      "state": "removed",
+      "evict": 0
+    },
+    {
+      "scores": [
+        100,
+        0,
+        0
+      ],
+      "state": "removing",
+      "evict": 0
+    },
+    {
+      "scores": [
+        100,
+        0,
+        0
+      ],
+      "state": "serving",
+      "evict": 1
+    }
+  ]
+}

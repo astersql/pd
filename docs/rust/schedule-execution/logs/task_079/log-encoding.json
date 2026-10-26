@@ -1,0 +1,57 @@
+{
+  "fmt-check.log": {
+    "encoding": "gzip",
+    "sha256_uncompressed": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes_uncompressed": 0
+  },
+  "fmt.log": {
+    "encoding": "gzip",
+    "sha256_uncompressed": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes_uncompressed": 0
+  },
+  "focused-final.log": {
+    "encoding": "gzip",
+    "sha256_uncompressed": "08beaff2e0b4b19ab9c6d4d1c5bb9764afe6f93bddd04c9ea871c586b6e203fc",
+    "bytes_uncompressed": 874
+  },
+  "focused.log": {
+    "encoding": "gzip",
+    "sha256_uncompressed": "7e373ddde454f3c85cbff6257c4fc3b11ac6796dae9c0122be30438e01c28695",
+    "bytes_uncompressed": 631
+  },
+  "metadata.log": {
+    "encoding": "gzip",
+    "sha256_uncompressed": "b5d85138715925e0025be7ed1ca41e691aaebc8bfa3834296dd4fa57cd23570a",
+    "bytes_uncompressed": 167680
+  },
+  "package.log": {
+    "encoding": "gzip",
+    "sha256_uncompressed": "409f4b4ea1e3732055f8d295177cc92f932e0dc3a025c957d6c0c455328ca089",
+    "bytes_uncompressed": 3552
+  },
+  "red-api.log": {
+    "encoding": "gzip",
+    "sha256_uncompressed": "5911a29643a4cdf14c352dcb5f82a8a23e2145d7b9534637dc41d811a6ee55a3",
+    "bytes_uncompressed": 7818
+  },
+  "red-behavior.log": {
+    "encoding": "gzip",
+    "sha256_uncompressed": "a3fa200ef11a216e03e75423ef175457773a5e6c7c5e67463e3a56c7b743bf7a",
+    "bytes_uncompressed": 1252
+  },
+  "workspace-check.log": {
+    "encoding": "gzip",
+    "sha256_uncompressed": "7b709f864b4e9694f90f92511219efd4fc02eff2c32b3fc92dd2644d9c7dbb59",
+    "bytes_uncompressed": 542
+  },
+  "workspace-test.log": {
+    "encoding": "gzip",
+    "sha256_uncompressed": "de0a5f37a98de49901ac6bcb89f3086d834b7fe0aab08666a386b95d476136ce",
+    "bytes_uncompressed": 144179
+  },
+  "before.json": {
+    "encoding": "gzip",
+    "sha256_uncompressed": "53e9f5cbef32b3f6e746441d77fdff2deae628a743fde418390819489358c63d",
+    "bytes_uncompressed": 122086
+  }
+}

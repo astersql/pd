@@ -1,0 +1,39 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "checkout": "56cf5991496eeb1c59dc3896eddd3f49a06841b6",
+  "method": "read-only Go source/test derivation + real Rust behavior and faults; user-authorized substitute",
+  "go_binary": null,
+  "go_output": null,
+  "go_output_sha256": null,
+  "sha256": {
+    "pkg/schedule/schedulers/evict_slow_store.go": "dc5a6f0d9f59e6001c0882d54d16771515266b23cd43d1c3f9a43520e217aeda",
+    "pkg/schedule/schedulers/evict_slow_store_test.go": "1c23c9d988c0c84b452fee31cc6d15d95badcb1ae7ad6b7e32323a222b7624e5",
+    "pkg/schedule/schedulers/evict_slow_trend.go": "cc8c13a96b1dd341a7c3a24d15c2a8ad7ed129434ee9c0f2e7f8a60edefa6fa6",
+    "pkg/schedule/schedulers/evict_leader.go": "7fb5a50e54d33f0069e22c69ffd1341ae64f6310a5d1c49ac315aad6f925a460",
+    "pkg/core/store.go": "686a3bd66c7deceb3fd79b2c83be359487088993d20e649ba2a533db298ad605",
+    "pkg/core/store_option.go": "5f63e5e1153c5461a5a087ee5237344b768c9c65f4d17d3a2105e0f766dc8094",
+    "docs/rust/schedule-execution/fixtures/task_079.json": "0ae275949cacba65846ab51051e91176d00765411991ea13bdcb6415edb03c99"
+  },
+  "normalization": {
+    "clock": "explicit monotonic Unix nanoseconds; elapsed capped at signed Go duration max",
+    "random": "explicit draws; stable candidate sort; compare complete candidate set",
+    "json": "object order ignored; missing/null disk store lists mapped to empty; runtime recovery fields not serialized",
+    "errors": "not normalized"
+  },
+  "baseline_source_sha256": {
+    "pkg/schedule/schedulers/evict_slow_store.go": "dc5a6f0d9f59e6001c0882d54d16771515266b23cd43d1c3f9a43520e217aeda",
+    "pkg/schedule/schedulers/evict_slow_store_test.go": "1c23c9d988c0c84b452fee31cc6d15d95badcb1ae7ad6b7e32323a222b7624e5",
+    "pkg/schedule/schedulers/evict_slow_trend.go": "cc8c13a96b1dd341a7c3a24d15c2a8ad7ed129434ee9c0f2e7f8a60edefa6fa6",
+    "pkg/schedule/schedulers/evict_leader.go": "7fb5a50e54d33f0069e22c69ffd1341ae64f6310a5d1c49ac315aad6f925a460",
+    "pkg/core/store.go": "686a3bd66c7deceb3fd79b2c83be359487088993d20e649ba2a533db298ad605",
+    "pkg/core/store_option.go": "5f63e5e1153c5461a5a087ee5237344b768c9c65f4d17d3a2105e0f766dc8094"
+  },
+  "baseline_matches_checkout": {
+    "pkg/schedule/schedulers/evict_slow_store.go": true,
+    "pkg/schedule/schedulers/evict_slow_store_test.go": true,
+    "pkg/schedule/schedulers/evict_slow_trend.go": true,
+    "pkg/schedule/schedulers/evict_leader.go": true,
+    "pkg/core/store.go": true,
+    "pkg/core/store_option.go": true
+  }
+}

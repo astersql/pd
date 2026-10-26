@@ -73,3 +73,9 @@ mod task_078_test;
 
 mod grant_leader_config;
 pub use grant_leader_config::*;
+
+#[cfg(test)]
+mod task_079_test;
+
+mod evict_disk;
+pub use evict_disk::*;

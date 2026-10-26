@@ -147,6 +147,14 @@ impl EvictLeaderScheduler {
         &self,
         ctx: &mut EvictLeaderContext<'_, C, P>,
     ) -> EvictLeaderResult {
+        self.schedule_with_description(ctx, "evict-leader-scheduler")
+            .await
+    }
+    pub(super) async fn schedule_with_description<C: BasicCluster, P: SchedulerConfigProvider>(
+        &self,
+        ctx: &mut EvictLeaderContext<'_, C, P>,
+        name: &str,
+    ) -> EvictLeaderResult {
         let mut result = EvictLeaderResult::default();
         let mut used = HashSet::new();
         for _ in 0..self.config.batch {
@@ -189,7 +197,7 @@ impl EvictLeaderScheduler {
                     HashSet::new()
                 };
                 let state = StoreStateFilter {
-                    action_scope: "evict-leader-scheduler".into(),
+                    action_scope: name.into(),
                     transfer_leader: true,
                     operator_level: PriorityLevel::URGENT,
                     now_unix_nanos: ctx.now_unix_nanos,
@@ -215,7 +223,7 @@ impl EvictLeaderScheduler {
                     &region.meta().key_range.end_key,
                 );
                 let factory = PeerOperatorFactory::new(
-                    "evict-leader-scheduler",
+                    name,
                     BuilderContext {
                         stores: ctx.cluster.stores(),
                         config: ctx.config,
