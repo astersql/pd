@@ -440,6 +440,19 @@ impl HotSolver {
         }
         Ok((ops, decorations))
     }
+    /// Compare read-leader and read-peer winners using the leader's rank formula,
+    /// as Go balanceHotReadRegions does. Both results retain real candidates.
+    pub fn prefers_result(&self, current: &HotSolveResult<'_>, old: &HotSolveResult<'_>) -> bool {
+        let Some(c) = current.best.as_ref() else {
+            return false;
+        };
+        let Some(b) = old.best.as_ref() else {
+            return true;
+        };
+        let rank = self.rank(c, &mut c.solution());
+        let old_rank = self.rank(b, &mut b.solution());
+        self.better(c, rank, Some((b, old_rank)))
+    }
     pub fn operation(&self) -> HotSourceOperation {
         self.operation
     }

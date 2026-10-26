@@ -1,0 +1,93 @@
+{
+  "source_commit": "deb38f6ed60c435074ce861ba66ce36157dfb314",
+  "evidence_kind": "source_assertion",
+  "runtime_oracle": null,
+  "normalization": "none",
+  "sha256": {
+    "pkg/schedule/schedulers/hot_region.go": "2e34a6068d48c1ffed3a78764fc18843b20b6fab2943587df4e907acfe692ad6",
+    "pkg/schedule/schedulers/hot_region_test.go": "20e49d3e00501845befb864375ed74b8e2da5f82dc8e71006c496463fb08a756",
+    "pkg/schedule/schedulers/hot_region_rank_v1.go": "d37b60b6506fd03d308e398a039dfe6884972103f1c58b268f11356e84d862df",
+    "pkg/schedule/schedulers/hot_region_rank_v2.go": "63fe4d9673afbd47d4905abb2c97e1d9590f9b34b61d3b37537469896f9a9e61",
+    "docs/rust/schedule-execution/fixtures/task_094.json": "1b00dc012c07314042fc4b3135fee391be440c9c522f97575bb4fc343f3f20da",
+    "pkg/schedule/schedulers/task_094_test.rs": "bc53c708bdef1cdc655b8d900b6f119d60ffaa71d51f640cdb18b44226730db5"
+  },
+  "raw_inputs": {
+    "stores": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "source_store": 1,
+    "destination_store": 2,
+    "source_loads": [
+      1000,
+      1000,
+      0,
+      0
+    ],
+    "destination_loads": [
+      500,
+      500,
+      0,
+      0
+    ],
+    "peer_loads": [
+      200,
+      200,
+      0,
+      0
+    ],
+    "rank_steps": [
+      10,
+      10,
+      10,
+      10
+    ],
+    "priorities": [
+      "byte",
+      "key"
+    ],
+    "formulas": [
+      "v1",
+      "v2"
+    ],
+    "leader_region": {
+      "id": 10,
+      "stores": [
+        1,
+        2,
+        3
+      ],
+      "leader": 1
+    },
+    "peer_region": {
+      "id": 10,
+      "stores": [
+        1,
+        3,
+        4
+      ],
+      "leader": 3
+    },
+    "allocator_id": 100,
+    "conf_change_v2": false,
+    "comparison_load_pairs": [
+      [
+        200,
+        100,
+        "ReadLeader"
+      ],
+      [
+        100,
+        200,
+        "ReadPeer"
+      ],
+      [
+        200,
+        200,
+        "ReadPeer"
+      ]
+    ]
+  }
+}

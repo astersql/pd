@@ -1,0 +1,37 @@
+{
+  "evidence_kind": "source_assertion",
+  "runtime_oracle": null,
+  "source_commit": "deb38f6ed60c435074ce861ba66ce36157dfb314",
+  "cases": [
+    {
+      "resource": 0,
+      "winner": 0,
+      "description": "move-hot-write-peer"
+    },
+    {
+      "resource": 1,
+      "winner": 1,
+      "description": "transfer-hot-write-leader"
+    },
+    {
+      "resource": 2,
+      "winner": 2,
+      "description": "move-hot-read-peer"
+    },
+    {
+      "resource": 3,
+      "winner": 3,
+      "description": "transfer-hot-read-leader"
+    },
+    {
+      "resource": 2,
+      "winner": 3,
+      "description": "transfer-hot-read-leader"
+    },
+    {
+      "resource": 3,
+      "winner": 2,
+      "description": "move-hot-read-peer"
+    }
+  ]
+}

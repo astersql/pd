@@ -34,3 +34,7 @@ Go 参考：`hot_region_solver.go` 的 solve、compareSrc/DstStore、stepRank、
 isReadyToBuild、buildOperators（非 split 分支）、createOperator、decorateOperator。
 源码推导与真实 Rust 正常/故障验证按用户授权验收，没有本任务 Go 运行 oracle
 或运行差分。验证和边界样例见 [task-092](../../../docs/rust/schedule-execution/task-092.md)。
+
+任务94增加 `prefers_result`：保留两条真实求解结果的 candidate，按 read-leader
+公式调用相同 rank/betterThan 比较 read-leader/read-peer 赢家；完全平局返回 false，
+使 read-peer 优先。该入口只比较，不分配 ID 或发布 pending。

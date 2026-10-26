@@ -157,3 +157,8 @@ mod task_093_test;
 
 mod hot_split;
 pub use hot_split::*;
+
+mod hot_schedule;
+pub use hot_schedule::*;
+#[cfg(test)]
+mod task_094_test;
