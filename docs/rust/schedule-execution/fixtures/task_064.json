@@ -1,0 +1,168 @@
+{
+  "evidence_kind": "source-derived; no Go execution",
+  "source_commit": "fc9eb14232c8ad5f51eb957ff7cc0b9b3ed30468",
+  "go_source_sha256": "6b940638e508d361468417bd8612b2589637c1fe7d79f96ce0a0c65ecfc7681d",
+  "normalization": "Region IDs sorted; clock explicitly supplied in milliseconds; cancellation wins simultaneous tick, one Go-select-permitted ordering.",
+  "cases": [
+    {
+      "id": "complete",
+      "keys": [
+        "m",
+        "t"
+      ],
+      "observe": [
+        "m",
+        "t"
+      ],
+      "cancel": false,
+      "pct": 100,
+      "ids": [
+        3,
+        4
+      ],
+      "remaining": []
+    },
+    {
+      "id": "timeout_partial",
+      "keys": [
+        "m",
+        "t"
+      ],
+      "observe": [
+        "m"
+      ],
+      "cancel": false,
+      "pct": 50,
+      "ids": [
+        3
+      ],
+      "remaining": [
+        "t"
+      ]
+    },
+    {
+      "id": "cancel_partial",
+      "keys": [
+        "m",
+        "t"
+      ],
+      "observe": [
+        "m"
+      ],
+      "cancel": true,
+      "pct": 50,
+      "ids": [
+        3
+      ],
+      "remaining": [
+        "t"
+      ]
+    },
+    {
+      "id": "cancel_no_observation",
+      "keys": [
+        "m"
+      ],
+      "observe": [],
+      "cancel": true,
+      "pct": 0,
+      "ids": [],
+      "remaining": [
+        "m"
+      ]
+    },
+    {
+      "id": "timeout_empty",
+      "keys": [
+        "m"
+      ],
+      "observe": [],
+      "cancel": false,
+      "pct": 0,
+      "ids": [],
+      "remaining": [
+        "m"
+      ]
+    },
+    {
+      "id": "duplicate",
+      "keys": [
+        "m",
+        "m"
+      ],
+      "observe": [
+        "m"
+      ],
+      "cancel": false,
+      "pct": 100,
+      "ids": [
+        3
+      ],
+      "remaining": []
+    },
+    {
+      "id": "rounding",
+      "keys": [
+        "m",
+        "t",
+        "x"
+      ],
+      "observe": [
+        "m"
+      ],
+      "cancel": false,
+      "pct": 34,
+      "ids": [
+        3
+      ],
+      "remaining": [
+        "t",
+        "x"
+      ]
+    },
+    {
+      "id": "boundary_only",
+      "keys": [
+        "a"
+      ],
+      "observe": [],
+      "cancel": false,
+      "pct": 0,
+      "ids": [],
+      "remaining": [
+        "a"
+      ]
+    },
+    {
+      "id": "mixed_boundary",
+      "keys": [
+        "a",
+        "m"
+      ],
+      "observe": [
+        "m"
+      ],
+      "cancel": false,
+      "pct": 50,
+      "ids": [
+        3
+      ],
+      "remaining": [
+        "a"
+      ]
+    },
+    {
+      "id": "hole",
+      "keys": [
+        "zz"
+      ],
+      "observe": [],
+      "cancel": false,
+      "pct": 0,
+      "ids": [],
+      "remaining": [
+        "zz"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+   Compiling astersql-pd-schedule-splitter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/splitter)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.84s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_splitter-e2fa8fb892c7c755)
+
+running 4 tests
+test task_064_test::task_064_empty_and_negative_limit ... ok
+test task_064_test::task_064_retries_remaining_and_deduplicates_ids ... ok
+test task_064_test::task_064_cancel_retries_and_capped_final_sleep ... ok
+task_064: 10 frozen source-derived cases passed
+test task_064_test::task_064_behavior_cases ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 9 filtered out; finished in 0.00s

@@ -1,0 +1,11 @@
+warning: use of deprecated field `astersql_pd_proto::pdpb::RegionHeartbeatRequest::cpu_usage`
+   --> pkg/server/core_region_adapter.rs:134:30
+    |
+134 |     r.set_response_cpu_usage(p.cpu_usage);
+    |                              ^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: `astersql-pd-server` (lib) generated 1 warning
+    Checking astersql-pd-schedule-splitter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/splitter)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.78s

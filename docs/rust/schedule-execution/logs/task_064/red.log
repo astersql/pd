@@ -1,0 +1,15 @@
+   Compiling astersql-pd-schedule-splitter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/splitter)
+error[E0599]: no variant, associated function, or constant named `Replaced` found for enum `CancelReason` in the current scope
+   --> pkg/schedule/splitter/task_064_test.rs:154:40
+    |
+154 |     ctl.remove_operators(CancelReason::Replaced);
+    |                                        ^^^^^^^^ variant, associated function, or constant not found in `CancelReason`
+
+error[E0599]: no method named `step` found for struct `AdmissionOutcome` in the current scope
+   --> pkg/schedule/splitter/task_064_test.rs:159:67
+    |
+159 |     let Some(OpStep::SplitRegion(step)) = submissions.admitted[0].step(0) else {
+    |                                                                   ^^^^ method not found in `AdmissionOutcome`
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `astersql-pd-schedule-splitter` (lib test) due to 2 previous errors

@@ -1,0 +1,30 @@
+   Compiling astersql-pd-schedule-splitter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/splitter)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.20s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_splitter-e2fa8fb892c7c755)
+
+running 4 tests
+test task_064_test::task_064_empty_and_negative_limit ... ok
+
+thread 'task_064_test::task_064_retries_remaining_and_deduplicates_ids' (165392519) panicked at pkg/schedule/splitter/task_064_test.rs:173:5:
+assertion `left == right` failed
+  left: SplitRetryResult { percentage: 100, region_ids: [], remaining_keys: [] }
+ right: SplitRetryResult { percentage: 100, region_ids: [3], remaining_keys: [] }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'task_064_test::task_064_behavior_cases' (165392516) panicked at pkg/schedule/splitter/task_064_test.rs:115:9:
+assertion `left == right` failed: "complete"
+  left: Array []
+ right: Array [Number(3), Number(4)]
+test task_064_test::task_064_cancel_retries_and_capped_final_sleep ... ok
+test task_064_test::task_064_retries_remaining_and_deduplicates_ids ... FAILED
+test task_064_test::task_064_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_064_test::task_064_behavior_cases
+    task_064_test::task_064_retries_remaining_and_deduplicates_ids
+
+test result: FAILED. 2 passed; 2 failed; 0 ignored; 0 measured; 9 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-splitter --lib`

@@ -1,0 +1,20 @@
+{
+  "evidence_kind": "read-only Go source/test contract derivation + executed Rust behavior; no Go runtime differential",
+  "source_commit": "fc9eb14232c8ad5f51eb957ff7cc0b9b3ed30468",
+  "plan_source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "go_binary_sha256": null,
+  "go_output_sha256": null,
+  "sources": {
+    "pkg/schedule/splitter/region_splitter.go": {
+      "sha256": "6b940638e508d361468417bd8612b2589637c1fe7d79f96ce0a0c65ecfc7681d",
+      "matches_plan_source": true
+    },
+    "pkg/schedule/splitter/region_splitter_test.go": {
+      "sha256": "a1d95e543bbd34251f0d60bdfb551dedf6bfb9b91d58d4ff9a721f0036a4256d",
+      "matches_plan_source": true
+    }
+  },
+  "fixture_sha256": "1fb3b84c61a86fea6a20ce624e83065e9faba2781ab720144cbc4ed3f8cc2f48",
+  "predecessor": "fc9eb1423; task-063.md; canonical SplitAttempt and split admission/scanning tests",
+  "oracle_index": "read; no task64 runtime cases; user waived Go runtime prerequisite"
+}

@@ -1,0 +1,26 @@
+   Compiling astersql-pd-schedule-splitter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/splitter)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.79s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_splitter-e2fa8fb892c7c755)
+
+running 13 tests
+test task_063_test::task_063_binary_unbounded_and_id_overwrite ... ok
+test task_063_test::task_063_factory_and_stale_epoch_failures ... ok
+test task_063_test::task_063_rejected_group_is_not_observed ... ok
+test task_064_test::task_064_empty_and_negative_limit ... ok
+test task_063_test::task_063_partial_accumulation_and_finished_latch ... ok
+test task_063_test::task_063_real_admission_and_heartbeat_command ... ok
+test task_062_test::task_062_refresh_after_split ... ok
+test task_063_test::task_063_group_submit_observe_and_suspect ... ok
+test task_064_test::task_064_retries_remaining_and_deduplicates_ids ... ok
+test task_063_test::task_063_behavior_cases ... ok
+test task_064_test::task_064_cancel_retries_and_capped_final_sleep ... ok
+test task_064_test::task_064_behavior_cases ... ok
+test task_062_test::task_062_behavior_cases ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_schedule_splitter
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
