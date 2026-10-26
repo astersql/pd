@@ -9,6 +9,8 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
+astersql-pd-schedule-checker.workspace = true
+astersql-pd-schedule-labeler.workspace = true
 astersql-pd-statistics-buckets.workspace = true
 astersql-pd-schedule-hbstream.workspace = true
 astersql-pd-statistics-utils.workspace = true
@@ -33,7 +35,6 @@ thiserror.workspace = true
 
 [dev-dependencies]
 astersql-pd-storelimit.workspace = true
-astersql-pd-schedule-labeler.workspace = true
 async-trait.workspace = true
 astersql-pd-storage-kv.workspace = true
 tokio.workspace = true

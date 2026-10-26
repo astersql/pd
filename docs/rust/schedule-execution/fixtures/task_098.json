@@ -1,0 +1,158 @@
+{
+  "provenance": "readonly Go source/test derivation; no Go runtime oracle",
+  "cases": [
+    {
+      "name": "next",
+      "target": 3
+    },
+    {
+      "name": "previous",
+      "previous": true,
+      "target": 1
+    },
+    {
+      "name": "one-way",
+      "previous": true,
+      "one_way": true,
+      "target": 3
+    },
+    {
+      "name": "fallback",
+      "missing_next": true,
+      "target": 1
+    },
+    {
+      "name": "one-way-no-next",
+      "one_way": true,
+      "missing_next": true,
+      "target": 0
+    },
+    {
+      "name": "range-miss",
+      "range_miss": true,
+      "target": 0
+    },
+    {
+      "name": "disconnected-source-permitted",
+      "store_down": true,
+      "target": 3
+    },
+    {
+      "name": "replication",
+      "unreplicated": true,
+      "target": 0
+    },
+    {
+      "name": "placement",
+      "rules": true,
+      "target": 3
+    },
+    {
+      "name": "hot-source",
+      "hot": 2,
+      "target": 0
+    },
+    {
+      "name": "hot-target",
+      "hot": 3,
+      "target": 0
+    },
+    {
+      "name": "align-peers",
+      "new_peer": true,
+      "target": 3
+    },
+    {
+      "name": "allocation-fault",
+      "new_peer": true,
+      "allocation_fail": true,
+      "error": true,
+      "target": 0
+    },
+    {
+      "name": "source-pending",
+      "source_fault": "pending",
+      "target": 0,
+      "error": false
+    },
+    {
+      "name": "source-down",
+      "source_fault": "down",
+      "target": 0,
+      "error": false
+    },
+    {
+      "name": "source-learner",
+      "source_fault": "learner",
+      "target": 0,
+      "error": false
+    },
+    {
+      "name": "source-joint",
+      "source_fault": "joint",
+      "target": 0,
+      "error": true
+    },
+    {
+      "name": "target-pending",
+      "target_fault": "pending",
+      "target": 0,
+      "error": false
+    },
+    {
+      "name": "target-down",
+      "target_fault": "down",
+      "target": 0,
+      "error": false
+    },
+    {
+      "name": "target-learner",
+      "target_fault": "learner",
+      "target": 0,
+      "error": false
+    },
+    {
+      "name": "target-joint",
+      "target_fault": "joint",
+      "target": 0,
+      "error": true
+    },
+    {
+      "name": "label-deny",
+      "label_deny": true,
+      "target": 0
+    },
+    {
+      "name": "label-boundary",
+      "label_split": true,
+      "target": 0
+    },
+    {
+      "name": "placement-boundary",
+      "rules": true,
+      "rule_split": true,
+      "target": 0
+    },
+    {
+      "name": "gap-fallback",
+      "gap": true,
+      "target": 1
+    },
+    {
+      "name": "one-way-gap",
+      "gap": true,
+      "one_way": true,
+      "target": 0
+    },
+    {
+      "name": "random-store-without-leaders",
+      "store_last": true,
+      "target": 0
+    },
+    {
+      "name": "busy-stores",
+      "busy": true,
+      "target": 0
+    }
+  ]
+}

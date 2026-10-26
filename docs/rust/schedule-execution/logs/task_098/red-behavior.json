@@ -1,0 +1,11 @@
+{
+  "command": [
+    "python3",
+    "docs/rust/schedule-execution/logs/task_098/red_behavior.py"
+  ],
+  "exit_code": 0,
+  "slot": 1,
+  "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+  "CARGO_BUILD_JOBS": null,
+  "RUST_TEST_THREADS": null
+}

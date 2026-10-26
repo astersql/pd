@@ -607,6 +607,7 @@ dependencies = [
  "astersql-pd-core-constant",
  "astersql-pd-keypath",
  "astersql-pd-keyutil",
+ "astersql-pd-schedule-checker",
  "astersql-pd-schedule-config",
  "astersql-pd-schedule-core",
  "astersql-pd-schedule-filter",

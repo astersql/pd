@@ -178,3 +178,9 @@ mod label;
 pub use label::*;
 #[cfg(test)]
 mod task_097_test;
+
+#[cfg(test)]
+mod task_098_test;
+
+mod random_merge;
+pub use random_merge::*;

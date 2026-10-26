@@ -1,0 +1,15 @@
+{
+  "source_commit": "0f5b5b29b5df3be35cdc86567e43076fdb6fc9cb",
+  "runtime_oracle": null,
+  "authorization": "User allows readonly Go source/test derivation plus real Rust behavior/fault tests; no claim of Go runtime differential",
+  "sha256": {
+    "pkg/schedule/schedulers/random_merge.go": "1df788b885604f424a4a8544d7d00e69f1525dc6aae53ce212f87a20bae7410c",
+    "pkg/schedule/schedulers/random_merge_test.go": "e45ce6b607561b5bf388167fb9a15ebbc6cbfb3e0d351450a5567a855d221b7e",
+    "pkg/schedule/checker/merge_checker.go": "cd5480a1c1a39e7bab3c10e51d4c9de7399e0e2a36a32614796c41f55f12aa75",
+    "pkg/schedule/filter/filters.go": "2e72100da29ddac7d371c59898ef10a562cda9bf4eec666cc4e4e0c7c8edc0a4",
+    "pkg/schedule/operator/create_operator.go": "43a938c72992f4ce81501c40ab85c1e79c08670383acd47f22655e779524b927",
+    "pkg/utils/keyutil/keyrange.go": "bf3f4c9a134c67e165d80b4bcf9c01d5b5c6b377f29c0ed87b2d40143251ee21",
+    "docs/rust/schedule-execution/oracle-index.json": "2d1a930742291e7047a864aa2246e7e22c612cb6583249b7edb42945b494b450",
+    "docs/rust/schedule-execution/fixtures/task_098.json": "a9c2f3a9685b4f481c61b7cc538a6a4e6e1906f79301b7197e654b1531b361b3"
+  }
+}
