@@ -200,3 +200,9 @@ mod task_101_test;
 
 mod shuffle_leader;
 pub use shuffle_leader::*;
+
+#[cfg(test)]
+mod task_102_test;
+
+mod shuffle_region;
+pub use shuffle_region::*;

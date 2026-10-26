@@ -1,0 +1,273 @@
+{
+  "evidence_kind": "source-derived; user authorized; no Go runtime oracle",
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "normalization": "stores sorted by ID; source shuffle identity/reverse; random first/last; region [a,b), peer IDs 1..3, allocated ID 10, clock 10^12ns",
+  "cases": [
+    {
+      "name": "follower",
+      "roles": [
+        "follower"
+      ],
+      "expected": 1,
+      "source": 2,
+      "target": 4
+    },
+    {
+      "name": "leader",
+      "roles": [
+        "leader"
+      ],
+      "expected": 1,
+      "source": 1,
+      "target": 4
+    },
+    {
+      "name": "all roles",
+      "roles": [
+        "leader",
+        "follower",
+        "learner"
+      ],
+      "expected": 1,
+      "source": 1,
+      "target": 4
+    },
+    {
+      "name": "learner",
+      "roles": [
+        "learner"
+      ],
+      "expected": 1,
+      "source": 3,
+      "target": 4,
+      "learner": true
+    },
+    {
+      "name": "learner legacy rejected",
+      "roles": [
+        "learner"
+      ],
+      "expected": 0,
+      "source": 2,
+      "target": 4,
+      "learner": true,
+      "legacy": true
+    },
+    {
+      "name": "no roles",
+      "roles": [],
+      "expected": 0,
+      "source": 2,
+      "target": 4
+    },
+    {
+      "name": "invalid stored role",
+      "roles": [
+        "voter"
+      ],
+      "expected": 0,
+      "source": 2,
+      "target": 4
+    },
+    {
+      "name": "pending",
+      "roles": [
+        "follower"
+      ],
+      "expected": 0,
+      "source": 2,
+      "target": 4,
+      "pending": true
+    },
+    {
+      "name": "down",
+      "roles": [
+        "follower"
+      ],
+      "expected": 0,
+      "source": 2,
+      "target": 4,
+      "down": true
+    },
+    {
+      "name": "no_region",
+      "roles": [
+        "follower"
+      ],
+      "expected": 0,
+      "source": 2,
+      "target": 4,
+      "no_region": true
+    },
+    {
+      "name": "no_target",
+      "roles": [
+        "follower"
+      ],
+      "expected": 0,
+      "source": 2,
+      "target": 4,
+      "no_target": true
+    },
+    {
+      "name": "special_target",
+      "roles": [
+        "follower"
+      ],
+      "expected": 0,
+      "source": 2,
+      "target": 4,
+      "special_target": true
+    },
+    {
+      "name": "offline_target",
+      "roles": [
+        "follower"
+      ],
+      "expected": 0,
+      "source": 2,
+      "target": 4,
+      "offline_target": true
+    },
+    {
+      "name": "replica_short",
+      "roles": [
+        "follower"
+      ],
+      "expected": 0,
+      "source": 2,
+      "target": 4,
+      "replica_short": true
+    },
+    {
+      "name": "disconnected_target",
+      "roles": [
+        "follower"
+      ],
+      "expected": 0,
+      "source": 2,
+      "target": 4,
+      "disconnected_target": true
+    },
+    {
+      "name": "allocation_failure",
+      "roles": [
+        "follower"
+      ],
+      "expected": 0,
+      "source": 2,
+      "target": 4,
+      "allocation_failure": true
+    },
+    {
+      "name": "placement_reject",
+      "roles": [
+        "follower"
+      ],
+      "expected": 0,
+      "source": 2,
+      "target": 4,
+      "placement_reject": true
+    },
+    {
+      "name": "budget",
+      "roles": [
+        "follower"
+      ],
+      "expected": 0,
+      "source": 2,
+      "target": 4,
+      "budget": true
+    },
+    {
+      "name": "outside range",
+      "roles": [
+        "follower"
+      ],
+      "expected": 0,
+      "source": 2,
+      "target": 4,
+      "ranges": [
+        "b",
+        "c"
+      ]
+    },
+    {
+      "name": "partial range",
+      "roles": [
+        "follower"
+      ],
+      "expected": 0,
+      "source": 2,
+      "target": 4,
+      "ranges": [
+        "aa",
+        "c"
+      ]
+    },
+    {
+      "name": "contained range",
+      "roles": [
+        "follower"
+      ],
+      "expected": 1,
+      "source": 2,
+      "target": 4,
+      "ranges": [
+        "a",
+        "c"
+      ]
+    },
+    {
+      "name": "empty ranges",
+      "roles": [
+        "follower"
+      ],
+      "expected": 1,
+      "source": 2,
+      "target": 4,
+      "ranges": []
+    },
+    {
+      "name": "last target",
+      "roles": [
+        "follower"
+      ],
+      "expected": 1,
+      "source": 2,
+      "target": 5,
+      "last": true
+    },
+    {
+      "name": "source shuffle",
+      "roles": [
+        "follower"
+      ],
+      "expected": 1,
+      "source": 3,
+      "target": 4,
+      "reverse": true
+    },
+    {
+      "name": "rule fitting accepted",
+      "roles": [
+        "follower"
+      ],
+      "expected": 1,
+      "source": 2,
+      "target": 4,
+      "rules": true
+    },
+    {
+      "name": "rule fitting rejects diversity regression",
+      "roles": [
+        "follower"
+      ],
+      "expected": 0,
+      "source": 2,
+      "target": 4,
+      "rules": true,
+      "placement_reject": true
+    }
+  ]
+}
