@@ -28,6 +28,7 @@ pub struct EvictLeaderConfig {
 struct EvictConfigJson {
     #[serde(rename = "store-id-ranges")]
     stores: BTreeMap<u64, Vec<astersql_pd_keyutil::KeyRange>>,
+    #[serde(default)]
     batch: usize,
 }
 impl TryFrom<EvictConfigJson> for EvictLeaderConfig {
@@ -49,7 +50,7 @@ impl TryFrom<EvictConfigJson> for EvictLeaderConfig {
                     )
                 })
                 .collect(),
-            value.batch,
+            if value.batch == 0 { 3 } else { value.batch },
         )
     }
 }
@@ -112,7 +113,7 @@ pub struct EvictLeaderResult {
     pub errors: Vec<BuilderError>,
 }
 pub struct EvictLeaderScheduler {
-    config: EvictLeaderConfig,
+    pub(super) config: EvictLeaderConfig,
 }
 impl EvictLeaderScheduler {
     pub fn new(config: EvictLeaderConfig) -> Self {

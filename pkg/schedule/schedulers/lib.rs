@@ -56,3 +56,8 @@ mod evict_leader;
 pub use evict_leader::*;
 #[cfg(test)]
 mod task_075_test;
+
+mod evict_leader_config;
+pub use evict_leader_config::*;
+#[cfg(test)]
+mod task_076_test;

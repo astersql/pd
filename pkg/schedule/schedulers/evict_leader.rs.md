@@ -5,6 +5,7 @@ with batch validated in 1..=100 (default 3). Empty store ranges disable that sto
 an empty start/end pair covers the keyspace. JSON uses the Go `store-id-ranges`
 and `batch` names and the existing binary-key codec. BTreeMap deduplicates store
 IDs and gives deterministic iteration; no extra state store or runtime is owned.
+For persisted compatibility, decoding a zero or missing batch defaults to 3.
 
 `EvictLeaderScheduler::prepare/clean` pause/resume only transfer-in using the
 canonical store registry. Prepare attempts every store, retains partial success
@@ -35,5 +36,7 @@ claim. Read-only sources are evict_leader.go, its adjacent tests, existing core
 sampling/filter/operation factories. See
 [task-075 evidence](../../../docs/rust/schedule-execution/task-075.md) and its
 fixture/logs for provenance, red/green tests and real operation completion.
-HTTP, configuration transactions and persistent recovery belong to adapters and
-subsequent task 76. This task adds no dependency or Cargo feature.
+HTTP remains in adapters. Configuration transactions and persistent recovery are
+implemented by [evict_leader_config.rs](evict_leader_config.rs.md), which extends
+this canonical scheduler under exclusive mutable access. No dependency or Cargo
+feature was added.

@@ -1,0 +1,303 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "oracle": "source-derived under explicit user waiver; no Go execution",
+  "go_output": null,
+  "cases": [
+    {
+      "name": "single",
+      "request": {
+        "store_id": 2
+      },
+      "stores": [
+        1,
+        2
+      ],
+      "batch": 3,
+      "ok": true
+    },
+    {
+      "name": "multi-dedup",
+      "request": {
+        "store_ids": [
+          1,
+          2,
+          2,
+          3
+        ]
+      },
+      "stores": [
+        1,
+        2,
+        3
+      ],
+      "batch": 3,
+      "ok": true
+    },
+    {
+      "name": "empty-ranges",
+      "request": {
+        "store_ids": [
+          1,
+          2
+        ],
+        "ranges": []
+      },
+      "stores": [
+        1,
+        2
+      ],
+      "batch": 3,
+      "ok": true
+    },
+    {
+      "name": "explicit",
+      "request": {
+        "store_ids": [
+          1,
+          2
+        ],
+        "ranges": [
+          "c",
+          "d"
+        ],
+        "batch": 100
+      },
+      "stores": [
+        1,
+        2
+      ],
+      "batch": 100,
+      "ok": true
+    },
+    {
+      "name": "batch-only",
+      "request": {
+        "batch": 1
+      },
+      "stores": [
+        1
+      ],
+      "batch": 1,
+      "ok": true
+    },
+    {
+      "name": "odd-ranges",
+      "request": {
+        "store_id": 2,
+        "ranges": [
+          "a"
+        ]
+      },
+      "stores": [
+        1,
+        2
+      ],
+      "batch": 3,
+      "ok": true
+    },
+    {
+      "name": "null-batch",
+      "request": {
+        "batch": null
+      },
+      "stores": [
+        1
+      ],
+      "batch": 3,
+      "ok": true
+    },
+    {
+      "name": "zero-id",
+      "request": {
+        "store_id": 0
+      },
+      "stores": [
+        0,
+        1
+      ],
+      "batch": 3,
+      "ok": true
+    },
+    {
+      "name": "both",
+      "request": {
+        "store_id": 1,
+        "store_ids": [
+          2
+        ]
+      },
+      "stores": [
+        1
+      ],
+      "batch": 3,
+      "ok": false
+    },
+    {
+      "name": "fraction",
+      "request": {
+        "store_id": 1.5
+      },
+      "stores": [
+        1
+      ],
+      "batch": 3,
+      "ok": false
+    },
+    {
+      "name": "negative",
+      "request": {
+        "store_id": -1
+      },
+      "stores": [
+        1
+      ],
+      "batch": 3,
+      "ok": false
+    },
+    {
+      "name": "overflow",
+      "request": {
+        "store_id": 1e+30
+      },
+      "stores": [
+        1
+      ],
+      "batch": 3,
+      "ok": false
+    },
+    {
+      "name": "ids-fraction",
+      "request": {
+        "store_ids": [
+          1,
+          2.5
+        ]
+      },
+      "stores": [
+        1
+      ],
+      "batch": 3,
+      "ok": false
+    },
+    {
+      "name": "ids-empty",
+      "request": {
+        "store_ids": []
+      },
+      "stores": [
+        1
+      ],
+      "batch": 3,
+      "ok": false
+    },
+    {
+      "name": "ids-string",
+      "request": {
+        "store_ids": [
+          "2"
+        ]
+      },
+      "stores": [
+        1
+      ],
+      "batch": 3,
+      "ok": false
+    },
+    {
+      "name": "null-id",
+      "request": {
+        "store_id": null
+      },
+      "stores": [
+        1
+      ],
+      "batch": 3,
+      "ok": false
+    },
+    {
+      "name": "batch-zero",
+      "request": {
+        "batch": 0
+      },
+      "stores": [
+        1
+      ],
+      "batch": 3,
+      "ok": false
+    },
+    {
+      "name": "batch-over",
+      "request": {
+        "batch": 101
+      },
+      "stores": [
+        1
+      ],
+      "batch": 3,
+      "ok": false
+    },
+    {
+      "name": "batch-fraction",
+      "request": {
+        "batch": 1.5
+      },
+      "stores": [
+        1
+      ],
+      "batch": 3,
+      "ok": false
+    },
+    {
+      "name": "batch-string",
+      "request": {
+        "batch": "3"
+      },
+      "stores": [
+        1
+      ],
+      "batch": 3,
+      "ok": false
+    },
+    {
+      "name": "ranges-no-id",
+      "request": {
+        "ranges": []
+      },
+      "stores": [
+        1
+      ],
+      "batch": 3,
+      "ok": false
+    },
+    {
+      "name": "ranges-type",
+      "request": {
+        "store_id": 2,
+        "ranges": [
+          1,
+          2
+        ]
+      },
+      "stores": [
+        1
+      ],
+      "batch": 3,
+      "ok": false
+    },
+    {
+      "name": "range-escape",
+      "request": {
+        "store_id": 2,
+        "ranges": [
+          "%zz",
+          "b"
+        ]
+      },
+      "stores": [
+        1
+      ],
+      "batch": 3,
+      "ok": false
+    }
+  ]
+}
