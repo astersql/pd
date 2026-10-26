@@ -1,0 +1,29 @@
+{
+  "commands": [
+    {
+      "command": [
+        "bin/pd-server",
+        "--version"
+      ],
+      "exit_code": 0,
+      "log": "go-binary-version.log"
+    },
+    {
+      "command": [
+        "go",
+        "version",
+        "-m",
+        "bin/pd-server"
+      ],
+      "exit_code": 0,
+      "log": "go-binary-buildinfo.log"
+    }
+  ],
+  "binary_sha256": "b9baaf7b6160a6ea1e3e3dc72ae059f317b0066838b676680105daceed297bdc",
+  "version_commit": "None",
+  "current_source_binding_verified": false,
+  "existing_admission_scheduler_binary_exists": false,
+  "api_test": "tests/server/api/scheduler_test.go:502-548",
+  "api_setup_failpoints": "tests/server/api/scheduler_test.go:65-66",
+  "execution": "version/buildinfo only; no behavior oracle obtained"
+}

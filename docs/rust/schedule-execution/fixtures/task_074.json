@@ -1,0 +1,66 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "provenance": "Go source-derived normal cases; task-required rollback differs from Go; no Go runtime oracle",
+  "cases": [
+    {
+      "name": "batch-one-all",
+      "batch": 1,
+      "ranges": [],
+      "expected": 1
+    },
+    {
+      "name": "batch-ten-all",
+      "batch": 10,
+      "ranges": [],
+      "expected": 1
+    },
+    {
+      "name": "included",
+      "batch": 4,
+      "ranges": [
+        [
+          "a",
+          "b"
+        ]
+      ],
+      "expected": 1
+    },
+    {
+      "name": "excluded",
+      "batch": 4,
+      "ranges": [
+        [
+          "c",
+          "d"
+        ]
+      ],
+      "expected": 0
+    },
+    {
+      "name": "multi-ranges",
+      "batch": 2,
+      "ranges": [
+        [
+          "c",
+          "d"
+        ],
+        [
+          "a",
+          "b"
+        ]
+      ],
+      "expected": 1
+    },
+    {
+      "name": "open-end",
+      "batch": 10,
+      "ranges": [
+        [
+          "a",
+          ""
+        ]
+      ],
+      "expected": 1
+    }
+  ]
+}

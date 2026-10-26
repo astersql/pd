@@ -1,0 +1,277 @@
+   Compiling astersql-pd-schedule-schedulers v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers)
+error[E0599]: no method named `update_witness_config` found for struct `balance_witness::BalanceWitnessScheduler` in the current scope
+  --> pkg/schedule/schedulers/task_074_test.rs:82:18
+   |
+81 | /             active
+82 | |                 .update_witness_config(candidate.clone(), &endpoint, &paths)
+   | |                 -^^^^^^^^^^^^^^^^^^^^^ method not found in `balance_witness::BalanceWitnessScheduler`
+   | |_________________|
+   |
+   |
+  ::: pkg/schedule/schedulers/balance_witness.rs:91:1
+   |
+91 |   pub struct BalanceWitnessScheduler {
+   |   ---------------------------------- method `update_witness_config` not found for this struct
+
+error[E0599]: no method named `encode_witness_config` found for struct `balance_witness::BalanceWitnessScheduler` in the current scope
+  --> pkg/schedule/schedulers/task_074_test.rs:86:30
+   |
+86 |         let encoded = active.encode_witness_config().unwrap();
+   |                              ^^^^^^^^^^^^^^^^^^^^^ method not found in `balance_witness::BalanceWitnessScheduler`
+   |
+  ::: pkg/schedule/schedulers/balance_witness.rs:91:1
+   |
+91 | pub struct BalanceWitnessScheduler {
+   | ---------------------------------- method `encode_witness_config` not found for this struct
+
+error[E0599]: no method named `update_witness_config` found for struct `balance_witness::BalanceWitnessScheduler` in the current scope
+  --> pkg/schedule/schedulers/task_074_test.rs:97:18
+   |
+96 |               !active
+   |  ______________-
+97 | |                 .update_witness_config(candidate, &endpoint, &paths)
+   | |                 -^^^^^^^^^^^^^^^^^^^^^ method not found in `balance_witness::BalanceWitnessScheduler`
+   | |_________________|
+   |
+   |
+  ::: pkg/schedule/schedulers/balance_witness.rs:91:1
+   |
+91 |   pub struct BalanceWitnessScheduler {
+   |   ---------------------------------- method `update_witness_config` not found for this struct
+
+error[E0599]: no method named `reload_witness_config` found for struct `balance_witness::BalanceWitnessScheduler` in the current scope
+   --> pkg/schedule/schedulers/task_074_test.rs:110:14
+    |
+109 | /         restored
+110 | |             .reload_witness_config(&endpoint, &paths)
+    | |             -^^^^^^^^^^^^^^^^^^^^^ method not found in `balance_witness::BalanceWitnessScheduler`
+    | |_____________|
+    |
+    |
+   ::: pkg/schedule/schedulers/balance_witness.rs:91:1
+    |
+ 91 |   pub struct BalanceWitnessScheduler {
+    |   ---------------------------------- method `reload_witness_config` not found for this struct
+
+error[E0599]: no method named `encode_witness_config` found for struct `balance_witness::BalanceWitnessScheduler` in the current scope
+   --> pkg/schedule/schedulers/task_074_test.rs:113:29
+    |
+113 |         assert_eq!(restored.encode_witness_config().unwrap(), encoded);
+    |                             ^^^^^^^^^^^^^^^^^^^^^ method not found in `balance_witness::BalanceWitnessScheduler`
+    |
+   ::: pkg/schedule/schedulers/balance_witness.rs:91:1
+    |
+ 91 | pub struct BalanceWitnessScheduler {
+    | ---------------------------------- method `encode_witness_config` not found for this struct
+
+error[E0599]: no method named `encode_witness_config` found for struct `balance_witness::BalanceWitnessScheduler` in the current scope
+   --> pkg/schedule/schedulers/task_074_test.rs:152:30
+    |
+152 |     let baseline = scheduler.encode_witness_config().unwrap();
+    |                              ^^^^^^^^^^^^^^^^^^^^^ method not found in `balance_witness::BalanceWitnessScheduler`
+    |
+   ::: pkg/schedule/schedulers/balance_witness.rs:91:1
+    |
+ 91 | pub struct BalanceWitnessScheduler {
+    | ---------------------------------- method `encode_witness_config` not found for this struct
+
+error[E0599]: no method named `encode_witness_config` found for struct `balance_witness::BalanceWitnessScheduler` in the current scope
+   --> pkg/schedule/schedulers/task_074_test.rs:159:30
+    |
+159 |         assert_eq!(scheduler.encode_witness_config().unwrap(), baseline);
+    |                              ^^^^^^^^^^^^^^^^^^^^^ method not found in `balance_witness::BalanceWitnessScheduler`
+    |
+   ::: pkg/schedule/schedulers/balance_witness.rs:91:1
+    |
+ 91 | pub struct BalanceWitnessScheduler {
+    | ---------------------------------- method `encode_witness_config` not found for this struct
+
+error[E0599]: no method named `update_witness_config` found for struct `balance_witness::BalanceWitnessScheduler` in the current scope
+   --> pkg/schedule/schedulers/task_074_test.rs:172:14
+    |
+171 | /         scheduler
+172 | |             .update_witness_config(candidate.clone(), &endpoint, &paths)
+    | |             -^^^^^^^^^^^^^^^^^^^^^ method not found in `balance_witness::BalanceWitnessScheduler`
+    | |_____________|
+    |
+    |
+   ::: pkg/schedule/schedulers/balance_witness.rs:91:1
+    |
+ 91 |   pub struct BalanceWitnessScheduler {
+    |   ---------------------------------- method `update_witness_config` not found for this struct
+
+error[E0599]: no method named `encode_witness_config` found for struct `balance_witness::BalanceWitnessScheduler` in the current scope
+   --> pkg/schedule/schedulers/task_074_test.rs:177:19
+    |
+177 |         scheduler.encode_witness_config().unwrap(),
+    |                   ^^^^^^^^^^^^^^^^^^^^^ method not found in `balance_witness::BalanceWitnessScheduler`
+    |
+   ::: pkg/schedule/schedulers/balance_witness.rs:91:1
+    |
+ 91 | pub struct BalanceWitnessScheduler {
+    | ---------------------------------- method `encode_witness_config` not found for this struct
+
+error[E0599]: no method named `reload_witness_config` found for struct `balance_witness::BalanceWitnessScheduler` in the current scope
+   --> pkg/schedule/schedulers/task_074_test.rs:182:19
+    |
+182 |         scheduler.reload_witness_config(&endpoint, &paths).await,
+    |                   ^^^^^^^^^^^^^^^^^^^^^ method not found in `balance_witness::BalanceWitnessScheduler`
+    |
+   ::: pkg/schedule/schedulers/balance_witness.rs:91:1
+    |
+ 91 | pub struct BalanceWitnessScheduler {
+    | ---------------------------------- method `reload_witness_config` not found for this struct
+
+error[E0599]: no method named `encode_witness_config` found for struct `balance_witness::BalanceWitnessScheduler` in the current scope
+   --> pkg/schedule/schedulers/task_074_test.rs:185:26
+    |
+185 |     assert_eq!(scheduler.encode_witness_config().unwrap(), baseline);
+    |                          ^^^^^^^^^^^^^^^^^^^^^ method not found in `balance_witness::BalanceWitnessScheduler`
+    |
+   ::: pkg/schedule/schedulers/balance_witness.rs:91:1
+    |
+ 91 | pub struct BalanceWitnessScheduler {
+    | ---------------------------------- method `encode_witness_config` not found for this struct
+
+error[E0599]: no method named `update_witness_config` found for struct `balance_witness::BalanceWitnessScheduler` in the current scope
+   --> pkg/schedule/schedulers/task_074_test.rs:189:14
+    |
+188 |           !scheduler
+    |  __________-
+189 | |             .update_witness_config(scheduler.config.clone(), &endpoint, &paths)
+    | |             -^^^^^^^^^^^^^^^^^^^^^ method not found in `balance_witness::BalanceWitnessScheduler`
+    | |_____________|
+    |
+    |
+   ::: pkg/schedule/schedulers/balance_witness.rs:91:1
+    |
+ 91 |   pub struct BalanceWitnessScheduler {
+    |   ---------------------------------- method `update_witness_config` not found for this struct
+
+error[E0599]: no method named `update_witness_config` found for struct `balance_witness::BalanceWitnessScheduler` in the current scope
+   --> pkg/schedule/schedulers/task_074_test.rs:203:14
+    |
+202 | /         scheduler
+203 | |             .update_witness_config(candidate, &endpoint, &paths)
+    | |             -^^^^^^^^^^^^^^^^^^^^^ method not found in `balance_witness::BalanceWitnessScheduler`
+    | |_____________|
+    |
+    |
+   ::: pkg/schedule/schedulers/balance_witness.rs:91:1
+    |
+ 91 |   pub struct BalanceWitnessScheduler {
+    |   ---------------------------------- method `update_witness_config` not found for this struct
+
+error[E0599]: no method named `encode_witness_config` found for struct `balance_witness::BalanceWitnessScheduler` in the current scope
+   --> pkg/schedule/schedulers/task_074_test.rs:207:27
+    |
+207 |     let saved = scheduler.encode_witness_config().unwrap();
+    |                           ^^^^^^^^^^^^^^^^^^^^^ method not found in `balance_witness::BalanceWitnessScheduler`
+    |
+   ::: pkg/schedule/schedulers/balance_witness.rs:91:1
+    |
+ 91 | pub struct BalanceWitnessScheduler {
+    | ---------------------------------- method `encode_witness_config` not found for this struct
+
+error[E0599]: no method named `reload_witness_config` found for struct `balance_witness::BalanceWitnessScheduler` in the current scope
+   --> pkg/schedule/schedulers/task_074_test.rs:210:10
+    |
+209 | /     scheduler
+210 | |         .reload_witness_config(&endpoint, &paths)
+    | |         -^^^^^^^^^^^^^^^^^^^^^ method not found in `balance_witness::BalanceWitnessScheduler`
+    | |_________|
+    |
+    |
+   ::: pkg/schedule/schedulers/balance_witness.rs:91:1
+    |
+ 91 |   pub struct BalanceWitnessScheduler {
+    |   ---------------------------------- method `reload_witness_config` not found for this struct
+
+error[E0599]: no method named `encode_witness_config` found for struct `balance_witness::BalanceWitnessScheduler` in the current scope
+   --> pkg/schedule/schedulers/task_074_test.rs:213:26
+    |
+213 |     assert_eq!(scheduler.encode_witness_config().unwrap(), saved);
+    |                          ^^^^^^^^^^^^^^^^^^^^^ method not found in `balance_witness::BalanceWitnessScheduler`
+    |
+   ::: pkg/schedule/schedulers/balance_witness.rs:91:1
+    |
+ 91 | pub struct BalanceWitnessScheduler {
+    | ---------------------------------- method `encode_witness_config` not found for this struct
+
+error[E0599]: no method named `reload_witness_config` found for struct `balance_witness::BalanceWitnessScheduler` in the current scope
+   --> pkg/schedule/schedulers/task_074_test.rs:230:23
+    |
+230 |             scheduler.reload_witness_config(&endpoint, &paths).await,
+    |                       ^^^^^^^^^^^^^^^^^^^^^ method not found in `balance_witness::BalanceWitnessScheduler`
+    |
+   ::: pkg/schedule/schedulers/balance_witness.rs:91:1
+    |
+ 91 | pub struct BalanceWitnessScheduler {
+    | ---------------------------------- method `reload_witness_config` not found for this struct
+
+error[E0599]: no method named `encode_witness_config` found for struct `balance_witness::BalanceWitnessScheduler` in the current scope
+   --> pkg/schedule/schedulers/task_074_test.rs:233:30
+    |
+233 |         assert_eq!(scheduler.encode_witness_config().unwrap(), saved);
+    |                              ^^^^^^^^^^^^^^^^^^^^^ method not found in `balance_witness::BalanceWitnessScheduler`
+    |
+   ::: pkg/schedule/schedulers/balance_witness.rs:91:1
+    |
+ 91 | pub struct BalanceWitnessScheduler {
+    | ---------------------------------- method `encode_witness_config` not found for this struct
+
+error[E0599]: no method named `reload_witness_config` found for struct `balance_witness::BalanceWitnessScheduler` in the current scope
+   --> pkg/schedule/schedulers/task_074_test.rs:237:14
+    |
+236 | /         scheduler
+237 | |             .reload_witness_config(&endpoint, &ClusterPaths::new(740))
+    | |             -^^^^^^^^^^^^^^^^^^^^^ method not found in `balance_witness::BalanceWitnessScheduler`
+    | |_____________|
+    |
+    |
+   ::: pkg/schedule/schedulers/balance_witness.rs:91:1
+    |
+ 91 |   pub struct BalanceWitnessScheduler {
+    |   ---------------------------------- method `reload_witness_config` not found for this struct
+
+error[E0599]: no method named `encode_witness_config` found for struct `balance_witness::BalanceWitnessScheduler` in the current scope
+   --> pkg/schedule/schedulers/task_074_test.rs:241:26
+    |
+241 |     assert_eq!(scheduler.encode_witness_config().unwrap(), saved);
+    |                          ^^^^^^^^^^^^^^^^^^^^^ method not found in `balance_witness::BalanceWitnessScheduler`
+    |
+   ::: pkg/schedule/schedulers/balance_witness.rs:91:1
+    |
+ 91 | pub struct BalanceWitnessScheduler {
+    | ---------------------------------- method `encode_witness_config` not found for this struct
+
+error[E0599]: no method named `update_witness_config` found for struct `balance_witness::BalanceWitnessScheduler` in the current scope
+   --> pkg/schedule/schedulers/task_074_test.rs:251:10
+    |
+250 | /     scheduler
+251 | |         .update_witness_config(binary.clone(), &endpoint, &paths)
+    | |         -^^^^^^^^^^^^^^^^^^^^^ method not found in `balance_witness::BalanceWitnessScheduler`
+    | |_________|
+    |
+    |
+   ::: pkg/schedule/schedulers/balance_witness.rs:91:1
+    |
+ 91 |   pub struct BalanceWitnessScheduler {
+    |   ---------------------------------- method `update_witness_config` not found for this struct
+
+error[E0599]: no method named `reload_witness_config` found for struct `balance_witness::BalanceWitnessScheduler` in the current scope
+   --> pkg/schedule/schedulers/task_074_test.rs:256:10
+    |
+255 | /     scheduler
+256 | |         .reload_witness_config(&endpoint, &paths)
+    | |         -^^^^^^^^^^^^^^^^^^^^^ method not found in `balance_witness::BalanceWitnessScheduler`
+    | |_________|
+    |
+    |
+   ::: pkg/schedule/schedulers/balance_witness.rs:91:1
+    |
+ 91 |   pub struct BalanceWitnessScheduler {
+    |   ---------------------------------- method `reload_witness_config` not found for this struct
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `astersql-pd-schedule-schedulers` (lib test) due to 22 previous errors

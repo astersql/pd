@@ -1,0 +1,46 @@
+   Compiling astersql-pd-schedule-schedulers v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.15s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_schedulers-46948a5a92bc5f3a)
+
+running 33 tests
+test task_065_test::task_065_unregistered_and_unsupported ... ok
+test task_065_test::task_065_behavior_cases ... ok
+test task_067_test::task_067_missing_resources_and_nan ... ok
+test task_067_test::task_067_resource_selection_and_wrapping ... ok
+test task_066_test::task_066_default_disable_restores ... ok
+test task_066_test::task_066_encode_failure ... ok
+test task_065_test::task_065_persistence_failure_retains_local_state ... ok
+test task_065_test::task_065_codec_and_payload ... ok
+test task_066_test::task_066_cancel_before_commit ... ok
+test task_066_test::task_066_failures_retain_old_value ... ok
+test task_066_test::task_066_behavior_cases ... ok
+test task_065_test::task_065_base_default_and_disable ... ok
+test task_068_test::task_068_behavior_cases ... ok
+test task_069_test::task_069_behavior_cases ... ok
+test task_069_test::task_069_pause_resume ... ok
+test task_069_test::task_069_pending_record_and_refresh ... ok
+test task_069_test::task_069_zero_window_after_refresh ... ok
+test task_068_test::task_068_range_projection ... ok
+test task_069_test::task_069_pending_lifecycle ... ok
+test task_070_test::task_070_candidates ... ok
+test task_070_test::task_070_config_and_allowed ... ok
+test task_067_test::task_067_behavior_cases ... ok
+test task_072_test::task_072_config_and_limits ... ok
+test task_072_test::task_072_influence_amp_and_candidate_margin ... ok
+test task_073_test::task_073_config_and_limits ... ok
+test task_071_test::task_071_faults_and_validation ... ok
+test task_074_test::task_074_faults_and_validation ... ok
+test task_068_test::task_068_count_threshold_roles_engines_and_splits ... ok
+test task_074_test::task_074_behavior_cases ... ok
+test task_073_test::task_073_behavior_cases ... ok
+test task_072_test::task_072_behavior_cases ... ok
+test task_071_test::task_071_behavior_cases ... ok
+test task_070_test::task_070_behavior_cases ... ok
+
+test result: ok. 33 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+   Doc-tests astersql_pd_schedule_schedulers
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

@@ -1,0 +1,29 @@
+{
+  "rule": "trailing whitespace and EOF blank lines only; no business-field normalization",
+  "files": {
+    "workspace-test.log": {
+      "before_sha256": "2fe2e5eb4bd5fec41a08737b5e560bf64899adf6cbbe3977e686497b29f5a8a6",
+      "after_sha256": "c339f8d04e11978741f7caf28ec90c9979d13c7cc9f4fbfb252db311f015d64f"
+    },
+    "go-binary-buildinfo.log": {
+      "before_sha256": "638b9afd62f65b53ff9a82e1d46b8e4cc41c2d2e80983313e2b876f537ea8679",
+      "after_sha256": "8690b78c81d53e952d8a1f210680e60878b8a22aa11551396a595c6c56c6f85f"
+    },
+    "focused-first.log": {
+      "before_sha256": "236be3398d5fe1690fafcc8c988676f670131c00849dd64bbe56db92c961c801",
+      "after_sha256": "4d6c91047e8d65e97095b6ca84ad52431b98eac85a0f45743ab65020983869bb"
+    },
+    "focused-third.log": {
+      "before_sha256": "1487d99e5228aaebff5989f42fd478b8933ba01be4cdb11640b74f3de15dbc4f",
+      "after_sha256": "6c65ae6e6fd862f5bd238c4cba6d4d9d129c0c9e50c3dde06f440d19b100b045"
+    },
+    "focused.log": {
+      "before_sha256": "bad3dc0f38f23ff9bdd2d143f96a62138259da01d03afce7e3bfc4b6cdca2355",
+      "after_sha256": "24efcfdd854e61ad712cffe078a3b2014ac0e25ea759833756d5a5b3d53c7a04"
+    },
+    "package.log": {
+      "before_sha256": "7e3aeef09f806df7875dba672bd97179769263cc369c3d75e98f69931196c6a1",
+      "after_sha256": "9d3398726d42834237ebfd2406a980b581e5f67f75f5280fb065b164efb0a36e"
+    }
+  }
+}
