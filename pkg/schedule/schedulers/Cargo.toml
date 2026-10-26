@@ -9,6 +9,7 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
+prometheus.workspace = true
 futures-util.workspace = true
 tokio.workspace = true
 tokio-util.workspace = true

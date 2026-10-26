@@ -628,6 +628,7 @@ dependencies = [
  "async-trait",
  "chrono",
  "futures-util",
+ "prometheus",
  "serde",
  "serde_json",
  "thiserror 2.0.21",

@@ -1,0 +1,21 @@
+{
+  "source_commit": "acf6b2afa63b5e1c92c71fda2e4716fa3bacb1a1",
+  "plan_base_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "dependency_109_commit": "acf6b2afa",
+  "oracle_kind": "read-only Go source derivation under explicit user waiver",
+  "go_runtime_output": null,
+  "go_commands": [],
+  "normalization": "No runtime differential; fixture descriptor order matches source, label comparison sorts names only. Values, errors and cleanup membership are asserted without normalization.",
+  "sha256": {
+    "pkg/schedule/schedulers/metrics.go": "add2f1dacf1fbd2f8fadd516ae4ab04895aea7783dc951b53deab1581165869e",
+    "pkg/schedule/schedulers/scheduler_controller.go": "5b8ad7382dcf829b9405240fb3e1e72ba659aa5ae301fb0257a3a66c318a7153",
+    "pkg/schedule/schedulers/hot_region.go": "2e34a6068d48c1ffed3a78764fc18843b20b6fab2943587df4e907acfe692ad6",
+    "pkg/schedule/schedulers/hot_region_test.go": "20e49d3e00501845befb864375ed74b8e2da5f82dc8e71006c496463fb08a756",
+    "pkg/schedule/schedulers/transfer_witness_leader.go": "b89a92588c33b70a13c885f53410b0103e65fffb1b8176d5b1d65418248a68e3",
+    "docs/rust/schedule-execution/fixtures/task_110.json": "817095b24370116c4ef80dfa280fc2afafcb3de9b99b32fa7b72f81a720cd047"
+  },
+  "rust_sha256": {
+    "pkg/schedule/schedulers/scheduler_metrics.rs": "6939eee0ae1d70e6ac3c4bb85a515bca1ca511bfd979295b86133b948e19d4f6",
+    "pkg/schedule/schedulers/task_110_test.rs": "9816188e24defd8345721c5e0f652bfa6c519e9dfc05f6d9d436e595a2917c13"
+  }
+}

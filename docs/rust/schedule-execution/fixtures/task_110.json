@@ -1,0 +1,640 @@
+{
+  "source": "read-only Go source derivation; no Go runtime oracle",
+  "source_commit": "acf6b2afa63b5e1c92c71fda2e4716fa3bacb1a1",
+  "go_runtime_output": null,
+  "families": [
+    {
+      "variable": "schedulerStatusGauge",
+      "name": "pd_scheduler_status",
+      "kind": "gauge",
+      "help": "Status of the scheduler.",
+      "labels": [
+        "kind",
+        "type"
+      ]
+    },
+    {
+      "variable": "schedulerCounter",
+      "name": "pd_scheduler_event_count",
+      "kind": "counter",
+      "help": "Counter of scheduler events.",
+      "labels": [
+        "type",
+        "name"
+      ]
+    },
+    {
+      "variable": "opInfluenceStatus",
+      "name": "pd_scheduler_op_influence",
+      "kind": "gauge",
+      "help": "Store status for schedule",
+      "labels": [
+        "scheduler",
+        "store",
+        "type"
+      ]
+    },
+    {
+      "variable": "tolerantResourceStatus",
+      "name": "pd_scheduler_tolerant_resource",
+      "kind": "gauge",
+      "help": "Store status for schedule",
+      "labels": [
+        "scheduler"
+      ]
+    },
+    {
+      "variable": "balanceWitnessCounter",
+      "name": "pd_scheduler_balance_witness",
+      "kind": "counter",
+      "help": "Counter of balance witness scheduler.",
+      "labels": [
+        "type",
+        "store"
+      ]
+    },
+    {
+      "variable": "hotSchedulerResultCounter",
+      "name": "pd_scheduler_hot_region",
+      "kind": "counter",
+      "help": "Counter of hot region scheduler.",
+      "labels": [
+        "type",
+        "store"
+      ]
+    },
+    {
+      "variable": "balanceDirectionCounter",
+      "name": "pd_scheduler_balance_direction",
+      "kind": "counter",
+      "help": "Counter of direction of balance related schedulers.",
+      "labels": [
+        "type",
+        "store",
+        "direction"
+      ]
+    },
+    {
+      "variable": "hotDirectionCounter",
+      "name": "pd_scheduler_hot_region_direction",
+      "kind": "counter",
+      "help": "Counter of hot region scheduler.",
+      "labels": [
+        "type",
+        "rw",
+        "store",
+        "direction",
+        "dim"
+      ]
+    },
+    {
+      "variable": "hotPeerHist",
+      "name": "pd_scheduler_hot_peer",
+      "kind": "histogram",
+      "help": "Bucketed histogram of the scheduling hot peer.",
+      "labels": [
+        "type",
+        "rw",
+        "dim"
+      ]
+    },
+    {
+      "variable": "evictedSlowStoreStatusGauge",
+      "name": "pd_scheduler_evicted_slow_store_status",
+      "kind": "gauge",
+      "help": "Store evicted status due to slow",
+      "labels": [
+        "store",
+        "slow_type"
+      ]
+    },
+    {
+      "variable": "evictedStoppingStoreStatusGauge",
+      "name": "pd_scheduler_evicted_stopping_store_status",
+      "kind": "gauge",
+      "help": "Store evicted status due to stopping",
+      "labels": [
+        "store"
+      ]
+    },
+    {
+      "variable": "slowStoreTriggerLimitGauge",
+      "name": "pd_scheduler_slow_store_trigger_limit",
+      "kind": "gauge",
+      "help": "slow store trigger limit",
+      "labels": [
+        "store",
+        "slow_type"
+      ]
+    },
+    {
+      "variable": "storeSlowTrendEvictedStatusGauge",
+      "name": "pd_scheduler_store_slow_trend_evicted_status",
+      "kind": "gauge",
+      "help": "Store evicted by slow trend status for schedule",
+      "labels": [
+        "address",
+        "store"
+      ]
+    },
+    {
+      "variable": "storeSlowTrendActionStatusGauge",
+      "name": "pd_scheduler_store_slow_trend_action_status",
+      "kind": "gauge",
+      "help": "Store trend scheduler calculating actions",
+      "labels": [
+        "type",
+        "status"
+      ]
+    },
+    {
+      "variable": "storeSlowTrendMiscGauge",
+      "name": "pd_scheduler_store_slow_trend_misc",
+      "kind": "gauge",
+      "help": "Store trend internal uncatalogued values",
+      "labels": [
+        "type",
+        "dim"
+      ]
+    },
+    {
+      "variable": "HotPendingSum",
+      "name": "pd_scheduler_hot_pending_sum",
+      "kind": "gauge",
+      "help": "Pending influence sum of store in hot region scheduler.",
+      "labels": [
+        "store",
+        "rw",
+        "dim"
+      ]
+    },
+    {
+      "variable": "ruleStatusGauge",
+      "name": "pd_rule_manager_status",
+      "kind": "gauge",
+      "help": "Status of the rule.",
+      "labels": [
+        "type"
+      ]
+    },
+    {
+      "variable": "regionLabelStatusGauge",
+      "name": "pd_region_label_status",
+      "kind": "gauge",
+      "help": "Status of the region labeler.",
+      "labels": [
+        "type"
+      ]
+    },
+    {
+      "variable": "balanceRangeGauge",
+      "name": "pd_balance_range_store",
+      "kind": "gauge",
+      "help": "Store status for balance range schedule",
+      "labels": [
+        "store",
+        "type"
+      ]
+    },
+    {
+      "variable": "balanceRangeJobGauge",
+      "name": "pd_balance_range_job",
+      "kind": "gauge",
+      "help": "job status for balance range schedule",
+      "labels": []
+    }
+  ],
+  "reset": [
+    "schedulerStatusGauge",
+    "ruleStatusGauge",
+    "regionLabelStatusGauge",
+    "opInfluenceStatus",
+    "hotSchedulerResultCounter",
+    "balanceWitnessCounter",
+    "balanceDirectionCounter",
+    "hotDirectionCounter",
+    "evictedSlowStoreStatusGauge",
+    "evictedStoppingStoreStatusGauge",
+    "slowStoreTriggerLimitGauge",
+    "storeSlowTrendEvictedStatusGauge",
+    "balanceRangeGauge"
+  ],
+  "delete_store": [
+    "opInfluenceStatus",
+    "hotSchedulerResultCounter",
+    "balanceDirectionCounter",
+    "hotDirectionCounter",
+    "evictedSlowStoreStatusGauge",
+    "evictedStoppingStoreStatusGauge",
+    "slowStoreTriggerLimitGauge",
+    "storeSlowTrendEvictedStatusGauge",
+    "balanceRangeGauge",
+    "HotPendingSum"
+  ],
+  "initial_events": [
+    [
+      "balance-hot-region-scheduler",
+      "abnormal_replica"
+    ],
+    [
+      "balance-hot-region-scheduler",
+      "create_operator_failed"
+    ],
+    [
+      "balance-hot-region-scheduler",
+      "hot_buckets_not_valid"
+    ],
+    [
+      "balance-hot-region-scheduler",
+      "ignored_affinity"
+    ],
+    [
+      "balance-hot-region-scheduler",
+      "need_split_before_move_peer"
+    ],
+    [
+      "balance-hot-region-scheduler",
+      "new_operator"
+    ],
+    [
+      "balance-hot-region-scheduler",
+      "no_region"
+    ],
+    [
+      "balance-hot-region-scheduler",
+      "not_found_split_keys"
+    ],
+    [
+      "balance-hot-region-scheduler",
+      "not_same_engine"
+    ],
+    [
+      "balance-hot-region-scheduler",
+      "only_one_buckets_hot"
+    ],
+    [
+      "balance-hot-region-scheduler",
+      "pending-op-fails"
+    ],
+    [
+      "balance-hot-region-scheduler",
+      "placement_scope_fallback"
+    ],
+    [
+      "balance-hot-region-scheduler",
+      "read-skip-all-dim-uniform-store"
+    ],
+    [
+      "balance-hot-region-scheduler",
+      "read-skip-byte-uniform-store"
+    ],
+    [
+      "balance-hot-region-scheduler",
+      "read-skip-cpu-uniform-store"
+    ],
+    [
+      "balance-hot-region-scheduler",
+      "read-skip-key-uniform-store"
+    ],
+    [
+      "balance-hot-region-scheduler",
+      "read-skip-query-uniform-store"
+    ],
+    [
+      "balance-hot-region-scheduler",
+      "region_buckets_not_hot"
+    ],
+    [
+      "balance-hot-region-scheduler",
+      "region_buckets_single_hot_spot"
+    ],
+    [
+      "balance-hot-region-scheduler",
+      "region_is_too_hot_need_split"
+    ],
+    [
+      "balance-hot-region-scheduler",
+      "schedule"
+    ],
+    [
+      "balance-hot-region-scheduler",
+      "search_revert_regions"
+    ],
+    [
+      "balance-hot-region-scheduler",
+      "skip"
+    ],
+    [
+      "balance-hot-region-scheduler",
+      "snapshot_sender_limit"
+    ],
+    [
+      "balance-hot-region-scheduler",
+      "split_success"
+    ],
+    [
+      "balance-hot-region-scheduler",
+      "unhealthy_replica"
+    ],
+    [
+      "balance-hot-region-scheduler",
+      "write-skip-all-dim-uniform-store"
+    ],
+    [
+      "balance-hot-region-scheduler",
+      "write-skip-byte-uniform-store"
+    ],
+    [
+      "balance-hot-region-scheduler",
+      "write-skip-key-uniform-store"
+    ],
+    [
+      "balance-hot-region-scheduler",
+      "write-skip-query-uniform-store"
+    ],
+    [
+      "balance-leader-scheduler",
+      "new-operator"
+    ],
+    [
+      "balance-leader-scheduler",
+      "no-follower-region"
+    ],
+    [
+      "balance-leader-scheduler",
+      "no-leader-region"
+    ],
+    [
+      "balance-leader-scheduler",
+      "no-source-store"
+    ],
+    [
+      "balance-leader-scheduler",
+      "no-target-store"
+    ],
+    [
+      "balance-leader-scheduler",
+      "region-hot"
+    ],
+    [
+      "balance-leader-scheduler",
+      "schedule"
+    ],
+    [
+      "balance-leader-scheduler",
+      "skip"
+    ],
+    [
+      "balance-range-scheduler",
+      "balanced"
+    ],
+    [
+      "balance-range-scheduler",
+      "create-operator-fail"
+    ],
+    [
+      "balance-range-scheduler",
+      "expired"
+    ],
+    [
+      "balance-range-scheduler",
+      "new-operator"
+    ],
+    [
+      "balance-range-scheduler",
+      "no-job"
+    ],
+    [
+      "balance-range-scheduler",
+      "no-leader"
+    ],
+    [
+      "balance-range-scheduler",
+      "no-region"
+    ],
+    [
+      "balance-range-scheduler",
+      "no-replacement"
+    ],
+    [
+      "balance-range-scheduler",
+      "persist-failed"
+    ],
+    [
+      "balance-range-scheduler",
+      "region-hot"
+    ],
+    [
+      "balance-range-scheduler",
+      "schedule"
+    ],
+    [
+      "balance-region-scheduler",
+      "create-operator-fail"
+    ],
+    [
+      "balance-region-scheduler",
+      "new-operator"
+    ],
+    [
+      "balance-region-scheduler",
+      "no-leader"
+    ],
+    [
+      "balance-region-scheduler",
+      "no-region"
+    ],
+    [
+      "balance-region-scheduler",
+      "no-replacement"
+    ],
+    [
+      "balance-region-scheduler",
+      "region-hot"
+    ],
+    [
+      "balance-region-scheduler",
+      "schedule"
+    ],
+    [
+      "balance-region-scheduler",
+      "skip"
+    ],
+    [
+      "evict-leader-scheduler",
+      "new-operator"
+    ],
+    [
+      "evict-leader-scheduler",
+      "no-leader"
+    ],
+    [
+      "evict-leader-scheduler",
+      "no-target-store"
+    ],
+    [
+      "evict-leader-scheduler",
+      "pick-unhealthy-region"
+    ],
+    [
+      "evict-leader-scheduler",
+      "schedule"
+    ],
+    [
+      "evict-slow-store-scheduler",
+      "schedule"
+    ],
+    [
+      "evict-stopping-store-scheduler",
+      "schedule"
+    ],
+    [
+      "grant-hot-region-scheduler",
+      "new-operator"
+    ],
+    [
+      "grant-hot-region-scheduler",
+      "no-follower"
+    ],
+    [
+      "grant-hot-region-scheduler",
+      "schedule"
+    ],
+    [
+      "grant-hot-region-scheduler",
+      "skip"
+    ],
+    [
+      "label-scheduler",
+      "new-operator"
+    ],
+    [
+      "label-scheduler",
+      "no-region"
+    ],
+    [
+      "label-scheduler",
+      "no-target"
+    ],
+    [
+      "label-scheduler",
+      "schedule"
+    ],
+    [
+      "label-scheduler",
+      "skip"
+    ],
+    [
+      "random-merge-scheduler",
+      "new-operator"
+    ],
+    [
+      "random-merge-scheduler",
+      "no-region"
+    ],
+    [
+      "random-merge-scheduler",
+      "no-source-store"
+    ],
+    [
+      "random-merge-scheduler",
+      "no-target-store"
+    ],
+    [
+      "random-merge-scheduler",
+      "not-allowed"
+    ],
+    [
+      "random-merge-scheduler",
+      "schedule"
+    ],
+    [
+      "scatter-range-scheduler",
+      "new-leader-operator"
+    ],
+    [
+      "scatter-range-scheduler",
+      "new-operator"
+    ],
+    [
+      "scatter-range-scheduler",
+      "new-region-operator"
+    ],
+    [
+      "scatter-range-scheduler",
+      "no-need-balance-leader"
+    ],
+    [
+      "scatter-range-scheduler",
+      "no-need-balance-region"
+    ],
+    [
+      "scatter-range-scheduler",
+      "schedule"
+    ],
+    [
+      "shuffle-hot-region-scheduler",
+      "new-operator"
+    ],
+    [
+      "shuffle-hot-region-scheduler",
+      "schedule"
+    ],
+    [
+      "shuffle-hot-region-scheduler",
+      "skip"
+    ],
+    [
+      "shuffle-leader-scheduler",
+      "new-operator"
+    ],
+    [
+      "shuffle-leader-scheduler",
+      "no-follower"
+    ],
+    [
+      "shuffle-leader-scheduler",
+      "no-target-store"
+    ],
+    [
+      "shuffle-leader-scheduler",
+      "schedule"
+    ],
+    [
+      "shuffle-region-scheduler",
+      "create-operator-fail"
+    ],
+    [
+      "shuffle-region-scheduler",
+      "new-operator"
+    ],
+    [
+      "shuffle-region-scheduler",
+      "no-new-peer"
+    ],
+    [
+      "shuffle-region-scheduler",
+      "no-region"
+    ],
+    [
+      "shuffle-region-scheduler",
+      "no-source-store"
+    ],
+    [
+      "shuffle-region-scheduler",
+      "schedule"
+    ],
+    [
+      "transfer-witness-leader-scheduler",
+      "new-operator"
+    ],
+    [
+      "transfer-witness-leader-scheduler",
+      "no-target-store"
+    ],
+    [
+      "transfer-witness-leader-scheduler",
+      "schedule"
+    ]
+  ]
+}

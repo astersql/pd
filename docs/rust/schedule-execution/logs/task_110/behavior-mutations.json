@@ -1,0 +1,87 @@
+[
+  {
+    "name": "eager",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-schedulers",
+      "--locked",
+      "--lib",
+      "task_110",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "behavior_assertion_failed": true,
+    "slot": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+  },
+  {
+    "name": "reset",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-schedulers",
+      "--locked",
+      "--lib",
+      "task_110",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "behavior_assertion_failed": true,
+    "slot": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+  },
+  {
+    "name": "delete",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-schedulers",
+      "--locked",
+      "--lib",
+      "task_110",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "behavior_assertion_failed": true,
+    "slot": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+  },
+  {
+    "name": "event",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-schedulers",
+      "--locked",
+      "--lib",
+      "task_110",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "behavior_assertion_failed": true,
+    "slot": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+  },
+  {
+    "name": "bury",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-schedulers",
+      "--locked",
+      "--lib",
+      "task_110",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "behavior_assertion_failed": true,
+    "slot": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+  }
+]
