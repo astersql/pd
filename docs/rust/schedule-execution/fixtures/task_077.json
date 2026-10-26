@@ -1,0 +1,147 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "evidence": "Go source-derived; no Go runtime oracle",
+  "cases": [
+    {
+      "name": "normal",
+      "expected": 1
+    },
+    {
+      "name": "multi-target",
+      "stores": [
+        2,
+        3
+      ],
+      "expected": 2
+    },
+    {
+      "name": "multiple-ranges",
+      "ranges": [
+        [
+          "x",
+          "z"
+        ],
+        [
+          "a",
+          "b"
+        ]
+      ],
+      "expected": 1
+    },
+    {
+      "name": "outside",
+      "ranges": [
+        [
+          "b",
+          "c"
+        ]
+      ],
+      "expected": 0
+    },
+    {
+      "name": "partial-overlap",
+      "ranges": [
+        [
+          "a",
+          "aa"
+        ]
+      ],
+      "expected": 0
+    },
+    {
+      "name": "empty-ranges",
+      "ranges": [],
+      "expected": 0
+    },
+    {
+      "name": "already-leader",
+      "stores": [
+        1
+      ],
+      "expected": 0
+    },
+    {
+      "name": "absent-follower",
+      "stores": [
+        99
+      ],
+      "expected": 0
+    },
+    {
+      "name": "pending-target",
+      "pending": [
+        3
+      ],
+      "expected": 0
+    },
+    {
+      "name": "pending-other",
+      "pending": [
+        2
+      ],
+      "expected": 0
+    },
+    {
+      "name": "down-other",
+      "down": [
+        2
+      ],
+      "expected": 0
+    },
+    {
+      "name": "learner",
+      "learner": true,
+      "expected": 0
+    },
+    {
+      "name": "witness",
+      "witness": true,
+      "expected": 0,
+      "error": true
+    },
+    {
+      "name": "paused-in-force",
+      "pause_in": [
+        3
+      ],
+      "expected": 1
+    },
+    {
+      "name": "prepared",
+      "prepare": true,
+      "expected": 1
+    },
+    {
+      "name": "missing-store",
+      "missing_targets": true,
+      "expected": 0,
+      "error": true
+    },
+    {
+      "name": "one-per-target",
+      "regions": 3,
+      "expected": 1
+    },
+    {
+      "name": "down-target",
+      "down": [
+        3
+      ],
+      "expected": 0
+    },
+    {
+      "name": "empty-config",
+      "stores": [],
+      "expected": 0
+    },
+    {
+      "name": "prepare-multiple",
+      "stores": [
+        2,
+        3
+      ],
+      "prepare": true,
+      "expected": 2
+    }
+  ]
+}

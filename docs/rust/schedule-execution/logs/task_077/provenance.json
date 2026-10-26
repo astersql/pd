@@ -1,0 +1,21 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "evidence": "source-derived expectations + Rust real behavior/fault verification; user-authorized waiver",
+  "go_runtime_output": null,
+  "go_runtime_output_sha256": null,
+  "sha256": {
+    "pkg/schedule/schedulers/grant_leader.go": "4c1f9fda46d697bce4c22ce8dbb07b8a7f255d5d475028067e7c06c8c3aca95f",
+    "pkg/schedule/schedulers/grant_leader_test.go": "f1763d8d73e99c470933119be6b42bcfc892a17b7e7782109bc7622c22b4cb32",
+    "pkg/schedule/operator/create_operator.go": "43a938c72992f4ce81501c40ab85c1e79c08670383acd47f22655e779524b927",
+    "pkg/schedule/operator/builder.go": "2c74830947c401ea8c4d46e8066e4c85aecd02beea035d0bb9eb4aab8cee8f83",
+    "pkg/schedule/schedulers/grant_leader.rs": "1b7fa6168ab977eb96a33f36fd765595e3dfd42c0e39a1af2f4d6528c8570fad",
+    "pkg/schedule/schedulers/task_077_test.rs": "9084750afe11c5ee7a5c2c0fc7a276e5812bfe6ef2aacbf35e98143460f0a7ec",
+    "docs/rust/schedule-execution/fixtures/task_077.json": "bcddba4f6a9c962bf5fa853526783def43d3f5d22253ba20667be2b51398eb31"
+  },
+  "source_baseline_match": {
+    "pkg/schedule/schedulers/grant_leader.go": true,
+    "pkg/schedule/schedulers/grant_leader_test.go": true,
+    "pkg/schedule/operator/create_operator.go": true,
+    "pkg/schedule/operator/builder.go": true
+  }
+}

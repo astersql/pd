@@ -1,0 +1,47 @@
+{
+  "red-api.log": {
+    "file": "red-api.log.gz",
+    "raw_sha256": "5f5096f0792647edbfab0a07baca8f597a1356708a4cb70f87524e0dba2af08d",
+    "raw_bytes": 4337
+  },
+  "workspace-test.log": {
+    "file": "workspace-test.log.gz",
+    "raw_sha256": "5f39625ce7d7d53320f1006eecb92954fa5d006c95bd425cf74b4e38beee8288",
+    "raw_bytes": 143481
+  },
+  "fmt.log": {
+    "file": "fmt.log.gz",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0
+  },
+  "red-behavior.log": {
+    "file": "red-behavior.log.gz",
+    "raw_sha256": "e4fe319cc3c9a05f55543e21dfdcacf029331aae577a37c3ab1418af27113c15",
+    "raw_bytes": 959
+  },
+  "workspace-check.log": {
+    "file": "workspace-check.log.gz",
+    "raw_sha256": "90d3a8a8ddeb74aec40e610476392f38587231e9c3a41ef6d9d4e4f48c0deda5",
+    "raw_bytes": 542
+  },
+  "fmt-check.log": {
+    "file": "fmt-check.log.gz",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0
+  },
+  "metadata.log": {
+    "file": "metadata.log.gz",
+    "raw_sha256": "b5d85138715925e0025be7ed1ca41e691aaebc8bfa3834296dd4fa57cd23570a",
+    "raw_bytes": 167680
+  },
+  "crate.log": {
+    "file": "crate.log.gz",
+    "raw_sha256": "7f4a38c49627abbae78a4f7d732331a91fed038abd3ce5d702b0457b92f3447d",
+    "raw_bytes": 2739
+  },
+  "focused.log": {
+    "file": "focused.log.gz",
+    "raw_sha256": "919e9fcf9ed496640e7b4a526f07b2480c65023d945f0dae7ad6142ddae09adf",
+    "raw_bytes": 1475
+  }
+}
