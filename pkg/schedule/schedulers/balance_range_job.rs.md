@@ -36,3 +36,6 @@ nanoseconds；固定测试时间和持久化规范化到 UTC，不比较原时�
 测试独立登记于 `task_104_test.rs`。真实 MemoryStore 执行所有正常读写，仅 MetaStore
 read/transact I/O 边界注入 unavailable/stall；验证完整本地/持久快照和重建。来源
 `TestPersistFail` 需要 failpoints，本任务未执行、注入或修改 Go。
+
+任务106的工厂接线新增 crate 内部 `from_json`，从持久队列构造真实owner；不写存储、
+不重新分配job ID，沿用原有serde状态/时间规则。

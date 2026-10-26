@@ -1,0 +1,12 @@
+{
+  "command": [
+    "python3",
+    "docs/rust/schedule-execution/logs/task_106/verify.py"
+  ],
+  "exit_code": 0,
+  "go_files_checked": 1101,
+  "all_content_hashes_equal": true,
+  "readonly_plans_unchanged": true,
+  "diff_check": true,
+  "document_links": true
+}

@@ -1,0 +1,34 @@
+[
+  {
+    "mutation": "wrong-batch",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-schedulers",
+      "--locked",
+      "--lib",
+      "task_106",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "assertion_failure": true
+  },
+  {
+    "mutation": "wrong-type",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-schedulers",
+      "--locked",
+      "--lib",
+      "task_106",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "assertion_failure": true
+  }
+]

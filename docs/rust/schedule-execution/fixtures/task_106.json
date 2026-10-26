@@ -1,0 +1,315 @@
+{
+  "provenance": "Read-only Go init.go/scheduler.go derivation, not Go runtime output",
+  "cases": [
+    {
+      "type": "balance-leader-scheduler",
+      "args": [],
+      "name": "balance-leader-scheduler",
+      "expected": {
+        "batch": 4,
+        "ranges": [
+          {
+            "start-key": "",
+            "end-key": ""
+          }
+        ]
+      }
+    },
+    {
+      "type": "balance-region-scheduler",
+      "args": [],
+      "name": "balance-region-scheduler",
+      "expected": {
+        "ranges": [
+          {
+            "start-key": "",
+            "end-key": ""
+          }
+        ]
+      }
+    },
+    {
+      "type": "balance-witness-scheduler",
+      "args": [],
+      "name": "balance-witness-scheduler",
+      "expected": {
+        "batch": 4,
+        "ranges": [
+          {
+            "start-key": "",
+            "end-key": ""
+          }
+        ]
+      }
+    },
+    {
+      "type": "evict-leader-scheduler",
+      "args": [
+        "1,2"
+      ],
+      "name": "evict-leader-scheduler",
+      "expected": {
+        "batch": 3,
+        "store-id-ranges": {
+          "1": [
+            {
+              "start-key": "",
+              "end-key": ""
+            }
+          ],
+          "2": [
+            {
+              "start-key": "",
+              "end-key": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "evict-slow-store-scheduler",
+      "args": [],
+      "name": "evict-slow-store-scheduler",
+      "expected": {
+        "batch": 3,
+        "recovery-duration": 1800,
+        "enable-network-slow-store": false,
+        "paused-network-slow-stores": [],
+        "evicted-network-slow-stores": []
+      }
+    },
+    {
+      "type": "evict-stopping-store-scheduler",
+      "args": [],
+      "name": "evict-stopping-store-scheduler",
+      "expected": {
+        "batch": 3
+      }
+    },
+    {
+      "type": "grant-hot-region-scheduler",
+      "args": [
+        "1",
+        "2,3"
+      ],
+      "name": "grant-hot-region-scheduler",
+      "expected": {
+        "store-leader-id": 1,
+        "store-id": [
+          2,
+          3,
+          1
+        ]
+      }
+    },
+    {
+      "type": "balance-hot-region-scheduler",
+      "args": [],
+      "name": "balance-hot-region-scheduler",
+      "expected": {
+        "rank-formula-version": "v2"
+      }
+    },
+    {
+      "type": "grant-leader-scheduler",
+      "args": [
+        "3",
+        "a",
+        "z"
+      ],
+      "name": "grant-leader-scheduler",
+      "expected": {
+        "store-id-ranges": {
+          "3": [
+            {
+              "start-key": "61",
+              "end-key": "7a"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "label-scheduler",
+      "args": [],
+      "name": "label-scheduler",
+      "expected": {
+        "ranges": [
+          {
+            "start-key": "",
+            "end-key": ""
+          }
+        ]
+      }
+    },
+    {
+      "type": "random-merge-scheduler",
+      "args": [],
+      "name": "random-merge-scheduler",
+      "expected": {
+        "ranges": [
+          {
+            "start-key": "",
+            "end-key": ""
+          }
+        ]
+      }
+    },
+    {
+      "type": "scatter-range-scheduler",
+      "args": [
+        "a",
+        "z",
+        "audit"
+      ],
+      "name": "scatter-range-scheduler-audit",
+      "expected": {
+        "range-name": "audit",
+        "start-key": "a",
+        "end-key": "z"
+      }
+    },
+    {
+      "type": "shuffle-hot-region-scheduler",
+      "args": [
+        "7"
+      ],
+      "name": "shuffle-hot-region-scheduler",
+      "expected": {
+        "limit": 7
+      }
+    },
+    {
+      "type": "shuffle-leader-scheduler",
+      "args": [],
+      "name": "shuffle-leader-scheduler",
+      "expected": {
+        "ranges": [
+          {
+            "start-key": "",
+            "end-key": ""
+          }
+        ]
+      }
+    },
+    {
+      "type": "shuffle-region-scheduler",
+      "args": [],
+      "name": "shuffle-region-scheduler",
+      "expected": {
+        "roles": [
+          "leader",
+          "follower",
+          "learner"
+        ],
+        "ranges": [
+          {
+            "start-key": "",
+            "end-key": ""
+          }
+        ]
+      }
+    },
+    {
+      "type": "transfer-witness-leader-scheduler",
+      "args": [],
+      "name": "transfer-witness-leader-scheduler",
+      "expected": {},
+      "expected_null": true
+    },
+    {
+      "type": "evict-slow-trend-scheduler",
+      "args": [],
+      "name": "evict-slow-trend-scheduler",
+      "expected": {
+        "recovery-duration": 1800
+      }
+    },
+    {
+      "type": "balance-range-scheduler",
+      "args": [
+        "leader-scatter",
+        "tikv",
+        "1h",
+        "audit",
+        "a",
+        "z"
+      ],
+      "name": "balance-range-scheduler",
+      "expected": {},
+      "job_expected": {
+        "job-id": 0,
+        "rule": "leader-scatter",
+        "engine": "tikv",
+        "timeout": 3600000000000,
+        "alias": "audit",
+        "ranges": [
+          {
+            "start-key": "61",
+            "end-key": "7a"
+          }
+        ],
+        "status": "pending",
+        "create": "1970-01-01T00:00:00Z"
+      }
+    }
+  ],
+  "invalid": [
+    [
+      "evict-leader-scheduler",
+      []
+    ],
+    [
+      "evict-leader-scheduler",
+      [
+        "1,2",
+        "a",
+        "b"
+      ]
+    ],
+    [
+      "grant-leader-scheduler",
+      [
+        "bad"
+      ]
+    ],
+    [
+      "grant-hot-region-scheduler",
+      [
+        "1"
+      ]
+    ],
+    [
+      "scatter-range-scheduler",
+      [
+        "a",
+        "z",
+        ""
+      ]
+    ],
+    [
+      "shuffle-hot-region-scheduler",
+      [
+        "bad"
+      ]
+    ],
+    [
+      "balance-range-scheduler",
+      [
+        "invalid",
+        "tikv",
+        "1h",
+        "audit",
+        "a",
+        "z"
+      ]
+    ],
+    [
+      "label-scheduler",
+      [
+        "%xx",
+        "z"
+      ]
+    ]
+  ]
+}

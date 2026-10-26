@@ -1,0 +1,10 @@
+{
+  "focused_passed": 4,
+  "scheduler_passed": 168,
+  "workspace_passed": 1717,
+  "workspace_failed": 0,
+  "workspace_ignored": 1,
+  "fixture_valid_factories": 18,
+  "fixture_invalid_args": 8,
+  "mutations_detected": 2
+}

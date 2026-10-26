@@ -187,7 +187,7 @@ async fn task_065_base_default_and_disable() {
 
 #[test]
 fn task_065_unregistered_and_unsupported() {
-    let registry = SchedulerRegistry;
+    let registry = SchedulerRegistry::default();
     for typ in SCHEDULERS
         .into_iter()
         .chain([CheckerSchedulerType::from("unknown")])

@@ -277,6 +277,21 @@ impl BalanceRangeJobs {
             config: SchedulerConfig::new("balance-range-scheduler".into(), storage, paths, vec![]),
         }
     }
+    /// Decode a factory snapshot without writing storage or changing job IDs.
+    pub(crate) fn from_json(
+        storage: Arc<StorageEndpoint>,
+        paths: ClusterPaths,
+        data: &[u8],
+    ) -> Result<Self, RangeJobError> {
+        Ok(Self {
+            config: SchedulerConfig::new(
+                "balance-range-scheduler".into(),
+                storage,
+                paths,
+                crate::decode_config(data)?,
+            ),
+        })
+    }
     pub fn jobs(&self) -> &[BalanceRangeJob] {
         self.config.get()
     }

@@ -1,0 +1,19 @@
+{
+  "source_commit": "e82869cbd32b3859be2ae922c7b4cf077da3f661",
+  "plan_source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "runtime_oracle": null,
+  "evidence_mode": "user-authorized read-only Go source/test derivation + Rust real behavior/fault tests",
+  "hashes": {
+    "pkg/schedule/schedulers/init.go": "09664f94f3ebe92a4cad1c9a435fb1f8619c72731e8fa55ec0c75c2818175a40",
+    "pkg/schedule/schedulers/scheduler.go": "c0330c4dc38ebb4d7b0e6d5a3b5d1fe5da85a2e4ec9b22a2e90ea9682112365c",
+    "pkg/schedule/schedulers/scheduler_test.go": "55b18eda7e1834ed5090cf360f2cbac1048b0b164e4e84dcf06cbfbbdc8162fc",
+    "pkg/schedule/schedulers/base_scheduler.go": "1da013a2323c2756dcfd3b1203e91c481c58e80e258e3848d5db23dd261e6bdc",
+    "pkg/schedule/schedulers/hot_region.go": "2e34a6068d48c1ffed3a78764fc18843b20b6fab2943587df4e907acfe692ad6",
+    "pkg/schedule/schedulers/grant_hot_region.go": "2e19e15d5305f8a09c62639be401dce2f11f6e83eab433bac4f56f9f9690dcd5",
+    "pkg/schedule/schedulers/evict_slow_store.go": "dc5a6f0d9f59e6001c0882d54d16771515266b23cd43d1c3f9a43520e217aeda",
+    "pkg/schedule/schedulers/balance_range.go": "ccd59a50facd035b9f50f69a3ac1e4a538540cbfa0fc0916840f0392224cdc2d",
+    "pkg/schedule/schedulers/balance_range_job.rs": "3a2e2d17836fdc69fbfe5e05b93e1f89a2fc75c03e8a5fa4b5303e5f63ee294c",
+    "docs/rust/schedule-execution/fixtures/task_106.json": "02e6c269b588c273e2ce78407e16823d3063feb4bf40f5016177150a8bae8916",
+    "docs/rust/schedule-execution/oracle-index.json": "2d1a930742291e7047a864aa2246e7e22c612cb6583249b7edb42945b494b450"
+  }
+}

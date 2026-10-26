@@ -222,3 +222,9 @@ mod balance_range_schedule;
 #[cfg(test)]
 mod task_105_test;
 pub use balance_range_schedule::*;
+
+#[cfg(test)]
+mod task_106_test;
+
+mod registry;
+pub use registry::*;

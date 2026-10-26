@@ -28,6 +28,8 @@ pub enum SchedulerError {
     NotRegistered(CheckerSchedulerType),
     #[error("the config decoder do not register for {0}")]
     DecoderNotRegistered(CheckerSchedulerType),
+    #[error("invalid scheduler configuration: {0}")]
+    InvalidConfig(String),
     #[error("unsupported scheduler action: {0}")]
     Unsupported(&'static str),
     #[error(transparent)]
@@ -235,24 +237,4 @@ pub trait Scheduler<C: SchedulerCluster> {
         dry_run: bool,
     ) -> Result<(Vec<Arc<Operator>>, Vec<BalanceSchedulerPlan>), SchedulerError>;
     fn is_schedule_allowed(&self, cluster: &C) -> bool;
-}
-
-/// Empty until concrete policies are ported. Known type strings are not factories.
-#[derive(Default)]
-pub struct SchedulerRegistry;
-impl SchedulerRegistry {
-    pub fn lookup(&self, typ: &CheckerSchedulerType) -> Result<(), SchedulerError> {
-        Err(SchedulerError::NotRegistered(typ.clone()))
-    }
-    pub fn decode_slice<T>(
-        &self,
-        typ: &CheckerSchedulerType,
-        _args: &[String],
-    ) -> Result<T, SchedulerError> {
-        Err(SchedulerError::DecoderNotRegistered(typ.clone()))
-    }
-    pub fn find_type_by_name(&self, name: &str) -> Option<CheckerSchedulerType> {
-        name.contains("scatter-range")
-            .then_some(astersql_pd_schedule_types::SCATTER_RANGE_SCHEDULER)
-    }
 }

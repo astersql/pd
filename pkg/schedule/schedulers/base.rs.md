@@ -27,9 +27,9 @@
   字段；每次查询尝试加载 disabled，缺失、null 或读取/解码错误保留本地值。
   set 先改本地值再保存，失败不回滚；后续成功读取恢复已持久化值。
   独占可变借用保证单实例修改顺序；多实例共享状态仍由宿主协调。
-- `update_config` 对基础类型返回 Unsupported。注册表目前为空，已知的 18 个字符串
-  不等于已移植策略：lookup/切片 decoder 全部显式报未注册。
-  名称查找仅保留 Go 即使空表也存在的 scatter-range 历史别名。
+- `update_config` 对基础类型返回 Unsupported。注册表已移至 [registry.rs](registry.rs.md)，
+  默认空表仍返回未注册；显式 register_builtins 后接入全部18类真实策略及切片decoder。
+  名称查找保留 Go 即使空表也存在的 scatter-range 历史别名。
 
 测试见 `task_065_test.rs`，完整来源哈希、失败断言和验证命令见
 [task-065](../../../docs/rust/schedule-execution/task-065.md)。
