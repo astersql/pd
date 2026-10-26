@@ -1,0 +1,26 @@
+{
+  "red-behavior": {
+    "passed": 1,
+    "failed": 5,
+    "ignored": 0,
+    "result_lines": 1
+  },
+  "focused-final": {
+    "passed": 6,
+    "failed": 0,
+    "ignored": 0,
+    "result_lines": 1
+  },
+  "crate": {
+    "passed": 62,
+    "failed": 0,
+    "ignored": 0,
+    "result_lines": 2
+  },
+  "workspace-test": {
+    "passed": 1611,
+    "failed": 0,
+    "ignored": 1,
+    "result_lines": 145
+  }
+}

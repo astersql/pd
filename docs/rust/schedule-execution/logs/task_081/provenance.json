@@ -1,0 +1,13 @@
+{
+  "pkg/schedule/schedulers/evict_slow_store.go": {
+    "current_sha256": "dc5a6f0d9f59e6001c0882d54d16771515266b23cd43d1c3f9a43520e217aeda",
+    "baseline_sha256": "dc5a6f0d9f59e6001c0882d54d16771515266b23cd43d1c3f9a43520e217aeda"
+  },
+  "pkg/schedule/schedulers/evict_slow_store_test.go": {
+    "current_sha256": "1c23c9d988c0c84b452fee31cc6d15d95badcb1ae7ad6b7e32323a222b7624e5",
+    "baseline_sha256": "1c23c9d988c0c84b452fee31cc6d15d95badcb1ae7ad6b7e32323a222b7624e5"
+  },
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "fixture_sha256": "8180cea8647fdee54b78895fb961ab4d5e52e96e584a20d2ed7a7a92bb911c7d",
+  "oracle": "source-derived only; user-authorized substitution; no Go execution"
+}

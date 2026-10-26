@@ -63,6 +63,17 @@ impl EvictDiskConfig {
             is_recovered: false,
         })
     }
+    /// Change policy without resetting runtime recovery or persisted eviction state.
+    pub(crate) fn update_policy(
+        &mut self,
+        recovery_sec: u64,
+        batch: usize,
+    ) -> Result<(), InvalidLeaderBatch> {
+        EvictLeaderConfig::new(Default::default(), batch)?;
+        self.recovery_sec = recovery_sec;
+        self.batch = batch;
+        Ok(())
+    }
     pub fn evict_store(&self) -> u64 {
         self.evicted.first().copied().unwrap_or(0)
     }

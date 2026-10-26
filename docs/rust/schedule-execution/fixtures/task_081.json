@@ -1,0 +1,10 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "provenance": "read-only Go source/test derivation; no Go execution",
+  "cases": [
+    {"triggers":0,"evicted":false},
+    {"triggers":5,"evicted":false},
+    {"triggers":6,"evicted":true},
+    {"triggers":7,"evicted":true}
+  ]
+}

@@ -85,3 +85,9 @@ mod task_080_test;
 
 mod evict_network_detect;
 pub use evict_network_detect::*;
+
+#[cfg(test)]
+mod task_081_test;
+
+mod evict_network;
+pub use evict_network::*;
