@@ -102,3 +102,9 @@ mod slow_trend_candidate;
 pub use slow_trend_candidate::*;
 #[cfg(test)]
 mod task_083_test;
+
+#[cfg(test)]
+mod task_084_test;
+
+mod slow_trend_recover;
+pub use slow_trend_recover::*;

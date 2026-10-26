@@ -1,0 +1,36 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "basis": "readonly Go source/test derivation; no Go runtime oracle",
+  "cases": [
+    {
+      "name": "before",
+      "now": 1800999999999,
+      "value": 10,
+      "evicted": 1
+    },
+    {
+      "name": "exact",
+      "now": 1801000000000,
+      "value": 10,
+      "evicted": 0
+    },
+    {
+      "name": "after",
+      "now": 1802000000000,
+      "value": 10,
+      "evicted": 0
+    },
+    {
+      "name": "too-slow",
+      "now": 1802000000000,
+      "value": 11.000001,
+      "evicted": 1
+    },
+    {
+      "name": "tolerance",
+      "now": 1801000000000,
+      "value": 11,
+      "evicted": 0
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "command": [
+    "env",
+    "CARGO_BUILD_JOBS=1",
+    "RUST_TEST_THREADS=2",
+    "cargo",
+    "test",
+    "--workspace",
+    "--locked"
+  ],
+  "exit_code": 0,
+  "slot": 1,
+  "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+  "CARGO_BUILD_JOBS": null,
+  "RUST_TEST_THREADS": null
+}

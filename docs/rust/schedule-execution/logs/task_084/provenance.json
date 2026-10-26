@@ -1,0 +1,14 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "dependency_commit": "7ca4de1d0",
+  "basis": "user authorized readonly Go source/test derivation plus Rust behavior/fault validation; no Go runtime outputs",
+  "sha256": {
+    "pkg/schedule/schedulers/evict_slow_trend.go": "cc8c13a96b1dd341a7c3a24d15c2a8ad7ed129434ee9c0f2e7f8a60edefa6fa6",
+    "pkg/schedule/schedulers/evict_slow_trend_test.go": "e3efaf585ca813dc16a183a0d32be59e5b53c2d53967956bee65fe847cc9bb08",
+    "docs/rust/schedule-execution/fixtures/task_084.json": "beec8cac40aeaac132a8b81ad898465c920ec55ef1e0c7a9bca60cd1d9080195"
+  },
+  "source_matches_baseline": {
+    "pkg/schedule/schedulers/evict_slow_trend.go": true,
+    "pkg/schedule/schedulers/evict_slow_trend_test.go": true
+  }
+}
