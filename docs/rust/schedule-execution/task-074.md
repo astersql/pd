@@ -1,7 +1,8 @@
 # 任务074：见证均衡配置更新恢复
 
-状态：已阻塞。实现与 Rust 行为验证已具备，必需 Go 运行 oracle 尚未取得；
-不能标记完成或待回归。任务73提交 `985b581aa` 的 canonical 配置与调度API、
+状态：已完成。用户已明确授权整个计划“突破啊，允许推导啊”，验收采用
+**只读Go源码/测试推导 + Rust真实行为和故障验证**；没有Go运行输出或运行差分。
+任务73提交 `985b581aa` 的 canonical 配置与调度API、
 包级及全仓证据已审阅，本次包级再次回归其行为。
 
 生产 [balance_witness_config.rs](../../../pkg/schedule/schedulers/balance_witness_config.rs)
@@ -12,7 +13,7 @@
 复用真实StorageEndpoint、ClusterPaths、MemoryStore及已有validated配置类型，
 没有新增后端/依赖/feature/运行时，也未改Go、模块或两份只读plan.md。
 
-## 来源、差异与准入缺口
+## 来源、差异与证据方式
 
 [provenance](logs/task_074/provenance.json) 保存来源基准commit、当前checkout、前置
 commit及源码/fixture SHA256。[fixture](fixtures/task_074.json) 的期望由只读来源及
@@ -36,9 +37,10 @@ Go ReloadConfig:209-219直接赋值；Rust恢复要求通过batch/key JSON校验
   x86_64 Mach-O可运行，但Git Commit Hash为None，buildinfo为command-line-arguments，
   没有可验证的当前Go源码绑定。版本查询不是行为测试，未作为oracle。
 
-本次未新建Go harness、未运行需要failpoint的测试、未启动无来源绑定的服务取得
-伪固定基准；源码推导与Rust故障实测不能替代任务要求的Go运行证据。仍需符合原标准
-的只读运行输出与provenance；已实现部分可审查并保存，阻塞不代表无实现。
+本次未新建Go harness、未运行需要failpoint的测试，未把版本查询当行为测试。
+上述调查保留为历史证据：原Go运行oracle准入曾阻塞本任务；用户后续明确授权
+整个计划采用源码/测试推导加Rust真实验证，该项限制已解除，不再构成阻塞。
+Go及模块文件仍保持只读；Go输出SHA256保留null，未伪造运行差分。
 
 ## Rust行为与故障证据
 
@@ -88,4 +90,8 @@ Rust变更后先运行cargo fmt --all，再执行相应验证；最终源码不�
 Git状态为空；两份plan.md与HEAD无差异。文档链接和diff检查通过。
 日志仅按[说明](logs/task_074/log-normalization.json) 清理行尾空白及EOF空行。
 实现、独立测试、fixture与证据单独提交；其它任务已有删除/修改不纳入。
-本任务文件保留“已阻塞”，不把Go oracle缺口当作无关回归失败。
+2026-10-26收尾核实见[completion-audit](logs/task_074/completion-audit.json)：
+实现提交`5f0225c78`的源码/fixture哈希与测试日志仍匹配，工作树无Rust/Cargo变更，
+1101个Go/模块文件及两份只读plan.md均不变，因此复用上述已通过验证，没有重跑Cargo。
+本次只更新验收说明及provenance，不新增代码或改变期望。按新授权标记完成并删除
+自身编号任务文件；不修改任何plan.md，不更改来源主题或其它任务。

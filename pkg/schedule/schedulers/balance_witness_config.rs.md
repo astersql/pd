@@ -19,10 +19,10 @@ Go `ReloadConfig:209-219` 直接赋值；Rust 按任务要求使用校验后的�
 拒绝非法 batch。Go update 的部分 JSON 合并、未知字段与错误中途字段修改行为
 不由本领域整体替换API模拟。
 
-只读来源与现有 API 测试仅用于设计正常/batch/range场景，未取得本任务必要的
-固定来源 Go 运行 oracle；证据状态仍为阻塞。Rust测试期望冻结于
+按用户明确授权，验收采用只读Go源码/测试推导加Rust真实行为和故障验证。
+没有本任务固定来源Go运行输出，不声称运行差分。Rust测试期望冻结于
 [fixture](../../../docs/rust/schedule-execution/fixtures/task_074.json)，明确标注源码
-推导和任务契约，不把它称为运行差分。后续验收需补齐该证据缺口。
+推导和任务契约；用户已解除原Go运行oracle准入限制，当前验收证据完整。
 
 [独立测试](task_074_test.rs) 使用真实 canonical core/placement/operator 和
 MemoryStore，经 I/O trait 边界注入读取/事务不可用，核对活动配置、持久化值、

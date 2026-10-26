@@ -2,7 +2,7 @@
   "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
   "checkout_commit": "985b581aa369e48c21c17d3540269701d7c9cf0a",
   "dependency_commit": "985b581aa",
-  "evidence": "source-derived normal cases + task-required rollback + executed Rust behavior; required Go runtime oracle missing",
+  "evidence": "read-only Go source/test derived + task-required rollback + executed Rust behavior/fault verification; accepted by explicit user authorization",
   "go_behavior_output_sha256": null,
   "normalization": "none; clock fixed 1000 seconds, index 0, shuffle identity; empty ranges canonicalized to full range by existing config",
   "files": {
@@ -12,5 +12,13 @@
     "pkg/schedule/schedulers/balance_witness_config.rs": "59fd0b12faf5110e39e0151e8f943341ddd8941a8f93b2a39f56069bee2e0988",
     "pkg/schedule/schedulers/task_074_test.rs": "3b162a62eac60bb37b7431192dbb6420bcaabee7d4740c74efbf1f0d09efbbec",
     "docs/rust/schedule-execution/fixtures/task_074.json": "6821722da5d9db27c5335cb6a0e06ceb86c7883111a0212d283b848f93f90990"
+  },
+  "acceptance_authorization": {
+    "date": "2026-10-26",
+    "scope": "entire scheduling execution plan",
+    "user_instruction": "突破啊，允许推导啊",
+    "accepted_evidence": "read-only Go source/test inference + real Rust behavior and fault verification",
+    "go_runtime_oracle_requirement_waived": true,
+    "go_module_readonly_requirement_unchanged": true
   }
 }
