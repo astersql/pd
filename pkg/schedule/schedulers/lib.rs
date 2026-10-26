@@ -184,3 +184,8 @@ mod task_098_test;
 
 mod random_merge;
 pub use random_merge::*;
+
+mod scatter_range;
+pub use scatter_range::*;
+#[cfg(test)]
+mod task_099_test;

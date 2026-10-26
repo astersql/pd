@@ -30,3 +30,7 @@ Go 源码和相邻测试只读。按用户授权，证据为源码/测试契约�
 
 任务25在同一 Operator 组合 AdditionalInfo，增加有原因取消与 merge Sync；
 历史/记录/JSON 的扩展实现见 [operator_record.rs.md](operator_record.rs.md)。
+
+任务099新增 `Operator::decorate(&mut self, desc, kind)`，用于范围散射在发布前独占
+修改 description 并附加 RANGE 位；保留已有步骤、kind 位、priority、health 和附加信息。
+行为由 schedulers/task_099_test.rs 的 leader 批次与 region 操作器案例验证。

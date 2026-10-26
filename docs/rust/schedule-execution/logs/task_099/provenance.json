@@ -1,0 +1,15 @@
+{
+  "source_commit": "c26dd40428c326dc564054cc6219f8ffb3aa0263",
+  "source_baseline": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "runtime_oracle": null,
+  "basis": "user-authorized read-only Go source/test derivation plus real Rust behavior/fault verification",
+  "normalization": "time=1000000000000ns; random index=0, shuffle identity; tied target store ids accepted only from legal candidate set; no operation/error fields normalized",
+  "sha256": {
+    "pkg/schedule/schedulers/scatter_range.go": "49d0f15a24cf8a618d4d83b98f37abddb02db9859a45a3f4036af46e9c0ba45d",
+    "pkg/schedule/schedulers/scatter_range_test.go": "4f1f561d12c5b0e41de73eb96ebd6868baed7da3a93340efd2ee0f137a70287a",
+    "pkg/schedule/schedulers/range_cluster.go": "90cd33aae78e9ff8ca757259586c33b8efe643b56bab286f31e6d20d6a0505c3",
+    "pkg/schedule/schedulers/balance_region.go": "616ed0bb53b58909c013e10be1000822fe0ca72ff46d36ec0aaab1031213c1fc",
+    "docs/rust/schedule-execution/oracle-index.json": "2d1a930742291e7047a864aa2246e7e22c612cb6583249b7edb42945b494b450",
+    "docs/rust/schedule-execution/fixtures/task_099.json": "3d9fb763ca27d05dbb7ebd148787a5dccf629935ff1ede42175a9a1ac4a86278"
+  }
+}

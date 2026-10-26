@@ -1,0 +1,17 @@
+{
+  "focused3": {
+    "passed": 2,
+    "failed": 0,
+    "ignored": 0
+  },
+  "package": {
+    "passed": 147,
+    "failed": 0,
+    "ignored": 0
+  },
+  "workspace-test": {
+    "passed": 1696,
+    "failed": 0,
+    "ignored": 1
+  }
+}

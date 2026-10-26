@@ -268,6 +268,11 @@ impl Operator {
             health_check: AtomicBool::new(false),
         }
     }
+    /// Decorate a newly built operation before publishing it to the controller.
+    pub fn decorate(&mut self, desc: String, kind: OpKind) {
+        self.desc = desc;
+        self.kind = self.kind | kind;
+    }
     pub fn desc(&self) -> &str {
         &self.desc
     }

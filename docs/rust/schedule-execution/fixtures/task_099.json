@@ -1,0 +1,97 @@
+{
+  "basis": "Go scatter_range.go Schedule/config and range_cluster.go; source-derived, no Go runtime oracle",
+  "cases": [
+    {
+      "name": "leader-first",
+      "leader": 4,
+      "region": 4,
+      "count": 0,
+      "expected": "leader"
+    },
+    {
+      "name": "leader-only",
+      "leader": 4,
+      "region": 0,
+      "count": 0,
+      "expected": "leader"
+    },
+    {
+      "name": "region-only",
+      "leader": 0,
+      "region": 4,
+      "count": 0,
+      "expected": "region"
+    },
+    {
+      "name": "leader-noop-falls-back",
+      "leader": 4,
+      "region": 4,
+      "count": 0,
+      "balanced_leaders": true,
+      "expected": "region"
+    },
+    {
+      "name": "both-limited",
+      "leader": 1,
+      "region": 1,
+      "count": 1,
+      "expected": "none"
+    },
+    {
+      "name": "region-allocation-fault",
+      "leader": 0,
+      "region": 4,
+      "count": 0,
+      "fail": true,
+      "expected": "error"
+    },
+    {
+      "name": "outside-range",
+      "leader": 4,
+      "region": 4,
+      "count": 0,
+      "miss": true,
+      "expected": "none"
+    },
+    {
+      "name": "pending-falls-back-to-region",
+      "leader": 4,
+      "region": 4,
+      "count": 0,
+      "pending": true,
+      "expected": "region"
+    },
+    {
+      "name": "empty-end",
+      "leader": 4,
+      "region": 0,
+      "count": 0,
+      "open_end": true,
+      "expected": "leader"
+    },
+    {
+      "name": "down-noop",
+      "leader": 4,
+      "region": 4,
+      "count": 0,
+      "down": true,
+      "expected": "none"
+    },
+    {
+      "name": "zero-size-region",
+      "leader": 0,
+      "region": 4,
+      "count": 0,
+      "zero_size": true,
+      "expected": "none"
+    },
+    {
+      "name": "empty-range",
+      "leader": 4,
+      "region": 4,
+      "count": 0,
+      "empty": true,
+      "expected": "none"
+    }
+  ]
+}
