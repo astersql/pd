@@ -1,0 +1,363 @@
+{
+  "provenance": "read-only Go source-derived; no Go runtime oracle",
+  "mode": "default features; classic/nextgen shared config domain",
+  "cases": [
+    {
+      "name": "default",
+      "input": {
+        "alias": "a",
+        "engine": "tikv",
+        "rule": "leader-scatter",
+        "start-key": "a",
+        "end-key": "z"
+      },
+      "ok": true,
+      "timeout": 1800000000000,
+      "start": "61",
+      "end": "7a"
+    },
+    {
+      "name": "leader-scatter-tikv",
+      "input": {
+        "alias": "a",
+        "engine": "tikv",
+        "rule": "leader-scatter",
+        "start-key": "a",
+        "end-key": "z",
+        "timeout": "1.5s"
+      },
+      "ok": true,
+      "timeout": 1500000000,
+      "start": "61",
+      "end": "7a"
+    },
+    {
+      "name": "leader-scatter-tiflash",
+      "input": {
+        "alias": "a",
+        "engine": "tiflash",
+        "rule": "leader-scatter",
+        "start-key": "a",
+        "end-key": "z",
+        "timeout": "1.5s"
+      },
+      "ok": true,
+      "timeout": 1500000000,
+      "start": "61",
+      "end": "7a"
+    },
+    {
+      "name": "peer-scatter-tikv",
+      "input": {
+        "alias": "a",
+        "engine": "tikv",
+        "rule": "peer-scatter",
+        "start-key": "a",
+        "end-key": "z",
+        "timeout": "1.5s"
+      },
+      "ok": true,
+      "timeout": 1500000000,
+      "start": "61",
+      "end": "7a"
+    },
+    {
+      "name": "peer-scatter-tiflash",
+      "input": {
+        "alias": "a",
+        "engine": "tiflash",
+        "rule": "peer-scatter",
+        "start-key": "a",
+        "end-key": "z",
+        "timeout": "1.5s"
+      },
+      "ok": true,
+      "timeout": 1500000000,
+      "start": "61",
+      "end": "7a"
+    },
+    {
+      "name": "learner-scatter-tikv",
+      "input": {
+        "alias": "a",
+        "engine": "tikv",
+        "rule": "learner-scatter",
+        "start-key": "a",
+        "end-key": "z",
+        "timeout": "1.5s"
+      },
+      "ok": true,
+      "timeout": 1500000000,
+      "start": "61",
+      "end": "7a"
+    },
+    {
+      "name": "learner-scatter-tiflash",
+      "input": {
+        "alias": "a",
+        "engine": "tiflash",
+        "rule": "learner-scatter",
+        "start-key": "a",
+        "end-key": "z",
+        "timeout": "1.5s"
+      },
+      "ok": true,
+      "timeout": 1500000000,
+      "start": "61",
+      "end": "7a"
+    },
+    {
+      "name": "empty-timeout",
+      "input": {
+        "alias": "a",
+        "engine": "tikv",
+        "rule": "leader-scatter",
+        "start-key": "a",
+        "end-key": "z",
+        "timeout": ""
+      },
+      "ok": true,
+      "timeout": 1800000000000,
+      "start": "61",
+      "end": "7a"
+    },
+    {
+      "name": "double-decode",
+      "input": {
+        "alias": "a",
+        "engine": "tikv",
+        "rule": "leader-scatter",
+        "start-key": "%252B",
+        "end-key": "%2541"
+      },
+      "ok": true,
+      "timeout": 1800000000000,
+      "start": "2b",
+      "end": "41"
+    },
+    {
+      "name": "binary",
+      "input": {
+        "alias": "a",
+        "engine": "tikv",
+        "rule": "leader-scatter",
+        "start-key": "%FF",
+        "end-key": "%00"
+      },
+      "ok": true,
+      "timeout": 1800000000000,
+      "start": "ff",
+      "end": "00"
+    },
+    {
+      "name": "multiple",
+      "input": {
+        "alias": "a",
+        "engine": "tikv",
+        "rule": "leader-scatter",
+        "start-key": "a,b",
+        "end-key": "c,d"
+      },
+      "ok": true,
+      "timeout": 1800000000000,
+      "start": "61",
+      "end": "63",
+      "ranges": 2
+    },
+    {
+      "name": "unbounded",
+      "input": {
+        "alias": "a",
+        "engine": "tikv",
+        "rule": "leader-scatter",
+        "start-key": "",
+        "end-key": ""
+      },
+      "ok": true,
+      "timeout": 1800000000000,
+      "start": "",
+      "end": ""
+    },
+    {
+      "name": "engine-number",
+      "input": {
+        "alias": "a",
+        "engine": 1,
+        "rule": "leader-scatter",
+        "start-key": "a",
+        "end-key": "z"
+      },
+      "ok": false
+    },
+    {
+      "name": "rule-number",
+      "input": {
+        "alias": "a",
+        "engine": "tikv",
+        "rule": 1,
+        "start-key": "a",
+        "end-key": "z"
+      },
+      "ok": false
+    },
+    {
+      "name": "alias-number",
+      "input": {
+        "alias": 1,
+        "engine": "tikv",
+        "rule": "leader-scatter",
+        "start-key": "a",
+        "end-key": "z"
+      },
+      "ok": false
+    },
+    {
+      "name": "start-key-number",
+      "input": {
+        "alias": "a",
+        "engine": "tikv",
+        "rule": "leader-scatter",
+        "start-key": 1,
+        "end-key": "z"
+      },
+      "ok": false
+    },
+    {
+      "name": "end-key-number",
+      "input": {
+        "alias": "a",
+        "engine": "tikv",
+        "rule": "leader-scatter",
+        "start-key": "a",
+        "end-key": 1
+      },
+      "ok": false
+    },
+    {
+      "name": "engine-unknown",
+      "input": {
+        "alias": "a",
+        "engine": "x",
+        "rule": "leader-scatter",
+        "start-key": "a",
+        "end-key": "z"
+      },
+      "ok": false
+    },
+    {
+      "name": "rule-unknown",
+      "input": {
+        "alias": "a",
+        "engine": "tikv",
+        "rule": "x",
+        "start-key": "a",
+        "end-key": "z"
+      },
+      "ok": false
+    },
+    {
+      "name": "alias-empty",
+      "input": {
+        "alias": "",
+        "engine": "tikv",
+        "rule": "leader-scatter",
+        "start-key": "a",
+        "end-key": "z"
+      },
+      "ok": false
+    },
+    {
+      "name": "timeout-number",
+      "input": {
+        "alias": "a",
+        "engine": "tikv",
+        "rule": "leader-scatter",
+        "start-key": "a",
+        "end-key": "z",
+        "timeout": 1
+      },
+      "ok": false
+    },
+    {
+      "name": "timeout-bad",
+      "input": {
+        "alias": "a",
+        "engine": "tikv",
+        "rule": "leader-scatter",
+        "start-key": "a",
+        "end-key": "z",
+        "timeout": "123"
+      },
+      "ok": false
+    },
+    {
+      "name": "timeout-zero",
+      "input": {
+        "alias": "a",
+        "engine": "tikv",
+        "rule": "leader-scatter",
+        "start-key": "a",
+        "end-key": "z",
+        "timeout": "0s"
+      },
+      "ok": false
+    },
+    {
+      "name": "timeout-negative",
+      "input": {
+        "alias": "a",
+        "engine": "tikv",
+        "rule": "leader-scatter",
+        "start-key": "a",
+        "end-key": "z",
+        "timeout": "-1s"
+      },
+      "ok": false
+    },
+    {
+      "name": "timeout-overflow",
+      "input": {
+        "alias": "a",
+        "engine": "tikv",
+        "rule": "leader-scatter",
+        "start-key": "a",
+        "end-key": "z",
+        "timeout": "9999999999999h"
+      },
+      "ok": false
+    },
+    {
+      "name": "ranges-mismatch",
+      "input": {
+        "alias": "a",
+        "engine": "tikv",
+        "rule": "leader-scatter",
+        "start-key": "a",
+        "end-key": "a,b"
+      },
+      "ok": false
+    },
+    {
+      "name": "bad-escape",
+      "input": {
+        "alias": "a",
+        "engine": "tikv",
+        "rule": "leader-scatter",
+        "start-key": "%q0",
+        "end-key": "z"
+      },
+      "ok": false
+    },
+    {
+      "name": "bad-second-escape",
+      "input": {
+        "alias": "a",
+        "engine": "tikv",
+        "rule": "leader-scatter",
+        "start-key": "%25",
+        "end-key": "z"
+      },
+      "ok": false
+    }
+  ]
+}

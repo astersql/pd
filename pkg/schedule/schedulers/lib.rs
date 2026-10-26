@@ -212,3 +212,8 @@ mod task_103_test;
 
 mod transfer_witness;
 pub use transfer_witness::*;
+
+mod balance_range_job;
+pub use balance_range_job::*;
+#[cfg(test)]
+mod task_104_test;

@@ -626,6 +626,7 @@ dependencies = [
  "astersql-pd-storelimit",
  "astersql-pd-typeutil",
  "async-trait",
+ "chrono",
  "serde",
  "serde_json",
  "thiserror 2.0.21",

@@ -1,0 +1,12 @@
+{
+  "command": [
+    "sh",
+    "-c",
+    "cargo fmt --all && cargo test -p astersql-pd-schedule-schedulers --locked --lib task_104 -- --nocapture && cargo test -p astersql-pd-schedule-schedulers --locked && cargo metadata --format-version 1 --no-deps && cargo fmt --all -- --check && cargo check --workspace --locked && cargo test --workspace --locked"
+  ],
+  "exit_code": 0,
+  "slot": 1,
+  "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+  "CARGO_BUILD_JOBS": "1",
+  "RUST_TEST_THREADS": "2"
+}

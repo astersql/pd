@@ -1,0 +1,15 @@
+{
+  "source_commit": "fcf87b951028f4b53f6ef81384797278de979f5a",
+  "plan_source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "runtime_oracle": null,
+  "method": "User-authorized read-only Go source derivation plus real Rust behavior and fault verification",
+  "sha256": {
+    "pkg/schedule/schedulers/balance_range.go": "ccd59a50facd035b9f50f69a3ac1e4a538540cbfa0fc0916840f0392224cdc2d",
+    "pkg/schedule/schedulers/balance_range_test.go": "a684a154f0b8faff1717551d3b92c2db17d8cf9de6cdb3e1f286009e00c8bcc1",
+    "pkg/schedule/schedulers/init.go": "09664f94f3ebe92a4cad1c9a435fb1f8619c72731e8fa55ec0c75c2818175a40",
+    "pkg/schedule/schedulers/utils.go": "41a551f1b4f95e31a0f48cfc262a125e1132dfa546a73a9300b8eb7bd18834e1",
+    "pkg/core/region.go": "be6ed0dc77537d62926d21d9e4eef080ea0dbcc7dc97efb4dc26269a172f99d8",
+    "pkg/utils/keyutil/keyrange.go": "bf3f4c9a134c67e165d80b4bcf9c01d5b5c6b377f29c0ed87b2d40143251ee21",
+    "docs/rust/schedule-execution/fixtures/task_104.json": "027a8f19e3915eca0c60add2d585a534195fa5ead9071863d3a78958b0b07065"
+  }
+}

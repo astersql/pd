@@ -9,6 +9,7 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
+chrono.workspace = true
 astersql-pd-schedule-checker.workspace = true
 astersql-pd-schedule-labeler.workspace = true
 astersql-pd-statistics-buckets.workspace = true
@@ -30,7 +31,7 @@ astersql-pd-storage-endpoint.workspace = true
 astersql-pd-keypath.workspace = true
 astersql-pd-keyutil.workspace = true
 serde.workspace = true
-serde_json.workspace = true
+serde_json = { workspace = true, features = ["raw_value"] }
 thiserror.workspace = true
 
 [dev-dependencies]

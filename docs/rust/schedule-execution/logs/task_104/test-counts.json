@@ -1,0 +1,19 @@
+{
+  "focused": {
+    "passed": 4,
+    "failed": 0,
+    "ignored": 0,
+    "fixture_cases": 28,
+    "slice_cases": 7
+  },
+  "package": {
+    "passed": 162,
+    "failed": 0,
+    "ignored": 0
+  },
+  "workspace": {
+    "passed": 1711,
+    "failed": 0,
+    "ignored": 1
+  }
+}
