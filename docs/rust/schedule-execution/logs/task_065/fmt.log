@@ -1,0 +1,9 @@
+error: `use` import is not supported in `trait`s or `impl`s
+   --> /Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers/task_065_test.rs:203:1
+    |
+203 | use astersql_pd_storage_kv::{Read, Snapshot, Compare, Mutation, Commit, RawTxnOp, RawTxnResponse, MetaWatch, Lease, StoreError};
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: consider moving the `use` import out to a nearby module scope
+
+Error writing files: failed to resolve mod `task_065_test`: cannot parse /Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers/task_065_test.rs

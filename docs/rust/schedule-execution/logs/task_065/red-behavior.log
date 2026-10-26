@@ -1,0 +1,30 @@
+   Compiling astersql-pd-schedule-schedulers v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.24s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_schedulers-9ec9513e6f038b3a)
+
+running 4 tests
+
+thread 'task_065_test::task_065_behavior_cases' (165415082) panicked at pkg/schedule/schedulers/task_065_test.rs:25:9:
+assertion `left == right` failed: {"expected":13000000,"growth":"exponential","input":10000000,"max":5000000000}
+  left: 10000000
+ right: 13000000
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test task_065_test::task_065_unregistered_and_unsupported ... ok
+test task_065_test::task_065_codec_and_payload ... ok
+test task_065_test::task_065_behavior_cases ... FAILED
+
+thread 'task_065_test::task_065_base_default_and_disable' (165415081) panicked at pkg/schedule/schedulers/task_065_test.rs:94:5:
+assertion `left == right` failed
+  left: 10000000
+ right: 13000000
+test task_065_test::task_065_base_default_and_disable ... FAILED
+
+failures:
+
+failures:
+    task_065_test::task_065_base_default_and_disable
+    task_065_test::task_065_behavior_cases
+
+test result: FAILED. 2 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-schedulers --lib`

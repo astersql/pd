@@ -1,0 +1,31 @@
+{
+  "source_commit": "3916a495035872d03b1adf64131a4e37ba66ca23",
+  "plan_source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "evidence_kind": "read-only Go source-derived expectations and actual Rust behavior tests",
+  "go_binary_sha256": null,
+  "go_output_sha256": null,
+  "sources": {
+    "pkg/schedule/schedulers/base_scheduler.go": {
+      "sha256": "1da013a2323c2756dcfd3b1203e91c481c58e80e258e3848d5db23dd261e6bdc",
+      "matches_plan_baseline": true
+    },
+    "pkg/schedule/schedulers/scheduler.go": {
+      "sha256": "c0330c4dc38ebb4d7b0e6d5a3b5d1fe5da85a2e4ec9b22a2e90ea9682112365c",
+      "matches_plan_baseline": true
+    },
+    "pkg/schedule/schedulers/config.go": {
+      "sha256": "64024b895d0b48c030acd9684c3879993710856796eebe11595d4108073b6409",
+      "matches_plan_baseline": true
+    },
+    "pkg/schedule/schedulers/scheduler_test.go": {
+      "sha256": "55b18eda7e1834ed5090cf360f2cbac1048b0b164e4e84dcf06cbfbbdc8162fc",
+      "matches_plan_baseline": true
+    },
+    "pkg/schedule/types/type.go": {
+      "sha256": "b7bc852de78e9a3ce6c06ef98cfd05c36d993e8dbcd2b074c9ec07c0ce0b49bb",
+      "matches_plan_baseline": true
+    }
+  },
+  "fixture_sha256": "73249050eecb08577514556924ad83122765f5c55b1bcc29c11051ccb700a771",
+  "oracle_index_review": "Existing runtime cases do not cover task 65; not extended or claimed as runtime evidence."
+}

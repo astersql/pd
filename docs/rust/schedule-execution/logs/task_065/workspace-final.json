@@ -1,0 +1,16 @@
+{
+  "command": [
+    "cargo",
+    "test",
+    "--workspace",
+    "--locked"
+  ],
+  "exit_code": 0,
+  "slot": 1,
+  "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+  "CARGO_BUILD_JOBS": "1",
+  "RUST_TEST_THREADS": "2",
+  "raw_stdout_stderr_sha256": "a4ad2c0e2513eea56777b9c000e4bda1f44814d92bfad1aab82a5775a15dea6b",
+  "stored_log_sha256": "b3a1b86a413a684b1a2b6b4a3ca8524b5d130f364d5ad62b1a6cd2aa34743368",
+  "log_normalization": "strip trailing line whitespace and blank EOF lines only"
+}

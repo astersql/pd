@@ -1,0 +1,17 @@
+{
+  "focused-contract": {
+    "passed": 5,
+    "failed": 0,
+    "ignored": 0
+  },
+  "package-final": {
+    "passed": 5,
+    "failed": 0,
+    "ignored": 0
+  },
+  "workspace-final": {
+    "passed": 1554,
+    "failed": 0,
+    "ignored": 1
+  }
+}

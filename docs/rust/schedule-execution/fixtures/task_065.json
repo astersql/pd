@@ -1,0 +1,98 @@
+{
+  "provenance": "Go source-derived; no Go runtime output",
+  "intervals": [
+    {
+      "growth": "exponential",
+      "input": 0,
+      "max": 5000000000,
+      "expected": 0
+    },
+    {
+      "growth": "exponential",
+      "input": 1,
+      "max": 5000000000,
+      "expected": 1
+    },
+    {
+      "growth": "exponential",
+      "input": 10000000,
+      "max": 5000000000,
+      "expected": 13000000
+    },
+    {
+      "growth": "exponential",
+      "input": 4000000000,
+      "max": 5000000000,
+      "expected": 5000000000
+    },
+    {
+      "growth": "exponential",
+      "input": 6000000000,
+      "max": 5000000000,
+      "expected": 5000000000
+    },
+    {
+      "growth": "exponential",
+      "input": -11,
+      "max": 5000000000,
+      "expected": -14
+    },
+    {
+      "growth": "linear",
+      "input": 10000000,
+      "max": 5000000000,
+      "expected": 3010000000
+    },
+    {
+      "growth": "linear",
+      "input": 3000000000,
+      "max": 5000000000,
+      "expected": 5000000000
+    },
+    {
+      "growth": "linear",
+      "input": -4000000000,
+      "max": 5000000000,
+      "expected": -1000000000
+    },
+    {
+      "growth": "zero",
+      "input": 6000000000,
+      "max": 5000000000,
+      "expected": 6000000000
+    },
+    {
+      "growth": "zero",
+      "input": -1,
+      "max": 0,
+      "expected": -1
+    }
+  ],
+  "codec": [
+    {
+      "value": null,
+      "encoded": "null"
+    },
+    {
+      "value": true,
+      "encoded": "true"
+    },
+    {
+      "value": {
+        "disabled": false
+      },
+      "encoded": "{\"disabled\":false}"
+    },
+    {
+      "value": [
+        1,
+        "x"
+      ],
+      "encoded": "[1,\"x\"]"
+    },
+    {
+      "value": "<>&\u2028\u2029",
+      "encoded": "\"\\u003c\\u003e\\u0026\\u2028\\u2029\""
+    }
+  ]
+}

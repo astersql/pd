@@ -1,0 +1,9 @@
+   Compiling astersql-pd-schedule-schedulers v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers)
+error[E0599]: no associated function or constant named `new` found for struct `MemoryStore` in the current scope
+  --> pkg/schedule/schedulers/task_065_test.rs:88:71
+   |
+88 |     let storage = Arc::new(StorageEndpoint::new(Arc::new(MemoryStore::new())));
+   |                                                                       ^^^ associated function or constant not found in `MemoryStore`
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `astersql-pd-schedule-schedulers` (lib test) due to 1 previous error

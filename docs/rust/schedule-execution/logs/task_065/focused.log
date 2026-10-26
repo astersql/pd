@@ -1,0 +1,40 @@
+   Compiling astersql-pd-schedule-schedulers v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers)
+error: `use` import is not supported in `trait`s or `impl`s
+   --> pkg/schedule/schedulers/task_065_test.rs:203:1
+    |
+203 | use astersql_pd_storage_kv::{Read, Snapshot, Compare, Mutation, Commit, RawTxnOp, RawTxnResponse, MetaWatch, Lease, StoreError};
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: consider moving the `use` import out to a nearby module scope
+
+error: expected one of: `default`, `fn`, `const`, `type`, identifier, `self`, `super`, `crate`, `::`
+   --> pkg/schedule/schedulers/task_065_test.rs:203:1
+    |
+203 | use astersql_pd_storage_kv::{Read, Snapshot, Compare, Mutation, Commit, RawTxnOp, RawTxnResponse, MetaWatch, Lease, StoreError};
+    | ^^^
+
+error[E0277]: the trait bound `FaultStore: MetaStore` is not satisfied
+   --> pkg/schedule/schedulers/task_065_test.rs:219:49
+    |
+219 |     let storage = Arc::new(StorageEndpoint::new(backend.clone()));
+    |                                                 ^^^^^^^^^^^^^^^ unsatisfied trait bound
+    |
+help: the trait `MetaStore` is not implemented for `FaultStore`
+   --> pkg/schedule/schedulers/task_065_test.rs:197:1
+    |
+197 | struct FaultStore {
+    | ^^^^^^^^^^^^^^^^^
+help: the following other types implement trait `MetaStore`
+   --> pkg/storage/kv/memory_store.rs:90:1
+    |
+ 90 | impl MetaStore for MemoryStore {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `MemoryStore`
+    |
+   ::: pkg/storage/kv/etcd_store.rs:106:1
+    |
+106 | impl MetaStore for EtcdMetaStore {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `EtcdMetaStore`
+    = note: required for the cast from `Arc<FaultStore>` to `Arc<(dyn MetaStore + 'static)>`
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `astersql-pd-schedule-schedulers` (lib test) due to 3 previous errors
