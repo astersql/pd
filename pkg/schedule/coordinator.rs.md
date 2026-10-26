@@ -47,3 +47,7 @@ supplies the complete persisted JSON to `scheduler_configuration`; the resulting
 controller configuration and report's valid list are the authoritative startup
 publication for updating a host-owned config provider. No interior mutation of an
 arbitrary immutable `Arc<C>` is attempted.
+
+Task 115 shares admission through `operator_handle` (an Arc to this same owner)
+so host patrol/scheduler workers can retain it while the lifecycle mutably owns
+scheduler management. See `coordinator_lifecycle.rs.md` for cancellation and join.

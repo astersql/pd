@@ -45,7 +45,7 @@ pub struct Coordinator<C> {
     heartbeat: RoutingHandle,
     prepare: PrepareChecker<PrepareRegionCount>,
     checkers: Arc<Mutex<CheckerDispatcher>>,
-    operators: ControllerAdmission,
+    operators: Arc<ControllerAdmission>,
     records: ControllerRecords,
     schedulers: SchedulerController,
     schedulers_initialized: bool,
@@ -65,7 +65,9 @@ impl<C: CheckerConfigProvider + SchedulerConfigProvider + Send + Sync + 'static>
         let callback = CheckerDispatcher::success_callback(Arc::downgrade(&checkers), move || {
             (config.get_affinity_schedule_limit(), seconds())
         });
-        let operators = ControllerAdmission::new(input.config.get_scheduler_max_waiting_operator());
+        let operators = Arc::new(ControllerAdmission::new(
+            input.config.get_scheduler_max_waiting_operator(),
+        ));
         Self {
             schedulers_initialized: false,
             schedulers: SchedulerController::new(
@@ -119,6 +121,9 @@ impl<C: CheckerConfigProvider + SchedulerConfigProvider + Send + Sync + 'static>
     }
     pub fn get_operator_controller(&self) -> &ControllerAdmission {
         &self.operators
+    }
+    pub fn operator_handle(&self) -> Arc<ControllerAdmission> {
+        self.operators.clone()
     }
     pub fn get_operator_records(&self) -> &ControllerRecords {
         &self.records
@@ -267,3 +272,7 @@ impl Deref for MergeCheckerGuard<'_> {
         self.0.merge_checker()
     }
 }
+
+#[path = "coordinator_lifecycle.rs"]
+mod lifecycle;
+pub use lifecycle::*;

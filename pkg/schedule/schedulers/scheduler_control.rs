@@ -79,6 +79,21 @@ impl SchedulerController {
             cleanup_errors: vec![],
         }
     }
+    /// Release prepared policies after all host scheduling loops have joined.
+    /// This does not delete or disable persisted startup configuration.
+    pub async fn clean_registered(&mut self) {
+        let Some(cluster) = &self.cluster else {
+            return;
+        };
+        for control in self.schedulers.values_mut() {
+            self.cleanup_errors
+                .extend(clean(&mut control.scheduler, cluster, &self.context).await);
+        }
+        for policy in self.handlers.values_mut() {
+            self.cleanup_errors
+                .extend(clean(policy, cluster, &self.context).await);
+        }
+    }
     pub fn context(&self) -> &FactoryContext {
         &self.context
     }

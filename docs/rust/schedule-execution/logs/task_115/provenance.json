@@ -1,0 +1,43 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "dependency_114_commit": "42b89871d",
+  "evidence_kind": "readonly_go_source_inference_with_real_rust_behavior_and_fault_validation",
+  "authorization": "User explicitly allowed source/test inference instead of missing Go runtime oracle for the whole plan; Go and module files remain readonly.",
+  "go_runtime_command": null,
+  "go_runtime_output": null,
+  "go_runtime_binary_sha256": null,
+  "sources": [
+    {
+      "path": "pkg/schedule/coordinator.go",
+      "sha256": "a61e5be78180e4a9e3f385beb6354ed352915785771edcc3a5805ee271cc5fc2",
+      "matches_source_commit": true
+    },
+    {
+      "path": "pkg/schedule/checker/checker_controller.go",
+      "sha256": "48d03fd259b5762da0381ce8976057098d0b9d83a0527666c3bbc738862fd56d",
+      "matches_source_commit": true
+    },
+    {
+      "path": "pkg/schedule/operator/operator_controller.go",
+      "sha256": "173d8e3e5fd5e4b1128ba24a954055d2d1ef7ea7a6676f6d3aa7cc7a37672ba1",
+      "matches_source_commit": true
+    },
+    {
+      "path": "pkg/schedule/schedulers/scheduler_controller.go",
+      "sha256": "5b8ad7382dcf829b9405240fb3e1e72ba659aa5ae301fb0257a3a66c318a7153",
+      "matches_source_commit": true
+    },
+    {
+      "path": "tests/server/cluster/cluster_test.go",
+      "sha256": "df21a0e8db96c94ea64bdaf2719ef2685cdd0f952399e7124e7ea1094a879313",
+      "matches_source_commit": true
+    },
+    {
+      "path": "tests/integrations/mcs/scheduling/server_test.go",
+      "sha256": "2d4e6fd1d869e3d1ef24ba0b28f535f4d7a6bb0268b0b894e5cb7d6bdfedeb1c",
+      "matches_source_commit": true
+    }
+  ],
+  "fixture_sha256": "2b5409e5264fb3b4c0d8c42fe582df624c307f4c4b87e4f68c877fe3e036e4e2",
+  "normalization": []
+}

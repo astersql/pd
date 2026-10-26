@@ -18,3 +18,7 @@ pub use scheduler_restore::*;
 #[cfg(test)]
 #[path = "task_114_test.rs"]
 mod task_114_test;
+
+#[cfg(test)]
+#[path = "task_115_test.rs"]
+mod task_115_test;

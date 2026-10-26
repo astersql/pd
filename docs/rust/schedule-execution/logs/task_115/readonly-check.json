@@ -1,0 +1,12 @@
+{
+  "go_files": 1101,
+  "content_and_file_list_equal": true,
+  "go_git_status": [],
+  "initial_go_git_status": "",
+  "plan_hashes_equal": {
+    ".plans/2026-10-25-\u8c03\u5ea6\u6267\u884c\u5185\u6838/10-\u8c03\u5ea6\u95e8\u9762/plan.md": true,
+    ".plans/2026-10-25-\u8c03\u5ea6\u6267\u884c\u5185\u6838/plan.md": true
+  },
+  "git_diff_check_exit_code": 0,
+  "own_lock_released": true
+}

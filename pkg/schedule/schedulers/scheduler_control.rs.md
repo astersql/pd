@@ -38,3 +38,8 @@ ReloadConfig/PrepareConfig/CleanConfig。按用户授权采用源码推导，不
 任务114增加 `replace_scheduler_configs`：启动恢复最终发布已验证的完整列表，保留
 重复及 disabled 条目，删除无法构造或添加的旧条目。它只替换同一管理器的
 `schedule.schedulers-v2`，由恢复入口调用既有 StorageEndpoint 保存完整配置。
+
+`clean_registered` releases prepared scheduler and handler store controls after
+coordinator workers join. It retains the management entries and persisted config;
+cleanup failures remain in `cleanup_errors`. Task 115 validates repeated stop and
+actual store-state restoration without deleting scheduler configuration.

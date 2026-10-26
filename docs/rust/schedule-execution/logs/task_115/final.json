@@ -1,0 +1,41 @@
+{
+  "slot": 1,
+  "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+  "commands": [
+    {
+      "command": "cargo fmt --all",
+      "exit_code": 0,
+      "log": "fmt.log.gz"
+    },
+    {
+      "command": "cargo test -p astersql-pd-schedule --locked --lib task_115 -- --nocapture",
+      "exit_code": 0,
+      "log": "focused.log.gz"
+    },
+    {
+      "command": "cargo test -p astersql-pd-schedule --locked",
+      "exit_code": 0,
+      "log": "package.log.gz"
+    },
+    {
+      "command": "cargo metadata --format-version 1 --no-deps",
+      "exit_code": 0,
+      "log": "metadata.log.gz"
+    },
+    {
+      "command": "cargo fmt --all -- --check",
+      "exit_code": 0,
+      "log": "fmt-check.log.gz"
+    },
+    {
+      "command": "cargo check --workspace --locked",
+      "exit_code": 0,
+      "log": "workspace-check.log.gz"
+    },
+    {
+      "command": "cargo test --workspace --locked",
+      "exit_code": 0,
+      "log": "workspace-test.log.gz"
+    }
+  ]
+}

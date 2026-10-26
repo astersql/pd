@@ -1,0 +1,41 @@
+{
+  "evidence_kind": "readonly_go_source_inference",
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "go_runtime_output": null,
+  "normalization": [],
+  "cases": [
+    {
+      "kv2": false,
+      "slow": false,
+      "existing": false,
+      "fail_once": false
+    },
+    {
+      "kv2": true,
+      "slow": true,
+      "existing": false,
+      "fail_once": false
+    },
+    {
+      "kv2": false,
+      "slow": true,
+      "existing": true,
+      "fail_once": false
+    },
+    {
+      "kv2": true,
+      "slow": true,
+      "existing": false,
+      "fail_once": true
+    }
+  ],
+  "contracts": [
+    "prepare before init",
+    "patrol and suspect ranges share pending state",
+    "push interval 500ms",
+    "slow scheduler interval 60s and exits when present",
+    "cancel joins inflight patrol and scheduler cleanup",
+    "repeat stop is idempotent",
+    "partial init failure starts no worker"
+  ]
+}
