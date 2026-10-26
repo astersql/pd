@@ -194,3 +194,9 @@ mod shuffle_hot;
 pub use shuffle_hot::*;
 #[cfg(test)]
 mod task_100_test;
+
+#[cfg(test)]
+mod task_101_test;
+
+mod shuffle_leader;
+pub use shuffle_leader::*;

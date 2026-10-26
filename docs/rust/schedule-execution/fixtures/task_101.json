@@ -1,0 +1,174 @@
+{
+  "evidence": "read-only Go source-derived; no runtime oracle",
+  "cases": [
+    {
+      "name": "reject",
+      "target": 2
+    },
+    {
+      "name": "no-region",
+      "missing": true,
+      "target": 0
+    },
+    {
+      "name": "pending-target",
+      "pending": [
+        2
+      ],
+      "target": 0
+    },
+    {
+      "name": "down-target",
+      "down": [
+        2
+      ],
+      "target": 0
+    },
+    {
+      "name": "all-unhealthy",
+      "pending": [
+        2
+      ],
+      "down": [
+        3
+      ],
+      "target": 0
+    },
+    {
+      "name": "reject-target",
+      "reject_target": true,
+      "target": 3
+    },
+    {
+      "name": "pause-target",
+      "pause": [
+        2
+      ],
+      "target": 3
+    },
+    {
+      "name": "no-target",
+      "pause": [
+        2,
+        3
+      ],
+      "target": 0
+    },
+    {
+      "name": "source-pause-out",
+      "pause_out": true,
+      "target": 2
+    },
+    {
+      "name": "range-miss",
+      "ranges": [
+        [
+          "b",
+          "c"
+        ]
+      ],
+      "target": 0
+    },
+    {
+      "name": "range-touch",
+      "ranges": [
+        [
+          "a",
+          "b"
+        ]
+      ],
+      "target": 2
+    },
+    {
+      "name": "partial-range",
+      "ranges": [
+        [
+          "a",
+          "az"
+        ]
+      ],
+      "target": 0
+    },
+    {
+      "name": "learner-target",
+      "learner": true,
+      "target": 0
+    },
+    {
+      "name": "witness-target",
+      "witness": true,
+      "target": 0,
+      "error": true
+    },
+    {
+      "name": "disconnected",
+      "disconnected": true,
+      "target": 3
+    },
+    {
+      "name": "leader-limit",
+      "limit": true,
+      "target": 3
+    },
+    {
+      "name": "placement-deny",
+      "placement": true,
+      "target": 0,
+      "error": true
+    },
+    {
+      "name": "placement-allow",
+      "target": 2,
+      "placement_allow": true
+    },
+    {
+      "name": "random-last",
+      "last": true,
+      "target": 3
+    },
+    {
+      "name": "select-existing-leader-no-retry",
+      "select_source": true,
+      "target": 0,
+      "reject": false
+    },
+    {
+      "name": "empty-ranges",
+      "ranges": [],
+      "target": 2
+    },
+    {
+      "name": "special-use-target",
+      "special": true,
+      "target": 3
+    },
+    {
+      "name": "offline-target",
+      "offline": true,
+      "target": 3
+    },
+    {
+      "name": "empty-cluster",
+      "no_stores": true,
+      "missing": true,
+      "select_source": true,
+      "target": 0
+    }
+  ],
+  "provenance": {
+    "runtime_oracle": null,
+    "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+    "basis": [
+      "shuffle_leader.go Schedule/IsScheduleAllowed",
+      "init.go shuffle-leader decoder",
+      "scheduler_test.go TestShuffleLeader (not executed)",
+      "pkg/core/region_tree.go RandomRegions: empty ranges cover tree"
+    ],
+    "normalization": {
+      "stores": "sorted ID, fixed first or last index",
+      "regions": "one region with fixed sample index",
+      "clock": "1000000000000 ns",
+      "heartbeat": "classic and conf-change-v2; same leader command"
+    }
+  }
+}
