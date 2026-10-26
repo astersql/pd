@@ -622,6 +622,7 @@ dependencies = [
  "astersql-pd-statistics-utils",
  "astersql-pd-storage-endpoint",
  "astersql-pd-storage-kv",
+ "astersql-pd-storelimit",
  "astersql-pd-typeutil",
  "async-trait",
  "serde",

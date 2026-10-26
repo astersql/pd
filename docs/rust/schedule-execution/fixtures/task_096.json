@@ -1,0 +1,207 @@
+{
+  "basis": "source_assertion",
+  "runtime_oracle": null,
+  "cases": [
+    {
+      "name": "leader",
+      "source": 1,
+      "leader": 2,
+      "stores": [
+        2,
+        4
+      ],
+      "branch": true,
+      "expected": 1
+    },
+    {
+      "name": "peer",
+      "source": 2,
+      "leader": 4,
+      "stores": [
+        2,
+        4
+      ],
+      "branch": false,
+      "expected": 1
+    },
+    {
+      "name": "configured_leader_source_skipped",
+      "source": 1,
+      "leader": 2,
+      "stores": [
+        1,
+        2
+      ],
+      "branch": true,
+      "expected": 0
+    },
+    {
+      "name": "unconfigured_peer_source_skipped",
+      "source": 1,
+      "leader": 4,
+      "stores": [
+        2,
+        4
+      ],
+      "branch": false,
+      "expected": 0
+    },
+    {
+      "name": "fixed_leader_source_skipped",
+      "source": 2,
+      "leader": 2,
+      "stores": [
+        2,
+        4
+      ],
+      "branch": false,
+      "expected": 0
+    },
+    {
+      "name": "missing_target",
+      "source": 1,
+      "leader": 99,
+      "stores": [
+        99
+      ],
+      "branch": true,
+      "expected": 0
+    },
+    {
+      "name": "no_hot",
+      "source": 1,
+      "leader": 2,
+      "stores": [
+        2
+      ],
+      "branch": true,
+      "empty": true,
+      "expected": 0
+    },
+    {
+      "name": "active",
+      "source": 1,
+      "leader": 2,
+      "stores": [
+        2
+      ],
+      "branch": true,
+      "active": true,
+      "expected": 0
+    },
+    {
+      "name": "missing_region",
+      "source": 1,
+      "leader": 2,
+      "stores": [
+        2
+      ],
+      "branch": true,
+      "missing": true,
+      "expected": 0
+    },
+    {
+      "name": "pending",
+      "source": 1,
+      "leader": 2,
+      "stores": [
+        2
+      ],
+      "branch": true,
+      "pending": true,
+      "expected": 0
+    },
+    {
+      "name": "down",
+      "source": 1,
+      "leader": 2,
+      "stores": [
+        2
+      ],
+      "branch": true,
+      "down": true,
+      "expected": 0
+    },
+    {
+      "name": "pause_target",
+      "source": 1,
+      "leader": 2,
+      "stores": [
+        2
+      ],
+      "branch": true,
+      "pause": true,
+      "expected": 0
+    },
+    {
+      "name": "allocation_failure",
+      "source": 2,
+      "leader": 4,
+      "stores": [
+        2,
+        4
+      ],
+      "branch": false,
+      "alloc_fail": true,
+      "expected": 0
+    },
+    {
+      "name": "existing_peers_excluded",
+      "source": 2,
+      "leader": 1,
+      "stores": [
+        1,
+        2,
+        3
+      ],
+      "branch": false,
+      "expected": 0
+    },
+    {
+      "name": "leader_in_exhausted",
+      "source": 1,
+      "leader": 2,
+      "stores": [
+        2
+      ],
+      "branch": true,
+      "limit": true,
+      "expected": 0
+    },
+    {
+      "name": "byte_sort_and_fallback",
+      "source": 1,
+      "leader": 2,
+      "stores": [
+        2
+      ],
+      "branch": true,
+      "sort": true,
+      "expected": 1
+    },
+    {
+      "name": "random_destination",
+      "source": 2,
+      "leader": 4,
+      "stores": [
+        2,
+        4,
+        5
+      ],
+      "branch": false,
+      "random": 1,
+      "target": 5,
+      "expected": 1
+    },
+    {
+      "name": "missing_leader_peer",
+      "source": 1,
+      "leader": 4,
+      "stores": [
+        4
+      ],
+      "branch": true,
+      "expected": 0
+    }
+  ]
+}
