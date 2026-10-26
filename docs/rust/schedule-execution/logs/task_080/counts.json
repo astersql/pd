@@ -1,0 +1,23 @@
+{
+  "red-behavior": {
+    "passed": 1,
+    "failed": 3,
+    "ignored": 0
+  },
+  "focused-final": {
+    "passed": 4,
+    "failed": 0,
+    "ignored": 0
+  },
+  "package": {
+    "passed": 56,
+    "failed": 0,
+    "ignored": 0
+  },
+  "workspace-test": {
+    "passed": 1605,
+    "failed": 0,
+    "ignored": 1
+  },
+  "frozen_cases": 22
+}

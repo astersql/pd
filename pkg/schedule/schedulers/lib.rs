@@ -79,3 +79,9 @@ mod task_079_test;
 
 mod evict_disk;
 pub use evict_disk::*;
+
+#[cfg(test)]
+mod task_080_test;
+
+mod evict_network_detect;
+pub use evict_network_detect::*;
