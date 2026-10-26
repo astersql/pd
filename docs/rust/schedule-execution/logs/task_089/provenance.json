@@ -1,0 +1,13 @@
+{
+  "source_commit": "d26211d1cc08fc5c3b9dbfa58f3f6fbf58908089",
+  "evidence_kind": "source_assertion",
+  "go_runtime_executed": false,
+  "files": {
+    "pkg/schedule/schedulers/hot_region_solver.go": "f71cb92668e2221aa0e6e9ff09004cafcea4ded55ad344d80e5d8f46a88df6ce",
+    "pkg/schedule/schedulers/hot_region_solver_test.go": "80697f96cf32436ef1d26b2d592e6ccba1b3890fdc90eecb146fac7aee9f31c3",
+    "pkg/schedule/schedulers/hot_region_rank_v1.go": "d37b60b6506fd03d308e398a039dfe6884972103f1c58b268f11356e84d862df",
+    "pkg/schedule/schedulers/hot_region_rank_v2.go": "63fe4d9673afbd47d4905abb2c97e1d9590f9b34b61d3b37537469896f9a9e61",
+    "pkg/schedule/schedulers/hot_region_rank_v2_test.go": "d02a4219dc8c4cbbf9d9e0061013242155544ad693d3ebde00b36c6417ec3d2d",
+    "docs/rust/schedule-execution/fixtures/task_089.json": "7b420cf291efc7d8c05f6e05403e114f446aa308f0256323cca2803bd3645d86"
+  }
+}
