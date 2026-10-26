@@ -1,0 +1,20 @@
+{
+  "command": [
+    "cargo",
+    "test",
+    "-p",
+    "astersql-pd-schedule-schedulers",
+    "--locked",
+    "--lib",
+    "task_069",
+    "--",
+    "--nocapture"
+  ],
+  "exit_code": 101,
+  "slot": 1,
+  "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+  "CARGO_BUILD_JOBS": null,
+  "RUST_TEST_THREADS": null,
+  "log_sha256_raw": "2e7ccd32a78de7b4d168bad82077bb746c94f9fa4318d23ae54e85647ba8ceb8",
+  "log_sha256_normalized": "2e7ccd32a78de7b4d168bad82077bb746c94f9fa4318d23ae54e85647ba8ceb8"
+}

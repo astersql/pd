@@ -20,3 +20,8 @@ mod task_068_test;
 
 mod range_view;
 pub use range_view::*;
+
+mod load_compare;
+pub use load_compare::*;
+#[cfg(test)]
+mod task_069_test;

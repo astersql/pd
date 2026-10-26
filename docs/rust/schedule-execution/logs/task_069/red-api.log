@@ -1,0 +1,171 @@
+   Compiling astersql-pd-schedule-schedulers v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers)
+error[E0583]: file not found for module `load_compare`
+  --> pkg/schedule/schedulers/lib.rs:24:1
+   |
+24 | mod load_compare;
+   | ^^^^^^^^^^^^^^^^^
+   |
+   = help: to create the module `load_compare`, create file "pkg/schedule/schedulers/load_compare.rs" or "pkg/schedule/schedulers/load_compare/mod.rs"
+   = note: if there is a `mod load_compare` elsewhere in the crate already, import it with `use crate::...` instead
+
+error[E0425]: cannot find type `StoreLoadCmp` in this scope
+  --> pkg/schedule/schedulers/task_069_test.rs:12:13
+   |
+12 | fn cmp() -> StoreLoadCmp { st_ld_rank_cmp(|ld| ld.loads[0], |v| (v / 10.) as i64) }
+   |             ^^^^^^^^^^^^
+   |
+  ::: pkg/statistics/load_values.rs:63:1
+   |
+63 | pub struct StoreLoad {
+   | -------------------- similarly named struct `StoreLoad` defined here
+   |
+help: a struct with a similar name exists
+   |
+12 - fn cmp() -> StoreLoadCmp { st_ld_rank_cmp(|ld| ld.loads[0], |v| (v / 10.) as i64) }
+12 + fn cmp() -> StoreLoad { st_ld_rank_cmp(|ld| ld.loads[0], |v| (v / 10.) as i64) }
+   |
+
+error[E0425]: cannot find value `OP_LEADER` in this scope
+  --> pkg/schedule/schedulers/task_069_test.rs:39:46
+   |
+39 |     Operator::with_clock("pending","",1,None,OP_LEADER,1,vec![OpStep::TransferLeader(TransferLeader { from_store:1,to_store:2,to_sto...
+   |                                              ^^^^^^^^^ not found in this scope
+
+warning: unused import: `load_compare::*`
+  --> pkg/schedule/schedulers/lib.rs:25:9
+   |
+25 | pub use load_compare::*;
+   |         ^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `super::*`
+ --> pkg/schedule/schedulers/task_069_test.rs:2:5
+  |
+2 | use super::*;
+  |     ^^^^^^^^
+
+error[E0425]: cannot find function `st_ld_rank_cmp` in this scope
+  --> pkg/schedule/schedulers/task_069_test.rs:12:28
+   |
+12 | fn cmp() -> StoreLoadCmp { st_ld_rank_cmp(|ld| ld.loads[0], |v| (v / 10.) as i64) }
+   |                            ^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `neg_load_cmp` in this scope
+  --> pkg/schedule/schedulers/task_069_test.rs:23:16
+   |
+23 |     assert_eq!(neg_load_cmp(cmp())(&a,&load(30.,0.)),1);
+   |                ^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `slice_load_cmp` in this scope
+  --> pkg/schedule/schedulers/task_069_test.rs:24:16
+   |
+24 |     assert_eq!(slice_load_cmp(vec![])(&a,&b),0);
+   |                ^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `st_ld_rank_cmp` in this scope
+  --> pkg/schedule/schedulers/task_069_test.rs:25:43
+   |
+25 |     assert_eq!(slice_load_cmp(vec![cmp(), st_ld_rank_cmp(|ld|ld.hot_peer_count, |v|v as i64)])(&a,&b),1);
+   |                                           ^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `slice_load_cmp` in this scope
+  --> pkg/schedule/schedulers/task_069_test.rs:25:16
+   |
+25 |     assert_eq!(slice_load_cmp(vec![cmp(), st_ld_rank_cmp(|ld|ld.hot_peer_count, |v|v as i64)])(&a,&b),1);
+   |                ^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `st_ld_rank_cmp` in this scope
+  --> pkg/schedule/schedulers/task_069_test.rs:26:36
+   |
+26 |     assert_eq!(slice_load_cmp(vec![st_ld_rank_cmp(|ld|ld.hot_peer_count, |v|v as i64), neg_load_cmp(cmp())])(&a,&load(30.,2.)),1);
+   |                                    ^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `neg_load_cmp` in this scope
+  --> pkg/schedule/schedulers/task_069_test.rs:26:88
+   |
+26 |     assert_eq!(slice_load_cmp(vec![st_ld_rank_cmp(|ld|ld.hot_peer_count, |v|v as i64), neg_load_cmp(cmp())])(&a,&load(30.,2.)),1);
+   |                                                                                        ^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `slice_load_cmp` in this scope
+  --> pkg/schedule/schedulers/task_069_test.rs:26:16
+   |
+26 |     assert_eq!(slice_load_cmp(vec![st_ld_rank_cmp(|ld|ld.hot_peer_count, |v|v as i64), neg_load_cmp(cmp())])(&a,&load(30.,2.)),1);
+   |                ^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `min_lp_cmp` in this scope
+  --> pkg/schedule/schedulers/task_069_test.rs:29:16
+   |
+29 |     assert_eq!(min_lp_cmp(cmp())(&a,&b),-1);
+   |                ^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `max_lp_cmp` in this scope
+  --> pkg/schedule/schedulers/task_069_test.rs:30:16
+   |
+30 |     assert_eq!(max_lp_cmp(cmp())(&a,&b),1);
+   |                ^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `diff_cmp` in this scope
+  --> pkg/schedule/schedulers/task_069_test.rs:31:16
+   |
+31 |     assert_eq!(diff_cmp(cmp())(&a,&b),1);
+   |                ^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `min_lp_cmp` in this scope
+  --> pkg/schedule/schedulers/task_069_test.rs:32:34
+   |
+32 |     assert_eq!(slice_lp_cmp(vec![min_lp_cmp(cmp()),max_lp_cmp(cmp())])(&a,&b),-1);
+   |                                  ^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `max_lp_cmp` in this scope
+  --> pkg/schedule/schedulers/task_069_test.rs:32:52
+   |
+32 |     assert_eq!(slice_lp_cmp(vec![min_lp_cmp(cmp()),max_lp_cmp(cmp())])(&a,&b),-1);
+   |                                                    ^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `slice_lp_cmp` in this scope
+  --> pkg/schedule/schedulers/task_069_test.rs:32:16
+   |
+32 |     assert_eq!(slice_lp_cmp(vec![min_lp_cmp(cmp()),max_lp_cmp(cmp())])(&a,&b),-1);
+   |                ^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `slice_lp_cmp` in this scope
+  --> pkg/schedule/schedulers/task_069_test.rs:33:16
+   |
+33 |     assert_eq!(slice_lp_cmp(vec![])(&a,&b),0);
+   |                ^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `calc_pending_influence` in this scope
+  --> pkg/schedule/schedulers/task_069_test.rs:57:20
+   |
+57 | ...   assert_eq!(calc_pending_influence(&op,Duration::from_nanos(c[2].as_u64().unwrap()),clock.now()),(c[3].as_f64().unwrap(),c[4].a...
+   |                  ^^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `calc_pending_influence` in this scope
+  --> pkg/schedule/schedulers/task_069_test.rs:61:16
+   |
+61 |     assert_eq!(calc_pending_influence(&op,Duration::from_secs(1),clock.now()),(0.,false));
+   |                ^^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `pause_and_resume_leader_transfer` in this scope
+  --> pkg/schedule/schedulers/task_069_test.rs:71:20
+   |
+71 | ...   assert_eq!(pause_and_resume_leader_transfer(&cluster,direction,&old,&new),vec![astersql_pd_core::StoreControlError::StoreNotFo...
+   |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `pause_and_resume_leader_transfer` in this scope
+  --> pkg/schedule/schedulers/task_069_test.rs:74:17
+   |
+74 |         assert!(pause_and_resume_leader_transfer(&cluster,direction,&new,&new).is_empty());
+   |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `pause_and_resume_leader_transfer` in this scope
+  --> pkg/schedule/schedulers/task_069_test.rs:75:17
+   |
+75 |         assert!(pause_and_resume_leader_transfer(&cluster,direction,&new,&HashSet::new()).is_empty());
+   |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+
+Some errors have detailed explanations: E0425, E0583.
+For more information about an error, try `rustc --explain E0425`.
+warning: `astersql-pd-schedule-schedulers` (lib test) generated 2 warnings
+error: could not compile `astersql-pd-schedule-schedulers` (lib test) due to 23 previous errors; 2 warnings emitted

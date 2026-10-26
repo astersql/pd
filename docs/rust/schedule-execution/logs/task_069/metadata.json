@@ -1,0 +1,16 @@
+{
+  "command": [
+    "cargo",
+    "metadata",
+    "--format-version",
+    "1",
+    "--no-deps"
+  ],
+  "exit_code": 0,
+  "slot": 1,
+  "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+  "CARGO_BUILD_JOBS": null,
+  "RUST_TEST_THREADS": null,
+  "log_sha256_raw": "3748e7160bdcc55b3a5206a205f1e4519d8a7e54378cf110bd0f016fd0fd2031",
+  "log_sha256_normalized": "3748e7160bdcc55b3a5206a205f1e4519d8a7e54378cf110bd0f016fd0fd2031"
+}

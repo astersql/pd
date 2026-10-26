@@ -1,0 +1,11 @@
+   Compiling astersql-pd-schedule-schedulers v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.86s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_schedulers-8242929983d555b8)
+
+running 4 tests
+test task_069_test::task_069_behavior_cases ... ok
+test task_069_test::task_069_pending_record_and_refresh ... ok
+test task_069_test::task_069_pending_lifecycle ... ok
+test task_069_test::task_069_pause_resume ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 16 filtered out; finished in 0.00s

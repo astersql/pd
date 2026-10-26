@@ -1,0 +1,17 @@
+{
+  "source_commit": "639c3b1a14b5af1a8414ff38d6185236cc938614",
+  "evidence_kind": "source_derived",
+  "go_execution": false,
+  "go_binary_sha256": null,
+  "go_output_sha256": null,
+  "normalization": "none; explicit clock elapsed nanoseconds; exact integer and weight comparison",
+  "sha256": {
+    "pkg/schedule/schedulers/utils.go": "41a551f1b4f95e31a0f48cfc262a125e1132dfa546a73a9300b8eb7bd18834e1",
+    "pkg/schedule/schedulers/utils_test.go": "6d52b31292c27b6f5659d133635726c112bdbbd4df1c0de2d4388f76abe14889",
+    "pkg/schedule/schedulers/hot_region.go": "2e34a6068d48c1ffed3a78764fc18843b20b6fab2943587df4e907acfe692ad6",
+    "pkg/schedule/schedulers/hot_region_test.go": "20e49d3e00501845befb864375ed74b8e2da5f82dc8e71006c496463fb08a756",
+    "pkg/schedule/operator/operator.go": "ad287d89ee51f9d8d94985b45f11b2c4baddae0acb59c2f7899bc607fca860ba",
+    "pkg/statistics/store_load.go": "3a1ad6b343965b66a39472b4621f7c0d0812c1f206decb9359438b5c34587c45",
+    "docs/rust/schedule-execution/fixtures/task_069.json": "4541e270bfeb8019b25be6ad5a61d283573dd6430325efd8910190d9096c4d0d"
+  }
+}
