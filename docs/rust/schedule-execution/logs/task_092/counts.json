@@ -1,0 +1,22 @@
+{
+  "focused": {
+    "passed": 7,
+    "failed": 0,
+    "ignored": 0
+  },
+  "package": {
+    "passed": 123,
+    "failed": 0,
+    "ignored": 0
+  },
+  "workspace-test": {
+    "passed": 1672,
+    "failed": 0,
+    "ignored": 1
+  },
+  "red-behavior": {
+    "passed": 5,
+    "failed": 2,
+    "ignored": 0
+  }
+}

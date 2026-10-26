@@ -1,0 +1,17 @@
+{
+  "source_commit": "6a11bf488d3c65a1be79949a83ad2bd1e73a0ec4",
+  "plan_source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "evidence_kind": "source_assertion",
+  "go_runtime_output": null,
+  "authorization": "User permits read-only Go source/test inference plus real Rust behavior/fault validation instead of missing Go runtime oracle. No Go or module writes.",
+  "hashes": {
+    "pkg/schedule/schedulers/hot_region_solver.go": "f71cb92668e2221aa0e6e9ff09004cafcea4ded55ad344d80e5d8f46a88df6ce",
+    "pkg/schedule/schedulers/hot_region_solver_test.go": "80697f96cf32436ef1d26b2d592e6ccba1b3890fdc90eecb146fac7aee9f31c3",
+    "pkg/schedule/schedulers/hot_region_rank_v1.go": "d37b60b6506fd03d308e398a039dfe6884972103f1c58b268f11356e84d862df",
+    "pkg/schedule/schedulers/hot_region_rank_v2.go": "63fe4d9673afbd47d4905abb2c97e1d9590f9b34b61d3b37537469896f9a9e61",
+    "docs/rust/schedule-execution/fixtures/task_092.json": "131863f298aa667ac45b53b11945ffa98bae1cd37a32c2ea87514241e1b626c6",
+    "docs/rust/schedule-execution/fixtures/task_031.json": "d05ade9e9205d4c1c6e350c7e6060acc797939b174fd01c7548f896ade0db0ec"
+  },
+  "dependency_091_commit": "6a11bf488",
+  "dependency_091_evidence": "docs/rust/schedule-execution/task-091.md"
+}

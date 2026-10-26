@@ -146,3 +146,8 @@ mod hot_placement;
 pub use hot_placement::*;
 #[cfg(test)]
 mod task_091_test;
+
+mod hot_solve;
+pub use hot_solve::*;
+#[cfg(test)]
+mod task_092_test;

@@ -1,0 +1,112 @@
+{
+  "evidence_kind": "source_assertion",
+  "source_commit": "6a11bf488d3c65a1be79949a83ad2bd1e73a0ec4",
+  "runtime_oracle": null,
+  "normalization": "No normalization of operator steps, errors, IDs or ranks; float comparison tolerance 1e-9; retain input candidate tie order.",
+  "step_cases": [
+    [
+      100,
+      10,
+      95,
+      0
+    ],
+    [
+      100,
+      10,
+      89,
+      -1
+    ],
+    [
+      100,
+      10,
+      111,
+      1
+    ],
+    [
+      0,
+      10,
+      -19,
+      -1
+    ],
+    [
+      0,
+      10,
+      19,
+      1
+    ]
+  ],
+  "solve_cases": [
+    {
+      "formula": "v1",
+      "main": [
+        200,
+        200,
+        0,
+        0
+      ],
+      "rank": 4,
+      "operators": 1
+    },
+    {
+      "formula": "v2",
+      "main": [
+        200,
+        200,
+        0,
+        0
+      ],
+      "rank": 4,
+      "operators": 1
+    },
+    {
+      "formula": "v1",
+      "main": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rank": null,
+      "operators": 0
+    },
+    {
+      "formula": "v2",
+      "main": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rank": null,
+      "operators": 0
+    }
+  ],
+  "reverse": {
+    "source": [
+      1000,
+      500,
+      0,
+      0
+    ],
+    "destination": [
+      500,
+      1000,
+      0,
+      0
+    ],
+    "main": [
+      200,
+      400,
+      0,
+      0
+    ],
+    "revert": [
+      0,
+      600,
+      0,
+      0
+    ],
+    "rank": 4,
+    "operators": 2
+  }
+}
