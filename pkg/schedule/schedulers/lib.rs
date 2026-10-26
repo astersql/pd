@@ -91,3 +91,9 @@ mod task_081_test;
 
 mod evict_network;
 pub use evict_network::*;
+
+#[cfg(test)]
+mod task_082_test;
+
+mod evict_stopping;
+pub use evict_stopping::*;

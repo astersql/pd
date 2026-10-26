@@ -1,0 +1,15 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "mode": "classic/default features; no mode-specific stopping branch",
+  "oracle": "source/test derived under user authorization; no Go execution",
+  "normalization": "controlled random selection; no time or error fields suppressed",
+  "hashes": {
+    "pkg/schedule/schedulers/evict_stopping_store.go": "297122adad26bc7ad43d5543e6b3f8566a4de8ddf26191e65863ef89ab012bd3",
+    "pkg/schedule/schedulers/evict_stopping_store_test.go": "19dddc81278efe22f9c5c7e091571be64ffe51597103d091f015a76ae35e948c",
+    "docs/rust/schedule-execution/fixtures/task_082.json": "8abd8ff25a1bc361eeafd7ad7ede4c32d23ea87e761d475b8bff18a8537c11d8"
+  },
+  "baseline_go_hashes": {
+    "pkg/schedule/schedulers/evict_stopping_store.go": "297122adad26bc7ad43d5543e6b3f8566a4de8ddf26191e65863ef89ab012bd3",
+    "pkg/schedule/schedulers/evict_stopping_store_test.go": "19dddc81278efe22f9c5c7e091571be64ffe51597103d091f015a76ae35e948c"
+  }
+}

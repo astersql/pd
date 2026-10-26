@@ -1,0 +1,1 @@
+{"source_commit":"836fdc7cf3ef34f7eabc9d051418995bb97efabe","provenance":"Go source/test derived; no Go runtime oracle","cases":[{"stopping":[],"evicted":0},{"stopping":[1],"evicted":1},{"stopping":[1,2],"evicted":0}]}
