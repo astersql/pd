@@ -1,0 +1,63 @@
+   Compiling astersql-pd-schedule-schedulers v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers)
+error[E0599]: no method named `is_pause_leader_transfer_in` found for struct `Arc<StoreInfo>` in the current scope
+   --> pkg/schedule/schedulers/task_108_test.rs:272:40
+    |
+272 |     assert!(core.get_store(1).unwrap().is_pause_leader_transfer_in());
+    |                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+help: there is a method `pause_leader_transfer` with a similar name, but with different arguments
+   --> pkg/core/store_control.rs:8:5
+    |
+  8 |     pub fn pause_leader_transfer(&mut self, direction: Direction) {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no method named `is_pause_leader_transfer_in` found for struct `Arc<StoreInfo>` in the current scope
+   --> pkg/schedule/schedulers/task_108_test.rs:282:41
+    |
+282 |     assert!(!core.get_store(1).unwrap().is_pause_leader_transfer_in());
+    |                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+help: there is a method `pause_leader_transfer` with a similar name, but with different arguments
+   --> pkg/core/store_control.rs:8:5
+    |
+  8 |     pub fn pause_leader_transfer(&mut self, direction: Direction) {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no method named `is_pause_leader_transfer_in` found for struct `Arc<StoreInfo>` in the current scope
+   --> pkg/schedule/schedulers/task_108_test.rs:333:45
+    |
+333 |             assert!(c.get_store(1).unwrap().is_pause_leader_transfer_in());
+    |                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+help: there is a method `pause_leader_transfer` with a similar name, but with different arguments
+   --> pkg/core/store_control.rs:8:5
+    |
+  8 |     pub fn pause_leader_transfer(&mut self, direction: Direction) {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no method named `is_pause_leader_transfer_in` found for struct `Arc<StoreInfo>` in the current scope
+   --> pkg/schedule/schedulers/task_108_test.rs:337:46
+    |
+337 |             assert!(!c.get_store(1).unwrap().is_pause_leader_transfer_in());
+    |                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+help: there is a method `pause_leader_transfer` with a similar name, but with different arguments
+   --> pkg/core/store_control.rs:8:5
+    |
+  8 |     pub fn pause_leader_transfer(&mut self, direction: Direction) {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no method named `is_pause_leader_transfer_in` found for struct `Arc<StoreInfo>` in the current scope
+   --> pkg/schedule/schedulers/task_108_test.rs:347:46
+    |
+347 |             assert!(!c.get_store(1).unwrap().is_pause_leader_transfer_in());
+    |                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+help: there is a method `pause_leader_transfer` with a similar name, but with different arguments
+   --> pkg/core/store_control.rs:8:5
+    |
+  8 |     pub fn pause_leader_transfer(&mut self, direction: Direction) {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `astersql-pd-schedule-schedulers` (lib test) due to 5 previous errors

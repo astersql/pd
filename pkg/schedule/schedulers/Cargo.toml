@@ -9,6 +9,9 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
+futures-util.workspace = true
+tokio.workspace = true
+tokio-util.workspace = true
 chrono.workspace = true
 astersql-pd-schedule-checker.workspace = true
 astersql-pd-schedule-labeler.workspace = true

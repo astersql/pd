@@ -1,0 +1,24 @@
+   Compiling astersql-pd-schedule-schedulers v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.90s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_schedulers-73768ffcd3e346da)
+
+running 5 tests
+test task_108_test::task_108_inflight_cleanup_wait ... ok
+task_108: 4 gate rows, empty/backoff/cap, 4 witness events in 3+1 batches, cancellation
+test task_108_test::task_108_behavior_cases ... ok
+test task_108_test::task_108_timer_stop_wait ... ok
+
+thread 'task_108_test::task_108_label_and_retry_budget' (169227677) panicked at pkg/schedule/schedulers/task_108_test.rs:275:5:
+eviction bypasses deny label
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test task_108_test::task_108_label_and_retry_budget ... FAILED
+test task_108_test::task_108_cache_and_faults ... ok
+
+failures:
+
+failures:
+    task_108_test::task_108_label_and_retry_budget
+
+test result: FAILED. 4 passed; 1 failed; 0 ignored; 0 measured; 172 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-schedulers --lib`

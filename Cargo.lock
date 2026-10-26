@@ -627,10 +627,12 @@ dependencies = [
  "astersql-pd-typeutil",
  "async-trait",
  "chrono",
+ "futures-util",
  "serde",
  "serde_json",
  "thiserror 2.0.21",
  "tokio",
+ "tokio-util",
 ]
 
 [[package]]

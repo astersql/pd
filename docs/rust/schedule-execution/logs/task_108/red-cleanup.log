@@ -1,0 +1,29 @@
+   Compiling astersql-pd-schedule-schedulers v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.63s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_schedulers-73768ffcd3e346da)
+
+running 6 tests
+task_108: 4 gate rows, empty/backoff/cap, 4 witness events in 3+1 batches, cancellation
+
+thread 'task_108_test::task_108_inflight_cleanup_wait' (169236844) panicked at pkg/schedule/schedulers/task_108_test.rs:350:13:
+assertion failed: c.get_store(1).unwrap().allow_leader_transfer_in()
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test task_108_test::task_108_behavior_cases ... ok
+test task_108_test::task_108_timer_backoff_and_gates ... ok
+test task_108_test::task_108_timer_stop_wait ... ok
+test task_108_test::task_108_inflight_cleanup_wait ... FAILED
+
+thread 'task_108_test::task_108_label_and_retry_budget' (169236845) panicked at pkg/schedule/schedulers/task_108_test.rs:287:5:
+assertion failed: core.get_store(1).unwrap().allow_leader_transfer_in()
+test task_108_test::task_108_label_and_retry_budget ... FAILED
+test task_108_test::task_108_cache_and_faults ... ok
+
+failures:
+
+failures:
+    task_108_test::task_108_inflight_cleanup_wait
+    task_108_test::task_108_label_and_retry_budget
+
+test result: FAILED. 4 passed; 2 failed; 0 ignored; 0 measured; 172 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-schedulers --lib`

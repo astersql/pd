@@ -1,0 +1,16 @@
+{
+  "source_commit": "73ace03c9f0685245c5ba4d30f8cd1ed7ec6f7d6",
+  "evidence_kind": "readonly_source_derivation",
+  "go_runtime_oracle": null,
+  "authorization": "User explicitly allows source-derived expectations plus real Rust behavior/fault verification",
+  "source_sha256": "5b8ad7382dcf829b9405240fb3e1e72ba659aa5ae301fb0257a3a66c318a7153",
+  "dependency_commit": "73ace03c9",
+  "fixture_sha256": "3e80406b621bb2d1f2bc7b841a09c5969049051bf4f480bf2ae8063983e1d6ad",
+  "readonly_sources": {
+    "pkg/schedule/schedulers/scheduler_controller.go": "5b8ad7382dcf829b9405240fb3e1e72ba659aa5ae301fb0257a3a66c318a7153",
+    "pkg/schedule/schedulers/transfer_witness_leader.go": "b89a92588c33b70a13c885f53410b0103e65fffb1b8176d5b1d65418248a68e3",
+    "pkg/schedule/schedulers/evict_leader.go": "7fb5a50e54d33f0069e22c69ffd1341ae64f6310a5d1c49ac315aad6f925a460",
+    "pkg/schedule/operator/operator_controller.go": "173d8e3e5fd5e4b1128ba24a954055d2d1ef7ea7a6676f6d3aa7cc7a37672ba1",
+    "pkg/core/region.go": "be6ed0dc77537d62926d21d9e4eef080ea0dbcc7dc97efb4dc26269a172f99d8"
+  }
+}

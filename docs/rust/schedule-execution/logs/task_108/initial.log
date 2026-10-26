@@ -1,0 +1,27 @@
+   Compiling astersql-pd-schedule-schedulers v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers)
+error[E0308]: mismatched types
+   --> pkg/schedule/schedulers/scheduler_loop.rs:162:71
+    |
+162 |                         .is_some_and(|l| l.schedule_disabled(&region, (self.now_nanos)()))
+    |                                            -----------------          ^^^^^^^^^^^^^^^^^^ expected `i128`, found `i64`
+    |                                            |
+    |                                            arguments to this method are incorrect
+    |
+note: method defined here
+   --> pkg/schedule/labeler/label_query.rs:56:12
+    |
+ 56 |     pub fn schedule_disabled(&self, region: &RegionInfo, now: Timestamp) -> bool {
+    |            ^^^^^^^^^^^^^^^^^
+help: you can convert an `i64` to an `i128`
+    |
+162 |                         .is_some_and(|l| l.schedule_disabled(&region, (self.now_nanos)().into()))
+    |                                                                                         +++++++
+
+error[E0308]: mismatched types
+   --> pkg/schedule/schedulers/scheduler_loop.rs:314:29
+    |
+314 |             now_unix_nanos: (self.now_nanos)(),
+    |                             ^^^^^^^^^^^^^^^^^^ expected `i128`, found `i64`
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `astersql-pd-schedule-schedulers` (lib test) due to 2 previous errors

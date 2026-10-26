@@ -1,0 +1,16 @@
+{
+  "evidence_kind": "readonly_source_derivation",
+  "go_runtime_output": null,
+  "source": "pkg/schedule/schedulers/scheduler_controller.go",
+  "normalization": "Explicit nanosecond clock and deterministic target index; no ignored errors or state fields",
+  "gates": [
+    [false, true, 101, "Pending"],
+    [true, true, 101, "Halted"],
+    [true, false, 101, "Paused"],
+    [true, false, 100, "Allowed"]
+  ],
+  "empty_interval": 13000000,
+  "success_interval": 10000000,
+  "max_attempts": 10,
+  "witness_batch": 3
+}

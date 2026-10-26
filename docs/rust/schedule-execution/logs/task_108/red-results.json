@@ -1,0 +1,66 @@
+[
+  {
+    "mutation": "retry-budget",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-schedulers",
+      "--locked",
+      "--lib",
+      "task_108",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "behavior_detected": true
+  },
+  {
+    "mutation": "backoff",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-schedulers",
+      "--locked",
+      "--lib",
+      "task_108",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "behavior_detected": true
+  },
+  {
+    "mutation": "cleanup",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-schedulers",
+      "--locked",
+      "--lib",
+      "task_108",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "behavior_detected": true
+  },
+  {
+    "mutation": "label-exemption",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-schedulers",
+      "--locked",
+      "--lib",
+      "task_108",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "behavior_detected": true
+  }
+]

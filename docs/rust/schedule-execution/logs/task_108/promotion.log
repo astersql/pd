@@ -1,0 +1,14 @@
+   Compiling astersql-pd-schedule-schedulers v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.19s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_schedulers-73768ffcd3e346da)
+
+running 5 tests
+task_108: 4 gate rows, empty/backoff/cap, 4 witness events in 3+1 batches, cancellation
+test task_108_test::task_108_behavior_cases ... ok
+test task_108_test::task_108_inflight_cleanup_wait ... ok
+test task_108_test::task_108_timer_stop_wait ... ok
+test task_108_test::task_108_label_and_retry_budget ... ok
+test task_108_test::task_108_cache_and_faults ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 172 filtered out; finished in 0.01s
+

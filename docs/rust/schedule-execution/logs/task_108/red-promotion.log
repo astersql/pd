@@ -1,0 +1,21 @@
+   Compiling astersql-pd-schedule-schedulers v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.27s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_schedulers-73768ffcd3e346da)
+
+running 1 test
+
+thread 'task_108_test::task_108_timer_stop_wait' (169229395) panicked at pkg/schedule/schedulers/task_108_test.rs:184:13:
+assertion `left == right` failed
+  left: 0
+ right: 1
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test task_108_test::task_108_timer_stop_wait ... FAILED
+
+failures:
+
+failures:
+    task_108_test::task_108_timer_stop_wait
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 176 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-schedulers --lib`

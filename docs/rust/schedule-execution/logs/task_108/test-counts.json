@@ -1,0 +1,19 @@
+{
+  "focused": {
+    "passed": 7,
+    "failed": 0
+  },
+  "package": {
+    "passed": 179,
+    "failed": 0
+  },
+  "workspace": {
+    "passed": 1728,
+    "failed": 0,
+    "ignored": 1
+  },
+  "gate_fixture": {
+    "passed": 4,
+    "failed": 0
+  }
+}

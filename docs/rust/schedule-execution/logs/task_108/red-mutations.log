@@ -1,0 +1,9 @@
+retry-budget 101 True
+backoff 101 True
+cleanup 101 True
+label-exemption 101 False
+Traceback (most recent call last):
+  File "/Users/Shared/work/dir/data/codes/pd/docs/rust/schedule-execution/logs/task_108/red_behavior.py", line 27, in <module>
+    assert len(results)==len(mutations) and all(r['behavior_detected'] for r in results)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
