@@ -189,3 +189,8 @@ mod scatter_range;
 pub use scatter_range::*;
 #[cfg(test)]
 mod task_099_test;
+
+mod shuffle_hot;
+pub use shuffle_hot::*;
+#[cfg(test)]
+mod task_100_test;

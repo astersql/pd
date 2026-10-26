@@ -1,0 +1,18 @@
+{
+  "focused5": {
+    "passed": 3,
+    "failed": 0,
+    "ignored": 0,
+    "behavior_cases": 72
+  },
+  "package": {
+    "passed": 150,
+    "failed": 0,
+    "ignored": 0
+  },
+  "baseline": {
+    "passed": 1699,
+    "failed": 0,
+    "ignored": 1
+  }
+}

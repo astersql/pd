@@ -1,0 +1,118 @@
+{
+  "provenance": "source-derived; no Go runtime oracle; human-authorized substitute",
+  "source": "shuffle_hot_region.go, hot_region.go, scheduler_test.go, init.go",
+  "cases": [
+    {
+      "name": "read",
+      "resource": 3,
+      "expected": 1,
+      "target": 4
+    },
+    {
+      "name": "write",
+      "resource": 1,
+      "expected": 1,
+      "target": 4
+    },
+    {
+      "name": "write-peer",
+      "resource": 0,
+      "expected": 0
+    },
+    {
+      "name": "read-peer",
+      "resource": 2,
+      "expected": 0
+    },
+    {
+      "name": "fixed-target",
+      "resource": 3,
+      "random": 1,
+      "expected": 1,
+      "target": 5
+    },
+    {
+      "name": "empty",
+      "resource": 3,
+      "expected": 0,
+      "empty": true
+    },
+    {
+      "name": "missing",
+      "resource": 3,
+      "expected": 0,
+      "missing": true
+    },
+    {
+      "name": "down",
+      "resource": 3,
+      "expected": 0,
+      "down": true
+    },
+    {
+      "name": "pending",
+      "resource": 3,
+      "expected": 0,
+      "pending": true
+    },
+    {
+      "name": "no_target",
+      "resource": 3,
+      "expected": 0,
+      "no_target": true
+    },
+    {
+      "name": "evicted",
+      "resource": 3,
+      "expected": 0,
+      "evicted": true
+    },
+    {
+      "name": "allocation",
+      "resource": 3,
+      "expected": 0,
+      "allocation": true
+    },
+    {
+      "name": "missing_source",
+      "resource": 3,
+      "expected": 0,
+      "missing_source": true
+    },
+    {
+      "name": "no_leader",
+      "resource": 3,
+      "expected": 0,
+      "no_leader": true
+    },
+    {
+      "name": "sample-one-peer",
+      "resource": 3,
+      "bad_peer": true,
+      "random_peer": 0,
+      "expected": 0
+    },
+    {
+      "name": "sample-next-peer",
+      "resource": 3,
+      "bad_peer": true,
+      "random_peer": 1,
+      "expected": 1,
+      "target": 4
+    },
+    {
+      "name": "placement",
+      "resource": 3,
+      "placement_target": true,
+      "random": 1,
+      "expected": 1,
+      "target": 4
+    },
+    {
+      "name": "offline-target",
+      "resource": 1,
+      "offline": true,
+      "expected": 0
+    }
+  ]
+}
