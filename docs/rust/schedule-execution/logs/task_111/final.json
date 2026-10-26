@@ -1,0 +1,83 @@
+{
+  "slot": 1,
+  "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+  "commands": [
+    {
+      "command": [
+        "cargo",
+        "fmt",
+        "--all"
+      ],
+      "exit_code": 0,
+      "log": "final-0.log.gz"
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "astersql-pd-schedule-diagnostic",
+        "--locked",
+        "--lib",
+        "task_111",
+        "--",
+        "--nocapture"
+      ],
+      "exit_code": 0,
+      "log": "final-1.log.gz"
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "astersql-pd-schedule-diagnostic",
+        "--locked"
+      ],
+      "exit_code": 0,
+      "log": "final-2.log.gz"
+    },
+    {
+      "command": [
+        "cargo",
+        "metadata",
+        "--format-version",
+        "1",
+        "--no-deps"
+      ],
+      "exit_code": 0,
+      "log": "final-3.log.gz"
+    },
+    {
+      "command": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "exit_code": 0,
+      "log": "final-4.log.gz"
+    },
+    {
+      "command": [
+        "cargo",
+        "check",
+        "--workspace",
+        "--locked"
+      ],
+      "exit_code": 0,
+      "log": "final-5.log.gz"
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--workspace",
+        "--locked"
+      ],
+      "exit_code": 0,
+      "log": "final-6.log.gz"
+    }
+  ]
+}

@@ -473,6 +473,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "astersql-pd-schedule-diagnostic"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-core",
+ "astersql-pd-errs",
+ "astersql-pd-keypath",
+ "astersql-pd-schedule-config",
+ "astersql-pd-schedule-plan",
+ "astersql-pd-schedule-schedulers",
+ "astersql-pd-schedule-types",
+ "astersql-pd-storage-endpoint",
+ "astersql-pd-storage-kv",
+ "serde_json",
+ "tokio",
+]
+
+[[package]]
 name = "astersql-pd-schedule-filter"
 version = "0.1.0"
 dependencies = [

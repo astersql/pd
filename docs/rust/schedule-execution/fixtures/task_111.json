@@ -1,0 +1,154 @@
+{
+  "evidence_kind": "read-only Go source derivation; no Go execution oracle",
+  "normalization": "none; timestamp is explicit Unix seconds supplied by host",
+  "cases": [
+    {
+      "name": "balance-leader-scheduler",
+      "allowed": false,
+      "disabled": false,
+      "recorder": false,
+      "recorded": null,
+      "timestamp": 42,
+      "status": null,
+      "error": "PD:diagnostic:ErrDiagnosticDisabled",
+      "summary": "",
+      "message": "diagnostic is disabled"
+    },
+    {
+      "name": "missing",
+      "allowed": false,
+      "disabled": false,
+      "recorder": false,
+      "recorded": null,
+      "timestamp": 42,
+      "status": null,
+      "error": "PD:diagnostic:ErrDiagnosticDisabled",
+      "summary": "",
+      "message": "diagnostic is disabled"
+    },
+    {
+      "name": "missing",
+      "allowed": true,
+      "disabled": false,
+      "recorder": false,
+      "recorded": null,
+      "timestamp": 0,
+      "status": "disabled",
+      "error": null,
+      "summary": ""
+    },
+    {
+      "name": "balance-leader-scheduler",
+      "allowed": true,
+      "disabled": true,
+      "recorder": false,
+      "recorded": null,
+      "timestamp": 42,
+      "status": "disabled",
+      "error": null,
+      "summary": ""
+    },
+    {
+      "name": "shuffle-leader-scheduler",
+      "allowed": true,
+      "disabled": false,
+      "recorder": false,
+      "recorded": null,
+      "timestamp": 42,
+      "status": null,
+      "error": "PD:diagnostic:ErrSchedulerUndiagnosable",
+      "summary": "",
+      "message": "shuffle-leader-scheduler hasn't supported diagnostic"
+    },
+    {
+      "name": "balance-leader-scheduler",
+      "allowed": true,
+      "disabled": false,
+      "recorder": false,
+      "recorded": null,
+      "timestamp": 42,
+      "status": null,
+      "error": "PD:diagnostic:ErrSchedulerUndiagnosable",
+      "summary": "",
+      "message": "balance-leader-scheduler hasn't supported diagnostic"
+    },
+    {
+      "name": "balance-leader-scheduler",
+      "allowed": true,
+      "disabled": false,
+      "recorder": true,
+      "recorded": null,
+      "timestamp": 42,
+      "status": null,
+      "error": "PD:diagnostic:ErrNoDiagnosticResult",
+      "summary": "",
+      "message": "balance-leader-scheduler has no diagnostic result"
+    },
+    {
+      "name": "balance-leader-scheduler",
+      "allowed": true,
+      "disabled": false,
+      "recorder": true,
+      "recorded": "paused",
+      "timestamp": 18446744073709551615,
+      "status": "paused",
+      "error": null,
+      "summary": ""
+    },
+    {
+      "name": "balance-leader-scheduler",
+      "allowed": true,
+      "disabled": false,
+      "recorder": true,
+      "recorded": "halted",
+      "timestamp": 18446744073709551615,
+      "status": "halted",
+      "error": null,
+      "summary": ""
+    },
+    {
+      "name": "balance-leader-scheduler",
+      "allowed": true,
+      "disabled": false,
+      "recorder": true,
+      "recorded": "scheduling",
+      "timestamp": 18446744073709551615,
+      "status": "scheduling",
+      "error": null,
+      "summary": ""
+    },
+    {
+      "name": "balance-leader-scheduler",
+      "allowed": true,
+      "disabled": false,
+      "recorder": true,
+      "recorded": "normal",
+      "timestamp": 18446744073709551615,
+      "status": "normal",
+      "error": null,
+      "summary": ""
+    },
+    {
+      "name": "balance-leader-scheduler",
+      "allowed": true,
+      "disabled": false,
+      "recorder": true,
+      "recorded": "pending",
+      "timestamp": 18446744073709551615,
+      "status": "pending",
+      "error": null,
+      "summary": "balance-leader-scheduler reach limit"
+    },
+    {
+      "name": "balance-leader-scheduler",
+      "allowed": true,
+      "disabled": true,
+      "recorder": true,
+      "recorded": "pending",
+      "timestamp": 42,
+      "status": "disabled",
+      "error": null,
+      "summary": ""
+    }
+  ]
+}

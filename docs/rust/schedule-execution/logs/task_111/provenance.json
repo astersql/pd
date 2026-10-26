@@ -1,0 +1,13 @@
+{
+  "source_commit": "772d5e62c1c5ed8ab445b75040195b5754bc99fb",
+  "plan_source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "sources": {
+    "pkg/schedule/diagnostic/diagnostic_manager.go": "bd39573ab8ea807b4eb689f875a3aeed573b02bf77406f1d18eb33578003ee1e",
+    "pkg/schedule/schedulers/diagnostic_recorder.go": "4221cf1359bb837642986ad82b3db18bfc1423ce5eddfd2a378c18f3f08730e4",
+    "pkg/errs/errno.go": "5b72951756fa619ef642081d382cb1f73ebf1d6a170d6410a8444124767b94e7",
+    "tests/server/api/diagnostic_test.go": "bae7afc37c339b12004126055d0a9513c182918dfb582261e4efa5294a803517"
+  },
+  "fixture_sha256": "ef7423a7df6810dac51467147680331f24715fc98090ff5ad6f169c3e73bda62",
+  "go_runtime_output": null,
+  "authorization": "User authorized read-only source derivation + real Rust behavior/fault validation instead of unavailable runtime oracle."
+}
