@@ -1,0 +1,94 @@
+{
+  "provenance": "read-only Go source/test derived; no Go execution",
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "cases": [
+    {
+      "name": "normal",
+      "expected": 1
+    },
+    {
+      "name": "batch-one",
+      "batch": 1,
+      "expected": 1
+    },
+    {
+      "name": "batch-ten",
+      "batch": 10,
+      "expected": 1,
+      "regions": 3
+    },
+    {
+      "name": "non-witness",
+      "expected": 0,
+      "no_witness": true
+    },
+    {
+      "name": "pending",
+      "expected": 0,
+      "pending": true
+    },
+    {
+      "name": "down",
+      "expected": 0,
+      "down": true
+    },
+    {
+      "name": "outside",
+      "expected": 0,
+      "outside": true
+    },
+    {
+      "name": "balanced",
+      "expected": 0,
+      "balanced": true
+    },
+    {
+      "name": "pending-influence",
+      "expected": 0,
+      "influence": true
+    },
+    {
+      "name": "offline-targets",
+      "expected": 0,
+      "offline": true
+    },
+    {
+      "name": "learner-targets",
+      "expected": 0,
+      "learner": true,
+      "placement": true
+    },
+    {
+      "name": "witness-targets",
+      "expected": 0,
+      "all_witness": true,
+      "placement": true
+    },
+    {
+      "name": "offline-source",
+      "source_offline": true,
+      "expected": 1
+    },
+    {
+      "name": "placement-leader-exclusion",
+      "placement": true,
+      "expected": 1
+    },
+    {
+      "name": "placement-witness-constraint",
+      "placement": true,
+      "placement_block": true,
+      "expected": 0
+    },
+    {
+      "name": "factory-no-leader",
+      "no_leader": true,
+      "expected": 0
+    },
+    {
+      "name": "simple-witness-switch",
+      "simple": true,
+      "expected": 1
+    }
+  ]
+}

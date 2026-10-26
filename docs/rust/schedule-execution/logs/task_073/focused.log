@@ -1,0 +1,26 @@
+   Compiling astersql-pd-schedule-schedulers v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.20s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_schedulers-46948a5a92bc5f3a)
+
+running 2 tests
+test task_073_test::task_073_config_and_limits ... ok
+task_073 case normal: 1 operators, 0 errors
+task_073 case batch-one: 1 operators, 0 errors
+task_073 case batch-ten: 1 operators, 0 errors
+task_073 case non-witness: 0 operators, 0 errors
+task_073 case pending: 0 operators, 0 errors
+task_073 case down: 0 operators, 0 errors
+task_073 case outside: 0 operators, 0 errors
+task_073 case balanced: 0 operators, 0 errors
+task_073 case pending-influence: 0 operators, 0 errors
+task_073 case offline-targets: 0 operators, 0 errors
+task_073 case learner-targets: 0 operators, 0 errors
+task_073 case witness-targets: 0 operators, 0 errors
+task_073 case offline-source: 1 operators, 0 errors
+task_073 case placement-leader-exclusion: 1 operators, 0 errors
+task_073 case placement-witness-constraint: 0 operators, 0 errors
+task_073 case factory-no-leader: 0 operators, 30 errors
+task_073 case simple-witness-switch: 1 operators, 0 errors
+test task_073_test::task_073_behavior_cases ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 29 filtered out; finished in 0.00s

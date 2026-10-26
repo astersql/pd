@@ -1,0 +1,30 @@
+   Compiling astersql-pd-schedule-schedulers v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.86s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_schedulers-46948a5a92bc5f3a)
+
+running 2 tests
+test task_073_test::task_073_config_and_limits ... ok
+task_073 case normal: 1 operators, 0 errors
+task_073 case batch-one: 1 operators, 0 errors
+task_073 case batch-ten: 1 operators, 0 errors
+task_073 case non-witness: 0 operators, 0 errors
+task_073 case pending: 0 operators, 0 errors
+task_073 case down: 0 operators, 0 errors
+task_073 case outside: 0 operators, 0 errors
+task_073 case balanced: 0 operators, 0 errors
+
+thread 'task_073_test::task_073_behavior_cases' (165842680) panicked at pkg/schedule/schedulers/task_073_test.rs:203:9:
+assertion `left == right` failed: pending-influence: []
+  left: 1
+ right: 0
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test task_073_test::task_073_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_073_test::task_073_behavior_cases
+
+test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 29 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-schedulers --lib`

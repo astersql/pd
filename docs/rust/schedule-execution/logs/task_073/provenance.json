@@ -1,0 +1,17 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "checkout_commit": "9c1a03c3d167e2c26b2d3c28cf229eefc0255683",
+  "dependency_commit": "9c1a03c3d",
+  "evidence": "read-only Go source/test derived + executed Rust behavior",
+  "go_binary_sha256": null,
+  "go_output_sha256": null,
+  "files": {
+    "pkg/schedule/schedulers/balance_witness.go": "c0b444018eeb1847513516cd79548fdceb0cd0e1fdd9d9269f33aca7f9c5a352",
+    "pkg/schedule/schedulers/balance_witness_test.go": "cecd97b88b667ebe6a135d72688962f9897c696c0cf9b5ab67ede7aa26e36d80",
+    "pkg/schedule/schedulers/utils.go": "41a551f1b4f95e31a0f48cfc262a125e1132dfa546a73a9300b8eb7bd18834e1",
+    "pkg/schedule/operator/create_operator.go": "43a938c72992f4ce81501c40ab85c1e79c08670383acd47f22655e779524b927",
+    "pkg/schedule/placement/fit.go": "5e5c91601641ee4ffd1af5a7fedd3424bf5408d210fdb03b3956f52bb5da7b22",
+    "pkg/schedule/filter/filters.go": "2e72100da29ddac7d371c59898ef10a562cda9bf4eec666cc4e4e0c7c8edc0a4",
+    "docs/rust/schedule-execution/fixtures/task_073.json": "b891bcdf5df759b029d1b66cde45755f6cef12382dd1f82d63c240625369d9be"
+  }
+}
