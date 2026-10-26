@@ -1,0 +1,30 @@
+   Compiling astersql-pd-schedule-splitter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/splitter)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.24s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_splitter-e2fa8fb892c7c755)
+
+running 4 tests
+
+thread 'task_063_test::task_063_partial_accumulation_and_finished_latch' (165370922) panicked at pkg/schedule/splitter/task_063_test.rs:172:5:
+assertion `left == right` failed
+  left: [[109], [116]]
+ right: [[116]]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'task_063_test::task_063_behavior_cases' (165370920) panicked at pkg/schedule/splitter/task_063_test.rs:72:9:
+assertion `left == right` failed: "partial" found
+  left: Object {}
+ right: Object {"3": String("m")}
+test task_063_test::task_063_factory_and_stale_epoch_failures ... ok
+test task_063_test::task_063_real_admission_and_heartbeat_command ... ok
+test task_063_test::task_063_partial_accumulation_and_finished_latch ... FAILED
+test task_063_test::task_063_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_063_test::task_063_behavior_cases
+    task_063_test::task_063_partial_accumulation_and_finished_latch
+
+test result: FAILED. 2 passed; 2 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-splitter --lib`

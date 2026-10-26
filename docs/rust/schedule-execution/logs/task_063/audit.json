@@ -1,0 +1,10 @@
+{
+  "go_module_files": 1101,
+  "hashes_and_file_inventory_unchanged": true,
+  "git_status_unchanged": true,
+  "readonly_plans_unchanged": true,
+  "go_status": "",
+  "baseline_manifest": "before.json",
+  "cargo_lock_remote_versions_unchanged": true,
+  "out_of_scope_rust_formatting_changes": false
+}

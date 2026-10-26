@@ -1,0 +1,24 @@
+{
+  "source_commit": "01ae53a2046366401eca3970911e43903b9bd4b5",
+  "plan_source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "evidence_kind": "readonly_go_source_and_test_contract_derived",
+  "user_authorization": "Go runtime oracle admission waived; Go and modules remain readonly",
+  "go_runtime_executed": false,
+  "go_binary_hash": null,
+  "go_output_hash": null,
+  "source_sha256": {
+    "pkg/schedule/splitter/region_splitter.go": "6b940638e508d361468417bd8612b2589637c1fe7d79f96ce0a0c65ecfc7681d",
+    "pkg/schedule/splitter/region_splitter_test.go": "a1d95e543bbd34251f0d60bdfb551dedf6bfb9b91d58d4ff9a721f0036a4256d",
+    "pkg/schedule/operator/create_operator.go": "43a938c72992f4ce81501c40ab85c1e79c08670383acd47f22655e779524b927",
+    "pkg/schedule/operator/operator_controller.go": "173d8e3e5fd5e4b1128ba24a954055d2d1ef7ea7a6676f6d3aa7cc7a37672ba1"
+  },
+  "source_matches_plan_baseline": {
+    "pkg/schedule/splitter/region_splitter.go": true,
+    "pkg/schedule/splitter/region_splitter_test.go": true,
+    "pkg/schedule/operator/create_operator.go": true,
+    "pkg/schedule/operator/operator_controller.go": true
+  },
+  "fixture_sha256": "e9ef550b8cd7d0824140f7eb1b102e9e6772d916f0b4b5883849b0c88cf5587e",
+  "normalization": "Only deterministic map ordering by region ID; no field/error/epoch/key normalization",
+  "oracle_index_review": "Existing approved runtime routes do not cover split scan/admission; index unchanged"
+}

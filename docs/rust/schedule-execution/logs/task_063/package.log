@@ -1,0 +1,22 @@
+   Compiling astersql-pd-schedule-splitter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/splitter)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.81s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_splitter-e2fa8fb892c7c755)
+
+running 9 tests
+test task_063_test::task_063_binary_unbounded_and_id_overwrite ... ok
+test task_063_test::task_063_factory_and_stale_epoch_failures ... ok
+test task_063_test::task_063_partial_accumulation_and_finished_latch ... ok
+test task_063_test::task_063_rejected_group_is_not_observed ... ok
+test task_063_test::task_063_real_admission_and_heartbeat_command ... ok
+test task_062_test::task_062_refresh_after_split ... ok
+test task_063_test::task_063_group_submit_observe_and_suspect ... ok
+test task_063_test::task_063_behavior_cases ... ok
+test task_062_test::task_062_behavior_cases ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests astersql_pd_schedule_splitter
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

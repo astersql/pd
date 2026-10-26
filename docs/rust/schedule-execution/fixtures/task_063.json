@@ -1,0 +1,14 @@
+{
+  "evidence_kind": "readonly_go_source_derived_not_runtime_oracle",
+  "cases": [
+    {"id":"admission-is-not-completion","keys":["m","t"],"ranges":[[1,"a","z",2]],"found":{},"remaining":["m","t"],"finished":false},
+    {"id":"epoch-only-is-not-completion","keys":["m"],"ranges":[[1,"a","z",9]],"found":{},"remaining":["m"],"finished":false},
+    {"id":"partial","keys":["m","t"],"ranges":[[2,"a","m",3],[3,"m","z",3]],"found":{"3":"m"},"remaining":["t"],"finished":false},
+    {"id":"complete","keys":["m","t"],"ranges":[[2,"a","m",3],[3,"m","t",3],[4,"t","z",3]],"found":{"3":"m","4":"t"},"remaining":[],"finished":true},
+    {"id":"original-id-can-be-right-child","keys":["m"],"ranges":[[2,"a","m",3],[1,"m","z",3]],"found":{"1":"m"},"remaining":[],"finished":true},
+    {"id":"duplicates-count-against-finished","keys":["m","m"],"ranges":[[2,"a","m",3],[3,"m","z",3]],"found":{"3":"m"},"remaining":[],"finished":false},
+    {"id":"no-regions","keys":["m"],"ranges":[],"found":{},"remaining":["m"],"finished":false},
+    {"id":"exclusive-range-end","keys":["z"],"ranges":[[2,"a","z",3],[3,"z","",3]],"found":{},"remaining":["z"],"finished":false},
+    {"id":"binary-key","keys":["\u0000m"],"ranges":[[2,"a","z",3]],"found":{},"remaining":["\u0000m"],"finished":false}
+  ]
+}
