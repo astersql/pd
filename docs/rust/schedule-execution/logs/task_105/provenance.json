@@ -1,0 +1,19 @@
+{
+  "source_commit": "9b2de5f322d367eec01a0344c1fe6da1c811afb7",
+  "plan_baseline": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "evidence_kind": "read-only Go source deduction and real Rust behavior/fault tests; user-authorized substitution",
+  "runtime_oracle": null,
+  "sha256": {
+    "pkg/schedule/schedulers/balance_range.go": "ccd59a50facd035b9f50f69a3ac1e4a538540cbfa0fc0916840f0392224cdc2d",
+    "pkg/schedule/schedulers/balance_range_test.go": "a684a154f0b8faff1717551d3b92c2db17d8cf9de6cdb3e1f286009e00c8bcc1",
+    "pkg/schedule/schedulers/utils.go": "41a551f1b4f95e31a0f48cfc262a125e1132dfa546a73a9300b8eb7bd18834e1",
+    "pkg/schedule/schedulers/range_view.rs": "7757d2b32e80c3216dd80e02e66b463fb64dae957e308ecca1af6b3def4080b4",
+    "docs/rust/schedule-execution/fixtures/task_105.json": "bc52341557f2398dd387319c687cf3046ea431edb27fdda103a79d4fa1e4ba11"
+  },
+  "normalization": {
+    "clock": "explicit Unix nanoseconds; report snapshot instead of host metric registry",
+    "random": "fixed host sample index 0 and identity shuffle; tied score store ordering fixed by ID for reproducibility",
+    "operators": "exact kind, steps, target, priority, influence and score fields asserted; no error suppression"
+  },
+  "mode": "classic/nextgen shared domain; default Cargo features; no Go execution"
+}

@@ -1,0 +1,32 @@
+[
+  {
+    "mutation": "improvement",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-schedulers",
+      "--locked",
+      "--lib",
+      "task_105_behavior_cases",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101
+  },
+  {
+    "mutation": "report",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-schedulers",
+      "--locked",
+      "--lib",
+      "task_105_roles_engines_and_faults",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101
+  }
+]

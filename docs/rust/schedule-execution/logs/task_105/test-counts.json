@@ -1,0 +1,9 @@
+{
+  "focused_passed": 2,
+  "scheduler_passed": 164,
+  "workspace_passed": 1713,
+  "workspace_failed": 0,
+  "workspace_ignored": 1,
+  "fixture_balance": 7,
+  "fixture_schedule": 79
+}

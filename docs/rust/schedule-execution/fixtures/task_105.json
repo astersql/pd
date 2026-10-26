@@ -1,0 +1,688 @@
+{
+  "provenance": "Go read-only source deduction; no runtime oracle",
+  "balance": [
+    [
+      3,
+      0,
+      0,
+      0,
+      true
+    ],
+    [
+      3,
+      0,
+      -1,
+      1,
+      false
+    ],
+    [
+      2,
+      0,
+      0,
+      0,
+      true
+    ],
+    [
+      1,
+      0,
+      0,
+      0,
+      false
+    ],
+    [
+      6,
+      0,
+      -4,
+      0,
+      true
+    ],
+    [
+      6,
+      0,
+      0,
+      -5,
+      false
+    ],
+    [
+      3,
+      1,
+      0,
+      0,
+      true
+    ]
+  ],
+  "schedule": [
+    {
+      "role": "leader-scatter",
+      "engine": "tikv",
+      "variant": "normal",
+      "v2": false,
+      "expected_operators": 1,
+      "expected_errors": 0
+    },
+    {
+      "role": "leader-scatter",
+      "engine": "tikv",
+      "variant": "normal",
+      "v2": true,
+      "expected_operators": 1,
+      "expected_errors": 0
+    },
+    {
+      "role": "leader-scatter",
+      "engine": "tikv",
+      "variant": "pending",
+      "v2": false,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "leader-scatter",
+      "engine": "tikv",
+      "variant": "pending",
+      "v2": true,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "leader-scatter",
+      "engine": "tikv",
+      "variant": "allocation",
+      "v2": false,
+      "expected_operators": 0,
+      "expected_errors": 1
+    },
+    {
+      "role": "leader-scatter",
+      "engine": "tikv",
+      "variant": "allocation",
+      "v2": true,
+      "expected_operators": 0,
+      "expected_errors": 1
+    },
+    {
+      "role": "leader-scatter",
+      "engine": "tikv",
+      "variant": "influence",
+      "v2": false,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "leader-scatter",
+      "engine": "tikv",
+      "variant": "influence",
+      "v2": true,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "leader-scatter",
+      "engine": "tikv",
+      "variant": "balanced",
+      "v2": false,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "leader-scatter",
+      "engine": "tikv",
+      "variant": "balanced",
+      "v2": true,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "leader-scatter",
+      "engine": "tikv",
+      "variant": "timeout_balanced",
+      "v2": false,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "leader-scatter",
+      "engine": "tikv",
+      "variant": "timeout_balanced",
+      "v2": true,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "leader-scatter",
+      "engine": "tiflash",
+      "variant": "normal",
+      "v2": false,
+      "expected_operators": 1,
+      "expected_errors": 0
+    },
+    {
+      "role": "leader-scatter",
+      "engine": "tiflash",
+      "variant": "normal",
+      "v2": true,
+      "expected_operators": 1,
+      "expected_errors": 0
+    },
+    {
+      "role": "leader-scatter",
+      "engine": "tiflash",
+      "variant": "pending",
+      "v2": false,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "leader-scatter",
+      "engine": "tiflash",
+      "variant": "pending",
+      "v2": true,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "leader-scatter",
+      "engine": "tiflash",
+      "variant": "allocation",
+      "v2": false,
+      "expected_operators": 0,
+      "expected_errors": 1
+    },
+    {
+      "role": "leader-scatter",
+      "engine": "tiflash",
+      "variant": "allocation",
+      "v2": true,
+      "expected_operators": 0,
+      "expected_errors": 1
+    },
+    {
+      "role": "leader-scatter",
+      "engine": "tiflash",
+      "variant": "influence",
+      "v2": false,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "leader-scatter",
+      "engine": "tiflash",
+      "variant": "influence",
+      "v2": true,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "leader-scatter",
+      "engine": "tiflash",
+      "variant": "balanced",
+      "v2": false,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "leader-scatter",
+      "engine": "tiflash",
+      "variant": "balanced",
+      "v2": true,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "leader-scatter",
+      "engine": "tiflash",
+      "variant": "timeout_balanced",
+      "v2": false,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "leader-scatter",
+      "engine": "tiflash",
+      "variant": "timeout_balanced",
+      "v2": true,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "peer-scatter",
+      "engine": "tikv",
+      "variant": "normal",
+      "v2": false,
+      "expected_operators": 1,
+      "expected_errors": 0
+    },
+    {
+      "role": "peer-scatter",
+      "engine": "tikv",
+      "variant": "normal",
+      "v2": true,
+      "expected_operators": 1,
+      "expected_errors": 0
+    },
+    {
+      "role": "peer-scatter",
+      "engine": "tikv",
+      "variant": "pending",
+      "v2": false,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "peer-scatter",
+      "engine": "tikv",
+      "variant": "pending",
+      "v2": true,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "peer-scatter",
+      "engine": "tikv",
+      "variant": "allocation",
+      "v2": false,
+      "expected_operators": 0,
+      "expected_errors": 1
+    },
+    {
+      "role": "peer-scatter",
+      "engine": "tikv",
+      "variant": "allocation",
+      "v2": true,
+      "expected_operators": 0,
+      "expected_errors": 1
+    },
+    {
+      "role": "peer-scatter",
+      "engine": "tikv",
+      "variant": "influence",
+      "v2": false,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "peer-scatter",
+      "engine": "tikv",
+      "variant": "influence",
+      "v2": true,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "peer-scatter",
+      "engine": "tikv",
+      "variant": "balanced",
+      "v2": false,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "peer-scatter",
+      "engine": "tikv",
+      "variant": "balanced",
+      "v2": true,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "peer-scatter",
+      "engine": "tikv",
+      "variant": "timeout_balanced",
+      "v2": false,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "peer-scatter",
+      "engine": "tikv",
+      "variant": "timeout_balanced",
+      "v2": true,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "peer-scatter",
+      "engine": "tiflash",
+      "variant": "normal",
+      "v2": false,
+      "expected_operators": 1,
+      "expected_errors": 0
+    },
+    {
+      "role": "peer-scatter",
+      "engine": "tiflash",
+      "variant": "normal",
+      "v2": true,
+      "expected_operators": 1,
+      "expected_errors": 0
+    },
+    {
+      "role": "peer-scatter",
+      "engine": "tiflash",
+      "variant": "pending",
+      "v2": false,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "peer-scatter",
+      "engine": "tiflash",
+      "variant": "pending",
+      "v2": true,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "peer-scatter",
+      "engine": "tiflash",
+      "variant": "allocation",
+      "v2": false,
+      "expected_operators": 0,
+      "expected_errors": 1
+    },
+    {
+      "role": "peer-scatter",
+      "engine": "tiflash",
+      "variant": "allocation",
+      "v2": true,
+      "expected_operators": 0,
+      "expected_errors": 1
+    },
+    {
+      "role": "peer-scatter",
+      "engine": "tiflash",
+      "variant": "influence",
+      "v2": false,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "peer-scatter",
+      "engine": "tiflash",
+      "variant": "influence",
+      "v2": true,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "peer-scatter",
+      "engine": "tiflash",
+      "variant": "balanced",
+      "v2": false,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "peer-scatter",
+      "engine": "tiflash",
+      "variant": "balanced",
+      "v2": true,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "peer-scatter",
+      "engine": "tiflash",
+      "variant": "timeout_balanced",
+      "v2": false,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "peer-scatter",
+      "engine": "tiflash",
+      "variant": "timeout_balanced",
+      "v2": true,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "learner-scatter",
+      "engine": "tikv",
+      "variant": "normal",
+      "v2": false,
+      "expected_operators": 1,
+      "expected_errors": 0
+    },
+    {
+      "role": "learner-scatter",
+      "engine": "tikv",
+      "variant": "normal",
+      "v2": true,
+      "expected_operators": 1,
+      "expected_errors": 0
+    },
+    {
+      "role": "learner-scatter",
+      "engine": "tikv",
+      "variant": "pending",
+      "v2": false,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "learner-scatter",
+      "engine": "tikv",
+      "variant": "pending",
+      "v2": true,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "learner-scatter",
+      "engine": "tikv",
+      "variant": "allocation",
+      "v2": false,
+      "expected_operators": 0,
+      "expected_errors": 1
+    },
+    {
+      "role": "learner-scatter",
+      "engine": "tikv",
+      "variant": "allocation",
+      "v2": true,
+      "expected_operators": 0,
+      "expected_errors": 1
+    },
+    {
+      "role": "learner-scatter",
+      "engine": "tikv",
+      "variant": "influence",
+      "v2": false,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "learner-scatter",
+      "engine": "tikv",
+      "variant": "influence",
+      "v2": true,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "learner-scatter",
+      "engine": "tikv",
+      "variant": "balanced",
+      "v2": false,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "learner-scatter",
+      "engine": "tikv",
+      "variant": "balanced",
+      "v2": true,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "learner-scatter",
+      "engine": "tikv",
+      "variant": "timeout_balanced",
+      "v2": false,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "learner-scatter",
+      "engine": "tikv",
+      "variant": "timeout_balanced",
+      "v2": true,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "learner-scatter",
+      "engine": "tiflash",
+      "variant": "normal",
+      "v2": false,
+      "expected_operators": 1,
+      "expected_errors": 0
+    },
+    {
+      "role": "learner-scatter",
+      "engine": "tiflash",
+      "variant": "normal",
+      "v2": true,
+      "expected_operators": 1,
+      "expected_errors": 0
+    },
+    {
+      "role": "learner-scatter",
+      "engine": "tiflash",
+      "variant": "pending",
+      "v2": false,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "learner-scatter",
+      "engine": "tiflash",
+      "variant": "pending",
+      "v2": true,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "learner-scatter",
+      "engine": "tiflash",
+      "variant": "allocation",
+      "v2": false,
+      "expected_operators": 0,
+      "expected_errors": 1
+    },
+    {
+      "role": "learner-scatter",
+      "engine": "tiflash",
+      "variant": "allocation",
+      "v2": true,
+      "expected_operators": 0,
+      "expected_errors": 1
+    },
+    {
+      "role": "learner-scatter",
+      "engine": "tiflash",
+      "variant": "influence",
+      "v2": false,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "learner-scatter",
+      "engine": "tiflash",
+      "variant": "influence",
+      "v2": true,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "learner-scatter",
+      "engine": "tiflash",
+      "variant": "balanced",
+      "v2": false,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "learner-scatter",
+      "engine": "tiflash",
+      "variant": "balanced",
+      "v2": true,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "learner-scatter",
+      "engine": "tiflash",
+      "variant": "timeout_balanced",
+      "v2": false,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "learner-scatter",
+      "engine": "tiflash",
+      "variant": "timeout_balanced",
+      "v2": true,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "leader-scatter",
+      "engine": "tikv",
+      "variant": "existing",
+      "v2": false,
+      "expected_operators": 1,
+      "expected_errors": 0
+    },
+    {
+      "role": "leader-scatter",
+      "engine": "tikv",
+      "variant": "timeout",
+      "v2": false,
+      "expected_operators": 1,
+      "expected_errors": 0
+    },
+    {
+      "role": "leader-scatter",
+      "engine": "tikv",
+      "variant": "outside",
+      "v2": false,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "leader-scatter",
+      "engine": "tikv",
+      "variant": "engine_mismatch",
+      "v2": false,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "leader-scatter",
+      "engine": "tikv",
+      "variant": "single",
+      "v2": false,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "leader-scatter",
+      "engine": "tikv",
+      "variant": "invalid",
+      "v2": false,
+      "expected_operators": 0,
+      "expected_errors": 0
+    },
+    {
+      "role": "leader-scatter",
+      "engine": "tikv",
+      "variant": "topology_reject",
+      "v2": false,
+      "expected_operators": 0,
+      "expected_errors": 0
+    }
+  ]
+}
