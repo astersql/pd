@@ -1,0 +1,16 @@
+{
+  "source_commit": "28f809a175b0bc5c01ce6f115254cfc0aa123809",
+  "source_baseline": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "provenance": "source-derived expectations + Rust execution; user waived Go runtime admission",
+  "go_binary_sha256": null,
+  "go_output_sha256": null,
+  "sources": {
+    "pkg/schedule/schedulers/range_cluster.go": "90cd33aae78e9ff8ca757259586c33b8efe643b56bab286f31e6d20d6a0505c3",
+    "pkg/schedule/schedulers/utils.go": "41a551f1b4f95e31a0f48cfc262a125e1132dfa546a73a9300b8eb7bd18834e1",
+    "pkg/schedule/schedulers/utils_test.go": "6d52b31292c27b6f5659d133635726c112bdbbd4df1c0de2d4388f76abe14889",
+    "pkg/core/store.go": "686a3bd66c7deceb3fd79b2c83be359487088993d20e649ba2a533db298ad605",
+    "pkg/core/region.go": "be6ed0dc77537d62926d21d9e4eef080ea0dbcc7dc97efb4dc26269a172f99d8"
+  },
+  "fixture_sha256": "649a7fca1e18c56c1578139dfe97ab23cb82055de8ac13e6f9bfc911cbbf577f",
+  "normalization": "none; threshold float comparisons use absolute tolerance 1e-10"
+}

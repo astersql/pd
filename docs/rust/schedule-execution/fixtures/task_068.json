@@ -1,0 +1,283 @@
+{
+  "provenance": "Go source/test derived; no runtime Go outputs; no normalization",
+  "quota": [
+    10,
+    5,
+    2,
+    1,
+    1,
+    1
+  ],
+  "ranges": [
+    {
+      "args": [],
+      "expected": [
+        [
+          [],
+          []
+        ]
+      ]
+    },
+    {
+      "args": [
+        "ignored"
+      ],
+      "expected": [
+        [
+          [],
+          []
+        ]
+      ]
+    },
+    {
+      "args": [
+        "a+b",
+        "c%2Bd"
+      ],
+      "expected": [
+        [
+          [
+            97,
+            32,
+            98
+          ],
+          [
+            99,
+            43,
+            100
+          ]
+        ]
+      ]
+    },
+    {
+      "args": [
+        "%00%ff",
+        "%2f"
+      ],
+      "expected": [
+        [
+          [
+            0,
+            255
+          ],
+          [
+            47
+          ]
+        ]
+      ]
+    },
+    {
+      "args": [
+        "a",
+        "b",
+        "%"
+      ],
+      "expected": [
+        [
+          [
+            97
+          ],
+          [
+            98
+          ]
+        ]
+      ]
+    },
+    {
+      "args": [
+        "a",
+        "b",
+        "c",
+        "d"
+      ],
+      "expected": [
+        [
+          [
+            97
+          ],
+          [
+            98
+          ]
+        ],
+        [
+          [
+            99
+          ],
+          [
+            100
+          ]
+        ]
+      ]
+    },
+    {
+      "args": [
+        "%",
+        "b"
+      ],
+      "error": true
+    },
+    {
+      "args": [
+        "a",
+        "%q0"
+      ],
+      "error": true
+    },
+    {
+      "args": [
+        "a",
+        "b",
+        "%2",
+        "d"
+      ],
+      "error": true
+    },
+    {
+      "args": [
+        "z",
+        "a"
+      ],
+      "expected": [
+        [
+          [
+            122
+          ],
+          [
+            97
+          ]
+        ]
+      ]
+    },
+    {
+      "args": [
+        "",
+        ""
+      ],
+      "expected": [
+        [
+          [],
+          []
+        ]
+      ]
+    }
+  ],
+  "projection": {
+    "range": [
+      "b",
+      "d"
+    ],
+    "regions": [
+      [
+        1,
+        "a",
+        "c",
+        10,
+        1
+      ],
+      [
+        2,
+        "c",
+        "e",
+        20,
+        2
+      ],
+      [
+        3,
+        "e",
+        "",
+        70,
+        1
+      ]
+    ],
+    "global_region_size": 1000,
+    "global_used_mib": 100,
+    "capacity_mib": 200,
+    "store1": {
+      "leaders": 1,
+      "regions": 2,
+      "pending": 1,
+      "leader_size": 10,
+      "region_size": 30,
+      "used_mib": 3,
+      "available_mib": 197
+    },
+    "average_size": 15
+  },
+  "thresholds": [
+    {
+      "role": "leader",
+      "store": 1,
+      "expected": 1.3333333333333333
+    },
+    {
+      "role": "leader",
+      "store": 2,
+      "expected": 0.3333333333333333
+    },
+    {
+      "role": "leader",
+      "store": 3,
+      "expected": 0.3333333333333333
+    },
+    {
+      "role": "leader",
+      "store": 4,
+      "expected": 0
+    },
+    {
+      "role": "leader",
+      "store": 5,
+      "expected": 0
+    },
+    {
+      "role": "peer",
+      "store": 1,
+      "expected": 1.3333333333333333
+    },
+    {
+      "role": "peer",
+      "store": 2,
+      "expected": 0.3333333333333333
+    },
+    {
+      "role": "peer",
+      "store": 3,
+      "expected": 0.3333333333333333
+    },
+    {
+      "role": "peer",
+      "store": 4,
+      "expected": 1
+    },
+    {
+      "role": "peer",
+      "store": 5,
+      "expected": 1
+    },
+    {
+      "role": "learner",
+      "store": 1,
+      "expected": 0
+    },
+    {
+      "role": "learner",
+      "store": 2,
+      "expected": 0
+    },
+    {
+      "role": "learner",
+      "store": 3,
+      "expected": 0
+    },
+    {
+      "role": "learner",
+      "store": 4,
+      "expected": 0
+    },
+    {
+      "role": "learner",
+      "store": 5,
+      "expected": 1
+    }
+  ]
+}

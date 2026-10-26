@@ -1,0 +1,22 @@
+{
+  "focused": {
+    "passed": 3,
+    "failed": 0,
+    "ignored": 0
+  },
+  "package": {
+    "passed": 16,
+    "failed": 0,
+    "ignored": 0
+  },
+  "workspace-serial": {
+    "passed": 1542,
+    "failed": 1,
+    "ignored": 1
+  },
+  "workspace-two-threads": {
+    "passed": 1565,
+    "failed": 0,
+    "ignored": 1
+  }
+}

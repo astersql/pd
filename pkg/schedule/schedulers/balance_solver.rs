@@ -74,6 +74,27 @@ impl<'a> BalanceSolver<'a> {
             max_count,
         )
     }
+    /// Score a range projection using its separate tolerance override.
+    /// Host config and root store counts remain inherited; average size is local.
+    pub fn from_range<C: astersql_pd_schedule_core::BasicCluster + ?Sized>(
+        kind: ScheduleKind,
+        config: &'a ScheduleConfig,
+        range: &crate::RangeCluster<'_, C>,
+    ) -> Self {
+        use astersql_pd_schedule_core::BasicCluster;
+        let max_count = range
+            .get_stores()
+            .iter()
+            .map(|s| range.store_region_count(s.id()))
+            .max()
+            .unwrap_or(0);
+        let mut solver = Self::new(kind, config, range.average_region_size(), max_count);
+        let ratio = range.get_tolerant_size_ratio(config.tolerant_size_ratio);
+        if ratio != 0.0 {
+            solver.tolerant_ratio = ratio;
+        }
+        solver
+    }
     pub fn tolerant_ratio(&self) -> f64 {
         self.tolerant_ratio
     }

@@ -609,6 +609,7 @@ dependencies = [
  "astersql-pd-schedule-config",
  "astersql-pd-schedule-core",
  "astersql-pd-schedule-operator",
+ "astersql-pd-schedule-placement",
  "astersql-pd-schedule-plan",
  "astersql-pd-schedule-types",
  "astersql-pd-storage-endpoint",

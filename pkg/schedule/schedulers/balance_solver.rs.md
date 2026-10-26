@@ -21,3 +21,7 @@ Go依据为 `utils.go` 的 solver 及 `balance_region_test.go` / `balance_leader
 `balance_witness_test.go` 的对应契约。用户已解除 Go 运行证据准入，冻结 fixture 明确为
 源码推导，未宣称 Go 执行或运行差分。验证及边界见
 [任务67证据](../../../docs/rust/schedule-execution/task-067.md)。
+
+任务068增加 `BalanceSolver::from_range`：读取 `RangeCluster` 的局部平均大小和独立
+容忍比率；自动比率的 store count 回退继续使用宿主根索引，与 Go rangeCluster 嵌入
+及 `adjustTolerantRatio` 的特殊分支一致。验证见 task-068 的范围投影用例。

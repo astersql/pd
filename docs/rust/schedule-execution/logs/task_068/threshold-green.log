@@ -1,0 +1,28 @@
+   Compiling astersql-pd-schedule-schedulers v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.99s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_schedulers-1a4b07a3b46226d2)
+
+running 3 tests
+6 quota progression cases + 11 parser cases passed
+test task_068_test::task_068_behavior_cases ... ok
+
+thread 'task_068_test::task_068_range_projection' (165537995) panicked at pkg/schedule/schedulers/task_068_test.rs:198:5:
+assertion `left == right` failed
+  left: 1
+ right: 0
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test task_068_test::task_068_range_projection ... FAILED
+
+thread 'task_068_test::task_068_count_threshold_roles_engines_and_splits' (165537994) panicked at pkg/schedule/schedulers/task_068_test.rs:260:49:
+called `Result::unwrap()` on an `Err` value: Build(BuildRuleListError("no rule left"))
+test task_068_test::task_068_count_threshold_roles_engines_and_splits ... FAILED
+
+failures:
+
+failures:
+    task_068_test::task_068_count_threshold_roles_engines_and_splits
+    task_068_test::task_068_range_projection
+
+test result: FAILED. 1 passed; 2 failed; 0 ignored; 0 measured; 13 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-schedulers --lib`

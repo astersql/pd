@@ -1,0 +1,22 @@
+{
+  "command": [
+    "cargo",
+    "test",
+    "-p",
+    "astersql-pd-tso",
+    "--locked",
+    "--test",
+    "etcd_behavior",
+    "real_etcd_oracle_process_restart",
+    "--",
+    "--nocapture"
+  ],
+  "exit_code": 0,
+  "slot": 1,
+  "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+  "CARGO_BUILD_JOBS": "1",
+  "RUST_TEST_THREADS": "2",
+  "raw_log_sha256": "0d884ff074638f3d0f392cf2a9601beb6f9c7d10758fb2b08c01c735fed40a66",
+  "saved_log_sha256": "c88a8dd0cd793dcf27ccb95790c4c58850cf6213f0537a5d45711824e7f123fe",
+  "log_storage_normalization": "trim trailing line whitespace and EOF blank lines only"
+}

@@ -1,0 +1,24 @@
+   Compiling astersql-pd-schedule-schedulers v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.01s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_schedulers-1a4b07a3b46226d2)
+
+running 3 tests
+
+thread 'task_068_test::task_068_behavior_cases' (165540934) panicked at pkg/schedule/schedulers/task_068_test.rs:99:9:
+assertion `left == right` failed
+  left: 3
+ right: 5
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test task_068_test::task_068_behavior_cases ... FAILED
+test task_068_test::task_068_range_projection ... ok
+15 frozen role/engine thresholds + 5 boundary cases passed
+test task_068_test::task_068_count_threshold_roles_engines_and_splits ... ok
+
+failures:
+
+failures:
+    task_068_test::task_068_behavior_cases
+
+test result: FAILED. 2 passed; 1 failed; 0 ignored; 0 measured; 13 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-schedulers --lib`

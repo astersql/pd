@@ -1,0 +1,70 @@
+   Compiling astersql-pd-schedule-schedulers v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers)
+warning: unused import: `super::*`
+ --> pkg/schedule/schedulers/task_068_test.rs:2:5
+  |
+2 | use super::*;
+  |     ^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+error[E0599]: no associated function or constant named `new` found for struct `KeyRange` in the current scope
+  --> pkg/schedule/schedulers/task_068_test.rs:65:34
+   |
+65 |             key_range: KeyRange::new(start, end),
+   |                                  ^^^ associated function or constant not found in `KeyRange`
+   |
+help: there is a method `ne` with a similar name, but with different arguments
+  --> /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/core/src/cmp.rs:275:4
+
+error[E0599]: no method named `set_store` found for struct `StoresInfo` in the current scope
+  --> pkg/schedule/schedulers/task_068_test.rs:79:18
+   |
+79 |         c.stores.set_store(store(id, 100 << 20));
+   |                  ^^^^^^^^^
+   |
+help: there is a method `get_store` with a similar name
+   |
+79 -         c.stores.set_store(store(id, 100 << 20));
+79 +         c.stores.get_store(store(id, 100 << 20));
+   |
+
+error[E0433]: cannot find type `RetryQuota` in this scope
+  --> pkg/schedule/schedulers/task_068_test.rs:94:17
+   |
+94 |     let mut q = RetryQuota::default();
+   |                 ^^^^^^^^^^ use of undeclared type `RetryQuota`
+
+error[E0425]: cannot find function `get_key_ranges` in this scope
+   --> pkg/schedule/schedulers/task_068_test.rs:115:22
+    |
+115 |         let actual = get_key_ranges(&args);
+    |                      ^^^^^^^^^^^^^^ not found in this scope
+
+error[E0433]: cannot find type `RangeCluster` in this scope
+   --> pkg/schedule/schedulers/task_068_test.rs:141:20
+    |
+141 |     let mut view = RangeCluster::new(&c, b"b", b"d");
+    |                    ^^^^^^^^^^^^ use of undeclared type `RangeCluster`
+    |
+help: a trait with a similar name exists
+    |
+141 -     let mut view = RangeCluster::new(&c, b"b", b"d");
+141 +     let mut view = BasicCluster::new(&c, b"b", b"d");
+    |
+
+error[E0433]: cannot find type `RangeCluster` in this scope
+   --> pkg/schedule/schedulers/task_068_test.rs:194:17
+    |
+194 |     let empty = RangeCluster::new(&c, b"z", b"zz");
+    |                 ^^^^^^^^^^^^ use of undeclared type `RangeCluster`
+    |
+help: a trait with a similar name exists
+    |
+194 -     let empty = RangeCluster::new(&c, b"z", b"zz");
+194 +     let empty = BasicCluster::new(&c, b"z", b"zz");
+    |
+
+Some errors have detailed explanations: E0425, E0433, E0599.
+For more information about an error, try `rustc --explain E0425`.
+warning: `astersql-pd-schedule-schedulers` (lib test) generated 1 warning
+error: could not compile `astersql-pd-schedule-schedulers` (lib test) due to 6 previous errors; 1 warning emitted
