@@ -1,0 +1,16 @@
+{
+  "source_commit": "4b59aae58d9ecfdd99aac86a39709673a27e002e",
+  "dependency_94": "4b59aae58",
+  "evidence_kind": "source_assertion",
+  "runtime_oracle": null,
+  "authorization": "User permits read-only Go source/test inference plus real Rust behavior/fault verification in lieu of unavailable Go runtime oracle",
+  "normalization": "explicit monotonic host clock only; no state/target/load/error normalization",
+  "sha256": {
+    "pkg/schedule/schedulers/hot_region.go": "2e34a6068d48c1ffed3a78764fc18843b20b6fab2943587df4e907acfe692ad6",
+    "pkg/schedule/schedulers/hot_region_solver.go": "f71cb92668e2221aa0e6e9ff09004cafcea4ded55ad344d80e5d8f46a88df6ce",
+    "pkg/schedule/schedulers/hot_region_test.go": "20e49d3e00501845befb864375ed74b8e2da5f82dc8e71006c496463fb08a756",
+    "pkg/schedule/schedulers/hot_region_solver_test.go": "80697f96cf32436ef1d26b2d592e6ccba1b3890fdc90eecb146fac7aee9f31c3",
+    "docs/rust/schedule-execution/fixtures/task_095.json": "549441ecdbcf067d1e07fd2722bebe4bbaf275a4cacf12e36102de09ac396e27",
+    "docs/rust/schedule-execution/oracle-index.json": "2d1a930742291e7047a864aa2246e7e22c612cb6583249b7edb42945b494b450"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "focused-final": {
+    "passed": 5,
+    "failed": 0,
+    "ignored": 0,
+    "groups": 1
+  },
+  "package": {
+    "passed": 138,
+    "failed": 0,
+    "ignored": 0,
+    "groups": 2
+  },
+  "workspace-test": {
+    "passed": 1687,
+    "failed": 0,
+    "ignored": 1,
+    "groups": 145
+  }
+}

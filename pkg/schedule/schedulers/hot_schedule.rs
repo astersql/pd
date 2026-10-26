@@ -58,7 +58,7 @@ pub enum HotScheduleDiagnostic {
     NoSolution,
 }
 /// Ordered executable offers. The pending owner (task 95) admits the first offer
-/// atomically or tries the fallback; dispatch does not submit or register influence.
+/// by region or tries the fallback; dispatch does not submit or register influence.
 pub struct HotDispatchResult<'a> {
     pub offers: Vec<(HotResource, HotSolveResult<'a>)>,
     pub diagnostic: Option<HotScheduleDiagnostic>,

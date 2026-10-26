@@ -162,3 +162,9 @@ mod hot_schedule;
 pub use hot_schedule::*;
 #[cfg(test)]
 mod task_094_test;
+
+#[cfg(test)]
+mod task_095_test;
+
+mod hot_pending;
+pub use hot_pending::*;
