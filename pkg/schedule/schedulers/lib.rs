@@ -114,3 +114,8 @@ mod task_085_test;
 
 mod hot_config;
 pub use hot_config::*;
+
+mod hot_solution;
+pub use hot_solution::*;
+#[cfg(test)]
+mod task_086_test;

@@ -1,0 +1,32 @@
+{
+  "red-missing-api": {
+    "passed": 0,
+    "failed": 0,
+    "ignored": 0,
+    "groups": 0
+  },
+  "red-behavior": {
+    "passed": 2,
+    "failed": 4,
+    "ignored": 0,
+    "groups": 1
+  },
+  "green": {
+    "passed": 6,
+    "failed": 0,
+    "ignored": 0,
+    "groups": 1
+  },
+  "package": {
+    "passed": 86,
+    "failed": 0,
+    "ignored": 0,
+    "groups": 2
+  },
+  "workspace-test": {
+    "passed": 1635,
+    "failed": 0,
+    "ignored": 1,
+    "groups": 145
+  }
+}

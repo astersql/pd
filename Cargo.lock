@@ -617,6 +617,7 @@ dependencies = [
  "astersql-pd-schedule-plan",
  "astersql-pd-schedule-types",
  "astersql-pd-statistics",
+ "astersql-pd-statistics-utils",
  "astersql-pd-storage-endpoint",
  "astersql-pd-storage-kv",
  "astersql-pd-typeutil",

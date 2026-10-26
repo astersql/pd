@@ -1,0 +1,15 @@
+{
+  "source_commit": "b39ce14fdf262d77b4244ac8d821195bd176dd6d",
+  "evidence_kind": "source_assertion",
+  "hashes": {
+    "pkg/schedule/schedulers/hot_region_solution.go": "cd6c21a14bf0249dc177c764de7be8125294409670bfe2ded31f29364e42505d",
+    "pkg/schedule/schedulers/hot_region.go": "2e34a6068d48c1ffed3a78764fc18843b20b6fab2943587df4e907acfe692ad6",
+    "pkg/schedule/schedulers/hot_region_test.go": "20e49d3e00501845befb864375ed74b8e2da5f82dc8e71006c496463fb08a756",
+    "pkg/schedule/schedulers/utils.go": "41a551f1b4f95e31a0f48cfc262a125e1132dfa546a73a9300b8eb7bd18834e1",
+    "pkg/statistics/store_load.go": "3a1ad6b343965b66a39472b4621f7c0d0812c1f206decb9359438b5c34587c45",
+    "pkg/statistics/hot_peer.go": "817f3cedd3e92d2aed6152e05ed231517b2c3d73163234d67af7fbc03e61a677"
+  },
+  "fixture_sha256": "73effe90670fee488a3306b2853831c4485f35fb151880f44f0fcac0134b71b2",
+  "plan_baseline": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "source_matches_plan_baseline": true
+}
