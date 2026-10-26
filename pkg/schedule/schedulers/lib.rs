@@ -141,3 +141,8 @@ mod hot_destination;
 pub use hot_destination::*;
 #[cfg(test)]
 mod task_090_test;
+
+mod hot_placement;
+pub use hot_placement::*;
+#[cfg(test)]
+mod task_091_test;

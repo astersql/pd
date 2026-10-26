@@ -1,0 +1,11 @@
+{
+  "source_commit": "3c4d258ce9ce7a35f08b26d794892e35a8d36688",
+  "evidence_kind": "source_assertion",
+  "go_runtime_oracle": false,
+  "sources": {
+    "pkg/schedule/schedulers/hot_region_solver.go": "f71cb92668e2221aa0e6e9ff09004cafcea4ded55ad344d80e5d8f46a88df6ce",
+    "pkg/schedule/schedulers/hot_region_solver_test.go": "80697f96cf32436ef1d26b2d592e6ccba1b3890fdc90eecb146fac7aee9f31c3",
+    "pkg/schedule/schedulers/hot_region.go": "2e34a6068d48c1ffed3a78764fc18843b20b6fab2943587df4e907acfe692ad6"
+  },
+  "fixture_sha256": "19ebebdea228fe0175a50956c805a191324e4e4e923fd812d0a234679520f654"
+}
