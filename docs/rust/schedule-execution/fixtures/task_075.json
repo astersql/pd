@@ -1,0 +1,262 @@
+{
+  "evidence": "read-only Go source/test derivation; no Go runtime oracle",
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "go_tests": [
+    "TestEvictLeader",
+    "TestEvictLeaderWithUnhealthyPeer",
+    "TestConfigClone",
+    "TestBatchEvict",
+    "TestEvictLeaderBatchLimit"
+  ],
+  "cases": [
+    {
+      "name": "single-store",
+      "expected": 1,
+      "targets": [
+        2,
+        3
+      ]
+    },
+    {
+      "name": "only-store-2",
+      "stores": [
+        2
+      ],
+      "leader": 1,
+      "expected": 0
+    },
+    {
+      "name": "no-configured-store",
+      "stores": [],
+      "expected": 0
+    },
+    {
+      "name": "range-included",
+      "ranges": [
+        [
+          "a",
+          "b"
+        ]
+      ],
+      "expected": 1,
+      "targets": [
+        2,
+        3
+      ]
+    },
+    {
+      "name": "range-excluded",
+      "ranges": [
+        [
+          "b",
+          "c"
+        ]
+      ],
+      "expected": 0
+    },
+    {
+      "name": "range-partial",
+      "ranges": [
+        [
+          "a",
+          "az"
+        ]
+      ],
+      "expected": 0
+    },
+    {
+      "name": "empty-ranges",
+      "ranges": [],
+      "expected": 0
+    },
+    {
+      "name": "pending",
+      "pending": [
+        2
+      ],
+      "expected": 1,
+      "targets": [
+        3
+      ]
+    },
+    {
+      "name": "down",
+      "down": [
+        3
+      ],
+      "expected": 1,
+      "targets": [
+        2
+      ]
+    },
+    {
+      "name": "no-healthy-target",
+      "pending": [
+        2
+      ],
+      "down": [
+        3
+      ],
+      "expected": 0
+    },
+    {
+      "name": "pause-in",
+      "pause_in": [
+        2
+      ],
+      "expected": 1,
+      "targets": [
+        3
+      ]
+    },
+    {
+      "name": "all-pause-in",
+      "pause_in": [
+        2,
+        3
+      ],
+      "expected": 0
+    },
+    {
+      "name": "pause-out-source",
+      "pause_out": [
+        1
+      ],
+      "expected": 1,
+      "targets": [
+        2,
+        3
+      ]
+    },
+    {
+      "name": "pause-out-target",
+      "pause_out": [
+        2,
+        3
+      ],
+      "expected": 1,
+      "targets": [
+        2,
+        3
+      ]
+    },
+    {
+      "name": "duplicate-region",
+      "batch": 100,
+      "expected": 1,
+      "targets": [
+        2,
+        3
+      ]
+    },
+    {
+      "name": "batch-3",
+      "regions": 128,
+      "batch": 3,
+      "expected": 3,
+      "targets": [
+        2,
+        3
+      ]
+    },
+    {
+      "name": "batch-5",
+      "regions": 128,
+      "batch": 5,
+      "expected": 5,
+      "targets": [
+        2,
+        3
+      ]
+    },
+    {
+      "name": "batch-100",
+      "regions": 128,
+      "batch": 100,
+      "expected": 100,
+      "targets": [
+        2,
+        3
+      ]
+    },
+    {
+      "name": "multi-store-overshoot",
+      "stores": [
+        1,
+        2
+      ],
+      "regions": 8,
+      "alternate": true,
+      "batch": 3,
+      "expected": 4,
+      "targets": [
+        3
+      ],
+      "prepare": true
+    },
+    {
+      "name": "witness-factory-error",
+      "witness": true,
+      "expected": 0,
+      "error": true
+    },
+    {
+      "name": "learner-no-target",
+      "learner": true,
+      "expected": 0
+    },
+    {
+      "name": "missing-targets",
+      "missing_targets": true,
+      "expected": 0
+    },
+    {
+      "name": "no-regions",
+      "regions": 0,
+      "expected": 0
+    },
+    {
+      "name": "healthy-region-preferred",
+      "regions": 2,
+      "first_pending": true,
+      "cycle": true,
+      "expected": 1,
+      "targets": [
+        2,
+        3
+      ],
+      "region_ids": [
+        2
+      ]
+    },
+    {
+      "name": "multi-range",
+      "ranges": [
+        [
+          "z",
+          "zz"
+        ],
+        [
+          "a",
+          "b"
+        ]
+      ],
+      "expected": 1,
+      "targets": [
+        2,
+        3
+      ]
+    },
+    {
+      "name": "unhealthy-source-evicted",
+      "down": [
+        1
+      ],
+      "expected": 1,
+      "targets": [
+        2,
+        3
+      ]
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "checkout": "be49050e53f835558d5ed88e839887957c857ec3",
+  "dependencies": [
+    "985b581aa",
+    "5f0225c78",
+    "be49050e5"
+  ],
+  "evidence_mode": "user-authorized read-only Go source/test derivation plus real Rust behavior/fault validation",
+  "go_runtime_output": null,
+  "go_runtime_sha256": null,
+  "files": {
+    "pkg/schedule/schedulers/evict_leader.go": {
+      "sha256": "7fb5a50e54d33f0069e22c69ffd1341ae64f6310a5d1c49ac315aad6f925a460",
+      "baseline_sha256": "7fb5a50e54d33f0069e22c69ffd1341ae64f6310a5d1c49ac315aad6f925a460",
+      "baseline_matches": true
+    },
+    "pkg/schedule/schedulers/evict_leader_test.go": {
+      "sha256": "eb9288a2cb678c8e7911b876788b537fdce89e13ff0aa1d7543c760e74454b21",
+      "baseline_sha256": "eb9288a2cb678c8e7911b876788b537fdce89e13ff0aa1d7543c760e74454b21",
+      "baseline_matches": true
+    },
+    "pkg/schedule/operator/create_operator.go": {
+      "sha256": "43a938c72992f4ce81501c40ab85c1e79c08670383acd47f22655e779524b927",
+      "baseline_sha256": "43a938c72992f4ce81501c40ab85c1e79c08670383acd47f22655e779524b927",
+      "baseline_matches": true
+    },
+    "pkg/schedule/filter/filters.go": {
+      "sha256": "2e72100da29ddac7d371c59898ef10a562cda9bf4eec666cc4e4e0c7c8edc0a4",
+      "baseline_sha256": "2e72100da29ddac7d371c59898ef10a562cda9bf4eec666cc4e4e0c7c8edc0a4",
+      "baseline_matches": true
+    },
+    "pkg/core/region_tree.go": {
+      "sha256": "a17ea7b65dfe4ca3e5dc01a88d6b8fefb85774fec4b45d69429eccbb7d1e1718",
+      "baseline_sha256": "a17ea7b65dfe4ca3e5dc01a88d6b8fefb85774fec4b45d69429eccbb7d1e1718",
+      "baseline_matches": true
+    },
+    "docs/rust/schedule-execution/fixtures/task_075.json": {
+      "sha256": "14e887499b12f8bb2d88e5ad10f0299f1c5f6046d41043c5622a2a6650e1d4f1"
+    },
+    "pkg/schedule/schedulers/evict_leader.rs": {
+      "sha256": "bda2fd0607fbb11b690d95cd26c96101105a4efb760f15b10d0d88c15beef0ef"
+    },
+    "pkg/schedule/schedulers/task_075_test.rs": {
+      "sha256": "55521ed2c000df49166a444aa5c02d66b6c61e2013b8967fad32ea4dcbc4765a"
+    },
+    "docs/rust/schedule-execution/oracle-index.json": {
+      "sha256": "2d1a930742291e7047a864aa2246e7e22c612cb6583249b7edb42945b494b450"
+    }
+  },
+  "normalization": {
+    "time": "fixed Unix nanoseconds 1000000000000",
+    "randomness": "deterministic caller callbacks; 10 identical draws per region selection for batch cases, cycling draws for healthy-preference",
+    "ordering": "store/candidate ID sort for unspecified Go map order",
+    "errors": "none"
+  }
+}

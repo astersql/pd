@@ -1,0 +1,45 @@
+{
+  "encoding": "gzip, byte-preserving compression; no normalization of captured stdout/stderr",
+  "logs": {
+    "red-api.log": {
+      "sha256": "58596bae0b9daf06b61aa3bbb26a33c0ec5d2ad6f1892707b1495dc5cb9e786b",
+      "bytes": 6767
+    },
+    "focused-influence-before-fix.log": {
+      "sha256": "d247cf0e0c5fe8d581410e2114fd018c7e555bb9ff6b1ffcd9c35d7b5c45eb69",
+      "bytes": 929
+    },
+    "red-behavior.log": {
+      "sha256": "6c526857fb88a2d0461a47b9095733d827f0fee5be1c0ce373f0b3d33a8ab7f1",
+      "bytes": 953
+    },
+    "workspace-check.log": {
+      "sha256": "180ffddfea938614d89c9e09cab6173aebea1e8e278b0ab06ee32b03317b573e",
+      "bytes": 542
+    },
+    "metadata.log": {
+      "sha256": "b5d85138715925e0025be7ed1ca41e691aaebc8bfa3834296dd4fa57cd23570a",
+      "bytes": 167680
+    },
+    "focused-first.log": {
+      "sha256": "4bb4b833b0e88cb35e86b20be4130cded7b02a8b45d73a4337c15ca72a414d61",
+      "bytes": 1639
+    },
+    "focused-influence-before-correction.log": {
+      "sha256": "65feb0c8ed1e8a9078698ebe4968242ae6866b32983b275eb4df428e6d9e730b",
+      "bytes": 929
+    },
+    "crate.log": {
+      "sha256": "f0274e07ea805ee1c5804fb1dc88ead5327d37e2c609e07c3a4c2b32aba78ac9",
+      "bytes": 2567
+    },
+    "focused.log": {
+      "sha256": "62eb7bbd3ff96cdc3aa479b79f3ec989708f744032fc1a03717fc37ace4b3bd5",
+      "bytes": 1797
+    },
+    "workspace-test.log": {
+      "sha256": "80859ad71d3e69239f00ef5b16db3764c62c4878fb456e53dd7e875fd4e1e146",
+      "bytes": 143196
+    }
+  }
+}

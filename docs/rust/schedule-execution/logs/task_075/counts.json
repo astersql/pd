@@ -1,0 +1,22 @@
+{
+  "focused": {
+    "passed": 2,
+    "failed": 0,
+    "ignored": 0
+  },
+  "crate": {
+    "passed": 35,
+    "failed": 0,
+    "ignored": 0
+  },
+  "red-behavior": {
+    "passed": 1,
+    "failed": 1,
+    "ignored": 0
+  },
+  "workspace-test": {
+    "passed": 1584,
+    "failed": 0,
+    "ignored": 1
+  }
+}
