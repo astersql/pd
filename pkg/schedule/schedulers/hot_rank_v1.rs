@@ -202,7 +202,12 @@ impl HotRankV1 {
             _ => "none".into(),
         }
     }
-    fn compare_store(&self, a: &StoreLoadDetail, b: &StoreLoadDetail, source: bool) -> i32 {
+    pub(crate) fn compare_store(
+        &self,
+        a: &StoreLoadDetail,
+        b: &StoreLoadDetail,
+        source: bool,
+    ) -> i32 {
         if std::ptr::eq(a, b) {
             return 0;
         }

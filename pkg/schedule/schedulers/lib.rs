@@ -125,3 +125,9 @@ mod task_087_test;
 
 mod hot_rank_v1;
 pub use hot_rank_v1::*;
+
+#[cfg(test)]
+mod task_088_test;
+
+mod hot_rank_v2;
+pub use hot_rank_v2::*;

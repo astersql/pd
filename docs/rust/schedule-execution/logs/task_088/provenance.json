@@ -1,0 +1,12 @@
+{
+  "source_commit": "61372ce92fd284e998646ea41b41f864b871cc38",
+  "evidence_kind": "source_assertion",
+  "go_runtime_executed": false,
+  "normalization": "none",
+  "sources": {
+    "pkg/schedule/schedulers/hot_region_rank_v2.go": "63fe4d9673afbd47d4905abb2c97e1d9590f9b34b61d3b37537469896f9a9e61",
+    "pkg/schedule/schedulers/hot_region_rank_v2_test.go": "d02a4219dc8c4cbbf9d9e0061013242155544ad693d3ebde00b36c6417ec3d2d",
+    "pkg/schedule/schedulers/hot_region_solver.go": "f71cb92668e2221aa0e6e9ff09004cafcea4ded55ad344d80e5d8f46a88df6ce"
+  },
+  "fixture_sha256": "8f890cfca762a655e1005eadece894c755523c11e8e486ec6b108660f0901f20"
+}

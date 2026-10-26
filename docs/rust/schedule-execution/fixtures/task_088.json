@@ -1,0 +1,157 @@
+{
+  "evidence_kind": "source_assertion",
+  "go_runtime_executed": false,
+  "normalization": "none",
+  "source": "hot_region_rank_v2.go:getScoreByPriorities; balanced=.95, minRate=1, no pending, no topn",
+  "scores": [
+    {
+      "high": 1000,
+      "low": 500,
+      "peer": -2,
+      "score": -2
+    },
+    {
+      "high": 1000,
+      "low": 500,
+      "peer": -1,
+      "score": 0
+    },
+    {
+      "high": 1000,
+      "low": 500,
+      "peer": 0,
+      "score": 0
+    },
+    {
+      "high": 1000,
+      "low": 500,
+      "peer": 9,
+      "score": 0
+    },
+    {
+      "high": 1000,
+      "low": 500,
+      "peer": 10,
+      "score": 2
+    },
+    {
+      "high": 1000,
+      "low": 500,
+      "peer": 200,
+      "score": 2
+    },
+    {
+      "high": 1000,
+      "low": 500,
+      "peer": 250,
+      "score": 3
+    },
+    {
+      "high": 1000,
+      "low": 500,
+      "peer": 300,
+      "score": 1
+    },
+    {
+      "high": 1000,
+      "low": 500,
+      "peer": 315,
+      "score": -1
+    },
+    {
+      "high": 1000,
+      "low": 500,
+      "peer": 316,
+      "score": -2
+    },
+    {
+      "high": 1000,
+      "low": 900,
+      "peer": -2,
+      "score": -2
+    },
+    {
+      "high": 1000,
+      "low": 900,
+      "peer": -1,
+      "score": 0
+    },
+    {
+      "high": 1000,
+      "low": 900,
+      "peer": 0,
+      "score": 0
+    },
+    {
+      "high": 1000,
+      "low": 900,
+      "peer": 25,
+      "score": 0
+    },
+    {
+      "high": 1000,
+      "low": 900,
+      "peer": 26,
+      "score": 3
+    },
+    {
+      "high": 1000,
+      "low": 900,
+      "peer": 74,
+      "score": 3
+    },
+    {
+      "high": 1000,
+      "low": 900,
+      "peer": 75,
+      "score": -1
+    },
+    {
+      "high": 1000,
+      "low": 900,
+      "peer": 100,
+      "score": -1
+    },
+    {
+      "high": 1000,
+      "low": 900,
+      "peer": 101,
+      "score": -2
+    },
+    {
+      "high": 1000,
+      "low": 940,
+      "peer": 0,
+      "score": 0
+    },
+    {
+      "high": 1000,
+      "low": 940,
+      "peer": 54,
+      "score": 0
+    },
+    {
+      "high": 1000,
+      "low": 940,
+      "peer": 55,
+      "score": -2
+    }
+  ],
+  "rank_matrix": [
+    [
+      4,
+      3,
+      2
+    ],
+    [
+      1,
+      -1,
+      -1
+    ],
+    [
+      0,
+      -1,
+      -1
+    ]
+  ]
+}
