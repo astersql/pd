@@ -1,0 +1,10 @@
+{
+  "provenance": "Go diagnostic_recorder.go / balance_plan.go source-derived; no Go runtime output",
+  "normalization": "explicit unix-second clock; summary groups sorted by code/reason; equal weights choose lower code/reason (Go unspecified map order)",
+  "cases": [
+    {"name":"empty", "codes":[], "status":"normal", "summary":""},
+    {"name":"normal", "codes":[100,102], "status":"normal", "summary":"1 store(s) StoreScoreDisallowed; 1 store(s) StoreNotMatchRule; "},
+    {"name":"pending", "codes":[403,403], "status":"pending", "summary":"2 store(s) StoreDown; "},
+    {"name":"mixed", "codes":[100,403], "status":"pending", "summary":"1 store(s) StoreScoreDisallowed; 1 store(s) StoreDown; "}
+  ]
+}

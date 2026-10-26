@@ -238,3 +238,8 @@ mod scheduler_loop;
 pub use scheduler_loop::*;
 #[cfg(test)]
 mod task_108_test;
+
+mod diagnostic_record;
+pub use diagnostic_record::*;
+#[cfg(test)]
+mod task_109_test;

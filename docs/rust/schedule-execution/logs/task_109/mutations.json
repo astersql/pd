@@ -1,0 +1,82 @@
+[
+  {
+    "name": "red-capacity",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-schedulers",
+      "--locked",
+      "--lib",
+      "task_109_history",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "assertion_failure": true
+  },
+  {
+    "name": "red-history",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-schedulers",
+      "--locked",
+      "--lib",
+      "task_109_history",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "assertion_failure": true
+  },
+  {
+    "name": "red-weight",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-schedulers",
+      "--locked",
+      "--lib",
+      "task_109_history",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "assertion_failure": true
+  },
+  {
+    "name": "red-operators",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-schedulers",
+      "--locked",
+      "--lib",
+      "task_109_real_dry_run",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "assertion_failure": true
+  },
+  {
+    "name": "red-normal",
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "astersql-pd-schedule-schedulers",
+      "--locked",
+      "--lib",
+      "task_109_behavior_cases",
+      "--",
+      "--nocapture"
+    ],
+    "exit_code": 101,
+    "assertion_failure": true
+  }
+]

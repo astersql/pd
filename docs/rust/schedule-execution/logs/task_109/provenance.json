@@ -1,0 +1,21 @@
+{
+  "source_commit": "9a685bcf49ef518a86bf50c3d8710664777a6c9e",
+  "baseline_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "dependency_commits": [
+    "da4ccf41b",
+    "9a685bcf4"
+  ],
+  "kind": "Go source-derived expectations; user-authorized substitute",
+  "go_runtime_output": null,
+  "source_hashes": {
+    "pkg/schedule/schedulers/diagnostic_recorder.go": "4221cf1359bb837642986ad82b3db18bfc1423ce5eddfd2a378c18f3f08730e4",
+    "pkg/schedule/schedulers/scheduler_controller.go": "5b8ad7382dcf829b9405240fb3e1e72ba659aa5ae301fb0257a3a66c318a7153",
+    "pkg/movingaverage/weight_allocator.go": "406cb76127309c1666d59f16cc216a8300394269f415dc4ea05d8572e9e6d93c",
+    "pkg/cache/fifo.go": "7bf733335b664061e1d65f6a337a3271788306ae5dc51c0ba17c99af3a4b120d",
+    "pkg/schedule/plan/balance_plan.go": "4f861f5afdf2fd71af0b1ea0aef20eab3d7dc40e2165a330487a2ffcca2e118f",
+    "pkg/schedule/plan/plan.go": "2b1edee3759a54db2784854b28b743d4ae996b5ba2e197f9818ac88150c0f34c",
+    "pkg/schedule/filter/filters.go": "2e72100da29ddac7d371c59898ef10a562cda9bf4eec666cc4e4e0c7c8edc0a4",
+    "pkg/schedule/schedulers/balance_leader.go": "904edff2c88b23fc228cd7d54b5054067c82254adc64855e47d1503e074c7a9f"
+  },
+  "fixture_sha256": "a499b130ba23d1f900371102f2bc78b52aa6f0038417e71143eaa31b85c89ad9"
+}
