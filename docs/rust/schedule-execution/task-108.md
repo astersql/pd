@@ -27,7 +27,7 @@ AddWaitingOperator，以及core/region.go的NeedTransferWitnessLeader。oracle-i
 失败，查明fixture仅更新root未更新角色subtree，改用真实put_region后通过。
 这些错误均保留原始日志，不冒充行为TDD。
 
-新增推进验收断言先产生 [red-promotion](logs/task_108/red-promotion.log)：10ms tick
+新增推进验收断言先产生 [red-promotion](logs/task_108/red-promotion.log.gz)：10ms tick
 后活动操作器应为1，实际为0（exit101，1有效测试失败）。此前循环只入等待队列；
 随后接入既有带限额的推进API，同一测试通过。行为变异脚本另外分别破坏重试上限、
 退避、cleanup与label豁免，测试检出真实断言失败，finally恢复生产源码。
