@@ -1,0 +1,15 @@
+{
+  "file_count": 1101,
+  "hashes_and_file_list_unchanged": true,
+  "go_git_status_unchanged": true,
+  "plans_unchanged": true,
+  "git_diff_check_exit_code": 0,
+  "go_status_before": [],
+  "go_status_after": [],
+  "protected_hash_map_sha256": "ae4ea1307f6a0074d7d6b706be224a1d139607a343ed2b2c6ea9068395425bd4",
+  "plan_hashes": {
+    ".plans/2026-10-25-\u8c03\u5ea6\u6267\u884c\u5185\u6838/plan.md": "823d7db69c05899fe3b59884bb5fdd3e2fc715ad82ca4fe6eb89bc9b65fa6f58",
+    ".plans/2026-10-25-\u8c03\u5ea6\u6267\u884c\u5185\u6838/10-\u8c03\u5ea6\u95e8\u9762/plan.md": "db6a177fa34317aee98ce3461a8a300247cd18ac5136fa1c0b732fe02a2c083f"
+  },
+  "command": "git ls-files --cached --others --exclude-standard -z; SHA-256 each Go/module file; compare manifest/hash/status and read-only plan hashes; git diff --check"
+}

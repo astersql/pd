@@ -382,6 +382,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "astersql-pd-schedule"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-core",
+ "serde_json",
+]
+
+[[package]]
 name = "astersql-pd-schedule-affinity"
 version = "0.1.0"
 dependencies = [

@@ -1,0 +1,181 @@
+{
+  "provenance": "read-only Go source derivation; no Go runtime oracle",
+  "cases": [
+    {
+      "name": "global_threshold_independent_of_store",
+      "total": 11,
+      "active": 9,
+      "indexed": 10,
+      "reported": 10,
+      "state": "serving",
+      "elapsed_ns": 0,
+      "expected": false,
+      "source": "heartbeat"
+    },
+    {
+      "name": "global_below",
+      "total": 10,
+      "active": 8,
+      "indexed": 10,
+      "reported": 10,
+      "state": "serving",
+      "elapsed_ns": 0,
+      "expected": false,
+      "source": "heartbeat"
+    },
+    {
+      "name": "global_equal",
+      "total": 10,
+      "active": 9,
+      "indexed": 10,
+      "reported": 10,
+      "state": "serving",
+      "elapsed_ns": 0,
+      "expected": true,
+      "source": "heartbeat"
+    },
+    {
+      "name": "global_above",
+      "total": 10,
+      "active": 10,
+      "indexed": 10,
+      "reported": 10,
+      "state": "serving",
+      "elapsed_ns": 0,
+      "expected": true,
+      "source": "heartbeat"
+    },
+    {
+      "name": "reported_store_below",
+      "total": 10,
+      "active": 9,
+      "indexed": 10,
+      "reported": 11,
+      "state": "serving",
+      "elapsed_ns": 0,
+      "expected": false,
+      "source": "heartbeat"
+    },
+    {
+      "name": "indexed_store_below",
+      "total": 8,
+      "active": 8,
+      "indexed": 10,
+      "reported": 8,
+      "state": "serving",
+      "elapsed_ns": 0,
+      "expected": false,
+      "source": "heartbeat"
+    },
+    {
+      "name": "preparing_requires_threshold",
+      "total": 10,
+      "active": 9,
+      "indexed": 10,
+      "reported": 11,
+      "state": "preparing",
+      "elapsed_ns": 0,
+      "expected": false,
+      "source": "heartbeat"
+    },
+    {
+      "name": "removing_skipped",
+      "total": 8,
+      "active": 8,
+      "indexed": 10,
+      "reported": 100,
+      "state": "removing",
+      "elapsed_ns": 0,
+      "expected": true,
+      "source": "heartbeat"
+    },
+    {
+      "name": "removed_skipped",
+      "total": 8,
+      "active": 8,
+      "indexed": 10,
+      "reported": 100,
+      "state": "removed",
+      "elapsed_ns": 0,
+      "expected": true,
+      "source": "heartbeat"
+    },
+    {
+      "name": "unknown_skipped",
+      "total": 8,
+      "active": 8,
+      "indexed": 10,
+      "reported": 100,
+      "state": "unknown",
+      "elapsed_ns": 0,
+      "expected": true,
+      "source": "heartbeat"
+    },
+    {
+      "name": "empty",
+      "total": 0,
+      "active": 0,
+      "indexed": 0,
+      "reported": 0,
+      "state": "serving",
+      "elapsed_ns": 0,
+      "expected": true,
+      "source": "heartbeat"
+    },
+    {
+      "name": "small_rounding",
+      "total": 1,
+      "active": 0,
+      "indexed": 1,
+      "reported": 1,
+      "state": "serving",
+      "elapsed_ns": 0,
+      "expected": false,
+      "source": "heartbeat"
+    },
+    {
+      "name": "timeout_equal",
+      "total": 10,
+      "active": 0,
+      "indexed": 10,
+      "reported": 10,
+      "state": "serving",
+      "elapsed_ns": 300000000000,
+      "expected": false,
+      "source": "heartbeat"
+    },
+    {
+      "name": "timeout_after",
+      "total": 10,
+      "active": 0,
+      "indexed": 10,
+      "reported": 10,
+      "state": "serving",
+      "elapsed_ns": 300000000001,
+      "expected": true,
+      "source": "heartbeat"
+    },
+    {
+      "name": "sync_is_active",
+      "total": 10,
+      "active": 9,
+      "indexed": 10,
+      "reported": 10,
+      "state": "serving",
+      "elapsed_ns": 0,
+      "expected": true,
+      "source": "sync"
+    },
+    {
+      "name": "storage_is_inactive",
+      "total": 10,
+      "active": 9,
+      "indexed": 10,
+      "reported": 10,
+      "state": "serving",
+      "elapsed_ns": 0,
+      "expected": false,
+      "source": "storage"
+    }
+  ]
+}

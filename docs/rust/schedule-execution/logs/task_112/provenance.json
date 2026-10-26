@@ -1,0 +1,18 @@
+{
+  "source_commit": "206b0d44493dad390f87811f7ea8cf0971647708",
+  "plan_source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "dependency_111_commit": "206b0d444",
+  "oracle_kind": "read-only-source-derivation",
+  "go_runtime_output": null,
+  "go_runtime_command": null,
+  "authorization": "User follow-up permits read-only Go source/test derivation + real Rust behavior/fault evidence in place of missing Go runtime oracle",
+  "sources": {
+    "pkg/schedule/prepare_checker.go": "7ce7563cdec4e4369e42be576a0a6eb955f9f83e40ed5f6616899c3f5cade0d2",
+    "pkg/schedule/coordinator.go": "a61e5be78180e4a9e3f385beb6354ed352915785771edcc3a5805ee271cc5fc2",
+    "pkg/core/region.go": "be6ed0dc77537d62926d21d9e4eef080ea0dbcc7dc97efb4dc26269a172f99d8",
+    "tests/integrations/mcs/scheduling/server_test.go": "2d4e6fd1d869e3d1ef24ba0b28f535f4d7a6bb0268b0b894e5cb7d6bdfedeb1c"
+  },
+  "fixture_sha256": "f6bb0b797731cd90e0d7f848ac3c2ef13b2c4a97eed056f37ecdf4e6ae57f31a",
+  "normalization": null,
+  "oracle_index": "Existing runtime entries do not cover prepare-checker cases; no parity execution claim"
+}
