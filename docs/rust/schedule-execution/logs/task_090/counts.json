@@ -1,0 +1,786 @@
+{
+  "red-behavior": {
+    "passed": 4,
+    "failed": 1,
+    "ignored": 0,
+    "groups": [
+      {
+        "passed": 4,
+        "failed": 1,
+        "ignored": 0
+      }
+    ]
+  },
+  "green": {
+    "passed": 7,
+    "failed": 0,
+    "ignored": 0,
+    "groups": [
+      {
+        "passed": 7,
+        "failed": 0,
+        "ignored": 0
+      }
+    ]
+  },
+  "package": {
+    "passed": 111,
+    "failed": 0,
+    "ignored": 0,
+    "groups": [
+      {
+        "passed": 111,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      }
+    ]
+  },
+  "workspace-test": {
+    "passed": 1660,
+    "failed": 0,
+    "ignored": 1,
+    "groups": [
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 5,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 12,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 17,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 46,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 1,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 7,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 10,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 10,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 1
+      },
+      {
+        "passed": 15,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 160,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 4,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 19,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 2,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 7,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 12,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 1,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 9,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 5,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 5,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 2,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 13,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 2,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 10,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 2,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 3,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 9,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 5,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 1,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 1,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 17,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 8,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 7,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 29,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 3,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 19,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 2,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 3,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 44,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 66,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 20,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 14,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 27,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 10,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 12,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 37,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 95,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 44,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 19,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 10,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 12,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 111,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 13,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 5,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 48,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 1,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 93,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 4,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 124,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 31,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 16,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 17,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 10,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 103,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 30,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 10,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 21,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 85,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 9,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 2,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 3,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 9,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 10,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 10,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 2,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      }
+    ]
+  },
+  "table_driven_checks": {
+    "frozen_thresholds": 10,
+    "history_modes": 4,
+    "invalid_priorities": 3,
+    "candidate_actions": 7,
+    "engine_modes": 4,
+    "reverse_leader_modes": 2,
+    "reverse_membership": 4,
+    "eviction_recovery_outcomes": 6
+  },
+  "table_driven_total": 40
+}
