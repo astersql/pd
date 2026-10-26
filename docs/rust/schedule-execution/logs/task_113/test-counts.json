@@ -1,0 +1,22 @@
+{
+  "red-1": {
+    "passed": 4,
+    "failed": 1,
+    "ignored": 0
+  },
+  "final-1": {
+    "passed": 5,
+    "failed": 0,
+    "ignored": 0
+  },
+  "final-2": {
+    "passed": 9,
+    "failed": 0,
+    "ignored": 0
+  },
+  "final-6": {
+    "passed": 1753,
+    "failed": 0,
+    "ignored": 1
+  }
+}

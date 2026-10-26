@@ -1,0 +1,11 @@
+{
+  "source_kind": "read-only Go source/test derivation; user-authorized substitute, no Go runtime output",
+  "cases": [
+    {"status":"success", "limit":10, "related":2, "cached":true},
+    {"status":"success", "limit":0, "related":2, "cached":false},
+    {"status":"success", "limit":10, "related":0, "cached":false},
+    {"status":"cancel", "limit":10, "related":2, "cached":false},
+    {"status":"replace", "limit":10, "related":2, "cached":false}
+  ],
+  "ttl_cases": [{"now":109,"recent":true},{"now":110,"recent":false},{"now":111,"recent":false}]
+}

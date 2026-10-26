@@ -1,0 +1,42 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "prerequisite_commit": "60db02166",
+  "prerequisite_evidence": "docs/rust/schedule-execution/task-112.md",
+  "source_files": {
+    "pkg/schedule/coordinator.go": {
+      "sha256": "a61e5be78180e4a9e3f385beb6354ed352915785771edcc3a5805ee271cc5fc2",
+      "matches_source_commit": true
+    },
+    "pkg/schedule/checker/checker_controller.go": {
+      "sha256": "48d03fd259b5762da0381ce8976057098d0b9d83a0527666c3bbc738862fd56d",
+      "matches_source_commit": true
+    },
+    "pkg/schedule/checker/rule_checker.go": {
+      "sha256": "b2cccb0a8ac670aa5957a5728998e1a7cf4b35dff3f43dd1cfc4a699dae6fc61",
+      "matches_source_commit": true
+    },
+    "pkg/schedule/checker/affinity_checker.go": {
+      "sha256": "e5b617a82f68abd5fda4fd30eb341a7bd588cb8187ff2cfef21446f8ee1bffbf",
+      "matches_source_commit": true
+    },
+    "pkg/schedule/scatter/region_scatterer.go": {
+      "sha256": "9f2f77a2ca302d6896d8dbffc7a736d411133d8df078807fcb8188b1fc75d3f6",
+      "matches_source_commit": true
+    },
+    "pkg/schedule/splitter/region_splitter.go": {
+      "sha256": "6b940638e508d361468417bd8612b2589637c1fe7d79f96ce0a0c65ecfc7681d",
+      "matches_source_commit": true
+    },
+    "tests/integrations/mcs/scheduling/server_test.go": {
+      "sha256": "2d4e6fd1d869e3d1ef24ba0b28f535f4d7a6bb0268b0b894e5cb7d6bdfedeb1c",
+      "matches_source_commit": true
+    }
+  },
+  "fixture_sha256": "c3e18088b9a324f30bc492eedb69f9f13ca8b028d530f7bb1b4bc7e513dddf2e",
+  "authorization": "Explicit user authorization: read-only Go source/test derivation plus real Rust behavioral/fault validation replaces missing Go runtime oracle. Go/modules remain read-only.",
+  "go_execution": false,
+  "go_binary_hash": null,
+  "go_runtime_output": null,
+  "normalization": "No fields dropped. Explicit integer nanoseconds/seconds; IDs sorted by canonical BTree collections.",
+  "red_mutation": "Temporarily remove success callback registration; same task_113_behavior_cases fails actual=false expected=true; restored before final validation."
+}

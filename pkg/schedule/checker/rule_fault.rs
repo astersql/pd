@@ -51,6 +51,12 @@ impl RuleFaultChecker {
         self.promoted_until
             .insert(region, now.saturating_add(interval_nanos));
     }
+    /// Whether a completed non-witness promotion still suppresses witness repair.
+    pub fn is_recently_promoted(&self, region: u64, now: i128) -> bool {
+        self.promoted_until
+            .get(&region)
+            .is_some_and(|until| *until > now)
+    }
     /// Count includes the outgoing leader when it won Go's strict first-minimum tie.
     pub fn offline_leader_count(&self, store: u64) -> u64 {
         self.offline_leaders.get(&store).copied().unwrap_or(0)
@@ -331,10 +337,7 @@ impl RuleFaultChecker {
                 return Err(RuleFaultError::PeerCannotBeWitness);
             }
             if !p.is_witness && rf.rule.is_witness && ctx.witness_enabled {
-                if self
-                    .promoted_until
-                    .get(&r.meta().id)
-                    .is_some_and(|t| *t > ctx.replica.now_unix_nanos)
+                if self.is_recently_promoted(r.meta().id, ctx.replica.now_unix_nanos)
                     || !r.pending_peers().is_empty()
                 {
                     return Ok(None);

@@ -10,6 +10,26 @@ path = "lib.rs"
 
 [dependencies]
 astersql-pd-core.workspace = true
+astersql-pd-cache.workspace = true
+astersql-pd-schedule-checker.workspace = true
+astersql-pd-schedule-config.workspace = true
+astersql-pd-schedule-diagnostic.workspace = true
+astersql-pd-schedule-filter.workspace = true
+astersql-pd-schedule-hbstream.workspace = true
+astersql-pd-schedule-operator.workspace = true
+astersql-pd-schedule-placement.workspace = true
+astersql-pd-schedule-scatter.workspace = true
+astersql-pd-schedule-schedulers.workspace = true
+astersql-pd-schedule-splitter.workspace = true
+serde_json.workspace = true
+tokio-util.workspace = true
 
 [dev-dependencies]
-serde_json.workspace = true
+tokio.workspace = true
+astersql-pd-keypath.workspace = true
+astersql-pd-storage-endpoint.workspace = true
+astersql-pd-storage-kv.workspace = true
+astersql-pd-schedule-types.workspace = true
+prometheus.workspace = true
+astersql-pd-schedule-labeler.workspace = true
+astersql-pd-schedule-affinity.workspace = true

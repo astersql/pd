@@ -385,8 +385,28 @@ dependencies = [
 name = "astersql-pd-schedule"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-cache",
  "astersql-pd-core",
+ "astersql-pd-keypath",
+ "astersql-pd-schedule-affinity",
+ "astersql-pd-schedule-checker",
+ "astersql-pd-schedule-config",
+ "astersql-pd-schedule-diagnostic",
+ "astersql-pd-schedule-filter",
+ "astersql-pd-schedule-hbstream",
+ "astersql-pd-schedule-labeler",
+ "astersql-pd-schedule-operator",
+ "astersql-pd-schedule-placement",
+ "astersql-pd-schedule-scatter",
+ "astersql-pd-schedule-schedulers",
+ "astersql-pd-schedule-splitter",
+ "astersql-pd-schedule-types",
+ "astersql-pd-storage-endpoint",
+ "astersql-pd-storage-kv",
+ "prometheus",
  "serde_json",
+ "tokio",
+ "tokio-util",
 ]
 
 [[package]]

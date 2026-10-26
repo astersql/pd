@@ -85,6 +85,14 @@ impl CheckerDispatcher {
     pub fn set_metrics(&mut self, metrics: CheckerMetrics) {
         self.metrics = Some(metrics);
     }
+    /// Canonical rule state used by dispatch and heartbeat completion callbacks.
+    pub fn rule_checker(&self) -> &RuleFaultChecker {
+        &self.rule_fault
+    }
+    /// Canonical merge state used by dispatch.
+    pub fn merge_checker(&self) -> &MergeChecker {
+        &self.merge
+    }
     /// Stable Go checker names; unknown names are rejected without modifying state.
     pub fn pause_controller(&self, name: &str) -> Option<&PauseController> {
         Some(match name {

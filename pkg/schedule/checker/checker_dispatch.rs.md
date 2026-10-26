@@ -66,3 +66,6 @@ affinity、内存 MetaStore、operator/records、TTL 和存储令牌。
 任务58增加 `set_metrics(CheckerMetrics)`，在既有分派阶段接入宿主 Registry 的
 checker duration 与调用、暂停及可观察结果事件；不改变领域选择、错误或队列决策。
 具体覆盖与有界事件 API 见 [指标说明](checker_metrics.rs.md)。
+
+任务113增加只读 `rule_checker` / `merge_checker` 访问器，供 Coordinator 的锁定视图
+访问 dispatch 使用的同一个组件；不创建新 checker。成功回调和 pending 接口保持原样。

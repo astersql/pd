@@ -26,3 +26,6 @@ fixLooseMatchPeer、allowLeader、recorder.refresh；不是 Go 运行差分。
 用户已解除运行 oracle 准入限制。独立注册的 `task_044_test.rs` 使用冻结 fixture、
 真实 placement/filter/builder 与实际心跳推进验证，无 mock 调用计数。
 详见[任务证据](../../../docs/rust/schedule-execution/task-044.md)。
+
+任务113将 witness repair 的现有到期判断提取为 `is_recently_promoted`；
+Coordinator 的 heartbeat 完成记录与修复路径查询同一个 map，严格 `until > now`。

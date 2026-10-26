@@ -1,0 +1,9 @@
+{
+  "go_module_file_count": 1101,
+  "go_module_hashes_identical": true,
+  "go_module_git_status_identical": true,
+  "plan_hashes_identical": true,
+  "git_diff_check_exit_code": 0,
+  "before_manifest_sha256": "75082f4bdc33adf65f411940cc3d7067020de7f3154b5713a548ca4cce1d888b",
+  "slot_1_released": true
+}
