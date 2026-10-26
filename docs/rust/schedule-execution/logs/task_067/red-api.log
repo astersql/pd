@@ -1,0 +1,48 @@
+   Compiling astersql-pd-schedule-schedulers v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers)
+warning: unused import: `balance_solver::*`
+  --> pkg/schedule/schedulers/lib.rs:14:9
+   |
+14 | pub use balance_solver::*;
+   |         ^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+error[E0433]: cannot find type `BalanceSolver` in this scope
+  --> pkg/schedule/schedulers/task_067_test.rs:85:22
+   |
+85 |         let solver = BalanceSolver::new(kind, &config, c.average, c.max_count);
+   |                      ^^^^^^^^^^^^^ use of undeclared type `BalanceSolver`
+
+error[E0433]: cannot find type `BalanceSolver` in this scope
+   --> pkg/schedule/schedulers/task_067_test.rs:114:27
+    |
+114 |             let result1 = BalanceSolver::new(kind, &v1, c.average, c.max_count)
+    |                           ^^^^^^^^^^^^^ use of undeclared type `BalanceSolver`
+
+error[E0433]: cannot find type `BalanceSolver` in this scope
+   --> pkg/schedule/schedulers/task_067_test.rs:125:18
+    |
+125 |     let solver = BalanceSolver::new(
+    |                  ^^^^^^^^^^^^^ use of undeclared type `BalanceSolver`
+
+error[E0433]: cannot find type `BalanceError` in this scope
+   --> pkg/schedule/schedulers/task_067_test.rs:135:13
+    |
+135 |         Err(BalanceError::MissingSource)
+    |             ^^^^^^^^^^^^ use of undeclared type `BalanceError`
+
+error[E0433]: cannot find type `BalanceError` in this scope
+   --> pkg/schedule/schedulers/task_067_test.rs:140:13
+    |
+140 |         Err(BalanceError::MissingTarget)
+    |             ^^^^^^^^^^^^ use of undeclared type `BalanceError`
+
+warning: unused import: `super`
+ --> pkg/schedule/schedulers/task_067_test.rs:2:5
+  |
+2 | use super::*;
+  |     ^^^^^
+
+For more information about this error, try `rustc --explain E0433`.
+warning: `astersql-pd-schedule-schedulers` (lib test) generated 2 warnings
+error: could not compile `astersql-pd-schedule-schedulers` (lib test) due to 5 previous errors; 2 warnings emitted

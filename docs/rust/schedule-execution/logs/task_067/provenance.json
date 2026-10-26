@@ -1,0 +1,18 @@
+{
+  "source_commit": "988d7b62e89cce772e35b5c68f6ff9eeab818a1b",
+  "go_evidence": "source-derived, no execution or runtime differential; explicitly authorized",
+  "go_binary_sha256": null,
+  "go_output_sha256": null,
+  "source_sha256": {
+    "pkg/schedule/schedulers/utils.go": "41a551f1b4f95e31a0f48cfc262a125e1132dfa546a73a9300b8eb7bd18834e1",
+    "pkg/schedule/schedulers/utils_test.go": "6d52b31292c27b6f5659d133635726c112bdbbd4df1c0de2d4388f76abe14889",
+    "pkg/schedule/schedulers/balance_region_test.go": "a0037629e3317d68ae59e4ed07ed9bb3859045aa57901151a7075707a17c4532",
+    "pkg/schedule/schedulers/balance_leader_test.go": "c9b79231c539c2d0e8322f372ea1df30c950e41213cdd313e7e4f679a2858bb5",
+    "pkg/schedule/schedulers/balance_witness_test.go": "cecd97b88b667ebe6a135d72688962f9897c696c0cf9b5ab67ede7aa26e36d80",
+    "pkg/core/store.go": "686a3bd66c7deceb3fd79b2c83be359487088993d20e649ba2a533db298ad605",
+    "pkg/schedule/operator/influence.go": "28181ccd446b1309976e1aa2d55c56ab6bfec2f3dd57dd5d0b724c9fc0605622"
+  },
+  "fixture_sha256": "71488b5d0534e45455023ed4f29472e7029866cfa7f1fdd7219a01edd5a20ee0",
+  "normalization": {},
+  "dependency_commit": "988d7b62e"
+}

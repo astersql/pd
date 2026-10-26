@@ -9,3 +9,8 @@ mod config;
 pub use config::*;
 #[cfg(test)]
 mod task_066_test;
+
+mod balance_solver;
+pub use balance_solver::*;
+#[cfg(test)]
+mod task_067_test;

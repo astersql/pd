@@ -1,0 +1,162 @@
+warning: use of deprecated field `astersql_pd_proto::pdpb::RegionHeartbeatRequest::cpu_usage`
+   --> pkg/server/core_region_adapter.rs:134:30
+    |
+134 |     r.set_response_cpu_usage(p.cpu_usage);
+    |                              ^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: `astersql-pd-server` (lib) generated 1 warning
+   Compiling astersql-pd-schedule-schedulers v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers)
+warning: use of deprecated field `astersql_pd_proto::pdpb::RegionHeartbeatRequest::cpu_usage`
+  --> pkg/server/core_region_adapter_test.rs:88:13
+   |
+88 |             cpu_usage: 77,
+   |             ^^^^^^^^^^^^^
+
+warning: `astersql-pd-server` (lib test) generated 2 warnings (1 duplicate)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.21s
+     Running unittests pkg/lib.rs (target/rust-slot-1/debug/deps/astersql_pd-d88c74ce8a05f741)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_balancer-2b4a90ef22198dfa)
+
+running 5 tests
+test balancer_test::concurrent_membership ... ok
+test balancer_test::policy_and_membership ... ok
+test balancer_test::round_robin_next ... ok
+test balancer_test::round_robin_next_concurrent ... ok
+test balancer_test::delete_duplicate_and_concurrency ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_btree-e8b849aefbddd8e1)
+
+running 12 tests
+test tests::clear_releases_payloads_and_reuses_empty_buffers ... ok
+test tests::clone_clear_and_freelist ... ok
+test tests::ascending_iteration ... ok
+test tests::delete_min_max ... ok
+test tests::descending_iteration ... ok
+test tests::descending_order ... ok
+test tests::insert_get_and_len ... ok
+test tests::invalid_degree - should panic ... ok
+test tests::delete_and_rebalance ... ok
+test tests::split_replace_min_max ... ok
+test tests::zero_degree - should panic ... ok
+test tests::order_statistics ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.88s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_cache-5b73eb89b75b127b)
+
+running 17 tests
+test cache_test::fifo_behavior ... ok
+test cache_test::fifo_behavior_concurrent_insertion ... ok
+test cache_test::fifo_last_same_group ... ok
+test cache_test::fifo_behavior_empty_remove_panics - should panic ... ok
+test cache_test::lru_behavior ... ok
+test cache_test::priority_queue_put_update ... ok
+test cache_test::priority_queue_query_remove ... ok
+test cache_test::thread_safe_cache_factory ... ok
+test cache_test::lru_behavior_unbounded_and_shared_values ... ok
+test cache_test::two_queue_behavior ... ok
+test cache_test::two_queue_behavior_ghost_capacity_and_ratios ... ok
+test ttl_test::ttl_cache_lifecycle_concurrent_put_pop ... ok
+test ttl_test::ttl_cache_lifecycle_drop_releases_values_and_preserves_parent ... ok
+test ttl_test::ttl_cache_lifecycle_expiration_boundaries ... ok
+test ttl_test::ttl_cache_lifecycle_gc_restarts_and_cancels ... ok
+test ttl_test::ttl_cache_lifecycle_update_and_revival ... ok
+test cache_test::thread_safe_cache_factory_concurrent_access ... ok
+
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_cluster-06cab2633352867f)
+
+running 46 tests
+test bucket_heartbeat_test::state_task_45_bucket_heartbeat_closed_worker_keeps_commit ... ok
+test bucket_heartbeat_test::state_task_45_bucket_heartbeat_compatibility_and_stale_metadata ... ok
+test bucket_heartbeat_test::state_task_45_bucket_heartbeat_missing_leader_store_allowed ... ok
+test bucket_heartbeat_test::state_task_45_bucket_heartbeat_competing_versions ... ok
+test bucket_heartbeat_test::state_task_45_bucket_heartbeat_missing_removed_never_enqueue ... ok
+test bucket_heartbeat_test::state_task_45_bucket_heartbeat_three_attempt_boundary_real_core_cas ... ok
+test bucket_heartbeat_test::state_task_45_bucket_heartbeat_versions_and_worker_payload ... ok
+test heartbeat_effects_test::state_task_46_heartbeat_effects_bucket_peer_epoch_and_stale ... ok
+test heartbeat_effects_test::state_task_46_heartbeat_effects_delayed_stats_refresh_root ... ok
+test heartbeat_effects_test::state_task_46_heartbeat_effects_duplicate_config_and_root_only ... ok
+test heartbeat_effects_test::state_task_46_heartbeat_effects_delete_failure_continues_then_save_failure ... ok
+test heartbeat_effects_test::state_task_46_heartbeat_effects_guide_snapshots ... ok
+test heartbeat_effects_test::state_task_46_heartbeat_effects_queue_cancel_and_duplicate_repair ... ok
+test heartbeat_effects_test::state_task_46_heartbeat_effects_retained_admission_and_stopped_runner ... ok
+panic: failed to create WAL
+
+goroutine 1 [running]:
+go.uber.org/zap/zapcore.CheckWriteAction.OnWrite(0x1?, 0x480b5a8?, {0x0?, 0x0?, 0xe662d9d8760?})
+	/Users/xiangmin/go/pkg/mod/go.uber.org/zap@v1.27.0/zapcore/entry.go:196 +0x54
+go.uber.org/zap/zapcore.(*CheckedEntry).Write(0xe662dd12ea0, {0xe662da60580, 0x1, 0x1})
+	/Users/xiangmin/go/pkg/mod/go.uber.org/zap@v1.27.0/zapcore/entry.go:262 +0x26e
+go.uber.org/zap.(*Logger).Panic(0xe662dc84200?, {0x480b5a8?, 0x5d?}, {0xe662da60580, 0x1, 0x1})
+	/Users/xiangmin/go/pkg/mod/go.uber.org/zap@v1.27.0/logger.go:285 +0x4b
+go.etcd.io/etcd/server/v3/etcdserver.startNode({{0x47fc6ec, 0x7}, {0x0, 0x0}, {0x0, 0x0}, {0xe662dd16510, 0x1, 0x1}, {0xe662dd165a0, ...}, ...}, ...)
+	/Users/xiangmin/go/pkg/mod/go.etcd.io/etcd/server/v3@v3.5.15/etcdserver/raft.go:480 +0x231
+go.etcd.io/etcd/server/v3/etcdserver.NewServer({{0x47fc6ec, 0x7}, {0x0, 0x0}, {0x0, 0x0}, {0xe662dd16510, 0x1, 0x1}, {0xe662dd165a0, ...}, ...})
+	/Users/xiangmin/go/pkg/mod/go.etcd.io/etcd/server/v3@v3.5.15/etcdserver/server.go:469 +0x235a
+go.etcd.io/etcd/server/v3/embed.StartEtcd(0xe662dc6cc08)
+	/Users/xiangmin/go/pkg/mod/go.etcd.io/etcd/server/v3@v3.5.15/embed/etcd.go:247 +0x1156
+main.main.func2(...)
+	/Users/Shared/work/dir/data/codes/pd/scripts/rust-etcd-fixture/main.go:53
+main.main()
+	/Users/Shared/work/dir/data/codes/pd/scripts/rust-etcd-fixture/main.go:73 +0x5d2
+test heartbeat_effects_test::state_task_46_heartbeat_effects_split_merge_etcd ... FAILED
+test heartbeat_effects_test::state_task_46_heartbeat_effects_split_merge_memory ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_accept_duplicate_inherit ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_concurrent_precheck_merge_commit ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_delayed_duplicate_cannot_resurrect ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_duplicate_repairs_subtree ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_epoch_term_rejection ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_flow_size_and_leader ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_membership_and_recovery ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_prepared_overlap_recheck ... ok
+test region_heartbeat_test::state_task_43_region_heartbeat_same_id_recheck_and_last_write ... ok
+test region_overlap_test::state_task_44_region_overlap_go_repeated_split_merge_sequence ... ok
+test region_overlap_test::state_task_44_region_overlap_hot_history_uses_normal_ttl ... ok
+test region_overlap_test::state_task_44_region_overlap_merge_offline_cross_store_and_replay ... ok
+test region_overlap_test::state_task_44_region_overlap_optional_statistics_and_duplicate_label_cleanup ... ok
+test region_overlap_test::state_task_44_region_overlap_split_left_then_right_and_empty_end ... ok
+test removed_store_test::state_task_42_removed_store_between_check_and_commit ... ok
+test removed_store_test::state_task_42_removed_store_commit_preserves_current_metadata ... ok
+test removed_store_test::state_task_42_removed_store_deleted_between_check_and_commit ... ok
+test removed_store_test::state_task_42_removed_store_routine_noop ... ok
+isolated etcd 3.5.15 ready at http://127.0.0.1:57344
+isolated etcd 3.5.15 ready at http://127.0.0.1:57332
+test state_pipeline_test::state_task_52_state_pipeline_etcd_replay ... ok
+test state_pipeline_test::state_task_52_state_pipeline_hot_flow_and_owned_snapshots ... ok
+test state_pipeline_test::state_task_52_state_pipeline_memory_replay ... ok
+test store_heartbeat_test::state_task_41_store_heartbeat_closed_queue_keeps_core_update ... ok
+test store_heartbeat_test::state_task_41_store_heartbeat_cpu_query_and_filters ... ok
+test store_heartbeat_test::state_task_41_store_heartbeat_existing_and_missing ... ok
+test store_heartbeat_test::state_task_41_store_heartbeat_go_hot_cold_sequence ... ok
+test store_heartbeat_test::state_task_41_store_heartbeat_intervals_and_independent ... ok
+test store_heartbeat_test::state_task_41_store_heartbeat_raw_oracle_rates ... ok
+test store_heartbeat_test::state_task_41_store_heartbeat_removed_and_unhealthy ... ok
+test store_heartbeat_test::state_task_41_store_heartbeat_reported_missing_peer_is_not_cold ... ok
+test heartbeat_effects_test::state_task_46_heartbeat_effects_etcd_disconnect_keeps_cache_and_history ... ok
+
+failures:
+
+---- heartbeat_effects_test::state_task_46_heartbeat_effects_split_merge_etcd stdout ----
+
+thread 'heartbeat_effects_test::state_task_46_heartbeat_effects_split_merge_etcd' (165477767) panicked at server/cluster/../../pkg/storage/kv/etcd_fixture_test.rs:69:13:
+etcd fixture exited: /Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/etcd-contract-35557-1
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    heartbeat_effects_test::state_task_46_heartbeat_effects_split_merge_etcd
+
+test result: FAILED. 45 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 11.44s
+
+error: test failed, to rerun pass `-p astersql-pd-cluster --lib`

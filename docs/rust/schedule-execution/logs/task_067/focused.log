@@ -1,0 +1,11 @@
+   Compiling astersql-pd-schedule-schedulers v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.87s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_schedulers-22b744db10e97299)
+
+running 3 tests
+test task_067_test::task_067_missing_resources_and_nan ... ok
+test task_067_test::task_067_resource_selection_and_wrapping ... ok
+task_067: 20 frozen cases passed (plus region v1 replays)
+test task_067_test::task_067_behavior_cases ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 10 filtered out; finished in 0.00s
