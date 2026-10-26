@@ -1,0 +1,29 @@
+{
+  "source_commit": "5836197e529b5eb47537fd7c3fecf9b7855f98be",
+  "dependency_069_commit": "5836197e5",
+  "evidence_kind": "readonly_go_source_derived_plus_rust_execution",
+  "user_authorization": "Go runtime oracle admission waived; Go and module files remain readonly",
+  "go_binary_sha256": null,
+  "go_output_sha256": null,
+  "normalization": {
+    "clock": "explicit now_unix_nanos=1000000000000; affinity now=1000 seconds",
+    "random_index": "floor(call_count/20) % bound, increment per call",
+    "shuffle": "rotate range order left by shuffle_call_count % len, increment per shuffle",
+    "follower_ties": "any eligible tied follower accepted; candidate larger-ID ordering checked exactly",
+    "omitted_errors": false
+  },
+  "files": {
+    "pkg/schedule/schedulers/balance_leader.go": "904edff2c88b23fc228cd7d54b5054067c82254adc64855e47d1503e074c7a9f",
+    "pkg/schedule/schedulers/balance_leader_test.go": "c9b79231c539c2d0e8322f372ea1df30c950e41213cdd313e7e4f679a2858bb5",
+    "pkg/schedule/schedulers/utils.go": "41a551f1b4f95e31a0f48cfc262a125e1132dfa546a73a9300b8eb7bd18834e1",
+    "pkg/core/region_tree.go": "a17ea7b65dfe4ca3e5dc01a88d6b8fefb85774fec4b45d69429eccbb7d1e1718",
+    "pkg/utils/typeutil/comparison.go": "db8cdb53ce10c291dfb2d1ae5db3dfeb5ea33aa5630780e3409984bbecc9338a",
+    "pkg/utils/keyutil/keyrange.go": "bf3f4c9a134c67e165d80b4bcf9c01d5b5c6b377f29c0ed87b2d40143251ee21",
+    "pkg/schedule/operator/create_operator.go": "43a938c72992f4ce81501c40ab85c1e79c08670383acd47f22655e779524b927",
+    "docs/rust/schedule-execution/fixtures/task_070.json": "dd4e945063217263dda8bde715ae9c00b61c86a2e742b7ce0a4eb5a4fc227341"
+  },
+  "final_rust_sources": {
+    "pkg/schedule/schedulers/balance_leader.rs": "7fb72354014aa5d44b036930d807aa8334f553a884ae6f3180622b6dabc5ec32",
+    "pkg/schedule/schedulers/task_070_test.rs": "3584970df44035ba578948dc5fdaa9773942538cf7bb8aa257319ae12783fa42"
+  }
+}

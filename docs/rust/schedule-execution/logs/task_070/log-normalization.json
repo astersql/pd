@@ -1,0 +1,46 @@
+{
+  "red-api.log": {
+    "raw_sha256": "98ce4f170fb60089a8b248c39671e6fa10b4bcc7a8b74faa5e8334426f5e1846",
+    "normalized_sha256": "98ce4f170fb60089a8b248c39671e6fa10b4bcc7a8b74faa5e8334426f5e1846"
+  },
+  "fmt.log": {
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "normalized_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+  },
+  "workspace.log": {
+    "raw_sha256": "5f328b64c21a7d5a7699a8295ff6bf6c5a476ed8620ea4d0ebacefcf719e069e",
+    "normalized_sha256": "5610d623b79ef8408254dd44a6644ab8f777ae6649fb53dec5d1ecaed26983c9"
+  },
+  "mutation-fmt.log": {
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "normalized_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+  },
+  "red-behavior.log": {
+    "raw_sha256": "3298d8a2d003ca1e49fedf2b37360d217873e8610badbbccb505d9177172f6b7",
+    "normalized_sha256": "3298d8a2d003ca1e49fedf2b37360d217873e8610badbbccb505d9177172f6b7"
+  },
+  "workspace-final.log": {
+    "raw_sha256": "73358073480a7f09e39f987b8cd23a3c22ff487fe752522aa0d76e30dcfdb130",
+    "normalized_sha256": "8b0f409f77125503fa73752c1360c7a5f53a5f88ef8cfdc31719ca15bd3fe567"
+  },
+  "fmt-check.log": {
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "normalized_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+  },
+  "metadata.log": {
+    "raw_sha256": "b5d85138715925e0025be7ed1ca41e691aaebc8bfa3834296dd4fa57cd23570a",
+    "normalized_sha256": "b5d85138715925e0025be7ed1ca41e691aaebc8bfa3834296dd4fa57cd23570a"
+  },
+  "check.log": {
+    "raw_sha256": "c1871c939010dba2d2ea470344705600c46114509ed238a03bce68adbe30b05b",
+    "normalized_sha256": "c1871c939010dba2d2ea470344705600c46114509ed238a03bce68adbe30b05b"
+  },
+  "focused.log": {
+    "raw_sha256": "29cb626e57fb95c4310a2f34d60c8fa6d1611292e5a4284787ae0dd6d0984718",
+    "normalized_sha256": "2ffb2e83f987b5b8c6199017e8292c00113c75edf2e688cf96726b25c08d74d6"
+  },
+  "package.log": {
+    "raw_sha256": "c2f9e44ecd2f82761c40e08a38457a7479ac0caf4a85f524b8252f894e4b7f87",
+    "normalized_sha256": "b3931c5fb760a7ebcf3aaa7fc265f78369b072eeb769143b6edea740d41e70b5"
+  }
+}

@@ -1,0 +1,247 @@
+{
+  "evidence_kind": "readonly_go_source_derived",
+  "go_runtime_output": null,
+  "defaults": {
+    "counts": [
+      20,
+      0,
+      0
+    ],
+    "sizes": [
+      200,
+      0,
+      0
+    ],
+    "batch": 4,
+    "regions": 8,
+    "peers": 3,
+    "tolerant_size_ratio": 1
+  },
+  "cases": [
+    {
+      "name": "batch-four",
+      "expected": 4
+    },
+    {
+      "name": "batch-one",
+      "batch": 1,
+      "expected": 1
+    },
+    {
+      "name": "batch-max",
+      "batch": 100,
+      "expected": 8
+    },
+    {
+      "name": "single-region-dedup",
+      "regions": 1,
+      "expected": 1
+    },
+    {
+      "name": "balanced",
+      "counts": [
+        4,
+        4,
+        4
+      ],
+      "expected": 0
+    },
+    {
+      "name": "tolerance-equal",
+      "counts": [
+        2,
+        0,
+        0
+      ],
+      "expected": 0
+    },
+    {
+      "name": "tolerance-above",
+      "counts": [
+        3,
+        0,
+        0
+      ],
+      "regions": 1,
+      "expected": 1
+    },
+    {
+      "name": "pending-influence",
+      "influence": [
+        -20,
+        20,
+        20
+      ],
+      "expected": 0
+    },
+    {
+      "name": "no-followers",
+      "peers": 1,
+      "expected": 0
+    },
+    {
+      "name": "all-hot",
+      "hot": true,
+      "expected": 0
+    },
+    {
+      "name": "pending-peers",
+      "pending": true,
+      "expected": 0
+    },
+    {
+      "name": "missing-source",
+      "missing_source": true,
+      "expected": 0
+    },
+    {
+      "name": "target-pause",
+      "pause": true,
+      "expected": 0
+    },
+    {
+      "name": "source-pause",
+      "source_pause": true,
+      "expected": 0
+    },
+    {
+      "name": "outside-range",
+      "ranges": [
+        [
+          "z",
+          "zz"
+        ]
+      ],
+      "expected": 0
+    },
+    {
+      "name": "multi-range",
+      "ranges": [
+        [
+          "b",
+          "d"
+        ],
+        [
+          "f",
+          "h"
+        ]
+      ],
+      "expected": 4
+    },
+    {
+      "name": "excluded-key-range",
+      "exclude": true,
+      "expected": 0
+    },
+    {
+      "name": "custom-name-ignores-key-manager",
+      "exclude": true,
+      "custom": true,
+      "expected": 4
+    },
+    {
+      "name": "size-policy",
+      "policy": "size",
+      "counts": [
+        10,
+        10,
+        10
+      ],
+      "sizes": [
+        10000,
+        100,
+        100
+      ],
+      "expected": 4
+    },
+    {
+      "name": "count-policy-same-count",
+      "counts": [
+        10,
+        10,
+        10
+      ],
+      "sizes": [
+        10000,
+        100,
+        100
+      ],
+      "expected": 0
+    },
+    {
+      "name": "weighted-balanced",
+      "counts": [
+        20,
+        10,
+        10
+      ],
+      "weight": 2,
+      "expected": 0
+    },
+    {
+      "name": "real-placement",
+      "placement": true,
+      "expected": 4
+    },
+    {
+      "name": "witness-targets",
+      "witness": true,
+      "expected": 0
+    },
+    {
+      "name": "no-regions",
+      "regions": 0,
+      "expected": 0
+    },
+    {
+      "name": "batch-influence-stops",
+      "counts": [
+        6,
+        0,
+        0
+      ],
+      "batch": 100,
+      "expected": 3
+    },
+    {
+      "name": "down-peer",
+      "down": true,
+      "expected": 0
+    },
+    {
+      "name": "learner-targets",
+      "learner": true,
+      "expected": 0
+    },
+    {
+      "name": "special-use-targets",
+      "special": true,
+      "expected": 0
+    },
+    {
+      "name": "removing-targets",
+      "removing_targets": true,
+      "expected": 0
+    },
+    {
+      "name": "removing-source",
+      "removing_source": true,
+      "expected": 4
+    },
+    {
+      "name": "raw-follower-score",
+      "counts": [
+        20,
+        1,
+        1
+      ],
+      "target_weights": [
+        1.0000001,
+        1.0
+      ],
+      "batch": 1,
+      "expected": 1,
+      "target": 2
+    }
+  ]
+}

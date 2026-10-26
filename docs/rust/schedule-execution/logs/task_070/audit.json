@@ -1,0 +1,11 @@
+{
+  "go_module_files": 1101,
+  "content_and_manifest_unchanged": true,
+  "git_status_unchanged": true,
+  "digest": "ae4ea1307f6a0074d7d6b706be224a1d139607a343ed2b2c6ea9068395425bd4",
+  "readonly_plans_match_HEAD": true,
+  "plans": [
+    ".plans/2026-10-25-调度执行内核/plan.md",
+    ".plans/2026-10-25-调度执行内核/08-内置调度器/plan.md"
+  ]
+}

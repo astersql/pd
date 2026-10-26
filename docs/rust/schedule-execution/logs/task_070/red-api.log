@@ -1,0 +1,70 @@
+   Compiling astersql-pd-schedule-schedulers v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers)
+error[E0583]: file not found for module `balance_leader`
+  --> pkg/schedule/schedulers/lib.rs:29:1
+   |
+29 | mod balance_leader;
+   | ^^^^^^^^^^^^^^^^^^^
+   |
+   = help: to create the module `balance_leader`, create file "pkg/schedule/schedulers/balance_leader.rs" or "pkg/schedule/schedulers/balance_leader/mod.rs"
+   = note: if there is a `mod balance_leader` elsewhere in the crate already, import it with `use crate::...` instead
+
+warning: unused import: `balance_leader::*`
+  --> pkg/schedule/schedulers/lib.rs:30:9
+   |
+30 | pub use balance_leader::*;
+   |         ^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `super::*`
+ --> pkg/schedule/schedulers/task_070_test.rs:2:5
+  |
+2 | use super::*;
+  |     ^^^^^^^^
+
+error[E0433]: cannot find type `LeaderCandidates` in this scope
+  --> pkg/schedule/schedulers/task_070_test.rs:17:17
+   |
+17 |     let mut c = LeaderCandidates::new(stores, false, SchedulePolicy::BY_COUNT, &influence);
+   |                 ^^^^^^^^^^^^^^^^ use of undeclared type `LeaderCandidates`
+
+error[E0433]: cannot find type `BalanceLeaderConfig` in this scope
+  --> pkg/schedule/schedulers/task_070_test.rs:32:13
+   |
+32 |     assert!(BalanceLeaderConfig::new(vec![],0).is_err());
+   |             ^^^^^^^^^^^^^^^^^^^ use of undeclared type `BalanceLeaderConfig`
+
+error[E0433]: cannot find type `BalanceLeaderConfig` in this scope
+  --> pkg/schedule/schedulers/task_070_test.rs:33:13
+   |
+33 |     assert!(BalanceLeaderConfig::new(vec![],101).is_err());
+   |             ^^^^^^^^^^^^^^^^^^^ use of undeclared type `BalanceLeaderConfig`
+
+error[E0433]: cannot find type `BalanceLeaderConfig` in this scope
+  --> pkg/schedule/schedulers/task_070_test.rs:34:15
+   |
+34 |     let cfg = BalanceLeaderConfig::default();
+   |               ^^^^^^^^^^^^^^^^^^^ use of undeclared type `BalanceLeaderConfig`
+
+error[E0433]: cannot find type `BalanceLeaderScheduler` in this scope
+  --> pkg/schedule/schedulers/task_070_test.rs:39:13
+   |
+39 |     assert!(BalanceLeaderScheduler::is_schedule_allowed(3,4));
+   |             ^^^^^^^^^^^^^^^^^^^^^^ use of undeclared type `BalanceLeaderScheduler`
+
+error[E0433]: cannot find type `BalanceLeaderScheduler` in this scope
+  --> pkg/schedule/schedulers/task_070_test.rs:40:14
+   |
+40 |     assert!(!BalanceLeaderScheduler::is_schedule_allowed(4,4));
+   |              ^^^^^^^^^^^^^^^^^^^^^^ use of undeclared type `BalanceLeaderScheduler`
+
+error[E0433]: cannot find type `BalanceLeaderScheduler` in this scope
+  --> pkg/schedule/schedulers/task_070_test.rs:41:14
+   |
+41 |     assert!(!BalanceLeaderScheduler::is_schedule_allowed(0,0));
+   |              ^^^^^^^^^^^^^^^^^^^^^^ use of undeclared type `BalanceLeaderScheduler`
+
+Some errors have detailed explanations: E0433, E0583.
+For more information about an error, try `rustc --explain E0433`.
+warning: `astersql-pd-schedule-schedulers` (lib test) generated 2 warnings
+error: could not compile `astersql-pd-schedule-schedulers` (lib test) due to 8 previous errors; 2 warnings emitted

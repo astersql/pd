@@ -10,6 +10,8 @@ path = "lib.rs"
 
 [dependencies]
 astersql-pd-statistics.workspace = true
+astersql-pd-schedule-filter.workspace = true
+astersql-pd-schedule-keyrange.workspace = true
 astersql-pd-core.workspace = true
 astersql-pd-core-constant.workspace = true
 astersql-pd-schedule-config.workspace = true
@@ -20,11 +22,13 @@ astersql-pd-schedule-operator.workspace = true
 astersql-pd-schedule-plan.workspace = true
 astersql-pd-storage-endpoint.workspace = true
 astersql-pd-keypath.workspace = true
+astersql-pd-keyutil.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 thiserror.workspace = true
 
 [dev-dependencies]
+astersql-pd-schedule-labeler.workspace = true
 async-trait.workspace = true
 astersql-pd-storage-kv.workspace = true
 tokio.workspace = true

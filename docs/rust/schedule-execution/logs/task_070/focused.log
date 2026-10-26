@@ -1,0 +1,59 @@
+   Compiling astersql-pd-core v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/core)
+   Compiling astersql-pd-proto v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/proto)
+   Compiling astersql-pd-storage-endpoint v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/storage/endpoint)
+   Compiling astersql-pd-schedule-config v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/config)
+   Compiling astersql-pd-election v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/election)
+   Compiling astersql-pd-member v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/member)
+   Compiling astersql-pd-schedule-placement v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/placement)
+   Compiling astersql-pd-schedule-labeler v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/labeler)
+   Compiling astersql-pd-schedule-affinity v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/affinity)
+   Compiling astersql-pd-statistics v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/statistics)
+   Compiling astersql-pd-id v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/id)
+   Compiling astersql-pd-schedule-keyrange v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/keyrange)
+   Compiling astersql-pd-schedule-core v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/core)
+   Compiling astersql-pd-schedule-plan v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/plan)
+   Compiling astersql-pd-schedule-filter v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/filter)
+   Compiling astersql-pd-schedule-hbstream v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/hbstream)
+   Compiling astersql-pd-schedule-operator v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/operator)
+   Compiling astersql-pd-schedule-schedulers v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 23.50s
+     Running unittests lib.rs (target/rust-slot-2/debug/deps/astersql_pd_schedule_schedulers-46948a5a92bc5f3a)
+
+running 3 tests
+test task_070_test::task_070_candidates ... ok
+test task_070_test::task_070_config_and_allowed ... ok
+task_070 case batch-four: 4 operators, 0 factory errors
+task_070 case batch-one: 1 operators, 0 factory errors
+task_070 case batch-max: 8 operators, 0 factory errors
+task_070 case single-region-dedup: 1 operators, 0 factory errors
+task_070 case balanced: 0 operators, 0 factory errors
+task_070 case tolerance-equal: 0 operators, 0 factory errors
+task_070 case tolerance-above: 1 operators, 0 factory errors
+task_070 case pending-influence: 0 operators, 0 factory errors
+task_070 case no-followers: 0 operators, 0 factory errors
+task_070 case all-hot: 0 operators, 0 factory errors
+task_070 case pending-peers: 0 operators, 0 factory errors
+task_070 case missing-source: 0 operators, 0 factory errors
+task_070 case target-pause: 0 operators, 0 factory errors
+task_070 case source-pause: 0 operators, 0 factory errors
+task_070 case outside-range: 0 operators, 0 factory errors
+task_070 case multi-range: 4 operators, 0 factory errors
+task_070 case excluded-key-range: 0 operators, 0 factory errors
+task_070 case custom-name-ignores-key-manager: 4 operators, 0 factory errors
+task_070 case size-policy: 4 operators, 0 factory errors
+task_070 case count-policy-same-count: 0 operators, 0 factory errors
+task_070 case weighted-balanced: 0 operators, 0 factory errors
+task_070 case real-placement: 4 operators, 0 factory errors
+task_070 case witness-targets: 0 operators, 40 factory errors
+task_070 case no-regions: 0 operators, 0 factory errors
+task_070 case batch-influence-stops: 3 operators, 0 factory errors
+task_070 case down-peer: 0 operators, 0 factory errors
+task_070 case learner-targets: 0 operators, 0 factory errors
+task_070 case special-use-targets: 0 operators, 0 factory errors
+task_070 case removing-targets: 0 operators, 0 factory errors
+task_070 case removing-source: 4 operators, 0 factory errors
+task_070 case raw-follower-score: 1 operators, 0 factory errors
+task_070: 31 frozen behavior cases passed
+test task_070_test::task_070_behavior_cases ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 21 filtered out; finished in 0.01s
