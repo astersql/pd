@@ -1,0 +1,17 @@
+{
+  "focused": {
+    "passed": 2,
+    "behavior_cases": 14
+  },
+  "package": {
+    "passed": 158,
+    "failed": 0,
+    "ignored": 0
+  },
+  "workspace": {
+    "passed": 1707,
+    "failed": 0,
+    "ignored": 1,
+    "includes_documentation_tests": 2
+  }
+}

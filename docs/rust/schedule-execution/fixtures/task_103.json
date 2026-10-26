@@ -1,0 +1,110 @@
+{
+  "provenance": "Go read-only source/test derivation; authorized substitute; no runtime oracle",
+  "cases": [
+    {
+      "name": "witness-heartbeat",
+      "ops": 1,
+      "target": 2,
+      "targets": [
+        2,
+        3
+      ]
+    },
+    {
+      "name": "ordinary-heartbeat",
+      "ordinary": true,
+      "ops": 1,
+      "target": 2,
+      "targets": [
+        2,
+        3
+      ]
+    },
+    {
+      "name": "last-target",
+      "last": true,
+      "ops": 1,
+      "target": 3,
+      "targets": [
+        2,
+        3
+      ]
+    },
+    {
+      "name": "pending",
+      "pending": true,
+      "ops": 1,
+      "target": 3,
+      "targets": [
+        3
+      ]
+    },
+    {
+      "name": "down",
+      "down": true,
+      "ops": 1,
+      "target": 2,
+      "targets": [
+        2
+      ]
+    },
+    {
+      "name": "no-healthy",
+      "pending": true,
+      "down": true,
+      "ops": 0
+    },
+    {
+      "name": "learner",
+      "learner": true,
+      "ops": 1,
+      "target": 3,
+      "targets": [
+        3
+      ]
+    },
+    {
+      "name": "missing-stores",
+      "missing_stores": true,
+      "ops": 0
+    },
+    {
+      "name": "offline",
+      "offline": true,
+      "ops": 1,
+      "target": 3,
+      "targets": [
+        3
+      ]
+    },
+    {
+      "name": "disconnected",
+      "disconnected": true,
+      "ops": 1,
+      "target": 3,
+      "targets": [
+        3
+      ]
+    },
+    {
+      "name": "budget-exhausted",
+      "budget": true,
+      "ops": 0
+    },
+    {
+      "name": "witness-target-builder-reject",
+      "witness": true,
+      "ops": 0
+    },
+    {
+      "name": "demoting-target-builder-reject",
+      "demoting": true,
+      "ops": 0
+    },
+    {
+      "name": "missing-leader-builder-reject",
+      "no_leader": true,
+      "ops": 0
+    }
+  ]
+}

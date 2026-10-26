@@ -206,3 +206,9 @@ mod task_102_test;
 
 mod shuffle_region;
 pub use shuffle_region::*;
+
+#[cfg(test)]
+mod task_103_test;
+
+mod transfer_witness;
+pub use transfer_witness::*;

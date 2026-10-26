@@ -1,0 +1,16 @@
+{
+  "source_commit": "aba8d8b6903d6e08fc63eddd41befbb4213c6857",
+  "plan_source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "runtime_oracle": null,
+  "evidence": "User-authorized read-only Go source/test derivation plus Rust real behavior/fault validation; no Go executed",
+  "sha256": {
+    "pkg/schedule/schedulers/transfer_witness_leader.go": "b89a92588c33b70a13c885f53410b0103e65fffb1b8176d5b1d65418248a68e3",
+    "pkg/schedule/schedulers/transfer_witness_leader_test.go": "39d4ab013057c82c87deb84d07ef4a46518f692baebb47cfd00a874efb085eca",
+    "pkg/core/region.go": "be6ed0dc77537d62926d21d9e4eef080ea0dbcc7dc97efb4dc26269a172f99d8",
+    "pkg/core/store.go": "686a3bd66c7deceb3fd79b2c83be359487088993d20e649ba2a533db298ad605",
+    "pkg/schedule/operator/builder.go": "2c74830947c401ea8c4d46e8066e4c85aecd02beea035d0bb9eb4aab8cee8f83",
+    "pkg/schedule/operator/create_operator.go": "43a938c72992f4ce81501c40ab85c1e79c08670383acd47f22655e779524b927",
+    "pkg/schedule/filter/filters.go": "2e72100da29ddac7d371c59898ef10a562cda9bf4eec666cc4e4e0c7c8edc0a4",
+    "docs/rust/schedule-execution/fixtures/task_103.json": "b54c63a3d15c7d41694c0a9850c020922dea2f5f5a0f7c404c1b5b37389ae035"
+  }
+}
