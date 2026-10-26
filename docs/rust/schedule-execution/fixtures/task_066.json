@@ -1,0 +1,35 @@
+{
+  "provenance": "read-only Go source/test derivation; no Go execution",
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "cases": [
+    {
+      "name": "first",
+      "value": {
+        "value": "test"
+      },
+      "updated": {
+        "value": "updated"
+      }
+    },
+    {
+      "name": "html",
+      "value": {
+        "value": "<a>&"
+      },
+      "updated": {
+        "value": ""
+      }
+    },
+    {
+      "name": "unicode",
+      "value": {
+        "value": "配置"
+      },
+      "updated": {
+        "value": "新值"
+      }
+    }
+  ],
+  "atomicity": "task-066 explicit contract; Go base save/load does not itself provide atomic publication",
+  "go_output": null
+}

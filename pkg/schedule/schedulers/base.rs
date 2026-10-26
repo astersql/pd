@@ -1,12 +1,12 @@
 // Copyright 2026 AsterSQL.
 //! Protocol-free scheduler base and JSON configuration boundary.
-use astersql_pd_keypath::ClusterPaths;
+use crate::DefaultSchedulerConfig;
 use astersql_pd_schedule_core::SchedulerCluster;
 use astersql_pd_schedule_operator::Operator;
 use astersql_pd_schedule_plan::BalanceSchedulerPlan;
 use astersql_pd_schedule_types::{CheckerSchedulerType, current_kernel_default_schedulers};
-use astersql_pd_storage_endpoint::{EndpointError, StorageEndpoint};
-use serde::{Deserialize, Serialize, de::DeserializeOwned};
+use astersql_pd_storage_endpoint::EndpointError;
+use serde::{Serialize, de::DeserializeOwned};
 use serde_json::Value;
 use std::{collections::BTreeMap, sync::Arc};
 
@@ -108,67 +108,6 @@ impl ConfigJsonDecoder {
     }
     pub fn decode<T: DeserializeOwned>(&self) -> Result<T, SchedulerError> {
         decode_config(&self.0)
-    }
-}
-
-/// Persisted disabled state; the complete config is retained when toggling disabled.
-/// Loads refresh state; load failures retain the last local state, as in Go.
-pub struct DefaultSchedulerConfig {
-    name: String,
-    storage: Arc<StorageEndpoint>,
-    paths: ClusterPaths,
-    data: Value,
-    disabled: bool,
-}
-impl DefaultSchedulerConfig {
-    pub fn new(
-        name: String,
-        storage: Arc<StorageEndpoint>,
-        paths: ClusterPaths,
-        data: Value,
-    ) -> Self {
-        let disabled = data
-            .get("disabled")
-            .and_then(Value::as_bool)
-            .unwrap_or(false);
-        Self {
-            name,
-            storage,
-            paths,
-            data,
-            disabled,
-        }
-    }
-    pub async fn is_disabled(&mut self) -> bool {
-        if let Ok(bytes) = self
-            .storage
-            .load_scheduler_config(&self.paths, &self.name)
-            .await
-        {
-            // Go leaves absent/null fields untouched and ignores unknown fields.
-            #[derive(Deserialize)]
-            struct Disabled {
-                disabled: Option<bool>,
-            }
-            if let Ok(config) = decode_config::<Disabled>(&bytes) {
-                if let Some(disabled) = config.disabled {
-                    self.disabled = disabled;
-                }
-            }
-        }
-        self.disabled
-    }
-    pub async fn set_disabled(&mut self, disabled: bool) -> Result<(), SchedulerError> {
-        self.disabled = disabled; // Deliberately retained even when persistence fails.
-        if !self.data.is_object() {
-            self.data = Value::Object(Default::default());
-        }
-        self.data["disabled"] = Value::Bool(disabled);
-        let data = encode_config(&self.data)?;
-        self.storage
-            .save_scheduler_config(&self.paths, &self.name, &data)
-            .await?;
-        Ok(())
     }
 }
 

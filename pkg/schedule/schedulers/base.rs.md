@@ -22,7 +22,8 @@
   PayloadLength，替代 Go 的越界 panic。这是明确的领域错误边界。
 - 默认类型来自 canonical types crate，支持宿主当前内核与显式 Classic/NextGen 列表。
   默认身份与禁用能力分开：没有 default config 的 set_disabled 成功但无效果。
-  `DefaultSchedulerConfig` 复用真实 StorageEndpoint 与 ClusterPaths，保留完整配置
+  `DefaultSchedulerConfig` 已移入 [config.rs](config.rs.md)，公开 API 和行为不变。
+  它复用真实 StorageEndpoint 与 ClusterPaths，保留完整配置
   字段；每次查询尝试加载 disabled，缺失、null 或读取/解码错误保留本地值。
   set 先改本地值再保存，失败不回滚；后续成功读取恢复已持久化值。
   独占可变借用保证单实例修改顺序；多实例共享状态仍由宿主协调。

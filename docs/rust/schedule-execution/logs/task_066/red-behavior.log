@@ -1,0 +1,36 @@
+   Compiling astersql-pd-schedule-schedulers v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.33s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_schedulers-8f2a747166049ec6)
+
+running 5 tests
+
+thread 'task_066_test::task_066_encode_failure' (165450557) panicked at pkg/schedule/schedulers/task_066_test.rs:194:5:
+assertion failed: !config.get().0
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'task_066_test::task_066_failures_retain_old_value' (165450558) panicked at pkg/schedule/schedulers/task_066_test.rs:87:5:
+assertion `left == right` failed: failed persistence must not publish candidate
+  left: Params { value: "new" }
+ right: Params { value: "old" }
+
+thread 'task_066_test::task_066_cancel_before_commit' (165450555) panicked at pkg/schedule/schedulers/task_066_test.rs:163:5:
+assertion `left == right` failed
+  left: Params { value: "new" }
+ right: Params { value: "old" }
+3 frozen save/load/update/reinstantiation cases passed; unknown name returns decode error
+test task_066_test::task_066_default_disable_restores ... ok
+test task_066_test::task_066_behavior_cases ... ok
+test task_066_test::task_066_encode_failure ... FAILED
+test task_066_test::task_066_failures_retain_old_value ... FAILED
+test task_066_test::task_066_cancel_before_commit ... FAILED
+
+failures:
+
+failures:
+    task_066_test::task_066_cancel_before_commit
+    task_066_test::task_066_encode_failure
+    task_066_test::task_066_failures_retain_old_value
+
+test result: FAILED. 2 passed; 3 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-schedulers --lib`

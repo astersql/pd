@@ -1,0 +1,13 @@
+   Compiling astersql-pd-schedule-schedulers v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.87s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_schedulers-8f2a747166049ec6)
+
+running 5 tests
+test task_066_test::task_066_encode_failure ... ok
+test task_066_test::task_066_default_disable_restores ... ok
+3 frozen save/load/update/reinstantiation cases passed; unknown name returns decode error
+test task_066_test::task_066_cancel_before_commit ... ok
+test task_066_test::task_066_failures_retain_old_value ... ok
+test task_066_test::task_066_behavior_cases ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s

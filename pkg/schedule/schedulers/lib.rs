@@ -4,3 +4,8 @@ mod base;
 pub use base::*;
 #[cfg(test)]
 mod task_065_test;
+
+mod config;
+pub use config::*;
+#[cfg(test)]
+mod task_066_test;
