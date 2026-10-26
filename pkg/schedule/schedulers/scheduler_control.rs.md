@@ -34,3 +34,7 @@ operator 限额、halt、placement 或 readiness 判断。
 依据：只读 `scheduler_controller.go`、`server/config/persist_options.go` 以及各策略
 ReloadConfig/PrepareConfig/CleanConfig。按用户授权采用源码推导，不声称 Go 运行差分。
 验证与冻结来源哈希见 [task-107](../../../docs/rust/schedule-execution/task-107.md)。
+
+任务114增加 `replace_scheduler_configs`：启动恢复最终发布已验证的完整列表，保留
+重复及 disabled 条目，删除无法构造或添加的旧条目。它只替换同一管理器的
+`schedule.schedulers-v2`，由恢复入口调用既有 StorageEndpoint 保存完整配置。

@@ -1,0 +1,43 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "evidence_kind": "readonly Go source derivation + real Rust behavior/fault tests, explicitly authorized by user",
+  "Go_runtime_output": null,
+  "Go_runtime_output_sha256": null,
+  "sources": [
+    {
+      "path": "pkg/schedule/coordinator.go",
+      "sha256": "a61e5be78180e4a9e3f385beb6354ed352915785771edcc3a5805ee271cc5fc2",
+      "matches_source_commit": true
+    },
+    {
+      "path": "pkg/schedule/schedulers/scheduler_controller.go",
+      "sha256": "5b8ad7382dcf829b9405240fb3e1e72ba659aa5ae301fb0257a3a66c318a7153",
+      "matches_source_commit": true
+    },
+    {
+      "path": "pkg/schedule/types/type.go",
+      "sha256": "b7bc852de78e9a3ce6c06ef98cfd05c36d993e8dbcd2b074c9ec07c0ce0b49bb",
+      "matches_source_commit": true
+    },
+    {
+      "path": "pkg/schedule/schedulers/grant_leader.go",
+      "sha256": "4c1f9fda46d697bce4c22ce8dbb07b8a7f255d5d475028067e7c06c8c3aca95f",
+      "matches_source_commit": true
+    },
+    {
+      "path": "tests/server/cluster/cluster_test.go",
+      "sha256": "df21a0e8db96c94ea64bdaf2719ef2685cdd0f952399e7124e7ea1094a879313",
+      "matches_source_commit": true
+    }
+  ],
+  "fixture_sha256": "aa4ae146b0ed03c22b404fafa784f9d2106631ea7f1c31ab9b03dd71beb80705",
+  "normalization": "none; fixed time and random boundary inputs; names sorted by canonical controller BTreeMap",
+  "dependency_commit": "b1fc5a091",
+  "oracle_index_sha256": "2d1a930742291e7047a864aa2246e7e22c612cb6583249b7edb42945b494b450",
+  "additional_fixture": {
+    "path": "fixtures/task_106.json",
+    "sha256": "02e6c269b588c273e2ce78407e16823d3063feb4bf40f5016177150a8bae8916",
+    "source": "existing 18-factory source-derived fixture"
+  },
+  "readonly_test_reference": "tests/server/cluster/cluster_test.go:1601 TestTransferLeaderForScheduler (inspected only, not executed)"
+}

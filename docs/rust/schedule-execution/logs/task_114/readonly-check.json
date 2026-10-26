@@ -1,0 +1,10 @@
+{
+  "Go_and_module_files": 1101,
+  "readonly_plans": 2,
+  "hash_manifest_and_git_status_identical": true,
+  "slot": 1,
+  "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+  "slot_released": true,
+  "active_slot_executables": [],
+  "git_diff_check_exit_code": 0
+}

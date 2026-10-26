@@ -403,8 +403,10 @@ dependencies = [
  "astersql-pd-schedule-types",
  "astersql-pd-storage-endpoint",
  "astersql-pd-storage-kv",
+ "async-trait",
  "prometheus",
  "serde_json",
+ "thiserror 2.0.21",
  "tokio",
  "tokio-util",
 ]

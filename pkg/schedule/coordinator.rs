@@ -48,6 +48,7 @@ pub struct Coordinator<C> {
     operators: ControllerAdmission,
     records: ControllerRecords,
     schedulers: SchedulerController,
+    schedulers_initialized: bool,
     recorders: BTreeMap<String, DiagnosticRecorder>,
     scatter_counts: ScatterCounts,
     scatter_metrics: ScatterBatchMetrics,
@@ -66,6 +67,7 @@ impl<C: CheckerConfigProvider + SchedulerConfigProvider + Send + Sync + 'static>
         });
         let operators = ControllerAdmission::new(input.config.get_scheduler_max_waiting_operator());
         Self {
+            schedulers_initialized: false,
             schedulers: SchedulerController::new(
                 Some(input.cluster.clone()),
                 input.factory,
@@ -82,6 +84,20 @@ impl<C: CheckerConfigProvider + SchedulerConfigProvider + Send + Sync + 'static>
             scatter_counts: ScatterCounts::default(),
             scatter_metrics: input.scatter_metrics,
         }
+    }
+    /// True after configuration cleanup, including a nonfatal final persist error.
+    pub fn are_schedulers_initialized(&self) -> bool {
+        self.schedulers_initialized
+    }
+    pub async fn init_schedulers(
+        &mut self,
+        need_run: bool,
+        cancellation: &CancellationToken,
+    ) -> Result<crate::SchedulerRestoreReport, crate::SchedulerRestoreError> {
+        let report =
+            crate::restore_schedulers(&mut self.schedulers, need_run, cancellation).await?;
+        self.schedulers_initialized = true;
+        Ok(report)
     }
     pub fn get_cluster(&self) -> &Arc<BasicCluster> {
         &self.cluster

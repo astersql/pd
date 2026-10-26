@@ -1,0 +1,15 @@
+{
+  "evidence_kind": "readonly Go source derivation; no Go runtime output",
+  "cases": [
+    {"name":"defaults","configs":[{"type":"balance-leader"},{"type":"label"}],"persisted":{},"names":["balance-leader-scheduler","label-scheduler"],"valid":2},
+    {"name":"custom-independent-wins","configs":[{"type":"balance-leader"}],"persisted":{"balance-leader-scheduler":{"batch":7}},"names":["balance-leader-scheduler"],"valid":1,"batch":7},
+    {"name":"duplicate","configs":[{"type":"label"},{"type":"label"}],"persisted":{},"names":["label-scheduler"],"valid":2},
+    {"name":"disabled","configs":[{"type":"balance-leader","disable":true}],"persisted":{"balance-leader-scheduler":{"batch":7}},"names":[],"valid":1},
+    {"name":"corrupt-fallback","configs":[{"type":"balance-leader"}],"persisted":{"balance-leader-scheduler":"{"},"names":["balance-leader-scheduler"],"valid":1,"batch":4},
+    {"name":"orphan","configs":[],"persisted":{"label-scheduler":{}},"names":[],"valid":0},
+    {"name":"unknown","configs":[{"type":"unknown"}],"persisted":{"unknown-scheduler":{}},"names":[],"valid":0},
+    {"name":"invalid-args","configs":[{"type":"grant-leader","args":["bad"]}],"persisted":{},"names":[],"valid":0},
+    {"name":"prepare-cleanup","configs":[{"type":"evict-leader","args":["1,999"]}],"persisted":{},"names":[],"valid":0},
+    {"name":"disabled-unknown-retained","configs":[{"type":"unknown","disable":true}],"persisted":{},"names":[],"valid":1}
+  ]
+}

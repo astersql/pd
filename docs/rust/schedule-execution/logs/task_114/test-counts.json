@@ -1,0 +1,26 @@
+{
+  "red-behavior-1": {
+    "command": "cargo test -p astersql-pd-schedule --locked --lib task_114 -- --nocapture",
+    "passed": 0,
+    "failed": 2,
+    "ignored": 0
+  },
+  "final-1": {
+    "command": "cargo test -p astersql-pd-schedule --locked --lib task_114 -- --nocapture",
+    "passed": 5,
+    "failed": 0,
+    "ignored": 0
+  },
+  "final-2": {
+    "command": "cargo test -p astersql-pd-schedule --locked",
+    "passed": 14,
+    "failed": 0,
+    "ignored": 0
+  },
+  "final-6": {
+    "command": "cargo test --workspace --locked",
+    "passed": 1758,
+    "failed": 0,
+    "ignored": 1
+  }
+}

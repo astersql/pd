@@ -4,7 +4,8 @@
 checker dispatcher, scheduler controller, prepare checker, diagnostic recorder map and
 scatter distribution counters. It retains the supplied `Arc<BasicCluster>` and config.
 There is no copied heartbeat collection, private runtime, background patrol or global
-registry. Scheduling startup and patrol are subsequent tasks.
+registry. Patrol is a subsequent task. Startup configuration restoration is described in
+[scheduler_restore.rs.md](scheduler_restore.rs.md).
 
 Checker success registration uses the existing weak dispatcher callback. Terminal
 records publish successful operator identities once; the callback reads the current
@@ -37,3 +38,12 @@ Source-derived contracts: read-only Go `coordinator.go` constructor/getters,
 success routing. Per explicit user authorization, tests use source derivation and
 real Rust state/fault behavior; no Go runtime oracle or differential parity claimed.
 See [task 113 evidence](../../docs/rust/schedule-execution/task-113.md).
+
+`init_schedulers` delegates to canonical factory/controller/MetaStore recovery and
+marks `are_schedulers_initialized` only after final list cleanup. Cancellation and
+exhausted load retries return errors without setting the flag; final persistence
+failure is reported but still marks initialization complete, matching Go. The host
+supplies the complete persisted JSON to `scheduler_configuration`; the resulting
+controller configuration and report's valid list are the authoritative startup
+publication for updating a host-owned config provider. No interior mutation of an
+arbitrary immutable `Arc<C>` is attempted.

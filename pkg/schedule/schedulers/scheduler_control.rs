@@ -85,6 +85,10 @@ impl SchedulerController {
     pub fn configuration(&self) -> &Value {
         &self.configuration
     }
+    /// Publish the startup-validated list while retaining unrelated configuration.
+    pub fn replace_scheduler_configs(&mut self, configs: Vec<Value>) {
+        *self.configs() = configs;
+    }
     fn ready(&self) -> Result<&BasicCluster, ControlError> {
         self.cluster.as_deref().ok_or(ControlError::NotBootstrapped)
     }
