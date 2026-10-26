@@ -1,0 +1,12 @@
+[
+  {
+    "mutation": "ttl_boundary",
+    "exit_code": 101,
+    "assertion_failed": true
+  },
+  {
+    "mutation": "reload_delay",
+    "exit_code": 101,
+    "assertion_failed": true
+  }
+]

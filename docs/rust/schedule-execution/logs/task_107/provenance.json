@@ -1,0 +1,15 @@
+{
+  "source_commit": "45c38e6d2d8238bc4c250595c6cce5c1000c4145",
+  "plan_source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "basis": "user-authorized readonly Go source derivation plus Rust real behavior/fault verification",
+  "runtime_oracle": null,
+  "normalization": "explicit Unix seconds, exact values; no error/state fields ignored",
+  "sha256": {
+    "pkg/schedule/schedulers/scheduler_controller.go": "5b8ad7382dcf829b9405240fb3e1e72ba659aa5ae301fb0257a3a66c318a7153",
+    "server/config/persist_options.go": "d49284b2eee7f9a509f32598ed69fe47bdccda674cb4940d80c2ac7ad10b62ff",
+    "pkg/schedule/schedulers/evict_leader.go": "7fb5a50e54d33f0069e22c69ffd1341ae64f6310a5d1c49ac315aad6f925a460",
+    "pkg/schedule/schedulers/grant_leader.go": "4c1f9fda46d697bce4c22ce8dbb07b8a7f255d5d475028067e7c06c8c3aca95f",
+    "pkg/schedule/schedulers/base_scheduler.go": "1da013a2323c2756dcfd3b1203e91c481c58e80e258e3848d5db23dd261e6bdc",
+    "docs/rust/schedule-execution/fixtures/task_107.json": "d76ec1e12993297d80fcca9eb7027bbb524cf6287b362937c059236fecf2c946"
+  }
+}

@@ -228,3 +228,8 @@ mod task_106_test;
 
 mod registry;
 pub use registry::*;
+
+mod scheduler_control;
+pub use scheduler_control::*;
+#[cfg(test)]
+mod task_107_test;
