@@ -1,0 +1,14 @@
+{
+  "source_commit": "b6cad9b3236345f8f394955c0bcccc9af658830d",
+  "dependency_commit": "b6cad9b32",
+  "provenance": "read-only Go source/test deduction, authorized oracle waiver; no Go execution",
+  "go_output_sha256": null,
+  "go_binary_sha256": null,
+  "sha256": {
+    "pkg/schedule/schedulers/balance_leader.go": "904edff2c88b23fc228cd7d54b5054067c82254adc64855e47d1503e074c7a9f",
+    "pkg/schedule/schedulers/balance_leader_test.go": "c9b79231c539c2d0e8322f372ea1df30c950e41213cdd313e7e4f679a2858bb5",
+    "pkg/schedule/schedulers/config.go": "64024b895d0b48c030acd9684c3879993710856796eebe11595d4108073b6409",
+    "docs/rust/schedule-execution/fixtures/task_071.json": "adcd42107428fc211693b3d33d49885538cda870111f932eb36c4ab3269a9304"
+  },
+  "normalization": "Explicit deterministic random index (next/20)%n and rotating shuffle; time fixed at 1000000000000ns; tied follower targets may be 2 or 3, command source/range/batch checked; no error fields ignored"
+}

@@ -1,0 +1,28 @@
+   Compiling astersql-pd-schedule-schedulers v0.1.0 (/Users/Shared/work/dir/data/codes/pd/pkg/schedule/schedulers)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.55s
+     Running unittests lib.rs (target/rust-slot-1/debug/deps/astersql_pd_schedule_schedulers-46948a5a92bc5f3a)
+
+running 2 tests
+
+thread 'task_071_test::task_071_faults_and_validation' (165723921) panicked at pkg/schedule/schedulers/task_071_test.rs:253:5:
+assertion `left == right` failed: Go keeps valid update active when persistence fails
+  left: 4
+ right: 100
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'task_071_test::task_071_behavior_cases' (165723920) panicked at pkg/schedule/schedulers/task_071_test.rs:133:9:
+assertion `left != right` failed
+  left: [123, 34, 114, 97, 110, 103, 101, 115, 34, 58, 91, 123, 34, 101, 110, 100, 45, 107, 101, 121, 34, 58, 34, 34, 44, 34, 115, 116, 97, 114, 116, 45, 107, 101, 121, 34, 58, 34, 34, 125, 93, 44, 34, 98, 97, 116, 99, 104, 34, 58, 52, 125]
+ right: [123, 34, 114, 97, 110, 103, 101, 115, 34, 58, 91, 123, 34, 101, 110, 100, 45, 107, 101, 121, 34, 58, 34, 34, 44, 34, 115, 116, 97, 114, 116, 45, 107, 101, 121, 34, 58, 34, 34, 125, 93, 44, 34, 98, 97, 116, 99, 104, 34, 58, 52, 125]
+test task_071_test::task_071_faults_and_validation ... FAILED
+test task_071_test::task_071_behavior_cases ... FAILED
+
+failures:
+
+failures:
+    task_071_test::task_071_behavior_cases
+    task_071_test::task_071_faults_and_validation
+
+test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 24 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p astersql-pd-schedule-schedulers --lib`

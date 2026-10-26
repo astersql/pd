@@ -1,0 +1,87 @@
+{
+  "provenance": "read-only Go source/test deduction; no Go execution",
+  "cases": [
+    {
+      "name": "one",
+      "batch": 1,
+      "ranges": [
+        [
+          "a",
+          "i"
+        ]
+      ],
+      "expected": 1
+    },
+    {
+      "name": "four",
+      "batch": 4,
+      "ranges": [
+        [
+          "a",
+          "i"
+        ]
+      ],
+      "expected": 4
+    },
+    {
+      "name": "max",
+      "batch": 100,
+      "ranges": [
+        [
+          "a",
+          "i"
+        ]
+      ],
+      "expected": 8
+    },
+    {
+      "name": "outside",
+      "batch": 4,
+      "ranges": [
+        [
+          "x",
+          "z"
+        ]
+      ],
+      "expected": 0
+    },
+    {
+      "name": "one-range",
+      "batch": 4,
+      "ranges": [
+        [
+          "b",
+          "c"
+        ]
+      ],
+      "expected": 1
+    },
+    {
+      "name": "multi",
+      "batch": 4,
+      "ranges": [
+        [
+          "a",
+          "b"
+        ],
+        [
+          "d",
+          "e"
+        ]
+      ],
+      "expected": 2
+    }
+  ],
+  "defaults": {
+    "counts": [
+      100,
+      0,
+      0
+    ],
+    "sizes": [
+      1000,
+      0,
+      0
+    ]
+  }
+}
