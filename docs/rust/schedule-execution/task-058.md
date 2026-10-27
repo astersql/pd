@@ -1,7 +1,7 @@
 # 任务058：检查器观测指标
 
-状态：已完成，待回归。聚焦行为及包级验证通过；workspace test 因磁盘耗尽未通过，
-保留编号任务文件供环境恢复后回归，不满足后继完整回归门槛。
+状态：已完成。2026-10-27基于最新共享工作区完成延后回归，所有必需命令通过；
+原磁盘耗尽失败及恢复尝试保留为历史证据，已不再阻塞。编号任务文件已按完成规则删除。
 
 生产路径：[checker_metrics.rs](../../../pkg/schedule/checker/checker_metrics.rs)，
 [边界说明](../../../pkg/schedule/checker/checker_metrics.rs.md)。
@@ -71,12 +71,48 @@ pending TTL、patrol worker 和 split-scatter retry 状态；未增加模拟状�
 [恢复记录](logs/task_058/workspace-test.json)如实标明退出码的日志恢复来源。
 已尝试清理本任务的中间日志/临时生成器和失败编译的77个未完成rcgu.o（8,398,472字节），
 恢复到约122MiB可用，保留有效缓存和其他任务缓存；仍不足支撑全仓重新编译。
-不执行全局cargo clean或清理用户文件。空间恢复后，重新动态领槽运行上述workspace test，
-通过后更新为已完成并删除编号任务文件。
+不执行全局cargo clean或清理用户文件。当时保留任务等待空间恢复；本次重新动态领槽完成上述workspace test，结果见后续回归记录。
 
 Cargo.lock只增加本crate的既有prometheus依赖，未改变远程依赖版本。
 [审计脚本](logs/task_058/audit.py)与[结果](logs/task_058/audit.json)核对全部1101个Go/模块文件
 清单及SHA256不变、Go Git状态为空、两份只读plan.md不变、链接有效、`git diff --check`通过。
-提交排除任务开始前已有的其它编号任务删除，保留本任务的待回归状态文件。
+提交排除任务开始前已有的其它编号任务删除，初次提交保留本任务的待回归状态文件，现已完成回归并删除。
 
 日志仅清理行末空白及末尾空行，未改写错误、测试、指标或状态输出。
+
+## 2026-10-27 延后回归：全部通过
+
+先阅读[任务156稳定证据](task-156.md)和[任务141安全复用方式](task-141.md)，
+以共享工作区提交 `d74fe173a30ff4c8b59b3538613d21f757440332` 为基准。
+checker及其调用方已由任务156切到同一中立storage-domain契约，保留原Etcd适配器及测试。
+本次不改Rust生产代码、测试、Cargo接线或Go文件，没有发现本任务相关失败。
+继续使用用户授权的只读Go源码推导 + Rust真实行为/故障验证，不新增Go运行差分主张。
+
+[回归runner](logs/task_058/regression.py)在仓库根依次原子mkdir动态领到槽位 **1**，
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+同阶段串行运行全部六条命令，CARGO_BUILD_JOBS=4、RUST_TEST_THREADS=2，默认features。
+从任务156已验证的fixture `rust-etcd-fixture-88178` 校验SHA256后在持有槽内建立硬链接，
+使用任务156的Go拦截器；未重复Go构建、复制大二进制或启停failpoint。
+fixture SHA256为 `57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5`。
+[复用调用记录](logs/task_058/regression/go-reuse.jsonl)保存实际请求、旧哈希与硬链接目标。
+磁盘已恢复约292GiB可用，本次无需清理任何缓存、fixture或其它任务产物。
+
+[完整命令/退出码/日志哈希](logs/task_058/regression/final.json)和
+[独立审计及数量汇总](logs/task_058/regression/audit.json)可复核：
+
+| 命令 | 退出码 | 有效结果 |
+| --- | --- | --- |
+| `cargo test -p astersql-pd-schedule-checker --locked --lib task_058 -- --nocapture` | 0 | 8通过、0失败、0忽略 |
+| `cargo test -p astersql-pd-schedule-checker --locked` | 0 | 66通过、0失败、0忽略 |
+| `cargo metadata --format-version 1 --no-deps` | 0 | 通过 |
+| `cargo fmt --all -- --check` | 0 | 通过 |
+| `cargo check --workspace --locked` | 0 | 通过 |
+| `cargo test --workspace --locked` | 0 | 1925通过、0失败、1既有忽略项 |
+
+全仓日志包含现有Etcd事务/取消/恢复/进程测试，唯一忽略项仍为既有`tso_processes`，
+未过滤失败测试或增加忽略。本次task058的8项行为覆盖同前述故事，保留初次变异红灯证据。
+[审计脚本](logs/task_058/regression/audit.py)核对本次开始快照的1101个Go/模块源文件，
+并对照任务156在运行前已冻结的1983个完整Go/模块文件清单（含ignored生成源码），
+文件集合/内容SHA256和Git状态均不变；两份只读plan.md不变，文档链接和diff检查通过。
+所有Cargo及槽位子进程结束后runner核对owner并释放自己的锁，缓存保留。
+本阶段已结束，可由任务67随后动态领取空闲槽位；未修改任务67的文件。

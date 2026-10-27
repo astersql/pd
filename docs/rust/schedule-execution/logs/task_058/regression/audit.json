@@ -1,0 +1,61 @@
+{
+  "workspace_head": "d74fe173a30ff4c8b59b3538613d21f757440332",
+  "go_files_excluding_target": 1101,
+  "all_go_files_including_ignored": 1983,
+  "go_unchanged": true,
+  "upstream_ignored_go_baseline": "docs/rust/schedule-execution/logs/task_156/baseline.json",
+  "upstream_baseline_sha256": "89f1f447c8b2f4ad4b086ee5ae23cabaad1452493d18cb5c7e296d46e62d8e53",
+  "readonly_plans_unchanged": true,
+  "go_git_status_unchanged": true,
+  "all_six_commands_passed": true,
+  "summary": [
+    {
+      "command": "cargo test -p astersql-pd-schedule-checker --locked --lib task_058 -- --nocapture",
+      "exit_code": 0,
+      "passed": 8,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "command": "cargo test -p astersql-pd-schedule-checker --locked",
+      "exit_code": 0,
+      "passed": 66,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "command": "cargo metadata --format-version 1 --no-deps",
+      "exit_code": 0,
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "command": "cargo fmt --all -- --check",
+      "exit_code": 0,
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "command": "cargo check --workspace --locked",
+      "exit_code": 0,
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "command": "cargo test --workspace --locked",
+      "exit_code": 0,
+      "passed": 1925,
+      "failed": 0,
+      "ignored": 1
+    }
+  ],
+  "ignored": [
+    "tso_processes"
+  ],
+  "etcd_fixture_hardlink_requests": 23,
+  "links_valid": true,
+  "diff_check_exit": 0
+}
