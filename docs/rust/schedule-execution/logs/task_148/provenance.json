@@ -1,0 +1,57 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "dependency_commit": "8d6f2bf5d",
+  "runtime_go_oracle": false,
+  "basis": "readonly Go source/test derivation authorized by user; real Rust behavior/fault validation",
+  "files": [
+    {
+      "path": "pkg/schedule/schedulers/scatter_range.go",
+      "sha256": "49d0f15a24cf8a618d4d83b98f37abddb02db9859a45a3f4036af46e9c0ba45d",
+      "matches_source_commit": true
+    },
+    {
+      "path": "pkg/schedule/schedulers/base_scheduler.go",
+      "sha256": "1da013a2323c2756dcfd3b1203e91c481c58e80e258e3848d5db23dd261e6bdc",
+      "matches_source_commit": true
+    },
+    {
+      "path": "pkg/schedule/schedulers/scatter_range_test.go",
+      "sha256": "4f1f561d12c5b0e41de73eb96ebd6868baed7da3a93340efd2ee0f137a70287a",
+      "matches_source_commit": true
+    },
+    {
+      "path": "pkg/utils/apiutil/apiutil.go",
+      "sha256": "edda400120b9f6cc3def157e8aefc74e4572b7971d01b521f41b6bee49e6bfe6",
+      "matches_source_commit": true
+    },
+    {
+      "path": "pkg/storage/kv/meta_store.rs",
+      "sha256": "472fbee3519333c0b618933548e03344f590dc9f1ec054c5a384c03b652d1670"
+    },
+    {
+      "path": "docs/rust/schedule-execution/oracle-index.json",
+      "sha256": "2d1a930742291e7047a864aa2246e7e22c612cb6583249b7edb42945b494b450"
+    },
+    {
+      "path": "docs/rust/schedule-execution/task-147.md",
+      "sha256": "b209115657214e2a1d321ec754ab36c204d90e2cd12106ec304bdb1c3244199a"
+    },
+    {
+      "path": "docs/rust/schedule-execution/fixtures/task_148.json",
+      "sha256": "f70ce1c50ac2f60cb5427406307ef358f88498de86b7663d262fdbfec23db546"
+    },
+    {
+      "path": "pkg/schedule/schedulers/scatter_range.rs",
+      "sha256": "161ac66b33b3217aa705cb39d03295832da67ede854dea8c7148de2f581e7ce5"
+    },
+    {
+      "path": "pkg/schedule/schedulers/task_099_test.rs",
+      "sha256": "80b33bbf1b7978f6c27cd864375c05608e88faec80c3b731624c20ff20606a7e"
+    },
+    {
+      "path": "docs/rust/schedule-execution/logs/task_147/final.json",
+      "sha256": "ba70578020e055ab048c67e48eb1a562b593eb764b7cee38ac1b498e30d37b75"
+    }
+  ],
+  "dependency_final_logs_verified": 7
+}

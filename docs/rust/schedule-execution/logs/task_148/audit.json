@@ -1,0 +1,77 @@
+{
+  "go_module_files": 1101,
+  "contents_and_set_unchanged": true,
+  "go_git_status_unchanged": true,
+  "readonly_plans_unchanged": true,
+  "cargo_manifests_and_lock_unchanged": true,
+  "markdown_links": [
+    {
+      "source": "docs/rust/schedule-execution/task-148.md",
+      "target": "task-147.md"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-148.md",
+      "target": "logs/task_148/provenance.json"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-148.md",
+      "target": "fixtures/task_148.json"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-148.md",
+      "target": "../../../pkg/server/schedule_admin_scatter_range.rs"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-148.md",
+      "target": "../../../pkg/server/schedule_admin_scatter_range.rs.md"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-148.md",
+      "target": "logs/task_148/red.json"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-148.md",
+      "target": "../../../pkg/server/schedule_admin_scatter_range_test.rs"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-148.md",
+      "target": "logs/task_148/verify.py"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-148.md",
+      "target": "logs/task_148/reuse-go/go"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-148.md",
+      "target": "logs/task_148/go-reuse.jsonl"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-148.md",
+      "target": "logs/task_148/final.json"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-148.md",
+      "target": "logs/task_148/final-summary.json"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-148.md",
+      "target": "logs/task_148/audit.json"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-148.md",
+      "target": "logs/task_148/baseline.json"
+    },
+    {
+      "source": "pkg/server/schedule_admin_scatter_range.rs.md",
+      "target": "../../docs/rust/schedule-execution/task-148.md"
+    }
+  ],
+  "diff_check_exit_code": 0,
+  "own_slot_released": true,
+  "reviewed_scope": [
+    "pkg/server/lib.rs module/test registration",
+    "pkg/server/schedule_admin_scatter_range.rs adapter",
+    "pkg/server/schedule_admin_scatter_range_test.rs behavior/fault/scheduling",
+    "fixture, provenance, logs and boundary evidence"
+  ]
+}

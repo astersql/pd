@@ -1,0 +1,429 @@
+{
+  "provenance": "readonly Go source derivation; user waiver; no runtime Go oracle",
+  "runtime_go_oracle": false,
+  "cases": [
+    {
+      "method": "GET",
+      "path": "/list",
+      "input": "",
+      "status": 200,
+      "body": {
+        "range-name": "test",
+        "start-key": "a",
+        "end-key": "b"
+      },
+      "config": null,
+      "code": null
+    },
+    {
+      "method": "GET",
+      "path": "/config",
+      "input": "{",
+      "status": 405,
+      "body": "",
+      "config": null,
+      "code": null
+    },
+    {
+      "method": "PUT",
+      "path": "/config",
+      "input": "{",
+      "status": 405,
+      "body": "",
+      "config": null,
+      "code": null
+    },
+    {
+      "method": "DELETE",
+      "path": "/config",
+      "input": "{",
+      "status": 405,
+      "body": "",
+      "config": null,
+      "code": null
+    },
+    {
+      "method": "HEAD",
+      "path": "/config",
+      "input": "{",
+      "status": 405,
+      "body": "",
+      "config": null,
+      "code": null
+    },
+    {
+      "method": "OPTIONS",
+      "path": "/config",
+      "input": "{",
+      "status": 405,
+      "body": "",
+      "config": null,
+      "code": null
+    },
+    {
+      "method": "PATCH",
+      "path": "/config",
+      "input": "{",
+      "status": 405,
+      "body": "",
+      "config": null,
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/list",
+      "input": "{",
+      "status": 405,
+      "body": "",
+      "config": null,
+      "code": null
+    },
+    {
+      "method": "HEAD",
+      "path": "/list",
+      "input": "{",
+      "status": 405,
+      "body": "",
+      "config": null,
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/",
+      "input": "{",
+      "status": 404,
+      "body": "404 page not found\n",
+      "config": null,
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config/",
+      "input": "{",
+      "status": 404,
+      "body": "404 page not found\n",
+      "config": null,
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/list/",
+      "input": "{",
+      "status": 404,
+      "body": "404 page not found\n",
+      "config": null,
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/delete/1",
+      "input": "{",
+      "status": 404,
+      "body": "404 page not found\n",
+      "config": null,
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/unknown",
+      "input": "{",
+      "status": 404,
+      "body": "404 page not found\n",
+      "config": null,
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{}",
+      "status": 200,
+      "body": "null",
+      "config": {
+        "range-name": "test",
+        "start-key": "a",
+        "end-key": "b"
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "null",
+      "status": 200,
+      "body": "null",
+      "config": {
+        "range-name": "test",
+        "start-key": "a",
+        "end-key": "b"
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"range-name\":\"test\"}",
+      "status": 200,
+      "body": "null",
+      "config": {
+        "range-name": "test",
+        "start-key": "a",
+        "end-key": "b"
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"range-name\":42,\"start-key\":false,\"end-key\":[]}",
+      "status": 200,
+      "body": "null",
+      "config": {
+        "range-name": "test",
+        "start-key": "a",
+        "end-key": "b"
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"unknown\":\"x\",\"START-KEY\":\"x\"}",
+      "status": 200,
+      "body": "null",
+      "config": {
+        "range-name": "test",
+        "start-key": "a",
+        "end-key": "b"
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"start-key\":\"z\",\"end-key\":\"a\"}",
+      "status": 200,
+      "body": "null",
+      "config": {
+        "range-name": "test",
+        "start-key": "z",
+        "end-key": "a"
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"start-key\":\"\",\"end-key\":\"\"}",
+      "status": 200,
+      "body": "null",
+      "config": {
+        "range-name": "test",
+        "start-key": "",
+        "end-key": ""
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"start-key\":\"a%zz+\\u0000<&>\\u2028\"}",
+      "status": 200,
+      "body": "null",
+      "config": {
+        "range-name": "test",
+        "start-key": "a%zz+\u0000<&> ",
+        "end-key": "b"
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"start-key\":\"x\",\"start-key\":null}",
+      "status": 200,
+      "body": "null",
+      "config": {
+        "range-name": "test",
+        "start-key": "a",
+        "end-key": "b"
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"start-key\":null,\"start-key\":\"x\"}",
+      "status": 200,
+      "body": "null",
+      "config": {
+        "range-name": "test",
+        "start-key": "x",
+        "end-key": "b"
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"range-name\":\"renamed\",\"start-key\":\"x\"}",
+      "status": 500,
+      "body": "\"Cannot change the range name, please delete this schedule\"",
+      "config": {
+        "range-name": "test",
+        "start-key": "a",
+        "end-key": "b"
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{",
+      "status": 400,
+      "body": {
+        "code": "input",
+        "msg": "unexpected end of JSON input",
+        "data": {
+          "Offset": 1
+        }
+      },
+      "config": {
+        "range-name": "test",
+        "start-key": "a",
+        "end-key": "b"
+      },
+      "code": "input"
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "",
+      "status": 400,
+      "body": {
+        "code": "input",
+        "msg": "unexpected end of JSON input",
+        "data": {
+          "Offset": 0
+        }
+      },
+      "config": {
+        "range-name": "test",
+        "start-key": "a",
+        "end-key": "b"
+      },
+      "code": "input"
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "[]",
+      "status": 400,
+      "body": {
+        "code": "input",
+        "msg": "json: cannot unmarshal array into Go value of type map[string]interface {}",
+        "data": {
+          "Value": "array",
+          "Type": {},
+          "Offset": 1,
+          "Struct": "",
+          "Field": ""
+        }
+      },
+      "config": {
+        "range-name": "test",
+        "start-key": "a",
+        "end-key": "b"
+      },
+      "code": "input"
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "true",
+      "status": 400,
+      "body": {
+        "code": "input",
+        "msg": "json: cannot unmarshal bool into Go value of type map[string]interface {}",
+        "data": {
+          "Value": "bool",
+          "Type": {},
+          "Offset": 4,
+          "Struct": "",
+          "Field": ""
+        }
+      },
+      "config": {
+        "range-name": "test",
+        "start-key": "a",
+        "end-key": "b"
+      },
+      "code": "input"
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "1",
+      "status": 400,
+      "body": {
+        "code": "input",
+        "msg": "json: cannot unmarshal number into Go value of type map[string]interface {}",
+        "data": {
+          "Value": "number",
+          "Type": {},
+          "Offset": 1,
+          "Struct": "",
+          "Field": ""
+        }
+      },
+      "config": {
+        "range-name": "test",
+        "start-key": "a",
+        "end-key": "b"
+      },
+      "code": "input"
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "\"x\"",
+      "status": 400,
+      "body": {
+        "code": "input",
+        "msg": "json: cannot unmarshal string into Go value of type map[string]interface {}",
+        "data": {
+          "Value": "string",
+          "Type": {},
+          "Offset": 3,
+          "Struct": "",
+          "Field": ""
+        }
+      },
+      "config": {
+        "range-name": "test",
+        "start-key": "a",
+        "end-key": "b"
+      },
+      "code": "input"
+    }
+  ],
+  "scheduling_cases": [
+    {
+      "leader": 4,
+      "region": 0,
+      "count": 0,
+      "expected": "leader"
+    },
+    {
+      "leader": 0,
+      "region": 4,
+      "count": 0,
+      "expected": "region"
+    },
+    {
+      "leader": 4,
+      "region": 4,
+      "count": 4,
+      "expected": "none"
+    }
+  ]
+}

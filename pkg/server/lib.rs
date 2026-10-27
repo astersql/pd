@@ -158,3 +158,8 @@ pub mod schedule_admin_random_merge;
 #[cfg(test)]
 #[path = "schedule_admin_random_merge_test.rs"]
 mod schedule_admin_random_merge_test;
+
+pub mod schedule_admin_scatter_range;
+#[cfg(test)]
+#[path = "schedule_admin_scatter_range_test.rs"]
+mod schedule_admin_scatter_range_test;
