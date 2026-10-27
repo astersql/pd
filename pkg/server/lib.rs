@@ -107,3 +107,8 @@ pub mod schedule_admin_balance_leader;
 #[cfg(test)]
 #[path = "schedule_admin_balance_leader_test.rs"]
 mod schedule_admin_balance_leader_test;
+
+pub mod schedule_admin_balance_region;
+#[cfg(test)]
+#[path = "schedule_admin_balance_region_test.rs"]
+mod schedule_admin_balance_region_test;

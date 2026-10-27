@@ -1,0 +1,24 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "dependency_commit": "84ae645e9",
+  "go_binary_sha256": null,
+  "go_output_sha256": null,
+  "evidence_mode": "user-authorized source inference + real Rust behavior/fault tests",
+  "sources": {
+    "pkg/schedule/schedulers/balance_region.go": "616ed0bb53b58909c013e10be1000822fe0ca72ff46d36ec0aaab1031213c1fc",
+    "pkg/schedule/schedulers/base_scheduler.go": "1da013a2323c2756dcfd3b1203e91c481c58e80e258e3848d5db23dd261e6bdc",
+    "pkg/schedule/schedulers/balance_region_test.go": "a0037629e3317d68ae59e4ed07ed9bb3859045aa57901151a7075707a17c4532"
+  },
+  "source_matches_baseline": {
+    "pkg/schedule/schedulers/balance_region.go": true,
+    "pkg/schedule/schedulers/base_scheduler.go": true,
+    "pkg/schedule/schedulers/balance_region_test.go": true
+  },
+  "fixture_sha256": "caf74a8dbc608fc48ad88a3d96cef82c32c74a064b4519d1d9fd713f3ef92c93",
+  "oracle_index_sha256": "2d1a930742291e7047a864aa2246e7e22c612cb6583249b7edb42945b494b450",
+  "additional_readonly_evidence": {
+    "docs/rust/schedule-execution/task-137.md": "87f8f259ffd530a7ea81cd56e9c2c96ed37e45eb66e09aed9235a55064aaeb28",
+    "docs/rust/schedule-execution/task-072.md": "c1229d3730dd533727f54110f75eeb65374a90a6631cd17a76f1aba295c69401",
+    "docs/rust/schedule-execution/fixtures/task_072.json": "933845b4a2803787ebddbf1546ff75383e25efbaa3c23b3e4b8f3fc09e3d4b6a"
+  }
+}

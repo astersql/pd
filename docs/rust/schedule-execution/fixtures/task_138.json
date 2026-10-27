@@ -1,0 +1,125 @@
+{
+  "provenance": "read-only Go source/test derived; no Go execution",
+  "cases": [
+    {
+      "method": "GET",
+      "path": "/config",
+      "input": "{\"ranges\":[{\"start-key\":\"61\",\"end-key\":\"62\"}]}",
+      "status": 200,
+      "body": "not implements",
+      "content_type": "text/plain; charset=utf-8"
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"ranges\":[{\"start-key\":\"61\",\"end-key\":\"62\"}]}",
+      "status": 200,
+      "body": "not implements",
+      "content_type": "text/plain; charset=utf-8"
+    },
+    {
+      "method": "PUT",
+      "path": "/config",
+      "input": "{\"ranges\":[{\"start-key\":\"61\",\"end-key\":\"62\"}]}",
+      "status": 200,
+      "body": "not implements",
+      "content_type": "text/plain; charset=utf-8"
+    },
+    {
+      "method": "DELETE",
+      "path": "/config",
+      "input": "{\"ranges\":[{\"start-key\":\"61\",\"end-key\":\"62\"}]}",
+      "status": 200,
+      "body": "not implements",
+      "content_type": "text/plain; charset=utf-8"
+    },
+    {
+      "method": "PATCH",
+      "path": "/config",
+      "input": "{\"ranges\":[{\"start-key\":\"61\",\"end-key\":\"62\"}]}",
+      "status": 200,
+      "body": "not implements",
+      "content_type": "text/plain; charset=utf-8"
+    },
+    {
+      "method": "HEAD",
+      "path": "/config",
+      "input": "{\"ranges\":[{\"start-key\":\"61\",\"end-key\":\"62\"}]}",
+      "status": 200,
+      "body": "not implements",
+      "content_type": "text/plain; charset=utf-8"
+    },
+    {
+      "method": "OPTIONS",
+      "path": "/config",
+      "input": "{\"ranges\":[{\"start-key\":\"61\",\"end-key\":\"62\"}]}",
+      "status": 200,
+      "body": "not implements",
+      "content_type": "text/plain; charset=utf-8"
+    },
+    {
+      "method": "POST",
+      "path": "/list",
+      "input": "",
+      "status": 200,
+      "body": "not implements",
+      "content_type": "text/plain; charset=utf-8"
+    },
+    {
+      "method": "POST",
+      "path": "/",
+      "input": "",
+      "status": 200,
+      "body": "not implements",
+      "content_type": "text/plain; charset=utf-8"
+    },
+    {
+      "method": "POST",
+      "path": "/unknown",
+      "input": "",
+      "status": 200,
+      "body": "not implements",
+      "content_type": "text/plain; charset=utf-8"
+    },
+    {
+      "method": "POST",
+      "path": "/config?batch=2",
+      "input": "{\"batch\":2}",
+      "status": 200,
+      "body": "not implements",
+      "content_type": "text/plain; charset=utf-8"
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{",
+      "status": 200,
+      "body": "not implements",
+      "content_type": "text/plain; charset=utf-8"
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "null",
+      "status": 200,
+      "body": "not implements",
+      "content_type": "text/plain; charset=utf-8"
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"ranges\":false}",
+      "status": 200,
+      "body": "not implements",
+      "content_type": "text/plain; charset=utf-8"
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"ranges\":[{\"start-key\":\"zz\"}]}",
+      "status": 200,
+      "body": "not implements",
+      "content_type": "text/plain; charset=utf-8"
+    }
+  ]
+}
