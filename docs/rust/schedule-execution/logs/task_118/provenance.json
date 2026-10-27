@@ -1,0 +1,33 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "checkout_commit": "47d0e88395629081ccb49a78a22257b9465a1151",
+  "prior_commit": "47d0e8839",
+  "evidence_kind": "source_derived_user_authorized",
+  "go_command": null,
+  "go_binary": null,
+  "go_output": null,
+  "sources": {
+    "pkg/schedule/handler/handler.go": {
+      "sha256": "c9f126a421b83fdee5b89d4c26a743b2c4d6493527d4ba0862895705f3639dfa",
+      "matches_source_commit": true
+    },
+    "pkg/schedule/operator/operator_controller.go": {
+      "sha256": "173d8e3e5fd5e4b1128ba24a954055d2d1ef7ea7a6676f6d3aa7cc7a37672ba1",
+      "matches_source_commit": true
+    },
+    "pkg/schedule/operator/operator_controller_test.go": {
+      "sha256": "18e953a9c41e84c3dba9dc381ebce462f652b27d0f7ab83de22413bc84e21501",
+      "matches_source_commit": true
+    },
+    "tests/server/api/operator_test.go": {
+      "sha256": "98b05af58107a8f9326baf08af7a2f127c3a82fc4b5e5953741d9faabc70a3a2",
+      "matches_source_commit": true
+    },
+    "pkg/errs/errno.go": {
+      "sha256": "5b72951756fa619ef642081d382cb1f73ebf1d6a170d6410a8444124767b94e7",
+      "matches_source_commit": true
+    }
+  },
+  "fixture_sha256": "9aeda61ac965462be142a9d12f350e5c2ce35747a614511297229759c4f20935",
+  "oracle_index_review": "Existing runtime cases do not cover Handler query/delete/records. User explicitly permits source derivation plus real Rust validation."
+}

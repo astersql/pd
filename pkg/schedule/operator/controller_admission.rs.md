@@ -50,3 +50,7 @@ user's explicit waiver of Go execution admission. No Go/Rust execution different
 is claimed. The fixture records source hashes, inputs and outcomes, while the
 [evidence](../../../docs/rust/schedule-execution/task-034.md) records actual Rust
 behavior, mutation failure, tests, Cargo slot and read-only verification.
+
+Task 118 adds `waiting_operators`, a non-consuming snapshot under the admission
+mutex, forwarding the canonical RandBuckets list (including merge partners).
+It neither dequeues nor changes waiting counts; used by the management handler.

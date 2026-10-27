@@ -1,0 +1,111 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "evidence_kind": "source_derived_user_authorized",
+  "go_runtime_output": null,
+  "normalization": "Only unordered operator group IDs sorted; preserve duplicates, status, errors, history and explicit monotonic times.",
+  "kinds": [
+    {
+      "input": [],
+      "ids": []
+    },
+    {
+      "input": [
+        "admin"
+      ],
+      "ids": [
+        1
+      ]
+    },
+    {
+      "input": [
+        "leader"
+      ],
+      "ids": [
+        1
+      ]
+    },
+    {
+      "input": [
+        "region"
+      ],
+      "ids": [
+        1
+      ]
+    },
+    {
+      "input": [
+        "waiting"
+      ],
+      "ids": [
+        1
+      ]
+    },
+    {
+      "input": [
+        "admin",
+        "leader"
+      ],
+      "ids": [
+        1,
+        1
+      ]
+    },
+    {
+      "input": [
+        "region",
+        "region"
+      ],
+      "ids": [
+        1,
+        1
+      ]
+    },
+    {
+      "input": [
+        "invalid"
+      ],
+      "ids": []
+    },
+    {
+      "input": [
+        "invalid",
+        "leader"
+      ],
+      "ids": [
+        1
+      ]
+    },
+    {
+      "input": [
+        "leader",
+        "invalid"
+      ],
+      "ids": [
+        1,
+        1
+      ]
+    },
+    {
+      "input": [
+        "leader",
+        "invalid",
+        "invalid"
+      ],
+      "ids": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "input": [
+        "waiting",
+        "admin"
+      ],
+      "ids": [
+        1,
+        1
+      ]
+    }
+  ]
+}

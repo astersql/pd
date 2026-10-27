@@ -300,6 +300,14 @@ impl ControllerAdmission {
             .copied()
             .unwrap_or(0)
     }
+    /// Non-consuming snapshot of queued canonical operators, including merge partners.
+    pub fn waiting_operators(&self) -> Vec<Arc<Operator>> {
+        self.state
+            .lock()
+            .expect("admission poisoned")
+            .waiting
+            .list_operator()
+    }
     pub fn waiting_count(&self, desc: &str) -> u64 {
         self.state
             .lock()
