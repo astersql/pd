@@ -1,0 +1,14 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "provenance": "Go read-only source derivation; no Go runtime oracle claimed",
+  "source": "pkg/schedule/handler/handler.go:408-578; pkg/schedule/operator/create_operator.go",
+  "input": {"region":1,"peers":[[1,1],[2,2],[3,3]],"leader":1,"allocated_id":100,"joint":false},
+  "success": [
+    {"action":"leader","steps":["transfer"]},
+    {"action":"region","steps":["add","promote","remove"]},
+    {"action":"peer","steps":["add","promote","remove"]},
+    {"action":"add","steps":["add","promote"]},
+    {"action":"learner","steps":["add"]},
+    {"action":"remove","steps":["remove"]}
+  ]
+}

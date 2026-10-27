@@ -557,6 +557,7 @@ dependencies = [
  "astersql-pd-schedule-config",
  "astersql-pd-schedule-hbstream",
  "astersql-pd-schedule-operator",
+ "astersql-pd-schedule-placement",
  "astersql-pd-schedule-scatter",
  "astersql-pd-schedule-schedulers",
  "astersql-pd-storage-endpoint",

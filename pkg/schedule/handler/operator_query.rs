@@ -34,7 +34,7 @@ impl<'a, C: CheckerConfigProvider + SchedulerConfigProvider + Send + Sync + 'sta
     pub fn new(coordinator: Option<&'a Coordinator<C>>) -> Self {
         Self { coordinator }
     }
-    fn coordinator(&self) -> Result<&'a Coordinator<C>, HandlerError> {
+    pub(super) fn coordinator(&self) -> Result<&'a Coordinator<C>, HandlerError> {
         self.coordinator.ok_or(HandlerError::NotBootstrapped)
     }
     pub fn get_operator_controller(&self) -> Result<&'a ControllerAdmission, HandlerError> {
@@ -55,7 +55,11 @@ impl<'a, C: CheckerConfigProvider + SchedulerConfigProvider + Send + Sync + 'sta
             .get_status(c.get_operator_controller(), id, now)
             .ok_or(HandlerError::OperatorNotFound)
     }
-    fn archive_removed(&self, removed: &[Arc<Operator>], now: Instant) -> Result<(), HandlerError> {
+    pub(super) fn archive_removed(
+        &self,
+        removed: &[Arc<Operator>],
+        now: Instant,
+    ) -> Result<(), HandlerError> {
         let c = self.coordinator()?;
         ack_removed_operators(removed, c.get_cluster(), &**c.get_config());
         c.get_operator_records().bury_removed(removed, now);

@@ -1,0 +1,73 @@
+[
+  {
+    "command": "cargo fmt --all",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "verified-0.log.gz",
+    "stdout_stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": "cargo test -p astersql-pd-schedule-handler --locked --lib task_119 -- --nocapture",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "verified-1.log.gz",
+    "test_counts": {
+      "passed": 5,
+      "failed": 0,
+      "ignored": 0
+    },
+    "stdout_stderr_sha256": "6feaaed0d6cd79c8378ebe2c5e3192a390f395f7e942c4d969158e87af15c1f0"
+  },
+  {
+    "command": "cargo test -p astersql-pd-schedule-handler --locked",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "verified-2.log.gz",
+    "test_counts": {
+      "passed": 9,
+      "failed": 0,
+      "ignored": 0
+    },
+    "stdout_stderr_sha256": "d619138347cdc4fe9abeb7f2c24c106a92354b96d2de692dc78a73b119f07e9d"
+  },
+  {
+    "command": "cargo metadata --format-version 1 --no-deps",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "verified-3.log.gz",
+    "stdout_stderr_sha256": "20ead4a84d1b2651f0b927240b2080dc43c1f8dbba947d629a6766c87e49207e"
+  },
+  {
+    "command": "cargo fmt --all -- --check",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "verified-4.log.gz",
+    "stdout_stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": "cargo check --workspace --locked",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "verified-5.log.gz",
+    "stdout_stderr_sha256": "b7c470e322f2f52ae077bdc7ff05e891d1e83a400ae69c607e779c99e45052a1"
+  },
+  {
+    "command": "cargo test --workspace --locked",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "verified-6.log.gz",
+    "test_counts": {
+      "passed": 1781,
+      "failed": 0,
+      "ignored": 1
+    },
+    "stdout_stderr_sha256": "ffe362b5241128a2f57d7b858ac674f2eb22eefed98e0f3ab4f8fa44e102a549"
+  }
+]

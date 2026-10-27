@@ -1,0 +1,58 @@
+[
+  {
+    "command": "cargo fmt --all",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "final-0.log.gz",
+    "stdout_stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": "cargo test -p astersql-pd-schedule-handler --locked --lib task_119 -- --nocapture",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "final-1.log.gz",
+    "stdout_stderr_sha256": "379f9e69199c4116357f0e4a17610c030da792eda242db136fa017a599e1d5bd"
+  },
+  {
+    "command": "cargo test -p astersql-pd-schedule-handler --locked",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "final-2.log.gz",
+    "stdout_stderr_sha256": "75bb0443c6db8bca1b5cba5b917a0c54125802370384406327b5360d68e73573"
+  },
+  {
+    "command": "cargo metadata --format-version 1 --no-deps",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "final-3.log.gz",
+    "stdout_stderr_sha256": "20ead4a84d1b2651f0b927240b2080dc43c1f8dbba947d629a6766c87e49207e"
+  },
+  {
+    "command": "cargo fmt --all -- --check",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "final-4.log.gz",
+    "stdout_stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": "cargo check --workspace --locked",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "final-5.log.gz",
+    "stdout_stderr_sha256": "5a6044d22933ce273bc7dd08b11a19c4f9ffeb36cc7ffc686e2da59f8cf844be"
+  },
+  {
+    "command": "cargo test --workspace --locked",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "final-6.log.gz",
+    "stdout_stderr_sha256": "cea3459714c5cc671e0cadcc483dbc27f3f56a3cbf7e2a19a80ac02d8cdec87b"
+  }
+]

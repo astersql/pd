@@ -1,0 +1,30 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "checkout_commit": "09286e2e07edc32f0e1dbcd53385d670d048665e",
+  "dependency_commit": "09286e2e0",
+  "evidence_kind": "source_derivation_and_rust_behavior",
+  "go_runtime_command": null,
+  "go_binary_sha256": null,
+  "go_runtime_outputs": null,
+  "authorization": "User explicitly authorized read-only Go source/test derivation plus real Rust behavior/fault evidence instead of unavailable Go runtime oracle. Go and module files remain read-only.",
+  "files_sha256": {
+    "pkg/schedule/handler/handler.go": "c9f126a421b83fdee5b89d4c26a743b2c4d6493527d4ba0862895705f3639dfa",
+    "pkg/schedule/operator/create_operator.go": "43a938c72992f4ce81501c40ab85c1e79c08670383acd47f22655e779524b927",
+    "pkg/schedule/operator/builder.go": "2c74830947c401ea8c4d46e8066e4c85aecd02beea035d0bb9eb4aab8cee8f83",
+    "tests/server/api/operator_test.go": "98b05af58107a8f9326baf08af7a2f127c3a82fc4b5e5953741d9faabc70a3a2",
+    "docs/rust/schedule-execution/oracle-index.json": "2d1a930742291e7047a864aa2246e7e22c612cb6583249b7edb42945b494b450",
+    "docs/rust/schedule-execution/fixtures/task_119.json": "bcec88075670a03c1ea9f4279ba23b29a1d860422667f12247d0502a2559919a"
+  },
+  "normalization": "Explicit Instant, Unix nanoseconds, allocator ID 100, conf-change capability; no ignored error or step fields. Roles carry source iteration order.",
+  "go_sources_match_source_commit": {
+    "pkg/schedule/handler/handler.go": true,
+    "pkg/schedule/operator/create_operator.go": true,
+    "pkg/schedule/operator/builder.go": true,
+    "tests/server/api/operator_test.go": true
+  },
+  "strconv_source": {
+    "path": "/usr/local/go/src/strconv/atoi.go",
+    "sha256": "51240f70d2b366dad4e9b2c93b58345e0ad34084fb144a203f90866d7ae16f67",
+    "basis": "ParseUint(s,10,64) accepts digits only; leading signs rejected"
+  }
+}
