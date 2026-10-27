@@ -75,3 +75,7 @@ path = "schedule_restore_test.rs"
 [[test]]
 name = "schedule_performance"
 path = "schedule_performance_test.rs"
+
+[[test]]
+name = "schedule_acceptance"
+path = "schedule_acceptance_test.rs"

@@ -1,0 +1,6 @@
+{
+  "command": "python3 docs/rust/schedule-execution/logs/task_156/audit.py",
+  "exit_code": 1,
+  "log": "audit-run.log.gz",
+  "sha256": "8a8f496fa58c62c36b438789c288b18faec2620e480f314b4dad50b852fc0924"
+}

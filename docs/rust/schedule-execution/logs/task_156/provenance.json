@@ -1,0 +1,56 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "implementation_head": "44c6366cbdd4075b7e3602133ff6a1fed4183d15",
+  "oracle": "User-approved read-only Go source/test derivation plus real Rust behavior/fault tests; no new Go execution or differential",
+  "sources": [
+    {
+      "path": "docs/rust/schedule-execution/source-inventory.json",
+      "sha256": "194c90f160c24dda9e688b75ce3114333919fa36a7c0d78d49b1409c5eb286bc"
+    },
+    {
+      "path": "docs/rust/schedule-execution/oracle-index.json",
+      "sha256": "2d1a930742291e7047a864aa2246e7e22c612cb6583249b7edb42945b494b450"
+    },
+    {
+      "path": "docs/rust/schedule-execution/fixtures/task_106.json",
+      "sha256": "02e6c269b588c273e2ce78407e16823d3063feb4bf40f5016177150a8bae8916"
+    },
+    {
+      "path": "docs/rust/schedule-execution/fixtures/task_156.json",
+      "sha256": "5789cffeca53a474a25e24c2aff18ca102756f217d1997a78949423862af2430"
+    },
+    {
+      "path": "docs/rust/schedule-execution/task-155.md",
+      "sha256": "8ce4e8a8b22fb73251b8ab32938b14fadfd4bc429e19539664f46bb35ca1e65a"
+    },
+    {
+      "path": "pkg/schedule/schedulers/init.go",
+      "sha256": "09664f94f3ebe92a4cad1c9a435fb1f8619c72731e8fa55ec0c75c2818175a40"
+    },
+    {
+      "path": "pkg/schedule/schedulers/scheduler.go",
+      "sha256": "c0330c4dc38ebb4d7b0e6d5a3b5d1fe5da85a2e4ec9b22a2e90ea9682112365c"
+    },
+    {
+      "path": "pkg/schedule/schedulers/scheduler_controller.go",
+      "sha256": "5b8ad7382dcf829b9405240fb3e1e72ba659aa5ae301fb0257a3a66c318a7153"
+    },
+    {
+      "path": "pkg/schedule/schedulers/transfer_witness_leader.go",
+      "sha256": "b89a92588c33b70a13c885f53410b0103e65fffb1b8176d5b1d65418248a68e3"
+    },
+    {
+      "path": "pkg/utils/keypath/config.go",
+      "sha256": "6c18b9aabfd6d01b3bb487c93dc7afcf697626394f38344489f6484d85366c09"
+    },
+    {
+      "path": "tests/rust-compat/schedule_acceptance_test.rs",
+      "sha256": "543fdd92288ca86a498911ebc61d03a4d2e99451d19371d3528d96e14a67fe3a"
+    },
+    {
+      "path": "tests/rust-compat/Cargo.toml",
+      "sha256": "0b727a1c33c349fe6d5952e4fd442474bb7757787e214fbeedba535ed1f23999"
+    }
+  ],
+  "normalization": "none for acceptance; task155 performance target tie normalization remains explicitly scoped to that harness"
+}

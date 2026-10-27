@@ -1,0 +1,22 @@
+[
+  {
+    "command": "cargo metadata --format-version 1 --no-deps",
+    "exit_code": 0,
+    "RUST_TEST_THREADS": 2,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "inventory-0.log.gz",
+    "sha256": "660312bb64f6fb25018c1f6f399648d6405d864b3e6a9a0b8c3f9de930f3346b",
+    "test_summaries": []
+  },
+  {
+    "command": "cargo tree --workspace --locked",
+    "exit_code": 0,
+    "RUST_TEST_THREADS": 2,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "inventory-1.log.gz",
+    "sha256": "4573ff3e121edd043002eaf62901f022f2fb95f268cd2ab241041ae951dcc3fb",
+    "test_summaries": []
+  }
+]

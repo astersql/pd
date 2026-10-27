@@ -1,0 +1,26 @@
+[
+  {
+    "command": "cargo test -p astersql-pd-compat-tests --locked --test schedule_performance -- --nocapture",
+    "exit_code": 0,
+    "RUST_TEST_THREADS": 1,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "performance-diagnostic-0.log.gz",
+    "sha256": "43a87993fd61fe8cbceed307a0b320db2fbacdc5d5bc0e4ae69bfaf80c8fcbf1",
+    "test_summaries": [
+      "test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.94s"
+    ]
+  },
+  {
+    "command": "cargo test -p astersql-pd-compat-tests --locked --test schedule_performance -- --nocapture",
+    "exit_code": 0,
+    "RUST_TEST_THREADS": 1,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "performance-diagnostic-1.log.gz",
+    "sha256": "2729fd5c8c8d82b64d59dc3ecda5fad90daf7116371820df3dd9442179f3e950",
+    "test_summaries": [
+      "test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.91s"
+    ]
+  }
+]

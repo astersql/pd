@@ -1,0 +1,18 @@
+{
+  "provenance": "Read-only Go init.go and scheduler_controller.go derivation, plus frozen task106 expectations; no new Go runtime differential",
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "factories": 18,
+  "valid_config_fixture": "task_106.json",
+  "pause": {
+    "at": 100,
+    "ttl": 10,
+    "expires": 110
+  },
+  "corrupt_config": "{",
+  "expected_invalid_args": 8,
+  "normalization": "none",
+  "decoder_ignored_types": [
+    "transfer-witness-leader-scheduler"
+  ],
+  "decoder_exception_source": "pkg/schedule/schedulers/init.go:552-557 ignores supplied ConfigDecoder; persisted contents do not affect null config"
+}

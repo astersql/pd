@@ -1,0 +1,13 @@
+{
+  "recorded_at": "2026-10-27T19:50:23.238246+08:00",
+  "platform": "macOS-26.1-arm64-arm-64bit",
+  "machine": "arm64",
+  "rustc": "rustc 1.99.0 (b940084d7 2026-09-28)\nbinary: rustc\ncommit-hash: b940084d7eb6a299eb4bfeb8e34901bc051e7ac4\ncommit-date: 2026-09-28\nhost: aarch64-apple-darwin\nrelease: 1.99.0\nLLVM version: 23.1.1\n",
+  "profile": "test/debug; no optimization override",
+  "CARGO_BUILD_JOBS": 4,
+  "RUST_TEST_THREADS": {
+    "performance": 1,
+    "other": 2
+  },
+  "load": "Machine not reserved; unrelated repository jobs may run concurrently. No latency or allocation regression threshold asserted."
+}

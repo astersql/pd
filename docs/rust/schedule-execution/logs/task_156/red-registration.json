@@ -1,0 +1,12 @@
+[
+  {
+    "command": "cargo test -p astersql-pd-compat-tests --locked --test schedule_acceptance -- --nocapture",
+    "exit_code": 101,
+    "RUST_TEST_THREADS": 2,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "red-registration-0.log.gz",
+    "sha256": "01df6b8fa034afe740bc1c04e1af24e3edf8bea7bcaf939395bdc65401dc5b97",
+    "test_summaries": []
+  }
+]
