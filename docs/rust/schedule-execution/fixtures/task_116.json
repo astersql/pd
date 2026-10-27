@@ -1,0 +1,95 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "evidence_kind": "source_assertion",
+  "go_runtime": null,
+  "query_cases": [
+    {
+      "rw": "write",
+      "bytes": 11,
+      "time": "1970-01-01T00:00:42Z"
+    },
+    {
+      "rw": "read",
+      "bytes": 21,
+      "time": "1970-01-01T00:00:07.000000123Z"
+    }
+  ],
+  "pending_cases": [
+    {
+      "weight": 1,
+      "cancel": false,
+      "source": -10,
+      "target": 10
+    },
+    {
+      "weight": 2,
+      "cancel": false,
+      "source": -20,
+      "target": 20
+    },
+    {
+      "weight": 0.5,
+      "cancel": false,
+      "source": -10,
+      "target": 10
+    },
+    {
+      "weight": 2,
+      "cancel": true,
+      "source": 0,
+      "target": 0
+    },
+    {
+      "weight": 2,
+      "success": true,
+      "elapsed": 15,
+      "source": -20,
+      "target": 20
+    },
+    {
+      "weight": 2,
+      "success": true,
+      "elapsed": 30,
+      "source": 0,
+      "target": 0
+    }
+  ],
+  "time_cases": [
+    {
+      "seconds": 0,
+      "read_nanos": 120,
+      "write": "1970-01-01T00:00:00Z",
+      "read": "1970-01-01T00:00:00.00000012Z"
+    },
+    {
+      "seconds": 951782400,
+      "read_nanos": -1,
+      "write": "2000-02-29T00:00:00Z",
+      "read": "1969-12-31T23:59:59.999999999Z"
+    },
+    {
+      "seconds": -62167219200,
+      "read_nanos": 123450000,
+      "write": "0000-01-01T00:00:00Z",
+      "read": "1970-01-01T00:00:00.12345Z"
+    },
+    {
+      "seconds": 253402300800,
+      "read_nanos": 1000000000,
+      "write": "10000-01-01T00:00:00Z",
+      "read": "1970-01-01T00:00:01Z"
+    }
+  ],
+  "learner_cases": [
+    {
+      "peer_id": 101,
+      "peer_store": 1,
+      "expected": false
+    },
+    {
+      "peer_id": 1,
+      "peer_store": 2,
+      "expected": true
+    }
+  ]
+}

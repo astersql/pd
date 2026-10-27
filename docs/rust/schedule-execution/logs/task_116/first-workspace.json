@@ -1,0 +1,76 @@
+{
+  "slot": 1,
+  "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+  "results": [
+    {
+      "command": "cargo fmt --all",
+      "exit_code": 0,
+      "tests": {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      "log": "first-workspace-0.txt.gz"
+    },
+    {
+      "command": "cargo test -p astersql-pd-schedule --locked --lib task_116 -- --nocapture",
+      "exit_code": 0,
+      "tests": {
+        "passed": 5,
+        "failed": 0,
+        "ignored": 0
+      },
+      "log": "first-workspace-1.txt.gz"
+    },
+    {
+      "command": "cargo test -p astersql-pd-schedule --locked",
+      "exit_code": 0,
+      "tests": {
+        "passed": 25,
+        "failed": 0,
+        "ignored": 0
+      },
+      "log": "first-workspace-2.txt.gz"
+    },
+    {
+      "command": "cargo metadata --format-version 1 --no-deps",
+      "exit_code": 0,
+      "tests": {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      "log": "first-workspace-3.txt.gz"
+    },
+    {
+      "command": "cargo fmt --all -- --check",
+      "exit_code": 0,
+      "tests": {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      "log": "first-workspace-4.txt.gz"
+    },
+    {
+      "command": "cargo check --workspace --locked",
+      "exit_code": 0,
+      "tests": {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0
+      },
+      "log": "first-workspace-5.txt.gz"
+    },
+    {
+      "command": "cargo test --workspace --locked",
+      "exit_code": 0,
+      "tests": {
+        "passed": 1769,
+        "failed": 0,
+        "ignored": 1
+      },
+      "log": "first-workspace-6.txt.gz"
+    }
+  ]
+}

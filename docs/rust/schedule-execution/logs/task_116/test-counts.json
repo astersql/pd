@@ -1,0 +1,22 @@
+{
+  "focused": {
+    "passed": 6,
+    "failed": 0,
+    "ignored": 0
+  },
+  "package": {
+    "passed": 26,
+    "failed": 0,
+    "ignored": 0
+  },
+  "workspace": {
+    "passed": 1770,
+    "failed": 0,
+    "ignored": 1
+  },
+  "table_cases": {
+    "passed": 14,
+    "failed": 0,
+    "direction_and_status_comparisons": 20
+  }
+}

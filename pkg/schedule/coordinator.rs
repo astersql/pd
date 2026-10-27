@@ -276,3 +276,7 @@ impl Deref for MergeCheckerGuard<'_> {
 #[path = "coordinator_lifecycle.rs"]
 mod lifecycle;
 pub use lifecycle::*;
+
+#[path = "coordinator_observe.rs"]
+mod observe;
+pub use observe::*;

@@ -22,3 +22,7 @@ mod task_114_test;
 #[cfg(test)]
 #[path = "task_115_test.rs"]
 mod task_115_test;
+
+#[cfg(test)]
+#[path = "task_116_test.rs"]
+mod task_116_test;

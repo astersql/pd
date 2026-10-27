@@ -1,0 +1,29 @@
+{
+  "evidence_kind": "source_assertion",
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "checkout_commit": "87665f6023eb6cf21766b30a9509de7e35ad3edc",
+  "go_run_command": null,
+  "go_output_sha256": null,
+  "go_binary_sha256": null,
+  "source_sha256": {
+    "pkg/schedule/coordinator.go": "a61e5be78180e4a9e3f385beb6354ed352915785771edcc3a5805ee271cc5fc2",
+    "pkg/schedule/metrics.go": "a5d4ae0dbc395de732e1d307f0ccecb54319561ccb8d77ee4684fcf23e5c5791",
+    "pkg/schedule/schedulers/hot_region.go": "2e34a6068d48c1ffed3a78764fc18843b20b6fab2943587df4e907acfe692ad6",
+    "pkg/schedule/schedulers/hot_region_config.go": "189283bad7801de492dcf5e2866a37118e1802f37250583d775c22a484fbaa3b",
+    "pkg/statistics/hot_regions_stat.go": "80a892f6038802221bb9a6d3ca9af7ba835e81bff3bb3a32b5c6cb55a5428842",
+    "pkg/statistics/store_hot_peers_infos.go": "abac5bb0e3eacd2d1e12158e0e5131284ebacd63540f9ee21fe0f70566434c22",
+    "tests/integrations/mcs/scheduling/api_test.go": "4293a16c5e177b7f59e1bce468764c7e15ac42356284fc153e144d8b2e14b99f",
+    "tests/server/api/hot_status_test.go": "da1eff4f0d66851c8a2f95908b672a3fe6f9852243b55116d3c9d1b7d4a6be1a",
+    "pkg/core/region.go": "be6ed0dc77537d62926d21d9e4eef080ea0dbcc7dc97efb4dc26269a172f99d8",
+    "pkg/core/peer.go": "cc1895b62828225902a4e9d39febd9f019dbb5fd0b5bcfea30d2e10807ec153d"
+  },
+  "fixture_sha256": "d1dd5cac4fd1f73cd7c1d363bdcc353f6f6ce4ffd7896e2271584c8e01504e7a",
+  "normalization": {
+    "time": "last_update_time renders the Unix instant in UTC; no precision rounding or omission",
+    "random": "none",
+    "maps": "order-independent map comparison; store IDs remain u64"
+  },
+  "authorization": "User permits read-only Go source/test derivation plus real Rust behavior/fault verification instead of unavailable Go runtime oracle.",
+  "baseline_drift": {},
+  "mode": "canonical scheduling state, UTC timestamp representation"
+}

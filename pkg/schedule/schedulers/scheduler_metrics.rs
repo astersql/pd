@@ -530,6 +530,28 @@ impl SchedulerMetrics {
             }
         }
     }
+    /// Facade hotspot cleanup affects only HotPendingSum; other scheduler
+    /// observations survive. None resets the vector and its tracked label set.
+    pub fn delete_hot_pending_metrics(&self, store: Option<&str>) {
+        let mut families = self.families.lock().unwrap_or_else(|p| p.into_inner());
+        let family = families
+            .get_mut("pd_scheduler_hot_pending_sum")
+            .expect("fixed family");
+        if let Some(store) = store {
+            family.series.retain(|labels| {
+                if labels[0] != store {
+                    return true;
+                }
+                family
+                    .vector
+                    .remove(&labels.iter().map(String::as_str).collect::<Vec<_>>());
+                false
+            });
+        } else {
+            family.vector.reset();
+            family.series.clear();
+        }
+    }
     pub fn delete_store_metrics(&self, store: &str) {
         for family in self
             .families

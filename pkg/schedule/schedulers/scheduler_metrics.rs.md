@@ -58,3 +58,7 @@ publication and its bury-race test. Fixed definitions and cleanup membership are
 in [task_110.json](../../../docs/rust/schedule-execution/fixtures/task_110.json).
 [Task evidence](../../../docs/rust/schedule-execution/task-110.md) records actual
 failure, mutation, success, registry fault, canonical component and baseline tests.
+
+任务116补充`delete_hot_pending_metrics(Some(store))`与`None`：供canonical
+schedule门面执行按store清理或全pending reset，同步维护vector及series集合，
+不重置其它scheduler观测。验证见[任务116](../../../docs/rust/schedule-execution/task-116.md)。
