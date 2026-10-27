@@ -1,0 +1,13 @@
+{
+  "readonly_file_count": 1103,
+  "all_path_and_content_hashes_unchanged": true,
+  "go_module_git_status": "",
+  "diff_check_exit": 0,
+  "markdown_links_valid": true,
+  "cargo_lock_remote_versions_unchanged": true,
+  "workspace_passed": 1830,
+  "workspace_failed": 0,
+  "workspace_ignored": 1,
+  "post_test_readonly_hashes_unchanged": true,
+  "own_slot_released": true
+}

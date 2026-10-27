@@ -1,0 +1,34 @@
+[
+  {
+    "command": "cargo fmt --all",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "green-0.log.gz",
+    "sha256": "2145169e29a2619e37313746cf910bfc39c2b933bb7a43b939846fd2ef1a42af",
+    "test_summaries": []
+  },
+  {
+    "command": "cargo test -p astersql-pd-progress --locked --lib task_130 -- --nocapture",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "green-1.log.gz",
+    "sha256": "bd3ace7a56bf4b36163b05e8a28b0bd54ec1a6095f12f61ab86acb404268bb99",
+    "test_summaries": [
+      "test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+    ]
+  },
+  {
+    "command": "cargo test -p astersql-pd-progress --locked",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "green-2.log.gz",
+    "sha256": "8add03911594f98af5c1cc69fad36bd1fa11b238384ebd0eca3f1938d5b63506",
+    "test_summaries": [
+      "test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+    ]
+  }
+]

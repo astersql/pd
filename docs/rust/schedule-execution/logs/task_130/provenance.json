@@ -1,0 +1,13 @@
+{
+  "source_commit": "238d27829e48c98bdd2647b8dd835f5b36a00465",
+  "baseline_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "evidence": "Go read-only source-derived; no Go execution or runtime differential claimed",
+  "source_sha256": {
+    "pkg/progress/indicator.go": "bd093cc179fd5edfd81f2289f8d8a3e0417221834c5a0c1cbcac221f17224727",
+    "pkg/progress/progress.go": "57c3b472bdf1fb567d9189f7da401e5d415ed31ed1b2ca080afdbda50e75864e",
+    "pkg/progress/indicator_test.go": "f0dd8dc754ac4988c8900745efb30b1f991dff647a6f7ea6fa22c98b57249fa2",
+    "pkg/progress/progress_test.go": "a78324c856d7abe1ed1fb0b12a26e2a51bacc9a95eaae6093d7218133de0a4a2"
+  },
+  "fixture_sha256": "67dd7bdd11db9c647fea539dd5a6c531c2bd12dbeb334386aefb1fd386f95d74",
+  "normalization": "none; max denotes f64::MAX; explicit host clock epoch+7s"
+}

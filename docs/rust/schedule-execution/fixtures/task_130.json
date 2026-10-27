@@ -1,0 +1,230 @@
+{
+  "evidence": "Go read-only source-derived; no Go execution or runtime differential claimed",
+  "source_commit": "238d27829e48c98bdd2647b8dd835f5b36a00465",
+  "cases": [
+    {
+      "id": "online",
+      "current": 0,
+      "total": 100,
+      "interval_seconds": 1,
+      "samples": [
+        10,
+        50,
+        120
+      ],
+      "expected": [
+        [
+          0.1,
+          10,
+          9
+        ],
+        [
+          0.5,
+          25,
+          2
+        ],
+        [
+          1,
+          40,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "offline_cumulative",
+      "current": 0,
+      "total": 100,
+      "interval_seconds": 1,
+      "samples": [
+        0,
+        20,
+        100
+      ],
+      "expected": [
+        [
+          0,
+          0,
+          "max"
+        ],
+        [
+          0.2,
+          10,
+          8
+        ],
+        [
+          1,
+          33.333333333333336,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "negative_speed",
+      "current": 50,
+      "total": 100,
+      "interval_seconds": 1,
+      "samples": [
+        40,
+        20
+      ],
+      "expected": [
+        [
+          0.4,
+          0,
+          "max"
+        ],
+        [
+          0.2,
+          0,
+          "max"
+        ]
+      ]
+    },
+    {
+      "id": "zero_speed",
+      "current": 0,
+      "total": 100,
+      "interval_seconds": 1,
+      "samples": [
+        0,
+        0
+      ],
+      "expected": [
+        [
+          0,
+          0,
+          "max"
+        ],
+        [
+          0,
+          0,
+          "max"
+        ]
+      ]
+    },
+    {
+      "id": "zero_total",
+      "current": 0,
+      "total": 0,
+      "interval_seconds": 1,
+      "samples": [
+        0,
+        10
+      ],
+      "expected": [
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "finished_stagnant",
+      "current": 100,
+      "total": 100,
+      "interval_seconds": 1,
+      "samples": [
+        100
+      ],
+      "expected": [
+        [
+          1,
+          0,
+          "max"
+        ]
+      ]
+    },
+    {
+      "id": "initial_work",
+      "current": 10,
+      "total": 100,
+      "interval_seconds": 1,
+      "samples": [
+        30
+      ],
+      "expected": [
+        [
+          0.3,
+          20,
+          3.5
+        ]
+      ]
+    },
+    {
+      "id": "fractional_interval",
+      "current": 0,
+      "total": 100,
+      "interval_seconds": 0.5,
+      "samples": [
+        10,
+        50
+      ],
+      "expected": [
+        [
+          0.1,
+          20,
+          4.5
+        ],
+        [
+          0.5,
+          50,
+          1
+        ]
+      ]
+    },
+    {
+      "id": "clamp_interval",
+      "current": 0,
+      "total": 100,
+      "interval_seconds": 1000,
+      "samples": [
+        10
+      ],
+      "expected": [
+        [
+          0.1,
+          0,
+          "max"
+        ]
+      ]
+    },
+    {
+      "id": "negative_work",
+      "current": 0,
+      "total": 100,
+      "interval_seconds": 1,
+      "samples": [
+        -10
+      ],
+      "expected": [
+        [
+          -0.1,
+          0,
+          "max"
+        ]
+      ]
+    },
+    {
+      "id": "zero_total_nonzero",
+      "current": 10,
+      "total": 0,
+      "interval_seconds": 1,
+      "samples": [
+        10
+      ],
+      "expected": [
+        [
+          1,
+          0,
+          0
+        ]
+      ]
+    }
+  ]
+}
