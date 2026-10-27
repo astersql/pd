@@ -1,0 +1,1177 @@
+{
+  "provenance": "read-only Go source-derived; user-authorized substitution; no Go runtime oracle",
+  "clock_unix_nanos": 1000000000000,
+  "cases": [
+    {
+      "name": "unsupported-config",
+      "method": "POST",
+      "path": "/config",
+      "input": "",
+      "status": 400,
+      "body": "\"update config is not supported\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "unsupported-config",
+      "method": "POST",
+      "path": "/config",
+      "input": "{",
+      "status": 400,
+      "body": "\"update config is not supported\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "unsupported-config",
+      "method": "POST",
+      "path": "/config",
+      "input": "null",
+      "status": 400,
+      "body": "\"update config is not supported\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "unsupported-config",
+      "method": "POST",
+      "path": "/config",
+      "input": "{}",
+      "status": 400,
+      "body": "\"update config is not supported\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "unsupported-config",
+      "method": "POST",
+      "path": "/config",
+      "input": "[]",
+      "status": 400,
+      "body": "\"update config is not supported\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "unsupported-config",
+      "method": "POST",
+      "path": "/config?x=1",
+      "input": "",
+      "status": 400,
+      "body": "\"update config is not supported\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "unsupported-config",
+      "method": "POST",
+      "path": "/config?x=1",
+      "input": "{",
+      "status": 400,
+      "body": "\"update config is not supported\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "unsupported-config",
+      "method": "POST",
+      "path": "/config?x=1",
+      "input": "null",
+      "status": 400,
+      "body": "\"update config is not supported\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "unsupported-config",
+      "method": "POST",
+      "path": "/config?x=1",
+      "input": "{}",
+      "status": 400,
+      "body": "\"update config is not supported\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "unsupported-config",
+      "method": "POST",
+      "path": "/config?x=1",
+      "input": "[]",
+      "status": 400,
+      "body": "\"update config is not supported\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "unknown-route",
+      "method": "GET",
+      "path": "/",
+      "input": "{",
+      "status": 404,
+      "body": "404 page not found\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "unknown-route",
+      "method": "GET",
+      "path": "/missing",
+      "input": "{",
+      "status": 404,
+      "body": "404 page not found\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "unknown-route",
+      "method": "GET",
+      "path": "/config/",
+      "input": "{",
+      "status": 404,
+      "body": "404 page not found\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "unknown-route",
+      "method": "GET",
+      "path": "/job/",
+      "input": "{",
+      "status": 404,
+      "body": "404 page not found\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "unknown-route",
+      "method": "GET",
+      "path": "/LIST",
+      "input": "{",
+      "status": 404,
+      "body": "404 page not found\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "wrong-method",
+      "method": "GET",
+      "path": "/config",
+      "input": "{",
+      "status": 405,
+      "body": "",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "wrong-method",
+      "method": "PUT",
+      "path": "/config",
+      "input": "{",
+      "status": 405,
+      "body": "",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "wrong-method",
+      "method": "DELETE",
+      "path": "/config",
+      "input": "{",
+      "status": 405,
+      "body": "",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "wrong-method",
+      "method": "HEAD",
+      "path": "/config",
+      "input": "{",
+      "status": 405,
+      "body": "",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "wrong-method",
+      "method": "OPTIONS",
+      "path": "/config",
+      "input": "{",
+      "status": 405,
+      "body": "",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "wrong-method",
+      "method": "PATCH",
+      "path": "/config",
+      "input": "{",
+      "status": 405,
+      "body": "",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "wrong-method",
+      "method": "POST",
+      "path": "/list",
+      "input": "{",
+      "status": 405,
+      "body": "",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "wrong-method",
+      "method": "PUT",
+      "path": "/list",
+      "input": "{",
+      "status": 405,
+      "body": "",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "wrong-method",
+      "method": "DELETE",
+      "path": "/list",
+      "input": "{",
+      "status": 405,
+      "body": "",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "wrong-method",
+      "method": "HEAD",
+      "path": "/list",
+      "input": "{",
+      "status": 405,
+      "body": "",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "wrong-method",
+      "method": "OPTIONS",
+      "path": "/list",
+      "input": "{",
+      "status": 405,
+      "body": "",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "wrong-method",
+      "method": "PATCH",
+      "path": "/list",
+      "input": "{",
+      "status": 405,
+      "body": "",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "wrong-method",
+      "method": "GET",
+      "path": "/job",
+      "input": "{",
+      "status": 405,
+      "body": "",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "wrong-method",
+      "method": "POST",
+      "path": "/job",
+      "input": "{",
+      "status": 405,
+      "body": "",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "wrong-method",
+      "method": "HEAD",
+      "path": "/job",
+      "input": "{",
+      "status": 405,
+      "body": "",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "wrong-method",
+      "method": "OPTIONS",
+      "path": "/job",
+      "input": "{",
+      "status": 405,
+      "body": "",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "wrong-method",
+      "method": "PATCH",
+      "path": "/job",
+      "input": "{",
+      "status": 405,
+      "body": "",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "empty-list",
+      "method": "GET",
+      "path": "/list?x=1",
+      "input": "{",
+      "status": 200,
+      "body": "[]\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "required-engine",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":null,\"rule\":\"leader-scatter\",\"alias\":\"work\",\"start-key\":\"a\",\"end-key\":\"z\"}",
+      "status": 400,
+      "body": "\"engine is required and must be a string\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "required-engine",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":false,\"rule\":\"leader-scatter\",\"alias\":\"work\",\"start-key\":\"a\",\"end-key\":\"z\"}",
+      "status": 400,
+      "body": "\"engine is required and must be a string\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "required-engine",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":1,\"rule\":\"leader-scatter\",\"alias\":\"work\",\"start-key\":\"a\",\"end-key\":\"z\"}",
+      "status": 400,
+      "body": "\"engine is required and must be a string\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "required-engine",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":[],\"rule\":\"leader-scatter\",\"alias\":\"work\",\"start-key\":\"a\",\"end-key\":\"z\"}",
+      "status": 400,
+      "body": "\"engine is required and must be a string\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "required-engine",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":{},\"rule\":\"leader-scatter\",\"alias\":\"work\",\"start-key\":\"a\",\"end-key\":\"z\"}",
+      "status": 400,
+      "body": "\"engine is required and must be a string\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "required-engine",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"\",\"rule\":\"leader-scatter\",\"alias\":\"work\",\"start-key\":\"a\",\"end-key\":\"z\"}",
+      "status": 400,
+      "body": "\"engine is required and must be a string\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "required-rule",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":null,\"alias\":\"work\",\"start-key\":\"a\",\"end-key\":\"z\"}",
+      "status": 400,
+      "body": "\"rule is required and must be a string\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "required-rule",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":false,\"alias\":\"work\",\"start-key\":\"a\",\"end-key\":\"z\"}",
+      "status": 400,
+      "body": "\"rule is required and must be a string\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "required-rule",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":1,\"alias\":\"work\",\"start-key\":\"a\",\"end-key\":\"z\"}",
+      "status": 400,
+      "body": "\"rule is required and must be a string\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "required-rule",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":[],\"alias\":\"work\",\"start-key\":\"a\",\"end-key\":\"z\"}",
+      "status": 400,
+      "body": "\"rule is required and must be a string\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "required-rule",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":{},\"alias\":\"work\",\"start-key\":\"a\",\"end-key\":\"z\"}",
+      "status": 400,
+      "body": "\"rule is required and must be a string\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "required-rule",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":\"\",\"alias\":\"work\",\"start-key\":\"a\",\"end-key\":\"z\"}",
+      "status": 400,
+      "body": "\"rule is required and must be a string\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "required-alias",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":\"leader-scatter\",\"alias\":null,\"start-key\":\"a\",\"end-key\":\"z\"}",
+      "status": 400,
+      "body": "\"alias is required and must be a string\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "required-alias",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":\"leader-scatter\",\"alias\":false,\"start-key\":\"a\",\"end-key\":\"z\"}",
+      "status": 400,
+      "body": "\"alias is required and must be a string\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "required-alias",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":\"leader-scatter\",\"alias\":1,\"start-key\":\"a\",\"end-key\":\"z\"}",
+      "status": 400,
+      "body": "\"alias is required and must be a string\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "required-alias",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":\"leader-scatter\",\"alias\":[],\"start-key\":\"a\",\"end-key\":\"z\"}",
+      "status": 400,
+      "body": "\"alias is required and must be a string\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "required-alias",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":\"leader-scatter\",\"alias\":{},\"start-key\":\"a\",\"end-key\":\"z\"}",
+      "status": 400,
+      "body": "\"alias is required and must be a string\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "required-alias",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":\"leader-scatter\",\"alias\":\"\",\"start-key\":\"a\",\"end-key\":\"z\"}",
+      "status": 400,
+      "body": "\"alias is required and must be a string\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "invalid-engine",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"TiKV\",\"rule\":\"leader-scatter\",\"alias\":\"work\",\"start-key\":\"a\",\"end-key\":\"z\"}",
+      "status": 400,
+      "body": "\"engine:TiKV must be tikv or tiflash\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "invalid-engine",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"other\",\"rule\":\"leader-scatter\",\"alias\":\"work\",\"start-key\":\"a\",\"end-key\":\"z\"}",
+      "status": 400,
+      "body": "\"engine:other must be tikv or tiflash\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "invalid-rule",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":\"leader\",\"alias\":\"work\",\"start-key\":\"a\",\"end-key\":\"z\"}",
+      "status": 400,
+      "body": "\"rule:leader must be leader-scatter, learner-scatter or peer-scatter\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "invalid-rule",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":\"other\",\"alias\":\"work\",\"start-key\":\"a\",\"end-key\":\"z\"}",
+      "status": 400,
+      "body": "\"rule:other must be leader-scatter, learner-scatter or peer-scatter\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "timeout-type",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":\"leader-scatter\",\"alias\":\"work\",\"start-key\":\"a\",\"end-key\":\"z\",\"timeout\":null}",
+      "status": 400,
+      "body": "\"timeout must be a string\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "timeout-type",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":\"leader-scatter\",\"alias\":\"work\",\"start-key\":\"a\",\"end-key\":\"z\",\"timeout\":0}",
+      "status": 400,
+      "body": "\"timeout must be a string\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "timeout-type",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":\"leader-scatter\",\"alias\":\"work\",\"start-key\":\"a\",\"end-key\":\"z\",\"timeout\":[]}",
+      "status": 400,
+      "body": "\"timeout must be a string\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "timeout-type",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":\"leader-scatter\",\"alias\":\"work\",\"start-key\":\"a\",\"end-key\":\"z\",\"timeout\":{}}",
+      "status": 400,
+      "body": "\"timeout must be a string\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "timeout-parse",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":\"leader-scatter\",\"alias\":\"work\",\"start-key\":\"a\",\"end-key\":\"z\",\"timeout\":\"junk\"}",
+      "status": 400,
+      "body": "\"timeout:junk is invalid\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "timeout-parse",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":\"leader-scatter\",\"alias\":\"work\",\"start-key\":\"a\",\"end-key\":\"z\",\"timeout\":\"1\"}",
+      "status": 400,
+      "body": "\"timeout:1 is invalid\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "timeout-parse",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":\"leader-scatter\",\"alias\":\"work\",\"start-key\":\"a\",\"end-key\":\"z\",\"timeout\":\"9223372036854775808ns\"}",
+      "status": 400,
+      "body": "\"timeout:9223372036854775808ns is invalid\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "timeout-positive",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":\"leader-scatter\",\"alias\":\"work\",\"start-key\":\"a\",\"end-key\":\"z\",\"timeout\":\"0\"}",
+      "status": 400,
+      "body": "\"timeout must be positive\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "timeout-positive",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":\"leader-scatter\",\"alias\":\"work\",\"start-key\":\"a\",\"end-key\":\"z\",\"timeout\":\"0s\"}",
+      "status": 400,
+      "body": "\"timeout must be positive\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "timeout-positive",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":\"leader-scatter\",\"alias\":\"work\",\"start-key\":\"a\",\"end-key\":\"z\",\"timeout\":\"-1s\"}",
+      "status": 400,
+      "body": "\"timeout must be positive\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "key-type",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":\"leader-scatter\",\"alias\":\"work\",\"start-key\":null,\"end-key\":\"z\"}",
+      "status": 400,
+      "body": "\"[PD:common:ErrInvalidArgument]invalid argument for start-key: %!v(MISSING)\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "key-type",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":\"leader-scatter\",\"alias\":\"work\",\"start-key\":false,\"end-key\":\"z\"}",
+      "status": 400,
+      "body": "\"[PD:common:ErrInvalidArgument]invalid argument for start-key: %!v(MISSING)\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "key-type",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":\"leader-scatter\",\"alias\":\"work\",\"start-key\":1,\"end-key\":\"z\"}",
+      "status": 400,
+      "body": "\"[PD:common:ErrInvalidArgument]invalid argument for start-key: %!v(MISSING)\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "key-type",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":\"leader-scatter\",\"alias\":\"work\",\"start-key\":\"a\",\"end-key\":null}",
+      "status": 400,
+      "body": "\"[PD:common:ErrInvalidArgument]invalid argument for end-key: %!v(MISSING)\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "key-type",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":\"leader-scatter\",\"alias\":\"work\",\"start-key\":\"a\",\"end-key\":false}",
+      "status": 400,
+      "body": "\"[PD:common:ErrInvalidArgument]invalid argument for end-key: %!v(MISSING)\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "key-type",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":\"leader-scatter\",\"alias\":\"work\",\"start-key\":\"a\",\"end-key\":1}",
+      "status": 400,
+      "body": "\"[PD:common:ErrInvalidArgument]invalid argument for end-key: %!v(MISSING)\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "ranges-count",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":\"leader-scatter\",\"alias\":\"work\",\"start-key\":\"a,b\",\"end-key\":\"z\"}",
+      "status": 400,
+      "body": "\"[PD:common:ErrInvalidArgument]invalid argument for a,b: z\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "escape-first",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":\"leader-scatter\",\"alias\":\"work\",\"start-key\":\"%zz\",\"end-key\":\"z\"}",
+      "status": 400,
+      "body": "\"invalid URL escape \\\"%zz\\\"\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "escape-second",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":\"leader-scatter\",\"alias\":\"work\",\"start-key\":\"%25zz\",\"end-key\":\"z\"}",
+      "status": 400,
+      "body": "\"[PD:url:ErrQueryUnescape]inverse transformation of QueryEscape error: invalid URL escape \\\"%zz\\\"\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "valid-tikv-leader-scatter",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":\"leader-scatter\",\"alias\":\"work\",\"start-key\":\"a\",\"end-key\":\"z\"}",
+      "status": 200,
+      "body": "null\n",
+      "code": null,
+      "jobs": 1
+    },
+    {
+      "name": "valid-tikv-peer-scatter",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":\"peer-scatter\",\"alias\":\"work\",\"start-key\":\"a\",\"end-key\":\"z\"}",
+      "status": 200,
+      "body": "null\n",
+      "code": null,
+      "jobs": 1
+    },
+    {
+      "name": "valid-tikv-learner-scatter",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":\"learner-scatter\",\"alias\":\"work\",\"start-key\":\"a\",\"end-key\":\"z\"}",
+      "status": 200,
+      "body": "null\n",
+      "code": null,
+      "jobs": 1
+    },
+    {
+      "name": "valid-tiflash-leader-scatter",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tiflash\",\"rule\":\"leader-scatter\",\"alias\":\"work\",\"start-key\":\"a\",\"end-key\":\"z\"}",
+      "status": 200,
+      "body": "null\n",
+      "code": null,
+      "jobs": 1
+    },
+    {
+      "name": "valid-tiflash-peer-scatter",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tiflash\",\"rule\":\"peer-scatter\",\"alias\":\"work\",\"start-key\":\"a\",\"end-key\":\"z\"}",
+      "status": 200,
+      "body": "null\n",
+      "code": null,
+      "jobs": 1
+    },
+    {
+      "name": "valid-tiflash-learner-scatter",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tiflash\",\"rule\":\"learner-scatter\",\"alias\":\"work\",\"start-key\":\"a\",\"end-key\":\"z\"}",
+      "status": 200,
+      "body": "null\n",
+      "code": null,
+      "jobs": 1
+    },
+    {
+      "name": "timeout-valid",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":\"leader-scatter\",\"alias\":\"work\",\"start-key\":\"a\",\"end-key\":\"z\",\"timeout\":\"\"}",
+      "status": 200,
+      "body": "null\n",
+      "code": null,
+      "jobs": 1
+    },
+    {
+      "name": "timeout-valid",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":\"leader-scatter\",\"alias\":\"work\",\"start-key\":\"a\",\"end-key\":\"z\",\"timeout\":\"1.5s\"}",
+      "status": 200,
+      "body": "null\n",
+      "code": null,
+      "jobs": 1
+    },
+    {
+      "name": "timeout-valid",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":\"leader-scatter\",\"alias\":\"work\",\"start-key\":\"a\",\"end-key\":\"z\",\"timeout\":\"1h2m3.000000004s\"}",
+      "status": 200,
+      "body": "null\n",
+      "code": null,
+      "jobs": 1
+    },
+    {
+      "name": "delete-invalid",
+      "method": "DELETE",
+      "path": "/job",
+      "input": "{",
+      "status": 400,
+      "body": "\"job-id is required\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "delete-invalid",
+      "method": "DELETE",
+      "path": "/job?job-id=",
+      "input": "{",
+      "status": 400,
+      "body": "\"job-id is required\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "delete-invalid",
+      "method": "DELETE",
+      "path": "/job?job-id=%zz",
+      "input": "{",
+      "status": 400,
+      "body": "\"job-id is required\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "delete-invalid",
+      "method": "DELETE",
+      "path": "/job?job-id=x",
+      "input": "{",
+      "status": 400,
+      "body": "\"invalid job-id\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "delete-invalid",
+      "method": "DELETE",
+      "path": "/job?job-id=-1",
+      "input": "{",
+      "status": 400,
+      "body": "\"invalid job-id\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "delete-invalid",
+      "method": "DELETE",
+      "path": "/job?job-id=+1",
+      "input": "{",
+      "status": 400,
+      "body": "\"invalid job-id\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "delete-invalid",
+      "method": "DELETE",
+      "path": "/job?job-id=%2B1",
+      "input": "{",
+      "status": 400,
+      "body": "\"invalid job-id\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "delete-invalid",
+      "method": "DELETE",
+      "path": "/job?job-id=18446744073709551616",
+      "input": "{",
+      "status": 400,
+      "body": "\"invalid job-id\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "delete-invalid",
+      "method": "DELETE",
+      "path": "/job?job-id=1_0",
+      "input": "{",
+      "status": 400,
+      "body": "\"invalid job-id\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "delete-missing",
+      "method": "DELETE",
+      "path": "/job?job-id=0",
+      "input": "{",
+      "status": 500,
+      "body": "{}\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "delete-missing",
+      "method": "DELETE",
+      "path": "/job?job-id=1",
+      "input": "{",
+      "status": 500,
+      "body": "{}\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "delete-missing",
+      "method": "DELETE",
+      "path": "/job?job-id=0001",
+      "input": "{",
+      "status": 500,
+      "body": "{}\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "delete-missing",
+      "method": "DELETE",
+      "path": "/job?job-id=18446744073709551615",
+      "input": "{",
+      "status": 500,
+      "body": "{}\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "null-input",
+      "method": "PUT",
+      "path": "/job",
+      "input": "null",
+      "status": 400,
+      "body": "\"engine is required and must be a string\"\n",
+      "code": null,
+      "jobs": 0
+    },
+    {
+      "name": "syntax-eof",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{",
+      "status": 400,
+      "body": {
+        "code": "input",
+        "msg": "unexpected end of JSON input",
+        "data": {
+          "Offset": 1
+        }
+      },
+      "code": "input",
+      "jobs": 0
+    },
+    {
+      "name": "json-read-error",
+      "method": "PUT",
+      "path": "/job",
+      "input": "",
+      "status": 400,
+      "body": {
+        "code": "input",
+        "msg": "unexpected end of JSON input",
+        "data": {
+          "Offset": 0
+        }
+      },
+      "code": "input",
+      "jobs": 0
+    },
+    {
+      "name": "json-read-error",
+      "method": "PUT",
+      "path": "/job",
+      "input": "[]",
+      "status": 400,
+      "body": {
+        "code": "input",
+        "msg": "json: cannot unmarshal array into Go value of type map[string]interface {}",
+        "data": {
+          "Value": "array",
+          "Type": {},
+          "Offset": 1,
+          "Struct": "",
+          "Field": ""
+        }
+      },
+      "code": "input",
+      "jobs": 0
+    },
+    {
+      "name": "json-read-error",
+      "method": "PUT",
+      "path": "/job",
+      "input": "true",
+      "status": 400,
+      "body": {
+        "code": "input",
+        "msg": "json: cannot unmarshal bool into Go value of type map[string]interface {}",
+        "data": {
+          "Value": "bool",
+          "Type": {},
+          "Offset": 4,
+          "Struct": "",
+          "Field": ""
+        }
+      },
+      "code": "input",
+      "jobs": 0
+    },
+    {
+      "name": "json-read-error",
+      "method": "PUT",
+      "path": "/job",
+      "input": "1",
+      "status": 400,
+      "body": {
+        "code": "input",
+        "msg": "json: cannot unmarshal number into Go value of type map[string]interface {}",
+        "data": {
+          "Value": "number",
+          "Type": {},
+          "Offset": 1,
+          "Struct": "",
+          "Field": ""
+        }
+      },
+      "code": "input",
+      "jobs": 0
+    },
+    {
+      "name": "json-read-error",
+      "method": "PUT",
+      "path": "/job",
+      "input": "\"x\"",
+      "status": 400,
+      "body": {
+        "code": "input",
+        "msg": "json: cannot unmarshal string into Go value of type map[string]interface {}",
+        "data": {
+          "Value": "string",
+          "Type": {},
+          "Offset": 3,
+          "Struct": "",
+          "Field": ""
+        }
+      },
+      "code": "input",
+      "jobs": 0
+    },
+    {
+      "name": "range-wire-decoding",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":\"leader-scatter\",\"alias\":\"work\",\"start-key\":\"\",\"end-key\":\"\"}",
+      "status": 200,
+      "body": "null\n",
+      "code": null,
+      "jobs": 1,
+      "ranges": [
+        {
+          "start-key": "",
+          "end-key": ""
+        }
+      ]
+    },
+    {
+      "name": "range-wire-decoding",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":\"leader-scatter\",\"alias\":\"work\",\"start-key\":\"a,c\",\"end-key\":\"b,d\"}",
+      "status": 200,
+      "body": "null\n",
+      "code": null,
+      "jobs": 1,
+      "ranges": [
+        {
+          "start-key": "61",
+          "end-key": "62"
+        },
+        {
+          "start-key": "63",
+          "end-key": "64"
+        }
+      ]
+    },
+    {
+      "name": "range-wire-decoding",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":\"leader-scatter\",\"alias\":\"work\",\"start-key\":\"%252B\",\"end-key\":\"%00\"}",
+      "status": 200,
+      "body": "null\n",
+      "code": null,
+      "jobs": 1,
+      "ranges": [
+        {
+          "start-key": "2b",
+          "end-key": "00"
+        }
+      ]
+    },
+    {
+      "name": "range-wire-decoding",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":\"leader-scatter\",\"alias\":\"work\",\"start-key\":\"%2B\",\"end-key\":\"%ff\"}",
+      "status": 200,
+      "body": "null\n",
+      "code": null,
+      "jobs": 1,
+      "ranges": [
+        {
+          "start-key": "20",
+          "end-key": "ff"
+        }
+      ]
+    },
+    {
+      "name": "unknown-or-duplicate-fields",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":\"leader-scatter\",\"alias\":\"work\",\"start-key\":\"a\",\"end-key\":\"z\",\"unknown\":true}",
+      "status": 200,
+      "body": "null\n",
+      "code": null,
+      "jobs": 1
+    },
+    {
+      "name": "unknown-or-duplicate-fields",
+      "method": "PUT",
+      "path": "/job",
+      "input": "{\"engine\":\"tikv\",\"rule\":\"leader-scatter\",\"alias\":\"work\",\"start-key\":\"a\",\"end-key\":\"z\",\"engine\":\"tikv\"}",
+      "status": 200,
+      "body": "null\n",
+      "code": null,
+      "jobs": 1
+    }
+  ],
+  "normalization": "Exact status/header/response bytes; structured error and list JSON compare every field, ignoring only key order/whitespace. Fixed UTC clock; no time normalization. No Go execution."
+}

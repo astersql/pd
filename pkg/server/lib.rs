@@ -188,3 +188,8 @@ pub mod schedule_admin_evict_slow_trend;
 #[cfg(test)]
 #[path = "schedule_admin_evict_slow_trend_test.rs"]
 mod schedule_admin_evict_slow_trend_test;
+
+pub mod schedule_admin_balance_range;
+#[cfg(test)]
+#[path = "schedule_admin_balance_range_test.rs"]
+mod schedule_admin_balance_range_test;

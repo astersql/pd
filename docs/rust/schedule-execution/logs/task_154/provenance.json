@@ -1,0 +1,115 @@
+{
+  "source_commit": "bf178fdd018b2cb6bb8a4941080677fefe130091",
+  "evidence_kind": "read-only Go source-derived plus real Rust behavior/fault tests; explicit user authorization; no Go runtime oracle or runtime diff",
+  "sources": [
+    {
+      "path": "pkg/schedule/schedulers/balance_range.go",
+      "sha256": "ccd59a50facd035b9f50f69a3ac1e4a538540cbfa0fc0916840f0392224cdc2d",
+      "equals_source_commit": true
+    },
+    {
+      "path": "pkg/schedule/schedulers/base_scheduler.go",
+      "sha256": "1da013a2323c2756dcfd3b1203e91c481c58e80e258e3848d5db23dd261e6bdc",
+      "equals_source_commit": true
+    },
+    {
+      "path": "pkg/schedule/schedulers/balance_range_test.go",
+      "sha256": "a684a154f0b8faff1717551d3b92c2db17d8cf9de6cdb3e1f286009e00c8bcc1",
+      "equals_source_commit": true
+    },
+    {
+      "path": "pkg/schedule/schedulers/utils.go",
+      "sha256": "41a551f1b4f95e31a0f48cfc262a125e1132dfa546a73a9300b8eb7bd18834e1",
+      "equals_source_commit": true
+    },
+    {
+      "path": "pkg/utils/keyutil/keyrange.go",
+      "sha256": "bf3f4c9a134c67e165d80b4bcf9c01d5b5c6b377f29c0ed87b2d40143251ee21",
+      "equals_source_commit": true
+    },
+    {
+      "path": "pkg/core/region.go",
+      "sha256": "be6ed0dc77537d62926d21d9e4eef080ea0dbcc7dc97efb4dc26269a172f99d8",
+      "equals_source_commit": true
+    },
+    {
+      "path": "pkg/errs/errno.go",
+      "sha256": "5b72951756fa619ef642081d382cb1f73ebf1d6a170d6410a8444124767b94e7",
+      "equals_source_commit": true
+    },
+    {
+      "path": "pkg/utils/apiutil/apiutil.go",
+      "sha256": "edda400120b9f6cc3def157e8aefc74e4572b7971d01b521f41b6bee49e6bfe6",
+      "equals_source_commit": true
+    },
+    {
+      "path": "scripts/rust-etcd-fixture/main.go",
+      "sha256": "5140c93bc8df9ca8a6d888806c2e7a30b35a49512a70222caf32b57e0800cede",
+      "equals_source_commit": true
+    }
+  ],
+  "external_read_only_sources": [
+    {
+      "path": "/Users/xiangmin/go/pkg/mod/github.com/pingcap/errors@v0.11.5-0.20211224045212-9687c2b0f87c/compatible_shim.go",
+      "sha256": "c52865823b98cca4e1589ad0ab9b912234dba5d3d288d96b62ed2787082087f7"
+    },
+    {
+      "path": "/Users/xiangmin/go/pkg/mod/github.com/pingcap/errors@v0.11.5-0.20211224045212-9687c2b0f87c/normalize.go",
+      "sha256": "fbe3b81ff79535a83fc54825144779838c2746fb1233bbd46f57d4c8868d0bb8"
+    },
+    {
+      "path": "/Users/xiangmin/go/pkg/mod/github.com/pingcap/errors@v0.11.5-0.20211224045212-9687c2b0f87c/errors.go",
+      "sha256": "fe2a09e42bc09aeee94663326eb93cf17aa96694b3ff1d02f6fdcaaea1ef057f"
+    },
+    {
+      "path": "/Users/xiangmin/go/pkg/mod/github.com/pingcap/errors@v0.11.5-0.20211224045212-9687c2b0f87c/juju_adaptor.go",
+      "sha256": "1f512be961a11ea0f1f5a231647e8139784606a177d9a498083a4964bea19633"
+    },
+    {
+      "path": "/Users/xiangmin/go/pkg/mod/github.com/unrolled/render@v1.0.1/engine.go",
+      "sha256": "dd08b35b28d90e16f9b4a9fe270b8a3bab02be35fe1eadc6f1715c89d0755f09"
+    },
+    {
+      "path": "/usr/local/go/src/net/url/url.go",
+      "sha256": "765a673b2bad096993ecd859ac84d9f9c3b8b70dc8ae53a14344f90d191c4bf5"
+    },
+    {
+      "path": "/usr/local/go/src/strconv/atoi.go",
+      "sha256": "51240f70d2b366dad4e9b2c93b58345e0ad34084fb144a203f90866d7ae16f67"
+    },
+    {
+      "path": "/usr/local/go/src/net/http/server.go",
+      "sha256": "d0f1d63484dc3b00c2d9498752352c078b194bcd56ee49e940967819f443277b"
+    },
+    {
+      "path": "/Users/xiangmin/go/pkg/mod/cache/download/github.com/gorilla/mux/@v/v1.7.4.zip",
+      "sha256": "ce43206d8f9e80fa758bc809340c6aaa7d692b065428232fbb08459d72823042"
+    }
+  ],
+  "fixtures": [
+    {
+      "path": "docs/rust/schedule-execution/fixtures/task_154.json",
+      "sha256": "d1e6c24c3ad79b61f5e4cc64b6091282836d951a6919d6da9d304974416528e5"
+    }
+  ],
+  "oracle_index_sha256": "2d1a930742291e7047a864aa2246e7e22c612cb6583249b7edb42945b494b450",
+  "dependency": {
+    "task": 153,
+    "commit": "bf178fdd0",
+    "evidence": "docs/rust/schedule-execution/task-153.md",
+    "verified_commands": 7,
+    "all_exit_zero": true,
+    "verified_manifest_sha256": "610c665e9b15697a27d23ddd4cf7b87580c7b3bd9ca9ae8f1216ea4248102a8e"
+  },
+  "mode": "default features; domain shared by classic/nextgen; both conf-change protocol command forms tested",
+  "remote_dependency_changes": false,
+  "source_review_corrections": [
+    "unrolled/render v1.0.1 JSON.Render appends newline in IndentJSON mode",
+    "FastGenByArgs -> SuspendStack -> withStack hides inner Error.MarshalJSON; delete errors render {}"
+  ],
+  "go_tool_execution": false,
+  "http_go_oracle_execution": false,
+  "existing_go_etcd_fixture_reused": true,
+  "gorilla_zip_read": "Read mux.go in memory from pinned v1.7.4 ZIP; no Go file extracted or modified.",
+  "etcd_fixture_read_only_audit": "Existing test binary only writes readiness/log/WAL data in its fixture directory; source reviewed, no Go/module file writes or failpoints."
+}
