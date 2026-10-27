@@ -1,0 +1,62 @@
+[
+  {
+    "command": "cargo fmt --all",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "interrupted-0.log.gz",
+    "sha256": "d3a2fd9fe5c3219d5e561a541d6d3bf5fc5b0729a4fa8cf3fd67398237b57966",
+    "test_summaries": []
+  },
+  {
+    "command": "cargo test -p astersql-pd-server --locked --lib task_137 -- --nocapture",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "interrupted-1.log.gz",
+    "sha256": "fc11a83a20c5a4e805d5ca4c33fc0f7b1f5852dd8912ea76eac4f6a6299e04fa",
+    "test_summaries": [
+      "test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 50 filtered out; finished in 0.01s"
+    ]
+  },
+  {
+    "command": "cargo test -p astersql-pd-server --locked",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "interrupted-2.log.gz",
+    "sha256": "f276389a25bcdb8b92b17003fdc287694f4ac3d6ff2dce9082a0b00274b1b79a",
+    "test_summaries": [
+      "test result: ok. 54 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.43s",
+      "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.21s",
+      "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+    ]
+  },
+  {
+    "command": "cargo metadata --format-version 1 --no-deps",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "interrupted-3.log.gz",
+    "sha256": "7ed9a0edd2e927b4ca96e00f4fb88316cce798406b5ac66657c3041816cc18e6",
+    "test_summaries": []
+  },
+  {
+    "command": "cargo fmt --all -- --check",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "interrupted-4.log.gz",
+    "sha256": "36da27db4705631b57c3d9056a753eb3d31bca8f250eaee5cc8c5396499930ad",
+    "test_summaries": []
+  },
+  {
+    "command": "cargo check --workspace --locked",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "interrupted-5.log.gz",
+    "sha256": "0c842179cf72e7a2818f11fd27d5bb3bcb172ecf0859e40f65bc20056cd3ef7f",
+    "test_summaries": []
+  }
+]

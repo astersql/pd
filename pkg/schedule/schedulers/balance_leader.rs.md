@@ -38,8 +38,9 @@ sourceScore/targetScore metadata and require store health checks.
 
 As in the Go source, only the default scheduler subtracts registered key ranges,
 and only from its first configured range. Empty sampling ranges retain canonical
-core's whole-keyspace meaning. The scheduler does not silently introduce new
-range semantics. Follower-score ties have no Go observable stable order; tests
+core's whole-keyspace meaning. Deserialization and `set_ranges` preserve an explicit
+empty list through persistence and reload (task 137). Follower-score ties have no Go
+observable stable order; tests
 accept any eligible tied follower while candidate ordering is tested exactly.
 
 The source contract is `balance_leader.go`, its adjacent tests, `utils.go` and

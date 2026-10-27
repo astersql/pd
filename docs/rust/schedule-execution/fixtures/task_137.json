@@ -1,0 +1,417 @@
+{
+  "evidence": "Go source derived; no new Go runtime oracle",
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "normalization": "JSON whitespace and object key order only; routing bodies exact",
+  "cases": [
+    {
+      "name": "list",
+      "method": "GET",
+      "path": "/list",
+      "input": "",
+      "status": 200,
+      "batch": 4,
+      "json": {
+        "ranges": [
+          {
+            "end-key": "",
+            "start-key": ""
+          }
+        ],
+        "batch": 4
+      }
+    },
+    {
+      "name": "route-GET/config",
+      "method": "GET",
+      "path": "/config",
+      "input": "",
+      "status": 405,
+      "batch": 4,
+      "body": ""
+    },
+    {
+      "name": "route-POST/list",
+      "method": "POST",
+      "path": "/list",
+      "input": "",
+      "status": 405,
+      "batch": 4,
+      "body": ""
+    },
+    {
+      "name": "route-PUT/config",
+      "method": "PUT",
+      "path": "/config",
+      "input": "",
+      "status": 405,
+      "batch": 4,
+      "body": ""
+    },
+    {
+      "name": "route-HEAD/list",
+      "method": "HEAD",
+      "path": "/list",
+      "input": "",
+      "status": 405,
+      "batch": 4,
+      "body": ""
+    },
+    {
+      "name": "route-OPTIONS/config",
+      "method": "OPTIONS",
+      "path": "/config",
+      "input": "",
+      "status": 405,
+      "batch": 4,
+      "body": ""
+    },
+    {
+      "name": "route-GET/missing",
+      "method": "GET",
+      "path": "/missing",
+      "input": "",
+      "status": 404,
+      "batch": 4,
+      "body": "404 page not found\n"
+    },
+    {
+      "name": "route-GET/list/",
+      "method": "GET",
+      "path": "/list/",
+      "input": "",
+      "status": 404,
+      "batch": 4,
+      "body": "404 page not found\n"
+    },
+    {
+      "name": "patch-8",
+      "method": "POST",
+      "path": "/config",
+      "input": "{}",
+      "status": 400,
+      "batch": 4,
+      "json": "Config item is not found."
+    },
+    {
+      "name": "patch-9",
+      "method": "POST",
+      "path": "/config",
+      "input": "null",
+      "status": 400,
+      "batch": 4,
+      "json": "Config item is not found."
+    },
+    {
+      "name": "patch-10",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"unknown\":1}",
+      "status": 400,
+      "batch": 4,
+      "json": "Config item is not found."
+    },
+    {
+      "name": "patch-11",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\":4}",
+      "status": 200,
+      "batch": 4,
+      "json": "Config is the same with origin, so do nothing."
+    },
+    {
+      "name": "patch-12",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"BATCH\":4}",
+      "status": 400,
+      "batch": 4,
+      "json": "Config item is not found."
+    },
+    {
+      "name": "patch-13",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\":null}",
+      "status": 200,
+      "batch": 4,
+      "json": "Config is the same with origin, so do nothing."
+    },
+    {
+      "name": "patch-14",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\":0}",
+      "status": 400,
+      "batch": 4,
+      "json": "invalid batch size which should be an integer between 1 and 100"
+    },
+    {
+      "name": "patch-15",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\":101}",
+      "status": 400,
+      "batch": 4,
+      "json": "invalid batch size which should be an integer between 1 and 100"
+    },
+    {
+      "name": "patch-16",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\":-1}",
+      "status": 400,
+      "batch": 4,
+      "json": "invalid batch size which should be an integer between 1 and 100"
+    },
+    {
+      "name": "patch-17",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\":\"2\"}",
+      "status": 500,
+      "batch": 4,
+      "json": "json: cannot unmarshal string into Go struct field balanceLeaderSchedulerParam.batch of type int"
+    },
+    {
+      "name": "patch-18",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\":1.5}",
+      "status": 500,
+      "batch": 4,
+      "json": "json: cannot unmarshal number 1.5 into Go struct field balanceLeaderSchedulerParam.batch of type int"
+    },
+    {
+      "name": "patch-19",
+      "method": "POST",
+      "path": "/config",
+      "input": "{",
+      "status": 500,
+      "batch": 4,
+      "json": "unexpected end of JSON input"
+    },
+    {
+      "name": "patch-20",
+      "method": "POST",
+      "path": "/config",
+      "input": "",
+      "status": 500,
+      "batch": 4,
+      "json": "unexpected end of JSON input"
+    },
+    {
+      "name": "patch-21",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\":100,\"ignored\":1}",
+      "status": 200,
+      "batch": 100,
+      "json": "Config is updated."
+    },
+    {
+      "name": "patch-22",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"BaTcH\":1}",
+      "status": 200,
+      "batch": 1,
+      "json": "Config is updated."
+    },
+    {
+      "name": "patch-23",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\":1}",
+      "status": 200,
+      "batch": 1,
+      "json": "Config is the same with origin, so do nothing."
+    },
+    {
+      "name": "patch-24",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"ranges\":[{\"start-key\":\"61\",\"end-key\":\"63\"}]}",
+      "status": 200,
+      "batch": 1,
+      "json": "Config is updated."
+    },
+    {
+      "name": "updated-list",
+      "method": "GET",
+      "path": "/list",
+      "input": "",
+      "status": 200,
+      "batch": 1,
+      "json": {
+        "ranges": [
+          {
+            "start-key": "61",
+            "end-key": "63"
+          }
+        ],
+        "batch": 1
+      }
+    },
+    {
+      "name": "empty-ranges",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"ranges\":[]}",
+      "status": 200,
+      "batch": 1,
+      "json": "Config is updated."
+    },
+    {
+      "name": "empty-list",
+      "method": "GET",
+      "path": "/list",
+      "input": "",
+      "status": 200,
+      "batch": 1,
+      "json": {
+        "ranges": [],
+        "batch": 1
+      }
+    },
+    {
+      "name": "query",
+      "method": "GET",
+      "path": "/list?ignored=yes",
+      "input": "",
+      "status": 200,
+      "batch": 1,
+      "json": {
+        "ranges": [],
+        "batch": 1
+      }
+    },
+    {
+      "name": "invalid-range-29",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"ranges\":\"bad\"}",
+      "status": 500,
+      "batch": 1,
+      "json": "json: cannot unmarshal string into Go struct field balanceLeaderSchedulerParam.ranges of type []keyutil.KeyRange"
+    },
+    {
+      "name": "invalid-range-30",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"ranges\":[{\"start-key\":\"a\"}]}",
+      "status": 500,
+      "batch": 1,
+      "json": "encoding/hex: odd length hex string"
+    },
+    {
+      "name": "invalid-range-31",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"ranges\":[{\"start-key\":\"zz\"}]}",
+      "status": 500,
+      "batch": 1,
+      "json": "encoding/hex: invalid byte: U+007A 'z'"
+    },
+    {
+      "name": "invalid-range-32",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"ranges\":[{\"ignored\":42}]}",
+      "status": 500,
+      "batch": 1,
+      "json": "json: cannot unmarshal number into Go value of type string"
+    }
+  ],
+  "decision_cases": [
+    {
+      "name": "one",
+      "batch": 1,
+      "ranges": [
+        [
+          "a",
+          "i"
+        ]
+      ],
+      "expected": 1
+    },
+    {
+      "name": "four",
+      "batch": 4,
+      "ranges": [
+        [
+          "a",
+          "i"
+        ]
+      ],
+      "expected": 4
+    },
+    {
+      "name": "max",
+      "batch": 100,
+      "ranges": [
+        [
+          "a",
+          "i"
+        ]
+      ],
+      "expected": 8
+    },
+    {
+      "name": "outside",
+      "batch": 4,
+      "ranges": [
+        [
+          "x",
+          "z"
+        ]
+      ],
+      "expected": 0
+    },
+    {
+      "name": "one-range",
+      "batch": 4,
+      "ranges": [
+        [
+          "b",
+          "c"
+        ]
+      ],
+      "expected": 1
+    },
+    {
+      "name": "multi",
+      "batch": 4,
+      "ranges": [
+        [
+          "a",
+          "b"
+        ],
+        [
+          "d",
+          "e"
+        ]
+      ],
+      "expected": 2
+    },
+    {
+      "name": "empty-range-list",
+      "batch": 1,
+      "ranges": [],
+      "empty": true,
+      "expected": 1
+    }
+  ],
+  "defaults": {
+    "counts": [
+      100,
+      0,
+      0
+    ],
+    "sizes": [
+      1000,
+      0,
+      0
+    ]
+  }
+}

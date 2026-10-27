@@ -47,17 +47,16 @@ impl From<BalanceLeaderConfig> for LeaderConfigJson {
 impl TryFrom<LeaderConfigJson> for BalanceLeaderConfig {
     type Error = InvalidLeaderBatch;
     fn try_from(config: LeaderConfigJson) -> Result<Self, Self::Error> {
-        Self::new(
-            config
-                .ranges
-                .into_iter()
-                .map(|r| KeyRange {
-                    start_key: r.start_key,
-                    end_key: r.end_key,
-                })
-                .collect(),
-            config.batch,
-        )
+        let mut result = Self::new(vec![], config.batch)?;
+        result.ranges = config
+            .ranges
+            .into_iter()
+            .map(|r| KeyRange {
+                start_key: r.start_key,
+                end_key: r.end_key,
+            })
+            .collect();
+        Ok(result)
     }
 }
 impl Default for BalanceLeaderConfig {
@@ -76,6 +75,10 @@ impl BalanceLeaderConfig {
             c.ranges = ranges;
         }
         Ok(c)
+    }
+    /// Replace HTTP-configured ranges exactly, preserving an explicit empty list.
+    pub fn set_ranges(&mut self, ranges: Vec<KeyRange>) {
+        self.ranges = ranges;
     }
     pub fn batch(&self) -> usize {
         self.batch

@@ -1,0 +1,51 @@
+[
+  {
+    "command": "cargo fmt --all",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "corrected-fixture-0.log.gz",
+    "sha256": "7ba50acff52a9b8e9fc96f3a9bc288559cb5183a814ff36fc2c5ff0baaad098b",
+    "test_summaries": []
+  },
+  {
+    "command": "cargo test -p astersql-pd-server --locked --lib task_137 -- --nocapture",
+    "exit_code": 101,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "corrected-fixture-1.log.gz",
+    "sha256": "e38c134fdbe70c7baf2abc60d99fbc4d14eaa08852d21d7b8f06d56bfd7849d5",
+    "test_summaries": [
+      "test result: FAILED. 3 passed; 1 failed; 0 ignored; 0 measured; 50 filtered out; finished in 0.01s"
+    ]
+  },
+  {
+    "command": "cargo test -p astersql-pd-server --locked",
+    "exit_code": 101,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "corrected-fixture-2.log.gz",
+    "sha256": "eb805aeb10db8b4c9af88ee417042b9a4c15ce46488f336f7b8ec5b6c186415b",
+    "test_summaries": [
+      "test result: FAILED. 53 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.80s"
+    ]
+  },
+  {
+    "command": "cargo metadata --format-version 1 --no-deps",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "corrected-fixture-3.log.gz",
+    "sha256": "12a24acc1d44b8b793be02e5c986f0b418cb3884fd5ab18b40acb5d6292cf125",
+    "test_summaries": []
+  },
+  {
+    "command": "cargo fmt --all -- --check",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "corrected-fixture-4.log.gz",
+    "sha256": "414390ad6f0d6dc224907baf4707cee29d09d74df5a2969379ac6918f4580558",
+    "test_summaries": []
+  }
+]

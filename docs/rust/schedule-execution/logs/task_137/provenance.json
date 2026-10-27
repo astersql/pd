@@ -1,0 +1,27 @@
+{
+  "evidence": "read-only Go source/test deduction plus real Rust behavior and faults; user-authorized replacement of Go runtime oracle, no new Go execution",
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "sources": {
+    "pkg/schedule/schedulers/balance_leader.go": "904edff2c88b23fc228cd7d54b5054067c82254adc64855e47d1503e074c7a9f",
+    "pkg/schedule/schedulers/base_scheduler.go": "1da013a2323c2756dcfd3b1203e91c481c58e80e258e3848d5db23dd261e6bdc",
+    "pkg/schedule/schedulers/balance_leader_test.go": "c9b79231c539c2d0e8322f372ea1df30c950e41213cdd313e7e4f679a2858bb5",
+    "pkg/schedule/schedulers/config.go": "64024b895d0b48c030acd9684c3879993710856796eebe11595d4108073b6409",
+    "pkg/utils/keyutil/keyrange.go": "bf3f4c9a134c67e165d80b4bcf9c01d5b5c6b377f29c0ed87b2d40143251ee21",
+    "pkg/utils/reflectutil/tag.go": "7ceb657bc59e34853fb65dfabfef91c16f032eee425e787814fd1d2e4de0ea0c",
+    "pkg/core/region_tree.go": "a17ea7b65dfe4ca3e5dc01a88d6b8fefb85774fec4b45d69429eccbb7d1e1718"
+  },
+  "source_matches_baseline": {
+    "pkg/schedule/schedulers/balance_leader.go": true,
+    "pkg/schedule/schedulers/base_scheduler.go": true,
+    "pkg/schedule/schedulers/balance_leader_test.go": true,
+    "pkg/schedule/schedulers/config.go": true,
+    "pkg/utils/keyutil/keyrange.go": true,
+    "pkg/utils/reflectutil/tag.go": true,
+    "pkg/core/region_tree.go": true
+  },
+  "fixture_sha256": "2abbe727a8b2330c10106c2700a3ac777c55f34bb572db46e0c99a39cdea9ed1",
+  "dependency_commit": "75ffb0330",
+  "dependency_evidence_sha256": "bc5582e116a6ebdd1af2b9c4da8e62818f41abed6dd9c7edbb1faa2dc10c9835",
+  "oracle_index_sha256": "2d1a930742291e7047a864aa2246e7e22c612cb6583249b7edb42945b494b450",
+  "normalization": "Only JSON whitespace/object-key order; routing bodies, statuses and all JSON values compared"
+}

@@ -102,3 +102,8 @@ pub mod schedule_wire;
 #[cfg(test)]
 #[path = "schedule_wire_test.rs"]
 mod schedule_wire_test;
+
+pub mod schedule_admin_balance_leader;
+#[cfg(test)]
+#[path = "schedule_admin_balance_leader_test.rs"]
+mod schedule_admin_balance_leader_test;

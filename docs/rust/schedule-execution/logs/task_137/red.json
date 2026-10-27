@@ -1,0 +1,31 @@
+[
+  {
+    "command": "cargo generate-lockfile --offline",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "red-0.log.gz",
+    "sha256": "1518b170de963769c93b7baa75e07527ef97a7201b6edfe5374d5065ab699601",
+    "test_summaries": []
+  },
+  {
+    "command": "cargo fmt --all",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "red-1.log.gz",
+    "sha256": "be40f4373b20dd7b3f940bcf4608e3f794971e8c07910294655cda67e2cc98d3",
+    "test_summaries": []
+  },
+  {
+    "command": "cargo test -p astersql-pd-server --locked --lib task_137 -- --nocapture",
+    "exit_code": 101,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "red-2.log.gz",
+    "sha256": "aaa0c5385ab8762d9b8d0d1b7eb7af54b0e5a4f3a3baed63656d38b98bfc076f",
+    "test_summaries": [
+      "test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 50 filtered out; finished in 0.00s"
+    ]
+  }
+]
