@@ -31,6 +31,11 @@ name = "tso"
 path = "tso_test.rs"
 
 [dev-dependencies]
+astersql-pd-schedule-operator.workspace = true
+astersql-pd-schedule-checker.workspace = true
+astersql-pd-schedule-schedulers.workspace = true
+astersql-pd-schedule-hbstream.workspace = true
+async-trait.workspace = true
 astersql-pd-server.workspace = true
 astersql-pd-cluster.workspace = true
 astersql-pd-statistics.workspace = true
@@ -53,3 +58,7 @@ astersql-pd-storage-endpoint.workspace = true
 [[example]]
 name = "state_oracle"
 path = "state_oracle.rs"
+
+[[test]]
+name = "schedule_loop"
+path = "schedule_loop_test.rs"

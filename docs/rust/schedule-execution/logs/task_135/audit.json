@@ -1,0 +1,63 @@
+{
+  "readonly_file_count": 1101,
+  "file_set_and_hashes_equal": true,
+  "go_git_status": "",
+  "readonly_plans": [
+    ".plans/2026-10-25-\u8c03\u5ea6\u6267\u884c\u5185\u6838/plan.md",
+    ".plans/2026-10-25-\u8c03\u5ea6\u6267\u884c\u5185\u6838/15-\u4e3b\u9898\u9a8c\u6536/plan.md"
+  ],
+  "remote_dependencies_unchanged": true,
+  "own_locks_released": true,
+  "validation": [
+    {
+      "command": "cargo fmt --all",
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "command": "cargo test -p astersql-pd-compat-tests --locked --test schedule_loop -- --nocapture",
+      "passed": 3,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "command": "cargo test -p astersql-pd-schedule-schedulers --locked --lib -- --nocapture",
+      "passed": 192,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "command": "cargo test -p astersql-pd-compat-tests --locked",
+      "passed": 23,
+      "failed": 0,
+      "ignored": 1
+    },
+    {
+      "command": "cargo metadata --format-version 1 --no-deps",
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "command": "cargo fmt --all -- --check",
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "command": "cargo check --workspace --locked",
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "command": "cargo test --workspace --locked",
+      "passed": 1848,
+      "failed": 0,
+      "ignored": 1
+    }
+  ],
+  "markdown_links": "passed",
+  "diff_check_exit": 0
+}

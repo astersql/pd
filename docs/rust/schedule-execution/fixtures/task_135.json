@@ -1,0 +1,662 @@
+{
+  "evidence_kind": "source_assertion",
+  "go_execution": false,
+  "normalization": [],
+  "source_contracts": [
+    "server/cluster/cluster.go",
+    "pkg/schedule/operator/operator_controller.go",
+    "pkg/schedule/operator/operator.go",
+    "pkg/schedule/operator/step.go",
+    "pkg/schedule/checker/learner_checker.go",
+    "pkg/schedule/checker/joint_state_checker.go",
+    "pkg/schedule/schedulers/shuffle_leader.go",
+    "pkg/schedule/schedulers/shuffle_region.go",
+    "pkg/schedule/schedulers/grant_leader.go",
+    "pkg/schedule/schedulers/evict_leader.go"
+  ],
+  "cases": [
+    {
+      "name": "learner",
+      "v2_only": false,
+      "commands_v1": [
+        "peer"
+      ],
+      "commands_v2": [
+        "v2"
+      ],
+      "peers": [
+        [
+          1,
+          0,
+          false
+        ],
+        [
+          2,
+          0,
+          false
+        ],
+        [
+          3,
+          0,
+          false
+        ]
+      ],
+      "rules": [
+        [
+          "voter",
+          3,
+          false
+        ]
+      ],
+      "leader": 1,
+      "regions": 1,
+      "completed": 1,
+      "disappeared": 0,
+      "ranges": [
+        [
+          1,
+          "a",
+          "z"
+        ]
+      ],
+      "version": 10,
+      "size": 100,
+      "keys": 1000,
+      "conf_v1": 11,
+      "conf_v2": 11
+    },
+    {
+      "name": "joint-recovery",
+      "v2_only": true,
+      "commands_v1": [
+        "peer"
+      ],
+      "commands_v2": [
+        "v2"
+      ],
+      "peers": [
+        [
+          1,
+          0,
+          false
+        ],
+        [
+          2,
+          0,
+          false
+        ],
+        [
+          3,
+          1,
+          false
+        ]
+      ],
+      "rules": [
+        [
+          "voter",
+          2,
+          false
+        ],
+        [
+          "learner",
+          1,
+          false
+        ]
+      ],
+      "leader": 1,
+      "regions": 1,
+      "completed": 1,
+      "disappeared": 0,
+      "ranges": [
+        [
+          1,
+          "a",
+          "z"
+        ]
+      ],
+      "version": 10,
+      "size": 100,
+      "keys": 1000,
+      "conf_v1": 10,
+      "conf_v2": 12
+    },
+    {
+      "name": "move",
+      "v2_only": false,
+      "commands_v1": [
+        "peer",
+        "peer",
+        "peer"
+      ],
+      "commands_v2": [
+        "v2",
+        "v2",
+        "v2",
+        "v2"
+      ],
+      "peers": [
+        [
+          1,
+          0,
+          false
+        ],
+        [
+          2,
+          0,
+          false
+        ],
+        [
+          4,
+          0,
+          false
+        ]
+      ],
+      "rules": [
+        [
+          "voter",
+          3,
+          false
+        ]
+      ],
+      "leader": 1,
+      "regions": 1,
+      "completed": 1,
+      "disappeared": 0,
+      "ranges": [
+        [
+          1,
+          "a",
+          "z"
+        ]
+      ],
+      "version": 10,
+      "size": 100,
+      "keys": 1000,
+      "conf_v1": 13,
+      "conf_v2": 16
+    },
+    {
+      "name": "witness",
+      "v2_only": false,
+      "commands_v1": [
+        "witness"
+      ],
+      "commands_v2": [
+        "witness"
+      ],
+      "peers": [
+        [
+          1,
+          0,
+          false
+        ],
+        [
+          2,
+          0,
+          false
+        ],
+        [
+          3,
+          0,
+          true
+        ]
+      ],
+      "rules": [
+        [
+          "voter",
+          2,
+          false
+        ],
+        [
+          "voter",
+          1,
+          true
+        ]
+      ],
+      "leader": 1,
+      "regions": 1,
+      "completed": 1,
+      "disappeared": 0,
+      "ranges": [
+        [
+          1,
+          "a",
+          "z"
+        ]
+      ],
+      "version": 10,
+      "size": 100,
+      "keys": 1000,
+      "conf_v1": 11,
+      "conf_v2": 11
+    },
+    {
+      "name": "nonwitness",
+      "v2_only": false,
+      "commands_v1": [
+        "peer",
+        "peer",
+        "witness",
+        "peer"
+      ],
+      "commands_v2": [
+        "v2",
+        "witness",
+        "v2"
+      ],
+      "peers": [
+        [
+          1,
+          0,
+          false
+        ],
+        [
+          2,
+          0,
+          false
+        ],
+        [
+          3,
+          0,
+          false
+        ]
+      ],
+      "rules": [
+        [
+          "voter",
+          3,
+          false
+        ]
+      ],
+      "leader": 1,
+      "regions": 1,
+      "completed": 1,
+      "disappeared": 0,
+      "expected_v1": {
+        "commands_v1": [
+          "peer",
+          "peer"
+        ],
+        "completed": 0,
+        "peers": [
+          [
+            1,
+            0,
+            false
+          ],
+          [
+            2,
+            0,
+            false
+          ],
+          [
+            3,
+            1,
+            true
+          ]
+        ],
+        "rules": [
+          [
+            "voter",
+            2,
+            false
+          ],
+          [
+            "learner",
+            1,
+            true
+          ]
+        ],
+        "cancel_reason": "epoch not match",
+        "conf_v1": 12
+      },
+      "ranges": [
+        [
+          1,
+          "a",
+          "z"
+        ]
+      ],
+      "version": 10,
+      "size": 100,
+      "keys": 1000,
+      "conf_v1": 11,
+      "conf_v2": 13
+    },
+    {
+      "name": "split",
+      "v2_only": false,
+      "commands_v1": [
+        "split"
+      ],
+      "commands_v2": [
+        "split"
+      ],
+      "peers": [
+        [
+          1,
+          0,
+          false
+        ],
+        [
+          2,
+          0,
+          false
+        ],
+        [
+          3,
+          0,
+          false
+        ]
+      ],
+      "rules": [
+        [
+          "voter",
+          3,
+          false
+        ]
+      ],
+      "leader": 1,
+      "regions": 2,
+      "completed": 1,
+      "disappeared": 0,
+      "ranges": [
+        [
+          1,
+          "a",
+          "m"
+        ],
+        [
+          2,
+          "m",
+          "z"
+        ]
+      ],
+      "version": 11,
+      "size": 50,
+      "keys": 500,
+      "conf_v1": 10,
+      "conf_v2": 10
+    },
+    {
+      "name": "merge",
+      "v2_only": false,
+      "commands_v1": [
+        "merge"
+      ],
+      "commands_v2": [
+        "merge"
+      ],
+      "peers": [
+        [
+          1,
+          0,
+          false
+        ],
+        [
+          2,
+          0,
+          false
+        ],
+        [
+          3,
+          0,
+          false
+        ]
+      ],
+      "rules": [
+        [
+          "voter",
+          3,
+          false
+        ]
+      ],
+      "leader": 1,
+      "regions": 1,
+      "completed": 1,
+      "disappeared": 0,
+      "ranges": [
+        [
+          2,
+          "a",
+          "z"
+        ]
+      ],
+      "version": 11,
+      "size": 200,
+      "keys": 2000,
+      "conf_v1": 10,
+      "conf_v2": 10
+    },
+    {
+      "name": "evict",
+      "v2_only": false,
+      "commands_v1": [
+        "leader"
+      ],
+      "commands_v2": [
+        "leader"
+      ],
+      "peers": [
+        [
+          1,
+          0,
+          false
+        ],
+        [
+          2,
+          0,
+          false
+        ],
+        [
+          3,
+          0,
+          false
+        ]
+      ],
+      "rules": [
+        [
+          "voter",
+          3,
+          false
+        ]
+      ],
+      "leader": 2,
+      "regions": 1,
+      "completed": 1,
+      "disappeared": 0,
+      "ranges": [
+        [
+          1,
+          "a",
+          "z"
+        ]
+      ],
+      "version": 10,
+      "size": 100,
+      "keys": 1000,
+      "conf_v1": 10,
+      "conf_v2": 10
+    },
+    {
+      "name": "grant",
+      "v2_only": false,
+      "commands_v1": [
+        "leader"
+      ],
+      "commands_v2": [
+        "leader"
+      ],
+      "peers": [
+        [
+          1,
+          0,
+          false
+        ],
+        [
+          2,
+          0,
+          false
+        ],
+        [
+          3,
+          0,
+          false
+        ]
+      ],
+      "rules": [
+        [
+          "voter",
+          3,
+          false
+        ]
+      ],
+      "leader": 2,
+      "regions": 1,
+      "completed": 1,
+      "disappeared": 0,
+      "ranges": [
+        [
+          1,
+          "a",
+          "z"
+        ]
+      ],
+      "version": 10,
+      "size": 100,
+      "keys": 1000,
+      "conf_v1": 10,
+      "conf_v2": 10
+    },
+    {
+      "name": "shuffle-leader",
+      "v2_only": false,
+      "commands_v1": [
+        "leader"
+      ],
+      "commands_v2": [
+        "leader"
+      ],
+      "peers": [
+        [
+          1,
+          0,
+          false
+        ],
+        [
+          2,
+          0,
+          false
+        ],
+        [
+          3,
+          0,
+          false
+        ]
+      ],
+      "rules": [
+        [
+          "voter",
+          3,
+          false
+        ]
+      ],
+      "leader": 2,
+      "regions": 1,
+      "completed": 1,
+      "disappeared": 0,
+      "ranges": [
+        [
+          1,
+          "a",
+          "z"
+        ]
+      ],
+      "version": 10,
+      "size": 100,
+      "keys": 1000,
+      "conf_v1": 10,
+      "conf_v2": 10
+    },
+    {
+      "name": "shuffle-region",
+      "v2_only": false,
+      "commands_v1": [
+        "peer",
+        "peer",
+        "peer"
+      ],
+      "commands_v2": [
+        "v2",
+        "v2",
+        "v2",
+        "v2"
+      ],
+      "peers": [
+        [
+          1,
+          0,
+          false
+        ],
+        [
+          3,
+          0,
+          false
+        ],
+        [
+          4,
+          0,
+          false
+        ]
+      ],
+      "rules": [
+        [
+          "voter",
+          3,
+          false
+        ]
+      ],
+      "leader": 1,
+      "regions": 1,
+      "completed": 1,
+      "disappeared": 0,
+      "ranges": [
+        [
+          1,
+          "a",
+          "z"
+        ]
+      ],
+      "version": 10,
+      "size": 100,
+      "keys": 1000,
+      "conf_v1": 13,
+      "conf_v2": 16
+    }
+  ],
+  "inputs": {
+    "cluster_id": 135,
+    "stores": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "region_id": 1,
+    "range": [
+      "a",
+      "z"
+    ],
+    "version": 10,
+    "conf_ver": 10,
+    "size_mib": 100,
+    "keys": 1000,
+    "now_unix_nanos": 1000000000000,
+    "enable_joint_consensus": true,
+    "enable_placement_rules": false,
+    "max_replicas": 3,
+    "random_index": "0 except shuffle-leader uses 1 modulo length",
+    "shuffle": "identity",
+    "allocation_peer_id": 14
+  }
+}

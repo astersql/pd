@@ -1,0 +1,174 @@
+{
+  "scope": "18 concrete policy behavioral suites; composition separately covers 4 scheduler policies plus checker/operator/range stories; no claim of 18 full-process cluster simulations",
+  "scheduler_count": 18,
+  "policies": [
+    {
+      "type": "balance-leader-scheduler",
+      "tests": [
+        "task_070_test::task_070_behavior_cases"
+      ],
+      "fixtures": {
+        "docs/rust/schedule-execution/fixtures/task_070.json": "dd4e945063217263dda8bde715ae9c00b61c86a2e742b7ce0a4eb5a4fc227341"
+      }
+    },
+    {
+      "type": "balance-region-scheduler",
+      "tests": [
+        "task_072_test::task_072_behavior_cases"
+      ],
+      "fixtures": {
+        "docs/rust/schedule-execution/fixtures/task_072.json": "933845b4a2803787ebddbf1546ff75383e25efbaa3c23b3e4b8f3fc09e3d4b6a"
+      }
+    },
+    {
+      "type": "balance-witness-scheduler",
+      "tests": [
+        "task_073_test::task_073_behavior_cases"
+      ],
+      "fixtures": {
+        "docs/rust/schedule-execution/fixtures/task_073.json": "b891bcdf5df759b029d1b66cde45755f6cef12382dd1f82d63c240625369d9be"
+      }
+    },
+    {
+      "type": "evict-leader-scheduler",
+      "tests": [
+        "task_075_test::task_075_behavior_cases"
+      ],
+      "fixtures": {
+        "docs/rust/schedule-execution/fixtures/task_075.json": "14e887499b12f8bb2d88e5ad10f0299f1c5f6046d41043c5622a2a6650e1d4f1"
+      }
+    },
+    {
+      "type": "grant-leader-scheduler",
+      "tests": [
+        "task_077_test::task_077_behavior_cases"
+      ],
+      "fixtures": {
+        "docs/rust/schedule-execution/fixtures/task_077.json": "bcddba4f6a9c962bf5fa853526783def43d3f5d22253ba20667be2b51398eb31"
+      }
+    },
+    {
+      "type": "evict-slow-store-scheduler",
+      "tests": [
+        "task_079_test::task_079_behavior_cases",
+        "task_081_test::task_081_behavior_cases",
+        "task_081_test::task_081_real_operators_and_batches"
+      ],
+      "fixtures": {
+        "docs/rust/schedule-execution/fixtures/task_079.json": "0ae275949cacba65846ab51051e91176d00765411991ea13bdcb6415edb03c99",
+        "docs/rust/schedule-execution/fixtures/task_081.json": "8180cea8647fdee54b78895fb961ab4d5e52e96e584a20d2ed7a7a92bb911c7d"
+      }
+    },
+    {
+      "type": "evict-stopping-store-scheduler",
+      "tests": [
+        "task_082_test::task_082_behavior_cases",
+        "task_082_test::task_082_real_operators_and_batches"
+      ],
+      "fixtures": {
+        "docs/rust/schedule-execution/fixtures/task_082.json": "8abd8ff25a1bc361eeafd7ad7ede4c32d23ea87e761d475b8bff18a8537c11d8"
+      }
+    },
+    {
+      "type": "evict-slow-trend-scheduler",
+      "tests": [
+        "task_084_test::task_084_behavior_cases",
+        "task_084_test::task_084_real_operators"
+      ],
+      "fixtures": {
+        "docs/rust/schedule-execution/fixtures/task_084.json": "beec8cac40aeaac132a8b81ad898465c920ec55ef1e0c7a9bca60cd1d9080195"
+      }
+    },
+    {
+      "type": "balance-hot-region-scheduler",
+      "tests": [
+        "task_094_test::task_094_behavior_cases"
+      ],
+      "fixtures": {
+        "docs/rust/schedule-execution/fixtures/task_094.json": "1b00dc012c07314042fc4b3135fee391be440c9c522f97575bb4fc343f3f20da"
+      }
+    },
+    {
+      "type": "grant-hot-region-scheduler",
+      "tests": [
+        "task_096_test::task_096_behavior_cases"
+      ],
+      "fixtures": {
+        "docs/rust/schedule-execution/fixtures/task_096.json": "126c794adde56321040b64e915c0afa395c2d645929d4be3c01888350e72ebc9"
+      }
+    },
+    {
+      "type": "label-scheduler",
+      "tests": [
+        "task_097_test::task_097_behavior_cases"
+      ],
+      "fixtures": {
+        "docs/rust/schedule-execution/fixtures/task_097.json": "00ea1b9f9ba708ec1da1d1424bba549b2ec6c7e414ec8c65adecd0d3c8df4371"
+      }
+    },
+    {
+      "type": "random-merge-scheduler",
+      "tests": [
+        "task_098_test::task_098_behavior_cases"
+      ],
+      "fixtures": {
+        "docs/rust/schedule-execution/fixtures/task_098.json": "a9c2f3a9685b4f481c61b7cc538a6a4e6e1906f79301b7197e654b1531b361b3"
+      }
+    },
+    {
+      "type": "scatter-range-scheduler",
+      "tests": [
+        "task_099_test::task_099_behavior_cases"
+      ],
+      "fixtures": {
+        "docs/rust/schedule-execution/fixtures/task_099.json": "3d9fb763ca27d05dbb7ebd148787a5dccf629935ff1ede42175a9a1ac4a86278"
+      }
+    },
+    {
+      "type": "shuffle-hot-region-scheduler",
+      "tests": [
+        "task_100_test::task_100_behavior_cases"
+      ],
+      "fixtures": {
+        "docs/rust/schedule-execution/fixtures/task_100.json": "41d37b3605fccca1f1d36b72ba944d8c4b5ecbefd5c85450b0ee525778621b4b"
+      }
+    },
+    {
+      "type": "shuffle-leader-scheduler",
+      "tests": [
+        "task_101_test::task_101_behavior_cases"
+      ],
+      "fixtures": {
+        "docs/rust/schedule-execution/fixtures/task_101.json": "47325e80c7f2557ce68eae0052db806c4201b9c1dc667cc45da19a8310a8d665"
+      }
+    },
+    {
+      "type": "shuffle-region-scheduler",
+      "tests": [
+        "task_102_test::task_102_behavior_cases"
+      ],
+      "fixtures": {
+        "docs/rust/schedule-execution/fixtures/task_102.json": "5ee9c86d4b17147aece5dbbc79f7179e98a14108d4566cf58013111e1469b531"
+      }
+    },
+    {
+      "type": "transfer-witness-leader-scheduler",
+      "tests": [
+        "task_103_test::task_103_behavior_cases"
+      ],
+      "fixtures": {
+        "docs/rust/schedule-execution/fixtures/task_103.json": "b54c63a3d15c7d41694c0a9850c020922dea2f5f5a0f7c404c1b5b37389ae035"
+      }
+    },
+    {
+      "type": "balance-range-scheduler",
+      "tests": [
+        "task_105_test::task_105_behavior_cases",
+        "task_105_test::task_105_roles_engines_and_faults"
+      ],
+      "fixtures": {
+        "docs/rust/schedule-execution/fixtures/task_105.json": "bc52341557f2398dd387319c687cf3046ea431edb27fdda103a79d4fa1e4ba11"
+      }
+    }
+  ]
+}
