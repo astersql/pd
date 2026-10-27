@@ -1,0 +1,14 @@
+{
+  "oracle_kind": "source-derived, user-authorized; no Go runtime outputs",
+  "names": ["balance-leader-scheduler", "balance-region-scheduler"],
+  "filters": [
+    {"status":"paused","timestamps":false,"names":["balance-leader-scheduler"]},
+    {"status":"disabled","timestamps":false,"names":["balance-region-scheduler"]},
+    {"status":"disabled","timestamps":true,"names":["balance-region-scheduler"]},
+    {"status":"","timestamps":false,"names":["balance-leader-scheduler"]},
+    {"status":"enabled","timestamps":true,"names":["balance-leader-scheduler"]},
+    {"status":"unknown","timestamps":false,"names":["balance-leader-scheduler"]}
+  ],
+  "checker_names":["learner","replica","rule","split","merge","joint-state","affinity"],
+  "pause": {"now":100,"ttl":10,"paused_at":100,"resume_at":110}
+}

@@ -552,6 +552,7 @@ dependencies = [
  "astersql-pd-cache",
  "astersql-pd-core",
  "astersql-pd-core-constant",
+ "astersql-pd-errs",
  "astersql-pd-keypath",
  "astersql-pd-schedule",
  "astersql-pd-schedule-config",

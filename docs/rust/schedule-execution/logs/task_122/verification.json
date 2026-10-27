@@ -1,0 +1,13 @@
+{
+  "readonly_files": 1101,
+  "hashes_and_paths_unchanged": true,
+  "go_status": "",
+  "plans_unchanged": true,
+  "diff_check_exit": 0,
+  "valid_relative_links": 14,
+  "post_workspace_readonly_recheck": true,
+  "slot": 1,
+  "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+  "own_lock_released": true,
+  "production_sha256": "7754b70084cc6716f28d3f70cc9be37793e4e09e205b1c18725a2801da6c97be"
+}
