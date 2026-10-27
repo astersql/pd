@@ -1,0 +1,75 @@
+{
+  "evidence": "Go source-derived; no runtime oracle",
+  "cases": [
+    {
+      "name": "latest_epoch",
+      "basic": true,
+      "present": true,
+      "cancel": false,
+      "offline": false,
+      "missing_store": false,
+      "placement": false,
+      "bitmap": 0
+    },
+    {
+      "name": "missing_basic",
+      "basic": false,
+      "present": true,
+      "cancel": true,
+      "offline": false,
+      "missing_store": false,
+      "placement": false,
+      "bitmap": null
+    },
+    {
+      "name": "deleted",
+      "basic": true,
+      "present": false,
+      "cancel": true,
+      "offline": false,
+      "missing_store": false,
+      "placement": false,
+      "bitmap": null
+    },
+    {
+      "name": "cancelled",
+      "basic": true,
+      "present": true,
+      "cancel": true,
+      "offline": false,
+      "missing_store": false,
+      "placement": false,
+      "bitmap": null
+    },
+    {
+      "name": "latest_store_offline",
+      "basic": true,
+      "present": true,
+      "cancel": false,
+      "offline": true,
+      "missing_store": false,
+      "placement": false,
+      "bitmap": 16
+    },
+    {
+      "name": "missing_peer_store",
+      "basic": true,
+      "present": true,
+      "cancel": false,
+      "offline": true,
+      "missing_store": true,
+      "placement": false,
+      "bitmap": 0
+    },
+    {
+      "name": "uninitialized_rules",
+      "basic": true,
+      "present": true,
+      "cancel": false,
+      "offline": false,
+      "missing_store": false,
+      "placement": true,
+      "bitmap": null
+    }
+  ]
+}

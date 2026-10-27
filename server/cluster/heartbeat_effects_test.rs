@@ -912,3 +912,51 @@ async fn task_128_pipeline_overlap_cleanup_and_stopped_lane() {
         h.stop().await;
     }
 }
+
+#[tokio::test]
+async fn task_129_queued_collection_latest_or_deleted_root() {
+    use astersql_pd_ratelimit::ConcurrencyLimiter;
+    for deleted in [false, true] {
+        let mut h = Host::new(Arc::new(MemoryStore::default()));
+        h.misc.stop().await;
+        let limiter = Arc::new(ConcurrencyLimiter::new(1));
+        let held = limiter
+            .acquire_token(&CancellationToken::new())
+            .await
+            .unwrap();
+        h.misc = ConcurrentRunner::new(Some(limiter.clone()));
+        h.misc.start(&CancellationToken::new());
+        let mut queued = h.submit(region(129, "", "", 1));
+        {
+            let mut state = h.state.lock().unwrap();
+            if deleted {
+                state.cluster.regions.remove_region_if_exist(129);
+            } else {
+                let mut latest = region(129, "", "", 2);
+                latest.stats_mut().approximate_size = 144;
+                handle_region_heartbeat(&mut state.cluster, latest, false).unwrap();
+                let mut offline = state.cluster.stores.get_store(3).unwrap().as_ref().clone();
+                offline.set_store_state(StoreState::Offline, Some(false));
+                state.cluster.stores.put_store(Arc::new(offline));
+            }
+        }
+        limiter.release_token(&held);
+        assert!(
+            tokio::time::timeout(std::time::Duration::from_secs(5), queued.wait())
+                .await
+                .unwrap()
+                .is_empty()
+        );
+        {
+            let state = h.state.lock().unwrap();
+            let stats = state.region_stats.as_ref().unwrap();
+            assert_eq!(stats.is_observed(129), !deleted);
+            if !deleted {
+                assert!(stats.is_region_stats_type(129, RegionStatisticType::OversizedRegion));
+                assert!(stats.is_region_stats_type(129, RegionStatisticType::OfflinePeer));
+                assert!(!stats.is_region_stats_type(129, RegionStatisticType::UndersizedRegion));
+            }
+        }
+        h.stop().await;
+    }
+}

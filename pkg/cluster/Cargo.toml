@@ -9,6 +9,7 @@ path = "lib.rs"
 [dependencies]
 astersql-pd-core.workspace = true
 astersql-pd-statistics.workspace = true
+astersql-pd-schedule-config.workspace = true
 astersql-pd-schedule-affinity.workspace = true
 astersql-pd-schedule-placement.workspace = true
 [dev-dependencies]
@@ -16,7 +17,6 @@ tokio.workspace = true
 serde_json.workspace = true
 astersql-pd-statistics-utils.workspace = true
 astersql-pd-schedule-schedulers.workspace = true
-astersql-pd-schedule-config.workspace = true
 astersql-pd-schedule-labeler.workspace = true
 astersql-pd-keyutil.workspace = true
 astersql-pd-storage-endpoint.workspace = true

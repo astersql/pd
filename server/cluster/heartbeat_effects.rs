@@ -282,28 +282,29 @@ fn submit_collect<C: CheckerConfigProvider + Send + 'static>(
     kind: HeartbeatEffect,
     now: i64,
 ) {
-    let id = receipt.heartbeat.region.meta().id;
+    let event = receipt.heartbeat.region.clone();
     receipt.enqueue(runner, kind, false, move |cancel| async move {
         let mut state = shared.lock().unwrap();
-        if cancel.is_cancelled() {
-            return None;
-        }
-        if let Some(region) = state.cluster.regions.get_region(id) {
-            let stores: Vec<_> = state
-                .cluster
-                .stores
-                .get_region_stores(&region)
-                .iter()
-                .map(|s| s.as_ref().clone())
-                .collect();
-            let HeartbeatEffectsState {
-                region_stats,
+        let HeartbeatEffectsState {
+            cluster,
+            region_stats,
+            config,
+            rules,
+            ..
+        } = &mut *state;
+        if let Some(stats) = region_stats {
+            if astersql_pd_cluster_utils::collect(
+                Some(cluster),
+                &event,
+                stats,
                 config,
                 rules,
-                ..
-            } = &mut *state;
-            if let Some(stats) = region_stats {
-                stats.observe_with_placement(&region, &stores, config, rules, now);
+                now,
+                || cancel.is_cancelled(),
+            )
+            .is_err()
+            {
+                return None;
             }
         }
         Some(vec![])

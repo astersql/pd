@@ -1,0 +1,22 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "sources": {
+    "pkg/cluster/cluster.go": "dc42d8c6e979d759db03b6d9a44b5a6b6b65131815df59aad0bff8c815cdfeb9",
+    "pkg/cluster/cluster_test.go": "5daccb390ddf756504238eef76de15b7d4ec3004e08301168d777a59375d8740",
+    "pkg/statistics/region_collection.go": "56a19dafd4492a15644ef92c9cd159cbfd51e341f1ce80735ee8f85ebd0e41dc",
+    "pkg/core/basic_cluster.go": "a9dc7beaa0c8ce2a8c00aa9d346bf21f242af43bcb4c670fec025f0313b010a0",
+    "server/cluster/cluster.go": "a6bc285063b31d56ce4db42bf26f9409144ea35d05a90a7f0dace98a8add291e"
+  },
+  "fixture_sha256": "cdeadb3b6d55de361ba4edc345f6c62b7b10c032bde3d00e8e0749e02f310130",
+  "go_binary": null,
+  "go_output": null,
+  "normalization": "none",
+  "authorization": "source-derived expectations plus real Rust behavior/fault validation",
+  "matches_source_commit": {
+    "pkg/cluster/cluster.go": true,
+    "pkg/cluster/cluster_test.go": true,
+    "pkg/statistics/region_collection.go": true,
+    "pkg/core/basic_cluster.go": true,
+    "server/cluster/cluster.go": true
+  }
+}
