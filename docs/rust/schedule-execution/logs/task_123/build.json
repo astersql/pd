@@ -1,0 +1,29 @@
+[
+  {
+    "command": "cargo generate-lockfile --offline",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "build-0.log.gz",
+    "sha256": "605921c9b9f10df1fa160d088d0512cc5d48614c37a8c684a5e06f9eeb235e3c",
+    "test_summaries": []
+  },
+  {
+    "command": "cargo fmt --all",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "build-1.log.gz",
+    "sha256": "99c0f4a1b8862701165cccc66356ff4ab1bf1de09eb3d81580afc02a6e638e8f",
+    "test_summaries": []
+  },
+  {
+    "command": "cargo test -p astersql-pd-schedule-handler --locked --lib task_123 -- --nocapture",
+    "exit_code": 101,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "build-2.log.gz",
+    "sha256": "4e8e239b145b1078230681f285f1d430995dccc56e90ade4fda60d1120793f0c",
+    "test_summaries": []
+  }
+]

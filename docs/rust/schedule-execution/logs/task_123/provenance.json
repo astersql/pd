@@ -1,0 +1,38 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "checkout_commit": "e1b5198125bd6551d7b6d7d36afcb7810adc0ba1",
+  "oracle_kind": "user-authorized source derivation; no Go runtime output",
+  "go_binary": null,
+  "go_output": null,
+  "hashes": {
+    "pkg/schedule/handler/handler.go": "c9f126a421b83fdee5b89d4c26a743b2c4d6493527d4ba0862895705f3639dfa",
+    "pkg/schedule/coordinator.go": "a61e5be78180e4a9e3f385beb6354ed352915785771edcc3a5805ee271cc5fc2",
+    "pkg/statistics/utils/kind.rs": "9bef3a70159c4a7c858c4e75b6e9e9dabf1a405e6443dd343615b5411eb57cf4",
+    "tests/server/api/hot_status_test.go": "da1eff4f0d66851c8a2f95908b672a3fe6f9852243b55116d3c9d1b7d4a6be1a",
+    ".plans/2026-10-25-\u8c03\u5ea6\u6267\u884c\u5185\u6838/plan.md": "823d7db69c05899fe3b59884bb5fdd3e2fc715ad82ca4fe6eb89bc9b65fa6f58",
+    ".plans/2026-10-25-\u8c03\u5ea6\u6267\u884c\u5185\u6838/11-\u8c03\u5ea6\u7ba1\u7406/plan.md": "f50b2576b6d4399ec1f0db70345d86928f81fa9bd278f3ec10ea75f510b6c7d3"
+  },
+  "fixture_sha256": "16d4d43252fdd9ddd0b91aef5cba086e682a5434f419758ba63fd6ef4231f25e",
+  "source_baseline_comparison": {
+    "pkg/schedule/handler/handler.go": {
+      "checkout_sha256": "c9f126a421b83fdee5b89d4c26a743b2c4d6493527d4ba0862895705f3639dfa",
+      "source_sha256": "c9f126a421b83fdee5b89d4c26a743b2c4d6493527d4ba0862895705f3639dfa",
+      "equal": true
+    },
+    "pkg/schedule/coordinator.go": {
+      "checkout_sha256": "a61e5be78180e4a9e3f385beb6354ed352915785771edcc3a5805ee271cc5fc2",
+      "source_sha256": "a61e5be78180e4a9e3f385beb6354ed352915785771edcc3a5805ee271cc5fc2",
+      "equal": true
+    },
+    "pkg/core/store.go": {
+      "checkout_sha256": "686a3bd66c7deceb3fd79b2c83be359487088993d20e649ba2a533db298ad605",
+      "source_sha256": "686a3bd66c7deceb3fd79b2c83be359487088993d20e649ba2a533db298ad605",
+      "equal": true
+    },
+    "pkg/statistics/buckets/hot_bucket_cache.go": {
+      "checkout_sha256": "f3dbef4b0ca2ff6cee1a5b98c19db7a136101fa1673f141503f7d4c33d6720a8",
+      "source_sha256": "f3dbef4b0ca2ff6cee1a5b98c19db7a136101fa1673f141503f7d4c33d6720a8",
+      "equal": true
+    }
+  }
+}

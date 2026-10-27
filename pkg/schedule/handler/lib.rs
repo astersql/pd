@@ -24,3 +24,8 @@ mod scheduler_admin;
 pub use scheduler_admin::*;
 #[cfg(test)]
 mod task_122_test;
+
+mod hot_query;
+pub use hot_query::*;
+#[cfg(test)]
+mod task_123_test;
