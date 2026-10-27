@@ -1,6 +1,10 @@
 # progress crate
 
-`astersql-pd-progress` 是 `pkg/progress` 的 canonical Rust crate，公开
-`Progress`、`ProgressIndicator`、`InvalidUpdateInterval`，实现说明见
-[indicator.rs.md](indicator.rs.md)。仅有 std 生产依赖；serde_json 只用于测试读取
-冻结场景。显式注册 `task_130_test.rs` 与 `task_131_test.rs`。manager、GC 和指标生命周期留给后续任务。
+`astersql-pd-progress` is the canonical Rust crate beside `pkg/progress`.
+It exports `Progress`, `ProgressIndicator`, `InvalidUpdateInterval` and `Manager`.
+The indicator uses std only; manager consumes real core stores, host Prometheus
+Registry and Tokio cancellation/timers. serde_json is a test dependency.
+
+See [indicator](indicator.rs.md) and [manager](progress_manager.rs.md) for behavior
+and boundaries. Tests are explicitly registered in `lib.rs` as separate
+`task_130_test.rs`, `task_131_test.rs` and `task_132_test.rs` modules.

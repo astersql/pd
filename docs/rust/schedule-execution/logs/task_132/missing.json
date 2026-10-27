@@ -1,0 +1,20 @@
+[
+  {
+    "command": "cargo generate-lockfile --offline",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "missing-0.log.gz",
+    "sha256": "07d547c2f7768ee69a6b0c503a9c877fb508ea08ccac463b69725f3266b91a7f",
+    "test_summaries": []
+  },
+  {
+    "command": "cargo test -p astersql-pd-progress --locked --lib task_132 -- --nocapture",
+    "exit_code": 101,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "missing-1.log.gz",
+    "sha256": "b50907213c053a0230fc645842fbbac1e02c3cbc17239a0d0045380dc51ada01",
+    "test_summaries": []
+  }
+]

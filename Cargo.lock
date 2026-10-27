@@ -313,7 +313,11 @@ version = "0.1.0"
 name = "astersql-pd-progress"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-core",
+ "prometheus",
  "serde_json",
+ "tokio",
+ "tokio-util",
 ]
 
 [[package]]

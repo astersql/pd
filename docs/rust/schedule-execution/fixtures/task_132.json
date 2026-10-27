@@ -1,0 +1,47 @@
+{
+  "provenance": "source-derived progress.go/TestOnlineAndOffline; no new Go execution",
+  "cases": [
+    {
+      "action": "preparing",
+      "updates": [
+        [
+          10,
+          0.1,
+          0,
+          1.7976931348623157e+308
+        ],
+        [
+          20,
+          0.2,
+          10,
+          8
+        ]
+      ],
+      "finished_speed": 45
+    },
+    {
+      "action": "removing",
+      "updates": [
+        [
+          100,
+          0,
+          0,
+          1.7976931348623157e+308
+        ],
+        [
+          110,
+          0,
+          0,
+          1.7976931348623157e+308
+        ],
+        [
+          80,
+          0.2,
+          10,
+          8
+        ]
+      ],
+      "finished_speed": 33.333333333333336
+    }
+  ]
+}

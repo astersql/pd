@@ -1,0 +1,13 @@
+[
+  {
+    "command": "cargo test -p astersql-pd-progress --locked --lib task_132 -- --nocapture",
+    "exit_code": 101,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "red-0.log.gz",
+    "sha256": "03b696c6e809c48eaa5da448f039e776e2641e2e596773fb54d451b95160bbbe",
+    "test_summaries": [
+      "test result: FAILED. 6 passed; 1 failed; 0 ignored; 0 measured; 7 filtered out; finished in 0.00s"
+    ]
+  }
+]

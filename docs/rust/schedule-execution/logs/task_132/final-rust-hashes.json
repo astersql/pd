@@ -1,0 +1,8 @@
+{
+  "pkg/progress/progress_manager.rs": "df45af877b3138ac381f74a4e6d65e16750612f0ad89e5e019ff1b2dc1b03f28",
+  "pkg/progress/task_131_test.rs": "223f94b4a823fcb5bae0b3e3ca4d86ca877fb3ab5c208219db5372633a60b055",
+  "pkg/progress/task_130_test.rs": "0cfef26eb0ea9357d7432c2de372d6f1f49b7c330790cd2d05b66ea7d3f009cd",
+  "pkg/progress/indicator.rs": "9184bbefe66c27e37e26f2f7ba994713984c2a7e8495e721bdcba879d6bbe5d4",
+  "pkg/progress/task_132_test.rs": "88fabf749d196ffb5a6708370e7914969315826eb13f081e64f41a5caa4947e2",
+  "pkg/progress/lib.rs": "1b52ea0b8a320eaa018353652f73f65128d3449b9044a482079de3fa201e9c81"
+}

@@ -8,3 +8,9 @@ license.workspace = true
 path = "lib.rs"
 [dev-dependencies]
 serde_json.workspace = true
+
+[dependencies]
+astersql-pd-core.workspace = true
+prometheus.workspace = true
+tokio.workspace = true
+tokio-util.workspace = true

@@ -1,0 +1,14 @@
+{
+  "source_commit": "74c41950841d0f36a23f5773d89afdec41321279",
+  "baseline_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "new_oracle": "source-derived, no Go execution",
+  "sha256": {
+    "pkg/progress/progress.go": "57c3b472bdf1fb567d9189f7da401e5d415ed31ed1b2ca080afdbda50e75864e",
+    "pkg/progress/metrics.go": "64639f41a9bfe3b634821604c2647d88c30b9f0b73f364d5a17e2da7eac3df81",
+    "pkg/progress/progress_test.go": "a78324c856d7abe1ed1fb0b12a26e2a51bacc9a95eaae6093d7218133de0a4a2",
+    "pkg/progress/indicator.go": "bd093cc179fd5edfd81f2289f8d8a3e0417221834c5a0c1cbcac221f17224727",
+    "docs/rust/schedule-execution/oracle-index.json": "2d1a930742291e7047a864aa2246e7e22c612cb6583249b7edb42945b494b450",
+    "docs/rust/schedule-execution/logs/task_001/native-events.json": "d408d64d1b3f9e617a31c42808a0358f59e1c3de1caeab3c6ac7411af4ab5080",
+    "docs/rust/schedule-execution/fixtures/task_132.json": "45adc03ef23953123e41cb66d0ede49a29b8f474852c43798def710e05a6840f"
+  }
+}
