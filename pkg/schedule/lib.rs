@@ -26,3 +26,9 @@ mod task_115_test;
 #[cfg(test)]
 #[path = "task_116_test.rs"]
 mod task_116_test;
+
+pub mod plugin_boundary;
+pub use plugin_boundary::{PluginAction, UnsupportedGoPlugin};
+#[cfg(test)]
+#[path = "task_117_test.rs"]
+mod task_117_test;

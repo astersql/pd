@@ -1,0 +1,44 @@
+[
+  {
+    "command": "cargo fmt --all",
+    "passed": 0,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "command": "cargo test -p astersql-pd-schedule --locked --lib task_117 -- --nocapture",
+    "passed": 2,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "command": "cargo test -p astersql-pd-schedule --locked",
+    "passed": 28,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "command": "cargo metadata --format-version 1 --no-deps",
+    "passed": 0,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "command": "cargo fmt --all -- --check",
+    "passed": 0,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "command": "cargo check --workspace --locked",
+    "passed": 0,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "command": "cargo test --workspace --locked",
+    "passed": 1772,
+    "failed": 0,
+    "ignored": 1
+  }
+]

@@ -1,0 +1,22 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "checkout_commit": "c62630aa50c4cc534f0699022490a437c0cbbb7c",
+  "dependency_116": "c62630aa5",
+  "evidence_kind": "source_assertion_and_architecture_boundary",
+  "authorization": "User permits read-only Go source/test derivation plus real Rust behavior/fault verification instead of missing Go runtime oracle.",
+  "go_command": null,
+  "go_binary_sha256": null,
+  "go_output": null,
+  "normalization": "None; exact typed operation/error, scheduler names/config/pause state, storage revision/entries/more and canonical component identity. No Go/Rust plugin parity claimed.",
+  "sha256": {
+    "pkg/schedule/plugin_interface.go": "a19830de2352f606ee569137f9e2fd0ad02b6f1db8df816660aef12b795a342f",
+    "pkg/schedule/coordinator.go": "a61e5be78180e4a9e3f385beb6354ed352915785771edcc3a5805ee271cc5fc2",
+    "docs/rust/architecture.md": "3cb14bc9fcc037aaad34cf91ba7ade7343ae6a55e3325d2bbe2e8778e7ff8bef",
+    "docs/rust/schedule-execution/oracle-index.json": "2d1a930742291e7047a864aa2246e7e22c612cb6583249b7edb42945b494b450",
+    "docs/rust/schedule-execution/fixtures/task_117.json": "edf8ea19e83314c03bbb566051ab18729b8f75631a8268e157ef79e6194346a8"
+  },
+  "baseline_source_matches": {
+    "pkg/schedule/plugin_interface.go": true,
+    "pkg/schedule/coordinator.go": true
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "slot": 1,
+  "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+  "results": [
+    {
+      "command": "cargo fmt --all",
+      "exit_code": 0,
+      "log": "red-0.txt.gz"
+    },
+    {
+      "command": "cargo test -p astersql-pd-schedule --locked --lib task_117 -- --nocapture",
+      "exit_code": 101,
+      "log": "red-1.txt.gz"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "readonly_file_count": 1101,
+  "go_module_list_hashes_and_status_identical": true,
+  "readonly_plan_hashes_identical": true,
+  "git_diff_check_exit_code": 0,
+  "slot": 1,
+  "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+  "slot_released": true,
+  "slot_artifact_processes": [],
+  "all_required_commands_exit_zero": true,
+  "focused_requests": 14
+}

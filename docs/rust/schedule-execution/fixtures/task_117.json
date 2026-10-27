@@ -1,0 +1,12 @@
+{
+  "evidence_kind": "source_assertion_and_architecture_boundary",
+  "go_runtime_output": null,
+  "error": "Go scheduler plugins are not supported",
+  "cases": [
+    {"path": "", "case": "empty"},
+    {"path": "missing-plugin.so", "case": "missing"},
+    {"path": "/nonexistent/pd/plugin.so", "case": "absolute"},
+    {"path": "balance-leader-scheduler", "case": "builtin-name"},
+    {"path": "../plugin.so", "case": "relative-parent"}
+  ]
+}
