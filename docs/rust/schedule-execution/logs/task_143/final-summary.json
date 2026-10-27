@@ -1,0 +1,65 @@
+[
+  {
+    "command": "cargo fmt --all",
+    "exit_code": 0,
+    "passed": 0,
+    "failed": 0,
+    "ignored": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+  },
+  {
+    "command": "cargo test -p astersql-pd-server --locked --lib task_143 -- --nocapture",
+    "exit_code": 0,
+    "passed": 3,
+    "failed": 0,
+    "ignored": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+  },
+  {
+    "command": "cargo test -p astersql-pd-server --locked",
+    "exit_code": 0,
+    "passed": 79,
+    "failed": 0,
+    "ignored": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+  },
+  {
+    "command": "cargo metadata --format-version 1 --no-deps",
+    "exit_code": 0,
+    "passed": 0,
+    "failed": 0,
+    "ignored": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+  },
+  {
+    "command": "cargo fmt --all -- --check",
+    "exit_code": 0,
+    "passed": 0,
+    "failed": 0,
+    "ignored": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+  },
+  {
+    "command": "cargo check --workspace --locked",
+    "exit_code": 0,
+    "passed": 0,
+    "failed": 0,
+    "ignored": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+  },
+  {
+    "command": "cargo test --workspace --locked",
+    "exit_code": 0,
+    "passed": 1879,
+    "failed": 0,
+    "ignored": 1,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1"
+  }
+]

@@ -1,0 +1,45 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "evidence_kind": "source-derived under user authorization; no Go runtime oracle",
+  "dependency_commit": "2355f6cd7",
+  "files": {
+    "pkg/schedule/schedulers/grant_hot_region.go": {
+      "sha256": "2e19e15d5305f8a09c62639be401dce2f11f6e83eab433bac4f56f9f9690dcd5",
+      "matches_source_commit": true
+    },
+    "pkg/schedule/schedulers/grant_hot_region_test.go": {
+      "sha256": "e171cc11d1fd9f3a874eda88a4b744a19fe38e59e7129c8274745ae497293914",
+      "matches_source_commit": true
+    },
+    "pkg/schedule/schedulers/base_scheduler.go": {
+      "sha256": "1da013a2323c2756dcfd3b1203e91c481c58e80e258e3848d5db23dd261e6bdc",
+      "matches_source_commit": true
+    },
+    "pkg/schedule/schedulers/config.go": {
+      "sha256": "64024b895d0b48c030acd9684c3879993710856796eebe11595d4108073b6409",
+      "matches_source_commit": true
+    },
+    "pkg/utils/apiutil/apiutil.go": {
+      "sha256": "edda400120b9f6cc3def157e8aefc74e4572b7971d01b521f41b6bee49e6bfe6",
+      "matches_source_commit": true
+    },
+    "pkg/errs/errno.go": {
+      "sha256": "5b72951756fa619ef642081d382cb1f73ebf1d6a170d6410a8444124767b94e7",
+      "matches_source_commit": true
+    },
+    "docs/rust/schedule-execution/oracle-index.json": {
+      "sha256": "2d1a930742291e7047a864aa2246e7e22c612cb6583249b7edb42945b494b450"
+    },
+    "docs/rust/schedule-execution/fixtures/task_143.json": {
+      "sha256": "f1e8a1e2b59361592f321f94e1ef3ceaabfb67279b783f287e8319e33258583e"
+    },
+    "github.com/pingcap/errors@v0.11.5-0.20260508054701-306e305bcf41/normalize.go": {
+      "sha256": "e5f0fa127a50200c9292c59743e4753921e6e7f2cf160cf119ab36dc29246d6d",
+      "purpose": "GetMsg and MarshalJSON source inspection only"
+    },
+    "github.com/pingcap/errors@v0.11.5-0.20260508054701-306e305bcf41/compatible_shim.go": {
+      "sha256": "c52865823b98cca4e1589ad0ab9b912234dba5d3d288d96b62ed2787082087f7",
+      "purpose": "GetMsg and MarshalJSON source inspection only"
+    }
+  }
+}

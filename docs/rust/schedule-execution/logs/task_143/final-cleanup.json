@@ -1,0 +1,10 @@
+{
+  "wrapper_exit_code": 1,
+  "cargo_commands_all_exit_zero": true,
+  "error": "FileNotFoundError removing target/rust-slot-locks/slot-1.lock/owner after final results saved",
+  "entire_lock_directory_missing_at_inspection": true,
+  "cause": "unknown; no task command removes rust-slot-locks parent",
+  "no_remaining_slot_child_processes": true,
+  "cache_preserved": true,
+  "script_cleanup_hardened_after_run": true
+}

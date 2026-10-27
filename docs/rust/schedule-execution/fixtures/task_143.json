@@ -1,0 +1,596 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "evidence_kind": "source-derived; no Go execution",
+  "cases": [
+    {
+      "name": "default",
+      "method": "GET",
+      "path": "/list",
+      "input": "",
+      "status": 200,
+      "json": {
+        "store-id": [],
+        "store-leader-id": 0
+      }
+    },
+    {
+      "name": "GET/config",
+      "method": "GET",
+      "path": "/config",
+      "input": "",
+      "status": 405,
+      "body": ""
+    },
+    {
+      "name": "POST/list",
+      "method": "POST",
+      "path": "/list",
+      "input": "",
+      "status": 405,
+      "body": ""
+    },
+    {
+      "name": "HEAD/list",
+      "method": "HEAD",
+      "path": "/list",
+      "input": "",
+      "status": 405,
+      "body": ""
+    },
+    {
+      "name": "PUT/config",
+      "method": "PUT",
+      "path": "/config",
+      "input": "",
+      "status": 405,
+      "body": ""
+    },
+    {
+      "name": "POST/config/",
+      "method": "POST",
+      "path": "/config/",
+      "input": "",
+      "status": 404,
+      "body": "404 page not found\n"
+    },
+    {
+      "name": "GET/unknown",
+      "method": "GET",
+      "path": "/unknown",
+      "input": "",
+      "status": 404,
+      "body": "404 page not found\n"
+    },
+    {
+      "name": "missing",
+      "method": "POST",
+      "path": "/config",
+      "input": "{}",
+      "status": 400,
+      "json": {
+        "class": 0,
+        "code": 0,
+        "message": "wrong scheduler config %s",
+        "rfccode": "PD:scheduler:ErrSchedulerConfig"
+      }
+    },
+    {
+      "name": "null",
+      "method": "POST",
+      "path": "/config",
+      "input": "null",
+      "status": 400,
+      "json": {
+        "class": 0,
+        "code": 0,
+        "message": "wrong scheduler config %s",
+        "rfccode": "PD:scheduler:ErrSchedulerConfig"
+      }
+    },
+    {
+      "name": "numeric leader",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store-id\":\"1,2\",\"store-leader-id\":1}",
+      "status": 400,
+      "json": {
+        "class": 0,
+        "code": 0,
+        "message": "wrong scheduler config %s",
+        "rfccode": "PD:scheduler:ErrSchedulerConfig"
+      }
+    },
+    {
+      "name": "numeric stores",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store-id\":1,\"store-leader-id\":\"2\"}",
+      "status": 400,
+      "json": {
+        "class": 0,
+        "code": 0,
+        "message": "wrong scheduler config %s",
+        "rfccode": "PD:scheduler:ErrSchedulerConfig"
+      }
+    },
+    {
+      "name": "array stores",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store-id\":[1],\"store-leader-id\":\"2\"}",
+      "status": 400,
+      "json": {
+        "class": 0,
+        "code": 0,
+        "message": "wrong scheduler config %s",
+        "rfccode": "PD:scheduler:ErrSchedulerConfig"
+      }
+    },
+    {
+      "name": "leader null",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store-id\":\"1\",\"store-leader-id\":null}",
+      "status": 400,
+      "json": {
+        "class": 0,
+        "code": 0,
+        "message": "wrong scheduler config %s",
+        "rfccode": "PD:scheduler:ErrSchedulerConfig"
+      }
+    },
+    {
+      "name": "upper key",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"STORE-ID\":\"1\",\"store-leader-id\":\"2\"}",
+      "status": 400,
+      "json": {
+        "class": 0,
+        "code": 0,
+        "message": "wrong scheduler config %s",
+        "rfccode": "PD:scheduler:ErrSchedulerConfig"
+      }
+    },
+    {
+      "name": "bad stores ",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store-id\": \"\", \"store-leader-id\": \"2\"}",
+      "status": 400,
+      "json": {
+        "class": 0,
+        "code": 0,
+        "message": "invalid data, must 8 bytes, but %d",
+        "rfccode": "PD:typeutil:ErrBytesToUint64"
+      }
+    },
+    {
+      "name": "bad stores 1,",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store-id\": \"1,\", \"store-leader-id\": \"2\"}",
+      "status": 400,
+      "json": {
+        "class": 0,
+        "code": 0,
+        "message": "invalid data, must 8 bytes, but %d",
+        "rfccode": "PD:typeutil:ErrBytesToUint64"
+      }
+    },
+    {
+      "name": "bad stores ,1",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store-id\": \",1\", \"store-leader-id\": \"2\"}",
+      "status": 400,
+      "json": {
+        "class": 0,
+        "code": 0,
+        "message": "invalid data, must 8 bytes, but %d",
+        "rfccode": "PD:typeutil:ErrBytesToUint64"
+      }
+    },
+    {
+      "name": "bad stores 1,,2",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store-id\": \"1,,2\", \"store-leader-id\": \"2\"}",
+      "status": 400,
+      "json": {
+        "class": 0,
+        "code": 0,
+        "message": "invalid data, must 8 bytes, but %d",
+        "rfccode": "PD:typeutil:ErrBytesToUint64"
+      }
+    },
+    {
+      "name": "bad stores  1",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store-id\": \" 1\", \"store-leader-id\": \"2\"}",
+      "status": 400,
+      "json": {
+        "class": 0,
+        "code": 0,
+        "message": "invalid data, must 8 bytes, but %d",
+        "rfccode": "PD:typeutil:ErrBytesToUint64"
+      }
+    },
+    {
+      "name": "bad stores +1",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store-id\": \"+1\", \"store-leader-id\": \"2\"}",
+      "status": 400,
+      "json": {
+        "class": 0,
+        "code": 0,
+        "message": "invalid data, must 8 bytes, but %d",
+        "rfccode": "PD:typeutil:ErrBytesToUint64"
+      }
+    },
+    {
+      "name": "bad stores -1",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store-id\": \"-1\", \"store-leader-id\": \"2\"}",
+      "status": 400,
+      "json": {
+        "class": 0,
+        "code": 0,
+        "message": "invalid data, must 8 bytes, but %d",
+        "rfccode": "PD:typeutil:ErrBytesToUint64"
+      }
+    },
+    {
+      "name": "bad stores 0x10",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store-id\": \"0x10\", \"store-leader-id\": \"2\"}",
+      "status": 400,
+      "json": {
+        "class": 0,
+        "code": 0,
+        "message": "invalid data, must 8 bytes, but %d",
+        "rfccode": "PD:typeutil:ErrBytesToUint64"
+      }
+    },
+    {
+      "name": "bad stores 18446744073709551616",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store-id\": \"18446744073709551616\", \"store-leader-id\": \"2\"}",
+      "status": 400,
+      "json": {
+        "class": 0,
+        "code": 0,
+        "message": "invalid data, must 8 bytes, but %d",
+        "rfccode": "PD:typeutil:ErrBytesToUint64"
+      }
+    },
+    {
+      "name": "bad leader ",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store-id\": \"1\", \"store-leader-id\": \"\"}",
+      "status": 400,
+      "json": {
+        "class": 0,
+        "code": 0,
+        "message": "invalid data, must 8 bytes, but %d",
+        "rfccode": "PD:typeutil:ErrBytesToUint64"
+      }
+    },
+    {
+      "name": "bad leader +1",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store-id\": \"1\", \"store-leader-id\": \"+1\"}",
+      "status": 400,
+      "json": {
+        "class": 0,
+        "code": 0,
+        "message": "invalid data, must 8 bytes, but %d",
+        "rfccode": "PD:typeutil:ErrBytesToUint64"
+      }
+    },
+    {
+      "name": "bad leader -1",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store-id\": \"1\", \"store-leader-id\": \"-1\"}",
+      "status": 400,
+      "json": {
+        "class": 0,
+        "code": 0,
+        "message": "invalid data, must 8 bytes, but %d",
+        "rfccode": "PD:typeutil:ErrBytesToUint64"
+      }
+    },
+    {
+      "name": "bad leader 1.0",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store-id\": \"1\", \"store-leader-id\": \"1.0\"}",
+      "status": 400,
+      "json": {
+        "class": 0,
+        "code": 0,
+        "message": "invalid data, must 8 bytes, but %d",
+        "rfccode": "PD:typeutil:ErrBytesToUint64"
+      }
+    },
+    {
+      "name": "bad leader  1",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store-id\": \"1\", \"store-leader-id\": \" 1\"}",
+      "status": 400,
+      "json": {
+        "class": 0,
+        "code": 0,
+        "message": "invalid data, must 8 bytes, but %d",
+        "rfccode": "PD:typeutil:ErrBytesToUint64"
+      }
+    },
+    {
+      "name": "bad leader 18446744073709551616",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store-id\": \"1\", \"store-leader-id\": \"18446744073709551616\"}",
+      "status": 400,
+      "json": {
+        "class": 0,
+        "code": 0,
+        "message": "invalid data, must 8 bytes, but %d",
+        "rfccode": "PD:typeutil:ErrBytesToUint64"
+      }
+    },
+    {
+      "name": "store parse before missing leader",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store-id\":\"x\"}",
+      "status": 400,
+      "json": {
+        "class": 0,
+        "code": 0,
+        "message": "invalid data, must 8 bytes, but %d",
+        "rfccode": "PD:typeutil:ErrBytesToUint64"
+      }
+    },
+    {
+      "name": "append",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store-id\": \"1,2\", \"store-leader-id\": \"3\", \"ignored\": true}",
+      "status": 200,
+      "json": null
+    },
+    {
+      "name": "append list",
+      "method": "GET",
+      "path": "/list?ignored=1",
+      "input": "broken ignored body",
+      "status": 200,
+      "json": {
+        "store-id": [
+          1,
+          2,
+          3
+        ],
+        "store-leader-id": 3
+      }
+    },
+    {
+      "name": "duplicates",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store-id\": \"1,1,2\", \"store-leader-id\": \"2\", \"ignored\": true}",
+      "status": 200,
+      "json": null
+    },
+    {
+      "name": "duplicates list",
+      "method": "GET",
+      "path": "/list?ignored=1",
+      "input": "broken ignored body",
+      "status": 200,
+      "json": {
+        "store-id": [
+          1,
+          1,
+          2
+        ],
+        "store-leader-id": 2
+      }
+    },
+    {
+      "name": "zero",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store-id\": \"0\", \"store-leader-id\": \"0\", \"ignored\": true}",
+      "status": 200,
+      "json": null
+    },
+    {
+      "name": "zero list",
+      "method": "GET",
+      "path": "/list?ignored=1",
+      "input": "broken ignored body",
+      "status": 200,
+      "json": {
+        "store-id": [
+          0
+        ],
+        "store-leader-id": 0
+      }
+    },
+    {
+      "name": "leading zeros",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store-id\": \"0001,02\", \"store-leader-id\": \"02\", \"ignored\": true}",
+      "status": 200,
+      "json": null
+    },
+    {
+      "name": "leading zeros list",
+      "method": "GET",
+      "path": "/list?ignored=1",
+      "input": "broken ignored body",
+      "status": 200,
+      "json": {
+        "store-id": [
+          1,
+          2
+        ],
+        "store-leader-id": 2
+      }
+    },
+    {
+      "name": "max",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store-id\": \"18446744073709551615\", \"store-leader-id\": \"18446744073709551615\", \"ignored\": true}",
+      "status": 200,
+      "json": null
+    },
+    {
+      "name": "max list",
+      "method": "GET",
+      "path": "/list?ignored=1",
+      "input": "broken ignored body",
+      "status": 200,
+      "json": {
+        "store-id": [
+          18446744073709551615
+        ],
+        "store-leader-id": 18446744073709551615
+      }
+    },
+    {
+      "name": "duplicate keys last wins",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store-id\":\"x\",\"store-id\":\"2\",\"store-leader-id\":\"3\"}",
+      "status": 200,
+      "json": null
+    },
+    {
+      "name": "final",
+      "method": "GET",
+      "path": "/list",
+      "input": "",
+      "status": 200,
+      "json": {
+        "store-id": [
+          2,
+          3
+        ],
+        "store-leader-id": 3
+      }
+    },
+    {
+      "name": "JSON root ",
+      "method": "POST",
+      "path": "/config",
+      "input": "",
+      "status": 400,
+      "json": {
+        "code": "input",
+        "msg": "unexpected end of JSON input",
+        "data": {
+          "Offset": 0
+        }
+      }
+    },
+    {
+      "name": "JSON root {",
+      "method": "POST",
+      "path": "/config",
+      "input": "{",
+      "status": 400,
+      "json": {
+        "code": "input",
+        "msg": "unexpected end of JSON input",
+        "data": {
+          "Offset": 1
+        }
+      }
+    },
+    {
+      "name": "JSON root []",
+      "method": "POST",
+      "path": "/config",
+      "input": "[]",
+      "status": 400,
+      "json": {
+        "code": "input",
+        "msg": "json: cannot unmarshal array into Go value of type map[string]interface {}",
+        "data": {
+          "Value": "array",
+          "Type": {},
+          "Offset": 1,
+          "Struct": "",
+          "Field": ""
+        }
+      }
+    },
+    {
+      "name": "JSON root true",
+      "method": "POST",
+      "path": "/config",
+      "input": "true",
+      "status": 400,
+      "json": {
+        "code": "input",
+        "msg": "json: cannot unmarshal bool into Go value of type map[string]interface {}",
+        "data": {
+          "Value": "bool",
+          "Type": {},
+          "Offset": 4,
+          "Struct": "",
+          "Field": ""
+        }
+      }
+    },
+    {
+      "name": "JSON root 12",
+      "method": "POST",
+      "path": "/config",
+      "input": "12",
+      "status": 400,
+      "json": {
+        "code": "input",
+        "msg": "json: cannot unmarshal number into Go value of type map[string]interface {}",
+        "data": {
+          "Value": "number",
+          "Type": {},
+          "Offset": 2,
+          "Struct": "",
+          "Field": ""
+        }
+      }
+    },
+    {
+      "name": "JSON root \"bad\"",
+      "method": "POST",
+      "path": "/config",
+      "input": "\"bad\"",
+      "status": 400,
+      "json": {
+        "code": "input",
+        "msg": "json: cannot unmarshal string into Go value of type map[string]interface {}",
+        "data": {
+          "Value": "string",
+          "Type": {},
+          "Offset": 5,
+          "Struct": "",
+          "Field": ""
+        }
+      }
+    }
+  ]
+}

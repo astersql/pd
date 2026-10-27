@@ -1,0 +1,78 @@
+{
+  "go_module_source_files": 1101,
+  "content_and_file_set_unchanged": true,
+  "status_unchanged": true,
+  "read_only_plans_unchanged": true,
+  "cargo_manifests_and_lock_unchanged": true,
+  "git_diff_check": 0,
+  "links": [
+    {
+      "source": "docs/rust/schedule-execution/task-143.md",
+      "target": "task-142.md"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-143.md",
+      "target": "fixtures/task_143.json"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-143.md",
+      "target": "logs/task_143/provenance.json"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-143.md",
+      "target": "../../../pkg/server/schedule_admin_grant_hot_region.rs"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-143.md",
+      "target": "../../../pkg/server/schedule_admin_grant_hot_region.rs.md"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-143.md",
+      "target": "../../../pkg/server/schedule_admin_grant_hot_region_test.rs"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-143.md",
+      "target": "logs/task_143/red.json"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-143.md",
+      "target": "logs/task_143/red2.json"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-143.md",
+      "target": "logs/task_143/green2.json"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-143.md",
+      "target": "logs/task_143/verify.py"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-143.md",
+      "target": "logs/task_143/reuse-go/go"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-143.md",
+      "target": "logs/task_143/final.json"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-143.md",
+      "target": "logs/task_143/final-summary.json"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-143.md",
+      "target": "logs/task_143/final-cleanup.json"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-143.md",
+      "target": "logs/task_143/audit.py"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-143.md",
+      "target": "logs/task_143/audit.json"
+    },
+    {
+      "source": "pkg/server/schedule_admin_grant_hot_region.rs.md",
+      "target": "../../docs/rust/schedule-execution/task-143.md"
+    }
+  ]
+}
