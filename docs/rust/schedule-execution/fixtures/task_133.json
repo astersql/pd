@@ -1,0 +1,801 @@
+{
+  "oracle": "Go source/test derived; no new Go execution",
+  "normalization": "none",
+  "cases": [
+    {
+      "check": "leader",
+      "steps": [
+        "l"
+      ],
+      "ok": true,
+      "kind": 384
+    },
+    {
+      "check": "leader",
+      "steps": [
+        "l"
+      ],
+      "ok": false,
+      "kind": 0
+    },
+    {
+      "check": "leader",
+      "steps": [
+        "l",
+        "x"
+      ],
+      "ok": false,
+      "kind": 384
+    },
+    {
+      "check": "leader",
+      "steps": [
+        "x"
+      ],
+      "ok": false,
+      "kind": 384
+    },
+    {
+      "check": "from",
+      "steps": [
+        "l"
+      ],
+      "ok": true,
+      "kind": 384
+    },
+    {
+      "check": "from",
+      "steps": [
+        "l"
+      ],
+      "ok": false,
+      "kind": 0
+    },
+    {
+      "check": "from",
+      "steps": [
+        "l",
+        "x"
+      ],
+      "ok": false,
+      "kind": 384
+    },
+    {
+      "check": "from",
+      "steps": [
+        "x"
+      ],
+      "ok": false,
+      "kind": 384
+    },
+    {
+      "check": "sources",
+      "steps": [
+        "l"
+      ],
+      "ok": true,
+      "kind": 384
+    },
+    {
+      "check": "sources",
+      "steps": [
+        "l"
+      ],
+      "ok": false,
+      "kind": 0
+    },
+    {
+      "check": "sources",
+      "steps": [
+        "l",
+        "x"
+      ],
+      "ok": false,
+      "kind": 384
+    },
+    {
+      "check": "sources",
+      "steps": [
+        "x"
+      ],
+      "ok": false,
+      "kind": 384
+    },
+    {
+      "check": "targets",
+      "steps": [
+        "t"
+      ],
+      "ok": true,
+      "kind": 384
+    },
+    {
+      "check": "targets",
+      "steps": [
+        "t"
+      ],
+      "ok": false,
+      "kind": 0
+    },
+    {
+      "check": "targets",
+      "steps": [
+        "t",
+        "x"
+      ],
+      "ok": false,
+      "kind": 384
+    },
+    {
+      "check": "targets",
+      "steps": [
+        "x"
+      ],
+      "ok": false,
+      "kind": 384
+    },
+    {
+      "check": "peer",
+      "steps": [
+        "a",
+        "p",
+        "r"
+      ],
+      "ok": true,
+      "kind": 384
+    },
+    {
+      "check": "peer",
+      "steps": [
+        "a",
+        "p",
+        "r"
+      ],
+      "ok": false,
+      "kind": 0
+    },
+    {
+      "check": "peer",
+      "steps": [
+        "a",
+        "p",
+        "r",
+        "x"
+      ],
+      "ok": false,
+      "kind": 384
+    },
+    {
+      "check": "peer",
+      "steps": [
+        "x",
+        "p",
+        "r"
+      ],
+      "ok": false,
+      "kind": 384
+    },
+    {
+      "check": "peer",
+      "steps": [
+        "a",
+        "e",
+        "v",
+        "r"
+      ],
+      "ok": true,
+      "kind": 384
+    },
+    {
+      "check": "peer",
+      "steps": [
+        "a",
+        "e",
+        "v",
+        "r"
+      ],
+      "ok": false,
+      "kind": 0
+    },
+    {
+      "check": "peer",
+      "steps": [
+        "a",
+        "e",
+        "v",
+        "r",
+        "x"
+      ],
+      "ok": false,
+      "kind": 384
+    },
+    {
+      "check": "peer",
+      "steps": [
+        "x",
+        "e",
+        "v",
+        "r"
+      ],
+      "ok": false,
+      "kind": 384
+    },
+    {
+      "check": "learner",
+      "steps": [
+        "a",
+        "r"
+      ],
+      "ok": true,
+      "kind": 384
+    },
+    {
+      "check": "learner",
+      "steps": [
+        "a",
+        "r"
+      ],
+      "ok": false,
+      "kind": 0
+    },
+    {
+      "check": "learner",
+      "steps": [
+        "a",
+        "r",
+        "x"
+      ],
+      "ok": false,
+      "kind": 384
+    },
+    {
+      "check": "learner",
+      "steps": [
+        "x",
+        "r"
+      ],
+      "ok": false,
+      "kind": 384
+    },
+    {
+      "check": "peer_leader",
+      "steps": [
+        "a",
+        "p",
+        "l",
+        "r"
+      ],
+      "ok": true,
+      "kind": 384
+    },
+    {
+      "check": "peer_leader",
+      "steps": [
+        "a",
+        "p",
+        "l",
+        "r"
+      ],
+      "ok": false,
+      "kind": 0
+    },
+    {
+      "check": "peer_leader",
+      "steps": [
+        "a",
+        "p",
+        "l",
+        "r",
+        "x"
+      ],
+      "ok": false,
+      "kind": 384
+    },
+    {
+      "check": "peer_leader",
+      "steps": [
+        "x",
+        "p",
+        "l",
+        "r"
+      ],
+      "ok": false,
+      "kind": 384
+    },
+    {
+      "check": "peer_leader",
+      "steps": [
+        "a",
+        "e",
+        "l",
+        "v",
+        "r"
+      ],
+      "ok": true,
+      "kind": 384
+    },
+    {
+      "check": "peer_leader",
+      "steps": [
+        "a",
+        "e",
+        "l",
+        "v",
+        "r"
+      ],
+      "ok": false,
+      "kind": 0
+    },
+    {
+      "check": "peer_leader",
+      "steps": [
+        "a",
+        "e",
+        "l",
+        "v",
+        "r",
+        "x"
+      ],
+      "ok": false,
+      "kind": 384
+    },
+    {
+      "check": "peer_leader",
+      "steps": [
+        "x",
+        "e",
+        "l",
+        "v",
+        "r"
+      ],
+      "ok": false,
+      "kind": 384
+    },
+    {
+      "check": "add",
+      "steps": [
+        "a",
+        "p"
+      ],
+      "ok": true,
+      "kind": 384
+    },
+    {
+      "check": "add",
+      "steps": [
+        "a",
+        "p"
+      ],
+      "ok": false,
+      "kind": 0
+    },
+    {
+      "check": "add",
+      "steps": [
+        "a",
+        "p",
+        "x"
+      ],
+      "ok": false,
+      "kind": 384
+    },
+    {
+      "check": "add",
+      "steps": [
+        "x",
+        "p"
+      ],
+      "ok": false,
+      "kind": 384
+    },
+    {
+      "check": "remove",
+      "steps": [
+        "r"
+      ],
+      "ok": true,
+      "kind": 384
+    },
+    {
+      "check": "remove",
+      "steps": [
+        "r",
+        "x"
+      ],
+      "ok": false,
+      "kind": 384
+    },
+    {
+      "check": "remove",
+      "steps": [
+        "x"
+      ],
+      "ok": false,
+      "kind": 384
+    },
+    {
+      "check": "remove",
+      "steps": [
+        "l",
+        "r"
+      ],
+      "ok": true,
+      "kind": 384
+    },
+    {
+      "check": "remove",
+      "steps": [
+        "l",
+        "r",
+        "x"
+      ],
+      "ok": false,
+      "kind": 384
+    },
+    {
+      "check": "remove",
+      "steps": [
+        "x",
+        "r"
+      ],
+      "ok": false,
+      "kind": 384
+    },
+    {
+      "check": "merge",
+      "steps": [
+        "a",
+        "p",
+        "l",
+        "r",
+        "m"
+      ],
+      "ok": true,
+      "kind": 388
+    },
+    {
+      "check": "merge",
+      "steps": [
+        "a",
+        "p",
+        "l",
+        "r",
+        "m"
+      ],
+      "ok": false,
+      "kind": 0
+    },
+    {
+      "check": "merge",
+      "steps": [
+        "a",
+        "p",
+        "l",
+        "r",
+        "m",
+        "x"
+      ],
+      "ok": false,
+      "kind": 388
+    },
+    {
+      "check": "merge",
+      "steps": [
+        "x",
+        "p",
+        "l",
+        "r",
+        "m"
+      ],
+      "ok": false,
+      "kind": 388
+    },
+    {
+      "check": "merge",
+      "steps": [
+        "M"
+      ],
+      "ok": true,
+      "kind": 388
+    },
+    {
+      "check": "merge",
+      "steps": [
+        "M"
+      ],
+      "ok": false,
+      "kind": 0
+    },
+    {
+      "check": "merge",
+      "steps": [
+        "M",
+        "x"
+      ],
+      "ok": false,
+      "kind": 388
+    },
+    {
+      "check": "merge",
+      "steps": [
+        "x"
+      ],
+      "ok": false,
+      "kind": 388
+    },
+    {
+      "check": "leader",
+      "steps": [
+        "t"
+      ],
+      "ok": false,
+      "kind": 384
+    },
+    {
+      "check": "targets",
+      "steps": [
+        "l"
+      ],
+      "ok": false,
+      "kind": 384
+    },
+    {
+      "check": "sources",
+      "steps": [
+        "z"
+      ],
+      "ok": false,
+      "kind": 384
+    },
+    {
+      "check": "targets",
+      "steps": [
+        "u"
+      ],
+      "ok": false,
+      "kind": 384
+    },
+    {
+      "check": "from",
+      "steps": [
+        "t"
+      ],
+      "ok": true,
+      "kind": 384
+    },
+    {
+      "check": "sources",
+      "steps": [
+        "t"
+      ],
+      "ok": true,
+      "kind": 384
+    },
+    {
+      "check": "peer",
+      "steps": [
+        "a",
+        "p",
+        "l",
+        "r"
+      ],
+      "ok": true,
+      "kind": 384
+    },
+    {
+      "check": "learner",
+      "steps": [
+        "l",
+        "a",
+        "r"
+      ],
+      "ok": true,
+      "kind": 384
+    },
+    {
+      "check": "peer_leader",
+      "steps": [
+        "a",
+        "p",
+        "r"
+      ],
+      "ok": false,
+      "kind": 384
+    },
+    {
+      "check": "peer_leader",
+      "steps": [
+        "a",
+        "p",
+        "z",
+        "r"
+      ],
+      "ok": false,
+      "kind": 384
+    },
+    {
+      "check": "peer_leader",
+      "steps": [
+        "a",
+        "p",
+        "l",
+        "z",
+        "r"
+      ],
+      "ok": false,
+      "kind": 384
+    },
+    {
+      "check": "peer_leader",
+      "steps": [
+        "a",
+        "p",
+        "z",
+        "l",
+        "r"
+      ],
+      "ok": true,
+      "kind": 384
+    },
+    {
+      "check": "peer_leader",
+      "steps": [
+        "b",
+        "p",
+        "l",
+        "r"
+      ],
+      "ok": true,
+      "kind": 384,
+      "target": 0
+    },
+    {
+      "check": "peer_leader",
+      "steps": [
+        "b",
+        "p",
+        "l",
+        "r"
+      ],
+      "ok": false,
+      "kind": 384
+    },
+    {
+      "check": "peer",
+      "steps": [
+        "a",
+        "r",
+        "p"
+      ],
+      "ok": false,
+      "kind": 384
+    },
+    {
+      "check": "peer",
+      "steps": [
+        "a",
+        "v",
+        "e",
+        "r"
+      ],
+      "ok": false,
+      "kind": 384
+    },
+    {
+      "check": "peer",
+      "steps": [
+        "a",
+        "p",
+        "R"
+      ],
+      "ok": false,
+      "kind": 384
+    },
+    {
+      "check": "learner",
+      "steps": [
+        "b",
+        "r"
+      ],
+      "ok": false,
+      "kind": 384
+    },
+    {
+      "check": "add",
+      "steps": [
+        "a",
+        "P"
+      ],
+      "ok": true,
+      "kind": 384
+    },
+    {
+      "check": "merge",
+      "steps": [],
+      "ok": true,
+      "kind": 4
+    },
+    {
+      "check": "merge",
+      "steps": [
+        "x"
+      ],
+      "ok": false,
+      "kind": 4
+    },
+    {
+      "check": "merge",
+      "steps": [
+        "a",
+        "p",
+        "l",
+        "r",
+        "m"
+      ],
+      "ok": false,
+      "kind": 4,
+      "expected": [
+        "a",
+        "p",
+        "l",
+        "r",
+        "M"
+      ]
+    },
+    {
+      "check": "merge",
+      "steps": [
+        "a",
+        "p",
+        "l",
+        "r",
+        "m"
+      ],
+      "ok": true,
+      "kind": 4,
+      "expected": [
+        "A",
+        "p",
+        "t",
+        "R2",
+        "m"
+      ]
+    },
+    {
+      "check": "merge",
+      "steps": [
+        "m"
+      ],
+      "ok": false,
+      "kind": 4,
+      "expected": null
+    },
+    {
+      "check": "leader",
+      "steps": [
+        "l"
+      ],
+      "ok": false,
+      "kind": 256,
+      "required": 16
+    },
+    {
+      "check": "leader",
+      "steps": [
+        "l"
+      ],
+      "ok": true,
+      "kind": 272,
+      "required": 16
+    },
+    {
+      "check": "leader",
+      "steps": [
+        "l"
+      ],
+      "ok": false,
+      "kind": 384,
+      "missing": true
+    }
+  ]
+}

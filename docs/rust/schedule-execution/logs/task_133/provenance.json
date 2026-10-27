@@ -1,0 +1,17 @@
+{
+  "source_commit": "fdf8cc1395175dd441d4d4517564cc8d5364414d",
+  "original_baseline": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "dependency_132": "fdf8cc139",
+  "oracle": "user-authorized source/test derivation; no new Go execution or runtime parity claim",
+  "normalization": "none",
+  "sha256": {
+    "pkg/utils/operatorutil/operator_check.go": "1d22bfd02d7caef8a6b4fe9ab4785bc0494a581850e7b6e547c29ead9b3f1d23",
+    "pkg/schedule/checker/merge_checker_test.go": "23c71ea5e72f71550dce735cab1f9f9ab8a4e25db6dcb76882adb9fdf858f0de",
+    "pkg/schedule/checker/replica_checker_test.go": "45b842a3b3fd84e72c175115df9d4105753bd6a6d4be350c77e77f2be98fe75d",
+    "pkg/schedule/schedulers/scheduler_test.go": "55b18eda7e1834ed5090cf360f2cbac1048b0b164e4e84dcf06cbfbbdc8162fc",
+    "pkg/schedule/schedulers/transfer_witness_leader_test.go": "39d4ab013057c82c87deb84d07ef4a46518f692baebb47cfd00a874efb085eca",
+    "pkg/schedule/schedulers/balance_region_test.go": "a0037629e3317d68ae59e4ed07ed9bb3859045aa57901151a7075707a17c4532",
+    "docs/rust/schedule-execution/oracle-index.json": "2d1a930742291e7047a864aa2246e7e22c612cb6583249b7edb42945b494b450",
+    "docs/rust/schedule-execution/fixtures/task_133.json": "eefc73976f38ca6246c630409cd2b868356f7f0959cdf325d655a10dbbdc40b9"
+  }
+}

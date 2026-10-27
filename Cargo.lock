@@ -310,6 +310,14 @@ name = "astersql-pd-movingaverage"
 version = "0.1.0"
 
 [[package]]
+name = "astersql-pd-operatorutil"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-schedule-operator",
+ "serde_json",
+]
+
+[[package]]
 name = "astersql-pd-progress"
 version = "0.1.0"
 dependencies = [
