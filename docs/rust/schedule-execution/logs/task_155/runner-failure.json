@@ -1,0 +1,12 @@
+[
+  {
+    "command": "exit 7",
+    "exit_code": 7,
+    "RUST_TEST_THREADS": 2,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "runner-failure-0.log.gz",
+    "sha256": "9577feac2391d6aa250924a99282b5aea38aee85ffe730add039df937a1fd7ff",
+    "test_summaries": []
+  }
+]

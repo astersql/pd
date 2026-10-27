@@ -1,0 +1,14 @@
+{
+  "os": "macOS-26.1-arm64-arm-64bit",
+  "machine": "arm64",
+  "processor": "Apple M4 Pro",
+  "rustc": "rustc 1.99.0 (b940084d7 2026-09-28)\nbinary: rustc\ncommit-hash: b940084d7eb6a299eb4bfeb8e34901bc051e7ac4\ncommit-date: 2026-09-28\nhost: aarch64-apple-darwin\nrelease: 1.99.0\nLLVM version: 23.1.1\n",
+  "profile": "test [unoptimized + debuginfo]",
+  "CARGO_BUILD_JOBS": 4,
+  "RUST_TEST_THREADS": {
+    "performance": 1,
+    "workspace_and_other_tests": 2,
+    "initial_workspace_attempt": 1
+  },
+  "measurement": "Process allocation/reallocation count and requested bytes, System allocator wrapped with relaxed atomics; not RSS/net retained memory. Snapshot/setup/assertions/formatting/output excluded. No wall-time threshold. In-process cache state, no OS cache flush."
+}

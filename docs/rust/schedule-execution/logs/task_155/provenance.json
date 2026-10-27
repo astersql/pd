@@ -1,0 +1,68 @@
+{
+  "source_commit": "f93c03e313d6389a019f6ae2aeef61cc2b4d4dba",
+  "evidence_kind": "source_assertion",
+  "runtime_oracle": null,
+  "go_elapsed_time_baseline": null,
+  "authorization": "User authorized read-only Go source/test derivation plus real Rust behavior/fault verification instead of missing Go runtime oracle; plans remain read-only.",
+  "sources": [
+    {
+      "path": "pkg/schedule/schedulers/balance_leader.go",
+      "sha256": "904edff2c88b23fc228cd7d54b5054067c82254adc64855e47d1503e074c7a9f",
+      "matches_source_commit": true
+    },
+    {
+      "path": "pkg/schedule/schedulers/balance_leader_test.go",
+      "sha256": "c9b79231c539c2d0e8322f372ea1df30c950e41213cdd313e7e4f679a2858bb5",
+      "matches_source_commit": true
+    },
+    {
+      "path": "pkg/schedule/schedulers/balance_region.go",
+      "sha256": "616ed0bb53b58909c013e10be1000822fe0ca72ff46d36ec0aaab1031213c1fc",
+      "matches_source_commit": true
+    },
+    {
+      "path": "pkg/schedule/schedulers/balance_region_test.go",
+      "sha256": "a0037629e3317d68ae59e4ed07ed9bb3859045aa57901151a7075707a17c4532",
+      "matches_source_commit": true
+    },
+    {
+      "path": "pkg/schedule/schedulers/hot_region_solver.go",
+      "sha256": "f71cb92668e2221aa0e6e9ff09004cafcea4ded55ad344d80e5d8f46a88df6ce",
+      "matches_source_commit": true
+    },
+    {
+      "path": "pkg/schedule/schedulers/hot_region_solver_test.go",
+      "sha256": "80697f96cf32436ef1d26b2d592e6ccba1b3890fdc90eecb146fac7aee9f31c3",
+      "matches_source_commit": true
+    },
+    {
+      "path": "pkg/schedule/schedulers/hot_region_rank_v1.go",
+      "sha256": "d37b60b6506fd03d308e398a039dfe6884972103f1c58b268f11356e84d862df",
+      "matches_source_commit": true
+    },
+    {
+      "path": "pkg/schedule/schedulers/hot_region_rank_v2.go",
+      "sha256": "63fe4d9673afbd47d4905abb2c97e1d9590f9b34b61d3b37537469896f9a9e61",
+      "matches_source_commit": true
+    },
+    {
+      "path": "pkg/schedule/placement/region_rule_cache.go",
+      "sha256": "3aed4ea52a964b4ccf5d59d75b54478aa480a7ae4991143b10d9817c59e1b190",
+      "matches_source_commit": true
+    }
+  ],
+  "fixtures": [
+    {
+      "path": "docs/rust/schedule-execution/fixtures/task_155.json",
+      "sha256": "ae797747b262b38484e7253822a95bd217c157e361e7d64ad3c85cedd5f8578b"
+    },
+    {
+      "path": "docs/rust/schedule-execution/fixtures/task_092.json",
+      "sha256": "131863f298aa667ac45b53b11945ffa98bae1cd37a32c2ea87514241e1b626c6"
+    }
+  ],
+  "oracle_index_sha256": "2d1a930742291e7047a864aa2246e7e22c612cb6583249b7edb42945b494b450",
+  "predecessor_commit": "f93c03e31",
+  "predecessor_verified_sha256": "24d18f66acf1e0b34170142fe387b966a358a0545967cb2a7fba5a592417e17c",
+  "test_source_sha256": "91317ea6bdf479595ca4608c382cd11dbefbe8d7d032ecddb149edf48523948c"
+}

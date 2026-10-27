@@ -1,0 +1,37 @@
+{
+  "evidence_kind": "source_assertion",
+  "runtime_oracle": null,
+  "source_commit": "f93c03e313d6389a019f6ae2aeef61cc2b4d4dba",
+  "scales": [
+    {
+      "stores": 4,
+      "regions": 1000
+    },
+    {
+      "stores": 100,
+      "regions": 10000
+    }
+  ],
+  "samples": 3,
+  "expected_operators": 1,
+  "hot_rank": 4,
+  "hot_source": [
+    1000,
+    1000,
+    0,
+    0
+  ],
+  "hot_destination": [
+    500,
+    500,
+    0,
+    0
+  ],
+  "hot_peer": [
+    200,
+    200,
+    0,
+    0
+  ],
+  "normalization": "No timing thresholds. IDs compared within a fixed snapshot; equal-score targets may vary across snapshot reconstructions. Every step/direction/kind and strictly improving projected load are checked. Timing/allocations reported without equality assertions."
+}

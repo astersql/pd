@@ -1,0 +1,219 @@
+{
+  "read_only_files_and_plans_unchanged": true,
+  "checked_files": 1103,
+  "go_git_status_unchanged": true,
+  "markdown_links_valid": true,
+  "git_diff_check_exit_code": 0,
+  "verified_logs": [
+    {
+      "stage": "compile",
+      "command": "cargo fmt --all",
+      "exit_code": 0,
+      "slot": 1
+    },
+    {
+      "stage": "compile",
+      "command": "cargo test -p astersql-pd-compat-tests --locked --test schedule_performance -- --nocapture",
+      "exit_code": 101,
+      "slot": 1
+    },
+    {
+      "stage": "initial",
+      "command": "cargo fmt --all",
+      "exit_code": 0,
+      "slot": 1
+    },
+    {
+      "stage": "initial",
+      "command": "cargo test -p astersql-pd-compat-tests --locked --test schedule_performance -- --nocapture",
+      "exit_code": 101,
+      "slot": 1
+    },
+    {
+      "stage": "setup",
+      "command": "cargo fmt --all",
+      "exit_code": 0,
+      "slot": 1
+    },
+    {
+      "stage": "setup",
+      "command": "cargo test -p astersql-pd-compat-tests --locked --test schedule_performance -- --nocapture",
+      "exit_code": 101,
+      "slot": 1
+    },
+    {
+      "stage": "setup2",
+      "command": "cargo fmt --all",
+      "exit_code": 0,
+      "slot": 1
+    },
+    {
+      "stage": "setup2",
+      "command": "cargo test -p astersql-pd-compat-tests --locked --test schedule_performance -- --nocapture",
+      "exit_code": 101,
+      "slot": 1
+    },
+    {
+      "stage": "setup3",
+      "command": "cargo fmt --all",
+      "exit_code": 0,
+      "slot": 1
+    },
+    {
+      "stage": "setup3",
+      "command": "cargo test -p astersql-pd-compat-tests --locked --test schedule_performance -- --nocapture",
+      "exit_code": 0,
+      "slot": 1
+    },
+    {
+      "stage": "refined",
+      "command": "cargo fmt --all",
+      "exit_code": 0,
+      "slot": 1
+    },
+    {
+      "stage": "refined",
+      "command": "cargo test -p astersql-pd-compat-tests --locked --test schedule_performance -- --nocapture",
+      "exit_code": 0,
+      "slot": 1
+    },
+    {
+      "stage": "cached",
+      "command": "cargo fmt --all",
+      "exit_code": 0,
+      "slot": 1
+    },
+    {
+      "stage": "cached",
+      "command": "cargo test -p astersql-pd-compat-tests --locked --test schedule_performance -- --nocapture",
+      "exit_code": 0,
+      "slot": 1
+    },
+    {
+      "stage": "convergence",
+      "command": "cargo fmt --all",
+      "exit_code": 0,
+      "slot": 1
+    },
+    {
+      "stage": "convergence",
+      "command": "cargo test -p astersql-pd-compat-tests --locked --test schedule_performance -- --nocapture",
+      "exit_code": 0,
+      "slot": 1
+    },
+    {
+      "stage": "red",
+      "command": "cargo fmt --all",
+      "exit_code": 0,
+      "slot": 1
+    },
+    {
+      "stage": "red",
+      "command": "cargo test -p astersql-pd-compat-tests --locked --test schedule_performance -- --nocapture",
+      "exit_code": 101,
+      "slot": 1
+    },
+    {
+      "stage": "serial-workspace",
+      "command": "cargo fmt --all",
+      "exit_code": 0,
+      "slot": 1
+    },
+    {
+      "stage": "serial-workspace",
+      "command": "cargo test -p astersql-pd-compat-tests --locked --test schedule_performance -- --nocapture",
+      "exit_code": 0,
+      "slot": 1
+    },
+    {
+      "stage": "serial-workspace",
+      "command": "cargo test -p astersql-pd-compat-tests --locked",
+      "exit_code": 0,
+      "slot": 1
+    },
+    {
+      "stage": "serial-workspace",
+      "command": "cargo metadata --format-version 1 --no-deps",
+      "exit_code": 0,
+      "slot": 1
+    },
+    {
+      "stage": "serial-workspace",
+      "command": "cargo fmt --all -- --check",
+      "exit_code": 0,
+      "slot": 1
+    },
+    {
+      "stage": "serial-workspace",
+      "command": "cargo check --workspace --locked",
+      "exit_code": 0,
+      "slot": 1
+    },
+    {
+      "stage": "serial-workspace",
+      "command": "cargo test --workspace --locked",
+      "exit_code": 101,
+      "slot": 1
+    },
+    {
+      "stage": "recovery",
+      "command": "cargo test -p astersql-pd-tso --locked --test etcd_behavior real_etcd_oracle_process_restart -- --nocapture",
+      "exit_code": 0,
+      "slot": 1
+    },
+    {
+      "stage": "runner-failure",
+      "command": "exit 7",
+      "exit_code": 7,
+      "slot": 1
+    },
+    {
+      "stage": "verified",
+      "command": "cargo fmt --all",
+      "exit_code": 0,
+      "slot": 1
+    },
+    {
+      "stage": "verified",
+      "command": "cargo test -p astersql-pd-compat-tests --locked --test schedule_performance -- --nocapture",
+      "exit_code": 0,
+      "slot": 1
+    },
+    {
+      "stage": "verified",
+      "command": "cargo test -p astersql-pd-compat-tests --locked",
+      "exit_code": 0,
+      "slot": 1
+    },
+    {
+      "stage": "verified",
+      "command": "cargo metadata --format-version 1 --no-deps",
+      "exit_code": 0,
+      "slot": 1
+    },
+    {
+      "stage": "verified",
+      "command": "cargo fmt --all -- --check",
+      "exit_code": 0,
+      "slot": 1
+    },
+    {
+      "stage": "verified",
+      "command": "cargo check --workspace --locked",
+      "exit_code": 0,
+      "slot": 1
+    },
+    {
+      "stage": "verified",
+      "command": "cargo test --workspace --locked",
+      "exit_code": 0,
+      "slot": 1
+    },
+    {
+      "stage": "verified",
+      "command": "cargo test -p astersql-pd-compat-tests --locked --test schedule_performance -- --nocapture",
+      "exit_code": 0,
+      "slot": 1
+    }
+  ]
+}

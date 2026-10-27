@@ -1,0 +1,13 @@
+[
+  {
+    "command": "cargo test -p astersql-pd-tso --locked --test etcd_behavior real_etcd_oracle_process_restart -- --nocapture",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "recovery-0.log.gz",
+    "sha256": "75f6b89b478d287c739af10836df798d4530788ac811efb91a44b9127cd46b2a",
+    "test_summaries": [
+      "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 8 filtered out; finished in 2.20s"
+    ]
+  }
+]

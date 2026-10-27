@@ -139,6 +139,7 @@ dependencies = [
  "astersql-pd-schedule-config",
  "astersql-pd-schedule-filter",
  "astersql-pd-schedule-hbstream",
+ "astersql-pd-schedule-keyrange",
  "astersql-pd-schedule-labeler",
  "astersql-pd-schedule-operator",
  "astersql-pd-schedule-placement",
