@@ -1,0 +1,78 @@
+{
+  "go_module_source_files": 1101,
+  "content_and_file_set_unchanged": true,
+  "status_unchanged": true,
+  "read_only_plans_unchanged": true,
+  "cargo_manifests_and_lock_unchanged": true,
+  "git_diff_check": 0,
+  "links": [
+    {
+      "source": "docs/rust/schedule-execution/task-142.md",
+      "target": "task-141.md"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-142.md",
+      "target": "fixtures/task_142.json"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-142.md",
+      "target": "logs/task_142/provenance.json"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-142.md",
+      "target": "../../../pkg/server/schedule_admin_evict_stopping_store.rs"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-142.md",
+      "target": "../../../pkg/server/schedule_admin_evict_stopping_store.rs.md"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-142.md",
+      "target": "../../../pkg/server/schedule_admin_evict_stopping_store_test.rs"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-142.md",
+      "target": "logs/task_142/red.json"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-142.md",
+      "target": "logs/task_142/green.json"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-142.md",
+      "target": "logs/task_142/green2.json"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-142.md",
+      "target": "logs/task_142/verify.py"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-142.md",
+      "target": "logs/task_142/reuse-go/go"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-142.md",
+      "target": "logs/task_142/audit.json"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-142.md",
+      "target": "logs/task_142/final.json"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-142.md",
+      "target": "logs/task_142/final-summary.json"
+    },
+    {
+      "source": "pkg/server/schedule_admin_evict_stopping_store.rs.md",
+      "target": "../../docs/rust/schedule-execution/task-142.md"
+    },
+    {
+      "source": "pkg/schedule/schedulers/evict_stopping.rs.md",
+      "target": "../../../docs/rust/schedule-execution/task-082.md"
+    },
+    {
+      "source": "pkg/schedule/schedulers/evict_stopping.rs.md",
+      "target": "../../../docs/rust/schedule-execution/task-142.md"
+    }
+  ]
+}

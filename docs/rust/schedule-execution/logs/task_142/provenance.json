@@ -1,0 +1,21 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "dependency_commit": "da39bcc42",
+  "kind": "user-authorized read-only Go source/test derivation; no Go execution or runtime differential",
+  "sha256": {
+    "pkg/schedule/schedulers/evict_stopping_store.go": "297122adad26bc7ad43d5543e6b3f8566a4de8ddf26191e65863ef89ab012bd3",
+    "pkg/schedule/schedulers/evict_stopping_store_test.go": "19dddc81278efe22f9c5c7e091571be64ffe51597103d091f015a76ae35e948c",
+    "pkg/schedule/schedulers/base_scheduler.go": "1da013a2323c2756dcfd3b1203e91c481c58e80e258e3848d5db23dd261e6bdc",
+    "pkg/schedule/schedulers/config.go": "64024b895d0b48c030acd9684c3879993710856796eebe11595d4108073b6409",
+    "pkg/utils/apiutil/apiutil.go": "edda400120b9f6cc3def157e8aefc74e4572b7971d01b521f41b6bee49e6bfe6",
+    "docs/rust/schedule-execution/oracle-index.json": "2d1a930742291e7047a864aa2246e7e22c612cb6583249b7edb42945b494b450",
+    "docs/rust/schedule-execution/fixtures/task_142.json": "e3dfdb82d8a6fe9b676b6429cd20ccfff6cee01face0779b07f4f2352623caa0"
+  },
+  "source_matches_baseline": {
+    "pkg/schedule/schedulers/evict_stopping_store.go": true,
+    "pkg/schedule/schedulers/evict_stopping_store_test.go": true,
+    "pkg/schedule/schedulers/base_scheduler.go": true,
+    "pkg/schedule/schedulers/config.go": true,
+    "pkg/utils/apiutil/apiutil.go": true
+  }
+}

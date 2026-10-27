@@ -1,0 +1,284 @@
+{
+  "oracle_kind": "read-only Go source/test derivation; user-authorized; no Go runtime output",
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "cases": [
+    {
+      "name": "defaults",
+      "method": "GET",
+      "path": "/list",
+      "input": "",
+      "status": 200,
+      "json": {
+        "batch": 3,
+        "evicted-stores": [],
+        "disabled": false
+      }
+    },
+    {
+      "name": "GET/config",
+      "method": "GET",
+      "path": "/config",
+      "input": "{",
+      "status": 405,
+      "body": ""
+    },
+    {
+      "name": "HEAD/list",
+      "method": "HEAD",
+      "path": "/list",
+      "input": "{",
+      "status": 405,
+      "body": ""
+    },
+    {
+      "name": "POST/list",
+      "method": "POST",
+      "path": "/list",
+      "input": "{",
+      "status": 405,
+      "body": ""
+    },
+    {
+      "name": "DELETE/config",
+      "method": "DELETE",
+      "path": "/config",
+      "input": "{",
+      "status": 405,
+      "body": ""
+    },
+    {
+      "name": "OPTIONS/config",
+      "method": "OPTIONS",
+      "path": "/config",
+      "input": "{",
+      "status": 405,
+      "body": ""
+    },
+    {
+      "name": "/",
+      "method": "POST",
+      "path": "/",
+      "input": "{}",
+      "status": 404,
+      "body": "404 page not found\n"
+    },
+    {
+      "name": "/config/",
+      "method": "POST",
+      "path": "/config/",
+      "input": "{}",
+      "status": 404,
+      "body": "404 page not found\n"
+    },
+    {
+      "name": "/list/",
+      "method": "POST",
+      "path": "/list/",
+      "input": "{}",
+      "status": 404,
+      "body": "404 page not found\n"
+    },
+    {
+      "name": "/delete/1",
+      "method": "POST",
+      "path": "/delete/1",
+      "input": "{}",
+      "status": 404,
+      "body": "404 page not found\n"
+    },
+    {
+      "name": "type\"bad\"",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\":\"bad\"}",
+      "status": 400,
+      "json": "invalid argument for 'batch'"
+    },
+    {
+      "name": "type[]",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\":[]}",
+      "status": 400,
+      "json": "invalid argument for 'batch'"
+    },
+    {
+      "name": "type{}",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\":{}}",
+      "status": 400,
+      "json": "invalid argument for 'batch'"
+    },
+    {
+      "name": "typetrue",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\":true}",
+      "status": 400,
+      "json": "invalid argument for 'batch'"
+    },
+    {
+      "name": "range0",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\":0}",
+      "status": 400,
+      "json": "batch is invalid, it should be in [1, 10]"
+    },
+    {
+      "name": "range-1",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\":-1}",
+      "status": 400,
+      "json": "batch is invalid, it should be in [1, 10]"
+    },
+    {
+      "name": "range11",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\":11}",
+      "status": 400,
+      "json": "batch is invalid, it should be in [1, 10]"
+    },
+    {
+      "name": "range10.1",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\":10.1}",
+      "status": 400,
+      "json": "batch is invalid, it should be in [1, 10]"
+    },
+    {
+      "name": "range0.9",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\":0.9}",
+      "status": 400,
+      "json": "batch is invalid, it should be in [1, 10]"
+    },
+    {
+      "name": "{}",
+      "method": "POST",
+      "path": "/config",
+      "input": "{}",
+      "status": 200,
+      "json": "Config updated."
+    },
+    {
+      "name": "null",
+      "method": "POST",
+      "path": "/config",
+      "input": "null",
+      "status": 200,
+      "json": "Config updated."
+    },
+    {
+      "name": "{\"batch\":null}",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\":null}",
+      "status": 200,
+      "json": "Config updated."
+    },
+    {
+      "name": "{\"Batch\":99,\"unknown\":1}",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"Batch\":99,\"unknown\":1}",
+      "status": 200,
+      "json": "Config updated."
+    },
+    {
+      "name": "{\"batch\":1}",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\":1}",
+      "status": 200,
+      "json": "Config updated."
+    },
+    {
+      "name": "{\"batch\":10}",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\":10}",
+      "status": 200,
+      "json": "Config updated."
+    },
+    {
+      "name": "{\"batch\":2,\"batch\":5}",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\":2,\"batch\":5}",
+      "status": 200,
+      "json": "Config updated."
+    },
+    {
+      "name": "{\"batch\":2.9}",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\":2.9}",
+      "status": 200,
+      "json": "Config updated."
+    },
+    {
+      "name": "final",
+      "method": "GET",
+      "path": "/list?x=1",
+      "input": "ignored",
+      "status": 200,
+      "json": {
+        "batch": 2,
+        "evicted-stores": [],
+        "disabled": false
+      }
+    },
+    {
+      "name": "syntax",
+      "method": "POST",
+      "path": "/config",
+      "input": "",
+      "status": 400,
+      "json": {
+        "code": "input",
+        "msg": "unexpected end of JSON input",
+        "data": {
+          "Offset": 0
+        }
+      }
+    },
+    {
+      "name": "syntax{",
+      "method": "POST",
+      "path": "/config",
+      "input": "{",
+      "status": 400,
+      "json": {
+        "code": "input",
+        "msg": "unexpected end of JSON input",
+        "data": {
+          "Offset": 1
+        }
+      }
+    },
+    {
+      "name": "array",
+      "method": "POST",
+      "path": "/config",
+      "input": "[]",
+      "status": 400,
+      "json": {
+        "code": "input",
+        "msg": "json: cannot unmarshal array into Go value of type map[string]interface {}",
+        "data": {
+          "Value": "array",
+          "Type": {},
+          "Offset": 1,
+          "Struct": "",
+          "Field": ""
+        }
+      }
+    }
+  ]
+}

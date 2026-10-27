@@ -127,3 +127,8 @@ pub mod schedule_admin_evict_slow_store;
 #[cfg(test)]
 #[path = "schedule_admin_evict_slow_store_test.rs"]
 mod schedule_admin_evict_slow_store_test;
+
+pub mod schedule_admin_evict_stopping_store;
+#[cfg(test)]
+#[path = "schedule_admin_evict_stopping_store_test.rs"]
+mod schedule_admin_evict_stopping_store_test;

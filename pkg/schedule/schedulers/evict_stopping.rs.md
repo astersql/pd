@@ -23,3 +23,8 @@ Clean 写失败仍恢复引用而配置回滚，重复 Clean 可继续降低 Go 
 
 验证见 [task-082](../../../docs/rust/schedule-execution/task-082.md)，
 测试独立于实现并显式注册；固定期望来自 Go 分支，不声称取得 Go 运行差分。
+
+任务142新增 `update_http(Option<f64>, disabled, storage, paths)`，仅在 batch 存在时
+校验 [1,10]，缺省保存历史 batch；写入宿主 disabled envelope 后才发布配置。
+宿主 disabled 的生命周期由装配层管理，不由请求或本领域对象重新持有。
+验收见 [task-142](../../../docs/rust/schedule-execution/task-142.md)。

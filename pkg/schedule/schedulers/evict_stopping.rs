@@ -144,6 +144,31 @@ impl EvictStoppingScheduler {
         next.batch = batch as usize;
         self.persist(next, storage, paths).await
     }
+    /// Save a scheduler-local HTTP patch, preserving an omitted batch even when
+    /// a legacy reload contains a value outside the HTTP update range.
+    /// The host supplies the persisted default-scheduler disabled envelope.
+    pub async fn update_http(
+        &mut self,
+        batch: Option<f64>,
+        disabled: bool,
+        storage: &StorageEndpoint,
+        paths: &ClusterPaths,
+    ) -> Result<(), EvictStoppingError> {
+        let mut next = self.config.clone();
+        if let Some(batch) = batch {
+            if !batch.is_finite() || !(1.0..=10.0).contains(&batch) {
+                return Err(EvictStoppingError::InvalidUpdate);
+            }
+            next.batch = batch as usize;
+        }
+        let envelope = serde_json::json!({"batch":next.batch,"evicted-stores":next.evicted,"disabled":disabled});
+        storage
+            .save_scheduler_config(paths, NAME, &encode_config(&envelope)?)
+            .await
+            .map_err(SchedulerError::from)?;
+        self.config = next;
+        Ok(())
+    }
     /// A single serving/preparing stopping node is selected; recovery never recaptures this round.
     pub async fn observe<C: BasicCluster>(
         &mut self,
