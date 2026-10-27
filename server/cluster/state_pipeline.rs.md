@@ -39,3 +39,14 @@ per-step follower/cache/KV/role/classification snapshots, query hot caches and
 verify detached store copies and closed-worker errors. The server transport test
 uses real RegionSyncer HTTP/2 incremental and full subscriptions against this same
 state. Hosts stop/join runners, hot workers, streams and listeners explicitly.
+
+Task 127 adds `region_with_witness`, taking the installed canonical scheduler's
+bounded sender. `region` delegates to that same path with no installed scheduler.
+After the existing root admission, `handle_stats_async` feeds hot flow and witness
+recovery with the receipt's immutable Arc. No second heartbeat pipeline or hot
+cache is constructed. Full/closed queues remain best effort and independent;
+rejected stale reports do not enqueue, duplicates do. Tests additionally prove
+that stopping HotStat does not suppress a witness event or roll back accepted root
+state. Hosts pass `TransferWitnessLeaderScheduler::recv_region_info()` when that
+scheduler is installed; sender registration/removal and scheduler shutdown remain
+host responsibilities.

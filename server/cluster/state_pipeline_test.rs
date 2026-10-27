@@ -412,3 +412,77 @@ async fn state_task_52_state_pipeline_hot_flow_and_owned_snapshots() {
         100
     );
 }
+
+#[tokio::test]
+async fn task_127_pipeline_same_view_duplicate_stale_and_stopped_hot() {
+    let mut h = Host::new(Arc::new(MemoryStore::default()));
+    let (tx, rx) = std::sync::mpsc::sync_channel(4);
+    let original = region(127, "", "", 2);
+    let mut meta = original.meta().clone();
+    meta.peers[0].is_witness = true;
+    let mut r = RegionInfo::new(meta.clone(), Some(meta.peers[0].clone()), vec![], vec![]);
+    *r.stats_mut() = original.stats().clone();
+    r.set_report_interval(0, 60);
+    r.set_source(RegionSource::Heartbeat);
+    for _ in 0..2 {
+        let mut receipt = h
+            .pipeline()
+            .region_with_witness(r.clone(), 100, 0, Some(&tx))
+            .unwrap();
+        let event = rx.try_recv().unwrap();
+        assert!(Arc::ptr_eq(&event, &receipt.heartbeat.region));
+        assert_eq!(event.leader().unwrap().is_witness, true);
+        assert!(receipt.wait().await.is_empty());
+    }
+    assert!(
+        h.pipeline()
+            .region_with_witness(region(127, "", "", 1), 100, 0, Some(&tx))
+            .is_err()
+    );
+    assert!(rx.try_recv().is_err());
+    assert_eq!(
+        h.pipeline()
+            .snapshot()
+            .await
+            .unwrap()
+            .statistics
+            .write
+            .get(&2)
+            .map_or(0, Vec::len),
+        1
+    );
+    // A newer ordinary report updates the root but does not enqueue recovery.
+    h.apply(region(127, "", "", 3)).await;
+    assert!(rx.try_recv().is_err());
+    assert!(
+        !h.state
+            .lock()
+            .unwrap()
+            .cluster
+            .regions
+            .get_region(127)
+            .unwrap()
+            .leader()
+            .unwrap()
+            .is_witness
+    );
+    h.hot.shutdown().await.unwrap();
+    meta.epoch.as_mut().unwrap().version = 4;
+    let next = RegionInfo::new(meta.clone(), Some(meta.peers[0].clone()), vec![], vec![]);
+    let mut receipt = h
+        .pipeline()
+        .region_with_witness(next, 100, 0, Some(&tx))
+        .unwrap();
+    assert_eq!(
+        rx.try_recv()
+            .unwrap()
+            .meta()
+            .epoch
+            .as_ref()
+            .unwrap()
+            .version,
+        4
+    );
+    assert!(receipt.wait().await.is_empty());
+    h.stop().await;
+}

@@ -9,6 +9,7 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
+astersql-pd-cluster-utils.workspace = true
 astersql-pd-ratelimit.workspace = true
 astersql-pd-storage-endpoint.workspace = true
 astersql-pd-keypath.workspace = true

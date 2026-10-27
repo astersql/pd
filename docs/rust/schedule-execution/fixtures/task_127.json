@@ -1,0 +1,9 @@
+{
+  "provenance": "source-derived; no Go runtime output",
+  "cases": [
+    {"name":"witness", "witness":true, "leader":true, "installed":true, "queued":true},
+    {"name":"ordinary", "witness":false, "leader":true, "installed":true, "queued":false},
+    {"name":"no-leader", "witness":true, "leader":false, "installed":true, "queued":false},
+    {"name":"not-installed", "witness":true, "leader":true, "installed":false, "queued":false}
+  ]
+}

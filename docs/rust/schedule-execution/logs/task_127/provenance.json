@@ -1,0 +1,47 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "dependency_commit": "96465d0fd",
+  "oracle_type": "source-derived under explicit user authorization",
+  "go_binary": null,
+  "go_runtime_output": null,
+  "normalization": "none; queue snapshots preserve Arc identity; explicit caller clock",
+  "fixture_sha256": "6058520d1984dfcf5cd21b0c621ffb61b974bd37aacc209bad6a65f95692651c",
+  "sources": [
+    {
+      "path": "pkg/cluster/cluster.go",
+      "sha256": "dc42d8c6e979d759db03b6d9a44b5a6b6b65131815df59aad0bff8c815cdfeb9",
+      "source_sha256": "dc42d8c6e979d759db03b6d9a44b5a6b6b65131815df59aad0bff8c815cdfeb9",
+      "matches_source": true
+    },
+    {
+      "path": "pkg/cluster/cluster_test.go",
+      "sha256": "5daccb390ddf756504238eef76de15b7d4ec3004e08301168d777a59375d8740",
+      "source_sha256": "5daccb390ddf756504238eef76de15b7d4ec3004e08301168d777a59375d8740",
+      "matches_source": true
+    },
+    {
+      "path": "pkg/core/region.go",
+      "sha256": "be6ed0dc77537d62926d21d9e4eef080ea0dbcc7dc97efb4dc26269a172f99d8",
+      "source_sha256": "be6ed0dc77537d62926d21d9e4eef080ea0dbcc7dc97efb4dc26269a172f99d8",
+      "matches_source": true
+    },
+    {
+      "path": "pkg/statistics/hot_cache.go",
+      "sha256": "358f74db30b7daac888397f869fd5b7d44dab832c05cc8fb92f6434ff1e42cc0",
+      "source_sha256": "358f74db30b7daac888397f869fd5b7d44dab832c05cc8fb92f6434ff1e42cc0",
+      "matches_source": true
+    },
+    {
+      "path": "pkg/schedule/schedulers/scheduler_controller.go",
+      "sha256": "5b8ad7382dcf829b9405240fb3e1e72ba659aa5ae301fb0257a3a66c318a7153",
+      "source_sha256": "5b8ad7382dcf829b9405240fb3e1e72ba659aa5ae301fb0257a3a66c318a7153",
+      "matches_source": true
+    },
+    {
+      "path": "pkg/schedule/schedulers/transfer_witness_leader.go",
+      "sha256": "b89a92588c33b70a13c885f53410b0103e65fffb1b8176d5b1d65418248a68e3",
+      "source_sha256": "b89a92588c33b70a13c885f53410b0103e65fffb1b8176d5b1d65418248a68e3",
+      "matches_source": true
+    }
+  ]
+}

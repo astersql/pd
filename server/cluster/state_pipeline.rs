@@ -57,6 +57,18 @@ impl<C: CheckerConfigProvider + Send + 'static> StatePipeline<'_, C> {
         now_unix_seconds: i64,
         now_unix_nanos: i64,
     ) -> Result<HeartbeatEffectsReceipt, StaleRegionError> {
+        self.region_with_witness(region, now_unix_seconds, now_unix_nanos, None)
+    }
+    /// Uses the installed witness scheduler's bounded sender on the same admission
+    /// path. Both queues receive the accepted immutable heartbeat view, including
+    /// duplicates. Queue failures never roll back root state or suppress each other.
+    pub fn region_with_witness(
+        &self,
+        region: RegionInfo,
+        now_unix_seconds: i64,
+        now_unix_nanos: i64,
+        witness: Option<&std::sync::mpsc::SyncSender<Arc<RegionInfo>>>,
+    ) -> Result<HeartbeatEffectsReceipt, StaleRegionError> {
         let receipt = submit_region_heartbeat(
             self.state,
             region,
@@ -69,10 +81,12 @@ impl<C: CheckerConfigProvider + Send + 'static> StatePipeline<'_, C> {
         )?;
         // Duplicate admissions still carry flow samples; stale reports never reach here.
         // Queue admission is best effort, matching the canonical Go hot-cache boundary.
-        let _ = self
-            .hot
-            .hot_cache
-            .check_region_flow_async(&receipt.heartbeat.region, now_unix_nanos);
+        let _ = astersql_pd_cluster_utils::handle_stats_async(
+            &self.hot.hot_cache,
+            witness,
+            receipt.heartbeat.region.clone(),
+            now_unix_nanos,
+        );
         Ok(receipt)
     }
     pub async fn snapshot(&self) -> Result<StateSnapshot, StatisticsSnapshotError> {
