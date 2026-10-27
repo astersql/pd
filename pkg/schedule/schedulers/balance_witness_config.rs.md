@@ -11,7 +11,10 @@ HTTP PATCH/状态码与请求解码由适配层负责，不在此新增。
 返回 true。保存失败传播 `SchedulerError::Storage`，保留全部原活动配置。
 恢复先加载和完整校验再发布；读取失败或非法 batch/key JSON 保留原配置，
 分别传播 Storage/Decode。不同实例共享存储仍是 last-writer-wins，没有新增 CAS。
-空 ranges 沿用前置配置类型的全域规范化，不改变其既有表示。
+`new` 的空 ranges 继续规范化为全域；任务139为HTTP增加保留 null/[] 的
+snapshot，二者调度均表示全域。恢复保留已保存的 null/[] 表示。
+`from_transport_parts` 专用于兼容Go非事务解码，允许错误路径留下非法batch；
+领域update入口仍校验1–10，拒绝这类snapshot，不写存储。
 
 任务74的明确验收要求优先：Go `balance_witness.go:81-85` 保存失败仍发布新值并
 返回成功，这里有意遵从任务的保留旧值契约，并不声称与该 Go 故障行为相同。

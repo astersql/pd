@@ -112,3 +112,8 @@ pub mod schedule_admin_balance_region;
 #[cfg(test)]
 #[path = "schedule_admin_balance_region_test.rs"]
 mod schedule_admin_balance_region_test;
+
+pub mod schedule_admin_balance_witness;
+#[cfg(test)]
+#[path = "schedule_admin_balance_witness_test.rs"]
+mod schedule_admin_balance_witness_test;

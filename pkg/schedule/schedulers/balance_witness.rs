@@ -17,37 +17,43 @@ use std::sync::Arc;
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 #[serde(try_from = "WitnessConfigJson", into = "WitnessConfigJson")]
 pub struct BalanceWitnessConfig {
-    ranges: BalanceRegionConfig,
-    batch: usize,
+    ranges: Option<Vec<KeyRange>>,
+    batch: i64,
 }
 #[derive(serde::Serialize, serde::Deserialize)]
 struct WitnessConfigJson {
-    ranges: Vec<astersql_pd_keyutil::KeyRange>,
-    batch: usize,
+    ranges: Option<Vec<astersql_pd_keyutil::KeyRange>>,
+    batch: i64,
 }
 impl TryFrom<WitnessConfigJson> for BalanceWitnessConfig {
     type Error = WitnessConfigError;
     fn try_from(c: WitnessConfigJson) -> Result<Self, Self::Error> {
-        Self::new(
-            c.ranges
-                .into_iter()
-                .map(|r| KeyRange {
-                    start_key: r.start_key,
-                    end_key: r.end_key,
-                })
-                .collect(),
+        if !(1..=10).contains(&c.batch) {
+            return Err(WitnessConfigError);
+        }
+        Ok(Self::from_transport_parts(
+            c.ranges.map(|ranges| {
+                ranges
+                    .into_iter()
+                    .map(|r| KeyRange {
+                        start_key: r.start_key,
+                        end_key: r.end_key,
+                    })
+                    .collect()
+            }),
             c.batch,
-        )
+        ))
     }
 }
 impl From<BalanceWitnessConfig> for WitnessConfigJson {
     fn from(c: BalanceWitnessConfig) -> Self {
         Self {
-            ranges: c
-                .ranges()
-                .iter()
-                .map(|r| astersql_pd_keyutil::KeyRange::new(&r.start_key, &r.end_key))
-                .collect(),
+            ranges: c.ranges.map(|ranges| {
+                ranges
+                    .into_iter()
+                    .map(|r| astersql_pd_keyutil::KeyRange::new(r.start_key, r.end_key))
+                    .collect()
+            }),
             batch: c.batch,
         }
     }
@@ -66,15 +72,29 @@ impl BalanceWitnessConfig {
             return Err(WitnessConfigError);
         }
         Ok(Self {
-            ranges: BalanceRegionConfig::new(ranges),
-            batch,
+            ranges: Some(BalanceRegionConfig::new(ranges).ranges().to_vec()),
+            batch: batch as i64,
         })
     }
-    pub fn batch(&self) -> usize {
+    /// Preserve the exact transport snapshot, including null/empty ranges and
+    /// partially decoded values on Go-compatible HTTP errors. Validated callers
+    /// should use `new`; this path intentionally does not validate or persist.
+    pub fn from_transport_parts(ranges: Option<Vec<KeyRange>>, batch: i64) -> Self {
+        Self { ranges, batch }
+    }
+    /// Exact signed transport batch; a failed Go decode may leave it invalid.
+    pub fn transport_batch(&self) -> i64 {
         self.batch
     }
+    /// Distinguish null ranges from an explicitly empty list at the HTTP boundary.
+    pub fn transport_ranges(&self) -> Option<&[KeyRange]> {
+        self.ranges.as_deref()
+    }
+    pub fn batch(&self) -> usize {
+        self.batch.try_into().unwrap_or(0)
+    }
     pub fn ranges(&self) -> &[KeyRange] {
-        self.ranges.ranges()
+        self.ranges.as_deref().unwrap_or_default()
     }
 }
 /// Immutable host snapshot, with explicit clock and region sampling boundaries.

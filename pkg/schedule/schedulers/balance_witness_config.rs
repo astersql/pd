@@ -22,6 +22,11 @@ impl BalanceWitnessScheduler {
         storage: &StorageEndpoint,
         paths: &ClusterPaths,
     ) -> Result<bool, SchedulerError> {
+        if !(1..=10).contains(&candidate.transport_batch()) {
+            return Err(SchedulerError::InvalidConfig(
+                crate::WitnessConfigError.to_string(),
+            ));
+        }
         let bytes = encode_config(&candidate)?;
         if bytes == self.encode_witness_config()? {
             return Ok(false);

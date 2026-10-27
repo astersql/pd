@@ -7,7 +7,12 @@ PlacementGuardContext、BalanceSolver 和 RangeOperatorFactory；没有传输或
 `is_schedule_allowed` 比较在途 WITNESS 操作数与限额，再请求调度。
 
 `BalanceWitnessConfig::new` 验证 batch 1–10，默认4，范围沿用二进制 key 的
-十六进制 JSON 编解码。HTTP、配置持久化和管理装配留给后续适配任务。
+十六进制 JSON 编解码。持久化见 `balance_witness_config.rs`；HTTP见
+`pkg/server/schedule_admin_balance_witness.rs`（任务139）。
+`from_transport_parts` 保留带符号batch和可空ranges，供HTTP兼容Go部分解码状态，
+不校验、不保存。`transport_batch`/`transport_ranges`读出精确状态；`batch()`保留
+原usize接口，负数错误状态读为0；正常构造与领域更新仍验证1–10。
+JSON恢复保留null/[]，采样将空ranges解释为全域，不改变调度算法。
 时钟与随机索引由宿主提供，规则管理器和状态均借用，库不创建 runtime。
 角色交换保留 peer ID，无需分配新 ID，工厂若意外请求分配将返回 Allocation 错误。
 

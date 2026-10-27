@@ -832,6 +832,7 @@ dependencies = [
  "futures-util",
  "prometheus",
  "prost",
+ "serde",
  "serde_json",
  "tokio",
  "tokio-stream",

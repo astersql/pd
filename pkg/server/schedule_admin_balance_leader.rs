@@ -133,7 +133,7 @@ pub async fn serve(
         Err(error) => message(500, &error.to_string()),
     }
 }
-fn json_type(value: &Value) -> &'static str {
+pub(crate) fn json_type(value: &Value) -> &'static str {
     match value {
         Value::Array(_) => "array",
         Value::Object(_) => "object",
@@ -143,7 +143,7 @@ fn json_type(value: &Value) -> &'static str {
         Value::Null => "null",
     }
 }
-fn syntax_error(bytes: &[u8], error: &serde_json::Error) -> String {
+pub(crate) fn syntax_error(bytes: &[u8], error: &serde_json::Error) -> String {
     if error.is_eof() {
         return "unexpected end of JSON input".into();
     }
@@ -152,7 +152,7 @@ fn syntax_error(bytes: &[u8], error: &serde_json::Error) -> String {
     let byte = bytes.get(position).copied().unwrap_or(b'?') as char;
     format!("invalid character '{byte}' looking for beginning of value")
 }
-fn decode_ranges(value: &Value) -> Result<Vec<KeyRange>, String> {
+pub(crate) fn decode_ranges(value: &Value) -> Result<Vec<KeyRange>, String> {
     let items = value.as_array().ok_or_else(|| format!("json: cannot unmarshal {} into Go struct field balanceLeaderSchedulerParam.ranges of type []keyutil.KeyRange", json_type(value)))?;
     items
         .iter()
