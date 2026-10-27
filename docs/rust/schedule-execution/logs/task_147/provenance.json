@@ -1,0 +1,32 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "dependency_commit": "aa5a49f25",
+  "runtime_go_oracle": false,
+  "authority": "User authorized read-only Go source/test derivation plus real Rust behavior/fault verification",
+  "files": {
+    "pkg/schedule/schedulers/random_merge.go": {
+      "sha256": "1df788b885604f424a4a8544d7d00e69f1525dc6aae53ce212f87a20bae7410c",
+      "matches_source_commit": true
+    },
+    "pkg/schedule/schedulers/base_scheduler.go": {
+      "sha256": "1da013a2323c2756dcfd3b1203e91c481c58e80e258e3848d5db23dd261e6bdc",
+      "matches_source_commit": true
+    },
+    "pkg/schedule/schedulers/random_merge_test.go": {
+      "sha256": "e45ce6b607561b5bf388167fb9a15ebbc6cbfb3e0d351450a5567a855d221b7e",
+      "matches_source_commit": true
+    },
+    "docs/rust/schedule-execution/fixtures/task_147.json": {
+      "sha256": "ec66e14a3a1dc8df17fa9c63415185a6fe63f544de0a5ba189bc526251628960"
+    },
+    "docs/rust/schedule-execution/oracle-index.json": {
+      "sha256": "2d1a930742291e7047a864aa2246e7e22c612cb6583249b7edb42945b494b450"
+    },
+    "docs/rust/schedule-execution/task-146.md": {
+      "sha256": "f7780a69ed38a3fa19cb6d01ea2bd6ff3b7429bceaf23ab468883687f3175dc8"
+    },
+    "docs/rust/schedule-execution/logs/task_146/final.json": {
+      "sha256": "04c38b3674f8a27725bc539a517caf21e83bc4734c8633c3652d89e12742cb6e"
+    }
+  }
+}

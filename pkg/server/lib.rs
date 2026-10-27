@@ -153,3 +153,8 @@ pub mod schedule_admin_label;
 #[cfg(test)]
 #[path = "schedule_admin_label_test.rs"]
 mod schedule_admin_label_test;
+
+pub mod schedule_admin_random_merge;
+#[cfg(test)]
+#[path = "schedule_admin_random_merge_test.rs"]
+mod schedule_admin_random_merge_test;

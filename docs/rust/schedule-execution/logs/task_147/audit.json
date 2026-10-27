@@ -1,0 +1,23 @@
+{
+  "go_file_count": 1101,
+  "go_contents_and_status_unchanged": true,
+  "plans_unchanged": true,
+  "links": [
+    "docs/rust/schedule-execution/task-146.md",
+    "docs/rust/schedule-execution/logs/task_147/provenance.json",
+    "docs/rust/schedule-execution/fixtures/task_147.json",
+    "docs/rust/schedule-execution/../../../pkg/server/schedule_admin_random_merge.rs",
+    "docs/rust/schedule-execution/../../../pkg/server/schedule_admin_random_merge.rs.md",
+    "docs/rust/schedule-execution/logs/task_147/red.json",
+    "docs/rust/schedule-execution/../../../pkg/server/schedule_admin_random_merge_test.rs",
+    "docs/rust/schedule-execution/logs/task_147/verify.py",
+    "docs/rust/schedule-execution/logs/task_147/reuse-go/go",
+    "docs/rust/schedule-execution/logs/task_147/go-reuse.jsonl",
+    "docs/rust/schedule-execution/logs/task_147/final.json",
+    "docs/rust/schedule-execution/logs/task_147/final-summary.json",
+    "docs/rust/schedule-execution/logs/task_147/audit.json",
+    "docs/rust/schedule-execution/logs/task_147/baseline.json",
+    "pkg/server/../../docs/rust/schedule-execution/task-147.md"
+  ],
+  "diff_check_exit_code": 0
+}
