@@ -1,0 +1,440 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "provenance": "Go read-only source-derived; no Go runtime output",
+  "normalization": "JSON whitespace and map key order only",
+  "cases": [
+    {
+      "name": "list-default",
+      "method": "GET",
+      "path": "/list",
+      "input": "",
+      "status": 200,
+      "json": {
+        "store-id-ranges": {},
+        "batch": 3
+      }
+    },
+    {
+      "name": "GET/config",
+      "method": "GET",
+      "path": "/config",
+      "input": "",
+      "status": 405,
+      "body": ""
+    },
+    {
+      "name": "POST/list",
+      "method": "POST",
+      "path": "/list",
+      "input": "",
+      "status": 405,
+      "body": ""
+    },
+    {
+      "name": "POST/delete/1",
+      "method": "POST",
+      "path": "/delete/1",
+      "input": "",
+      "status": 405,
+      "body": ""
+    },
+    {
+      "name": "HEAD/list",
+      "method": "HEAD",
+      "path": "/list",
+      "input": "",
+      "status": 405,
+      "body": ""
+    },
+    {
+      "name": "OPTIONS/config",
+      "method": "OPTIONS",
+      "path": "/config",
+      "input": "",
+      "status": 405,
+      "body": ""
+    },
+    {
+      "name": "/unknown",
+      "method": "POST",
+      "path": "/unknown",
+      "input": "",
+      "status": 404,
+      "body": "404 page not found\n"
+    },
+    {
+      "name": "/delete/",
+      "method": "POST",
+      "path": "/delete/",
+      "input": "",
+      "status": 404,
+      "body": "404 page not found\n"
+    },
+    {
+      "name": "/delete/1/2",
+      "method": "POST",
+      "path": "/delete/1/2",
+      "input": "",
+      "status": 404,
+      "body": "404 page not found\n"
+    },
+    {
+      "name": "/config/",
+      "method": "POST",
+      "path": "/config/",
+      "input": "",
+      "status": 404,
+      "body": "404 page not found\n"
+    },
+    {
+      "name": "empty",
+      "method": "POST",
+      "path": "/config",
+      "input": "{}",
+      "status": 200,
+      "json": "The scheduler has been applied to the store."
+    },
+    {
+      "name": "null",
+      "method": "POST",
+      "path": "/config",
+      "input": "null",
+      "status": 200,
+      "json": "The scheduler has been applied to the store."
+    },
+    {
+      "name": "unknown",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"foo\":1}",
+      "status": 200,
+      "json": "The scheduler has been applied to the store."
+    },
+    {
+      "name": "batch-max",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\":100}",
+      "status": 200,
+      "json": "The scheduler has been applied to the store."
+    },
+    {
+      "name": "batch-min",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\":1}",
+      "status": 200,
+      "json": "The scheduler has been applied to the store."
+    },
+    {
+      "name": "batch-null",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\":null}",
+      "status": 200,
+      "json": "The scheduler has been applied to the store."
+    },
+    {
+      "name": "single",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store_id\":1}",
+      "status": 200,
+      "json": "The scheduler has been applied to the store."
+    },
+    {
+      "name": "multi",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store_ids\":[1,2,2]}",
+      "status": 200,
+      "json": "The scheduler has been applied to the store."
+    },
+    {
+      "name": "ranges",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store_ids\":[1,2],\"ranges\":[\"a\",\"z\"]}",
+      "status": 200,
+      "json": "The scheduler has been applied to the store."
+    },
+    {
+      "name": "empty-ranges",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store_id\":1,\"ranges\":[]}",
+      "status": 200,
+      "json": "The scheduler has been applied to the store."
+    },
+    {
+      "name": "list-retains-ranges",
+      "method": "GET",
+      "path": "/list",
+      "input": "",
+      "status": 200,
+      "json": {
+        "store-id-ranges": {
+          "1": [
+            {
+              "start-key": "61",
+              "end-key": "7a"
+            }
+          ],
+          "2": [
+            {
+              "start-key": "61",
+              "end-key": "7a"
+            }
+          ]
+        },
+        "batch": 1
+      }
+    },
+    {
+      "name": "odd-ranges",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store_id\":1,\"ranges\":[\"ignored\"]}",
+      "status": 200,
+      "json": "The scheduler has been applied to the store."
+    },
+    {
+      "name": "duplicate-last",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\":0,\"batch\":2}",
+      "status": 200,
+      "json": "The scheduler has been applied to the store."
+    },
+    {
+      "name": "case-sensitive",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"Batch\":0}",
+      "status": 200,
+      "json": "The scheduler has been applied to the store."
+    },
+    {
+      "name": "ids-conflict",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store_id\":1,\"store_ids\":[2]}",
+      "status": 400,
+      "json": "only one of store_id and store_ids can be set"
+    },
+    {
+      "name": "ids-empty",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store_ids\":[]}",
+      "status": 400,
+      "json": "please input a right store id"
+    },
+    {
+      "name": "ids-null",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store_ids\":null}",
+      "status": 400,
+      "json": "please input a right store id"
+    },
+    {
+      "name": "id-string",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store_id\":\"1\"}",
+      "status": 400,
+      "json": "please input a right store id"
+    },
+    {
+      "name": "id-fraction",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store_id\":1.5}",
+      "status": 400,
+      "json": "please input a right store id"
+    },
+    {
+      "name": "id-negative",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store_id\":-1}",
+      "status": 400,
+      "json": "please input a right store id"
+    },
+    {
+      "name": "batch-zero",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\":0}",
+      "status": 400,
+      "json": "batch must be an integer in [1, 100]"
+    },
+    {
+      "name": "batch-large",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\":101}",
+      "status": 400,
+      "json": "batch must be an integer in [1, 100]"
+    },
+    {
+      "name": "batch-fraction",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\":2.1}",
+      "status": 400,
+      "json": "batch must be an integer in [1, 100]"
+    },
+    {
+      "name": "batch-string",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\":\"2\"}",
+      "status": 400,
+      "json": "invalid argument for 'batch': expected a number, got string"
+    },
+    {
+      "name": "batch-bool",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\":true}",
+      "status": 400,
+      "json": "invalid argument for 'batch': expected a number, got bool"
+    },
+    {
+      "name": "ranges-null",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store_id\":1,\"ranges\":null}",
+      "status": 400,
+      "json": "invalid argument for 'ranges': expected an array of strings, got <nil>"
+    },
+    {
+      "name": "ranges-element",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store_id\":1,\"ranges\":[1]}",
+      "status": 400,
+      "json": "invalid argument for 'ranges': expected an array of strings, got []interface {}"
+    },
+    {
+      "name": "invalid-escape",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store_id\":1,\"ranges\":[\"%xx\",\"z\"]}",
+      "status": 400,
+      "json": "[PD:url:ErrQueryUnescape]inverse transformation of QueryEscape error: invalid URL escape \"%xx\""
+    },
+    {
+      "name": "empty-body",
+      "method": "POST",
+      "path": "/config",
+      "input": "",
+      "status": 400,
+      "json": {
+        "code": "input",
+        "msg": "unexpected end of JSON input",
+        "data": {
+          "Offset": 0
+        }
+      }
+    },
+    {
+      "name": "ranges-no-ids",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"ranges\":[]}",
+      "status": 400,
+      "json": {
+        "class": 0,
+        "code": 0,
+        "message": "wrong scheduler config id",
+        "rfccode": "PD:scheduler:ErrSchedulerConfig"
+      }
+    },
+    {
+      "name": "syntax",
+      "method": "POST",
+      "path": "/config",
+      "input": "{",
+      "status": 400,
+      "json": {
+        "code": "input",
+        "msg": "unexpected end of JSON input",
+        "data": {
+          "Offset": 1
+        }
+      }
+    },
+    {
+      "name": "array-root",
+      "method": "POST",
+      "path": "/config",
+      "input": "[]",
+      "status": 400,
+      "json": {
+        "code": "input",
+        "msg": "json: cannot unmarshal array into Go value of type map[string]interface {}",
+        "data": {
+          "Value": "array",
+          "Type": {},
+          "Offset": 1,
+          "Struct": "",
+          "Field": ""
+        }
+      }
+    },
+    {
+      "name": "delete-invalid",
+      "method": "DELETE",
+      "path": "/delete/no",
+      "input": "",
+      "status": 400,
+      "json": "strconv.ParseUint: parsing \"no\": invalid syntax"
+    },
+    {
+      "name": "delete-overflow",
+      "method": "DELETE",
+      "path": "/delete/18446744073709551616",
+      "input": "",
+      "status": 400,
+      "json": "strconv.ParseUint: parsing \"18446744073709551616\": value out of range"
+    },
+    {
+      "name": "delete-missing",
+      "method": "DELETE",
+      "path": "/delete/3",
+      "input": "",
+      "status": 404,
+      "json": "[PD:scheduler:ErrScheduleConfigNotExist]the config does not exist"
+    },
+    {
+      "name": "delete-first",
+      "method": "DELETE",
+      "path": "/delete/01",
+      "input": "",
+      "status": 200,
+      "json": null
+    },
+    {
+      "name": "delete-last",
+      "method": "DELETE",
+      "path": "/delete/2",
+      "input": "",
+      "status": 200,
+      "json": "The last store has been deleted"
+    },
+    {
+      "name": "list-final",
+      "method": "GET",
+      "path": "/list?x=1",
+      "input": "",
+      "status": 200,
+      "json": {
+        "store-id-ranges": {},
+        "batch": 2
+      }
+    }
+  ]
+}

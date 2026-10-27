@@ -1,0 +1,65 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "dependency_139_commit": "1f4690078",
+  "go_runtime_output": null,
+  "go_runtime_hash": null,
+  "oracle_kind": "read-only Go source/test derivation, authorized in follow-up; Rust real behavior and fault validation",
+  "files": [
+    {
+      "path": "pkg/schedule/schedulers/evict_leader.go",
+      "sha256": "7fb5a50e54d33f0069e22c69ffd1341ae64f6310a5d1c49ac315aad6f925a460",
+      "baseline_sha256": "7fb5a50e54d33f0069e22c69ffd1341ae64f6310a5d1c49ac315aad6f925a460",
+      "matches_baseline": true
+    },
+    {
+      "path": "pkg/schedule/schedulers/evict_leader_test.go",
+      "sha256": "eb9288a2cb678c8e7911b876788b537fdce89e13ff0aa1d7543c760e74454b21",
+      "baseline_sha256": "eb9288a2cb678c8e7911b876788b537fdce89e13ff0aa1d7543c760e74454b21",
+      "matches_baseline": true
+    },
+    {
+      "path": "pkg/schedule/schedulers/base_scheduler.go",
+      "sha256": "1da013a2323c2756dcfd3b1203e91c481c58e80e258e3848d5db23dd261e6bdc",
+      "baseline_sha256": "1da013a2323c2756dcfd3b1203e91c481c58e80e258e3848d5db23dd261e6bdc",
+      "matches_baseline": true
+    },
+    {
+      "path": "pkg/schedule/schedulers/utils.go",
+      "sha256": "41a551f1b4f95e31a0f48cfc262a125e1132dfa546a73a9300b8eb7bd18834e1",
+      "baseline_sha256": "41a551f1b4f95e31a0f48cfc262a125e1132dfa546a73a9300b8eb7bd18834e1",
+      "matches_baseline": true
+    },
+    {
+      "path": "pkg/utils/apiutil/apiutil.go",
+      "sha256": "edda400120b9f6cc3def157e8aefc74e4572b7971d01b521f41b6bee49e6bfe6",
+      "baseline_sha256": "edda400120b9f6cc3def157e8aefc74e4572b7971d01b521f41b6bee49e6bfe6",
+      "matches_baseline": true
+    },
+    {
+      "path": "pkg/errs/errno.go",
+      "sha256": "5b72951756fa619ef642081d382cb1f73ebf1d6a170d6410a8444124767b94e7",
+      "baseline_sha256": "5b72951756fa619ef642081d382cb1f73ebf1d6a170d6410a8444124767b94e7",
+      "matches_baseline": true
+    },
+    {
+      "path": "docs/rust/schedule-execution/task-139.md",
+      "sha256": "bc658483503bcd255f1e2d971c50a9e8064203e612921a6fd3f28f41619dbc04"
+    },
+    {
+      "path": "docs/rust/schedule-execution/task-076.md",
+      "sha256": "5add31f428a33bccd6f38f93ba63314ab9eb509b69e3f0bce815a15d14f49f77"
+    },
+    {
+      "path": "docs/rust/schedule-execution/task-075.md",
+      "sha256": "31defd8843b6e7df92c057469474ce806a0814b84ffb0feaf0218efddd42e85c"
+    },
+    {
+      "path": "docs/rust/schedule-execution/oracle-index.json",
+      "sha256": "2d1a930742291e7047a864aa2246e7e22c612cb6583249b7edb42945b494b450"
+    },
+    {
+      "path": "docs/rust/schedule-execution/fixtures/task_140.json",
+      "sha256": "56cf75db230233eec52192fda28b4ba9ab6a56c8cd4f2db3c5182065d842939e"
+    }
+  ]
+}

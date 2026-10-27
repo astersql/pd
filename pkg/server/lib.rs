@@ -117,3 +117,8 @@ pub mod schedule_admin_balance_witness;
 #[cfg(test)]
 #[path = "schedule_admin_balance_witness_test.rs"]
 mod schedule_admin_balance_witness_test;
+
+pub mod schedule_admin_evict_leader;
+#[cfg(test)]
+#[path = "schedule_admin_evict_leader_test.rs"]
+mod schedule_admin_evict_leader_test;

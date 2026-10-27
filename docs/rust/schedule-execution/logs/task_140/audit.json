@@ -1,0 +1,70 @@
+{
+  "go_and_module_files": 1101,
+  "go_file_set_hashes_status_unchanged": true,
+  "readonly_plans_unchanged": true,
+  "provenance_hashes_match": true,
+  "slot": 1,
+  "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+  "own_lock_released": true,
+  "validated_links": [
+    "docs/rust/schedule-execution/task-139.md",
+    "docs/rust/schedule-execution/logs/task_140/provenance.json",
+    "docs/rust/schedule-execution/fixtures/task_140.json",
+    "pkg/server/schedule_admin_evict_leader.rs",
+    "pkg/server/schedule_admin_evict_leader.rs.md",
+    "pkg/server/schedule_admin_evict_leader_test.rs",
+    "docs/rust/schedule-execution/logs/task_140/red.json",
+    "docs/rust/schedule-execution/logs/task_140/green.json",
+    "docs/rust/schedule-execution/logs/task_140/expanded.json",
+    "docs/rust/schedule-execution/logs/task_140/corrected.json",
+    "docs/rust/schedule-execution/logs/task_140/edges.json",
+    "docs/rust/schedule-execution/logs/task_140/final.json",
+    "docs/rust/schedule-execution/logs/task_140/verify.py",
+    "docs/rust/schedule-execution/logs/task_140/reuse-go/go",
+    "docs/rust/schedule-execution/logs/task_140/go-reuse.jsonl",
+    "docs/rust/schedule-execution/logs/task_140/space-recovery.json",
+    "docs/rust/schedule-execution/logs/task_140/space-recovery-2.json",
+    "docs/rust/schedule-execution/logs/task_140/audit.json",
+    "docs/rust/schedule-execution/task-140.md"
+  ],
+  "git_diff_check_exit": 0,
+  "remote_dependency_versions_unchanged": true,
+  "counts": [
+    {
+      "command": "cargo test -p astersql-pd-server --locked --lib task_140 -- --nocapture",
+      "passed": 4,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "command": "cargo test -p astersql-pd-server --locked",
+      "passed": 67,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "command": "cargo metadata --format-version 1 --no-deps",
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "command": "cargo fmt --all -- --check",
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "command": "cargo check --workspace --locked",
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "command": "cargo test --workspace --locked",
+      "passed": 1867,
+      "failed": 0,
+      "ignored": 1
+    }
+  ]
+}
