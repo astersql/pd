@@ -1,0 +1,160 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "provenance": "read-only Go source/test derived; no Go execution",
+  "runtime_go_oracle": false,
+  "normalization": "none; exact response bytes; HEAD body tested at direct handler boundary",
+  "cases": [
+    {
+      "method": "GET",
+      "path": "/config",
+      "input": "{\"ranges\":[]}",
+      "status": 200,
+      "body": "not implements",
+      "content_type": "text/plain; charset=utf-8"
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"ranges\":[]}",
+      "status": 200,
+      "body": "not implements",
+      "content_type": "text/plain; charset=utf-8"
+    },
+    {
+      "method": "PUT",
+      "path": "/config",
+      "input": "{\"ranges\":[]}",
+      "status": 200,
+      "body": "not implements",
+      "content_type": "text/plain; charset=utf-8"
+    },
+    {
+      "method": "DELETE",
+      "path": "/config",
+      "input": "{\"ranges\":[]}",
+      "status": 200,
+      "body": "not implements",
+      "content_type": "text/plain; charset=utf-8"
+    },
+    {
+      "method": "PATCH",
+      "path": "/config",
+      "input": "{\"ranges\":[]}",
+      "status": 200,
+      "body": "not implements",
+      "content_type": "text/plain; charset=utf-8"
+    },
+    {
+      "method": "HEAD",
+      "path": "/config",
+      "input": "{\"ranges\":[]}",
+      "status": 200,
+      "body": "not implements",
+      "content_type": "text/plain; charset=utf-8"
+    },
+    {
+      "method": "OPTIONS",
+      "path": "/config",
+      "input": "{\"ranges\":[]}",
+      "status": 200,
+      "body": "not implements",
+      "content_type": "text/plain; charset=utf-8"
+    },
+    {
+      "method": "TRACE",
+      "path": "/config",
+      "input": "{\"ranges\":[]}",
+      "status": 200,
+      "body": "not implements",
+      "content_type": "text/plain; charset=utf-8"
+    },
+    {
+      "method": "CONNECT",
+      "path": "/config",
+      "input": "{\"ranges\":[]}",
+      "status": 200,
+      "body": "not implements",
+      "content_type": "text/plain; charset=utf-8"
+    },
+    {
+      "method": "CUSTOM",
+      "path": "/config",
+      "input": "{\"ranges\":[]}",
+      "status": 200,
+      "body": "not implements",
+      "content_type": "text/plain; charset=utf-8"
+    },
+    {
+      "method": "GET",
+      "path": "/list",
+      "input": "",
+      "status": 200,
+      "body": "not implements",
+      "content_type": "text/plain; charset=utf-8"
+    },
+    {
+      "method": "POST",
+      "path": "/unknown",
+      "input": "{",
+      "status": 200,
+      "body": "not implements",
+      "content_type": "text/plain; charset=utf-8"
+    },
+    {
+      "method": "DELETE",
+      "path": "/delete/1",
+      "input": "",
+      "status": 200,
+      "body": "not implements",
+      "content_type": "text/plain; charset=utf-8"
+    },
+    {
+      "method": "POST",
+      "path": "/config?x=1",
+      "input": "null",
+      "status": 200,
+      "body": "not implements",
+      "content_type": "text/plain; charset=utf-8"
+    },
+    {
+      "method": "POST",
+      "path": "/config/",
+      "input": "[]",
+      "status": 200,
+      "body": "not implements",
+      "content_type": "text/plain; charset=utf-8"
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"ranges\":2}",
+      "status": 200,
+      "body": "not implements",
+      "content_type": "text/plain; charset=utf-8"
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"ranges\":[{\"start-key\":\"zz\"}]}",
+      "status": 200,
+      "body": "not implements",
+      "content_type": "text/plain; charset=utf-8"
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{",
+      "status": 200,
+      "body": "not implements",
+      "content_type": "text/plain; charset=utf-8"
+    },
+    {
+      "method": "POST",
+      "path": "/",
+      "input": "",
+      "status": 200,
+      "body": "not implements",
+      "content_type": "text/plain; charset=utf-8"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "runtime_go_oracle": false,
+  "admission": "User authorized readonly Go source/test inference plus real Rust behavior/fault verification instead of missing Go runtime differential",
+  "dependency_commit": "caf7b22d9",
+  "source_files": [
+    {
+      "path": "pkg/schedule/schedulers/label.go",
+      "sha256": "c6127510efb37ebafca5db1482dadc0a851b25532c99d1b5962e3f60dc0d25b6",
+      "source_commit_sha256": "c6127510efb37ebafca5db1482dadc0a851b25532c99d1b5962e3f60dc0d25b6",
+      "identical_to_source_commit": true
+    },
+    {
+      "path": "pkg/schedule/schedulers/base_scheduler.go",
+      "sha256": "1da013a2323c2756dcfd3b1203e91c481c58e80e258e3848d5db23dd261e6bdc",
+      "source_commit_sha256": "1da013a2323c2756dcfd3b1203e91c481c58e80e258e3848d5db23dd261e6bdc",
+      "identical_to_source_commit": true
+    },
+    {
+      "path": "pkg/schedule/schedulers/scheduler_test.go",
+      "sha256": "55b18eda7e1834ed5090cf360f2cbac1048b0b164e4e84dcf06cbfbbdc8162fc",
+      "source_commit_sha256": "55b18eda7e1834ed5090cf360f2cbac1048b0b164e4e84dcf06cbfbbdc8162fc",
+      "identical_to_source_commit": true
+    }
+  ],
+  "docs/rust/schedule-execution/oracle-index.json": "2d1a930742291e7047a864aa2246e7e22c612cb6583249b7edb42945b494b450",
+  "docs/rust/schedule-execution/fixtures/task_146.json": "ec66e14a3a1dc8df17fa9c63415185a6fe63f544de0a5ba189bc526251628960",
+  "docs/rust/schedule-execution/task-145.md": "62190483c159f46737842851b86a7766b6c7d1adb76ad056536fe5b79c6feee7",
+  "docs/rust/schedule-execution/logs/task_145/final.json": "4c7510121a335a00cd4d72e287fbbcb40aa1653fe23ce4b026f9698aeed58dd3"
+}

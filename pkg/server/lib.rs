@@ -147,3 +147,9 @@ pub mod schedule_admin_grant_leader;
 #[cfg(test)]
 #[path = "schedule_admin_grant_leader_test.rs"]
 mod schedule_admin_grant_leader_test;
+
+// Label scheduler inherited configuration endpoint.
+pub mod schedule_admin_label;
+#[cfg(test)]
+#[path = "schedule_admin_label_test.rs"]
+mod schedule_admin_label_test;

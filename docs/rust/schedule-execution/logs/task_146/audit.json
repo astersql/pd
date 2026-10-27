@@ -1,0 +1,79 @@
+{
+  "go_file_count": 1101,
+  "go_set_and_content_unchanged": true,
+  "go_status_unchanged": true,
+  "readonly_plans_unchanged": true,
+  "checked_links": [
+    [
+      "docs/rust/schedule-execution/task-146.md",
+      "task-145.md"
+    ],
+    [
+      "docs/rust/schedule-execution/task-146.md",
+      "logs/task_146/provenance.json"
+    ],
+    [
+      "docs/rust/schedule-execution/task-146.md",
+      "fixtures/task_146.json"
+    ],
+    [
+      "docs/rust/schedule-execution/task-146.md",
+      "../../../pkg/server/schedule_admin_label.rs"
+    ],
+    [
+      "docs/rust/schedule-execution/task-146.md",
+      "../../../pkg/server/schedule_admin_label.rs.md"
+    ],
+    [
+      "docs/rust/schedule-execution/task-146.md",
+      "logs/task_146/red.json"
+    ],
+    [
+      "docs/rust/schedule-execution/task-146.md",
+      "../../../pkg/server/schedule_admin_label_test.rs"
+    ],
+    [
+      "docs/rust/schedule-execution/task-146.md",
+      "logs/task_146/verify.py"
+    ],
+    [
+      "docs/rust/schedule-execution/task-146.md",
+      "logs/task_146/reuse-go/go"
+    ],
+    [
+      "docs/rust/schedule-execution/task-146.md",
+      "logs/task_146/go-reuse.jsonl"
+    ],
+    [
+      "docs/rust/schedule-execution/task-146.md",
+      "logs/task_146/final.json"
+    ],
+    [
+      "docs/rust/schedule-execution/task-146.md",
+      "logs/task_146/final-summary.json"
+    ],
+    [
+      "docs/rust/schedule-execution/task-146.md",
+      "logs/task_146/audit.json"
+    ],
+    [
+      "docs/rust/schedule-execution/task-146.md",
+      "logs/task_146/baseline.json"
+    ],
+    [
+      "pkg/server/schedule_admin_label.rs.md",
+      "schedule_admin_label.rs"
+    ],
+    [
+      "pkg/server/schedule_admin_label.rs.md",
+      "../../docs/rust/schedule-execution/task-146.md"
+    ],
+    [
+      "pkg/server/schedule_admin_label.rs.md",
+      "schedule_admin_label_test.rs"
+    ]
+  ],
+  "diff_check_exit": 0,
+  "diff_check_stdout": "",
+  "diff_check_stderr": ""
+}
