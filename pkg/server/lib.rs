@@ -97,3 +97,8 @@ pub mod sync_transport;
 #[cfg(test)]
 #[path = "sync_transport_test.rs"]
 mod sync_transport_test;
+
+pub mod schedule_wire;
+#[cfg(test)]
+#[path = "schedule_wire_test.rs"]
+mod schedule_wire_test;

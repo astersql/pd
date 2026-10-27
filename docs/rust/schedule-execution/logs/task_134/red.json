@@ -1,0 +1,22 @@
+[
+  {
+    "command": "cargo fmt --all",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "red-0.log.gz",
+    "sha256": "2f7c400d740c11b4b6636fea0aea48734a4e91fec0a7c397e8cf94eaed49b78c",
+    "test_summaries": []
+  },
+  {
+    "command": "cargo test -p astersql-pd-server --locked --lib task_134 -- --nocapture",
+    "exit_code": 101,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "red-1.log.gz",
+    "sha256": "04fe1d436a457f4db66ed839855224d33eaa01c24c3c945405bc0c1e888e20cc",
+    "test_summaries": [
+      "test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 48 filtered out; finished in 0.00s"
+    ]
+  }
+]

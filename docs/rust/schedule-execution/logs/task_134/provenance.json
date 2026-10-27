@@ -1,0 +1,22 @@
+{
+  "source_commit": "b63a04f205619406d7d45c956092d85750d50d37",
+  "dependency": "b63a04f20",
+  "evidence_kind": "source-derived under user authorization; no new Go runtime oracle",
+  "sources": {
+    "pkg/schedule/hbstream/heartbeat_streams.go": "e9388f1dd8e1ab906c273df018a2446b36450f6894bdc3ad2e0a70ec0a999489",
+    "pkg/schedule/hbstream/operation.rs": "50b47f4cafea29478f43c502228e13f37a1afa0625bae7fbcfcd3afb8125fe99",
+    "docs/rust/schedule-execution/oracle-index.json": "2d1a930742291e7047a864aa2246e7e22c612cb6583249b7edb42945b494b450"
+  },
+  "protocol_sources": {
+    "proto/pdpb.proto": "bc8c1a97f8883b3d2a3bef1aa36b9d595a56229f32d56b65224d688f63055614",
+    "proto/schedulingpb.proto": "204b6f600ce8b0960ef26e7f37d32e7af48fe733f0737b8c6ea583893d98140c",
+    "proto/metapb.proto": "bd8d88d8724fc1742feadd01900983980a0901be70a9a95537e8641c00d6b42b",
+    "proto/encryptionpb.proto": "0d78c7a484271be3a29638e10a54a5e7543a72fe40346667afe12735bb72f934",
+    "pkg/pdpb/pdpb.pb.go": "6743c75cc6e77ac70059a0d63ae1518f0ca21f42bfe1f89ab797ef668f4a024c"
+  },
+  "artifacts": {
+    "docs/rust/schedule-execution/fixtures/task_012.json": "015fc4f672f7cdc3215467a7a4870dc06ba9d8e71b8d220e1b694e9583fb5184",
+    "docs/rust/schedule-execution/fixtures/task_134.json": "975cec8bd960a5b1f9e8d63c46127b1fcc39764f28506e13ab8167992902cdce",
+    "docs/rust/schedule-execution/logs/task_134/freeze.py": "3483604a3a192168414efec61ad1ff6c96200ddb9e944c28c78c333a06ea0bbf"
+  }
+}
