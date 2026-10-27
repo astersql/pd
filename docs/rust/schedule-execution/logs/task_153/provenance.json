@@ -1,0 +1,41 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "dependency_commit": "2ffefa04af7f4352140b72c47c97e2634174966c",
+  "dependency_152_all_required_checks_passed": true,
+  "runtime_go_oracle": false,
+  "basis": "User-authorized read-only Go source/test derivation and real Rust behavior/fault verification",
+  "sources": [
+    {
+      "path": "pkg/schedule/schedulers/evict_slow_trend.go",
+      "sha256": "cc8c13a96b1dd341a7c3a24d15c2a8ad7ed129434ee9c0f2e7f8a60edefa6fa6",
+      "matches_source_commit": true
+    },
+    {
+      "path": "pkg/schedule/schedulers/base_scheduler.go",
+      "sha256": "1da013a2323c2756dcfd3b1203e91c481c58e80e258e3848d5db23dd261e6bdc",
+      "matches_source_commit": true
+    },
+    {
+      "path": "pkg/schedule/schedulers/evict_slow_trend_test.go",
+      "sha256": "e3efaf585ca813dc16a183a0d32be59e5b53c2d53967956bee65fe847cc9bb08",
+      "matches_source_commit": true
+    },
+    {
+      "path": "pkg/utils/apiutil/apiutil.go",
+      "sha256": "edda400120b9f6cc3def157e8aefc74e4572b7971d01b521f41b6bee49e6bfe6",
+      "matches_source_commit": true
+    },
+    {
+      "path": "pkg/schedule/schedulers/config.go",
+      "sha256": "64024b895d0b48c030acd9684c3879993710856796eebe11595d4108073b6409",
+      "matches_source_commit": true
+    }
+  ],
+  "fixtures": [
+    {
+      "path": "docs/rust/schedule-execution/fixtures/task_153.json",
+      "sha256": "bf4b15e72d3015101ebc4ab1c4fd8c638e2e2b578694bf5d63062d63d89ef381"
+    }
+  ],
+  "oracle_index_sha256": "2d1a930742291e7047a864aa2246e7e22c612cb6583249b7edb42945b494b450"
+}

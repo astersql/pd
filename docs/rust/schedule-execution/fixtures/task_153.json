@@ -1,0 +1,527 @@
+{
+  "evidence_kind": "source_derived_user_authorized",
+  "runtime_go_oracle": false,
+  "cases": [
+    {
+      "method": "GET",
+      "path": "/list",
+      "input": "",
+      "status": 200,
+      "body": "{\n  \"recovery-duration\": 1800,\n  \"evict-by-trend-stores\": null\n}",
+      "config": {
+        "recovery-duration": 1800,
+        "evict-by-trend-stores": []
+      },
+      "code": null
+    },
+    {
+      "method": "GET",
+      "path": "/config",
+      "input": "{}",
+      "status": 405,
+      "body": "",
+      "config": {
+        "recovery-duration": 1800,
+        "evict-by-trend-stores": []
+      },
+      "code": null
+    },
+    {
+      "method": "HEAD",
+      "path": "/config",
+      "input": "{}",
+      "status": 405,
+      "body": "",
+      "config": {
+        "recovery-duration": 1800,
+        "evict-by-trend-stores": []
+      },
+      "code": null
+    },
+    {
+      "method": "PUT",
+      "path": "/config",
+      "input": "{}",
+      "status": 405,
+      "body": "",
+      "config": {
+        "recovery-duration": 1800,
+        "evict-by-trend-stores": []
+      },
+      "code": null
+    },
+    {
+      "method": "PATCH",
+      "path": "/config",
+      "input": "{}",
+      "status": 405,
+      "body": "",
+      "config": {
+        "recovery-duration": 1800,
+        "evict-by-trend-stores": []
+      },
+      "code": null
+    },
+    {
+      "method": "DELETE",
+      "path": "/config",
+      "input": "{}",
+      "status": 405,
+      "body": "",
+      "config": {
+        "recovery-duration": 1800,
+        "evict-by-trend-stores": []
+      },
+      "code": null
+    },
+    {
+      "method": "OPTIONS",
+      "path": "/config",
+      "input": "{}",
+      "status": 405,
+      "body": "",
+      "config": {
+        "recovery-duration": 1800,
+        "evict-by-trend-stores": []
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/list",
+      "input": "",
+      "status": 405,
+      "body": "",
+      "config": {
+        "recovery-duration": 1800,
+        "evict-by-trend-stores": []
+      },
+      "code": null
+    },
+    {
+      "method": "HEAD",
+      "path": "/list",
+      "input": "",
+      "status": 405,
+      "body": "",
+      "config": {
+        "recovery-duration": 1800,
+        "evict-by-trend-stores": []
+      },
+      "code": null
+    },
+    {
+      "method": "PUT",
+      "path": "/list",
+      "input": "",
+      "status": 405,
+      "body": "",
+      "config": {
+        "recovery-duration": 1800,
+        "evict-by-trend-stores": []
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/",
+      "input": "{}",
+      "status": 404,
+      "body": "404 page not found\n",
+      "config": {
+        "recovery-duration": 1800,
+        "evict-by-trend-stores": []
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/unknown",
+      "input": "{}",
+      "status": 404,
+      "body": "404 page not found\n",
+      "config": {
+        "recovery-duration": 1800,
+        "evict-by-trend-stores": []
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config/",
+      "input": "{}",
+      "status": 404,
+      "body": "404 page not found\n",
+      "config": {
+        "recovery-duration": 1800,
+        "evict-by-trend-stores": []
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/list/",
+      "input": "{}",
+      "status": 404,
+      "body": "404 page not found\n",
+      "config": {
+        "recovery-duration": 1800,
+        "evict-by-trend-stores": []
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{}",
+      "status": 400,
+      "body": "\"invalid argument for 'recovery-duration'\"",
+      "config": {
+        "recovery-duration": 1800,
+        "evict-by-trend-stores": []
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "null",
+      "status": 400,
+      "body": "\"invalid argument for 'recovery-duration'\"",
+      "config": {
+        "recovery-duration": 1800,
+        "evict-by-trend-stores": []
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"recovery-duration\":null}",
+      "status": 400,
+      "body": "\"invalid argument for 'recovery-duration'\"",
+      "config": {
+        "recovery-duration": 1800,
+        "evict-by-trend-stores": []
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"recovery-duration\":\"2\"}",
+      "status": 400,
+      "body": "\"invalid argument for 'recovery-duration'\"",
+      "config": {
+        "recovery-duration": 1800,
+        "evict-by-trend-stores": []
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"recovery-duration\":true}",
+      "status": 400,
+      "body": "\"invalid argument for 'recovery-duration'\"",
+      "config": {
+        "recovery-duration": 1800,
+        "evict-by-trend-stores": []
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"recovery-duration\":[]}",
+      "status": 400,
+      "body": "\"invalid argument for 'recovery-duration'\"",
+      "config": {
+        "recovery-duration": 1800,
+        "evict-by-trend-stores": []
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"recovery-duration\":{}}",
+      "status": 400,
+      "body": "\"invalid argument for 'recovery-duration'\"",
+      "config": {
+        "recovery-duration": 1800,
+        "evict-by-trend-stores": []
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"Recovery-Duration\":2}",
+      "status": 400,
+      "body": "\"invalid argument for 'recovery-duration'\"",
+      "config": {
+        "recovery-duration": 1800,
+        "evict-by-trend-stores": []
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"recovery-duration\":0}",
+      "status": 200,
+      "body": "\"Config updated.\"",
+      "config": {
+        "recovery-duration": 0,
+        "evict-by-trend-stores": []
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"recovery-duration\":2}",
+      "status": 200,
+      "body": "\"Config updated.\"",
+      "config": {
+        "recovery-duration": 2,
+        "evict-by-trend-stores": []
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"recovery-duration\":2.9}",
+      "status": 200,
+      "body": "\"Config updated.\"",
+      "config": {
+        "recovery-duration": 2,
+        "evict-by-trend-stores": []
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"recovery-duration\":1e2}",
+      "status": 200,
+      "body": "\"Config updated.\"",
+      "config": {
+        "recovery-duration": 100,
+        "evict-by-trend-stores": []
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"recovery-duration\":-0.9}",
+      "status": 200,
+      "body": "\"Config updated.\"",
+      "config": {
+        "recovery-duration": 0,
+        "evict-by-trend-stores": []
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"recovery-duration\":-1}",
+      "status": 200,
+      "body": "\"Config updated.\"",
+      "config": {
+        "recovery-duration": 18446744073709551615,
+        "evict-by-trend-stores": []
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"recovery-duration\":9007199254740993}",
+      "status": 200,
+      "body": "\"Config updated.\"",
+      "config": {
+        "recovery-duration": 9007199254740992,
+        "evict-by-trend-stores": []
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"recovery-duration\":2,\"unknown\":9}",
+      "status": 200,
+      "body": "\"Config updated.\"",
+      "config": {
+        "recovery-duration": 2,
+        "evict-by-trend-stores": []
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"recovery-duration\":4,\"recovery-duration\":3}",
+      "status": 200,
+      "body": "\"Config updated.\"",
+      "config": {
+        "recovery-duration": 3,
+        "evict-by-trend-stores": []
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"recovery-duration\":18446744073709549568}",
+      "status": 200,
+      "body": "\"Config updated.\"",
+      "config": {
+        "recovery-duration": 18446744073709549568,
+        "evict-by-trend-stores": []
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{",
+      "status": 400,
+      "body": {
+        "code": "input",
+        "msg": "unexpected end of JSON input",
+        "data": {
+          "Offset": 1
+        }
+      },
+      "config": {
+        "recovery-duration": 1800,
+        "evict-by-trend-stores": []
+      },
+      "code": "input"
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "",
+      "status": 400,
+      "body": {
+        "code": "input",
+        "msg": "unexpected end of JSON input",
+        "data": {
+          "Offset": 0
+        }
+      },
+      "config": {
+        "recovery-duration": 1800,
+        "evict-by-trend-stores": []
+      },
+      "code": "input"
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "[]",
+      "status": 400,
+      "body": {
+        "code": "input",
+        "msg": "json: cannot unmarshal array into Go value of type map[string]interface {}",
+        "data": {
+          "Value": "array",
+          "Type": {},
+          "Offset": 1,
+          "Struct": "",
+          "Field": ""
+        }
+      },
+      "config": {
+        "recovery-duration": 1800,
+        "evict-by-trend-stores": []
+      },
+      "code": "input"
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "true",
+      "status": 400,
+      "body": {
+        "code": "input",
+        "msg": "json: cannot unmarshal bool into Go value of type map[string]interface {}",
+        "data": {
+          "Value": "bool",
+          "Type": {},
+          "Offset": 4,
+          "Struct": "",
+          "Field": ""
+        }
+      },
+      "config": {
+        "recovery-duration": 1800,
+        "evict-by-trend-stores": []
+      },
+      "code": "input"
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "1",
+      "status": 400,
+      "body": {
+        "code": "input",
+        "msg": "json: cannot unmarshal number into Go value of type map[string]interface {}",
+        "data": {
+          "Value": "number",
+          "Type": {},
+          "Offset": 1,
+          "Struct": "",
+          "Field": ""
+        }
+      },
+      "config": {
+        "recovery-duration": 1800,
+        "evict-by-trend-stores": []
+      },
+      "code": "input"
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "\"x\"",
+      "status": 400,
+      "body": {
+        "code": "input",
+        "msg": "json: cannot unmarshal string into Go value of type map[string]interface {}",
+        "data": {
+          "Value": "string",
+          "Type": {},
+          "Offset": 3,
+          "Struct": "",
+          "Field": ""
+        }
+      },
+      "config": {
+        "recovery-duration": 1800,
+        "evict-by-trend-stores": []
+      },
+      "code": "input"
+    },
+    {
+      "method": "POST",
+      "path": "/config?ignored=1",
+      "input": "{\"recovery-duration\":5,\"disabled\":true,\"evict-by-trend-stores\":[99]}",
+      "status": 200,
+      "body": "\"Config updated.\"",
+      "config": {
+        "recovery-duration": 5,
+        "evict-by-trend-stores": []
+      },
+      "code": null
+    }
+  ],
+  "normalization": "No normalization for status, header, raw response bytes, configuration or persisted values; structured API error JSON compares all fields. No Go execution."
+}

@@ -183,3 +183,8 @@ pub mod schedule_admin_transfer_witness_leader;
 #[cfg(test)]
 #[path = "schedule_admin_transfer_witness_leader_test.rs"]
 mod schedule_admin_transfer_witness_leader_test;
+
+pub mod schedule_admin_evict_slow_trend;
+#[cfg(test)]
+#[path = "schedule_admin_evict_slow_trend_test.rs"]
+mod schedule_admin_evict_slow_trend_test;
