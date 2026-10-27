@@ -1,0 +1,33 @@
+[
+  {
+    "command": "cargo fmt --all",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "expanded-0.log.gz",
+    "sha256": "a1c74eff19f46c7fddff8ac3b2750c7638ccf919a2c9eca3bd9c18bae31e5ec9",
+    "test_summaries": []
+  },
+  {
+    "command": "cargo test -p astersql-pd-schedule-handler --locked --lib task_125 -- --nocapture",
+    "exit_code": 101,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "expanded-1.log.gz",
+    "sha256": "120b4877b34cf90d2764b212ef88b53892594e4f973eca43b61a5cb7f861af86",
+    "test_summaries": [
+      "test result: FAILED. 4 passed; 1 failed; 0 ignored; 0 measured; 35 filtered out; finished in 0.01s"
+    ]
+  },
+  {
+    "command": "cargo test -p astersql-pd-schedule-handler --locked",
+    "exit_code": 101,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "expanded-2.log.gz",
+    "sha256": "56a4458a1e3a03d84f0914194d2df6e67f4d54f2367ab4fb58f116db70de1820",
+    "test_summaries": [
+      "test result: FAILED. 39 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.11s"
+    ]
+  }
+]

@@ -35,3 +35,9 @@ mod task_124_test;
 
 mod region_admin;
 pub use region_admin::*;
+
+#[cfg(test)]
+mod task_125_test;
+
+mod scatter_admin;
+pub use scatter_admin::*;

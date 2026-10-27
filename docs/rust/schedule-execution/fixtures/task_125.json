@@ -1,0 +1,46 @@
+{
+  "evidence_kind": "source_assertion",
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "go_runtime_output": null,
+  "source": [
+    "pkg/schedule/handler/handler.go:654-726,1188-1236",
+    "pkg/schedule/scatter/region_scatterer.go:481-591"
+  ],
+  "percentages": [
+    [
+      0,
+      0,
+      100
+    ],
+    [
+      1,
+      0,
+      100
+    ],
+    [
+      0,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      50
+    ],
+    [
+      2,
+      1,
+      67
+    ],
+    [
+      1,
+      2,
+      34
+    ],
+    [
+      31,
+      1,
+      97
+    ]
+  ]
+}

@@ -19,9 +19,9 @@ float→uint64 转换。keys 非数组返回400，替代 Go 类型断言 panic�
 输入边界。serde_json 不表示 NaN/Infinity，它们在 JSON 解码层已拒绝。
 
 peer/merge/split 复用119/120的工厂、验证和 admission/归档。
-单区 scatter 复用 canonical `ScatterBatch::scatter_one`，通过局部公开该已有规划入口
-避免复制算法；宿主转发 suspect IDs 到现有 checker，真实操作保留 ADMIN/HIGH，按 store limit
-接纳并归档替换项，空操作成功。批量散射复用 Coordinator 的 RegionScatterer，保留
+单区与批量 scatter 委托同包 `scatter_admin.rs`，复用 canonical `ScatterBatch::scatter_one`
+及 Coordinator 的 RegionScatterer；单区按 Go addOperator 直接准入，归档并确认替换项，
+空操作成功。宿主转发 suspect IDs 到现有 checker，真实操作保留 ADMIN/HIGH。批量保留
 计数及 pending 回调；两端非空 hex 范围优先于 IDs。错误总是200，body包含
 `processed-percentage` 与 `error`；分区失败保留 Go 整数百分比计算，不上抛为500。
 

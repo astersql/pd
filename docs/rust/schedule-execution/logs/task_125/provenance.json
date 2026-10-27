@@ -1,0 +1,25 @@
+{
+  "evidence_kind": "source_assertion; user authorized alternative to Go runtime oracle",
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "dependency_commit": "37b4b8a2b",
+  "go_binary": null,
+  "go_runtime_output": null,
+  "normalization": "none; BTreeMap/BTreeSet IDs observed in sorted order",
+  "files": {
+    "pkg/schedule/handler/handler.go": {
+      "sha256": "c9f126a421b83fdee5b89d4c26a743b2c4d6493527d4ba0862895705f3639dfa",
+      "matches_source_commit": true
+    },
+    "pkg/schedule/scatter/region_scatterer.go": {
+      "sha256": "9f2f77a2ca302d6896d8dbffc7a736d411133d8df078807fcb8188b1fc75d3f6",
+      "matches_source_commit": true
+    },
+    "tests/server/api/scatter_split_test.go": {
+      "sha256": "5bc80e1f97ffe5988bcab0e039275cc2b81aebc524f9c92f81476479dc40de13",
+      "matches_source_commit": true
+    },
+    "docs/rust/schedule-execution/fixtures/task_125.json": {
+      "sha256": "db09ae25d815255046ea9cbca845a9d26e768af86e936bea85a85e4f2196ba31"
+    }
+  }
+}
