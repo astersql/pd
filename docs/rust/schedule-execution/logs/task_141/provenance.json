@@ -1,0 +1,57 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "dependency_140_commit": "a3486f938",
+  "oracle_kind": "user-authorized read-only Go source/test derivation + Rust real behavior and faults",
+  "go_runtime_output": null,
+  "go_runtime_hash": null,
+  "files": [
+    {
+      "path": "pkg/schedule/schedulers/evict_slow_store.go",
+      "sha256": "dc5a6f0d9f59e6001c0882d54d16771515266b23cd43d1c3f9a43520e217aeda",
+      "baseline_sha256": "dc5a6f0d9f59e6001c0882d54d16771515266b23cd43d1c3f9a43520e217aeda",
+      "matches_baseline": true
+    },
+    {
+      "path": "pkg/schedule/schedulers/evict_slow_store_test.go",
+      "sha256": "1c23c9d988c0c84b452fee31cc6d15d95badcb1ae7ad6b7e32323a222b7624e5",
+      "baseline_sha256": "1c23c9d988c0c84b452fee31cc6d15d95badcb1ae7ad6b7e32323a222b7624e5",
+      "matches_baseline": true
+    },
+    {
+      "path": "pkg/schedule/schedulers/base_scheduler.go",
+      "sha256": "1da013a2323c2756dcfd3b1203e91c481c58e80e258e3848d5db23dd261e6bdc",
+      "baseline_sha256": "1da013a2323c2756dcfd3b1203e91c481c58e80e258e3848d5db23dd261e6bdc",
+      "matches_baseline": true
+    },
+    {
+      "path": "pkg/schedule/schedulers/evict_leader.go",
+      "sha256": "7fb5a50e54d33f0069e22c69ffd1341ae64f6310a5d1c49ac315aad6f925a460",
+      "baseline_sha256": "7fb5a50e54d33f0069e22c69ffd1341ae64f6310a5d1c49ac315aad6f925a460",
+      "matches_baseline": true
+    },
+    {
+      "path": "pkg/utils/apiutil/apiutil.go",
+      "sha256": "edda400120b9f6cc3def157e8aefc74e4572b7971d01b521f41b6bee49e6bfe6",
+      "baseline_sha256": "edda400120b9f6cc3def157e8aefc74e4572b7971d01b521f41b6bee49e6bfe6",
+      "matches_baseline": true
+    },
+    {
+      "path": "docs/rust/schedule-execution/oracle-index.json",
+      "sha256": "2d1a930742291e7047a864aa2246e7e22c612cb6583249b7edb42945b494b450"
+    },
+    {
+      "path": "docs/rust/schedule-execution/task-140.md",
+      "sha256": "f6185dfb20b0240e7d4c565a820d41906252246d7316310a97b0d92530ddc8a6"
+    },
+    {
+      "path": "docs/rust/schedule-execution/fixtures/task_141.json",
+      "sha256": "052771d73a0995a05a6a2124ff41c03d0f618f17dc229533f9c246b9431e8cf5"
+    },
+    {
+      "path": "pkg/schedule/schedulers/config.go",
+      "sha256": "64024b895d0b48c030acd9684c3879993710856796eebe11595d4108073b6409",
+      "baseline_sha256": "64024b895d0b48c030acd9684c3879993710856796eebe11595d4108073b6409",
+      "matches_baseline": true
+    }
+  ]
+}

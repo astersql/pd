@@ -1,0 +1,13 @@
+[
+  {
+    "command": "cargo test -p astersql-pd-server --locked --lib task_141_behavior_cases -- --nocapture",
+    "exit_code": 101,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "disabled-red-0.log.gz",
+    "sha256": "4ec142e6ab5d6b7ce786693438f65369e857eb80cdbc34e0e4803dea36d8044c",
+    "test_summaries": [
+      "test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 69 filtered out; finished in 0.00s"
+    ]
+  }
+]

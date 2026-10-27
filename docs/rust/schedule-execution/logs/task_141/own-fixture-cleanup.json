@@ -1,0 +1,14 @@
+[
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-33707",
+    "bytes": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-33764",
+    "bytes": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false
+  }
+]

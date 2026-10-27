@@ -1,0 +1,50 @@
+[
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-107",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-12627",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-12654",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-13194",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-1328",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-13281",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  }
+]

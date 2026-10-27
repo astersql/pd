@@ -112,6 +112,14 @@ impl EvictDiskScheduler {
     pub fn new(config: EvictDiskConfig) -> Self {
         Self { config }
     }
+    /// Apply an already persisted HTTP policy without resetting eviction or clocks.
+    pub fn update_policy(
+        &mut self,
+        recovery_sec: u64,
+        batch: usize,
+    ) -> Result<(), InvalidLeaderBatch> {
+        self.config.update_policy(recovery_sec, batch)
+    }
     pub fn config(&self) -> &EvictDiskConfig {
         &self.config
     }

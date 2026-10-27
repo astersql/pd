@@ -1,0 +1,514 @@
+[
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-13309",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-13352",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-13386",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-13437",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-13522",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-13560",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-13582",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-13606",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-13619",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-13664",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-1372",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-13758",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-13915",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-13963",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-13971",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-13987",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-14013",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-14024",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-14069",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-1432",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-1456",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-14598",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-14727",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-14755",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-14788",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-14821",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-14862",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-14901",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-14944",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-1496",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-14996",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-15029",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-15041",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-15078",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-15109",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-15141",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-15356",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-15758",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-1578",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-15842",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-16158",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-17005",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-17040",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-17054",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-1716",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-17602",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-17680",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-17711",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-17765",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-17803",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-17839",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-17873",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-17919",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-1798",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-17988",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-180",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-18023",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-18040",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-18084",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-18144",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-18196",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-18358",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-18409",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  },
+  {
+    "path": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-18858",
+    "size": 38413888,
+    "sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+    "active": false,
+    "source_retained": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-2647",
+    "kind": "redundant external I/O fixture; Rust compilation cache retained"
+  }
+]

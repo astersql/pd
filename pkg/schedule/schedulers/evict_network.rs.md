@@ -38,3 +38,6 @@ TestNetworkNotConflictWithOtherScheduler、TestCalculateAvgScore。
 
 完整命令、案例、故障、provenance 和槽位证据见
 [task-081](../../../docs/rust/schedule-execution/task-081.md)。
+
+任务141新增 `update_with_disk`：同步当前 disk 状态再复用 update 事务，成功后
+同步 disk 数值策略；恢复表、引用和时钟保持。服务适配层独占借用两个 owner。

@@ -1,0 +1,5 @@
+{
+  "initial_workspace_interruption": "SIGTERM sent to own verification runner after discovering embedded disabled serialization; runner joined its child process group and released slot; rerun required",
+  "final2_package_failure": "disk full during existing etcd fixture duplication; task141 focus 5 passed; package 70 passed, 1 failed; retry uses SHA256-verified original binary by hardlink",
+  "cache_policy": "all rust-slot compilation caches preserved; only this task completed duplicate fixture binaries removed"
+}

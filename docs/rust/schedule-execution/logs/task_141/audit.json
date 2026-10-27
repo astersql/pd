@@ -1,0 +1,99 @@
+{
+  "go_module_source_files": 1101,
+  "content_and_file_set_unchanged": true,
+  "status_unchanged": true,
+  "read_only_plans_unchanged": true,
+  "cargo_manifests_and_lock_unchanged": true,
+  "git_diff_check": 0,
+  "links": [
+    {
+      "source": "docs/rust/schedule-execution/task-141.md",
+      "target": "task-140.md"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-141.md",
+      "target": "fixtures/task_141.json"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-141.md",
+      "target": "logs/task_141/provenance.json"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-141.md",
+      "target": "../../../pkg/server/schedule_admin_evict_slow_store.rs"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-141.md",
+      "target": "../../../pkg/server/schedule_admin_evict_slow_store.rs.md"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-141.md",
+      "target": "../../../pkg/server/schedule_admin_evict_slow_store_test.rs"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-141.md",
+      "target": "logs/task_141/red.json"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-141.md",
+      "target": "logs/task_141/green.json"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-141.md",
+      "target": "logs/task_141/disabled-red.json"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-141.md",
+      "target": "logs/task_141/duplicate-fixture-recovery.json"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-141.md",
+      "target": "logs/task_141/reuse-go/go"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-141.md",
+      "target": "logs/task_141/go-reuse.jsonl"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-141.md",
+      "target": "logs/task_141/verify.py"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-141.md",
+      "target": "logs/task_141/audit.json"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-141.md",
+      "target": "logs/task_141/duplicate-fixture-recovery-2.json"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-141.md",
+      "target": "logs/task_141/final8.json"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-141.md",
+      "target": "logs/task_141/final-summary.json"
+    },
+    {
+      "source": "pkg/server/schedule_admin_evict_slow_store.rs.md",
+      "target": "../../docs/rust/schedule-execution/task-141.md"
+    },
+    {
+      "source": "pkg/schedule/schedulers/evict_disk.rs.md",
+      "target": "../../../docs/rust/schedule-execution/task-079.md"
+    },
+    {
+      "source": "pkg/schedule/schedulers/evict_network.rs.md",
+      "target": "../../../docs/rust/schedule-execution/task-081.md"
+    }
+  ],
+  "scan_excluded_generated_cache_directories": [
+    ".git",
+    "target",
+    ".tools",
+    "node_modules",
+    ".cache"
+  ],
+  "build_wrapper_rejects_actual_go_commands": true,
+  "slot_released": true
+}

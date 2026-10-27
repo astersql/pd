@@ -1,0 +1,372 @@
+{
+  "oracle_kind": "read-only Go source/test derivation; user-authorized; no Go runtime output",
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "cases": [
+    {
+      "name": "defaults",
+      "method": "GET",
+      "path": "/list",
+      "input": "",
+      "status": 200,
+      "json": {
+        "recovery-duration": 1800,
+        "batch": 3,
+        "evict-stores": [],
+        "enable-network-slow-store": false,
+        "paused-network-slow-stores": [],
+        "evicted-network-slow-stores": [],
+        "disabled": false
+      }
+    },
+    {
+      "name": "GET/config",
+      "method": "GET",
+      "path": "/config",
+      "input": "{",
+      "status": 405,
+      "body": ""
+    },
+    {
+      "name": "HEAD/list",
+      "method": "HEAD",
+      "path": "/list",
+      "input": "{",
+      "status": 405,
+      "body": ""
+    },
+    {
+      "name": "POST/list",
+      "method": "POST",
+      "path": "/list",
+      "input": "{",
+      "status": 405,
+      "body": ""
+    },
+    {
+      "name": "DELETE/config",
+      "method": "DELETE",
+      "path": "/config",
+      "input": "{",
+      "status": 405,
+      "body": ""
+    },
+    {
+      "name": "OPTIONS/config",
+      "method": "OPTIONS",
+      "path": "/config",
+      "input": "{",
+      "status": 405,
+      "body": ""
+    },
+    {
+      "name": "/",
+      "method": "POST",
+      "path": "/",
+      "input": "{}",
+      "status": 404,
+      "body": "404 page not found\n"
+    },
+    {
+      "name": "/config/",
+      "method": "POST",
+      "path": "/config/",
+      "input": "{}",
+      "status": 404,
+      "body": "404 page not found\n"
+    },
+    {
+      "name": "/list/",
+      "method": "POST",
+      "path": "/list/",
+      "input": "{}",
+      "status": 404,
+      "body": "404 page not found\n"
+    },
+    {
+      "name": "/delete/1",
+      "method": "POST",
+      "path": "/delete/1",
+      "input": "{}",
+      "status": 404,
+      "body": "404 page not found\n"
+    },
+    {
+      "name": "recovery-durationbad",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"recovery-duration\": \"bad\"}",
+      "status": 400,
+      "json": "invalid argument for 'recovery-duration'"
+    },
+    {
+      "name": "recovery-duration[]",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"recovery-duration\": []}",
+      "status": 400,
+      "json": "invalid argument for 'recovery-duration'"
+    },
+    {
+      "name": "recovery-duration{}",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"recovery-duration\": {}}",
+      "status": 400,
+      "json": "invalid argument for 'recovery-duration'"
+    },
+    {
+      "name": "recovery-durationTrue",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"recovery-duration\": true}",
+      "status": 400,
+      "json": "invalid argument for 'recovery-duration'"
+    },
+    {
+      "name": "batchbad",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\": \"bad\"}",
+      "status": 400,
+      "json": "invalid argument for 'batch'"
+    },
+    {
+      "name": "batch[]",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\": []}",
+      "status": 400,
+      "json": "invalid argument for 'batch'"
+    },
+    {
+      "name": "batch{}",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\": {}}",
+      "status": 400,
+      "json": "invalid argument for 'batch'"
+    },
+    {
+      "name": "batchTrue",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\": true}",
+      "status": 400,
+      "json": "invalid argument for 'batch'"
+    },
+    {
+      "name": "enable-network-slow-storebad",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"enable-network-slow-store\": \"bad\"}",
+      "status": 400,
+      "json": "invalid argument for 'enable-network-slow-store'"
+    },
+    {
+      "name": "enable-network-slow-store[]",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"enable-network-slow-store\": []}",
+      "status": 400,
+      "json": "invalid argument for 'enable-network-slow-store'"
+    },
+    {
+      "name": "enable-network-slow-store{}",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"enable-network-slow-store\": {}}",
+      "status": 400,
+      "json": "invalid argument for 'enable-network-slow-store'"
+    },
+    {
+      "name": "enable-network-slow-store1",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"enable-network-slow-store\": 1}",
+      "status": 400,
+      "json": "invalid argument for 'enable-network-slow-store'"
+    },
+    {
+      "name": "batch0",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\": 0}",
+      "status": 400,
+      "json": "batch must be an integer in [1, 100]"
+    },
+    {
+      "name": "batch-1",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\": -1}",
+      "status": 400,
+      "json": "batch must be an integer in [1, 100]"
+    },
+    {
+      "name": "batch101",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\": 101}",
+      "status": 400,
+      "json": "batch must be an integer in [1, 100]"
+    },
+    {
+      "name": "batch1.5",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\": 1.5}",
+      "status": 400,
+      "json": "batch must be an integer in [1, 100]"
+    },
+    {
+      "name": "empty",
+      "method": "POST",
+      "path": "/config",
+      "input": "{}",
+      "status": 200,
+      "json": "Config updated."
+    },
+    {
+      "name": "null",
+      "method": "POST",
+      "path": "/config",
+      "input": "null",
+      "status": 200,
+      "json": "Config updated."
+    },
+    {
+      "name": "unknown",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"Batch\":99,\"unknown\":1}",
+      "status": 200,
+      "json": "Config updated."
+    },
+    {
+      "name": "null-values",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\":null,\"recovery-duration\":null,\"enable-network-slow-store\":null}",
+      "status": 200,
+      "json": "Config updated."
+    },
+    {
+      "name": "{\"batch\":1}",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\":1}",
+      "status": 200,
+      "json": "Config updated."
+    },
+    {
+      "name": "{\"batch\":100}",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\":100}",
+      "status": 200,
+      "json": "Config updated."
+    },
+    {
+      "name": "{\"batch\":2,\"batch\":5}",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\":2,\"batch\":5}",
+      "status": 200,
+      "json": "Config updated."
+    },
+    {
+      "name": "{\"recovery-duration\":2.9,\"enable-network-slow-store\":true}",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"recovery-duration\":2.9,\"enable-network-slow-store\":true}",
+      "status": 200,
+      "json": "Config updated."
+    },
+    {
+      "name": "{\"enable-network-slow-store\":false}",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"enable-network-slow-store\":false}",
+      "status": 200,
+      "json": "Config updated."
+    },
+    {
+      "name": "final",
+      "method": "GET",
+      "path": "/list?x=1",
+      "input": "ignored",
+      "status": 200,
+      "json": {
+        "recovery-duration": 2,
+        "batch": 5,
+        "evict-stores": [],
+        "enable-network-slow-store": false,
+        "paused-network-slow-stores": [],
+        "evicted-network-slow-stores": [],
+        "disabled": false
+      }
+    },
+    {
+      "name": "empty-body",
+      "method": "POST",
+      "path": "/config",
+      "input": "",
+      "status": 400,
+      "json": {
+        "code": "input",
+        "msg": "unexpected end of JSON input",
+        "data": {
+          "Offset": 0
+        }
+      }
+    },
+    {
+      "name": "syntax",
+      "method": "POST",
+      "path": "/config",
+      "input": "{",
+      "status": 400,
+      "json": {
+        "code": "input",
+        "msg": "unexpected end of JSON input",
+        "data": {
+          "Offset": 1
+        }
+      }
+    },
+    {
+      "name": "array-root",
+      "method": "POST",
+      "path": "/config",
+      "input": "[]",
+      "status": 400,
+      "json": {
+        "code": "input",
+        "msg": "json: cannot unmarshal array into Go value of type map[string]interface {}",
+        "data": {
+          "Value": "array",
+          "Type": {},
+          "Offset": 1,
+          "Struct": "",
+          "Field": ""
+        }
+      }
+    },
+    {
+      "name": "validation-precedence",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"recovery-duration\":\"bad\",\"batch\":\"bad\",\"enable-network-slow-store\":1}",
+      "status": 400,
+      "json": "invalid argument for 'recovery-duration'"
+    },
+    {
+      "name": "batch-before-enable",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"batch\":0,\"enable-network-slow-store\":1}",
+      "status": 400,
+      "json": "batch must be an integer in [1, 100]"
+    }
+  ]
+}

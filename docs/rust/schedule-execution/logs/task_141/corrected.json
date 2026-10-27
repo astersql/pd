@@ -1,0 +1,11 @@
+[
+  {
+    "command": "cargo fmt --all",
+    "exit_code": 1,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "corrected-0.log.gz",
+    "sha256": "6122fb25ee95b8dedf77fab44c650b7e39363f7025a13cf3914de4f35f1b3c0c",
+    "test_summaries": []
+  }
+]

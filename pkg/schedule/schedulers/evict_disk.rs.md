@@ -51,3 +51,6 @@ tests inform typed validation. TestCalculateAvgScore covers a network helper,
 so it is explicitly outside this implementation. Source/fixture hashes,
 commands, red/green evidence and counts are in
 [task-079](../../../docs/rust/schedule-execution/task-079.md).
+
+任务141新增 `update_policy` 供 HTTP 事务成功后应用数值策略；不重置 evicted、
+last_capture 或 is_recovered。完整 envelope 由 network 的 update_with_disk 保存。

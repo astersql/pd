@@ -110,6 +110,35 @@ impl EvictNetworkScheduler {
         self.config = next;
         errors
     }
+    /// Persist HTTP policy against the current disk snapshot; keep both owners aligned.
+    /// Enablement deliberately survives I/O failure, matching Go persistLocked.
+    pub async fn update_with_disk(
+        &mut self,
+        disk: &mut crate::EvictDiskScheduler,
+        enabled: bool,
+        recovery_sec: u64,
+        batch: usize,
+        disabled: bool,
+        storage: &StorageEndpoint,
+        paths: &ClusterPaths,
+    ) -> Result<(), EvictNetworkError> {
+        let mut next = self.config.clone();
+        next.disk = disk.config().clone();
+        next.disk.update_policy(recovery_sec, batch)?;
+        next.enabled = enabled;
+        let mut envelope = serde_json::to_value(&next).map_err(SchedulerError::Encode)?;
+        envelope["disabled"] = serde_json::Value::Bool(disabled);
+        let bytes = encode_config(&envelope)?;
+        // Go restores numeric policy on save failure but does not restore this flag.
+        self.config.enabled = enabled;
+        storage
+            .save_scheduler_config(paths, NAME, &bytes)
+            .await
+            .map_err(SchedulerError::from)?;
+        self.config = next;
+        disk.update_policy(recovery_sec, batch)?;
+        Ok(())
+    }
     pub async fn update(
         &mut self,
         enabled: bool,
