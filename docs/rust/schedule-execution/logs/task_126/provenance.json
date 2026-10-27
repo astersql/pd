@@ -1,0 +1,35 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "dependency_commit": "990b3a0ce",
+  "evidence_kind": "source_assertion_with_real_Rust_behavior_and_fault_tests; explicitly authorized by user",
+  "go_binary": null,
+  "go_runtime_output": null,
+  "sources": [
+    {
+      "path": "pkg/schedule/handler/handler.go",
+      "sha256": "c9f126a421b83fdee5b89d4c26a743b2c4d6493527d4ba0862895705f3639dfa",
+      "matches_source_commit": true
+    },
+    {
+      "path": "pkg/schedule/splitter/region_splitter.go",
+      "sha256": "6b940638e508d361468417bd8612b2589637c1fe7d79f96ce0a0c65ecfc7681d",
+      "matches_source_commit": true
+    },
+    {
+      "path": "pkg/schedule/splitter/region_splitter_test.go",
+      "sha256": "a1d95e543bbd34251f0d60bdfb551dedf6bfb9b91d58d4ff9a721f0036a4256d",
+      "matches_source_commit": true
+    },
+    {
+      "path": "tests/server/api/scatter_split_test.go",
+      "sha256": "5bc80e1f97ffe5988bcab0e039275cc2b81aebc524f9c92f81476479dc40de13",
+      "matches_source_commit": true
+    }
+  ],
+  "fixture_sha256": "c89e2087fe1b5883432f67152056113ff62a5e3e6722dbf9a05f09e0ec5150b6",
+  "normalization": {
+    "region_ids": "canonical sorted set replaces unspecified Go map order; all values preserved",
+    "other_fields": "none"
+  },
+  "mode": "canonical Rust default features; no new features; no Go failpoints run"
+}

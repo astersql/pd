@@ -41,3 +41,8 @@ mod task_125_test;
 
 mod scatter_admin;
 pub use scatter_admin::*;
+
+mod split_admin;
+pub use split_admin::*;
+#[cfg(test)]
+mod task_126_test;

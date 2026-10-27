@@ -1,0 +1,189 @@
+{
+  "evidence": "source_assertion; user-authorized substitute, no Go runtime oracle",
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "cases": [
+    {
+      "id": "empty",
+      "hex": [],
+      "observe": [],
+      "retry": 0,
+      "response": {
+        "processed-percentage": 0,
+        "regions-id": null
+      },
+      "decoded": []
+    },
+    {
+      "id": "negative",
+      "hex": [
+        "6d"
+      ],
+      "observe": [],
+      "retry": -1,
+      "response": {
+        "processed-percentage": 0,
+        "regions-id": []
+      },
+      "decoded": [
+        [
+          109
+        ]
+      ]
+    },
+    {
+      "id": "full",
+      "hex": [
+        "6D",
+        "74"
+      ],
+      "observe": [
+        "m",
+        "t"
+      ],
+      "retry": 0,
+      "response": {
+        "processed-percentage": 100,
+        "regions-id": [
+          3,
+          4
+        ]
+      },
+      "decoded": [
+        [
+          109
+        ],
+        [
+          116
+        ]
+      ]
+    },
+    {
+      "id": "partial",
+      "hex": [
+        "6d",
+        "74",
+        "78"
+      ],
+      "observe": [
+        "m",
+        "t"
+      ],
+      "retry": 0,
+      "response": {
+        "processed-percentage": 67,
+        "regions-id": [
+          3,
+          4
+        ]
+      },
+      "decoded": [
+        [
+          109
+        ],
+        [
+          116
+        ],
+        [
+          120
+        ]
+      ]
+    },
+    {
+      "id": "unobserved",
+      "hex": [
+        "6d"
+      ],
+      "observe": [],
+      "retry": 0,
+      "response": {
+        "processed-percentage": 0,
+        "regions-id": []
+      },
+      "decoded": [
+        [
+          109
+        ]
+      ]
+    },
+    {
+      "id": "duplicate",
+      "hex": [
+        "6d",
+        "6d"
+      ],
+      "observe": [
+        "m"
+      ],
+      "retry": 0,
+      "response": {
+        "processed-percentage": 100,
+        "regions-id": [
+          3
+        ]
+      },
+      "decoded": [
+        [
+          109
+        ],
+        [
+          109
+        ]
+      ]
+    },
+    {
+      "id": "empty-key",
+      "hex": [
+        ""
+      ],
+      "observe": [],
+      "retry": 0,
+      "response": {
+        "processed-percentage": 0,
+        "regions-id": []
+      },
+      "decoded": [
+        []
+      ]
+    },
+    {
+      "id": "boundary",
+      "hex": [
+        "61"
+      ],
+      "observe": [],
+      "retry": 0,
+      "response": {
+        "processed-percentage": 0,
+        "regions-id": []
+      },
+      "decoded": [
+        [
+          97
+        ]
+      ]
+    },
+    {
+      "id": "binary-key",
+      "hex": [
+        "6d0074"
+      ],
+      "observe": [
+        "m\u0000t"
+      ],
+      "retry": 0,
+      "response": {
+        "processed-percentage": 100,
+        "regions-id": [
+          3
+        ]
+      },
+      "decoded": [
+        [
+          109,
+          0,
+          116
+        ]
+      ]
+    }
+  ]
+}
