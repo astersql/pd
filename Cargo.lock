@@ -126,19 +126,23 @@ version = "0.1.0"
 name = "astersql-pd-compat-tests"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-cache",
  "astersql-pd-cluster",
  "astersql-pd-core",
  "astersql-pd-keypath",
  "astersql-pd-keyutil",
  "astersql-pd-proto",
  "astersql-pd-ratelimit",
+ "astersql-pd-schedule",
  "astersql-pd-schedule-affinity",
  "astersql-pd-schedule-checker",
  "astersql-pd-schedule-config",
+ "astersql-pd-schedule-filter",
  "astersql-pd-schedule-hbstream",
  "astersql-pd-schedule-labeler",
  "astersql-pd-schedule-operator",
  "astersql-pd-schedule-placement",
+ "astersql-pd-schedule-scatter",
  "astersql-pd-schedule-schedulers",
  "astersql-pd-server",
  "astersql-pd-statistics",

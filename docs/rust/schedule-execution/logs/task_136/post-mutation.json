@@ -1,0 +1,31 @@
+[
+  {
+    "command": "cargo fmt --all",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "post-mutation-0.log.gz",
+    "sha256": "dcba4bbbac36420c373677e31305cb788308c6574f8818610deae14ab2fc602d",
+    "test_summaries": []
+  },
+  {
+    "command": "cargo test -p astersql-pd-compat-tests --locked --test schedule_restore -- --nocapture",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "post-mutation-1.log.gz",
+    "sha256": "0bd1b37671f806519715e1f7b48d92d4dbe98f89a0f4df54919d62c433c7fd57",
+    "test_summaries": [
+      "test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+    ]
+  },
+  {
+    "command": "cargo fmt --all -- --check",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "post-mutation-2.log.gz",
+    "sha256": "e5f8bef4085d242d8b2bbd7ed03fad666a6cfae4a1deaef5c89d3b79b8e6f182",
+    "test_summaries": []
+  }
+]

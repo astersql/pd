@@ -31,6 +31,10 @@ name = "tso"
 path = "tso_test.rs"
 
 [dev-dependencies]
+astersql-pd-schedule-filter.workspace = true
+astersql-pd-schedule.workspace = true
+astersql-pd-cache.workspace = true
+astersql-pd-schedule-scatter.workspace = true
 astersql-pd-schedule-operator.workspace = true
 astersql-pd-schedule-checker.workspace = true
 astersql-pd-schedule-schedulers.workspace = true
@@ -62,3 +66,7 @@ path = "state_oracle.rs"
 [[test]]
 name = "schedule_loop"
 path = "schedule_loop_test.rs"
+
+[[test]]
+name = "schedule_restore"
+path = "schedule_restore_test.rs"

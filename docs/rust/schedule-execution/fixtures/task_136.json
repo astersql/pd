@@ -1,0 +1,53 @@
+{
+  "evidence": "Go source-derived; user-authorized substitute, not Go execution",
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "cases": [
+    {
+      "mode": "classic",
+      "need_run": true
+    },
+    {
+      "mode": "handler-only",
+      "need_run": false
+    }
+  ],
+  "configuration": {
+    "other": 136,
+    "schedule": {
+      "schedulers-v2": [
+        {
+          "type": "grant-leader",
+          "args": [
+            "1"
+          ]
+        },
+        {
+          "type": "balance-leader",
+          "disable": true
+        }
+      ]
+    }
+  },
+  "persisted_grant": {
+    "store-id-ranges": {
+      "3": [
+        {
+          "start-key": "",
+          "end-key": ""
+        }
+      ]
+    }
+  },
+  "expected": {
+    "target": 3,
+    "pause_restored": false,
+    "disabled": true,
+    "old_status": "STARTED",
+    "new_operator_count": 0,
+    "old_leader_deltas": [
+      -1,
+      1
+    ],
+    "new_pending_count": 0
+  }
+}

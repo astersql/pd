@@ -1,0 +1,35 @@
+{
+  "evidence_kind": "readonly Go source derivation + Rust behavior/fault tests; explicitly authorized substitute; no new Go execution or runtime differential",
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "dependency_commit": "aca52c9a2",
+  "dependency_evidence_sha256": "7bb3fb7080d251751b25037142f6a5d5b993d3585c6f617ae140918f08dcd2a9",
+  "oracle_index_sha256": "2d1a930742291e7047a864aa2246e7e22c612cb6583249b7edb42945b494b450",
+  "fixture_sha256": "d381284797315f64cb34c2402d3a922fac8151de87ebb62700309f82bed576e8",
+  "sources": {
+    "pkg/schedule/coordinator.go": "a61e5be78180e4a9e3f385beb6354ed352915785771edcc3a5805ee271cc5fc2",
+    "pkg/schedule/schedulers/scheduler_controller.go": "5b8ad7382dcf829b9405240fb3e1e72ba659aa5ae301fb0257a3a66c318a7153",
+    "pkg/schedule/schedulers/grant_leader.go": "4c1f9fda46d697bce4c22ce8dbb07b8a7f255d5d475028067e7c06c8c3aca95f",
+    "pkg/schedule/schedulers/grant_leader_test.go": "f1763d8d73e99c470933119be6b42bcfc892a17b7e7782109bc7622c22b4cb32",
+    "pkg/schedule/schedulers/hot_region.go": "2e34a6068d48c1ffed3a78764fc18843b20b6fab2943587df4e907acfe692ad6",
+    "pkg/schedule/operator/operator_controller.go": "173d8e3e5fd5e4b1128ba24a954055d2d1ef7ea7a6676f6d3aa7cc7a37672ba1",
+    "pkg/schedule/operator/operator_controller_test.go": "18e953a9c41e84c3dba9dc381ebce462f652b27d0f7ab83de22413bc84e21501"
+  },
+  "source_matches_baseline": {
+    "pkg/schedule/coordinator.go": true,
+    "pkg/schedule/schedulers/scheduler_controller.go": true,
+    "pkg/schedule/schedulers/grant_leader.go": true,
+    "pkg/schedule/schedulers/grant_leader_test.go": true,
+    "pkg/schedule/schedulers/hot_region.go": true,
+    "pkg/schedule/operator/operator_controller.go": true,
+    "pkg/schedule/operator/operator_controller_test.go": true
+  },
+  "normalization": "none; explicit monotonic/Unix clocks and deterministic random input, no error/state fields ignored",
+  "source_contracts": {
+    "configuration": "Coordinator.InitSchedulers persisted JSON first, disabled skip, invalid/failed add cleaned list, nonfatal final config write",
+    "pause": "Controller.PauseOrResumeScheduler only in-memory SetDelay; NewScheduleController has zero delay",
+    "operators": "NewCoordinator creates new operator.NewController; NewController creates fresh waiting/counts/records, does not restore unfinished operator",
+    "pending": "newBaseHotScheduler creates empty regionPendings; summaryPendingInfluence computes signed load deltas from operator status",
+    "stop": "Coordinator.Stop cancels; RunUntilStop waits scheduler and worker joins; no distributed lease fencing claim"
+  },
+  "fixture_inputs": "3 stores; region 1 leader 1 and followers 2/3; whole-config grant args 1, persisted independent grant target3 full keyspace; disabled balance-leader; 600s in-memory pause; admitted unfinished leader transfer; I/O write/read failures"
+}
