@@ -1,0 +1,11 @@
+[
+  {
+    "command": "cargo generate-lockfile --offline",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "lock-0.log.gz",
+    "sha256": "d94344245dcefe7c295d300db6ad4e5fd7203e11abbe5ab6000831fb556d9fbb",
+    "test_summaries": []
+  }
+]

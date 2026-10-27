@@ -1,0 +1,29 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "dependency_commit": "cda8aba2afa99fca90607ece7f7fbcfc60c81440",
+  "evidence_kind": "source_assertion + actual Rust execution; user-authorized substitution",
+  "go_binary": null,
+  "go_output": null,
+  "normalization": "none; queue membership compared as sorted ID set",
+  "sources": [
+    {
+      "path": "pkg/schedule/handler/handler.go",
+      "checkout_sha256": "c9f126a421b83fdee5b89d4c26a743b2c4d6493527d4ba0862895705f3639dfa",
+      "source_sha256": "c9f126a421b83fdee5b89d4c26a743b2c4d6493527d4ba0862895705f3639dfa",
+      "same_as_source": true
+    },
+    {
+      "path": "tests/server/api/region_test.go",
+      "checkout_sha256": "58f4e42206dbad919981c116dd703517bb8d2369227f4f92a5041a7f73e1412f",
+      "source_sha256": "58f4e42206dbad919981c116dd703517bb8d2369227f4f92a5041a7f73e1412f",
+      "same_as_source": true
+    },
+    {
+      "path": "pkg/schedule/filter/region_filters.go",
+      "checkout_sha256": "ab08b272ad1e1ff1f044e40ba0091f13678d3d31f09bbf9c61b2a009f8903915",
+      "source_sha256": "ab08b272ad1e1ff1f044e40ba0091f13678d3d31f09bbf9c61b2a009f8903915",
+      "same_as_source": true
+    }
+  ],
+  "fixture_sha256": "0c48651f154461863563e027caddaebfc102edacc801f7a4adc1b6f8656cc2e9"
+}

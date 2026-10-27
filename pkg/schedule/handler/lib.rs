@@ -29,3 +29,9 @@ mod hot_query;
 pub use hot_query::*;
 #[cfg(test)]
 mod task_123_test;
+
+#[cfg(test)]
+mod task_124_test;
+
+mod region_admin;
+pub use region_admin::*;

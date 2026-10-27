@@ -1,0 +1,37 @@
+{
+  "evidence_kind": "source_assertion",
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "source": "pkg/schedule/handler/handler.go:1113-1186,1274-1354",
+  "go_runtime_output": null,
+  "normalization": "none; queue membership sorted as set",
+  "limits": [
+    [
+      "",
+      16
+    ],
+    [
+      "0",
+      0
+    ],
+    [
+      "-1",
+      -1
+    ],
+    [
+      "+17",
+      17
+    ],
+    [
+      "0004",
+      4
+    ],
+    [
+      "10241",
+      10240
+    ],
+    [
+      "-9223372036854775808",
+      -9223372036854775808
+    ]
+  ]
+}

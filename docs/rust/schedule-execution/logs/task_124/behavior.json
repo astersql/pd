@@ -1,0 +1,13 @@
+[
+  {
+    "command": "cargo test -p astersql-pd-schedule-handler --locked --lib task_124 -- --nocapture",
+    "exit_code": 101,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "behavior-0.log.gz",
+    "sha256": "9845e26a819be51671e068a9a8909810e92c7f70d53b4b19486b5602ee0c6e00",
+    "test_summaries": [
+      "test result: FAILED. 3 passed; 1 failed; 0 ignored; 0 measured; 30 filtered out; finished in 0.00s"
+    ]
+  }
+]

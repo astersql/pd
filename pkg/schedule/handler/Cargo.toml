@@ -33,3 +33,6 @@ astersql-pd-storage-endpoint.workspace = true
 astersql-pd-storage-kv.workspace = true
 prometheus.workspace = true
 tokio.workspace = true
+astersql-pd-schedule-checker.workspace = true
+astersql-pd-schedule-affinity.workspace = true
+astersql-pd-schedule-labeler.workspace = true

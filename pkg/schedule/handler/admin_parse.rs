@@ -366,7 +366,7 @@ where
         Err(e) => CreationResponse::error(e),
     }
 }
-fn decode_hex(s: &str) -> Result<Vec<u8>, CreationError> {
+pub(super) fn decode_hex(s: &str) -> Result<Vec<u8>, CreationError> {
     let digit = |b: u8| match b {
         b'0'..=b'9' => Some(b - b'0'),
         b'a'..=b'f' => Some(b - b'a' + 10),

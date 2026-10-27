@@ -1,0 +1,20 @@
+[
+  {
+    "command": "cargo fmt --all",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "initial-0.log.gz",
+    "sha256": "a82f1eaaa58dc0fd9c6e3393a838e5c71252de66d160b9b3b7fd8f252fea2d3f",
+    "test_summaries": []
+  },
+  {
+    "command": "cargo test -p astersql-pd-schedule-handler --locked --lib task_124 -- --nocapture",
+    "exit_code": 101,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "initial-1.log.gz",
+    "sha256": "32a8666d0f8c06498d72bf5d3b76d5134765122411735ab24021c5ac767c1ba4",
+    "test_summaries": []
+  }
+]
