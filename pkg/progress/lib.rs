@@ -5,3 +5,5 @@ mod indicator;
 pub use indicator::{InvalidUpdateInterval, Progress, ProgressIndicator};
 #[cfg(test)]
 mod task_130_test;
+#[cfg(test)]
+mod task_131_test;

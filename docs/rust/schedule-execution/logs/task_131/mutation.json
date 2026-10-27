@@ -1,0 +1,8 @@
+{
+  "path": "pkg/progress/indicator.rs",
+  "mutation": "adjust_window_length: endpoint sample +1 replaced with +0",
+  "restored_sha256": "9184bbefe66c27e37e26f2f7ba994713984c2a7e8495e721bdcba879d6bbe5d4",
+  "mutated_sha256": "53b8de514541d7bfa8cc5790a2cf89239b7949051a6610830f51c9b332eed3a8",
+  "expected_failure": "four runtime assertion failures, exit 101",
+  "production_restored": true
+}

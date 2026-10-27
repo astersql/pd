@@ -1,0 +1,128 @@
+{
+  "evidence_kind": "readonly Go source/test derivation; no Go execution",
+  "source_commit": "3d07881fab18fa3bfec27a509320c611ffcafb6d",
+  "boundaries": [
+    {
+      "interval_seconds": 1,
+      "patrol_seconds": 0,
+      "length": 601,
+      "capacity": 7201
+    },
+    {
+      "interval_seconds": 1,
+      "patrol_seconds": 599,
+      "length": 601,
+      "capacity": 7201
+    },
+    {
+      "interval_seconds": 1,
+      "patrol_seconds": 600,
+      "length": 601,
+      "capacity": 7201
+    },
+    {
+      "interval_seconds": 1,
+      "patrol_seconds": 601,
+      "length": 602,
+      "capacity": 7201
+    },
+    {
+      "interval_seconds": 1,
+      "patrol_seconds": 7199,
+      "length": 7200,
+      "capacity": 7201
+    },
+    {
+      "interval_seconds": 1,
+      "patrol_seconds": 7200,
+      "length": 7201,
+      "capacity": 7201
+    },
+    {
+      "interval_seconds": 1,
+      "patrol_seconds": 7201,
+      "length": 7201,
+      "capacity": 7201
+    },
+    {
+      "interval_seconds": 60,
+      "patrol_seconds": 1140,
+      "length": 20,
+      "capacity": 121
+    },
+    {
+      "interval_seconds": 600,
+      "patrol_seconds": 7200,
+      "length": 13,
+      "capacity": 13
+    },
+    {
+      "interval_seconds": 601,
+      "patrol_seconds": 600,
+      "length": 2,
+      "capacity": 13
+    },
+    {
+      "interval_seconds": 0.5,
+      "patrol_seconds": 600,
+      "length": 1201,
+      "capacity": 14401
+    },
+    {
+      "interval_seconds": 7,
+      "patrol_seconds": 601,
+      "length": 86,
+      "capacity": 1029
+    }
+  ],
+  "dynamic": {
+    "initial_growth": 120,
+    "first_pause": 5,
+    "expanded_pause": 4,
+    "recovery": 10,
+    "checkpoints": [
+      [
+        11,
+        110,
+        0.12,
+        1,
+        880
+      ],
+      [
+        11,
+        115,
+        0.12,
+        0.5,
+        1760
+      ],
+      [
+        20,
+        110,
+        0.12,
+        0.5263157894736842,
+        1672
+      ],
+      [
+        20,
+        120,
+        0.13,
+        0.5263157894736842,
+        1653
+      ],
+      [
+        11,
+        121,
+        0.131,
+        1,
+        869
+      ],
+      [
+        121,
+        21,
+        0.132,
+        0.925,
+        938.3783783783783
+      ]
+    ]
+  }
+}

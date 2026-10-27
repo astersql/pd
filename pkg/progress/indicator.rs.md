@@ -22,3 +22,9 @@
 
 来源推导、11组固定期望与3项真实 Rust 测试见
 [任务证据](../../docs/rust/schedule-execution/task-130.md)。没有 Go 运行差分声明。
+
+任务131进一步冻结动态窗口边界与连续性，复用此 canonical 实现，不新增重复
+`indicator_window.rs`。见[动态窗口证据](../../docs/rust/schedule-execution/task-131.md)：
+12组时长/间隔边界、保留历史的缩窗再扩窗、样本不足、完成后调整与回退，
+以及缺少端点样本的错误实现检测。窗口改变不立即刷新快照/完成时间；下一次
+push才用新窗口重算，缩窗只移动active front，不丢弃容量范围内历史。

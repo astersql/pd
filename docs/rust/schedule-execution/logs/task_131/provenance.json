@@ -1,0 +1,11 @@
+{
+  "source_commit": "3d07881fab18fa3bfec27a509320c611ffcafb6d",
+  "kind": "readonly Go source/test derivation; no Go execution",
+  "hashes": {
+    "pkg/progress/indicator.go": "bd093cc179fd5edfd81f2289f8d8a3e0417221834c5a0c1cbcac221f17224727",
+    "pkg/progress/progress.go": "57c3b472bdf1fb567d9189f7da401e5d415ed31ed1b2ca080afdbda50e75864e",
+    "pkg/progress/indicator_test.go": "f0dd8dc754ac4988c8900745efb30b1f991dff647a6f7ea6fa22c98b57249fa2",
+    "pkg/progress/progress_test.go": "a78324c856d7abe1ed1fb0b12a26e2a51bacc9a95eaae6093d7218133de0a4a2",
+    "docs/rust/schedule-execution/fixtures/task_131.json": "9da487447f05de99e3ed09d6bd5cdf4285578445829c89bb49036b07485324f2"
+  }
+}
