@@ -1,0 +1,9 @@
+{
+  "task156_commands_verified": 11,
+  "repaired_record_sha256": "42e4add99ac6a05bbd671ec6de273fd81c7fc44245369ecb61b868b95ccc10a2",
+  "neutral_storage": "pkg/storage/domain/lib.rs",
+  "etcd_binary": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1/rust-etcd-fixture-88178",
+  "etcd_sha256": "57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5",
+  "go_evidence": "source-derived; no new Go execution",
+  "task58_runs_first": true
+}

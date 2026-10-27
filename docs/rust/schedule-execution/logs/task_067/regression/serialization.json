@@ -1,0 +1,7 @@
+{
+  "task58_record": "docs/rust/schedule-execution/logs/task_058/regression/final.json",
+  "sha256": "fc36bf337571b51348131f6c6bf1d4fa80b805806e5238306efe2a59610a1dac",
+  "task58_all_commands_exit_zero": true,
+  "slot_locks_empty_before_claim": true,
+  "cargo_and_python_processes_absent_before_claim": true
+}

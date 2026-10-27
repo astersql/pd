@@ -1,0 +1,6 @@
+{
+  "pkg/schedule/schedulers/balance_solver.rs": "3fdf6adcf42cf0f5fcbf53960ccad8c826a1ffbff50eca97a48f643f26c94d84",
+  "pkg/schedule/schedulers/task_067_test.rs": "92c4ef1ec774a205b06b445f2140f65a8275e8b87237fc0047e2d3a73af0d62d",
+  "pkg/schedule/schedulers/Cargo.toml": "4e44f9f8013a885ee182285489c50e15935258f9079e1e2c5d75790b9315230a",
+  "Cargo.lock": "ce2f7200b5f735aede4a237681b1fcdc51e18d1ff97b90710d2b62b067adf796"
+}

@@ -1,6 +1,7 @@
 # 任务067：均衡求解公共规则
 
-状态：已完成，待回归验证（全量 workspace 被无关磁盘容量阻断）。任务文件保留。
+状态：已完成。2026-10-27在最新共享工作区完成延后回归；下列早期磁盘失败记录保留，
+最终通过证据见文末。任务文件由本会话按完成规则删除。
 
 依赖66由提交 `988d7b62e`、[task-066](task-066.md) 的证据及实际配置/存储 API
 核实；没有并行任务或代理。实际实现为
@@ -64,7 +65,7 @@ TDD：[red-api.log](logs/task_067/red-api.log) 为缺失API编译失败，退出
 磁盘实测仅268MiB可用；串行重跑通过第一轮失败的全部46项cluster测试，但后续兼容
 测试再次无法创建WAL。已清理本次阶段产生且进程已退出的4个临时fixture二进制，
 见[cleanup](logs/task_067/cleanup.json)；不删其它任务缓存，不改fixture绕过失败。
-待磁盘恢复后须重跑完整workspace命令，成功才删除任务文件。
+当时待磁盘恢复后须重跑完整workspace命令；该项已由文末最终回归满足。
 
 所有Cargo操作由[run.py](logs/task_067/run.py) 原子mkdir动态领取共享槽位，本次实际
 全部为槽位 **1**，绝对
@@ -77,3 +78,46 @@ TDD：[red-api.log](logs/task_067/red-api.log) 为缺失API编译失败，退出
 Cargo.lock只增加3项已有workspace路径依赖，恢复离线锁生成引起的无关版本漂移；
 无远程依赖版本变更。没有格式化引起的范围外Rust变动，已有其它任务删除不纳入提交。
 日志仅规范行尾空白和EOF空行，JSON记录原始/保存SHA256。
+
+
+## 2026-10-27 延后回归完成
+
+先阅读并核实[任务141](task-141.md)的Etcd复用/恢复办法与
+[任务156](task-156.md)的中立存储拆分、严格依赖审计和最终通过记录。
+来源语义仍按用户授权采用只读Go源码/测试推导加Rust真实行为/故障验证，
+没有新增Go运行oracle或运行差分。后续任务增加的`from_range`也纳入本次包级测试。
+未修改生产Rust、测试、Cargo配置或任何Go文件，原先错误已确认是外部容量问题。
+
+按用户指定顺序等待任务58的Cargo阶段及子进程全部结束、锁释放后，才动态领取槽位。
+[串行核验](logs/task_067/regression/serialization.json)记录任务58全量通过记录的哈希，
+[上下文核验](logs/task_067/regression/context.json)记录156的11条最终命令日志哈希核对。
+
+所有命令由[回归runner](logs/task_067/regression/verify.py)执行，原子mkdir动态领取
+槽位 **1**，`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`，
+`CARGO_BUILD_JOBS=4`、`RUST_TEST_THREADS=2`。从已核验源fixture建立槽内硬链接；
+[Go拦截器](logs/task_067/regression/reuse-go/go)拒绝实际Go构建/测试，仅复用已验证二进制
+和只读kvproto ZIP，避免重复编译及物理复制。二进制SHA256为
+`57b00595142cedefe6048a0584bdc3cdb00b883263af99ea95ea50c131a0cfd5`，
+[调用日志](logs/task_067/regression/go-reuse.jsonl)保留全部请求。
+
+[最终命令记录](logs/task_067/regression/final.json)保存确切命令、退出码、实际槽位、
+压缩stdout/stderr路径、SHA256和全部libtest汇总行：
+
+| 命令 | 退出码 | 有效结果 |
+| --- | --- | --- |
+| `cargo test -p astersql-pd-schedule-schedulers --locked --lib task_067 -- --nocapture` | 0 | 3通过、0失败/忽略；20冻结案例及9次region v1重放 |
+| `cargo test -p astersql-pd-schedule-schedulers --locked` | 0 | 192通过、0失败/忽略 |
+| `cargo metadata --format-version 1 --no-deps` | 0 | 通过 |
+| `cargo fmt --all -- --check` | 0 | 通过 |
+| `cargo check --workspace --locked` | 0 | 通过，仅既有cpu_usage deprecated警告 |
+| `cargo test --workspace --locked` | 0 | 1925通过、0失败、1既有忽略 |
+| `python3 docs/rust/schedule-execution/logs/task_067/regression/audit.py` | 0 | 日志、只读文件、链接、输入及锁审计通过 |
+| `git diff --check` | 0 | 通过 |
+
+全仓测试包含2项既有compile-fail doctest；0测试target不计入有效测试数。
+[最终审计](logs/task_067/regression/audit.json)及
+[脚本](logs/task_067/regression/audit.py)核对1101个Go/模块文件（含ignored/untracked）的
+清单、内容SHA256和Git状态不变（扫描包含ignored/untracked，排除target/.git/node_modules生成缓存），
+两份plan.md不变，本次Rust/Cargo验证输入不变。
+所有Cargo及槽位产物子进程已结束，自己的锁已释放，缓存保留。无需业务修复；
+只提交本任务回归脚本和稳定证据，排除其它任务改动；编号任务删除不单独提交。
