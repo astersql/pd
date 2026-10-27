@@ -1,0 +1,615 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "runtime_go_oracle": false,
+  "evidence": "read-only Go source-derived; user-authorized substitute",
+  "normalization": "JSON object key order only; exact array order, strings, headers, offsets, and status; HEAD at direct handler boundary",
+  "cases": [
+    {
+      "method": "GET",
+      "path": "/list",
+      "input": "{",
+      "status": 200,
+      "body": "[\n  \"leader\",\n  \"follower\",\n  \"learner\"\n]\n",
+      "content_type": "application/json; charset=UTF-8",
+      "roles": [
+        "leader",
+        "follower",
+        "learner"
+      ],
+      "code": null,
+      "nosniff": null
+    },
+    {
+      "method": "GET",
+      "path": "/roles",
+      "input": "{",
+      "status": 200,
+      "body": "[\n  \"leader\",\n  \"follower\",\n  \"learner\"\n]\n",
+      "content_type": "application/json; charset=UTF-8",
+      "roles": [
+        "leader",
+        "follower",
+        "learner"
+      ],
+      "code": null,
+      "nosniff": null
+    },
+    {
+      "method": "GET",
+      "path": "/roles?q=1",
+      "input": "{",
+      "status": 200,
+      "body": "[\n  \"leader\",\n  \"follower\",\n  \"learner\"\n]\n",
+      "content_type": "application/json; charset=UTF-8",
+      "roles": [
+        "leader",
+        "follower",
+        "learner"
+      ],
+      "code": null,
+      "nosniff": null
+    },
+    {
+      "method": "HEAD",
+      "path": "/roles",
+      "input": "[]",
+      "status": 405,
+      "body": "",
+      "content_type": null,
+      "roles": [
+        "leader",
+        "follower",
+        "learner"
+      ],
+      "code": null,
+      "nosniff": null
+    },
+    {
+      "method": "PUT",
+      "path": "/roles",
+      "input": "[]",
+      "status": 405,
+      "body": "",
+      "content_type": null,
+      "roles": [
+        "leader",
+        "follower",
+        "learner"
+      ],
+      "code": null,
+      "nosniff": null
+    },
+    {
+      "method": "DELETE",
+      "path": "/roles",
+      "input": "[]",
+      "status": 405,
+      "body": "",
+      "content_type": null,
+      "roles": [
+        "leader",
+        "follower",
+        "learner"
+      ],
+      "code": null,
+      "nosniff": null
+    },
+    {
+      "method": "PATCH",
+      "path": "/roles",
+      "input": "[]",
+      "status": 405,
+      "body": "",
+      "content_type": null,
+      "roles": [
+        "leader",
+        "follower",
+        "learner"
+      ],
+      "code": null,
+      "nosniff": null
+    },
+    {
+      "method": "OPTIONS",
+      "path": "/roles",
+      "input": "[]",
+      "status": 405,
+      "body": "",
+      "content_type": null,
+      "roles": [
+        "leader",
+        "follower",
+        "learner"
+      ],
+      "code": null,
+      "nosniff": null
+    },
+    {
+      "method": "POST",
+      "path": "/list",
+      "input": "[]",
+      "status": 405,
+      "body": "",
+      "content_type": null,
+      "roles": [
+        "leader",
+        "follower",
+        "learner"
+      ],
+      "code": null,
+      "nosniff": null
+    },
+    {
+      "method": "HEAD",
+      "path": "/list",
+      "input": "[]",
+      "status": 405,
+      "body": "",
+      "content_type": null,
+      "roles": [
+        "leader",
+        "follower",
+        "learner"
+      ],
+      "code": null,
+      "nosniff": null
+    },
+    {
+      "method": "CUSTOM",
+      "path": "/roles",
+      "input": "[]",
+      "status": 405,
+      "body": "",
+      "content_type": null,
+      "roles": [
+        "leader",
+        "follower",
+        "learner"
+      ],
+      "code": null,
+      "nosniff": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "[]",
+      "status": 404,
+      "body": "404 page not found\n",
+      "content_type": "text/plain; charset=utf-8",
+      "roles": [
+        "leader",
+        "follower",
+        "learner"
+      ],
+      "code": null,
+      "nosniff": "nosniff"
+    },
+    {
+      "method": "POST",
+      "path": "/roles/",
+      "input": "[]",
+      "status": 404,
+      "body": "404 page not found\n",
+      "content_type": "text/plain; charset=utf-8",
+      "roles": [
+        "leader",
+        "follower",
+        "learner"
+      ],
+      "code": null,
+      "nosniff": "nosniff"
+    },
+    {
+      "method": "POST",
+      "path": "/",
+      "input": "[]",
+      "status": 404,
+      "body": "404 page not found\n",
+      "content_type": "text/plain; charset=utf-8",
+      "roles": [
+        "leader",
+        "follower",
+        "learner"
+      ],
+      "code": null,
+      "nosniff": "nosniff"
+    },
+    {
+      "method": "POST",
+      "path": "/unknown",
+      "input": "[]",
+      "status": 404,
+      "body": "404 page not found\n",
+      "content_type": "text/plain; charset=utf-8",
+      "roles": [
+        "leader",
+        "follower",
+        "learner"
+      ],
+      "code": null,
+      "nosniff": "nosniff"
+    },
+    {
+      "method": "POST",
+      "path": "/roles",
+      "input": "[]",
+      "status": 200,
+      "body": "Config is updated.",
+      "content_type": "text/plain; charset=UTF-8",
+      "roles": [],
+      "code": null,
+      "nosniff": null
+    },
+    {
+      "method": "POST",
+      "path": "/roles",
+      "input": "null",
+      "status": 200,
+      "body": "Config is updated.",
+      "content_type": "text/plain; charset=UTF-8",
+      "roles": null,
+      "code": null,
+      "nosniff": null
+    },
+    {
+      "method": "POST",
+      "path": "/roles",
+      "input": "[\"follower\"]",
+      "status": 200,
+      "body": "Config is updated.",
+      "content_type": "text/plain; charset=UTF-8",
+      "roles": [
+        "follower"
+      ],
+      "code": null,
+      "nosniff": null
+    },
+    {
+      "method": "POST",
+      "path": "/roles",
+      "input": "[\"leader\",\"leader\",\"learner\"]",
+      "status": 200,
+      "body": "Config is updated.",
+      "content_type": "text/plain; charset=UTF-8",
+      "roles": [
+        "leader",
+        "leader",
+        "learner"
+      ],
+      "code": null,
+      "nosniff": null
+    },
+    {
+      "method": "POST",
+      "path": "/roles",
+      "input": "[\"follower\",\"leader\"]",
+      "status": 200,
+      "body": "Config is updated.",
+      "content_type": "text/plain; charset=UTF-8",
+      "roles": [
+        "follower",
+        "leader"
+      ],
+      "code": null,
+      "nosniff": null
+    },
+    {
+      "method": "POST",
+      "path": "/roles",
+      "input": "[\"voter\"]",
+      "status": 400,
+      "body": "invalid role:voter",
+      "content_type": "text/plain; charset=UTF-8",
+      "roles": [
+        "leader",
+        "follower",
+        "learner"
+      ],
+      "code": null,
+      "nosniff": null
+    },
+    {
+      "method": "POST",
+      "path": "/roles",
+      "input": "[\"follower\",\"bad\"]",
+      "status": 400,
+      "body": "invalid role:bad",
+      "content_type": "text/plain; charset=UTF-8",
+      "roles": [
+        "leader",
+        "follower",
+        "learner"
+      ],
+      "code": null,
+      "nosniff": null
+    },
+    {
+      "method": "POST",
+      "path": "/roles",
+      "input": "[\"\"]",
+      "status": 400,
+      "body": "invalid role:",
+      "content_type": "text/plain; charset=UTF-8",
+      "roles": [
+        "leader",
+        "follower",
+        "learner"
+      ],
+      "code": null,
+      "nosniff": null
+    },
+    {
+      "method": "POST",
+      "path": "/roles",
+      "input": "[null]",
+      "status": 400,
+      "body": "invalid role:",
+      "content_type": "text/plain; charset=UTF-8",
+      "roles": [
+        "leader",
+        "follower",
+        "learner"
+      ],
+      "code": null,
+      "nosniff": null
+    },
+    {
+      "method": "POST",
+      "path": "/roles",
+      "input": "[\"Leader\"]",
+      "status": 400,
+      "body": "invalid role:Leader",
+      "content_type": "text/plain; charset=UTF-8",
+      "roles": [
+        "leader",
+        "follower",
+        "learner"
+      ],
+      "code": null,
+      "nosniff": null
+    },
+    {
+      "method": "POST",
+      "path": "/roles",
+      "input": "",
+      "status": 400,
+      "body": "{\n  \"code\": \"input\",\n  \"msg\": \"unexpected end of JSON input\",\n  \"data\": {\n    \"Offset\": 0\n  }\n}\n",
+      "content_type": "application/json; charset=UTF-8",
+      "roles": [
+        "leader",
+        "follower",
+        "learner"
+      ],
+      "code": "input",
+      "nosniff": null
+    },
+    {
+      "method": "POST",
+      "path": "/roles",
+      "input": "{",
+      "status": 400,
+      "body": "{\n  \"code\": \"input\",\n  \"msg\": \"unexpected end of JSON input\",\n  \"data\": {\n    \"Offset\": 1\n  }\n}\n",
+      "content_type": "application/json; charset=UTF-8",
+      "roles": [
+        "leader",
+        "follower",
+        "learner"
+      ],
+      "code": "input",
+      "nosniff": null
+    },
+    {
+      "method": "POST",
+      "path": "/roles",
+      "input": "[",
+      "status": 400,
+      "body": "{\n  \"code\": \"input\",\n  \"msg\": \"unexpected end of JSON input\",\n  \"data\": {\n    \"Offset\": 1\n  }\n}\n",
+      "content_type": "application/json; charset=UTF-8",
+      "roles": [
+        "leader",
+        "follower",
+        "learner"
+      ],
+      "code": "input",
+      "nosniff": null
+    },
+    {
+      "method": "POST",
+      "path": "/roles",
+      "input": "!",
+      "status": 400,
+      "body": "{\n  \"code\": \"input\",\n  \"msg\": \"invalid character '!' looking for beginning of value\",\n  \"data\": {\n    \"Offset\": 1\n  }\n}\n",
+      "content_type": "application/json; charset=UTF-8",
+      "roles": [
+        "leader",
+        "follower",
+        "learner"
+      ],
+      "code": "input",
+      "nosniff": null
+    },
+    {
+      "method": "POST",
+      "path": "/roles",
+      "input": "[] []",
+      "status": 400,
+      "body": "{\n  \"code\": \"input\",\n  \"msg\": \"invalid character '[' after top-level value\",\n  \"data\": {\n    \"Offset\": 4\n  }\n}\n",
+      "content_type": "application/json; charset=UTF-8",
+      "roles": [
+        "leader",
+        "follower",
+        "learner"
+      ],
+      "code": "input",
+      "nosniff": null
+    },
+    {
+      "method": "POST",
+      "path": "/roles",
+      "input": "{}",
+      "status": 400,
+      "body": "{\n  \"code\": \"input\",\n  \"msg\": \"json: cannot unmarshal object into Go value of type []string\",\n  \"data\": {\n    \"Value\": \"object\",\n    \"Type\": {},\n    \"Offset\": 1,\n    \"Struct\": \"\",\n    \"Field\": \"\"\n  }\n}\n",
+      "content_type": "application/json; charset=UTF-8",
+      "roles": [
+        "leader",
+        "follower",
+        "learner"
+      ],
+      "code": "input",
+      "nosniff": null
+    },
+    {
+      "method": "POST",
+      "path": "/roles",
+      "input": "1",
+      "status": 400,
+      "body": "{\n  \"code\": \"input\",\n  \"msg\": \"json: cannot unmarshal number into Go value of type []string\",\n  \"data\": {\n    \"Value\": \"number\",\n    \"Type\": {},\n    \"Offset\": 1,\n    \"Struct\": \"\",\n    \"Field\": \"\"\n  }\n}\n",
+      "content_type": "application/json; charset=UTF-8",
+      "roles": [
+        "leader",
+        "follower",
+        "learner"
+      ],
+      "code": "input",
+      "nosniff": null
+    },
+    {
+      "method": "POST",
+      "path": "/roles",
+      "input": "\"x\"",
+      "status": 400,
+      "body": "{\n  \"code\": \"input\",\n  \"msg\": \"json: cannot unmarshal string into Go value of type []string\",\n  \"data\": {\n    \"Value\": \"string\",\n    \"Type\": {},\n    \"Offset\": 3,\n    \"Struct\": \"\",\n    \"Field\": \"\"\n  }\n}\n",
+      "content_type": "application/json; charset=UTF-8",
+      "roles": [
+        "leader",
+        "follower",
+        "learner"
+      ],
+      "code": "input",
+      "nosniff": null
+    },
+    {
+      "method": "POST",
+      "path": "/roles",
+      "input": "[1]",
+      "status": 400,
+      "body": "{\n  \"code\": \"input\",\n  \"msg\": \"json: cannot unmarshal number into Go value of type string\",\n  \"data\": {\n    \"Value\": \"number\",\n    \"Type\": {},\n    \"Offset\": 2,\n    \"Struct\": \"\",\n    \"Field\": \"\"\n  }\n}\n",
+      "content_type": "application/json; charset=UTF-8",
+      "roles": [
+        "leader",
+        "follower",
+        "learner"
+      ],
+      "code": "input",
+      "nosniff": null
+    },
+    {
+      "method": "POST",
+      "path": "/roles",
+      "input": "[true]",
+      "status": 400,
+      "body": "{\n  \"code\": \"input\",\n  \"msg\": \"json: cannot unmarshal bool into Go value of type string\",\n  \"data\": {\n    \"Value\": \"bool\",\n    \"Type\": {},\n    \"Offset\": 5,\n    \"Struct\": \"\",\n    \"Field\": \"\"\n  }\n}\n",
+      "content_type": "application/json; charset=UTF-8",
+      "roles": [
+        "leader",
+        "follower",
+        "learner"
+      ],
+      "code": "input",
+      "nosniff": null
+    },
+    {
+      "method": "POST",
+      "path": "/roles",
+      "input": "[{}]",
+      "status": 400,
+      "body": "{\n  \"code\": \"input\",\n  \"msg\": \"json: cannot unmarshal object into Go value of type string\",\n  \"data\": {\n    \"Value\": \"object\",\n    \"Type\": {},\n    \"Offset\": 2,\n    \"Struct\": \"\",\n    \"Field\": \"\"\n  }\n}\n",
+      "content_type": "application/json; charset=UTF-8",
+      "roles": [
+        "leader",
+        "follower",
+        "learner"
+      ],
+      "code": "input",
+      "nosniff": null
+    },
+    {
+      "method": "POST",
+      "path": "/roles",
+      "input": "[[\"x\"]]",
+      "status": 400,
+      "body": "{\n  \"code\": \"input\",\n  \"msg\": \"json: cannot unmarshal array into Go value of type string\",\n  \"data\": {\n    \"Value\": \"array\",\n    \"Type\": {},\n    \"Offset\": 2,\n    \"Struct\": \"\",\n    \"Field\": \"\"\n  }\n}\n",
+      "content_type": "application/json; charset=UTF-8",
+      "roles": [
+        "leader",
+        "follower",
+        "learner"
+      ],
+      "code": "input",
+      "nosniff": null
+    },
+    {
+      "method": "GET",
+      "path": "/%72oles",
+      "input": "{",
+      "status": 200,
+      "body": "[\n  \"leader\",\n  \"follower\",\n  \"learner\"\n]\n",
+      "content_type": "application/json; charset=UTF-8",
+      "roles": [
+        "leader",
+        "follower",
+        "learner"
+      ],
+      "code": null,
+      "nosniff": null
+    },
+    {
+      "method": "POST",
+      "path": "/roles//",
+      "input": "{",
+      "status": 301,
+      "body": "",
+      "content_type": null,
+      "roles": [
+        "leader",
+        "follower",
+        "learner"
+      ],
+      "code": null,
+      "location": "/roles/",
+      "nosniff": null
+    },
+    {
+      "method": "POST",
+      "path": "/x/../roles?q=1",
+      "input": "{",
+      "status": 301,
+      "body": "",
+      "content_type": null,
+      "roles": [
+        "leader",
+        "follower",
+        "learner"
+      ],
+      "code": null,
+      "location": "/roles?q=1",
+      "nosniff": null
+    },
+    {
+      "method": "POST",
+      "path": "//roles",
+      "input": "{",
+      "status": 301,
+      "body": "",
+      "content_type": null,
+      "roles": [
+        "leader",
+        "follower",
+        "learner"
+      ],
+      "code": null,
+      "location": "/roles",
+      "nosniff": null
+    }
+  ]
+}

@@ -27,3 +27,6 @@ reload 解码失败保留旧配置。宿主独占可变 scheduler；并发请求
 
 独立测试显式在 lib.rs 注册。固定 fixture、两种 conf-change 模式、实际步骤应用、
 故障 I/O 及配置回滚证据见 [任务102](../../../docs/rust/schedule-execution/task-102.md)。
+
+任务151补充 `update_optional_roles`：HTTP JSON null 保留为存储 null；空数组仍为 []。
+与 update_roles 共用验证及持久化后发布路径，保存失败不改内存。

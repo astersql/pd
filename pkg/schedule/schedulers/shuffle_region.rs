@@ -96,8 +96,21 @@ impl ShuffleRegionScheduler {
         storage: &StorageEndpoint,
         paths: &ClusterPaths,
     ) -> Result<(), ShuffleRegionError> {
+        self.update_optional_roles(Some(roles), storage, paths)
+            .await
+    }
+    /// Preserve JSON null separately from an empty role list, publishing after I/O.
+    pub async fn update_optional_roles(
+        &mut self,
+        roles: Option<Vec<String>>,
+        storage: &StorageEndpoint,
+        paths: &ClusterPaths,
+    ) -> Result<(), ShuffleRegionError> {
         let mut candidate = self.config.clone();
-        candidate.set_roles(roles)?;
+        if let Some(roles) = &roles {
+            candidate.set_roles(roles.clone())?;
+        }
+        candidate.roles = roles;
         storage
             .save_scheduler_config(paths, NAME, &encode_config(&candidate)?)
             .await

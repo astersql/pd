@@ -1,0 +1,53 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "dependency_commit": "88c1f937c",
+  "runtime_go_oracle": false,
+  "basis": "User-authorized read-only Go source/test derivation plus real Rust behavior/fault verification",
+  "sources": [
+    {
+      "path": "pkg/schedule/schedulers/shuffle_region.go",
+      "sha256": "e5844a8e1f52a635b9bf5819f73d2819fb22c345957b9b05f4c648113e6da0cf",
+      "matches_source_commit": true
+    },
+    {
+      "path": "pkg/schedule/schedulers/shuffle_region_config.go",
+      "sha256": "4350643dec0a6cec8d9fdf6dcde757219344dd1a1c30260ebaa500643823924c",
+      "matches_source_commit": true
+    },
+    {
+      "path": "pkg/schedule/schedulers/base_scheduler.go",
+      "sha256": "1da013a2323c2756dcfd3b1203e91c481c58e80e258e3848d5db23dd261e6bdc",
+      "matches_source_commit": true
+    },
+    {
+      "path": "pkg/schedule/schedulers/config.go",
+      "sha256": "64024b895d0b48c030acd9684c3879993710856796eebe11595d4108073b6409",
+      "matches_source_commit": true
+    },
+    {
+      "path": "pkg/schedule/schedulers/scheduler_test.go",
+      "sha256": "55b18eda7e1834ed5090cf360f2cbac1048b0b164e4e84dcf06cbfbbdc8162fc",
+      "matches_source_commit": true
+    },
+    {
+      "path": "pkg/utils/apiutil/apiutil.go",
+      "sha256": "edda400120b9f6cc3def157e8aefc74e4572b7971d01b521f41b6bee49e6bfe6",
+      "matches_source_commit": true
+    },
+    {
+      "path": "/Users/xiangmin/go/pkg/mod/github.com/gorilla/mux@v1.7.4/mux.go",
+      "sha256": "bcc9cc372fa7e1198fe2a4dc7cbcbb54afdc1e057af008c4a3fecba8aa25d76d"
+    },
+    {
+      "path": "/Users/xiangmin/go/pkg/mod/github.com/unrolled/render@v1.0.1/render.go",
+      "sha256": "b5c50ad47be09f33fb2ccdb479c732e7b93f5737ad37d309f2be9ceb84ff3134"
+    },
+    {
+      "path": "/Users/xiangmin/go/pkg/mod/github.com/unrolled/render@v1.0.1/engine.go",
+      "sha256": "dd08b35b28d90e16f9b4a9fe270b8a3bab02be35fe1eadc6f1715c89d0755f09"
+    }
+  ],
+  "fixture_sha256": "29c17984d97ee21799478bfee43e79818c0cf7bd79e8c90fa0976d7f2e35e58e",
+  "schedule_fixture_sha256": "5ee9c86d4b17147aece5dbbc79f7179e98a14108d4566cf58013111e1469b531",
+  "oracle_index_sha256": "2d1a930742291e7047a864aa2246e7e22c612cb6583249b7edb42945b494b450"
+}
