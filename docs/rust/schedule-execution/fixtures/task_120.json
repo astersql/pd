@@ -1,0 +1,14 @@
+{
+  "evidence_kind": "source_assertion",
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "go_execution": null,
+  "split": [
+    {"policy":"scan","raw":0,"keys":["invalid"],"decoded":[]},
+    {"policy":"ApPrOxImAtE","raw":1,"keys":["invalid"],"decoded":[]},
+    {"policy":"usekey","raw":2,"keys":["00fF","00fF",""],"decoded":[[0,255],[0,255],[]]},
+    {"policy":"USEKEY","raw":2,"keys":[],"decoded":[]},
+    {"policy":"USEKEY","raw":2,"keys":["62","61"],"decoded":[[98],[97]]}
+  ],
+  "merge": {"directed_pairs":[[1,2],[2,1],[2,3],[3,2]],"steps":["active merge","passive merge"],"kind":"ADMIN","priority":"URGENT","status":"STARTED"},
+  "normalization": "none; explicit clock/capabilities; no Go runtime output claimed"
+}

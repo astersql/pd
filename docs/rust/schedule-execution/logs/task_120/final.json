@@ -1,0 +1,68 @@
+{
+  "slot": 1,
+  "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+  "results": [
+    {
+      "command": "cargo fmt --all",
+      "exit_code": 0,
+      "log": "final-0.log.gz",
+      "stdout_stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": "cargo test -p astersql-pd-schedule-handler --locked --lib task_120 -- --nocapture",
+      "exit_code": 0,
+      "log": "final-1.log.gz",
+      "stdout_stderr_sha256": "23edb5dc05f9c0ca9eeb5462c69bb5a1ea583dbf3f94a7d7ad697e622e5f1ec5",
+      "tests": {
+        "passed": 6,
+        "failed": 0,
+        "ignored": 0
+      }
+    },
+    {
+      "command": "cargo test -p astersql-pd-schedule-handler --locked",
+      "exit_code": 0,
+      "log": "final-2.log.gz",
+      "stdout_stderr_sha256": "359e683869b62600c05cbe1d79c13bdb55894a88ffdc87fd4ac83250e04f4616",
+      "tests": {
+        "passed": 15,
+        "failed": 0,
+        "ignored": 0
+      }
+    },
+    {
+      "command": "cargo metadata --format-version 1 --no-deps",
+      "exit_code": 0,
+      "log": "final-3.log.gz",
+      "stdout_stderr_sha256": "d68ef7841b3439316cf3835487dfbd3893fda2ab73b8aaf62b38dfc89a0f825a"
+    },
+    {
+      "command": "cargo fmt --all -- --check",
+      "exit_code": 0,
+      "log": "final-4.log.gz",
+      "stdout_stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": "cargo check --workspace --locked",
+      "exit_code": 0,
+      "log": "final-5.log.gz",
+      "stdout_stderr_sha256": "73687566dc5305c1f3380726d79199d0ce70a0c58e25d26b4b4fa36f88622220"
+    },
+    {
+      "command": "cargo test --workspace --locked",
+      "exit_code": 0,
+      "log": "final-6.log.gz",
+      "stdout_stderr_sha256": "68c48e81287b6515987d5893aaff14cf3346cb8fb7e582bd740a81eb21560952",
+      "tests": {
+        "passed": 1787,
+        "failed": 0,
+        "ignored": 1
+      }
+    }
+  ],
+  "environment": {
+    "CARGO_BUILD_JOBS": "4",
+    "RUST_TEST_THREADS": "4",
+    "GOFLAGS": "-mod=readonly"
+  }
+}
