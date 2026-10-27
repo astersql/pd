@@ -1,0 +1,44 @@
+{
+  "protected_files": 1103,
+  "hashes_and_file_set_unchanged": true,
+  "go_module_git_status_unchanged": true,
+  "source_matches_commit": true,
+  "provenance_hashes_valid": true,
+  "log_hashes_valid": true,
+  "links_valid": [
+    "task-148.md",
+    "logs/task_149/provenance.json",
+    "fixtures/task_149.json",
+    "fixtures/task_100.json",
+    "../../../pkg/server/schedule_admin_shuffle_hot_region.rs",
+    "../../../pkg/server/schedule_admin_shuffle_hot_region.rs.md",
+    "logs/task_149/red.json",
+    "../../../pkg/server/schedule_admin_shuffle_hot_region_test.rs",
+    "logs/task_149/verify.py",
+    "logs/task_149/reuse-go/go",
+    "logs/task_149/go-reuse.jsonl",
+    "logs/task_149/final.json",
+    "logs/task_149/final-summary.json",
+    "logs/task_149/audit.json",
+    "logs/task_149/baseline.json",
+    "../../docs/rust/schedule-execution/task-149.md"
+  ],
+  "diff_check_exit": 0,
+  "counts": {
+    "cargo test -p astersql-pd-server --locked --lib task_149 -- --nocapture": {
+      "passed": 3,
+      "failed": 0,
+      "ignored": 0
+    },
+    "cargo test -p astersql-pd-server --locked": {
+      "passed": 98,
+      "failed": 0,
+      "ignored": 0
+    },
+    "cargo test --workspace --locked": {
+      "passed": 1898,
+      "failed": 0,
+      "ignored": 1
+    }
+  }
+}

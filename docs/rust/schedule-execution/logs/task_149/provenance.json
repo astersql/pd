@@ -1,0 +1,16 @@
+{
+  "source_commit": "9398c4dfd856dfdde29dd1a88e1bf17a0e5021cb",
+  "runtime_go_oracle": false,
+  "authorization": "read-only Go source/test derivation + real Rust behavior/fault validation",
+  "dependency_148": "9398c4dfd",
+  "sha256": {
+    "pkg/schedule/schedulers/shuffle_hot_region.go": "a53d67b39bbd2aa67673ca7e58dbc1d39abead235734d5e97fe744d364ca1042",
+    "pkg/schedule/schedulers/base_scheduler.go": "1da013a2323c2756dcfd3b1203e91c481c58e80e258e3848d5db23dd261e6bdc",
+    "pkg/schedule/schedulers/scheduler_test.go": "55b18eda7e1834ed5090cf360f2cbac1048b0b164e4e84dcf06cbfbbdc8162fc",
+    "pkg/utils/apiutil/apiutil.go": "edda400120b9f6cc3def157e8aefc74e4572b7971d01b521f41b6bee49e6bfe6",
+    "docs/rust/schedule-execution/oracle-index.json": "2d1a930742291e7047a864aa2246e7e22c612cb6583249b7edb42945b494b450",
+    "docs/rust/schedule-execution/fixtures/task_149.json": "92c64c68a8b9a5611d8306200328befbafa79bdd5adcdf6adc5d8dca9b668a85",
+    "docs/rust/schedule-execution/task-148.md": "ecbccf71080433608aed6d1b9c9046850111e8e2c93c08c9a5b0f589069c7aaf",
+    "docs/rust/schedule-execution/fixtures/task_100.json": "41d37b3605fccca1f1d36b72ba944d8c4b5ecbefd5c85450b0ee525778621b4b"
+  }
+}

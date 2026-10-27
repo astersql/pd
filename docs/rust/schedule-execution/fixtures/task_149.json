@@ -1,0 +1,478 @@
+{
+  "evidence_kind": "source_derived_user_authorized",
+  "runtime_go_oracle": false,
+  "cases": [
+    {
+      "method": "GET",
+      "path": "/list",
+      "input": "",
+      "status": 200,
+      "body": {
+        "limit": 1
+      },
+      "config": {
+        "limit": 1
+      },
+      "code": null
+    },
+    {
+      "method": "GET",
+      "path": "/config",
+      "input": "{}",
+      "status": 405,
+      "body": "",
+      "config": {
+        "limit": 1
+      },
+      "code": null
+    },
+    {
+      "method": "HEAD",
+      "path": "/config",
+      "input": "{}",
+      "status": 405,
+      "body": "",
+      "config": {
+        "limit": 1
+      },
+      "code": null
+    },
+    {
+      "method": "PUT",
+      "path": "/config",
+      "input": "{}",
+      "status": 405,
+      "body": "",
+      "config": {
+        "limit": 1
+      },
+      "code": null
+    },
+    {
+      "method": "PATCH",
+      "path": "/config",
+      "input": "{}",
+      "status": 405,
+      "body": "",
+      "config": {
+        "limit": 1
+      },
+      "code": null
+    },
+    {
+      "method": "DELETE",
+      "path": "/config",
+      "input": "{}",
+      "status": 405,
+      "body": "",
+      "config": {
+        "limit": 1
+      },
+      "code": null
+    },
+    {
+      "method": "OPTIONS",
+      "path": "/config",
+      "input": "{}",
+      "status": 405,
+      "body": "",
+      "config": {
+        "limit": 1
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/list",
+      "input": "",
+      "status": 405,
+      "body": "",
+      "config": {
+        "limit": 1
+      },
+      "code": null
+    },
+    {
+      "method": "HEAD",
+      "path": "/list",
+      "input": "",
+      "status": 405,
+      "body": "",
+      "config": {
+        "limit": 1
+      },
+      "code": null
+    },
+    {
+      "method": "PUT",
+      "path": "/list",
+      "input": "",
+      "status": 405,
+      "body": "",
+      "config": {
+        "limit": 1
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/",
+      "input": "{}",
+      "status": 404,
+      "body": "404 page not found\n",
+      "config": {
+        "limit": 1
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/unknown",
+      "input": "{}",
+      "status": 404,
+      "body": "404 page not found\n",
+      "config": {
+        "limit": 1
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config/",
+      "input": "{}",
+      "status": 404,
+      "body": "404 page not found\n",
+      "config": {
+        "limit": 1
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/list/",
+      "input": "{}",
+      "status": 404,
+      "body": "404 page not found\n",
+      "config": {
+        "limit": 1
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{}",
+      "status": 400,
+      "body": "\"invalid limit\"",
+      "config": {
+        "limit": 1
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "null",
+      "status": 400,
+      "body": "\"invalid limit\"",
+      "config": {
+        "limit": 1
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"limit\":null}",
+      "status": 400,
+      "body": "\"invalid limit\"",
+      "config": {
+        "limit": 1
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"limit\":\"2\"}",
+      "status": 400,
+      "body": "\"invalid limit\"",
+      "config": {
+        "limit": 1
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"limit\":true}",
+      "status": 400,
+      "body": "\"invalid limit\"",
+      "config": {
+        "limit": 1
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"limit\":[]}",
+      "status": 400,
+      "body": "\"invalid limit\"",
+      "config": {
+        "limit": 1
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"limit\":{}}",
+      "status": 400,
+      "body": "\"invalid limit\"",
+      "config": {
+        "limit": 1
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"Limit\":2}",
+      "status": 400,
+      "body": "\"invalid limit\"",
+      "config": {
+        "limit": 1
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"limit\":0}",
+      "status": 200,
+      "body": "null",
+      "config": {
+        "limit": 0
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"limit\":2}",
+      "status": 200,
+      "body": "null",
+      "config": {
+        "limit": 2
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"limit\":2.9}",
+      "status": 200,
+      "body": "null",
+      "config": {
+        "limit": 2
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"limit\":1e2}",
+      "status": 200,
+      "body": "null",
+      "config": {
+        "limit": 100
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"limit\":-0.9}",
+      "status": 200,
+      "body": "null",
+      "config": {
+        "limit": 0
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"limit\":-1}",
+      "status": 200,
+      "body": "null",
+      "config": {
+        "limit": 18446744073709551615
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"limit\":9007199254740993}",
+      "status": 200,
+      "body": "null",
+      "config": {
+        "limit": 9007199254740992
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"limit\":2,\"unknown\":9}",
+      "status": 200,
+      "body": "null",
+      "config": {
+        "limit": 2
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"limit\":4,\"limit\":3}",
+      "status": 200,
+      "body": "null",
+      "config": {
+        "limit": 3
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"limit\":18446744073709549568}",
+      "status": 200,
+      "body": "null",
+      "config": {
+        "limit": 18446744073709549568
+      },
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "{",
+      "status": 400,
+      "body": {
+        "code": "input",
+        "msg": "unexpected end of JSON input",
+        "data": {
+          "Offset": 1
+        }
+      },
+      "config": {
+        "limit": 1
+      },
+      "code": "input"
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "",
+      "status": 400,
+      "body": {
+        "code": "input",
+        "msg": "unexpected end of JSON input",
+        "data": {
+          "Offset": 0
+        }
+      },
+      "config": {
+        "limit": 1
+      },
+      "code": "input"
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "[]",
+      "status": 400,
+      "body": {
+        "code": "input",
+        "msg": "json: cannot unmarshal array into Go value of type map[string]interface {}",
+        "data": {
+          "Value": "array",
+          "Type": {},
+          "Offset": 1,
+          "Struct": "",
+          "Field": ""
+        }
+      },
+      "config": {
+        "limit": 1
+      },
+      "code": "input"
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "true",
+      "status": 400,
+      "body": {
+        "code": "input",
+        "msg": "json: cannot unmarshal bool into Go value of type map[string]interface {}",
+        "data": {
+          "Value": "bool",
+          "Type": {},
+          "Offset": 4,
+          "Struct": "",
+          "Field": ""
+        }
+      },
+      "config": {
+        "limit": 1
+      },
+      "code": "input"
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "1",
+      "status": 400,
+      "body": {
+        "code": "input",
+        "msg": "json: cannot unmarshal number into Go value of type map[string]interface {}",
+        "data": {
+          "Value": "number",
+          "Type": {},
+          "Offset": 1,
+          "Struct": "",
+          "Field": ""
+        }
+      },
+      "config": {
+        "limit": 1
+      },
+      "code": "input"
+    },
+    {
+      "method": "POST",
+      "path": "/config",
+      "input": "\"x\"",
+      "status": 400,
+      "body": {
+        "code": "input",
+        "msg": "json: cannot unmarshal string into Go value of type map[string]interface {}",
+        "data": {
+          "Value": "string",
+          "Type": {},
+          "Offset": 3,
+          "Struct": "",
+          "Field": ""
+        }
+      },
+      "config": {
+        "limit": 1
+      },
+      "code": "input"
+    }
+  ]
+}

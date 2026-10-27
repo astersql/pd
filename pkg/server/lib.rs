@@ -163,3 +163,8 @@ pub mod schedule_admin_scatter_range;
 #[cfg(test)]
 #[path = "schedule_admin_scatter_range_test.rs"]
 mod schedule_admin_scatter_range_test;
+
+pub mod schedule_admin_shuffle_hot_region;
+#[cfg(test)]
+#[path = "schedule_admin_shuffle_hot_region_test.rs"]
+mod schedule_admin_shuffle_hot_region_test;
