@@ -1,0 +1,41 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "dependency_commit": "87d3fd46e",
+  "oracle_kind": "source_assertion",
+  "runtime_go_oracle": false,
+  "authorization": "User permits read-only Go source/test derivation plus real Rust behavior/fault verification instead of unavailable Go runtime oracle.",
+  "files": [
+    {
+      "path": "pkg/schedule/schedulers/grant_leader.go",
+      "sha256": "4c1f9fda46d697bce4c22ce8dbb07b8a7f255d5d475028067e7c06c8c3aca95f",
+      "source_commit_sha256": "4c1f9fda46d697bce4c22ce8dbb07b8a7f255d5d475028067e7c06c8c3aca95f",
+      "same_as_source_commit": true
+    },
+    {
+      "path": "pkg/schedule/schedulers/base_scheduler.go",
+      "sha256": "1da013a2323c2756dcfd3b1203e91c481c58e80e258e3848d5db23dd261e6bdc",
+      "source_commit_sha256": "1da013a2323c2756dcfd3b1203e91c481c58e80e258e3848d5db23dd261e6bdc",
+      "same_as_source_commit": true
+    },
+    {
+      "path": "pkg/schedule/schedulers/grant_leader_test.go",
+      "sha256": "f1763d8d73e99c470933119be6b42bcfc892a17b7e7782109bc7622c22b4cb32",
+      "source_commit_sha256": "f1763d8d73e99c470933119be6b42bcfc892a17b7e7782109bc7622c22b4cb32",
+      "same_as_source_commit": true
+    },
+    {
+      "path": "pkg/utils/apiutil/apiutil.go",
+      "sha256": "edda400120b9f6cc3def157e8aefc74e4572b7971d01b521f41b6bee49e6bfe6",
+      "source_commit_sha256": "edda400120b9f6cc3def157e8aefc74e4572b7971d01b521f41b6bee49e6bfe6",
+      "same_as_source_commit": true
+    },
+    {
+      "path": "docs/rust/schedule-execution/oracle-index.json",
+      "sha256": "2d1a930742291e7047a864aa2246e7e22c612cb6583249b7edb42945b494b450"
+    },
+    {
+      "path": "docs/rust/schedule-execution/fixtures/task_145.json",
+      "sha256": "56cfc026413695ca8ffd5e6fb5e34460fc9fddc6c42a11584826287561faa2b6"
+    }
+  ]
+}

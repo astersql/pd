@@ -1,0 +1,353 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "provenance": "source_assertion: read-only Go source; user-authorized substitute; no Go runtime output",
+  "normalization": "JSON whitespace and map key order only",
+  "cases": [
+    {
+      "name": "list-default",
+      "method": "GET",
+      "path": "/list",
+      "input": "",
+      "status": 200,
+      "json": {
+        "store-id-ranges": {}
+      }
+    },
+    {
+      "name": "GET/config",
+      "method": "GET",
+      "path": "/config",
+      "input": "",
+      "status": 405,
+      "body": ""
+    },
+    {
+      "name": "POST/list",
+      "method": "POST",
+      "path": "/list",
+      "input": "",
+      "status": 405,
+      "body": ""
+    },
+    {
+      "name": "POST/delete/1",
+      "method": "POST",
+      "path": "/delete/1",
+      "input": "",
+      "status": 405,
+      "body": ""
+    },
+    {
+      "name": "HEAD/list",
+      "method": "HEAD",
+      "path": "/list",
+      "input": "",
+      "status": 405,
+      "body": ""
+    },
+    {
+      "name": "OPTIONS/config",
+      "method": "OPTIONS",
+      "path": "/config",
+      "input": "",
+      "status": 405,
+      "body": ""
+    },
+    {
+      "name": "/unknown",
+      "method": "POST",
+      "path": "/unknown",
+      "input": "",
+      "status": 404,
+      "body": "404 page not found\n"
+    },
+    {
+      "name": "/delete/",
+      "method": "POST",
+      "path": "/delete/",
+      "input": "",
+      "status": 404,
+      "body": "404 page not found\n"
+    },
+    {
+      "name": "/delete/1/2",
+      "method": "POST",
+      "path": "/delete/1/2",
+      "input": "",
+      "status": 404,
+      "body": "404 page not found\n"
+    },
+    {
+      "name": "/config/",
+      "method": "POST",
+      "path": "/config/",
+      "input": "",
+      "status": 404,
+      "body": "404 page not found\n"
+    },
+    {
+      "name": "missing-or-wrong-id:{}",
+      "method": "POST",
+      "path": "/config",
+      "input": "{}",
+      "status": 400,
+      "json": "[PD:scheduler:ErrSchedulerConfig]wrong scheduler config id"
+    },
+    {
+      "name": "missing-or-wrong-id:null",
+      "method": "POST",
+      "path": "/config",
+      "input": "null",
+      "status": 400,
+      "json": "[PD:scheduler:ErrSchedulerConfig]wrong scheduler config id"
+    },
+    {
+      "name": "missing-or-wrong-id:{\"foo\":1}",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"foo\":1}",
+      "status": 400,
+      "json": "[PD:scheduler:ErrSchedulerConfig]wrong scheduler config id"
+    },
+    {
+      "name": "missing-or-wrong-id:{\"store_id\":\"1\"}",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store_id\":\"1\"}",
+      "status": 400,
+      "json": "[PD:scheduler:ErrSchedulerConfig]wrong scheduler config id"
+    },
+    {
+      "name": "missing-or-wrong-id:{\"store_id\":null}",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store_id\":null}",
+      "status": 400,
+      "json": "[PD:scheduler:ErrSchedulerConfig]wrong scheduler config id"
+    },
+    {
+      "name": "missing-or-wrong-id:{\"store_id\":true}",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store_id\":true}",
+      "status": 400,
+      "json": "[PD:scheduler:ErrSchedulerConfig]wrong scheduler config id"
+    },
+    {
+      "name": "missing-or-wrong-id:{\"store_ids\":[1]}",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store_ids\":[1]}",
+      "status": 400,
+      "json": "[PD:scheduler:ErrSchedulerConfig]wrong scheduler config id"
+    },
+    {
+      "name": "missing-or-wrong-id:{\"Store_id\":1}",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"Store_id\":1}",
+      "status": 400,
+      "json": "[PD:scheduler:ErrSchedulerConfig]wrong scheduler config id"
+    },
+    {
+      "name": "update:{\"store_id\":1}",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store_id\":1}",
+      "status": 200,
+      "json": "The scheduler has been applied to the store."
+    },
+    {
+      "name": "update:{\"store_id\":1.9}",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store_id\":1.9}",
+      "status": 200,
+      "json": "The scheduler has been applied to the store."
+    },
+    {
+      "name": "update:{\"store_id\":2,\"ranges\":[\"d\",\"z\"]}",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store_id\":2,\"ranges\":[\"d\",\"z\"]}",
+      "status": 200,
+      "json": "The scheduler has been applied to the store."
+    },
+    {
+      "name": "update:{\"store_id\":1,\"ranges\":[\"%xx\",\"z\"]}",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store_id\":1,\"ranges\":[\"%xx\",\"z\"]}",
+      "status": 200,
+      "json": "The scheduler has been applied to the store."
+    },
+    {
+      "name": "update:{\"store_id\":1,\"ranges\":null}",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store_id\":1,\"ranges\":null}",
+      "status": 200,
+      "json": "The scheduler has been applied to the store."
+    },
+    {
+      "name": "update:{\"store_id\":1,\"ranges\":[1]}",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store_id\":1,\"ranges\":[1]}",
+      "status": 200,
+      "json": "The scheduler has been applied to the store."
+    },
+    {
+      "name": "update:{\"store_id\":1,\"store_ids\":[2]}",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store_id\":1,\"store_ids\":[2]}",
+      "status": 200,
+      "json": "The scheduler has been applied to the store."
+    },
+    {
+      "name": "update:{\"store_id\":3,\"store_id\":2}",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store_id\":3,\"store_id\":2}",
+      "status": 200,
+      "json": "The scheduler has been applied to the store."
+    },
+    {
+      "name": "list-two",
+      "method": "GET",
+      "path": "/list",
+      "input": "",
+      "status": 200,
+      "json": {
+        "store-id-ranges": {
+          "1": [
+            {
+              "start-key": "",
+              "end-key": ""
+            }
+          ],
+          "2": [
+            {
+              "start-key": "",
+              "end-key": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "pause-missing",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"store_id\":999}",
+      "status": 500,
+      "json": "[PD:core:ErrStoreNotFound]store 999 not found"
+    },
+    {
+      "name": "empty-body",
+      "method": "POST",
+      "path": "/config",
+      "input": "",
+      "status": 400,
+      "json": {
+        "code": "input",
+        "msg": "unexpected end of JSON input",
+        "data": {
+          "Offset": 0
+        }
+      }
+    },
+    {
+      "name": "ranges-no-ids",
+      "method": "POST",
+      "path": "/config",
+      "input": "{\"ranges\":[]}",
+      "status": 400,
+      "json": "[PD:scheduler:ErrSchedulerConfig]wrong scheduler config id"
+    },
+    {
+      "name": "syntax",
+      "method": "POST",
+      "path": "/config",
+      "input": "{",
+      "status": 400,
+      "json": {
+        "code": "input",
+        "msg": "unexpected end of JSON input",
+        "data": {
+          "Offset": 1
+        }
+      }
+    },
+    {
+      "name": "array-root",
+      "method": "POST",
+      "path": "/config",
+      "input": "[]",
+      "status": 400,
+      "json": {
+        "code": "input",
+        "msg": "json: cannot unmarshal array into Go value of type map[string]interface {}",
+        "data": {
+          "Value": "array",
+          "Type": {},
+          "Offset": 1,
+          "Struct": "",
+          "Field": ""
+        }
+      }
+    },
+    {
+      "name": "delete-invalid",
+      "method": "DELETE",
+      "path": "/delete/no",
+      "input": "",
+      "status": 400,
+      "json": "strconv.ParseUint: parsing \"no\": invalid syntax"
+    },
+    {
+      "name": "delete-overflow",
+      "method": "DELETE",
+      "path": "/delete/18446744073709551616",
+      "input": "",
+      "status": 400,
+      "json": "strconv.ParseUint: parsing \"18446744073709551616\": value out of range"
+    },
+    {
+      "name": "delete-missing",
+      "method": "DELETE",
+      "path": "/delete/3",
+      "input": "",
+      "status": 404,
+      "json": "[PD:scheduler:ErrScheduleConfigNotExist]the config does not exist"
+    },
+    {
+      "name": "delete-first",
+      "method": "DELETE",
+      "path": "/delete/01",
+      "input": "",
+      "status": 200,
+      "json": null
+    },
+    {
+      "name": "delete-last",
+      "method": "DELETE",
+      "path": "/delete/2",
+      "input": "",
+      "status": 200,
+      "json": "The last store has been deleted"
+    },
+    {
+      "name": "final",
+      "method": "GET",
+      "path": "/list",
+      "input": "",
+      "status": 200,
+      "json": {
+        "store-id-ranges": {}
+      }
+    }
+  ],
+  "runtime_go_oracle": false
+}

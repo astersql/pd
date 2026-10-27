@@ -14,6 +14,7 @@ astersql-pd-storage.workspace = true
 astersql-pd-keypath.workspace = true
 astersql-pd-syncer.workspace = true
 astersql-pd-core.workspace = true
+astersql-pd-core-constant.workspace = true
 astersql-pd-cluster.workspace = true
 astersql-pd-statistics.workspace = true
 astersql-pd-statistics-buckets.workspace = true
@@ -31,7 +32,6 @@ prometheus.workspace = true
 futures-util.workspace = true
 
 [dev-dependencies]
-astersql-pd-core-constant.workspace = true
 astersql-pd-schedule-core.workspace = true
 astersql-pd-schedule-filter.workspace = true
 astersql-pd-schedule-keyrange.workspace = true
