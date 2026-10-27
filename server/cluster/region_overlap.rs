@@ -19,10 +19,11 @@ pub fn handle_region_heartbeat_with_overlap_cleanup(
     let result = handle_region_heartbeat(cluster, region, bucket_enabled)?;
     for overlap in &result.overlaps {
         let id = overlap.meta().id;
-        if let Some(stats) = region_stats.as_deref_mut() {
-            stats.clear_defunct_region(id);
-        }
-        label_stats.mark_defunct_region(id);
+        astersql_pd_cluster_utils::clear_overlap_statistics(
+            id,
+            region_stats.as_deref_mut(),
+            label_stats,
+        );
     }
     Ok(result)
 }

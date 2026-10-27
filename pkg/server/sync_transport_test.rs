@@ -638,6 +638,7 @@ async fn state_task_52_state_pipeline_real_region_syncer() {
         config,
         region_stats: Some(RegionStatistics::new()),
         label_stats: LabelStatistics::new(),
+        affinity: None,
         rules: RuleManager::new(endpoint.clone(), paths),
     }));
     let mut hot = HotStat::new(&Handle::current(), &prometheus::Registry::new(), 128).unwrap();

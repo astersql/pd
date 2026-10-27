@@ -5,3 +5,8 @@ mod async_stats;
 pub use async_stats::{AsyncStatsReceipt, WitnessAdmission, handle_stats_async};
 #[cfg(test)]
 mod task_127_test;
+
+mod overlaps;
+pub use overlaps::{OverlapsCancelled, clear_overlap_statistics, handle_overlaps};
+#[cfg(test)]
+mod task_128_test;

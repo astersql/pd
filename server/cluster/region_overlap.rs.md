@@ -27,3 +27,9 @@ protocol dependency, backend or background task is introduced.
 The independent [tests](region_overlap_test.rs) are explicitly registered in
 [lib.rs](lib.rs). Evidence and limitations are in
 [task-44.md](../../docs/rust/state/task-44.md).
+
+Task 128 extracts the anomaly/label mutations into
+`astersql_pd_cluster_utils::clear_overlap_statistics`, shared with the scheduling
+bridge. This opt-in state-only API retains its existing statistics-only signature;
+the full heartbeat effects path uses `handle_overlaps` to additionally invalidate
+placement and the host-installed affinity manager under its state lock.

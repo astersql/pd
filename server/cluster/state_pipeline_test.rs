@@ -92,6 +92,7 @@ impl Host {
                 cluster,
                 region_stats: Some(RegionStatistics::new()),
                 label_stats: LabelStatistics::new(),
+                affinity: None,
                 config,
                 rules: RuleManager::new(storage.clone(), paths),
             })),

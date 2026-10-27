@@ -1,0 +1,34 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "dependency_commit": "34ac34381",
+  "evidence_kind": "read_only_source_derivation_plus_real_Rust_behavior_and_fault_tests_user_authorized",
+  "go_binary_sha256": null,
+  "go_output_sha256": null,
+  "source_files": {
+    "pkg/cluster/cluster.go": {
+      "sha256": "dc42d8c6e979d759db03b6d9a44b5a6b6b65131815df59aad0bff8c815cdfeb9",
+      "matches_source_commit": true
+    },
+    "pkg/cluster/cluster_test.go": {
+      "sha256": "5daccb390ddf756504238eef76de15b7d4ec3004e08301168d777a59375d8740",
+      "matches_source_commit": true
+    },
+    "pkg/statistics/region_collection.go": {
+      "sha256": "56a19dafd4492a15644ef92c9cd159cbfd51e341f1ce80735ee8f85ebd0e41dc",
+      "matches_source_commit": true
+    },
+    "pkg/schedule/placement/rule_manager.go": {
+      "sha256": "d601f3dba8f99d21b24141a01836d5898edc1e3d72ef093b4a4f1a96d4dbc235",
+      "matches_source_commit": true
+    },
+    "pkg/schedule/affinity/manager.go": {
+      "sha256": "65c9eed5ad88ab7eea50554317967f25c7161d86eff365451cf2d96fb281c31b",
+      "matches_source_commit": true
+    }
+  },
+  "behavior_red_fixture_sha256": "2373b996b6fbc6485ab607894d4059527f562a2973e58b19ba31af8286e07ec2",
+  "fixture_sha256": "2a53c0d06c5b139ec7a97890fe6ae15d1f62317728ea50d8324c527ccc00cdfa",
+  "normalization": {},
+  "note": "First five scenario rows frozen before implementation; two optional/cancellation refinements added afterward from the same Go source. Explicit inputs/output expansion follows the same source assertions, not observed Rust output.",
+  "mutation_fixture_sha256": "99d65ea0275496b8512eeb23bac7216aded7e4e1d7e26f368a65c3e905f81a46"
+}

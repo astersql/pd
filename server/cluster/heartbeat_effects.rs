@@ -19,6 +19,8 @@ pub struct HeartbeatEffectsState<C> {
     pub label_stats: LabelStatistics,
     pub config: C,
     pub rules: RuleManager,
+    /// Installed canonical affinity manager; None means this host has no affinity state.
+    pub affinity: Option<astersql_pd_schedule_affinity::manager::Manager>,
 }
 /// Independent runner lanes, started and stopped by the host.
 pub struct HeartbeatRunners<'a> {
@@ -147,16 +149,24 @@ pub fn submit_region_heartbeat<C: CheckerConfigProvider + Send + 'static>(
             false,
             move |cancel| async move {
                 let mut state = shared.lock().unwrap();
-                for region in overlaps {
-                    if cancel.is_cancelled() {
-                        return None;
-                    }
-                    let id = region.meta().id;
-                    if let Some(stats) = &mut state.region_stats {
-                        stats.clear_defunct_region(id);
-                    }
-                    state.label_stats.mark_defunct_region(id);
-                    state.rules.invalid_cache(id);
+                let HeartbeatEffectsState {
+                    region_stats,
+                    label_stats,
+                    rules,
+                    affinity,
+                    ..
+                } = &mut *state;
+                if astersql_pd_cluster_utils::handle_overlaps(
+                    &overlaps,
+                    region_stats.as_mut(),
+                    label_stats,
+                    rules,
+                    affinity.as_mut(),
+                    || cancel.is_cancelled(),
+                )
+                .is_err()
+                {
+                    return None;
                 }
                 Some(vec![])
             },

@@ -73,6 +73,7 @@ impl Host {
                 config,
                 region_stats: Some(RegionStatistics::new()),
                 label_stats: LabelStatistics::new(),
+                affinity: None,
                 rules: RuleManager::new(endpoint.clone(), paths),
             })),
             endpoint,
@@ -764,4 +765,150 @@ async fn state_task_46_heartbeat_effects_bucket_peer_epoch_and_stale() {
         revision
     );
     h.stop().await;
+}
+
+#[tokio::test]
+async fn task_128_pipeline_overlap_cleanup_and_stopped_lane() {
+    use astersql_pd_schedule_affinity::{
+        group::Group,
+        manager::Manager,
+        ranges::{GroupKeyRanges, make_label_rule},
+    };
+    use astersql_pd_schedule_labeler::RegionLabeler;
+    for stopped in [false, true] {
+        let mut h = Host::new(Arc::new(MemoryStore::default()));
+        h.apply(region(1, "a", "m", 2)).await;
+        h.apply(region(2, "m", "z", 2)).await;
+        let old = [h.cached(1), h.cached(2)];
+        let mut labeler = RegionLabeler::load(
+            StorageEndpoint::new(Arc::new(MemoryStore::default())),
+            h.paths,
+            0,
+        )
+        .await
+        .unwrap();
+        let mut rule = make_label_rule(&GroupKeyRanges {
+            group_id: "g".into(),
+            key_ranges: vec![astersql_pd_keyutil::KeyRange::new(
+                b"a".to_vec(),
+                b"z".to_vec(),
+            )],
+        });
+        rule.check_and_adjust(0).unwrap();
+        let mut affinity = Manager::default();
+        affinity.sync_key_ranges_from_etcd(&rule).unwrap();
+        affinity.sync_group_from_etcd(
+            &Group {
+                id: "g".into(),
+                leader_store_id: 1,
+                voter_store_ids: vec![1, 2, 3],
+                ..Default::default()
+            },
+            &labeler,
+            100,
+        );
+        labeler.set_label_rule(rule, 0).await.unwrap();
+        affinity.restore_affinity_group("g", 100);
+        let mut conf = ProviderSnapshot::<()>::default();
+        conf.replication.enable_placement_rules_cache = true;
+        let mut rules = RuleManager::new(h.endpoint.clone(), h.paths);
+        rules
+            .initialize(3, &[], "", false, &conf, &[])
+            .await
+            .unwrap();
+        let stores: Vec<_> = (1..=3)
+            .map(|id| {
+                Arc::new(StoreInfo::new(StoreMeta {
+                    id,
+                    last_heartbeat: 1,
+                    ..Default::default()
+                }))
+            })
+            .collect();
+        {
+            let mut state = h.state.lock().unwrap();
+            for r in &old {
+                assert!(
+                    state
+                        .region_stats
+                        .as_ref()
+                        .unwrap()
+                        .is_observed(r.meta().id)
+                );
+                state.label_stats.observe(r, &[], &[]);
+                assert!(
+                    affinity
+                        .get_and_cache_region_affinity_group_state(&labeler, Some(r), 100)
+                        .1
+                );
+                let fit = rules.fit_region(&stores, r, &conf, 1);
+                rules.set_region_fit_cache(&stores, r, fit, 1);
+                for _ in 0..11 {
+                    rules.fit_region(&stores, r, &conf, 1);
+                }
+                assert!(rules.is_region_fit_cached(&stores, r, 1));
+            }
+            state.rules = rules;
+            state.affinity = Some(affinity);
+        }
+        if stopped {
+            h.misc.stop().await;
+        }
+        let mut receipt = h.submit(region(3, "a", "z", 3));
+        assert_eq!(receipt.heartbeat.overlaps.len(), 2);
+        let failures = receipt.wait().await;
+        if stopped {
+            assert!(failures.iter().any(|f| matches!(
+                f,
+                HeartbeatEffectFailure::Admission(HeartbeatEffect::HandleOverlaps, _)
+            )));
+        } else {
+            assert!(failures.is_empty(), "{failures:?}");
+        }
+        {
+            let mut state = h.state.lock().unwrap();
+            assert!(state.cluster.regions.get_region(3).is_some());
+            assert!(state.cluster.regions.get_region(1).is_none());
+            assert_eq!(state.label_stats.label_counter()["none"], 2);
+            state.label_stats.clear_defunct_regions();
+            assert_eq!(
+                state.label_stats.label_counter()["none"],
+                if stopped { 2 } else { 0 }
+            );
+            let affinity = state.affinity.as_ref().unwrap();
+            assert_eq!(
+                affinity.affinity_region_count(),
+                if stopped { 2 } else { 0 }
+            );
+            assert_eq!(
+                affinity.groups["g"].info.region_count,
+                if stopped { 2 } else { 0 }
+            );
+            for r in &old {
+                assert_eq!(
+                    state
+                        .region_stats
+                        .as_ref()
+                        .unwrap()
+                        .is_observed(r.meta().id),
+                    stopped
+                );
+                assert_eq!(state.rules.is_region_fit_cached(&stores, r, 1), stopped);
+            }
+        }
+        if !stopped {
+            h.apply(region(3, "a", "z", 3)).await;
+            assert_eq!(
+                h.state
+                    .lock()
+                    .unwrap()
+                    .affinity
+                    .as_ref()
+                    .unwrap()
+                    .affinity_region_count(),
+                0
+            );
+        }
+        h.stop().await;
+    }
 }

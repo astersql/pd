@@ -1,0 +1,20 @@
+[
+  {
+    "command": "cargo fmt --all",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "post-format-0.log.gz",
+    "sha256": "a4e4dc6e5d8e0b2a6497e641606b40097bd35371a2927a327625f134d008663e",
+    "test_summaries": []
+  },
+  {
+    "command": "cargo fmt --all -- --check",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "post-format-1.log.gz",
+    "sha256": "6ce5b05efb1c7e8925b0a4db9835e1fb9c84cc2b68aa493a710b53979267f6eb",
+    "test_summaries": []
+  }
+]

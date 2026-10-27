@@ -1,0 +1,205 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "provenance": "Go read-only source derivation; no Go runtime output; user-authorized substitution",
+  "go_binary_sha256": null,
+  "go_output_sha256": null,
+  "normalization": {},
+  "cases": [
+    {
+      "name": "all",
+      "stats": true,
+      "affinity": true,
+      "cancel_after": 3,
+      "processed": 3,
+      "expected_outputs": {
+        "result": "ok",
+        "processed": 3,
+        "observed_region_ids": [],
+        "placement_cached_ids": [],
+        "affinity_member_count": 0,
+        "affinity_region_count": 0,
+        "label_before_collection": 3,
+        "label_after_collection": 0,
+        "repeat_cleanup_changes_counts": false
+      }
+    },
+    {
+      "name": "optional_stats",
+      "stats": false,
+      "affinity": true,
+      "cancel_after": 3,
+      "processed": 3,
+      "expected_outputs": {
+        "result": "ok",
+        "processed": 3,
+        "observed_region_ids": [
+          1,
+          2,
+          3
+        ],
+        "placement_cached_ids": [],
+        "affinity_member_count": 0,
+        "affinity_region_count": 0,
+        "label_before_collection": 3,
+        "label_after_collection": 0,
+        "repeat_cleanup_changes_counts": false
+      }
+    },
+    {
+      "name": "optional_affinity",
+      "stats": true,
+      "affinity": false,
+      "cancel_after": 3,
+      "processed": 3,
+      "expected_outputs": {
+        "result": "ok",
+        "processed": 3,
+        "observed_region_ids": [],
+        "placement_cached_ids": [],
+        "affinity_member_count": 3,
+        "affinity_region_count": 3,
+        "label_before_collection": 3,
+        "label_after_collection": 0,
+        "repeat_cleanup_changes_counts": false
+      }
+    },
+    {
+      "name": "cancel_before",
+      "stats": true,
+      "affinity": true,
+      "cancel_after": 0,
+      "processed": 0,
+      "expected_outputs": {
+        "result": "cancelled",
+        "processed": 0,
+        "observed_region_ids": [
+          1,
+          2,
+          3
+        ],
+        "placement_cached_ids": [
+          1,
+          2,
+          3
+        ],
+        "affinity_member_count": 3,
+        "affinity_region_count": 3,
+        "label_before_collection": 3,
+        "label_after_collection": 3,
+        "repeat_cleanup_changes_counts": false
+      }
+    },
+    {
+      "name": "cancel_midway",
+      "stats": true,
+      "affinity": true,
+      "cancel_after": 1,
+      "processed": 1,
+      "expected_outputs": {
+        "result": "cancelled",
+        "processed": 1,
+        "observed_region_ids": [
+          2,
+          3
+        ],
+        "placement_cached_ids": [
+          2,
+          3
+        ],
+        "affinity_member_count": 2,
+        "affinity_region_count": 2,
+        "label_before_collection": 3,
+        "label_after_collection": 2,
+        "repeat_cleanup_changes_counts": false
+      }
+    },
+    {
+      "name": "both_optional",
+      "stats": false,
+      "affinity": false,
+      "cancel_after": 3,
+      "processed": 3,
+      "expected_outputs": {
+        "result": "ok",
+        "processed": 3,
+        "observed_region_ids": [
+          1,
+          2,
+          3
+        ],
+        "placement_cached_ids": [],
+        "affinity_member_count": 3,
+        "affinity_region_count": 3,
+        "label_before_collection": 3,
+        "label_after_collection": 0,
+        "repeat_cleanup_changes_counts": false
+      }
+    },
+    {
+      "name": "cancel_after_two",
+      "stats": true,
+      "affinity": true,
+      "cancel_after": 2,
+      "processed": 2,
+      "expected_outputs": {
+        "result": "cancelled",
+        "processed": 2,
+        "observed_region_ids": [
+          3
+        ],
+        "placement_cached_ids": [
+          3
+        ],
+        "affinity_member_count": 1,
+        "affinity_region_count": 1,
+        "label_before_collection": 3,
+        "label_after_collection": 1,
+        "repeat_cleanup_changes_counts": false
+      }
+    }
+  ],
+  "inputs": {
+    "region_ids": [
+      1,
+      2,
+      3
+    ],
+    "ranges_hex": [
+      [
+        "01",
+        "02"
+      ],
+      [
+        "02",
+        "03"
+      ],
+      [
+        "03",
+        "04"
+      ]
+    ],
+    "epoch": {
+      "version": 0,
+      "conf_ver": 0
+    },
+    "leader_store": 1,
+    "voter_stores": [
+      1
+    ],
+    "placement_default_count": 1,
+    "placement_cache_enabled": true,
+    "cache_promoted_before_cleanup": true,
+    "affinity_group": "g",
+    "affinity_range_hex": [
+      "01",
+      "09"
+    ],
+    "time_seconds": 100,
+    "placement_clock": 1,
+    "label_before_collection": 3,
+    "empty_list_with_cancelled": {
+      "result": "ok",
+      "processed": 0
+    }
+  }
+}

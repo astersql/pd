@@ -36,7 +36,7 @@ which later duplicate reports repair. Runners may cancel in-flight I/O, whose
 commit outcome can remain unknown. No rollback or automatic write retry is added.
 
 This boundary does not make scheduling decisions or transport conversions. Hosts
-still own hot-stat submission, affinity invalidation, scheduling-service placement,
+still own hot-stat submission, scheduling-service placement,
 metrics aggregation and the runners' lifecycle. Optional statistics, storage and
 Downstreams owners express which effects are locally installed. Rules and anomaly
 classification remain real domain components, not mocked calculation callbacks.
@@ -50,3 +50,11 @@ The sync effect acquires the canonical HeartbeatEffectsState lock around history
 append/broadcast. RegionSyncer attached to this state captures and binds under the
 same gate; locks are released before any transport I/O. Lock order is state then
 Downstreams, consistent with subscription capture and all other heartbeat effects.
+
+Task 128 routes HandleOverlaps through the canonical cluster-utils bridge. The
+optional `HeartbeatEffectsState.affinity` is the installed manager under the same
+state lock, so anomaly/label/placement/affinity invalidation shares one per-region
+cancellation boundary. Hosts move their existing manager into this owner instead
+of keeping a second cache. The [bridge contract](../../pkg/cluster/overlaps.rs.md)
+describes cancellation and deferred labels; its real heartbeat test also verifies
+that a stopped misc lane reports Admission without rolling back accepted root.
