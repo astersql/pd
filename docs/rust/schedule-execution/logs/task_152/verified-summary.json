@@ -1,0 +1,51 @@
+[
+  {
+    "command": "cargo fmt --all",
+    "exit_code": 0,
+    "passed": 0,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "command": "cargo test -p astersql-pd-server --locked --lib task_152 -- --nocapture",
+    "exit_code": 0,
+    "passed": 4,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "command": "cargo test -p astersql-pd-server --locked",
+    "exit_code": 0,
+    "passed": 110,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "command": "cargo metadata --format-version 1 --no-deps",
+    "exit_code": 0,
+    "passed": 0,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "command": "cargo fmt --all -- --check",
+    "exit_code": 0,
+    "passed": 0,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "command": "cargo check --workspace --locked",
+    "exit_code": 0,
+    "passed": 0,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "command": "cargo test --workspace --locked",
+    "exit_code": 0,
+    "passed": 1910,
+    "failed": 0,
+    "ignored": 1
+  }
+]

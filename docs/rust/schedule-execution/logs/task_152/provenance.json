@@ -1,0 +1,40 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "dependency_commit": "85a11132b854225759dc18640f8ae999eea333a2",
+  "dependency_151_all_required_checks_passed": true,
+  "runtime_go_oracle": false,
+  "basis": "User-authorized read-only Go source/test derivation and real Rust behavior/fault verification",
+  "sources": [
+    {
+      "path": "pkg/schedule/schedulers/transfer_witness_leader.go",
+      "sha256": "b89a92588c33b70a13c885f53410b0103e65fffb1b8176d5b1d65418248a68e3",
+      "matches_source_commit": true
+    },
+    {
+      "path": "pkg/schedule/schedulers/base_scheduler.go",
+      "sha256": "1da013a2323c2756dcfd3b1203e91c481c58e80e258e3848d5db23dd261e6bdc",
+      "matches_source_commit": true
+    },
+    {
+      "path": "pkg/schedule/schedulers/transfer_witness_leader_test.go",
+      "sha256": "39d4ab013057c82c87deb84d07ef4a46518f692baebb47cfd00a874efb085eca",
+      "matches_source_commit": true
+    },
+    {
+      "path": "pkg/schedule/schedulers/scheduler.go",
+      "sha256": "c0330c4dc38ebb4d7b0e6d5a3b5d1fe5da85a2e4ec9b22a2e90ea9682112365c",
+      "matches_source_commit": true
+    }
+  ],
+  "fixtures": [
+    {
+      "path": "docs/rust/schedule-execution/fixtures/task_152.json",
+      "sha256": "4a33ad3e4af334708e419a36358aa1c9e2178791d0be232b4fa4a9fe21263f50"
+    },
+    {
+      "path": "docs/rust/schedule-execution/fixtures/task_103.json",
+      "sha256": "b54c63a3d15c7d41694c0a9850c020922dea2f5f5a0f7c404c1b5b37389ae035"
+    }
+  ],
+  "oracle_index_sha256": "2d1a930742291e7047a864aa2246e7e22c612cb6583249b7edb42945b494b450"
+}
