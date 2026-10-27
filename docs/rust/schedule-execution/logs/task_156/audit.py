@@ -5,14 +5,16 @@ root=Path.cwd();base=root/'docs/rust/schedule-execution';folder=base/'logs/task_
 sha=lambda p:hashlib.sha256(Path(p).read_bytes()).hexdigest()
 def load(p):return json.loads(Path(p).read_text())
 def save(name,obj):(folder/name).write_text(json.dumps(obj,indent=2,ensure_ascii=False)+'\n')
-records=load(folder/'verified.json')
+records=load(folder/'repaired.json')
 assert all(r['exit_code']==0 for r in records)
-for stage in ['inventory','red-registration','initial','corrected','red','verified','performance-diagnostic']:
+for stage in ['inventory','red-registration','initial','corrected','red','verified','performance-diagnostic','split-initial','split-check2','split-check3','split-check4','split-check5','split-tests','split-boundary','split-red','split-closure','split-compile-all','repaired','normal-tree']:
  for row in load(folder/f'{stage}.json'):
   assert sha(folder/row['log'])==row['sha256']
   assert row['CARGO_TARGET_DIR']==str(root/f"target/rust-slot-{row['slot']}")
 red=gzip.open(folder/load(folder/'red.json')[-1]['log'],'rt').read()
 assert '0 passed; 3 failed' in red
+split_red=gzip.open(folder/load(folder/'split-red.json')[-1]['log'],'rt').read()
+assert '1 passed; 3 failed' in split_red and 'left: Missing' in split_red
 summary=[]
 for r in records:
  log=gzip.open(folder/r['log'],'rt').read()
@@ -67,7 +69,7 @@ meta=json.loads(gzip.open(folder/metadata_row['log'],'rt').read())
 byname={p['name']:p for p in meta['packages']}
 def deps(name):
  return [d['name'] for d in byname[name]['dependencies'] if d['kind'] is None]
-domain=[n for n,p in byname.items() if '/pkg/schedule/' in p['manifest_path'] or n in ['astersql-pd-schedule','astersql-pd-cluster-utils','astersql-pd-progress','astersql-pd-operatorutil']]
+domain=[n for n,p in byname.items() if '/pkg/schedule/' in p['manifest_path'] or n in ['astersql-pd-schedule','astersql-pd-cluster-utils','astersql-pd-progress','astersql-pd-operatorutil','astersql-pd-storage-domain']]
 violations=[]
 for start in domain:
  pending=[(start,[start])];seen=set()
@@ -79,7 +81,11 @@ for start in domain:
    if d in ['astersql-pd-proto','astersql-pd-server','astersql-pd-runtime','tonic','prost','axum','hyper','tower']:
     violations.append(path+[d])
    if d in byname:pending.append((d,path+[d]))
-save('dependency-audit.json',dict(domain_crates=domain,normal_transitive_dependencies_free_of_proto_transport_server_runtime=not violations,violating_paths=violations,dev_dependencies_are_test_harness_only=True,tree_log=next(r['log'] for r in records if r['command']=='cargo tree --workspace --locked')))
+normal_rows=load(folder/'normal-tree.json')
+assert all(r['exit_code']==0 for r in normal_rows)
+normal_log=gzip.open(folder/normal_rows[0]['log'],'rt').read()
+assert not re.search(r'(?<![a-zA-Z0-9_-])(?:astersql-pd-proto|tonic|prost|axum|hyper|tower|astersql-pd-server|astersql-pd-runtime) v[0-9]',normal_log)
+save('dependency-audit.json',dict(domain_crates=domain,normal_tree_log=normal_rows[0]['log'],normal_transitive_dependencies_free_of_proto_transport_server_runtime=not violations,violating_paths=violations,dev_dependencies_are_test_harness_only=True,tree_log=next(r['log'] for r in records if r['command']=='cargo tree --workspace --locked')))
 # Replay the measured snapshot baseline; elapsed time/allocation values are recorded, not gated.
 performance_row=next(r for r in records if '--test schedule_performance' in r['command'])
 performance_log=gzip.open(folder/performance_row['log'],'rt').read()
@@ -112,7 +118,7 @@ assert status==before['status']
 assert subprocess.run(['git','diff','--check']).returncode==0
 assert subprocess.run(['git','diff','--cached','--check']).returncode==0
 save('audit.json',dict(source_commit=inventory['source_commit'],production_files=len(rows),source_packages=len(packages),source_counts=dict(totals),source_drift=[],ownership_tasks_with_fresh_results=len(owners),factories=len(matrix),readonly_files_and_plans=len(before['hashes']),go_status_unchanged=True,all_cargo_commands_exit_zero=True,theme_acceptance_passed=not violations and score_quality_matches,dependency_violations=len(violations),performance_operation_differences=len(performance_differences),red_detected_three_behavior_failures=True,delayed_regression_tasks_freshly_passing={n:owners[n]['fresh_passing_tests'] for n in [58,67]},ignored=[t for t in re.findall(r'^test (\S+) \.\.\. ignored',log,re.M)],limitations=['Ownership/suite-level traceability, not per-symbol instrumentation','No new Go runtime differential; user-approved source derivation','Synthetic snapshots, test/debug performance, in-memory persistence; not production cluster or durability proof']))
-for row in load(folder/'provenance.json')['sources']:
+for row in load(folder/'repaired-provenance.json')['sources']:
  assert sha(root/row['path'])==row['sha256'],row['path']
 for link in re.findall(r'\]\(([^)]+)\)',(base/'task-156.md').read_text()):
  if '://' not in link:

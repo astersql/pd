@@ -1,6 +1,6 @@
 // Copyright 2026 AsterSQL.
 use crate::{ElectionError, Result};
-use astersql_pd_storage_kv::*;
+use astersql_pd_storage_domain::*;
 use std::{collections::VecDeque, sync::Arc, time::Duration};
 use tokio::time::Instant;
 use tokio_util::sync::CancellationToken;

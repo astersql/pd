@@ -195,7 +195,7 @@ impl StorageEndpoint {
 
 pub(super) fn decode_region(bytes: &[u8]) -> Result<RegionMeta, RegionMetaError> {
     WireRegion::decode(bytes)
-        .map_err(EndpointError::ProtoUnmarshal)
+        .map_err(|error| EndpointError::ProtoUnmarshal(Box::new(error)))
         .map_err(RegionMetaError::from)
         .and_then(RegionMeta::try_from)
 }

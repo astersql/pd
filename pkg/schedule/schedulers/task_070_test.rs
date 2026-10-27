@@ -68,8 +68,8 @@ async fn task_070_behavior_cases() {
     use astersql_pd_schedule_operator::OpStep;
     use astersql_pd_schedule_placement::RuleManager;
     use astersql_pd_statistics::{HotPeerStat, StatisticsSnapshot};
-    use astersql_pd_storage_endpoint::StorageEndpoint;
-    use astersql_pd_storage_kv::MemoryStore;
+    use astersql_pd_storage_domain::MemoryStore;
+    use astersql_pd_storage_domain::StorageEndpoint;
     let fixture: serde_json::Value = serde_json::from_str(include_str!(
         "../../../docs/rust/schedule-execution/fixtures/task_070.json"
     ))

@@ -7,7 +7,7 @@ use crate::{
 use astersql_pd_core::{BasicCluster, KeyRange, StoreControlError};
 use astersql_pd_core_constant::Direction;
 use astersql_pd_keypath::ClusterPaths;
-use astersql_pd_storage_endpoint::StorageEndpoint;
+use astersql_pd_storage_domain::StorageEndpoint;
 use serde_json::Value;
 use std::collections::{BTreeMap, HashSet};
 const NAME: &str = "evict-leader-scheduler";

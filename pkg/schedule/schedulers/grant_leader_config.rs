@@ -7,7 +7,7 @@ use crate::{
 use astersql_pd_core::{BasicCluster, KeyRange, StoreControlError};
 use astersql_pd_core_constant::Direction;
 use astersql_pd_keypath::ClusterPaths;
-use astersql_pd_storage_endpoint::StorageEndpoint;
+use astersql_pd_storage_domain::StorageEndpoint;
 use std::collections::BTreeMap;
 const NAME: &str = "grant-leader-scheduler";
 

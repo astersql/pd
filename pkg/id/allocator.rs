@@ -1,6 +1,6 @@
 // Copyright 2026 AsterSQL.
 use astersql_pd_member::{Leadership, MemberError};
-use astersql_pd_storage_kv::{Compare, Consistency, MetaStore, Mutation, Read, StoreError};
+use astersql_pd_storage_domain::{Compare, Consistency, MetaStore, Mutation, Read, StoreError};
 use std::sync::Arc;
 use tokio::sync::Mutex;
 use tokio_util::sync::CancellationToken;

@@ -13,7 +13,7 @@ use astersql_pd_schedule_operator::{
 };
 use astersql_pd_schedule_placement::RuleManager;
 use astersql_pd_statistics::StoreLoadDetail;
-use astersql_pd_storage_endpoint::StorageEndpoint;
+use astersql_pd_storage_domain::StorageEndpoint;
 use std::{collections::HashSet, sync::Arc};
 const NAME: &str = "grant-hot-region-scheduler";
 #[derive(Clone, Debug, Default, PartialEq, Eq, serde::Serialize, serde::Deserialize)]

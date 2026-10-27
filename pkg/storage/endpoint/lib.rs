@@ -35,19 +35,15 @@ pub use region_scan::RegionScanError;
 #[cfg(test)]
 mod region_scan_test;
 
-mod config_endpoint;
 #[cfg(test)]
 mod config_endpoint_test;
 
-mod scheduler_endpoint;
 #[cfg(test)]
 mod scheduler_endpoint_test;
 
-mod rule_endpoint;
 #[cfg(test)]
 mod rule_endpoint_test;
 
-mod affinity_endpoint;
 #[cfg(test)]
 mod affinity_endpoint_test;
 
@@ -149,7 +145,6 @@ pub use gc_batch_read::{
 #[cfg(test)]
 mod gc_batch_read_test;
 
-mod batch_ops;
-pub use batch_ops::{MAX_BATCH_OPS, run_batch_op_in_txn};
+pub use astersql_pd_storage_domain::{MAX_BATCH_OPS, run_batch_op_in_txn};
 #[cfg(test)]
 mod batch_ops_test;

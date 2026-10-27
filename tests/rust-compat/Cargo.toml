@@ -31,6 +31,7 @@ name = "tso"
 path = "tso_test.rs"
 
 [dev-dependencies]
+astersql-pd-storage-domain.workspace = true
 astersql-pd-schedule-keyrange.workspace = true
 astersql-pd-schedule-filter.workspace = true
 astersql-pd-schedule.workspace = true

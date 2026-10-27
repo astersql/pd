@@ -1,7 +1,7 @@
 // Copyright 2026 AsterSQL.
 use super::*;
 use astersql_pd_schedule_schedulers::{DiagnosticRecorder, SchedulerRegistry};
-use astersql_pd_storage_kv::MemoryStore;
+use astersql_pd_storage_domain::MemoryStore;
 use serde_json::{Value, json};
 use std::sync::Arc;
 
@@ -232,14 +232,14 @@ use astersql_pd_schedule_config::ProviderSnapshot;
 use astersql_pd_schedule_hbstream::routing::StreamRouter;
 use astersql_pd_schedule_scatter::ScatterBatchMetrics;
 use astersql_pd_schedule_schedulers::{FactoryContext, JobTime};
-use astersql_pd_storage_endpoint::StorageEndpoint;
+use astersql_pd_storage_domain::StorageEndpoint;
 
 use std::time::Duration;
 use tokio_util::sync::CancellationToken;
 
 fn setup_admin(
     diagnostic: bool,
-    backend: Arc<dyn astersql_pd_storage_kv::MetaStore>,
+    backend: Arc<dyn astersql_pd_storage_domain::MetaStore>,
 ) -> (Coordinator<ProviderSnapshot<()>>, Arc<TTLUint64<()>>) {
     let cluster = Arc::new(BasicCluster::new());
     let (heartbeat, _router) = StreamRouter::new(Arc::new(astersql_pd_core::StoresInfo::new()));
@@ -281,7 +281,7 @@ async fn setup_diagnostic() -> (Coordinator<ProviderSnapshot<()>>, Arc<TTLUint64
 
 #[tokio::test]
 async fn task_122_boundaries_and_metadata_preservation() {
-    use astersql_pd_storage_kv::{Consistency, MetaStore, Read};
+    use astersql_pd_storage_domain::{Consistency, MetaStore, Read};
     let backend = Arc::new(MemoryStore::default());
     let (mut c, pending) = setup_admin(true, backend.clone());
     for (status, ts) in [("paused", false), ("disabled", true), ("unknown", true)] {

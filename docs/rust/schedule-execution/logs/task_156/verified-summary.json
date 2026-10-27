@@ -9,14 +9,14 @@
   {
     "command": "cargo test -p astersql-pd-compat-tests --locked --test schedule_acceptance -- --nocapture",
     "exit_code": 0,
-    "passed": 3,
+    "passed": 4,
     "failed": 0,
     "ignored": 0
   },
   {
     "command": "cargo test -p astersql-pd-compat-tests --locked",
     "exit_code": 0,
-    "passed": 32,
+    "passed": 33,
     "failed": 0,
     "ignored": 1
   },
@@ -44,7 +44,7 @@
   {
     "command": "cargo test --workspace --locked",
     "exit_code": 0,
-    "passed": 1924,
+    "passed": 1925,
     "failed": 0,
     "ignored": 1
   },

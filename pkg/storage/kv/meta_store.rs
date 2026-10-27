@@ -75,7 +75,8 @@ impl Read {
             consistency,
         }
     }
-    pub(crate) fn validate(&self) -> Result<()> {
+    #[doc(hidden)]
+    pub fn validate(&self) -> Result<()> {
         if self.revision.is_some_and(|r| r <= 0)
             || self
                 .start

@@ -14,7 +14,7 @@ use astersql_pd_schedule_filter::{
     RegionReplicationContext, SpecialUseFilter, StoreStateFilter, select_one_region,
 };
 use astersql_pd_schedule_operator::{BuilderContext, BuilderError, OpKind, PeerOperatorFactory};
-use astersql_pd_storage_endpoint::StorageEndpoint;
+use astersql_pd_storage_domain::StorageEndpoint;
 use std::{cell::RefCell, sync::Arc};
 const NAME: &str = "shuffle-region-scheduler";
 /// Persisted JSON preserves null/empty role lists. Validation belongs to role updates,

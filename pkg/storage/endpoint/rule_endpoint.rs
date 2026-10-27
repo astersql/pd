@@ -1,7 +1,7 @@
 // Copyright 2026 AsterSQL.
+use crate::kv::{Base, CallbackTxn, CallbackTxnError, Consistency, Read};
 use crate::{EndpointError, StorageEndpoint};
 use astersql_pd_keypath::ClusterPaths;
-use astersql_pd_storage_kv::{Base, CallbackTxn, CallbackTxnError, Consistency, Read};
 use serde::Serialize;
 use std::ops::AsyncFnOnce;
 
@@ -117,7 +117,8 @@ impl StorageEndpoint {
         self.load_rule_prefix(paths.region_label_path_prefix().as_bytes(), callback)
             .await
     }
-    pub(super) async fn load_rule_prefix(
+    /// Adapter seam for ordered raw prefix scans with the same paging and error semantics.
+    pub async fn load_rule_prefix(
         &self,
         prefix: &[u8],
         mut callback: impl FnMut(&[u8], &[u8]),

@@ -1,0 +1,12 @@
+[
+  {
+    "command": "cargo check --workspace --locked",
+    "exit_code": 0,
+    "RUST_TEST_THREADS": 2,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "split-check5-0.log.gz",
+    "sha256": "c1322cd8fe1c5d1b1840960761ae18e32d9f4dcb864ba6af3023d95677bc7ad8",
+    "test_summaries": []
+  }
+]

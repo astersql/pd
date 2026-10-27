@@ -1,8 +1,8 @@
 // Copyright 2026 AsterSQL.
 use super::*;
 use astersql_pd_keypath::ClusterPaths;
-use astersql_pd_storage_endpoint::StorageEndpoint;
-use astersql_pd_storage_kv::{MemoryStore, MetaStore};
+use astersql_pd_storage_domain::StorageEndpoint;
+use astersql_pd_storage_domain::{MemoryStore, MetaStore};
 use serde_json::json;
 use std::{sync::Arc, time::Duration};
 use tokio::sync::Mutex;
@@ -117,7 +117,7 @@ fn label_gc_metrics_host_registry() {
     assert_eq!(hist.get_metric()[0].get_histogram().get_bucket().len(), 13);
 }
 
-use astersql_pd_storage_kv::*;
+use astersql_pd_storage_domain::*;
 use async_trait::async_trait;
 use std::sync::atomic::{AtomicIsize, Ordering};
 struct Gate {

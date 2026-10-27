@@ -1,0 +1,30 @@
+[
+  {
+    "command": "cargo test -p astersql-pd-compat-tests --locked --test schedule_acceptance -- --nocapture",
+    "exit_code": 0,
+    "RUST_TEST_THREADS": 2,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "split-tests-0.log.gz",
+    "sha256": "586d956a00444e4dcd36ff29fd8cf653d12a780e01ce20d0768a20e8264d0723",
+    "test_summaries": [
+      "test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s"
+    ]
+  },
+  {
+    "command": "cargo test -p astersql-pd-storage-kv -p astersql-pd-storage-endpoint --locked",
+    "exit_code": 0,
+    "RUST_TEST_THREADS": 2,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "split-tests-1.log.gz",
+    "sha256": "5d7f7daebec11a619a732a21d00ae24db19b516690e330c040b55ce99c469e1c",
+    "test_summaries": [
+      "test result: ok. 103 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 63.74s",
+      "test result: ok. 30 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 9.33s",
+      "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 11.96s",
+      "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+    ]
+  }
+]

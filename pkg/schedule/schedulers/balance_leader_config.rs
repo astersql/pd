@@ -4,7 +4,7 @@ use crate::{
     BalanceLeaderConfig, BalanceLeaderScheduler, SchedulerError, decode_config, encode_config,
 };
 use astersql_pd_keypath::ClusterPaths;
-use astersql_pd_storage_endpoint::{EndpointError, StorageEndpoint};
+use astersql_pd_storage_domain::{EndpointError, StorageEndpoint};
 
 /// Go publishes valid updates even when saving fails. The host must surface this warning;
 /// a subsequent reload restores the last successfully persisted configuration.

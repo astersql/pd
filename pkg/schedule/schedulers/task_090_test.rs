@@ -8,8 +8,8 @@ use astersql_pd_schedule_placement::{
 };
 use astersql_pd_statistics::*;
 use astersql_pd_statistics_utils::RWType;
-use astersql_pd_storage_endpoint::StorageEndpoint;
-use astersql_pd_storage_kv::MemoryStore;
+use astersql_pd_storage_domain::MemoryStore;
+use astersql_pd_storage_domain::StorageEndpoint;
 use serde_json::Value;
 use std::sync::Arc;
 fn config() -> HotRegionParams {

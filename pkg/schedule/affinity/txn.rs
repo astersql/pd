@@ -10,7 +10,7 @@ use astersql_pd_errs::{
 };
 use astersql_pd_keypath::ClusterPaths;
 use astersql_pd_schedule_labeler::{RegionLabeler, RuleError};
-use astersql_pd_storage_endpoint::{EndpointError, MAX_BATCH_OPS, StorageEndpoint};
+use astersql_pd_storage_domain::{EndpointError, MAX_BATCH_OPS, StorageEndpoint};
 use std::collections::BTreeSet;
 
 /// Validation and backend errors retain their canonical identity.
@@ -25,7 +25,7 @@ pub enum TransactionError {
     #[error(transparent)]
     Label(#[from] RuleError),
     #[error(transparent)]
-    Storage(#[from] astersql_pd_storage_kv::CallbackTxnError<EndpointError>),
+    Storage(#[from] astersql_pd_storage_domain::CallbackTxnError<EndpointError>),
 }
 impl Manager {
     /// Creates groups and their labels; publishes only after every storage batch succeeds.

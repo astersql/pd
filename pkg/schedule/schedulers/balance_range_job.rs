@@ -4,7 +4,7 @@ use crate::{SchedulerConfig, SchedulerError, get_key_ranges};
 use astersql_pd_core::Rule;
 use astersql_pd_keypath::ClusterPaths;
 use astersql_pd_keyutil::{KeyRange, decode_http_key_ranges};
-use astersql_pd_storage_endpoint::StorageEndpoint;
+use astersql_pd_storage_domain::StorageEndpoint;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use serde_json::Value;
 use std::{str::FromStr, sync::Arc};
@@ -272,7 +272,8 @@ pub struct BalanceRangeJobs {
     config: SchedulerConfig<Vec<BalanceRangeJob>>,
 }
 impl BalanceRangeJobs {
-    pub fn new(storage: Arc<StorageEndpoint>, paths: ClusterPaths) -> Self {
+    pub fn new<S: AsRef<StorageEndpoint> + ?Sized>(storage: Arc<S>, paths: ClusterPaths) -> Self {
+        let storage = Arc::new(storage.as_ref().as_ref().clone());
         Self {
             config: SchedulerConfig::new("balance-range-scheduler".into(), storage, paths, vec![]),
         }
@@ -309,12 +310,13 @@ impl BalanceRangeJobs {
         Ok(crate::encode_config(self.config.get())?)
     }
     /// Factory initialization does not save and starts IDs at zero, unlike add.
-    pub fn from_args(
-        storage: Arc<StorageEndpoint>,
+    pub fn from_args<S: AsRef<StorageEndpoint> + ?Sized>(
+        storage: Arc<S>,
         paths: ClusterPaths,
         args: &[&str],
         now: JobTime,
     ) -> Result<Self, RangeJobError> {
+        let storage = Arc::new(storage.as_ref().as_ref().clone());
         let job = BalanceRangeJob::from_args(args, now)?;
         Ok(Self {
             config: SchedulerConfig::new(

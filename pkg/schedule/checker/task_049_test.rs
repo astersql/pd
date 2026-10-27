@@ -14,8 +14,8 @@ use astersql_pd_schedule_config::ProviderSnapshot;
 use astersql_pd_schedule_labeler::RegionLabeler;
 use astersql_pd_schedule_operator::{BuilderError, OpKind, OpStep};
 use astersql_pd_schedule_placement::{PeerRoleType, Rule, RuleManager};
-use astersql_pd_storage_endpoint::StorageEndpoint;
-use astersql_pd_storage_kv::MemoryStore;
+use astersql_pd_storage_domain::MemoryStore;
+use astersql_pd_storage_domain::StorageEndpoint;
 use serde_json::Value;
 use std::sync::Arc;
 #[tokio::test]
@@ -436,7 +436,7 @@ async fn task_049_behavior_cases() {
     );
 }
 
-use astersql_pd_storage_kv::{
+use astersql_pd_storage_domain::{
     Commit, Compare, Lease, LeaseId, MetaStore, MetaWatch, Mutation, RawTxnOp, RawTxnResponse,
     Read, Revision, Snapshot, StoreError,
 };
@@ -456,14 +456,14 @@ impl FaultBoundary {
 }
 #[async_trait]
 impl MetaStore for FaultBoundary {
-    async fn read(&self, r: Read) -> astersql_pd_storage_kv::Result<Snapshot> {
+    async fn read(&self, r: Read) -> astersql_pd_storage_domain::Result<Snapshot> {
         self.inner.read(r).await
     }
     async fn transact(
         &self,
         c: Vec<Compare>,
         w: Vec<Mutation>,
-    ) -> astersql_pd_storage_kv::Result<Commit> {
+    ) -> astersql_pd_storage_domain::Result<Commit> {
         if self.fail.load(Ordering::SeqCst) {
             return Err(StoreError::Unavailable);
         }
@@ -474,7 +474,7 @@ impl MetaStore for FaultBoundary {
         c: Vec<Compare>,
         t: Vec<Mutation>,
         e: Vec<Mutation>,
-    ) -> astersql_pd_storage_kv::Result<Commit> {
+    ) -> astersql_pd_storage_domain::Result<Commit> {
         self.inner.transact_branches(c, t, e).await
     }
     async fn transact_raw(
@@ -482,29 +482,29 @@ impl MetaStore for FaultBoundary {
         c: Vec<Compare>,
         t: Vec<RawTxnOp>,
         e: Vec<RawTxnOp>,
-    ) -> astersql_pd_storage_kv::Result<RawTxnResponse> {
+    ) -> astersql_pd_storage_domain::Result<RawTxnResponse> {
         self.inner.transact_raw(c, t, e).await
     }
     async fn watch(
         &self,
         p: Vec<u8>,
         r: Revision,
-    ) -> astersql_pd_storage_kv::Result<Box<dyn MetaWatch>> {
+    ) -> astersql_pd_storage_domain::Result<Box<dyn MetaWatch>> {
         self.inner.watch(p, r).await
     }
-    async fn grant(&self, t: i64) -> astersql_pd_storage_kv::Result<Lease> {
+    async fn grant(&self, t: i64) -> astersql_pd_storage_domain::Result<Lease> {
         self.inner.grant(t).await
     }
-    async fn keep_alive(&self, l: LeaseId) -> astersql_pd_storage_kv::Result<Lease> {
+    async fn keep_alive(&self, l: LeaseId) -> astersql_pd_storage_domain::Result<Lease> {
         self.inner.keep_alive(l).await
     }
-    async fn revoke(&self, l: LeaseId) -> astersql_pd_storage_kv::Result<()> {
+    async fn revoke(&self, l: LeaseId) -> astersql_pd_storage_domain::Result<()> {
         self.inner.revoke(l).await
     }
-    async fn ttl(&self, l: LeaseId) -> astersql_pd_storage_kv::Result<i64> {
+    async fn ttl(&self, l: LeaseId) -> astersql_pd_storage_domain::Result<i64> {
         self.inner.ttl(l).await
     }
-    async fn compact(&self, r: Revision) -> astersql_pd_storage_kv::Result<()> {
+    async fn compact(&self, r: Revision) -> astersql_pd_storage_domain::Result<()> {
         self.inner.compact(r).await
     }
 }

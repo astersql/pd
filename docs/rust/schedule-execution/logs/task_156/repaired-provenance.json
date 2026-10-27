@@ -1,0 +1,722 @@
+{
+  "baseline_commit": "d25981c4e",
+  "authorization": "Preserve strict crate dependency boundary; user authorized minimum Rust storage contract/adapter split; no Go modifications or new oracle claim",
+  "sources": [
+    {
+      "path": "docs/rust/schedule-execution/source-inventory.json",
+      "sha256": "194c90f160c24dda9e688b75ce3114333919fa36a7c0d78d49b1409c5eb286bc"
+    },
+    {
+      "path": "docs/rust/schedule-execution/oracle-index.json",
+      "sha256": "2d1a930742291e7047a864aa2246e7e22c612cb6583249b7edb42945b494b450"
+    },
+    {
+      "path": "docs/rust/schedule-execution/fixtures/task_106.json",
+      "sha256": "02e6c269b588c273e2ce78407e16823d3063feb4bf40f5016177150a8bae8916"
+    },
+    {
+      "path": "docs/rust/schedule-execution/fixtures/task_156.json",
+      "sha256": "5789cffeca53a474a25e24c2aff18ca102756f217d1997a78949423862af2430"
+    },
+    {
+      "path": "docs/rust/schedule-execution/task-155.md",
+      "sha256": "8ce4e8a8b22fb73251b8ab32938b14fadfd4bc429e19539664f46bb35ca1e65a"
+    },
+    {
+      "path": "pkg/schedule/schedulers/init.go",
+      "sha256": "09664f94f3ebe92a4cad1c9a435fb1f8619c72731e8fa55ec0c75c2818175a40"
+    },
+    {
+      "path": "pkg/schedule/schedulers/scheduler.go",
+      "sha256": "c0330c4dc38ebb4d7b0e6d5a3b5d1fe5da85a2e4ec9b22a2e90ea9682112365c"
+    },
+    {
+      "path": "pkg/schedule/schedulers/scheduler_controller.go",
+      "sha256": "5b8ad7382dcf829b9405240fb3e1e72ba659aa5ae301fb0257a3a66c318a7153"
+    },
+    {
+      "path": "pkg/schedule/schedulers/transfer_witness_leader.go",
+      "sha256": "b89a92588c33b70a13c885f53410b0103e65fffb1b8176d5b1d65418248a68e3"
+    },
+    {
+      "path": "pkg/utils/keypath/config.go",
+      "sha256": "6c18b9aabfd6d01b3bb487c93dc7afcf697626394f38344489f6484d85366c09"
+    },
+    {
+      "path": "tests/rust-compat/schedule_acceptance_test.rs",
+      "sha256": "04c10e4ac02cf7b9645e95dae7609a1dbbd108dfcc20f0dd3fbf538db6be43a4"
+    },
+    {
+      "path": "tests/rust-compat/Cargo.toml",
+      "sha256": "8d7435c1f2b9395d49ccdd6391ea35c0f026dc2fb71a42980eb3bbdba2e33d3d"
+    },
+    {
+      "path": "Cargo.lock",
+      "sha256": "ce2f7200b5f735aede4a237681b1fcdc51e18d1ff97b90710d2b62b067adf796"
+    },
+    {
+      "path": "Cargo.toml",
+      "sha256": "a29ff6c3b151f8bc7d07287233fb0453f3d1012fd4dbba7bd166b39bdd94e991"
+    },
+    {
+      "path": "pkg/cluster/Cargo.toml",
+      "sha256": "be1a0e0800d8c7b8f4e2a19cc3fbe2c2436d89cd09d651bbbb64c0abe3f3d9a1"
+    },
+    {
+      "path": "pkg/cluster/task_127_test.rs",
+      "sha256": "ebe82ebaa58f0768d1fa1e2119b66b2031d83133e935e89d05921e05a230abe1"
+    },
+    {
+      "path": "pkg/cluster/task_128_test.rs",
+      "sha256": "d5ff0954451b1f7082f3dacfc053e1bfe4a72b6c69c39ca96bec0fff2e15a097"
+    },
+    {
+      "path": "pkg/cluster/task_129_test.rs",
+      "sha256": "8057b0430b884ba42f0c72c6c83e5365440bb4588c40bfb0fc3c897c0f171e9d"
+    },
+    {
+      "path": "pkg/election/Cargo.toml",
+      "sha256": "f51509212dab7126ca3d6ab13ea8c760976eeac6de2c85afdcb56294ecd3828a"
+    },
+    {
+      "path": "pkg/election/leader_delete.rs",
+      "sha256": "f603be32fec5cfc9ac567a8cd59505098de4dab2dbc9b4282cba80056e4a9719"
+    },
+    {
+      "path": "pkg/election/leader_watch.rs",
+      "sha256": "35326260aa46966c73b841ada8eb72cd7b05fc06194f3783705a5540ca224b17"
+    },
+    {
+      "path": "pkg/election/leadership.rs",
+      "sha256": "cd7f970f0305e1935ae5d91991fc07eb6debdafd94d81423107b4345a888efbb"
+    },
+    {
+      "path": "pkg/election/lease_keep.rs",
+      "sha256": "a1b8f2648b380f086b8c66492c04fcd42a029d97052d94eecdb6fc97b424f613"
+    },
+    {
+      "path": "pkg/election/watch_reset.rs",
+      "sha256": "1d113cfba2d3bf2dfee2112eef769c4c33ba2f6b0d07f9bb7e7d63c17c1fec97"
+    },
+    {
+      "path": "pkg/id/Cargo.toml",
+      "sha256": "244c8055fb22a06a94278eac72e0c0d1b6cd3a688f1444703ccce8d6a769776a"
+    },
+    {
+      "path": "pkg/id/allocator.rs",
+      "sha256": "04d7112ba608531f3cdf47d837b739c7781ffd5527731fb267ddf9e86bf90f6a"
+    },
+    {
+      "path": "pkg/member/Cargo.toml",
+      "sha256": "6e82fc4741bbbe4c503295f8db7bb268bc23d9f6940d47259c11d5db4ba6db7d"
+    },
+    {
+      "path": "pkg/member/leader_priority.rs",
+      "sha256": "e0f490b3c25444fb0cad2e6cb1a6c0e985a422a003e2bfb16bd92e48883628fe"
+    },
+    {
+      "path": "pkg/member/member.rs",
+      "sha256": "523fcf71a050e9e64e3e62dd6ad9dca5d5981bb8c601fff126100cac88375903"
+    },
+    {
+      "path": "pkg/member/member_info.rs",
+      "sha256": "223098c2ff4b8e334f668856d81a66a1786ebec116a68d4d306dc895adee2dc2"
+    },
+    {
+      "path": "pkg/schedule/Cargo.toml",
+      "sha256": "01a879ccf620d43f63a30bf62e3d3dd50ad0e254e708a51cc417bb3b86dfe743"
+    },
+    {
+      "path": "pkg/schedule/affinity/Cargo.toml",
+      "sha256": "12c82bc52372b4e4e2089650475123d387a8143fc932ad8fd7bb1179410cdf94"
+    },
+    {
+      "path": "pkg/schedule/affinity/affinity_availability_test.rs",
+      "sha256": "15eb5806ed66822f693c33f740d3eff58fe090bbee1fbfba0cc082ede1ad5fd4"
+    },
+    {
+      "path": "pkg/schedule/affinity/affinity_cache_sync_test.rs",
+      "sha256": "ffb3f584bbec3f8bcda03573d9765d90ffefa09b20ad396763d87f4864b84351"
+    },
+    {
+      "path": "pkg/schedule/affinity/affinity_create_delete_test.rs",
+      "sha256": "09a7d8057bb4e80d17f8e19a049229483f336387a059b3e648f78c67d7c49401"
+    },
+    {
+      "path": "pkg/schedule/affinity/affinity_lifecycle_test.rs",
+      "sha256": "15006087055964306a36bc0582eec5cb091448c072ff108e78bb83f03b4c2602"
+    },
+    {
+      "path": "pkg/schedule/affinity/affinity_restore_test.rs",
+      "sha256": "f71a9c1dd4e49531fa600a5b37ffa417e9cede854cf412d450501ddea2f85153"
+    },
+    {
+      "path": "pkg/schedule/affinity/affinity_split_test.rs",
+      "sha256": "c0fa404af276eac904060982e3909f270a80130dba3526eaa22d079fbb841461"
+    },
+    {
+      "path": "pkg/schedule/affinity/affinity_update_peers_test.rs",
+      "sha256": "e72def4d5a50f17f2c67a4b9d6a52b3edb8650718a27079f1b04ac6f484813c4"
+    },
+    {
+      "path": "pkg/schedule/affinity/affinity_update_ranges_test.rs",
+      "sha256": "b69f4aed18223c9d50206039b18ed657d9c0d154da93cda7d2a2f022bb976dd0"
+    },
+    {
+      "path": "pkg/schedule/affinity/manager.rs",
+      "sha256": "0d36df9d8385100d3bdb4861dc74e54e4c3f80a821d146387307f11917b4f2ac"
+    },
+    {
+      "path": "pkg/schedule/affinity/txn.rs",
+      "sha256": "ce5448fc86701c1cc78f747e5df16a620bd2fedcba492130adbe9b5fc394bfa7"
+    },
+    {
+      "path": "pkg/schedule/affinity/txn_peers.rs",
+      "sha256": "21be87c6db7a3a0519c3500a1790c4acfb7140eec479e0a42e707f2253f5f5f0"
+    },
+    {
+      "path": "pkg/schedule/affinity/txn_ranges.rs",
+      "sha256": "3a5a74c917b300cc91c3351caef244f5b51607a99f57387fccd4048e16d38b77"
+    },
+    {
+      "path": "pkg/schedule/checker/Cargo.toml",
+      "sha256": "b03296810492d924c4d4bbc9b0c2c40fe4df0f844f8b918bae8751dbf99a2e3e"
+    },
+    {
+      "path": "pkg/schedule/checker/affinity_peer.rs",
+      "sha256": "c09828ca17f6ec11c6dbc7da6414efae779fcad4d2bf04c7da235a1b498d1219"
+    },
+    {
+      "path": "pkg/schedule/checker/task_043_test.rs",
+      "sha256": "740189536c9f233fe49078a6bf72669d25ee60a4a182f7a1408de7de51f861ee"
+    },
+    {
+      "path": "pkg/schedule/checker/task_046_test.rs",
+      "sha256": "ffa45e79e9a02a09631ce843858041f7ac5de6e7ec37c745a4b08b7180de39fc"
+    },
+    {
+      "path": "pkg/schedule/checker/task_047_test.rs",
+      "sha256": "bd71ce0cbb6f0329993d11284e7a5f3395191738611dea4043b3c1fb3833bc73"
+    },
+    {
+      "path": "pkg/schedule/checker/task_048_test.rs",
+      "sha256": "eba819a15027b0b38f071948c09cec672018c58f4a2c2cb60be2e761ed1a43fe"
+    },
+    {
+      "path": "pkg/schedule/checker/task_049_test.rs",
+      "sha256": "72c3b0ff38377b6de5c473a7c6c738e5aeb013b07520d23897b7a2c3a410e514"
+    },
+    {
+      "path": "pkg/schedule/checker/task_050_test.rs",
+      "sha256": "e0ab491928448c30f5e65e4086ed91d3941ec35642f580fd4f02cb1420397bc0"
+    },
+    {
+      "path": "pkg/schedule/checker/task_051_test.rs",
+      "sha256": "e59661b21b63c3ae4aa678d051fadc7dba40a7d58e6c791588c94db3f6fc5efc"
+    },
+    {
+      "path": "pkg/schedule/checker/task_054_test.rs",
+      "sha256": "16daf36d32337a13760d49d2841939f6d45916b944475abffeb79a0064751a1f"
+    },
+    {
+      "path": "pkg/schedule/checker/task_055_test.rs",
+      "sha256": "e49fcbf85788c1118566503d4a58636bb32208846edf3627f58a35a18a7023d9"
+    },
+    {
+      "path": "pkg/schedule/checker/task_056_test.rs",
+      "sha256": "e1c903e29747cebc11fa2cbf6d8eb45863c7912b30ee5a8ac69b8142fa4feea3"
+    },
+    {
+      "path": "pkg/schedule/core/Cargo.toml",
+      "sha256": "f66bab2626d8bf670a872105a547d414ac4d0112517fae26551b3caf52b1c94a"
+    },
+    {
+      "path": "pkg/schedule/core/task_003_test.rs",
+      "sha256": "5f36df7625f1bfb3bcf4c4cde6cd6c80434f4c251e70795296e3caf871ec2a01"
+    },
+    {
+      "path": "pkg/schedule/core/task_004_test.rs",
+      "sha256": "78dccd57113155b1f637ecc9ab8144bc3a1c389b0e45fbe283417086861ee32f"
+    },
+    {
+      "path": "pkg/schedule/diagnostic/Cargo.toml",
+      "sha256": "c66a3f1b6c6a1d6d1565f734f6a69ea8c30078685f0b970d2fbe9e47a6ba574f"
+    },
+    {
+      "path": "pkg/schedule/diagnostic/task_111_test.rs",
+      "sha256": "b13febc71abd5aba63b12aebeaa4107d989006066d3a33a84b6fec0b64c2c053"
+    },
+    {
+      "path": "pkg/schedule/filter/Cargo.toml",
+      "sha256": "5078e1671cbd7100fa2f593a968d9732566f8e87d72aedc750a894686740751d"
+    },
+    {
+      "path": "pkg/schedule/filter/task_009_test.rs",
+      "sha256": "f149971213dffd50001372a02761320af5af56eaef7ac1f0803664f79fce05ad"
+    },
+    {
+      "path": "pkg/schedule/filter/task_010_test.rs",
+      "sha256": "4425f3a23442d3106f95aa3a472d09b46ff9ea57cbeec47d5f35963f198b189d"
+    },
+    {
+      "path": "pkg/schedule/handler/Cargo.toml",
+      "sha256": "6dbaa58bd2bc129475f49c596a7176755335af53b31195182bbd6ad057ce0089"
+    },
+    {
+      "path": "pkg/schedule/handler/task_118_test.rs",
+      "sha256": "260363e9f77a8b8a9c41f253cf756c54c7bf18f1472071976b73e9303801f21d"
+    },
+    {
+      "path": "pkg/schedule/handler/task_119_test.rs",
+      "sha256": "24e72df5cdef166fe6770ac1cc29b7a5329a4fb0bf92cdff0d4c8f2b56203312"
+    },
+    {
+      "path": "pkg/schedule/handler/task_120_test.rs",
+      "sha256": "656542735da5029a1e776a77c991a035e392a4e843bc55c52e85e33ddb6f0627"
+    },
+    {
+      "path": "pkg/schedule/handler/task_121_test.rs",
+      "sha256": "a9a8763d335b4c3c1b0a6933d0fc3c1139480a164f9068beeaf114cd1c3870c7"
+    },
+    {
+      "path": "pkg/schedule/handler/task_122_test.rs",
+      "sha256": "1814b9a8dd1d5039ba1d3ca6c17afc07b7210fe986c97f02320b84ff5743fe7b"
+    },
+    {
+      "path": "pkg/schedule/handler/task_123_test.rs",
+      "sha256": "06dee1804489a863246acad4fc35eff2b2e4f69b6d4d438041480f4d79d2791a"
+    },
+    {
+      "path": "pkg/schedule/handler/task_124_test.rs",
+      "sha256": "b242c3be3c4422a911c63711b55958a1dc320f9bf88a5eb6deed22d5a74e57cd"
+    },
+    {
+      "path": "pkg/schedule/handler/task_125_test.rs",
+      "sha256": "1d59d8c63d408df6cb41742e36ac0c6e100a174e0dae9b5e6caef30ff9ce06aa"
+    },
+    {
+      "path": "pkg/schedule/handler/task_126_test.rs",
+      "sha256": "264c714c19c0a115982ffbfa6829543d948a5d9a84a45ee5d71671abd8a53ded"
+    },
+    {
+      "path": "pkg/schedule/labeler/Cargo.toml",
+      "sha256": "643167d68bd1a3924a0c13fd4db3411209ab0866c980b9951f39a66af8120fe7"
+    },
+    {
+      "path": "pkg/schedule/labeler/label_gc_test.rs",
+      "sha256": "377f9d4c74b7fd784e0e9c608d3988097cea77214e585fb215b4d1ee6a1590b1"
+    },
+    {
+      "path": "pkg/schedule/labeler/label_query_test.rs",
+      "sha256": "99f409e1ec992b63cdcd13798f227f3d1d4be61729fa506e0cc2b38b39a2dda6"
+    },
+    {
+      "path": "pkg/schedule/labeler/label_restore_test.rs",
+      "sha256": "ffe4a7295726500c47fc4fb2091c2821b1efa0c2f0997d71859c816cec9233ad"
+    },
+    {
+      "path": "pkg/schedule/labeler/label_txn_test.rs",
+      "sha256": "9427021ed17cb08fc2988576e41e6e3ef839631e94c1b08bf70098bd79287fd5"
+    },
+    {
+      "path": "pkg/schedule/labeler/labeler.rs",
+      "sha256": "51bcddab28822068f3bf59d3829294dbd37ce8c6accfb071d6a9fa67aca8f808"
+    },
+    {
+      "path": "pkg/schedule/labeler/plan.rs",
+      "sha256": "5a89e59ecf8c1acf095f32d9fbd7c79b49c95597b25b25ad726a56e28747cca1"
+    },
+    {
+      "path": "pkg/schedule/placement/Cargo.toml",
+      "sha256": "211c9cc8165913a307360b5d0ab40bb54c9151a0d23ac058f40e52dc66182c6d"
+    },
+    {
+      "path": "pkg/schedule/placement/placement_batch_test.rs",
+      "sha256": "ce8037017c6516469f8458fbceea79b48a0e88e558d96e0e945ba222902e034a"
+    },
+    {
+      "path": "pkg/schedule/placement/placement_cache_test.rs",
+      "sha256": "f2d56d3e95dfc52862e32ec30d81765a0c7202f4ef36270f2b0e3597d14e3c35"
+    },
+    {
+      "path": "pkg/schedule/placement/placement_manager_test.rs",
+      "sha256": "90dd4e34974c04c28b6862a3a52e2a0b9ba4912d5392eaa72c7937cf31f9aa04"
+    },
+    {
+      "path": "pkg/schedule/placement/placement_restore_test.rs",
+      "sha256": "90df77a32f1380b0ff41fb5fc8a32c7bb082deb6e67117e8efd88dcef0ccb5d8"
+    },
+    {
+      "path": "pkg/schedule/placement/rule_batch.rs",
+      "sha256": "e8a55b6abe199a0c7050bbef98981624e1b2d8b9acfd125a308e663f7b2ae0d6"
+    },
+    {
+      "path": "pkg/schedule/placement/rule_manager.rs",
+      "sha256": "d7040660b6db7a23f9d23dea59b3986db8246c4d4c92b25b11bb8fd10d015f3f"
+    },
+    {
+      "path": "pkg/schedule/scatter/Cargo.toml",
+      "sha256": "e1309d57bece726ce5329f6a2354dd1fb94cf2ea98120ada302aaac4cc4c6910"
+    },
+    {
+      "path": "pkg/schedule/scatter/task_061_test.rs",
+      "sha256": "1ed20e3e179b566eb97f55552696afc0cff658e3d689ae2bbf3312515d633761"
+    },
+    {
+      "path": "pkg/schedule/schedulers/Cargo.toml",
+      "sha256": "4e44f9f8013a885ee182285489c50e15935258f9079e1e2c5d75790b9315230a"
+    },
+    {
+      "path": "pkg/schedule/schedulers/balance_leader_config.rs",
+      "sha256": "5cbc88aa45e4d19970269fd9bfc8b0f3602b313ad5d0def44a60560a378d55f0"
+    },
+    {
+      "path": "pkg/schedule/schedulers/balance_range_job.rs",
+      "sha256": "4902bde9dc9a1a5b0bfcf133fe353aed08aa366f8731c574abdcd29ae0d2712b"
+    },
+    {
+      "path": "pkg/schedule/schedulers/balance_witness_config.rs",
+      "sha256": "c7454cb48c07868361263a39748cbe4ecc548f509a960de6de54f95eb4bdbd56"
+    },
+    {
+      "path": "pkg/schedule/schedulers/base.rs",
+      "sha256": "2e630db59e3f1f9260d6a984edf09dbf542966f14ec746a7826e113c23b0d7a5"
+    },
+    {
+      "path": "pkg/schedule/schedulers/config.rs",
+      "sha256": "df09ddc16ac13cba9471c994f9317d1a7987206b2ce9d4cebd1c26b24baca95b"
+    },
+    {
+      "path": "pkg/schedule/schedulers/evict_disk.rs",
+      "sha256": "ac5fabb17c2155a37cfc86a3852235086cee5ee30f7d76de086411ed75f69561"
+    },
+    {
+      "path": "pkg/schedule/schedulers/evict_leader_config.rs",
+      "sha256": "f1034cacd77f202debaca1812fb4b370863d5a574c15db585b551e3b89ede688"
+    },
+    {
+      "path": "pkg/schedule/schedulers/evict_network.rs",
+      "sha256": "15b0aa19b3004f73e5883de09cd06143a3c171c332aa4c91d837f874069ef648"
+    },
+    {
+      "path": "pkg/schedule/schedulers/evict_stopping.rs",
+      "sha256": "89b4d21a856b2d40d04b11a22372894477cc9b38824551c37b08912e73d04088"
+    },
+    {
+      "path": "pkg/schedule/schedulers/grant_hot.rs",
+      "sha256": "6bf962cd163cf94d50d94fe1f2a21aee930f639e4d2fe7c2a3e49947d2a52322"
+    },
+    {
+      "path": "pkg/schedule/schedulers/grant_leader_config.rs",
+      "sha256": "0e1d96764eb7700d33cef06b06091e97293a51e2c98bf5331fe86cab911ade68"
+    },
+    {
+      "path": "pkg/schedule/schedulers/hot_config.rs",
+      "sha256": "6087cf0b583d6523b0aa16e32bb439e49a1d52181da5595cbe4fd0969ba06366"
+    },
+    {
+      "path": "pkg/schedule/schedulers/registry.rs",
+      "sha256": "f0fb7e3653a6246fd1bbdca6afb6534dcc84ededba79f7b3cbb4e30679ed71f9"
+    },
+    {
+      "path": "pkg/schedule/schedulers/scatter_range.rs",
+      "sha256": "7de5b31a62bf79bbdde08077c436826f7efe5940e81fa11adbb41bddd750f495"
+    },
+    {
+      "path": "pkg/schedule/schedulers/scheduler_control.rs",
+      "sha256": "e224d05dd2364a316fa5873ce7a7442203edd97fd5f9281436d5438b98042768"
+    },
+    {
+      "path": "pkg/schedule/schedulers/shuffle_hot.rs",
+      "sha256": "675b9a6a64e585d68816df8a897789455244c27ab05a84347d48bb7b1d9859ac"
+    },
+    {
+      "path": "pkg/schedule/schedulers/shuffle_region.rs",
+      "sha256": "9fb28c379064bdfe35fc02f479b9967d45eb1ace40a8518e88c2ea582577c611"
+    },
+    {
+      "path": "pkg/schedule/schedulers/slow_trend_recover.rs",
+      "sha256": "af5e573dc7f30ee3cc75457d77b9119f3aa51abca353eeeb8a967e6bd36524f8"
+    },
+    {
+      "path": "pkg/schedule/schedulers/task_065_test.rs",
+      "sha256": "90d248143dc09892f3a326b475762beb5afc5c6c3f0e695e8b46785bfeb3047b"
+    },
+    {
+      "path": "pkg/schedule/schedulers/task_066_test.rs",
+      "sha256": "c6d3f5dce22d96d1c58a95216edc83309488f295a11cb28bc3d3acfbb041d59c"
+    },
+    {
+      "path": "pkg/schedule/schedulers/task_068_test.rs",
+      "sha256": "42d1d57a9f1010dfebeba6f16039d9d671ef7afe205b5acc763239318019091e"
+    },
+    {
+      "path": "pkg/schedule/schedulers/task_070_test.rs",
+      "sha256": "4229ec0aa7a5d694f2270c106caf04ad3a388293c17e08a88eed728fcccc4755"
+    },
+    {
+      "path": "pkg/schedule/schedulers/task_071_test.rs",
+      "sha256": "ad38f2938caaf7fb6dc954938b7cdc5317de613058f2b345eafa78d0404aa0b7"
+    },
+    {
+      "path": "pkg/schedule/schedulers/task_072_test.rs",
+      "sha256": "0cdc50fdef1cd08b88d2b3eb8a30c4945d624c452761224355cbc76e0d97eb13"
+    },
+    {
+      "path": "pkg/schedule/schedulers/task_073_test.rs",
+      "sha256": "aa483b23b74d44d8f59eaf7e53f296f078bb994798f6d47184288af320b0f024"
+    },
+    {
+      "path": "pkg/schedule/schedulers/task_074_test.rs",
+      "sha256": "ddaa032dda9f2a288461708f81160275181b04659bec14823886c39333d66414"
+    },
+    {
+      "path": "pkg/schedule/schedulers/task_075_test.rs",
+      "sha256": "4242bb3c124a0f380db0c35fd255d14ef37f5bcba53d19d34adb906c90c3bf58"
+    },
+    {
+      "path": "pkg/schedule/schedulers/task_076_test.rs",
+      "sha256": "9e268b60498b9669c98f3ec24064ba87c1fc7b601bc9472aeb6fa11ff537c426"
+    },
+    {
+      "path": "pkg/schedule/schedulers/task_077_test.rs",
+      "sha256": "c85393eb804ceb4f8f82b7c9028284355e0fb54464d40de12d5d12f5bfec4808"
+    },
+    {
+      "path": "pkg/schedule/schedulers/task_078_test.rs",
+      "sha256": "8ff2d2948aa76164e297fd441afa6214e9858308ccecc4e5db784ae6fd0ebeb0"
+    },
+    {
+      "path": "pkg/schedule/schedulers/task_079_test.rs",
+      "sha256": "ce96663f5cb31f5a1343d92f48741410778c946fd82863083213cb622cdb836e"
+    },
+    {
+      "path": "pkg/schedule/schedulers/task_081_test.rs",
+      "sha256": "8745222fb6bec498559e0dda6dc37cb834d96db23e3f8fa97359a75b5a2c27c1"
+    },
+    {
+      "path": "pkg/schedule/schedulers/task_082_test.rs",
+      "sha256": "dc84b2a22883ef8520311836b9a2d45bb0c4199ab014881c9d1481ba19cc456c"
+    },
+    {
+      "path": "pkg/schedule/schedulers/task_084_test.rs",
+      "sha256": "7266a2412b88bdadfb4d8f09dea7fdcfac20d6e90685c8da37ce4dc4cebf035c"
+    },
+    {
+      "path": "pkg/schedule/schedulers/task_085_test.rs",
+      "sha256": "002794f77e3987b8ab83b90f6b522baa52d196b5df64233555216d547f3f1a2f"
+    },
+    {
+      "path": "pkg/schedule/schedulers/task_089_test.rs",
+      "sha256": "384880d219e9956480fff5cbae6a58c21e82aac82089968fd49c3c8f5a06be56"
+    },
+    {
+      "path": "pkg/schedule/schedulers/task_090_test.rs",
+      "sha256": "aefc7709e82bb150279571be6d012d3e1205176ed0007ab8e7b3133b6d6e331b"
+    },
+    {
+      "path": "pkg/schedule/schedulers/task_091_test.rs",
+      "sha256": "4014169bdb7554ebcdac92927600a3eba5ca4933ded03a0c8f0ef642acd09e79"
+    },
+    {
+      "path": "pkg/schedule/schedulers/task_096_test.rs",
+      "sha256": "41c101a42ce4a17ed54b81db5f507b7b01423f7e0f68ff987a8d3615b2f71af0"
+    },
+    {
+      "path": "pkg/schedule/schedulers/task_097_test.rs",
+      "sha256": "96d3f02d03cfffb51738735aeaead2bf2057a5f96f9af6ce198738f2c01374c8"
+    },
+    {
+      "path": "pkg/schedule/schedulers/task_098_test.rs",
+      "sha256": "986cac6cea05f8bc9edab4da888def96bcc95c2d6dcc48527f7a2ecd70f5d96e"
+    },
+    {
+      "path": "pkg/schedule/schedulers/task_099_test.rs",
+      "sha256": "128e7ca7db3c0c20fe8363728d312086da3af3eaee3c01094c2c978c32995604"
+    },
+    {
+      "path": "pkg/schedule/schedulers/task_100_test.rs",
+      "sha256": "f8189570dddc5d4e077f961a1b7ee2e062e9fd49b1e35824d7bc73ead162b183"
+    },
+    {
+      "path": "pkg/schedule/schedulers/task_101_test.rs",
+      "sha256": "d0e0fc175e6e0212344c83a72bbaa96f9db71000744cdb4c2fff8e8c8f595f6c"
+    },
+    {
+      "path": "pkg/schedule/schedulers/task_102_test.rs",
+      "sha256": "7f04e165e6778018339304c8d43472bf2182aa716d5d7c3cc78550cb60505f10"
+    },
+    {
+      "path": "pkg/schedule/schedulers/task_103_test.rs",
+      "sha256": "fe3d56a8c3db48ee7d52c637424ba419be000b9d01c5c9529b8de50367b5f18a"
+    },
+    {
+      "path": "pkg/schedule/schedulers/task_104_test.rs",
+      "sha256": "242f66c65838b6abb9f195a25c84d626a38e5b34f3d861e44fff4cf7b5277704"
+    },
+    {
+      "path": "pkg/schedule/schedulers/task_105_test.rs",
+      "sha256": "7e374a2baef916093fe18ec6ccdc4e193e529ca514caf27a227b644e1b6ad050"
+    },
+    {
+      "path": "pkg/schedule/schedulers/task_106_test.rs",
+      "sha256": "d7312f6b28d8d841a55df74493d39390ec3aaa68df58bfaed1dc93eb241b2dda"
+    },
+    {
+      "path": "pkg/schedule/schedulers/task_107_test.rs",
+      "sha256": "5e29b074b071aae0778c0b709ba5ca670ad6151e64e295dfca197aea7d62ca09"
+    },
+    {
+      "path": "pkg/schedule/schedulers/task_108_test.rs",
+      "sha256": "e59bfcc4454c87d7775a5742b6feff45c6c4d5822b0ecd0ee8dacddc634bc824"
+    },
+    {
+      "path": "pkg/schedule/schedulers/task_109_test.rs",
+      "sha256": "ba163d1c7422721b008eca753965a6728ea9fc490f5b9f12137add66afb1ea57"
+    },
+    {
+      "path": "pkg/schedule/schedulers/task_110_test.rs",
+      "sha256": "5cb08465f8a396aede72ffb438e01868fa3972bee61adca49cc5e230b3e647f6"
+    },
+    {
+      "path": "pkg/schedule/splitter/Cargo.toml",
+      "sha256": "cc1d9407dbf0b0ab70f0a77a7c0611d92af140e8c2638b03b631899627a0f3d3"
+    },
+    {
+      "path": "pkg/schedule/splitter/task_062_test.rs",
+      "sha256": "f208b38fb2ca2b0c2b4490385a54a7ad64485552b4b2d021ddefde4f743f93b2"
+    },
+    {
+      "path": "pkg/schedule/splitter/task_063_test.rs",
+      "sha256": "3356e1f308db0bfd0ce6ae44b261780fa7b5844b2d9aa7272c53d37ed3d3ef2b"
+    },
+    {
+      "path": "pkg/schedule/splitter/task_064_test.rs",
+      "sha256": "63cec95c54c1665c5c9f001369bded43a34dd6026154e816e34c03a51b93835e"
+    },
+    {
+      "path": "pkg/schedule/task_113_test.rs",
+      "sha256": "361a4e44bb1c3d183e9c7c1e4e0c52884d8292afad46808e1ba2d4cda0b27d32"
+    },
+    {
+      "path": "pkg/schedule/task_114_test.rs",
+      "sha256": "d47ddef2c51526f21de33e3160c377019373c5dc8f26f0a3a6c5be1f01bf91c7"
+    },
+    {
+      "path": "pkg/schedule/task_115_test.rs",
+      "sha256": "eeea54cbb214661fff0015436e15e704302e0c6b482a8fc9c620edd5ce78b8d6"
+    },
+    {
+      "path": "pkg/schedule/task_116_test.rs",
+      "sha256": "ff9377451554fadec26e6c73f10768b19d5152c25214792bd9f7248e0182784f"
+    },
+    {
+      "path": "pkg/schedule/task_117_test.rs",
+      "sha256": "bdd3067a8836d2303470710dac18c8588c5996ad3dd5878ba009e02e7de605af"
+    },
+    {
+      "path": "pkg/statistics/Cargo.toml",
+      "sha256": "0b50c145d7ec2a1c5e13d01444d5612581b33b5c70a2c66b3f9891b35b4b1969"
+    },
+    {
+      "path": "pkg/statistics/region_placement_test.rs",
+      "sha256": "150a01c3774eb774dd1e60ab1ad3fe082f8697d1b559df9a0c761ba94b9f9693"
+    },
+    {
+      "path": "pkg/storage/endpoint/Cargo.toml",
+      "sha256": "78dba15d324bb90198356513d1cded29a2e21e1b609a0e665277636e74c1e4e7"
+    },
+    {
+      "path": "pkg/storage/endpoint/affinity_endpoint.rs",
+      "sha256": "bc56b8875b5ae73a7133f06070bc9fb13bf974b356cd08264322cd68b51ccbb0"
+    },
+    {
+      "path": "pkg/storage/endpoint/batch_ops.rs",
+      "sha256": "5c5196fddbc5dc9f780909dcec727abf0d5ad54ea235c253e686f8f6ab84c511"
+    },
+    {
+      "path": "pkg/storage/endpoint/endpoint_codec.rs",
+      "sha256": "6ff3b3930b1a9311fc3bef9857a176e56ada2af10076a060fe7d756058a1ca77"
+    },
+    {
+      "path": "pkg/storage/endpoint/lib.rs",
+      "sha256": "02b1482312060c03d264bc92465ac498df5fa915ee572b898d1971aca3bbe23e"
+    },
+    {
+      "path": "pkg/storage/endpoint/region_meta.rs",
+      "sha256": "666d9b8458567408cf7ec387755646ad38135aeb78aed99c3c2ab3f684da20ad"
+    },
+    {
+      "path": "pkg/storage/endpoint/rule_endpoint.rs",
+      "sha256": "a91c84f2e352b2f7f3db673211a5d83c19b430456b5831b03efcc2409b80d9ed"
+    },
+    {
+      "path": "pkg/storage/endpoint/scheduler_endpoint.rs",
+      "sha256": "c0055a3c09147067720327ea6369fbf737f4b6601381272131d07798386d29b6"
+    },
+    {
+      "path": "pkg/storage/endpoint/store_meta.rs",
+      "sha256": "2d1c96019b21ad801a86b298b71fbaf4921e1610302da8365b25e2880780db00"
+    },
+    {
+      "path": "pkg/storage/kv/Cargo.toml",
+      "sha256": "c0d7b0e3259c6d0729881ee140becb2dba7e0f0e9cab69f0b82a528a9d3a7394"
+    },
+    {
+      "path": "pkg/storage/kv/lib.rs",
+      "sha256": "87afb332f1d66133eaab14ce9ac3539054c4fb033ac427952e0a70553dde5864"
+    },
+    {
+      "path": "pkg/storage/kv/meta_store.rs",
+      "sha256": "478d1c7b1a61f4532213386d8c36a88f08c0ada559f439fae3e265feee36f24d"
+    },
+    {
+      "path": "pkg/storage/kv/raw_get.rs",
+      "sha256": "5341c50340b489611d4a806db55b7ecb9356327a685d9341e26cf5d66dc40da7"
+    },
+    {
+      "path": "pkg/storage/kv/raw_range.rs",
+      "sha256": "54de780acd92dcd3a35733a7d292b2934a6a270c30a27adc1da31c712034101f"
+    },
+    {
+      "path": "pkg/storage/kv/txn_cancel.rs",
+      "sha256": "b5052ebc425a84403fca272f73637a04f9006c630b17979301796fb0976ae429"
+    },
+    {
+      "path": "tests/rust-compat/schedule_restore_test.rs",
+      "sha256": "b68f046c931b69f702d3934a59c83fc6f436176aa5dfe86df9c08c1760dfb75d"
+    },
+    {
+      "path": "pkg/storage/domain/kv.rs.md",
+      "sha256": "cd940ef6f0785053e2985b39e6049c1292e9ff7bf9814c4bb8732f86ca5eac33"
+    },
+    {
+      "path": "pkg/storage/domain/Cargo.toml",
+      "sha256": "c48e45f2d142e4689d54a930c6b7c804e0cd42a400a2af40e43795a1d4aae11c"
+    },
+    {
+      "path": "pkg/storage/domain/kv.rs",
+      "sha256": "9937d276ff5c06c83a055e072ca3b3e0d4da358f8bf5656e6a878244290c25c8"
+    },
+    {
+      "path": "pkg/storage/domain/endpoint.rs.md",
+      "sha256": "10653c57f4a1d1cff7312e4d9d525328545a82012e0a4b14a72c89e1645979ac"
+    },
+    {
+      "path": "pkg/storage/domain/lib.rs",
+      "sha256": "dbc5ea3d6b89336797140c9be759c88822bc3038cf1241711995e3f53abb9871"
+    },
+    {
+      "path": "pkg/storage/domain/lib.rs.md",
+      "sha256": "48e298f92ad53a5f44c8327e632ab0172fec8c0a80de13ff5124b0b7943e7034"
+    },
+    {
+      "path": "pkg/storage/domain/endpoint.rs",
+      "sha256": "1c2b687586e138dd1bdc8f8673103ce460cb619a93999bbf9948212eb324033e"
+    },
+    {
+      "path": "pkg/proto/wire-fixtures.json",
+      "sha256": "7116298b15785761da3ebbcfe84e71059d73768faf4a146aaf256ae29580d632"
+    }
+  ]
+}

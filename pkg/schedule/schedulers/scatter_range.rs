@@ -9,7 +9,7 @@ use astersql_pd_schedule_config::SchedulerConfigProvider;
 use astersql_pd_schedule_core::BasicCluster;
 use astersql_pd_schedule_filter::AffinityFilter;
 use astersql_pd_schedule_operator::OpKind;
-use astersql_pd_storage_endpoint::StorageEndpoint;
+use astersql_pd_storage_domain::StorageEndpoint;
 use std::sync::Arc;
 
 #[derive(Clone, Debug, Default, PartialEq, Eq, serde::Serialize, serde::Deserialize)]

@@ -31,8 +31,8 @@ pub enum ControlError {
     #[error(transparent)]
     Hot(#[from] HotScheduleError),
 }
-impl From<astersql_pd_storage_endpoint::EndpointError> for ControlError {
-    fn from(e: astersql_pd_storage_endpoint::EndpointError) -> Self {
+impl From<astersql_pd_storage_domain::EndpointError> for ControlError {
+    fn from(e: astersql_pd_storage_domain::EndpointError) -> Self {
         Self::Scheduler(e.into())
     }
 }

@@ -1,0 +1,32 @@
+[
+  {
+    "command": "cargo generate-lockfile --offline",
+    "exit_code": 0,
+    "RUST_TEST_THREADS": 2,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "split-initial-0.log.gz",
+    "sha256": "515d4b79d16514d58f996091f67791beb04b1eb0b5f1bbb4e8b916bd95f235e7",
+    "test_summaries": []
+  },
+  {
+    "command": "cargo fmt --all",
+    "exit_code": 0,
+    "RUST_TEST_THREADS": 2,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "split-initial-1.log.gz",
+    "sha256": "8449edff6e82dd588820fce96087cf665b42c9fd9f1383158c1e85d1673a6ebb",
+    "test_summaries": []
+  },
+  {
+    "command": "cargo check --workspace --locked",
+    "exit_code": 101,
+    "RUST_TEST_THREADS": 2,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "split-initial-2.log.gz",
+    "sha256": "f643c1e4b98450782e494276f4f94723beda6944ac9d93de66b35b1c7d11b0e9",
+    "test_summaries": []
+  }
+]

@@ -129,8 +129,8 @@ fn placement_cache_changes_and_eligibility() {
 #[tokio::test]
 async fn placement_cache_manager_matches_uncached() {
     use astersql_pd_schedule_config::ProviderSnapshot;
-    use astersql_pd_storage_endpoint::StorageEndpoint;
-    use astersql_pd_storage_kv::MemoryStore;
+    use astersql_pd_storage_domain::MemoryStore;
+    use astersql_pd_storage_domain::StorageEndpoint;
     let (r, s, _) = input();
     let mut conf = ProviderSnapshot::<String>::default();
     conf.replication.enable_placement_rules_cache = true;

@@ -10,13 +10,13 @@ use astersql_pd_schedule_config::ProviderSnapshot;
 use astersql_pd_schedule_hbstream::routing::StreamRouter;
 use astersql_pd_schedule_scatter::ScatterBatchMetrics;
 use astersql_pd_schedule_schedulers::{FactoryContext, JobTime};
-use astersql_pd_storage_endpoint::StorageEndpoint;
-use astersql_pd_storage_kv::MemoryStore;
+use astersql_pd_storage_domain::MemoryStore;
+use astersql_pd_storage_domain::StorageEndpoint;
 use std::{sync::Arc, time::Duration};
 use tokio_util::sync::CancellationToken;
 fn setup(
     config: serde_json::Value,
-    backend: Arc<dyn astersql_pd_storage_kv::MetaStore>,
+    backend: Arc<dyn astersql_pd_storage_domain::MetaStore>,
 ) -> (Coordinator<ProviderSnapshot<()>>, Arc<TTLUint64<()>>) {
     let mut cluster = BasicCluster::new();
     let peers: Vec<_> = (1..=3)

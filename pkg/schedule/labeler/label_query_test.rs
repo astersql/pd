@@ -2,8 +2,8 @@
 use super::*;
 use astersql_pd_core::{KeyRange, RegionInfo, RegionMeta};
 use astersql_pd_keypath::ClusterPaths;
-use astersql_pd_storage_endpoint::StorageEndpoint;
-use astersql_pd_storage_kv::MemoryStore;
+use astersql_pd_storage_domain::MemoryStore;
+use astersql_pd_storage_domain::StorageEndpoint;
 use serde_json::json;
 use std::sync::Arc;
 fn region(start: u8, end: u8) -> RegionInfo {

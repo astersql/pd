@@ -4,7 +4,7 @@ use crate::{
     BalanceWitnessConfig, BalanceWitnessScheduler, SchedulerError, decode_config, encode_config,
 };
 use astersql_pd_keypath::ClusterPaths;
-use astersql_pd_storage_endpoint::StorageEndpoint;
+use astersql_pd_storage_domain::StorageEndpoint;
 
 const CONFIG_NAME: &str = "balance-witness-scheduler";
 

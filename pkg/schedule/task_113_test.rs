@@ -14,8 +14,8 @@ use astersql_pd_schedule_schedulers::{
 };
 use astersql_pd_schedule_splitter::SplitRetry;
 use astersql_pd_schedule_types::BALANCE_LEADER_SCHEDULER;
-use astersql_pd_storage_endpoint::StorageEndpoint;
-use astersql_pd_storage_kv::MemoryStore;
+use astersql_pd_storage_domain::MemoryStore;
+use astersql_pd_storage_domain::StorageEndpoint;
 use std::{
     cell::RefCell,
     collections::BTreeSet,

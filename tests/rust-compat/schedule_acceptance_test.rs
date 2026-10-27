@@ -280,3 +280,82 @@ async fn task_156_io_faults_and_invalid_configuration() {
         "TASK156 faults: 18 read + 18 write failures, old value + retry; 8 invalid args, unknown name"
     );
 }
+
+#[tokio::test]
+async fn task_156_storage_adapter_shares_neutral_backend() {
+    use astersql_pd_proto::pdpb::RequestHeader;
+    use astersql_pd_storage_domain as domain;
+    use astersql_pd_storage_endpoint::protobuf;
+    // The legacy facade and clean domain expose the exact same canonical KV types.
+    assert_eq!(
+        std::any::TypeId::of::<MemoryStore>(),
+        std::any::TypeId::of::<domain::MemoryStore>()
+    );
+    let backend = Arc::new(MemoryStore::default());
+    let adapter = Arc::new(StorageEndpoint::new(backend.clone()));
+    let neutral: &domain::StorageEndpoint = adapter.as_ref().as_ref();
+    let paths = ClusterPaths::new(156);
+    let payload = br#"{"batch":4}"#;
+    neutral
+        .save_scheduler_config(&paths, "boundary", payload)
+        .await
+        .unwrap();
+    assert_eq!(
+        adapter
+            .load_scheduler_config(&paths, "boundary")
+            .await
+            .unwrap(),
+        payload
+    );
+    let host = FactoryContext::new(adapter.clone(), paths, JobTime(0));
+    assert_eq!(
+        host.storage
+            .load_scheduler_config(&host.paths, "boundary")
+            .await
+            .unwrap(),
+        payload
+    );
+
+    // Existing frozen Go wire fixture; expectations are not encoded by the tested Rust codec.
+    let fixture: Value =
+        serde_json::from_str(include_str!("../../pkg/proto/wire-fixtures.json")).unwrap();
+    let hex = fixture["request_header"].as_str().unwrap();
+    let wire: Vec<u8> = (0..hex.len())
+        .step_by(2)
+        .map(|i| u8::from_str_radix(&hex[i..i + 2], 16).unwrap())
+        .collect();
+    let header = RequestHeader {
+        cluster_id: 42,
+        sender_id: 7,
+        caller_id: "oracle".into(),
+        caller_component: "pd".into(),
+    };
+    protobuf::save(&adapter, b"/boundary/header", &header)
+        .await
+        .unwrap();
+    assert_eq!(
+        neutral.load(b"/boundary/header").await.unwrap(),
+        domain::LoadState::Value(wire)
+    );
+    assert_eq!(
+        protobuf::load::<RequestHeader>(&adapter, b"/boundary/header")
+            .await
+            .unwrap(),
+        Some(header)
+    );
+    Base::new(backend.as_ref())
+        .save(b"/boundary/header", &[0x80])
+        .await
+        .unwrap();
+    let error = protobuf::load::<RequestHeader>(&adapter, b"/boundary/header")
+        .await
+        .unwrap_err();
+    assert!(error.to_string().starts_with("proto unmarshal:"));
+    let domain::EndpointError::ProtoUnmarshal(source) = error else {
+        panic!("codec category lost")
+    };
+    assert!(source.downcast_ref::<prost::DecodeError>().is_some());
+    println!(
+        "TASK156 storage boundary: shared KV identity, config handle, frozen Go wire, typed codec failure"
+    );
+}

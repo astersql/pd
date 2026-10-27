@@ -14,8 +14,8 @@ use astersql_pd_schedule_config::ProviderSnapshot;
 use astersql_pd_schedule_filter::RegionReplicationContext;
 use astersql_pd_schedule_labeler::{LabelRule, RegionLabeler};
 use astersql_pd_schedule_placement::{Rule, RuleManager};
-use astersql_pd_storage_endpoint::StorageEndpoint;
-use astersql_pd_storage_kv::MemoryStore;
+use astersql_pd_storage_domain::MemoryStore;
+use astersql_pd_storage_domain::StorageEndpoint;
 use serde_json::{Value, json};
 use std::{cell::RefCell, sync::Arc};
 fn region(start: Vec<u8>, end: Vec<u8>, stores: &[u64], fault: &str) -> RegionInfo {

@@ -7,8 +7,8 @@ use crate::{
 use astersql_pd_keypath::ClusterPaths;
 use astersql_pd_keyutil::KeyRange;
 use astersql_pd_schedule_labeler::RegionLabeler;
-use astersql_pd_storage_endpoint::StorageEndpoint;
-use astersql_pd_storage_kv::{MemoryStore, MetaStore};
+use astersql_pd_storage_domain::StorageEndpoint;
+use astersql_pd_storage_domain::{MemoryStore, MetaStore};
 use std::sync::Arc;
 fn change(id: &str, ranges: bool) -> GroupKeyRanges {
     GroupKeyRanges {
@@ -144,7 +144,7 @@ async fn affinity_create_delete_etcd() {
     assert_eq!(manager.groups.keys().collect::<Vec<_>>(), vec!["new"]);
 }
 
-use astersql_pd_storage_kv::*;
+use astersql_pd_storage_domain::*;
 use async_trait::async_trait;
 use std::sync::atomic::{AtomicIsize, Ordering};
 pub(super) struct Gate {

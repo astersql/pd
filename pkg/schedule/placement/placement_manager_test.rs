@@ -2,8 +2,8 @@
 use crate::*;
 use astersql_pd_core::{KeyRange, Peer, RegionEpoch, RegionInfo, RegionMeta, StoreInfo, StoreMeta};
 use astersql_pd_schedule_config::ProviderSnapshot;
-use astersql_pd_storage_endpoint::StorageEndpoint;
-use astersql_pd_storage_kv::MemoryStore;
+use astersql_pd_storage_domain::MemoryStore;
+use astersql_pd_storage_domain::StorageEndpoint;
 use std::sync::Arc;
 async fn manager() -> (RuleManager, ProviderSnapshot<String>) {
     let conf = ProviderSnapshot::default();

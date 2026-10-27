@@ -3,7 +3,7 @@ use crate::placement_restore_test::fixture;
 use crate::*;
 use astersql_pd_keypath::ClusterPaths;
 use astersql_pd_schedule_config::ProviderSnapshot;
-use astersql_pd_storage_endpoint::StorageEndpoint;
+use astersql_pd_storage_domain::StorageEndpoint;
 use std::sync::Arc;
 fn rule(id: &str) -> Rule {
     Rule {
@@ -31,7 +31,7 @@ fn op(id: &str, action: &str, prefix: bool) -> RuleOp {
     }
 }
 // Errors are injected before backend dispatch; no rule, index or transaction result is mocked.
-use astersql_pd_storage_kv::*;
+use astersql_pd_storage_domain::*;
 use async_trait::async_trait;
 use std::sync::atomic::{AtomicIsize, Ordering};
 struct Gate {

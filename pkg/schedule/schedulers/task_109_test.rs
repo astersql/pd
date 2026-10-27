@@ -148,8 +148,8 @@ async fn task_109_real_dry_run() {
     use astersql_pd_schedule_operator::{OpInfluence, OpStep};
     use astersql_pd_schedule_placement::RuleManager;
     use astersql_pd_statistics::StatisticsSnapshot;
-    use astersql_pd_storage_endpoint::StorageEndpoint;
-    use astersql_pd_storage_kv::MemoryStore;
+    use astersql_pd_storage_domain::MemoryStore;
+    use astersql_pd_storage_domain::StorageEndpoint;
     let mut cluster = BasicCluster::new();
     for id in 1..=3 {
         let mut s = StoreInfo::new(StoreMeta {

@@ -2,8 +2,8 @@
 use std::collections::BTreeMap;
 
 use astersql_pd_keypath::ClusterPaths;
-use astersql_pd_storage_endpoint::{EndpointError, MAX_BATCH_OPS, StorageEndpoint};
-use astersql_pd_storage_kv::CallbackTxn;
+use astersql_pd_storage_domain::CallbackTxn;
+use astersql_pd_storage_domain::{EndpointError, MAX_BATCH_OPS, StorageEndpoint};
 
 use crate::{LabelRule, LabelerError, RegionLabeler, RuleError, Timestamp};
 

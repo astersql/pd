@@ -23,8 +23,8 @@ use astersql_pd_schedule_config::ProviderSnapshot;
 use astersql_pd_schedule_labeler::RegionLabeler;
 use astersql_pd_schedule_operator::{ControllerAdmission, OpStep};
 use astersql_pd_schedule_placement::RuleManager;
-use astersql_pd_storage_endpoint::StorageEndpoint;
-use astersql_pd_storage_kv::MemoryStore;
+use astersql_pd_storage_domain::MemoryStore;
+use astersql_pd_storage_domain::StorageEndpoint;
 use async_trait::async_trait;
 use std::{
     cell::{Cell, RefCell},

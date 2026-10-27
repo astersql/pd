@@ -9,6 +9,7 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
+astersql-pd-storage-domain.workspace = true
 async-trait.workspace = true
 thiserror.workspace = true
 etcd-client.workspace = true

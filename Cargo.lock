@@ -99,8 +99,7 @@ dependencies = [
  "astersql-pd-schedule-schedulers",
  "astersql-pd-statistics",
  "astersql-pd-statistics-utils",
- "astersql-pd-storage-endpoint",
- "astersql-pd-storage-kv",
+ "astersql-pd-storage-domain",
  "serde_json",
  "tokio",
 ]
@@ -150,6 +149,7 @@ dependencies = [
  "astersql-pd-statistics-buckets",
  "astersql-pd-statistics-utils",
  "astersql-pd-storage",
+ "astersql-pd-storage-domain",
  "astersql-pd-storage-endpoint",
  "astersql-pd-storage-kv",
  "astersql-pd-syncer",
@@ -195,6 +195,7 @@ version = "0.1.0"
 name = "astersql-pd-election"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-storage-domain",
  "astersql-pd-storage-kv",
  "async-trait",
  "thiserror 2.0.21",
@@ -239,6 +240,7 @@ name = "astersql-pd-id"
 version = "0.1.0"
 dependencies = [
  "astersql-pd-member",
+ "astersql-pd-storage-domain",
  "astersql-pd-storage-kv",
  "thiserror 2.0.21",
  "tokio",
@@ -293,6 +295,7 @@ version = "0.1.0"
 dependencies = [
  "astersql-pd-election",
  "astersql-pd-keypath",
+ "astersql-pd-storage-domain",
  "astersql-pd-storage-kv",
  "thiserror 2.0.21",
  "tokio",
@@ -456,8 +459,7 @@ dependencies = [
  "astersql-pd-schedule-types",
  "astersql-pd-statistics",
  "astersql-pd-statistics-utils",
- "astersql-pd-storage-endpoint",
- "astersql-pd-storage-kv",
+ "astersql-pd-storage-domain",
  "async-trait",
  "futures-util",
  "prometheus",
@@ -479,7 +481,7 @@ dependencies = [
  "astersql-pd-keyutil",
  "astersql-pd-schedule-config",
  "astersql-pd-schedule-labeler",
- "astersql-pd-storage-endpoint",
+ "astersql-pd-storage-domain",
  "astersql-pd-storage-kv",
  "async-trait",
  "prometheus",
@@ -508,8 +510,7 @@ dependencies = [
  "astersql-pd-schedule-operator",
  "astersql-pd-schedule-placement",
  "astersql-pd-statistics",
- "astersql-pd-storage-endpoint",
- "astersql-pd-storage-kv",
+ "astersql-pd-storage-domain",
  "async-trait",
  "futures-util",
  "prometheus",
@@ -551,8 +552,7 @@ dependencies = [
  "astersql-pd-statistics",
  "astersql-pd-statistics-buckets",
  "astersql-pd-statistics-utils",
- "astersql-pd-storage-endpoint",
- "astersql-pd-storage-kv",
+ "astersql-pd-storage-domain",
  "prometheus",
  "serde_json",
  "tokio",
@@ -570,8 +570,7 @@ dependencies = [
  "astersql-pd-schedule-plan",
  "astersql-pd-schedule-schedulers",
  "astersql-pd-schedule-types",
- "astersql-pd-storage-endpoint",
- "astersql-pd-storage-kv",
+ "astersql-pd-storage-domain",
  "serde_json",
  "tokio",
 ]
@@ -590,8 +589,7 @@ dependencies = [
  "astersql-pd-schedule-labeler",
  "astersql-pd-schedule-placement",
  "astersql-pd-schedule-plan",
- "astersql-pd-storage-endpoint",
- "astersql-pd-storage-kv",
+ "astersql-pd-storage-domain",
  "astersql-pd-storelimit",
  "prometheus",
  "serde_json",
@@ -622,8 +620,7 @@ dependencies = [
  "astersql-pd-statistics",
  "astersql-pd-statistics-buckets",
  "astersql-pd-statistics-utils",
- "astersql-pd-storage-endpoint",
- "astersql-pd-storage-kv",
+ "astersql-pd-storage-domain",
  "astersql-pd-storelimit",
  "prometheus",
  "serde",
@@ -661,7 +658,7 @@ dependencies = [
  "astersql-pd-errs",
  "astersql-pd-keypath",
  "astersql-pd-schedule-rangelist",
- "astersql-pd-storage-endpoint",
+ "astersql-pd-storage-domain",
  "astersql-pd-storage-kv",
  "astersql-pd-typeutil",
  "async-trait",
@@ -697,7 +694,7 @@ dependencies = [
  "astersql-pd-keypath",
  "astersql-pd-schedule-config",
  "astersql-pd-schedule-rangelist",
- "astersql-pd-storage-endpoint",
+ "astersql-pd-storage-domain",
  "astersql-pd-storage-kv",
  "async-trait",
  "regex",
@@ -730,8 +727,7 @@ dependencies = [
  "astersql-pd-schedule-filter",
  "astersql-pd-schedule-operator",
  "astersql-pd-schedule-placement",
- "astersql-pd-storage-endpoint",
- "astersql-pd-storage-kv",
+ "astersql-pd-storage-domain",
  "prometheus",
  "serde_json",
  "tokio",
@@ -760,8 +756,7 @@ dependencies = [
  "astersql-pd-statistics",
  "astersql-pd-statistics-buckets",
  "astersql-pd-statistics-utils",
- "astersql-pd-storage-endpoint",
- "astersql-pd-storage-kv",
+ "astersql-pd-storage-domain",
  "astersql-pd-storelimit",
  "astersql-pd-typeutil",
  "async-trait",
@@ -786,8 +781,7 @@ dependencies = [
  "astersql-pd-schedule-hbstream",
  "astersql-pd-schedule-operator",
  "astersql-pd-schedule-placement",
- "astersql-pd-storage-endpoint",
- "astersql-pd-storage-kv",
+ "astersql-pd-storage-domain",
  "serde_json",
  "tokio",
 ]
@@ -884,8 +878,7 @@ dependencies = [
  "astersql-pd-schedule-placement",
  "astersql-pd-statistics-buckets",
  "astersql-pd-statistics-utils",
- "astersql-pd-storage-endpoint",
- "astersql-pd-storage-kv",
+ "astersql-pd-storage-domain",
  "prometheus",
  "serde",
  "serde_json",
@@ -927,12 +920,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "astersql-pd-storage-domain"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-keypath",
+ "async-trait",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.21",
+ "tokio",
+ "tokio-util",
+]
+
+[[package]]
 name = "astersql-pd-storage-endpoint"
 version = "0.1.0"
 dependencies = [
  "astersql-pd-core",
  "astersql-pd-keypath",
  "astersql-pd-proto",
+ "astersql-pd-storage-domain",
  "astersql-pd-storage-kv",
  "astersql-pd-typeutil",
  "async-trait",
@@ -948,6 +955,7 @@ dependencies = [
 name = "astersql-pd-storage-kv"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-storage-domain",
  "async-trait",
  "etcd-client",
  "thiserror 2.0.21",

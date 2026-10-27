@@ -1,0 +1,22 @@
+[
+  {
+    "command": "cargo fmt --all",
+    "exit_code": 0,
+    "RUST_TEST_THREADS": 2,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "split-check4-0.log.gz",
+    "sha256": "19646ada7012e61f040092a6199aa5cdd0e31540a5b0ed5056f9ff16fbc5d240",
+    "test_summaries": []
+  },
+  {
+    "command": "cargo check --workspace --locked",
+    "exit_code": 101,
+    "RUST_TEST_THREADS": 2,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "split-check4-1.log.gz",
+    "sha256": "23fc94c4d0cb55b61c0a73d7a210df691e7f62202bd8d71fbae146b14b3cdb91",
+    "test_summaries": []
+  }
+]

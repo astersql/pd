@@ -37,7 +37,8 @@ pub struct RawTxnResponse {
 }
 
 /// Validate both branches before execution, including unselected reads.
-pub(crate) fn validate_raw(compares: &[Compare], ops: &[RawTxnOp]) -> Result<()> {
+#[doc(hidden)]
+pub fn validate_raw(compares: &[Compare], ops: &[RawTxnOp]) -> Result<()> {
     if compares.len() + ops.len() > 128
         || ops
             .iter()
@@ -57,5 +58,5 @@ pub(crate) fn validate_raw(compares: &[Compare], ops: &[RawTxnOp]) -> Result<()>
             RawTxnOp::Get(_) | RawTxnOp::GetRange { .. } => None,
         })
         .collect();
-    crate::meta_store::validate_txn(compares, &writes)
+    crate::kv::meta_store::validate_txn(compares, &writes)
 }

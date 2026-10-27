@@ -9,10 +9,13 @@ path = "lib.rs"
 [dependencies]
 astersql-pd-keypath.workspace = true
 thiserror.workspace = true
-astersql-pd-storage-kv.workspace = true
+astersql-pd-storage-domain.workspace = true
 astersql-pd-election.workspace = true
 tokio.workspace = true
 tokio-util.workspace = true
 [[test]]
 name = "etcd_behavior"
 path = "etcd_behavior_test.rs"
+
+[dev-dependencies]
+astersql-pd-storage-kv.workspace = true

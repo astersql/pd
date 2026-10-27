@@ -1,6 +1,6 @@
 // Copyright 2026 AsterSQL.
 use crate::{ElectionError, Leadership, Result};
-use astersql_pd_storage_kv::{Compare, Mutation, RawTxnOp, Revision, StoreError};
+use astersql_pd_storage_domain::{Compare, Mutation, RawTxnOp, Revision, StoreError};
 
 impl Leadership {
     /// Delete exactly the observed leader revision, or succeed if it is already absent.

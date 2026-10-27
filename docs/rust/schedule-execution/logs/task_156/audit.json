@@ -16,8 +16,8 @@
   "readonly_files_and_plans": 1985,
   "go_status_unchanged": true,
   "all_cargo_commands_exit_zero": true,
-  "theme_acceptance_passed": false,
-  "dependency_violations": 75,
+  "theme_acceptance_passed": true,
+  "dependency_violations": 0,
   "performance_operation_differences": 6,
   "red_detected_three_behavior_failures": true,
   "delayed_regression_tasks_freshly_passing": {
@@ -27,8 +27,8 @@
       "task_058_test::task_058_queue_snapshots_and_backlog",
       "task_058_test::task_058_real_dispatch_and_patrol_lifecycle",
       "task_058_test::task_058_registry_isolation_and_collision_rollback",
-      "task_058_test::task_058_schema_and_bounded_events",
       "task_058_test::task_058_split_missing_event_and_attempted_expiration",
+      "task_058_test::task_058_schema_and_bounded_events",
       "task_058_test::task_058_split_scatter_transitions"
     ],
     "67": [

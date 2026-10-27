@@ -13,9 +13,8 @@ thiserror.workspace = true
 astersql-pd-errs.workspace = true
 astersql-pd-keyutil.workspace = true
 astersql-pd-schedule-labeler.workspace = true
-astersql-pd-storage-endpoint.workspace = true
+astersql-pd-storage-domain.workspace = true
 astersql-pd-keypath.workspace = true
-astersql-pd-storage-kv.workspace = true
 
 astersql-pd-core.workspace = true
 astersql-pd-schedule-config.workspace = true
@@ -25,5 +24,6 @@ tokio-util.workspace = true
 prometheus.workspace = true
 
 [dev-dependencies]
+astersql-pd-storage-kv.workspace = true
 astersql-pd-core-constant.workspace = true
 async-trait.workspace = true

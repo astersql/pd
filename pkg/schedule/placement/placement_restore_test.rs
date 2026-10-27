@@ -2,8 +2,8 @@
 use crate::*;
 use astersql_pd_keypath::ClusterPaths;
 use astersql_pd_schedule_config::ProviderSnapshot;
-use astersql_pd_storage_endpoint::StorageEndpoint;
-use astersql_pd_storage_kv::{Base, MemoryStore, MetaStore};
+use astersql_pd_storage_domain::StorageEndpoint;
+use astersql_pd_storage_domain::{Base, MemoryStore, MetaStore};
 use std::sync::Arc;
 #[allow(dead_code)]
 #[path = "../../storage/kv/etcd_fixture_test.rs"]
@@ -185,7 +185,7 @@ async fn placement_restore_validation_rejects_without_publish() {
 }
 
 // Errors are injected before backend dispatch; no rule, index or transaction result is mocked.
-use astersql_pd_storage_kv::*;
+use astersql_pd_storage_domain::*;
 use async_trait::async_trait;
 use std::sync::atomic::{AtomicIsize, Ordering};
 struct Gate {

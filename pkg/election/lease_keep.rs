@@ -89,12 +89,12 @@ impl Leadership {
                             term.validate().await?;
                             let lease = term.store.keep_alive(term.lease).await
                                 .map_err(|e| match e {
-                                    astersql_pd_storage_kv::StoreError::LeaseNotFound => ElectionError::NotLeader,
+                                    astersql_pd_storage_domain::StoreError::LeaseNotFound => ElectionError::NotLeader,
                                     other => ElectionError::Store(other),
                                 })?;
                             term.validate().await?;
                             Ok((start, lease.ttl_seconds))
-                        }).await.unwrap_or(Err(ElectionError::Store(astersql_pd_storage_kv::StoreError::Unavailable)))
+                        }).await.unwrap_or(Err(ElectionError::Store(astersql_pd_storage_domain::StoreError::Unavailable)))
                     });
                 }
             }

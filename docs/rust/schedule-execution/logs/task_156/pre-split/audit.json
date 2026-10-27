@@ -1,0 +1,48 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "production_files": 85,
+  "source_packages": 14,
+  "source_counts": {
+    "public_symbols": 1213,
+    "internal_symbols": 900,
+    "metrics": 44,
+    "persistence_sites": 24,
+    "asynchronous_sites": 17,
+    "failpoints": 25
+  },
+  "source_drift": [],
+  "ownership_tasks_with_fresh_results": 154,
+  "factories": 18,
+  "readonly_files_and_plans": 1985,
+  "go_status_unchanged": true,
+  "all_cargo_commands_exit_zero": true,
+  "theme_acceptance_passed": false,
+  "dependency_violations": 75,
+  "performance_operation_differences": 6,
+  "red_detected_three_behavior_failures": true,
+  "delayed_regression_tasks_freshly_passing": {
+    "58": [
+      "task_058_test::task_058_behavior_cases",
+      "task_058_test::task_058_host_failure_and_pre_cancel",
+      "task_058_test::task_058_queue_snapshots_and_backlog",
+      "task_058_test::task_058_real_dispatch_and_patrol_lifecycle",
+      "task_058_test::task_058_registry_isolation_and_collision_rollback",
+      "task_058_test::task_058_schema_and_bounded_events",
+      "task_058_test::task_058_split_missing_event_and_attempted_expiration",
+      "task_058_test::task_058_split_scatter_transitions"
+    ],
+    "67": [
+      "task_067_test::task_067_missing_resources_and_nan",
+      "task_067_test::task_067_resource_selection_and_wrapping",
+      "task_067_test::task_067_behavior_cases"
+    ]
+  },
+  "ignored": [
+    "tso_processes"
+  ],
+  "limitations": [
+    "Ownership/suite-level traceability, not per-symbol instrumentation",
+    "No new Go runtime differential; user-approved source derivation",
+    "Synthetic snapshots, test/debug performance, in-memory persistence; not production cluster or durability proof"
+  ]
+}

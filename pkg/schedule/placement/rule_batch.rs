@@ -5,7 +5,7 @@ use crate::{
 };
 use astersql_pd_core::StoreInfo;
 use astersql_pd_schedule_config::SharedConfigProvider;
-use astersql_pd_storage_endpoint::EndpointError;
+use astersql_pd_storage_domain::EndpointError;
 
 /// Unknown actions are ignored, matching the Go switch's default behavior.
 #[derive(Clone, Debug)]

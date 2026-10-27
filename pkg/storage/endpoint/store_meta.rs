@@ -185,5 +185,5 @@ pub(crate) fn decode_store(bytes: &[u8]) -> Result<StoreMeta, EndpointError> {
     use prost::Message;
     WireStore::decode(bytes)
         .map(Into::into)
-        .map_err(EndpointError::ProtoUnmarshal)
+        .map_err(|error| EndpointError::ProtoUnmarshal(Box::new(error)))
 }

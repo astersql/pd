@@ -11,8 +11,8 @@ use astersql_pd_schedule_labeler::{LabelRule, RegionLabeler};
 use astersql_pd_schedule_operator::{BuilderError, OpKind, OpStep};
 use astersql_pd_schedule_placement::{Rule, RuleManager};
 use astersql_pd_statistics::{HotPeerStat, StatisticsSnapshot};
-use astersql_pd_storage_endpoint::StorageEndpoint;
-use astersql_pd_storage_kv::MemoryStore;
+use astersql_pd_storage_domain::MemoryStore;
+use astersql_pd_storage_domain::StorageEndpoint;
 use std::{cell::RefCell, sync::Arc};
 #[tokio::test]
 async fn task_098_behavior_cases() {

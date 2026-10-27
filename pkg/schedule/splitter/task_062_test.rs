@@ -6,8 +6,8 @@ use astersql_pd_core::{
 use astersql_pd_schedule_config::ProviderSnapshot;
 use astersql_pd_schedule_filter::RegionReplicationContext;
 use astersql_pd_schedule_placement::RuleManager;
-use astersql_pd_storage_endpoint::StorageEndpoint;
-use astersql_pd_storage_kv::MemoryStore;
+use astersql_pd_storage_domain::MemoryStore;
+use astersql_pd_storage_domain::StorageEndpoint;
 use std::{cell::RefCell, collections::BTreeMap, sync::Arc};
 
 async fn check_case(c: &serde_json::Value) {

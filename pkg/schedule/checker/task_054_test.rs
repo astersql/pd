@@ -213,8 +213,8 @@ async fn task_054_dispatch_outcomes() {
     use astersql_pd_schedule_filter::RegionReplicationContext;
     use astersql_pd_schedule_operator::{AdmissionError, CancelReason, OpKind};
     use astersql_pd_schedule_placement::RuleManager;
-    use astersql_pd_storage_endpoint::StorageEndpoint;
-    use astersql_pd_storage_kv::MemoryStore;
+    use astersql_pd_storage_domain::MemoryStore;
+    use astersql_pd_storage_domain::StorageEndpoint;
     use std::cell::RefCell;
     let mut conf = ProviderSnapshot::<()>::default();
     conf.replication.enable_placement_rules = false;
@@ -468,8 +468,8 @@ async fn task_054_real_labels_store_budget_and_sequential_admission() {
     use astersql_pd_schedule_labeler::{LabelRule, RegionLabeler};
     use astersql_pd_schedule_operator::{AddPeer, OpKind, Operator};
     use astersql_pd_schedule_placement::RuleManager;
-    use astersql_pd_storage_endpoint::StorageEndpoint;
-    use astersql_pd_storage_kv::MemoryStore;
+    use astersql_pd_storage_domain::MemoryStore;
+    use astersql_pd_storage_domain::StorageEndpoint;
     use std::cell::RefCell;
     let mut conf = ProviderSnapshot::<()>::default();
     conf.replication.enable_placement_rules = false;
@@ -574,8 +574,8 @@ async fn task_054_heartbeat_and_range_group() {
     use astersql_pd_schedule_config::ProviderSnapshot;
     use astersql_pd_schedule_filter::RegionReplicationContext;
     use astersql_pd_schedule_placement::RuleManager;
-    use astersql_pd_storage_endpoint::StorageEndpoint;
-    use astersql_pd_storage_kv::MemoryStore;
+    use astersql_pd_storage_domain::MemoryStore;
+    use astersql_pd_storage_domain::StorageEndpoint;
     use std::cell::RefCell;
     let mut conf = ProviderSnapshot::<()>::default();
     conf.replication.max_replicas = 3;

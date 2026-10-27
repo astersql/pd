@@ -1,0 +1,7 @@
+{
+  "baseline_commit": "d25981c4e",
+  "remote_packages_unchanged": true,
+  "remote_package_count": 200,
+  "final_lock_sha256": "ce2f7200b5f735aede4a237681b1fcdc51e18d1ff97b90710d2b62b067adf796",
+  "note": "Initial offline regeneration selected pulldown-cmark 0.13.5; restored all original registry blocks including 0.13.4 before locked validation; only workspace graph changes remain."
+}

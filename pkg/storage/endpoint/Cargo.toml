@@ -9,6 +9,7 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
+astersql-pd-storage-domain.workspace = true
 astersql-pd-core.workspace = true
 astersql-pd-typeutil.workspace = true
 astersql-pd-storage-kv.workspace = true

@@ -143,9 +143,9 @@ async fn task_127_canonical_scheduler_consumes_event() {
     }
     let config = ProviderSnapshot::<()>::default();
     let mut rules = RuleManager::new(
-        Arc::new(astersql_pd_storage_endpoint::StorageEndpoint::new(
-            Arc::new(astersql_pd_storage_kv::MemoryStore::default()),
-        )),
+        Arc::new(astersql_pd_storage_domain::StorageEndpoint::new(Arc::new(
+            astersql_pd_storage_domain::MemoryStore::default(),
+        ))),
         astersql_pd_keypath::ClusterPaths::new(127),
     );
     let mut hot = HotCache::new(&tokio::runtime::Handle::current(), 16);

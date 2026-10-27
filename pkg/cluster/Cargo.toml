@@ -19,6 +19,5 @@ astersql-pd-statistics-utils.workspace = true
 astersql-pd-schedule-schedulers.workspace = true
 astersql-pd-schedule-labeler.workspace = true
 astersql-pd-keyutil.workspace = true
-astersql-pd-storage-endpoint.workspace = true
-astersql-pd-storage-kv.workspace = true
+astersql-pd-storage-domain.workspace = true
 astersql-pd-keypath.workspace = true

@@ -6,8 +6,8 @@ use crate::{
 use astersql_pd_core::StoreInfo;
 use astersql_pd_keypath::ClusterPaths;
 use astersql_pd_schedule_config::SharedConfigProvider;
-use astersql_pd_storage_endpoint::{EndpointError, StorageEndpoint};
-use astersql_pd_storage_kv::CallbackTxnError;
+use astersql_pd_storage_domain::CallbackTxnError;
+use astersql_pd_storage_domain::{EndpointError, StorageEndpoint};
 use std::sync::Arc;
 
 #[derive(Debug, thiserror::Error)]
@@ -37,7 +37,8 @@ pub struct RuleManager {
     key_type: String,
 }
 impl RuleManager {
-    pub fn new(storage: Arc<StorageEndpoint>, paths: ClusterPaths) -> Self {
+    pub fn new<S: AsRef<StorageEndpoint> + ?Sized>(storage: Arc<S>, paths: ClusterPaths) -> Self {
+        let storage = Arc::new(storage.as_ref().as_ref().clone());
         Self {
             storage,
             paths,

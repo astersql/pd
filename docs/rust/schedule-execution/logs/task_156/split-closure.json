@@ -1,0 +1,42 @@
+[
+  {
+    "command": "cargo fmt --all",
+    "exit_code": 0,
+    "RUST_TEST_THREADS": 2,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "split-closure-0.log.gz",
+    "sha256": "8b755f6ee5d5cbc58bab535400c2282b6fba03b5f0f162fb74f773b13c8eb539",
+    "test_summaries": []
+  },
+  {
+    "command": "cargo metadata --format-version 1 --no-deps",
+    "exit_code": 0,
+    "RUST_TEST_THREADS": 2,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "split-closure-1.log.gz",
+    "sha256": "a47c539dd4351e37c6e3c90d80d8d15833b0827d84144b1d4049dc098a65e604",
+    "test_summaries": []
+  },
+  {
+    "command": "cargo tree --workspace --locked",
+    "exit_code": 0,
+    "RUST_TEST_THREADS": 2,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "split-closure-2.log.gz",
+    "sha256": "1d97801765f1ba13547daf84af710ba09729fd4eb81a9a161c7ab0807cdf2e6c",
+    "test_summaries": []
+  },
+  {
+    "command": "cargo test --workspace --locked --no-run",
+    "exit_code": 101,
+    "RUST_TEST_THREADS": 2,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "split-closure-3.log.gz",
+    "sha256": "0a4b01085a33b67a8a7adbe539173aa57c854019cf67db3af95b08f3ee1a4689",
+    "test_summaries": []
+  }
+]

@@ -1,8 +1,8 @@
 // Copyright 2026 AsterSQL.
 use astersql_pd_errs::{TypedError, catalog::ERR_REGION_RULE_NOT_FOUND};
 use astersql_pd_keypath::ClusterPaths;
-use astersql_pd_storage_endpoint::{EndpointError, StorageEndpoint};
-use astersql_pd_storage_kv::CallbackTxnError;
+use astersql_pd_storage_domain::CallbackTxnError;
+use astersql_pd_storage_domain::{EndpointError, StorageEndpoint};
 
 use crate::{LabelRule, LabelRuleIndex, RuleError, Timestamp};
 
@@ -29,10 +29,11 @@ pub struct RegionLabeler {
 impl RegionLabeler {
     /// Restore rules before exposing this owner; malformed records are discarded.
     pub async fn load(
-        storage: StorageEndpoint,
+        storage: impl Into<StorageEndpoint>,
         paths: ClusterPaths,
         now: Timestamp,
     ) -> Result<Self, LabelerError> {
+        let storage = storage.into();
         let mut rules = Vec::new();
         let mut invalid_keys = Vec::new();
         storage

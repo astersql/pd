@@ -220,8 +220,8 @@ fn task_091_scoped_destination_diagnostic() {
 async fn task_091_real_range_fit_and_stale_labels() {
     use astersql_pd_core::{Peer, RegionInfo, RegionMeta};
     use astersql_pd_schedule_placement::{PeerRoleType, RuleManager};
-    use astersql_pd_storage_endpoint::StorageEndpoint;
-    use astersql_pd_storage_kv::MemoryStore;
+    use astersql_pd_storage_domain::MemoryStore;
+    use astersql_pd_storage_domain::StorageEndpoint;
     use std::sync::Arc;
     let ds = details();
     let owned: Vec<_> = ds

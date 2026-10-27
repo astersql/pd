@@ -1,0 +1,12 @@
+[
+  {
+    "command": "cargo tree --locked --edges normal -p astersql-pd-cluster-utils -p astersql-pd-operatorutil -p astersql-pd-progress -p astersql-pd-schedule -p astersql-pd-schedule-affinity -p astersql-pd-schedule-checker -p astersql-pd-schedule-config -p astersql-pd-schedule-core -p astersql-pd-schedule-diagnostic -p astersql-pd-schedule-filter -p astersql-pd-schedule-handler -p astersql-pd-schedule-hbstream -p astersql-pd-schedule-keyrange -p astersql-pd-schedule-labeler -p astersql-pd-schedule-operator -p astersql-pd-schedule-placement -p astersql-pd-schedule-plan -p astersql-pd-schedule-rangelist -p astersql-pd-schedule-scatter -p astersql-pd-schedule-schedulers -p astersql-pd-schedule-splitter -p astersql-pd-schedule-types -p astersql-pd-storage-domain",
+    "exit_code": 0,
+    "RUST_TEST_THREADS": 2,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "normal-tree-0.log.gz",
+    "sha256": "22b042852f2742d03d0b5839e24f4cfcb1ea3157e67e186ed87f75b12f539c96",
+    "test_summaries": []
+  }
+]

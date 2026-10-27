@@ -242,8 +242,8 @@ async fn task_068_count_threshold_roles_engines_and_splits() {
     use astersql_pd_schedule_placement::{
         LabelConstraint, LabelConstraintOp, PeerRoleType, Rule as PlacementRule, RuleManager,
     };
-    use astersql_pd_storage_endpoint::StorageEndpoint;
-    use astersql_pd_storage_kv::MemoryStore;
+    use astersql_pd_storage_domain::MemoryStore;
+    use astersql_pd_storage_domain::StorageEndpoint;
     let c = cluster();
     let stores: Vec<_> = (1..=5)
         .map(|id| {

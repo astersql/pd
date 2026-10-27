@@ -4,8 +4,8 @@ use astersql_pd_core::{Peer, PeerRole, RegionEpoch, RegionInfo, RegionMeta, Stor
 use astersql_pd_keypath::ClusterPaths;
 use astersql_pd_schedule_config::ProviderSnapshot;
 use astersql_pd_schedule_placement::{PeerRoleType, Rule, RuleManager};
-use astersql_pd_storage_endpoint::StorageEndpoint;
-use astersql_pd_storage_kv::MemoryStore;
+use astersql_pd_storage_domain::MemoryStore;
+use astersql_pd_storage_domain::StorageEndpoint;
 use serde_json::Value;
 use std::sync::Arc;
 fn region(id: u64, peers: u64, learners: u64, epoch: u64) -> RegionInfo {

@@ -5,8 +5,8 @@ use astersql_pd_schedule_config::ProviderSnapshot;
 use astersql_pd_schedule_filter::RegionReplicationContext;
 use astersql_pd_schedule_operator::{CancelReason, ControllerAdmission, OpStep};
 use astersql_pd_schedule_placement::RuleManager;
-use astersql_pd_storage_endpoint::StorageEndpoint;
-use astersql_pd_storage_kv::MemoryStore;
+use astersql_pd_storage_domain::MemoryStore;
+use astersql_pd_storage_domain::StorageEndpoint;
 use std::{cell::RefCell, sync::Arc};
 
 fn region(id: u64, start: &str, end: &str) -> Arc<RegionInfo> {

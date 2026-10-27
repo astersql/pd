@@ -1,7 +1,7 @@
 // Copyright 2026 AsterSQL.
+use crate::kv::{Base, CallbackTxn};
 use crate::{EndpointError, StorageEndpoint};
 use astersql_pd_keypath::ClusterPaths;
-use astersql_pd_storage_kv::{Base, CallbackTxn};
 use serde::Serialize;
 
 impl StorageEndpoint {

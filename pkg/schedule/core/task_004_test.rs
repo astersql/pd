@@ -23,8 +23,8 @@ use astersql_pd_statistics_buckets::{
     BucketFlows, BucketRangeIndex, BucketReport, BucketStats, BucketSubmitError, BucketWaitError,
     BucketWorker, BucketWorkerClient,
 };
-use astersql_pd_storage_endpoint::StorageEndpoint;
-use astersql_pd_storage_kv::{MemoryStore, MetaStore};
+use astersql_pd_storage_domain::StorageEndpoint;
+use astersql_pd_storage_domain::{MemoryStore, MetaStore};
 use prometheus::Registry;
 use serde_json::{Value, json};
 use std::sync::Arc;

@@ -1,8 +1,8 @@
 // Copyright 2026 AsterSQL.
 use super::*;
 use astersql_pd_keypath::ClusterPaths;
-use astersql_pd_storage_endpoint::StorageEndpoint;
-use astersql_pd_storage_kv::{Base, MemoryStore, MetaStore};
+use astersql_pd_storage_domain::StorageEndpoint;
+use astersql_pd_storage_domain::{Base, MemoryStore, MetaStore};
 use serde_json::{Value, json};
 use std::sync::Arc;
 #[allow(dead_code)]
@@ -122,7 +122,7 @@ async fn label_restore_etcd_contract_and_same_wal() {
 }
 
 // Errors are injected before backend dispatch; no rule, index or transaction result is mocked.
-use astersql_pd_storage_kv::*;
+use astersql_pd_storage_domain::*;
 use async_trait::async_trait;
 use std::sync::atomic::{AtomicIsize, Ordering};
 struct Gate {

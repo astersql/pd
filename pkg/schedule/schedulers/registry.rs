@@ -3,7 +3,7 @@
 use crate::*;
 use astersql_pd_keypath::ClusterPaths;
 use astersql_pd_schedule_types::*;
-use astersql_pd_storage_endpoint::StorageEndpoint;
+use astersql_pd_storage_domain::StorageEndpoint;
 use serde::{Serialize, de::DeserializeOwned};
 use serde_json::{Value, json};
 use std::{collections::BTreeSet, sync::Arc};
@@ -40,7 +40,12 @@ pub struct FactoryContext {
     pub hot_inputs: [HotRankInputs; 4],
 }
 impl FactoryContext {
-    pub fn new(storage: Arc<StorageEndpoint>, paths: ClusterPaths, now: JobTime) -> Self {
+    pub fn new<S: AsRef<StorageEndpoint> + ?Sized>(
+        storage: Arc<S>,
+        paths: ClusterPaths,
+        now: JobTime,
+    ) -> Self {
+        let storage = Arc::new(storage.as_ref().as_ref().clone());
         Self {
             storage,
             paths,

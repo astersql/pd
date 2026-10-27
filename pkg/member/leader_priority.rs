@@ -2,7 +2,7 @@
 use crate::Leadership;
 use astersql_pd_election::ElectionError;
 use astersql_pd_keypath::ClusterPaths;
-use astersql_pd_storage_kv::{Consistency, MetaStore, Mutation, Read, StoreError};
+use astersql_pd_storage_domain::{Consistency, MetaStore, Mutation, Read, StoreError};
 use std::sync::Arc;
 use tokio_util::sync::CancellationToken;
 

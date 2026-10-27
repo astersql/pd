@@ -9,7 +9,7 @@ use crate::{
 use astersql_pd_errs::TypedError;
 use astersql_pd_keypath::ClusterPaths;
 use astersql_pd_schedule_labeler::{LabelRule, RegionLabeler};
-use astersql_pd_storage_endpoint::{EndpointError, StorageEndpoint};
+use astersql_pd_storage_domain::{EndpointError, StorageEndpoint};
 use std::collections::BTreeMap;
 
 /// Startup failures preserve storage and range-validation errors.

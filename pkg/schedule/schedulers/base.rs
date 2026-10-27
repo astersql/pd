@@ -5,7 +5,7 @@ use astersql_pd_schedule_core::SchedulerCluster;
 use astersql_pd_schedule_operator::Operator;
 use astersql_pd_schedule_plan::BalanceSchedulerPlan;
 use astersql_pd_schedule_types::{CheckerSchedulerType, current_kernel_default_schedulers};
-use astersql_pd_storage_endpoint::EndpointError;
+use astersql_pd_storage_domain::EndpointError;
 use serde::{Serialize, de::DeserializeOwned};
 use serde_json::Value;
 use std::{collections::BTreeMap, sync::Arc};

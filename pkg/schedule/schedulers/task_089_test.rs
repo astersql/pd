@@ -261,8 +261,8 @@ use astersql_pd_core::{DownPeer, Peer, PeerRole, RegionInfo, RegionMeta};
 use astersql_pd_schedule_config::ProviderSnapshot;
 use astersql_pd_schedule_filter::RegionReplicationContext;
 use astersql_pd_schedule_placement::RuleManager;
-use astersql_pd_storage_endpoint::StorageEndpoint;
-use astersql_pd_storage_kv::MemoryStore;
+use astersql_pd_storage_domain::MemoryStore;
+use astersql_pd_storage_domain::StorageEndpoint;
 use std::{cell::RefCell, sync::Arc};
 fn region(n: u64, learner: bool, pending: bool, down: bool) -> RegionInfo {
     let peers: Vec<_> = (1..=n)

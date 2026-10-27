@@ -4,8 +4,8 @@ use crate::{group::Group, manager::Manager, ranges::GroupKeyRanges};
 use astersql_pd_core::{Peer, RegionInfo, RegionMeta, StoreInfo, StoreMeta};
 use astersql_pd_keypath::ClusterPaths;
 use astersql_pd_schedule_labeler::RegionLabeler;
-use astersql_pd_storage_endpoint::StorageEndpoint;
-use astersql_pd_storage_kv::{MemoryStore, MetaStore};
+use astersql_pd_storage_domain::StorageEndpoint;
+use astersql_pd_storage_domain::{MemoryStore, MetaStore};
 use std::sync::Arc;
 fn stores() -> Vec<StoreInfo> {
     (1..=3)

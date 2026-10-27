@@ -7,7 +7,7 @@ use crate::{
 use astersql_pd_core::{RegionInfo, StoreInfo};
 use astersql_pd_errs::catalog::{ERR_AFFINITY_GROUP_CONTENT, ERR_AFFINITY_GROUP_NOT_FOUND};
 use astersql_pd_keypath::ClusterPaths;
-use astersql_pd_storage_endpoint::{EndpointError, StorageEndpoint};
+use astersql_pd_storage_domain::{EndpointError, StorageEndpoint};
 
 /// Owned observation token; version zero is reserved for administrative updates.
 #[derive(Clone, Debug)]

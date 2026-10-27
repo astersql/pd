@@ -95,9 +95,9 @@ async fn task_103_behavior_cases() {
         let c = cluster(case).await;
         let conf = ProviderSnapshot::<u64>::default();
         let mut rules = RuleManager::new(
-            Arc::new(astersql_pd_storage_endpoint::StorageEndpoint::new(
-                Arc::new(astersql_pd_storage_kv::MemoryStore::default()),
-            )),
+            Arc::new(astersql_pd_storage_domain::StorageEndpoint::new(Arc::new(
+                astersql_pd_storage_domain::MemoryStore::default(),
+            ))),
             astersql_pd_keypath::ClusterPaths::new(103),
         );
         let r = region(case);
@@ -212,9 +212,9 @@ async fn task_103_queue_batch_and_faults() {
     let c = cluster(&serde_json::json!({})).await;
     let conf = ProviderSnapshot::<u64>::default();
     let mut rules = RuleManager::new(
-        Arc::new(astersql_pd_storage_endpoint::StorageEndpoint::new(
-            Arc::new(astersql_pd_storage_kv::MemoryStore::default()),
-        )),
+        Arc::new(astersql_pd_storage_domain::StorageEndpoint::new(Arc::new(
+            astersql_pd_storage_domain::MemoryStore::default(),
+        ))),
         astersql_pd_keypath::ClusterPaths::new(103),
     );
     let mut pick = |_| 0;

@@ -19,7 +19,10 @@ async fn setup() -> (
     Coordinator<ProviderSnapshot<()>>,
     Arc<astersql_pd_cache::TTLUint64<()>>,
 ) {
-    setup_admin(3, Arc::new(astersql_pd_storage_kv::MemoryStore::default()))
+    setup_admin(
+        3,
+        Arc::new(astersql_pd_storage_domain::MemoryStore::default()),
+    )
 }
 #[tokio::test]
 async fn task_123_behavior_cases() {
@@ -304,11 +307,11 @@ use astersql_pd_schedule::CoordinatorInputs;
 use astersql_pd_schedule_hbstream::routing::StreamRouter;
 use astersql_pd_schedule_scatter::ScatterBatchMetrics;
 use astersql_pd_schedule_schedulers::{FactoryContext, JobTime};
-use astersql_pd_storage_endpoint::StorageEndpoint;
+use astersql_pd_storage_domain::StorageEndpoint;
 use std::time::Duration;
 fn setup_admin(
     threshold: u64,
-    backend: Arc<dyn astersql_pd_storage_kv::MetaStore>,
+    backend: Arc<dyn astersql_pd_storage_domain::MetaStore>,
 ) -> (Coordinator<ProviderSnapshot<()>>, Arc<TTLUint64<()>>) {
     let cluster = Arc::new(BasicCluster::new());
     let (heartbeat, _router) = StreamRouter::new(Arc::new(astersql_pd_core::StoresInfo::new()));
@@ -434,7 +437,7 @@ async fn task_123_wide_threshold() {
     for (threshold, expected) in [(3, 1), (1u64 << 32, 0), (u64::MAX, 1)] {
         let (c, pending) = setup_admin(
             threshold,
-            Arc::new(astersql_pd_storage_kv::MemoryStore::default()),
+            Arc::new(astersql_pd_storage_domain::MemoryStore::default()),
         );
         let result = Handler::new(Some(&c))
             .get_hot_buckets(&worker.client(), &[], &token)

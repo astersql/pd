@@ -190,8 +190,8 @@ async fn task_063_group_submit_observe_and_suspect() {
     use astersql_pd_schedule_config::ProviderSnapshot;
     use astersql_pd_schedule_filter::RegionReplicationContext;
     use astersql_pd_schedule_placement::RuleManager;
-    use astersql_pd_storage_endpoint::StorageEndpoint;
-    use astersql_pd_storage_kv::MemoryStore;
+    use astersql_pd_storage_domain::MemoryStore;
+    use astersql_pd_storage_domain::StorageEndpoint;
     use std::cell::RefCell;
     let mut c = BasicCluster::new();
     c.regions.set_region(region(1, "a", "z", 2));

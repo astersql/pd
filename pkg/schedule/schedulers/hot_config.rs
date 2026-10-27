@@ -1,7 +1,7 @@
 // Copyright 2026 AsterSQL.
 //! Hot scheduler configuration domain. HTTP and cluster-version detection stay in adapters.
 use astersql_pd_keypath::ClusterPaths;
-use astersql_pd_storage_endpoint::{EndpointError, StorageEndpoint};
+use astersql_pd_storage_domain::{EndpointError, StorageEndpoint};
 use astersql_pd_typeutil::Duration;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;

@@ -12,7 +12,7 @@ use astersql_pd_schedule_operator::{
 };
 use astersql_pd_schedule_placement::{PeerRoleType, RuleManager};
 use astersql_pd_statistics::is_region_label_isolation_satisfied;
-use astersql_pd_storage_endpoint::StorageEndpoint;
+use astersql_pd_storage_domain::StorageEndpoint;
 use std::{
     collections::{BTreeMap, BTreeSet},
     sync::Arc,

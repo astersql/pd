@@ -7,8 +7,8 @@ use astersql_pd_schedule_config::ProviderSnapshot;
 use astersql_pd_schedule_labeler::{LabelRule, RegionLabeler};
 use astersql_pd_schedule_operator::{BuilderError, OpKind, OpStep};
 use astersql_pd_schedule_placement::{PeerRoleType, Rule, RuleManager};
-use astersql_pd_storage_endpoint::StorageEndpoint;
-use astersql_pd_storage_kv::MemoryStore;
+use astersql_pd_storage_domain::MemoryStore;
+use astersql_pd_storage_domain::StorageEndpoint;
 use serde_json::{Value, json};
 use std::sync::Arc;
 fn num(c: &Value, k: &str, d: i64) -> i64 {

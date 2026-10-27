@@ -17,12 +17,12 @@ astersql-pd-typeutil.workspace = true
 astersql-pd-errs.workspace = true
 astersql-pd-schedule-rangelist.workspace = true
 astersql-pd-codec.workspace = true
-astersql-pd-storage-endpoint.workspace = true
-astersql-pd-storage-kv.workspace = true
+astersql-pd-storage-domain.workspace = true
 astersql-pd-keypath.workspace = true
 thiserror.workspace = true
 tokio.workspace = true
 prometheus.workspace = true
 
 [dev-dependencies]
+astersql-pd-storage-kv.workspace = true
 async-trait.workspace = true

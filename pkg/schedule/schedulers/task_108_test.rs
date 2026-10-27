@@ -3,8 +3,8 @@ use super::*;
 use astersql_pd_core::{BasicCluster, Peer, RegionInfo, RegionMeta, StoreInfo, StoreMeta};
 use astersql_pd_schedule_core::BasicCluster as _;
 use astersql_pd_schedule_operator::{ControllerAdmission, OpStep};
-use astersql_pd_storage_endpoint::StorageEndpoint;
-use astersql_pd_storage_kv::MemoryStore;
+use astersql_pd_storage_domain::MemoryStore;
+use astersql_pd_storage_domain::StorageEndpoint;
 use std::sync::Arc;
 fn now() -> i64 {
     1_000_000_000_000

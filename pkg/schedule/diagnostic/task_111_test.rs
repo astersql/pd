@@ -5,8 +5,8 @@ use astersql_pd_keypath::ClusterPaths;
 use astersql_pd_schedule_config::{ProviderSnapshot, SchedulerConfig};
 use astersql_pd_schedule_schedulers::*;
 use astersql_pd_schedule_types::*;
-use astersql_pd_storage_endpoint::StorageEndpoint;
-use astersql_pd_storage_kv::MemoryStore;
+use astersql_pd_storage_domain::MemoryStore;
+use astersql_pd_storage_domain::StorageEndpoint;
 use std::{collections::BTreeMap, sync::Arc};
 
 async fn controller() -> SchedulerController {

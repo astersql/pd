@@ -35,7 +35,6 @@ futures-util.workspace = true
 [dev-dependencies]
 async-trait.workspace = true
 astersql-pd-keypath.workspace = true
-astersql-pd-storage-endpoint.workspace = true
-astersql-pd-storage-kv.workspace = true
+astersql-pd-storage-domain.workspace = true
 astersql-pd-schedule-labeler.workspace = true
 astersql-pd-schedule-affinity.workspace = true

@@ -10,8 +10,8 @@ use astersql_pd_keypath::ClusterPaths;
 use astersql_pd_keyutil::KeyRange;
 use astersql_pd_schedule_config::ProviderSnapshot;
 use astersql_pd_schedule_labeler::RegionLabeler;
-use astersql_pd_storage_endpoint::StorageEndpoint;
-use astersql_pd_storage_kv::MemoryStore;
+use astersql_pd_storage_domain::MemoryStore;
+use astersql_pd_storage_domain::StorageEndpoint;
 use std::sync::Arc;
 fn region(size: u64, keys: u64, leader: u64) -> Arc<RegionInfo> {
     let peer = Peer {

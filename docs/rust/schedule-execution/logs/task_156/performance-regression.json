@@ -4,7 +4,7 @@
       "allocated_bytes": 15458,
       "allocations": 100,
       "cache": "cold",
-      "elapsed_ns": 161208,
+      "elapsed_ns": 138250,
       "quality": {
         "after_gap": 998,
         "before_gap": 1000,
@@ -20,17 +20,17 @@
       "stores": 4
     },
     {
-      "allocated_bytes": 14795,
-      "allocations": 92,
+      "allocated_bytes": 14859,
+      "allocations": 95,
       "cache": "cold",
-      "elapsed_ns": 74750,
+      "elapsed_ns": 75708,
       "quality": {
         "after_gap": 95808,
         "before_gap": 96000,
         "operators": 1,
         "region_id": 1,
         "source_score": 1067546272.0,
-        "steps": "[AddLearner(AddLearner { to_store: 4, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: 4, peer_id: 9000000, is_witness: false }), RemovePeer(RemovePeer { from_store: 3, peer_id: 103, is_light_weight: false, is_down_store: false })]",
+        "steps": "[AddLearner(AddLearner { to_store: 4, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: 4, peer_id: 9000000, is_witness: false }), TransferLeader(TransferLeader { from_store: 1, to_store: 2, to_stores: [] }), RemovePeer(RemovePeer { from_store: 1, peer_id: 101, is_light_weight: false, is_down_store: false })]",
         "target_score": 1067450464.0
       },
       "regions": 1000,
@@ -42,7 +42,7 @@
       "allocated_bytes": 15394,
       "allocations": 99,
       "cache": "cold",
-      "elapsed_ns": 46833,
+      "elapsed_ns": 49917,
       "quality": {
         "after_gap": 998,
         "before_gap": 1000,
@@ -58,17 +58,17 @@
       "stores": 4
     },
     {
-      "allocated_bytes": 14795,
-      "allocations": 92,
+      "allocated_bytes": 14859,
+      "allocations": 95,
       "cache": "cold",
-      "elapsed_ns": 60791,
+      "elapsed_ns": 64625,
       "quality": {
         "after_gap": 95808,
         "before_gap": 96000,
         "operators": 1,
         "region_id": 1,
         "source_score": 1067546272.0,
-        "steps": "[AddLearner(AddLearner { to_store: 4, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: 4, peer_id: 9000000, is_witness: false }), RemovePeer(RemovePeer { from_store: 3, peer_id: 103, is_light_weight: false, is_down_store: false })]",
+        "steps": "[AddLearner(AddLearner { to_store: 4, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: 4, peer_id: 9000000, is_witness: false }), TransferLeader(TransferLeader { from_store: 1, to_store: 2, to_stores: [] }), RemovePeer(RemovePeer { from_store: 1, peer_id: 101, is_light_weight: false, is_down_store: false })]",
         "target_score": 1067450464.0
       },
       "regions": 1000,
@@ -80,7 +80,7 @@
       "allocated_bytes": 15394,
       "allocations": 99,
       "cache": "cold",
-      "elapsed_ns": 42875,
+      "elapsed_ns": 46000,
       "quality": {
         "after_gap": 998,
         "before_gap": 1000,
@@ -96,17 +96,17 @@
       "stores": 4
     },
     {
-      "allocated_bytes": 14795,
-      "allocations": 92,
+      "allocated_bytes": 14859,
+      "allocations": 95,
       "cache": "cold",
-      "elapsed_ns": 57834,
+      "elapsed_ns": 61167,
       "quality": {
         "after_gap": 95808,
         "before_gap": 96000,
         "operators": 1,
         "region_id": 1,
         "source_score": 1067546272.0,
-        "steps": "[AddLearner(AddLearner { to_store: 4, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: 4, peer_id: 9000000, is_witness: false }), RemovePeer(RemovePeer { from_store: 3, peer_id: 103, is_light_weight: false, is_down_store: false })]",
+        "steps": "[AddLearner(AddLearner { to_store: 4, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: 4, peer_id: 9000000, is_witness: false }), TransferLeader(TransferLeader { from_store: 1, to_store: 2, to_stores: [] }), RemovePeer(RemovePeer { from_store: 1, peer_id: 101, is_light_weight: false, is_down_store: false })]",
         "target_score": 1067450464.0
       },
       "regions": 1000,
@@ -118,7 +118,7 @@
       "allocated_bytes": 14635,
       "allocations": 86,
       "cache": "warm",
-      "elapsed_ns": 39333,
+      "elapsed_ns": 38917,
       "quality": {
         "after_gap": 998,
         "before_gap": 1000,
@@ -134,17 +134,17 @@
       "stores": 4
     },
     {
-      "allocated_bytes": 14036,
-      "allocations": 79,
+      "allocated_bytes": 14100,
+      "allocations": 82,
       "cache": "warm",
-      "elapsed_ns": 54125,
+      "elapsed_ns": 58750,
       "quality": {
         "after_gap": 95808,
         "before_gap": 96000,
         "operators": 1,
         "region_id": 1,
         "source_score": 1067546272.0,
-        "steps": "[AddLearner(AddLearner { to_store: 4, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: 4, peer_id: 9000000, is_witness: false }), RemovePeer(RemovePeer { from_store: 3, peer_id: 103, is_light_weight: false, is_down_store: false })]",
+        "steps": "[AddLearner(AddLearner { to_store: 4, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: 4, peer_id: 9000000, is_witness: false }), TransferLeader(TransferLeader { from_store: 1, to_store: 2, to_stores: [] }), RemovePeer(RemovePeer { from_store: 1, peer_id: 101, is_light_weight: false, is_down_store: false })]",
         "target_score": 1067450464.0
       },
       "regions": 1000,
@@ -156,7 +156,7 @@
       "allocated_bytes": 14635,
       "allocations": 86,
       "cache": "warm",
-      "elapsed_ns": 38583,
+      "elapsed_ns": 39292,
       "quality": {
         "after_gap": 998,
         "before_gap": 1000,
@@ -172,17 +172,17 @@
       "stores": 4
     },
     {
-      "allocated_bytes": 14036,
-      "allocations": 79,
+      "allocated_bytes": 14100,
+      "allocations": 82,
       "cache": "warm",
-      "elapsed_ns": 53500,
+      "elapsed_ns": 56708,
       "quality": {
         "after_gap": 95808,
         "before_gap": 96000,
         "operators": 1,
         "region_id": 1,
         "source_score": 1067546272.0,
-        "steps": "[AddLearner(AddLearner { to_store: 4, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: 4, peer_id: 9000000, is_witness: false }), RemovePeer(RemovePeer { from_store: 3, peer_id: 103, is_light_weight: false, is_down_store: false })]",
+        "steps": "[AddLearner(AddLearner { to_store: 4, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: 4, peer_id: 9000000, is_witness: false }), TransferLeader(TransferLeader { from_store: 1, to_store: 2, to_stores: [] }), RemovePeer(RemovePeer { from_store: 1, peer_id: 101, is_light_weight: false, is_down_store: false })]",
         "target_score": 1067450464.0
       },
       "regions": 1000,
@@ -194,7 +194,7 @@
       "allocated_bytes": 14635,
       "allocations": 86,
       "cache": "warm",
-      "elapsed_ns": 38458,
+      "elapsed_ns": 38917,
       "quality": {
         "after_gap": 998,
         "before_gap": 1000,
@@ -210,17 +210,17 @@
       "stores": 4
     },
     {
-      "allocated_bytes": 14036,
-      "allocations": 79,
+      "allocated_bytes": 14100,
+      "allocations": 82,
       "cache": "warm",
-      "elapsed_ns": 52833,
+      "elapsed_ns": 56166,
       "quality": {
         "after_gap": 95808,
         "before_gap": 96000,
         "operators": 1,
         "region_id": 1,
         "source_score": 1067546272.0,
-        "steps": "[AddLearner(AddLearner { to_store: 4, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: 4, peer_id: 9000000, is_witness: false }), RemovePeer(RemovePeer { from_store: 3, peer_id: 103, is_light_weight: false, is_down_store: false })]",
+        "steps": "[AddLearner(AddLearner { to_store: 4, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: 4, peer_id: 9000000, is_witness: false }), TransferLeader(TransferLeader { from_store: 1, to_store: 2, to_stores: [] }), RemovePeer(RemovePeer { from_store: 1, peer_id: 101, is_light_weight: false, is_down_store: false })]",
         "target_score": 1067450464.0
       },
       "regions": 1000,
@@ -232,7 +232,7 @@
       "allocated_bytes": 45042,
       "allocations": 114,
       "cache": "cold",
-      "elapsed_ns": 892666,
+      "elapsed_ns": 893500,
       "quality": {
         "after_gap": 9998,
         "before_gap": 10000,
@@ -248,17 +248,17 @@
       "stores": 100
     },
     {
-      "allocated_bytes": 43475,
-      "allocations": 116,
+      "allocated_bytes": 42971,
+      "allocations": 113,
       "cache": "cold",
-      "elapsed_ns": 484625,
+      "elapsed_ns": 467625,
       "quality": {
         "after_gap": 959808,
         "before_gap": 960000,
         "operators": 1,
         "region_id": 1,
         "source_score": 1068410272.0,
-        "steps": "[AddLearner(AddLearner { to_store: 64, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: 64, peer_id: 9000000, is_witness: false }), RemovePeer(RemovePeer { from_store: 3, peer_id: 103, is_light_weight: false, is_down_store: false })]",
+        "steps": "[AddLearner(AddLearner { to_store: 39, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: 39, peer_id: 9000000, is_witness: false }), RemovePeer(RemovePeer { from_store: 2, peer_id: 102, is_light_weight: false, is_down_store: false })]",
         "target_score": 1067450464.0
       },
       "regions": 10000,
@@ -270,7 +270,7 @@
       "allocated_bytes": 44978,
       "allocations": 113,
       "cache": "cold",
-      "elapsed_ns": 823750,
+      "elapsed_ns": 788083,
       "quality": {
         "after_gap": 9998,
         "before_gap": 10000,
@@ -286,17 +286,17 @@
       "stores": 100
     },
     {
-      "allocated_bytes": 43475,
-      "allocations": 116,
+      "allocated_bytes": 42971,
+      "allocations": 113,
       "cache": "cold",
-      "elapsed_ns": 461333,
+      "elapsed_ns": 442791,
       "quality": {
         "after_gap": 959808,
         "before_gap": 960000,
         "operators": 1,
         "region_id": 1,
         "source_score": 1068410272.0,
-        "steps": "[AddLearner(AddLearner { to_store: 64, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: 64, peer_id: 9000000, is_witness: false }), RemovePeer(RemovePeer { from_store: 3, peer_id: 103, is_light_weight: false, is_down_store: false })]",
+        "steps": "[AddLearner(AddLearner { to_store: 39, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: 39, peer_id: 9000000, is_witness: false }), RemovePeer(RemovePeer { from_store: 2, peer_id: 102, is_light_weight: false, is_down_store: false })]",
         "target_score": 1067450464.0
       },
       "regions": 10000,
@@ -308,7 +308,7 @@
       "allocated_bytes": 44978,
       "allocations": 113,
       "cache": "cold",
-      "elapsed_ns": 806666,
+      "elapsed_ns": 777666,
       "quality": {
         "after_gap": 9998,
         "before_gap": 10000,
@@ -324,17 +324,17 @@
       "stores": 100
     },
     {
-      "allocated_bytes": 43475,
-      "allocations": 116,
+      "allocated_bytes": 42971,
+      "allocations": 113,
       "cache": "cold",
-      "elapsed_ns": 467083,
+      "elapsed_ns": 435959,
       "quality": {
         "after_gap": 959808,
         "before_gap": 960000,
         "operators": 1,
         "region_id": 1,
         "source_score": 1068410272.0,
-        "steps": "[AddLearner(AddLearner { to_store: 64, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: 64, peer_id: 9000000, is_witness: false }), RemovePeer(RemovePeer { from_store: 3, peer_id: 103, is_light_weight: false, is_down_store: false })]",
+        "steps": "[AddLearner(AddLearner { to_store: 39, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: 39, peer_id: 9000000, is_witness: false }), RemovePeer(RemovePeer { from_store: 2, peer_id: 102, is_light_weight: false, is_down_store: false })]",
         "target_score": 1067450464.0
       },
       "regions": 10000,
@@ -346,7 +346,7 @@
       "allocated_bytes": 44219,
       "allocations": 100,
       "cache": "warm",
-      "elapsed_ns": 797125,
+      "elapsed_ns": 775459,
       "quality": {
         "after_gap": 9998,
         "before_gap": 10000,
@@ -362,17 +362,17 @@
       "stores": 100
     },
     {
-      "allocated_bytes": 42716,
-      "allocations": 103,
+      "allocated_bytes": 42212,
+      "allocations": 100,
       "cache": "warm",
-      "elapsed_ns": 446167,
+      "elapsed_ns": 434042,
       "quality": {
         "after_gap": 959808,
         "before_gap": 960000,
         "operators": 1,
         "region_id": 1,
         "source_score": 1068410272.0,
-        "steps": "[AddLearner(AddLearner { to_store: 64, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: 64, peer_id: 9000000, is_witness: false }), RemovePeer(RemovePeer { from_store: 3, peer_id: 103, is_light_weight: false, is_down_store: false })]",
+        "steps": "[AddLearner(AddLearner { to_store: 39, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: 39, peer_id: 9000000, is_witness: false }), RemovePeer(RemovePeer { from_store: 2, peer_id: 102, is_light_weight: false, is_down_store: false })]",
         "target_score": 1067450464.0
       },
       "regions": 10000,
@@ -384,7 +384,7 @@
       "allocated_bytes": 44219,
       "allocations": 100,
       "cache": "warm",
-      "elapsed_ns": 779667,
+      "elapsed_ns": 774000,
       "quality": {
         "after_gap": 9998,
         "before_gap": 10000,
@@ -400,17 +400,17 @@
       "stores": 100
     },
     {
-      "allocated_bytes": 42716,
-      "allocations": 103,
+      "allocated_bytes": 42212,
+      "allocations": 100,
       "cache": "warm",
-      "elapsed_ns": 449584,
+      "elapsed_ns": 434208,
       "quality": {
         "after_gap": 959808,
         "before_gap": 960000,
         "operators": 1,
         "region_id": 1,
         "source_score": 1068410272.0,
-        "steps": "[AddLearner(AddLearner { to_store: 64, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: 64, peer_id: 9000000, is_witness: false }), RemovePeer(RemovePeer { from_store: 3, peer_id: 103, is_light_weight: false, is_down_store: false })]",
+        "steps": "[AddLearner(AddLearner { to_store: 39, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: 39, peer_id: 9000000, is_witness: false }), RemovePeer(RemovePeer { from_store: 2, peer_id: 102, is_light_weight: false, is_down_store: false })]",
         "target_score": 1067450464.0
       },
       "regions": 10000,
@@ -422,7 +422,7 @@
       "allocated_bytes": 44219,
       "allocations": 100,
       "cache": "warm",
-      "elapsed_ns": 785166,
+      "elapsed_ns": 783417,
       "quality": {
         "after_gap": 9998,
         "before_gap": 10000,
@@ -438,17 +438,17 @@
       "stores": 100
     },
     {
-      "allocated_bytes": 42716,
-      "allocations": 103,
+      "allocated_bytes": 42212,
+      "allocations": 100,
       "cache": "warm",
-      "elapsed_ns": 431334,
+      "elapsed_ns": 494708,
       "quality": {
         "after_gap": 959808,
         "before_gap": 960000,
         "operators": 1,
         "region_id": 1,
         "source_score": 1068410272.0,
-        "steps": "[AddLearner(AddLearner { to_store: 64, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: 64, peer_id: 9000000, is_witness: false }), RemovePeer(RemovePeer { from_store: 3, peer_id: 103, is_light_weight: false, is_down_store: false })]",
+        "steps": "[AddLearner(AddLearner { to_store: 39, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: 39, peer_id: 9000000, is_witness: false }), RemovePeer(RemovePeer { from_store: 2, peer_id: 102, is_light_weight: false, is_down_store: false })]",
         "target_score": 1067450464.0
       },
       "regions": 10000,
@@ -460,7 +460,7 @@
       "allocated_bytes": 5679,
       "allocations": 35,
       "cache": "cold",
-      "elapsed_ns": 21205042,
+      "elapsed_ns": 20954208,
       "quality": {
         "after_gap": 100.0,
         "before_gap": 500,
@@ -478,7 +478,7 @@
       "allocated_bytes": 5679,
       "allocations": 35,
       "cache": "cold",
-      "elapsed_ns": 20054750,
+      "elapsed_ns": 20116958,
       "quality": {
         "after_gap": 100.0,
         "before_gap": 500,
@@ -496,7 +496,7 @@
       "allocated_bytes": 5679,
       "allocations": 35,
       "cache": "cold",
-      "elapsed_ns": 20267708,
+      "elapsed_ns": 20713250,
       "quality": {
         "after_gap": 100.0,
         "before_gap": 500,
@@ -514,7 +514,7 @@
       "allocated_bytes": 5679,
       "allocations": 35,
       "cache": "warm",
-      "elapsed_ns": 20454042,
+      "elapsed_ns": 20497583,
       "quality": {
         "after_gap": 100.0,
         "before_gap": 500,
@@ -532,7 +532,7 @@
       "allocated_bytes": 5679,
       "allocations": 35,
       "cache": "warm",
-      "elapsed_ns": 19816459,
+      "elapsed_ns": 20532208,
       "quality": {
         "after_gap": 100.0,
         "before_gap": 500,
@@ -550,7 +550,7 @@
       "allocated_bytes": 5679,
       "allocations": 35,
       "cache": "warm",
-      "elapsed_ns": 19782083,
+      "elapsed_ns": 20485833,
       "quality": {
         "after_gap": 100.0,
         "before_gap": 500,
@@ -568,7 +568,7 @@
       "allocated_bytes": 5679,
       "allocations": 35,
       "cache": "cold",
-      "elapsed_ns": 36507125,
+      "elapsed_ns": 35877833,
       "quality": {
         "after_gap": 100.0,
         "before_gap": 500,
@@ -586,7 +586,7 @@
       "allocated_bytes": 5679,
       "allocations": 35,
       "cache": "cold",
-      "elapsed_ns": 35883791,
+      "elapsed_ns": 36206209,
       "quality": {
         "after_gap": 100.0,
         "before_gap": 500,
@@ -604,7 +604,7 @@
       "allocated_bytes": 5679,
       "allocations": 35,
       "cache": "cold",
-      "elapsed_ns": 36073292,
+      "elapsed_ns": 36144542,
       "quality": {
         "after_gap": 100.0,
         "before_gap": 500,
@@ -622,7 +622,7 @@
       "allocated_bytes": 5679,
       "allocations": 35,
       "cache": "warm",
-      "elapsed_ns": 35563708,
+      "elapsed_ns": 35662792,
       "quality": {
         "after_gap": 100.0,
         "before_gap": 500,
@@ -640,7 +640,7 @@
       "allocated_bytes": 5679,
       "allocations": 35,
       "cache": "warm",
-      "elapsed_ns": 35830000,
+      "elapsed_ns": 35654917,
       "quality": {
         "after_gap": 100.0,
         "before_gap": 500,
@@ -658,7 +658,7 @@
       "allocated_bytes": 5679,
       "allocations": 35,
       "cache": "warm",
-      "elapsed_ns": 35841708,
+      "elapsed_ns": 35822625,
       "quality": {
         "after_gap": 100.0,
         "before_gap": 500,
@@ -693,26 +693,26 @@
       "case": [
         "balance-region",
         "cold",
-        4,
-        1000,
+        100,
+        10000,
         0
       ],
       "current": {
-        "after_gap": 95808,
-        "before_gap": 96000,
+        "after_gap": 959808,
+        "before_gap": 960000,
         "operators": 1,
         "region_id": 1,
-        "source_score": 1067546272.0,
-        "steps": "[AddLearner(AddLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, is_witness: false }), RemovePeer(RemovePeer { from_store: 3, peer_id: 103, is_light_weight: false, is_down_store: false })]",
+        "source_score": 1068410272.0,
+        "steps": "[AddLearner(AddLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, is_witness: false }), RemovePeer(RemovePeer { from_store: 2, peer_id: 102, is_light_weight: false, is_down_store: false })]",
         "target_score": 1067450464.0
       },
       "previous": {
-        "after_gap": 95808,
-        "before_gap": 96000,
+        "after_gap": 959808,
+        "before_gap": 960000,
         "operators": 1,
         "region_id": 1,
-        "source_score": 1067546272.0,
-        "steps": "[AddLearner(AddLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, is_witness: false }), TransferLeader(TransferLeader { from_store: 1, to_store: 2, to_stores: [] }), RemovePeer(RemovePeer { from_store: 1, peer_id: 101, is_light_weight: false, is_down_store: false })]",
+        "source_score": 1068410272.0,
+        "steps": "[AddLearner(AddLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, is_witness: false }), RemovePeer(RemovePeer { from_store: 3, peer_id: 103, is_light_weight: false, is_down_store: false })]",
         "target_score": 1067450464.0
       }
     },
@@ -720,26 +720,26 @@
       "case": [
         "balance-region",
         "cold",
-        4,
-        1000,
+        100,
+        10000,
         1
       ],
       "current": {
-        "after_gap": 95808,
-        "before_gap": 96000,
+        "after_gap": 959808,
+        "before_gap": 960000,
         "operators": 1,
         "region_id": 1,
-        "source_score": 1067546272.0,
-        "steps": "[AddLearner(AddLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, is_witness: false }), RemovePeer(RemovePeer { from_store: 3, peer_id: 103, is_light_weight: false, is_down_store: false })]",
+        "source_score": 1068410272.0,
+        "steps": "[AddLearner(AddLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, is_witness: false }), RemovePeer(RemovePeer { from_store: 2, peer_id: 102, is_light_weight: false, is_down_store: false })]",
         "target_score": 1067450464.0
       },
       "previous": {
-        "after_gap": 95808,
-        "before_gap": 96000,
+        "after_gap": 959808,
+        "before_gap": 960000,
         "operators": 1,
         "region_id": 1,
-        "source_score": 1067546272.0,
-        "steps": "[AddLearner(AddLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, is_witness: false }), TransferLeader(TransferLeader { from_store: 1, to_store: 2, to_stores: [] }), RemovePeer(RemovePeer { from_store: 1, peer_id: 101, is_light_weight: false, is_down_store: false })]",
+        "source_score": 1068410272.0,
+        "steps": "[AddLearner(AddLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, is_witness: false }), RemovePeer(RemovePeer { from_store: 3, peer_id: 103, is_light_weight: false, is_down_store: false })]",
         "target_score": 1067450464.0
       }
     },
@@ -747,26 +747,26 @@
       "case": [
         "balance-region",
         "cold",
-        4,
-        1000,
+        100,
+        10000,
         2
       ],
       "current": {
-        "after_gap": 95808,
-        "before_gap": 96000,
+        "after_gap": 959808,
+        "before_gap": 960000,
         "operators": 1,
         "region_id": 1,
-        "source_score": 1067546272.0,
-        "steps": "[AddLearner(AddLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, is_witness: false }), RemovePeer(RemovePeer { from_store: 3, peer_id: 103, is_light_weight: false, is_down_store: false })]",
+        "source_score": 1068410272.0,
+        "steps": "[AddLearner(AddLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, is_witness: false }), RemovePeer(RemovePeer { from_store: 2, peer_id: 102, is_light_weight: false, is_down_store: false })]",
         "target_score": 1067450464.0
       },
       "previous": {
-        "after_gap": 95808,
-        "before_gap": 96000,
+        "after_gap": 959808,
+        "before_gap": 960000,
         "operators": 1,
         "region_id": 1,
-        "source_score": 1067546272.0,
-        "steps": "[AddLearner(AddLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, is_witness: false }), TransferLeader(TransferLeader { from_store: 1, to_store: 2, to_stores: [] }), RemovePeer(RemovePeer { from_store: 1, peer_id: 101, is_light_weight: false, is_down_store: false })]",
+        "source_score": 1068410272.0,
+        "steps": "[AddLearner(AddLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, is_witness: false }), RemovePeer(RemovePeer { from_store: 3, peer_id: 103, is_light_weight: false, is_down_store: false })]",
         "target_score": 1067450464.0
       }
     },
@@ -774,26 +774,26 @@
       "case": [
         "balance-region",
         "warm",
-        4,
-        1000,
+        100,
+        10000,
         0
       ],
       "current": {
-        "after_gap": 95808,
-        "before_gap": 96000,
+        "after_gap": 959808,
+        "before_gap": 960000,
         "operators": 1,
         "region_id": 1,
-        "source_score": 1067546272.0,
-        "steps": "[AddLearner(AddLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, is_witness: false }), RemovePeer(RemovePeer { from_store: 3, peer_id: 103, is_light_weight: false, is_down_store: false })]",
+        "source_score": 1068410272.0,
+        "steps": "[AddLearner(AddLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, is_witness: false }), RemovePeer(RemovePeer { from_store: 2, peer_id: 102, is_light_weight: false, is_down_store: false })]",
         "target_score": 1067450464.0
       },
       "previous": {
-        "after_gap": 95808,
-        "before_gap": 96000,
+        "after_gap": 959808,
+        "before_gap": 960000,
         "operators": 1,
         "region_id": 1,
-        "source_score": 1067546272.0,
-        "steps": "[AddLearner(AddLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, is_witness: false }), TransferLeader(TransferLeader { from_store: 1, to_store: 2, to_stores: [] }), RemovePeer(RemovePeer { from_store: 1, peer_id: 101, is_light_weight: false, is_down_store: false })]",
+        "source_score": 1068410272.0,
+        "steps": "[AddLearner(AddLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, is_witness: false }), RemovePeer(RemovePeer { from_store: 3, peer_id: 103, is_light_weight: false, is_down_store: false })]",
         "target_score": 1067450464.0
       }
     },
@@ -801,26 +801,26 @@
       "case": [
         "balance-region",
         "warm",
-        4,
-        1000,
+        100,
+        10000,
         1
       ],
       "current": {
-        "after_gap": 95808,
-        "before_gap": 96000,
+        "after_gap": 959808,
+        "before_gap": 960000,
         "operators": 1,
         "region_id": 1,
-        "source_score": 1067546272.0,
-        "steps": "[AddLearner(AddLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, is_witness: false }), RemovePeer(RemovePeer { from_store: 3, peer_id: 103, is_light_weight: false, is_down_store: false })]",
+        "source_score": 1068410272.0,
+        "steps": "[AddLearner(AddLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, is_witness: false }), RemovePeer(RemovePeer { from_store: 2, peer_id: 102, is_light_weight: false, is_down_store: false })]",
         "target_score": 1067450464.0
       },
       "previous": {
-        "after_gap": 95808,
-        "before_gap": 96000,
+        "after_gap": 959808,
+        "before_gap": 960000,
         "operators": 1,
         "region_id": 1,
-        "source_score": 1067546272.0,
-        "steps": "[AddLearner(AddLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, is_witness: false }), TransferLeader(TransferLeader { from_store: 1, to_store: 2, to_stores: [] }), RemovePeer(RemovePeer { from_store: 1, peer_id: 101, is_light_weight: false, is_down_store: false })]",
+        "source_score": 1068410272.0,
+        "steps": "[AddLearner(AddLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, is_witness: false }), RemovePeer(RemovePeer { from_store: 3, peer_id: 103, is_light_weight: false, is_down_store: false })]",
         "target_score": 1067450464.0
       }
     },
@@ -828,26 +828,26 @@
       "case": [
         "balance-region",
         "warm",
-        4,
-        1000,
+        100,
+        10000,
         2
       ],
       "current": {
-        "after_gap": 95808,
-        "before_gap": 96000,
+        "after_gap": 959808,
+        "before_gap": 960000,
         "operators": 1,
         "region_id": 1,
-        "source_score": 1067546272.0,
-        "steps": "[AddLearner(AddLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, is_witness: false }), RemovePeer(RemovePeer { from_store: 3, peer_id: 103, is_light_weight: false, is_down_store: false })]",
+        "source_score": 1068410272.0,
+        "steps": "[AddLearner(AddLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, is_witness: false }), RemovePeer(RemovePeer { from_store: 2, peer_id: 102, is_light_weight: false, is_down_store: false })]",
         "target_score": 1067450464.0
       },
       "previous": {
-        "after_gap": 95808,
-        "before_gap": 96000,
+        "after_gap": 959808,
+        "before_gap": 960000,
         "operators": 1,
         "region_id": 1,
-        "source_score": 1067546272.0,
-        "steps": "[AddLearner(AddLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, is_witness: false }), TransferLeader(TransferLeader { from_store: 1, to_store: 2, to_stores: [] }), RemovePeer(RemovePeer { from_store: 1, peer_id: 101, is_light_weight: false, is_down_store: false })]",
+        "source_score": 1068410272.0,
+        "steps": "[AddLearner(AddLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, send_store: 1, is_light_weight: false, is_witness: false }), PromoteLearner(PromoteLearner { to_store: EQUAL_SCORE_EMPTY_TARGET, peer_id: 9000000, is_witness: false }), RemovePeer(RemovePeer { from_store: 3, peer_id: 103, is_light_weight: false, is_down_store: false })]",
         "target_score": 1067450464.0
       }
     }

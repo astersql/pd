@@ -1,5 +1,5 @@
 // Copyright 2026 AsterSQL.
-use astersql_pd_storage_kv::{Base, CallbackTxn, CallbackTxnError, MetaStore, StoreError};
+use crate::kv::{Base, CallbackTxn, CallbackTxnError, MetaStore, StoreError};
 use tokio_util::sync::CancellationToken;
 
 /// Go's etcdutil.MaxEtcdTxnOps bounds callbacks per transaction, not writes per callback.

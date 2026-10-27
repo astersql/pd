@@ -8,7 +8,7 @@ use astersql_pd_core::{KeyRange, StoreControlError};
 use astersql_pd_keypath::ClusterPaths;
 use astersql_pd_schedule_config::SchedulerConfigProvider;
 use astersql_pd_schedule_core::BasicCluster;
-use astersql_pd_storage_endpoint::StorageEndpoint;
+use astersql_pd_storage_domain::StorageEndpoint;
 const NAME: &str = "evict-slow-store-scheduler";
 
 /// Only disk configuration is persisted here; recovery timestamps are process-local in Go.

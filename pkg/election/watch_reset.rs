@@ -1,6 +1,6 @@
 // Copyright 2026 AsterSQL.
 use crate::{ElectionError, LeaderWatch, Leadership, Result};
-use astersql_pd_storage_kv::*;
+use astersql_pd_storage_domain::*;
 use std::sync::{Arc, Mutex};
 use tokio_util::sync::CancellationToken;
 

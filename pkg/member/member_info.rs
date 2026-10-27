@@ -1,6 +1,6 @@
 // Copyright 2026 AsterSQL.
 use astersql_pd_keypath::ClusterPaths;
-use astersql_pd_storage_kv::{Consistency, MetaStore, Mutation, Read, StoreError};
+use astersql_pd_storage_domain::{Consistency, MetaStore, Mutation, Read, StoreError};
 use std::{future::Future, sync::Arc};
 use tokio_util::sync::CancellationToken;
 

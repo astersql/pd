@@ -1,153 +1,153 @@
 # 任务156：全包覆盖审计与主题回归
 
-状态：已阻塞。全部Cargo验证通过；主题必需的normal传递依赖审计失败。编号任务保留。
+状态：已完成。初次存储适配层依赖阻塞已按用户后续授权修复；严格crate normal传递
+依赖、全包覆盖及所有最终验证通过。两份plan.md和原始主题6只读；58/67编号文件由主会话处理。
 
 依赖155由提交 `44c6366cb`、[任务155](task-155.md)与全部8条最终命令的日志哈希核实，
-详见[依赖核验](logs/task_156/dependency-155.json)。整体与包级plan只读；没有子代理。
-任务58、67由主会话负责最终状态清理，本任务只提供它们的新回归证据，不改其文件。
+详见[依赖核验](logs/task_156/dependency-155.json)。初次验收提交为 `d25981c4e`。
+按用户明确授权，以只读Go源码/测试推导加Rust真实行为/故障验证替代缺失Go运行oracle，
+没有新增Go运行差分；[oracle-index](oracle-index.json)原分类保持不变。
 
-本任务遵照后续明确授权，采用**只读Go源码/测试推导 + Rust真实行为及故障验证**
-替代缺失Go运行oracle。没有执行新的Go oracle或宣称新Go/Rust运行差分；
-[provenance](logs/task_156/provenance.json)固定来源commit、源码与冻结fixture哈希。
-既有Go运行证据仍按[oracle-index](oracle-index.json)原分类保存，没有重分类或伪造。
+## 最小依赖修复与兼容边界
 
-## 新验收测试与生产路径
+原始[失败依赖审计](logs/task_156/pre-split/dependency-audit.json)发现75条到proto/prost/tonic
+的normal路径，例如 `schedulers → storage-endpoint → proto`、`core → id → storage-kv → tonic`。
+不是unused依赖，直接删除会破坏实际适配器功能；初次结果没有冒充完成。
+后续用户明确授权必要的Rust契约/适配器拆分，保留严格门槛和现有后端行为。
+
+新增唯一的中立存储crate：
+[storage-domain](../../../pkg/storage/domain/lib.rs)，领域说明见
+[lib.rs.md](../../../pkg/storage/domain/lib.rs.md)。它显式注册原KV中立实现文件及原endpoint的
+字节/JSON、配置、调度器、规则、affinity、batch实现，不复制业务算法。旧KV facade
+重导出同一套MetaStore、Base、MemoryStore和事务类型，同时保留Etcd实现及全部测试。
+旧endpoint保留prost/wire实现、region ID游标；字节/JSON方法委托同一MetaStore的中立句柄。
+
+[中立KV](../../../pkg/storage/domain/kv.rs)与[中立endpoint](../../../pkg/storage/domain/endpoint.rs)
+不依赖protobuf、prost、tonic、具体Etcd、server或runtime。EndpointError保留错误分类和显示
+文本；适配器的底层codec错误通过标准Error trait对象承载，真正编解码仍在原endpoint。
+隐藏的public校验/range/取消辅助函数供Etcd适配器复用，避免复制算法。
+
+调度、placement、affinity、labeler、statistics、cluster-utils改用中立crate；传递路径上的
+ID/member/election也切到同一中立契约，Etcd测试依赖留在dev-dependencies。
+`RuleManager::new`、`FactoryContext::new`、配置/range构造器通过AsRef接收新旧句柄；
+`RegionLabeler::load`通过Into接收。克隆只共享后端Arc，不复制或重建后端状态。
+旧Etcd、protobuf功能、存储契约和回归测试均保留。没有新增feature或远程依赖。
+
+[锁文件审计](logs/task_156/lock-audit.json)确认全部远程包source/version/checksum及依赖块
+与d25981c4e相同。首次离线生成暂选pulldown-cmark 0.13.5，已恢复原0.13.4及全部原远程块；
+最终只改变workspace包及依赖接线，后续验证使用--locked。
+[修复provenance](logs/task_156/repaired-provenance.json)固定实际修改、新中立文件、Go wire
+fixture和来源哈希；[初次provenance](logs/task_156/provenance.json)保留修复前快照。
+
+## 真实验收与故障测试
 
 [schedule_acceptance_test.rs](../../../tests/rust-compat/schedule_acceptance_test.rs)
-通过compat Cargo.toml显式注册为 `schedule_acceptance`，默认features；无需lib.rs重复注册。
-复用现有canonical `SchedulerRegistry::{register_builtins,create_args,restore}`、
-`RegisteredScheduler::{encode_config,save_config}`、
-`SchedulerController::{add,pause_or_resume,is_paused,delay,remove}`、真实BasicCluster、
-MemoryStore/StorageEndpoint。没有新增生产算法、crate、依赖、feature或Go文件。
+在compat Cargo.toml显式注册为`schedule_acceptance`。使用既有真实BasicCluster、18类
+SchedulerRegistry策略、SchedulerController和MetaStore；期望复用先前冻结的
+[task106 fixture](fixtures/task_106.json)及[task156场景](fixtures/task_156.json)。
 
-[任务156 fixture](fixtures/task_156.json)冻结18类数量、暂停时钟100秒/TTL10秒、110秒
-到期、损坏配置和decoder例外。有效args、名称、字段、job期望复用先于本任务冻结的
-[任务106 fixture](fixtures/task_106.json)，其哈希已固定；不由被测Rust实现生成期望。
+4个独立测试：
 
-3项独立测试：
+- `task_156_behavior_cases`：18类注册集合、有效args、名称、默认字段与range job字段；
+  真实保存后重建registry/endpoint并逐字节核对恢复，验证损坏配置及修复。
+- `task_156_pause_resume_all_factories`：18类各用独立真实cluster，检查add、按名暂停、
+  到期前一秒/精确到期、all暂停、显式恢复、remove，以及移除后再次暂停报错。
+- `task_156_io_faults_and_invalid_configuration`：18类read/transact边界失败（36次I/O拒绝），
+  核对错误、旧提交字节与恢复重试；8条非法args和1条未知name。正常I/O委托真实MemoryStore。
+- `task_156_storage_adapter_shares_neutral_backend`：检查旧KV与中立类型身份相同，旧adapter、
+  中立句柄及FactoryContext读到同一配置；使用既有冻结Go request_header wire字节验证
+  原protobuf适配器的实际保存/加载；坏wire保持ProtoUnmarshal分类、文本及原prost错误类型。
 
-- `task_156_behavior_cases`：18条配置故事。核对注册类型集合、名称、关键默认值与range
-  job字段；经真实后端保存后重建registry和endpoint，逐字节比较恢复结果；损坏配置
-  后验证17类拒绝、transfer-witness例外，再修复并重载全部18类。不归一化配置差异。
-- `task_156_pause_resume_all_factories`：18条生命周期故事，各用独立真实cluster，
-  add→按名暂停→到期前1秒仍暂停→精确到期恢复→all暂停→显式恢复→remove；
-  验证delay、移除后的空集合与再次暂停错误。操作器数量/预算限流另由下述策略测试验证。
-- `task_156_io_faults_and_invalid_configuration`：18条故障故事，每类各注入一次read与
-  transact边界Unavailable，保存/恢复返回错误；恢复I/O后核对旧提交字节及成功重试。
-  I/O adapter正常路径全部委托既有MemoryStore。另有8条非法args、1条未知name错误。
+前三项共54条按工厂划分的故事与9条独立错误案例；它们不是54个libtest函数或18个线上
+集群。真实Schedule步骤/kind/priority/目标/影响量、错误和限流由各策略既有测试在本次
+workspace重跑。新增第四项单独验证拆分边界，不能只靠编译或对象创建证明后端共享。
 
-共54条按工厂划分的故事与9条独立非法输入/名称案例；其中故障故事包含36次I/O拒绝。
-这不是54个独立libtest函数，也不是18个完整线上集群模拟。实际Schedule操作步骤、kind、
-priority、目标、影响量、错误和限流由每类真实策略的既有行为测试在本次workspace重新执行。
+transfer-witness的Go工厂`init.go:552–557`忽略decoder，因此损坏配置恢复为null；另外17类
+拒绝。该例外明确固定并验证，没有修改正确生产行为。其队列为瞬态，gate恒true，实际
+store预算和队列边界由task103覆盖；不虚构队列持久化故事。18类均实测宿主暂停/恢复。
 
-首轮新增测试错误地要求全部18类拒绝损坏配置；实际transfer-witness工厂在Go
-`init.go:552–557`忽略decoder，Rust既有实现与之相同。对照来源修正fixture，明确验证
-其null配置，不改正确生产行为。这个策略没有可持久化的调度队列，队列为瞬态；其
-`is_schedule_allowed`恒true，实际store预算与队列边界由task103测试覆盖，不虚构通用限流。
-所有18类的宿主级暂停/恢复均适用并已实测。
+## 来源覆盖、架构与性能
 
-## 覆盖与架构审计
+[逐来源映射](logs/task_156/source-coverage.json.gz)核实14包、85个生产文件、1213公开符号、
+900内部符号、44指标、24持久化候选、17异步及25failpoint站点的owner与本次通过测试；
+2个keypath定义单独关联配置存储测试。每项都有owner证据和fixture哈希，task002–155
+均有本次行为测试通过。来源Go文件集合和SHA256无漂移。持久化候选包含history.Remove
+等启发式命中，不能称24个存储事务。
 
-[逐来源覆盖映射](logs/task_156/source-coverage.json.gz)核验准入基准后的实际文件集合、
-逐文件SHA256和每项任务归属：14个来源包、85个生产文件、1213个公开符号、900个内部
-符号、44个指标构造、24个持久化候选、17个异步站点、25个failpoint站点。
-每项都关联owner任务证据、fixture哈希与**本次**通过的任务测试；2个keypath定义单独
-关联配置保存/恢复测试。持久化候选包含源码启发式匹配，如history.Remove，不能把24
-解释为24个实际存储事务。来源文件与准入SHA256一致，无增删或源码漂移。
+[18类矩阵](logs/task_156/scheduler-matrix.json)关联实际Schedule结果、策略错误/限流/配置、
+共同工厂保存/恢复和本次暂停测试；逐包覆盖heartbeat classic/v2、闭环、影响量、I/O取消、
+重启与性能。这是来源归属到行为套件的可追溯性，不是每条语句/分支动态覆盖率，也不
+声称每个符号各有独立Go运行差分。
 
-[18类矩阵](logs/task_156/scheduler-matrix.json)分别关联真实Schedule结果测试、
-策略限流/错误/配置任务、共同工厂持久化与本次暂停/恢复测试。balance、evict、grant、
-hot、label、merge、scatter、shuffle、witness、range所有工厂均有新通过结果，
-不是仅创建对象、列测试名或复用旧“通过”状态。task002–155每个任务都有新通过测试；
-逐包证据包括heartbeat classic/v2、闭环、影响量、I/O取消、重启及性能，详见逐项映射。
+[最终依赖审计](logs/task_156/dependency-audit.json)采用与初次失败相同的禁止集合，增加
+中立存储入口，共审查23个领域入口及其全部normal workspace传递边；不能用仅直接边、
+feature或过滤器跳过存储路径。真实Etcd/codec的dev测试和适配crate仍保留在完整cargo tree。
 
-此审计是**来源归属到行为测试套件的可追溯性**，不是每条语句/分支的动态覆盖率测量，
-也不声称每个公开符号各有独立运行差分。metric label/help/type、key及后台任务由其owner
-真实行为套件验收；本任务不复制这些生产逻辑或给源码推导套上Go运行标签。
+[性能重放](logs/task_156/performance-regression.json)重跑155的36条样本、4条错误/边界与
+666步leader收敛（最终`[334,333,333]`）。分数、改善量、操作数和rank比较保持严格；耗时/
+分配量只记录，没有Go耗时对比或新增阈值。跨进程等分source可变，步骤差异逐项保留，
+不声称字节相同：Go balance_region按分数排序无ID tie-break，原155测试允许移出1..3，
+并按实际source检查kind/步骤。同一快照冷/热步骤严格一致；只沿用原先声明的空目标tie
+归一化，不把不同source的操作归一成相同。仍是debug合成快照与MemoryStore契约测试，
+不是线上吞吐量或生产durability证明。[环境](logs/task_156/environment.json)注明机器未独占。
 
-[依赖审计](logs/task_156/dependency-audit.json)结合新metadata和完整cargo tree，沿22个
-调度领域及cluster-utils/progress/operatorutil的normal workspace传递边审查，发现75条
-到proto/prost/tonic的路径（含共享终点的多条路径，不是75个独立缺陷）。例如：
+## 红灯与验证记录
 
-- `schedule-schedulers → storage-endpoint → astersql-pd-proto/prost`
-- `schedule-schedulers → storage-endpoint → storage-kv → tonic`
+初次[缺target](logs/task_156/red-registration.json)退出101；
+[错误decoder期望](logs/task_156/initial.json)2通过/1失败，核对Go源码后修正。
+[初次错误变异](logs/task_156/red.json)污染恢复字节、取消暂停、禁用I/O故障，0通过/3失败，
+exit101；[快照](logs/task_156/mutated-test.rs.gz)保存当时实际源码。
 
-直接领域Cargo依赖没有新增transport，但传递图仍不满足本任务“无领域到proto/transport
-依赖倒置”的最终门槛。既有storage-endpoint的 `endpoint_codec.rs`、`keyspace_meta.rs`
-等实际使用prost/生成proto；storage-kv的 `etcd_store.rs` 使用etcd-client/tonic。
-它们分别把持久化codec和Etcd适配器与可复用存储契约放在同一crate。不能仅删除Cargo
-依赖，否则现有生产实现无法编译；不能用新feature或只检查直接边掩盖传递依赖。
-修复需要将后端中立存储契约与协议/Etcd适配器拆开，并调整placement、调度和存储调用方；
-这是跨既有基础包的边界重构，超过156“仅补验收、禁止塞入大量新实现”的范围。
-本次没有擅自进行该重构或放宽架构门槛，没有新增生产依赖。
+拆分新增[错误后端变异](logs/task_156/split-red.json)：给旧适配器的中立句柄新建独立后端，
+同一4测试出现1通过/3失败，exit101；配置恢复、I/O错误和冻结wire断言均检出问题。
+[变异脚本](logs/task_156/split-red.py)与[源码](logs/task_156/split-mutated-adapter.rs.gz)可审查；
+finally先等待Cargo子进程退出再恢复源码。没有Go文件改写。
 
-[性能重放](logs/task_156/performance-regression.json)在相同冻结场景重新执行任务155，
-得到36条新测量与666步leader闭环，最终 `[334,333,333]`。分数、改善量、操作数和rank
-与155基准一致；耗时/分配量只记录，无自定阈值或Go耗时对比。
-跨进程步骤**并非逐字节相同**：4节点region冷/热6条样本由原先移出store1变为移出
-store3，因而少了TransferLeader。原始前后步骤完整保存，不把这种差异归一化成相同。
-只读Go balance_region.go按分数排序且无ID tie-break；固定快照1/2/3副本负载相等，既有
-任务155测试明确允许移出1..3，并按实际source校验kind与步骤。同一快照的冷/热步骤仍
-严格一致，本次harness全部通过；不能将跨进程不同操作说成同一操作。
-另以[performance-diagnostic](logs/task_156/performance-diagnostic.json)重复两个新进程，
-均3项通过，各36条测量与666步闭环，保存全部原始输出，未修改155期望或生产排序。
-[环境](logs/task_156/environment.json)注明未独占机器，数据仍是debug profile合成快照；
-MemoryStore不是生产durability证明，不宣称线上TiKV吞吐量或生产后端替代通过。
+修复期间编译/接线失败均保留在split-initial、split-check2/3/4、split-closure记录；
+它们不是最终通过证据。[原存储包测试](logs/task_156/split-tests.json)包含真实MemoryStore、
+Etcd、事务取消/恢复、wire codec测试；[全仓目标编译](logs/task_156/split-compile-all.json)
+只用于提前发现跨crate接线问题，不替代行为回归。
 
-## 红灯、最终验证与复现
+[最终命令记录](logs/task_156/repaired.json)、[完整数量汇总](logs/task_156/verified-summary.json)
+保存确切命令、stdout/stderr、退出码和日志SHA256。性能target单线程，其余测试2线程，
+CARGO_BUILD_JOBS=4；默认features。metadata/fmt/check/test/tree及58/67、性能均重跑。
 
-[缺target红灯](logs/task_156/red-registration.json)退出101，只证明接线缺失。
-[initial](logs/task_156/initial.json)记录上述decoder期望错误，2通过/1失败；
-[corrected](logs/task_156/corrected.json)修正来源期望后3通过。
-随后[red.py](logs/task_156/red.py)暂时在测试装配中污染恢复字节、取消暂停、禁用I/O
-故障边界；同一3个测试均产生行为断言失败，Cargo退出101，0通过/3失败。
-[变异快照](logs/task_156/mutated-test.rs.gz)和[红灯日志索引](logs/task_156/red.json)
-可审查；不是生产算法缺失的证据。finally等待子进程完成后恢复源码，再执行全部最终验证。
+[runner](logs/task_156/verify.py)按1–10原子mkdir动态领取槽位，记录task/session/PID；
+全部Cargo和子进程继承绝对CARGO_TARGET_DIR，正常/失败/中断均等子进程退出后只清理
+自己的锁。实际槽位1，
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`，缓存保留。
+[Go拦截器](logs/task_156/reuse-go/go)拒绝实际Go构建/测试，仅复用已核验的现有etcd二进制
+和只读kvproto ZIP；[调用记录](logs/task_156/go-reuse.jsonl)可复核。
 
-[最终原始记录](logs/task_156/verified.json)保存每条确切命令、合并stdout/stderr、退出码、
-日志SHA256、线程数与槽位；[数量汇总](logs/task_156/verified-summary.json)统计libtest实际结果。
-所有最终验证使用默认features、CARGO_BUILD_JOBS=4；性能target单线程，其余RUST_TEST_THREADS=2。
+[最终审计](logs/task_156/audit.json)及[执行记录](logs/task_156/audit-run.json)由
+[audit.py](logs/task_156/audit.py)核对覆盖、依赖、性能质量、日志/来源哈希、Markdown链接、
+Go/模块集合和Git状态。1983个Go/模块文件（含ignored/untracked）及两份plan保持原样。
+初次失败结果完整保存在[pre-split](logs/task_156/pre-split/audit.json)，不覆盖为假通过。
 
-复现入口（仓库根执行）：
+## 最终结果
 
-```sh
-python3 docs/rust/schedule-execution/logs/task_156/verify.py repeat \
-  'cargo test -p astersql-pd-compat-tests --locked --test schedule_acceptance -- --nocapture'
-```
-
-runner按1–10原子mkdir动态领取共享槽位，写task/session/PID，所有Cargo及其子进程继承
-绝对CARGO_TARGET_DIR；正常/失败/中断均等待子进程退出后只释放自己的锁，保留缓存。
-本任务实际使用槽位1：
-`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
-
-[只读Go拦截器](logs/task_156/reuse-go/go)拒绝实际Go构建/测试，仅复用task030已核验
-SHA256的既有etcd I/O fixture二进制与只读kvproto ZIP。调用记录见
-[go-reuse](logs/task_156/go-reuse.jsonl)；不运行make、failpoint注入/启停或Go模块整理。
-[audit.py](logs/task_156/audit.py)对照[开始快照](logs/task_156/baseline.json)复核所有
-Go/模块文件（含ignored/untracked）的集合、内容和Git状态，两份plan保持不变；
-[审计结果](logs/task_156/audit.json)同时核对日志哈希、测试覆盖、依赖与git diff --check。
-
-## 最终检查结果与阻塞交接
-
-| 命令 | 退出码 | 有效结果 |
+| 命令 | 退出码 | 实际结果 |
 | --- | --- | --- |
-| `cargo fmt --all` | 0 | 无无关Rust格式差异 |
-| `cargo test -p astersql-pd-compat-tests --locked --test schedule_acceptance -- --nocapture` | 0 | 3通过；54条工厂故事+9条非法输入/名称 |
-| `cargo test -p astersql-pd-compat-tests --locked` | 0 | 32通过、1既有忽略 |
+| `cargo fmt --all` | 0 | 通过 |
+| `cargo test -p astersql-pd-compat-tests --locked --test schedule_acceptance -- --nocapture` | 0 | 4通过、0失败、0忽略 |
+| `cargo test -p astersql-pd-compat-tests --locked` | 0 | 33通过、0失败、1忽略 |
 | `cargo metadata --format-version 1 --no-deps` | 0 | 通过 |
 | `cargo fmt --all -- --check` | 0 | 通过 |
 | `cargo check --workspace --locked` | 0 | 通过 |
-| `cargo test --workspace --locked` | 0 | 1924通过、0失败、1既有忽略tso_processes |
-| `cargo tree --workspace --locked` | 0 | 树已保存，不能将命令成功当架构通过 |
-| `cargo test -p astersql-pd-schedule-checker --locked --lib task_058 -- --nocapture` | 0 | 8通过 |
-| `cargo test -p astersql-pd-schedule-schedulers --locked --lib task_067 -- --nocapture` | 0 | 3通过 |
-| `cargo test -p astersql-pd-compat-tests --locked --test schedule_performance -- --nocapture` | 0 | 3通过，36测量+666步闭环 |
-| `python3 docs/rust/schedule-execution/logs/task_156/audit.py` | 1 | 只读/覆盖/性能质量检查通过；75条协议/传输依赖路径阻塞 |
+| `cargo test --workspace --locked` | 0 | 1925通过、0失败、1忽略 |
+| `cargo tree --workspace --locked` | 0 | 通过 |
+| `cargo test -p astersql-pd-schedule-checker --locked --lib task_058 -- --nocapture` | 0 | 8通过、0失败、0忽略 |
+| `cargo test -p astersql-pd-schedule-schedulers --locked --lib task_067 -- --nocapture` | 0 | 3通过、0失败、0忽略 |
+| `cargo test -p astersql-pd-compat-tests --locked --test schedule_performance -- --nocapture` | 0 | 3通过、0失败、0忽略 |
+| `cargo tree --locked --edges normal -p …`（23入口，完整命令见normal-tree.json） | 0 | 无禁止协议/传输依赖 |
+| `python3 docs/rust/schedule-execution/logs/task_156/audit.py` | 0 | 覆盖、依赖、只读、日志与质量审计通过 |
 
-[审计执行记录](logs/task_156/audit-run.json)保存实际失败退出码和stdout/stderr哈希。
-1983个Go/模块文件（含ignored/untracked）及两份plan的内容、集合和Git状态均保持不变。
-自己的槽位锁已释放，缓存保留。任务58/67文件由主会话后续处理；未改写原始主题6。
+[normal-tree原始记录](logs/task_156/normal-tree.json)保留完整包参数与Cargo实际解析树；
+与metadata的normal边遍历互相核验，不以只列crate名字代替依赖证据。
+原存储包另有143项实际测试通过；完整workspace仍执行它们，无删除功能或忽略测试。
+只有既有`tso_processes`保持忽略；新验收测试没有忽略项。
 
-不能将当前结果标为“已完成”或“已完成，待回归”：验证已实际运行，失败是明确的架构
-验收缺口。解除阻塞需要先修复或由来源产物明确重新裁定上述存储适配层依赖边界，随后
-重跑依赖审计及本任务最终验证；本次未自动修改来源或只读plan，也未删除156编号任务。
+任务156的验收证据已齐备，主题具备本任务要求的完成证据。主会话仍负责58/67编号
+文件的独立归档以及原始主题6的来源完成流程；本任务不代改、删除这些文件。
+只提交必要Rust修复、测试、接线和证据，排除所有其他编号任务及用户变更。
+自己的槽位锁已释放，编译缓存保留。156编号任务按契约删除，不单独提交状态/删除。

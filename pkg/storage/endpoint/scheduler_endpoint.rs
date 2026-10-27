@@ -1,8 +1,8 @@
 // Copyright 2026 AsterSQL.
 
+use crate::kv::{Base, Consistency, Read};
 use crate::{EndpointError, StorageEndpoint};
 use astersql_pd_keypath::ClusterPaths;
-use astersql_pd_storage_kv::{Base, Consistency, Read};
 impl StorageEndpoint {
     /// Load raw bytes; missing and stored empty values both return empty bytes.
     pub async fn load_scheduler_config(

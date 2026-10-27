@@ -10,7 +10,7 @@ use crate::{
 use astersql_pd_errs::catalog::ERR_AFFINITY_GROUP_EXIST;
 use astersql_pd_keypath::ClusterPaths;
 use astersql_pd_schedule_labeler::RegionLabeler;
-use astersql_pd_storage_endpoint::{EndpointError, MAX_BATCH_OPS, StorageEndpoint};
+use astersql_pd_storage_domain::{EndpointError, MAX_BATCH_OPS, StorageEndpoint};
 use std::collections::BTreeMap;
 impl Manager {
     fn current_ranges(

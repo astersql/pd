@@ -2,7 +2,7 @@
 //! Scheduler configuration persistence over the host's canonical MetaStore endpoint.
 use crate::{SchedulerError, decode_config, encode_config};
 use astersql_pd_keypath::ClusterPaths;
-use astersql_pd_storage_endpoint::StorageEndpoint;
+use astersql_pd_storage_domain::StorageEndpoint;
 use serde::{Deserialize, Serialize, de::DeserializeOwned};
 use serde_json::Value;
 use std::sync::Arc;
@@ -17,7 +17,13 @@ pub struct SchedulerConfig<T> {
     data: T,
 }
 impl<T> SchedulerConfig<T> {
-    pub fn new(name: String, storage: Arc<StorageEndpoint>, paths: ClusterPaths, data: T) -> Self {
+    pub fn new<S: AsRef<StorageEndpoint> + ?Sized>(
+        name: String,
+        storage: Arc<S>,
+        paths: ClusterPaths,
+        data: T,
+    ) -> Self {
+        let storage = Arc::new(storage.as_ref().as_ref().clone());
         Self {
             name,
             storage,
@@ -79,12 +85,13 @@ pub struct DefaultSchedulerConfig {
     disabled: bool,
 }
 impl DefaultSchedulerConfig {
-    pub fn new(
+    pub fn new<S: AsRef<StorageEndpoint> + ?Sized>(
         name: String,
-        storage: Arc<StorageEndpoint>,
+        storage: Arc<S>,
         paths: ClusterPaths,
         data: Value,
     ) -> Self {
+        let storage = Arc::new(storage.as_ref().as_ref().clone());
         let disabled = data
             .get("disabled")
             .and_then(Value::as_bool)

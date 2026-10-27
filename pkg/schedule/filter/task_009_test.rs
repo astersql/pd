@@ -236,8 +236,8 @@ fn task_009_temporary_region_is_independent() {
 #[tokio::test]
 async fn task_009_factories_and_reusable_fit() {
     use astersql_pd_schedule_placement::RuleManager;
-    use astersql_pd_storage_endpoint::StorageEndpoint;
-    use astersql_pd_storage_kv::MemoryStore;
+    use astersql_pd_storage_domain::MemoryStore;
+    use astersql_pd_storage_domain::StorageEndpoint;
     let case = &fixture()["cases"][36];
     let stores = stores(case);
     let region = region(case);

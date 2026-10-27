@@ -7,8 +7,8 @@ use crate::{
 use astersql_pd_keypath::ClusterPaths;
 use astersql_pd_keyutil::KeyRange;
 use astersql_pd_schedule_labeler::RegionLabeler;
-use astersql_pd_storage_endpoint::{EndpointError, StorageEndpoint};
-use astersql_pd_storage_kv::{Base, MemoryStore, MetaStore};
+use astersql_pd_storage_domain::{Base, MemoryStore, MetaStore};
+use astersql_pd_storage_domain::{EndpointError, StorageEndpoint};
 use std::sync::Arc;
 #[path = "../../storage/kv/etcd_fixture_test.rs"]
 pub(super) mod fixture;

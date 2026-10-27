@@ -9,8 +9,8 @@ use astersql_pd_core::{NodeState, StoreInfo, StoreMeta};
 use astersql_pd_keypath::ClusterPaths;
 use astersql_pd_schedule_config::ProviderSnapshot;
 use astersql_pd_schedule_labeler::RegionLabeler;
-use astersql_pd_storage_endpoint::StorageEndpoint;
-use astersql_pd_storage_kv::MemoryStore;
+use astersql_pd_storage_domain::MemoryStore;
+use astersql_pd_storage_domain::StorageEndpoint;
 use prometheus::Registry;
 use std::{sync::Arc, time::Duration};
 use tokio_util::sync::CancellationToken;
@@ -226,7 +226,7 @@ async fn affinity_lifecycle_initialization_failure_and_drop_cleanup() {
                 },
             )?;
         }
-        Ok::<_, astersql_pd_storage_endpoint::EndpointError>(())
+        Ok::<_, astersql_pd_storage_domain::EndpointError>(())
     })
     .await
     .unwrap();

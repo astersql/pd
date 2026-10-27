@@ -1,6 +1,6 @@
 // Copyright 2026 AsterSQL.
 use crate::{LeaseClock, LeaseExpiry, MonotonicLeaseClock};
-use astersql_pd_storage_kv::*;
+use astersql_pd_storage_domain::*;
 use std::{future::Future, sync::Arc};
 use tokio_util::sync::CancellationToken;
 
@@ -23,7 +23,7 @@ pub type Result<T> = std::result::Result<T, ElectionError>;
 
 async fn cancellable<T>(
     cancel: &CancellationToken,
-    f: impl Future<Output = astersql_pd_storage_kv::Result<T>>,
+    f: impl Future<Output = astersql_pd_storage_domain::Result<T>>,
 ) -> Result<T> {
     tokio::select! { biased; _ = cancel.cancelled() => Err(ElectionError::Cancelled), result = f => Ok(result?) }
 }

@@ -2,13 +2,13 @@
 use super::label_restore_test::fixture;
 use super::*;
 use astersql_pd_keypath::ClusterPaths;
-use astersql_pd_storage_endpoint::{MAX_BATCH_OPS, StorageEndpoint};
+use astersql_pd_storage_domain::{MAX_BATCH_OPS, StorageEndpoint};
 use serde_json::{Value, json};
 use std::sync::Arc;
 fn rule(id: &str, start: &str, end: &str) -> LabelRule {
     LabelRule::from_json(&serde_json::to_vec(&json!({"id":id,"labels":[{"key":"k","value":id}],"rule_type":"key-range","data":[{"start_key":start,"end_key":end}]})).unwrap(),0).unwrap()
 }
-use astersql_pd_storage_kv::*;
+use astersql_pd_storage_domain::*;
 use async_trait::async_trait;
 use std::sync::atomic::{AtomicIsize, Ordering};
 struct Gate {
@@ -173,7 +173,7 @@ async fn contract(store: Arc<dyn MetaStore>) {
             for op in plan.commit_ops() {
                 op.buffer(txn, &endpoint, &paths)?;
             }
-            Ok::<_, astersql_pd_storage_endpoint::EndpointError>(())
+            Ok::<_, astersql_pd_storage_domain::EndpointError>(())
         })
         .await
         .unwrap();
