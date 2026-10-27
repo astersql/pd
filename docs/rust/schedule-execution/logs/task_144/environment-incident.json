@@ -1,0 +1,15 @@
+{
+  "incident": "Independent terminal rm -rf ./target recursively removed active build artifacts",
+  "pid": 81186,
+  "parent_pid": 18325,
+  "observed_cwd": "target/rust-slot-1/debug/deps",
+  "open_fd3": "repository root",
+  "symptoms": [
+    "missing unicode_ident rlib",
+    "missing pin_project_lite rmeta",
+    "missing tokio rmeta"
+  ],
+  "user_response": "\u91cd\u65b0\u5f00\u59cb",
+  "resolution": "Sent SIGINT; process exited; invalidated own slot stale fingerprints and retried",
+  "go_files_modified": false
+}

@@ -1,0 +1,29 @@
+[
+  {
+    "command": "cargo fmt --all",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "red5-0.log.gz",
+    "sha256": "a2a4e793ecd40ddc1c183255bd64c36a48ac5d290a2f5c64b5160167aa688d8e",
+    "test_summaries": []
+  },
+  {
+    "command": "python3 -c \"import os,pathlib,shutil; p=pathlib.Path(os.environ[\\\"CARGO_TARGET_DIR\\\"])/\\\"debug/.fingerprint\\\"; shutil.rmtree(p,ignore_errors=True)\"",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "red5-1.log.gz",
+    "sha256": "58ba037f448c8a0f24c21bb482c4fc0d04bd14058985a9c653b84c61654e86d9",
+    "test_summaries": []
+  },
+  {
+    "command": "cargo test -p astersql-pd-server --locked --lib task_144_behavior_cases -- --nocapture",
+    "exit_code": 101,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "red5-2.log.gz",
+    "sha256": "153254405e0ba8dbdc6686aed0000a39755b89aa2c26a51f27f30c25a97f4458",
+    "test_summaries": []
+  }
+]

@@ -36,14 +36,25 @@ fn main() {
         "kvproto archive checksum mismatch"
     );
     let out = PathBuf::from(env::var_os("OUT_DIR").unwrap());
-    let source = out.join("source");
+    // Extract only protocol inputs; never generate or remove Go source/module files.
+    let source = out.join("proto-source");
     if source.exists() {
         fs::remove_dir_all(&source).unwrap();
     }
-    zip::ZipArchive::new(std::io::Cursor::new(bytes))
-        .unwrap()
-        .extract(&source)
-        .unwrap();
+    let mut archive = zip::ZipArchive::new(std::io::Cursor::new(bytes)).unwrap();
+    for index in 0..archive.len() {
+        let mut entry = archive.by_index(index).unwrap();
+        let path = entry.enclosed_name().expect("safe pinned archive path");
+        if path
+            .extension()
+            .is_none_or(|extension| extension != "proto")
+        {
+            continue;
+        }
+        let destination = source.join(path);
+        fs::create_dir_all(destination.parent().unwrap()).unwrap();
+        std::io::copy(&mut entry, &mut fs::File::create(destination).unwrap()).unwrap();
+    }
     let root = source.join(format!("github.com/pingcap/kvproto@{VERSION}"));
     let proto = root.join("proto");
     let include = root.join("include");

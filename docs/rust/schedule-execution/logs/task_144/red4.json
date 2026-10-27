@@ -1,0 +1,20 @@
+[
+  {
+    "command": "python3 -c \"import os,pathlib,shutil; p=pathlib.Path(os.environ[\\\"CARGO_TARGET_DIR\\\"])/\\\"debug/.fingerprint\\\"; print(\\\"invalidate stale fingerprints:\\\",p); shutil.rmtree(p)\"",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "red4-0.log.gz",
+    "sha256": "28817eb371ac74857605b29b5107f422551d2653fb8b91ce3e5ed23aa77af385",
+    "test_summaries": []
+  },
+  {
+    "command": "cargo test -p astersql-pd-server --locked --lib task_144 -- --nocapture",
+    "exit_code": 101,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "red4-1.log.gz",
+    "sha256": "865ad405648b5aaaa0f960d91b4f68736e33fb86b1227b02c09a72d83e686f2f",
+    "test_summaries": []
+  }
+]

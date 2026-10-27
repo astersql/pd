@@ -1,0 +1,1110 @@
+{
+  "evidence_kind": "source_assertion",
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "runtime_go_oracle": false,
+  "normalization": "JSON key order, indentation, trailing newline and number formatting only",
+  "defaults": {
+    "min-hot-byte-rate": 100,
+    "min-hot-key-rate": 10,
+    "min-hot-query-rate": 10,
+    "min-hot-cpu-rate": 10,
+    "max-zombie-rounds": 3,
+    "pending-weight": 1,
+    "max-peer-number": 1000,
+    "byte-rate-rank-step-ratio": 0.05,
+    "key-rate-rank-step-ratio": 0.05,
+    "query-rate-rank-step-ratio": 0.05,
+    "cpu-rate-rank-step-ratio": 0.05,
+    "count-rank-step-ratio": 0.01,
+    "great-dec-ratio": 0.95,
+    "minor-dec-ratio": 0.99,
+    "src-tolerance-ratio": 1.05,
+    "dst-tolerance-ratio": 1.05,
+    "write-leader-priorities": [
+      "query",
+      "byte"
+    ],
+    "write-peer-priorities": [
+      "byte",
+      "key"
+    ],
+    "read-priorities": [
+      "cpu",
+      "byte"
+    ],
+    "strict-picking-store": "true",
+    "enable-for-tiflash": "true",
+    "rank-formula-version": "v2",
+    "split-thresholds": 0.2,
+    "history-sample-duration": "5m0s",
+    "history-sample-interval": "30s"
+  },
+  "cases": [
+    {
+      "name": "POST/list",
+      "input": "",
+      "status": 405,
+      "body": "",
+      "method": "POST",
+      "path": "/list"
+    },
+    {
+      "name": "PUT/list",
+      "input": "",
+      "status": 405,
+      "body": "",
+      "method": "PUT",
+      "path": "/list"
+    },
+    {
+      "name": "DELETE/list",
+      "input": "",
+      "status": 405,
+      "body": "",
+      "method": "DELETE",
+      "path": "/list"
+    },
+    {
+      "name": "HEAD/list",
+      "input": "",
+      "status": 405,
+      "body": "",
+      "method": "HEAD",
+      "path": "/list"
+    },
+    {
+      "name": "OPTIONS/list",
+      "input": "",
+      "status": 405,
+      "body": "",
+      "method": "OPTIONS",
+      "path": "/list"
+    },
+    {
+      "name": "GET/config",
+      "input": "",
+      "status": 405,
+      "body": "",
+      "method": "GET",
+      "path": "/config"
+    },
+    {
+      "name": "PUT/config",
+      "input": "",
+      "status": 405,
+      "body": "",
+      "method": "PUT",
+      "path": "/config"
+    },
+    {
+      "name": "DELETE/config",
+      "input": "",
+      "status": 405,
+      "body": "",
+      "method": "DELETE",
+      "path": "/config"
+    },
+    {
+      "name": "HEAD/config",
+      "input": "",
+      "status": 405,
+      "body": "",
+      "method": "HEAD",
+      "path": "/config"
+    },
+    {
+      "name": "OPTIONS/config",
+      "input": "",
+      "status": 405,
+      "body": "",
+      "method": "OPTIONS",
+      "path": "/config"
+    },
+    {
+      "name": "GET/missing",
+      "input": "",
+      "status": 404,
+      "body": "404 page not found\n",
+      "method": "GET",
+      "path": "/missing"
+    },
+    {
+      "name": "POST/missing",
+      "input": "",
+      "status": 404,
+      "body": "404 page not found\n",
+      "method": "POST",
+      "path": "/missing"
+    },
+    {
+      "name": "PUT/missing",
+      "input": "",
+      "status": 404,
+      "body": "404 page not found\n",
+      "method": "PUT",
+      "path": "/missing"
+    },
+    {
+      "name": "DELETE/missing",
+      "input": "",
+      "status": 404,
+      "body": "404 page not found\n",
+      "method": "DELETE",
+      "path": "/missing"
+    },
+    {
+      "name": "HEAD/missing",
+      "input": "",
+      "status": 404,
+      "body": "404 page not found\n",
+      "method": "HEAD",
+      "path": "/missing"
+    },
+    {
+      "name": "OPTIONS/missing",
+      "input": "",
+      "status": 404,
+      "body": "404 page not found\n",
+      "method": "OPTIONS",
+      "path": "/missing"
+    },
+    {
+      "name": "GET/config/",
+      "input": "",
+      "status": 404,
+      "body": "404 page not found\n",
+      "method": "GET",
+      "path": "/config/"
+    },
+    {
+      "name": "POST/config/",
+      "input": "",
+      "status": 404,
+      "body": "404 page not found\n",
+      "method": "POST",
+      "path": "/config/"
+    },
+    {
+      "name": "PUT/config/",
+      "input": "",
+      "status": 404,
+      "body": "404 page not found\n",
+      "method": "PUT",
+      "path": "/config/"
+    },
+    {
+      "name": "DELETE/config/",
+      "input": "",
+      "status": 404,
+      "body": "404 page not found\n",
+      "method": "DELETE",
+      "path": "/config/"
+    },
+    {
+      "name": "HEAD/config/",
+      "input": "",
+      "status": 404,
+      "body": "404 page not found\n",
+      "method": "HEAD",
+      "path": "/config/"
+    },
+    {
+      "name": "OPTIONS/config/",
+      "input": "",
+      "status": 404,
+      "body": "404 page not found\n",
+      "method": "OPTIONS",
+      "path": "/config/"
+    },
+    {
+      "name": "unknown/nochange",
+      "input": "{}",
+      "status": 400,
+      "body": "Config item is not found.",
+      "method": "POST",
+      "path": "/config"
+    },
+    {
+      "name": "unknown/nochange",
+      "input": "{\"unknown\": 1}",
+      "status": 400,
+      "body": "Config item is not found.",
+      "method": "POST",
+      "path": "/config"
+    },
+    {
+      "name": "unknown/nochange",
+      "input": "null",
+      "status": 400,
+      "body": "Config item is not found.",
+      "method": "POST",
+      "path": "/config"
+    },
+    {
+      "name": "unknown/nochange",
+      "input": "{\"PENDING-WEIGHT\": 1}",
+      "status": 400,
+      "body": "Config item is not found.",
+      "method": "POST",
+      "path": "/config"
+    },
+    {
+      "name": "known unchanged",
+      "input": "{\"pending-weight\": 1}",
+      "status": 200,
+      "body": "Config is the same with origin, so do nothing.",
+      "method": "POST",
+      "path": "/config"
+    },
+    {
+      "name": "known unchanged",
+      "input": "{\"pending-weight\": null}",
+      "status": 200,
+      "body": "Config is the same with origin, so do nothing.",
+      "method": "POST",
+      "path": "/config"
+    },
+    {
+      "name": "known unchanged",
+      "input": "{\"strict-picking-store\": \"true\"}",
+      "status": 200,
+      "body": "Config is the same with origin, so do nothing.",
+      "method": "POST",
+      "path": "/config"
+    },
+    {
+      "name": "reject pending-weight",
+      "input": "{\"pending-weight\": 0}",
+      "status": 400,
+      "body": "[PD:scheduler:ErrSchedulerConfig]wrong scheduler config invalid pending-weight, should be at least 1",
+      "method": "POST",
+      "path": "/config",
+      "json_body": true
+    },
+    {
+      "name": "reject pending-weight",
+      "input": "{\"pending-weight\": 0.5}",
+      "status": 400,
+      "body": "[PD:scheduler:ErrSchedulerConfig]wrong scheduler config invalid pending-weight, should be at least 1",
+      "method": "POST",
+      "path": "/config",
+      "json_body": true
+    },
+    {
+      "name": "reject pending-weight",
+      "input": "{\"pending-weight\": -1}",
+      "status": 400,
+      "body": "[PD:scheduler:ErrSchedulerConfig]wrong scheduler config invalid pending-weight, should be at least 1",
+      "method": "POST",
+      "path": "/config",
+      "json_body": true
+    },
+    {
+      "name": "reject split-thresholds",
+      "input": "{\"split-thresholds\": 0.009}",
+      "status": 400,
+      "body": "[PD:scheduler:ErrSchedulerConfig]wrong scheduler config invalid split-thresholds, should be in range [0.01, 1.0]",
+      "method": "POST",
+      "path": "/config",
+      "json_body": true
+    },
+    {
+      "name": "reject split-thresholds",
+      "input": "{\"split-thresholds\": 1.001}",
+      "status": 400,
+      "body": "[PD:scheduler:ErrSchedulerConfig]wrong scheduler config invalid split-thresholds, should be in range [0.01, 1.0]",
+      "method": "POST",
+      "path": "/config",
+      "json_body": true
+    },
+    {
+      "name": "reject rank-formula-version",
+      "input": "{\"rank-formula-version\": \"v3\"}",
+      "status": 400,
+      "body": "[PD:scheduler:ErrSchedulerConfig]wrong scheduler config invalid rank-formula-version",
+      "method": "POST",
+      "path": "/config",
+      "json_body": true
+    },
+    {
+      "name": "reject forbid-rw-type",
+      "input": "{\"forbid-rw-type\": \"bad\"}",
+      "status": 400,
+      "body": "[PD:scheduler:ErrSchedulerConfig]wrong scheduler config invalid forbid-rw-type",
+      "method": "POST",
+      "path": "/config",
+      "json_body": true
+    },
+    {
+      "name": "reject read-priorities",
+      "input": "{\"read-priorities\": [\"byte\"]}",
+      "status": 400,
+      "body": "[PD:scheduler:ErrSchedulerConfig]wrong scheduler config priorities should have at least 2 dimensions",
+      "method": "POST",
+      "path": "/config",
+      "json_body": true
+    },
+    {
+      "name": "reject read-priorities",
+      "input": "{\"read-priorities\": [\"byte\", \"byte\"]}",
+      "status": 400,
+      "body": "[PD:scheduler:ErrSchedulerConfig]wrong scheduler config priorities shouldn't be repeated",
+      "method": "POST",
+      "path": "/config",
+      "json_body": true
+    },
+    {
+      "name": "reject read-priorities",
+      "input": "{\"read-priorities\": [\"invalid\", \"byte\"]}",
+      "status": 400,
+      "body": "[PD:scheduler:ErrSchedulerConfig]wrong scheduler config invalid scheduling dimensions",
+      "method": "POST",
+      "path": "/config",
+      "json_body": true
+    },
+    {
+      "name": "reject write-leader-priorities",
+      "input": "{\"write-leader-priorities\": [\"cpu\", \"byte\"]}",
+      "status": 400,
+      "body": "[PD:scheduler:ErrSchedulerConfig]wrong scheduler config cpu is not allowed to be set in priorities for write-leader-priorities",
+      "method": "POST",
+      "path": "/config",
+      "json_body": true
+    },
+    {
+      "name": "reject write-peer-priorities",
+      "input": "{\"write-peer-priorities\": [\"cpu\", \"byte\"]}",
+      "status": 400,
+      "body": "[PD:scheduler:ErrSchedulerConfig]wrong scheduler config cpu is not allowed to be set in priorities for write-peer-priorities",
+      "method": "POST",
+      "path": "/config",
+      "json_body": true
+    },
+    {
+      "name": "reject write-peer-priorities",
+      "input": "{\"write-peer-priorities\": [\"query\", \"byte\"]}",
+      "status": 400,
+      "body": "[PD:scheduler:ErrSchedulerConfig]wrong scheduler config query is not allowed to be set in priorities for write-peer-priorities",
+      "method": "POST",
+      "path": "/config",
+      "json_body": true
+    },
+    {
+      "name": "update",
+      "input": "{\"pending-weight\": 2}",
+      "status": 200,
+      "body": "Config is updated.",
+      "method": "POST",
+      "path": "/config"
+    },
+    {
+      "name": "update",
+      "input": "{\"PENDING-WEIGHT\": 2}",
+      "status": 200,
+      "body": "Config is updated.",
+      "method": "POST",
+      "path": "/config"
+    },
+    {
+      "name": "update",
+      "input": "{\"split-thresholds\": 0.01}",
+      "status": 200,
+      "body": "Config is updated.",
+      "method": "POST",
+      "path": "/config"
+    },
+    {
+      "name": "update",
+      "input": "{\"split-thresholds\": 1}",
+      "status": 200,
+      "body": "Config is updated.",
+      "method": "POST",
+      "path": "/config"
+    },
+    {
+      "name": "update",
+      "input": "{\"read-priorities\": []}",
+      "status": 200,
+      "body": "Config is updated.",
+      "method": "POST",
+      "path": "/config"
+    },
+    {
+      "name": "update",
+      "input": "{\"read-priorities\": null}",
+      "status": 200,
+      "body": "Config is updated.",
+      "method": "POST",
+      "path": "/config"
+    },
+    {
+      "name": "update",
+      "input": "{\"strict-picking-store\": \"false\"}",
+      "status": 200,
+      "body": "Config is updated.",
+      "method": "POST",
+      "path": "/config"
+    },
+    {
+      "name": "update",
+      "input": "{\"enable-for-tiflash\": \"false\"}",
+      "status": 200,
+      "body": "Config is updated.",
+      "method": "POST",
+      "path": "/config"
+    },
+    {
+      "name": "update",
+      "input": "{\"rank-formula-version\": \"\"}",
+      "status": 200,
+      "body": "Config is updated.",
+      "method": "POST",
+      "path": "/config"
+    },
+    {
+      "name": "update",
+      "input": "{\"forbid-rw-type\": \"write\"}",
+      "status": 200,
+      "body": "Config is updated.",
+      "method": "POST",
+      "path": "/config"
+    },
+    {
+      "name": "update",
+      "input": "{\"history-sample-interval\": \"1.5s\"}",
+      "status": 200,
+      "body": "Config is updated.",
+      "method": "POST",
+      "path": "/config"
+    },
+    {
+      "name": "update",
+      "input": "{\"unknown\": 1, \"min-hot-byte-rate\": -1}",
+      "status": 200,
+      "body": "Config is updated.",
+      "method": "POST",
+      "path": "/config"
+    },
+    {
+      "name": "decode pending-weight",
+      "input": "{\"pending-weight\": \"x\"}",
+      "status": 500,
+      "body": "json: cannot unmarshal string into Go struct field hotRegionSchedulerParam.pending-weight of type float64",
+      "method": "POST",
+      "path": "/config",
+      "json_body": true
+    },
+    {
+      "name": "decode max-peer-number",
+      "input": "{\"max-peer-number\": 1.5}",
+      "status": 500,
+      "body": "json: cannot unmarshal number 1.5 into Go struct field hotRegionSchedulerParam.max-peer-number of type int",
+      "method": "POST",
+      "path": "/config",
+      "json_body": true
+    },
+    {
+      "name": "decode rank-formula-version",
+      "input": "{\"rank-formula-version\": 12}",
+      "status": 500,
+      "body": "json: cannot unmarshal number 12 into Go struct field hotRegionSchedulerParam.rank-formula-version of type string",
+      "method": "POST",
+      "path": "/config",
+      "json_body": true
+    },
+    {
+      "name": "decode read-priorities",
+      "input": "{\"read-priorities\": \"byte\"}",
+      "status": 500,
+      "body": "json: cannot unmarshal string into Go struct field hotRegionSchedulerParam.read-priorities of type []string",
+      "method": "POST",
+      "path": "/config",
+      "json_body": true
+    },
+    {
+      "name": "truncated",
+      "input": "",
+      "status": 500,
+      "body": "unexpected end of JSON input",
+      "method": "POST",
+      "path": "/config",
+      "json_body": true
+    },
+    {
+      "name": "truncated",
+      "input": "{",
+      "status": 500,
+      "body": "unexpected end of JSON input",
+      "method": "POST",
+      "path": "/config",
+      "json_body": true
+    },
+    {
+      "name": "root array",
+      "input": "[]",
+      "status": 500,
+      "body": "json: cannot unmarshal array into Go value of type schedulers.hotRegionSchedulerParam",
+      "method": "POST",
+      "path": "/config",
+      "json_body": true
+    },
+    {
+      "name": "root bool",
+      "input": "true",
+      "status": 500,
+      "body": "json: cannot unmarshal bool into Go value of type schedulers.hotRegionSchedulerParam",
+      "method": "POST",
+      "path": "/config",
+      "json_body": true
+    },
+    {
+      "name": "root number",
+      "input": "12",
+      "status": 500,
+      "body": "json: cannot unmarshal number into Go value of type schedulers.hotRegionSchedulerParam",
+      "method": "POST",
+      "path": "/config",
+      "json_body": true
+    },
+    {
+      "name": "root string",
+      "input": "\"bad\"",
+      "status": 500,
+      "body": "json: cannot unmarshal string into Go value of type schedulers.hotRegionSchedulerParam",
+      "method": "POST",
+      "path": "/config",
+      "json_body": true
+    },
+    {
+      "name": "duplicate keys",
+      "input": "{\"pending-weight\":2,\"pending-weight\":3}",
+      "status": 200,
+      "body": "Config is updated.",
+      "method": "POST",
+      "path": "/config",
+      "expected_patch": {
+        "pending-weight": 3
+      }
+    },
+    {
+      "name": "unquoted bool strict-picking-store",
+      "input": "{\"strict-picking-store\": false}",
+      "status": 500,
+      "body": "json: invalid use of ,string struct tag, trying to unmarshal unquoted value into bool",
+      "method": "POST",
+      "path": "/config",
+      "json_body": true
+    },
+    {
+      "name": "invalid string bool strict-picking-store",
+      "input": "{\"strict-picking-store\": \"bad\"}",
+      "status": 500,
+      "body": "json: invalid use of ,string struct tag, trying to unmarshal \"bad\" into bool",
+      "method": "POST",
+      "path": "/config",
+      "json_body": true
+    },
+    {
+      "name": "unquoted bool enable-for-tiflash",
+      "input": "{\"enable-for-tiflash\": false}",
+      "status": 500,
+      "body": "json: invalid use of ,string struct tag, trying to unmarshal unquoted value into bool",
+      "method": "POST",
+      "path": "/config",
+      "json_body": true
+    },
+    {
+      "name": "invalid string bool enable-for-tiflash",
+      "input": "{\"enable-for-tiflash\": \"bad\"}",
+      "status": 500,
+      "body": "json: invalid use of ,string struct tag, trying to unmarshal \"bad\" into bool",
+      "method": "POST",
+      "path": "/config",
+      "json_body": true
+    },
+    {
+      "name": "duration type",
+      "input": "{\"history-sample-duration\": null}",
+      "status": 500,
+      "body": "invalid syntax",
+      "method": "POST",
+      "path": "/config",
+      "json_body": true
+    },
+    {
+      "name": "duration type",
+      "input": "{\"history-sample-duration\": 1}",
+      "status": 500,
+      "body": "invalid syntax",
+      "method": "POST",
+      "path": "/config",
+      "json_body": true
+    },
+    {
+      "name": "duration invalid",
+      "input": "{\"history-sample-duration\": \"bad\"}",
+      "status": 500,
+      "body": "time: invalid duration \"bad\"",
+      "method": "POST",
+      "path": "/config",
+      "json_body": true
+    },
+    {
+      "name": "priority null entry",
+      "input": "{\"read-priorities\": [\"byte\", null]}",
+      "status": 400,
+      "body": "[PD:scheduler:ErrSchedulerConfig]wrong scheduler config invalid scheduling dimensions",
+      "method": "POST",
+      "path": "/config",
+      "json_body": true
+    },
+    {
+      "name": "bool null ignored",
+      "input": "{\"enable-for-tiflash\": null}",
+      "status": 200,
+      "body": "Config is the same with origin, so do nothing.",
+      "method": "POST",
+      "path": "/config",
+      "json_body": false
+    },
+    {
+      "name": "uppercase nochange",
+      "input": "{\"MIN-HOT-BYTE-RATE\": 100}",
+      "status": 400,
+      "body": "Config item is not found.",
+      "method": "POST",
+      "path": "/config",
+      "json_body": false
+    },
+    {
+      "name": "unknown with known nochange",
+      "input": "{\"min-hot-byte-rate\": 100, \"unknown\": 2}",
+      "status": 200,
+      "body": "Config is the same with origin, so do nothing.",
+      "method": "POST",
+      "path": "/config",
+      "json_body": false
+    },
+    {
+      "name": "field min-hot-key-rate",
+      "input": "{\"min-hot-key-rate\": -1}",
+      "status": 200,
+      "body": "Config is updated.",
+      "method": "POST",
+      "path": "/config",
+      "json_body": false
+    },
+    {
+      "name": "field min-hot-query-rate",
+      "input": "{\"min-hot-query-rate\": -2}",
+      "status": 200,
+      "body": "Config is updated.",
+      "method": "POST",
+      "path": "/config",
+      "json_body": false
+    },
+    {
+      "name": "field min-hot-cpu-rate",
+      "input": "{\"min-hot-cpu-rate\": -3}",
+      "status": 200,
+      "body": "Config is updated.",
+      "method": "POST",
+      "path": "/config",
+      "json_body": false
+    },
+    {
+      "name": "field max-zombie-rounds",
+      "input": "{\"max-zombie-rounds\": 0}",
+      "status": 200,
+      "body": "Config is updated.",
+      "method": "POST",
+      "path": "/config",
+      "json_body": false
+    },
+    {
+      "name": "field max-peer-number",
+      "input": "{\"max-peer-number\": -1}",
+      "status": 200,
+      "body": "Config is updated.",
+      "method": "POST",
+      "path": "/config",
+      "json_body": false
+    },
+    {
+      "name": "field byte-rate-rank-step-ratio",
+      "input": "{\"byte-rate-rank-step-ratio\": 0}",
+      "status": 200,
+      "body": "Config is updated.",
+      "method": "POST",
+      "path": "/config",
+      "json_body": false
+    },
+    {
+      "name": "field key-rate-rank-step-ratio",
+      "input": "{\"key-rate-rank-step-ratio\": -1}",
+      "status": 200,
+      "body": "Config is updated.",
+      "method": "POST",
+      "path": "/config",
+      "json_body": false
+    },
+    {
+      "name": "field query-rate-rank-step-ratio",
+      "input": "{\"query-rate-rank-step-ratio\": 0.4}",
+      "status": 200,
+      "body": "Config is updated.",
+      "method": "POST",
+      "path": "/config",
+      "json_body": false
+    },
+    {
+      "name": "field cpu-rate-rank-step-ratio",
+      "input": "{\"cpu-rate-rank-step-ratio\": 0.3}",
+      "status": 200,
+      "body": "Config is updated.",
+      "method": "POST",
+      "path": "/config",
+      "json_body": false
+    },
+    {
+      "name": "field count-rank-step-ratio",
+      "input": "{\"count-rank-step-ratio\": 0.8}",
+      "status": 200,
+      "body": "Config is updated.",
+      "method": "POST",
+      "path": "/config",
+      "json_body": false
+    },
+    {
+      "name": "field great-dec-ratio",
+      "input": "{\"great-dec-ratio\": 0.9}",
+      "status": 200,
+      "body": "Config is updated.",
+      "method": "POST",
+      "path": "/config",
+      "json_body": false
+    },
+    {
+      "name": "field minor-dec-ratio",
+      "input": "{\"minor-dec-ratio\": 0.8}",
+      "status": 200,
+      "body": "Config is updated.",
+      "method": "POST",
+      "path": "/config",
+      "json_body": false
+    },
+    {
+      "name": "field src-tolerance-ratio",
+      "input": "{\"src-tolerance-ratio\": 0}",
+      "status": 200,
+      "body": "Config is updated.",
+      "method": "POST",
+      "path": "/config",
+      "json_body": false
+    },
+    {
+      "name": "field dst-tolerance-ratio",
+      "input": "{\"dst-tolerance-ratio\": 0}",
+      "status": 200,
+      "body": "Config is updated.",
+      "method": "POST",
+      "path": "/config",
+      "json_body": false
+    },
+    {
+      "name": "field history-sample-duration",
+      "input": "{\"history-sample-duration\": \"2m0s\"}",
+      "status": 200,
+      "body": "Config is updated.",
+      "method": "POST",
+      "path": "/config",
+      "json_body": false
+    },
+    {
+      "name": "field read-priorities",
+      "input": "{\"read-priorities\": [\"cpu\", \"query\", \"byte\"]}",
+      "status": 200,
+      "body": "Config is updated.",
+      "method": "POST",
+      "path": "/config",
+      "json_body": false
+    },
+    {
+      "name": "quoted null boolean ignored",
+      "input": "{\"strict-picking-store\":\"null\"}",
+      "status": 200,
+      "body": "Config is the same with origin, so do nothing.",
+      "method": "POST",
+      "path": "/config"
+    }
+  ],
+  "list_cases": [
+    {
+      "patch": {
+        "pending-weight": 2,
+        "rank-formula-version": "",
+        "forbid-rw-type": "none"
+      },
+      "query": true,
+      "cpu": true,
+      "expected": {
+        "min-hot-byte-rate": 100,
+        "min-hot-key-rate": 10,
+        "min-hot-query-rate": 10,
+        "min-hot-cpu-rate": 10,
+        "max-zombie-rounds": 3,
+        "pending-weight": 2,
+        "max-peer-number": 1000,
+        "byte-rate-rank-step-ratio": 0.05,
+        "key-rate-rank-step-ratio": 0.05,
+        "query-rate-rank-step-ratio": 0.05,
+        "cpu-rate-rank-step-ratio": 0.05,
+        "count-rank-step-ratio": 0.01,
+        "great-dec-ratio": 0.95,
+        "minor-dec-ratio": 0.99,
+        "src-tolerance-ratio": 1.05,
+        "dst-tolerance-ratio": 1.05,
+        "write-leader-priorities": [
+          "query",
+          "byte"
+        ],
+        "write-peer-priorities": [
+          "byte",
+          "key"
+        ],
+        "read-priorities": [
+          "cpu",
+          "byte"
+        ],
+        "strict-picking-store": "true",
+        "enable-for-tiflash": "true",
+        "rank-formula-version": "v1",
+        "split-thresholds": 0.2,
+        "history-sample-duration": "5m0s",
+        "history-sample-interval": "30s"
+      }
+    },
+    {
+      "patch": {
+        "forbid-rw-type": "write"
+      },
+      "query": true,
+      "cpu": true,
+      "expected": {
+        "min-hot-byte-rate": 100,
+        "min-hot-key-rate": 10,
+        "min-hot-query-rate": 10,
+        "min-hot-cpu-rate": 10,
+        "max-zombie-rounds": 3,
+        "pending-weight": 1,
+        "max-peer-number": 1000,
+        "byte-rate-rank-step-ratio": 0.05,
+        "key-rate-rank-step-ratio": 0.05,
+        "query-rate-rank-step-ratio": 0.05,
+        "cpu-rate-rank-step-ratio": 0.05,
+        "count-rank-step-ratio": 0.01,
+        "great-dec-ratio": 0.95,
+        "minor-dec-ratio": 0.99,
+        "src-tolerance-ratio": 1.05,
+        "dst-tolerance-ratio": 1.05,
+        "write-leader-priorities": [
+          "query",
+          "byte"
+        ],
+        "write-peer-priorities": [
+          "byte",
+          "key"
+        ],
+        "read-priorities": [
+          "cpu",
+          "byte"
+        ],
+        "strict-picking-store": "true",
+        "enable-for-tiflash": "true",
+        "rank-formula-version": "v2",
+        "split-thresholds": 0.2,
+        "history-sample-duration": "5m0s",
+        "history-sample-interval": "30s",
+        "forbid-rw-type": "write"
+      }
+    },
+    {
+      "patch": {
+        "read-priorities": null
+      },
+      "query": true,
+      "cpu": true,
+      "expected": {
+        "min-hot-byte-rate": 100,
+        "min-hot-key-rate": 10,
+        "min-hot-query-rate": 10,
+        "min-hot-cpu-rate": 10,
+        "max-zombie-rounds": 3,
+        "pending-weight": 1,
+        "max-peer-number": 1000,
+        "byte-rate-rank-step-ratio": 0.05,
+        "key-rate-rank-step-ratio": 0.05,
+        "query-rate-rank-step-ratio": 0.05,
+        "cpu-rate-rank-step-ratio": 0.05,
+        "count-rank-step-ratio": 0.01,
+        "great-dec-ratio": 0.95,
+        "minor-dec-ratio": 0.99,
+        "src-tolerance-ratio": 1.05,
+        "dst-tolerance-ratio": 1.05,
+        "write-leader-priorities": [
+          "query",
+          "byte"
+        ],
+        "write-peer-priorities": [
+          "byte",
+          "key"
+        ],
+        "read-priorities": [
+          "cpu",
+          "byte"
+        ],
+        "strict-picking-store": "true",
+        "enable-for-tiflash": "true",
+        "rank-formula-version": "v2",
+        "split-thresholds": 0.2,
+        "history-sample-duration": "5m0s",
+        "history-sample-interval": "30s"
+      }
+    },
+    {
+      "patch": {
+        "read-priorities": []
+      },
+      "query": false,
+      "cpu": false,
+      "expected": {
+        "min-hot-byte-rate": 100,
+        "min-hot-key-rate": 10,
+        "min-hot-query-rate": 10,
+        "min-hot-cpu-rate": 10,
+        "max-zombie-rounds": 3,
+        "pending-weight": 1,
+        "max-peer-number": 1000,
+        "byte-rate-rank-step-ratio": 0.05,
+        "key-rate-rank-step-ratio": 0.05,
+        "query-rate-rank-step-ratio": 0.05,
+        "cpu-rate-rank-step-ratio": 0.05,
+        "count-rank-step-ratio": 0.01,
+        "great-dec-ratio": 0.95,
+        "minor-dec-ratio": 0.99,
+        "src-tolerance-ratio": 1.05,
+        "dst-tolerance-ratio": 1.05,
+        "write-leader-priorities": [
+          "key",
+          "byte"
+        ],
+        "write-peer-priorities": [
+          "byte",
+          "key"
+        ],
+        "read-priorities": [
+          "byte",
+          "key"
+        ],
+        "strict-picking-store": "true",
+        "enable-for-tiflash": "true",
+        "rank-formula-version": "v2",
+        "split-thresholds": 0.2,
+        "history-sample-duration": "5m0s",
+        "history-sample-interval": "30s"
+      }
+    },
+    {
+      "patch": {
+        "read-priorities": [
+          "key",
+          "byte"
+        ],
+        "strict-picking-store": "false",
+        "enable-for-tiflash": "false"
+      },
+      "query": true,
+      "cpu": false,
+      "expected": {
+        "min-hot-byte-rate": 100,
+        "min-hot-key-rate": 10,
+        "min-hot-query-rate": 10,
+        "min-hot-cpu-rate": 10,
+        "max-zombie-rounds": 3,
+        "pending-weight": 1,
+        "max-peer-number": 1000,
+        "byte-rate-rank-step-ratio": 0.05,
+        "key-rate-rank-step-ratio": 0.05,
+        "query-rate-rank-step-ratio": 0.05,
+        "cpu-rate-rank-step-ratio": 0.05,
+        "count-rank-step-ratio": 0.01,
+        "great-dec-ratio": 0.95,
+        "minor-dec-ratio": 0.99,
+        "src-tolerance-ratio": 1.05,
+        "dst-tolerance-ratio": 1.05,
+        "write-leader-priorities": [
+          "query",
+          "byte"
+        ],
+        "write-peer-priorities": [
+          "byte",
+          "key"
+        ],
+        "read-priorities": [
+          "key",
+          "byte"
+        ],
+        "strict-picking-store": "false",
+        "enable-for-tiflash": "false",
+        "rank-formula-version": "v2",
+        "split-thresholds": 0.2,
+        "history-sample-duration": "5m0s",
+        "history-sample-interval": "30s"
+      }
+    },
+    {
+      "patch": {
+        "history-sample-duration": "1.5s",
+        "history-sample-interval": "0"
+      },
+      "query": true,
+      "cpu": true,
+      "expected": {
+        "min-hot-byte-rate": 100,
+        "min-hot-key-rate": 10,
+        "min-hot-query-rate": 10,
+        "min-hot-cpu-rate": 10,
+        "max-zombie-rounds": 3,
+        "pending-weight": 1,
+        "max-peer-number": 1000,
+        "byte-rate-rank-step-ratio": 0.05,
+        "key-rate-rank-step-ratio": 0.05,
+        "query-rate-rank-step-ratio": 0.05,
+        "cpu-rate-rank-step-ratio": 0.05,
+        "count-rank-step-ratio": 0.01,
+        "great-dec-ratio": 0.95,
+        "minor-dec-ratio": 0.99,
+        "src-tolerance-ratio": 1.05,
+        "dst-tolerance-ratio": 1.05,
+        "write-leader-priorities": [
+          "query",
+          "byte"
+        ],
+        "write-peer-priorities": [
+          "byte",
+          "key"
+        ],
+        "read-priorities": [
+          "cpu",
+          "byte"
+        ],
+        "strict-picking-store": "true",
+        "enable-for-tiflash": "true",
+        "rank-formula-version": "v2",
+        "split-thresholds": 0.2,
+        "history-sample-duration": "1.5s",
+        "history-sample-interval": "0s"
+      }
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+[
+  {
+    "command": "cargo clean -p pin-project-lite",
+    "exit_code": 0,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "red3-0.log.gz",
+    "sha256": "dc52f25f08c787ce9694cb1aaf6e949ae42c6ccaa3e3adc2e713210eec88e89e",
+    "test_summaries": []
+  },
+  {
+    "command": "cargo test -p astersql-pd-server --locked --lib task_144 -- --nocapture",
+    "exit_code": 101,
+    "slot": 1,
+    "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+    "log": "red3-1.log.gz",
+    "sha256": "0790b60574ffc93fce2c067b76b3047674ae45b71d9948eac3afeb6cff1ce792",
+    "test_summaries": []
+  }
+]

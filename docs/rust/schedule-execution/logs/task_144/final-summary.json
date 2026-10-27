@@ -1,0 +1,73 @@
+{
+  "commands": [
+    {
+      "command": "cargo fmt --all",
+      "exit_code": 0,
+      "slot": 1,
+      "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "command": "cargo test -p astersql-pd-server --locked --lib task_144 -- --nocapture",
+      "exit_code": 0,
+      "slot": 1,
+      "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+      "passed": 3,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "command": "cargo test -p astersql-pd-server --locked",
+      "exit_code": 0,
+      "slot": 1,
+      "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+      "passed": 82,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "command": "cargo metadata --format-version 1 --no-deps",
+      "exit_code": 0,
+      "slot": 1,
+      "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "command": "cargo fmt --all -- --check",
+      "exit_code": 0,
+      "slot": 1,
+      "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "command": "cargo check --workspace --locked",
+      "exit_code": 0,
+      "slot": 1,
+      "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "command": "cargo test --workspace --locked",
+      "exit_code": 0,
+      "slot": 1,
+      "CARGO_TARGET_DIR": "/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1",
+      "passed": 1882,
+      "failed": 0,
+      "ignored": 1
+    }
+  ],
+  "http_cases": 93,
+  "full_snapshots": 9,
+  "scheduling_cases": 6,
+  "behavior_test_functions": 3,
+  "go_runtime_oracle": false,
+  "evidence_kind": "source_assertion"
+}

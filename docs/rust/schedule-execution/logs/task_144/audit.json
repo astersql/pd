@@ -1,0 +1,99 @@
+{
+  "go_module_source_files": 1101,
+  "content_and_file_set_unchanged": true,
+  "status_unchanged": true,
+  "read_only_plans_unchanged": true,
+  "cargo_manifests_and_lock_unchanged": true,
+  "git_diff_check": 0,
+  "links": [
+    {
+      "source": "docs/rust/schedule-execution/task-144.md",
+      "target": "task-143.md"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-144.md",
+      "target": "logs/task_144/provenance.json"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-144.md",
+      "target": "fixtures/task_144.json"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-144.md",
+      "target": "../../../pkg/server/schedule_admin_hot_region.rs"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-144.md",
+      "target": "../../../pkg/server/schedule_admin_hot_region.rs.md"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-144.md",
+      "target": "../../../pkg/server/schedule_admin_hot_region_test.rs"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-144.md",
+      "target": "logs/task_144/verify.py"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-144.md",
+      "target": "logs/task_144/reuse-go/go"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-144.md",
+      "target": "logs/task_144/environment-incident.json"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-144.md",
+      "target": "../../../pkg/proto/build.rs"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-144.md",
+      "target": "../../../pkg/proto/build.rs.md"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-144.md",
+      "target": "logs/task_144/red8.json"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-144.md",
+      "target": "logs/task_144/green.json"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-144.md",
+      "target": "logs/task_144/final.json"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-144.md",
+      "target": "logs/task_144/final-summary.json"
+    },
+    {
+      "source": "docs/rust/schedule-execution/task-144.md",
+      "target": "logs/task_144/audit.json"
+    },
+    {
+      "source": "pkg/server/schedule_admin_hot_region.rs.md",
+      "target": "../../docs/rust/schedule-execution/task-144.md"
+    },
+    {
+      "source": "pkg/proto/build.rs.md",
+      "target": "../../docs/rust/schedule-execution/task-144.md"
+    }
+  ],
+  "protocol_extraction": [
+    {
+      "directory": "target/rust-slot-1/debug/build/astersql-pd-proto-3bed99abc0c60341/out/proto-source",
+      "files": 55,
+      "only_proto": true
+    },
+    {
+      "directory": "target/rust-slot-1/debug/build/astersql-pd-proto-b8c5cfd4008973ae/out/proto-source",
+      "files": 55,
+      "only_proto": true
+    },
+    {
+      "directory": "target/rust-slot-1/debug/build/astersql-pd-proto-d0c6bbe81587c7bb/out/proto-source",
+      "files": 55,
+      "only_proto": true
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "dependency_commit": "51bf9531a",
+  "evidence_kind": "source_assertion",
+  "go_execution": false,
+  "authorization": "User explicitly permits read-only Go source/test derivation plus real Rust behavior/fault verification instead of missing Go execution oracle.",
+  "files": {
+    "pkg/schedule/schedulers/hot_region.go": "2e34a6068d48c1ffed3a78764fc18843b20b6fab2943587df4e907acfe692ad6",
+    "pkg/schedule/schedulers/hot_region_config.go": "189283bad7801de492dcf5e2866a37118e1802f37250583d775c22a484fbaa3b",
+    "pkg/schedule/schedulers/base_scheduler.go": "1da013a2323c2756dcfd3b1203e91c481c58e80e258e3848d5db23dd261e6bdc",
+    "pkg/schedule/schedulers/hot_region_test.go": "20e49d3e00501845befb864375ed74b8e2da5f82dc8e71006c496463fb08a756",
+    "pkg/utils/typeutil/duration.go": "72774c8b512e26361e352485ab00a3315765abfa1ccb8a082eba96defc4b8028",
+    "pkg/errs/errno.go": "5b72951756fa619ef642081d382cb1f73ebf1d6a170d6410a8444124767b94e7",
+    "docs/rust/schedule-execution/oracle-index.json": "2d1a930742291e7047a864aa2246e7e22c612cb6583249b7edb42945b494b450",
+    "docs/rust/schedule-execution/fixtures/task_144.json": "dd258cb8d3fe569349aeb495dcdd128832c60bcf39aff4e362fcca5a197cb43f"
+  }
+}
