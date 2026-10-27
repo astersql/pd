@@ -825,6 +825,7 @@ dependencies = [
  "astersql-pd-storage",
  "astersql-pd-storage-endpoint",
  "astersql-pd-storage-kv",
+ "astersql-pd-storelimit",
  "astersql-pd-syncer",
  "astersql-pd-tso",
  "async-trait",

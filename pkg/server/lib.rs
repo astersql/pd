@@ -168,3 +168,8 @@ pub mod schedule_admin_shuffle_hot_region;
 #[cfg(test)]
 #[path = "schedule_admin_shuffle_hot_region_test.rs"]
 mod schedule_admin_shuffle_hot_region_test;
+
+pub mod schedule_admin_shuffle_leader;
+#[cfg(test)]
+#[path = "schedule_admin_shuffle_leader_test.rs"]
+mod schedule_admin_shuffle_leader_test;

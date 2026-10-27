@@ -32,6 +32,7 @@ prometheus.workspace = true
 futures-util.workspace = true
 
 [dev-dependencies]
+astersql-pd-storelimit.workspace = true
 astersql-pd-schedule-core.workspace = true
 astersql-pd-schedule-filter.workspace = true
 astersql-pd-schedule-keyrange.workspace = true
