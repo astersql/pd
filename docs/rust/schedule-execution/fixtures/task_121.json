@@ -1,0 +1,291 @@
+[
+  {
+    "input": {
+      "name": "transfer-leader",
+      "region_id": 1,
+      "to_store_id": 2
+    },
+    "status": 200,
+    "desc": "admin-transfer-leader"
+  },
+  {
+    "input": {
+      "name": "transfer-region",
+      "region_id": 1,
+      "to_store_ids": [
+        2,
+        3,
+        4
+      ]
+    },
+    "status": 200,
+    "desc": "admin-move-region"
+  },
+  {
+    "input": {
+      "name": "transfer-peer",
+      "region_id": 1,
+      "from_store_id": 3,
+      "to_store_id": 4
+    },
+    "status": 200,
+    "desc": "admin-move-peer"
+  },
+  {
+    "input": {
+      "name": "add-peer",
+      "region_id": 1,
+      "store_id": 4
+    },
+    "status": 200,
+    "desc": "admin-add-peer"
+  },
+  {
+    "input": {
+      "name": "add-learner",
+      "region_id": 1,
+      "store_id": 4
+    },
+    "status": 200,
+    "desc": "admin-add-learner"
+  },
+  {
+    "input": {
+      "name": "remove-peer",
+      "region_id": 1,
+      "store_id": 3
+    },
+    "status": 200,
+    "desc": "admin-remove-peer"
+  },
+  {
+    "input": {
+      "name": "merge-region",
+      "region_id": 1,
+      "source_region_id": 1,
+      "target_region_id": 2
+    },
+    "status": 200,
+    "desc": "admin-merge-region"
+  },
+  {
+    "input": {
+      "name": "split-region",
+      "region_id": 1,
+      "policy": "SCAN"
+    },
+    "status": 200,
+    "desc": "admin-split-region"
+  },
+  {
+    "input": {
+      "name": "scatter-region",
+      "region_id": 1
+    },
+    "status": 200
+  },
+  {
+    "input": {
+      "name": "scatter-regions",
+      "region_id": 1,
+      "region_ids": [
+        1
+      ],
+      "retry_limit": 0
+    },
+    "status": 200,
+    "body": {
+      "processed-percentage": 100,
+      "error": ""
+    }
+  },
+  {
+    "input": {},
+    "status": 400,
+    "error": "missing operator name"
+  },
+  {
+    "input": {
+      "name": 3
+    },
+    "status": 400,
+    "error": "missing operator name"
+  },
+  {
+    "input": {
+      "name": "bad"
+    },
+    "status": 400,
+    "error": "unknown operator"
+  },
+  {
+    "input": {
+      "name": "add-peer"
+    },
+    "status": 400,
+    "error": "missing region id"
+  },
+  {
+    "input": {
+      "name": "add-peer",
+      "region_id": "1"
+    },
+    "status": 400,
+    "error": "missing region id"
+  },
+  {
+    "input": {
+      "name": "add-peer",
+      "region_id": 1
+    },
+    "status": 400,
+    "error": "invalid store id to transfer peer to"
+  },
+  {
+    "input": {
+      "name": "transfer-leader",
+      "region_id": 1
+    },
+    "status": 400,
+    "error": "missing store id to transfer leader to"
+  },
+  {
+    "input": {
+      "name": "transfer-peer",
+      "region_id": 1
+    },
+    "status": 400,
+    "error": "invalid store id to transfer peer from"
+  },
+  {
+    "input": {
+      "name": "transfer-peer",
+      "region_id": 1,
+      "from_store_id": 2
+    },
+    "status": 400,
+    "error": "invalid store id to transfer peer to"
+  },
+  {
+    "input": {
+      "name": "merge-region",
+      "source_region_id": 1
+    },
+    "status": 400,
+    "error": "invalid target region id to merge to"
+  },
+  {
+    "input": {
+      "name": "split-region",
+      "region_id": 1
+    },
+    "status": 400,
+    "error": "missing split policy"
+  },
+  {
+    "input": {
+      "name": "split-region",
+      "region_id": 1,
+      "policy": "SCAN",
+      "keys": 3
+    },
+    "status": 400,
+    "error": "bad format keys"
+  },
+  {
+    "input": {
+      "name": "split-region",
+      "region_id": 1,
+      "policy": "SCAN",
+      "keys": [
+        3
+      ]
+    },
+    "status": 400,
+    "error": "bad format keys"
+  },
+  {
+    "input": {
+      "name": "transfer-region",
+      "region_id": 1
+    },
+    "status": 400,
+    "error": "invalid store ids to transfer region to"
+  },
+  {
+    "input": {
+      "name": "transfer-region",
+      "region_id": 1,
+      "to_store_ids": []
+    },
+    "status": 400,
+    "error": "missing store ids to transfer region to"
+  },
+  {
+    "input": {
+      "name": "transfer-region",
+      "region_id": 1,
+      "to_store_ids": [
+        "2"
+      ]
+    },
+    "status": 400,
+    "error": "invalid store ids to transfer region to"
+  },
+  {
+    "input": {
+      "name": "scatter-regions"
+    },
+    "status": 400,
+    "error": "region_ids is invalid"
+  },
+  {
+    "input": {
+      "name": "add-peer",
+      "region_id": -1,
+      "store_id": 4
+    },
+    "status": 400,
+    "error": "missing region id"
+  },
+  {
+    "input": {
+      "name": "add-peer",
+      "region_id": 1.5,
+      "store_id": 4
+    },
+    "status": 400,
+    "error": "missing region id"
+  },
+  {
+    "input": {
+      "name": "add-peer",
+      "region_id": 18446744073709551616,
+      "store_id": 4
+    },
+    "status": 400,
+    "error": "missing region id"
+  },
+  {
+    "input": {
+      "name": "split-region",
+      "region_id": 999,
+      "policy": "SCAN"
+    },
+    "status": 500,
+    "error": "region 999 not found"
+  },
+  {
+    "input": {
+      "name": "scatter-regions",
+      "region_ids": [
+        999
+      ]
+    },
+    "status": 200,
+    "body": {
+      "processed-percentage": 0,
+      "error": "scatter batch error: RegionNotFound(999)"
+    }
+  }
+]

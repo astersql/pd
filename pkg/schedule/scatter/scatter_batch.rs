@@ -132,7 +132,8 @@ pub struct ScatterBatch<'a, C: SharedConfigProvider> {
     pub metrics: &'a ScatterBatchMetrics,
 }
 impl<C: SharedConfigProvider> ScatterBatch<'_, C> {
-    async fn scatter_one<F: FnMut() -> Result<u64, BuilderError>>(
+    /// Plan one real scatter action without admission, for single-region admin dispatch.
+    pub async fn scatter_one<F: FnMut() -> Result<u64, BuilderError>>(
         &mut self,
         region: &Arc<RegionInfo>,
         group: &str,

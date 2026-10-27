@@ -52,3 +52,9 @@ separate distribution metric. `success` means operator construction, even if
 admission later rejects it; `unnecessary` counts only actual no-op layouts.
 The public outcome supplies cancellation/pending state without inventing metric
 labels. Typed selector, builder and admission errors expose their sources.
+
+`scatter_one` is also public for the administrative creation dispatcher. It plans
+against the same distribution state without admitting or retrying. The caller
+forwards `suspect` IDs to the canonical checker even on failure, preserves the
+scatter HIGH priority, applies store-limit admission, and archives
+replaced operators. See [task-121](../../../docs/rust/schedule-execution/task-121.md).

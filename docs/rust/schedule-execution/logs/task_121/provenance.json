@@ -1,0 +1,43 @@
+{
+  "source_commit": "836fdc7cf3ef34f7eabc9d051418995bb97efabe",
+  "checkout_commit": "82260f2f2c37436de6ce3f591b2df6d80d1847ea",
+  "evidence_kind": "readonly_source_derivation_and_executed_Rust_behavior; user-authorized Go runtime waiver",
+  "go_runtime_command": null,
+  "go_binary": null,
+  "go_outputs": null,
+  "normalization": "No error or command fields ignored. JSON numeric values pass through float64, as Go JSON decoder does; valid integer IDs only. Explicit clock and deterministic ascending store/role order, no claimed randomized target parity.",
+  "sources": {
+    "pkg/schedule/handler/handler.go": {
+      "sha256": "c9f126a421b83fdee5b89d4c26a743b2c4d6493527d4ba0862895705f3639dfa",
+      "matches_source_commit": true
+    },
+    "pkg/utils/typeutil/conversion.go": {
+      "sha256": "9dbd47d2bcba379aeb1caaa1dd8eda02ed57dc46db71e17bb62c900fe681b71f",
+      "matches_source_commit": true
+    },
+    "pkg/utils/typeutil/conversion_test.go": {
+      "sha256": "0317b50b4a355dde5f3d47593b347cb61ba6c277f703302d0e2c346e9629c52b",
+      "matches_source_commit": true
+    },
+    "tests/server/api/operator_test.go": {
+      "sha256": "98b05af58107a8f9326baf08af7a2f127c3a82fc4b5e5953741d9faabc70a3a2",
+      "matches_source_commit": true
+    },
+    "pkg/schedule/scatter/region_scatterer.go": {
+      "sha256": "9f2f77a2ca302d6896d8dbffc7a736d411133d8df078807fcb8188b1fc75d3f6",
+      "matches_source_commit": true
+    }
+  },
+  "fixture": {
+    "path": "docs/rust/schedule-execution/fixtures/task_121.json",
+    "sha256": "576323896d6725c7a791c6d210dc310aa08ec8dbd113822bd588e767038155b8",
+    "cases": 32
+  },
+  "stdlib_hex_source": {
+    "path": "/usr/local/go/src/encoding/hex/hex.go",
+    "sha256": "b3344957ddc5d4090972f94b552a5a7a5bdfb8174a189df033adb0ede97002ba",
+    "scope": "Decode byte error ordering and InvalidByteError formatting; source derivation only",
+    "go_version_source": "go1.24.3\ntime 2025-04-30T18:13:34Z"
+  },
+  "rust_literal_expectations_sha256": "ca76a9f75b5d9cb34bf5a160b15a28e5e844856898dce4f4864bf27ff835ac45"
+}
