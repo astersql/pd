@@ -2,7 +2,7 @@
 //! Shared canonical cluster state owned by the serving scope.
 use astersql_pd_cluster::{
     HeartbeatEffectsState, HeartbeatRunners, StatePipeline, StateSnapshot, StoreStateWorker,
-    check_store_states,
+    StoreStatsWorker, check_store_states, refresh_store_stats,
 };
 use astersql_pd_core::{BasicCluster, NodeState, RegionInfo, StoreStats};
 use astersql_pd_keypath::ClusterPaths;
@@ -39,6 +39,7 @@ pub struct ClusterHost {
     restored_config: Option<astersql_pd_server_config::PersistedConfig>,
     resources: Arc<AsyncMutex<Option<Resources>>>,
     store_worker: AsyncMutex<Option<StoreStateWorker>>,
+    stats_worker: AsyncMutex<Option<StoreStatsWorker>>,
     store_check_errors: Arc<Mutex<Vec<(u64, String)>>>,
     cancel: CancellationToken,
 }
@@ -167,12 +168,30 @@ impl ClusterHost {
                 }
             },
         );
+        let stats_resources = resources.clone();
+        let stats_cancel = cancel.clone();
+        let stats_worker =
+            StoreStatsWorker::start(&tokio::runtime::Handle::current(), &cancel, move || {
+                let resources = stats_resources.clone();
+                let cancel = stats_cancel.clone();
+                async move {
+                    let guard = resources.lock().await;
+                    let Some(resources) = guard.as_ref() else {
+                        return;
+                    };
+                    if cancel.is_cancelled() || resources.leader.validate().await.is_err() {
+                        return;
+                    }
+                    refresh_store_stats(&resources.state.lock().unwrap().cluster);
+                }
+            });
         Ok(Self {
             syncer: syncer_weak,
             state: state_weak,
             restored_config,
             resources,
             store_worker: AsyncMutex::new(Some(store_worker)),
+            stats_worker: AsyncMutex::new(Some(stats_worker)),
             store_check_errors,
             cancel,
         })
@@ -205,6 +224,11 @@ impl ClusterHost {
         } else {
             None
         };
+        let stats_error = if let Some(worker) = self.stats_worker.lock().await.take() {
+            worker.stop().await.err()
+        } else {
+            None
+        };
         let mut guard = self.resources.lock().await;
         let result = if let Some(resources) = guard.as_mut() {
             resources.syncer.stop().await;
@@ -216,7 +240,7 @@ impl ClusterHost {
             Ok(())
         };
         guard.take();
-        if let Some(error) = worker_error {
+        if let Some(error) = worker_error.or(stats_error) {
             return Err(error.into());
         }
         result
@@ -347,3 +371,7 @@ impl astersql_pd_server::bucket_heartbeat_adapter::BucketHeartbeatService for Cl
 #[cfg(test)]
 #[path = "store_state_worker_test.rs"]
 mod store_state_worker_test;
+
+#[cfg(test)]
+#[path = "store_stats_worker_test.rs"]
+mod store_stats_worker_test;

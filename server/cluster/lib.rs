@@ -51,3 +51,8 @@ mod store_state_worker;
 pub use store_state_worker::{StoreStateWorker, check_store_states};
 #[cfg(test)]
 mod store_state_worker_test;
+
+mod store_stats_worker;
+pub use store_stats_worker::{StoreStatsWorker, refresh_store_stats};
+#[cfg(test)]
+mod store_stats_worker_test;
