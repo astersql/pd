@@ -9,6 +9,10 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
+hyper.workspace = true
+hyper-util.workspace = true
+http-body-util.workspace = true
+serde_json.workspace = true
 astersql-pd-schedule-affinity.workspace = true
 astersql-pd-cluster-utils.workspace = true
 astersql-pd-ratelimit.workspace = true
@@ -25,6 +29,7 @@ astersql-pd-statistics.workspace = true
 astersql-pd-statistics-utils.workspace = true
 
 [dev-dependencies]
+axum.workspace = true
 astersql-pd-schedule-labeler.workspace = true
 astersql-pd-keyutil.workspace = true
 astersql-pd-storage.workspace = true

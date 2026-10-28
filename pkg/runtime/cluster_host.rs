@@ -1,8 +1,8 @@
 // Copyright 2026 AsterSQL.
 //! Shared canonical cluster state owned by the serving scope.
 use astersql_pd_cluster::{
-    HeartbeatEffectsState, HeartbeatRunners, StatePipeline, StateSnapshot, StoreStateWorker,
-    StoreStatsWorker, check_store_states, refresh_store_stats,
+    HeartbeatEffectsState, HeartbeatRunners, StatePipeline, StateSnapshot, StoreConfigWorker,
+    StoreStateWorker, StoreStatsWorker, check_store_states, refresh_store_stats, sync_store_config,
 };
 use astersql_pd_core::{BasicCluster, NodeState, RegionInfo, StoreStats};
 use astersql_pd_keypath::ClusterPaths;
@@ -29,6 +29,7 @@ struct Resources {
     paths: ClusterPaths,
     downstreams: Downstreams,
     syncer: Arc<RegionSyncer>,
+    persisted_config: astersql_pd_server_config::PersistedConfig,
 }
 /// One cache and pipeline shared by all adapters and host readers.
 /// The node creates workers on its supplied executor and joins them on shutdown.
@@ -40,6 +41,8 @@ pub struct ClusterHost {
     resources: Arc<AsyncMutex<Option<Resources>>>,
     store_worker: AsyncMutex<Option<StoreStateWorker>>,
     stats_worker: AsyncMutex<Option<StoreStatsWorker>>,
+    config_worker: AsyncMutex<Option<StoreConfigWorker>>,
+    store_config_error: Arc<Mutex<Option<String>>>,
     store_check_errors: Arc<Mutex<Vec<(u64, String)>>>,
     cancel: CancellationToken,
 }
@@ -54,6 +57,23 @@ impl ClusterHost {
         registry: &prometheus::Registry,
         leader: Arc<astersql_pd_member::Leadership>,
     ) -> Result<Self, crate::NodeError> {
+        let mut persisted_config = restored_config.clone().unwrap_or_default();
+        if restored_config.is_none() {
+            // Persist the adjusted dynamic defaults, not raw zero-valued sections.
+            // Host identity fields are excluded by PersistedConfig::persist.
+            persisted_config.config.adjust(
+                &Default::default(),
+                astersql_pd_server_config::ConfigDefaultsContext {
+                    hostname: "",
+                    cwd: &std::env::current_dir()?,
+                },
+                false,
+                &mut astersql_pd_schedule_config::ScheduleDefaults::default(),
+            )?;
+        }
+        persisted_config.config.schedule = config.schedule.clone();
+        persisted_config.config.replication = config.replication.clone();
+        persisted_config.store = config.store.clone();
         let storage = Arc::new(StorageEndpoint::new(store));
         let paths = ClusterPaths::new(cluster_id);
         let mut rules = RuleManager::new(storage.clone(), paths);
@@ -103,6 +123,7 @@ impl ClusterHost {
             runners,
             storage,
             paths,
+            persisted_config,
             downstreams: syncer.downstreams(),
             syncer,
         })));
@@ -185,6 +206,27 @@ impl ClusterHost {
                     refresh_store_stats(&resources.state.lock().unwrap().cluster);
                 }
             });
+        let config_resources = resources.clone();
+        let store_config_error = Arc::new(Mutex::new(None));
+        let config_error = store_config_error.clone();
+        let candidates = Arc::new(AsyncMutex::new(Vec::new()));
+        let config_worker =
+            StoreConfigWorker::start(&tokio::runtime::Handle::current(), &cancel, move |cancel| {
+                let resources = config_resources.clone();
+                let candidates = candidates.clone();
+                let error = config_error.clone();
+                async move {
+                    let mut guard = resources.lock().await;
+                    let Some(resources) = guard.as_mut() else {
+                        return;
+                    };
+                    let mut candidates = candidates.lock().await;
+                    let result = resources
+                        .sync_store_configuration(&mut candidates, &cancel)
+                        .await;
+                    *error.lock().unwrap() = result.err().map(|e| e.to_string());
+                }
+            });
         Ok(Self {
             syncer: syncer_weak,
             state: state_weak,
@@ -192,11 +234,27 @@ impl ClusterHost {
             resources,
             store_worker: AsyncMutex::new(Some(store_worker)),
             stats_worker: AsyncMutex::new(Some(stats_worker)),
+            config_worker: AsyncMutex::new(Some(config_worker)),
+            store_config_error,
             store_check_errors,
             cancel,
         })
     }
 
+    /// Latest synchronization failure; the next periodic tick retries it.
+    pub fn store_config_error(&self) -> Option<String> {
+        self.store_config_error.lock().unwrap().clone()
+    }
+    /// Current configuration from the same generation read by cluster workers.
+    pub async fn store_config(&self) -> Option<astersql_pd_schedule_config::StoreConfig> {
+        let guard = self.resources.lock().await;
+        if self.cancel.is_cancelled() {
+            return None;
+        }
+        guard
+            .as_ref()
+            .map(|r| r.state.lock().unwrap().config.store.clone())
+    }
     /// Failures from the latest store check; subsequent ticks retry failed stores.
     pub fn store_state_check_errors(&self) -> Vec<(u64, String)> {
         self.store_check_errors.lock().unwrap().clone()
@@ -229,6 +287,11 @@ impl ClusterHost {
         } else {
             None
         };
+        let config_error = if let Some(worker) = self.config_worker.lock().await.take() {
+            worker.stop().await.err()
+        } else {
+            None
+        };
         let mut guard = self.resources.lock().await;
         let result = if let Some(resources) = guard.as_mut() {
             resources.syncer.stop().await;
@@ -240,7 +303,7 @@ impl ClusterHost {
             Ok(())
         };
         guard.take();
-        if let Some(error) = worker_error.or(stats_error) {
+        if let Some(error) = worker_error.or(stats_error).or(config_error) {
             return Err(error.into());
         }
         result
@@ -309,6 +372,51 @@ fn now() -> (i64, i64) {
 }
 
 impl Resources {
+    async fn sync_store_configuration(
+        &mut self,
+        candidates: &mut Vec<Arc<astersql_pd_core::StoreInfo>>,
+        cancel: &CancellationToken,
+    ) -> Result<(), crate::NodeError> {
+        if cancel.is_cancelled() {
+            return Ok(());
+        }
+        self.leader.validate().await?;
+        if candidates.is_empty() {
+            *candidates = self.state.lock().unwrap().cluster.stores.get_stores();
+        }
+        let result = sync_store_config(candidates, cancel).await;
+        let config = match result {
+            Ok(Some(config)) => config,
+            other => {
+                // Go refreshes the candidate snapshot only when no Store succeeded.
+                *candidates = self.state.lock().unwrap().cluster.stores.get_stores();
+                return other.map(|_| ()).map_err(Into::into);
+            }
+        };
+        if cancel.is_cancelled() {
+            return Ok(());
+        }
+        self.leader.validate().await?;
+        let old = self.state.lock().unwrap().config.store.clone();
+        if config == old {
+            return Ok(());
+        }
+        let mut next = self.persisted_config.clone();
+        next.store = config;
+        if !old.is_raft_kv2() && next.store.is_raft_kv2() {
+            next.config.schedule.store_limit_version = "v2".into();
+        }
+        // Admission is held across this transaction. A failed write never publishes
+        // a candidate; cancellation joins admitted writes instead of dropping them.
+        next.persist(&self.storage, &self.paths).await?;
+        {
+            let mut state = self.state.lock().unwrap();
+            state.config.store = next.store.clone();
+            state.config.schedule = next.config.schedule.clone();
+        }
+        self.persisted_config = next;
+        Ok(())
+    }
     fn pipeline(&self) -> StatePipeline<'_, ProviderSnapshot<()>> {
         StatePipeline {
             state: &self.state,
@@ -375,3 +483,7 @@ mod store_state_worker_test;
 #[cfg(test)]
 #[path = "store_stats_worker_test.rs"]
 mod store_stats_worker_test;
+
+#[cfg(test)]
+#[path = "store_config_worker_test.rs"]
+mod store_config_worker_test;

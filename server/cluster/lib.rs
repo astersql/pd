@@ -56,3 +56,8 @@ mod store_stats_worker;
 pub use store_stats_worker::{StoreStatsWorker, refresh_store_stats};
 #[cfg(test)]
 mod store_stats_worker_test;
+
+mod store_config_worker;
+pub use store_config_worker::{StoreConfigWorker, fetch_store_config, sync_store_config};
+#[cfg(test)]
+mod store_config_worker_test;

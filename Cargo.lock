@@ -80,7 +80,12 @@ dependencies = [
  "astersql-pd-storage-kv",
  "astersql-pd-syncer",
  "async-trait",
+ "axum",
+ "http-body-util",
+ "hyper",
+ "hyper-util",
  "prometheus",
+ "serde_json",
  "tokio",
  "tokio-util",
 ]
