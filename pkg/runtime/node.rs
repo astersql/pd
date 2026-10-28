@@ -86,6 +86,11 @@ impl PdServices for Application {
     ) -> Option<&dyn astersql_pd_server::region_heartbeat_adapter::RegionHeartbeatService> {
         Some(self.cluster.as_ref())
     }
+    fn bucket_heartbeat_service(
+        &self,
+    ) -> Option<&dyn astersql_pd_server::bucket_heartbeat_adapter::BucketHeartbeatService> {
+        Some(self.cluster.as_ref())
+    }
     fn cluster_read_service(&self) -> Option<&dyn astersql_pd_server::ClusterReadService> {
         Some(self.cluster.as_ref())
     }

@@ -46,6 +46,11 @@ impl PdServices for RoleServices {
     fn region_heartbeat_service(&self) -> Option<&dyn RegionHeartbeatService> {
         Some(self)
     }
+    fn bucket_heartbeat_service(
+        &self,
+    ) -> Option<&dyn astersql_pd_server::bucket_heartbeat_adapter::BucketHeartbeatService> {
+        Some(self)
+    }
     fn cluster_read_service(&self) -> Option<&dyn ClusterReadService> {
         Some(self)
     }
@@ -262,5 +267,18 @@ impl MetaStore for TermStore {
     }
     async fn compact(&self, _: astersql_pd_storage::Revision) -> astersql_pd_storage::Result<()> {
         Err(astersql_pd_storage::StoreError::PermissionDenied)
+    }
+}
+
+#[async_trait::async_trait]
+impl astersql_pd_server::bucket_heartbeat_adapter::BucketHeartbeatService for RoleServices {
+    async fn bucket_heartbeat(
+        &self,
+        report: astersql_pd_statistics_buckets::BucketReport,
+    ) -> Result<bool, astersql_pd_cluster::BucketRegionNotFound> {
+        let Ok(term) = self.active().await else {
+            return Ok(false);
+        };
+        term.cluster.bucket_heartbeat(report).await
     }
 }

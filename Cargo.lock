@@ -433,6 +433,7 @@ dependencies = [
  "astersql-pd-server",
  "astersql-pd-server-config",
  "astersql-pd-statistics",
+ "astersql-pd-statistics-buckets",
  "astersql-pd-storage",
  "astersql-pd-storage-endpoint",
  "astersql-pd-storage-kv",

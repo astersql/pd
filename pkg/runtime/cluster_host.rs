@@ -204,3 +204,23 @@ impl astersql_pd_server::ClusterReadService for ClusterHost {
         Ok(state.cluster.regions.get_region(id))
     }
 }
+
+#[async_trait::async_trait]
+impl astersql_pd_server::bucket_heartbeat_adapter::BucketHeartbeatService for ClusterHost {
+    async fn bucket_heartbeat(
+        &self,
+        report: astersql_pd_statistics_buckets::BucketReport,
+    ) -> Result<bool, astersql_pd_cluster::BucketRegionNotFound> {
+        let guard = self.resources.lock().await;
+        if self.cancel.is_cancelled() {
+            return Ok(false);
+        }
+        let Some(resources) = guard.as_ref() else {
+            return Ok(false);
+        };
+        if resources.leader.validate().await.is_err() {
+            return Ok(false);
+        }
+        resources.pipeline().bucket(report)
+    }
+}

@@ -32,6 +32,7 @@ astersql-pd-schedule-placement.workspace = true
 astersql-pd-statistics.workspace = true
 astersql-pd-storage-endpoint.workspace = true
 astersql-pd-syncer.workspace = true
+astersql-pd-statistics-buckets.workspace = true
 [dev-dependencies]
 astersql-pd-compat-tests.workspace = true
 astersql-pd-storage-kv.workspace = true
