@@ -43,6 +43,9 @@ pub struct ClusterHost {
     stats_worker: AsyncMutex<Option<StoreStatsWorker>>,
     config_worker: AsyncMutex<Option<StoreConfigWorker>>,
     metrics_worker: AsyncMutex<Option<astersql_pd_cluster::ClusterMetricsWorker>>,
+    resolved_worker: AsyncMutex<Option<astersql_pd_cluster::ResolvedTsWorker>>,
+    min_resolved_ts: Arc<std::sync::atomic::AtomicU64>,
+    resolved_error: Arc<Mutex<Option<String>>>,
     store_config_error: Arc<Mutex<Option<String>>>,
     store_check_errors: Arc<Mutex<Vec<(u64, String)>>>,
     cancel: CancellationToken,
@@ -78,6 +81,23 @@ impl ClusterHost {
         let metrics_store = store.clone();
         let storage = Arc::new(StorageEndpoint::new(store));
         let paths = ClusterPaths::new(cluster_id);
+        let resolved_error = Arc::new(Mutex::new(None));
+        let initial_resolved = match storage.load_min_resolved_ts(&paths).await {
+            Ok(value) => value,
+            Err(error) => {
+                *resolved_error.lock().unwrap() = Some(error.to_string());
+                0
+            }
+        };
+        let min_resolved_ts = Arc::new(std::sync::atomic::AtomicU64::new(initial_resolved));
+        let resolved_interval = Arc::new(std::sync::atomic::AtomicU64::new(
+            persisted_config
+                .config
+                .pd_server
+                .min_resolved_ts_persistence_interval
+                .as_nanos()
+                .max(0) as u64,
+        ));
         let mut rules = RuleManager::new(storage.clone(), paths);
         if config.replication.enable_placement_rules {
             let stores = cluster
@@ -259,7 +279,59 @@ impl ClusterHost {
                 }
             },
         )?;
+        let worker_resources = resources.clone();
+        let current = min_resolved_ts.clone();
+        let error = resolved_error.clone();
+        let configured = resolved_interval.clone();
+        let worker_cancel = cancel.clone();
+        let resolved_worker = astersql_pd_cluster::ResolvedTsWorker::start(
+            &tokio::runtime::Handle::current(),
+            &cancel,
+            move || {
+                std::time::Duration::from_nanos(
+                    configured.load(std::sync::atomic::Ordering::Relaxed),
+                )
+            },
+            move || {
+                let resources = worker_resources.clone();
+                let current = current.clone();
+                let error = error.clone();
+                let cancel = worker_cancel.clone();
+                async move {
+                    let guard = resources.lock().await;
+                    let Some(resources) = guard.as_ref() else {
+                        return;
+                    };
+                    if cancel.is_cancelled() {
+                        return;
+                    }
+                    if let Err(e) = resources.leader.validate().await {
+                        *error.lock().unwrap() = Some(e.to_string());
+                        return;
+                    }
+                    let candidate = {
+                        let state = resources.state.lock().unwrap();
+                        astersql_pd_cluster::min_resolved_ts_candidate(
+                            &state.cluster,
+                            state.config.replication.max_replicas as usize,
+                        )
+                    };
+                    *error.lock().unwrap() = astersql_pd_cluster::refresh_min_resolved_ts(
+                        candidate,
+                        &current,
+                        &resources.storage,
+                        &resources.paths,
+                    )
+                    .await
+                    .err()
+                    .map(|e| e.to_string());
+                }
+            },
+        );
         Ok(Self {
+            resolved_worker: AsyncMutex::new(Some(resolved_worker)),
+            min_resolved_ts,
+            resolved_error,
             syncer: syncer_weak,
             state: state_weak,
             restored_config,
@@ -274,6 +346,15 @@ impl ClusterHost {
         })
     }
 
+    /// Current monotonic minimum, recovered from the shared storage at startup.
+    pub fn min_resolved_ts(&self) -> u64 {
+        self.min_resolved_ts
+            .load(std::sync::atomic::Ordering::Relaxed)
+    }
+    /// Latest resolved timestamp restore, leadership or persistence failure.
+    pub fn resolved_ts_error(&self) -> Option<String> {
+        self.resolved_error.lock().unwrap().clone()
+    }
     /// Latest synchronization failure; the next periodic tick retries it.
     pub fn store_config_error(&self) -> Option<String> {
         self.store_config_error.lock().unwrap().clone()
@@ -330,6 +411,11 @@ impl ClusterHost {
         } else {
             None
         };
+        let resolved_error = if let Some(worker) = self.resolved_worker.lock().await.take() {
+            worker.stop().await.err()
+        } else {
+            None
+        };
         let mut guard = self.resources.lock().await;
         let result = if let Some(resources) = guard.as_mut() {
             resources.syncer.stop().await;
@@ -345,6 +431,7 @@ impl ClusterHost {
             .or(stats_error)
             .or(config_error)
             .or(metrics_error)
+            .or(resolved_error)
         {
             return Err(error.into());
         }
@@ -532,3 +619,7 @@ mod cluster_metrics_worker_test;
 #[cfg(test)]
 #[path = "store_config_worker_test.rs"]
 mod store_config_worker_test;
+
+#[cfg(test)]
+#[path = "resolved_ts_worker_test.rs"]
+mod resolved_ts_worker_test;

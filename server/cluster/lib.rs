@@ -66,3 +66,10 @@ mod cluster_metrics_worker;
 pub use cluster_metrics_worker::{ClusterMetricsWorker, HealthMember};
 #[cfg(test)]
 mod cluster_metrics_worker_test;
+
+mod resolved_ts_worker;
+pub use resolved_ts_worker::{
+    ResolvedTsWorker, min_resolved_ts_candidate, refresh_min_resolved_ts,
+};
+#[cfg(test)]
+mod resolved_ts_worker_test;

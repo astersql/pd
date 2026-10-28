@@ -46,9 +46,9 @@ def binary(name):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--mode', choices=['go', 'rust', 'dual'], default=os.environ.get('PD_COMPAT_MODE', 'dual'))
-    parser.add_argument('--case', choices=['health-member', 'tso', 'cluster-host', 'cluster-restore', 'member-role', 'bucket-heartbeat', 'sync-regions', 'store-state', 'store-stats', 'store-config', 'cluster-metrics'], action='append')
+    parser.add_argument('--case', choices=['health-member', 'tso', 'cluster-host', 'cluster-restore', 'member-role', 'bucket-heartbeat', 'sync-regions', 'store-state', 'store-stats', 'store-config', 'cluster-metrics', 'resolved-ts'], action='append')
     args = parser.parse_args()
-    if any(case in (args.case or []) for case in ['cluster-host', 'cluster-restore', 'member-role', 'bucket-heartbeat', 'sync-regions', 'store-state', 'store-stats', 'store-config', 'cluster-metrics']) and args.mode != 'dual':
+    if any(case in (args.case or []) for case in ['cluster-host', 'cluster-restore', 'member-role', 'bucket-heartbeat', 'sync-regions', 'store-state', 'store-stats', 'store-config', 'cluster-metrics', 'resolved-ts']) and args.mode != 'dual':
         raise ValueError('cluster-host, cluster-restore and member-role require dual mode')
     go = binary('PD_COMPAT_GO_BIN') if args.mode != 'rust' else None
     rust = binary('PD_COMPAT_RUST_BIN') if args.mode != 'go' else None
@@ -84,6 +84,7 @@ def main():
         'pkg/proto/build.rs', 'pkg/storage/kv/etcd_fixture_test.rs', 'Cargo.lock',
         'pkg/member/member.rs', 'pkg/runtime/node_test.rs', 'pkg/runtime/member_role_worker.rs', 'pkg/runtime/member_role_worker_test.rs', 'pkg/runtime/cluster_restore.rs', 'pkg/runtime/cluster_restore_test.rs', 'pkg/server/grpc.rs',
         'pkg/server/sync_transport.rs', 'pkg/server/lib.rs', 'pkg/runtime/cluster_host.rs', 'pkg/runtime/cluster_host_test.rs', 'pkg/runtime/node.rs',
+        'pkg/runtime/resolved_ts_worker_test.rs', 'server/cluster/resolved_ts_worker.rs', 'server/cluster/resolved_ts_worker_test.rs',
         'pkg/runtime/cluster_metrics_worker_test.rs', 'server/cluster/cluster_metrics_worker.rs', 'server/cluster/cluster_metrics_worker_test.rs', 'pkg/server/http.rs',
         'pkg/runtime/store_config_worker_test.rs', 'server/cluster/store_config_worker.rs', 'server/cluster/store_config_worker_test.rs',
         'pkg/runtime/store_stats_worker_test.rs', 'server/cluster/store_stats_worker.rs', 'server/cluster/store_stats_worker_test.rs', 'pkg/runtime/store_state_worker_test.rs', 'server/cluster/lib.rs', 'server/cluster/store_state_worker.rs', 'server/cluster/store_state_worker_test.rs', 'pkg/runtime/wire_sync_regions_test.rs', 'pkg/runtime/wire_bucket_heartbeat_test.rs', 'pkg/server/bucket_heartbeat_adapter.rs', 'server/cluster/bucket_heartbeat.rs', 'server/cluster/state_pipeline.rs', 'pkg/statistics/buckets/bucket_worker.rs', 'pkg/runtime/Cargo.toml', 'Cargo.toml')]
@@ -120,6 +121,9 @@ def main():
             if case == 'sync-regions':
                 command = ['cargo', 'test', '--locked', '-p', 'astersql-pd-runtime', '--lib',
                            'readonly_sync_regions_differential', '--', '--ignored']
+            if case == 'resolved-ts':
+                command = ['cargo', 'test', '--locked', '-p', 'astersql-pd-runtime', '--lib',
+                           'readonly_resolved_ts_differential', '--', '--ignored']
             if case == 'cluster-metrics':
                 command = ['cargo', 'test', '--locked', '-p', 'astersql-pd-runtime', '--lib',
                            'readonly_cluster_metrics_differential', '--', '--ignored']
