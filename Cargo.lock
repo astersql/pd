@@ -419,12 +419,22 @@ dependencies = [
 name = "astersql-pd-runtime"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-cluster",
+ "astersql-pd-compat-tests",
+ "astersql-pd-core",
  "astersql-pd-id",
+ "astersql-pd-keypath",
  "astersql-pd-member",
  "astersql-pd-proto",
+ "astersql-pd-ratelimit",
+ "astersql-pd-schedule-config",
+ "astersql-pd-schedule-placement",
  "astersql-pd-server",
+ "astersql-pd-statistics",
  "astersql-pd-storage",
+ "astersql-pd-storage-endpoint",
  "astersql-pd-storage-kv",
+ "astersql-pd-syncer",
  "astersql-pd-tso",
  "async-trait",
  "axum",

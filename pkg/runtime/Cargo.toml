@@ -21,7 +21,17 @@ async-trait.workspace = true
 prost.workspace = true
 astersql-pd-proto.workspace = true
 axum.workspace = true
+astersql-pd-cluster.workspace = true
+astersql-pd-core.workspace = true
+astersql-pd-keypath.workspace = true
+astersql-pd-ratelimit.workspace = true
+astersql-pd-schedule-config.workspace = true
+astersql-pd-schedule-placement.workspace = true
+astersql-pd-statistics.workspace = true
+astersql-pd-storage-endpoint.workspace = true
+astersql-pd-syncer.workspace = true
 [dev-dependencies]
+astersql-pd-compat-tests.workspace = true
 astersql-pd-storage-kv.workspace = true
 serde_json.workspace = true
 tonic.workspace = true

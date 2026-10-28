@@ -5,7 +5,7 @@ use std::{sync::Arc, time::Duration};
 use tokio_util::sync::CancellationToken;
 #[allow(dead_code)]
 #[path = "../storage/kv/etcd_fixture_test.rs"]
-mod fixture;
+pub(super) mod fixture;
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
 async fn shared_runtime_network_lifecycle() {

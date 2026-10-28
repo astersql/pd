@@ -115,6 +115,7 @@ impl BucketWorkerClient {
 pub struct BucketWorker {
     client: BucketWorkerClient,
     join: Option<JoinHandle<()>>,
+    registration: Option<(Registry, HistogramVec)>,
 }
 impl BucketWorker {
     /// Moves the initial index into a host task and registers metrics in its registry.
@@ -137,10 +138,11 @@ impl BucketWorker {
         registry.register(Box::new(metrics.clone()))?;
         let stopped = parent.child_token();
         let (sender, receiver) = mpsc::channel(BUCKET_TASK_QUEUE_CAPACITY);
-        let join = handle.spawn(run(index, receiver, stopped.clone(), metrics));
+        let join = handle.spawn(run(index, receiver, stopped.clone(), metrics.clone()));
         Ok(Self {
             client: BucketWorkerClient { sender, stopped },
             join: Some(join),
+            registration: Some((registry.clone(), metrics)),
         })
     }
     #[cfg(test)]
@@ -152,6 +154,11 @@ impl BucketWorker {
     pub fn client(&self) -> BucketWorkerClient {
         self.client.clone()
     }
+    fn unregister(&mut self) {
+        if let Some((registry, metrics)) = self.registration.take() {
+            let _ = registry.unregister(Box::new(metrics));
+        }
+    }
     /// Cancels pending work and waits for exit. Repeated calls are safe.
     /// Cancellation of this future retains the join handle for a later call.
     pub async fn shutdown(&mut self) -> Result<(), JoinError> {
@@ -159,14 +166,17 @@ impl BucketWorker {
         if let Some(join) = self.join.as_mut() {
             let result = join.await;
             self.join.take();
+            self.unregister();
             result?;
         }
+        self.unregister();
         Ok(())
     }
 }
 impl Drop for BucketWorker {
     fn drop(&mut self) {
         self.client.stopped.cancel();
+        self.unregister();
     }
 }
 

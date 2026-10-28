@@ -64,6 +64,7 @@ fn record(events: &Events, event: &'static str) {
 
 struct Application {
     identity: Identity,
+    cluster: Arc<crate::cluster_host::ClusterHost>,
     leader: Arc<Leadership>,
     allocator: Allocator,
     oracle: Oracle,
@@ -74,6 +75,16 @@ struct Application {
 impl PdServices for Application {
     fn identity(&self) -> &Identity {
         &self.identity
+    }
+    fn store_heartbeat_service(
+        &self,
+    ) -> Option<&dyn astersql_pd_server::store_heartbeat_adapter::StoreHeartbeatService> {
+        Some(self.cluster.as_ref())
+    }
+    fn region_heartbeat_service(
+        &self,
+    ) -> Option<&dyn astersql_pd_server::region_heartbeat_adapter::RegionHeartbeatService> {
+        Some(self.cluster.as_ref())
     }
     async fn healthy(&self) -> Result<(), String> {
         if self.cancel.is_cancelled() {
@@ -93,14 +104,21 @@ impl PdServices for Application {
 /// Starts services on the host's executor without installing process-global state.
 pub struct PdNodeBuilder {
     runtime: Handle,
+    cluster: astersql_pd_core::BasicCluster,
     cancellation: CancellationToken,
 }
 impl PdNodeBuilder {
     pub fn new(runtime: Handle, cancellation: CancellationToken) -> Self {
         Self {
             runtime,
+            cluster: astersql_pd_core::BasicCluster::new(),
             cancellation: cancellation.child_token(),
         }
+    }
+    /// Injects the canonical cluster rather than creating adapter-local caches.
+    pub fn with_cluster(mut self, cluster: astersql_pd_core::BasicCluster) -> Self {
+        self.cluster = cluster;
+        self
     }
     /// Reserves leadership and a durable TSO window before accepting traffic.
     pub async fn start(
@@ -113,7 +131,14 @@ impl PdNodeBuilder {
         // Initialization runs on the supplied executor, including when the caller uses another one.
         let cancel = self.cancellation.clone();
         self.runtime
-            .spawn(initialize_node(store, config, listener, registry, cancel))
+            .spawn(initialize_node(
+                store,
+                config,
+                listener,
+                registry,
+                cancel,
+                self.cluster,
+            ))
             .await?
     }
 }
@@ -123,6 +148,7 @@ async fn initialize_node(
     listener: TcpListener,
     registry: Arc<prometheus::Registry>,
     cancel: CancellationToken,
+    cluster: astersql_pd_core::BasicCluster,
 ) -> Result<PdNode, NodeError> {
     let events = Arc::new(Mutex::new(vec!["storage"]));
     let member = Member::bootstrap(
@@ -157,7 +183,21 @@ async fn initialize_node(
             "Minimal Rust PD domain requests",
         )?;
         registry.register(Box::new(requests.clone()))?;
+        let cluster = match crate::cluster_host::ClusterHost::new(
+            cluster,
+            store.clone(),
+            config.cluster_id,
+            cancel.clone(),
+            &registry,
+        ) {
+            Ok(cluster) => Arc::new(cluster),
+            Err(error) => {
+                registry.unregister(Box::new(requests))?;
+                return Err(error);
+            }
+        };
         Ok::<_, NodeError>(Arc::new(Application {
+            cluster,
             identity: config,
             leader: leader.clone(),
             allocator,
@@ -180,6 +220,7 @@ async fn initialize_node(
     let (tx, rx) = oneshot::channel();
     let worker_events = events.clone();
     let worker_cancel = cancel.clone();
+    let cluster_view = application.cluster.clone();
     let worker = tokio::spawn(async move {
         let server = axum::serve(listener, router)
             .with_graceful_shutdown(worker_cancel.clone().cancelled_owned());
@@ -219,6 +260,7 @@ async fn initialize_node(
             (&mut server).await
         };
         drop(server);
+        let cluster_stopped = application.cluster.shutdown().await;
         record(&worker_events, "background-joined");
         let resignation = leader.resign().await;
         record(&worker_events, "leadership-released");
@@ -226,6 +268,7 @@ async fn initialize_node(
         drop((application, leader, member, store));
         record(&worker_events, "storage-released");
         result?;
+        cluster_stopped?;
         drained?;
         resignation?;
         unregistered?;
@@ -233,6 +276,7 @@ async fn initialize_node(
     });
     Ok(PdNode {
         cancellation: cancel,
+        cluster: cluster_view,
         ready: Some(rx),
         worker: Some(worker),
         events,
@@ -240,12 +284,17 @@ async fn initialize_node(
 }
 /// Owns the serving scope. Shutdown joins admission and maintenance before releasing leadership.
 pub struct PdNode {
+    cluster: Arc<crate::cluster_host::ClusterHost>,
     cancellation: CancellationToken,
     ready: Option<oneshot::Receiver<()>>,
     worker: Option<JoinHandle<Result<(), NodeError>>>,
     events: Events,
 }
 impl PdNode {
+    /// Host read adapters share the same state as network heartbeat adapters.
+    pub fn cluster(&self) -> Arc<crate::cluster_host::ClusterHost> {
+        self.cluster.clone()
+    }
     pub async fn ready(&mut self) -> Result<(), NodeError> {
         if let Some(ready) = self.ready.take() {
             ready.await?;
