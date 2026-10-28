@@ -265,6 +265,12 @@ pub fn minimal_sample(server: &Server) -> Result<Value, String> {
     Ok(rules.apply(&json!({"health_status":hs,"health":h,"members_status":ms,"header":m["header"],"members":[member],"leader":leader,"tso_allocator_leaders":m.get("tso_allocator_leaders").cloned().unwrap_or(json!({}))})))
 }
 pub fn run_minimal(mode: &str, go: &Path, rust: Option<&Path>) -> Result<(), String> {
+    crate::readonly_oracle::validate(
+        mode,
+        go,
+        rust,
+        &Path::new(env!("CARGO_MANIFEST_DIR")).join("fixtures/health-member.json"),
+    )?;
     let mut samples = Vec::new();
     for is_rust in match mode {
         "go" => vec![false],

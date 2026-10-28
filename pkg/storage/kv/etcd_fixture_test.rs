@@ -2,7 +2,7 @@
 use astersql_pd_storage_kv::EtcdMetaStore;
 use std::{
     io::Write,
-    path::PathBuf,
+    path::{Path, PathBuf},
     process::{Child, Command, Stdio},
     sync::{
         OnceLock,
@@ -31,8 +31,13 @@ impl Fixture {
         assert!(target.is_absolute());
         let binary = BINARY.get_or_init(|| {
             let binary = target.join(format!("rust-etcd-fixture-{}", std::process::id()));
-            let status = Command::new("go")
-                .args(["build", "-o"])
+            let status = fixture_go(root)
+                .env("GOWORK", "off")
+                .env("GOFLAGS", "-mod=readonly")
+                .env("CGO_ENABLED", "0")
+                .env("GOPROXY", "off")
+                .env("GOTOOLCHAIN", "local")
+                .args(["build", "-mod=readonly", "-o"])
                 .arg(&binary)
                 .arg("./scripts/rust-etcd-fixture")
                 .current_dir(&root)
@@ -41,7 +46,10 @@ impl Fixture {
             assert!(status.success(), "Go etcd fixture build failed");
             binary
         });
-        let directory = target.join(format!(
+        let work = std::env::var_os("PD_COMPAT_WORK_DIR")
+            .map(PathBuf::from)
+            .unwrap_or_else(|| target.clone());
+        let directory = work.join(format!(
             "etcd-contract-{}-{}",
             std::process::id(),
             NEXT.fetch_add(1, Ordering::Relaxed)
@@ -96,8 +104,37 @@ impl Drop for Fixture {
             let _ = self.child.kill();
         }
         let _ = self.child.wait();
-        if !std::thread::panicking() {
-            let _ = std::fs::remove_dir_all(&self.directory);
-        }
+        let _ = std::fs::remove_dir_all(&self.directory);
     }
+}
+
+// Prefer the already installed toolchain matching go.mod. GOTOOLCHAIN=local
+// rejects a missing toolchain instead of downloading Go sources behind the guard.
+fn fixture_go(root: &Path) -> Command {
+    let output = Command::new("go")
+        .args(["env", "GOMODCACHE", "GOOS", "GOARCH"])
+        .env("GOTOOLCHAIN", "local")
+        .env("GOWORK", "off")
+        .current_dir(root)
+        .output()
+        .expect("locate existing Go toolchain cache");
+    assert!(output.status.success(), "cannot locate Go toolchain cache");
+    let environment = String::from_utf8(output.stdout).unwrap();
+    let values: Vec<_> = environment.lines().collect();
+    assert_eq!(values.len(), 3);
+    let module = std::fs::read_to_string(root.join("go.mod")).unwrap();
+    let version = module
+        .lines()
+        .find_map(|line| line.strip_prefix("go "))
+        .unwrap()
+        .trim();
+    let cached = PathBuf::from(values[0]).join(format!(
+        "golang.org/toolchain@v0.0.1-go{version}.{}-{}/bin/go",
+        values[1], values[2]
+    ));
+    Command::new(if cached.is_file() {
+        cached
+    } else {
+        PathBuf::from("go")
+    })
 }

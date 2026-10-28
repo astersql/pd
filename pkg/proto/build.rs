@@ -9,25 +9,20 @@ const ARCHIVE_SHA256: &str = "aff09d074d493874bfd7e3e63c766a8d93f42901ff235dde2d
 
 fn main() {
     println!("cargo:rerun-if-changed=build.rs");
-    println!("cargo:rerun-if-env-changed=GOPROXY");
-    let manifest = PathBuf::from(env::var_os("CARGO_MANIFEST_DIR").unwrap());
+    println!("cargo:rerun-if-env-changed=GOMODCACHE");
+    // Resolve an existing cache only: downloading a module may create Go files or
+    // update sums. Provision the pinned archive outside the read-only workflow.
     let output = Command::new("go")
-        .args([
-            "mod",
-            "download",
-            "-json",
-            &format!("github.com/pingcap/kvproto@{VERSION}"),
-        ])
-        .current_dir(manifest.join("../.."))
+        .args(["env", "GOMODCACHE"])
+        .env("GOWORK", "off")
+        .env("GOFLAGS", "-mod=readonly")
+        .current_dir(env::var_os("OUT_DIR").unwrap())
         .output()
-        .expect("Go is required to fetch the pinned kvproto module");
-    assert!(
-        output.status.success(),
-        "kvproto download failed: {}",
-        String::from_utf8_lossy(&output.stderr)
-    );
-    let module: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
-    let archive = PathBuf::from(module["Zip"].as_str().expect("module Zip missing"));
+        .expect("Go is required to locate the pinned protocol cache");
+    assert!(output.status.success(), "cannot locate Go module cache");
+    let archive = PathBuf::from(String::from_utf8(output.stdout).unwrap().trim()).join(format!(
+        "cache/download/github.com/pingcap/kvproto/@v/{VERSION}.zip"
+    ));
     println!("cargo:rerun-if-changed={}", archive.display());
     let bytes = fs::read(archive).unwrap();
     assert_eq!(

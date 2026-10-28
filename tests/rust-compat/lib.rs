@@ -13,3 +13,7 @@ mod schedule_foundation_test;
 mod state_regression;
 #[cfg(test)]
 mod state_regression_test;
+
+pub mod readonly_oracle;
+#[cfg(test)]
+mod readonly_oracle_test;
