@@ -17,3 +17,7 @@ mod cluster_host_test;
 mod cluster_restore_test;
 
 mod cluster_restore;
+
+mod member_role_worker;
+#[cfg(test)]
+mod member_role_worker_test;

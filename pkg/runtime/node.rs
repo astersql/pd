@@ -62,14 +62,14 @@ fn record(events: &Events, event: &'static str) {
     events.lock().unwrap().push(event);
 }
 
-struct Application {
+pub(crate) struct Application {
     identity: Identity,
-    cluster: Arc<crate::cluster_host::ClusterHost>,
-    leader: Arc<Leadership>,
+    pub(crate) cluster: Arc<crate::cluster_host::ClusterHost>,
+    pub(crate) leader: Arc<Leadership>,
     allocator: Allocator,
-    oracle: Oracle,
-    requests: prometheus::IntCounter,
-    cancel: CancellationToken,
+    pub(crate) oracle: Oracle,
+    pub(crate) requests: prometheus::IntCounter,
+    pub(crate) cancel: CancellationToken,
 }
 #[async_trait::async_trait]
 impl PdServices for Application {
@@ -90,8 +90,8 @@ impl PdServices for Application {
         Some(self.cluster.as_ref())
     }
     async fn healthy(&self) -> Result<(), String> {
-        if self.cancel.is_cancelled() {
-            return Err("node stopped".into());
+        if self.cancel.is_cancelled() || self.leader.is_expired() {
+            return Err("node stopped or leadership expired".into());
         }
         self.leader.validate().await.map_err(|e| e.to_string())
     }
@@ -169,12 +169,100 @@ async fn initialize_node(
         .encode_to_vec(),
     )
     .await?;
-    let leader = Arc::new(member.campaign(5).await?);
-    record(&events, "leadership");
+    let services = Arc::new(crate::member_role_worker::RoleServices::new(config.clone()));
+    let initial = match member.campaign(5).await {
+        Ok(leader) => {
+            record(&events, "leadership");
+            Some(
+                prepare_term(
+                    store.clone(),
+                    config.clone(),
+                    registry.clone(),
+                    cancel.child_token(),
+                    cluster,
+                    Arc::new(leader),
+                )
+                .await?,
+            )
+        }
+        Err(astersql_pd_member::MemberError::Contended) => None,
+        Err(error) => return Err(error.into()),
+    };
+    services.replace(initial.clone());
+    record(&events, "services");
+    let router = astersql_pd_server::router(services.clone(), cancel.clone());
+    record(&events, "listener");
+    let (tx, rx) = oneshot::channel();
+    let worker_events = events.clone();
+    let worker_cancel = cancel.clone();
+    let cluster_view = services.clone();
+    let worker = tokio::spawn(async move {
+        let server = axum::serve(listener, router)
+            .with_graceful_shutdown(worker_cancel.clone().cancelled_owned());
+        let mut server = Box::pin(std::future::IntoFuture::into_future(server));
+        record(&worker_events, "ready");
+        let _ = tx.send(());
+        let roles = crate::member_role_worker::run(
+            services.clone(),
+            member,
+            store.clone(),
+            config,
+            registry.clone(),
+            worker_cancel.clone(),
+        );
+        tokio::pin!(roles);
+        let (result, finished) = tokio::select! {
+            result = &mut server => (result.map_err(Into::into), true),
+            result = &mut roles => (result, false),
+        };
+        worker_cancel.cancel();
+        record(&worker_events, "stop-admission");
+        if finished {
+            let _ = (&mut roles).await;
+        }
+        let drained = if finished {
+            Ok(())
+        } else {
+            (&mut server).await
+        };
+        drop(server);
+        record(&worker_events, "background-joined");
+        record(&worker_events, "leadership-released");
+        drop((services, store));
+        record(&worker_events, "storage-released");
+        result?;
+        drained?;
+        Ok(())
+    });
+    Ok(PdNode {
+        cancellation: cancel,
+        cluster: cluster_view,
+        ready: Some(rx),
+        worker: Some(worker),
+        events,
+    })
+}
+
+pub(crate) async fn prepare_term(
+    store: Arc<dyn MetaStore>,
+    config: NodeConfig,
+    registry: Arc<prometheus::Registry>,
+    cancel: CancellationToken,
+    cluster: astersql_pd_core::BasicCluster,
+    leader: Arc<Leadership>,
+) -> Result<Arc<Application>, NodeError> {
     let setup = async {
         let (cluster, cluster_config, restored_config) = {
-            let recovery =
-                crate::cluster_restore::restore(cluster, store.clone(), &config, &cancel);
+            let recovery = crate::cluster_restore::restore(
+                cluster,
+                Arc::new(crate::member_role_worker::TermStore::new(
+                    store.clone(),
+                    leader.clone(),
+                    cancel.clone(),
+                )),
+                &config,
+                &cancel,
+            );
             tokio::pin!(recovery);
             let mut renew = tokio::time::interval(std::time::Duration::from_secs(1));
             // Large snapshots must not exhaust the election lease before serving starts.
@@ -205,10 +293,15 @@ async fn initialize_node(
             cluster,
             cluster_config,
             restored_config,
-            store.clone(),
+            Arc::new(crate::member_role_worker::TermStore::new(
+                store.clone(),
+                leader.clone(),
+                cancel.clone(),
+            )),
             config.cluster_id,
             cancel.clone(),
             &registry,
+            leader.clone(),
         ) {
             Ok(cluster) => Arc::new(cluster),
             Err(error) => {
@@ -235,86 +328,26 @@ async fn initialize_node(
             return Err(error);
         }
     };
-    record(&events, "services");
-    let router = astersql_pd_server::router(application.clone(), cancel.clone());
-    record(&events, "listener");
-    let (tx, rx) = oneshot::channel();
-    let worker_events = events.clone();
-    let worker_cancel = cancel.clone();
-    let cluster_view = application.cluster.clone();
-    let worker = tokio::spawn(async move {
-        let server = axum::serve(listener, router)
-            .with_graceful_shutdown(worker_cancel.clone().cancelled_owned());
-        let mut server = Box::pin(std::future::IntoFuture::into_future(server));
-        record(&worker_events, "ready");
-        let _ = tx.send(());
-        let mut tick = tokio::time::interval(std::time::Duration::from_millis(50));
-        let mut renew = tokio::time::interval(std::time::Duration::from_secs(1));
-        let mut server_finished = false;
-        let result: Result<(), NodeError> = loop {
-            tokio::select! {
-                biased;
-                _ = worker_cancel.cancelled() => break Ok(()),
-                result = &mut server => {
-                    server_finished = true;
-                    break result.map_err(Into::into);
-                }
-                _ = renew.tick() => {
-                    if let Err(error) = leader.renew().await {
-                        break if worker_cancel.is_cancelled() { Ok(()) } else { Err(error.into()) };
-                    }
-                }
-                _ = tick.tick() => {
-                    if let Err(error) = application.oracle.update().await {
-                        break if worker_cancel.is_cancelled() { Ok(()) } else { Err(error.into()) };
-                    }
-                }
-            }
-        };
-        worker_cancel.cancel();
-        record(&worker_events, "stop-admission");
-        // Supported response streams observe cancellation. Join all connections rather than
-        // reporting successful shutdown while detached transport tasks still use storage.
-        let drained = if server_finished {
-            Ok(())
-        } else {
-            (&mut server).await
-        };
-        drop(server);
-        let cluster_stopped = application.cluster.shutdown().await;
-        record(&worker_events, "background-joined");
-        let resignation = leader.resign().await;
-        record(&worker_events, "leadership-released");
-        let unregistered = registry.unregister(Box::new(application.requests.clone()));
-        drop((application, leader, member, store));
-        record(&worker_events, "storage-released");
-        result?;
-        cluster_stopped?;
-        drained?;
-        resignation?;
-        unregistered?;
-        Ok(())
-    });
-    Ok(PdNode {
-        cancellation: cancel,
-        cluster: cluster_view,
-        ready: Some(rx),
-        worker: Some(worker),
-        events,
-    })
+    Ok(application)
 }
 /// Owns the serving scope. Shutdown joins admission and maintenance before releasing leadership.
 pub struct PdNode {
-    cluster: Arc<crate::cluster_host::ClusterHost>,
+    cluster: Arc<crate::member_role_worker::RoleServices>,
     cancellation: CancellationToken,
     ready: Option<oneshot::Receiver<()>>,
     worker: Option<JoinHandle<Result<(), NodeError>>>,
     events: Events,
 }
 impl PdNode {
-    /// Host read adapters share the same state as network heartbeat adapters.
+    /// Host read adapters share the active leader cache.
+    /// Panics on a follower; use `try_cluster` when the node may change roles.
     pub fn cluster(&self) -> Arc<crate::cluster_host::ClusterHost> {
-        self.cluster.clone()
+        self.try_cluster()
+            .expect("cluster is available only during a leader term")
+    }
+    /// Returns the active leader cache; followers have no scheduling scope.
+    pub fn try_cluster(&self) -> Option<Arc<crate::cluster_host::ClusterHost>> {
+        self.cluster.current().map(|term| term.cluster.clone())
     }
     pub async fn ready(&mut self) -> Result<(), NodeError> {
         if let Some(ready) = self.ready.take() {

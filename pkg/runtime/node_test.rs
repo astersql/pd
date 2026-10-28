@@ -159,7 +159,7 @@ async fn startup_failure_releases_term_and_listener() {
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
-async fn lease_loss_stops_admission_and_reports_failure() {
+async fn lease_loss_retires_term_and_preserves_listener() {
     use astersql_pd_storage::{Consistency, MetaStore, Read};
     let fixture = fixture::Fixture::start();
     let store = Arc::new(fixture.store().await);
@@ -190,12 +190,31 @@ async fn lease_loss_stops_admission_and_reports_failure() {
         .revoke(leader.entries[0].lease.unwrap())
         .await
         .unwrap();
-    assert!(
-        tokio::time::timeout(Duration::from_secs(5), node.wait())
-            .await
-            .unwrap()
-            .is_err()
-    );
-    assert!(node.ready().await.is_err());
-    assert!(tokio::net::TcpStream::connect(address).await.is_err());
+    let old_revision = leader.entries[0].mod_revision;
+    tokio::time::timeout(Duration::from_secs(5), async {
+        loop {
+            let current = store
+                .read(Read::range(
+                    b"/pd/44/leader",
+                    b"",
+                    Consistency::Linearizable,
+                ))
+                .await
+                .unwrap();
+            if current
+                .entries
+                .first()
+                .is_some_and(|entry| entry.mod_revision > old_revision)
+                && node.try_cluster().is_some()
+            {
+                break;
+            }
+            tokio::time::sleep(Duration::from_millis(20)).await;
+        }
+    })
+    .await
+    .unwrap();
+    node.ready().await.unwrap();
+    assert!(tokio::net::TcpStream::connect(address).await.is_ok());
+    node.shutdown().await.unwrap();
 }

@@ -17,6 +17,7 @@ use tokio_util::sync::CancellationToken;
 
 type State = Mutex<HeartbeatEffectsState<ProviderSnapshot<()>>>;
 struct Resources {
+    leader: Arc<astersql_pd_member::Leadership>,
     state: Arc<State>,
     hot: HotStat,
     runners: [ConcurrentRunner; 3],
@@ -42,6 +43,7 @@ impl ClusterHost {
         cluster_id: u64,
         cancel: CancellationToken,
         registry: &prometheus::Registry,
+        leader: Arc<astersql_pd_member::Leadership>,
     ) -> Result<Self, crate::NodeError> {
         let storage = Arc::new(StorageEndpoint::new(store));
         let paths = ClusterPaths::new(cluster_id);
@@ -62,6 +64,7 @@ impl ClusterHost {
             state: Arc::downgrade(&state),
             restored_config,
             resources: AsyncMutex::new(Some(Resources {
+                leader,
                 state,
                 hot,
                 runners,
@@ -110,6 +113,11 @@ impl StoreHeartbeatService for ClusterHost {
         let resources = resources
             .as_ref()
             .ok_or_else(|| StoreHeartbeatError::Other("node stopped".into()))?;
+        resources
+            .leader
+            .validate()
+            .await
+            .map_err(|e| StoreHeartbeatError::Other(e.to_string()))?;
         let mut state = resources.state.lock().unwrap();
         apply_store_heartbeat(&mut state.cluster, Some(&resources.hot), &stats, now().1)
     }
@@ -134,6 +142,11 @@ impl RegionHeartbeatService for ClusterHost {
         let resources = resources
             .as_ref()
             .ok_or_else(|| RegionHeartbeatError("node stopped".into()))?;
+        resources
+            .leader
+            .validate()
+            .await
+            .map_err(|e| RegionHeartbeatError(e.to_string()))?;
         let (seconds, nanos) = now();
         let _receipt = resources
             .pipeline()

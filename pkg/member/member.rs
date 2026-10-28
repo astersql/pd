@@ -3,7 +3,7 @@ use astersql_pd_storage_domain::*;
 use std::{future::Future, sync::Arc};
 use tokio_util::sync::CancellationToken;
 
-pub use astersql_pd_election::{ElectionError as MemberError, Leadership, Result};
+pub use astersql_pd_election::{ElectionError as MemberError, LeaderWatch, Leadership, Result};
 
 async fn cancellable<T>(
     cancel: &CancellationToken,

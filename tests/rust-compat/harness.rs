@@ -30,6 +30,10 @@ impl Server {
     }
     /// Send SIGTERM and require graceful, successful exit before releasing the fixture.
     pub fn stop(&mut self) -> Result<(), String> {
+        self.stop_with_timeout(Duration::from_secs(8))
+    }
+    /// Multi-member etcd may need to transfer Raft leadership before exiting.
+    pub fn stop_with_timeout(&mut self, timeout: Duration) -> Result<(), String> {
         let status = Command::new("kill")
             .args(["-TERM", &self.child.id().to_string()])
             .status()
@@ -37,7 +41,7 @@ impl Server {
         if !status.success() {
             return Err("SIGTERM failed".into());
         }
-        let deadline = Instant::now() + Duration::from_secs(8);
+        let deadline = Instant::now() + timeout;
         while Instant::now() < deadline {
             if let Some(status) = self.child.try_wait().map_err(|e| e.to_string())? {
                 if !status.success() {
@@ -68,7 +72,6 @@ impl Server {
             let peer_url = format!("http://{}", peer.local_addr()?);
             let log = fs::File::create(dir.join("server.log"))?;
             let mut command = Command::new(binary);
-            command.args(extra);
             command
                 .args([
                     "--name=compat",
@@ -79,6 +82,7 @@ impl Server {
                     &format!("--advertise-peer-urls={peer_url}"),
                     &format!("--initial-cluster=compat={peer_url}"),
                 ])
+                .args(extra)
                 .stdout(Stdio::from(log.try_clone()?))
                 .stderr(Stdio::from(log));
             drop((client, peer));
