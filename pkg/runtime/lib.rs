@@ -21,3 +21,6 @@ mod cluster_restore;
 mod member_role_worker;
 #[cfg(test)]
 mod member_role_worker_test;
+
+#[cfg(test)]
+mod wire_store_heartbeat_test;
