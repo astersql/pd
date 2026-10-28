@@ -75,6 +75,7 @@ fn counters(store: &astersql_pd_core::StoreInfo) -> [i64; 4] {
 async fn rust_scenario() -> [i64; 4] {
     let fixture = fixture::Fixture::start();
     let store = Arc::new(fixture.store().await);
+    crate::node_test::seed_bootstrap(store.clone(), 513).await;
     let cluster = BasicCluster::new();
     cluster.stores.put_store(Arc::new(StoreInfo::new(StoreMeta {
         id: 1,

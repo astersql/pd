@@ -16,15 +16,21 @@ impl Grpc {
             ..Default::default()
         })
     }
-    fn check(&self, header: Option<&pdpb::RequestHeader>) -> Result<(), Status> {
-        if header.map(|h| h.cluster_id).unwrap_or(0) != self.services.identity().cluster_id {
-            return Err(Status::failed_precondition(format!(
-                "mismatch cluster id, need {} but got {}",
-                self.services.identity().cluster_id,
-                header.map(|h| h.cluster_id).unwrap_or(0)
-            )));
+    async fn bootstrap_header(&self) -> Result<Option<pdpb::ResponseHeader>, Status> {
+        let bootstrapped = tokio::select! { biased;
+            _ = self.cancel.cancelled() => return Err(Status::unavailable("server not started")),
+            result = self.services.is_bootstrapped() => result.map_err(Status::unavailable)?,
+        };
+        if bootstrapped {
+            Ok(None)
+        } else {
+            Ok(Some(crate::request_role::not_bootstrapped(
+                self.services.as_ref(),
+            )))
         }
-        Ok(())
+    }
+    async fn check(&self, header: Option<&pdpb::RequestHeader>) -> Result<(), Status> {
+        crate::request_role::validate(self.services.as_ref(), &self.cancel, header).await
     }
 }
 pub(crate) fn member(id: &Identity) -> pdpb::Member {
@@ -43,8 +49,13 @@ impl Pd for Grpc {
         request: Request<pdpb::GetStoreRequest>,
     ) -> Result<Response<pdpb::GetStoreResponse>, Status> {
         let request = request.into_inner();
-        self.check(request.header.as_ref())?;
-        self.services.healthy().await.map_err(Status::unavailable)?;
+        self.check(request.header.as_ref()).await?;
+        if let Some(header) = self.bootstrap_header().await? {
+            return Ok(Response::new(pdpb::GetStoreResponse {
+                header: Some(header),
+                ..Default::default()
+            }));
+        }
         let service = self
             .services
             .cluster_read_service()
@@ -83,14 +94,19 @@ impl Pd for Grpc {
         request: Request<pdpb::GetRegionByIdRequest>,
     ) -> Result<Response<pdpb::GetRegionResponse>, Status> {
         let request = request.into_inner();
+        self.check(request.header.as_ref()).await?;
+        if let Some(header) = self.bootstrap_header().await? {
+            return Ok(Response::new(pdpb::GetRegionResponse {
+                header: Some(header),
+                ..Default::default()
+            }));
+        }
         if request.need_buckets {
             return Err(Status::unimplemented(
                 "region bucket queries are not configured",
             ));
         }
 
-        self.check(request.header.as_ref())?;
-        self.services.healthy().await.map_err(Status::unavailable)?;
         let service = self
             .services
             .cluster_read_service()
@@ -151,7 +167,13 @@ impl Pd for Grpc {
                 let service = self.services.bucket_heartbeat_service().ok_or_else(|| {
                     Status::unimplemented("bucket heartbeat state service is not configured")
                 })?;
-                if !service.is_bootstrapped() {
+                if !self
+                    .services
+                    .is_bootstrapped()
+                    .await
+                    .map_err(Status::unavailable)?
+                    || !service.is_bootstrapped()
+                {
                     let mut header = self.header().unwrap();
                     header.error = Some(pdpb::Error {
                         r#type: pdpb::ErrorType::NotBootstrapped as i32,
@@ -161,8 +183,7 @@ impl Pd for Grpc {
                         header: Some(header),
                     }));
                 }
-                self.check(request.header.as_ref())?;
-                self.services.healthy().await.map_err(Status::unavailable)?;
+                self.check(request.header.as_ref()).await?;
                 if let Some(buckets) = request.buckets.filter(|b| !b.keys.is_empty()) {
                     // Canonical host admission owns the applied flag and worker
                     // submission. Missing regions are ignored and reception continues.
@@ -249,7 +270,12 @@ impl Pd for Grpc {
                                     ..Default::default()
                                 }
                             };
-                        if !service.is_bootstrapped() {
+                        if !services
+                            .is_bootstrapped()
+                            .await
+                            .map_err(Status::unavailable)?
+                            || !service.is_bootstrapped()
+                        {
                             return Ok(Some((
                                 error_response(
                                     pdpb::ErrorType::NotBootstrapped,
@@ -259,14 +285,12 @@ impl Pd for Grpc {
                                 true,
                             )));
                         }
-                        if req.header.as_ref().map(|h| h.cluster_id).unwrap_or(0) != cluster_id {
-                            return Err(Status::failed_precondition(format!(
-                                "mismatch cluster id, need {} but got {}",
-                                cluster_id,
-                                req.header.as_ref().map(|h| h.cluster_id).unwrap_or(0)
-                            )));
-                        }
-                        services.healthy().await.map_err(Status::unavailable)?;
+                        crate::request_role::validate(
+                            services.as_ref(),
+                            &cancel,
+                            req.header.as_ref(),
+                        )
+                        .await?;
                         let store_id = req.leader.as_ref().map(|p| p.store_id).unwrap_or(0);
                         match service.region_store_state(store_id) {
                             None => {
@@ -374,12 +398,18 @@ impl Pd for Grpc {
     ) -> Result<Response<pdpb::StoreHeartbeatResponse>, Status> {
         use crate::store_heartbeat_adapter::StoreHeartbeatError;
         let request = request.into_inner();
-        self.check(request.header.as_ref())?;
+        self.check(request.header.as_ref()).await?;
         self.services.healthy().await.map_err(Status::unavailable)?;
         // Do not include a debug dump of the wire payload in transport errors.
         let stats = request
             .stats
             .ok_or_else(|| Status::unknown("invalid store heartbeat command"))?;
+        if let Some(header) = self.bootstrap_header().await? {
+            return Ok(Response::new(pdpb::StoreHeartbeatResponse {
+                header: Some(header),
+                ..Default::default()
+            }));
+        }
         let service = self.services.store_heartbeat_service().ok_or_else(|| {
             Status::unimplemented("store heartbeat state service is not configured")
         })?;
@@ -446,7 +476,7 @@ impl Pd for Grpc {
         req: Request<pdpb::AllocIdRequest>,
     ) -> Result<Response<pdpb::AllocIdResponse>, Status> {
         let req = req.into_inner();
-        self.check(req.header.as_ref())?;
+        self.check(req.header.as_ref()).await?;
         if req.count > 1 {
             return Err(Status::unimplemented("batch ID allocation is unsupported"));
         }

@@ -36,3 +36,6 @@ mod wire_sync_regions_test;
 
 #[cfg(test)]
 mod schedule_worker_test;
+
+#[cfg(test)]
+mod request_role_test;

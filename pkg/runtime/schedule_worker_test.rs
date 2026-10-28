@@ -20,6 +20,7 @@ async fn rust_scenario(mode: &str) -> pdpb::RegionHeartbeatResponse {
         fail: failure.clone(),
     });
     let endpoint = StorageEndpoint::new(store.clone());
+    crate::node_test::seed_bootstrap(store.clone(), 517).await;
     let paths = ClusterPaths::new(517);
     endpoint
         .save_config(

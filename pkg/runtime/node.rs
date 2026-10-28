@@ -177,7 +177,10 @@ async fn initialize_node(
         .encode_to_vec(),
     )
     .await?;
-    let services = Arc::new(crate::member_role_worker::RoleServices::new(config.clone()));
+    let services = Arc::new(crate::member_role_worker::RoleServices::new(
+        config.clone(),
+        store.clone(),
+    ));
     let initial = match member.campaign(5).await {
         Ok(leader) => {
             record(&events, "leadership");

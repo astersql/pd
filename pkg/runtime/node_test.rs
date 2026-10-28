@@ -218,3 +218,20 @@ async fn lease_loss_retires_term_and_preserves_listener() {
     assert!(tokio::net::TcpStream::connect(address).await.is_ok());
     node.shutdown().await.unwrap();
 }
+
+/// Persist the real bootstrap marker before exercising bootstrapped wire methods.
+pub(super) async fn seed_bootstrap(
+    store: std::sync::Arc<dyn astersql_pd_storage::MetaStore>,
+    id: u64,
+) {
+    astersql_pd_storage_endpoint::StorageEndpoint::new(store)
+        .save_meta(
+            &astersql_pd_keypath::ClusterPaths::new(id),
+            &astersql_pd_storage_endpoint::Cluster {
+                id,
+                max_peer_count: 3,
+            },
+        )
+        .await
+        .unwrap();
+}

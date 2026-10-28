@@ -2,6 +2,7 @@
 //! HTTP and gRPC adapters for the minimal classic PD role.
 mod grpc;
 mod http;
+mod request_role;
 use astersql_pd_tso::Timestamp;
 use async_trait::async_trait;
 use std::sync::Arc;
@@ -49,6 +50,11 @@ pub trait PdServices: Send + Sync {
     /// Canonical metadata reads used by startup recovery verification.
     fn cluster_read_service(&self) -> Option<&dyn ClusterReadService> {
         None
+    }
+    /// Whether this host currently exposes a bootstrapped raft cluster.
+    /// Implementations must read canonical state, rather than infer it from requests.
+    async fn is_bootstrapped(&self) -> Result<bool, String> {
+        Ok(true)
     }
     async fn healthy(&self) -> Result<(), String>;
     async fn alloc_id(&self) -> Result<u64, String>;
@@ -209,3 +215,12 @@ pub mod schedule_admin_balance_range;
 mod schedule_admin_balance_range_test;
 
 mod heartbeat_stream_adapter;
+
+#[cfg(test)]
+#[path = "request_role_test.rs"]
+mod request_role_test;
+
+#[cfg(test)]
+#[allow(dead_code)]
+#[path = "../storage/kv/etcd_fixture_test.rs"]
+mod etcd_fixture;

@@ -9,17 +9,19 @@ use astersql_pd_server::{
     ClusterReadService, PdServices, region_heartbeat_adapter::*, store_heartbeat_adapter::*,
 };
 use astersql_pd_storage::{Consistency, MetaStore, Read};
-use std::sync::{Arc, RwLock};
+use std::sync::{Arc, RwLock, Weak};
 use tokio_util::sync::CancellationToken;
 
 pub(crate) struct RoleServices {
     identity: NodeConfig,
+    store: Weak<dyn MetaStore>,
     term: RwLock<Option<Arc<Application>>>,
 }
 impl RoleServices {
-    pub(crate) fn new(identity: NodeConfig) -> Self {
+    pub(crate) fn new(identity: NodeConfig, store: Arc<dyn MetaStore>) -> Self {
         Self {
             identity,
+            store: Arc::downgrade(&store),
             term: RwLock::new(None),
         }
     }
@@ -56,6 +58,22 @@ impl PdServices for RoleServices {
     }
     fn region_sync_handle(&self) -> Option<Arc<astersql_pd_server::sync_transport::RegionSyncer>> {
         self.current()?.region_sync_handle()
+    }
+    async fn is_bootstrapped(&self) -> Result<bool, String> {
+        // Go GetRaftCluster returns nil on followers, including heartbeat streams
+        // whose bootstrap check deliberately precedes request-role validation.
+        if self.current().is_none() {
+            return Ok(false);
+        }
+        astersql_pd_storage_endpoint::StorageEndpoint::new(
+            self.store.upgrade().ok_or("server not started")?,
+        )
+        .load_meta(&astersql_pd_keypath::ClusterPaths::new(
+            self.identity.cluster_id,
+        ))
+        .await
+        .map(|meta| meta.is_some())
+        .map_err(|error| error.to_string())
     }
     async fn healthy(&self) -> Result<(), String> {
         self.active().await.map(|_| ())

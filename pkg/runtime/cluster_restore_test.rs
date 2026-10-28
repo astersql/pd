@@ -24,6 +24,7 @@ fn header() -> Option<pdpb::RequestHeader> {
     })
 }
 async fn seed(store: Arc<dyn MetaStore>, cluster_id: u64) {
+    crate::node_test::seed_bootstrap(store.clone(), cluster_id).await;
     let endpoint = StorageEndpoint::new(store);
     let paths = ClusterPaths::new(cluster_id);
     endpoint

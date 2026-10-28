@@ -60,6 +60,7 @@ async fn observe(
 async fn rust_scenario() -> Vec<i32> {
     let fixture = fixture::Fixture::start();
     let store = Arc::new(fixture.store().await);
+    crate::node_test::seed_bootstrap(store.clone(), 512).await;
     let storage = StorageEndpoint::new(store.clone());
     let cluster = BasicCluster::new();
     for (id, node_state, state) in [

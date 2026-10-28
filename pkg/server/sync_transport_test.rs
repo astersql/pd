@@ -488,8 +488,7 @@ async fn state_task_51_sync_transport_stop_before_first_request() {
 }
 
 #[allow(dead_code)]
-#[path = "../storage/kv/etcd_fixture_test.rs"]
-mod etcd_fixture;
+use crate::etcd_fixture;
 #[tokio::test]
 async fn state_task_51_sync_transport_etcd_follower_persistence() {
     let fixture = etcd_fixture::Fixture::start();

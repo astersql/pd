@@ -10,6 +10,7 @@ use tokio_util::sync::CancellationToken;
 async fn task_008_behavior() {
     let fixture = fixture::Fixture::start();
     let store = Arc::new(fixture.store().await);
+    crate::node_test::seed_bootstrap(store.clone(), 808).await;
     let cluster = BasicCluster::new();
     for (id, state, node_state) in [
         (1, StoreState::Up, NodeState::Serving),

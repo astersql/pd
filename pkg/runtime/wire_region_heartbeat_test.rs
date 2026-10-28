@@ -15,6 +15,7 @@ use tokio_util::sync::CancellationToken;
 async fn task_009_behavior() {
     let fixture = fixture::Fixture::start();
     let store = Arc::new(fixture.store().await);
+    crate::node_test::seed_bootstrap(store.clone(), 505).await;
     let registry = Arc::new(prometheus::Registry::new());
     let parent = CancellationToken::new();
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
