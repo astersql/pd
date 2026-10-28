@@ -9,6 +9,7 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
+prometheus.workspace = true
 hyper.workspace = true
 hyper-util.workspace = true
 http-body-util.workspace = true
@@ -35,4 +36,3 @@ astersql-pd-keyutil.workspace = true
 astersql-pd-storage.workspace = true
 astersql-pd-storage-kv.workspace = true
 async-trait.workspace = true
-prometheus.workspace = true

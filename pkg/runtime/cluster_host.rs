@@ -42,6 +42,7 @@ pub struct ClusterHost {
     store_worker: AsyncMutex<Option<StoreStateWorker>>,
     stats_worker: AsyncMutex<Option<StoreStatsWorker>>,
     config_worker: AsyncMutex<Option<StoreConfigWorker>>,
+    metrics_worker: AsyncMutex<Option<astersql_pd_cluster::ClusterMetricsWorker>>,
     store_config_error: Arc<Mutex<Option<String>>>,
     store_check_errors: Arc<Mutex<Vec<(u64, String)>>>,
     cancel: CancellationToken,
@@ -74,6 +75,7 @@ impl ClusterHost {
         persisted_config.config.schedule = config.schedule.clone();
         persisted_config.config.replication = config.replication.clone();
         persisted_config.store = config.store.clone();
+        let metrics_store = store.clone();
         let storage = Arc::new(StorageEndpoint::new(store));
         let paths = ClusterPaths::new(cluster_id);
         let mut rules = RuleManager::new(storage.clone(), paths);
@@ -227,6 +229,36 @@ impl ClusterHost {
                     *error.lock().unwrap() = result.err().map(|e| e.to_string());
                 }
             });
+        let metrics_worker = astersql_pd_cluster::ClusterMetricsWorker::start(
+            &tokio::runtime::Handle::current(),
+            &cancel,
+            registry,
+            move || {
+                let store = metrics_store.clone();
+                async move {
+                    use astersql_pd_storage::{Consistency, Read};
+                    use prost::Message;
+                    let prefix = format!("/pd/{cluster_id}/rust/members/");
+                    let snapshot = store
+                        .read(Read::prefix(prefix.as_bytes(), Consistency::Linearizable))
+                        .await
+                        .map_err(|e| e.to_string())?;
+                    snapshot
+                        .entries
+                        .into_iter()
+                        .map(|entry| {
+                            let member =
+                                astersql_pd_proto::pdpb::Member::decode(entry.value.as_slice())
+                                    .map_err(|e| e.to_string())?;
+                            Ok(astersql_pd_cluster::HealthMember {
+                                name: member.name,
+                                client_urls: member.client_urls,
+                            })
+                        })
+                        .collect()
+                }
+            },
+        )?;
         Ok(Self {
             syncer: syncer_weak,
             state: state_weak,
@@ -235,6 +267,7 @@ impl ClusterHost {
             store_worker: AsyncMutex::new(Some(store_worker)),
             stats_worker: AsyncMutex::new(Some(stats_worker)),
             config_worker: AsyncMutex::new(Some(config_worker)),
+            metrics_worker: AsyncMutex::new(Some(metrics_worker)),
             store_config_error,
             store_check_errors,
             cancel,
@@ -292,6 +325,11 @@ impl ClusterHost {
         } else {
             None
         };
+        let metrics_error = if let Some(worker) = self.metrics_worker.lock().await.take() {
+            worker.stop().await.err()
+        } else {
+            None
+        };
         let mut guard = self.resources.lock().await;
         let result = if let Some(resources) = guard.as_mut() {
             resources.syncer.stop().await;
@@ -303,7 +341,11 @@ impl ClusterHost {
             Ok(())
         };
         guard.take();
-        if let Some(error) = worker_error.or(stats_error).or(config_error) {
+        if let Some(error) = worker_error
+            .or(stats_error)
+            .or(config_error)
+            .or(metrics_error)
+        {
             return Err(error.into());
         }
         result
@@ -484,6 +526,9 @@ mod store_state_worker_test;
 #[path = "store_stats_worker_test.rs"]
 mod store_stats_worker_test;
 
+#[cfg(test)]
+#[path = "cluster_metrics_worker_test.rs"]
+mod cluster_metrics_worker_test;
 #[cfg(test)]
 #[path = "store_config_worker_test.rs"]
 mod store_config_worker_test;

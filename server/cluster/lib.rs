@@ -61,3 +61,8 @@ mod store_config_worker;
 pub use store_config_worker::{StoreConfigWorker, fetch_store_config, sync_store_config};
 #[cfg(test)]
 mod store_config_worker_test;
+
+mod cluster_metrics_worker;
+pub use cluster_metrics_worker::{ClusterMetricsWorker, HealthMember};
+#[cfg(test)]
+mod cluster_metrics_worker_test;

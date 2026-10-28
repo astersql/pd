@@ -31,6 +31,7 @@ async fn members(State(s): State<Services>) -> (StatusCode, Json<Value>) {
 pub fn router(services: Services) -> Router {
     Router::new()
         .route("/pd/api/v1/health", get(health))
+        .route("/pd/api/v1/ping", get(|| async { StatusCode::OK }))
         .route("/pd/api/v1/members", get(members))
         .with_state(services)
 }
