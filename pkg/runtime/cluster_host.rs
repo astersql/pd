@@ -6,6 +6,7 @@ use astersql_pd_keypath::ClusterPaths;
 use astersql_pd_ratelimit::ConcurrentRunner;
 use astersql_pd_schedule_config::ProviderSnapshot;
 use astersql_pd_schedule_placement::RuleManager;
+use astersql_pd_server::sync_transport::RegionSyncer;
 use astersql_pd_server::{region_heartbeat_adapter::*, store_heartbeat_adapter::*};
 use astersql_pd_statistics::{HotStat, LabelStatistics, RegionStatistics};
 use astersql_pd_storage::MetaStore;
@@ -24,12 +25,14 @@ struct Resources {
     storage: Arc<StorageEndpoint>,
     paths: ClusterPaths,
     downstreams: Downstreams,
+    syncer: Arc<RegionSyncer>,
 }
 /// One cache and pipeline shared by all adapters and host readers.
 /// The node creates workers on its supplied executor and joins them on shutdown.
 /// Read handles retain no storage or workers after shutdown.
 pub struct ClusterHost {
     state: Weak<State>,
+    syncer: Weak<RegionSyncer>,
     restored_config: Option<astersql_pd_server_config::PersistedConfig>,
     resources: AsyncMutex<Option<Resources>>,
     cancel: CancellationToken,
@@ -60,7 +63,14 @@ impl ClusterHost {
             rules: RuleManager::new(storage.clone(), paths),
             affinity: None,
         }));
+        let syncer = Arc::new(RegionSyncer::for_heartbeat_state(
+            tokio::runtime::Handle::current(),
+            state.clone(),
+            HistoryBuffer::new(100)?,
+            std::time::Duration::from_secs(10),
+        ));
         Ok(Self {
+            syncer: Arc::downgrade(&syncer),
             state: Arc::downgrade(&state),
             restored_config,
             resources: AsyncMutex::new(Some(Resources {
@@ -70,10 +80,14 @@ impl ClusterHost {
                 runners,
                 storage,
                 paths,
-                downstreams: Downstreams::new(HistoryBuffer::new(100)?),
+                downstreams: syncer.downstreams(),
+                syncer,
             })),
             cancel,
         })
+    }
+    pub(crate) fn region_sync_handle(&self) -> Option<Arc<RegionSyncer>> {
+        self.syncer.upgrade()
     }
     /// Dynamic configuration recovered before serving this node.
     pub fn restored_config(&self) -> Option<&astersql_pd_server_config::PersistedConfig> {
@@ -92,6 +106,7 @@ impl ClusterHost {
         self.cancel.cancel();
         let mut guard = self.resources.lock().await;
         let result = if let Some(resources) = guard.as_mut() {
+            resources.syncer.stop().await;
             for runner in &mut resources.runners {
                 runner.stop().await;
             }

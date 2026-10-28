@@ -30,3 +30,6 @@ mod wire_region_heartbeat_test;
 
 #[cfg(test)]
 mod wire_bucket_heartbeat_test;
+
+#[cfg(test)]
+mod wire_sync_regions_test;

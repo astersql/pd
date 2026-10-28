@@ -135,7 +135,7 @@ impl RegionSyncer {
         &self,
         request: SyncRequest,
         cluster_id: u64,
-        mut input: tonic::Streaming<pdpb::SyncRegionRequest>,
+        input: tonic::Streaming<pdpb::SyncRegionRequest>,
         host_cancel: CancellationToken,
     ) -> Result<Output<pdpb::SyncRegionResponse>, Status> {
         let name = request.member.map(|m| m.name).unwrap_or_default();
@@ -189,11 +189,23 @@ impl RegionSyncer {
             let send_initial = async {
                 for response in initial {
                     let response = match response {
-                        astersql_pd_syncer::BootstrapFrame::Snapshot((start_index, records)) =>
-                            catch_up_to_proto(cluster_id, astersql_pd_syncer::CatchUpFrame::Records { start_index, records: &records }),
-                        astersql_pd_syncer::BootstrapFrame::History(frame) => history_to_proto(cluster_id, &frame),
+                        astersql_pd_syncer::BootstrapFrame::Snapshot((start_index, records)) => {
+                            catch_up_to_proto(
+                                cluster_id,
+                                astersql_pd_syncer::CatchUpFrame::Records {
+                                    start_index,
+                                    records: &records,
+                                },
+                            )
+                        }
+                        astersql_pd_syncer::BootstrapFrame::History(frame) => {
+                            history_to_proto(cluster_id, &frame)
+                        }
                     };
-                    tokio::time::timeout(timeout, tx.send(Ok(response))).await.map_err(|_| ())?.map_err(|_| ())?;
+                    tokio::time::timeout(timeout, tx.send(Ok(response)))
+                        .await
+                        .map_err(|_| ())?
+                        .map_err(|_| ())?;
                 }
                 Ok::<_, ()>(())
             };
@@ -212,14 +224,17 @@ impl RegionSyncer {
                     _ = cancel.cancelled() => {},
                     _ = host_cancel.cancelled() => {},
                     _ = tx.closed() => {},
-                    // The initial Go request owns the stream until disconnect;
-                    // subsequent request frames are not another subscription.
-                    _ = async { loop { if !matches!(input.message().await, Ok(Some(_))) { break; } } } => {},
                     _ = worker.wait() => { finished = true; },
                 }
             }
+            // Like Go, only the first request establishes this subscription.
+            // Keep its receive half owned until the response closes; request EOF
+            // must not terminate a follower's response stream.
+            drop(input);
             worker.cancel();
-            if !finished { let _ = worker.join().await; }
+            if !finished {
+                let _ = worker.join().await;
+            }
             session_closed.cancel();
         }));
         Ok(Box::pin(futures_util::stream::unfold(
@@ -284,10 +299,10 @@ impl Pd for SyncGrpc {
         &self,
         request: Request<tonic::Streaming<pdpb::SyncRegionRequest>>,
     ) -> Result<Response<Output<pdpb::SyncRegionResponse>>, Status> {
-        let service = self
-            .0
-            .services
-            .region_sync_service()
+        let owned = self.0.services.region_sync_handle();
+        let service = owned
+            .as_deref()
+            .or_else(|| self.0.services.region_sync_service())
             .ok_or_else(|| Status::unimplemented("region sync service is not configured"))?;
         let mut input = request.into_inner();
         let request = tokio::select! { biased;
@@ -300,7 +315,7 @@ impl Pd for SyncGrpc {
         };
         let cluster_id = self.0.services.identity().cluster_id;
         if request.header.as_ref().map(|h| h.cluster_id).unwrap_or(0) != cluster_id {
-            return Err(Status::unknown(format!(
+            return Err(Status::failed_precondition(format!(
                 "mismatch cluster id, need {cluster_id} but got {}",
                 request.header.as_ref().map(|h| h.cluster_id).unwrap_or(0)
             )));

@@ -94,6 +94,9 @@ impl PdServices for Application {
     fn cluster_read_service(&self) -> Option<&dyn astersql_pd_server::ClusterReadService> {
         Some(self.cluster.as_ref())
     }
+    fn region_sync_handle(&self) -> Option<Arc<astersql_pd_server::sync_transport::RegionSyncer>> {
+        self.cluster.region_sync_handle()
+    }
     async fn healthy(&self) -> Result<(), String> {
         if self.cancel.is_cancelled() || self.leader.is_expired() {
             return Err("node stopped or leadership expired".into());

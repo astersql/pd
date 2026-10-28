@@ -54,6 +54,9 @@ impl PdServices for RoleServices {
     fn cluster_read_service(&self) -> Option<&dyn ClusterReadService> {
         Some(self)
     }
+    fn region_sync_handle(&self) -> Option<Arc<astersql_pd_server::sync_transport::RegionSyncer>> {
+        self.current()?.region_sync_handle()
+    }
     async fn healthy(&self) -> Result<(), String> {
         self.active().await.map(|_| ())
     }

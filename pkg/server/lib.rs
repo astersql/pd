@@ -42,6 +42,10 @@ pub trait PdServices: Send + Sync {
     fn region_sync_service(&self) -> Option<&sync_transport::RegionSyncer> {
         None
     }
+    /// Owned term handle for hosts whose leader service can change concurrently.
+    fn region_sync_handle(&self) -> Option<Arc<sync_transport::RegionSyncer>> {
+        None
+    }
     /// Canonical metadata reads used by startup recovery verification.
     fn cluster_read_service(&self) -> Option<&dyn ClusterReadService> {
         None
