@@ -1,9 +1,9 @@
 // Copyright 2026 AsterSQL.
 //! Validation and root commit share one exclusive registry borrow.
-use crate::{RegionInfo, RegionsInfo, StaleRegionError};
+use crate::{RegionInfo, RegionState, StaleRegionError};
 use std::sync::Arc;
 
-impl RegionsInfo {
+impl RegionState {
     /// Commit root and store-role indexes without a staleness check.
     pub fn put_region(&mut self, region: Arc<RegionInfo>) -> Vec<Arc<RegionInfo>> {
         let (origin, overlaps, changed) = self.set_region(region.clone());

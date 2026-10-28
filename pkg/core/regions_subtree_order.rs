@@ -1,9 +1,9 @@
 // Copyright 2026 AsterSQL.
 //! Unordered subtree delivery with root refresh and metadata rejection.
-use crate::{RegionInfo, RegionsInfo, check_region};
+use crate::{RegionInfo, RegionState, check_region};
 use std::sync::Arc;
 
-impl RegionsInfo {
+impl RegionState {
     /// Refreshes the event's ID from the root before applying it to subtrees.
     /// Missing IDs are ignored, including IDs already evicted by overlap updates.
     pub fn check_and_put_sub_tree(&mut self, event: &RegionInfo) {

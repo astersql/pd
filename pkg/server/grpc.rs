@@ -201,13 +201,16 @@ impl Pd for Grpc {
     > {
         let input = request.into_inner();
         let services = self.services.clone();
-        let cancel = self.cancel.clone();
+        let cancel = self.cancel.child_token();
+        let (commands_tx, commands_rx) = tokio::sync::mpsc::channel(1024);
+        let commands_cancel = cancel.clone();
         // The output owns the receive loop, including the in-flight state future.
         // Accepted reports produce no ack; cancellation/drop detaches no worker.
         let output = futures_util::stream::unfold(
-            (input, services, cancel, false),
-            |(mut input, services, cancel, terminal)| async move {
+            (input, services, cancel, false, commands_tx),
+            |(mut input, services, cancel, terminal, commands_tx)| async move {
                 if terminal {
+                    cancel.cancel();
                     return None;
                 }
                 loop {
@@ -217,8 +220,13 @@ impl Pd for Grpc {
                     };
                     let req = match next {
                         Ok(Some(req)) => req,
-                        Ok(None) => return None,
-                        Err(e) => return Some((Err(e), (input, services, cancel, true))),
+                        Ok(None) => {
+                            cancel.cancel();
+                            return None;
+                        }
+                        Err(e) => {
+                            return Some((Err(e), (input, services, cancel, true, commands_tx)));
+                        }
                     };
                     let cluster_id = services.identity().cluster_id;
                     let result = async {
@@ -269,6 +277,18 @@ impl Pd for Grpc {
                             Some(astersql_pd_core::NodeState::Removed) => return Ok(None),
                             _ => {}
                         }
+                        service
+                            .bind_heartbeat(
+                                store_id,
+                                std::sync::Arc::new(
+                                    crate::heartbeat_stream_adapter::CommandStream {
+                                        sender: commands_tx.clone(),
+                                        cancellation: cancel.clone(),
+                                    },
+                                ),
+                            )
+                            .await
+                            .map_err(|e| Status::unavailable(e.0))?;
                         let target = req.leader.clone();
                         let region = match crate::core_region_adapter::region_from_heartbeat(
                             req,
@@ -313,14 +333,40 @@ impl Pd for Grpc {
                     match result {
                         Ok(None) => continue,
                         Ok(Some((response, terminal))) => {
-                            return Some((Ok(response), (input, services, cancel, terminal)));
+                            return Some((
+                                Ok(response),
+                                (input, services, cancel, terminal, commands_tx),
+                            ));
                         }
-                        Err(error) => return Some((Err(error), (input, services, cancel, true))),
+                        Err(error) => {
+                            return Some((
+                                Err(error),
+                                (input, services, cancel, true, commands_tx),
+                            ));
+                        }
                     }
                 }
             },
         );
-        Ok(Response::new(Box::pin(output)))
+        let commands = futures_util::stream::unfold(
+            (commands_rx, commands_cancel),
+            |(mut rx, cancel)| async move {
+                let command = tokio::select! { biased;
+                    _ = cancel.cancelled() => return None,
+                    command = rx.recv() => command?,
+                };
+                let response = match command {
+                    astersql_pd_schedule_hbstream::stream_lifecycle::HeartbeatMessage::Command(command) =>
+                        crate::schedule_wire::to_pdpb(&command).map_err(|e| Status::internal(e.to_string())),
+                    astersql_pd_schedule_hbstream::stream_lifecycle::HeartbeatMessage::KeepAlive{cluster_id} =>
+                        Ok(pdpb::RegionHeartbeatResponse{header:Some(pdpb::ResponseHeader{cluster_id,error:None}),..Default::default()}),
+                };
+                Some((response, (rx, cancel)))
+            },
+        );
+        Ok(Response::new(Box::pin(futures_util::stream::select(
+            output, commands,
+        ))))
     }
     async fn store_heartbeat(
         &self,

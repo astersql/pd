@@ -1,7 +1,7 @@
 // Copyright 2026 AsterSQL.
 //! Explicit root/subtree removal and cache generation reset.
-use crate::{RegionInfo, RegionTree, RegionsInfo};
-impl RegionsInfo {
+use crate::{RegionInfo, RegionState, RegionTree};
+impl RegionState {
     /// Removes root and ID entries; subtree removal is a separate operation.
     pub fn remove_region(&mut self, region: &RegionInfo) {
         self.root.remove(region);

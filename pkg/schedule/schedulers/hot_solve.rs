@@ -187,6 +187,27 @@ impl HotSolver {
             priorities,
         })
     }
+    pub(crate) fn refresh_rank_inputs(
+        &mut self,
+        input: crate::HotRankInputs,
+    ) -> Result<(), HotSolveError> {
+        let config = self.source.config_snapshot().clone();
+        let mut fresh = Self::new(
+            config,
+            self.priorities,
+            self.rw,
+            self.operation,
+            input.max_source,
+            input.min_destination,
+            input.step,
+        )?;
+        if let (Formula::V2(old), Formula::V2(new)) = (&self.formula, &mut fresh.formula) {
+            new.search_revert_regions = old.search_revert_regions;
+        }
+        self.order = fresh.order;
+        self.formula = fresh.formula;
+        Ok(())
+    }
     pub fn compare_src(&self, a: &StoreLoadDetail, b: &StoreLoadDetail) -> i32 {
         self.order.compare_store(a, b, true)
     }

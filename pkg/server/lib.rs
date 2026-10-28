@@ -207,3 +207,5 @@ pub mod schedule_admin_balance_range;
 #[cfg(test)]
 #[path = "schedule_admin_balance_range_test.rs"]
 mod schedule_admin_balance_range_test;
+
+mod heartbeat_stream_adapter;

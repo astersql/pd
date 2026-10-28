@@ -29,3 +29,8 @@ pending APIs 的宿主全链装配仍须在后续 facade/集群接线中验收�
 balanceHotWritePeers/Leaders、IsScheduleAllowed、GetNextInterval、resourceType，
 以及 rank_v1/v2.betterThan。按用户授权使用源码推导，未取得或声称 Go 运行差分。
 测试及错误接线红灯见 [任务94证据](../../../docs/rust/schedule-execution/task-094.md)。
+
+Runtime task 017 refreshes per-resource rank inputs through `refresh_rank_inputs`.
+It updates the existing solvers' rank populations while retaining reverse-search
+state and the restored scheduler instance; source/destination configuration is
+unchanged. No transport or runtime capability is added to this domain API.

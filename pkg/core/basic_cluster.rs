@@ -5,7 +5,7 @@ use std::sync::Arc;
 
 /// Basic cluster state; region mutations require exclusive access, while store
 /// snapshots and status updates use the registry's internal lock.
-#[derive(Default)]
+#[derive(Clone, Default)]
 pub struct BasicCluster {
     pub stores: StoresInfo,
     pub regions: RegionsInfo,

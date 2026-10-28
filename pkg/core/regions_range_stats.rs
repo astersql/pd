@@ -1,9 +1,9 @@
 // Copyright 2026 AsterSQL.
 //! Range aggregates and contiguous neighbors over the canonical indexes.
-use crate::{RegionInfo, RegionRole, RegionsInfo};
+use crate::{RegionInfo, RegionRole, RegionState};
 use std::sync::Arc;
 
-impl RegionsInfo {
+impl RegionState {
     /// Sums whole approximate sizes of intersecting regions, including partial
     /// intersections. Empty bounds select the complete index.
     pub fn get_region_size_by_range(&self, start: &[u8], end: &[u8]) -> i64 {

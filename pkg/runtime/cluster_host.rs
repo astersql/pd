@@ -22,6 +22,8 @@ use tokio_util::sync::CancellationToken;
 type State = Mutex<HeartbeatEffectsState<ProviderSnapshot<()>>>;
 struct Resources {
     leader: Arc<astersql_pd_member::Leadership>,
+    allocator: Arc<astersql_pd_id::Allocator>,
+    schedule_observations: std::collections::BTreeSet<u64>,
     state: Arc<State>,
     hot: HotStat,
     runners: [ConcurrentRunner; 3],
@@ -35,7 +37,9 @@ struct Resources {
 /// The node creates workers on its supplied executor and joins them on shutdown.
 /// Read handles retain no storage or workers after shutdown.
 pub struct ClusterHost {
+    #[cfg(test)]
     state: Weak<State>,
+    stores: astersql_pd_core::StoresInfo,
     syncer: Weak<RegionSyncer>,
     restored_config: Option<astersql_pd_server_config::PersistedConfig>,
     resources: Arc<AsyncMutex<Option<Resources>>>,
@@ -43,6 +47,11 @@ pub struct ClusterHost {
     stats_worker: AsyncMutex<Option<StoreStatsWorker>>,
     config_worker: AsyncMutex<Option<StoreConfigWorker>>,
     metrics_worker: AsyncMutex<Option<astersql_pd_cluster::ClusterMetricsWorker>>,
+    schedule_status: tokio::sync::watch::Receiver<ScheduleStatus>,
+    schedule_worker: AsyncMutex<Option<schedule_worker::ScheduleWorker>>,
+    schedule_routing: astersql_pd_schedule_hbstream::routing::RoutingHandle,
+    schedule_error: Arc<Mutex<Option<String>>>,
+    schedule_initialized: Arc<std::sync::atomic::AtomicBool>,
     resolved_worker: AsyncMutex<Option<astersql_pd_cluster::ResolvedTsWorker>>,
     min_resolved_ts: Arc<std::sync::atomic::AtomicU64>,
     resolved_error: Arc<Mutex<Option<String>>>,
@@ -60,7 +69,10 @@ impl ClusterHost {
         cancel: CancellationToken,
         registry: &prometheus::Registry,
         leader: Arc<astersql_pd_member::Leadership>,
+        allocator: Arc<astersql_pd_id::Allocator>,
     ) -> Result<Self, crate::NodeError> {
+        let scheduling_cluster = cluster.clone();
+        let stores = cluster.stores.clone();
         let mut persisted_config = restored_config.clone().unwrap_or_default();
         if restored_config.is_none() {
             // Persist the adjusted dynamic defaults, not raw zero-valued sections.
@@ -136,10 +148,16 @@ impl ClusterHost {
             HistoryBuffer::new(100)?,
             std::time::Duration::from_secs(10),
         ));
+        #[cfg(test)]
         let state_weak = Arc::downgrade(&state);
         let syncer_weak = Arc::downgrade(&syncer);
+        let scheduling_configuration =
+            serde_json::to_value(persisted_config.persistence_snapshot())
+                .map_err(|e| e.to_string())?;
         let resources = Arc::new(AsyncMutex::new(Some(Resources {
             leader,
+            allocator,
+            schedule_observations: Default::default(),
             state: state.clone(),
             hot,
             runners,
@@ -154,12 +172,14 @@ impl ClusterHost {
         let start = tokio::time::Instant::now();
         let count = Arc::new(std::sync::atomic::AtomicI64::new(0));
         let total = count.clone();
-        let preparation =
-            astersql_pd_schedule::PrepareChecker::new(std::time::Duration::ZERO, move || {
+        let preparation = Arc::new(astersql_pd_schedule::PrepareChecker::new(
+            std::time::Duration::ZERO,
+            move || {
                 Ok::<i64, std::convert::Infallible>(
                     total.load(std::sync::atomic::Ordering::Relaxed),
                 )
-            });
+            },
+        ));
         let store_check_errors = Arc::new(Mutex::new(Vec::new()));
         let worker_errors = store_check_errors.clone();
         let store_worker = StoreStateWorker::start(
@@ -170,18 +190,8 @@ impl ClusterHost {
                 let resources = worker_resources.clone();
                 let cancel = worker_cancel.clone();
                 let errors = worker_errors.clone();
-                // Preparation uses the same canonical heartbeat state. It is sticky,
-                // and its timeout follows the supplied executor's monotonic clock.
-                let prepared = {
-                    // The worker is the only owner of this gate; heartbeat admissions
-                    // are excluded below before the actual lifecycle check.
-                    let state = state.lock().unwrap();
-                    count.store(
-                        state.cluster.regions.total_region_count() as i64,
-                        std::sync::atomic::Ordering::Relaxed,
-                    );
-                    preparation.check(&state.cluster, start.elapsed())
-                };
+                let preparation = preparation.clone();
+                let count = count.clone();
                 async move {
                     let guard = resources.lock().await;
                     let Some(resources) = guard.as_ref() else {
@@ -190,6 +200,14 @@ impl ClusterHost {
                     if cancel.is_cancelled() || resources.leader.validate().await.is_err() {
                         return;
                     }
+                    let prepared = {
+                        let state = resources.state.lock().unwrap();
+                        count.store(
+                            state.cluster.regions.total_region_count() as i64,
+                            std::sync::atomic::Ordering::Relaxed,
+                        );
+                        preparation.check(&state.cluster, start.elapsed())
+                    };
                     let result = check_store_states(
                         &resources.state,
                         &resources.storage,
@@ -328,11 +346,30 @@ impl ClusterHost {
                 }
             },
         );
+        let schedule_error = Arc::new(Mutex::new(None));
+        let schedule_initialized = Arc::new(std::sync::atomic::AtomicBool::new(false));
+        let (schedule_routing, schedule_worker, schedule_status) =
+            schedule_worker::ScheduleWorker::start(
+                resources.clone(),
+                scheduling_cluster,
+                scheduling_configuration,
+                cancel.clone(),
+                schedule_error.clone(),
+                schedule_initialized.clone(),
+                cluster_id,
+            );
         Ok(Self {
+            stores,
+            schedule_status,
+            schedule_worker: AsyncMutex::new(Some(schedule_worker)),
+            schedule_routing,
+            schedule_error,
+            schedule_initialized,
             resolved_worker: AsyncMutex::new(Some(resolved_worker)),
             min_resolved_ts,
             resolved_error,
             syncer: syncer_weak,
+            #[cfg(test)]
             state: state_weak,
             restored_config,
             resources,
@@ -346,6 +383,19 @@ impl ClusterHost {
         })
     }
 
+    /// Subscribe to term progress without retaining workers or persistence resources.
+    pub fn watch_schedule(&self) -> tokio::sync::watch::Receiver<ScheduleStatus> {
+        self.schedule_status.clone()
+    }
+    /// True only after the preparation gate and scheduler recovery finish.
+    pub fn schedule_initialized(&self) -> bool {
+        self.schedule_initialized
+            .load(std::sync::atomic::Ordering::Acquire)
+    }
+    /// Latest scheduler restore, execution or leadership failure.
+    pub fn schedule_error(&self) -> Option<String> {
+        self.schedule_error.lock().unwrap().clone()
+    }
     /// Current monotonic minimum, recovered from the shared storage at startup.
     pub fn min_resolved_ts(&self) -> u64 {
         self.min_resolved_ts
@@ -391,6 +441,11 @@ impl ClusterHost {
     }
     pub(crate) async fn shutdown(&self) -> Result<(), crate::NodeError> {
         self.cancel.cancel();
+        let schedule_error = if let Some(worker) = self.schedule_worker.lock().await.take() {
+            worker.stop().await.err()
+        } else {
+            None
+        };
         let worker_error = if let Some(worker) = self.store_worker.lock().await.take() {
             worker.stop().await.err()
         } else {
@@ -427,7 +482,8 @@ impl ClusterHost {
             Ok(())
         };
         guard.take();
-        if let Some(error) = worker_error
+        if let Some(error) = schedule_error
+            .or(worker_error)
             .or(stats_error)
             .or(config_error)
             .or(metrics_error)
@@ -459,34 +515,51 @@ impl StoreHeartbeatService for ClusterHost {
 }
 #[async_trait::async_trait]
 impl RegionHeartbeatService for ClusterHost {
+    async fn bind_heartbeat(
+        &self,
+        store_id: u64,
+        stream: Arc<dyn astersql_pd_schedule_hbstream::routing::HeartbeatStream>,
+    ) -> Result<(), RegionHeartbeatError> {
+        if self.cancel.is_cancelled() {
+            return Err(RegionHeartbeatError("node stopped".into()));
+        }
+        self.schedule_routing
+            .bind(
+                store_id,
+                Arc::new(schedule_worker::TermStream {
+                    inner: stream,
+                    cancel: self.cancel.clone(),
+                }),
+            )
+            .await
+            .map_err(|e| RegionHeartbeatError(e.to_string()))
+    }
+
     fn region_store_state(&self, id: u64) -> Option<NodeState> {
-        self.state
-            .upgrade()?
-            .lock()
-            .unwrap()
-            .cluster
-            .stores
+        self.stores
             .get_store(id)
             .and_then(|s| s.meta().map(|m| m.node_state))
     }
     async fn region_heartbeat(&self, region: RegionInfo) -> Result<(), RegionHeartbeatError> {
-        let resources = self.resources.lock().await;
+        let mut resources = self.resources.lock().await;
         if self.cancel.is_cancelled() {
             return Err(RegionHeartbeatError("node stopped".into()));
         }
         let resources = resources
-            .as_ref()
+            .as_mut()
             .ok_or_else(|| RegionHeartbeatError("node stopped".into()))?;
         resources
             .leader
             .validate()
             .await
             .map_err(|e| RegionHeartbeatError(e.to_string()))?;
+        let id = region.meta().id;
         let (seconds, nanos) = now();
         let _receipt = resources
             .pipeline()
             .region(region, seconds, nanos)
             .map_err(|e| RegionHeartbeatError(e.to_string()))?;
+        resources.schedule_observations.insert(id);
         Ok(())
     }
 }
@@ -623,3 +696,11 @@ mod store_config_worker_test;
 #[cfg(test)]
 #[path = "resolved_ts_worker_test.rs"]
 mod resolved_ts_worker_test;
+
+#[path = "schedule_worker.rs"]
+mod schedule_worker;
+
+#[path = "schedule_policy.rs"]
+mod schedule_policy;
+
+pub use schedule_worker::{SchedulePhase, ScheduleStatus};

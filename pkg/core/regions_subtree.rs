@@ -1,6 +1,6 @@
 // Copyright 2026 AsterSQL.
 //! Store-role indexes maintained separately from the root index.
-use crate::{Peer, RegionInfo, RegionItem, RegionTree, RegionsInfo};
+use crate::{Peer, RegionInfo, RegionItem, RegionState, RegionTree};
 use std::collections::HashMap;
 use std::sync::Arc;
 
@@ -79,7 +79,7 @@ impl SubTrees {
         self.regions.remove(&region.meta().id);
     }
 }
-impl RegionsInfo {
+impl RegionState {
     /// Returns a store's role index, including empty indexes retained after removal.
     pub fn role_tree(&self, role: RegionRole, store: u64) -> Option<&RegionTree> {
         self.subtrees.roles.get(&(role, store))

@@ -55,7 +55,11 @@ fn core_task_44_fixture_replacements() {
             assert!(Arc::ptr_eq(r, &regions.get_region(r.meta().id).unwrap()));
             assert!(Arc::ptr_eq(
                 r,
-                &regions.root.search(&r.meta().key_range.start_key).unwrap()
+                &regions
+                    .read()
+                    .root
+                    .search(&r.meta().key_range.start_key)
+                    .unwrap()
             ));
         }
         assert!(Arc::ptr_eq(&r, &regions.get_region(r.meta().id).unwrap()));
@@ -63,7 +67,7 @@ fn core_task_44_fixture_replacements() {
             assert_eq!(regions.get_region(id).is_some(), ids.contains(&id));
         }
         assert_eq!(
-            regions.root.total_size(),
+            regions.read().root.total_size(),
             all.iter().map(|r| r.stats.approximate_size).sum::<i64>()
         );
     }
@@ -81,5 +85,5 @@ fn core_task_44_snapshot_ownership() {
     assert!(!changed);
     assert!(Arc::ptr_eq(&snapshot[0], &old));
     assert!(Arc::ptr_eq(&regions.get_regions()[0], &new));
-    assert_eq!(regions.root.total_size(), 20);
+    assert_eq!(regions.read().root.total_size(), 20);
 }

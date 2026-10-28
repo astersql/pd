@@ -33,7 +33,7 @@ impl RegionQueryResponse {
         }
     }
 }
-impl RegionsInfo {
+impl RegionState {
     /// Queries keys, contiguous predecessors and IDs in batches of 128.
     /// Key misses produce zero; explicit missing nonzero IDs retain a None entry.
     /// The shared borrow provides a consistent registry view for this call.

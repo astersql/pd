@@ -31,11 +31,16 @@ impl PersistedConfig {
         endpoint: &StorageEndpoint,
         paths: &ClusterPaths,
     ) -> Result<(), ConfigPersistenceError> {
+        let snapshot = self.persistence_snapshot();
+        endpoint.save_config(paths, &snapshot).await?;
+        Ok(())
+    }
+    /// Dynamic-only document used by scheduler restoration and ordinary persistence.
+    pub fn persistence_snapshot(&self) -> Self {
         let mut snapshot = Self::default();
         copy_dynamic(&mut snapshot.config, &self.config);
         snapshot.store = self.store.clone();
-        endpoint.save_config(paths, &snapshot).await?;
-        Ok(())
+        snapshot
     }
     /// Build and validate a candidate before publishing the dynamic sections.
     /// Returns false for absent/empty storage. Host facts and process defaults are explicit.

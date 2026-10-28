@@ -1,9 +1,9 @@
 // Copyright 2026 AsterSQL.
 //! Ordered registry scans with Go-compatible bounds and limits.
-use crate::{RegionInfo, RegionsInfo};
+use crate::{RegionInfo, RegionState};
 use std::sync::Arc;
 
-impl RegionsInfo {
+impl RegionState {
     /// Scans from the containing or next region, excluding starts at or beyond
     /// a nonempty end key. Nonpositive limits include all candidates across holes.
     /// Bounds follow Go's literal start-key comparison, including equal bounds

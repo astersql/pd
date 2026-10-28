@@ -1,6 +1,6 @@
 // Copyright 2026 AsterSQL.
 //! Aggregate views of the canonical root and store-role indexes.
-use crate::{RegionRole, RegionsInfo};
+use crate::{RegionRole, RegionState};
 
 const PEER_ROLES: [RegionRole; 3] = [
     RegionRole::Leader,
@@ -20,7 +20,7 @@ pub struct StoreRegionStats {
     pub region_size: i64,
 }
 
-impl RegionsInfo {
+impl RegionState {
     /// Returns a role's count, including zero for an unknown store.
     pub fn store_role_count(&self, store: u64, role: RegionRole) -> usize {
         self.role_tree(role, store).map_or(0, |t| t.tree.len())

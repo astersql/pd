@@ -66,7 +66,7 @@ pub(crate) struct Application {
     identity: Identity,
     pub(crate) cluster: Arc<crate::cluster_host::ClusterHost>,
     pub(crate) leader: Arc<Leadership>,
-    allocator: Allocator,
+    allocator: Arc<Allocator>,
     pub(crate) oracle: Oracle,
     pub(crate) requests: prometheus::IntCounter,
     pub(crate) cancel: CancellationToken,
@@ -283,7 +283,12 @@ pub(crate) async fn prepare_term(
             }
         };
         leader.validate().await?;
-        let allocator = Allocator::new(store.clone(), leader.clone(), cancel.clone(), 0)?;
+        let allocator = Arc::new(Allocator::new(
+            store.clone(),
+            leader.clone(),
+            cancel.clone(),
+            0,
+        )?);
         let oracle = Oracle::new(
             store.clone(),
             leader.clone(),
@@ -310,6 +315,7 @@ pub(crate) async fn prepare_term(
             cancel.clone(),
             &registry,
             leader.clone(),
+            allocator.clone(),
         );
         tokio::pin!(creation);
         let mut renew = tokio::time::interval(std::time::Duration::from_secs(1));

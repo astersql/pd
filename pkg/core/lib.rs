@@ -218,7 +218,7 @@ pub mod regions;
 #[cfg(test)]
 #[path = "regions_test.rs"]
 mod regions_test;
-pub use regions::*;
+pub(crate) use regions::RegionState;
 
 pub mod region_stale;
 pub use region_stale::*;
@@ -298,3 +298,6 @@ pub mod basic_cluster_rates;
 #[cfg(test)]
 #[path = "basic_cluster_rates_test.rs"]
 mod basic_cluster_rates_test;
+
+mod regions_shared;
+pub use regions_shared::*;

@@ -9,6 +9,17 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
+astersql-pd-cache.workspace = true
+astersql-pd-schedule-hbstream.workspace = true
+astersql-pd-schedule-operator.workspace = true
+astersql-pd-schedule-scatter.workspace = true
+astersql-pd-schedule-schedulers.workspace = true
+serde_json.workspace = true
+rand.workspace = true
+astersql-pd-schedule-filter.workspace = true
+astersql-pd-schedule-labeler.workspace = true
+astersql-pd-schedule-keyrange.workspace = true
+astersql-pd-statistics-utils.workspace = true
 astersql-pd-schedule.workspace = true
 astersql-pd-server-config.workspace = true
 astersql-pd-core-constant.workspace = true
@@ -37,6 +48,5 @@ astersql-pd-statistics-buckets.workspace = true
 [dev-dependencies]
 astersql-pd-compat-tests.workspace = true
 astersql-pd-storage-kv.workspace = true
-serde_json.workspace = true
 tonic.workspace = true
 tokio-stream.workspace = true

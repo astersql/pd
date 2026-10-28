@@ -79,6 +79,19 @@ impl StoreHeartbeatService for RoleServices {
 }
 #[async_trait::async_trait]
 impl RegionHeartbeatService for RoleServices {
+    async fn bind_heartbeat(
+        &self,
+        store_id: u64,
+        stream: Arc<dyn astersql_pd_schedule_hbstream::routing::HeartbeatStream>,
+    ) -> Result<(), RegionHeartbeatError> {
+        self.active()
+            .await
+            .map_err(RegionHeartbeatError)?
+            .cluster
+            .bind_heartbeat(store_id, stream)
+            .await
+    }
+
     fn region_store_state(&self, id: u64) -> Option<astersql_pd_core::NodeState> {
         self.current()?.cluster.region_store_state(id)
     }

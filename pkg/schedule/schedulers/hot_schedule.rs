@@ -108,6 +108,13 @@ impl HotScheduler {
             solvers: solvers.try_into().ok().expect("four resources"),
         })
     }
+    /// Refresh population ranks without replacing the restored policy or reverse-search state.
+    pub fn refresh_rank_inputs(&mut self, inputs: [HotRankInputs; 4]) -> Result<(), HotSolveError> {
+        for (solver, input) in self.solvers.iter_mut().zip(inputs) {
+            solver.refresh_rank_inputs(input)?;
+        }
+        Ok(())
+    }
     pub fn min_interval() -> i64 {
         1_000_000_000
     }

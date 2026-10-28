@@ -1,6 +1,6 @@
 // Copyright 2026 AsterSQL.
 //! Read-only epoch and term validation against the current root index.
-use crate::{RegionEpoch, RegionInfo, RegionMeta, RegionsInfo};
+use crate::{RegionEpoch, RegionInfo, RegionMeta, RegionState};
 use std::{fmt, sync::Arc};
 
 /// A stale heartbeat retains both metadata values for diagnostics.
@@ -95,7 +95,7 @@ pub type RegionPreCheck = (
     Vec<Arc<RegionInfo>>,
     Result<(), StaleRegionError>,
 );
-impl RegionsInfo {
+impl RegionState {
     /// Validates a heartbeat without changing either index.
     pub fn pre_check_put_region(&self, region: &RegionInfo) -> RegionPreCheck {
         let origin = self.get_region(region.meta().id);

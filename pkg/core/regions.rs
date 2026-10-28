@@ -6,12 +6,12 @@ use std::sync::Arc;
 
 /// Region registry. Borrowing keeps each read consistent with the root index;
 /// shared concurrent owners may place the registry behind their own lock.
-pub struct RegionsInfo {
+pub(crate) struct RegionState {
     pub(crate) root: RegionTree,
     pub(crate) subtrees: crate::regions_subtree::SubTrees,
     pub(crate) regions: HashMap<u64, Arc<RegionInfo>>,
 }
-impl Default for RegionsInfo {
+impl Default for RegionState {
     fn default() -> Self {
         Self {
             root: RegionTree::with_count_ref(),
@@ -20,11 +20,7 @@ impl Default for RegionsInfo {
         }
     }
 }
-impl RegionsInfo {
-    /// Creates an empty registry.
-    pub fn new() -> Self {
-        Self::default()
-    }
+impl RegionState {
     /// Returns the current payload for an ID.
     pub fn get_region(&self, id: u64) -> Option<Arc<RegionInfo>> {
         self.regions.get(&id).cloned()
@@ -65,3 +61,6 @@ impl RegionsInfo {
         (origin, overlaps, true)
     }
 }
+
+// Retain the public module path while keeping mutable index state private.
+pub use crate::regions_shared::RegionsInfo;

@@ -43,3 +43,13 @@ ReloadConfig/PrepareConfig/CleanConfig。按用户授权采用源码推导，不
 coordinator workers join. It retains the management entries and persisted config;
 cleanup failures remain in `cleanup_errors`. Task 115 validates repeated stop and
 actual store-state restoration without deleting scheduler configuration.
+
+`get_mut` permits a host with exclusive management access to drive the restored
+policy itself. The runtime serializes execution and management, and runs
+`clean_registered` only after its worker joins. It does not create a replacement
+policy just to access a concrete scheduling algorithm.
+
+Before a serialized restoration/persist, `set_configuration` refreshes the complete
+host document under the same admission gate as other configuration workers. It
+prevents a startup snapshot from overwriting StoreConfig committed while the
+preparation gate waited. It does not recreate registered policy instances.

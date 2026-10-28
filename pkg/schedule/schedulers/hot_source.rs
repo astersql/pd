@@ -91,6 +91,9 @@ impl HotSourceSelector {
             operation,
         })
     }
+    pub(crate) fn config_snapshot(&self) -> &HotRegionParams {
+        &self.config
+    }
     fn write_leader(&self) -> bool {
         self.rw == RWType::WRITE && self.operation == HotSourceOperation::TransferLeader
     }

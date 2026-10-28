@@ -75,7 +75,7 @@ fn core_task_49_remove_split_and_missing() {
     r.remove_region_if_exist(1);
     assert_eq!(v.get_ref(), 0);
     assert!(r.get_regions().is_empty());
-    assert!(r.subtrees.regions.is_empty());
+    assert!(r.read().subtrees.regions.is_empty());
 }
 #[test]
 fn core_task_49_reset_and_reinsert() {
@@ -91,7 +91,7 @@ fn core_task_49_reset_and_reinsert() {
     );
     assert_eq!(r.tree_len(), 0);
     assert!(r.get_regions().is_empty());
-    assert!(r.subtrees.regions.is_empty());
+    assert!(r.read().subtrees.regions.is_empty());
     for (role, store) in roles() {
         assert!(r.role_tree(role, store).is_none());
     }

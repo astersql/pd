@@ -1,6 +1,6 @@
 // Copyright 2026 AsterSQL.
 //! Store-role sampling with caller-owned randomness.
-use crate::{KeyRange, RegionInfo, RegionRole, RegionsInfo};
+use crate::{KeyRange, RegionInfo, RegionRole, RegionState};
 use std::sync::Arc;
 
 /// Whether the separately recorded leader is a witness and needs transfer.
@@ -11,7 +11,7 @@ pub fn need_transfer_witness_leader(region: Option<&RegionInfo>) -> bool {
         .is_some_and(|peer| peer.is_witness)
 }
 
-impl RegionsInfo {
+impl RegionState {
     /// Samples up to ten fully contained leader regions with replacement.
     /// Empty ranges cover the whole role index. Random callbacks follow
     /// [`crate::RegionTree::random_regions`], including its retry semantics.

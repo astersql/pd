@@ -1,6 +1,6 @@
 // Copyright 2026 AsterSQL.
 //! Multi-range scans, preserving Go's per-range validation and total limit.
-use crate::{KeyRange, RegionInfo, RegionsInfo};
+use crate::{KeyRange, RegionInfo, RegionState};
 use std::{fmt, sync::Arc};
 
 /// Options corresponding to Go's WithLimit and WithOutputMustContainAllKeyRange.
@@ -35,7 +35,7 @@ impl fmt::Display for RegionNotAdjacent {
 }
 impl std::error::Error for RegionNotAdjacent {}
 
-impl RegionsInfo {
+impl RegionState {
     /// Scans ordered, non-overlapping ranges. Adjacent input ranges are merged;
     /// callers retain their input. Shared boundary regions appear only once.
     /// Each range is validated with the full limit before the total is truncated.

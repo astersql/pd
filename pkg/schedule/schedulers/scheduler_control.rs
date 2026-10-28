@@ -97,6 +97,10 @@ impl SchedulerController {
     pub fn context(&self) -> &FactoryContext {
         &self.context
     }
+    /// Replace the host's complete current dynamic document before a serialized persist.
+    pub fn set_configuration(&mut self, configuration: Value) {
+        self.configuration = configuration;
+    }
     pub fn configuration(&self) -> &Value {
         &self.configuration
     }
@@ -109,6 +113,10 @@ impl SchedulerController {
     }
     pub fn get(&self, name: &str) -> Option<&ScheduleControl> {
         self.schedulers.get(name)
+    }
+    /// Exclusive access to the restored policy; the host serializes execution and management.
+    pub fn get_mut(&mut self, name: &str) -> Option<&mut ScheduleControl> {
+        self.schedulers.get_mut(name)
     }
     pub fn names(&self) -> Vec<String> {
         self.schedulers.keys().cloned().collect()
