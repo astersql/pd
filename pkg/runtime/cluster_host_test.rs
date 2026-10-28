@@ -141,7 +141,11 @@ async fn rust_scenario() -> serde_json::Value {
         .unwrap()
         .unwrap()
         .unwrap();
-    assert!(error.header.unwrap().error.is_some());
+    let error = error.header.unwrap().error.unwrap();
+    let stale_kind = error.r#type;
+    let stale_message = error.message.starts_with("region is stale");
+    assert_eq!(stale_kind, pdpb::ErrorType::Unknown as i32);
+    assert!(stale_message);
     assert_eq!(
         host.snapshot().await.unwrap().regions[0]
             .meta()
@@ -189,7 +193,7 @@ async fn rust_scenario() -> serde_json::Value {
         "region": snapshot.regions[0].meta().id,
         "version": snapshot.regions[0].meta().epoch.as_ref().unwrap().version,
         "size": snapshot.regions[0].stats().approximate_size,
-        "persisted": true, "missing_store_error": true, "stale_error": true, "healthy": true})
+        "persisted": true, "missing_store_error": true, "stale_error": true, "stale_kind": stale_kind, "stale_message": stale_message, "healthy": true})
 }
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
 async fn task_005_behavior() {
@@ -361,13 +365,8 @@ async fn readonly_cluster_host_differential() {
     let stale = tokio::time::timeout(Duration::from_secs(5), async {
         loop {
             let response = output.message().await.unwrap().unwrap();
-            if response
-                .header
-                .as_ref()
-                .and_then(|h| h.error.as_ref())
-                .is_some()
-            {
-                break true;
+            if let Some(error) = response.header.and_then(|h| h.error) {
+                break error;
             }
         }
     })
@@ -379,7 +378,8 @@ async fn readonly_cluster_host_differential() {
     assert_eq!(status, 200);
     let observed = serde_json::json!({"capacity": capacity, "region": persisted.id,
         "version": persisted.region_epoch.unwrap().version, "size": region["approximate_size"],
-        "persisted": true, "missing_store_error": missing, "stale_error": stale,
+        "persisted": true, "missing_store_error": missing, "stale_error": true,
+        "stale_kind": stale.r#type, "stale_message": stale.message.starts_with("region is stale"),
         "healthy": health[0]["health"]});
     println!("Go={observed}; Rust={rust}");
     assert_eq!(observed, rust);

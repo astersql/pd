@@ -24,3 +24,6 @@ mod member_role_worker_test;
 
 #[cfg(test)]
 mod wire_store_heartbeat_test;
+
+#[cfg(test)]
+mod wire_region_heartbeat_test;
