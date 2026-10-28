@@ -29,12 +29,15 @@ struct Resources {
 /// Read handles retain no storage or workers after shutdown.
 pub struct ClusterHost {
     state: Weak<State>,
+    restored_config: Option<astersql_pd_server_config::PersistedConfig>,
     resources: AsyncMutex<Option<Resources>>,
     cancel: CancellationToken,
 }
 impl ClusterHost {
     pub(crate) fn new(
         cluster: BasicCluster,
+        config: ProviderSnapshot<()>,
+        restored_config: Option<astersql_pd_server_config::PersistedConfig>,
         store: Arc<dyn MetaStore>,
         cluster_id: u64,
         cancel: CancellationToken,
@@ -42,8 +45,6 @@ impl ClusterHost {
     ) -> Result<Self, crate::NodeError> {
         let storage = Arc::new(StorageEndpoint::new(store));
         let paths = ClusterPaths::new(cluster_id);
-        let mut config = ProviderSnapshot::default();
-        config.replication.enable_placement_rules = false;
         let hot = HotStat::new(&tokio::runtime::Handle::current(), registry, 128)?;
         let mut runners = std::array::from_fn(|_| ConcurrentRunner::new(None));
         for runner in &mut runners {
@@ -59,6 +60,7 @@ impl ClusterHost {
         }));
         Ok(Self {
             state: Arc::downgrade(&state),
+            restored_config,
             resources: AsyncMutex::new(Some(Resources {
                 state,
                 hot,
@@ -69,6 +71,10 @@ impl ClusterHost {
             })),
             cancel,
         })
+    }
+    /// Dynamic configuration recovered before serving this node.
+    pub fn restored_config(&self) -> Option<&astersql_pd_server_config::PersistedConfig> {
+        self.restored_config.as_ref()
     }
     /// Reads the same cache that accepted heartbeats. Cancellation rejects new reads.
     pub async fn snapshot(&self) -> Result<StateSnapshot, crate::NodeError> {
@@ -161,5 +167,27 @@ impl Resources {
             downstreams: self.downstreams.clone(),
             bucket_enabled: true,
         }
+    }
+}
+
+#[async_trait::async_trait]
+impl astersql_pd_server::ClusterReadService for ClusterHost {
+    async fn store(&self, id: u64) -> Result<Option<Arc<astersql_pd_core::StoreInfo>>, String> {
+        let guard = self.resources.lock().await;
+        if self.cancel.is_cancelled() {
+            return Err("node stopped".into());
+        }
+        let resources = guard.as_ref().ok_or("node stopped")?;
+        let state = resources.state.lock().unwrap();
+        Ok(state.cluster.stores.get_store(id))
+    }
+    async fn region(&self, id: u64) -> Result<Option<Arc<RegionInfo>>, String> {
+        let guard = self.resources.lock().await;
+        if self.cancel.is_cancelled() {
+            return Err("node stopped".into());
+        }
+        let resources = guard.as_ref().ok_or("node stopped")?;
+        let state = resources.state.lock().unwrap();
+        Ok(state.cluster.regions.get_region(id))
     }
 }

@@ -42,9 +42,19 @@ pub trait PdServices: Send + Sync {
     fn region_sync_service(&self) -> Option<&sync_transport::RegionSyncer> {
         None
     }
+    /// Canonical metadata reads used by startup recovery verification.
+    fn cluster_read_service(&self) -> Option<&dyn ClusterReadService> {
+        None
+    }
     async fn healthy(&self) -> Result<(), String>;
     async fn alloc_id(&self) -> Result<u64, String>;
     async fn timestamp(&self, count: u32) -> Result<Timestamp, String>;
+}
+/// Host-owned metadata lookup; protocol conversion remains in the server adapter.
+#[async_trait]
+pub trait ClusterReadService: Send + Sync {
+    async fn store(&self, id: u64) -> Result<Option<Arc<astersql_pd_core::StoreInfo>>, String>;
+    async fn region(&self, id: u64) -> Result<Option<Arc<astersql_pd_core::RegionInfo>>, String>;
 }
 /// One router, listener and cancellation scope for HTTP/1 and HTTP/2 gRPC.
 pub fn router(services: Arc<dyn PdServices>, cancel: CancellationToken) -> axum::Router {

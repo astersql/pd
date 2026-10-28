@@ -8,6 +8,7 @@ rust-version = "1.85"
 license = "Apache-2.0"
 
 [workspace.dependencies]
+astersql-pd-server-config = { path = "server/config" }
 astersql-pd-compat-tests = { path = "tests/rust-compat" }
 astersql-pd-storage-domain = { path = "pkg/storage/domain" }
 astersql-pd-operatorutil = { path = "pkg/utils/operatorutil" }

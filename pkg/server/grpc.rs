@@ -38,6 +38,102 @@ pub(crate) fn member(id: &Identity) -> pdpb::Member {
 }
 #[tonic::async_trait]
 impl Pd for Grpc {
+    async fn get_store(
+        &self,
+        request: Request<pdpb::GetStoreRequest>,
+    ) -> Result<Response<pdpb::GetStoreResponse>, Status> {
+        let request = request.into_inner();
+        self.check(request.header.as_ref())?;
+        self.services.healthy().await.map_err(Status::unavailable)?;
+        let service = self
+            .services
+            .cluster_read_service()
+            .ok_or_else(|| Status::unimplemented("cluster reads are not configured"))?;
+        let store = service
+            .store(request.store_id)
+            .await
+            .map_err(Status::unavailable)?;
+        let mut header = self.header().unwrap();
+        let (store, stats) = match store {
+            Some(store) => (
+                store
+                    .meta()
+                    .cloned()
+                    .map(crate::core_store_adapter::store_to_proto),
+                Some(crate::core_store_adapter::store_stats_to_proto(
+                    store.store_stats(),
+                )),
+            ),
+            None => {
+                header.error = Some(pdpb::Error {
+                    r#type: pdpb::ErrorType::Unknown as i32,
+                    message: format!("invalid store ID {}, not found", request.store_id),
+                });
+                (None, None)
+            }
+        };
+        Ok(Response::new(pdpb::GetStoreResponse {
+            header: Some(header),
+            store,
+            stats,
+        }))
+    }
+    async fn get_region_by_id(
+        &self,
+        request: Request<pdpb::GetRegionByIdRequest>,
+    ) -> Result<Response<pdpb::GetRegionResponse>, Status> {
+        let request = request.into_inner();
+        if request.need_buckets {
+            return Err(Status::unimplemented(
+                "region bucket queries are not configured",
+            ));
+        }
+
+        self.check(request.header.as_ref())?;
+        self.services.healthy().await.map_err(Status::unavailable)?;
+        let service = self
+            .services
+            .cluster_read_service()
+            .ok_or_else(|| Status::unimplemented("cluster reads are not configured"))?;
+        let region = service
+            .region(request.region_id)
+            .await
+            .map_err(Status::unavailable)?;
+        Ok(Response::new(pdpb::GetRegionResponse {
+            header: self.header(),
+            region: region
+                .as_ref()
+                .map(|r| crate::core_region_adapter::region_to_proto(r.meta().clone())),
+            leader: region
+                .as_ref()
+                .and_then(|r| r.leader().cloned())
+                .map(crate::core_region_adapter::peer_to_proto),
+            down_peers: region
+                .as_ref()
+                .map(|r| {
+                    r.down_peers()
+                        .iter()
+                        .map(|p| pdpb::PeerStats {
+                            peer: Some(crate::core_region_adapter::peer_to_proto(p.peer.clone())),
+                            down_seconds: p.down_seconds,
+                        })
+                        .collect()
+                })
+                .unwrap_or_default(),
+            pending_peers: region
+                .as_ref()
+                .map(|r| {
+                    r.pending_peers()
+                        .iter()
+                        .cloned()
+                        .map(crate::core_region_adapter::peer_to_proto)
+                        .collect()
+                })
+                .unwrap_or_default(),
+            ..Default::default()
+        }))
+    }
+
     async fn report_buckets(
         &self,
         request: Request<tonic::Streaming<pdpb::ReportBucketsRequest>>,

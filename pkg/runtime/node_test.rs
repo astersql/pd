@@ -73,7 +73,7 @@ async fn shared_runtime_network_lifecycle() {
     assert!(tso.timestamp.unwrap().physical > 0);
     assert_eq!(
         client
-            .get_store(pdpb::GetStoreRequest::default())
+            .get_all_stores(pdpb::GetAllStoresRequest::default())
             .await
             .unwrap_err()
             .code(),

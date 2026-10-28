@@ -46,10 +46,10 @@ def binary(name):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--mode', choices=['go', 'rust', 'dual'], default=os.environ.get('PD_COMPAT_MODE', 'dual'))
-    parser.add_argument('--case', choices=['health-member', 'tso', 'cluster-host'], action='append')
+    parser.add_argument('--case', choices=['health-member', 'tso', 'cluster-host', 'cluster-restore'], action='append')
     args = parser.parse_args()
-    if 'cluster-host' in (args.case or []) and args.mode != 'dual':
-        raise ValueError('cluster-host requires dual mode')
+    if any(case in (args.case or []) for case in ['cluster-host', 'cluster-restore']) and args.mode != 'dual':
+        raise ValueError('cluster-host and cluster-restore require dual mode')
     go = binary('PD_COMPAT_GO_BIN') if args.mode != 'rust' else None
     rust = binary('PD_COMPAT_RUST_BIN') if args.mode != 'go' else None
     target = Path(os.environ.get('CARGO_TARGET_DIR', ''))
@@ -82,7 +82,8 @@ def main():
         'tests/rust-compat/harness.rs', 'tests/rust-compat/readonly_oracle.rs',
         'scripts/run-pd-compat-readonly.sh', 'scripts/pd-compat-readonly.py',
         'pkg/proto/build.rs', 'pkg/storage/kv/etcd_fixture_test.rs', 'Cargo.lock',
-        'pkg/runtime/cluster_host.rs', 'pkg/runtime/cluster_host_test.rs', 'pkg/runtime/node.rs',
+        'pkg/runtime/cluster_restore.rs', 'pkg/runtime/cluster_restore_test.rs', 'pkg/server/grpc.rs',
+        'pkg/server/sync_transport.rs', 'pkg/server/lib.rs', 'pkg/runtime/cluster_host.rs', 'pkg/runtime/cluster_host_test.rs', 'pkg/runtime/node.rs',
         'pkg/statistics/buckets/bucket_worker.rs', 'pkg/runtime/Cargo.toml', 'Cargo.toml')]
     report = {'baseline': subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode().strip(),
               'target': str(target), 'before': before, 'go_build_info': info,
@@ -105,6 +106,9 @@ def main():
             if case == 'cluster-host':
                 command = ['cargo', 'test', '--locked', '-p', 'astersql-pd-runtime', '--lib',
                            'readonly_cluster_host_differential', '--', '--ignored']
+            if case == 'cluster-restore':
+                command = ['cargo', 'test', '--locked', '-p', 'astersql-pd-runtime', '--lib',
+                           'readonly_cluster_restore_differential', '--', '--ignored']
             if case == 'tso':
                 command.append('--ignored')
             command.append('--nocapture')

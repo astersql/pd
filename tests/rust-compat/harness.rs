@@ -95,6 +95,30 @@ impl Server {
         }
         result
     }
+    /// Restart the existing durable data directory with the same network identity.
+    pub fn restart_with_args(&mut self, binary: &Path, extra: &[&str]) -> Result<(), String> {
+        self.stop()?;
+        let log = fs::OpenOptions::new()
+            .append(true)
+            .open(self.dir.join("server.log"))
+            .map_err(|e| e.to_string())?;
+        self.child = Command::new(binary)
+            .args(extra)
+            .args([
+                "--name=compat",
+                &format!("--data-dir={}", self.dir.join("data").display()),
+                &format!("--client-urls={}", self.url),
+                &format!("--advertise-client-urls={}", self.url),
+                &format!("--peer-urls={}", self.peer),
+                &format!("--advertise-peer-urls={}", self.peer),
+                &format!("--initial-cluster=compat={}", self.peer),
+            ])
+            .stdout(Stdio::from(log.try_clone().map_err(|e| e.to_string())?))
+            .stderr(Stdio::from(log))
+            .spawn()
+            .map_err(|e| e.to_string())?;
+        Ok(())
+    }
     pub fn ready(&mut self) -> Result<(), String> {
         self.ready_with_timeout(Duration::from_secs(40))
     }

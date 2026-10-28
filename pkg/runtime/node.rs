@@ -86,6 +86,9 @@ impl PdServices for Application {
     ) -> Option<&dyn astersql_pd_server::region_heartbeat_adapter::RegionHeartbeatService> {
         Some(self.cluster.as_ref())
     }
+    fn cluster_read_service(&self) -> Option<&dyn astersql_pd_server::ClusterReadService> {
+        Some(self.cluster.as_ref())
+    }
     async fn healthy(&self) -> Result<(), String> {
         if self.cancel.is_cancelled() {
             return Err("node stopped".into());
@@ -169,6 +172,21 @@ async fn initialize_node(
     let leader = Arc::new(member.campaign(5).await?);
     record(&events, "leadership");
     let setup = async {
+        let (cluster, cluster_config, restored_config) = {
+            let recovery =
+                crate::cluster_restore::restore(cluster, store.clone(), &config, &cancel);
+            tokio::pin!(recovery);
+            let mut renew = tokio::time::interval(std::time::Duration::from_secs(1));
+            // Large snapshots must not exhaust the election lease before serving starts.
+            loop {
+                tokio::select! { biased;
+                    _ = cancel.cancelled() => return Err("cluster recovery cancelled".into()),
+                    result = &mut recovery => break result?,
+                    _ = renew.tick() => leader.renew().await?,
+                }
+            }
+        };
+        leader.validate().await?;
         let allocator = Allocator::new(store.clone(), leader.clone(), cancel.clone(), 0)?;
         let oracle = Oracle::new(
             store.clone(),
@@ -185,6 +203,8 @@ async fn initialize_node(
         registry.register(Box::new(requests.clone()))?;
         let cluster = match crate::cluster_host::ClusterHost::new(
             cluster,
+            cluster_config,
+            restored_config,
             store.clone(),
             config.cluster_id,
             cancel.clone(),
@@ -210,6 +230,7 @@ async fn initialize_node(
     let application = match setup {
         Ok(application) => application,
         Err(error) => {
+            cancel.cancel();
             leader.resign().await?;
             return Err(error);
         }

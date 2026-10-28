@@ -267,6 +267,19 @@ impl astersql_pd_syncer::DownstreamSender for WireSender {
 pub(crate) struct SyncGrpc(pub Grpc);
 #[tonic::async_trait]
 impl Pd for SyncGrpc {
+    async fn get_store(
+        &self,
+        r: Request<pdpb::GetStoreRequest>,
+    ) -> Result<Response<pdpb::GetStoreResponse>, Status> {
+        self.0.get_store(r).await
+    }
+    async fn get_region_by_id(
+        &self,
+        r: Request<pdpb::GetRegionByIdRequest>,
+    ) -> Result<Response<pdpb::GetRegionResponse>, Status> {
+        self.0.get_region_by_id(r).await
+    }
+
     async fn sync_regions(
         &self,
         request: Request<tonic::Streaming<pdpb::SyncRegionRequest>>,

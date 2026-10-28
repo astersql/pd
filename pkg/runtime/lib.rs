@@ -11,3 +11,9 @@ pub mod cluster_host;
 #[cfg(test)]
 #[path = "cluster_host_test.rs"]
 mod cluster_host_test;
+
+#[cfg(test)]
+#[path = "cluster_restore_test.rs"]
+mod cluster_restore_test;
+
+mod cluster_restore;
