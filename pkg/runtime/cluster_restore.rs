@@ -32,6 +32,12 @@ pub(crate) async fn restore(
             )
             .await?;
         let mut config = ProviderSnapshot::default();
+        // A missing persisted document still needs Go's lifecycle defaults;
+        // raw zero values would immediately promote every preparing store.
+        config
+            .schedule
+            .adjust(&Default::default(), true, &mut ScheduleDefaults::default())?;
+        config.replication.adjust(&Default::default())?;
         // Preserve the host's existing no-rule default until a persisted setting exists.
         config.replication.enable_placement_rules = false;
         if found {

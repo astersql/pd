@@ -46,3 +46,8 @@ mod state_pipeline;
 pub use state_pipeline::{StatePipeline, StateSnapshot};
 #[cfg(test)]
 mod state_pipeline_test;
+
+mod store_state_worker;
+pub use store_state_worker::{StoreStateWorker, check_store_states};
+#[cfg(test)]
+mod store_state_worker_test;

@@ -297,7 +297,7 @@ pub(crate) async fn prepare_term(
             "Minimal Rust PD domain requests",
         )?;
         registry.register(Box::new(requests.clone()))?;
-        let cluster = match crate::cluster_host::ClusterHost::new(
+        let creation = crate::cluster_host::ClusterHost::new(
             cluster,
             cluster_config,
             restored_config,
@@ -310,7 +310,19 @@ pub(crate) async fn prepare_term(
             cancel.clone(),
             &registry,
             leader.clone(),
-        ) {
+        );
+        tokio::pin!(creation);
+        let mut renew = tokio::time::interval(std::time::Duration::from_secs(1));
+        let created = loop {
+            tokio::select! { biased;
+                _ = cancel.cancelled() => break Err("cluster initialization cancelled".into()),
+                result = &mut creation => break result,
+                _ = renew.tick() => {
+                    if let Err(error) = leader.renew().await { break Err(error.into()); }
+                }
+            }
+        };
+        let cluster = match created {
             Ok(cluster) => Arc::new(cluster),
             Err(error) => {
                 registry.unregister(Box::new(requests))?;

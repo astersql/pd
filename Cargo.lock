@@ -428,6 +428,7 @@ dependencies = [
  "astersql-pd-member",
  "astersql-pd-proto",
  "astersql-pd-ratelimit",
+ "astersql-pd-schedule",
  "astersql-pd-schedule-config",
  "astersql-pd-schedule-placement",
  "astersql-pd-server",

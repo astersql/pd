@@ -1,6 +1,9 @@
 // Copyright 2026 AsterSQL.
 //! Shared canonical cluster state owned by the serving scope.
-use astersql_pd_cluster::{HeartbeatEffectsState, HeartbeatRunners, StatePipeline, StateSnapshot};
+use astersql_pd_cluster::{
+    HeartbeatEffectsState, HeartbeatRunners, StatePipeline, StateSnapshot, StoreStateWorker,
+    check_store_states,
+};
 use astersql_pd_core::{BasicCluster, NodeState, RegionInfo, StoreStats};
 use astersql_pd_keypath::ClusterPaths;
 use astersql_pd_ratelimit::ConcurrentRunner;
@@ -34,11 +37,13 @@ pub struct ClusterHost {
     state: Weak<State>,
     syncer: Weak<RegionSyncer>,
     restored_config: Option<astersql_pd_server_config::PersistedConfig>,
-    resources: AsyncMutex<Option<Resources>>,
+    resources: Arc<AsyncMutex<Option<Resources>>>,
+    store_worker: AsyncMutex<Option<StoreStateWorker>>,
+    store_check_errors: Arc<Mutex<Vec<(u64, String)>>>,
     cancel: CancellationToken,
 }
 impl ClusterHost {
-    pub(crate) fn new(
+    pub(crate) async fn new(
         cluster: BasicCluster,
         config: ProviderSnapshot<()>,
         restored_config: Option<astersql_pd_server_config::PersistedConfig>,
@@ -50,6 +55,25 @@ impl ClusterHost {
     ) -> Result<Self, crate::NodeError> {
         let storage = Arc::new(StorageEndpoint::new(store));
         let paths = ClusterPaths::new(cluster_id);
+        let mut rules = RuleManager::new(storage.clone(), paths);
+        if config.replication.enable_placement_rules {
+            let stores = cluster
+                .stores
+                .get_stores()
+                .into_iter()
+                .map(|s| s.as_ref().clone())
+                .collect::<Vec<_>>();
+            rules
+                .initialize(
+                    config.replication.max_replicas as i64,
+                    config.replication.location_labels.as_slice(),
+                    &config.replication.isolation_level,
+                    false,
+                    &config,
+                    &stores,
+                )
+                .await?;
+        }
         let hot = HotStat::new(&tokio::runtime::Handle::current(), registry, 128)?;
         let mut runners = std::array::from_fn(|_| ConcurrentRunner::new(None));
         for runner in &mut runners {
@@ -60,7 +84,7 @@ impl ClusterHost {
             region_stats: Some(RegionStatistics::new()),
             label_stats: LabelStatistics::new(),
             config,
-            rules: RuleManager::new(storage.clone(), paths),
+            rules,
             affinity: None,
         }));
         let syncer = Arc::new(RegionSyncer::for_heartbeat_state(
@@ -69,22 +93,94 @@ impl ClusterHost {
             HistoryBuffer::new(100)?,
             std::time::Duration::from_secs(10),
         ));
+        let state_weak = Arc::downgrade(&state);
+        let syncer_weak = Arc::downgrade(&syncer);
+        let resources = Arc::new(AsyncMutex::new(Some(Resources {
+            leader,
+            state: state.clone(),
+            hot,
+            runners,
+            storage,
+            paths,
+            downstreams: syncer.downstreams(),
+            syncer,
+        })));
+        let worker_resources = resources.clone();
+        let worker_cancel = cancel.clone();
+        let start = tokio::time::Instant::now();
+        let count = Arc::new(std::sync::atomic::AtomicI64::new(0));
+        let total = count.clone();
+        let preparation =
+            astersql_pd_schedule::PrepareChecker::new(std::time::Duration::ZERO, move || {
+                Ok::<i64, std::convert::Infallible>(
+                    total.load(std::sync::atomic::Ordering::Relaxed),
+                )
+            });
+        let store_check_errors = Arc::new(Mutex::new(Vec::new()));
+        let worker_errors = store_check_errors.clone();
+        let store_worker = StoreStateWorker::start(
+            &tokio::runtime::Handle::current(),
+            &cancel,
+            std::time::Duration::from_secs(10),
+            move || {
+                let resources = worker_resources.clone();
+                let cancel = worker_cancel.clone();
+                let errors = worker_errors.clone();
+                // Preparation uses the same canonical heartbeat state. It is sticky,
+                // and its timeout follows the supplied executor's monotonic clock.
+                let prepared = {
+                    // The worker is the only owner of this gate; heartbeat admissions
+                    // are excluded below before the actual lifecycle check.
+                    let state = state.lock().unwrap();
+                    count.store(
+                        state.cluster.regions.total_region_count() as i64,
+                        std::sync::atomic::Ordering::Relaxed,
+                    );
+                    preparation.check(&state.cluster, start.elapsed())
+                };
+                async move {
+                    let guard = resources.lock().await;
+                    let Some(resources) = guard.as_ref() else {
+                        return;
+                    };
+                    if cancel.is_cancelled() || resources.leader.validate().await.is_err() {
+                        return;
+                    }
+                    let result = check_store_states(
+                        &resources.state,
+                        &resources.storage,
+                        resources.paths,
+                        now().1 as i128,
+                        prepared,
+                    )
+                    .await;
+                    *errors.lock().unwrap() = result;
+                    let state = resources.state.lock().unwrap();
+                    for store in state.cluster.stores.get_stores() {
+                        if store.is_removed() {
+                            resources
+                                .hot
+                                .stores_stats
+                                .remove_rolling_store_stats(store.id());
+                        }
+                    }
+                }
+            },
+        );
         Ok(Self {
-            syncer: Arc::downgrade(&syncer),
-            state: Arc::downgrade(&state),
+            syncer: syncer_weak,
+            state: state_weak,
             restored_config,
-            resources: AsyncMutex::new(Some(Resources {
-                leader,
-                state,
-                hot,
-                runners,
-                storage,
-                paths,
-                downstreams: syncer.downstreams(),
-                syncer,
-            })),
+            resources,
+            store_worker: AsyncMutex::new(Some(store_worker)),
+            store_check_errors,
             cancel,
         })
+    }
+
+    /// Failures from the latest store check; subsequent ticks retry failed stores.
+    pub fn store_state_check_errors(&self) -> Vec<(u64, String)> {
+        self.store_check_errors.lock().unwrap().clone()
     }
     pub(crate) fn region_sync_handle(&self) -> Option<Arc<RegionSyncer>> {
         self.syncer.upgrade()
@@ -104,6 +200,11 @@ impl ClusterHost {
     }
     pub(crate) async fn shutdown(&self) -> Result<(), crate::NodeError> {
         self.cancel.cancel();
+        let worker_error = if let Some(worker) = self.store_worker.lock().await.take() {
+            worker.stop().await.err()
+        } else {
+            None
+        };
         let mut guard = self.resources.lock().await;
         let result = if let Some(resources) = guard.as_mut() {
             resources.syncer.stop().await;
@@ -115,6 +216,9 @@ impl ClusterHost {
             Ok(())
         };
         guard.take();
+        if let Some(error) = worker_error {
+            return Err(error.into());
+        }
         result
     }
 }
@@ -239,3 +343,7 @@ impl astersql_pd_server::bucket_heartbeat_adapter::BucketHeartbeatService for Cl
         resources.pipeline().bucket(report)
     }
 }
+
+#[cfg(test)]
+#[path = "store_state_worker_test.rs"]
+mod store_state_worker_test;

@@ -9,6 +9,7 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
+astersql-pd-schedule.workspace = true
 astersql-pd-server-config.workspace = true
 astersql-pd-core-constant.workspace = true
 tokio.workspace = true
