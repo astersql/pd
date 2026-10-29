@@ -487,6 +487,18 @@ impl Pd for Grpc {
         }))
     }
 
+    async fn ask_split(
+        &self,
+        r: Request<pdpb::AskSplitRequest>,
+    ) -> Result<Response<pdpb::AskSplitResponse>, Status> {
+        self.ask_split_request(r.into_inner()).await
+    }
+    async fn ask_batch_split(
+        &self,
+        r: Request<pdpb::AskBatchSplitRequest>,
+    ) -> Result<Response<pdpb::AskBatchSplitResponse>, Status> {
+        self.ask_batch_split_request(r.into_inner()).await
+    }
     async fn alloc_id(
         &self,
         req: Request<pdpb::AllocIdRequest>,

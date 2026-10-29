@@ -511,12 +511,12 @@ impl ClusterHost {
     ) -> Result<(), astersql_pd_server::grpc_store::StoreError> {
         use astersql_pd_server::grpc_store::StoreError;
         // Serialize validation, durable write and publication against other registrations.
-        let guard = self.resources.lock().await;
+        let mut guard = self.resources.lock().await;
         if self.cancel.is_cancelled() {
             return Err(StoreError::Other("node stopped".into()));
         }
         let resources = guard
-            .as_ref()
+            .as_mut()
             .ok_or_else(|| StoreError::Other("node stopped".into()))?;
         let next = {
             let state = resources.state.lock().unwrap();
@@ -629,23 +629,26 @@ impl ClusterHost {
             .save_store_meta(&resources.paths, next.meta().unwrap())
             .await
             .map_err(|e| StoreError::Other(e.to_string()))?;
-        let state = resources.state.lock().unwrap();
-        // Keep concurrently accepted heartbeat statistics and lifecycle options.
-        if !state.cluster.stores.patch_store(next.id(), |store| {
-            let incoming = next.meta().unwrap();
-            store.edit_meta(|meta| {
-                meta.address.clone_from(&incoming.address);
-                meta.peer_address.clone_from(&incoming.peer_address);
-                meta.status_address.clone_from(&incoming.status_address);
-                meta.version.clone_from(&incoming.version);
-                meta.git_hash.clone_from(&incoming.git_hash);
-                meta.start_timestamp = incoming.start_timestamp;
-                meta.deploy_path.clone_from(&incoming.deploy_path);
-                meta.labels.clone_from(&incoming.labels);
-            });
-        }) {
-            state.cluster.stores.put_store(Arc::new(next));
+        {
+            let state = resources.state.lock().unwrap();
+            // Keep concurrently accepted heartbeat statistics and lifecycle options.
+            if !state.cluster.stores.patch_store(next.id(), |store| {
+                let incoming = next.meta().unwrap();
+                store.edit_meta(|meta| {
+                    meta.address.clone_from(&incoming.address);
+                    meta.peer_address.clone_from(&incoming.peer_address);
+                    meta.status_address.clone_from(&incoming.status_address);
+                    meta.version.clone_from(&incoming.version);
+                    meta.git_hash.clone_from(&incoming.git_hash);
+                    meta.start_timestamp = incoming.start_timestamp;
+                    meta.deploy_path.clone_from(&incoming.deploy_path);
+                    meta.labels.clone_from(&incoming.labels);
+                });
+            }) {
+                state.cluster.stores.put_store(Arc::new(next));
+            }
         }
+        self.update_split_version(resources).await;
         Ok(())
     }
     pub(crate) async fn shutdown(&self) -> Result<(), crate::NodeError> {
@@ -976,3 +979,6 @@ mod schedule_worker;
 mod schedule_policy;
 
 pub use schedule_worker::{SchedulePhase, ScheduleStatus};
+
+#[path = "cluster_split.rs"]
+mod cluster_split;

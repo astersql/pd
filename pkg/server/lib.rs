@@ -2,6 +2,7 @@
 //! HTTP and gRPC adapters for the minimal classic PD role.
 mod grpc;
 mod grpc_alloc_id;
+pub mod grpc_ask_split;
 mod grpc_bootstrap;
 mod grpc_members;
 mod grpc_region_lookup;
@@ -104,6 +105,22 @@ pub trait PdServices: Send + Sync {
             return Err("batch ID allocation is not configured".into());
         }
         self.alloc_id().await.map(|id| (id, 1))
+    }
+    /// An unsupported cluster version, or None when batch splitting is supported.
+    async fn batch_split_version(&self) -> Result<Option<String>, String> {
+        Ok(None)
+    }
+    /// Validate and allocate against the same term-owned cluster state.
+    async fn split_ids(
+        &self,
+        _region: astersql_pd_core::RegionMeta,
+        _count: u32,
+        _batch: bool,
+        _reason: i32,
+    ) -> Result<grpc_ask_split::SplitIds, grpc_ask_split::SplitError> {
+        Err(grpc_ask_split::SplitError::Other(
+            "split allocation is not configured".into(),
+        ))
     }
     async fn timestamp(&self, count: u32) -> Result<Timestamp, String>;
 }
@@ -348,3 +365,10 @@ mod grpc_region_scan_scenarios_test;
 mod grpc_region_query_scenarios_test;
 #[cfg(test)]
 mod grpc_region_query_test;
+
+#[cfg(test)]
+#[path = "grpc_ask_split_scenarios_test.rs"]
+mod grpc_ask_split_scenarios_test;
+#[cfg(test)]
+#[path = "grpc_ask_split_test.rs"]
+mod grpc_ask_split_test;

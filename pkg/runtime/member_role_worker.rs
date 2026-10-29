@@ -126,6 +126,26 @@ impl PdServices for RoleServices {
     async fn healthy(&self) -> Result<(), String> {
         self.active().await.map(|_| ())
     }
+    async fn batch_split_version(&self) -> Result<Option<String>, String> {
+        self.active().await?.cluster.batch_split_version().await
+    }
+    async fn split_ids(
+        &self,
+        region: astersql_pd_core::RegionMeta,
+        count: u32,
+        batch: bool,
+        reason: i32,
+    ) -> Result<
+        astersql_pd_server::grpc_ask_split::SplitIds,
+        astersql_pd_server::grpc_ask_split::SplitError,
+    > {
+        self.active()
+            .await
+            .map_err(astersql_pd_server::grpc_ask_split::SplitError::Other)?
+            .cluster
+            .split_ids(region, count, batch, reason)
+            .await
+    }
     async fn alloc_id(&self) -> Result<u64, String> {
         self.active().await?.alloc_id().await
     }

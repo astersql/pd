@@ -112,6 +112,21 @@ impl PdServices for Application {
         }
         self.leader.validate().await.map_err(|e| e.to_string())
     }
+    async fn batch_split_version(&self) -> Result<Option<String>, String> {
+        self.cluster.batch_split_version().await
+    }
+    async fn split_ids(
+        &self,
+        region: astersql_pd_core::RegionMeta,
+        count: u32,
+        batch: bool,
+        reason: i32,
+    ) -> Result<
+        astersql_pd_server::grpc_ask_split::SplitIds,
+        astersql_pd_server::grpc_ask_split::SplitError,
+    > {
+        self.cluster.split_ids(region, count, batch, reason).await
+    }
     async fn alloc_id(&self) -> Result<u64, String> {
         self.requests.inc();
         self.allocator.alloc().await.map_err(|e| e.to_string())

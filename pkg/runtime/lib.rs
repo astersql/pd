@@ -80,3 +80,9 @@ mod grpc_region_query_differential_test;
 mod grpc_region_query_fault_test;
 #[cfg(test)]
 mod grpc_region_query_readiness_test;
+
+#[cfg(test)]
+mod grpc_ask_split_differential_test;
+
+#[cfg(test)]
+mod grpc_ask_split_fault_test;
