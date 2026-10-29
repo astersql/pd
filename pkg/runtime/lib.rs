@@ -132,3 +132,6 @@ mod grpc_tso_clock_test;
 #[cfg(test)]
 mod grpc_tso_differential_test;
 mod tso;
+
+#[cfg(test)]
+mod grpc_unsupported_differential_test;

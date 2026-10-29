@@ -35,6 +35,38 @@ impl Grpc {
 }
 #[tonic::async_trait]
 impl Pd for Grpc {
+    async fn watch_gc_safe_point_v2(
+        &self,
+        _r: Request<pdpb::WatchGcSafePointV2Request>,
+    ) -> Result<Response<tonic::codegen::BoxStream<pdpb::WatchGcSafePointV2Response>>, Status> {
+        Err(crate::grpc_unsupported::watch_gc_safe_point_v2())
+    }
+    async fn watch_gc_states(
+        &self,
+        _r: Request<pdpb::WatchGcStatesRequest>,
+    ) -> Result<Response<tonic::codegen::BoxStream<pdpb::WatchGcStatesResponse>>, Status> {
+        Err(crate::grpc_unsupported::watch_gc_states())
+    }
+
+    async fn sync_max_ts(
+        &self,
+        _r: Request<pdpb::SyncMaxTsRequest>,
+    ) -> Result<Response<pdpb::SyncMaxTsResponse>, Status> {
+        Ok(Response::new(pdpb::SyncMaxTsResponse {
+            header: crate::grpc_unsupported::header(self.services.identity().cluster_id),
+            ..Default::default()
+        }))
+    }
+    async fn get_dc_location_info(
+        &self,
+        _r: Request<pdpb::GetDcLocationInfoRequest>,
+    ) -> Result<Response<pdpb::GetDcLocationInfoResponse>, Status> {
+        Ok(Response::new(pdpb::GetDcLocationInfoResponse {
+            header: crate::grpc_unsupported::header(self.services.identity().cluster_id),
+            ..Default::default()
+        }))
+    }
+
     async fn set_external_timestamp(
         &self,
         r: Request<pdpb::SetExternalTimestampRequest>,

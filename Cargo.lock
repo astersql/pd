@@ -863,12 +863,14 @@ dependencies = [
  "futures-util",
  "prometheus",
  "prost",
+ "prost-types",
  "serde",
  "serde_json",
  "tokio",
  "tokio-stream",
  "tokio-util",
  "tonic",
+ "tonic-prost",
 ]
 
 [[package]]

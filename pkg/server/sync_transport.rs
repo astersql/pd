@@ -282,6 +282,32 @@ impl astersql_pd_syncer::DownstreamSender for WireSender {
 pub(crate) struct SyncGrpc(pub Grpc);
 #[tonic::async_trait]
 impl Pd for SyncGrpc {
+    async fn watch_gc_safe_point_v2(
+        &self,
+        r: Request<pdpb::WatchGcSafePointV2Request>,
+    ) -> Result<Response<tonic::codegen::BoxStream<pdpb::WatchGcSafePointV2Response>>, Status> {
+        self.0.watch_gc_safe_point_v2(r).await
+    }
+    async fn watch_gc_states(
+        &self,
+        r: Request<pdpb::WatchGcStatesRequest>,
+    ) -> Result<Response<tonic::codegen::BoxStream<pdpb::WatchGcStatesResponse>>, Status> {
+        self.0.watch_gc_states(r).await
+    }
+
+    async fn sync_max_ts(
+        &self,
+        r: Request<pdpb::SyncMaxTsRequest>,
+    ) -> Result<Response<pdpb::SyncMaxTsResponse>, Status> {
+        self.0.sync_max_ts(r).await
+    }
+    async fn get_dc_location_info(
+        &self,
+        r: Request<pdpb::GetDcLocationInfoRequest>,
+    ) -> Result<Response<pdpb::GetDcLocationInfoResponse>, Status> {
+        self.0.get_dc_location_info(r).await
+    }
+
     async fn set_external_timestamp(
         &self,
         r: Request<pdpb::SetExternalTimestampRequest>,
