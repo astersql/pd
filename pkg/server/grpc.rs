@@ -35,6 +35,13 @@ impl Grpc {
 }
 #[tonic::async_trait]
 impl Pd for Grpc {
+    async fn watch_global_config(
+        &self,
+        r: Request<pdpb::WatchGlobalConfigRequest>,
+    ) -> Result<Response<tonic::codegen::BoxStream<pdpb::WatchGlobalConfigResponse>>, Status> {
+        self.watch_global_config_request(r).await
+    }
+
     async fn store_global_config(
         &self,
         r: Request<pdpb::StoreGlobalConfigRequest>,

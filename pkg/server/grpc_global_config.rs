@@ -8,7 +8,7 @@ use tonic::{Response, Status};
 const ROOT: &str = "/global/config/";
 const CONTROLLER: &str = astersql_pd_keypath::controller_config_path();
 
-fn normalize(path: &str) -> Result<&str, Status> {
+pub(crate) fn normalize(path: &str) -> Result<&str, Status> {
     if path.is_empty() || path == "/global/config" {
         Ok(ROOT)
     } else if path.starts_with(ROOT) {

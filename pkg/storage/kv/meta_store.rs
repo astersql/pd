@@ -209,6 +209,12 @@ pub struct WatchBatch {
 /// Unavailable is retryable via next(); Compacted requires a fresh snapshot + watch.
 #[async_trait]
 pub trait MetaWatch: Send {
+    /// Previous bytes for a delete in the most recently returned batch, if retained.
+    /// Call before next(): advancing the watch may release this batch's history.
+    fn previous_value(&self, _event: &Event) -> Option<Vec<u8>> {
+        None
+    }
+
     async fn next(&mut self, cancel: &CancellationToken) -> Result<WatchBatch>;
 }
 
@@ -242,6 +248,15 @@ pub trait MetaStore: Send + Sync {
         else_ops: Vec<crate::RawTxnOp>,
     ) -> Result<crate::RawTxnResponse>;
     async fn watch(&self, prefix: Vec<u8>, start_revision: Revision) -> Result<Box<dyn MetaWatch>>;
+    /// Opt in to retained delete values for the most recently delivered batch.
+    /// Backends without separate watch options may retain history for every watch.
+    async fn watch_with_previous(
+        &self,
+        prefix: Vec<u8>,
+        start_revision: Revision,
+    ) -> Result<Box<dyn MetaWatch>> {
+        self.watch(prefix, start_revision).await
+    }
     async fn grant(&self, ttl_seconds: i64) -> Result<Lease>;
     async fn keep_alive(&self, lease: LeaseId) -> Result<Lease>;
     async fn revoke(&self, lease: LeaseId) -> Result<()>;

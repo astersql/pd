@@ -16,5 +16,7 @@ contract_case!(
     lease_renew_revoke,
     election_fencing,
     invalid_atomic,
-    watch_cancel
+    watch_cancel,
+    task_033_watch_previous,
+    task_033_watch_boundary
 );

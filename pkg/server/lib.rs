@@ -6,6 +6,7 @@ pub mod grpc_ask_split;
 mod grpc_bootstrap;
 mod grpc_cluster_config;
 mod grpc_global_config;
+mod grpc_global_watch;
 mod grpc_members;
 mod grpc_region_lookup;
 mod grpc_region_query;
@@ -429,3 +430,9 @@ mod grpc_split_scatter_test;
 mod grpc_global_config_scenarios_test;
 #[cfg(test)]
 mod grpc_global_config_test;
+
+#[cfg(test)]
+mod grpc_global_watch_test;
+
+#[cfg(test)]
+mod grpc_global_watch_scenarios_test;

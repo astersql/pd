@@ -282,6 +282,13 @@ impl astersql_pd_syncer::DownstreamSender for WireSender {
 pub(crate) struct SyncGrpc(pub Grpc);
 #[tonic::async_trait]
 impl Pd for SyncGrpc {
+    async fn watch_global_config(
+        &self,
+        r: Request<pdpb::WatchGlobalConfigRequest>,
+    ) -> Result<Response<tonic::codegen::BoxStream<pdpb::WatchGlobalConfigResponse>>, Status> {
+        self.0.watch_global_config(r).await
+    }
+
     async fn store_global_config(
         &self,
         r: Request<pdpb::StoreGlobalConfigRequest>,

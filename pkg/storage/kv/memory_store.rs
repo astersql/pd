@@ -269,6 +269,7 @@ impl MetaStore for MemoryStore {
             store: self.clone(),
             prefix,
             next: start_revision,
+            previous: BTreeMap::new(),
             cancelled: false,
         }))
     }
@@ -327,13 +328,14 @@ impl MetaStore for MemoryStore {
             return Err(StoreError::FutureRevision);
         }
         s.compacted = rev;
-        s.events.retain(|e| e.revision() > rev);
+        s.events.retain(|e| e.revision() >= rev);
         s.snapshots.retain(|r, _| *r >= rev);
         self.changed.notify_waiters();
         Ok(())
     }
 }
 struct MemoryWatch {
+    previous: BTreeMap<(Revision, Vec<u8>), Vec<u8>>,
     store: MemoryStore,
     prefix: Vec<u8>,
     next: Revision,
@@ -341,6 +343,11 @@ struct MemoryWatch {
 }
 #[async_trait]
 impl MetaWatch for MemoryWatch {
+    fn previous_value(&self, event: &Event) -> Option<Vec<u8>> {
+        self.previous
+            .get(&(event.revision(), event.key().to_vec()))
+            .cloned()
+    }
     async fn next(&mut self, cancel: &CancellationToken) -> Result<WatchBatch> {
         loop {
             if self.cancelled || cancel.is_cancelled() {
@@ -350,7 +357,7 @@ impl MetaWatch for MemoryWatch {
             let notified = self.store.changed.notified();
             let deadline = {
                 let s = self.store.state();
-                if self.next <= s.compacted {
+                if self.next < s.compacted {
                     return Err(StoreError::Compacted {
                         requested: self.next,
                         compact_revision: Some(s.compacted),
@@ -365,6 +372,17 @@ impl MetaWatch for MemoryWatch {
                 if let Some(last) = events.last() {
                     let revision = last.revision();
                     self.next = revision + 1;
+                    self.previous = events
+                        .iter()
+                        .filter_map(|event| {
+                            let entry =
+                                s.snapshots.get(&(event.revision() - 1))?.get(event.key())?;
+                            Some((
+                                (event.revision(), event.key().to_vec()),
+                                entry.value.clone(),
+                            ))
+                        })
+                        .collect();
                     return Ok(WatchBatch { events, revision });
                 }
                 s.leases

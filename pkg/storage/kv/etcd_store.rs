@@ -16,6 +16,26 @@ pub struct EtcdMetaStore {
     timeout: Duration,
 }
 impl EtcdMetaStore {
+    fn new_watch(
+        &self,
+        prefix: Vec<u8>,
+        start_revision: Revision,
+        with_previous: bool,
+    ) -> Result<Box<dyn MetaWatch>> {
+        if start_revision <= 0 {
+            return Err(StoreError::InvalidArgument);
+        }
+        Ok(Box::new(EtcdWatch {
+            store: self.clone(),
+            prefix,
+            next: start_revision,
+            active: None,
+            previous: Default::default(),
+            with_previous,
+            cancelled: false,
+        }))
+    }
+
     pub async fn connect(endpoints: &[String], timeout: Duration) -> Result<Self> {
         if endpoints.is_empty() || timeout.is_zero() {
             return Err(StoreError::InvalidArgument);
@@ -260,16 +280,14 @@ impl MetaStore for EtcdMetaStore {
     }
 
     async fn watch(&self, prefix: Vec<u8>, start_revision: Revision) -> Result<Box<dyn MetaWatch>> {
-        if start_revision <= 0 {
-            return Err(StoreError::InvalidArgument);
-        }
-        Ok(Box::new(EtcdWatch {
-            store: self.clone(),
-            prefix,
-            next: start_revision,
-            active: None,
-            cancelled: false,
-        }))
+        self.new_watch(prefix, start_revision, false)
+    }
+    async fn watch_with_previous(
+        &self,
+        prefix: Vec<u8>,
+        start_revision: Revision,
+    ) -> Result<Box<dyn MetaWatch>> {
+        self.new_watch(prefix, start_revision, true)
     }
     async fn grant(&self, ttl_seconds: i64) -> Result<Lease> {
         if !(1..=i32::MAX as i64).contains(&ttl_seconds) {
@@ -321,6 +339,8 @@ impl MetaStore for EtcdMetaStore {
     }
 }
 struct EtcdWatch {
+    with_previous: bool,
+    previous: std::collections::BTreeMap<(Revision, Vec<u8>), Vec<u8>>,
     store: EtcdMetaStore,
     prefix: Vec<u8>,
     next: Revision,
@@ -336,6 +356,11 @@ impl EtcdWatch {
                     (vec![0], WatchOptions::new().with_all_keys())
                 } else {
                     (self.prefix.clone(), WatchOptions::new().with_prefix())
+                };
+                let options = if self.with_previous {
+                    options.with_prev_key()
+                } else {
+                    options
                 };
                 self.active = Some(
                     self.store
@@ -372,6 +397,15 @@ impl EtcdWatch {
                 self.active = None;
                 return Err(StoreError::Unavailable);
             }
+            self.previous.clear();
+            for event in response.events() {
+                if let (Some(kv), Some(previous)) = (event.kv(), event.prev_kv()) {
+                    self.previous.insert(
+                        (kv.mod_revision(), kv.key().to_vec()),
+                        previous.value().to_vec(),
+                    );
+                }
+            }
             let events: Vec<_> = response
                 .events()
                 .iter()
@@ -396,6 +430,12 @@ impl EtcdWatch {
 }
 #[async_trait]
 impl MetaWatch for EtcdWatch {
+    fn previous_value(&self, event: &Event) -> Option<Vec<u8>> {
+        self.previous
+            .get(&(event.revision(), event.key().to_vec()))
+            .cloned()
+    }
+
     async fn next(&mut self, cancel: &CancellationToken) -> Result<WatchBatch> {
         if self.cancelled {
             return Err(StoreError::Cancelled);

@@ -114,3 +114,6 @@ mod grpc_split_scatter_fault_test;
 
 #[cfg(test)]
 mod grpc_global_config_differential_test;
+
+#[cfg(test)]
+mod grpc_global_watch_differential_test;

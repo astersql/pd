@@ -423,3 +423,44 @@ pub async fn watch_cancel(store: &dyn MetaStore) {
         .unwrap();
     assert_eq!(pre.next(&cancel).await.unwrap_err(), StoreError::Cancelled);
 }
+
+pub async fn task_033_watch_previous(store: &dyn MetaStore) {
+    let key = b"/task033/previous";
+    put(store, key, b"old").await;
+    let first = put(store, key, &[0, 255, 2]).await;
+    let deleted = store
+        .transact(vec![], vec![Mutation::Delete { key: key.to_vec() }])
+        .await
+        .unwrap();
+    let mut watch = store
+        .watch_with_previous(b"/task033/".to_vec(), first.revision)
+        .await
+        .unwrap();
+    loop {
+        let observed = batch(watch.as_mut()).await;
+        if let Some(event) = observed
+            .events
+            .iter()
+            .find(|event| matches!(event, Event::Delete { .. }))
+        {
+            assert_eq!(watch.previous_value(event), Some(vec![0, 255, 2]));
+            // The returned batch owns history even after administrative retention advances.
+            store.compact(deleted.revision).await.unwrap();
+            assert_eq!(watch.previous_value(event), Some(vec![0, 255, 2]));
+            break;
+        }
+    }
+}
+
+pub async fn task_033_watch_boundary(store: &dyn MetaStore) {
+    let commit = put(store, b"/task033/boundary", b"boundary").await;
+    store.compact(commit.revision).await.unwrap();
+    let mut watch = store
+        .watch(b"/task033/boundary".to_vec(), commit.revision)
+        .await
+        .unwrap();
+    let observed = batch(watch.as_mut()).await;
+    assert_eq!(observed.revision, commit.revision);
+    assert_eq!(observed.events.len(), 1);
+    assert!(matches!(&observed.events[0], Event::Put(entry) if entry.value == b"boundary"));
+}
