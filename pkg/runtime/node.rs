@@ -17,6 +17,10 @@ pub async fn bootstrap_config(
     client_url: String,
     peer_url: String,
 ) -> Result<NodeConfig, NodeError> {
+    let client_endpoint = crate::net_address::Endpoint::parse(&client_url)?;
+    client_endpoint.validate_advertised()?;
+    let client_url = client_endpoint.url();
+    let peer_url = crate::net_address::Endpoint::parse(&peer_url)?.url();
     use astersql_pd_storage::{Compare, Consistency, Mutation, Read};
     let key = b"/pd/cluster_id";
     let proposed = u64::try_from(
@@ -227,6 +231,10 @@ async fn initialize_node(
     cancel: CancellationToken,
     cluster: astersql_pd_core::BasicCluster,
 ) -> Result<PdNode, NodeError> {
+    let mut config = config;
+    config.client_url = crate::net_address::Endpoint::parse(&config.client_url)?
+        .advertised_url(listener.local_addr()?)?;
+    config.peer_url = crate::net_address::Endpoint::parse(&config.peer_url)?.url();
     let events = Arc::new(Mutex::new(vec!["storage"]));
     let member = Member::bootstrap(
         store.clone(),

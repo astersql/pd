@@ -5,9 +5,6 @@ mod fixture;
 #[test]
 fn standalone_runtime_lifecycle() {
     let fixture = fixture::Fixture::start();
-    let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
-    let address = listener.local_addr().unwrap();
-    drop(listener);
     let runtime = tokio::runtime::Builder::new_multi_thread()
         .enable_all()
         .build()
@@ -16,9 +13,11 @@ fn standalone_runtime_lifecycle() {
         .block_on(crate::entry::run_until(
             crate::entry::Config {
                 endpoint: fixture.endpoint.clone(),
-                client: format!("http://{address}"),
+                client: "http://127.0.0.1:0".into(),
                 peer: "http://127.0.0.1:2380".into(),
                 name: "standalone".into(),
+                advertise_client: None,
+                advertise_peer: None,
             },
             async { Ok(()) },
         ))
@@ -37,6 +36,29 @@ fn standalone_runtime_lifecycle() {
             "storage-released"
         ]
     );
-    assert!(std::net::TcpStream::connect(address).is_err());
     println!("standalone: {events:?}");
+}
+
+#[test]
+fn task_039_cli_advertise_options() {
+    let config = crate::entry::Config::parse(
+        [
+            "--etcd-endpoints=http://127.0.0.1:2379",
+            "--client-urls=http://0.0.0.0:0",
+            "--advertise-client-urls=http://public.example:2379",
+            "--advertise-peer-urls=http://public.example:2380",
+        ]
+        .into_iter()
+        .map(String::from),
+    )
+    .unwrap();
+    assert_eq!(config.client, "http://0.0.0.0:0");
+    assert_eq!(
+        config.advertise_client.as_deref(),
+        Some("http://public.example:2379")
+    );
+    assert_eq!(
+        config.advertise_peer.as_deref(),
+        Some("http://public.example:2380")
+    );
 }

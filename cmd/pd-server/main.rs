@@ -10,14 +10,18 @@ pub(crate) struct Config {
     pub client: String,
     pub peer: String,
     pub name: String,
+    pub advertise_client: Option<String>,
+    pub advertise_peer: Option<String>,
 }
 impl Config {
-    fn parse(args: impl Iterator<Item = String>) -> Result<Self, ProcessError> {
+    pub(crate) fn parse(args: impl Iterator<Item = String>) -> Result<Self, ProcessError> {
         let mut config = Self {
             endpoint: String::new(),
             client: "http://127.0.0.1:2379".into(),
             peer: "http://127.0.0.1:2380".into(),
             name: "pd".into(),
+            advertise_client: None,
+            advertise_peer: None,
         };
         for arg in args {
             let (key, value) = arg.split_once('=').ok_or("expected --option=value")?;
@@ -26,11 +30,10 @@ impl Config {
                 "--client-urls" => config.client = value.into(),
                 "--peer-urls" => config.peer = value.into(),
                 "--name" => config.name = value.into(),
+                "--advertise-client-urls" => config.advertise_client = Some(value.into()),
+                "--advertise-peer-urls" => config.advertise_peer = Some(value.into()),
                 // Compatibility harness supplies Go process metadata. No local storage is opened.
-                "--data-dir"
-                | "--advertise-client-urls"
-                | "--advertise-peer-urls"
-                | "--initial-cluster" => {}
+                "--data-dir" | "--initial-cluster" => {}
                 _ => return Err(format!("unsupported option: {key}").into()),
             }
         }
@@ -44,6 +47,13 @@ pub(crate) async fn run_until(
     config: Config,
     shutdown: impl Future<Output = Result<(), std::io::Error>>,
 ) -> Result<Vec<&'static str>, ProcessError> {
+    use astersql_pd_runtime::net_address::Endpoint;
+    let endpoint = Endpoint::parse(&config.client)?;
+    let advertised = Endpoint::parse(config.advertise_client.as_deref().unwrap_or(&config.client))?;
+    let peer = Endpoint::parse(config.advertise_peer.as_deref().unwrap_or(&config.peer))?.url();
+    Endpoint::parse(&config.peer)?;
+    let listener = endpoint.bind().await?;
+    let client = advertised.advertised_url(listener.local_addr()?)?;
     let store: Arc<dyn MetaStore> = Arc::new(
         EtcdMetaStore::connect(
             &config
@@ -55,18 +65,8 @@ pub(crate) async fn run_until(
         )
         .await?,
     );
-    let identity = astersql_pd_runtime::bootstrap_config(
-        store.as_ref(),
-        config.name,
-        config.client.clone(),
-        config.peer,
-    )
-    .await?;
-    let address = config
-        .client
-        .strip_prefix("http://")
-        .ok_or("only http:// listeners are supported by the MVP")?;
-    let listener = tokio::net::TcpListener::bind(address).await?;
+    let identity =
+        astersql_pd_runtime::bootstrap_config(store.as_ref(), config.name, client, peer).await?;
     let mut node = PdNodeBuilder::new(tokio::runtime::Handle::current(), CancellationToken::new())
         .start(
             store,

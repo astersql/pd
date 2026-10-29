@@ -139,7 +139,7 @@ async fn readonly_request_role_differential() {
                         member_id: id,
                         name: format!("request-{id}"),
                         client_url: url.clone(),
-                        peer_url: String::new(),
+                        peer_url: "http://peer:2380".into(),
                     },
                     listener,
                     Arc::new(prometheus::Registry::new()),

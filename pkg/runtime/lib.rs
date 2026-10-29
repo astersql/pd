@@ -135,3 +135,8 @@ mod tso;
 
 #[cfg(test)]
 mod grpc_unsupported_differential_test;
+
+#[cfg(test)]
+mod net_address_test;
+
+pub mod net_address;
