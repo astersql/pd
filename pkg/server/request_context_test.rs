@@ -2,6 +2,7 @@
 use crate::{Identity, PdServices, request_context};
 use astersql_pd_proto::pdpb::{self, pd_client::PdClient};
 use astersql_pd_storage::{Consistency, MetaStore, Mutation, Read};
+use prost::Message;
 use std::{
     sync::{Arc, Mutex},
     time::Duration,
@@ -17,6 +18,9 @@ struct Services {
 impl PdServices for Services {
     fn identity(&self) -> &Identity {
         &self.identity
+    }
+    fn discovery_store(&self) -> Option<Arc<dyn MetaStore>> {
+        Some(self.store.clone())
     }
     async fn healthy(&self) -> Result<(), String> {
         self.seen.lock().unwrap().push(request_context::current());
@@ -83,6 +87,21 @@ async fn task_040_behavior() {
     let store: Arc<dyn MetaStore> = Arc::new(fixture.store().await);
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
     let url = format!("http://{}", listener.local_addr().unwrap());
+    store
+        .transact(
+            vec![],
+            vec![Mutation::put(
+                b"/pd/40/leader",
+                &pdpb::Member {
+                    member_id: 1,
+                    client_urls: vec![url.clone()],
+                    ..Default::default()
+                }
+                .encode_to_vec(),
+            )],
+        )
+        .await
+        .unwrap();
     let services = Arc::new(Services {
         identity: Identity {
             cluster_id: 40,
@@ -153,7 +172,7 @@ async fn task_040_behavior() {
         .insert("x-forwarded-for", "198.51.100.1".parse().unwrap());
     request
         .metadata_mut()
-        .insert("pd-forwarded-host", "untrusted-target".parse().unwrap());
+        .insert("pd-forwarded-host", url.parse().unwrap());
     assert_eq!(client.alloc_id(request).await.unwrap().into_inner().id, 40);
     let stored = store
         .read(Read::prefix(b"/task040/id", Consistency::Linearizable))
@@ -171,7 +190,7 @@ async fn task_040_behavior() {
     assert_eq!(grpc_context.service_label, "/pdpb.PD/AllocID");
     assert_eq!(grpc_context.source_ip, "127.0.0.1");
     assert_eq!(grpc_context.forwarded_for, ["198.51.100.1"]);
-    assert_eq!(grpc_context.forwarded_host, "untrusted-target");
+    assert_eq!(grpc_context.forwarded_host, url);
     assert!(grpc_context.caller_id.is_empty());
     let error = client
         .alloc_id(pdpb::AllocIdRequest::default())

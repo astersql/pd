@@ -223,6 +223,13 @@ pub fn router(services: Arc<dyn PdServices>, cancel: CancellationToken) -> axum:
     .merge(http::router(services.clone()))
     .layer(axum::middleware::from_fn_with_state(
         http_redirect::RedirectState {
+            services: services.clone(),
+            cancel: cancel.clone(),
+        },
+        grpc_forward::middleware,
+    ))
+    .layer(axum::middleware::from_fn_with_state(
+        http_redirect::RedirectState {
             services,
             cancel: cancel.clone(),
         },
@@ -496,3 +503,9 @@ mod request_context_test;
 mod http_redirect_test;
 
 pub mod http_redirect;
+
+#[cfg(test)]
+#[path = "grpc_forward_test.rs"]
+mod grpc_forward_test;
+
+mod grpc_forward;
