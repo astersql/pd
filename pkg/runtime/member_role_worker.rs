@@ -97,6 +97,14 @@ impl PdServices for RoleServices {
     fn discovery_store(&self) -> Option<Arc<dyn MetaStore>> {
         self.store.upgrade()
     }
+    fn cluster_config_store(&self) -> Option<Arc<dyn MetaStore>> {
+        let term = self.current()?;
+        Some(Arc::new(TermStore::new(
+            self.store.upgrade()?,
+            term.leader.clone(),
+            term.cancel.clone(),
+        )))
+    }
     async fn bootstrap(
         &self,
         store: astersql_pd_core::StoreMeta,

@@ -398,6 +398,18 @@ impl Pd for SyncGrpc {
     ) -> Result<Response<pdpb::GetClusterInfoResponse>, Status> {
         self.0.get_cluster_info(r).await
     }
+    async fn get_cluster_config(
+        &self,
+        r: Request<pdpb::GetClusterConfigRequest>,
+    ) -> Result<Response<pdpb::GetClusterConfigResponse>, Status> {
+        self.0.get_cluster_config(r).await
+    }
+    async fn put_cluster_config(
+        &self,
+        r: Request<pdpb::PutClusterConfigRequest>,
+    ) -> Result<Response<pdpb::PutClusterConfigResponse>, Status> {
+        self.0.put_cluster_config(r).await
+    }
     async fn bootstrap(
         &self,
         r: Request<pdpb::BootstrapRequest>,

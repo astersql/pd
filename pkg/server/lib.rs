@@ -4,6 +4,7 @@ mod grpc;
 mod grpc_alloc_id;
 pub mod grpc_ask_split;
 mod grpc_bootstrap;
+mod grpc_cluster_config;
 mod grpc_members;
 mod grpc_region_lookup;
 mod grpc_region_query;
@@ -76,6 +77,10 @@ pub trait PdServices: Send + Sync {
     /// Shared canonical discovery metadata, independent of the local leader term.
     fn discovery_store(&self) -> Option<Arc<dyn astersql_pd_storage::MetaStore>> {
         None
+    }
+    /// Metadata backend fenced to the active leader term for configuration writes.
+    fn cluster_config_store(&self) -> Option<Arc<dyn astersql_pd_storage::MetaStore>> {
+        self.discovery_store()
     }
     /// Commit initial metadata and publish it into the canonical host cache.
     async fn bootstrap(
@@ -377,3 +382,6 @@ mod grpc_ask_split_test;
 #[cfg(test)]
 #[path = "grpc_report_split_test.rs"]
 mod grpc_report_split_test;
+
+#[cfg(test)]
+mod grpc_cluster_config_test;

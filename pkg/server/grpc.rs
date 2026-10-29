@@ -35,6 +35,18 @@ impl Grpc {
 }
 #[tonic::async_trait]
 impl Pd for Grpc {
+    async fn get_cluster_config(
+        &self,
+        r: Request<pdpb::GetClusterConfigRequest>,
+    ) -> Result<Response<pdpb::GetClusterConfigResponse>, Status> {
+        self.get_cluster_config_request(r.into_inner()).await
+    }
+    async fn put_cluster_config(
+        &self,
+        r: Request<pdpb::PutClusterConfigRequest>,
+    ) -> Result<Response<pdpb::PutClusterConfigResponse>, Status> {
+        self.put_cluster_config_request(r.into_inner()).await
+    }
     async fn bootstrap(
         &self,
         r: Request<pdpb::BootstrapRequest>,

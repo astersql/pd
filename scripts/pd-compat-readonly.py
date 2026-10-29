@@ -46,9 +46,9 @@ def binary(name):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--mode', choices=['go', 'rust', 'dual'], default=os.environ.get('PD_COMPAT_MODE', 'dual'))
-    parser.add_argument('--case', choices=['health-member', 'tso', 'cluster-host', 'cluster-restore', 'member-role', 'bucket-heartbeat', 'sync-regions', 'store-state', 'store-stats', 'store-config', 'cluster-metrics', 'resolved-ts', 'schedule-coordinator', 'request-role', 'members', 'bootstrap', 'alloc-id', 'store-registration', 'region-lookup', 'region-scan', 'region-query', 'ask-split', 'report-split'], action='append')
+    parser.add_argument('--case', choices=['health-member', 'tso', 'cluster-host', 'cluster-restore', 'member-role', 'bucket-heartbeat', 'sync-regions', 'store-state', 'store-stats', 'store-config', 'cluster-metrics', 'resolved-ts', 'schedule-coordinator', 'request-role', 'members', 'bootstrap', 'alloc-id', 'store-registration', 'region-lookup', 'region-scan', 'region-query', 'ask-split', 'report-split', 'cluster-config'], action='append')
     args = parser.parse_args()
-    if any(case in (args.case or []) for case in ['cluster-host', 'cluster-restore', 'member-role', 'bucket-heartbeat', 'sync-regions', 'store-state', 'store-stats', 'store-config', 'cluster-metrics', 'resolved-ts', 'schedule-coordinator', 'request-role', 'members', 'bootstrap', 'alloc-id', 'store-registration', 'region-lookup', 'region-scan', 'region-query', 'ask-split', 'report-split']) and args.mode != 'dual':
+    if any(case in (args.case or []) for case in ['cluster-host', 'cluster-restore', 'member-role', 'bucket-heartbeat', 'sync-regions', 'store-state', 'store-stats', 'store-config', 'cluster-metrics', 'resolved-ts', 'schedule-coordinator', 'request-role', 'members', 'bootstrap', 'alloc-id', 'store-registration', 'region-lookup', 'region-scan', 'region-query', 'ask-split', 'report-split', 'cluster-config']) and args.mode != 'dual':
         raise ValueError('cluster-host, cluster-restore and member-role require dual mode')
     go = binary('PD_COMPAT_GO_BIN') if args.mode != 'rust' else None
     rust = binary('PD_COMPAT_RUST_BIN') if args.mode != 'go' else None
@@ -88,6 +88,7 @@ def main():
         'pkg/storage/kv/meta_store.rs', 'pkg/storage/kv/etcd_store.rs',
         'pkg/runtime/lib.rs', 'pkg/server/core_store_adapter.rs', 'pkg/server/core_region_adapter.rs', 'pkg/storage/endpoint/endpoint_codec.rs', 'pkg/storage/endpoint/lib.rs',
         'pkg/server/grpc_store.rs', 'pkg/server/grpc_store_test.rs', 'pkg/server/grpc_store_scenarios_test.rs', 'pkg/runtime/grpc_store_differential_test.rs', 'pkg/runtime/grpc_store_fault_test.rs',
+        'pkg/server/grpc_cluster_config.rs', 'pkg/server/grpc_cluster_config_test.rs', 'pkg/server/grpc_cluster_config_scenarios_test.rs', 'pkg/runtime/grpc_cluster_config_differential_test.rs',
         'pkg/server/grpc_report_split.rs', 'pkg/server/grpc_report_split_test.rs', 'pkg/server/grpc_report_split_scenarios_test.rs', 'pkg/runtime/grpc_report_split_differential_test.rs',
         'pkg/server/grpc_ask_split.rs', 'pkg/server/grpc_ask_split_test.rs', 'pkg/server/grpc_ask_split_scenarios_test.rs', 'pkg/runtime/cluster_split.rs', 'pkg/runtime/grpc_ask_split_differential_test.rs',
         'pkg/server/grpc_alloc_id.rs', 'pkg/server/grpc_alloc_id_test.rs', 'pkg/runtime/grpc_alloc_id_differential_test.rs', 'pkg/id/allocator.rs',
@@ -136,6 +137,9 @@ def main():
             if case == 'region-lookup':
                 command = ['cargo', 'test', '--locked', '-p', 'astersql-pd-runtime', '--lib',
                            'readonly_region_lookup_differential', '--', '--ignored']
+            if case == 'cluster-config':
+                command = ['cargo', 'test', '--locked', '-p', 'astersql-pd-runtime', '--lib',
+                           'readonly_cluster_config_differential', '--', '--ignored']
             if case == 'report-split':
                 command = ['cargo', 'test', '--locked', '-p', 'astersql-pd-runtime', '--lib',
                            'readonly_report_split_differential', '--', '--ignored']
