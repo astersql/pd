@@ -46,9 +46,9 @@ def binary(name):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--mode', choices=['go', 'rust', 'dual'], default=os.environ.get('PD_COMPAT_MODE', 'dual'))
-    parser.add_argument('--case', choices=['health-member', 'tso', 'cluster-host', 'cluster-restore', 'member-role', 'bucket-heartbeat', 'sync-regions', 'store-state', 'store-stats', 'store-config', 'cluster-metrics', 'resolved-ts', 'schedule-coordinator', 'request-role', 'members', 'bootstrap', 'alloc-id', 'store-registration', 'region-lookup', 'region-scan', 'region-query', 'ask-split', 'report-split', 'cluster-config', 'scatter', 'split-regions'], action='append')
+    parser.add_argument('--case', choices=['health-member', 'tso', 'cluster-host', 'cluster-restore', 'member-role', 'bucket-heartbeat', 'sync-regions', 'store-state', 'store-stats', 'store-config', 'cluster-metrics', 'resolved-ts', 'schedule-coordinator', 'request-role', 'members', 'bootstrap', 'alloc-id', 'store-registration', 'region-lookup', 'region-scan', 'region-query', 'ask-split', 'report-split', 'cluster-config', 'scatter', 'split-regions', 'split-scatter'], action='append')
     args = parser.parse_args()
-    if any(case in (args.case or []) for case in ['cluster-host', 'cluster-restore', 'member-role', 'bucket-heartbeat', 'sync-regions', 'store-state', 'store-stats', 'store-config', 'cluster-metrics', 'resolved-ts', 'schedule-coordinator', 'request-role', 'members', 'bootstrap', 'alloc-id', 'store-registration', 'region-lookup', 'region-scan', 'region-query', 'ask-split', 'report-split', 'cluster-config', 'scatter', 'split-regions']) and args.mode != 'dual':
+    if any(case in (args.case or []) for case in ['cluster-host', 'cluster-restore', 'member-role', 'bucket-heartbeat', 'sync-regions', 'store-state', 'store-stats', 'store-config', 'cluster-metrics', 'resolved-ts', 'schedule-coordinator', 'request-role', 'members', 'bootstrap', 'alloc-id', 'store-registration', 'region-lookup', 'region-scan', 'region-query', 'ask-split', 'report-split', 'cluster-config', 'scatter', 'split-regions', 'split-scatter']) and args.mode != 'dual':
         raise ValueError('cluster-host, cluster-restore and member-role require dual mode')
     go = binary('PD_COMPAT_GO_BIN') if args.mode != 'rust' else None
     rust = binary('PD_COMPAT_RUST_BIN') if args.mode != 'go' else None
@@ -78,6 +78,7 @@ def main():
     record = target / f'compat-readonly-{time.time_ns()}.json'
     before = snapshot()
     sources = [ROOT / name for name in (
+        'pkg/server/grpc_split_scatter.rs', 'pkg/server/grpc_split_scatter_test.rs', 'pkg/server/grpc_split_scatter_scenarios_test.rs', 'pkg/runtime/grpc_split_scatter_differential_test.rs', 'pkg/runtime/grpc_split_scatter_fault_test.rs',
         'pkg/server/grpc_split_regions.rs', 'pkg/server/grpc_split_regions_test.rs', 'pkg/server/grpc_split_regions_scenarios_test.rs', 'pkg/runtime/schedule_split.rs', 'pkg/runtime/grpc_split_regions_clock_test.rs', 'pkg/runtime/grpc_split_regions_differential_test.rs', 'pkg/schedule/splitter/split_retry.rs',
         'pkg/server/grpc_scatter.rs', 'pkg/server/grpc_scatter_test.rs', 'pkg/server/grpc_scatter_scenarios_test.rs', 'pkg/runtime/schedule_scatter.rs', 'pkg/runtime/grpc_scatter_fault_test.rs', 'pkg/runtime/schedule_worker.rs', 'pkg/runtime/grpc_scatter_differential_test.rs',
         'pkg/server/grpc_region_query.rs', 'pkg/server/grpc_region_query_test.rs', 'pkg/server/grpc_region_query_scenarios_test.rs', 'pkg/runtime/grpc_region_query_differential_test.rs',
@@ -139,6 +140,9 @@ def main():
             if case == 'region-lookup':
                 command = ['cargo', 'test', '--locked', '-p', 'astersql-pd-runtime', '--lib',
                            'readonly_region_lookup_differential', '--', '--ignored']
+            if case == 'split-scatter':
+                command = ['cargo', 'test', '--locked', '-p', 'astersql-pd-runtime', '--lib',
+                           'readonly_split_scatter_differential', '--', '--ignored']
             if case == 'split-regions':
                 command = ['cargo', 'test', '--locked', '-p', 'astersql-pd-runtime', '--lib',
                            'readonly_split_regions_differential', '--', '--ignored']

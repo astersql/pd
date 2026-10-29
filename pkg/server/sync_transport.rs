@@ -282,6 +282,13 @@ impl astersql_pd_syncer::DownstreamSender for WireSender {
 pub(crate) struct SyncGrpc(pub Grpc);
 #[tonic::async_trait]
 impl Pd for SyncGrpc {
+    async fn split_and_scatter_regions(
+        &self,
+        r: Request<pdpb::SplitAndScatterRegionsRequest>,
+    ) -> Result<Response<pdpb::SplitAndScatterRegionsResponse>, Status> {
+        self.0.split_and_scatter_regions(r).await
+    }
+
     async fn split_regions(
         &self,
         r: Request<pdpb::SplitRegionsRequest>,

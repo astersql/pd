@@ -12,6 +12,7 @@ mod grpc_region_scan;
 mod grpc_report_split;
 pub mod grpc_scatter;
 pub mod grpc_split_regions;
+mod grpc_split_scatter;
 pub mod grpc_store;
 mod http;
 mod request_role;
@@ -417,3 +418,8 @@ mod grpc_split_regions_test;
 
 #[cfg(test)]
 pub(crate) mod grpc_split_regions_scenarios_test;
+
+#[cfg(test)]
+pub(crate) mod grpc_split_scatter_scenarios_test;
+#[cfg(test)]
+mod grpc_split_scatter_test;
