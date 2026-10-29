@@ -126,3 +126,9 @@ mod grpc_external_ts_differential_test;
 
 #[cfg(test)]
 mod grpc_external_ts_fault_test;
+
+#[cfg(test)]
+mod grpc_tso_clock_test;
+#[cfg(test)]
+mod grpc_tso_differential_test;
+mod tso;

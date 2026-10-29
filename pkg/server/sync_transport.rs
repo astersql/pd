@@ -526,6 +526,13 @@ impl Pd for SyncGrpc {
     ) -> Result<Response<pdpb::AllocIdResponse>, Status> {
         self.0.alloc_id(r).await
     }
+    async fn get_min_ts(
+        &self,
+        request: Request<pdpb::GetMinTsRequest>,
+    ) -> Result<Response<pdpb::GetMinTsResponse>, Status> {
+        self.0.get_min_ts(request).await
+    }
+
     async fn tso(
         &self,
         r: Request<tonic::Streaming<pdpb::TsoRequest>>,

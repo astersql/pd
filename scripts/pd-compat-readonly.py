@@ -46,9 +46,9 @@ def binary(name):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--mode', choices=['go', 'rust', 'dual'], default=os.environ.get('PD_COMPAT_MODE', 'dual'))
-    parser.add_argument('--case', choices=['health-member', 'tso', 'cluster-host', 'cluster-restore', 'member-role', 'bucket-heartbeat', 'sync-regions', 'store-state', 'store-stats', 'store-config', 'cluster-metrics', 'resolved-ts', 'schedule-coordinator', 'request-role', 'members', 'bootstrap', 'alloc-id', 'store-registration', 'region-lookup', 'region-scan', 'region-query', 'ask-split', 'report-split', 'cluster-config', 'scatter', 'split-regions', 'split-scatter', 'global-config', 'global-watch', 'report-min-resolved-ts', 'external-timestamp'], action='append')
+    parser.add_argument('--case', choices=['health-member', 'tso', 'cluster-host', 'cluster-restore', 'member-role', 'bucket-heartbeat', 'sync-regions', 'store-state', 'store-stats', 'store-config', 'cluster-metrics', 'resolved-ts', 'schedule-coordinator', 'request-role', 'members', 'bootstrap', 'alloc-id', 'store-registration', 'region-lookup', 'region-scan', 'region-query', 'ask-split', 'report-split', 'cluster-config', 'scatter', 'split-regions', 'split-scatter', 'global-config', 'global-watch', 'report-min-resolved-ts', 'external-timestamp', 'classic-tso'], action='append')
     args = parser.parse_args()
-    if any(case in (args.case or []) for case in ['cluster-host', 'cluster-restore', 'member-role', 'bucket-heartbeat', 'sync-regions', 'store-state', 'store-stats', 'store-config', 'cluster-metrics', 'resolved-ts', 'schedule-coordinator', 'request-role', 'members', 'bootstrap', 'alloc-id', 'store-registration', 'region-lookup', 'region-scan', 'region-query', 'ask-split', 'report-split', 'cluster-config', 'scatter', 'split-regions', 'split-scatter', 'global-config', 'global-watch', 'report-min-resolved-ts', 'external-timestamp']) and args.mode != 'dual':
+    if any(case in (args.case or []) for case in ['cluster-host', 'cluster-restore', 'member-role', 'bucket-heartbeat', 'sync-regions', 'store-state', 'store-stats', 'store-config', 'cluster-metrics', 'resolved-ts', 'schedule-coordinator', 'request-role', 'members', 'bootstrap', 'alloc-id', 'store-registration', 'region-lookup', 'region-scan', 'region-query', 'ask-split', 'report-split', 'cluster-config', 'scatter', 'split-regions', 'split-scatter', 'global-config', 'global-watch', 'report-min-resolved-ts', 'external-timestamp', 'classic-tso']) and args.mode != 'dual':
         raise ValueError('cluster-host, cluster-restore and member-role require dual mode')
     go = binary('PD_COMPAT_GO_BIN') if args.mode != 'rust' else None
     rust = binary('PD_COMPAT_RUST_BIN') if args.mode != 'go' else None
@@ -78,6 +78,7 @@ def main():
     record = target / f'compat-readonly-{time.time_ns()}.json'
     before = snapshot()
     sources = [ROOT / name for name in (
+        'pkg/server/grpc_tso.rs', 'pkg/server/grpc_tso_test.rs', 'pkg/server/grpc_tso_scenarios_test.rs', 'pkg/runtime/grpc_tso_differential_test.rs', 'pkg/runtime/grpc_tso_clock_test.rs', 'pkg/runtime/tso.rs',
         'pkg/server/grpc_external_ts.rs', 'pkg/server/grpc_external_ts_test.rs', 'pkg/server/grpc_external_ts_scenarios_test.rs', 'pkg/runtime/grpc_external_ts_differential_test.rs', 'pkg/runtime/grpc_external_ts_fault_test.rs',
         'pkg/server/grpc_resolved_ts.rs', 'pkg/server/grpc_resolved_ts_test.rs', 'pkg/server/grpc_resolved_ts_scenarios_test.rs', 'pkg/runtime/grpc_resolved_ts_differential_test.rs', 'pkg/runtime/cluster_host.rs',
         'pkg/server/grpc_global_watch.rs', 'pkg/server/grpc_global_watch_test.rs', 'pkg/server/grpc_global_watch_scenarios_test.rs', 'pkg/runtime/grpc_global_watch_differential_test.rs',
@@ -145,6 +146,9 @@ def main():
             if case == 'region-lookup':
                 command = ['cargo', 'test', '--locked', '-p', 'astersql-pd-runtime', '--lib',
                            'readonly_region_lookup_differential', '--', '--ignored']
+            if case == 'classic-tso':
+                command = ['cargo', 'test', '--locked', '-p', 'astersql-pd-runtime', '--lib',
+                           'readonly_classic_tso_differential', '--', '--ignored']
             if case == 'external-timestamp':
                 command = ['cargo', 'test', '--locked', '-p', 'astersql-pd-runtime', '--lib',
                            'readonly_external_timestamp_differential', '--', '--ignored']

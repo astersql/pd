@@ -175,7 +175,7 @@ impl PdServices for Application {
     }
     async fn timestamp(&self, count: u32) -> Result<Timestamp, String> {
         self.requests.inc();
-        self.oracle.allocate(count).await.map_err(|e| e.to_string())
+        crate::tso::allocate(&self.oracle, &self.leader, count).await
     }
 }
 /// Starts services on the host's executor without installing process-global state.

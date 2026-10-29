@@ -2,7 +2,7 @@
 
 批次：【批次 36】依赖批次 35（含此前传递依赖）
 
-状态：未开始
+状态：已完成，待回归
 
 目的：classic模式Tso/GetMinTS使用同一Oracle，流背压、count、逻辑溢出及失去领导权返回Go语义；MCS转发只记录主题8依赖。
 
@@ -79,3 +79,14 @@
 ## 完成
 
 该行为及本任务全部来源行获得当前证据才标记已完成；不得把扩大范围作为修改Go或绕过验证的授权。只能在本任务文件记阻塞；因无关环境无法验证可标记已完成，待回归并保留文件，但缺失领域能力或必要兼容证据须保持已阻塞。提交规则与删除规则见对应prompt；不修改plan.md或来源史诗。
+
+
+## 本次实施与待回归记录（2026-10-29）
+
+实现、独立失败/通过测试和证据见 `docs/rust/server-api/task-036.md`。GetMinTS 与 Tso 共用 Oracle，补齐 count/leader 错误、逻辑窗口续期、流取消与旧 dc_location 兼容。已通过：task_036_ 聚焦1项、runtime真实时钟/事务/背压1项、server包级148项、真实双节点Go差分1项、fmt/metadata/server check/workspace check。初始 GetMinTS 行为断言失败退出101，最终各专项退出0。
+
+未完成的全局回归：`cargo test --workspace --locked -- --test-threads=1` 在350项通过后，2项既有 election 测试因 fixture文件被删除而失败（101）；单独重建 election 又因 liblog rmeta 被删除而编译失败（101，0测试）。确认非本任务的 `rm -rf ./target` 持续清理共享缓存及锁目录；再次重建已主动中止（runner 130）。没有修改Go、模块、plan.md或其他任务内容。
+
+所有阶段动态领取槽位1，`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。自己的构建/fixture进程和锁已清理；未删除缓存，但缓存及此前监督报告原JSON被外部清理移除，已有原始命令日志保存在压缩证据。按用户允许的无关环境异常规则保留本任务待回归。
+
+待共享缓存清理结束：重新原子领取1–10中首个空闲槽位，记录owner并设置绝对CARGO_TARGET_DIR；运行 `cargo build --locked -p astersql-pd-cmd-pd-server --bin pd-server`，用已有Go二进制运行只读入口 `--case classic-tso` 并归档新监督报告；再运行 `cargo test --workspace --locked -- --test-threads=1` 及最终Go只读守卫。通过后更新证据并删除本任务文件。

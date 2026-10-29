@@ -111,8 +111,9 @@ async fn task_018_behavior() {
                 .unwrap()
                 .into_inner();
             // TSO separately validates identity before asking its lease-backed allocator.
+            // Classic GenerateTSO failures are Unknown (verified against Go).
             let tso_expected = if request_header == header {
-                tonic::Code::Unavailable
+                tonic::Code::Unknown
             } else {
                 tonic::Code::FailedPrecondition
             };

@@ -204,7 +204,10 @@ impl PdServices for RoleServices {
         self.active().await?.alloc_ids(count).await
     }
     async fn timestamp(&self, count: u32) -> Result<astersql_pd_tso::Timestamp, String> {
-        self.active().await?.timestamp(count).await
+        self.current()
+            .ok_or_else(|| crate::tso::generation_error("requested pd is not leader of cluster"))?
+            .timestamp(count)
+            .await
     }
 }
 #[async_trait::async_trait]

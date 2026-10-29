@@ -51,7 +51,7 @@ async fn validation_and_open_stream_shutdown() {
     assert_eq!((batch.id, batch.count), (2, 2));
     for (count, dc, code) in [
         (0, "", tonic::Code::Unknown),
-        (1, "dc-1", tonic::Code::Unimplemented),
+        (u32::MAX, "", tonic::Code::Unknown),
     ] {
         let mut stream = client
             .tso(tokio_stream::iter([pdpb::TsoRequest {
@@ -88,7 +88,8 @@ async fn validation_and_open_stream_shutdown() {
             .get_metric()[0]
             .get_counter()
             .get_value(),
-        2.0
+        // Both invalid counts now reach the leader-fenced domain allocator.
+        4.0
     );
     tokio::time::timeout(Duration::from_secs(5), node.shutdown())
         .await

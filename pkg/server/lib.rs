@@ -18,6 +18,7 @@ pub mod grpc_scatter;
 pub mod grpc_split_regions;
 mod grpc_split_scatter;
 pub mod grpc_store;
+mod grpc_tso;
 mod http;
 mod request_role;
 use astersql_pd_tso::Timestamp;
@@ -456,3 +457,8 @@ mod grpc_resolved_ts_test;
 
 #[cfg(test)]
 mod grpc_external_ts_test;
+
+#[cfg(test)]
+mod grpc_tso_scenarios_test;
+#[cfg(test)]
+mod grpc_tso_test;

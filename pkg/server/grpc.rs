@@ -611,6 +611,13 @@ impl Pd for Grpc {
         crate::grpc_alloc_id::handle(self.services.as_ref(), &self.cancel, req).await
     }
 
+    async fn get_min_ts(
+        &self,
+        request: Request<pdpb::GetMinTsRequest>,
+    ) -> Result<Response<pdpb::GetMinTsResponse>, Status> {
+        self.get_min_ts_request(request.into_inner()).await
+    }
+
     async fn tso(
         &self,
         req: Request<tonic::Streaming<pdpb::TsoRequest>>,
@@ -642,29 +649,24 @@ impl Pd for Grpc {
                                 services.identity().cluster_id,
                                 req.header.as_ref().map(|h| h.cluster_id).unwrap_or(0)
                             )))
-                        } else if !req.dc_location.is_empty() && req.dc_location != "global" {
-                            Err(Status::unimplemented("local TSO is unsupported"))
-                        } else if req.count == 0 || req.count >= astersql_pd_tso::MAX_LOGICAL {
-                            Err(Status::unknown(
-                                "[PD:tso:ErrGenerateTimestamp]generate timestamp failed, tso count should be positive",
-                            ))
                         } else {
-                            services
-                                .timestamp(req.count)
-                                .await
-                                .map(|ts| pdpb::TsoResponse {
-                                    header: Some(pdpb::ResponseHeader {
-                                        cluster_id: services.identity().cluster_id,
-                                        ..Default::default()
-                                    }),
-                                    count: req.count,
-                                    timestamp: Some(pdpb::Timestamp {
-                                        physical: ts.physical as i64,
-                                        logical: ts.logical as i64,
-                                        suffix_bits: 0,
-                                    }),
-                                })
-                                .map_err(Status::unavailable)
+                            tokio::select! { biased;
+                                _ = cancel.cancelled() => return None,
+                                result = services.timestamp(req.count) => result,
+                            }
+                            .map(|ts| pdpb::TsoResponse {
+                                header: Some(pdpb::ResponseHeader {
+                                    cluster_id: services.identity().cluster_id,
+                                    ..Default::default()
+                                }),
+                                count: req.count,
+                                timestamp: Some(pdpb::Timestamp {
+                                    physical: ts.physical as i64,
+                                    logical: ts.logical as i64,
+                                    suffix_bits: 0,
+                                }),
+                            })
+                            .map_err(Status::unknown)
                         }
                     }
                     Ok(None) => return None,
