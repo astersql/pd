@@ -75,6 +75,9 @@ impl PdServices for RoleServices {
         .map(|meta| meta.is_some())
         .map_err(|error| error.to_string())
     }
+    fn discovery_store(&self) -> Option<Arc<dyn MetaStore>> {
+        self.store.upgrade()
+    }
     async fn healthy(&self) -> Result<(), String> {
         self.active().await.map(|_| ())
     }

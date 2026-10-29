@@ -1,6 +1,7 @@
 // Copyright 2026 AsterSQL.
 //! HTTP and gRPC adapters for the minimal classic PD role.
 mod grpc;
+mod grpc_members;
 mod http;
 mod request_role;
 use astersql_pd_tso::Timestamp;
@@ -8,7 +9,7 @@ use async_trait::async_trait;
 use std::sync::Arc;
 use tokio_util::sync::CancellationToken;
 
-/// Adapter-independent single-node identity. Multi-member forwarding is not yet supported.
+/// Adapter-independent local identity. Discovery reads the shared member registry.
 #[derive(Clone)]
 pub struct Identity {
     pub cluster_id: u64,
@@ -55,6 +56,10 @@ pub trait PdServices: Send + Sync {
     /// Implementations must read canonical state, rather than infer it from requests.
     async fn is_bootstrapped(&self) -> Result<bool, String> {
         Ok(true)
+    }
+    /// Shared canonical discovery metadata, independent of the local leader term.
+    fn discovery_store(&self) -> Option<Arc<dyn astersql_pd_storage::MetaStore>> {
+        None
     }
     async fn healthy(&self) -> Result<(), String>;
     async fn alloc_id(&self) -> Result<u64, String>;
@@ -224,3 +229,7 @@ mod request_role_test;
 #[allow(dead_code)]
 #[path = "../storage/kv/etcd_fixture_test.rs"]
 mod etcd_fixture;
+
+#[cfg(test)]
+#[path = "grpc_members_test.rs"]
+mod grpc_members_test;

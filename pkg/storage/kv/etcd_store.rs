@@ -104,6 +104,12 @@ fn prefix_end(prefix: &[u8]) -> Vec<u8> {
 }
 #[async_trait]
 impl MetaStore for EtcdMetaStore {
+    async fn consensus_leader_id(&self) -> Result<Option<u64>> {
+        let mut client = self.client.clone();
+        let status = self.bounded(client.status()).await?;
+        Ok((status.leader() != 0).then_some(status.leader()))
+    }
+
     async fn read(&self, r: Read) -> Result<Snapshot> {
         r.validate()?;
         let start = r

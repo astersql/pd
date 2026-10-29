@@ -22,6 +22,7 @@ astersql-pd-statistics.workspace = true
 astersql-pd-statistics-buckets.workspace = true
 astersql-pd-proto.workspace = true
 astersql-pd-tso.workspace = true
+prost.workspace = true
 async-trait.workspace = true
 axum.workspace = true
 tonic.workspace = true
@@ -46,7 +47,6 @@ astersql-pd-schedule-config.workspace = true
 astersql-pd-schedule-placement.workspace = true
 astersql-pd-storage-endpoint.workspace = true
 astersql-pd-statistics-utils.workspace = true
-prost.workspace = true
 astersql-pd-storage-kv.workspace = true
 astersql-pd-runtime.workspace = true
 

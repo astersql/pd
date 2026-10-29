@@ -33,15 +33,6 @@ impl Grpc {
         crate::request_role::validate(self.services.as_ref(), &self.cancel, header).await
     }
 }
-pub(crate) fn member(id: &Identity) -> pdpb::Member {
-    pdpb::Member {
-        member_id: id.member_id,
-        name: id.name.clone(),
-        client_urls: vec![id.client_url.clone()],
-        peer_urls: vec![id.peer_url.clone()],
-        ..Default::default()
-    }
-}
 #[tonic::async_trait]
 impl Pd for Grpc {
     async fn get_store(
@@ -462,15 +453,24 @@ impl Pd for Grpc {
         &self,
         _: Request<pdpb::GetMembersRequest>,
     ) -> Result<Response<pdpb::GetMembersResponse>, Status> {
-        self.services.healthy().await.map_err(Status::unavailable)?;
-        let member = member(self.services.identity());
-        Ok(Response::new(pdpb::GetMembersResponse {
+        crate::grpc_members::members(self.services.as_ref(), &self.cancel)
+            .await
+            .map(Response::new)
+    }
+    async fn get_cluster_info(
+        &self,
+        _: Request<pdpb::GetClusterInfoRequest>,
+    ) -> Result<Response<pdpb::GetClusterInfoResponse>, Status> {
+        if self.cancel.is_cancelled() {
+            return Err(Status::unavailable("server not started"));
+        }
+        Ok(Response::new(pdpb::GetClusterInfoResponse {
             header: self.header(),
-            members: vec![member.clone()],
-            leader: Some(member),
-            ..Default::default()
+            service_modes: vec![pdpb::ServiceMode::PdSvcMode as i32],
+            tso_urls: vec![],
         }))
     }
+
     async fn alloc_id(
         &self,
         req: Request<pdpb::AllocIdRequest>,

@@ -350,6 +350,12 @@ impl Pd for SyncGrpc {
     ) -> Result<Response<pdpb::StoreHeartbeatResponse>, Status> {
         self.0.store_heartbeat(r).await
     }
+    async fn get_cluster_info(
+        &self,
+        r: Request<pdpb::GetClusterInfoRequest>,
+    ) -> Result<Response<pdpb::GetClusterInfoResponse>, Status> {
+        self.0.get_cluster_info(r).await
+    }
     async fn get_members(
         &self,
         r: Request<pdpb::GetMembersRequest>,

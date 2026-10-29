@@ -217,6 +217,12 @@ pub trait MetaWatch: Send {
 /// Lease-attached create-if-absent plus Value/Lease comparisons fences leadership.
 #[async_trait]
 pub trait MetaStore: Send + Sync {
+    /// Current consensus leader identity, when exposed by this backend.
+    /// The ID is backend-local and must never be assumed to identify a PD node.
+    async fn consensus_leader_id(&self) -> Result<Option<u64>> {
+        Ok(None)
+    }
+
     async fn read(&self, request: Read) -> Result<Snapshot>;
     async fn transact(&self, compares: Vec<Compare>, writes: Vec<Mutation>) -> Result<Commit>;
     /// Evaluate comparisons and commit exactly one write branch atomically.
