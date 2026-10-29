@@ -45,3 +45,6 @@ mod grpc_members_differential_test;
 
 #[cfg(test)]
 mod grpc_bootstrap_differential_test;
+
+#[cfg(test)]
+mod grpc_alloc_id_differential_test;

@@ -492,22 +492,9 @@ impl Pd for Grpc {
         &self,
         req: Request<pdpb::AllocIdRequest>,
     ) -> Result<Response<pdpb::AllocIdResponse>, Status> {
-        let req = req.into_inner();
-        self.check(req.header.as_ref()).await?;
-        if req.count > 1 {
-            return Err(Status::unimplemented("batch ID allocation is unsupported"));
-        }
-        let id = self
-            .services
-            .alloc_id()
-            .await
-            .map_err(Status::unavailable)?;
-        Ok(Response::new(pdpb::AllocIdResponse {
-            header: self.header(),
-            id,
-            ..Default::default()
-        }))
+        crate::grpc_alloc_id::handle(self.services.as_ref(), &self.cancel, req).await
     }
+
     async fn tso(
         &self,
         req: Request<tonic::Streaming<pdpb::TsoRequest>>,

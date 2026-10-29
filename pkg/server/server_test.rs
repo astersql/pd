@@ -40,17 +40,15 @@ async fn validation_and_open_stream_shutdown() {
         .await
         .unwrap_err();
     assert_eq!(error.code(), tonic::Code::FailedPrecondition);
-    assert_eq!(
-        client
-            .alloc_id(pdpb::AllocIdRequest {
-                header: header.clone(),
-                count: 2
-            })
-            .await
-            .unwrap_err()
-            .code(),
-        tonic::Code::Unimplemented
-    );
+    let batch = client
+        .alloc_id(pdpb::AllocIdRequest {
+            header: header.clone(),
+            count: 2,
+        })
+        .await
+        .unwrap()
+        .into_inner();
+    assert_eq!((batch.id, batch.count), (2, 2));
     for (count, dc, code) in [
         (0, "", tonic::Code::Unknown),
         (1, "dc-1", tonic::Code::Unimplemented),
@@ -90,7 +88,7 @@ async fn validation_and_open_stream_shutdown() {
             .get_metric()[0]
             .get_counter()
             .get_value(),
-        1.0
+        2.0
     );
     tokio::time::timeout(Duration::from_secs(5), node.shutdown())
         .await

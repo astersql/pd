@@ -97,6 +97,9 @@ impl PdServices for RoleServices {
     async fn alloc_id(&self) -> Result<u64, String> {
         self.active().await?.alloc_id().await
     }
+    async fn alloc_ids(&self, count: u32) -> Result<(u64, u32), String> {
+        self.active().await?.alloc_ids(count).await
+    }
     async fn timestamp(&self, count: u32) -> Result<astersql_pd_tso::Timestamp, String> {
         self.active().await?.timestamp(count).await
     }

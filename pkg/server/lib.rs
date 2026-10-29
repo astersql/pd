@@ -1,6 +1,7 @@
 // Copyright 2026 AsterSQL.
 //! HTTP and gRPC adapters for the minimal classic PD role.
 mod grpc;
+mod grpc_alloc_id;
 mod grpc_bootstrap;
 mod grpc_members;
 mod http;
@@ -72,6 +73,13 @@ pub trait PdServices: Send + Sync {
     }
     async fn healthy(&self) -> Result<(), String>;
     async fn alloc_id(&self) -> Result<u64, String>;
+    /// Reserve one indivisible batch and return its last ID and count.
+    async fn alloc_ids(&self, count: u32) -> Result<(u64, u32), String> {
+        if count != 1 {
+            return Err("batch ID allocation is not configured".into());
+        }
+        self.alloc_id().await.map(|id| (id, 1))
+    }
     async fn timestamp(&self, count: u32) -> Result<Timestamp, String>;
 }
 /// Host-owned metadata lookup; protocol conversion remains in the server adapter.
@@ -246,3 +254,7 @@ mod grpc_members_test;
 #[cfg(test)]
 #[path = "grpc_bootstrap_test.rs"]
 mod grpc_bootstrap_test;
+
+#[cfg(test)]
+#[path = "grpc_alloc_id_test.rs"]
+mod grpc_alloc_id_test;

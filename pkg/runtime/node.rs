@@ -107,6 +107,18 @@ impl PdServices for Application {
         self.requests.inc();
         self.allocator.alloc().await.map_err(|e| e.to_string())
     }
+    async fn alloc_ids(&self, count: u32) -> Result<(u64, u32), String> {
+        self.requests.inc();
+        self.allocator
+            .alloc_count(count)
+            .await
+            .map_err(|error| match error {
+                astersql_pd_id::AllocatorError::Exhausted => {
+                    "[PD:idalloc:ErrIDExhausted]id exhausted".into()
+                }
+                other => other.to_string(),
+            })
+    }
     async fn timestamp(&self, count: u32) -> Result<Timestamp, String> {
         self.requests.inc();
         self.oracle.allocate(count).await.map_err(|e| e.to_string())
