@@ -174,6 +174,20 @@ impl RegionHeartbeatService for RoleServices {
 }
 #[async_trait::async_trait]
 impl ClusterReadService for RoleServices {
+    async fn query_regions(
+        &self,
+        keys: &[Vec<u8>],
+        prev_keys: &[Vec<u8>],
+        ids: &[u64],
+        need_buckets: bool,
+    ) -> Result<Option<astersql_pd_core::RegionQueryResult>, String> {
+        self.active()
+            .await?
+            .cluster
+            .query_regions(keys, prev_keys, ids, need_buckets)
+            .await
+    }
+
     async fn batch_scan_regions(
         &self,
         ranges: &[astersql_pd_core::KeyRange],
@@ -453,6 +467,27 @@ impl astersql_pd_server::bucket_heartbeat_adapter::BucketHeartbeatService for Ro
 struct FollowerRead(Arc<tokio::sync::Mutex<astersql_pd_server::sync_transport::SyncFollowerState>>);
 #[async_trait::async_trait]
 impl ClusterReadService for FollowerRead {
+    async fn query_regions(
+        &self,
+        keys: &[Vec<u8>],
+        prev_keys: &[Vec<u8>],
+        ids: &[u64],
+        _need_buckets: bool,
+    ) -> Result<Option<astersql_pd_core::RegionQueryResult>, String> {
+        let state = self.0.lock().await;
+        if !state.apply.is_running() {
+            return Ok(None);
+        }
+        let keys: Vec<_> = keys.iter().map(Vec::as_slice).collect();
+        let prev_keys: Vec<_> = prev_keys.iter().map(Vec::as_slice).collect();
+        Ok(Some(
+            state
+                .cluster
+                .regions
+                .query_regions(&keys, &prev_keys, ids, false),
+        ))
+    }
+
     async fn batch_scan_regions(
         &self,
         ranges: &[astersql_pd_core::KeyRange],

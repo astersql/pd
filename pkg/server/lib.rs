@@ -5,6 +5,7 @@ mod grpc_alloc_id;
 mod grpc_bootstrap;
 mod grpc_members;
 mod grpc_region_lookup;
+mod grpc_region_query;
 mod grpc_region_scan;
 pub mod grpc_store;
 mod http;
@@ -109,6 +110,17 @@ pub trait PdServices: Send + Sync {
 /// Host-owned metadata lookup; protocol conversion remains in the server adapter.
 #[async_trait]
 pub trait ClusterReadService: Send + Sync {
+    /// None means the follower synchronization worker is not running.
+    async fn query_regions(
+        &self,
+        _keys: &[Vec<u8>],
+        _prev_keys: &[Vec<u8>],
+        _ids: &[u64],
+        _need_buckets: bool,
+    ) -> Result<Option<astersql_pd_core::RegionQueryResult>, String> {
+        Err("region queries are not configured".into())
+    }
+
     async fn batch_scan_regions(
         &self,
         _ranges: &[astersql_pd_core::KeyRange],
@@ -331,3 +343,8 @@ mod grpc_region_scan_test;
 #[cfg(test)]
 #[path = "grpc_region_scan_scenarios_test.rs"]
 mod grpc_region_scan_scenarios_test;
+
+#[cfg(test)]
+mod grpc_region_query_scenarios_test;
+#[cfg(test)]
+mod grpc_region_query_test;

@@ -847,6 +847,28 @@ impl Resources {
 
 #[async_trait::async_trait]
 impl astersql_pd_server::ClusterReadService for ClusterHost {
+    async fn query_regions(
+        &self,
+        keys: &[Vec<u8>],
+        prev_keys: &[Vec<u8>],
+        ids: &[u64],
+        need_buckets: bool,
+    ) -> Result<Option<astersql_pd_core::RegionQueryResult>, String> {
+        let guard = self.resources.lock().await;
+        if self.cancel.is_cancelled() {
+            return Err("node stopped".into());
+        }
+        let state = guard.as_ref().ok_or("node stopped")?.state.lock().unwrap();
+        let keys: Vec<_> = keys.iter().map(Vec::as_slice).collect();
+        let prev_keys: Vec<_> = prev_keys.iter().map(Vec::as_slice).collect();
+        Ok(Some(state.cluster.regions.query_regions(
+            &keys,
+            &prev_keys,
+            ids,
+            need_buckets,
+        )))
+    }
+
     async fn batch_scan_regions(
         &self,
         ranges: &[astersql_pd_core::KeyRange],

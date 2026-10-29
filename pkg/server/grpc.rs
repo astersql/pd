@@ -121,6 +121,12 @@ impl Pd for Grpc {
     ) -> Result<Response<pdpb::GetRegionResponse>, Status> {
         self.region_request(request, true).await.map(Response::new)
     }
+    async fn query_region(
+        &self,
+        r: Request<tonic::Streaming<pdpb::QueryRegionRequest>>,
+    ) -> Result<Response<crate::grpc_region_query::QueryStream>, Status> {
+        Ok(self.query_stream(r))
+    }
     async fn scan_regions(
         &self,
         r: Request<pdpb::ScanRegionsRequest>,
