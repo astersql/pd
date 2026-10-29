@@ -416,6 +416,18 @@ impl Pd for SyncGrpc {
     ) -> Result<Response<pdpb::GetMembersResponse>, Status> {
         self.0.get_members(r).await
     }
+    async fn report_split(
+        &self,
+        r: Request<pdpb::ReportSplitRequest>,
+    ) -> Result<Response<pdpb::ReportSplitResponse>, Status> {
+        self.0.report_split(r).await
+    }
+    async fn report_batch_split(
+        &self,
+        r: Request<pdpb::ReportBatchSplitRequest>,
+    ) -> Result<Response<pdpb::ReportBatchSplitResponse>, Status> {
+        self.0.report_batch_split(r).await
+    }
     async fn ask_split(
         &self,
         r: Request<pdpb::AskSplitRequest>,

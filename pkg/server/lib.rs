@@ -8,6 +8,7 @@ mod grpc_members;
 mod grpc_region_lookup;
 mod grpc_region_query;
 mod grpc_region_scan;
+mod grpc_report_split;
 pub mod grpc_store;
 mod http;
 mod request_role;
@@ -372,3 +373,7 @@ mod grpc_ask_split_scenarios_test;
 #[cfg(test)]
 #[path = "grpc_ask_split_test.rs"]
 mod grpc_ask_split_test;
+
+#[cfg(test)]
+#[path = "grpc_report_split_test.rs"]
+mod grpc_report_split_test;

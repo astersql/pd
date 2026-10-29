@@ -86,3 +86,7 @@ mod grpc_ask_split_differential_test;
 
 #[cfg(test)]
 mod grpc_ask_split_fault_test;
+
+#[cfg(test)]
+#[path = "grpc_report_split_differential_test.rs"]
+mod grpc_report_split_differential_test;

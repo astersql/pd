@@ -487,6 +487,31 @@ impl Pd for Grpc {
         }))
     }
 
+    async fn report_split(
+        &self,
+        r: Request<pdpb::ReportSplitRequest>,
+    ) -> Result<Response<pdpb::ReportSplitResponse>, Status> {
+        let r = r.into_inner();
+        Ok(Response::new(pdpb::ReportSplitResponse {
+            header: self
+                .report_split_header(r.header.as_ref(), &[r.left, r.right])
+                .await?,
+        }))
+    }
+    async fn report_batch_split(
+        &self,
+        r: Request<pdpb::ReportBatchSplitRequest>,
+    ) -> Result<Response<pdpb::ReportBatchSplitResponse>, Status> {
+        let r = r.into_inner();
+        Ok(Response::new(pdpb::ReportBatchSplitResponse {
+            header: self
+                .report_split_header(
+                    r.header.as_ref(),
+                    &r.regions.into_iter().map(Some).collect::<Vec<_>>(),
+                )
+                .await?,
+        }))
+    }
     async fn ask_split(
         &self,
         r: Request<pdpb::AskSplitRequest>,
