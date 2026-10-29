@@ -93,3 +93,9 @@ mod grpc_report_split_differential_test;
 
 #[cfg(test)]
 mod grpc_cluster_config_differential_test;
+
+#[cfg(test)]
+mod grpc_scatter_differential_test;
+
+#[cfg(test)]
+mod grpc_scatter_fault_test;

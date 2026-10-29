@@ -35,6 +35,7 @@ pub(super) struct ScheduleWorker {
 impl ScheduleWorker {
     pub(super) fn start(
         resources: Arc<AsyncMutex<Option<Resources>>>,
+        requests: tokio::sync::mpsc::Receiver<super::schedule_scatter::Command>,
         cluster: BasicCluster,
         configuration: serde_json::Value,
         cancel: CancellationToken,
@@ -62,6 +63,7 @@ impl ScheduleWorker {
             executor.block_on(local.run_until(async move {
                 let result = run(
                     resources,
+                    requests,
                     Arc::new(cluster),
                     configuration,
                     worker_routing,
@@ -88,6 +90,7 @@ impl ScheduleWorker {
 }
 async fn run(
     resources: Arc<AsyncMutex<Option<Resources>>>,
+    mut requests: tokio::sync::mpsc::Receiver<super::schedule_scatter::Command>,
     cluster: Arc<BasicCluster>,
     configuration: serde_json::Value,
     routing: RoutingHandle,
@@ -137,11 +140,15 @@ async fn run(
     let ranges = astersql_pd_schedule_keyrange::Manager::new();
     let mut ids = std::collections::VecDeque::new();
     let mut hot = astersql_pd_schedule_schedulers::HotLoadProjection::default();
+    let mut push_queue = Default::default();
+    let mut fast_operators = Default::default();
     let result = async {
         status.send_modify(|s| s.phase = SchedulePhase::Preparing);
         while !coordinator.should_run(start.elapsed()) {
             tokio::select! {biased;
                 _=cancel.cancelled()=>return Ok(()),
+                command=requests.recv()=>{if let Some(command)=command {super::schedule_scatter::serve(command,&mut coordinator,&resources,&labels,&cancel).await;
+                    super::schedule_scatter::dispatch_new(&coordinator,&resources,&routing,&mut push_queue,&mut fast_operators,&cancel).await?;}},
                 _=tokio::time::sleep(Duration::from_secs(3))=>{}
             }
         }
@@ -178,12 +185,12 @@ async fn run(
         status.send_modify(|s| s.phase = SchedulePhase::Running);
         let mut last_push = tokio::time::Instant::now();
         let mut last_slow = tokio::time::Instant::now();
-        let mut push_queue = Default::default();
-        let mut fast_operators = Default::default();
         loop {
             tokio::select! {biased;
                 _=cancel.cancelled()=>break,
-                _=ticker.tick()=>{}
+                _=ticker.tick()=>{},
+                command=requests.recv()=>{if let Some(command)=command {super::schedule_scatter::serve(command,&mut coordinator,&resources,&labels,&cancel).await;
+                    super::schedule_scatter::dispatch_new(&coordinator,&resources,&routing,&mut push_queue,&mut fast_operators,&cancel).await?;} continue;},
             }
             let mut guard = resources.lock().await;
             let Some(r) = guard.as_mut() else { break };

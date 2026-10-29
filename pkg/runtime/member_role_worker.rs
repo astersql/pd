@@ -131,6 +131,26 @@ impl PdServices for RoleServices {
     async fn stores(&self) -> Result<Vec<astersql_pd_core::StoreMeta>, String> {
         self.active().await?.cluster.registered_stores().await
     }
+    async fn scatter(
+        &self,
+        request: astersql_pd_server::grpc_scatter::ScatterRequest,
+    ) -> Result<
+        astersql_pd_server::grpc_scatter::ScatterResult,
+        astersql_pd_server::grpc_scatter::ScatterError,
+    > {
+        self.active()
+            .await
+            .map_err(astersql_pd_server::grpc_scatter::ScatterError::Other)?
+            .cluster
+            .scatter(request)
+            .await
+    }
+    async fn operator(
+        &self,
+        id: u64,
+    ) -> Result<Option<astersql_pd_server::grpc_scatter::OperatorResult>, String> {
+        self.active().await?.cluster.operator(id).await
+    }
     async fn healthy(&self) -> Result<(), String> {
         self.active().await.map(|_| ())
     }

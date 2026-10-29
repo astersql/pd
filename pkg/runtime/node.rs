@@ -106,6 +106,21 @@ impl PdServices for Application {
     async fn stores(&self) -> Result<Vec<astersql_pd_core::StoreMeta>, String> {
         self.cluster.registered_stores().await
     }
+    async fn scatter(
+        &self,
+        request: astersql_pd_server::grpc_scatter::ScatterRequest,
+    ) -> Result<
+        astersql_pd_server::grpc_scatter::ScatterResult,
+        astersql_pd_server::grpc_scatter::ScatterError,
+    > {
+        self.cluster.scatter(request).await
+    }
+    async fn operator(
+        &self,
+        id: u64,
+    ) -> Result<Option<astersql_pd_server::grpc_scatter::OperatorResult>, String> {
+        self.cluster.operator(id).await
+    }
     async fn healthy(&self) -> Result<(), String> {
         if self.cancel.is_cancelled() || self.leader.is_expired() {
             return Err("node stopped or leadership expired".into());

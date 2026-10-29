@@ -398,6 +398,18 @@ impl Pd for SyncGrpc {
     ) -> Result<Response<pdpb::GetClusterInfoResponse>, Status> {
         self.0.get_cluster_info(r).await
     }
+    async fn scatter_region(
+        &self,
+        r: Request<pdpb::ScatterRegionRequest>,
+    ) -> Result<Response<pdpb::ScatterRegionResponse>, Status> {
+        self.0.scatter_region(r).await
+    }
+    async fn get_operator(
+        &self,
+        r: Request<pdpb::GetOperatorRequest>,
+    ) -> Result<Response<pdpb::GetOperatorResponse>, Status> {
+        self.0.get_operator(r).await
+    }
     async fn get_cluster_config(
         &self,
         r: Request<pdpb::GetClusterConfigRequest>,

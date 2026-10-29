@@ -35,6 +35,18 @@ impl Grpc {
 }
 #[tonic::async_trait]
 impl Pd for Grpc {
+    async fn scatter_region(
+        &self,
+        r: Request<pdpb::ScatterRegionRequest>,
+    ) -> Result<Response<pdpb::ScatterRegionResponse>, Status> {
+        self.scatter_request(r.into_inner()).await
+    }
+    async fn get_operator(
+        &self,
+        r: Request<pdpb::GetOperatorRequest>,
+    ) -> Result<Response<pdpb::GetOperatorResponse>, Status> {
+        self.operator_request(r.into_inner()).await
+    }
     async fn get_cluster_config(
         &self,
         r: Request<pdpb::GetClusterConfigRequest>,

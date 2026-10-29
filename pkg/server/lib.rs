@@ -10,6 +10,7 @@ mod grpc_region_lookup;
 mod grpc_region_query;
 mod grpc_region_scan;
 mod grpc_report_split;
+pub mod grpc_scatter;
 pub mod grpc_store;
 mod http;
 mod request_role;
@@ -102,6 +103,17 @@ pub trait PdServices: Send + Sync {
     /// List metadata from the same view used by heartbeats and GetStore.
     async fn stores(&self) -> Result<Vec<astersql_pd_core::StoreMeta>, String> {
         Err("store listing is not configured".into())
+    }
+    async fn scatter(
+        &self,
+        _request: grpc_scatter::ScatterRequest,
+    ) -> Result<grpc_scatter::ScatterResult, grpc_scatter::ScatterError> {
+        Err(grpc_scatter::ScatterError::Other(
+            "scheduling is not configured".into(),
+        ))
+    }
+    async fn operator(&self, _id: u64) -> Result<Option<grpc_scatter::OperatorResult>, String> {
+        Err("scheduling is not configured".into())
     }
     async fn healthy(&self) -> Result<(), String>;
     async fn alloc_id(&self) -> Result<u64, String>;
@@ -385,3 +397,10 @@ mod grpc_report_split_test;
 
 #[cfg(test)]
 mod grpc_cluster_config_test;
+
+#[cfg(test)]
+#[path = "grpc_scatter_test.rs"]
+mod grpc_scatter_test;
+
+#[cfg(test)]
+mod grpc_scatter_scenarios_test;

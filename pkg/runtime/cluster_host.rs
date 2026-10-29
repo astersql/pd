@@ -23,6 +23,7 @@ type State = Mutex<HeartbeatEffectsState<ProviderSnapshot<()>>>;
 struct Resources {
     leader: Arc<astersql_pd_member::Leadership>,
     allocator: Arc<astersql_pd_id::Allocator>,
+    schedule_creations: std::collections::BTreeSet<u64>,
     schedule_observations: std::collections::BTreeSet<u64>,
     state: Arc<State>,
     hot: HotStat,
@@ -47,6 +48,7 @@ pub struct ClusterHost {
     stats_worker: AsyncMutex<Option<StoreStatsWorker>>,
     config_worker: AsyncMutex<Option<StoreConfigWorker>>,
     metrics_worker: AsyncMutex<Option<astersql_pd_cluster::ClusterMetricsWorker>>,
+    schedule_requests: tokio::sync::mpsc::Sender<schedule_scatter::Command>,
     schedule_status: tokio::sync::watch::Receiver<ScheduleStatus>,
     schedule_worker: AsyncMutex<Option<schedule_worker::ScheduleWorker>>,
     schedule_routing: astersql_pd_schedule_hbstream::routing::RoutingHandle,
@@ -111,7 +113,9 @@ impl ClusterHost {
                 .max(0) as u64,
         ));
         let mut rules = RuleManager::new(storage.clone(), paths);
-        if config.replication.enable_placement_rules {
+        {
+            // Scatter uses the canonical default voter rule even when placement rules
+            // are disabled, so the term must initialize the shared rule manager.
             let stores = cluster
                 .stores
                 .get_stores()
@@ -157,6 +161,7 @@ impl ClusterHost {
         let resources = Arc::new(AsyncMutex::new(Some(Resources {
             leader,
             allocator,
+            schedule_creations: Default::default(),
             schedule_observations: Default::default(),
             state: state.clone(),
             hot,
@@ -348,9 +353,11 @@ impl ClusterHost {
         );
         let schedule_error = Arc::new(Mutex::new(None));
         let schedule_initialized = Arc::new(std::sync::atomic::AtomicBool::new(false));
+        let (schedule_requests, schedule_rx) = tokio::sync::mpsc::channel(64);
         let (schedule_routing, schedule_worker, schedule_status) =
             schedule_worker::ScheduleWorker::start(
                 resources.clone(),
+                schedule_rx,
                 scheduling_cluster,
                 scheduling_configuration,
                 cancel.clone(),
@@ -360,6 +367,7 @@ impl ClusterHost {
             );
         Ok(Self {
             stores,
+            schedule_requests,
             schedule_status,
             schedule_worker: AsyncMutex::new(Some(schedule_worker)),
             schedule_routing,
@@ -982,3 +990,6 @@ pub use schedule_worker::{SchedulePhase, ScheduleStatus};
 
 #[path = "cluster_split.rs"]
 mod cluster_split;
+
+#[path = "schedule_scatter.rs"]
+mod schedule_scatter;
