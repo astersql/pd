@@ -21,6 +21,7 @@ pub mod grpc_store;
 mod grpc_tso;
 mod grpc_unsupported;
 mod http;
+pub mod http_contract;
 mod request_role;
 use astersql_pd_tso::Timestamp;
 use async_trait::async_trait;
@@ -469,3 +470,7 @@ mod grpc_unsupported_test;
 
 #[cfg(test)]
 mod grpc_unsupported_scenarios_test;
+
+#[cfg(test)]
+#[path = "http_contract_test.rs"]
+mod http_contract_test;

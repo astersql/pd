@@ -122,6 +122,8 @@ Go源码事实见逐行来源与条件；冻结输出：本次没有新增或确
 
 ## HTTP 全量注册行
 
+任务38公共适配证据见 [task-038](task-038.md)：JSON/map/null、十进制参数与query转义公共工具，既有health/members响应头及错误脱敏。45个Go JSON场景和5个非法ID验证状态/分类；Go反射字段及解析器诊断不逐字复制。测试专用解析入口不代表member写接口已实现；263条路由仍须各owner接线和验收。
+
 默认PD前缀 `/pd` 来自 [server/api/server.go](../../../server/api/server.go)；v1子路由条件：clusterRouter要求已bootstrap；regionReadRouter允许已同步follower；regionResetRouter允许follower重置；ruleRouter叠加placement-rule开关；escapeRouter/regionReadEscapeRouter保留encoded path。ANY表示源码未限制HTTP方法，不能擅自缩成GET。v2 [server/apiv2/router.go](../../../server/apiv2/router.go) 先注册本机探针，再装Redirector，Affinity最后叠加专用转发。
 
 调度器子路径逐注册源保留，动态name不能按文件名直接替换；[server/handler.go:314](../../../server/handler.go#L314) 负责从当前实例集合挂载。RM engine的 `/metrics`、`/status`、`/health` 和gin pprof虽然在独立MCS注册，但classic只挂 `/resource-manager/api/v1/`，这些root路径不因此暴露；独立MCS归主题8。Go plugin ABI不移植，owner78/102必须给出明确拒绝契约。

@@ -1,31 +1,28 @@
 // Copyright 2026 AsterSQL.
+use crate::http_contract::json_response;
 use crate::*;
-use axum::{Json, Router, extract::State, http::StatusCode, routing::get};
-use serde_json::{Value, json};
+use axum::{Router, extract::State, http::StatusCode, response::Response, routing::get};
+use serde_json::json;
 type Services = Arc<dyn PdServices>;
-async fn health(State(s): State<Services>) -> (StatusCode, Json<Value>) {
+async fn health(State(s): State<Services>) -> Response {
     let id = s.identity();
     match s.healthy().await {
-        Ok(()) => (
+        Ok(()) => json_response(
             StatusCode::OK,
-            Json(
-                json!([{ "name":id.name, "member_id":id.member_id, "client_urls":[id.client_url], "health":true }]),
-            ),
+            &json!([{ "name":id.name, "member_id":id.member_id, "client_urls":[id.client_url], "health":true }]),
         ),
-        Err(error) => (StatusCode::SERVICE_UNAVAILABLE, Json(json!(error))),
+        Err(_) => json_response(StatusCode::SERVICE_UNAVAILABLE, &"service unavailable"),
     }
 }
-async fn members(State(s): State<Services>) -> (StatusCode, Json<Value>) {
-    if let Err(error) = s.healthy().await {
-        return (StatusCode::SERVICE_UNAVAILABLE, Json(json!(error)));
+async fn members(State(s): State<Services>) -> Response {
+    if s.healthy().await.is_err() {
+        return json_response(StatusCode::SERVICE_UNAVAILABLE, &"service unavailable");
     }
     let id = s.identity();
     let member = json!({"name":id.name,"member_id":id.member_id,"peer_urls":[id.peer_url],"client_urls":[id.client_url]});
-    (
+    json_response(
         StatusCode::OK,
-        Json(
-            json!({"header":{"cluster_id":id.cluster_id},"members":[member.clone()],"leader":member}),
-        ),
+        &json!({"header":{"cluster_id":id.cluster_id},"members":[member.clone()],"leader":member}),
     )
 }
 pub fn router(services: Services) -> Router {
