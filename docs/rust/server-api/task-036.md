@@ -1,6 +1,6 @@
 # 任务036：classic TSO 流与最小时间戳
 
-状态：已完成，待回归。基准 `87cce7d5f6a038fe16087ea01e613959c91ceeef`；依赖任务35与任务1–4的清单、主题6领域准入和只读 oracle 入口已核对。协议固定 kvproto `f8ad079c8e9812ed5900b0c12b5f1d97171464c4`，默认 features，无依赖变更。
+状态：已完成。2026-10-30 已在最新共享工作区补齐回归，详见末节；以下首轮失败记录保留为历史。基准 `87cce7d5f6a038fe16087ea01e613959c91ceeef`；依赖任务35与任务1–4的清单、主题6领域准入和只读 oracle 入口已核对。协议固定 kvproto `f8ad079c8e9812ed5900b0c12b5f1d97171464c4`，默认 features，无依赖变更。
 
 ## 行为与来源
 
@@ -22,7 +22,7 @@
 
 初轮实现删除了 select 后多余的 await 后才编译通过。差分先修正 harness 对首响应头错误的处理，再由实际 Go 输出修正领导权错误中的“is”；新增 duplex 场景曾在等待 Go 响应头前未发送首请求，经监督入口 SIGTERM 清理（退出130），调整为先发送首请求后通过。包级回归还发现任务18的旧断言把 TSO follower 错误写成 Unavailable，现按真实 Go 证据更新为 Unknown。集成测试的域请求计数也从2更新为4：零count与超大count现在进入带领导权校验的分配器，随后正常请求和关闭行为验证通过。
 
-## 验证记录
+## 首轮验证记录（2026-10-29）
 
 所有阶段从槽位1–10依次原子 mkdir 动态领取，实际槽位1，`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。锁记录计划、任务、会话和持有 PID；全部 Cargo 和子进程继承此绝对路径，正常阶段结束释放自己的锁；本任务没有删除槽位缓存。末次全局回归期间外部进程删除了缓存及占用记录，详见下文。最终验证执行器同时设置 `PD_COMPAT_MODE=dual`、`PD_COMPAT_GO_BIN=$PWD/bin/pd-server`、`PD_COMPAT_RUST_BIN=$CARGO_TARGET_DIR/debug/pd-server`，工作区中读取这些变量的既有健康差分也使用真实二进制。完整命令、日志、退出码、Go首尾清单和监督报告归档于本任务压缩证据。
 
@@ -47,9 +47,33 @@ Go oracle 为既有 `bin/pd-server`，go1.26.8 构建，固定 kvproto 模块 `v
 
 `cargo check --workspace --locked` 退出0。`cargo test --workspace --locked -- --test-threads=1` 未通过：已执行350项通过、2项失败、1项忽略；失败均在既有 election watch_reset 测试启动 fixture 时发生 ENOENT，未到行为断言。单独重跑 `cargo test --locked -p astersql-pd-election --lib -- --test-threads=1` 又在编译阶段因刚生成的 liblog rmeta 不存在退出101（0行为测试）；此时观察到非本任务的 `rm -rf ./target` 进程仍在删除共享缓存。再次工作区重建也受同一清理影响，主动 SIGTERM 本任务 runner，外层退出130；自有 Cargo 已结束，自己的槽位锁已释放，没有停止外部进程。
 
-环境异常也删除了之前的5份监督报告原文件及 Rust 二进制缓存；此前报告的成功与守卫结果已实际读取核实，原始命令输出仍完整保留，但不能声称原始 JSON 仍在归档里。压缩证据明确标注缺失，并记录删除前观察到的最终报告字段。缓存清理结束后必须重新领取槽位，重建 pd-server、运行 `--case classic-tso` 并立即归档新监督报告，再重跑工作区测试。已有专项、148项包级及静态证据有效；本任务按用户授权标记“已完成，待回归”，保留编号任务文件，不宣称整个工作区验收完成。
+环境异常也删除了之前的5份监督报告原文件及 Rust 二进制缓存；此前报告的成功与守卫结果已实际读取核实，原始命令输出仍完整保留，但不能声称原始 JSON 仍在归档里。压缩证据明确标注缺失，并记录删除前观察到的最终报告字段。缓存清理结束后必须重新领取槽位，重建 pd-server、运行 `--case classic-tso` 并立即归档新监督报告，再重跑工作区测试。已有专项、148项包级及静态证据有效；首轮按用户授权标记“已完成，待回归”，当时保留编号任务文件；此历史状态现已由下述回归结果解除。
 
 
 开始/结束1983个 Go/模块文件（含 ignored/untracked）的路径、SHA-256 和 Git状态完全一致；plan.md 与初始快照逐字节一致。未运行 make、failpoint 启停、Go测试、Go格式化或模块整理。Python AST、本文链接与 `git diff --check` 通过。其他会话新增的三个2026-10-29计划目录原样保留，不纳入本次提交。
 
-完整命令日志、退出码、槽位执行器、首尾Go清单、最终源码SHA-256及报告缺失说明见 [压缩证据](task-036-evidence.json.gz)，SHA-256：`d1937691f4922a433f36bfeb05c21d07e7f690b20be44f129b2b753070b069a4`。工作区回归仍待环境恢复，编号任务文件保留。
+完整命令日志、退出码、槽位执行器、首尾Go清单、最终源码SHA-256及报告缺失说明见 [压缩证据](task-036-evidence.json.gz)，SHA-256：`d1937691f4922a433f36bfeb05c21d07e7f690b20be44f129b2b753070b069a4`。首轮工作区回归当时等待环境恢复，编号任务文件当时保留。
+
+
+## 补齐回归（2026-10-30）
+
+基准 `3ba8aefe8`。使用当前最新共享工作区，未修改生产代码或测试；任务43原有状态变更未纳入本次工作。此前外部缓存清理已不再干扰验证，两个 election watch_reset 用例在完整工作区回归中均通过。
+
+| 确切命令 | 退出码 | 有效测试 |
+| --- | --- | --- |
+| `cargo build --locked -p astersql-pd-cmd-pd-server --bin pd-server` | 0 | 构建 |
+| `PD_COMPAT_MODE=dual PD_COMPAT_GO_BIN="$PWD/bin/pd-server" PD_COMPAT_RUST_BIN="$CARGO_TARGET_DIR/debug/pd-server" bash scripts/run-pd-compat-readonly.sh --case classic-tso` | 0 | 1真实Go差分通过，0忽略 |
+| `cargo test --locked -p astersql-pd-server --lib task_036_ -- --nocapture` | 0 | 1通过，0忽略 |
+| `cargo test --locked -p astersql-pd-runtime --lib task_036_ -- --nocapture` | 0 | 1通过，0忽略 |
+| `cargo test --locked -p astersql-pd-server -- --nocapture` | 0 | 160通过，4既有忽略 |
+| `cargo metadata --format-version 1 --no-deps` | 0 | 静态 |
+| `cargo fmt --all -- --check` | 0 | 静态；无Rust改动，无需格式化写入 |
+| `cargo check --locked -p astersql-pd-server` | 0 | 静态 |
+| `cargo check --workspace --locked` | 0 | 静态 |
+| `cargo test --workspace --locked -- --test-threads=1` | 0 | 2041通过（含2项文档编译测试），37忽略、0失败 |
+
+各阶段依次原子 mkdir 领取共享槽位，实际均为1；`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。执行器记录计划/任务/会话/PID，并为Cargo及子进程设置上述绝对路径；各阶段结束释放自有锁，未删除缓存。沿用双实现环境变量运行验证；工作区既有健康差分使用真实Go/Rust二进制，ignored不计入通过数。
+
+完整新监督报告 `compat-readonly-1793295870855590000.json` 已复制出共享缓存并归档：exit=0，readonly_unchanged、inputs_unchanged、work_directory_cleaned、process_group_cleaned 均 true。所有报告 inputs 在全局回归结束后重新逐文件核对匹配。当前基准下1101个Go/模块文件（含ignored/untracked）的路径、SHA-256及Git状态首尾一致；plan.md逐字节一致。该数量属于本轮新快照，不与首轮缓存清理前的1983个文件混用。
+
+新报告、全部命令日志/退出码、动态槽位执行器和首尾守卫见 [回归压缩证据](task-036-regression.json.gz)，SHA-256：`39a466e023395002aa89c923b7200de2e84dded38c9679af2ffeb3db2fe48d3f`。全部待回归项已获得当前证据，编号任务36文件按要求删除。
