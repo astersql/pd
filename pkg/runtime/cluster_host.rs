@@ -439,6 +439,55 @@ impl ClusterHost {
         let resources = resources.as_ref().ok_or("node stopped")?;
         Ok(resources.pipeline().snapshot().await?)
     }
+    pub(crate) async fn bootstrap(
+        &self,
+        backend: Arc<dyn MetaStore>,
+        store: astersql_pd_core::StoreMeta,
+        region: astersql_pd_core::RegionMeta,
+    ) -> Result<bool, String> {
+        let guard = self.resources.lock().await;
+        let resources = guard.as_ref().ok_or("node stopped")?;
+        if self.cancel.is_cancelled() {
+            return Err("node stopped".into());
+        }
+        if resources
+            .persisted_config
+            .config
+            .replication_mode
+            .replication_mode
+            != "majority"
+        {
+            return Err(
+                "bootstrap replication mode requires a configured replication manager".into(),
+            );
+        }
+        let nanos = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .map_err(|e| e.to_string())?
+            .as_nanos() as u64;
+        let endpoint = StorageEndpoint::new(backend);
+        let meta = astersql_pd_storage_endpoint::Cluster {
+            id: resources.paths.cluster_id(),
+            max_peer_count: resources.persisted_config.config.replication.max_replicas as u32,
+        };
+        let committed = endpoint
+            .bootstrap_cluster(&resources.paths, &meta, &store, &region, nanos)
+            .await
+            .map_err(|e| e.to_string())?;
+        if committed {
+            let mut state = resources.state.lock().unwrap();
+            state
+                .cluster
+                .stores
+                .put_store(Arc::new(astersql_pd_core::StoreInfo::new(store)));
+            state
+                .cluster
+                .regions
+                .check_and_put_region(Arc::new(RegionInfo::new(region, None, vec![], vec![])));
+            state.cluster.update_all_store_status();
+        }
+        Ok(committed)
+    }
     pub(crate) async fn shutdown(&self) -> Result<(), crate::NodeError> {
         self.cancel.cancel();
         let schedule_error = if let Some(worker) = self.schedule_worker.lock().await.take() {

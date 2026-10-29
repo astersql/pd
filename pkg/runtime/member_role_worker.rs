@@ -78,6 +78,19 @@ impl PdServices for RoleServices {
     fn discovery_store(&self) -> Option<Arc<dyn MetaStore>> {
         self.store.upgrade()
     }
+    async fn bootstrap(
+        &self,
+        store: astersql_pd_core::StoreMeta,
+        region: astersql_pd_core::RegionMeta,
+    ) -> Result<bool, String> {
+        let term = self.active().await?;
+        let backend = Arc::new(TermStore::new(
+            self.store.upgrade().ok_or("server not started")?,
+            term.leader.clone(),
+            term.cancel.clone(),
+        ));
+        term.cluster.bootstrap(backend, store, region).await
+    }
     async fn healthy(&self) -> Result<(), String> {
         self.active().await.map(|_| ())
     }

@@ -187,3 +187,7 @@ pub(crate) fn decode_store(bytes: &[u8]) -> Result<StoreMeta, EndpointError> {
         .map(Into::into)
         .map_err(|error| EndpointError::ProtoUnmarshal(Box::new(error)))
 }
+
+pub(crate) fn bootstrap_bytes(meta: &StoreMeta) -> Vec<u8> {
+    prost::Message::encode_to_vec(&WireStore::from(meta))
+}

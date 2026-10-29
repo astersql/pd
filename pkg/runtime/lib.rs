@@ -42,3 +42,6 @@ mod request_role_test;
 
 #[cfg(test)]
 mod grpc_members_differential_test;
+
+#[cfg(test)]
+mod grpc_bootstrap_differential_test;

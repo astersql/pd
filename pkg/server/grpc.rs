@@ -35,6 +35,23 @@ impl Grpc {
 }
 #[tonic::async_trait]
 impl Pd for Grpc {
+    async fn bootstrap(
+        &self,
+        r: Request<pdpb::BootstrapRequest>,
+    ) -> Result<Response<pdpb::BootstrapResponse>, Status> {
+        self.bootstrap_request(r.into_inner())
+            .await
+            .map(Response::new)
+    }
+    async fn is_bootstrapped(
+        &self,
+        r: Request<pdpb::IsBootstrappedRequest>,
+    ) -> Result<Response<pdpb::IsBootstrappedResponse>, Status> {
+        self.bootstrapped_request(r.into_inner())
+            .await
+            .map(Response::new)
+    }
+
     async fn get_store(
         &self,
         request: Request<pdpb::GetStoreRequest>,

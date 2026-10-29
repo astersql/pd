@@ -46,9 +46,9 @@ def binary(name):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--mode', choices=['go', 'rust', 'dual'], default=os.environ.get('PD_COMPAT_MODE', 'dual'))
-    parser.add_argument('--case', choices=['health-member', 'tso', 'cluster-host', 'cluster-restore', 'member-role', 'bucket-heartbeat', 'sync-regions', 'store-state', 'store-stats', 'store-config', 'cluster-metrics', 'resolved-ts', 'schedule-coordinator', 'request-role', 'members'], action='append')
+    parser.add_argument('--case', choices=['health-member', 'tso', 'cluster-host', 'cluster-restore', 'member-role', 'bucket-heartbeat', 'sync-regions', 'store-state', 'store-stats', 'store-config', 'cluster-metrics', 'resolved-ts', 'schedule-coordinator', 'request-role', 'members', 'bootstrap'], action='append')
     args = parser.parse_args()
-    if any(case in (args.case or []) for case in ['cluster-host', 'cluster-restore', 'member-role', 'bucket-heartbeat', 'sync-regions', 'store-state', 'store-stats', 'store-config', 'cluster-metrics', 'resolved-ts', 'schedule-coordinator', 'request-role', 'members']) and args.mode != 'dual':
+    if any(case in (args.case or []) for case in ['cluster-host', 'cluster-restore', 'member-role', 'bucket-heartbeat', 'sync-regions', 'store-state', 'store-stats', 'store-config', 'cluster-metrics', 'resolved-ts', 'schedule-coordinator', 'request-role', 'members', 'bootstrap']) and args.mode != 'dual':
         raise ValueError('cluster-host, cluster-restore and member-role require dual mode')
     go = binary('PD_COMPAT_GO_BIN') if args.mode != 'rust' else None
     rust = binary('PD_COMPAT_RUST_BIN') if args.mode != 'go' else None
@@ -84,6 +84,8 @@ def main():
         'pkg/proto/build.rs', 'pkg/storage/kv/etcd_fixture_test.rs', 'Cargo.lock',
         'pkg/member/member.rs', 'pkg/runtime/node_test.rs', 'pkg/runtime/member_role_worker.rs', 'pkg/runtime/member_role_worker_test.rs', 'pkg/runtime/cluster_restore.rs', 'pkg/runtime/cluster_restore_test.rs', 'pkg/server/grpc.rs',
         'pkg/storage/kv/meta_store.rs', 'pkg/storage/kv/etcd_store.rs',
+        'pkg/runtime/lib.rs', 'pkg/server/core_store_adapter.rs', 'pkg/server/core_region_adapter.rs', 'pkg/storage/endpoint/endpoint_codec.rs', 'pkg/storage/endpoint/lib.rs',
+        'pkg/server/grpc_bootstrap.rs', 'pkg/server/grpc_bootstrap_test.rs', 'pkg/runtime/grpc_bootstrap_differential_test.rs', 'pkg/storage/endpoint/cluster_meta.rs', 'pkg/storage/endpoint/store_meta.rs', 'pkg/storage/endpoint/region_meta.rs',
         'pkg/server/grpc_members.rs', 'pkg/server/grpc_members_test.rs', 'pkg/runtime/grpc_members_differential_test.rs',
         'pkg/server/request_role.rs', 'pkg/server/request_role_test.rs', 'pkg/runtime/request_role_test.rs',
         'pkg/server/sync_transport.rs', 'pkg/server/lib.rs', 'pkg/runtime/cluster_host.rs', 'pkg/runtime/cluster_host_test.rs', 'pkg/runtime/node.rs',
@@ -110,6 +112,9 @@ def main():
             command = ['cargo', 'test', '--locked', '-p', 'astersql-pd-compat-tests', '--test',
                        'health_member' if case == 'health-member' else 'tso',
                        'health_member_processes' if case == 'health-member' else 'tso_processes', '--']
+            if case == 'bootstrap':
+                command = ['cargo', 'test', '--locked', '-p', 'astersql-pd-runtime', '--lib',
+                           'readonly_bootstrap_differential', '--', '--ignored']
             if case == 'members':
                 command = ['cargo', 'test', '--locked', '-p', 'astersql-pd-runtime', '--lib',
                            'readonly_members_differential', '--', '--ignored']

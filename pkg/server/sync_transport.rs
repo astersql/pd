@@ -356,6 +356,18 @@ impl Pd for SyncGrpc {
     ) -> Result<Response<pdpb::GetClusterInfoResponse>, Status> {
         self.0.get_cluster_info(r).await
     }
+    async fn bootstrap(
+        &self,
+        r: Request<pdpb::BootstrapRequest>,
+    ) -> Result<Response<pdpb::BootstrapResponse>, Status> {
+        self.0.bootstrap(r).await
+    }
+    async fn is_bootstrapped(
+        &self,
+        r: Request<pdpb::IsBootstrappedRequest>,
+    ) -> Result<Response<pdpb::IsBootstrappedResponse>, Status> {
+        self.0.is_bootstrapped(r).await
+    }
     async fn get_members(
         &self,
         r: Request<pdpb::GetMembersRequest>,

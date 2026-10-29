@@ -1,6 +1,7 @@
 // Copyright 2026 AsterSQL.
 //! HTTP and gRPC adapters for the minimal classic PD role.
 mod grpc;
+mod grpc_bootstrap;
 mod grpc_members;
 mod http;
 mod request_role;
@@ -60,6 +61,14 @@ pub trait PdServices: Send + Sync {
     /// Shared canonical discovery metadata, independent of the local leader term.
     fn discovery_store(&self) -> Option<Arc<dyn astersql_pd_storage::MetaStore>> {
         None
+    }
+    /// Commit initial metadata and publish it into the canonical host cache.
+    async fn bootstrap(
+        &self,
+        _store: astersql_pd_core::StoreMeta,
+        _region: astersql_pd_core::RegionMeta,
+    ) -> Result<bool, String> {
+        Err("bootstrap is not configured".into())
     }
     async fn healthy(&self) -> Result<(), String>;
     async fn alloc_id(&self) -> Result<u64, String>;
@@ -233,3 +242,7 @@ mod etcd_fixture;
 #[cfg(test)]
 #[path = "grpc_members_test.rs"]
 mod grpc_members_test;
+
+#[cfg(test)]
+#[path = "grpc_bootstrap_test.rs"]
+mod grpc_bootstrap_test;

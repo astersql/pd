@@ -199,3 +199,7 @@ pub(super) fn decode_region(bytes: &[u8]) -> Result<RegionMeta, RegionMetaError>
         .map_err(RegionMetaError::from)
         .and_then(RegionMeta::try_from)
 }
+
+pub(crate) fn bootstrap_bytes(meta: &RegionMeta) -> Vec<u8> {
+    WireRegion::from(meta).encode_to_vec()
+}
