@@ -63,6 +63,9 @@ pub(crate) fn map_error(error: etcd_client::Error) -> StoreError {
             {
                 StoreError::FutureRevision
             }
+            Code::InvalidArgument if status.message() == "etcdserver: request is too large" => {
+                StoreError::RequestTooLarge
+            }
             Code::InvalidArgument => StoreError::InvalidArgument,
             _ => StoreError::Backend,
         },

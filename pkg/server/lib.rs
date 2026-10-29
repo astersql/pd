@@ -5,6 +5,7 @@ mod grpc_alloc_id;
 pub mod grpc_ask_split;
 mod grpc_bootstrap;
 mod grpc_cluster_config;
+mod grpc_global_config;
 mod grpc_members;
 mod grpc_region_lookup;
 mod grpc_region_query;
@@ -423,3 +424,8 @@ pub(crate) mod grpc_split_regions_scenarios_test;
 pub(crate) mod grpc_split_scatter_scenarios_test;
 #[cfg(test)]
 mod grpc_split_scatter_test;
+
+#[cfg(test)]
+mod grpc_global_config_scenarios_test;
+#[cfg(test)]
+mod grpc_global_config_test;

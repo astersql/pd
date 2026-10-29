@@ -22,6 +22,8 @@ pub enum StoreError {
     FutureRevision,
     #[error("lease does not exist")]
     LeaseNotFound,
+    #[error("metadata request is too large")]
+    RequestTooLarge,
     #[error("invalid metadata request")]
     InvalidArgument,
     #[error("permission denied")]

@@ -282,6 +282,20 @@ impl astersql_pd_syncer::DownstreamSender for WireSender {
 pub(crate) struct SyncGrpc(pub Grpc);
 #[tonic::async_trait]
 impl Pd for SyncGrpc {
+    async fn store_global_config(
+        &self,
+        r: Request<pdpb::StoreGlobalConfigRequest>,
+    ) -> Result<Response<pdpb::StoreGlobalConfigResponse>, Status> {
+        self.0.store_global_config(r).await
+    }
+
+    async fn load_global_config(
+        &self,
+        r: Request<pdpb::LoadGlobalConfigRequest>,
+    ) -> Result<Response<pdpb::LoadGlobalConfigResponse>, Status> {
+        self.0.load_global_config(r).await
+    }
+
     async fn split_and_scatter_regions(
         &self,
         r: Request<pdpb::SplitAndScatterRegionsRequest>,

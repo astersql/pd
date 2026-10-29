@@ -35,6 +35,20 @@ impl Grpc {
 }
 #[tonic::async_trait]
 impl Pd for Grpc {
+    async fn store_global_config(
+        &self,
+        r: Request<pdpb::StoreGlobalConfigRequest>,
+    ) -> Result<Response<pdpb::StoreGlobalConfigResponse>, Status> {
+        self.store_global_config_request(r.into_inner()).await
+    }
+
+    async fn load_global_config(
+        &self,
+        r: Request<pdpb::LoadGlobalConfigRequest>,
+    ) -> Result<Response<pdpb::LoadGlobalConfigResponse>, Status> {
+        self.load_global_config_request(r.into_inner()).await
+    }
+
     async fn split_and_scatter_regions(
         &self,
         r: Request<pdpb::SplitAndScatterRegionsRequest>,
