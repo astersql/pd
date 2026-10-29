@@ -117,3 +117,6 @@ mod grpc_global_config_differential_test;
 
 #[cfg(test)]
 mod grpc_global_watch_differential_test;
+
+#[cfg(test)]
+mod grpc_resolved_ts_differential_test;

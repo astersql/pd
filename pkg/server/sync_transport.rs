@@ -282,6 +282,13 @@ impl astersql_pd_syncer::DownstreamSender for WireSender {
 pub(crate) struct SyncGrpc(pub Grpc);
 #[tonic::async_trait]
 impl Pd for SyncGrpc {
+    async fn report_min_resolved_ts(
+        &self,
+        r: Request<pdpb::ReportMinResolvedTsRequest>,
+    ) -> Result<Response<pdpb::ReportMinResolvedTsResponse>, Status> {
+        self.0.report_min_resolved_ts(r).await
+    }
+
     async fn watch_global_config(
         &self,
         r: Request<pdpb::WatchGlobalConfigRequest>,

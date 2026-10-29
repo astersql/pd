@@ -118,6 +118,13 @@ impl PdServices for RoleServices {
         ));
         term.cluster.bootstrap(backend, store, region).await
     }
+    async fn report_min_resolved_ts(&self, store_id: u64, ts: u64) -> Result<(), String> {
+        self.active()
+            .await?
+            .cluster
+            .report_min_resolved_ts(store_id, ts)
+            .await
+    }
     async fn put_store(
         &self,
         store: astersql_pd_core::StoreMeta,

@@ -496,6 +496,35 @@ impl ClusterHost {
         }
         Ok(committed)
     }
+    /// Replace a store report under the same lock as lifecycle transitions.
+    pub async fn report_min_resolved_ts(&self, store_id: u64, ts: u64) -> Result<(), String> {
+        let resources = self.resources.lock().await;
+        if self.cancel.is_cancelled() {
+            return Err("node stopped".into());
+        }
+        let resources = resources.as_ref().ok_or("node stopped")?;
+        resources
+            .leader
+            .validate()
+            .await
+            .map_err(|e| e.to_string())?;
+        let state = resources.state.lock().unwrap();
+        let store = state
+            .cluster
+            .stores
+            .get_store(store_id)
+            .ok_or_else(|| format!("[PD:core:ErrStoreNotFound]store {store_id} not found"))?;
+        if store.is_removed() {
+            return Err(format!(
+                "[PD:core:ErrStoreRemoved]store {store_id} has been removed"
+            ));
+        }
+        state
+            .cluster
+            .stores
+            .patch_store(store_id, |store| store.set_min_resolved_ts(ts));
+        Ok(())
+    }
     /// Return metadata from the canonical heartbeat view.
     pub async fn registered_stores(&self) -> Result<Vec<astersql_pd_core::StoreMeta>, String> {
         let guard = self.resources.lock().await;

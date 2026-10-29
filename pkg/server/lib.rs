@@ -12,6 +12,7 @@ mod grpc_region_lookup;
 mod grpc_region_query;
 mod grpc_region_scan;
 mod grpc_report_split;
+mod grpc_resolved_ts;
 pub mod grpc_scatter;
 pub mod grpc_split_regions;
 mod grpc_split_scatter;
@@ -94,6 +95,10 @@ pub trait PdServices: Send + Sync {
         _region: astersql_pd_core::RegionMeta,
     ) -> Result<bool, String> {
         Err("bootstrap is not configured".into())
+    }
+    /// Apply a report to the canonical store cache; aggregation persists separately.
+    async fn report_min_resolved_ts(&self, _store_id: u64, _ts: u64) -> Result<(), String> {
+        Err("resolved timestamp reports are not configured".into())
     }
     /// Persist registration into the host-owned canonical cluster.
     async fn put_store(
@@ -436,3 +441,6 @@ mod grpc_global_watch_test;
 
 #[cfg(test)]
 mod grpc_global_watch_scenarios_test;
+
+#[cfg(test)]
+mod grpc_resolved_ts_test;

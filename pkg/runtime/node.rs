@@ -97,6 +97,9 @@ impl PdServices for Application {
     fn region_sync_handle(&self) -> Option<Arc<astersql_pd_server::sync_transport::RegionSyncer>> {
         self.cluster.region_sync_handle()
     }
+    async fn report_min_resolved_ts(&self, store_id: u64, ts: u64) -> Result<(), String> {
+        self.cluster.report_min_resolved_ts(store_id, ts).await
+    }
     async fn put_store(
         &self,
         store: astersql_pd_core::StoreMeta,

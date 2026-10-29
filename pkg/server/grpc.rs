@@ -35,6 +35,13 @@ impl Grpc {
 }
 #[tonic::async_trait]
 impl Pd for Grpc {
+    async fn report_min_resolved_ts(
+        &self,
+        r: Request<pdpb::ReportMinResolvedTsRequest>,
+    ) -> Result<Response<pdpb::ReportMinResolvedTsResponse>, Status> {
+        self.report_min_resolved_ts_request(r.into_inner()).await
+    }
+
     async fn watch_global_config(
         &self,
         r: Request<pdpb::WatchGlobalConfigRequest>,
