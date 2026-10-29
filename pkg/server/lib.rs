@@ -220,7 +220,14 @@ pub fn router(services: Arc<dyn PdServices>, cancel: CancellationToken) -> axum:
         }),
     ))
     .into_axum_router()
-    .merge(http::router(services))
+    .merge(http::router(services.clone()))
+    .layer(axum::middleware::from_fn_with_state(
+        http_redirect::RedirectState {
+            services,
+            cancel: cancel.clone(),
+        },
+        http_redirect::middleware,
+    ))
     .layer(axum::middleware::from_fn_with_state(
         request_context::ContextState::new(cancel),
         request_context::middleware,
@@ -483,3 +490,9 @@ pub mod request_context;
 #[cfg(test)]
 #[path = "request_context_test.rs"]
 mod request_context_test;
+
+#[cfg(test)]
+#[path = "http_redirect_test.rs"]
+mod http_redirect_test;
+
+pub mod http_redirect;

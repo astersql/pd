@@ -21,3 +21,8 @@ and streamed response frames. Embedders must serve it with
 missing connect information remains absent rather than trusting a header. The
 canonical runtime listener supplies this connection extension. See
 [request_context](request_context.rs.md) for field trust and cancellation rules.
+
+The router also installs [HTTP leader forwarding](http_redirect.rs.md) inside
+request_context, before route dispatch, so follower requests to leader-owned paths
+can reach the leader even when the local router has no handler for that path.
+It only handles `/pd/` HTTP paths and leaves gRPC admission unchanged.

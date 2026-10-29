@@ -103,9 +103,17 @@ async fn task_038_behavior() {
     for path in ["health", "members"] {
         let (status, content, value) =
             request(&format!("{follower_url}/pd/api/v1/{path}"), "GET", "", "");
-        assert_eq!(status, 503);
         assert_eq!(content, "application/json; charset=UTF-8");
-        assert_eq!(value, "service unavailable");
+        if path == "members" {
+            // Task 041 forwards leader-owned HTTP requests; local health keeps
+            // its original role-sensitive contract.
+            assert_eq!(status, 200);
+            let (_, _, leader) = request(&format!("{url}/pd/api/v1/members"), "GET", "", "");
+            assert_eq!(value, leader);
+        } else {
+            assert_eq!(status, 503);
+            assert_eq!(value, "service unavailable");
+        }
     }
     assert_eq!(before, store.read(read()).await.unwrap().entries);
     follower.shutdown().await.unwrap();
