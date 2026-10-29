@@ -22,3 +22,9 @@ Evidence: runtime task 017 deterministic clock test updates a live heartbeat and
 observes it through a retained cluster handle, receives the real policy command,
 and verifies prepared store controls are released after shutdown. The existing
 core/index and full workspace regressions cover the unchanged indexing behavior.
+
+`region_by_key(key, previous)` resolves a half-open range or its contiguous
+predecessor under a single root-index read lock and returns the original immutable
+`Arc<RegionInfo>`. Unlike composing positional queries and a later ID lookup,
+this preserves bucket metadata and cannot cross two index generations during a
+concurrent heartbeat. Region point RPCs use this entry point.

@@ -56,3 +56,11 @@ mod grpc_store_differential_test;
 #[cfg(test)]
 #[path = "grpc_store_fault_test.rs"]
 mod grpc_store_fault_test;
+
+#[cfg(test)]
+#[path = "grpc_region_lookup_differential_test.rs"]
+mod grpc_region_lookup_differential_test;
+
+#[cfg(test)]
+#[path = "grpc_region_lookup_fault_test.rs"]
+mod grpc_region_lookup_fault_test;

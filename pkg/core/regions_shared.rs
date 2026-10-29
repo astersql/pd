@@ -36,6 +36,15 @@ impl RegionsInfo {
     pub fn get_region(&self, id: u64) -> Option<Arc<RegionInfo>> {
         self.inner.read().unwrap().get_region(id)
     }
+    /// Return an immutable point-query snapshot under one canonical index lock.
+    pub fn region_by_key(&self, key: &[u8], previous: bool) -> Option<Arc<RegionInfo>> {
+        let state = self.inner.read().unwrap();
+        if previous {
+            state.root.search_prev(key)
+        } else {
+            state.root.search(key)
+        }
+    }
     pub fn get_regions(&self) -> Vec<Arc<RegionInfo>> {
         self.inner.read().unwrap().get_regions()
     }

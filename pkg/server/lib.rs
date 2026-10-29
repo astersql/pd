@@ -4,6 +4,7 @@ mod grpc;
 mod grpc_alloc_id;
 mod grpc_bootstrap;
 mod grpc_members;
+mod grpc_region_lookup;
 pub mod grpc_store;
 mod http;
 mod request_role;
@@ -55,6 +56,14 @@ pub trait PdServices: Send + Sync {
     fn cluster_read_service(&self) -> Option<&dyn ClusterReadService> {
         None
     }
+    /// Store configuration gate, matching Go's disabled-by-default region buckets.
+    fn region_buckets_enabled(&self) -> bool {
+        false
+    }
+    /// Local synchronized follower view, separate from the scheduling leader term.
+    fn follower_read_service(&self) -> Option<&dyn ClusterReadService> {
+        None
+    }
     /// Whether this host currently exposes a bootstrapped raft cluster.
     /// Implementations must read canonical state, rather than infer it from requests.
     async fn is_bootstrapped(&self) -> Result<bool, String> {
@@ -101,6 +110,13 @@ pub trait PdServices: Send + Sync {
 pub trait ClusterReadService: Send + Sync {
     async fn store(&self, id: u64) -> Result<Option<Arc<astersql_pd_core::StoreInfo>>, String>;
     async fn region(&self, id: u64) -> Result<Option<Arc<astersql_pd_core::RegionInfo>>, String>;
+    async fn region_by_key(
+        &self,
+        _key: &[u8],
+        _previous: bool,
+    ) -> Result<Option<Arc<astersql_pd_core::RegionInfo>>, String> {
+        Err("region key lookup is not configured".into())
+    }
 }
 /// One router, listener and cancellation scope for HTTP/1 and HTTP/2 gRPC.
 pub fn router(services: Arc<dyn PdServices>, cancel: CancellationToken) -> axum::Router {
@@ -280,3 +296,11 @@ mod grpc_store_test;
 #[cfg(test)]
 #[path = "grpc_store_scenarios_test.rs"]
 mod grpc_store_scenarios_test;
+
+#[cfg(test)]
+#[path = "grpc_region_lookup_test.rs"]
+mod grpc_region_lookup_test;
+
+#[cfg(test)]
+#[path = "grpc_region_lookup_scenarios_test.rs"]
+mod grpc_region_lookup_scenarios_test;

@@ -109,65 +109,34 @@ impl Pd for Grpc {
             stats,
         }))
     }
+    async fn get_region(
+        &self,
+        request: Request<pdpb::GetRegionRequest>,
+    ) -> Result<Response<pdpb::GetRegionResponse>, Status> {
+        self.region_request(request, false).await.map(Response::new)
+    }
+    async fn get_prev_region(
+        &self,
+        request: Request<pdpb::GetRegionRequest>,
+    ) -> Result<Response<pdpb::GetRegionResponse>, Status> {
+        self.region_request(request, true).await.map(Response::new)
+    }
     async fn get_region_by_id(
         &self,
         request: Request<pdpb::GetRegionByIdRequest>,
     ) -> Result<Response<pdpb::GetRegionResponse>, Status> {
-        let request = request.into_inner();
-        self.check(request.header.as_ref()).await?;
-        if let Some(header) = self.bootstrap_header().await? {
-            return Ok(Response::new(pdpb::GetRegionResponse {
-                header: Some(header),
-                ..Default::default()
-            }));
-        }
-        if request.need_buckets {
-            return Err(Status::unimplemented(
-                "region bucket queries are not configured",
-            ));
-        }
-
-        let service = self
-            .services
-            .cluster_read_service()
-            .ok_or_else(|| Status::unimplemented("cluster reads are not configured"))?;
-        let region = service
-            .region(request.region_id)
-            .await
-            .map_err(Status::unavailable)?;
-        Ok(Response::new(pdpb::GetRegionResponse {
-            header: self.header(),
-            region: region
-                .as_ref()
-                .map(|r| crate::core_region_adapter::region_to_proto(r.meta().clone())),
-            leader: region
-                .as_ref()
-                .and_then(|r| r.leader().cloned())
-                .map(crate::core_region_adapter::peer_to_proto),
-            down_peers: region
-                .as_ref()
-                .map(|r| {
-                    r.down_peers()
-                        .iter()
-                        .map(|p| pdpb::PeerStats {
-                            peer: Some(crate::core_region_adapter::peer_to_proto(p.peer.clone())),
-                            down_seconds: p.down_seconds,
-                        })
-                        .collect()
-                })
-                .unwrap_or_default(),
-            pending_peers: region
-                .as_ref()
-                .map(|r| {
-                    r.pending_peers()
-                        .iter()
-                        .cloned()
-                        .map(crate::core_region_adapter::peer_to_proto)
-                        .collect()
-                })
-                .unwrap_or_default(),
-            ..Default::default()
-        }))
+        let allow = request.metadata().contains_key("pd-allow-follower-handle");
+        let r = request.into_inner();
+        self.lookup_region(
+            r.header.as_ref(),
+            None,
+            r.region_id,
+            false,
+            r.need_buckets,
+            allow,
+        )
+        .await
+        .map(Response::new)
     }
 
     async fn report_buckets(

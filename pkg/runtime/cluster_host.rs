@@ -856,6 +856,19 @@ impl astersql_pd_server::ClusterReadService for ClusterHost {
         let state = resources.state.lock().unwrap();
         Ok(state.cluster.stores.get_store(id))
     }
+    async fn region_by_key(
+        &self,
+        key: &[u8],
+        previous: bool,
+    ) -> Result<Option<Arc<RegionInfo>>, String> {
+        let guard = self.resources.lock().await;
+        if self.cancel.is_cancelled() {
+            return Err("node stopped".into());
+        }
+        let resources = guard.as_ref().ok_or("node stopped")?;
+        let state = resources.state.lock().unwrap();
+        Ok(state.cluster.regions.region_by_key(key, previous))
+    }
     async fn region(&self, id: u64) -> Result<Option<Arc<RegionInfo>>, String> {
         let guard = self.resources.lock().await;
         if self.cancel.is_cancelled() {

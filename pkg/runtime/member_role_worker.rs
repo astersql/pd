@@ -14,12 +14,28 @@ use tokio_util::sync::CancellationToken;
 
 pub(crate) struct RoleServices {
     identity: NodeConfig,
+    follower: FollowerRead,
     store: Weak<dyn MetaStore>,
     term: RwLock<Option<Arc<Application>>>,
 }
 impl RoleServices {
     pub(crate) fn new(identity: NodeConfig, store: Arc<dyn MetaStore>) -> Self {
         Self {
+            follower: FollowerRead(Arc::new(tokio::sync::Mutex::new(
+                astersql_pd_server::sync_transport::SyncFollowerState {
+                    cluster: astersql_pd_core::BasicCluster::new(),
+                    history: astersql_pd_syncer::HistoryBuffer::new(10000)
+                        .expect("nonzero history capacity"),
+                    apply: astersql_pd_syncer::ClientApply::default(),
+                    // Sync application persists its checkpoint as well as updating the cache.
+                    // This nonauthoritative projection must never write the shared,
+                    // leader-fenced metadata namespace.
+                    storage: astersql_pd_storage::Storage::new(Arc::new(
+                        astersql_pd_storage::MemoryStore::default(),
+                    )),
+                    paths: astersql_pd_keypath::ClusterPaths::new(identity.cluster_id),
+                },
+            ))),
             identity,
             store: Arc::downgrade(&store),
             term: RwLock::new(None),
@@ -52,6 +68,9 @@ impl PdServices for RoleServices {
         &self,
     ) -> Option<&dyn astersql_pd_server::bucket_heartbeat_adapter::BucketHeartbeatService> {
         Some(self)
+    }
+    fn follower_read_service(&self) -> Option<&dyn ClusterReadService> {
+        Some(&self.follower)
     }
     fn cluster_read_service(&self) -> Option<&dyn ClusterReadService> {
         Some(self)
@@ -158,6 +177,17 @@ impl ClusterReadService for RoleServices {
     async fn store(&self, id: u64) -> Result<Option<Arc<astersql_pd_core::StoreInfo>>, String> {
         self.active().await?.cluster.store(id).await
     }
+    async fn region_by_key(
+        &self,
+        key: &[u8],
+        previous: bool,
+    ) -> Result<Option<Arc<astersql_pd_core::RegionInfo>>, String> {
+        self.active()
+            .await?
+            .cluster
+            .region_by_key(key, previous)
+            .await
+    }
     async fn region(&self, id: u64) -> Result<Option<Arc<astersql_pd_core::RegionInfo>>, String> {
         self.active().await?.cluster.region(id).await
     }
@@ -212,7 +242,51 @@ pub(crate) async fn run(
             if snapshot.entries.iter().any(|entry| entry.key == key) {
                 let mut watch =
                     LeaderWatch::new(store.clone(), key.clone(), snapshot.revision + 1)?;
-                let _ = watch.next(&cancel).await;
+                use prost::Message;
+                let leader = astersql_pd_proto::pdpb::Member::decode(
+                    snapshot
+                        .entries
+                        .iter()
+                        .find(|e| e.key == key)
+                        .unwrap()
+                        .value
+                        .as_slice(),
+                )?;
+                let endpoint = leader
+                    .client_urls
+                    .first()
+                    .ok_or("leader has no client URL")?
+                    .clone();
+                let mut sync = astersql_pd_server::sync_transport::SyncFollower {
+                    endpoint,
+                    request: astersql_pd_server::sync_codec::SyncRequest {
+                        header: Some(astersql_pd_server::sync_codec::SyncRequestHeader {
+                            cluster_id: config.cluster_id,
+                            ..Default::default()
+                        }),
+                        member: Some(astersql_pd_server::sync_codec::SyncMember {
+                            name: config.name.clone(),
+                            member_id: config.member_id,
+                            client_urls: vec![config.client_url.clone()],
+                            ..Default::default()
+                        }),
+                        ..Default::default()
+                    },
+                    state: services.follower.0.clone(),
+                };
+                services.follower.0.lock().await.apply.reset_stream();
+                let synchronize = async {
+                    use astersql_pd_syncer::SyncAttempt;
+                    loop {
+                        let _ = sync.sync().await;
+                        tokio::time::sleep(std::time::Duration::from_millis(200)).await;
+                    }
+                };
+                tokio::select! { biased;
+                    _=cancel.cancelled()=>{},
+                    _=watch.next(&cancel)=>{},
+                    _=synchronize=>{},
+                }
                 continue;
             }
             match member.campaign(5).await {
@@ -346,5 +420,34 @@ impl astersql_pd_server::bucket_heartbeat_adapter::BucketHeartbeatService for Ro
             return Ok(false);
         };
         term.cluster.bucket_heartbeat(report).await
+    }
+}
+
+/// Follower cache reads never fall back to leader state or persistent metadata.
+struct FollowerRead(Arc<tokio::sync::Mutex<astersql_pd_server::sync_transport::SyncFollowerState>>);
+#[async_trait::async_trait]
+impl ClusterReadService for FollowerRead {
+    async fn store(&self, _id: u64) -> Result<Option<Arc<astersql_pd_core::StoreInfo>>, String> {
+        Err("follower store reads are not supported".into())
+    }
+    async fn region(&self, id: u64) -> Result<Option<Arc<astersql_pd_core::RegionInfo>>, String> {
+        let state = self.0.lock().await;
+        Ok(if state.apply.is_running() {
+            state.cluster.regions.get_region(id)
+        } else {
+            None
+        })
+    }
+    async fn region_by_key(
+        &self,
+        key: &[u8],
+        previous: bool,
+    ) -> Result<Option<Arc<astersql_pd_core::RegionInfo>>, String> {
+        let state = self.0.lock().await;
+        Ok(if state.apply.is_running() {
+            state.cluster.regions.region_by_key(key, previous)
+        } else {
+            None
+        })
     }
 }

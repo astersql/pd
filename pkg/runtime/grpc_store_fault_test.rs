@@ -9,11 +9,11 @@ use astersql_pd_storage::{
 use std::sync::Arc;
 use tokio_util::sync::CancellationToken;
 // Only gates real backend IO: failures still come from the real etcd transaction.
-struct RegistrationStore {
-    inner: Arc<dyn MetaStore>,
-    _fixture: std::sync::Mutex<crate::node_test::fixture::Fixture>,
-    mode: std::sync::atomic::AtomicU8,
-    entered: tokio::sync::Notify,
+pub(super) struct RegistrationStore {
+    pub(super) inner: Arc<dyn MetaStore>,
+    pub(super) _fixture: std::sync::Mutex<crate::node_test::fixture::Fixture>,
+    pub(super) mode: std::sync::atomic::AtomicU8,
+    pub(super) entered: tokio::sync::Notify,
 }
 #[async_trait::async_trait]
 impl MetaStore for RegistrationStore {
@@ -82,14 +82,17 @@ impl MetaStore for RegistrationStore {
     }
 }
 
-struct Host {
-    cluster: Arc<crate::cluster_host::ClusterHost>,
-    identity: astersql_pd_server::Identity,
+pub(super) struct Host {
+    pub(super) cluster: Arc<crate::cluster_host::ClusterHost>,
+    pub(super) identity: astersql_pd_server::Identity,
 }
 #[async_trait::async_trait]
 impl astersql_pd_server::PdServices for Host {
     fn identity(&self) -> &astersql_pd_server::Identity {
         &self.identity
+    }
+    fn region_buckets_enabled(&self) -> bool {
+        true
     }
     fn cluster_read_service(&self) -> Option<&dyn astersql_pd_server::ClusterReadService> {
         Some(self.cluster.as_ref())

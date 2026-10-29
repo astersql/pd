@@ -323,7 +323,19 @@ async fn task_020_transaction_fault_and_cancel() {
     );
     proxy_stop.cancel();
     proxy.await.unwrap();
-    node.shutdown().await.unwrap();
+    // The proxy was deliberately disconnected before shutdown. Lease revocation
+    // can race admission cancellation and legitimately observe backend outage.
+    if let Err(error) = node.shutdown().await {
+        assert!(
+            matches!(
+                error.downcast_ref::<astersql_pd_member::MemberError>(),
+                Some(astersql_pd_member::MemberError::Store(
+                    astersql_pd_storage::StoreError::Unavailable
+                ))
+            ),
+            "unexpected shutdown failure: {error:?}"
+        );
+    }
     fixture.command("stop", "stopped");
     assert!(
         endpoint

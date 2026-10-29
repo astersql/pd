@@ -300,6 +300,18 @@ impl Pd for SyncGrpc {
     ) -> Result<Response<pdpb::GetStoreResponse>, Status> {
         self.0.get_store(r).await
     }
+    async fn get_region(
+        &self,
+        r: Request<pdpb::GetRegionRequest>,
+    ) -> Result<Response<pdpb::GetRegionResponse>, Status> {
+        self.0.get_region(r).await
+    }
+    async fn get_prev_region(
+        &self,
+        r: Request<pdpb::GetRegionRequest>,
+    ) -> Result<Response<pdpb::GetRegionResponse>, Status> {
+        self.0.get_prev_region(r).await
+    }
     async fn get_region_by_id(
         &self,
         r: Request<pdpb::GetRegionByIdRequest>,
