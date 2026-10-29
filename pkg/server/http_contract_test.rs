@@ -105,14 +105,16 @@ async fn task_038_behavior() {
             request(&format!("{follower_url}/pd/api/v1/{path}"), "GET", "", "");
         assert_eq!(content, "application/json; charset=UTF-8");
         if path == "members" {
-            // Task 041 forwards leader-owned HTTP requests; local health keeps
-            // its original role-sensitive contract.
+            // Leader-owned member administration remains forwarded.
             assert_eq!(status, 200);
             let (_, _, leader) = request(&format!("{url}/pd/api/v1/members"), "GET", "", "");
             assert_eq!(value, leader);
         } else {
-            assert_eq!(status, 503);
-            assert_eq!(value, "service unavailable");
+            // Task 043 reads membership independently of the local PD role.
+            assert_eq!(status, 200);
+            let members = value.as_array().unwrap();
+            assert_eq!(members.len(), 2);
+            assert!(members.iter().all(|member| member["health"] == true));
         }
     }
     assert_eq!(before, store.read(read()).await.unwrap().entries);

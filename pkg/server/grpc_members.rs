@@ -19,38 +19,14 @@ pub(crate) async fn members(
         let store = services
             .discovery_store()
             .ok_or("member discovery is not configured")?;
-        let prefix = format!("/pd/{cluster_id}/rust/members/");
-        let snapshot = store
-            .read(Read::prefix(prefix.as_bytes(), Consistency::Linearizable))
+        let (members, revision) = registry_members(store.as_ref(), cluster_id)
             .await
-            .map_err(|e| e.to_string())?;
-        let mut members = Vec::with_capacity(snapshot.entries.len());
-        for entry in snapshot.entries {
-            let id = std::str::from_utf8(&entry.key)
-                .ok()
-                .and_then(|key| key.strip_prefix(&prefix))
-                .and_then(|key| key.parse::<u64>().ok())
-                .filter(|id| *id != 0)
-                .ok_or("invalid member registry key")?;
-            let member = pdpb::Member::decode(entry.value.as_slice()).map_err(|e| e.to_string())?;
-            if member.member_id != id {
-                return Err("member registry identity mismatch".into());
-            }
-            // Go's gRPC membership exposes consensus identity fields only; binary
-            // publication metadata belongs to the HTTP member administration API.
-            members.push(pdpb::Member {
-                member_id: id,
-                name: member.name,
-                client_urls: member.client_urls,
-                peer_urls: member.peer_urls,
-                ..Default::default()
-            });
-        }
+            .map_err(|error| error.message().to_owned())?;
         let key = format!("/pd/{cluster_id}/leader");
         let mut read = Read::range(key.as_bytes(), b"", Consistency::Linearizable);
         // Pin the leader to the member snapshot so a concurrent election cannot
         // return a leader absent from a stale list. No local term is consulted.
-        read.revision = Some(snapshot.revision);
+        read.revision = Some(revision);
         let leader = store
             .read(read)
             .await
@@ -98,4 +74,45 @@ pub(crate) async fn members(
         }
     }
     Ok(response)
+}
+
+/// Shared registry decoding for HTTP health and gRPC membership. No leadership
+/// or backend consensus diagnostics are needed to inspect member liveness.
+pub(crate) async fn registry_members(
+    store: &dyn astersql_pd_storage::MetaStore,
+    cluster_id: u64,
+) -> Result<(Vec<pdpb::Member>, i64), Status> {
+    let prefix = format!("/pd/{cluster_id}/rust/members/");
+    let snapshot = store
+        .read(Read::prefix(prefix.as_bytes(), Consistency::Linearizable))
+        .await
+        .map_err(|error| match error {
+            astersql_pd_storage::StoreError::Unavailable
+            | astersql_pd_storage::StoreError::Cancelled => Status::unavailable(error.to_string()),
+            error => Status::internal(error.to_string()),
+        })?;
+    let mut members = Vec::with_capacity(snapshot.entries.len());
+    for entry in snapshot.entries {
+        let id = std::str::from_utf8(&entry.key)
+            .ok()
+            .and_then(|key| key.strip_prefix(&prefix))
+            .and_then(|key| key.parse::<u64>().ok())
+            .filter(|id| *id != 0)
+            .ok_or_else(|| Status::internal("invalid member registry key"))?;
+        let member = pdpb::Member::decode(entry.value.as_slice())
+            .map_err(|e| Status::internal(e.to_string()))?;
+        if member.member_id != id {
+            return Err(Status::internal("member registry identity mismatch"));
+        }
+        // Go's gRPC membership exposes consensus identity fields only; binary
+        // publication metadata belongs to the HTTP member administration API.
+        members.push(pdpb::Member {
+            member_id: id,
+            name: member.name,
+            client_urls: member.client_urls,
+            peer_urls: member.peer_urls,
+            ..Default::default()
+        });
+    }
+    Ok((members, snapshot.revision))
 }

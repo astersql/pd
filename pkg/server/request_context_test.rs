@@ -136,7 +136,7 @@ async fn task_040_behavior() {
             "X-Forwarded-Port: 1234",
             "-H",
             "X-Caller-ID: caller",
-            &format!("{url}/pd/api/v1/health"),
+            &format!("{url}/pd/api/v1/members"),
         ])
         .output()
         .unwrap();
@@ -146,7 +146,7 @@ async fn task_040_behavior() {
         .as_ref()
         .expect("HTTP domain call must receive request context");
     assert_eq!(context.request_id, "http-40");
-    assert_eq!(context.service_label, "GetHealthStatus");
+    assert_eq!(context.service_label, "GetMembers");
     assert_eq!(context.source_ip, "203.0.113.1");
     assert_eq!(context.source_port, "1234");
     assert_eq!(context.caller_id, "caller");
@@ -274,7 +274,7 @@ async fn task_040_behavior() {
         .unwrap();
     socket
         .write_all(
-            b"GET /pd/api/v1/health HTTP/1.1\r\nHost: localhost\r\nX-Request-ID: http-wait\r\n\r\n",
+            b"GET /pd/api/v1/members HTTP/1.1\r\nHost: localhost\r\nX-Request-ID: http-wait\r\n\r\n",
         )
         .await
         .unwrap();

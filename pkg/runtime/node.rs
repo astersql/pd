@@ -288,8 +288,25 @@ async fn initialize_node(
         )
         .with_graceful_shutdown(worker_cancel.clone().cancelled_owned());
         let mut server = Box::pin(std::future::IntoFuture::into_future(server));
-        record(&worker_events, "ready");
-        let _ = tx.send(());
+        // Poll the serving future before publishing readiness. A listener that
+        // terminates immediately must never acknowledge initialization.
+        let first = std::future::poll_fn(|cx| {
+            std::task::Poll::Ready(std::future::Future::poll(server.as_mut(), cx))
+        })
+        .await;
+        if first.is_pending() && !worker_cancel.is_cancelled() {
+            services.set_listening(true);
+            record(&worker_events, "ready");
+            let _ = tx.send(());
+        } else {
+            drop(tx);
+        }
+        let mut server = Box::pin(async move {
+            match first {
+                std::task::Poll::Ready(result) => result,
+                std::task::Poll::Pending => server.await,
+            }
+        });
         let roles = crate::member_role_worker::run(
             services.clone(),
             member,
@@ -303,6 +320,7 @@ async fn initialize_node(
             result = &mut server => (result.map_err(Into::into), true),
             result = &mut roles => (result, false),
         };
+        services.set_listening(false);
         worker_cancel.cancel();
         record(&worker_events, "stop-admission");
         if finished {

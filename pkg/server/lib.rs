@@ -22,6 +22,7 @@ mod grpc_tso;
 mod grpc_unsupported;
 mod http;
 pub mod http_contract;
+pub mod http_health;
 mod request_role;
 use astersql_pd_tso::Timestamp;
 use async_trait::async_trait;
@@ -142,6 +143,21 @@ pub trait PdServices: Send + Sync {
     async fn operator(&self, _id: u64) -> Result<Option<grpc_scatter::OperatorResult>, String> {
         Err("scheduling is not configured".into())
     }
+    /// Whether the host has started polling its listener and still admits probes.
+    fn probe_listener_ready(&self) -> bool {
+        false
+    }
+    /// Inspect this host's own consensus member, never an arbitrary external member.
+    async fn local_consensus_probe(
+        &self,
+        _probe: http_health::LocalConsensusProbe,
+    ) -> Result<(), String> {
+        Err("local consensus diagnostics are not configured".into())
+    }
+    /// Local listener and cluster initialization; unsupported hosts fail closed.
+    async fn probe_status(&self) -> Result<http_health::ReadyStatus, String> {
+        Err("local readiness is not configured".into())
+    }
     async fn healthy(&self) -> Result<(), String>;
     async fn alloc_id(&self) -> Result<u64, String>;
     /// Reserve one indivisible batch and return its last ID and count.
@@ -221,6 +237,7 @@ pub fn router(services: Arc<dyn PdServices>, cancel: CancellationToken) -> axum:
     ))
     .into_axum_router()
     .merge(http::router(services.clone()))
+    .merge(http_health::router(services.clone(), cancel.clone()))
     .layer(axum::middleware::from_fn_with_state(
         http_redirect::RedirectState {
             services: services.clone(),
@@ -509,3 +526,6 @@ pub mod http_redirect;
 mod grpc_forward_test;
 
 mod grpc_forward;
+
+#[cfg(test)]
+mod http_health_test;

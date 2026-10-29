@@ -45,7 +45,17 @@ fn error(v2: bool, status: StatusCode, message: &str) -> Response {
 }
 fn local(request: &Request<Body>) -> bool {
     let path = request.uri().path();
-    (request.method() == "GET" && path == "/pd/api/v1/config")
+    path.starts_with("/pd/api/v2/livez/")
+        || path.starts_with("/pd/api/v2/readyz/")
+        || matches!(
+            path,
+            "/pd/health"
+                | "/pd/ping"
+                | "/pd/api/v2/ready"
+                | "/pd/api/v2/readyz"
+                | "/pd/api/v2/livez"
+        )
+        || (request.method() == "GET" && path == "/pd/api/v1/config")
         || [
             "/pd/api/v1/admin/log",
             "/pd/api/v1/status",

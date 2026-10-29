@@ -14,6 +14,7 @@ use tokio_util::sync::CancellationToken;
 
 pub(crate) struct RoleServices {
     identity: NodeConfig,
+    listening: std::sync::atomic::AtomicBool,
     follower: FollowerRead,
     store: Weak<dyn MetaStore>,
     term: RwLock<Option<Arc<Application>>>,
@@ -36,10 +37,15 @@ impl RoleServices {
                     paths: astersql_pd_keypath::ClusterPaths::new(identity.cluster_id),
                 },
             ))),
+            listening: std::sync::atomic::AtomicBool::new(false),
             identity,
             store: Arc::downgrade(&store),
             term: RwLock::new(None),
         }
+    }
+    pub(crate) fn set_listening(&self, value: bool) {
+        self.listening
+            .store(value, std::sync::atomic::Ordering::Release);
     }
     pub(crate) fn current(&self) -> Option<Arc<Application>> {
         self.term.read().unwrap().clone()
@@ -173,6 +179,38 @@ impl PdServices for RoleServices {
         id: u64,
     ) -> Result<Option<astersql_pd_server::grpc_scatter::OperatorResult>, String> {
         self.active().await?.cluster.operator(id).await
+    }
+    fn probe_listener_ready(&self) -> bool {
+        self.listening.load(std::sync::atomic::Ordering::Acquire)
+    }
+    async fn probe_status(&self) -> Result<astersql_pd_server::http_health::ReadyStatus, String> {
+        if !self.probe_listener_ready() {
+            return Err("listener is not serving".into());
+        }
+        let store = self.store.upgrade().ok_or("server not started")?;
+        let bootstrapped = astersql_pd_storage_endpoint::StorageEndpoint::new(store)
+            .load_meta(&astersql_pd_keypath::ClusterPaths::new(
+                self.identity.cluster_id,
+            ))
+            .await
+            .map_err(|error| error.to_string())?
+            .is_some();
+        let loaded = if !bootstrapped {
+            false
+        } else if let Some(term) = self.current() {
+            // Publication follows restore; serialize with bootstrap and retirement.
+            term.cluster.regions_initialized().await
+                && self
+                    .current()
+                    .is_some_and(|current| Arc::ptr_eq(&current, &term))
+        } else {
+            let state = self.follower.0.lock().await;
+            state.apply.is_running() && !state.apply.full_syncing()
+        };
+        Ok(astersql_pd_server::http_health::ReadyStatus {
+            region_loaded: loaded,
+            is_bootstrapped: bootstrapped,
+        })
     }
     async fn healthy(&self) -> Result<(), String> {
         self.active().await.map(|_| ())

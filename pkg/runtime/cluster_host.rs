@@ -453,6 +453,11 @@ impl ClusterHost {
         let resources = resources.as_ref().ok_or("node stopped")?;
         Ok(resources.pipeline().snapshot().await?)
     }
+    /// Serialize readiness with bootstrap publication and term teardown.
+    pub(crate) async fn regions_initialized(&self) -> bool {
+        let resources = self.resources.lock().await;
+        resources.is_some() && !self.cancel.is_cancelled()
+    }
     pub(crate) async fn bootstrap(
         &self,
         backend: Arc<dyn MetaStore>,

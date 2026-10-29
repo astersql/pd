@@ -140,3 +140,6 @@ mod grpc_unsupported_differential_test;
 mod net_address_test;
 
 pub mod net_address;
+
+#[cfg(test)]
+mod http_health_test;
