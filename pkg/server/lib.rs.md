@@ -14,3 +14,10 @@ The region adapter and its separate behavior tests are explicitly registered.
 The optional bucket_heartbeat_service defaults to None. BucketHeartbeatService
 and its separate test module are explicitly registered; the host supplies the
 canonical cluster admission and local worker without adding protocol types to domain crates.
+
+The shared router installs request_context metadata around both HTTP/gRPC futures
+and streamed response frames. Embedders must serve it with
+`into_make_service_with_connect_info::<SocketAddr>()` to supply real peer data;
+missing connect information remains absent rather than trusting a header. The
+canonical runtime listener supplies this connection extension. See
+[request_context](request_context.rs.md) for field trust and cancellation rules.

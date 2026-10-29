@@ -7,6 +7,7 @@ license.workspace = true
 [lib]
 path = "lib.rs"
 [dependencies]
+http-body-util.workspace = true
 astersql-pd-keyutil.workspace = true
 astersql-pd-typeutil.workspace = true
 astersql-pd-schedule-schedulers.workspace = true

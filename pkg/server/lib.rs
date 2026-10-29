@@ -216,11 +216,15 @@ pub fn router(services: Arc<dyn PdServices>, cancel: CancellationToken) -> axum:
     tonic::service::Routes::new(astersql_pd_proto::pdpb::pd_server::PdServer::new(
         sync_transport::SyncGrpc(grpc::Grpc {
             services: services.clone(),
-            cancel,
+            cancel: cancel.clone(),
         }),
     ))
     .into_axum_router()
     .merge(http::router(services))
+    .layer(axum::middleware::from_fn_with_state(
+        request_context::ContextState::new(cancel),
+        request_context::middleware,
+    ))
 }
 
 pub mod core_trace;
@@ -474,3 +478,8 @@ mod grpc_unsupported_scenarios_test;
 #[cfg(test)]
 #[path = "http_contract_test.rs"]
 mod http_contract_test;
+
+pub mod request_context;
+#[cfg(test)]
+#[path = "request_context_test.rs"]
+mod request_context_test;

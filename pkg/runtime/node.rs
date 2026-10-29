@@ -282,8 +282,11 @@ async fn initialize_node(
     let worker_cancel = cancel.clone();
     let cluster_view = services.clone();
     let worker = tokio::spawn(async move {
-        let server = axum::serve(listener, router)
-            .with_graceful_shutdown(worker_cancel.clone().cancelled_owned());
+        let server = axum::serve(
+            listener,
+            router.into_make_service_with_connect_info::<std::net::SocketAddr>(),
+        )
+        .with_graceful_shutdown(worker_cancel.clone().cancelled_owned());
         let mut server = Box::pin(std::future::IntoFuture::into_future(server));
         record(&worker_events, "ready");
         let _ = tx.send(());

@@ -861,6 +861,7 @@ dependencies = [
  "axum",
  "base64",
  "futures-util",
+ "http-body-util",
  "prometheus",
  "prost",
  "prost-types",
