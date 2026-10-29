@@ -4,6 +4,7 @@ mod grpc;
 mod grpc_alloc_id;
 mod grpc_bootstrap;
 mod grpc_members;
+pub mod grpc_store;
 mod http;
 mod request_role;
 use astersql_pd_tso::Timestamp;
@@ -70,6 +71,19 @@ pub trait PdServices: Send + Sync {
         _region: astersql_pd_core::RegionMeta,
     ) -> Result<bool, String> {
         Err("bootstrap is not configured".into())
+    }
+    /// Persist registration into the host-owned canonical cluster.
+    async fn put_store(
+        &self,
+        _store: astersql_pd_core::StoreMeta,
+    ) -> Result<(), grpc_store::StoreError> {
+        Err(grpc_store::StoreError::Other(
+            "store registration is not configured".into(),
+        ))
+    }
+    /// List metadata from the same view used by heartbeats and GetStore.
+    async fn stores(&self) -> Result<Vec<astersql_pd_core::StoreMeta>, String> {
+        Err("store listing is not configured".into())
     }
     async fn healthy(&self) -> Result<(), String>;
     async fn alloc_id(&self) -> Result<u64, String>;
@@ -258,3 +272,11 @@ mod grpc_bootstrap_test;
 #[cfg(test)]
 #[path = "grpc_alloc_id_test.rs"]
 mod grpc_alloc_id_test;
+
+#[cfg(test)]
+#[path = "grpc_store_test.rs"]
+mod grpc_store_test;
+
+#[cfg(test)]
+#[path = "grpc_store_scenarios_test.rs"]
+mod grpc_store_scenarios_test;

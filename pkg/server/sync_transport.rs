@@ -282,6 +282,18 @@ impl astersql_pd_syncer::DownstreamSender for WireSender {
 pub(crate) struct SyncGrpc(pub Grpc);
 #[tonic::async_trait]
 impl Pd for SyncGrpc {
+    async fn put_store(
+        &self,
+        r: Request<pdpb::PutStoreRequest>,
+    ) -> Result<Response<pdpb::PutStoreResponse>, Status> {
+        self.0.put_store(r).await
+    }
+    async fn get_all_stores(
+        &self,
+        r: Request<pdpb::GetAllStoresRequest>,
+    ) -> Result<Response<pdpb::GetAllStoresResponse>, Status> {
+        self.0.get_all_stores(r).await
+    }
     async fn get_store(
         &self,
         r: Request<pdpb::GetStoreRequest>,

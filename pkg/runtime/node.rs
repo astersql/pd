@@ -97,6 +97,15 @@ impl PdServices for Application {
     fn region_sync_handle(&self) -> Option<Arc<astersql_pd_server::sync_transport::RegionSyncer>> {
         self.cluster.region_sync_handle()
     }
+    async fn put_store(
+        &self,
+        store: astersql_pd_core::StoreMeta,
+    ) -> Result<(), astersql_pd_server::grpc_store::StoreError> {
+        self.cluster.register_store(store).await
+    }
+    async fn stores(&self) -> Result<Vec<astersql_pd_core::StoreMeta>, String> {
+        self.cluster.registered_stores().await
+    }
     async fn healthy(&self) -> Result<(), String> {
         if self.cancel.is_cancelled() || self.leader.is_expired() {
             return Err("node stopped or leadership expired".into());

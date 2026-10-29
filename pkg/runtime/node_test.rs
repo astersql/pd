@@ -77,7 +77,22 @@ async fn shared_runtime_network_lifecycle() {
             .await
             .unwrap_err()
             .code(),
-        tonic::Code::Unimplemented
+        tonic::Code::FailedPrecondition
+    );
+    let stores = client
+        .get_all_stores(pdpb::GetAllStoresRequest {
+            header: Some(pdpb::RequestHeader {
+                cluster_id: 42,
+                ..Default::default()
+            }),
+            ..Default::default()
+        })
+        .await
+        .unwrap()
+        .into_inner();
+    assert_eq!(
+        stores.header.unwrap().error.unwrap().r#type,
+        pdpb::ErrorType::NotBootstrapped as i32
     );
     drop((stream, client));
     node.shutdown().await.unwrap();

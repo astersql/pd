@@ -91,6 +91,19 @@ impl PdServices for RoleServices {
         ));
         term.cluster.bootstrap(backend, store, region).await
     }
+    async fn put_store(
+        &self,
+        store: astersql_pd_core::StoreMeta,
+    ) -> Result<(), astersql_pd_server::grpc_store::StoreError> {
+        let term = self
+            .active()
+            .await
+            .map_err(astersql_pd_server::grpc_store::StoreError::Other)?;
+        term.cluster.register_store(store).await
+    }
+    async fn stores(&self) -> Result<Vec<astersql_pd_core::StoreMeta>, String> {
+        self.active().await?.cluster.registered_stores().await
+    }
     async fn healthy(&self) -> Result<(), String> {
         self.active().await.map(|_| ())
     }

@@ -488,6 +488,166 @@ impl ClusterHost {
         }
         Ok(committed)
     }
+    /// Return metadata from the canonical heartbeat view.
+    pub async fn registered_stores(&self) -> Result<Vec<astersql_pd_core::StoreMeta>, String> {
+        let guard = self.resources.lock().await;
+        if self.cancel.is_cancelled() {
+            return Err("node stopped".into());
+        }
+        let resources = guard.as_ref().ok_or("node stopped")?;
+        let state = resources.state.lock().unwrap();
+        Ok(state
+            .cluster
+            .stores
+            .get_stores()
+            .iter()
+            .filter_map(|s| s.meta().cloned())
+            .collect())
+    }
+    /// Validate, persist and publish a registration into the canonical view.
+    pub async fn register_store(
+        &self,
+        incoming: astersql_pd_core::StoreMeta,
+    ) -> Result<(), astersql_pd_server::grpc_store::StoreError> {
+        use astersql_pd_server::grpc_store::StoreError;
+        // Serialize validation, durable write and publication against other registrations.
+        let guard = self.resources.lock().await;
+        if self.cancel.is_cancelled() {
+            return Err(StoreError::Other("node stopped".into()));
+        }
+        let resources = guard
+            .as_ref()
+            .ok_or_else(|| StoreError::Other("node stopped".into()))?;
+        let next = {
+            let state = resources.state.lock().unwrap();
+            let previous = state.cluster.stores.get_store(incoming.id);
+            if previous.as_ref().is_some_and(|s| s.is_removed()) {
+                return Err(StoreError::Removed);
+            }
+            astersql_pd_core::validate_store_engine_key(Some(&incoming))
+                .map_err(|e| StoreError::InvalidEngine(e.to_string()))?;
+            let config = &resources.persisted_config.config;
+            if !config.replication.enable_placement_rules
+                && astersql_pd_core::is_store_contain_label(Some(&incoming), "engine", "tiflash")
+            {
+                return Err(StoreError::Other("placement rules is disabled".into()));
+            }
+            if incoming.id == 0 {
+                return Err(StoreError::InvalidStore(Box::new(incoming)));
+            }
+            let text = if incoming.version.is_empty() {
+                "1.0.0"
+            } else {
+                incoming
+                    .version
+                    .strip_prefix('v')
+                    .unwrap_or(&incoming.version)
+            };
+            let version: astersql_pd_server_config::ClusterVersion =
+                serde_json::from_value(serde_json::Value::String(text.into()))
+                    .map_err(|e| StoreError::Other(format!("invalid put store, error: {e}")))?;
+            let current = &config.cluster_version;
+            if (version.major, version.minor) < (current.major, current.minor) {
+                return Err(StoreError::Other(format!(
+                    "version should compatible with version  {current}, got {version}"
+                )));
+            }
+            for store in state.cluster.stores.get_stores() {
+                if store.id() == incoming.id
+                    || store.is_removed()
+                    || store.is_physically_destroyed()
+                {
+                    continue;
+                }
+                let old = store.meta().unwrap();
+                if incoming.address == old.address
+                    || (!old.peer_address.is_empty() && incoming.address == old.peer_address)
+                {
+                    return Err(StoreError::AddressConflict {
+                        peer: false,
+                        incoming: Box::new(incoming),
+                        existing: Box::new(old.clone()),
+                    });
+                }
+                if !incoming.peer_address.is_empty()
+                    && (incoming.peer_address == old.address
+                        || incoming.peer_address == old.peer_address)
+                {
+                    return Err(StoreError::AddressConflict {
+                        peer: true,
+                        incoming: Box::new(incoming),
+                        existing: Box::new(old.clone()),
+                    });
+                }
+            }
+            let next = match previous {
+                None => astersql_pd_core::StoreInfo::new(incoming),
+                Some(old) => {
+                    let mut next = old.as_ref().clone();
+                    next.edit_meta(|meta| {
+                        meta.address = incoming.address;
+                        meta.peer_address = incoming.peer_address;
+                        meta.status_address = incoming.status_address;
+                        meta.version = incoming.version;
+                        meta.git_hash = incoming.git_hash;
+                        meta.start_timestamp = incoming.start_timestamp;
+                        meta.deploy_path = incoming.deploy_path;
+                        meta.labels =
+                            astersql_pd_core::merge_labels(&meta.labels, &incoming.labels);
+                    });
+                    next
+                }
+            };
+            if config.replication.strictly_match_label {
+                for key in config.replication.location_labels.as_slice() {
+                    if next.label_value(key).is_empty() {
+                        return Err(StoreError::Other(format!(
+                            "label configuration is incorrect, need to specify the key: {key} "
+                        )));
+                    }
+                }
+                for label in &next.meta().unwrap().labels {
+                    if label.key != "engine"
+                        && label.key != "engine_role"
+                        && !config
+                            .replication
+                            .location_labels
+                            .as_slice()
+                            .contains(&label.key)
+                    {
+                        return Err(StoreError::Other(format!(
+                            "key matching the label was not found in the PD, store label key: {} ",
+                            label.key
+                        )));
+                    }
+                }
+            }
+            next
+        };
+        resources
+            .storage
+            .save_store_meta(&resources.paths, next.meta().unwrap())
+            .await
+            .map_err(|e| StoreError::Other(e.to_string()))?;
+        let state = resources.state.lock().unwrap();
+        // Keep concurrently accepted heartbeat statistics and lifecycle options.
+        if !state.cluster.stores.patch_store(next.id(), |store| {
+            let incoming = next.meta().unwrap();
+            store.edit_meta(|meta| {
+                meta.address.clone_from(&incoming.address);
+                meta.peer_address.clone_from(&incoming.peer_address);
+                meta.status_address.clone_from(&incoming.status_address);
+                meta.version.clone_from(&incoming.version);
+                meta.git_hash.clone_from(&incoming.git_hash);
+                meta.start_timestamp = incoming.start_timestamp;
+                meta.deploy_path.clone_from(&incoming.deploy_path);
+                meta.labels.clone_from(&incoming.labels);
+            });
+        }) {
+            state.cluster.stores.put_store(Arc::new(next));
+        }
+        Ok(())
+    }
     pub(crate) async fn shutdown(&self) -> Result<(), crate::NodeError> {
         self.cancel.cancel();
         let schedule_error = if let Some(worker) = self.schedule_worker.lock().await.take() {

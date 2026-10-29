@@ -48,3 +48,11 @@ mod grpc_bootstrap_differential_test;
 
 #[cfg(test)]
 mod grpc_alloc_id_differential_test;
+
+#[cfg(test)]
+#[path = "grpc_store_differential_test.rs"]
+mod grpc_store_differential_test;
+
+#[cfg(test)]
+#[path = "grpc_store_fault_test.rs"]
+mod grpc_store_fault_test;

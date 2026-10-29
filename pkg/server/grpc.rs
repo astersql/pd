@@ -10,13 +10,13 @@ pub struct Grpc {
     pub cancel: CancellationToken,
 }
 impl Grpc {
-    fn header(&self) -> Option<pdpb::ResponseHeader> {
+    pub(crate) fn header(&self) -> Option<pdpb::ResponseHeader> {
         Some(pdpb::ResponseHeader {
             cluster_id: self.services.identity().cluster_id,
             ..Default::default()
         })
     }
-    async fn bootstrap_header(&self) -> Result<Option<pdpb::ResponseHeader>, Status> {
+    pub(crate) async fn bootstrap_header(&self) -> Result<Option<pdpb::ResponseHeader>, Status> {
         let bootstrapped = tokio::select! { biased;
             _ = self.cancel.cancelled() => return Err(Status::unavailable("server not started")),
             result = self.services.is_bootstrapped() => result.map_err(Status::unavailable)?,
@@ -29,7 +29,7 @@ impl Grpc {
             )))
         }
     }
-    async fn check(&self, header: Option<&pdpb::RequestHeader>) -> Result<(), Status> {
+    pub(crate) async fn check(&self, header: Option<&pdpb::RequestHeader>) -> Result<(), Status> {
         crate::request_role::validate(self.services.as_ref(), &self.cancel, header).await
     }
 }
@@ -52,6 +52,18 @@ impl Pd for Grpc {
             .map(Response::new)
     }
 
+    async fn put_store(
+        &self,
+        r: Request<pdpb::PutStoreRequest>,
+    ) -> Result<Response<pdpb::PutStoreResponse>, Status> {
+        self.put_store_request(r.into_inner()).await
+    }
+    async fn get_all_stores(
+        &self,
+        r: Request<pdpb::GetAllStoresRequest>,
+    ) -> Result<Response<pdpb::GetAllStoresResponse>, Status> {
+        self.all_stores_request(r.into_inner()).await
+    }
     async fn get_store(
         &self,
         request: Request<pdpb::GetStoreRequest>,
@@ -68,10 +80,10 @@ impl Pd for Grpc {
             .services
             .cluster_read_service()
             .ok_or_else(|| Status::unimplemented("cluster reads are not configured"))?;
-        let store = service
-            .store(request.store_id)
-            .await
-            .map_err(Status::unavailable)?;
+        let store = tokio::select! { biased;
+            _ = self.cancel.cancelled() => return Err(Status::unavailable("server not started")),
+            result = service.store(request.store_id) => result.map_err(Status::unavailable)?,
+        };
         let mut header = self.header().unwrap();
         let (store, stats) = match store {
             Some(store) => (
