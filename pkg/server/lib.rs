@@ -11,6 +11,7 @@ mod grpc_region_query;
 mod grpc_region_scan;
 mod grpc_report_split;
 pub mod grpc_scatter;
+pub mod grpc_split_regions;
 pub mod grpc_store;
 mod http;
 mod request_role;
@@ -103,6 +104,12 @@ pub trait PdServices: Send + Sync {
     /// List metadata from the same view used by heartbeats and GetStore.
     async fn stores(&self) -> Result<Vec<astersql_pd_core::StoreMeta>, String> {
         Err("store listing is not configured".into())
+    }
+    async fn split_regions(
+        &self,
+        _request: grpc_split_regions::SplitRequest,
+    ) -> Result<grpc_split_regions::SplitResult, String> {
+        Err("splitting is not configured".into())
     }
     async fn scatter(
         &self,
@@ -404,3 +411,9 @@ mod grpc_scatter_test;
 
 #[cfg(test)]
 mod grpc_scatter_scenarios_test;
+
+#[cfg(test)]
+mod grpc_split_regions_test;
+
+#[cfg(test)]
+pub(crate) mod grpc_split_regions_scenarios_test;

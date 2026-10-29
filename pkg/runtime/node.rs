@@ -106,6 +106,12 @@ impl PdServices for Application {
     async fn stores(&self) -> Result<Vec<astersql_pd_core::StoreMeta>, String> {
         self.cluster.registered_stores().await
     }
+    async fn split_regions(
+        &self,
+        request: astersql_pd_server::grpc_split_regions::SplitRequest,
+    ) -> Result<astersql_pd_server::grpc_split_regions::SplitResult, String> {
+        self.cluster.split_regions(request).await
+    }
     async fn scatter(
         &self,
         request: astersql_pd_server::grpc_scatter::ScatterRequest,

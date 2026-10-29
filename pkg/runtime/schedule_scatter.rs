@@ -8,6 +8,7 @@ use astersql_pd_schedule_scatter::{ScatterBatchError, ScatterBatchFailure, Scatt
 use astersql_pd_server::grpc_scatter::*;
 use tokio::sync::oneshot;
 pub(super) enum Command {
+    Split(super::schedule_split::Pending),
     Scatter(
         ScatterRequest,
         oneshot::Sender<Result<ScatterResult, ScatterError>>,
@@ -39,8 +40,10 @@ pub(super) async fn serve(
     resources: &Arc<AsyncMutex<Option<Resources>>>,
     labels: &astersql_pd_schedule_labeler::RegionLabeler,
     cancel: &CancellationToken,
+    splits: &mut Vec<super::schedule_split::Pending>,
 ) {
     match command {
+        Command::Split(pending) => splits.push(pending),
         Command::Operator(id, mut reply) => {
             let future = async {
                 let guard = resources.lock().await;

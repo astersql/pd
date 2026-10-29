@@ -993,3 +993,6 @@ mod cluster_split;
 
 #[path = "schedule_scatter.rs"]
 mod schedule_scatter;
+
+#[path = "schedule_split.rs"]
+mod schedule_split;

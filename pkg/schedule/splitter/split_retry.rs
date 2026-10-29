@@ -30,15 +30,16 @@ pub struct SplitRetry {
     original_len: usize,
     remaining: Vec<Vec<u8>>,
     ids: BTreeSet<u64>,
-    retry_limit: i32,
-    attempt_index: u32,
+    retry_limit: i64,
+    attempt_index: u64,
     attempt: Option<SplitAttempt>,
     phase: SplitRetryPhase,
     deadline_ms: u64,
     next_tick_ms: u64,
 }
 impl SplitRetry {
-    pub fn new(keys: Vec<Vec<u8>>, retry_limit: i32) -> Self {
+    pub fn new(keys: Vec<Vec<u8>>, retry_limit: impl Into<i64>) -> Self {
+        let retry_limit = retry_limit.into();
         Self {
             original_len: keys.len(),
             remaining: keys,
@@ -114,7 +115,11 @@ impl SplitRetry {
                     self.phase = SplitRetryPhase::Done;
                 } else {
                     let delay = 100_u64
-                        .saturating_mul(1_u64.checked_shl(self.attempt_index).unwrap_or(u64::MAX))
+                        .saturating_mul(
+                            1_u64
+                                .checked_shl(self.attempt_index.try_into().unwrap_or(u32::MAX))
+                                .unwrap_or(u64::MAX),
+                        )
                         .min(60_000);
                     self.phase = SplitRetryPhase::Backoff {
                         until_ms: now_ms.saturating_add(delay),
@@ -122,7 +127,7 @@ impl SplitRetry {
                 }
             }
             SplitRetryPhase::Backoff { until_ms } if now_ms >= until_ms => {
-                if self.attempt_index >= self.retry_limit as u32 {
+                if self.attempt_index >= self.retry_limit as u64 {
                     self.phase = SplitRetryPhase::Done;
                 } else {
                     self.attempt_index += 1;

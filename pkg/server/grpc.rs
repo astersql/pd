@@ -35,6 +35,13 @@ impl Grpc {
 }
 #[tonic::async_trait]
 impl Pd for Grpc {
+    async fn split_regions(
+        &self,
+        r: Request<pdpb::SplitRegionsRequest>,
+    ) -> Result<Response<pdpb::SplitRegionsResponse>, Status> {
+        self.split_regions_request(r.into_inner()).await
+    }
+
     async fn scatter_region(
         &self,
         r: Request<pdpb::ScatterRegionRequest>,

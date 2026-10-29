@@ -142,14 +142,17 @@ async fn run(
     let mut hot = astersql_pd_schedule_schedulers::HotLoadProjection::default();
     let mut push_queue = Default::default();
     let mut fast_operators = Default::default();
+    let mut splits = Vec::new();
     let result = async {
         status.send_modify(|s| s.phase = SchedulePhase::Preparing);
         while !coordinator.should_run(start.elapsed()) {
+            super::schedule_split::drive(&mut splits, &mut coordinator, &resources).await;
+            super::schedule_scatter::dispatch_new(&coordinator,&resources,&routing,&mut push_queue,&mut fast_operators,&cancel).await?;
             tokio::select! {biased;
                 _=cancel.cancelled()=>return Ok(()),
-                command=requests.recv()=>{if let Some(command)=command {super::schedule_scatter::serve(command,&mut coordinator,&resources,&labels,&cancel).await;
+                command=requests.recv()=>{if let Some(command)=command {super::schedule_scatter::serve(command,&mut coordinator,&resources,&labels,&cancel,&mut splits).await;
                     super::schedule_scatter::dispatch_new(&coordinator,&resources,&routing,&mut push_queue,&mut fast_operators,&cancel).await?;}},
-                _=tokio::time::sleep(Duration::from_secs(3))=>{}
+                _=tokio::time::sleep(if splits.is_empty() { Duration::from_secs(3) } else { Duration::from_millis(10) })=>{}
             }
         }
         if cancel.is_cancelled() {
@@ -186,10 +189,12 @@ async fn run(
         let mut last_push = tokio::time::Instant::now();
         let mut last_slow = tokio::time::Instant::now();
         loop {
+            super::schedule_split::drive(&mut splits, &mut coordinator, &resources).await;
+            super::schedule_scatter::dispatch_new(&coordinator,&resources,&routing,&mut push_queue,&mut fast_operators,&cancel).await?;
             tokio::select! {biased;
                 _=cancel.cancelled()=>break,
                 _=ticker.tick()=>{},
-                command=requests.recv()=>{if let Some(command)=command {super::schedule_scatter::serve(command,&mut coordinator,&resources,&labels,&cancel).await;
+                command=requests.recv()=>{if let Some(command)=command {super::schedule_scatter::serve(command,&mut coordinator,&resources,&labels,&cancel,&mut splits).await;
                     super::schedule_scatter::dispatch_new(&coordinator,&resources,&routing,&mut push_queue,&mut fast_operators,&cancel).await?;} continue;},
             }
             let mut guard = resources.lock().await;
