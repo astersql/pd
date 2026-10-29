@@ -35,6 +35,20 @@ impl Grpc {
 }
 #[tonic::async_trait]
 impl Pd for Grpc {
+    async fn set_external_timestamp(
+        &self,
+        r: Request<pdpb::SetExternalTimestampRequest>,
+    ) -> Result<Response<pdpb::SetExternalTimestampResponse>, Status> {
+        self.set_external_timestamp_request(r.into_inner()).await
+    }
+
+    async fn get_external_timestamp(
+        &self,
+        r: Request<pdpb::GetExternalTimestampRequest>,
+    ) -> Result<Response<pdpb::GetExternalTimestampResponse>, Status> {
+        self.get_external_timestamp_request(r.into_inner()).await
+    }
+
     async fn report_min_resolved_ts(
         &self,
         r: Request<pdpb::ReportMinResolvedTsRequest>,

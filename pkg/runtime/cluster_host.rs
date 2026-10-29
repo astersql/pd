@@ -21,6 +21,7 @@ use tokio_util::sync::CancellationToken;
 
 type State = Mutex<HeartbeatEffectsState<ProviderSnapshot<()>>>;
 struct Resources {
+    meta_store: Arc<dyn MetaStore>,
     leader: Arc<astersql_pd_member::Leadership>,
     allocator: Arc<astersql_pd_id::Allocator>,
     schedule_creations: std::collections::BTreeSet<u64>,
@@ -55,6 +56,7 @@ pub struct ClusterHost {
     schedule_error: Arc<Mutex<Option<String>>>,
     schedule_initialized: Arc<std::sync::atomic::AtomicBool>,
     resolved_worker: AsyncMutex<Option<astersql_pd_cluster::ResolvedTsWorker>>,
+    external_ts: std::sync::atomic::AtomicU64,
     min_resolved_ts: Arc<std::sync::atomic::AtomicU64>,
     resolved_error: Arc<Mutex<Option<String>>>,
     store_config_error: Arc<Mutex<Option<String>>>,
@@ -93,8 +95,10 @@ impl ClusterHost {
         persisted_config.config.replication = config.replication.clone();
         persisted_config.store = config.store.clone();
         let metrics_store = store.clone();
-        let storage = Arc::new(StorageEndpoint::new(store));
+        let storage = Arc::new(StorageEndpoint::new(store.clone()));
         let paths = ClusterPaths::new(cluster_id);
+        let external_ts =
+            std::sync::atomic::AtomicU64::new(storage.load_external_ts(&paths).await.unwrap_or(0));
         let resolved_error = Arc::new(Mutex::new(None));
         let initial_resolved = match storage.load_min_resolved_ts(&paths).await {
             Ok(value) => value,
@@ -159,6 +163,7 @@ impl ClusterHost {
             serde_json::to_value(persisted_config.persistence_snapshot())
                 .map_err(|e| e.to_string())?;
         let resources = Arc::new(AsyncMutex::new(Some(Resources {
+            meta_store: store,
             leader,
             allocator,
             schedule_creations: Default::default(),
@@ -374,6 +379,7 @@ impl ClusterHost {
             schedule_error,
             schedule_initialized,
             resolved_worker: AsyncMutex::new(Some(resolved_worker)),
+            external_ts,
             min_resolved_ts,
             resolved_error,
             syncer: syncer_weak,
@@ -495,6 +501,43 @@ impl ClusterHost {
             state.cluster.update_all_store_status();
         }
         Ok(committed)
+    }
+    /// Return the current term's canonical external timestamp.
+    pub async fn external_timestamp(&self) -> Result<u64, String> {
+        let resources = self.resources.lock().await;
+        if self.cancel.is_cancelled() || resources.is_none() {
+            return Err("node stopped".into());
+        }
+        Ok(self.external_ts.load(std::sync::atomic::Ordering::SeqCst))
+    }
+    /// Publish before persistence, preserving Go's failure side effect.
+    pub async fn set_external_timestamp(&self, timestamp: u64) -> Result<(), String> {
+        let guard = self.resources.lock().await;
+        if self.cancel.is_cancelled() {
+            return Err("node stopped".into());
+        }
+        let resources = guard.as_ref().ok_or("node stopped")?;
+        resources
+            .leader
+            .validate()
+            .await
+            .map_err(|e| e.to_string())?;
+        if timestamp <= self.external_ts.load(std::sync::atomic::Ordering::SeqCst) {
+            return Err(
+                "the external timestamp should be larger than current external timestamp".into(),
+            );
+        }
+        self.external_ts
+            .store(timestamp, std::sync::atomic::Ordering::SeqCst);
+        let storage = StorageEndpoint::new(Arc::new(crate::member_role_worker::TermStore::new(
+            resources.meta_store.clone(),
+            resources.leader.clone(),
+            self.cancel.clone(),
+        )));
+        storage
+            .save_external_ts(&resources.paths, timestamp)
+            .await
+            .map_err(|e| e.to_string())
     }
     /// Replace a store report under the same lock as lifecycle transitions.
     pub async fn report_min_resolved_ts(&self, store_id: u64, ts: u64) -> Result<(), String> {

@@ -5,6 +5,7 @@ mod grpc_alloc_id;
 pub mod grpc_ask_split;
 mod grpc_bootstrap;
 mod grpc_cluster_config;
+mod grpc_external_ts;
 mod grpc_global_config;
 mod grpc_global_watch;
 mod grpc_members;
@@ -95,6 +96,14 @@ pub trait PdServices: Send + Sync {
         _region: astersql_pd_core::RegionMeta,
     ) -> Result<bool, String> {
         Err("bootstrap is not configured".into())
+    }
+    /// Read the host-owned external timestamp restored from canonical storage.
+    async fn external_timestamp(&self) -> Result<u64, String> {
+        Err("external timestamp is not configured".into())
+    }
+    /// Validate monotonicity, publish in memory, then persist, matching Go ordering.
+    async fn set_external_timestamp(&self, _timestamp: u64) -> Result<(), String> {
+        Err("external timestamp is not configured".into())
     }
     /// Apply a report to the canonical store cache; aggregation persists separately.
     async fn report_min_resolved_ts(&self, _store_id: u64, _ts: u64) -> Result<(), String> {
@@ -444,3 +453,6 @@ mod grpc_global_watch_scenarios_test;
 
 #[cfg(test)]
 mod grpc_resolved_ts_test;
+
+#[cfg(test)]
+mod grpc_external_ts_test;

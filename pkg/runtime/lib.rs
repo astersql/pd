@@ -120,3 +120,9 @@ mod grpc_global_watch_differential_test;
 
 #[cfg(test)]
 mod grpc_resolved_ts_differential_test;
+
+#[cfg(test)]
+mod grpc_external_ts_differential_test;
+
+#[cfg(test)]
+mod grpc_external_ts_fault_test;

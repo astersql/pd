@@ -282,6 +282,20 @@ impl astersql_pd_syncer::DownstreamSender for WireSender {
 pub(crate) struct SyncGrpc(pub Grpc);
 #[tonic::async_trait]
 impl Pd for SyncGrpc {
+    async fn set_external_timestamp(
+        &self,
+        r: Request<pdpb::SetExternalTimestampRequest>,
+    ) -> Result<Response<pdpb::SetExternalTimestampResponse>, Status> {
+        self.0.set_external_timestamp(r).await
+    }
+
+    async fn get_external_timestamp(
+        &self,
+        r: Request<pdpb::GetExternalTimestampRequest>,
+    ) -> Result<Response<pdpb::GetExternalTimestampResponse>, Status> {
+        self.0.get_external_timestamp(r).await
+    }
+
     async fn report_min_resolved_ts(
         &self,
         r: Request<pdpb::ReportMinResolvedTsRequest>,

@@ -118,6 +118,16 @@ impl PdServices for RoleServices {
         ));
         term.cluster.bootstrap(backend, store, region).await
     }
+    async fn external_timestamp(&self) -> Result<u64, String> {
+        self.active().await?.cluster.external_timestamp().await
+    }
+    async fn set_external_timestamp(&self, timestamp: u64) -> Result<(), String> {
+        self.active()
+            .await?
+            .cluster
+            .set_external_timestamp(timestamp)
+            .await
+    }
     async fn report_min_resolved_ts(&self, store_id: u64, ts: u64) -> Result<(), String> {
         self.active()
             .await?
