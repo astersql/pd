@@ -457,6 +457,7 @@ dependencies = [
  "astersql-pd-tso",
  "async-trait",
  "axum",
+ "etcd-client",
  "prometheus",
  "prost",
  "rand",

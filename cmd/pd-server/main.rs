@@ -7,6 +7,8 @@ type ProcessError = Box<dyn Error + Send + Sync>;
 
 pub(crate) struct Config {
     pub endpoint: String,
+    pub diagnostic_endpoint: Option<String>,
+    pub diagnostic_member: Option<u64>,
     pub client: String,
     pub peer: String,
     pub name: String,
@@ -17,6 +19,8 @@ impl Config {
     pub(crate) fn parse(args: impl Iterator<Item = String>) -> Result<Self, ProcessError> {
         let mut config = Self {
             endpoint: String::new(),
+            diagnostic_endpoint: None,
+            diagnostic_member: None,
             client: "http://127.0.0.1:2379".into(),
             peer: "http://127.0.0.1:2380".into(),
             name: "pd".into(),
@@ -27,6 +31,8 @@ impl Config {
             let (key, value) = arg.split_once('=').ok_or("expected --option=value")?;
             match key {
                 "--etcd-endpoints" => config.endpoint = value.into(),
+                "--etcd-member-endpoint" => config.diagnostic_endpoint = Some(value.into()),
+                "--etcd-member-id" => config.diagnostic_member = Some(value.parse()?),
                 "--client-urls" => config.client = value.into(),
                 "--peer-urls" => config.peer = value.into(),
                 "--name" => config.name = value.into(),
@@ -39,6 +45,14 @@ impl Config {
         }
         if config.endpoint.is_empty() {
             return Err("--etcd-endpoints is required for the transitional backend".into());
+        }
+        if config.diagnostic_endpoint.is_some() != config.diagnostic_member.is_some()
+            || config.diagnostic_member == Some(0)
+        {
+            return Err(
+                "--etcd-member-endpoint and nonzero --etcd-member-id must be supplied together"
+                    .into(),
+            );
         }
         Ok(config)
     }
@@ -65,9 +79,21 @@ pub(crate) async fn run_until(
         )
         .await?,
     );
+    let mut builder =
+        PdNodeBuilder::new(tokio::runtime::Handle::current(), CancellationToken::new());
+    if let (Some(endpoint), Some(member)) = (config.diagnostic_endpoint, config.diagnostic_member) {
+        let diagnostics = astersql_pd_runtime::etcd_diagnostics::EtcdMemberDiagnostics::connect(
+            endpoint,
+            member,
+            Duration::from_secs(2),
+        )
+        .await?;
+        diagnostics.validate_store(store.as_ref()).await?;
+        builder = builder.with_etcd_member_diagnostics(Arc::new(diagnostics));
+    }
     let identity =
         astersql_pd_runtime::bootstrap_config(store.as_ref(), config.name, client, peer).await?;
-    let mut node = PdNodeBuilder::new(tokio::runtime::Handle::current(), CancellationToken::new())
+    let mut node = builder
         .start(
             store,
             identity,
@@ -89,7 +115,7 @@ pub fn main() -> ExitCode {
     let args: Vec<_> = std::env::args().skip(1).collect();
     if args == ["--help"] || args == ["-h"] {
         println!(
-            "pd-server --etcd-endpoints=http://127.0.0.1:2379 [--client-urls=http://127.0.0.1:2381] [--name=pd]\nMinimal classic PD; external etcd is a transitional dependency."
+            "pd-server [--etcd-member-endpoint=URL --etcd-member-id=ID] --etcd-endpoints=http://127.0.0.1:2379 [--client-urls=http://127.0.0.1:2381] [--name=pd]\nMinimal classic PD; external etcd is a transitional dependency."
         );
         return ExitCode::SUCCESS;
     }

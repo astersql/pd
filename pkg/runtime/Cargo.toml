@@ -9,6 +9,7 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
+etcd-client.workspace = true
 astersql-pd-schedule-splitter.workspace = true
 astersql-pd-cache.workspace = true
 astersql-pd-schedule-hbstream.workspace = true

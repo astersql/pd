@@ -127,6 +127,11 @@ fn prefix_end(prefix: &[u8]) -> Vec<u8> {
 }
 #[async_trait]
 impl MetaStore for EtcdMetaStore {
+    async fn consensus_cluster_id(&self) -> Result<Option<u64>> {
+        let mut client = self.client.clone();
+        let status = self.bounded(client.status()).await?;
+        Ok(status.header().map(|header| header.cluster_id()))
+    }
     async fn consensus_leader_id(&self) -> Result<Option<u64>> {
         let mut client = self.client.clone();
         let status = self.bounded(client.status()).await?;

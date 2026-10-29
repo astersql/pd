@@ -1,6 +1,6 @@
 # 任务043：已实现的健康与区域加载探针证据
 
-本记录验收已实现的经典明文HTTP边界，不代表任务043整体完成。基准为
+本记录保留初版HTTP证据，并在下文补齐用户授权的独立etcd成员诊断验收。最终完成边界为显式成员绑定的过渡部署。基准为
 `3ba8aefe8bc9a4b7aa58abb6b09b31403cc87215`；依赖任务042已验收。
 固定kvproto版本不变，没有修改Go、Go模块、Cargo依赖或只读plan.md。
 
@@ -15,12 +15,12 @@
 - [PdNode](../../../pkg/runtime/node.rs)在第一次poll监听服务后才发布ready；提前结束/取消不发送ready，服务结束先清除监听状态。请求取消另由既有request_context传递。
 
 当前明文ping不降级HTTPS，也不声称TLS探测已验收；TLS仍属83–85。
-livez/readyz根与子路由、字典序汇总、verbose、重复exclude参数和未知检查404已接线。LocalConsensusProbe明确要求接收请求的宿主本机成员能力；默认返回诊断能力未配置错误，真实RoleServices因此返回503而非伪成功。显式排除检查遵循Go契约，但不能绕过未启动的listener或取消门。本机etcd诊断提供方及其成功/故障差分仍未交付；具体剩余阻塞及最小契约决策仅记录在编号任务文件中。
+livez/readyz根与子路由、字典序汇总、verbose、重复exclude参数和未知检查404已接线。LocalConsensusProbe明确要求接收请求的宿主本机成员能力；默认返回诊断能力未配置错误，真实RoleServices因此返回503而非伪成功。显式排除检查遵循Go契约，但不能绕过未启动的listener或取消门。初版未交付诊断提供方；该缺口已由下文的独立etcd绑定provider及运行证据补齐。
 
 ## 来源映射
 
 - source-inventory：任务43条目，`server/api/health.go`、`server/apiv2/handlers/ready.go`及`pkg/basicserver/`共享生命周期来源。当前仅覆盖上述成员健康、ping、Ready/checkLeaderPromotion及监听生命周期边界。
-- wire-inventory：HTTP-145/146/171/172/196/213获得本次实现与测试；HTTP-210/211/212/214–217已有路由/协议和缺失能力时的失败验证，但本机存储能力未验收，不把这些失败响应称作完整兼容成功。
+- wire-inventory：HTTP-145/146/171/172/196/213获得本次实现与测试；HTTP-210/211/212/214–217已有路由/协议和缺失能力时的失败验证，但初版不将失败响应称作完整成功；这些来源行的实际状态检查由下文补齐。
 - surface-inventory：health/ping审计注册仍归81/主题9，本次没有新增指标、审计或配置。
 
 ## 新运行行为证据
@@ -75,4 +75,94 @@ Go二进制SHA-256：`b9baaf7b6160a6ea1e3e3dc72ae059f317b0066838b676680105daceed
 
 1101个Go/模块文件（含ignored/untracked）开始/结束的路径集合、原字节SHA-256及Git状态完全一致；plan.md与HEAD逐字节相同。Python语法、文档相对链接、`git diff --check`检查通过。全部测试/oracle子进程已退出；槽位1、2的自有锁均已释放，缓存保留。
 
-[压缩证据](task-043-evidence.json.gz)包含确切命令/退出码/原始日志、Go binary build info及SHA-256、各轮真实HTTP观察、只读守卫和最终源码哈希。SHA-256：`6af4504c9127793e3060ef11017acfece09c82419b92730e5333b15186c2696e`。任务整体仍按编号任务文件的原验收条件处理，不将本机诊断未配置时的503算作完整兼容。
+[压缩证据](task-043-evidence.json.gz)包含确切命令/退出码/原始日志、Go binary build info及SHA-256、各轮真实HTTP观察、只读守卫和最终源码哈希。SHA-256：`6af4504c9127793e3060ef11017acfece09c82419b92730e5333b15186c2696e`。未配置能力时的503不算成功；本轮最终验收采用下文用户明确授权的独立etcd绑定契约。
+
+
+## 用户授权的独立etcd成员诊断（最终实现）
+
+用户明确提出“没有就单独起一个”，授权用显式PD到独立etcd成员的绑定定义过渡诊断，不再要求Go embedded-etcd进程/拓扑等价。此授权解除初版的唯一阻塞；Go和plan.md继续只读。官方[embed接口](https://etcd.io/docs/v3.6/dev-guide/golang_embed_pkg/)为Go服务端，[etcd-client](https://docs.rs/etcd-client/0.17.0/etcd_client/)为Rust gRPC客户端，本轮没有发现满足当前约束的Rust嵌入式服务端方案，采用已有精确版本的客户端连接独立服务，不引入Go FFI或私有runtime。
+
+[EtcdMemberDiagnostics](../../../pkg/runtime/etcd_diagnostics.rs)只连接一个显式endpoint，构造时校验非零预期member ID并固定backend cluster ID。每次status、Range和Alarm响应都重新验证cluster/member身份，防止DNS、代理或错误endpoint指向另一个成员。MetaStore只新增后端中立的可选cluster身份查询，EtcdMetaStore提供真实status身份；无法证明同集群的backend拒绝绑定，不以PD ID冒充etcd ID。
+
+启动前校验诊断与元数据存储集群相同；以真实事务持久保存`/pd/{cluster}/rust/diagnostic-members/{pd-member}`的`etcd-cluster:etcd-member`，拒绝静默重绑。CLI先验证配置及backend，再建立PD身份；已取消的启动不会写入绑定。宿主生命周期持有provider，HTTP取消会丢弃正在等待的RPC。
+
+四项检查均来自真实服务：Serializable/Linearizable Range使用对应选项，CORRUPT来自Alarm API，learner来自该成员status。诊断连接不要求leader，使孤立成员的可序列化本地读仍可存活，线性读无法取得多数派时失败。额外的身份校验或RPC不可达/拒绝也失败；不把它们固定为成功。
+
+部署差异：etcd是独立进程，PD生命周期不负责启动或关闭它；显式成员绑定定义诊断对象，两个进程的故障和权限边界也独立。Go检查内部Server方法，本实现通过绑定成员的gRPC检查，因此连接/权限/超时可以产生503。该调整不证明Rust原生后端或Go进程内拓扑等价；HTTP状态、字段、汇总/排除规则和真实可观察状态仍接受本任务验证。
+
+### 配置与复跑
+
+新增CLI参数必须成对提供：`--etcd-member-endpoint=URL --etcd-member-id=DECIMAL_ID`。ID取真实`etcdctl endpoint status --write-out=json`的member_id，不取PD的名称派生ID。旧调用未配置时仍明确503。库宿主通过`PdNodeBuilder::with_etcd_member_diagnostics`注入同一能力。
+
+例如独立启动etcd（命令为部署说明，本轮验证使用自动清理的临时目录和随机端口）：
+
+```sh
+etcd --name=pd-store --data-dir=/absolute/path/pd-etcd-data \
+  --listen-client-urls=http://127.0.0.1:12379 \
+  --advertise-client-urls=http://127.0.0.1:12379 \
+  --listen-peer-urls=http://127.0.0.1:12380 \
+  --initial-advertise-peer-urls=http://127.0.0.1:12380 \
+  --initial-cluster=pd-store=http://127.0.0.1:12380
+etcdctl --endpoints=http://127.0.0.1:12379 endpoint status --write-out=json
+pd-server --etcd-endpoints=http://127.0.0.1:12379 \
+  --etcd-member-endpoint=http://127.0.0.1:12379 --etcd-member-id=DECIMAL_ID \
+  --client-urls=http://127.0.0.1:12381 --peer-urls=http://127.0.0.1:12382
+```
+
+Docker引擎不可用时，使用官方[etcd 3.5.15发行版](https://github.com/etcd-io/etcd/releases/tag/v3.5.15)。本轮下载`etcd-v3.5.15-darwin-arm64.zip`，与官方SHA256SUMS核对：`86e189e61f021d9d94e16cdad7c2fda65fd2439ecc4895c45429e3bdc1ca9512`。仅提取etcd/etcdctl两个可执行文件到`/tmp/pd-task043-etcd-v3.5.15`，没有写入任何Go源码或模块；没有把第三方二进制提交入库。
+
+领取共享槽位后，可复跑：
+
+```sh
+cargo test --locked -p astersql-pd-runtime --lib task_043_ -- --nocapture
+PD_ETCD_BIN=/absolute/path/etcd cargo test --locked -p astersql-pd-runtime --lib task_043_independent_etcd_learner -- --ignored --nocapture
+PD_COMPAT_GO_BIN="$PWD/bin/pd-server" python3 scripts/etcd-diagnostics-oracle.py
+```
+
+### 新增真实验证
+
+[独立测试](../../../pkg/runtime/etcd_diagnostics_test.rs)显式注册，默认运行2项新增provider测试；2项需要显式环境的验证分别执行，不将默认忽略算作通过。
+
+- `task_043_bound_etcd_member`：真实etcd四类检查成功。最小接口阶段已编译运行并在“真实已初始化etcd必须成功”断言失败（退出101、0通过/1失败），之后才接通真实RPC。首次--locked检查因新增现有workspace依赖需更新lock而拒绝，非行为失败；离线更新仅增加runtime的etcd-client依赖行，没有更换版本。
+- `task_043_binding_faults_and_real_alarm`：错误成员ID拒绝；错误后端cluster拒绝且目标namespace为空；预先取消的启动不留绑定；真实PD HTTP livez/readyz及子项成功，稳定成员/绑定namespace前后不变。实际修改持久绑定后拒绝重绑且不覆盖冲突值，恢复后继续。实际Activate CORRUPT得到503，Deactivate恢复200；停止etcd后四种检查均失败。
+- `task_043_independent_etcd_learner`（显式）：运行两个官方独立etcd进程；真实member_add learner，status确认为learner，Rust HTTP non-learner=503；真实promote后等待该成员实际应用配置，再验证200及readyz=200。停止另一投票成员造成失去多数派，真实status确认无leader；Serializable检查成功、Linearizable检查失败。进行中的真实线性读由宿主取消，1秒内HTTP返回503，未等待2秒RPC超时。服务、节点、etcd子进程全部join并清理测试数据。learner状态oracle是官方Go etcd的status/member API，不将其说成Go PD learner HTTP差分。
+- `task_043_readonly_etcd_diagnostics_differential`（显式）：[只读脚本](../../../scripts/etcd-diagnostics-oracle.py)保持已有Go PD进程存活，Rust provider绑定同一真实存储成员，Rust使用独立PD namespace。9条正常livez/readyz请求逐字比较状态与body；真实激活CORRUPT后比较告警及两种Range探针，再解除告警比较恢复。CORRUPT不等于Range一定失败：初始测试错误地要求503，观察实际Go后改为精确对照真实Go响应，两种读可仍返回200；没有将告警检查的503放宽。
+- CLI成对参数、零ID拒绝及既有独立启动/退出测试运行；所有旧health/ready、取消及成员管理回归继续保留。
+
+测试设计中曾将整个PD前缀作为无写入快照，被独立调度worker的启动配置写入干扰；改为稳定的成员/绑定namespace，并对注入的绑定冲突单独核对副作用。learner晋升RPC的提交确认早于follower应用，曾观察晋升后仍503，现按真实status变化等待后断言，没有固定睡眠或直接修改状态。
+
+### 过渡诊断验证命令（最终源码）
+
+本轮各阶段原子领取的实际槽位均为1：
+`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`。
+所有构建、检查、测试和oracle脚本继承该绝对路径，正常与失败阶段均释放自有锁，缓存保留。
+
+| 命令 | 退出码 | 有效测试/结果 |
+| --- | --- | --- |
+| `cargo check --offline -p astersql-pd-runtime`（必要的lock更新） | 0 | 已有workspace依赖，lock只增加一行 |
+| `cargo test --locked -p astersql-pd-runtime --lib task_043_bound_etcd_member -- --nocapture`（最小接口失败） | 101 | 0通过/1行为失败 |
+| `cargo fmt --all` | 0 | 每次修改后运行 |
+| `cargo test --locked -p astersql-pd-runtime --lib task_043_ -- --nocapture` | 0 | 3通过/2默认忽略 |
+| `PD_ETCD_BIN=/tmp/pd-task043-etcd-v3.5.15/etcd cargo test --locked -p astersql-pd-runtime --lib task_043_independent_etcd_learner -- --ignored --nocapture` | 0 | 1显式运行通过 |
+| `PD_COMPAT_GO_BIN="$PWD/bin/pd-server" python3 scripts/etcd-diagnostics-oracle.py` | 0 | 1显式Go差分通过，13组HTTP响应比较 |
+| `PD_COMPAT_GO_BIN="$PWD/bin/pd-server" python3 scripts/http-health-oracle.py` | 0 | 1显式Go差分通过，10组既有HTTP比较 |
+| `cargo test --locked -p astersql-pd-cmd-pd-server -- --nocapture` | 0 | 3通过 |
+| `cargo test --locked -p astersql-pd-server -- --nocapture` | 0 | 162通过/5默认忽略 |
+| `cargo test --locked -p astersql-pd-runtime -- --nocapture` | 0 | 48通过/34默认忽略 |
+| `cargo metadata --format-version 1 --no-deps` | 0 | 元数据 |
+| `cargo fmt --all -- --check` | 0 | 格式 |
+| `cargo check --locked -p astersql-pd-server` | 0 | 指定crate静态检查 |
+| `cargo check --workspace --locked` | 0 | 全工作区静态检查 |
+
+
+### 最终完成证据
+
+状态：**已完成（用户授权的显式绑定独立etcd过渡契约）**。
+
+冻结1214个Rust/Cargo文件后执行`cargo test --workspace --locked`，退出0：**2047通过、0失败、40默认忽略**（含2项compile-fail doctest）。所有冻结源码的路径集合及SHA-256结束时一致。默认忽略的新增独立部署、Go差分各自显式运行并通过；另重新运行既有Go健康探针差分。此前基准2044项为初版证据，最终以2047项为准。
+
+Go/模块1101个文件（含ignored/untracked）前后路径、字节哈希及Git状态相同；plan.md与基准逐字节一致。测试、官方etcd与Go oracle进程全部结束；独立etcd测试目录已清理，槽位1自有锁已释放，缓存保留。Python语法、文档链接、`git diff --check`检查通过。仅新增既有workspace的etcd-client直接依赖，Cargo.lock相应增加一行。
+
+[本轮压缩证据](task-043-provider-evidence.json.gz)包含失败/通过确切命令、退出码、原始日志、官方发行版及二进制摘要、只读Go清单、最终源码哈希和环境。SHA-256：`1e9d29a3de87364ed75eae2bfd096b7f5dfb0b140c3e9c70c13c6669bf5b5701`。原[初版证据](task-043-evidence.json.gz)保留，未改写其历史结果。
+
+来源覆盖：HTTP-145/146/171/172/196由原实现及重新执行的健康差分覆盖；HTTP-210–217由绑定成员的实际读、告警、learner检查及汇总/取消验证补齐。未配置时的503继续是明确的能力缺失响应，完整就绪成功要求按部署说明配置真实成员。此完成结论不延伸到主题10原生后端或Go进程内嵌入等价。

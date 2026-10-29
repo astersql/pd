@@ -15,6 +15,7 @@ use tokio_util::sync::CancellationToken;
 pub(crate) struct RoleServices {
     identity: NodeConfig,
     listening: std::sync::atomic::AtomicBool,
+    diagnostics: RwLock<Option<Arc<crate::etcd_diagnostics::EtcdMemberDiagnostics>>>,
     follower: FollowerRead,
     store: Weak<dyn MetaStore>,
     term: RwLock<Option<Arc<Application>>>,
@@ -38,10 +39,17 @@ impl RoleServices {
                 },
             ))),
             listening: std::sync::atomic::AtomicBool::new(false),
+            diagnostics: RwLock::new(None),
             identity,
             store: Arc::downgrade(&store),
             term: RwLock::new(None),
         }
+    }
+    pub(crate) fn set_diagnostics(
+        &self,
+        value: Option<Arc<crate::etcd_diagnostics::EtcdMemberDiagnostics>>,
+    ) {
+        *self.diagnostics.write().unwrap() = value;
     }
     pub(crate) fn set_listening(&self, value: bool) {
         self.listening
@@ -179,6 +187,18 @@ impl PdServices for RoleServices {
         id: u64,
     ) -> Result<Option<astersql_pd_server::grpc_scatter::OperatorResult>, String> {
         self.active().await?.cluster.operator(id).await
+    }
+    async fn local_consensus_probe(
+        &self,
+        probe: astersql_pd_server::http_health::LocalConsensusProbe,
+    ) -> Result<(), String> {
+        let diagnostics = self
+            .diagnostics
+            .read()
+            .unwrap()
+            .clone()
+            .ok_or("local consensus diagnostics are not configured")?;
+        diagnostics.check(probe).await
     }
     fn probe_listener_ready(&self) -> bool {
         self.listening.load(std::sync::atomic::Ordering::Acquire)

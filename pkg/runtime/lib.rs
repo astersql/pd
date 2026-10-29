@@ -143,3 +143,7 @@ pub mod net_address;
 
 #[cfg(test)]
 mod http_health_test;
+
+pub mod etcd_diagnostics;
+#[cfg(test)]
+mod etcd_diagnostics_test;

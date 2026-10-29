@@ -186,6 +186,7 @@ impl PdServices for Application {
 pub struct PdNodeBuilder {
     runtime: Handle,
     cluster: astersql_pd_core::BasicCluster,
+    diagnostics: Option<Arc<crate::etcd_diagnostics::EtcdMemberDiagnostics>>,
     cancellation: CancellationToken,
 }
 impl PdNodeBuilder {
@@ -193,8 +194,17 @@ impl PdNodeBuilder {
         Self {
             runtime,
             cluster: astersql_pd_core::BasicCluster::new(),
+            diagnostics: None,
             cancellation: cancellation.child_token(),
         }
+    }
+    /// Bind diagnostics to an explicitly configured independent etcd member.
+    pub fn with_etcd_member_diagnostics(
+        mut self,
+        diagnostics: Arc<crate::etcd_diagnostics::EtcdMemberDiagnostics>,
+    ) -> Self {
+        self.diagnostics = Some(diagnostics);
+        self
     }
     /// Injects the canonical cluster rather than creating adapter-local caches.
     pub fn with_cluster(mut self, cluster: astersql_pd_core::BasicCluster) -> Self {
@@ -219,6 +229,7 @@ impl PdNodeBuilder {
                 registry,
                 cancel,
                 self.cluster,
+                self.diagnostics,
             ))
             .await?
     }
@@ -230,11 +241,18 @@ async fn initialize_node(
     registry: Arc<prometheus::Registry>,
     cancel: CancellationToken,
     cluster: astersql_pd_core::BasicCluster,
+    diagnostics: Option<Arc<crate::etcd_diagnostics::EtcdMemberDiagnostics>>,
 ) -> Result<PdNode, NodeError> {
     let mut config = config;
     config.client_url = crate::net_address::Endpoint::parse(&config.client_url)?
         .advertised_url(listener.local_addr()?)?;
     config.peer_url = crate::net_address::Endpoint::parse(&config.peer_url)?.url();
+    if let Some(diagnostics) = &diagnostics {
+        tokio::select! { biased;
+            _ = cancel.cancelled() => return Err("node is stopped".into()),
+            result = diagnostics.bind(store.as_ref(), config.cluster_id, config.member_id) => result?,
+        }
+    }
     let events = Arc::new(Mutex::new(vec!["storage"]));
     let member = Member::bootstrap(
         store.clone(),
@@ -273,6 +291,7 @@ async fn initialize_node(
         Err(astersql_pd_member::MemberError::Contended) => None,
         Err(error) => return Err(error.into()),
     };
+    services.set_diagnostics(diagnostics);
     services.replace(initial.clone());
     record(&events, "services");
     let router = astersql_pd_server::router(services.clone(), cancel.clone());
