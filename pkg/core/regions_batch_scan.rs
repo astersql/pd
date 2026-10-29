@@ -17,6 +17,10 @@ pub struct BatchScanRegionsOptions {
 pub struct RegionNotAdjacent {
     pub requested: KeyRange,
     pub missing: KeyRange,
+    /// Last scanned range, or the synthetic initial range ending at the request start.
+    pub previous: KeyRange,
+    /// First range beyond an internal hole; absent for a trailing hole.
+    pub next: Option<KeyRange>,
 }
 impl RegionNotAdjacent {
     /// Stable Go error identity.
@@ -26,11 +30,32 @@ impl RegionNotAdjacent {
 }
 impl fmt::Display for RegionNotAdjacent {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(
-            f,
-            "[PD:region:ErrRegionNotAdjacent]key range {:?} contains a hole {:?}",
-            self.requested, self.missing
-        )
+        let hex = |v: &[u8]| v.iter().map(|b| format!("{b:02x}")).collect::<String>();
+        let r = &self.requested;
+        let p = &self.previous;
+        if let Some(n) = &self.next {
+            write!(
+                f,
+                "[PD:region:ErrRegionNotAdjacent]key range[{}, {}) found a hole region between region[{}, {}) and region[{}, {})",
+                hex(&r.start_key),
+                hex(&r.end_key),
+                hex(&p.start_key),
+                hex(&p.end_key),
+                hex(&n.start_key),
+                hex(&n.end_key)
+            )
+        } else {
+            write!(
+                f,
+                "[PD:region:ErrRegionNotAdjacent]key range[{}, {}) found a hole region in the last, the last scanned region is [{}, {}), [{}, {}) is missing",
+                hex(&r.start_key),
+                hex(&r.end_key),
+                hex(&p.start_key),
+                hex(&p.end_key),
+                hex(&self.missing.start_key),
+                hex(&self.missing.end_key)
+            )
+        }
     }
 }
 impl std::error::Error for RegionNotAdjacent {}
@@ -58,6 +83,10 @@ impl RegionState {
         for range in merged {
             let candidates = self.scan_regions(&range.start_key, &range.end_key, options.limit);
             if options.output_must_contain_all_key_range {
+                let mut previous = KeyRange {
+                    start_key: vec![],
+                    end_key: range.start_key.clone(),
+                };
                 let mut last_end = range.start_key.as_slice();
                 for region in &candidates {
                     let current = &region.meta().key_range;
@@ -67,6 +96,8 @@ impl RegionState {
                     {
                         return Err(RegionNotAdjacent {
                             requested: range.clone(),
+                            previous: previous.clone(),
+                            next: Some(current.clone()),
                             missing: KeyRange {
                                 start_key: last_end.to_vec(),
                                 end_key: current.start_key.clone(),
@@ -74,6 +105,7 @@ impl RegionState {
                         });
                     }
                     last_end = &current.end_key;
+                    previous = current.clone();
                 }
                 if !(options.limit > 0 && candidates.len() >= options.limit as usize)
                     && !range.end_key.is_empty()
@@ -82,6 +114,8 @@ impl RegionState {
                 {
                     return Err(RegionNotAdjacent {
                         requested: range.clone(),
+                        previous,
+                        next: None,
                         missing: KeyRange {
                             start_key: last_end.to_vec(),
                             end_key: range.end_key.clone(),

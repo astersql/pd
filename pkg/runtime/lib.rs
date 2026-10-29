@@ -64,3 +64,11 @@ mod grpc_region_lookup_differential_test;
 #[cfg(test)]
 #[path = "grpc_region_lookup_fault_test.rs"]
 mod grpc_region_lookup_fault_test;
+
+#[cfg(test)]
+#[path = "grpc_region_scan_differential_test.rs"]
+mod grpc_region_scan_differential_test;
+
+#[cfg(test)]
+#[path = "grpc_region_scan_fault_test.rs"]
+mod grpc_region_scan_fault_test;

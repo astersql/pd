@@ -847,6 +847,21 @@ impl Resources {
 
 #[async_trait::async_trait]
 impl astersql_pd_server::ClusterReadService for ClusterHost {
+    async fn batch_scan_regions(
+        &self,
+        ranges: &[astersql_pd_core::KeyRange],
+        options: astersql_pd_core::BatchScanRegionsOptions,
+    ) -> Result<
+        Result<Vec<Arc<astersql_pd_core::RegionInfo>>, astersql_pd_core::RegionNotAdjacent>,
+        String,
+    > {
+        let guard = self.resources.lock().await;
+        if self.cancel.is_cancelled() {
+            return Err("node stopped".into());
+        }
+        let state = guard.as_ref().ok_or("node stopped")?.state.lock().unwrap();
+        Ok(state.cluster.regions.batch_scan_regions(ranges, options))
+    }
     async fn store(&self, id: u64) -> Result<Option<Arc<astersql_pd_core::StoreInfo>>, String> {
         let guard = self.resources.lock().await;
         if self.cancel.is_cancelled() {
@@ -855,6 +870,19 @@ impl astersql_pd_server::ClusterReadService for ClusterHost {
         let resources = guard.as_ref().ok_or("node stopped")?;
         let state = resources.state.lock().unwrap();
         Ok(state.cluster.stores.get_store(id))
+    }
+    async fn scan_regions(
+        &self,
+        start: &[u8],
+        end: &[u8],
+        limit: isize,
+    ) -> Result<Vec<Arc<astersql_pd_core::RegionInfo>>, String> {
+        let guard = self.resources.lock().await;
+        if self.cancel.is_cancelled() {
+            return Err("node stopped".into());
+        }
+        let state = guard.as_ref().ok_or("node stopped")?.state.lock().unwrap();
+        Ok(state.cluster.regions.scan_regions(start, end, limit))
     }
     async fn region_by_key(
         &self,

@@ -174,8 +174,34 @@ impl RegionHeartbeatService for RoleServices {
 }
 #[async_trait::async_trait]
 impl ClusterReadService for RoleServices {
+    async fn batch_scan_regions(
+        &self,
+        ranges: &[astersql_pd_core::KeyRange],
+        options: astersql_pd_core::BatchScanRegionsOptions,
+    ) -> Result<
+        Result<Vec<Arc<astersql_pd_core::RegionInfo>>, astersql_pd_core::RegionNotAdjacent>,
+        String,
+    > {
+        self.active()
+            .await?
+            .cluster
+            .batch_scan_regions(ranges, options)
+            .await
+    }
     async fn store(&self, id: u64) -> Result<Option<Arc<astersql_pd_core::StoreInfo>>, String> {
         self.active().await?.cluster.store(id).await
+    }
+    async fn scan_regions(
+        &self,
+        start: &[u8],
+        end: &[u8],
+        limit: isize,
+    ) -> Result<Vec<Arc<astersql_pd_core::RegionInfo>>, String> {
+        self.active()
+            .await?
+            .cluster
+            .scan_regions(start, end, limit)
+            .await
     }
     async fn region_by_key(
         &self,
@@ -427,6 +453,21 @@ impl astersql_pd_server::bucket_heartbeat_adapter::BucketHeartbeatService for Ro
 struct FollowerRead(Arc<tokio::sync::Mutex<astersql_pd_server::sync_transport::SyncFollowerState>>);
 #[async_trait::async_trait]
 impl ClusterReadService for FollowerRead {
+    async fn batch_scan_regions(
+        &self,
+        ranges: &[astersql_pd_core::KeyRange],
+        options: astersql_pd_core::BatchScanRegionsOptions,
+    ) -> Result<
+        Result<Vec<Arc<astersql_pd_core::RegionInfo>>, astersql_pd_core::RegionNotAdjacent>,
+        String,
+    > {
+        let state = self.0.lock().await;
+        Ok(if state.apply.is_running() {
+            state.cluster.regions.batch_scan_regions(ranges, options)
+        } else {
+            Ok(vec![])
+        })
+    }
     async fn store(&self, _id: u64) -> Result<Option<Arc<astersql_pd_core::StoreInfo>>, String> {
         Err("follower store reads are not supported".into())
     }
@@ -436,6 +477,19 @@ impl ClusterReadService for FollowerRead {
             state.cluster.regions.get_region(id)
         } else {
             None
+        })
+    }
+    async fn scan_regions(
+        &self,
+        start: &[u8],
+        end: &[u8],
+        limit: isize,
+    ) -> Result<Vec<Arc<astersql_pd_core::RegionInfo>>, String> {
+        let state = self.0.lock().await;
+        Ok(if state.apply.is_running() {
+            state.cluster.regions.scan_regions(start, end, limit)
+        } else {
+            vec![]
         })
     }
     async fn region_by_key(

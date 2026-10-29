@@ -312,6 +312,18 @@ impl Pd for SyncGrpc {
     ) -> Result<Response<pdpb::GetRegionResponse>, Status> {
         self.0.get_prev_region(r).await
     }
+    async fn scan_regions(
+        &self,
+        r: Request<pdpb::ScanRegionsRequest>,
+    ) -> Result<Response<pdpb::ScanRegionsResponse>, Status> {
+        self.0.scan_regions(r).await
+    }
+    async fn batch_scan_regions(
+        &self,
+        r: Request<pdpb::BatchScanRegionsRequest>,
+    ) -> Result<Response<pdpb::BatchScanRegionsResponse>, Status> {
+        self.0.batch_scan_regions(r).await
+    }
     async fn get_region_by_id(
         &self,
         r: Request<pdpb::GetRegionByIdRequest>,

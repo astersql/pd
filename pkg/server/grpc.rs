@@ -121,6 +121,18 @@ impl Pd for Grpc {
     ) -> Result<Response<pdpb::GetRegionResponse>, Status> {
         self.region_request(request, true).await.map(Response::new)
     }
+    async fn scan_regions(
+        &self,
+        r: Request<pdpb::ScanRegionsRequest>,
+    ) -> Result<Response<pdpb::ScanRegionsResponse>, Status> {
+        self.scan_regions_request(r).await.map(Response::new)
+    }
+    async fn batch_scan_regions(
+        &self,
+        r: Request<pdpb::BatchScanRegionsRequest>,
+    ) -> Result<Response<pdpb::BatchScanRegionsResponse>, Status> {
+        self.batch_scan_regions_request(r).await.map(Response::new)
+    }
     async fn get_region_by_id(
         &self,
         request: Request<pdpb::GetRegionByIdRequest>,

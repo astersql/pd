@@ -5,6 +5,7 @@ mod grpc_alloc_id;
 mod grpc_bootstrap;
 mod grpc_members;
 mod grpc_region_lookup;
+mod grpc_region_scan;
 pub mod grpc_store;
 mod http;
 mod request_role;
@@ -108,8 +109,26 @@ pub trait PdServices: Send + Sync {
 /// Host-owned metadata lookup; protocol conversion remains in the server adapter.
 #[async_trait]
 pub trait ClusterReadService: Send + Sync {
+    async fn batch_scan_regions(
+        &self,
+        _ranges: &[astersql_pd_core::KeyRange],
+        _options: astersql_pd_core::BatchScanRegionsOptions,
+    ) -> Result<
+        Result<Vec<Arc<astersql_pd_core::RegionInfo>>, astersql_pd_core::RegionNotAdjacent>,
+        String,
+    > {
+        Err("batch scan is not configured".into())
+    }
     async fn store(&self, id: u64) -> Result<Option<Arc<astersql_pd_core::StoreInfo>>, String>;
     async fn region(&self, id: u64) -> Result<Option<Arc<astersql_pd_core::RegionInfo>>, String>;
+    async fn scan_regions(
+        &self,
+        _start: &[u8],
+        _end: &[u8],
+        _limit: isize,
+    ) -> Result<Vec<Arc<astersql_pd_core::RegionInfo>>, String> {
+        Err("region scan is not configured".into())
+    }
     async fn region_by_key(
         &self,
         _key: &[u8],
@@ -304,3 +323,11 @@ mod grpc_region_lookup_test;
 #[cfg(test)]
 #[path = "grpc_region_lookup_scenarios_test.rs"]
 mod grpc_region_lookup_scenarios_test;
+
+#[cfg(test)]
+#[path = "grpc_region_scan_test.rs"]
+mod grpc_region_scan_test;
+
+#[cfg(test)]
+#[path = "grpc_region_scan_scenarios_test.rs"]
+mod grpc_region_scan_scenarios_test;
