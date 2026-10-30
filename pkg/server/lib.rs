@@ -21,6 +21,7 @@ pub mod grpc_store;
 mod grpc_tso;
 mod grpc_unsupported;
 mod http;
+pub mod http_admin_cache;
 pub mod http_cluster;
 mod http_config_read;
 pub mod http_contract;
@@ -48,6 +49,14 @@ pub struct Identity {
 /// Domain operations supplied by the host; transport types stay in this crate.
 #[async_trait]
 pub trait PdServices: Send + Sync {
+    /// Mutate the existing region cache or storage under host admission.
+    async fn admin_region(
+        &self,
+        _command: http_admin_cache::Command,
+        _follower: bool,
+    ) -> Result<(u16, serde_json::Value), String> {
+        Err("server not started".into())
+    }
     /// Read affinity state from the active term's canonical manager.
     async fn affinity_read(
         &self,
@@ -896,3 +905,7 @@ pub mod http_affinity_read;
 mod http_affinity_write_test;
 
 pub mod http_affinity_write;
+
+#[cfg(test)]
+#[path = "http_admin_cache_test.rs"]
+mod http_admin_cache_test;

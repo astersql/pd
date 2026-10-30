@@ -12,18 +12,30 @@ use astersql_pd_storage::{Consistency, MetaStore, Read};
 use std::sync::{Arc, RwLock, Weak};
 use tokio_util::sync::CancellationToken;
 
+type RegionReset = (
+    Option<u64>,
+    tokio::sync::oneshot::Sender<Result<(), String>>,
+);
 pub(crate) struct RoleServices {
     identity: NodeConfig,
     listening: std::sync::atomic::AtomicBool,
     admin: RwLock<Option<Arc<crate::member_admin::EtcdMemberAdmin>>>,
     diagnostics: RwLock<Option<Arc<crate::etcd_diagnostics::EtcdMemberDiagnostics>>>,
     follower: FollowerRead,
+    follower_store: Arc<dyn MetaStore>,
+    region_resets: tokio::sync::mpsc::Sender<RegionReset>,
+    region_reset_rx: tokio::sync::Mutex<tokio::sync::mpsc::Receiver<RegionReset>>,
     store: Weak<dyn MetaStore>,
     term: RwLock<Option<Arc<Application>>>,
 }
 impl RoleServices {
     pub(crate) fn new(identity: NodeConfig, store: Arc<dyn MetaStore>) -> Self {
+        let follower_store: Arc<dyn MetaStore> =
+            Arc::new(astersql_pd_storage::MemoryStore::default());
+        let (region_resets, region_reset_rx) = tokio::sync::mpsc::channel(16);
         Self {
+            region_resets,
+            region_reset_rx: tokio::sync::Mutex::new(region_reset_rx),
             follower: FollowerRead(Arc::new(tokio::sync::Mutex::new(
                 astersql_pd_server::sync_transport::SyncFollowerState {
                     cluster: astersql_pd_core::BasicCluster::new(),
@@ -33,12 +45,11 @@ impl RoleServices {
                     // Sync application persists its checkpoint as well as updating the cache.
                     // This nonauthoritative projection must never write the shared,
                     // leader-fenced metadata namespace.
-                    storage: astersql_pd_storage::Storage::new(Arc::new(
-                        astersql_pd_storage::MemoryStore::default(),
-                    )),
+                    storage: astersql_pd_storage::Storage::new(follower_store.clone()),
                     paths: astersql_pd_keypath::ClusterPaths::new(identity.cluster_id),
                 },
             ))),
+            follower_store,
             listening: std::sync::atomic::AtomicBool::new(false),
             diagnostics: RwLock::new(None),
             admin: RwLock::new(None),
@@ -96,6 +107,59 @@ impl RoleServices {
 }
 #[async_trait::async_trait]
 impl PdServices for RoleServices {
+    async fn admin_region(
+        &self,
+        command: astersql_pd_server::http_admin_cache::Command,
+        follower: bool,
+    ) -> Result<(u16, serde_json::Value), String> {
+        if !follower {
+            return self.active().await?.cluster.admin_region(command).await;
+        }
+        let astersql_pd_server::http_admin_cache::Command::Cache(id) = command else {
+            return Err("not leader".into());
+        };
+        if !self
+            .configuration(false)
+            .await?
+            .pd_server
+            .use_region_storage
+        {
+            return Err("region storage is disabled".into());
+        }
+        use prost::Message;
+        let key = format!("/pd/{}/leader", self.identity.cluster_id);
+        let snapshot = self
+            .store
+            .upgrade()
+            .ok_or("server not started")?
+            .read(Read::range(key.as_bytes(), b"", Consistency::Linearizable))
+            .await
+            .map_err(|e| e.to_string())?;
+        let leader = snapshot
+            .entries
+            .first()
+            .ok_or("[PD:server:ErrLeaderNil]leader is nil")?;
+        let leader = astersql_pd_proto::pdpb::Member::decode(leader.value.as_slice())
+            .map_err(|e| e.to_string())?;
+        if leader.client_urls.is_empty() {
+            return Err("pd leader has no client url".into());
+        }
+        let (tx, rx) = tokio::sync::oneshot::channel();
+        self.region_resets
+            .send((id, tx))
+            .await
+            .map_err(|_| "server not started")?;
+        rx.await.map_err(|_| "server not started")??;
+        Ok((
+            200,
+            serde_json::json!(if id.is_some() {
+                "The region is removed from follower cache and the follower starts to resync regions from leader."
+            } else {
+                "All regions are removed from follower cache and the follower starts to resync regions from leader."
+            }),
+        ))
+    }
+
     async fn hotspot_history(
         &self,
         query: astersql_pd_storage::HistoryQuery,
@@ -862,9 +926,21 @@ pub(crate) async fn run(
                         tokio::time::sleep(std::time::Duration::from_millis(200)).await;
                     }
                 };
+                let mut resets=services.region_reset_rx.lock().await;
                 tokio::select! { biased;
                     _=cancel.cancelled()=>{},
                     _=watch.next(&cancel)=>{},
+                    request=resets.recv()=>{
+                        if let Some((id,reply))=request {
+                            // select drops the old sync future before this branch, so no
+                            // response can race the reset. The outer loop reconnects at 0.
+                            let mut state=services.follower.0.lock().await;
+                            let result=reset_follower_regions(&mut state,services.follower_store.as_ref(),id).await;
+                            state.history.reset_with_index(astersql_pd_syncer::HistoryIndex(0));
+                            state.apply.reset_stream();
+                            let _=reply.send(result);
+                        }
+                    },
                     _=synchronize=>{},
                 }
                 continue;
@@ -1158,4 +1234,77 @@ impl ClusterReadService for FollowerRead {
             None
         })
     }
+}
+
+async fn reset_follower_regions(
+    state: &mut astersql_pd_server::sync_transport::SyncFollowerState,
+    store: &dyn MetaStore,
+    id: Option<u64>,
+) -> Result<(), String> {
+    let mut error = state
+        .storage
+        .flush()
+        .err()
+        .map(|e| format!("flush follower region storage: {e}"));
+    let result = async {
+        if let Some(id) = id {
+            let meta = match state.cluster.regions.get_region(id) {
+                Some(r) => Some(r.meta().clone()),
+                None => state
+                    .storage
+                    .load_region(&state.paths, id)
+                    .await
+                    .map_err(|e| format!("load follower region from local storage: {e}"))?,
+            };
+            if let Some(meta) = meta {
+                state
+                    .storage
+                    .delete_region(&state.paths, &meta)
+                    .await
+                    .map_err(|e| e.to_string())?;
+            }
+            state.cluster.regions.remove_region_if_exist(id);
+        } else {
+            // Scan the existing host-owned projection, including uncached keys.
+            let saved = store
+                .read(Read::range(
+                    state.paths.region_path(0).as_bytes(),
+                    state.paths.region_path(u64::MAX).as_bytes(),
+                    Consistency::Linearizable,
+                ))
+                .await
+                .map_err(|e| format!("load follower regions from local storage: {e}"))?;
+            for chunk in saved.entries.chunks(128) {
+                let commit = store
+                    .transact(
+                        vec![],
+                        chunk
+                            .iter()
+                            .map(|e| astersql_pd_storage::Mutation::Delete { key: e.key.clone() })
+                            .collect(),
+                    )
+                    .await
+                    .map_err(|e| format!("delete follower regions from local storage: {e}"))?;
+                if !commit.succeeded {
+                    return Err(
+                        "delete follower regions from local storage: transaction failed".into(),
+                    );
+                }
+            }
+        }
+        Ok(())
+    }
+    .await;
+    if id.is_none() {
+        state.cluster.regions.reset_region_cache();
+    }
+    if error.is_none() {
+        error = result.err();
+    }
+    if let Err(e) = state.storage.flush() {
+        if error.is_none() {
+            error = Some(format!("flush follower region storage: {e}"));
+        }
+    }
+    error.map_or(Ok(()), Err)
 }

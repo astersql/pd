@@ -73,6 +73,64 @@ pub struct ClusterHost {
     cancel: CancellationToken,
 }
 impl ClusterHost {
+    pub(crate) async fn admin_region(
+        &self,
+        command: astersql_pd_server::http_admin_cache::Command,
+    ) -> Result<(u16, serde_json::Value), String> {
+        use astersql_pd_server::http_admin_cache::Command;
+        let guard = self.resources.lock().await;
+        let r = guard.as_ref().ok_or("server not started")?;
+        r.leader.validate().await.map_err(|e| e.to_string())?;
+        let message = match command {
+            Command::Storage(id) => {
+                let region = r.state.lock().unwrap().cluster.regions.get_region(id);
+                let Some(region) = region else {
+                    return Ok((
+                        400,
+                        serde_json::json!("failed to get target region from cache"),
+                    ));
+                };
+                let storage =
+                    StorageEndpoint::new(Arc::new(crate::member_role_worker::TermStore::new(
+                        r.meta_store.clone(),
+                        r.leader.clone(),
+                        self.cancel.clone(),
+                    )));
+                if storage
+                    .delete_region(&r.paths, region.meta())
+                    .await
+                    .is_err()
+                {
+                    return Ok((
+                        200,
+                        serde_json::json!("failed to delete region from storage."),
+                    ));
+                }
+                r.state
+                    .lock()
+                    .unwrap()
+                    .cluster
+                    .regions
+                    .remove_region_if_exist(id);
+                "The region is removed from server cache and region meta storage."
+            }
+            Command::Cache(Some(id)) => {
+                r.state
+                    .lock()
+                    .unwrap()
+                    .cluster
+                    .regions
+                    .remove_region_if_exist(id);
+                "The region is removed from server cache."
+            }
+            Command::Cache(None) => {
+                r.state.lock().unwrap().cluster.regions.reset_region_cache();
+                "All regions are removed from server cache."
+            }
+        };
+        Ok((200, serde_json::json!(message)))
+    }
+
     pub(crate) async fn store_progress(
         &self,
         id: Option<u64>,
