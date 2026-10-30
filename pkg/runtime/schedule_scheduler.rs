@@ -277,3 +277,254 @@ fn publish(controller: &astersql_pd_schedule_schedulers::SchedulerController, r:
     r.state.lock().unwrap().config.schedule.schedulers =
         r.persisted_config.config.schedule.schedulers.clone();
 }
+
+pub(super) async fn configure(
+    mut request: axum::http::Request<axum::body::Body>,
+    coordinator: &mut Coordinator<ProviderSnapshot<()>>,
+    resources: &Arc<AsyncMutex<Option<Resources>>>,
+) -> Result<axum::response::Response, String> {
+    use astersql_pd_server::{http_contract::json_response, http_scheduler_config::not_found};
+    use axum::{body::Body, http::StatusCode};
+    let mut guard = resources.lock().await;
+    let r = guard.as_mut().ok_or("server not started")?;
+    r.leader.validate().await.map_err(|e| e.to_string())?;
+    let full = request.uri().clone();
+    let suffix = full
+        .path()
+        .strip_prefix("/pd/api/v1/scheduler-config/")
+        .unwrap_or_default();
+    let (name, path) = suffix
+        .split_once('/')
+        .map(|(n, p)| (n, format!("/{p}")))
+        .unwrap_or((suffix, String::new()));
+    let cluster = coordinator.get_cluster().clone();
+    let controller = coordinator.get_schedulers_controller_mut();
+    if controller.get_mut(name).is_none() {
+        return Ok(not_found());
+    }
+    if path.is_empty() {
+        let location = format!(
+            "{}/{}",
+            full.path(),
+            full.query().map(|q| format!("?{q}")).unwrap_or_default()
+        );
+        let escaped = location
+            .replace('&', "&amp;")
+            .replace('<', "&lt;")
+            .replace('>', "&gt;")
+            .replace('"', "&#34;")
+            .replace('\'', "&#39;");
+        return Ok(axum::response::Response::builder()
+            .status(307)
+            .header("location", location)
+            .header("content-type", "text/html; charset=utf-8")
+            .body(Body::from(format!(
+                "<a href=\"{escaped}\">Temporary Redirect</a>.\n\n"
+            )))
+            .unwrap());
+    }
+    let uri = format!(
+        "{path}{}",
+        full.query().map(|q| format!("?{q}")).unwrap_or_default()
+    );
+    *request.uri_mut() = uri.parse().map_err(|_| "invalid scheduler path")?;
+    let ctx = controller.context();
+    let storage = r.storage.clone();
+    let paths = ctx.paths;
+    let inputs = ctx.hot_inputs.clone();
+    let control = controller.get_mut(name).unwrap();
+    let disabled = control.scheduler.is_disabled();
+    let mut remove = false;
+    let response = match &mut control.scheduler.policy {
+        BuiltinScheduler::BalanceLeader(p) => {
+            astersql_pd_server::schedule_admin_balance_leader::serve(p, &storage, &paths, request)
+                .await
+        }
+        BuiltinScheduler::BalanceWitness(p) => {
+            astersql_pd_server::schedule_admin_balance_witness::serve(p, &storage, &paths, request)
+                .await
+        }
+        BuiltinScheduler::GrantHot(p) => {
+            astersql_pd_server::schedule_admin_grant_hot_region::serve(p, &storage, &paths, request)
+                .await
+        }
+        BuiltinScheduler::ScatterRange(p) => {
+            astersql_pd_server::schedule_admin_scatter_range::serve(p, &storage, &paths, request)
+                .await
+        }
+        BuiltinScheduler::ShuffleHot(p) => {
+            astersql_pd_server::schedule_admin_shuffle_hot_region::serve(
+                p, &storage, &paths, request,
+            )
+            .await
+        }
+        BuiltinScheduler::ShuffleRegion(p) => {
+            astersql_pd_server::schedule_admin_shuffle_region::serve(p, &storage, &paths, request)
+                .await
+        }
+        BuiltinScheduler::SlowTrend(p) => {
+            astersql_pd_server::schedule_admin_evict_slow_trend::serve(p, &storage, &paths, request)
+                .await
+        }
+        BuiltinScheduler::BalanceRegion(p) => {
+            astersql_pd_server::schedule_admin_balance_region::serve(p, request)
+        }
+        BuiltinScheduler::Label(p) => astersql_pd_server::schedule_admin_label::serve(p, request),
+        BuiltinScheduler::RandomMerge(p) => {
+            astersql_pd_server::schedule_admin_random_merge::serve(p, request)
+        }
+        BuiltinScheduler::ShuffleLeader(p) => {
+            astersql_pd_server::schedule_admin_shuffle_leader::serve(p, request)
+        }
+        BuiltinScheduler::TransferWitness(p) => {
+            astersql_pd_server::schedule_admin_transfer_witness_leader::serve(p, request)
+        }
+        BuiltinScheduler::EvictLeader(p) => {
+            astersql_pd_server::schedule_admin_evict_leader::serve(
+                p,
+                &cluster,
+                &storage,
+                &paths,
+                request,
+                |_| {
+                    remove = true;
+                    Err(astersql_pd_schedule_schedulers::EvictRemoveError::Failed(
+                        "deferred host removal".into(),
+                    ))
+                },
+            )
+            .await
+        }
+        BuiltinScheduler::GrantLeader(p) => {
+            astersql_pd_server::schedule_admin_grant_leader::serve(
+                p,
+                &cluster,
+                &storage,
+                &paths,
+                request,
+                |_| {
+                    remove = true;
+                    Err(astersql_pd_schedule_schedulers::GrantRemoveError::Failed(
+                        "deferred host removal".into(),
+                    ))
+                },
+            )
+            .await
+        }
+        BuiltinScheduler::EvictSlowStore { disk, network } => {
+            astersql_pd_server::schedule_admin_evict_slow_store::serve(
+                disk, network, &storage, &paths, disabled, request,
+            )
+            .await
+        }
+        BuiltinScheduler::EvictStoppingStore(p) => {
+            astersql_pd_server::schedule_admin_evict_stopping_store::serve(
+                p, &storage, &paths, disabled, request,
+            )
+            .await
+        }
+        BuiltinScheduler::BalanceRange { jobs, .. } => {
+            astersql_pd_server::schedule_admin_balance_range::serve(
+                jobs,
+                JobTime(now().1 as i128),
+                request,
+            )
+            .await
+        }
+        BuiltinScheduler::Hot { scheduler, config } => {
+            let mut local = astersql_pd_schedule_schedulers::HotRegionConfig::new(config.clone())
+                .map_err(|e| e.to_string())?;
+            let support = scheduler.observed_support();
+            let (observed_query, observed_cpu) = support.unwrap_or((false, false));
+            local.set_support(observed_query, observed_cpu);
+            let response = astersql_pd_server::schedule_admin_hot_region::serve(
+                &mut local, &storage, &paths, request,
+            )
+            .await;
+            if local.params() != config {
+                *config = local.params().clone();
+                *scheduler = Box::new(
+                    astersql_pd_schedule_schedulers::HotScheduler::new(
+                        config.clone(),
+                        observed_query,
+                        observed_cpu,
+                        inputs,
+                    )
+                    .map_err(|e| e.to_string())?,
+                );
+                if support.is_some() {
+                    scheduler.observe_support(observed_query, observed_cpu);
+                }
+            }
+            response
+        }
+    };
+    if remove {
+        // The local API's synchronous callback restores its original policy while
+        // the host performs async controller removal below. No tick can interleave.
+
+        controller.set_configuration(
+            serde_json::to_value(r.persisted_config.persistence_snapshot())
+                .map_err(|e| e.to_string())?,
+        );
+        let result = controller.remove(name, false).await;
+        publish(controller, r);
+        if let Err(e) = result {
+            return Ok(json_response(StatusCode::INTERNAL_SERVER_ERROR, &error(e)));
+        }
+        return Ok(json_response(
+            StatusCode::OK,
+            &"The last store has been deleted",
+        ));
+    }
+    Ok(response)
+}
+
+pub(super) fn observe_hot_support(
+    policy: &mut BuiltinScheduler,
+    version: &astersql_pd_server_config::ClusterVersion,
+) -> Result<(), String> {
+    if let astersql_pd_schedule_schedulers::BuiltinScheduler::Hot {
+        scheduler,
+        config: params,
+    } = policy
+    {
+        let query = !super::cluster_split::compare_version(
+            version,
+            &astersql_pd_server_config::ClusterVersion {
+                major: 5,
+                minor: 2,
+                ..Default::default()
+            },
+        )
+        .is_lt();
+        let floor = if version.major >= 9 {
+            astersql_pd_server_config::ClusterVersion {
+                major: 9,
+                pre_release: "beta.1".into(),
+                ..Default::default()
+            }
+        } else {
+            astersql_pd_server_config::ClusterVersion {
+                major: 8,
+                minor: 5,
+                patch: 7,
+                ..Default::default()
+            }
+        };
+        let cpu = !super::cluster_split::compare_version(version, &floor).is_lt();
+        if scheduler.observed_support() != Some((query, cpu)) {
+            *scheduler = Box::new(
+                astersql_pd_schedule_schedulers::HotScheduler::new(
+                    params.clone(),
+                    query,
+                    cpu,
+                    std::array::from_fn(|_| Default::default()),
+                )
+                .map_err(|e| e.to_string())?,
+            );
+        }
+        scheduler.observe_support(query, cpu);
+    }
+    Ok(())
+}

@@ -314,7 +314,9 @@ impl MetaStore for StateStore {
             let key = match write {
                 Mutation::Put { key, .. } | Mutation::Delete { key } => key,
             };
-            if mode == 5 {
+            if mode == 6 || mode == 7 {
+                key.windows(18).any(|w| w == b"/scheduler_config/")
+            } else if mode == 5 {
                 key.ends_with(b"/alloc_id")
             } else if mode == 3 || mode == 4 {
                 key.ends_with(b"/config")
@@ -324,12 +326,12 @@ impl MetaStore for StateStore {
         });
         if target {
             match self.mode.swap(0, std::sync::atomic::Ordering::SeqCst) {
-                1 | 3 | 5 => writes.push(Mutation::Put {
+                1 | 3 | 5 | 6 => writes.push(Mutation::Put {
                     key: b"/task052/failure".to_vec(),
                     value: vec![],
                     lease: Some(i64::MAX),
                 }),
-                2 | 4 => {
+                2 | 4 | 7 => {
                     self.entered.notify_one();
                     std::future::pending::<()>().await;
                 }

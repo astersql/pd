@@ -394,6 +394,7 @@ async fn run(
                     )
                     .await
                     .map_err(|e| e.to_string())?;
+                super::schedule_scheduler::observe_hot_support(policy,&r.persisted_config.config.cluster_version)?;
                 let mut state = r.state.lock().unwrap();
                 let mut inputs = super::schedule_policy::PolicyInputs {
                     cluster: &cluster,

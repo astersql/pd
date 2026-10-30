@@ -46,6 +46,13 @@ pub struct Identity {
 /// Domain operations supplied by the host; transport types stay in this crate.
 #[async_trait]
 pub trait PdServices: Send + Sync {
+    /// Dispatch a scheduler-relative request on the live coordinator.
+    async fn scheduler_config(
+        &self,
+        _request: axum::http::Request<axum::body::Body>,
+    ) -> Result<axum::response::Response, String> {
+        Err("server not started".into())
+    }
     /// Manage the live coordinator scheduler instances.
     async fn scheduler(
         &self,
@@ -807,3 +814,9 @@ pub mod http_operator_write;
 mod http_scheduler_test;
 
 pub mod http_scheduler;
+
+#[cfg(test)]
+#[path = "http_scheduler_config_test.rs"]
+mod http_scheduler_config_test;
+
+pub mod http_scheduler_config;

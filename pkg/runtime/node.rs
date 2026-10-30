@@ -147,6 +147,12 @@ impl PdServices for Application {
     > {
         self.cluster.scatter(request).await
     }
+    async fn scheduler_config(
+        &self,
+        request: axum::http::Request<axum::body::Body>,
+    ) -> Result<axum::response::Response, String> {
+        self.cluster.scheduler_config(request).await
+    }
     async fn scheduler(
         &self,
         command: astersql_pd_server::http_scheduler::Command,

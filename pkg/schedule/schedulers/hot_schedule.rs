@@ -67,10 +67,20 @@ pub struct HotDispatchResult<'a> {
 /// Four independent solver search states. RNG, preparation, cache admission and
 /// pending lifecycle belong to the host; Schedule receives the sampled random word.
 pub struct HotScheduler {
+    observed_support: Option<(bool, bool)>,
     config: HotRegionParams,
     solvers: [HotSolver; 4],
 }
 impl HotScheduler {
+    /// Capability observations are lazy, matching Go's first scheduling attempt.
+    pub fn observed_support(&self) -> Option<(bool, bool)> {
+        self.observed_support
+    }
+    /// Publish the host's version capability check after an actual scheduling attempt.
+    pub fn observe_support(&mut self, query: bool, cpu: bool) {
+        self.observed_support = Some((query, cpu));
+    }
+
     pub fn new(
         config: HotRegionParams,
         query_supported: bool,
@@ -104,6 +114,7 @@ impl HotScheduler {
             )?);
         }
         Ok(Self {
+            observed_support: None,
             config,
             solvers: solvers.try_into().ok().expect("four resources"),
         })

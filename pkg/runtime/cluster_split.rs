@@ -110,7 +110,7 @@ impl ClusterHost {
     }
 }
 
-fn compare_version(
+pub(super) fn compare_version(
     a: &astersql_pd_server_config::ClusterVersion,
     b: &astersql_pd_server_config::ClusterVersion,
 ) -> std::cmp::Ordering {

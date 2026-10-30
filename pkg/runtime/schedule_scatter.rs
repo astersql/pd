@@ -8,6 +8,10 @@ use astersql_pd_schedule_scatter::{ScatterBatchError, ScatterBatchFailure, Scatt
 use astersql_pd_server::grpc_scatter::*;
 use tokio::sync::oneshot;
 pub(super) enum Command {
+    SchedulerConfig(
+        axum::http::Request<axum::body::Body>,
+        oneshot::Sender<Result<axum::response::Response, String>>,
+    ),
     Scheduler(
         astersql_pd_server::http_scheduler::Command,
         oneshot::Sender<Result<(u16, serde_json::Value), String>>,
@@ -51,6 +55,14 @@ pub(super) enum Command {
     Operator(u64, oneshot::Sender<Result<Option<OperatorResult>, String>>),
 }
 impl ClusterHost {
+    pub(crate) async fn scheduler_config(
+        &self,
+        request: axum::http::Request<axum::body::Body>,
+    ) -> Result<axum::response::Response, String> {
+        let (tx, rx) = oneshot::channel();
+        tokio::select! {biased;_=self.cancel.cancelled()=>Err("server not started".into()),r=async{self.schedule_requests.send(Command::SchedulerConfig(request,tx)).await.map_err(|_|"scheduling stopped")?;rx.await.map_err(|_|"scheduling stopped")?}=>r}
+    }
+
     pub(crate) async fn scheduler(
         &self,
         command: astersql_pd_server::http_scheduler::Command,
@@ -147,6 +159,11 @@ pub(super) async fn serve(
     splits: &mut Vec<super::schedule_split::Pending>,
 ) {
     match command {
+        Command::SchedulerConfig(request, mut reply) => {
+            let work = super::schedule_scheduler::configure(request, coordinator, resources);
+            tokio::select! {biased;_=cancel.cancelled()=>{},_=reply.closed()=>{},r=work=>{let _=reply.send(r);}}
+        }
+
         Command::Scheduler(command, mut reply) => {
             let work = super::schedule_scheduler::manage(command, coordinator, resources, cancel);
             tokio::select! {biased;_=cancel.cancelled()=>{},_=reply.closed()=>{},result=work=>{let _=reply.send(result);}}

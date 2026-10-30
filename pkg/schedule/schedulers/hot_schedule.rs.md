@@ -34,3 +34,7 @@ Runtime task 017 refreshes per-resource rank inputs through `refresh_rank_inputs
 It updates the existing solvers' rank populations while retaining reverse-search
 state and the restored scheduler instance; source/destination configuration is
 unchanged. No transport or runtime capability is added to this domain API.
+
+任务65通过 `observed_support` / `observe_support` 保存宿主实际调度时检查的能力标志。
+新建或重启实例在第一次调度前均为 false，与 Go 配置 HTTP 的惰性能力观察一致；
+只读配置请求不触发调度或版本检查。宿主更新参数时保留已观察标志。
