@@ -8,6 +8,10 @@ use astersql_pd_schedule_scatter::{ScatterBatchError, ScatterBatchFailure, Scatt
 use astersql_pd_server::grpc_scatter::*;
 use tokio::sync::oneshot;
 pub(super) enum Command {
+    LabelRules(
+        astersql_pd_server::http_region_label::Request,
+        oneshot::Sender<Result<(u16, serde_json::Value), String>>,
+    ),
     Rule(
         astersql_pd_server::http_rule::Request,
         oneshot::Sender<Result<(u16, serde_json::Value), String>>,
@@ -68,6 +72,14 @@ pub(super) enum Command {
     Operator(u64, oneshot::Sender<Result<Option<OperatorResult>, String>>),
 }
 impl ClusterHost {
+    pub(crate) async fn region_label_rules(
+        &self,
+        request: astersql_pd_server::http_region_label::Request,
+    ) -> Result<(u16, serde_json::Value), String> {
+        let (tx, rx) = oneshot::channel();
+        tokio::select! {biased;_=self.cancel.cancelled()=>Err("server not started".into()),r=async{self.schedule_requests.send(Command::LabelRules(request,tx)).await.map_err(|_|"scheduling stopped")?;rx.await.map_err(|_|"scheduling stopped")?}=>r}
+    }
+
     pub(crate) async fn rule(
         &self,
         request: astersql_pd_server::http_rule::Request,
@@ -197,11 +209,22 @@ pub(super) async fn serve(
     command: Command,
     coordinator: &mut Coordinator<ProviderSnapshot<()>>,
     resources: &Arc<AsyncMutex<Option<Resources>>>,
-    labels: &astersql_pd_schedule_labeler::RegionLabeler,
+    labels: &mut Arc<astersql_pd_schedule_labeler::RegionLabeler>,
     cancel: &CancellationToken,
     splits: &mut Vec<super::schedule_split::Pending>,
 ) {
     match command {
+        Command::LabelRules(request, mut reply) => {
+            let work = async {
+                // Scheduler policy calls only borrow/clone this Arc until their
+                // local controller is dropped, before the next queue command.
+                // Reject a retained snapshot rather than mutating a second owner.
+                let owner = Arc::get_mut(labels).ok_or("labeler is in use")?;
+                super::region_label_http::handle(request, owner, resources, now().1 as i128).await
+            };
+            tokio::select! {biased;_=cancel.cancelled()=>{},_=reply.closed()=>{},r=work=>{let _=reply.send(r);}}
+        }
+
         Command::Rule(request, mut reply) => {
             let work = super::placement_http::handle(request, coordinator, resources, cancel);
             tokio::select! {biased;_=cancel.cancelled()=>{},_=reply.closed()=>{},r=work=>{let _=reply.send(r);}}

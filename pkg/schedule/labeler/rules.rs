@@ -208,6 +208,9 @@ impl LabelRule {
                 end_key_hex: end.into(),
             });
         }
+        // Go replaces the interface{} input with typed KeyRangeRule values.
+        // Persist only the canonical fields, retaining original hex spelling.
+        self.data = serde_json::to_value(&ranges).expect("key range JSON");
         self.ranges = Some(ranges);
         Ok(())
     }

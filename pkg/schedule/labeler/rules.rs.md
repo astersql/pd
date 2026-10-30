@@ -22,7 +22,10 @@ Public API:
 Validation order follows Go: id, labels, key/value/TTL, removal of strictly expired
 labels, supported rule type, data shape, start/end hex, increasing byte boundaries.
 An empty end key is unbounded. Range and label order are preserved; no sorting or
-merging. Unknown JSON fields are ignored; object keys match without ASCII case,
+merging. After validation, data is replaced with the canonical KeyRangeRule JSON
+(start_key/end_key only), discarding unknown range fields as Go does while
+preserving original hex spelling. Task070 adds a real HTTP differential and
+independent regression for this persistence boundary. Unknown JSON fields are ignored; object keys match without ASCII case,
 null scalars preserve defaults/prior values, duplicate fields are consumed in order.
 `from_json_without_check` leaves all derived state absent. Empty label collections
 use a Rust Vec; unchecked serialization emits an empty array rather than Go's nil

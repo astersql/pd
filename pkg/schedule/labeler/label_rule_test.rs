@@ -182,3 +182,15 @@ fn label_rule_timezone_and_calendar_expiry() {
         );
     }
 }
+
+#[test]
+fn label_rule_canonical_range_json_discards_unknown_fields() {
+    let mut value = input();
+    value["data"][0]["extra"] = json!({"untrusted":"field"});
+    let rule = decode(&value).unwrap();
+    assert_eq!(rule.data, json!([{"start_key":"AA","end_key":""}]));
+    assert_eq!(
+        serde_json::to_value(rule).unwrap()["data"],
+        json!([{"start_key":"AA","end_key":""}])
+    );
+}

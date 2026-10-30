@@ -8,6 +8,10 @@ pub fn router(services: Arc<dyn PdServices>, cancel: CancellationToken) -> axum:
             services.clone(),
             cancel.clone(),
         ))
+        .merge(crate::http_region_label::router(
+            services.clone(),
+            cancel.clone(),
+        ))
         .merge(crate::http_rule::router(services.clone(), cancel.clone()))
         .merge(crate::http_region_schedule::router(
             services.clone(),

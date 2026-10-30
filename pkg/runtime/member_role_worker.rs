@@ -126,6 +126,16 @@ impl PdServices for RoleServices {
             .await
     }
 
+    async fn region_label_rules(
+        &self,
+        request: astersql_pd_server::http_region_label::Request,
+    ) -> Result<(u16, serde_json::Value), String> {
+        self.active()
+            .await?
+            .cluster
+            .region_label_rules(request)
+            .await
+    }
     async fn rule(
         &self,
         request: astersql_pd_server::http_rule::Request,

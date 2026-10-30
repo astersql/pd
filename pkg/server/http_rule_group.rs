@@ -127,7 +127,9 @@ pub fn parse(bytes: &[u8], schema: &str) -> Result<serde_json::Value, serde_json
                 pos = end;
             }
         } else if value.is_object() {
-            let current = typ.trim_start_matches("placement.");
+            let current = typ
+                .trim_start_matches("placement.")
+                .trim_start_matches("labeler.");
             // Keep duplicate fields in input order: a later null does not clear a scalar.
             let mut ordered = Vec::new();
             let mut cursor = bytes.iter().position(|c| *c == b'{').unwrap() + 1;
@@ -155,6 +157,12 @@ pub fn parse(bytes: &[u8], schema: &str) -> Result<serde_json::Value, serde_json
             for (a, b, key, v) in ordered {
                 let key = key.to_lowercase();
                 let expected = match (current, key.as_str()) {
+                    ("LabelRule", "id" | "rule_type") => "string",
+                    ("LabelRule", "index") => "int",
+                    ("LabelRule", "labels") => "[]labeler.RegionLabel",
+                    ("RegionLabel", "key" | "value" | "ttl" | "start_at") => "string",
+                    ("LabelRulePatch", "sets") => "[]*labeler.LabelRule",
+                    ("LabelRulePatch", "deletes") => "[]string",
                     ("RuleGroup", "id") => "string",
                     ("RuleGroup", "index") => "int",
                     ("RuleGroup", "override") => "bool",

@@ -49,6 +49,13 @@ pub struct Identity {
 #[async_trait]
 pub trait PdServices: Send + Sync {
     /// Placement management on the existing term coordinator.
+    /// Access the active term's region-label rules and region label snapshots.
+    async fn region_label_rules(
+        &self,
+        _request: http_region_label::Request,
+    ) -> Result<(u16, serde_json::Value), String> {
+        Err("region labels are not configured".into())
+    }
     async fn rule(&self, _request: http_rule::Request) -> Result<(u16, serde_json::Value), String> {
         Err("server not started".into())
     }
@@ -863,3 +870,9 @@ mod http_rule_fault_test;
 mod http_rule_group_test;
 
 pub mod http_rule_group;
+
+#[cfg(test)]
+#[path = "http_region_label_test.rs"]
+mod http_region_label_test;
+
+pub mod http_region_label;
