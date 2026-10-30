@@ -27,6 +27,7 @@ pub mod http_contract;
 pub mod http_health;
 mod http_leader;
 pub mod http_member;
+pub mod http_region_schedule;
 mod http_store_read;
 mod request_role;
 use astersql_pd_tso::Timestamp;
@@ -46,6 +47,14 @@ pub struct Identity {
 /// Domain operations supplied by the host; transport types stay in this crate.
 #[async_trait]
 pub trait PdServices: Send + Sync {
+    /// Accelerate the checker pending queue on the active term coordinator.
+    async fn accelerate_regions(
+        &self,
+        _request: http_region_schedule::AccelerateRequest,
+    ) -> Result<(), String> {
+        Err("server not started".into())
+    }
+
     /// Inspect or mutate the host-owned checker and diagnostic state.
     async fn checker(&self, _command: http_checker::Command) -> Result<serde_json::Value, String> {
         Err("server not started".into())
@@ -831,3 +840,6 @@ pub mod http_scheduler_config;
 mod http_checker_test;
 
 pub mod http_checker;
+
+#[cfg(test)]
+mod http_region_schedule_test;

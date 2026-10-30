@@ -1,4 +1,6 @@
 // Copyright 2026 AsterSQL.
+#[path = "http_region_schedule_client_test.rs"]
+mod http_region_schedule_client;
 use astersql_pd_proto::{
     metapb,
     pdpb::{self, pd_client::PdClient},
@@ -95,17 +97,52 @@ async fn wait_region(client: &mut Client, id: u64, r: &metapb::Region) {
 }
 /// Same requests and real heartbeat side effects run against both implementations.
 pub async fn observe(client: &mut Client, id: u64) -> Value {
+    observe_transport(client, id, None).await
+}
+/// Same split side effects and timeout assertions through HTTP.
+pub async fn observe_http(client: &mut Client, id: u64, url: &str) -> Value {
+    observe_transport(client, id, Some(url)).await
+}
+async fn split(
+    client: &mut Client,
+    id: u64,
+    keys: &[&[u8]],
+    retry: u64,
+    url: Option<&str>,
+) -> pdpb::SplitRegionsResponse {
+    if let Some(url) = url {
+        let hex = |k: &&[u8]| k.iter().map(|b| format!("{b:02x}")).collect::<String>();
+        let body = json!({"split_keys":keys.iter().map(hex).collect::<Vec<_>>(),"retry_limit":retry as i64});
+        let (status, v) =
+            http_region_schedule_client::request(url, "split", &body.to_string()).await;
+        assert_eq!(status, 200, "{v}");
+        pdpb::SplitRegionsResponse {
+            header: Some(pdpb::ResponseHeader {
+                cluster_id: id,
+                ..Default::default()
+            }),
+            finished_percentage: v["processed-percentage"].as_u64().unwrap(),
+            regions_id: serde_json::from_value(v["regions-id"].clone()).unwrap(),
+        }
+    } else {
+        client
+            .split_regions(request(id, keys, retry))
+            .await
+            .unwrap()
+            .into_inner()
+    }
+}
+async fn observe_transport(client: &mut Client, id: u64, url: Option<&str>) -> Value {
     let mut output = vec![];
     for (keys, retries) in [
         (vec![], 0),
         (vec![b"a".as_slice()], 0),
         (vec![b"b".as_slice()], u64::MAX),
     ] {
-        let r = client
-            .split_regions(request(id, &keys, retries))
-            .await
-            .unwrap()
-            .into_inner();
+        if url.is_some() && keys.is_empty() {
+            continue;
+        }
+        let r = split(client, id, &keys, retries, url).await;
         assert!(r.header.as_ref().unwrap().error.is_none());
         assert_eq!(r.finished_percentage, 0);
         assert!(r.regions_id.is_empty());
@@ -144,7 +181,8 @@ pub async fn observe(client: &mut Client, id: u64) -> Value {
         assert!(r.header.unwrap().error.is_none());
     }
     let (tx, rx) = tokio::sync::mpsc::channel(16);
-    let original = region(100, b"a", b"w", 3);
+    let version = if url.is_some() { 30 } else { 3 };
+    let original = region(100, b"a", b"w", version);
     send(&tx, id, original.clone()).await;
     let mut stream = client
         .region_heartbeat(tokio_stream::wrappers::ReceiverStream::new(rx))
@@ -159,8 +197,18 @@ pub async fn observe(client: &mut Client, id: u64) -> Value {
             vec![b"m"]
         };
         let mut caller = client.clone();
-        let req = request(id, &keys, 0);
-        let task = tokio::spawn(async move { caller.split_regions(req).await });
+        let owned_keys = keys.iter().map(|k| k.to_vec()).collect::<Vec<_>>();
+        let owned_url = url.map(str::to_owned);
+        let task = tokio::spawn(async move {
+            split(
+                &mut caller,
+                id,
+                &owned_keys.iter().map(Vec::as_slice).collect::<Vec<_>>(),
+                0,
+                owned_url.as_deref(),
+            )
+            .await
+        });
         let expected_id = if partial { 102 } else { 100 };
         tokio::time::timeout(Duration::from_secs(15), async {
             loop {
@@ -195,9 +243,15 @@ pub async fn observe(client: &mut Client, id: u64) -> Value {
         assert_eq!(op.desc, b"region-splitter");
         assert_eq!(op.status, pdpb::OperatorStatus::Running as i32);
         let replacements = if partial {
-            vec![region(102, b"m", b"p", 5), region(103, b"p", b"w", 5)]
+            vec![
+                region(102, b"m", b"p", version + 2),
+                region(103, b"p", b"w", version + 2),
+            ]
         } else {
-            vec![region(101, b"a", b"m", 4), region(102, b"m", b"w", 4)]
+            vec![
+                region(101, b"a", b"m", version + 1),
+                region(102, b"m", b"w", version + 1),
+            ]
         };
         for r in &replacements {
             send(&tx, id, r.clone()).await;
@@ -208,13 +262,34 @@ pub async fn observe(client: &mut Client, id: u64) -> Value {
         let r = tokio::time::timeout(Duration::from_secs(65), task)
             .await
             .unwrap()
-            .unwrap()
-            .unwrap()
-            .into_inner();
+            .unwrap();
         assert!(r.header.as_ref().unwrap().error.is_none());
         assert_eq!(r.finished_percentage, if partial { 50 } else { 100 });
         assert_eq!(r.regions_id, if partial { vec![103] } else { vec![102] });
         output.push(record(r, id));
+    }
+    if let Some(url) = url {
+        let endpoint = format!("{url}/pd/api/v1/regions/split");
+        let out = tokio::task::spawn_blocking(move || {
+            std::process::Command::new("curl")
+                .args([
+                    "-sS",
+                    "--max-time",
+                    "0.1",
+                    "--data-binary",
+                    r#"{"split_keys":["64"],"retry_limit":0}"#,
+                    &endpoint,
+                ])
+                .output()
+                .unwrap()
+        })
+        .await
+        .unwrap();
+        assert_eq!(
+            out.status.code(),
+            Some(28),
+            "HTTP split must remain pending until a boundary is observed: {out:?}"
+        );
     }
     // A client deadline cancels the active watch. It cannot invent a completed boundary.
     let mut caller = client.clone();
@@ -234,7 +309,7 @@ pub async fn observe(client: &mut Client, id: u64) -> Value {
         .await
         .unwrap()
         .into_inner();
-    assert_eq!(r.region.unwrap(), region(101, b"a", b"m", 4));
+    assert_eq!(r.region.unwrap(), region(101, b"a", b"m", version + 1));
     output.push(json!([
         format!("{:?}", cancelled.code()),
         cancelled.message(),

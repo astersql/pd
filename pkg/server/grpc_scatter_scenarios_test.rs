@@ -1,4 +1,6 @@
 // Copyright 2026 AsterSQL.
+#[path = "http_region_schedule_client_test.rs"]
+mod http_region_schedule_client;
 use astersql_pd_proto::{
     metapb,
     pdpb::{self, pd_client::PdClient},
@@ -14,6 +16,13 @@ fn header(id: u64) -> Option<pdpb::RequestHeader> {
 }
 /// Real stores and heartbeats; scatter can only rebalance the three existing voters.
 pub async fn observe(client: &mut Client, id: u64) -> Value {
+    observe_transport(client, id, None).await
+}
+/// Reuse the heartbeat and operator assertions through the management HTTP path.
+pub async fn observe_http(client: &mut Client, id: u64, url: &str) -> Value {
+    observe_transport(client, id, Some(url)).await
+}
+async fn observe_transport(client: &mut Client, id: u64, url: Option<&str>) -> Value {
     for store_id in 1..=3 {
         let response = client
             .put_store(pdpb::PutStoreRequest {
@@ -110,20 +119,40 @@ pub async fn observe(client: &mut Client, id: u64) -> Value {
     })
     .await
     .unwrap();
-    let r = client
-        .scatter_region(pdpb::ScatterRegionRequest {
-            header: header(id),
-            regions_id: vec![100, 101, 102, 999],
-            group: "task029".into(),
-            skip_store_limit: true,
-            ..Default::default()
-        })
-        .await
-        .unwrap()
-        .into_inner();
+    let r = if let Some(url) = url {
+        let (status, body) = http_region_schedule_client::request(
+            url,
+            "scatter",
+            r#"{"regions_id":[100,101,102,999],"group":"task029","retry_limit":0}"#,
+        )
+        .await;
+        assert_eq!(
+            (status, body.clone()),
+            (200, json!({"processed-percentage":75}))
+        );
+        pdpb::ScatterRegionResponse {
+            header: Some(pdpb::ResponseHeader::default()),
+            finished_percentage: body["processed-percentage"].as_u64().unwrap(),
+            failed_regions_id: vec![],
+        }
+    } else {
+        client
+            .scatter_region(pdpb::ScatterRegionRequest {
+                header: header(id),
+                regions_id: vec![100, 101, 102, 999],
+                group: "task029".into(),
+                skip_store_limit: true,
+                ..Default::default()
+            })
+            .await
+            .unwrap()
+            .into_inner()
+    };
     assert!(r.header.unwrap().error.is_none());
     assert_eq!(r.finished_percentage, 75);
-    assert_eq!(r.failed_regions_id, vec![999]);
+    if url.is_none() {
+        assert_eq!(r.failed_regions_id, vec![999]);
+    }
     let mut running = vec![];
     for region_id in 100..=102 {
         let r = client
@@ -207,7 +236,12 @@ pub async fn observe(client: &mut Client, id: u64) -> Value {
                     .await
                     .unwrap()
                     .into_inner();
-                assert!(r.header.unwrap().error.is_none());
+                // Go removes an active operator before publishing its retained record.
+                // Observe eventual Success across that transition, within the same deadline.
+                if r.header.unwrap().error.is_some() {
+                    done = false;
+                    continue;
+                }
                 done &= r.status == pdpb::OperatorStatus::Success as i32;
             }
             if done {

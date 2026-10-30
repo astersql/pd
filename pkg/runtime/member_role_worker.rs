@@ -420,6 +420,16 @@ impl PdServices for RoleServices {
     ) -> Result<String, String> {
         self.active().await?.cluster.region_label(region, key).await
     }
+    async fn accelerate_regions(
+        &self,
+        request: astersql_pd_server::http_region_schedule::AccelerateRequest,
+    ) -> Result<(), String> {
+        self.active()
+            .await?
+            .cluster
+            .accelerate_regions(request)
+            .await
+    }
     async fn checker(
         &self,
         command: astersql_pd_server::http_checker::Command,

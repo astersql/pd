@@ -84,16 +84,17 @@ pub enum OperatorCreation {
         retries: i64,
     },
 }
-// Go's encoding/json decodes interface numbers as float64. Preserve truncation
-// and the pinned amd64 oracle's out-of-range integer conversion (CVTTSD2SI).
-fn signed_number(n: f64) -> i64 {
+/// Decode JSON's float64 number as the pinned amd64 Go oracle's native int.
+/// Preserve truncation and out-of-range integer conversion (CVTTSD2SI).
+pub fn go_json_i64(n: f64) -> i64 {
     if n >= 9223372036854775808.0 || n < -9223372036854775808.0 {
         i64::MIN
     } else {
         n as i64
     }
 }
-fn id(v: &Value) -> Option<u64> {
+/// Decode a JSON region/store ID with the same Go float64 conversion.
+pub fn go_json_u64(v: &Value) -> Option<u64> {
     let n = v.as_f64()?;
     Some(
         if n >= 18446744073709551616.0 || n < -9223372036854775808.0 {
@@ -101,12 +102,12 @@ fn id(v: &Value) -> Option<u64> {
         } else if n >= 9223372036854775808.0 {
             n as u64
         } else {
-            signed_number(n) as u64
+            go_json_i64(n) as u64
         },
     )
 }
 fn ids(v: &Value) -> Option<Vec<u64>> {
-    v.as_array()?.iter().map(id).collect()
+    v.as_array()?.iter().map(go_json_u64).collect()
 }
 impl OperatorCreation {
     pub fn parse(input: &Value) -> Result<Self, CreationError> {
@@ -114,14 +115,11 @@ impl OperatorCreation {
         let name = input["name"]
             .as_str()
             .ok_or(Input("missing operator name"))?;
-        let field = |key: &str, error| id(&input[key]).ok_or(Input(error));
+        let field = |key: &str, error| go_json_u64(&input[key]).ok_or(Input(error));
         let string = |key: &str| input[key].as_str().unwrap_or_default().to_owned();
         if name == "scatter-regions" {
             let ids = ids(&input["region_ids"]).ok_or(Input("region_ids is invalid"))?;
-            let retries = input["retry_limit"]
-                .as_f64()
-                .map(signed_number)
-                .unwrap_or(5);
+            let retries = input["retry_limit"].as_f64().map(go_json_i64).unwrap_or(5);
             return Ok(Self::ScatterRegions {
                 ids,
                 start: string("start_key"),

@@ -8,6 +8,11 @@ use astersql_pd_schedule_scatter::{ScatterBatchError, ScatterBatchFailure, Scatt
 use astersql_pd_server::grpc_scatter::*;
 use tokio::sync::oneshot;
 pub(super) enum Command {
+    PendingRegions(oneshot::Sender<Result<Vec<u64>, String>>),
+    Accelerate(
+        astersql_pd_server::http_region_schedule::AccelerateRequest,
+        oneshot::Sender<Result<(), String>>,
+    ),
     Checker(
         astersql_pd_server::http_checker::Command,
         oneshot::Sender<Result<serde_json::Value, String>>,
@@ -59,6 +64,21 @@ pub(super) enum Command {
     Operator(u64, oneshot::Sender<Result<Option<OperatorResult>, String>>),
 }
 impl ClusterHost {
+    /// Snapshot the canonical acceleration/retry queue on the term scheduling task.
+    /// This queue differs from the rule checker's pending-replication list.
+    pub async fn pending_processed_regions(&self) -> Result<Vec<u64>, String> {
+        let (tx, rx) = oneshot::channel();
+        tokio::select! {biased;_=self.cancel.cancelled()=>Err("server not started".into()),r=async{self.schedule_requests.send(Command::PendingRegions(tx)).await.map_err(|_|"scheduling stopped")?;rx.await.map_err(|_|"scheduling stopped")?}=>r}
+    }
+
+    pub(crate) async fn accelerate_regions(
+        &self,
+        request: astersql_pd_server::http_region_schedule::AccelerateRequest,
+    ) -> Result<(), String> {
+        let (tx, rx) = oneshot::channel();
+        tokio::select! {biased;_=self.cancel.cancelled()=>Err("server not started".into()),r=async{self.schedule_requests.send(Command::Accelerate(request,tx)).await.map_err(|_|"scheduling stopped")?;rx.await.map_err(|_|"scheduling stopped")?}=>r}
+    }
+
     pub(crate) async fn checker(
         &self,
         command: astersql_pd_server::http_checker::Command,
@@ -171,6 +191,38 @@ pub(super) async fn serve(
     splits: &mut Vec<super::schedule_split::Pending>,
 ) {
     match command {
+        Command::PendingRegions(mut reply) => {
+            let work = async {
+                let guard = resources.lock().await;
+                let r = guard.as_ref().ok_or("server not started")?;
+                r.leader.validate().await.map_err(|e| e.to_string())?;
+                let mut ids = coordinator
+                    .get_checker_controller()
+                    .lock()
+                    .unwrap()
+                    .pending_processed_regions();
+                ids.sort_unstable();
+                Ok(ids)
+            };
+            tokio::select! {biased;_=cancel.cancelled()=>{},_=reply.closed()=>{},r=work=>{let _=reply.send(r);}}
+        }
+
+        Command::Accelerate(request, mut reply) => {
+            let work = async {
+                let guard = resources.lock().await;
+                let r = guard.as_ref().ok_or("server not started")?;
+                r.leader.validate().await.map_err(|e| e.to_string())?;
+                astersql_pd_schedule_handler::Handler::new(Some(coordinator))
+                    .accelerate_regions_schedule_in_ranges(
+                        &request.starts,
+                        &request.ends,
+                        request.limit,
+                    )
+                    .map_err(|e| e.to_string())
+            };
+            tokio::select! {biased;_=cancel.cancelled()=>{},_=reply.closed()=>{},r=work=>{let _=reply.send(r);}}
+        }
+
         Command::Checker(command, mut reply) => {
             let work = async {
                 let guard = resources.lock().await;
@@ -525,7 +577,7 @@ async fn scatter(
         .map_err(|e| ScatterError::Other(e.to_string()))?;
     let cluster = coordinator.get_cluster().clone();
     let config = r.state.lock().unwrap().config.clone();
-    let single = if request.ids.is_empty() {
+    let single = if request.ids.is_empty() && request.range.is_none() {
         Some(
             cluster
                 .regions
@@ -540,6 +592,10 @@ async fn scatter(
     // One attempt can replace every peer; retries never exceed the canonical limit.
     let regions: Vec<_> = if let Some(region) = &single {
         vec![region.clone()]
+    } else if let Some(range) = &request.range {
+        cluster
+            .regions
+            .scan_regions(&range.start_key, &range.end_key, -1)
     } else {
         request
             .ids
@@ -639,7 +695,13 @@ async fn scatter(
     }
     let outcome = scatterer
         .scatter(
-            ScatterBatchRequest::Ids(request.ids),
+            match request.range {
+                Some(range) => ScatterBatchRequest::Range {
+                    start: range.start_key,
+                    end: range.end_key,
+                },
+                None => ScatterBatchRequest::Ids(request.ids),
+            },
             &request.group,
             request.retries,
             request.skip_store_limit,

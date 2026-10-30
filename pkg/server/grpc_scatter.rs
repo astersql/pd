@@ -8,6 +8,8 @@ use tonic::{Response, Status};
 
 /// Transport-independent request forwarded to the term-owned scheduling task.
 pub struct ScatterRequest {
+    /// A range is resolved by the same coordinator that plans and admits the batch.
+    pub range: Option<astersql_pd_core::KeyRange>,
     pub ids: Vec<u64>,
     pub single: u64,
     pub fallback: Option<Arc<RegionInfo>>,
@@ -53,6 +55,7 @@ impl Grpc {
             ))
         });
         let request = ScatterRequest {
+            range: None,
             ids: r.regions_id,
             single: r.region_id,
             fallback,

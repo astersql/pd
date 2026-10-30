@@ -147,6 +147,12 @@ impl PdServices for Application {
     > {
         self.cluster.scatter(request).await
     }
+    async fn accelerate_regions(
+        &self,
+        request: astersql_pd_server::http_region_schedule::AccelerateRequest,
+    ) -> Result<(), String> {
+        self.cluster.accelerate_regions(request).await
+    }
     async fn checker(
         &self,
         command: astersql_pd_server::http_checker::Command,
