@@ -857,3 +857,9 @@ mod http_rule_test;
 #[cfg(test)]
 #[path = "http_rule_fault_test.rs"]
 mod http_rule_fault_test;
+
+#[cfg(test)]
+#[path = "http_rule_group_test.rs"]
+mod http_rule_group_test;
+
+pub mod http_rule_group;

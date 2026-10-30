@@ -131,10 +131,15 @@ pub fn fit_rule(
 pub struct RegionFit {
     pub rule_fits: Vec<RuleFit>,
     pub orphan_peers: Vec<Peer>,
+    orphan_peers_initialized: bool,
     pub(crate) region_stores: Vec<Arc<StoreInfo>>,
     pub(crate) rules: Vec<Arc<Rule>>,
 }
 impl RegionFit {
+    /// Preserve the distinction between an unallocated orphan list and a cleared list.
+    pub fn orphan_peers_is_nil(&self) -> bool {
+        !self.orphan_peers_initialized
+    }
     pub fn is_satisfied(&self) -> bool {
         !self.rule_fits.is_empty()
             && self.rule_fits.iter().all(RuleFit::is_satisfied)
@@ -160,6 +165,7 @@ pub fn fit_region(
         selected: vec![false; region.meta().peers.len()],
         best: (0..rules.len()).map(|_| None).collect(),
         orphans: vec![],
+        orphan_peers_initialized: false,
         need_isolation: rules.iter().any(|r| !r.location_labels.is_empty()),
         exit: false,
     };
@@ -174,6 +180,7 @@ pub fn fit_region(
             .map(|f| f.expect("every rule has an empty combination"))
             .collect(),
         orphan_peers: worker.orphans,
+        orphan_peers_initialized: worker.orphan_peers_initialized,
         region_stores: region
             .meta()
             .peers
@@ -227,6 +234,7 @@ struct FitWorker<'a> {
     selected: Vec<bool>,
     best: Vec<Option<RuleFit>>,
     orphans: Vec<Peer>,
+    orphan_peers_initialized: bool,
     need_isolation: bool,
     exit: bool,
 }
@@ -239,6 +247,7 @@ impl FitWorker<'_> {
             .filter(|(_, selected)| !**selected)
             .map(|(p, _)| (*p).clone())
             .collect();
+        self.orphan_peers_initialized |= !self.orphans.is_empty();
     }
     fn fit(&mut self, index: usize) -> bool {
         if self.exit {

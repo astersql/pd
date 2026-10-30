@@ -19,3 +19,9 @@
 没有协议类型、全局状态、后台工作、系统时钟或私有 runtime。存储复用 canonical
 StorageEndpoint 和 MetaStore。独立测试 placement_batch_test.rs 显式登记在 lib.rs，
 内存和 Etcd 使用相同契约；见[批次 25 证据](../../../docs/rust/schedule/placement/25-证据.md)。
+
+HTTP宿主通过 `prepare_set_rules/prepare_batch/prepare_set_all_group_bundles` 复用上述
+纯补丁构造；`prepare_delete_matching_groups` 接受调用方已校验的选择器。旧领域入口仍
+保留 Go 的120项分段语义。HTTP使用 `prepare_patch` + `PreparedRulePatch::persist`
+执行单个宿主fenced事务，提交后 `publish_patch`，因此存储拒绝不会部分写入或发布。
+超过后端单事务容量时整体报错，不退回分段提交。见[任务069](../../../docs/rust/server-api/task-069.md)。

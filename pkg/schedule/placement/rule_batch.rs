@@ -76,20 +76,40 @@ impl RuleManager {
         conf: &C,
         stores: &[StoreInfo],
     ) -> Result<(), RuleManagerError> {
+        let patch = self.prepare_set_rules(rules, conf, stores)?;
+        self.try_commit_patch(patch, now).await
+    }
+    /// Validate all upserts without persistence or publication.
+    pub fn prepare_set_rules<C: SharedConfigProvider + ?Sized>(
+        &self,
+        rules: Vec<Rule>,
+        conf: &C,
+        stores: &[StoreInfo],
+    ) -> Result<RuleConfigPatch, RuleManagerError> {
         let mut patch = self.begin_patch();
         for mut rule in rules {
             self.adjust_rule(&mut rule, conf, stores)?;
             patch.set_rule(rule);
         }
-        self.try_commit_patch(patch, now).await
+        Ok(patch)
     }
     pub async fn batch<C: SharedConfigProvider + ?Sized>(
         &mut self,
-        mut todo: Vec<RuleOp>,
+        todo: Vec<RuleOp>,
         now: u64,
         conf: &C,
         stores: &[StoreInfo],
     ) -> Result<(), RuleManagerError> {
+        let patch = self.prepare_batch(todo, conf, stores)?;
+        self.try_commit_patch(patch, now).await
+    }
+    /// Validate additions and select ordered mutations against the original snapshot.
+    pub fn prepare_batch<C: SharedConfigProvider + ?Sized>(
+        &self,
+        mut todo: Vec<RuleOp>,
+        conf: &C,
+        stores: &[StoreInfo],
+    ) -> Result<RuleConfigPatch, RuleManagerError> {
         for op in &mut todo {
             if op.action == "add" {
                 self.adjust_rule(&mut op.rule, conf, stores)?;
@@ -111,7 +131,7 @@ impl RuleManager {
                 _ => {}
             }
         }
-        self.try_commit_patch(patch, now).await
+        Ok(patch)
     }
     pub async fn set_rule_group(
         &mut self,
@@ -127,7 +147,7 @@ impl RuleManager {
         p.delete_group(id);
         self.try_commit_patch(p, now).await
     }
-    fn bundle_patch<C: SharedConfigProvider + ?Sized>(
+    pub fn bundle_patch<C: SharedConfigProvider + ?Sized>(
         &self,
         p: &mut RuleConfigPatch,
         bundle: GroupBundle,
@@ -164,6 +184,17 @@ impl RuleManager {
         conf: &C,
         stores: &[StoreInfo],
     ) -> Result<(), RuleManagerError> {
+        let patch = self.prepare_set_all_group_bundles(bundles, override_, conf, stores)?;
+        self.try_commit_patch(patch, now).await
+    }
+    /// Prepare whole-group replacement while retaining canonical group ordering.
+    pub fn prepare_set_all_group_bundles<C: SharedConfigProvider + ?Sized>(
+        &self,
+        bundles: Vec<GroupBundle>,
+        override_: bool,
+        conf: &C,
+        stores: &[StoreInfo],
+    ) -> Result<RuleConfigPatch, RuleManagerError> {
         let mut p = self.begin_patch();
         for r in self.config.rules() {
             if override_ || bundles.iter().any(|g| g.id == r.group_id) {
@@ -178,7 +209,7 @@ impl RuleManager {
         for g in bundles {
             self.bundle_patch(&mut p, g, conf, stores)?;
         }
-        self.try_commit_patch(p, now).await
+        Ok(p)
     }
     pub async fn set_group_bundle<C: SharedConfigProvider + ?Sized>(
         &mut self,
@@ -196,8 +227,24 @@ impl RuleManager {
         regex: bool,
         now: u64,
     ) -> Result<(), RuleManagerError> {
+        let patch = self.prepare_delete_group_bundle(id, regex)?;
+        self.try_commit_patch(patch, now).await
+    }
+    /// Prepare exact or regexp group deletion without IO.
+    pub fn prepare_delete_group_bundle(
+        &self,
+        id: &str,
+        regex: bool,
+    ) -> Result<RuleConfigPatch, RuleManagerError> {
         let re = if regex { Some(go_regexp(id)?) } else { None };
         let matches = |s: &str| re.as_ref().map_or(s == id, |r| r.is_match(s));
+        Ok(self.prepare_delete_matching_groups(matches))
+    }
+    /// Select group deletions from the immutable base using a caller-validated selector.
+    pub fn prepare_delete_matching_groups(
+        &self,
+        matches: impl Fn(&str) -> bool,
+    ) -> RuleConfigPatch {
         let mut p = self.begin_patch();
         for r in self.config.rules() {
             if matches(&r.group_id) {
@@ -209,7 +256,7 @@ impl RuleManager {
                 p.delete_group(id);
             }
         }
-        self.try_commit_patch(p, now).await
+        p
     }
 }
 

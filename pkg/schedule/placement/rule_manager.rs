@@ -53,7 +53,81 @@ impl PreparedRuleUpdate {
         &self.rule
     }
 }
+/// Owned, validated bulk update. The host persists all mutations in one fenced transaction.
+pub struct PreparedRulePatch {
+    rules: Vec<(String, Option<Arc<Rule>>)>,
+    groups: Vec<(String, RuleGroup)>,
+    config: RuleConfig,
+    list: RuleList,
+}
+impl PreparedRulePatch {
+    /// Persist without publishing; a backend transaction rejection leaves both views unchanged.
+    pub async fn persist(
+        &self,
+        storage: &StorageEndpoint,
+        paths: &ClusterPaths,
+    ) -> Result<(), RuleManagerError> {
+        storage
+            .run_in_txn(async |txn| {
+                for (key, rule) in &self.rules {
+                    if let Some(rule) = rule {
+                        storage.save_rule(txn, paths, key, rule.as_ref())?;
+                    } else {
+                        storage.delete_rule(txn, paths, key)?;
+                    }
+                }
+                for (id, group) in &self.groups {
+                    if group.is_default() {
+                        storage.delete_rule_group(txn, paths, id)?;
+                    } else {
+                        storage.save_rule_group(txn, paths, id, group)?;
+                    }
+                }
+                Ok::<_, EndpointError>(())
+            })
+            .await?;
+        Ok(())
+    }
+}
 impl RuleManager {
+    /// Validate and freeze a bulk patch before an enclosing host transaction.
+    pub fn prepare_patch(
+        &self,
+        mut patch: RuleConfigPatch,
+        now: u64,
+    ) -> Result<PreparedRulePatch, RuleManagerError> {
+        RuleList::build(patch.adjust().rules().cloned())?;
+        patch.trim();
+        let rules = patch
+            .rule_mutations()
+            .map(|(key, rule)| {
+                let key = Rule {
+                    group_id: key[0].clone(),
+                    id: key[1].clone(),
+                    ..Default::default()
+                }
+                .store_key();
+                (key, rule.clone())
+            })
+            .collect();
+        let groups = patch
+            .group_mutations()
+            .map(|(id, g)| (id.clone(), g.clone()))
+            .collect();
+        let config = patch.commit(now);
+        let list = RuleList::build(config.rules().cloned())?;
+        Ok(PreparedRulePatch {
+            rules,
+            groups,
+            config,
+            list,
+        })
+    }
+    /// Publish a successfully persisted patch without IO or cancellation points.
+    pub fn publish_patch(&mut self, update: PreparedRulePatch) {
+        self.config = update.config;
+        self.list = Some(update.list);
+    }
     /// Validate without persistence or publication; caller serializes preparation and commit.
     pub fn prepare_rule<C: SharedConfigProvider + ?Sized>(
         &self,

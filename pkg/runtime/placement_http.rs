@@ -49,13 +49,26 @@ pub(super) async fn handle(
             "[PD:placement:ErrPlacementDisabled]placement rules feature is disabled",
         ));
     }
-    let path = astersql_pd_server::http_contract::query_unescape(&request.path.replace('+', "%2B"))
-        .map_err(|_| "invalid path escape".to_owned())?;
+    let path = astersql_pd_server::http_contract::query_unescape(
+        &request.path.split('?').next().unwrap().replace('+', "%2B"),
+    )
+    .map_err(|_| "invalid path escape".to_owned())?;
     let path = String::from_utf8_lossy(&path);
     let parts = path
         .trim_start_matches("/pd/api/v1/config/")
         .split('/')
         .collect::<Vec<_>>();
+    if !matches!(
+        parts.as_slice(),
+        ["rule"]
+            | ["rule", _, _]
+            | ["rules", "group", _]
+            | ["rules", "key", _]
+            | ["rules", "region", _]
+    ) {
+        drop(guard);
+        return group::handle(request, coordinator, resources, cancel).await;
+    }
     let delete = request.method == axum::http::Method::DELETE;
     let write = delete || request.method == axum::http::Method::POST;
     if !write {
@@ -257,3 +270,6 @@ pub(super) async fn check_ranges(
     );
     Ok(())
 }
+
+#[path = "placement_http_group.rs"]
+mod group;

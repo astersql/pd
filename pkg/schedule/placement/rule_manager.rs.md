@@ -35,3 +35,9 @@ The storage endpoint transitively references protocol adapters, but this module 
 uses its generic JSON RuleStorage operations and backend-neutral MetaStore transaction.
 See [task 24 evidence](../../../docs/rust/schedule/placement/24-证据.md) and the explicitly
 registered independent `placement_restore_test.rs` tests.
+
+Bulk HTTP uses `prepare_patch` to validate/trim an owned canonical patch and freeze
+persistence values separately from committed runtime versions. `PreparedRulePatch::persist`
+uses one caller-supplied fenced StorageEndpoint transaction, then `publish_patch` replaces
+the configuration and list without IO. Backend capacity errors reject the entire update.
+The existing domain batch APIs retain their Go-compatible chunking behavior.

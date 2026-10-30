@@ -309,7 +309,10 @@ pub(crate) fn router(services: Arc<dyn PdServices>, cancel: CancellationToken) -
 }
 
 fn label_pattern(input: &str) -> Result<regex::Regex, String> {
-    let pattern = format!("(?i){input}");
+    go_pattern(&format!("(?i){input}"))
+}
+/// Shared RE2-compatible parsing for HTTP label and placement selectors.
+pub(crate) fn go_pattern(pattern: &str) -> Result<regex::Regex, String> {
     // Go's Perl classes and word boundaries are ASCII, while its literal
     // case folding remains Unicode. Quoted literals are accepted by RE2.
     let mut translated = String::new();

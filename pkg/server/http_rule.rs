@@ -29,7 +29,7 @@ pub(crate) fn router(services: Arc<dyn PdServices>, cancel: CancellationToken) -
         .route("/pd/api/v1/config/rules/region/{region}", get(handle))
         .with_state((services, cancel))
 }
-async fn handle(
+pub(crate) async fn handle(
     State((services, cancel)): State<(Arc<dyn PdServices>, CancellationToken)>,
     OriginalUri(uri): OriginalUri,
     method: Method,
@@ -56,7 +56,7 @@ async fn handle(
         match services
             .rule(Request {
                 method,
-                path: uri.path().into(),
+                path: uri.path_and_query().unwrap().as_str().into(),
                 body: bytes,
             })
             .await

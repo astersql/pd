@@ -42,3 +42,9 @@ No rules produces sorted orphan peers and an unsatisfied fit. Rules are expected
 to be validated by the existing rule manager (including positive counts).
 See [task 27 evidence](../../../docs/rust/schedule/placement/27-证据.md) and
 explicitly registered `placement_region_fit_test.rs`.
+
+RegionFit retains whether the orphan list has ever been populated during combination
+search (`orphan_peers_is_nil`). This preserves the Go distinction between nil and an
+allocated list subsequently cleared, without adding transport or JSON types to the
+fitting domain. The HTTP detail adapter maps empty RuleFit peer lists to null and
+uses this provenance for orphan-peers; see task-069 HTTP/Go differential evidence.
