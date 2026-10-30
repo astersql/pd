@@ -9,6 +9,7 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
+astersql-pd-progress.workspace = true
 astersql-pd-storelimit.workspace = true
 rustix.workspace = true
 etcd-client.workspace = true

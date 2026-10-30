@@ -21,6 +21,7 @@ use tokio_util::sync::CancellationToken;
 
 type State = Mutex<HeartbeatEffectsState<ProviderSnapshot<()>>>;
 struct Resources {
+    progress: Arc<astersql_pd_progress::Manager>,
     previous_store_limits:
         std::collections::BTreeMap<u64, astersql_pd_schedule_config::StoreLimitConfig>,
     meta_store: Arc<dyn MetaStore>,
@@ -49,6 +50,7 @@ pub struct ClusterHost {
     restored_config: Option<astersql_pd_server_config::PersistedConfig>,
     resources: Arc<AsyncMutex<Option<Resources>>>,
     store_worker: AsyncMutex<Option<StoreStateWorker>>,
+    progress_worker: AsyncMutex<Option<tokio::task::JoinHandle<()>>>,
     stats_worker: AsyncMutex<Option<StoreStatsWorker>>,
     config_worker: AsyncMutex<Option<StoreConfigWorker>>,
     metrics_worker: AsyncMutex<Option<astersql_pd_cluster::ClusterMetricsWorker>>,
@@ -67,6 +69,46 @@ pub struct ClusterHost {
     cancel: CancellationToken,
 }
 impl ClusterHost {
+    pub(crate) async fn store_progress(
+        &self,
+        id: Option<u64>,
+        action: String,
+    ) -> Result<serde_json::Value, String> {
+        let guard = self.resources.lock().await;
+        let r = guard.as_ref().ok_or("server not started")?;
+        let p = if let Some(id) = id {
+            r.progress.get_progress_by_store_id(id)
+        } else {
+            r.progress.get_average_progress_by_action(&action)
+        };
+        let p = p.ok_or_else(|| {
+            format!(
+                "[PD:progress:ErrProgressNotFound]no progress found for {}",
+                id.map(|id| format!("the given store ID: {id}"))
+                    .unwrap_or_else(|| format!("the action: {action}"))
+            )
+        })?;
+        for n in [p.progress_percent, p.current_speed, p.left_second] {
+            if !n.is_finite() {
+                return Err(format!(
+                    "json: unsupported value: {}",
+                    if n.is_nan() {
+                        "NaN"
+                    } else if n.is_sign_positive() {
+                        "+Inf"
+                    } else {
+                        "-Inf"
+                    }
+                ));
+            }
+        }
+        let mut v = serde_json::json!({"action":p.action,"progress":p.progress_percent,"current_speed":p.current_speed,"left_seconds":p.left_second});
+        if let Some(id) = id.filter(|id| *id != 0) {
+            v["store_id"] = serde_json::json!(id);
+        }
+        Ok(v)
+    }
+
     pub(crate) async fn configuration(&self) -> Result<astersql_pd_server_config::Config, String> {
         let guard = self.resources.lock().await;
         let resources = guard.as_ref().ok_or("server not started")?;
@@ -216,7 +258,13 @@ impl ClusterHost {
         let scheduling_configuration =
             serde_json::to_value(persisted_config.persistence_snapshot())
                 .map_err(|e| e.to_string())?;
+        let progress = Arc::new(astersql_pd_progress::Manager::new(
+            Arc::new(|| std::time::Duration::ZERO),
+            std::time::Duration::from_secs(10),
+            registry,
+        )?);
         let resources = Arc::new(AsyncMutex::new(Some(Resources {
+            progress: progress.clone(),
             previous_store_limits: Default::default(),
             meta_store: store,
             leader,
@@ -288,6 +336,10 @@ impl ClusterHost {
                         .filter(|s| s.is_removing() || s.is_removed())
                         .map(|s| s.id())
                         .collect::<Vec<_>>();
+                    let samples = astersql_pd_cluster::store_progress_samples(
+                        &resources.state.lock().unwrap(),
+                        prepared,
+                    );
                     let result = check_store_states(
                         &resources.state,
                         &resources.storage,
@@ -297,6 +349,13 @@ impl ClusterHost {
                     )
                     .await;
                     *errors.lock().unwrap() = result;
+                    for (store, threshold) in samples {
+                        resources.progress.update_progress(
+                            Some(&store),
+                            store.region_size() as f64,
+                            threshold,
+                        );
+                    }
                     {
                         let state = resources.state.lock().unwrap();
                         for store in state.cluster.stores.get_stores() {
@@ -445,7 +504,12 @@ impl ClusterHost {
                 schedule_initialized.clone(),
                 cluster_id,
             );
+        let progress_cancel = cancel.clone();
+        let progress_worker = tokio::runtime::Handle::current().spawn(async move {
+            progress.gc(&progress_cancel).await;
+        });
         Ok(Self {
+            progress_worker: AsyncMutex::new(Some(progress_worker)),
             stores,
             schedule_requests,
             schedule_status,
@@ -719,6 +783,7 @@ impl ClusterHost {
             .map_err(StoreError::Other)?;
             next
         };
+        let registered_id = next.id();
         resources
             .storage
             .save_store_meta(&resources.paths, next.meta().unwrap())
@@ -743,11 +808,17 @@ impl ClusterHost {
                 state.cluster.stores.put_store(Arc::new(next));
             }
         }
+        store_limits::ensure_registered_limit(registered_id, resources).await;
         self.update_split_version(resources).await;
         Ok(())
     }
     pub(crate) async fn shutdown(&self) -> Result<(), crate::NodeError> {
         self.cancel.cancel();
+        let progress_error = if let Some(worker) = self.progress_worker.lock().await.take() {
+            worker.await.err()
+        } else {
+            None
+        };
         let schedule_error = if let Some(worker) = self.schedule_worker.lock().await.take() {
             worker.stop().await.err()
         } else {
@@ -790,6 +861,7 @@ impl ClusterHost {
         };
         guard.take();
         if let Some(error) = schedule_error
+            .or(progress_error)
             .or(worker_error)
             .or(stats_error)
             .or(config_error)
@@ -1156,3 +1228,6 @@ fn check_store_admission(
     }
     Ok(())
 }
+
+#[path = "store_limits.rs"]
+mod store_limits;

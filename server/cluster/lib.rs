@@ -48,7 +48,7 @@ pub use state_pipeline::{StatePipeline, StateSnapshot};
 mod state_pipeline_test;
 
 mod store_state_worker;
-pub use store_state_worker::{StoreStateWorker, check_store_states};
+pub use store_state_worker::{StoreStateWorker, check_store_states, store_progress_samples};
 #[cfg(test)]
 mod store_state_worker_test;
 

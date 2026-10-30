@@ -81,6 +81,10 @@ impl<C: CheckerConfigProvider + SchedulerConfigProvider + Send + Sync + 'static>
             return Err(CoordinatorLifecycleError::Restore(error));
         }
         let mut patrol = Patrol::new();
+        self.checkers
+            .lock()
+            .unwrap()
+            .set_patrol_status(patrol.subscribe());
         let checkers = &self.checkers;
         let cluster = &*self.cluster;
         let config = &*self.config;

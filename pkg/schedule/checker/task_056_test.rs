@@ -798,3 +798,38 @@ impl Host {
         dispatcher.add_pending_processed_regions(false, &[1, 99]);
     }
 }
+
+#[tokio::test(start_paused = true)]
+async fn task_054_progress_reads_live_patrol_duration() {
+    let h = Host::new(130, 0, true).await;
+    let mut patrol = Patrol::new();
+    h.domain
+        .lock()
+        .await
+        .dispatcher
+        .set_patrol_status(patrol.subscribe());
+    assert_eq!(
+        h.domain.lock().await.dispatcher.patrol_regions_duration(),
+        Duration::ZERO
+    );
+    let mut status = patrol.subscribe();
+    let cancel = CancellationToken::new();
+    let (result, ()) = tokio::join!(patrol.run(&h, cancel.clone()), async {
+        ticks(&mut status, 1).await;
+        h.halt.set(true);
+        ticks(&mut status, 2).await;
+        h.halt.set(false);
+        ticks(&mut status, 3).await;
+        assert_eq!(
+            h.domain.lock().await.dispatcher.patrol_regions_duration(),
+            Duration::from_millis(30)
+        );
+        cancel.cancel();
+    });
+    assert_eq!(result, Ok(()));
+    assert_eq!(
+        h.domain.lock().await.dispatcher.patrol_regions_duration(),
+        Duration::ZERO
+    );
+    h.shutdown().await;
+}

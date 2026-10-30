@@ -212,3 +212,35 @@ fn preparing_threshold<C: CheckerConfigProvider>(
     }
     Some(threshold * 0.9)
 }
+
+/// Samples the same pre-transition store snapshots and preparing thresholds as the lifecycle check.
+/// The caller holds the admission gate, so heartbeats cannot change the sampled state.
+pub fn store_progress_samples<C: CheckerConfigProvider>(
+    state: &HeartbeatEffectsState<C>,
+    prepared: bool,
+) -> Vec<(Arc<astersql_pd_core::StoreInfo>, f64)> {
+    state
+        .cluster
+        .stores
+        .get_stores()
+        .into_iter()
+        .map(|store| {
+            let threshold = if store.is_preparing()
+                && store.uptime_nanos()
+                    < state
+                        .config
+                        .snapshot()
+                        .schedule
+                        .max_store_preparing_time
+                        .as_nanos()
+                && state.cluster.regions.total_region_count() >= 100
+                && prepared
+            {
+                preparing_threshold(state, &store).unwrap_or(0.0)
+            } else {
+                0.0
+            };
+            (store, threshold)
+        })
+        .collect()
+}

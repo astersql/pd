@@ -18,6 +18,12 @@ use tokio_util::sync::CancellationToken;
 
 #[derive(Clone, Debug)]
 pub enum StoreMutation {
+    Limit {
+        id: Option<u64>,
+        labels: Option<Vec<astersql_pd_core::StoreLabel>>,
+        rate: f64,
+        types: Vec<String>,
+    },
     Offline {
         id: u64,
         force: bool,

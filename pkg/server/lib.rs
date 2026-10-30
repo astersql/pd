@@ -178,6 +178,14 @@ pub trait PdServices: Send + Sync {
     ) -> Result<(), String> {
         Err("store lifecycle is not configured".into())
     }
+    /// Read the active store progress maintained by the host worker.
+    async fn store_progress(
+        &self,
+        _id: Option<u64>,
+        _action: String,
+    ) -> Result<serde_json::Value, String> {
+        Err("progress manager is not initialized".into())
+    }
     /// List metadata from the same view used by heartbeats and GetStore.
     async fn stores(&self) -> Result<Vec<astersql_pd_core::StoreMeta>, String> {
         Err("store listing is not configured".into())
@@ -646,3 +654,9 @@ pub mod http_store_state;
 mod http_store_labels_test;
 
 mod http_store_labels;
+
+#[cfg(test)]
+#[path = "http_store_limit_test.rs"]
+mod http_store_limit_test;
+
+mod http_store_limit;

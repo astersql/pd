@@ -29,7 +29,7 @@ pub(crate) fn router(services: Arc<dyn PdServices>, cancel: CancellationToken) -
         .route("/pd/api/v1/labels", get(handle))
         .with_state(Context { services, cancel })
 }
-fn input(msg: String) -> Response {
+pub(crate) fn input(msg: String) -> Response {
     let mut r = json_response(
         StatusCode::BAD_REQUEST,
         &json!({"code":"input","msg":msg,"data":{}}),
@@ -247,7 +247,12 @@ async fn handle(
     tokio::select! {biased;_=token.cancelled()=>json_response(StatusCode::INTERNAL_SERVER_ERROR,&"server not started"),r=work=>r}
 }
 
-fn type_error(bytes: &[u8], value: &Value, expected: &str, key: Option<&str>) -> Response {
+pub(crate) fn type_error(
+    bytes: &[u8],
+    value: &Value,
+    expected: &str,
+    key: Option<&str>,
+) -> Response {
     let kind = crate::schedule_admin_balance_leader::json_type(value);
     let (start, end) = key
         .and_then(|k| crate::http_schedule_config_write::field_bounds(bytes, k))

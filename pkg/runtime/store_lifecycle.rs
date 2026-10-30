@@ -30,6 +30,9 @@ pub(super) async fn mutate(
         r.leader.clone(),
         cancel.clone(),
     )));
+    if matches!(operation, StoreMutation::Limit { .. }) {
+        return super::store_limits::mutate(operation, r, coordinator, &storage).await;
+    }
     if matches!(
         operation,
         StoreMutation::Labels { .. }
@@ -147,7 +150,7 @@ pub(super) async fn mutate(
     }
     Ok(())
 }
-async fn set_limit(
+pub(super) async fn set_limit(
     id: u64,
     typ: Type,
     rate: f64,
@@ -166,6 +169,8 @@ async fn set_limit(
     match typ {
         Type::ADD_PEER => limit.add_peer = rate,
         Type::REMOVE_PEER => limit.remove_peer = rate,
+        Type::TRANSFER_LEADER_IN => limit.transfer_leader_in = rate,
+        Type::SEND_SNAPSHOT => {}
         _ => unreachable!(),
     }
     publish_limits(config, r, coordinator, storage).await?;
@@ -175,7 +180,7 @@ async fn set_limit(
     Ok(())
 }
 
-async fn publish_limits(
+pub(super) async fn publish_limits(
     next: astersql_pd_server_config::PersistedConfig,
     r: &mut Resources,
     coordinator: &mut Coordinator<ProviderSnapshot<()>>,

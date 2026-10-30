@@ -314,7 +314,7 @@ impl MetaStore for StateStore {
             let key = match write {
                 Mutation::Put { key, .. } | Mutation::Delete { key } => key,
             };
-            if mode == 3 {
+            if mode == 3 || mode == 4 {
                 key.ends_with(b"/config")
             } else {
                 key.windows(8).any(|w| w == b"/raft/s/")
@@ -327,7 +327,7 @@ impl MetaStore for StateStore {
                     value: vec![],
                     lease: Some(i64::MAX),
                 }),
-                2 => {
+                2 | 4 => {
                     self.entered.notify_one();
                     std::future::pending::<()>().await;
                 }

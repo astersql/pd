@@ -21,6 +21,7 @@ struct State {
 /// Manager owns store progress snapshots and host-registered metrics.
 /// Updates, reset, and GC are serialized; returned values are detached copies.
 pub struct Manager {
+    registry: Registry,
     state: Mutex<State>,
     interval: Duration,
     metrics: [GaugeVec; 3],
@@ -56,6 +57,7 @@ impl Manager {
             }
         }
         Ok(Self {
+            registry: registry.clone(),
             state: Mutex::new(State {
                 active: BTreeMap::new(),
                 completed: BTreeMap::new(),
@@ -230,6 +232,16 @@ impl Manager {
         ticker.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Skip);
         loop {
             tokio::select! {biased; _=cancel.cancelled()=>return,_=ticker.tick()=>{self.gc_completed_progress_at(SystemTime::now());}}
+        }
+    }
+}
+
+impl Drop for Manager {
+    fn drop(&mut self) {
+        // Registry owns cloned collectors, not the manager. Release our registration
+        // when the host has joined its GC worker and dropped the last manager handle.
+        for metric in &self.metrics {
+            let _ = self.registry.unregister(Box::new(metric.clone()));
         }
     }
 }

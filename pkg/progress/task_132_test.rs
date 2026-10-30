@@ -245,3 +245,25 @@ fn task_132_average_zero_and_repeat() {
     m.update_progress_at(Some(&store(10, NodeState::Removed)), 0.0, 0.0, at(1));
     assert_eq!(m.gc_completed_progress_at(at(100)), 2); // store 10 had no metric series.
 }
+
+#[test]
+fn task_054_progress_registry_reuse_after_drop() {
+    let registry = prometheus::Registry::new();
+    for _ in 0..3 {
+        let manager = Manager::new(
+            std::sync::Arc::new(|| Duration::ZERO),
+            Duration::from_secs(10),
+            &registry,
+        )
+        .unwrap();
+        assert!(
+            Manager::new(
+                std::sync::Arc::new(|| Duration::ZERO),
+                Duration::from_secs(10),
+                &registry
+            )
+            .is_err()
+        );
+        drop(manager);
+    }
+}

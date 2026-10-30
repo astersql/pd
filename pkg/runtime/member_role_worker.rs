@@ -361,6 +361,17 @@ impl PdServices for RoleServices {
     ) -> Result<(), String> {
         self.active().await?.cluster.mutate_store(operation).await
     }
+    async fn store_progress(
+        &self,
+        id: Option<u64>,
+        action: String,
+    ) -> Result<serde_json::Value, String> {
+        self.active()
+            .await?
+            .cluster
+            .store_progress(id, action)
+            .await
+    }
     async fn stores(&self) -> Result<Vec<astersql_pd_core::StoreMeta>, String> {
         self.active().await?.cluster.registered_stores().await
     }

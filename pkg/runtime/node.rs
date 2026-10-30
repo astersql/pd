@@ -122,6 +122,13 @@ impl PdServices for Application {
     ) -> Result<(), String> {
         self.cluster.mutate_store(operation).await
     }
+    async fn store_progress(
+        &self,
+        id: Option<u64>,
+        action: String,
+    ) -> Result<serde_json::Value, String> {
+        self.cluster.store_progress(id, action).await
+    }
     async fn stores(&self) -> Result<Vec<astersql_pd_core::StoreMeta>, String> {
         self.cluster.registered_stores().await
     }

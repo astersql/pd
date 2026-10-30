@@ -45,6 +45,7 @@ pub struct CheckerDispatchOutcome {
 /// Owns checker state only. The host creates the shared three-minute TTL cache
 /// using its runtime/cancellation token and joins cache shutdown itself.
 pub struct CheckerDispatcher {
+    patrol_status: Option<tokio::sync::watch::Receiver<crate::PatrolStatus>>,
     metrics: Option<CheckerMetrics>,
     joint: JointStateChecker,
     split: SplitChecker,
@@ -64,6 +65,7 @@ pub struct CheckerDispatcher {
 impl CheckerDispatcher {
     pub fn new(pending: Arc<TTLUint64<()>>, now: i128, split_merge_interval: i64) -> Self {
         Self {
+            patrol_status: None,
             metrics: None,
             joint: JointStateChecker::default(),
             split: SplitChecker::default(),
@@ -80,6 +82,17 @@ impl CheckerDispatcher {
             pending,
             rule_pending: Cache::new_default(100_000),
         }
+    }
+    /// Attach the canonical patrol's live status without retaining its worker.
+    pub fn set_patrol_status(&mut self, status: tokio::sync::watch::Receiver<crate::PatrolStatus>) {
+        self.patrol_status = Some(status);
+    }
+    /// Last completed scan duration; no completed patrol has duration zero, as in Go.
+    pub fn patrol_regions_duration(&self) -> std::time::Duration {
+        self.patrol_status
+            .as_ref()
+            .map(|s| s.borrow().last_round)
+            .unwrap_or_default()
     }
     /// Attach one host Registry before dispatch starts; no global registration.
     pub fn set_metrics(&mut self, metrics: CheckerMetrics) {

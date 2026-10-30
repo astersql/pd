@@ -128,6 +128,18 @@ async fn run(
         total_regions: Box::new(move || Ok(counts.regions.total_region_count() as i64)),
         unix_seconds: Arc::new(|| now().0 as u64),
     });
+    {
+        let checker = Arc::downgrade(coordinator.get_checker_controller());
+        let guard = resources.lock().await;
+        let r = guard.as_ref().ok_or("node stopped")?;
+        r.progress
+            .set_patrol_regions_duration_getter(Arc::new(move || {
+                checker
+                    .upgrade()
+                    .map(|c| c.lock().unwrap().patrol_regions_duration())
+                    .unwrap_or_default()
+            }));
+    }
     let labels = Arc::new(
         astersql_pd_schedule_labeler::RegionLabeler::load(
             storage.as_ref().as_ref().clone(),

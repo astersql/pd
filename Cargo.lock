@@ -432,6 +432,7 @@ dependencies = [
  "astersql-pd-id",
  "astersql-pd-keypath",
  "astersql-pd-member",
+ "astersql-pd-progress",
  "astersql-pd-proto",
  "astersql-pd-ratelimit",
  "astersql-pd-schedule",
