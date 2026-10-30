@@ -35,7 +35,11 @@ async fn handle(
     State((services, cancel)): State<(Arc<dyn PdServices>, CancellationToken)>,
     OriginalUri(uri): OriginalUri,
     method: Method,
+    body: axum::body::Body,
 ) -> Response {
+    if method == Method::POST || method == Method::DELETE {
+        return crate::http_operator_write::handle(services, cancel, uri, method, body).await;
+    }
     if method == Method::OPTIONS {
         return StatusCode::OK.into_response();
     }
@@ -156,7 +160,7 @@ async fn handle(
 
 // strconv reports the first bad digit or overflow, rather than prevalidating
 // the whole input. ParseInt scans uint64 before checking its signed bound.
-fn decimal(text: &str) -> Result<u64, &'static str> {
+pub(crate) fn decimal(text: &str) -> Result<u64, &'static str> {
     if text.is_empty() {
         return Err("invalid syntax");
     }
@@ -172,7 +176,7 @@ fn decimal(text: &str) -> Result<u64, &'static str> {
     }
     Ok(n)
 }
-fn number_error(method: &str, text: &str, reason: &str) -> Response {
+pub(crate) fn number_error(method: &str, text: &str, reason: &str) -> Response {
     json_response(
         StatusCode::BAD_REQUEST,
         &format!(

@@ -8,6 +8,10 @@ use astersql_pd_schedule_scatter::{ScatterBatchError, ScatterBatchFailure, Scatt
 use astersql_pd_server::grpc_scatter::*;
 use tokio::sync::oneshot;
 pub(super) enum Command {
+    OperatorWrite(
+        astersql_pd_server::http_operator_write::Command,
+        oneshot::Sender<Result<(u16, serde_json::Value), String>>,
+    ),
     OperatorRead(
         astersql_pd_server::http_operator_read::Query,
         super::schedule_operator_read::ClockMap,
@@ -43,6 +47,14 @@ pub(super) enum Command {
     Operator(u64, oneshot::Sender<Result<Option<OperatorResult>, String>>),
 }
 impl ClusterHost {
+    pub(crate) async fn operator_write(
+        &self,
+        command: astersql_pd_server::http_operator_write::Command,
+    ) -> Result<(u16, serde_json::Value), String> {
+        let (tx, rx) = oneshot::channel();
+        tokio::select! {biased;_=self.cancel.cancelled()=>Err("server not started".into()), result=async {self.schedule_requests.send(Command::OperatorWrite(command,tx)).await.map_err(|_|"scheduling stopped")?;rx.await.map_err(|_|"scheduling stopped")?}=>result}
+    }
+
     pub(crate) async fn operator_read(
         &self,
         query: astersql_pd_server::http_operator_read::Query,
@@ -124,6 +136,34 @@ pub(super) async fn serve(
     splits: &mut Vec<super::schedule_split::Pending>,
 ) {
     match command {
+        Command::OperatorWrite(command, mut reply) => {
+            let admission = coordinator.operator_handle();
+            let before: std::collections::BTreeMap<_, _> = admission
+                .operators()
+                .into_iter()
+                .map(|op| (op.region_id(), op))
+                .collect();
+            let result = tokio::select! {biased;_=cancel.cancelled()=>None,_=reply.closed()=>None,result=super::schedule_operator_write::write(command,coordinator,resources,labels,cancel)=>Some(result)};
+            if !cancel.is_cancelled() {
+                if let Some(r) = resources.lock().await.as_mut() {
+                    r.schedule_creations.extend(
+                        admission
+                            .operators()
+                            .into_iter()
+                            .filter(|op| {
+                                before
+                                    .get(&op.region_id())
+                                    .is_none_or(|old| !Arc::ptr_eq(old, op))
+                            })
+                            .map(|op| op.region_id()),
+                    );
+                }
+            }
+            if let Some(result) = result {
+                let _ = reply.send(result);
+            }
+        }
+
         Command::OperatorRead(query, clock, mut reply) => {
             let work = async {
                 let guard = resources.lock().await;

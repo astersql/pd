@@ -46,6 +46,13 @@ pub struct Identity {
 /// Domain operations supplied by the host; transport types stay in this crate.
 #[async_trait]
 pub trait PdServices: Send + Sync {
+    /// Mutate canonical operators through the host scheduling queue.
+    async fn operator_write(
+        &self,
+        _command: http_operator_write::Command,
+    ) -> Result<(u16, serde_json::Value), String> {
+        Err("server not started".into())
+    }
     /// Read canonical running and retained operators through the host queue.
     async fn operator_read(
         &self,
@@ -782,3 +789,9 @@ mod http_hotspot_history_test;
 mod http_operator_read_test;
 
 pub mod http_operator_read;
+
+#[cfg(test)]
+#[path = "http_operator_write_test.rs"]
+mod http_operator_write_test;
+
+pub mod http_operator_write;

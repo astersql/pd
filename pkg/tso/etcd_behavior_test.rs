@@ -165,8 +165,9 @@ async fn real_etcd_oracle_process_restart() {
         .unwrap();
         let timestamp = oracle.allocate(1).await.unwrap();
         let saved = oracle_test::boundary(&store, 76).await;
+        // Serial libtest prefixes the test name without ending its output line.
         println!(
-            "PROCESS_TSO {} {} {}",
+            "\nPROCESS_TSO {} {} {}",
             timestamp.physical, timestamp.logical, saved
         );
         std::io::stdout().flush().unwrap();
@@ -190,7 +191,7 @@ async fn real_etcd_oracle_process_restart() {
         let fields: Vec<u64> = stdout
             .lines()
             .find_map(|line| line.strip_prefix("PROCESS_TSO "))
-            .expect("child allocated a timestamp")
+            .unwrap_or_else(|| panic!("child allocated a timestamp; stdout={stdout:?}"))
             .split_whitespace()
             .map(|s| s.parse().unwrap())
             .collect();

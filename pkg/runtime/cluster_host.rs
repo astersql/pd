@@ -1456,3 +1456,6 @@ mod hot_history;
 
 #[path = "schedule_operator_read.rs"]
 mod schedule_operator_read;
+
+#[path = "schedule_operator_write.rs"]
+mod schedule_operator_write;

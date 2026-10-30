@@ -147,6 +147,12 @@ impl PdServices for Application {
     > {
         self.cluster.scatter(request).await
     }
+    async fn operator_write(
+        &self,
+        command: astersql_pd_server::http_operator_write::Command,
+    ) -> Result<(u16, serde_json::Value), String> {
+        self.cluster.operator_write(command).await
+    }
     async fn operator_read(
         &self,
         query: astersql_pd_server::http_operator_read::Query,

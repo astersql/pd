@@ -458,16 +458,35 @@ async fn observe(url: &str, id: u64) -> Value {
     })
     .await
     .unwrap();
-    client
-        .scatter_region(pdpb::ScatterRegionRequest {
-            header: crate::grpc_region_lookup_scenarios_test::header(id),
-            regions_id: vec![100, 101, 102],
-            group: "task062cancel".into(),
-            skip_store_limit: true,
-            ..Default::default()
-        })
-        .await
-        .unwrap();
+    // Task 063 supplies deterministic public admission for this read-side
+    // cancellation check. A second randomized scatter can produce a different
+    // number of moves; that count is not the behavior this test verifies.
+    for store_id in 1..=3 {
+        let r = client
+            .store_heartbeat(pdpb::StoreHeartbeatRequest {
+                header: crate::grpc_region_lookup_scenarios_test::header(id),
+                stats: Some(pdpb::StoreStats {
+                    store_id,
+                    capacity: 1 << 40,
+                    available: 1 << 39,
+                    ..Default::default()
+                }),
+                ..Default::default()
+            })
+            .await
+            .unwrap()
+            .into_inner();
+        assert!(r.header.unwrap().error.is_none());
+    }
+    for region_id in [100, 101] {
+        let r = crate::http_member_test::request(
+            url,
+            "POST",
+            "/pd/api/v1/operators",
+            &json!({"name":"transfer-leader","region_id":region_id,"to_store_id":2}).to_string(),
+        );
+        assert_eq!(r, (200, json!("The operator is created.")));
+    }
     let canceled = request(url, "?object").1;
     let canceled = canceled.as_array().unwrap();
     assert_eq!(canceled.len(), 2);
@@ -501,7 +520,9 @@ async fn observe(url: &str, id: u64) -> Value {
                 request(url, &format!("/{}", op["region_id"].as_u64().unwrap()))
                     .1
                     .as_str()
-                    .is_some_and(|s| s.starts_with("status: CANCEL, operator: scatter-region"))
+                    .is_some_and(|s| {
+                        s.starts_with("status: CANCEL, operator: admin-transfer-leader")
+                    })
             }) {
                 break;
             }

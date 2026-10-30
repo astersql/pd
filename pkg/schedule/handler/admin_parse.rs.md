@@ -10,13 +10,12 @@ allocator，执行真实 peer/range/scatter 管理动作。`CreationResponse` �
 roles 只有数组长度匹配时生效；非字符串 role 保留先前值；重复 store 合并，后续字符串
 覆盖先前字符串。缺角色保留 Unknown(空字符串)，交给前序管理 API 的 placement
 校验。类型错误的可选 group/start/end 采用空字符串，retry_limit 类型错误采用5；
-有限 retry 数字按 Go int64 截断，执行时等效收敛到 [-1,30]，与现有 scatter 上限一致。
-ID 先经 float64（与 Go JSON decoder 相同），再检查有限、非负、整数且小于 2^64；
-超出精确表示范围的整数保留 Go float64 舍入语义，不声称原始十进制无损。
-
-任务明确要求非法浮点 ID 校验，故负数、分数、越界 ID 返回400，不模仿 Go 未验证的
-float→uint64 转换。keys 非数组返回400，替代 Go 类型断言 panic；这两项是显式安全
-输入边界。serde_json 不表示 NaN/Infinity，它们在 JSON 解码层已拒绝。
+任务063的真实 HTTP 差分补充了数字契约：ID与retry_limit先经float64舍入，再按固定
+Go amd64 oracle执行截断；负数ID保留有符号转无符号结果，越界转换保留该oracle的
+2^63哨兵值，retry_limit越界采用i64::MIN后收敛到[-1,30]。这替换了任务121最初
+对分数/负数/越界值返回400的输入边界；NaN/Infinity仍由JSON层拒绝。
+keys非数组返回400，替代Go类型断言panic。未bootstrap的Go单区创建还存在typed-nil
+panic；Rust保持结构化500，差分明确记录双方原始响应，不宣称错误体等价。
 
 peer/merge/split 复用119/120的工厂、验证和 admission/归档。
 单区与批量 scatter 委托同包 `scatter_admin.rs`，复用 canonical `ScatterBatch::scatter_one`
@@ -30,3 +29,5 @@ peer/merge/split 复用119/120的工厂、验证和 admission/归档。
 用户授权允许以源码推导和 Rust 真实行为/故障证据替代缺失运行 oracle。
 [任务121证据](../../../docs/rust/schedule-execution/task-121.md)记录 fixture、provenance、
 红绿灯、命令、退出码、测试数和实际槽位。
+
+当前HTTP接线、数值运行差分与故障证据见[任务063](../../../docs/rust/server-api/task-063.md)。

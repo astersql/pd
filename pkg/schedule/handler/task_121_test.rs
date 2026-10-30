@@ -300,16 +300,14 @@ fn task_121_roles_and_numeric_boundaries() {
         OperatorCreation::Peer {request:AdminPeerRequest::TransferRegion(actual),..}=>assert_eq!(actual,vec![(2,PeerRoleType::Leader)]),
         _=>panic!(),
     }
+    // The HTTP oracle confirms float64 truncation/wrapping, including overflow.
     for input in [
         serde_json::json!({"name":"add-peer","region_id":1,"store_id":0.5}),
         serde_json::json!({"name":"transfer-region","region_id":1,"to_store_ids":[-1]}),
         serde_json::json!({"name":"scatter-regions","region_ids":[1.25]}),
         serde_json::json!({"name":"scatter-regions","region_ids":[],"retry_limit":1e100}),
     ] {
-        assert!(matches!(
-            OperatorCreation::parse(&input),
-            Err(CreationError::Input(_))
-        ));
+        assert!(OperatorCreation::parse(&input).is_ok());
     }
     for (value, expected) in [(0_u64, 0_u64), (9007199254740993, 9007199254740992)] {
         match OperatorCreation::parse(

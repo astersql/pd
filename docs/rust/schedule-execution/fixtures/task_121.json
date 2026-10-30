@@ -245,8 +245,8 @@
       "region_id": -1,
       "store_id": 4
     },
-    "status": 400,
-    "error": "missing region id"
+    "status": 500,
+    "error": "region 18446744073709551615 not found"
   },
   {
     "input": {
@@ -254,8 +254,8 @@
       "region_id": 1.5,
       "store_id": 4
     },
-    "status": 400,
-    "error": "missing region id"
+    "status": 200,
+    "desc": "admin-add-peer"
   },
   {
     "input": {
@@ -263,8 +263,8 @@
       "region_id": 18446744073709551616,
       "store_id": 4
     },
-    "status": 400,
-    "error": "missing region id"
+    "status": 500,
+    "error": "region 9223372036854775808 not found"
   },
   {
     "input": {

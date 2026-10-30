@@ -38,6 +38,9 @@ pub struct CreationResponse {
     pub status: u16,
     pub body: Value,
     pub error: Option<CreationError>,
+    /// Batch actions retain HTTP-200 payloads while exposing their typed cause
+    /// to adapters, which own stable public error-code rendering.
+    pub batch_error: Option<CreationError>,
 }
 impl CreationResponse {
     fn error(error: CreationError) -> Self {
@@ -49,6 +52,7 @@ impl CreationResponse {
             },
             body: Value::Null,
             error: Some(error),
+            batch_error: None,
         }
     }
 }
@@ -80,10 +84,26 @@ pub enum OperatorCreation {
         retries: i64,
     },
 }
+// Go's encoding/json decodes interface numbers as float64. Preserve truncation
+// and the pinned amd64 oracle's out-of-range integer conversion (CVTTSD2SI).
+fn signed_number(n: f64) -> i64 {
+    if n >= 9223372036854775808.0 || n < -9223372036854775808.0 {
+        i64::MIN
+    } else {
+        n as i64
+    }
+}
 fn id(v: &Value) -> Option<u64> {
     let n = v.as_f64()?;
-    (n.is_finite() && n >= 0.0 && n.fract() == 0.0 && n < 18446744073709551616.0)
-        .then_some(n as u64)
+    Some(
+        if n >= 18446744073709551616.0 || n < -9223372036854775808.0 {
+            i64::MIN as u64
+        } else if n >= 9223372036854775808.0 {
+            n as u64
+        } else {
+            signed_number(n) as u64
+        },
+    )
 }
 fn ids(v: &Value) -> Option<Vec<u64>> {
     v.as_array()?.iter().map(id).collect()
@@ -98,13 +118,10 @@ impl OperatorCreation {
         let string = |key: &str| input[key].as_str().unwrap_or_default().to_owned();
         if name == "scatter-regions" {
             let ids = ids(&input["region_ids"]).ok_or(Input("region_ids is invalid"))?;
-            let retries = match input["retry_limit"].as_f64() {
-                Some(n) if n.is_finite() && n >= i64::MIN as f64 && n < 9223372036854775808.0 => {
-                    n as i64
-                }
-                Some(_) => return Err(Input("retry_limit is invalid")),
-                None => 5,
-            };
+            let retries = input["retry_limit"]
+                .as_f64()
+                .map(signed_number)
+                .unwrap_or(5);
             return Ok(Self::ScatterRegions {
                 ids,
                 start: string("start_key"),
@@ -304,11 +321,13 @@ where
             status: 200,
             body,
             error: None,
+            batch_error: None,
         },
         Err(e) if batch => CreationResponse {
             status: 200,
             body: json!({"processed-percentage":0,"error":e.to_string()}),
             error: None,
+            batch_error: Some(e),
         },
         Err(e) => CreationResponse::error(e),
     }

@@ -314,7 +314,9 @@ impl MetaStore for StateStore {
             let key = match write {
                 Mutation::Put { key, .. } | Mutation::Delete { key } => key,
             };
-            if mode == 3 || mode == 4 {
+            if mode == 5 {
+                key.ends_with(b"/alloc_id")
+            } else if mode == 3 || mode == 4 {
                 key.ends_with(b"/config")
             } else {
                 key.windows(8).any(|w| w == b"/raft/s/")
@@ -322,7 +324,7 @@ impl MetaStore for StateStore {
         });
         if target {
             match self.mode.swap(0, std::sync::atomic::Ordering::SeqCst) {
-                1 | 3 => writes.push(Mutation::Put {
+                1 | 3 | 5 => writes.push(Mutation::Put {
                     key: b"/task052/failure".to_vec(),
                     value: vec![],
                     lease: Some(i64::MAX),
