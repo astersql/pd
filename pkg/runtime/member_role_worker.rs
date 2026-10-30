@@ -420,6 +420,12 @@ impl PdServices for RoleServices {
     ) -> Result<String, String> {
         self.active().await?.cluster.region_label(region, key).await
     }
+    async fn scheduler(
+        &self,
+        command: astersql_pd_server::http_scheduler::Command,
+    ) -> Result<(u16, serde_json::Value), String> {
+        self.active().await?.cluster.scheduler(command).await
+    }
     async fn operator_write(
         &self,
         command: astersql_pd_server::http_operator_write::Command,

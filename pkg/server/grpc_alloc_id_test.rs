@@ -128,6 +128,16 @@ async fn boundary(store: &dyn MetaStore) -> u64 {
 async fn task_021_behavior() {
     let fixture = crate::etcd_fixture::Fixture::start();
     let store = Arc::new(fixture.store().await);
+    // This test asserts an exact allocator sequence. Keep the real scheduling
+    // worker from reserving its own 128-ID window when the host is slow enough
+    // to pass its prepare gate between these RPCs.
+    astersql_pd_storage_endpoint::StorageEndpoint::new(store.clone())
+        .save_config(
+            &astersql_pd_keypath::ClusterPaths::new(2100),
+            &serde_json::json!({"schedule":{"halt-scheduling":"true"}}),
+        )
+        .await
+        .unwrap();
     let (mut node, url) = start(store.clone(), None).await;
     let mut client = PdClient::connect(url.clone()).await.unwrap();
     let result = client.alloc_id(request(5)).await;

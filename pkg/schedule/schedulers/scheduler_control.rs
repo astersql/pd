@@ -257,10 +257,12 @@ impl SchedulerController {
         let typ = scheduler.scheduler_type();
         let legacy = scheduler_type_compatible(&typ).unwrap_or(typ.as_str());
         let configs = self.configs();
-        if let Some(v) = configs
-            .iter_mut()
-            .find(|v| v["type"] == legacy && v["args"] == json!(args))
-        {
+        // Startup defaults decode absent args as null; an empty host slice must
+        // re-enable that entry instead of appending a second configuration.
+        if let Some(v) = configs.iter_mut().find(|v| {
+            v["type"] == legacy
+                && (v["args"] == json!(args) || (args.is_empty() && v["args"].is_null()))
+        }) {
             v["disable"] = json!(false);
         } else {
             configs.push(json!({"type":legacy,"args":args,"disable":false}));

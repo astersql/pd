@@ -46,6 +46,13 @@ pub struct Identity {
 /// Domain operations supplied by the host; transport types stay in this crate.
 #[async_trait]
 pub trait PdServices: Send + Sync {
+    /// Manage the live coordinator scheduler instances.
+    async fn scheduler(
+        &self,
+        _command: http_scheduler::Command,
+    ) -> Result<(u16, serde_json::Value), String> {
+        Err("server not started".into())
+    }
     /// Mutate canonical operators through the host scheduling queue.
     async fn operator_write(
         &self,
@@ -795,3 +802,8 @@ pub mod http_operator_read;
 mod http_operator_write_test;
 
 pub mod http_operator_write;
+
+#[cfg(test)]
+mod http_scheduler_test;
+
+pub mod http_scheduler;

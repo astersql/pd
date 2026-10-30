@@ -147,6 +147,12 @@ impl PdServices for Application {
     > {
         self.cluster.scatter(request).await
     }
+    async fn scheduler(
+        &self,
+        command: astersql_pd_server::http_scheduler::Command,
+    ) -> Result<(u16, serde_json::Value), String> {
+        self.cluster.scheduler(command).await
+    }
     async fn operator_write(
         &self,
         command: astersql_pd_server::http_operator_write::Command,

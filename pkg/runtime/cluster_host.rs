@@ -1459,3 +1459,6 @@ mod schedule_operator_read;
 
 #[path = "schedule_operator_write.rs"]
 mod schedule_operator_write;
+
+#[path = "schedule_scheduler.rs"]
+mod schedule_scheduler;
