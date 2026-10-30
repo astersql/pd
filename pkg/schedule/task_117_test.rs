@@ -13,7 +13,7 @@ use astersql_pd_storage_domain::MemoryStore;
 use astersql_pd_storage_domain::StorageEndpoint;
 use std::{sync::Arc, time::Duration};
 use tokio_util::sync::CancellationToken;
-fn setup(
+pub(super) fn setup(
     config: serde_json::Value,
     backend: Arc<dyn astersql_pd_storage_domain::MetaStore>,
 ) -> (Coordinator<ProviderSnapshot<()>>, Arc<TTLUint64<()>>) {

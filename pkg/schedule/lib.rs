@@ -32,3 +32,6 @@ pub use plugin_boundary::{PluginAction, UnsupportedGoPlugin};
 #[cfg(test)]
 #[path = "task_117_test.rs"]
 mod task_117_test;
+
+#[cfg(test)]
+mod config_update_test;

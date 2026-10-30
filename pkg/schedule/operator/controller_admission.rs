@@ -73,14 +73,19 @@ impl AdmissionState {
 /// retention and transport belong to subsequent controller layers.
 pub struct ControllerAdmission {
     pub(super) state: Mutex<AdmissionState>,
-    max_waiting: u64,
+    max_waiting: std::sync::atomic::AtomicU64,
 }
 impl ControllerAdmission {
     pub fn new(max_waiting: u64) -> Self {
         Self {
             state: Mutex::new(AdmissionState::default()),
-            max_waiting,
+            max_waiting: std::sync::atomic::AtomicU64::new(max_waiting),
         }
+    }
+    /// Change the waiting limit while retaining admitted operators and counts.
+    pub fn set_max_waiting(&self, limit: u64) {
+        self.max_waiting
+            .store(limit, std::sync::atomic::Ordering::Relaxed);
     }
     fn valid_batch(ops: &[Arc<Operator>]) -> bool {
         let mut ids = HashSet::new();
@@ -129,7 +134,8 @@ impl ControllerAdmission {
                 } else if op.status() != CREATED {
                     Some(CancelReason::NotInCreateStatus)
                 } else if !promoting
-                    && state.waiting_counts.get_count(op.desc()) >= self.max_waiting
+                    && state.waiting_counts.get_count(op.desc())
+                        >= self.max_waiting.load(std::sync::atomic::Ordering::Relaxed)
                 {
                     Some(CancelReason::ExceedWaitLimit)
                 } else {

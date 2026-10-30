@@ -42,6 +42,7 @@ pub struct CoordinatorInputs<C> {
 pub struct Coordinator<C> {
     cluster: Arc<BasicCluster>,
     config: Arc<C>,
+    callback_config: Arc<std::sync::RwLock<Arc<C>>>,
     heartbeat: RoutingHandle,
     prepare: PrepareChecker<PrepareRegionCount>,
     checkers: Arc<Mutex<CheckerDispatcher>>,
@@ -60,10 +61,14 @@ impl<C: CheckerConfigProvider + SchedulerConfigProvider + Send + Sync + 'static>
             input.now_unix_nanos,
             input.split_merge_interval_nanos,
         )));
-        let config = input.config.clone();
+        let callback_config = Arc::new(std::sync::RwLock::new(input.config.clone()));
+        let config = callback_config.clone();
         let seconds = input.unix_seconds;
         let callback = CheckerDispatcher::success_callback(Arc::downgrade(&checkers), move || {
-            (config.get_affinity_schedule_limit(), seconds())
+            (
+                config.read().unwrap().get_affinity_schedule_limit(),
+                seconds(),
+            )
         });
         let operators = Arc::new(ControllerAdmission::new(
             input.config.get_scheduler_max_waiting_operator(),
@@ -81,6 +86,7 @@ impl<C: CheckerConfigProvider + SchedulerConfigProvider + Send + Sync + 'static>
             operators,
             cluster: input.cluster,
             config: input.config,
+            callback_config,
             heartbeat: input.heartbeat,
             recorders: BTreeMap::new(),
             scatter_counts: ScatterCounts::default(),
@@ -115,6 +121,13 @@ impl<C: CheckerConfigProvider + SchedulerConfigProvider + Send + Sync + 'static>
     }
     pub fn get_merge_checker(&self) -> MergeCheckerGuard<'_> {
         MergeCheckerGuard(self.checkers.lock().unwrap())
+    }
+    /// Publish a validated generation without replacing controllers or pending work.
+    pub fn update_config(&mut self, config: Arc<C>) {
+        self.operators
+            .set_max_waiting(config.get_scheduler_max_waiting_operator());
+        *self.callback_config.write().unwrap() = config.clone();
+        self.config = config;
     }
     pub fn get_config(&self) -> &Arc<C> {
         &self.config

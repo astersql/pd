@@ -8,6 +8,7 @@ use astersql_pd_schedule_scatter::{ScatterBatchError, ScatterBatchFailure, Scatt
 use astersql_pd_server::grpc_scatter::*;
 use tokio::sync::oneshot;
 pub(super) enum Command {
+    Configure(serde_json::Value, oneshot::Sender<Result<(), String>>),
     Split(super::schedule_split::Pending),
     Scatter(
         ScatterRequest,
@@ -16,6 +17,15 @@ pub(super) enum Command {
     Operator(u64, oneshot::Sender<Result<Option<OperatorResult>, String>>),
 }
 impl ClusterHost {
+    pub(crate) async fn patch_schedule(&self, patch: serde_json::Value) -> Result<(), String> {
+        let (tx, rx) = oneshot::channel();
+        self.schedule_requests
+            .send(Command::Configure(patch, tx))
+            .await
+            .map_err(|_| "scheduling stopped")?;
+        rx.await.map_err(|_| "scheduling stopped")?
+    }
+
     pub(crate) async fn scatter(
         &self,
         request: ScatterRequest,
@@ -43,6 +53,79 @@ pub(super) async fn serve(
     splits: &mut Vec<super::schedule_split::Pending>,
 ) {
     match command {
+        Command::Configure(patch, mut reply) => {
+            let work = async {
+                let mut guard = resources.lock().await;
+                let r = guard.as_mut().ok_or("server not started")?;
+                let mut next = r.persisted_config.clone();
+                next.config.schedule = r.state.lock().unwrap().config.schedule.clone();
+                let mut value =
+                    serde_json::to_value(&next.config.schedule).map_err(|e| e.to_string())?;
+                let mut scalars = patch.clone();
+                if let Some(fields) = scalars.as_object_mut() {
+                    fields.remove("store-limit");
+                }
+                overlay_schedule(&mut value, &scalars);
+                if let Some(limits) = patch
+                    .get("store-limit")
+                    .and_then(serde_json::Value::as_object)
+                {
+                    let defaults = value["default-store-limit"].clone();
+                    if value["store-limit"].is_null() {
+                        value["store-limit"] = serde_json::json!({});
+                    }
+                    for (id, patch) in limits {
+                        let mut limit = value["store-limit"]
+                            .get(id)
+                            .cloned()
+                            .unwrap_or_else(|| defaults.clone());
+                        overlay_schedule(&mut limit, patch);
+                        value["store-limit"][id] = limit;
+                    }
+                }
+                next.config.schedule =
+                    serde_json::from_value(value.clone()).map_err(|e| e.to_string())?;
+                next.config.schedule.validate()?;
+                for key in [
+                    "disable-raft-learner",
+                    "disable-remove-down-replica",
+                    "disable-replace-offline-replica",
+                    "disable-make-up-replica",
+                    "disable-remove-extra-replica",
+                    "disable-location-replacement",
+                    "store-balance-rate",
+                ] {
+                    if value.get(key).is_some_and(|v| {
+                        v == "true"
+                            || (key == "store-balance-rate" && v.as_f64().is_some_and(|n| n != 0.0))
+                    }) {
+                        return Err(format!("{key} has already been deprecated"));
+                    }
+                }
+                let storage =
+                    StorageEndpoint::new(Arc::new(crate::member_role_worker::TermStore::new(
+                        r.meta_store.clone(),
+                        r.leader.clone(),
+                        cancel.clone(),
+                    )));
+                let scheduler_configuration =
+                    serde_json::to_value(next.persistence_snapshot()).map_err(|e| e.to_string())?;
+                next.persist(&storage, &r.paths)
+                    .await
+                    .map_err(|e| e.to_string())?;
+                // No await between durable completion and publication to all consumers.
+                r.persisted_config = next;
+                let mut state = r.state.lock().unwrap();
+                state.config.schedule = r.persisted_config.config.schedule.clone();
+                coordinator.update_config(Arc::new(state.config.clone()));
+                coordinator
+                    .get_schedulers_controller_mut()
+                    .set_configuration(scheduler_configuration);
+                Ok(())
+            };
+            tokio::select! {biased; _=cancel.cancelled()=>{}, _=reply.closed()=>{}, result=work=>{let _=reply.send(result);}}
+        }
+
         Command::Split(pending) => splits.push(pending),
         Command::Operator(id, mut reply) => {
             let future = async {
@@ -319,4 +402,20 @@ pub(super) async fn dispatch_new(
     *push_queue = dispatch.push_queue;
     *fast = dispatch.fast_operators;
     Ok(())
+}
+
+// Go JSON patches retain scalar values on null, recursively merge objects, and
+// replace arrays. Unknown fields are ignored by the canonical typed decoder.
+fn overlay_schedule(base: &mut serde_json::Value, patch: &serde_json::Value) {
+    if let (Some(base), Some(patch)) = (base.as_object_mut(), patch.as_object()) {
+        for (key, value) in patch {
+            if let Some(old) = base.get_mut(key) {
+                overlay_schedule(old, value);
+            } else {
+                base.insert(key.clone(), value.clone());
+            }
+        }
+    } else if !patch.is_null() || base.is_array() || base.is_null() {
+        *base = patch.clone();
+    }
 }

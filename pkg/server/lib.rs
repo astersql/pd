@@ -53,6 +53,10 @@ pub trait PdServices: Send + Sync {
     ) -> Result<astersql_pd_server_config::Config, String> {
         Err("server not started".into())
     }
+    /// Apply a partial schedule update through the active coordinator.
+    async fn patch_schedule(&self, _patch: serde_json::Value) -> Result<(), String> {
+        Err("server not started".into())
+    }
     async fn cluster_observation(&self) -> Result<http_cluster::ClusterObservation, String> {
         Err("server not started".into())
     }
@@ -578,3 +582,11 @@ mod http_config_read_test;
 
 #[cfg(test)]
 mod http_config_read_fault_test;
+
+#[cfg(test)]
+mod http_schedule_config_write_test;
+
+mod http_schedule_config_write;
+
+#[cfg(test)]
+mod http_schedule_config_write_fault_test;
