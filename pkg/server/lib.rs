@@ -704,3 +704,9 @@ mod http_region_lookup;
 mod http_region_scan_test;
 
 mod http_region_scan;
+
+#[cfg(test)]
+#[path = "http_region_top_test.rs"]
+mod http_region_top_test;
+
+mod http_region_top;

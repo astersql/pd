@@ -23,12 +23,15 @@ struct Context {
     cancel: CancellationToken,
 }
 pub(crate) fn router(services: Arc<dyn PdServices>, cancel: CancellationToken) -> Router {
-    Router::new()
+    let mut router = Router::new()
         .route("/pd/api/v1/regions", get(handle))
         .route("/pd/api/v1/regions/key", get(handle))
         .route("/pd/api/v1/regions/count", get(handle))
-        .route("/pd/api/v1/regions/store/{id}", get(handle))
-        .with_state(Context { services, cancel })
+        .route("/pd/api/v1/regions/store/{id}", get(handle));
+    for dimension in crate::http_region_top::DIMENSIONS {
+        router = router.route(&format!("/pd/api/v1/regions/{dimension}"), get(handle));
+    }
+    router.with_state(Context { services, cancel })
 }
 fn error(code: StatusCode, message: impl AsRef<str>) -> Response {
     json_response(code, &message.as_ref())
@@ -168,7 +171,27 @@ async fn handle(State(s): State<Context>, OriginalUri(uri): OriginalUri) -> Resp
             }
         }
         let get = |k: &str| query.get(k.as_bytes()).cloned().unwrap_or_default();
-        let regions = if uri.path().ends_with("/key") {
+        let dimension = uri
+            .path()
+            .strip_prefix("/pd/api/v1/regions/")
+            .unwrap_or_default();
+        let regions = if crate::http_region_top::DIMENSIONS.contains(&dimension) {
+            let raw = get("limit");
+            let limit = if raw.is_empty() {
+                16
+            } else {
+                match atoi(&String::from_utf8_lossy(&raw)) {
+                    Ok(v) => v,
+                    Err(e) => return error(StatusCode::BAD_REQUEST, e),
+                }
+            };
+            match service.region_list(None).await {
+                Ok(regions) => crate::http_region_top::select(regions, dimension, limit, &cancel)
+                    .await
+                    .map_err(str::to_owned),
+                Err(e) => Err(e),
+            }
+        } else if uri.path().ends_with("/key") {
             let mut start = get("key");
             let mut end = get("end_key");
             if get("format") == b"hex" {
