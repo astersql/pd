@@ -23,6 +23,7 @@ mod grpc_unsupported;
 mod http;
 pub mod http_contract;
 pub mod http_health;
+mod http_leader;
 pub mod http_member;
 mod request_role;
 use astersql_pd_tso::Timestamp;
@@ -48,6 +49,10 @@ pub trait PdServices: Send + Sync {
     }
     async fn set_member_priority(&self, _id: u64, _priority: i64) -> Result<(), String> {
         Err("member priority is not configured".into())
+    }
+    /// Transfer consensus leadership through explicit host-owned membership.
+    async fn transfer_leader(&self, _target: Option<u64>) -> Result<(), String> {
+        Err("dedicated member ownership is not configured; shared backend transfer refused".into())
     }
     async fn remove_member(&self, _id: u64) -> Result<(), String> {
         Err("dedicated member ownership is not configured".into())
@@ -544,3 +549,6 @@ mod http_health_test;
 #[cfg(test)]
 #[path = "http_member_test.rs"]
 mod http_member_test;
+
+#[cfg(test)]
+mod http_leader_test;

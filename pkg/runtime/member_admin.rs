@@ -7,9 +7,9 @@ use etcd_client::{Client, ConnectOptions};
 use std::{sync::Arc, time::Duration};
 
 pub struct EtcdMemberAdmin {
-    client: Client,
-    cluster: u64,
-    member: u64,
+    pub(crate) client: Client,
+    pub(crate) cluster: u64,
+    pub(crate) member: u64,
 }
 pub(crate) fn binding_key(cluster: u64, member: u64) -> Vec<u8> {
     format!("/pd/{cluster}/rust/member-ownership/{member}").into_bytes()

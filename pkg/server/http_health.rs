@@ -60,7 +60,9 @@ async fn ping(State(state): State<Probes>) -> StatusCode {
         StatusCode::OK
     }
 }
-async fn ping_url(url: &str) -> bool {
+/// Probe a registered PD endpoint with a bounded, follower-safe HTTP request.
+/// HTTPS is rejected until the host supplies its TLS transport; never downgrade.
+pub async fn ping_url(url: &str) -> bool {
     let operation = async {
         let uri: Uri = format!("{}/pd/api/v1/ping", url.trim_end_matches('/'))
             .parse()

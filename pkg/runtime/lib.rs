@@ -155,3 +155,7 @@ mod member_admin_test;
 
 #[cfg(test)]
 mod member_admin_fault_test;
+
+mod leader_admin;
+#[cfg(test)]
+mod leader_admin_test;

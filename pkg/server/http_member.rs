@@ -34,7 +34,7 @@ fn token(s: &Members) -> CancellationToken {
 fn failure(error: impl ToString) -> Response {
     json_response(StatusCode::INTERNAL_SERVER_ERROR, &error.to_string())
 }
-fn member_json(m: &pdpb::Member) -> Value {
+pub(crate) fn member_json(m: &pdpb::Member) -> Value {
     let mut v = json!({"name":m.name,"member_id":m.member_id,"peer_urls":m.peer_urls,"client_urls":m.client_urls});
     for (key, text) in [
         ("binary_version", &m.binary_version),

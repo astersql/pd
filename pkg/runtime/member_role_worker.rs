@@ -69,6 +69,16 @@ impl RoleServices {
     pub(crate) fn replace(&self, term: Option<Arc<Application>>) {
         *self.term.write().unwrap() = term;
     }
+    fn managed(&self) -> bool {
+        self.admin.read().unwrap().is_some()
+    }
+    pub(crate) async fn eligible(&self) -> Result<bool, String> {
+        let admin = self.admin.read().unwrap().clone();
+        match admin {
+            Some(admin) => admin.is_leader().await,
+            None => Ok(true),
+        }
+    }
     async fn active(&self) -> Result<Arc<Application>, String> {
         crate::member_admin::ensure_admitted(
             self.store.upgrade().ok_or("server not started")?.as_ref(),
@@ -76,6 +86,9 @@ impl RoleServices {
             self.identity.member_id,
         )
         .await?;
+        if !self.eligible().await? {
+            return Err("not leader".into());
+        }
         let term = self.current().ok_or("not leader")?;
         term.healthy().await?;
         Ok(term)
@@ -126,6 +139,21 @@ impl PdServices for RoleServices {
             .set_registered_member_leader_priority(&term.leader, id, priority)
             .await
             .map_err(|e| e.to_string())
+    }
+    async fn transfer_leader(&self, target: Option<u64>) -> Result<(), String> {
+        let term = self.active().await?;
+        let admin = self.admin.read().unwrap().clone().ok_or(
+            "dedicated member ownership is not configured; shared backend transfer refused",
+        )?;
+        admin
+            .transfer(
+                self.store.upgrade().ok_or("server not started")?,
+                &term.leader,
+                self.identity.cluster_id,
+                self.identity.member_id,
+                target,
+            )
+            .await
     }
     async fn remove_member(&self, id: u64) -> Result<(), String> {
         let term = self.active().await?;
@@ -436,10 +464,37 @@ impl ClusterReadService for RoleServices {
         self.active().await?.cluster.region(id).await
     }
 }
+pub(crate) fn retryable_role_error(error: &NodeError) -> bool {
+    error.downcast_ref::<MemberError>().is_some_and(|e| {
+        matches!(
+            e,
+            MemberError::NotLeader
+                | MemberError::Store(astersql_pd_storage::StoreError::Unavailable)
+        )
+    }) || error
+        .downcast_ref::<astersql_pd_storage::StoreError>()
+        .is_some_and(|e| matches!(e, astersql_pd_storage::StoreError::Unavailable))
+}
 async fn retire(term: Arc<Application>, registry: &prometheus::Registry) -> Result<(), NodeError> {
     term.cancel.cancel();
     let stopped = term.cluster.shutdown().await;
-    let resigned = term.leader.resign().await;
+    // etcd can briefly reject linearizable operations while MoveLeader commits.
+    // The term is already cancelled; retry only its own lease cleanup, bounded.
+    let deadline = tokio::time::Instant::now() + std::time::Duration::from_secs(2);
+    let resigned = loop {
+        let result = term.leader.resign().await;
+        if matches!(
+            &result,
+            Err(MemberError::Store(
+                astersql_pd_storage::StoreError::Unavailable
+            ))
+        ) && tokio::time::Instant::now() < deadline
+        {
+            tokio::time::sleep(std::time::Duration::from_millis(50)).await;
+            continue;
+        }
+        break result;
+    };
     let unregistered = registry.unregister(Box::new(term.requests.clone()));
     stopped?;
     resigned?;
@@ -466,7 +521,12 @@ pub(crate) async fn run(
                     let result = tokio::select! { biased;
                         _ = cancel.cancelled() => break,
                         _ = renew.tick() => term.leader.renew().await.map_err(|e| e.to_string()),
-                        _ = tick.tick() => term.oracle.update().await.map_err(|e| e.to_string()),
+                        _ = tick.tick() => {
+                            match services.eligible().await {
+                                Ok(true) => term.oracle.update().await.map_err(|e| e.to_string()),
+                                _ => Err("consensus leadership lost".into()),
+                            }
+                        },
                     };
                     if result.is_err() {
                         break;
@@ -481,7 +541,17 @@ pub(crate) async fn run(
             let key = format!("/pd/{}/leader", config.cluster_id).into_bytes();
             let snapshot = tokio::select! { biased;
                 _ = cancel.cancelled() => break,
-                result = store.read(Read::range(&key, b"", Consistency::Linearizable)) => result?,
+                result = store.read(Read::range(&key, b"", Consistency::Linearizable)) => match result {
+                    Ok(snapshot) => snapshot,
+                    Err(astersql_pd_storage::StoreError::Unavailable) if services.managed() => {
+                        tokio::select! { biased;
+                            _ = cancel.cancelled() => break,
+                            _ = tokio::time::sleep(std::time::Duration::from_millis(100)) => {},
+                        }
+                        continue;
+                    }
+                    Err(error) => return Err(error.into()),
+                },
             };
             if snapshot.entries.iter().any(|entry| entry.key == key) {
                 let mut watch =
@@ -533,6 +603,13 @@ pub(crate) async fn run(
                 }
                 continue;
             }
+            if !services.eligible().await.unwrap_or(false) {
+                tokio::select! { biased;
+                    _ = cancel.cancelled() => break,
+                    _ = tokio::time::sleep(std::time::Duration::from_millis(100)) => {},
+                }
+                continue;
+            }
             match member.campaign(5).await {
                 Ok(leader) => {
                     let term = prepare_term(
@@ -543,10 +620,25 @@ pub(crate) async fn run(
                         astersql_pd_core::BasicCluster::new(),
                         Arc::new(leader),
                     )
-                    .await?;
-                    services.replace(Some(term));
+                    .await;
+                    match term {
+                        Ok(term) => services.replace(Some(term)),
+                        Err(error) if services.managed() && retryable_role_error(&error) => {
+                            tokio::select! { biased;
+                                _ = cancel.cancelled() => break,
+                                _ = tokio::time::sleep(std::time::Duration::from_millis(100)) => {},
+                            }
+                        }
+                        Err(error) => return Err(error),
+                    }
                 }
                 Err(MemberError::Contended) => {}
+                Err(MemberError::Store(astersql_pd_storage::StoreError::Unavailable)) if services.managed() => {
+                    tokio::select! { biased;
+                        _ = cancel.cancelled() => break,
+                        _ = tokio::time::sleep(std::time::Duration::from_millis(100)) => {},
+                    }
+                }
                 Err(MemberError::Cancelled) if cancel.is_cancelled() => break,
                 Err(error) => return Err(error.into()),
             }

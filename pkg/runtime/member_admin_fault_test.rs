@@ -28,6 +28,15 @@ impl MetaStore for MemberStore {
         compares: Vec<Compare>,
         mut writes: Vec<Mutation>,
     ) -> astersql_pd_storage::Result<Commit> {
+        // Leadership administration gates at its fenced validation transaction.
+        if writes.is_empty() && compares.iter().any(|compare| matches!(compare,
+            Compare::CreateRevision(key, 0) if String::from_utf8_lossy(key).contains("/rust/removed-members/"))) {
+            match self.mode.swap(0, std::sync::atomic::Ordering::SeqCst) {
+                4 => { self.entered.notify_one(); std::future::pending::<()>().await; },
+                5 => writes.push(Mutation::put(b"/task045/oversized", &vec![0; 2 * 1024 * 1024])),
+                other => { self.mode.store(other, std::sync::atomic::Ordering::SeqCst); }
+            }
+        }
         if self.mode.load(std::sync::atomic::Ordering::SeqCst) == 3
             && writes.iter().any(|write| matches!(write, Mutation::Delete { key } if key.ends_with(b"/leader_priority")))
         {

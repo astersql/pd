@@ -90,7 +90,7 @@ pub(crate) async fn restore(
         Ok((cluster, config, found.then_some(persisted)))
     };
     tokio::select! { biased;
-        _ = cancel.cancelled() => Err("cluster recovery cancelled".into()),
+        _ = cancel.cancelled() => Err(astersql_pd_member::MemberError::Cancelled.into()),
         result = recover => result,
     }
 }

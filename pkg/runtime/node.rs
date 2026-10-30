@@ -295,11 +295,14 @@ async fn initialize_node(
         config.clone(),
         store.clone(),
     ));
-    let initial = match member.campaign(5).await {
-        Ok(leader) => {
-            record(&events, "leadership");
-            Some(
-                prepare_term(
+    services.set_member_admin(member_admin.clone());
+    let initial = if !services.eligible().await? {
+        None
+    } else {
+        match member.campaign(5).await {
+            Ok(leader) => {
+                record(&events, "leadership");
+                match prepare_term(
                     store.clone(),
                     config.clone(),
                     registry.clone(),
@@ -307,14 +310,23 @@ async fn initialize_node(
                     cluster,
                     Arc::new(leader),
                 )
-                .await?,
-            )
+                .await
+                {
+                    Ok(term) => Some(term),
+                    Err(error)
+                        if member_admin.is_some()
+                            && crate::member_role_worker::retryable_role_error(&error) =>
+                    {
+                        None
+                    }
+                    Err(error) => return Err(error),
+                }
+            }
+            Err(astersql_pd_member::MemberError::Contended) => None,
+            Err(error) => return Err(error.into()),
         }
-        Err(astersql_pd_member::MemberError::Contended) => None,
-        Err(error) => return Err(error.into()),
     };
     services.set_diagnostics(diagnostics);
-    services.set_member_admin(member_admin.clone());
     services.replace(initial.clone());
     record(&events, "services");
     let router = astersql_pd_server::router(services.clone(), cancel.clone());
@@ -364,6 +376,7 @@ async fn initialize_node(
         let monitor_cancel = worker_cancel.clone();
         let managed = member_admin.is_some();
         let mut membership = Box::pin(async move {
+            let mut unavailable_since = None;
             loop {
                 tokio::select! { biased;
                     _ = monitor_cancel.cancelled() => break,
@@ -376,9 +389,19 @@ async fn initialize_node(
                 )
                 .await
                 {
-                    if managed || error == "PD member has been revoked" {
+                    if error == "PD member has been revoked" {
                         break;
                     }
+                    if managed {
+                        // Keep admission fail-closed, but tolerate the brief
+                        // linearizable-read interruption during consensus transfer.
+                        let start = unavailable_since.get_or_insert_with(tokio::time::Instant::now);
+                        if start.elapsed() >= std::time::Duration::from_secs(2) {
+                            break;
+                        }
+                    }
+                } else {
+                    unavailable_since = None;
                 }
             }
         });
@@ -446,7 +469,7 @@ pub(crate) async fn prepare_term(
             // Large snapshots must not exhaust the election lease before serving starts.
             loop {
                 tokio::select! { biased;
-                    _ = cancel.cancelled() => return Err("cluster recovery cancelled".into()),
+                    _ = cancel.cancelled() => return Err(astersql_pd_member::MemberError::Cancelled.into()),
                     result = &mut recovery => break result?,
                     _ = renew.tick() => leader.renew().await?,
                 }
@@ -491,7 +514,7 @@ pub(crate) async fn prepare_term(
         let mut renew = tokio::time::interval(std::time::Duration::from_secs(1));
         let created = loop {
             tokio::select! { biased;
-                _ = cancel.cancelled() => break Err("cluster initialization cancelled".into()),
+                _ = cancel.cancelled() => break Err(astersql_pd_member::MemberError::Cancelled.into()),
                 result = &mut creation => break result,
                 _ = renew.tick() => {
                     if let Err(error) = leader.renew().await { break Err(error.into()); }
@@ -519,9 +542,17 @@ pub(crate) async fn prepare_term(
     let application = match setup {
         Ok(application) => application,
         Err(error) => {
+            // Nested domain adapters may wrap cancellation transparently. Host
+            // cancellation wins an in-flight initialization race, but cleanup
+            // failures must still propagate before reporting graceful shutdown.
+            let interrupted = cancel.is_cancelled();
             cancel.cancel();
             leader.resign().await?;
-            return Err(error);
+            return Err(if interrupted {
+                astersql_pd_member::MemberError::Cancelled.into()
+            } else {
+                error
+            });
         }
     };
     Ok(application)
