@@ -16,6 +16,8 @@ use std::{
 };
 
 pub(super) struct PolicyInputs<'a> {
+    pub diagnostic: Option<DiagnosticRecorder>,
+    pub diagnostic_recorded: bool,
     pub cluster: &'a BasicCluster,
     pub config: &'a ProviderSnapshot<()>,
     pub rules: &'a mut RuleManager,
@@ -183,7 +185,28 @@ impl PolicyInputs<'_> {
                 random_index: &mut random,
                 shuffle: &mut shuffle,
             };
-            return Ok(p.schedule(&mut ctx, false).await.operators);
+            let out = p
+                .schedule(
+                    &mut ctx,
+                    self.diagnostic.is_some() && !self.diagnostic_recorded,
+                )
+                .await;
+            if let Some(recorder) = self
+                .diagnostic
+                .as_mut()
+                .filter(|_| !self.diagnostic_recorded)
+            {
+                recorder.set_result_from_plans(
+                    &out.operators,
+                    &out.plans
+                        .iter()
+                        .map(|p| p as &dyn std::any::Any)
+                        .collect::<Vec<_>>(),
+                    now().0 as u64,
+                );
+                self.diagnostic_recorded = true;
+            }
+            return Ok(out.operators);
         }
         if let BuiltinScheduler::BalanceWitness(p) = policy {
             let mut ctx = WitnessBalanceContext {
@@ -198,6 +221,7 @@ impl PolicyInputs<'_> {
             };
             return Ok(p.schedule(&mut ctx, false).await.operators);
         }
+
         if let BuiltinScheduler::RandomMerge(p) = policy {
             let stores = self.cluster.stores.get_stores();
             let replication = RegionReplicationContext {
@@ -251,7 +275,28 @@ impl PolicyInputs<'_> {
             };
             return match policy {
                 BuiltinScheduler::BalanceRegion(p) => {
-                    Ok(p.schedule(&mut ctx, false).await.operators)
+                    let out = p
+                        .schedule(
+                            &mut ctx,
+                            self.diagnostic.is_some() && !self.diagnostic_recorded,
+                        )
+                        .await;
+                    if let Some(recorder) = self
+                        .diagnostic
+                        .as_mut()
+                        .filter(|_| !self.diagnostic_recorded)
+                    {
+                        recorder.set_result_from_plans(
+                            &out.operators,
+                            &out.plans
+                                .iter()
+                                .map(|p| p as &dyn std::any::Any)
+                                .collect::<Vec<_>>(),
+                            now().0 as u64,
+                        );
+                        self.diagnostic_recorded = true;
+                    }
+                    Ok(out.operators)
                 }
                 BuiltinScheduler::ScatterRange(p) => Ok(p
                     .schedule(&mut ctx, self.admission.operator_count(OpKind::RANGE))

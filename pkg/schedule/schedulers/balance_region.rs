@@ -6,9 +6,10 @@ use astersql_pd_core_constant::{PriorityLevel, ResourceKind, ScheduleKind, Sched
 use astersql_pd_schedule_config::SchedulerConfigProvider;
 use astersql_pd_schedule_core::BasicCluster;
 use astersql_pd_schedule_filter::{
-    AffinityFilter, Filter, PlacementGuardContext, RegionDownFilter, RegionEmptyFilter,
-    RegionFilter, RegionPendingFilter, RegionReplicatedFilter, RegionReplicationContext,
-    RegionWitnessFilter, SnapshotSenderFilter, SpecialUseFilter, StoreStateFilter,
+    AffinityFilter, ExcludedFilter, Filter, PlacementGuardContext, RegionDownFilter,
+    RegionEmptyFilter, RegionFilter, RegionPendingFilter, RegionReplicatedFilter,
+    RegionReplicationContext, RegionWitnessFilter, SnapshotSenderFilter, SpecialUseFilter,
+    StoreStateFilter,
 };
 use astersql_pd_schedule_operator::{
     BuilderContext, BuilderError, OpInfluence, OpKind, Operator, PeerOperatorFactory,
@@ -313,15 +314,23 @@ impl BalanceRegionScheduler {
                     now: ctx.now_unix_nanos,
                 }
                 .safeguard(&self.name, source, fit);
+                let excluded = ExcludedFilter::new(
+                    &self.name,
+                    [],
+                    region
+                        .meta()
+                        .peers
+                        .iter()
+                        .map(|p| p.store_id)
+                        .chain(unavailable.iter().copied()),
+                );
                 for target in sources[source_index + 1..].iter().rev() {
-                    if region.get_store_peer(target.id()).is_some()
-                        || unavailable.contains(&target.id())
-                    {
-                        continue;
-                    }
                     plan.target = Some(target.clone());
                     plan.step = 2;
-                    let status = guard.target(ctx.config, target);
+                    let mut status = excluded.target(ctx.config, target);
+                    if status.is_ok() {
+                        status = guard.target(ctx.config, target);
+                    }
                     if !status.is_ok() {
                         if dry_run {
                             let mut p = plan.clone();

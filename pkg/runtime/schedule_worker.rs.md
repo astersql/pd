@@ -43,3 +43,7 @@ hosts can wait for a real lifecycle boundary before advancing time; a fixed
 number of yield_now calls cannot synchronize a blocking-pool actor. Runtime tests
 use this progress only to coordinate execution and assert real commands/state,
 never as a substitute for behavior evidence.
+
+任务66复用当前term的诊断历史：按准入限额、halt、pause的Go优先级记录门禁结果；
+实际balance调度结束后归还同一recorder。读取仍走原调度命令队列，不另建worker。
+[当前差分及取消证据](../../docs/rust/server-api/task-066.md)。

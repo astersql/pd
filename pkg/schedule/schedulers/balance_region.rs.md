@@ -37,3 +37,8 @@ range 状态或推断宿主具体类型。
 核对实际成员索引、REGION kind、MEDIUM、影响量、confver=3 与分布改善。
 单个非空区域在交换 store ID 后各重复调度 10 次仍不搬迁；故障在 allocator I/O
 边界注入。故意绕过评分准入时，large-overshoot 断言失败，恢复后通过。
+
+服务端任务66的真实Go/Rust诊断差分发现，目标排除提前continue会漏报
+`StoreAlreadyHasPeer`。目标现在复用`ExcludedFilter`，dry-run把拒绝原因记入
+同一BalanceSchedulerPlan；正常调度的目标准入保持一致。当前运行差分和
+验证见[任务66](../../../docs/rust/server-api/task-066.md)。

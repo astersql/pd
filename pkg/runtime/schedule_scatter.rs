@@ -8,6 +8,10 @@ use astersql_pd_schedule_scatter::{ScatterBatchError, ScatterBatchFailure, Scatt
 use astersql_pd_server::grpc_scatter::*;
 use tokio::sync::oneshot;
 pub(super) enum Command {
+    Checker(
+        astersql_pd_server::http_checker::Command,
+        oneshot::Sender<Result<serde_json::Value, String>>,
+    ),
     SchedulerConfig(
         axum::http::Request<axum::body::Body>,
         oneshot::Sender<Result<axum::response::Response, String>>,
@@ -55,6 +59,14 @@ pub(super) enum Command {
     Operator(u64, oneshot::Sender<Result<Option<OperatorResult>, String>>),
 }
 impl ClusterHost {
+    pub(crate) async fn checker(
+        &self,
+        command: astersql_pd_server::http_checker::Command,
+    ) -> Result<serde_json::Value, String> {
+        let (tx, rx) = oneshot::channel();
+        tokio::select! {biased;_=self.cancel.cancelled()=>Err("server not started".into()),r=async{self.schedule_requests.send(Command::Checker(command,tx)).await.map_err(|_|"scheduling stopped")?;rx.await.map_err(|_|"scheduling stopped")?}=>r}
+    }
+
     pub(crate) async fn scheduler_config(
         &self,
         request: axum::http::Request<axum::body::Body>,
@@ -159,13 +171,61 @@ pub(super) async fn serve(
     splits: &mut Vec<super::schedule_split::Pending>,
 ) {
     match command {
+        Command::Checker(command, mut reply) => {
+            let work = async {
+                let guard = resources.lock().await;
+                let r = guard.as_ref().ok_or("server not started")?;
+                r.leader.validate().await.map_err(|e| e.to_string())?;
+                use astersql_pd_server::http_checker::Command as C;
+                match command {
+                    C::Diagnostic(name) => {
+                        if name != "balance-leader-scheduler" && name != "balance-region-scheduler"
+                        {
+                            return Err(format!(
+                                "[PD:diagnostic:ErrSchedulerUndiagnosable]{name} hasn't supported diagnostic"
+                            ));
+                        }
+                        sync_diagnostics(coordinator);
+                        coordinator
+                            .get_diagnostic_manager()
+                            .get_diagnostic_result(&name, now().0 as u64)
+                            .map(|v| serde_json::to_value(v).unwrap())
+                            .map_err(|e| e.to_string())
+                    }
+                    C::Status(ref name) | C::Pause(ref name, _) => {
+                        let checkers = coordinator.get_checker_controller().lock().unwrap();
+                        let p = checkers
+                            .pause_controller(&name)
+                            .ok_or("[PD:checker:ErrCheckerNotFound]checker not found")?;
+                        if let C::Pause(_, delay) = command {
+                            p.pause_or_resume(delay);
+                            Ok(serde_json::json!(if delay == 0 {
+                                "Resume the checker successfully."
+                            } else {
+                                "Pause the checker successfully."
+                            }))
+                        } else {
+                            Ok(astersql_pd_server::http_checker::status(p.is_paused()))
+                        }
+                    }
+                }
+            };
+            tokio::select! {biased;_=cancel.cancelled()=>{},_=reply.closed()=>{},r=work=>{let _=reply.send(r);}}
+        }
+
         Command::SchedulerConfig(request, mut reply) => {
             let work = super::schedule_scheduler::configure(request, coordinator, resources);
             tokio::select! {biased;_=cancel.cancelled()=>{},_=reply.closed()=>{},r=work=>{let _=reply.send(r);}}
         }
 
         Command::Scheduler(command, mut reply) => {
-            let work = super::schedule_scheduler::manage(command, coordinator, resources, cancel);
+            let work = async {
+                let result =
+                    super::schedule_scheduler::manage(command, coordinator, resources, cancel)
+                        .await;
+                sync_diagnostics(coordinator);
+                result
+            };
             tokio::select! {biased;_=cancel.cancelled()=>{},_=reply.closed()=>{},result=work=>{let _=reply.send(result);}}
         }
 
@@ -676,5 +736,28 @@ fn overlay_schedule(base: &mut serde_json::Value, patch: &serde_json::Value) {
         }
     } else if !patch.is_null() || base.is_array() || base.is_null() {
         *base = patch.clone();
+    }
+}
+
+// Keep history bound to a live scheduler instance, including remove/recreate.
+fn sync_diagnostics(coordinator: &mut Coordinator<ProviderSnapshot<()>>) {
+    let names = coordinator.get_schedulers_controller().names();
+    coordinator
+        .diagnostic_recorders_mut()
+        .retain(|name, _| names.contains(name));
+    for name in names {
+        let scheduler = &coordinator
+            .get_schedulers_controller()
+            .get(&name)
+            .unwrap()
+            .scheduler;
+        if let Some(recorder) =
+            astersql_pd_schedule_schedulers::DiagnosticRecorder::new(scheduler.scheduler_type())
+        {
+            coordinator
+                .diagnostic_recorders_mut()
+                .entry(name)
+                .or_insert(recorder);
+        }
     }
 }

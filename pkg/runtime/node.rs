@@ -147,6 +147,12 @@ impl PdServices for Application {
     > {
         self.cluster.scatter(request).await
     }
+    async fn checker(
+        &self,
+        command: astersql_pd_server::http_checker::Command,
+    ) -> Result<serde_json::Value, String> {
+        self.cluster.checker(command).await
+    }
     async fn scheduler_config(
         &self,
         request: axum::http::Request<axum::body::Body>,

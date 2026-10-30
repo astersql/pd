@@ -857,6 +857,7 @@ dependencies = [
  "astersql-pd-ratelimit",
  "astersql-pd-response",
  "astersql-pd-runtime",
+ "astersql-pd-schedule-checker",
  "astersql-pd-schedule-config",
  "astersql-pd-schedule-core",
  "astersql-pd-schedule-filter",

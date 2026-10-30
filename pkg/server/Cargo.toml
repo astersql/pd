@@ -45,6 +45,7 @@ prometheus.workspace = true
 futures-util.workspace = true
 
 [dev-dependencies]
+astersql-pd-schedule-checker.workspace = true
 astersql-pd-compat-tests.workspace = true
 prost-types.workspace = true
 tonic-prost.workspace = true

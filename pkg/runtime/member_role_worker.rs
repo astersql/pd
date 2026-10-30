@@ -420,6 +420,12 @@ impl PdServices for RoleServices {
     ) -> Result<String, String> {
         self.active().await?.cluster.region_label(region, key).await
     }
+    async fn checker(
+        &self,
+        command: astersql_pd_server::http_checker::Command,
+    ) -> Result<serde_json::Value, String> {
+        self.active().await?.cluster.checker(command).await
+    }
     async fn scheduler_config(
         &self,
         request: axum::http::Request<axum::body::Body>,

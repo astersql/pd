@@ -356,23 +356,19 @@ async fn run(
                     continue;
                 }
                 let config = r.state.lock().unwrap().config.clone();
-                if config.schedule.halt_scheduling
-                    || coordinator
-                        .get_schedulers_controller()
-                        .is_paused(&name, now().0)
-                        .unwrap_or(true)
-                {
-                    continue;
+                let paused=coordinator.get_schedulers_controller().is_paused(&name,now().0).unwrap_or(true);
+                let scheduler=&coordinator.get_schedulers_controller().get(&name).ok_or("scheduler disappeared")?.scheduler;
+                let allowed=super::schedule_policy::allowed(&scheduler.policy,&config,&admission);
+                if config.schedule.enable_diagnostic {
+                    if let Some(recorder)=astersql_pd_schedule_schedulers::DiagnosticRecorder::new(scheduler.scheduler_type()) {
+                        let recorder=coordinator.diagnostic_recorders_mut().entry(name.clone()).or_insert(recorder);
+                        let status=if !allowed {Some("pending")}else if config.schedule.halt_scheduling {Some("halted")}else if paused {Some("paused")}else{None};
+                        if let Some(status)=status {recorder.set_result_from_status(status,now().0 as u64);}
+                    }
                 }
-                let policy = &mut coordinator
-                    .get_schedulers_controller_mut()
-                    .get_mut(&name)
-                    .ok_or("scheduler disappeared")?
-                    .scheduler
-                    .policy;
-                if !super::schedule_policy::allowed(policy, &config, &admission) {
-                    continue;
-                }
+                if !allowed || config.schedule.halt_scheduling || paused {continue;}
+                let diagnostic=if config.schedule.enable_diagnostic {coordinator.diagnostic_recorders_mut().remove(&name)}else{None};
+                let policy=&mut coordinator.get_schedulers_controller_mut().get_mut(&name).ok_or("scheduler disappeared")?.scheduler.policy;
                 if ids.len() < 64 {
                     let (last, count) = r
                         .allocator
@@ -397,6 +393,7 @@ async fn run(
                 super::schedule_scheduler::observe_hot_support(policy,&r.persisted_config.config.cluster_version)?;
                 let mut state = r.state.lock().unwrap();
                 let mut inputs = super::schedule_policy::PolicyInputs {
+                    diagnostic,diagnostic_recorded:false,
                     cluster: &cluster,
                     config: &config,
                     rules: &mut state.rules,
@@ -411,6 +408,10 @@ async fn run(
                     hot: &mut hot,
                 };
                 let output = inputs.schedule(policy, interval, &cancel).await;
+                let diagnostic=inputs.diagnostic.take();
+                drop(inputs);
+                drop(state);
+                if let Some(recorder)=diagnostic {coordinator.diagnostic_recorders_mut().insert(name.clone(),recorder);}
                 let output = match output {
                     Ok(output) => output,
                     Err(e) => {
@@ -420,8 +421,6 @@ async fn run(
                         continue;
                     }
                 };
-                drop(inputs);
-                drop(state);
                 *due = current + *interval;
                 let mut index = 0;
                 while index < output.len() {

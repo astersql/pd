@@ -46,6 +46,11 @@ pub struct Identity {
 /// Domain operations supplied by the host; transport types stay in this crate.
 #[async_trait]
 pub trait PdServices: Send + Sync {
+    /// Inspect or mutate the host-owned checker and diagnostic state.
+    async fn checker(&self, _command: http_checker::Command) -> Result<serde_json::Value, String> {
+        Err("server not started".into())
+    }
+
     /// Dispatch a scheduler-relative request on the live coordinator.
     async fn scheduler_config(
         &self,
@@ -820,3 +825,9 @@ pub mod http_scheduler;
 mod http_scheduler_config_test;
 
 pub mod http_scheduler_config;
+
+#[cfg(test)]
+#[path = "http_checker_test.rs"]
+mod http_checker_test;
+
+pub mod http_checker;

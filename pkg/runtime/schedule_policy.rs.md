@@ -25,3 +25,7 @@ scheduler management surfaces must update these same owners; this task does not
 expose those HTTP APIs. Runtime task-017 tests cover the scheduling chain with
 restored eviction and cold defaults; existing domain regressions cover individual
 policy algorithms. Do not interpret that as new hot-policy wire parity evidence.
+
+任务66把同一协调器的诊断recorder借给本轮调度输入。leader/region balance
+仅在首轮重试启用plan收集，并通过已有DiagnosticRecorder聚合实际operators和
+plans；后续重试不覆盖该次记录。[当前差分证据](../../docs/rust/server-api/task-066.md)。
