@@ -890,3 +890,9 @@ pub mod http_region_label;
 mod http_affinity_read_test;
 
 pub mod http_affinity_read;
+
+#[cfg(test)]
+#[path = "http_affinity_write_test.rs"]
+mod http_affinity_write_test;
+
+pub mod http_affinity_write;

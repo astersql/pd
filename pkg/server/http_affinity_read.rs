@@ -14,16 +14,25 @@ use tokio_util::sync::CancellationToken;
 pub struct Request {
     pub path: String,
     pub query: String,
+    pub write: Option<crate::http_affinity_write::Request>,
 }
 pub(crate) fn router(services: Arc<dyn PdServices>, cancel: CancellationToken) -> Router {
     Router::new()
-        .route("/pd/api/v2/affinity-groups", get(handle))
-        .route("/pd/api/v2/affinity-groups/{id}", get(handle))
+        .route(
+            "/pd/api/v2/affinity-groups",
+            get(handle).post(handle).patch(handle),
+        )
+        .route(
+            "/pd/api/v2/affinity-groups/{id}",
+            get(handle).put(handle).delete(handle),
+        )
         .with_state((services, cancel))
 }
 async fn handle(
     State((services, cancel)): State<(Arc<dyn PdServices>, CancellationToken)>,
     OriginalUri(uri): OriginalUri,
+    method: axum::http::Method,
+    body: axum::body::Body,
 ) -> Response {
     // Gin matches the decoded path before middleware. A decoded slash is no
     // longer one group_id component, even when axum matched the encoded URI.
@@ -49,10 +58,30 @@ async fn handle(
             .affinity_read(Request {
                 path: uri.path().into(),
                 query: uri.query().unwrap_or_default().into(),
+                write: if method == axum::http::Method::GET {
+                    None
+                } else {
+                    Some(crate::http_affinity_write::Request {
+                        method: method.to_string(),
+                        body,
+                    })
+                },
             })
             .await
         {
-            Ok((code, value)) => response(StatusCode::from_u16(code).unwrap(), &value),
+            Ok((code, value)) => {
+                let mut result = response(StatusCode::from_u16(code).unwrap(), &value);
+                if method != axum::http::Method::DELETE
+                    && value
+                        .as_str()
+                        .is_some_and(|s| s.starts_with("[PD:gin:ErrBindJSON]"))
+                {
+                    result
+                        .headers_mut()
+                        .insert("content-type", "text/plain; charset=utf-8".parse().unwrap());
+                }
+                result
+            }
             Err(e) => response(StatusCode::INTERNAL_SERVER_ERROR, &e),
         }
     };

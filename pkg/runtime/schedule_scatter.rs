@@ -222,14 +222,19 @@ pub(super) async fn serve(
     coordinator: &mut Coordinator<ProviderSnapshot<()>>,
     resources: &Arc<AsyncMutex<Option<Resources>>>,
     labels: &mut Arc<astersql_pd_schedule_labeler::RegionLabeler>,
-    affinity: &astersql_pd_schedule_affinity::manager::Manager,
+    affinity: &mut astersql_pd_schedule_affinity::manager::Manager,
     cancel: &CancellationToken,
     splits: &mut Vec<super::schedule_split::Pending>,
 ) {
     match command {
         Command::AffinityRead(request, mut reply) => {
-            let work =
-                super::affinity_read_http::handle(request, affinity, resources, now().0 as u64);
+            let work = super::affinity_read_http::handle(
+                request,
+                affinity,
+                labels,
+                resources,
+                now().0 as u64,
+            );
             tokio::select! {biased;_=cancel.cancelled()=>{},_=reply.closed()=>{},r=work=>{let _=reply.send(r);}}
         }
 

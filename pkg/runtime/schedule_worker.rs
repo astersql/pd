@@ -191,7 +191,7 @@ async fn run(
                 _=cancel.cancelled()=>return Ok(()),
                 _=affinity_tick.tick()=>{super::affinity_read_http::check_availability(&mut affinity,&resources).await;},
                 _=suspect_tick.tick()=>{super::placement_http::check_ranges(&coordinator,&resources).await?;},
-                command=requests.recv()=>{if let Some(command)=command {super::schedule_scatter::serve(command,&mut coordinator,&resources,&mut labels,&affinity,&cancel,&mut splits).await;
+                command=requests.recv()=>{if let Some(command)=command {super::schedule_scatter::serve(command,&mut coordinator,&resources,&mut labels,&mut affinity,&cancel,&mut splits).await;
                     super::schedule_scatter::dispatch_new(&coordinator,&resources,&routing,&mut push_queue,&mut fast_operators,&cancel).await?;}},
                 _=tokio::time::sleep(history_wait.min(if splits.is_empty() { Duration::from_secs(3) } else { Duration::from_millis(10) }))=>{}
             }
@@ -237,7 +237,7 @@ async fn run(
                 _=affinity_tick.tick()=>{super::affinity_read_http::check_availability(&mut affinity,&resources).await;},
                 _=suspect_tick.tick()=>{super::placement_http::check_ranges(&coordinator,&resources).await?;continue;},
                 _=ticker.tick()=>{},
-                command=requests.recv()=>{if let Some(command)=command {super::schedule_scatter::serve(command,&mut coordinator,&resources,&mut labels,&affinity,&cancel,&mut splits).await;
+                command=requests.recv()=>{if let Some(command)=command {super::schedule_scatter::serve(command,&mut coordinator,&resources,&mut labels,&mut affinity,&cancel,&mut splits).await;
                     super::schedule_scatter::dispatch_new(&coordinator,&resources,&routing,&mut push_queue,&mut fast_operators,&cancel).await?;} continue;},
             }
             let mut guard = resources.lock().await;

@@ -23,7 +23,8 @@ impl GroupStateProvider for States<'_> {
 }
 pub(super) async fn handle(
     request: Request,
-    manager: &Manager,
+    manager: &mut Manager,
+    labels: &mut Arc<astersql_pd_schedule_labeler::RegionLabeler>,
     resources: &Arc<AsyncMutex<Option<Resources>>>,
     now: u64,
 ) -> Result<(u16, Value), String> {
@@ -42,6 +43,16 @@ pub(super) async fn handle(
                 "[PD:cluster:ErrNotBootstrapped]TiKV cluster not bootstrapped, please start TiKV first"
             ),
         ));
+    }
+    if request.write.is_some() {
+        return super::affinity_write_http::handle(
+            request,
+            manager,
+            Arc::get_mut(labels).ok_or("labeler is in use")?,
+            r,
+            now,
+        )
+        .await;
     }
     let states = States(manager, now);
     if let Some(raw) = request.path.strip_prefix("/pd/api/v2/affinity-groups/") {
