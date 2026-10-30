@@ -48,6 +48,29 @@ impl RegionsInfo {
     pub fn get_regions(&self) -> Vec<Arc<RegionInfo>> {
         self.inner.read().unwrap().get_regions()
     }
+    /// Snapshot store membership from the canonical role indexes under one lock.
+    /// All membership is the union of leaders, followers and learners, as in Go.
+    pub fn store_regions(&self, store: u64, role: Option<RegionRole>) -> Vec<Arc<RegionInfo>> {
+        let state = self.inner.read().unwrap();
+        let roles = role.map_or_else(
+            || {
+                vec![
+                    RegionRole::Leader,
+                    RegionRole::Follower,
+                    RegionRole::Learner,
+                ]
+            },
+            |role| vec![role],
+        );
+        roles
+            .into_iter()
+            .flat_map(|role| {
+                state
+                    .role_tree(role, store)
+                    .map_or_else(Vec::new, |tree| tree.scan_ranges())
+            })
+            .collect()
+    }
     pub fn tree_len(&self) -> usize {
         self.inner.read().unwrap().tree_len()
     }

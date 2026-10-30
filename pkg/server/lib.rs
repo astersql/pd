@@ -260,6 +260,16 @@ pub trait PdServices: Send + Sync {
 /// Host-owned metadata lookup; protocol conversion remains in the server adapter.
 #[async_trait]
 pub trait ClusterReadService: Send + Sync {
+    /// Snapshot the canonical root or store role index for HTTP list encoding.
+    async fn region_list(
+        &self,
+        _store: Option<(u64, Option<astersql_pd_core::RegionRole>)>,
+    ) -> Result<Vec<Arc<astersql_pd_core::RegionInfo>>, String> {
+        Err("region lists are not configured".into())
+    }
+    async fn region_count(&self) -> Result<usize, String> {
+        Err("region count is not configured".into())
+    }
     /// Read touching neighbors from one canonical cache snapshot.
     async fn adjacent_regions(
         &self,
@@ -688,3 +698,9 @@ mod http_store_limit;
 mod http_region_lookup_test;
 
 mod http_region_lookup;
+
+#[cfg(test)]
+#[path = "http_region_scan_test.rs"]
+mod http_region_scan_test;
+
+mod http_region_scan;

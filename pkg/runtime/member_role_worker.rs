@@ -526,6 +526,16 @@ impl RegionHeartbeatService for RoleServices {
 }
 #[async_trait::async_trait]
 impl ClusterReadService for RoleServices {
+    async fn region_list(
+        &self,
+        store: Option<(u64, Option<astersql_pd_core::RegionRole>)>,
+    ) -> Result<Vec<Arc<astersql_pd_core::RegionInfo>>, String> {
+        self.active().await?.cluster.region_list(store).await
+    }
+    async fn region_count(&self) -> Result<usize, String> {
+        self.active().await?.cluster.region_count().await
+    }
+
     async fn adjacent_regions(
         &self,
         region: &astersql_pd_core::RegionInfo,
@@ -910,6 +920,27 @@ impl astersql_pd_server::bucket_heartbeat_adapter::BucketHeartbeatService for Ro
 struct FollowerRead(Arc<tokio::sync::Mutex<astersql_pd_server::sync_transport::SyncFollowerState>>);
 #[async_trait::async_trait]
 impl ClusterReadService for FollowerRead {
+    async fn region_list(
+        &self,
+        store: Option<(u64, Option<astersql_pd_core::RegionRole>)>,
+    ) -> Result<Vec<Arc<astersql_pd_core::RegionInfo>>, String> {
+        let state = self.0.lock().await;
+        if !state.apply.is_running() {
+            return Err("cluster not bootstrapped".into());
+        }
+        Ok(match store {
+            Some((id, role)) => state.cluster.regions.store_regions(id, role),
+            None => state.cluster.regions.get_regions(),
+        })
+    }
+    async fn region_count(&self) -> Result<usize, String> {
+        let state = self.0.lock().await;
+        if !state.apply.is_running() {
+            return Err("cluster not bootstrapped".into());
+        }
+        Ok(state.cluster.regions.total_region_count())
+    }
+
     async fn adjacent_regions(
         &self,
         region: &astersql_pd_core::RegionInfo,
