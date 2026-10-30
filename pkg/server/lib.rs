@@ -260,6 +260,18 @@ pub trait PdServices: Send + Sync {
 /// Host-owned metadata lookup; protocol conversion remains in the server adapter.
 #[async_trait]
 pub trait ClusterReadService: Send + Sync {
+    /// Aggregate canonical range and hot-cache snapshots without transport types.
+    async fn region_statistics(
+        &self,
+        _start: &[u8],
+        _end: &[u8],
+        _count: bool,
+        _hot: bool,
+        _engine: &str,
+    ) -> Result<astersql_pd_statistics::RegionStats, String> {
+        Err("region statistics are not configured".into())
+    }
+
     /// Snapshot the canonical root or store role index for HTTP list encoding.
     async fn region_list(
         &self,
@@ -710,3 +722,9 @@ mod http_region_scan;
 mod http_region_top_test;
 
 mod http_region_top;
+
+#[cfg(test)]
+#[path = "http_region_stats_test.rs"]
+mod http_region_stats_test;
+
+mod http_region_stats;

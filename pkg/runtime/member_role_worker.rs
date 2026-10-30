@@ -526,6 +526,21 @@ impl RegionHeartbeatService for RoleServices {
 }
 #[async_trait::async_trait]
 impl ClusterReadService for RoleServices {
+    async fn region_statistics(
+        &self,
+        start: &[u8],
+        end: &[u8],
+        count: bool,
+        hot: bool,
+        engine: &str,
+    ) -> Result<astersql_pd_statistics::RegionStats, String> {
+        self.active()
+            .await?
+            .cluster
+            .region_statistics(start, end, count, hot, engine)
+            .await
+    }
+
     async fn region_list(
         &self,
         store: Option<(u64, Option<astersql_pd_core::RegionRole>)>,

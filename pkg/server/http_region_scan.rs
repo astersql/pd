@@ -25,6 +25,9 @@ struct Context {
 pub(crate) fn router(services: Arc<dyn PdServices>, cancel: CancellationToken) -> Router {
     let mut router = Router::new()
         .route("/pd/api/v1/regions", get(handle))
+        .route("/pd/api/v1/regions/check/hist-size", get(handle))
+        .route("/pd/api/v1/regions/check/hist-keys", get(handle))
+        .route("/pd/api/v1/stats/region", get(handle))
         .route("/pd/api/v1/regions/key", get(handle))
         .route("/pd/api/v1/regions/count", get(handle))
         .route("/pd/api/v1/regions/store/{id}", get(handle));
@@ -36,7 +39,7 @@ pub(crate) fn router(services: Arc<dyn PdServices>, cancel: CancellationToken) -
 fn error(code: StatusCode, message: impl AsRef<str>) -> Response {
     json_response(code, &message.as_ref())
 }
-fn atoi(raw: &str) -> Result<i64, String> {
+pub(crate) fn atoi(raw: &str) -> Result<i64, String> {
     raw.parse().map_err(|_| {
         let digits = raw.strip_prefix(['+', '-']).unwrap_or(raw);
         let reason = if !digits.is_empty() && digits.bytes().all(|b| b.is_ascii_digit()) {
@@ -124,6 +127,11 @@ async fn handle(State(s): State<Context>, OriginalUri(uri): OriginalUri) -> Resp
         let follower = s.services.healthy().await.is_err_and(|e| e == "not leader");
         let cold =
             "[PD:cluster:ErrNotBootstrapped]TiKV cluster not bootstrapped, please start TiKV first";
+        // Go mounts stats/region on clusterRouter; only histogram routes may
+        // use the synchronized follower Region cache.
+        if follower && uri.path() == "/pd/api/v1/stats/region" {
+            return error(StatusCode::INTERNAL_SERVER_ERROR, cold);
+        }
         if !follower {
             match s.services.is_bootstrapped().await {
                 Ok(true) => {}
@@ -169,6 +177,12 @@ async fn handle(State(s): State<Context>, OriginalUri(uri): OriginalUri) -> Resp
             if let (Ok(k), Ok(v)) = (query_unescape(k), query_unescape(v)) {
                 query.entry(k).or_insert(v);
             }
+        }
+        if uri.path().ends_with("/hist-size")
+            || uri.path().ends_with("/hist-keys")
+            || uri.path().ends_with("/stats/region")
+        {
+            return crate::http_region_stats::respond(service, uri.path(), &query, &cancel).await;
         }
         let get = |k: &str| query.get(k.as_bytes()).cloned().unwrap_or_default();
         let dimension = uri

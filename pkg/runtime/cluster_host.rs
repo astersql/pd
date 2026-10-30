@@ -1017,6 +1017,104 @@ impl Resources {
 
 #[async_trait::async_trait]
 impl astersql_pd_server::ClusterReadService for ClusterHost {
+    async fn region_statistics(
+        &self,
+        start: &[u8],
+        end: &[u8],
+        count: bool,
+        hot: bool,
+        engine: &str,
+    ) -> Result<astersql_pd_statistics::RegionStats, String> {
+        use astersql_pd_statistics::{RegionStats, with_store_map_option};
+        let guard = self.resources.lock().await;
+        if self.cancel.is_cancelled() {
+            return Err("node stopped".into());
+        }
+        let resources = guard.as_ref().ok_or("node stopped")?;
+        let (regions, stores) = {
+            let state = resources.state.lock().unwrap();
+            if count {
+                return Ok(RegionStats {
+                    count: state.cluster.regions.get_region_count_by_range(start, end) as i64,
+                    ..Default::default()
+                });
+            }
+            (
+                state.cluster.regions.scan_regions(start, end, 0),
+                state.cluster.stores.get_stores(),
+            )
+        };
+        let snapshot = if hot {
+            Some(
+                resources
+                    .hot
+                    .snapshot(0, vec![])
+                    .await
+                    .map_err(|e| e.to_string())?,
+            )
+        } else {
+            None
+        };
+        let stores: std::collections::BTreeMap<_, _> = stores
+            .into_iter()
+            .filter(|s| match engine {
+                "tikv" => s.label_value("engine") != "tiflash",
+                "tiflash" => s.label_value("engine") == "tiflash",
+                _ => true,
+            })
+            .map(|s| (s.id(), s.label_value("engine").to_owned()))
+            .collect();
+        let filter = with_store_map_option(&stores);
+        let mut stats = RegionStats::default();
+        for (i, r) in regions.iter().enumerate() {
+            if i % 256 == 0 {
+                tokio::task::yield_now().await;
+            }
+            if self.cancel.is_cancelled() {
+                return Err("node stopped".into());
+            }
+            let filters: [astersql_pd_statistics::GetRegionStatsOption<'_>; 1] = [&filter];
+            stats.observe(
+                r,
+                snapshot
+                    .as_ref()
+                    .map(|s| s as &dyn astersql_pd_statistics::RegionStatInformer),
+                if hot { &filters } else { &[] },
+            );
+        }
+        if hot {
+            for (&id, label) in &stores {
+                macro_rules! zero {($($f:ident),*)=>{$(stats.$f.entry(id).or_default();)*};}
+                zero!(
+                    store_leader_count,
+                    store_leader_keys,
+                    store_leader_size,
+                    store_peer_count,
+                    store_peer_keys,
+                    store_peer_size,
+                    store_write_bytes,
+                    store_write_keys,
+                    store_write_query,
+                    store_leader_read_keys,
+                    store_leader_read_bytes,
+                    store_leader_read_query,
+                    store_peer_read_keys,
+                    store_peer_read_bytes,
+                    store_peer_read_query
+                );
+                stats.store_engine.insert(
+                    id,
+                    if label.is_empty() {
+                        "tikv".into()
+                    } else {
+                        label.clone()
+                    },
+                );
+            }
+        }
+        Ok(stats)
+    }
+
     async fn region_list(
         &self,
         store: Option<(u64, Option<astersql_pd_core::RegionRole>)>,
