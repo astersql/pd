@@ -395,6 +395,13 @@ impl PdServices for RoleServices {
             .scatter(request)
             .await
     }
+    async fn region_label(
+        &self,
+        region: Arc<astersql_pd_core::RegionInfo>,
+        key: String,
+    ) -> Result<String, String> {
+        self.active().await?.cluster.region_label(region, key).await
+    }
     async fn operator(
         &self,
         id: u64,
@@ -519,6 +526,19 @@ impl RegionHeartbeatService for RoleServices {
 }
 #[async_trait::async_trait]
 impl ClusterReadService for RoleServices {
+    async fn adjacent_regions(
+        &self,
+        region: &astersql_pd_core::RegionInfo,
+    ) -> Result<
+        (
+            Option<Arc<astersql_pd_core::RegionInfo>>,
+            Option<Arc<astersql_pd_core::RegionInfo>>,
+        ),
+        String,
+    > {
+        self.active().await?.cluster.adjacent_regions(region).await
+    }
+
     async fn query_regions(
         &self,
         keys: &[Vec<u8>],
@@ -890,6 +910,20 @@ impl astersql_pd_server::bucket_heartbeat_adapter::BucketHeartbeatService for Ro
 struct FollowerRead(Arc<tokio::sync::Mutex<astersql_pd_server::sync_transport::SyncFollowerState>>);
 #[async_trait::async_trait]
 impl ClusterReadService for FollowerRead {
+    async fn adjacent_regions(
+        &self,
+        region: &astersql_pd_core::RegionInfo,
+    ) -> Result<
+        (
+            Option<Arc<astersql_pd_core::RegionInfo>>,
+            Option<Arc<astersql_pd_core::RegionInfo>>,
+        ),
+        String,
+    > {
+        let state = self.0.lock().await;
+        Ok(state.cluster.regions.get_adjacent_regions(region))
+    }
+
     async fn query_regions(
         &self,
         keys: &[Vec<u8>],

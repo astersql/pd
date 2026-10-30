@@ -4,6 +4,10 @@ use std::sync::Arc;
 use tokio_util::sync::CancellationToken;
 pub fn router(services: Arc<dyn PdServices>, cancel: CancellationToken) -> axum::Router {
     crate::http_member::router(services.clone(), cancel.clone())
+        .merge(crate::http_region_lookup::router(
+            services.clone(),
+            cancel.clone(),
+        ))
         .merge(crate::http_store_limit::router(
             services.clone(),
             cancel.clone(),

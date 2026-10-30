@@ -8,6 +8,11 @@ use astersql_pd_schedule_scatter::{ScatterBatchError, ScatterBatchFailure, Scatt
 use astersql_pd_server::grpc_scatter::*;
 use tokio::sync::oneshot;
 pub(super) enum Command {
+    RegionLabel(
+        Arc<astersql_pd_core::RegionInfo>,
+        String,
+        oneshot::Sender<Result<String, String>>,
+    ),
     StoreCleanup(Vec<u64>),
     Store(
         astersql_pd_server::http_store_state::StoreMutation,
@@ -28,6 +33,18 @@ pub(super) enum Command {
     Operator(u64, oneshot::Sender<Result<Option<OperatorResult>, String>>),
 }
 impl ClusterHost {
+    pub(crate) async fn region_label(
+        &self,
+        region: Arc<astersql_pd_core::RegionInfo>,
+        key: String,
+    ) -> Result<String, String> {
+        let (tx, rx) = oneshot::channel();
+        tokio::select! {biased;
+            _=self.cancel.cancelled()=>Err("server not started".into()),
+            result=async {self.schedule_requests.send(Command::RegionLabel(region,key,tx)).await.map_err(|_|"scheduling stopped")?;rx.await.map_err(|_|"scheduling stopped")?}=>result,
+        }
+    }
+
     pub(crate) async fn patch_server_config(
         &self,
         key: String,
@@ -90,6 +107,10 @@ pub(super) async fn serve(
     splits: &mut Vec<super::schedule_split::Pending>,
 ) {
     match command {
+        Command::RegionLabel(region, key, reply) => {
+            let _ = reply.send(Ok(labels.get_region_label(&region, &key, now().1 as i128)));
+        }
+
         Command::StoreCleanup(ids) => {
             tokio::select! {biased;_=cancel.cancelled()=>{},_=super::store_lifecycle::cleanup(ids,coordinator,resources,cancel)=>{}}
         }

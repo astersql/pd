@@ -204,6 +204,14 @@ pub trait PdServices: Send + Sync {
             "scheduling is not configured".into(),
         ))
     }
+    /// Read one label from the active coordinator's canonical labeler.
+    async fn region_label(
+        &self,
+        _region: Arc<astersql_pd_core::RegionInfo>,
+        _key: String,
+    ) -> Result<String, String> {
+        Err("region labels are not configured".into())
+    }
     async fn operator(&self, _id: u64) -> Result<Option<grpc_scatter::OperatorResult>, String> {
         Err("scheduling is not configured".into())
     }
@@ -252,6 +260,20 @@ pub trait PdServices: Send + Sync {
 /// Host-owned metadata lookup; protocol conversion remains in the server adapter.
 #[async_trait]
 pub trait ClusterReadService: Send + Sync {
+    /// Read touching neighbors from one canonical cache snapshot.
+    async fn adjacent_regions(
+        &self,
+        _region: &astersql_pd_core::RegionInfo,
+    ) -> Result<
+        (
+            Option<Arc<astersql_pd_core::RegionInfo>>,
+            Option<Arc<astersql_pd_core::RegionInfo>>,
+        ),
+        String,
+    > {
+        Err("adjacent regions are not configured".into())
+    }
+
     /// None means the follower synchronization worker is not running.
     async fn query_regions(
         &self,
@@ -660,3 +682,9 @@ mod http_store_labels;
 mod http_store_limit_test;
 
 mod http_store_limit;
+
+#[cfg(test)]
+#[path = "http_region_lookup_test.rs"]
+mod http_region_lookup_test;
+
+mod http_region_lookup;

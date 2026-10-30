@@ -1017,6 +1017,24 @@ impl Resources {
 
 #[async_trait::async_trait]
 impl astersql_pd_server::ClusterReadService for ClusterHost {
+    async fn adjacent_regions(
+        &self,
+        region: &astersql_pd_core::RegionInfo,
+    ) -> Result<
+        (
+            Option<Arc<astersql_pd_core::RegionInfo>>,
+            Option<Arc<astersql_pd_core::RegionInfo>>,
+        ),
+        String,
+    > {
+        let guard = self.resources.lock().await;
+        if self.cancel.is_cancelled() {
+            return Err("node stopped".into());
+        }
+        let state = guard.as_ref().ok_or("node stopped")?.state.lock().unwrap();
+        Ok(state.cluster.regions.get_adjacent_regions(region))
+    }
+
     async fn query_regions(
         &self,
         keys: &[Vec<u8>],
