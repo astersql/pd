@@ -9,6 +9,7 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
+rustix.workspace = true
 etcd-client.workspace = true
 astersql-pd-schedule-splitter.workspace = true
 astersql-pd-cache.workspace = true

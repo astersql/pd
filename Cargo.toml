@@ -8,6 +8,7 @@ rust-version = "1.85"
 license = "Apache-2.0"
 
 [workspace.dependencies]
+rustix = { version = "=1.1.5", features = ["system"] }
 rand = "=0.8.8"
 astersql-pd-server-config = { path = "server/config" }
 astersql-pd-compat-tests = { path = "tests/rust-compat" }

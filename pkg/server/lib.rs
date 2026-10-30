@@ -22,6 +22,7 @@ mod grpc_tso;
 mod grpc_unsupported;
 mod http;
 pub mod http_cluster;
+mod http_config_read;
 pub mod http_contract;
 pub mod http_health;
 mod http_leader;
@@ -45,6 +46,13 @@ pub struct Identity {
 #[async_trait]
 pub trait PdServices: Send + Sync {
     fn identity(&self) -> &Identity;
+    /// Host configuration snapshot; defaults do not include live dynamic overrides.
+    async fn configuration(
+        &self,
+        _defaults: bool,
+    ) -> Result<astersql_pd_server_config::Config, String> {
+        Err("server not started".into())
+    }
     async fn cluster_observation(&self) -> Result<http_cluster::ClusterObservation, String> {
         Err("server not started".into())
     }
@@ -564,3 +572,9 @@ mod http_cluster_test;
 #[cfg(test)]
 #[path = "http_cluster_fault_test.rs"]
 mod http_cluster_fault_test;
+
+#[cfg(test)]
+mod http_config_read_test;
+
+#[cfg(test)]
+mod http_config_read_fault_test;

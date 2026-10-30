@@ -64,6 +64,19 @@ pub struct ClusterHost {
     cancel: CancellationToken,
 }
 impl ClusterHost {
+    pub(crate) async fn configuration(&self) -> Result<astersql_pd_server_config::Config, String> {
+        let guard = self.resources.lock().await;
+        let resources = guard.as_ref().ok_or("server not started")?;
+        if self.cancel.is_cancelled() {
+            return Err("server not started".into());
+        }
+        let mut config = resources.persisted_config.config.clone();
+        let state = resources.state.lock().unwrap();
+        config.schedule = state.config.schedule.clone();
+        config.replication = state.config.replication.clone();
+        Ok(config)
+    }
+
     pub(crate) async fn http_observation(
         &self,
     ) -> Result<astersql_pd_server::http_cluster::ClusterObservation, String> {

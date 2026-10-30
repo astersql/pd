@@ -73,7 +73,7 @@ fn nonempty(request: &Request<Body>, name: &str) -> bool {
         .get(name)
         .is_some_and(|v| !v.as_bytes().is_empty())
 }
-async fn leader(services: &dyn PdServices) -> Option<pdpb::Member> {
+pub(crate) async fn leader(services: &dyn PdServices) -> Option<pdpb::Member> {
     let store = services.discovery_store()?;
     let key = format!("/pd/{}/leader", services.identity().cluster_id);
     let result = store

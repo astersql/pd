@@ -96,6 +96,69 @@ impl RoleServices {
 }
 #[async_trait::async_trait]
 impl PdServices for RoleServices {
+    async fn configuration(
+        &self,
+        defaults: bool,
+    ) -> Result<astersql_pd_server_config::Config, String> {
+        use astersql_pd_server_config::{Config, ConfigDefaultsContext, PersistedConfig};
+        let cwd = std::env::current_dir().map_err(|e| e.to_string())?;
+        let hostname = rustix::system::uname()
+            .nodename()
+            .to_string_lossy()
+            .into_owned();
+        let mut config = Config::default();
+        if !defaults {
+            config.scalars.name = self.identity.name.clone();
+            config.scalars.client_urls = self.identity.client_url.clone();
+            config.scalars.peer_urls = self.identity.peer_url.clone();
+        }
+        config.adjust(
+            &Default::default(),
+            ConfigDefaultsContext {
+                hostname: &hostname,
+                cwd: &cwd,
+            },
+            false,
+            &mut Default::default(),
+        )?;
+        if defaults {
+            return Ok(config);
+        }
+        let dynamic = if let Some(term) = self.current() {
+            term.cluster.configuration().await?
+        } else {
+            let endpoint = astersql_pd_storage_endpoint::StorageEndpoint::new(
+                self.store.upgrade().ok_or("server not started")?,
+            );
+            let mut persisted = PersistedConfig {
+                config: config.clone(),
+                ..Default::default()
+            };
+            persisted
+                .reload(
+                    &endpoint,
+                    &astersql_pd_keypath::ClusterPaths::new(self.identity.cluster_id),
+                    ConfigDefaultsContext {
+                        hostname: &hostname,
+                        cwd: &cwd,
+                    },
+                    &mut Default::default(),
+                )
+                .await
+                .map_err(|e| e.to_string())?;
+            persisted.config
+        };
+        config.schedule = dynamic.schedule;
+        config.replication = dynamic.replication;
+        config.pd_server = dynamic.pd_server;
+        config.replication_mode = dynamic.replication_mode;
+        config.label_property = dynamic.label_property;
+        config.cluster_version = dynamic.cluster_version;
+        config.keyspace = dynamic.keyspace;
+        config.microservice = dynamic.microservice;
+        Ok(config)
+    }
+
     async fn cluster_observation(
         &self,
     ) -> Result<astersql_pd_server::http_cluster::ClusterObservation, String> {
