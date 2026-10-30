@@ -258,7 +258,18 @@ async fn singleflight_randomized() {
                                 result
                             }));
                         if random % 10 == 0 {
-                            register(call.as_mut()).await;
+                            // Another runtime worker may finish the operation during
+                            // this first poll. Cancel pending calls, but validate a
+                            // completed result with the same ordering checks below.
+                            let result = std::future::poll_fn(|cx| {
+                                std::task::Poll::Ready(call.as_mut().poll(cx))
+                            })
+                            .await;
+                            if let std::task::Poll::Ready(result) = result {
+                                let value = result.unwrap();
+                                assert!(value >= before);
+                                assert!(value <= clock.load(Ordering::SeqCst));
+                            }
                             drop(call);
                         } else {
                             let value = call.await.unwrap();
