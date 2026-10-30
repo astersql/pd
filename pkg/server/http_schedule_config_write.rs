@@ -190,7 +190,7 @@ fn validate_types(patch: &serde_json::Value, bytes: &[u8]) -> Option<Response> {
     None
 }
 
-fn duration_error(value: &str) -> String {
+pub(crate) fn duration_error(value: &str) -> String {
     let invalid = || format!("time: invalid duration {value:?}");
     let mut rest = value.strip_prefix(['+', '-']).unwrap_or(value);
     while !rest.is_empty() {

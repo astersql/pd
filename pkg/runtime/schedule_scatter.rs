@@ -8,6 +8,11 @@ use astersql_pd_schedule_scatter::{ScatterBatchError, ScatterBatchFailure, Scatt
 use astersql_pd_server::grpc_scatter::*;
 use tokio::sync::oneshot;
 pub(super) enum Command {
+    ServerConfig(
+        String,
+        serde_json::Value,
+        oneshot::Sender<Result<(), String>>,
+    ),
     Replication(bool, serde_json::Value, oneshot::Sender<Result<(), String>>),
     Configure(serde_json::Value, oneshot::Sender<Result<(), String>>),
     Split(super::schedule_split::Pending),
@@ -18,6 +23,19 @@ pub(super) enum Command {
     Operator(u64, oneshot::Sender<Result<Option<OperatorResult>, String>>),
 }
 impl ClusterHost {
+    pub(crate) async fn patch_server_config(
+        &self,
+        key: String,
+        value: serde_json::Value,
+    ) -> Result<(), String> {
+        let (tx, rx) = oneshot::channel();
+        self.schedule_requests
+            .send(Command::ServerConfig(key, value, tx))
+            .await
+            .map_err(|_| "scheduling stopped")?;
+        rx.await.map_err(|_| "scheduling stopped")?
+    }
+
     pub(crate) async fn patch_replication(
         &self,
         labels: bool,
@@ -67,6 +85,11 @@ pub(super) async fn serve(
     splits: &mut Vec<super::schedule_split::Pending>,
 ) {
     match command {
+        Command::ServerConfig(key, value, mut reply) => {
+            let work = super::server_config::update(key, value, coordinator, resources, cancel);
+            tokio::select! {biased; _=cancel.cancelled()=>{},_=reply.closed()=>{},result=work=>{let _=reply.send(result);}}
+        }
+
         Command::Replication(labels, patch, mut reply) => {
             let work =
                 super::replication_config::update(labels, patch, coordinator, resources, cancel);

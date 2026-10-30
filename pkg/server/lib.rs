@@ -53,6 +53,14 @@ pub trait PdServices: Send + Sync {
     ) -> Result<astersql_pd_server_config::Config, String> {
         Err("server not started".into())
     }
+    /// Persist and publish a PD server field or cluster version on the active term.
+    async fn patch_server_config(
+        &self,
+        _key: String,
+        _value: serde_json::Value,
+    ) -> Result<(), String> {
+        Err("server not started".into())
+    }
     /// Apply replication or label-property changes in the host coordinator.
     async fn patch_replication(
         &self,
@@ -606,3 +614,11 @@ mod http_replication_config_write;
 
 #[cfg(test)]
 mod http_replication_config_write_fault_test;
+
+#[cfg(test)]
+mod http_server_config_write_test;
+
+mod http_server_config_write;
+
+#[cfg(test)]
+mod http_server_config_write_fault_test;

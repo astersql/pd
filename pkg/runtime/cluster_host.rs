@@ -34,6 +34,7 @@ struct Resources {
     downstreams: Downstreams,
     syncer: Arc<RegionSyncer>,
     persisted_config: astersql_pd_server_config::PersistedConfig,
+    resolved_interval: Arc<std::sync::atomic::AtomicU64>,
 }
 /// One cache and pipeline shared by all adapters and host readers.
 /// The node creates workers on its supplied executor and joins them on shutdown.
@@ -225,6 +226,7 @@ impl ClusterHost {
             storage,
             paths,
             persisted_config,
+            resolved_interval: resolved_interval.clone(),
             downstreams: syncer.downstreams(),
             syncer,
         })));
@@ -1131,3 +1133,10 @@ mod replication_config;
 #[cfg(test)]
 #[path = "replication_config_test.rs"]
 mod replication_config_test;
+
+#[path = "server_config.rs"]
+mod server_config;
+
+#[cfg(test)]
+#[path = "server_config_test.rs"]
+mod server_config_test;
