@@ -75,7 +75,7 @@ pub use resolved_ts_worker::{
 mod resolved_ts_worker_test;
 
 mod store_lifecycle;
-pub use store_lifecycle::store_transition;
+pub use store_lifecycle::{check_store_location_labels, store_transition};
 #[cfg(test)]
 #[path = "store_lifecycle_test.rs"]
 mod store_lifecycle_test;

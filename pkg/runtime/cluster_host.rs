@@ -692,54 +692,7 @@ impl ClusterHost {
             {
                 return Err(StoreError::Other("placement rules is disabled".into()));
             }
-            if incoming.id == 0 {
-                return Err(StoreError::InvalidStore(Box::new(incoming)));
-            }
-            let text = if incoming.version.is_empty() {
-                "1.0.0"
-            } else {
-                incoming
-                    .version
-                    .strip_prefix('v')
-                    .unwrap_or(&incoming.version)
-            };
-            let version: astersql_pd_server_config::ClusterVersion =
-                serde_json::from_value(serde_json::Value::String(text.into()))
-                    .map_err(|e| StoreError::Other(format!("invalid put store, error: {e}")))?;
-            let current = &config.cluster_version;
-            if (version.major, version.minor) < (current.major, current.minor) {
-                return Err(StoreError::Other(format!(
-                    "version should compatible with version  {current}, got {version}"
-                )));
-            }
-            for store in state.cluster.stores.get_stores() {
-                if store.id() == incoming.id
-                    || store.is_removed()
-                    || store.is_physically_destroyed()
-                {
-                    continue;
-                }
-                let old = store.meta().unwrap();
-                if incoming.address == old.address
-                    || (!old.peer_address.is_empty() && incoming.address == old.peer_address)
-                {
-                    return Err(StoreError::AddressConflict {
-                        peer: false,
-                        incoming: Box::new(incoming),
-                        existing: Box::new(old.clone()),
-                    });
-                }
-                if !incoming.peer_address.is_empty()
-                    && (incoming.peer_address == old.address
-                        || incoming.peer_address == old.peer_address)
-                {
-                    return Err(StoreError::AddressConflict {
-                        peer: true,
-                        incoming: Box::new(incoming),
-                        existing: Box::new(old.clone()),
-                    });
-                }
-            }
+            check_store_admission(&incoming, &config.cluster_version, &state.cluster)?;
             let next = match previous {
                 None => astersql_pd_core::StoreInfo::new(incoming),
                 Some(old) => {
@@ -758,30 +711,12 @@ impl ClusterHost {
                     next
                 }
             };
-            if config.replication.strictly_match_label {
-                for key in config.replication.location_labels.as_slice() {
-                    if next.label_value(key).is_empty() {
-                        return Err(StoreError::Other(format!(
-                            "label configuration is incorrect, need to specify the key: {key} "
-                        )));
-                    }
-                }
-                for label in &next.meta().unwrap().labels {
-                    if label.key != "engine"
-                        && label.key != "engine_role"
-                        && !config
-                            .replication
-                            .location_labels
-                            .as_slice()
-                            .contains(&label.key)
-                    {
-                        return Err(StoreError::Other(format!(
-                            "key matching the label was not found in the PD, store label key: {} ",
-                            label.key
-                        )));
-                    }
-                }
-            }
+            astersql_pd_cluster::check_store_location_labels(
+                &next,
+                config.replication.location_labels.as_slice(),
+                config.replication.strictly_match_label,
+            )
+            .map_err(StoreError::Other)?;
             next
         };
         resources
@@ -1165,3 +1100,59 @@ mod server_config_test;
 
 #[path = "store_lifecycle.rs"]
 mod store_lifecycle;
+
+#[path = "store_labels.rs"]
+mod store_labels;
+
+fn check_store_admission(
+    incoming: &astersql_pd_core::StoreMeta,
+    version: &astersql_pd_server_config::ClusterVersion,
+    cluster: &BasicCluster,
+) -> Result<(), astersql_pd_server::grpc_store::StoreError> {
+    use astersql_pd_server::grpc_store::StoreError;
+    if incoming.id == 0 {
+        return Err(StoreError::InvalidStore(Box::new(incoming.clone())));
+    }
+    let text = if incoming.version.is_empty() {
+        "1.0.0"
+    } else {
+        incoming
+            .version
+            .strip_prefix('v')
+            .unwrap_or(&incoming.version)
+    };
+    let parsed: astersql_pd_server_config::ClusterVersion =
+        serde_json::from_value(serde_json::Value::String(text.into()))
+            .map_err(|e| StoreError::Other(format!("invalid put store, error: {e}")))?;
+    let current = version;
+    if (parsed.major, parsed.minor) < (current.major, current.minor) {
+        return Err(StoreError::Other(format!(
+            "version should compatible with version  {current}, got {parsed}"
+        )));
+    }
+    for store in cluster.stores.get_stores() {
+        if store.id() == incoming.id || store.is_removed() || store.is_physically_destroyed() {
+            continue;
+        }
+        let old = store.meta().unwrap();
+        if incoming.address == old.address
+            || (!old.peer_address.is_empty() && incoming.address == old.peer_address)
+        {
+            return Err(StoreError::AddressConflict {
+                peer: false,
+                incoming: Box::new(incoming.clone()),
+                existing: Box::new(old.clone()),
+            });
+        }
+        if !incoming.peer_address.is_empty()
+            && (incoming.peer_address == old.address || incoming.peer_address == old.peer_address)
+        {
+            return Err(StoreError::AddressConflict {
+                peer: true,
+                incoming: Box::new(incoming.clone()),
+                existing: Box::new(old.clone()),
+            });
+        }
+    }
+    Ok(())
+}

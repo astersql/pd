@@ -640,3 +640,9 @@ mod http_store_read_test;
 mod http_store_state_test;
 
 pub mod http_store_state;
+
+#[cfg(test)]
+#[path = "http_store_labels_test.rs"]
+mod http_store_labels_test;
+
+mod http_store_labels;

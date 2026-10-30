@@ -41,30 +41,12 @@ impl Grpc {
         let header = match result {
             Ok(()) => self.header(),
             Err(error) => {
-                let (kind, message) = match error {
-                    StoreError::AddressConflict {
-                        peer,
-                        incoming,
-                        existing,
-                    } => (
-                        pdpb::ErrorType::Unknown,
-                        format!(
-                            "duplicated store {}address: {}, already registered by {}",
-                            if peer { "peer " } else { "" },
-                            store_text(*incoming),
-                            store_text(*existing)
-                        ),
-                    ),
-                    StoreError::InvalidStore(store) => (
-                        pdpb::ErrorType::Unknown,
-                        format!("invalid put store {}", store_text(*store)),
-                    ),
-                    StoreError::Removed => {
-                        (pdpb::ErrorType::StoreTombstone, "store is tombstone".into())
-                    }
-                    StoreError::InvalidEngine(message) => (pdpb::ErrorType::InvalidValue, message),
-                    StoreError::Other(message) => (pdpb::ErrorType::Unknown, message),
+                let kind = match &error {
+                    StoreError::Removed => pdpb::ErrorType::StoreTombstone,
+                    StoreError::InvalidEngine(_) => pdpb::ErrorType::InvalidValue,
+                    _ => pdpb::ErrorType::Unknown,
                 };
+                let message = error.to_string();
                 Some(pdpb::ResponseHeader {
                     cluster_id: self.services.identity().cluster_id,
                     error: Some(pdpb::Error {
@@ -197,4 +179,27 @@ fn store_text(meta: astersql_pd_core::StoreMeta) -> String {
         out.push_str("> ");
     }
     out
+}
+
+impl std::fmt::Display for StoreError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::AddressConflict {
+                peer,
+                incoming,
+                existing,
+            } => write!(
+                f,
+                "duplicated store {}address: {}, already registered by {}",
+                if *peer { "peer " } else { "" },
+                store_text(incoming.as_ref().clone()),
+                store_text(existing.as_ref().clone())
+            ),
+            Self::InvalidStore(s) => {
+                write!(f, "invalid put store {}", store_text(s.as_ref().clone()))
+            }
+            Self::Removed => f.write_str("store is tombstone"),
+            Self::InvalidEngine(s) | Self::Other(s) => f.write_str(s),
+        }
+    }
 }

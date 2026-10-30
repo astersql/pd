@@ -30,6 +30,14 @@ pub(super) async fn mutate(
         r.leader.clone(),
         cancel.clone(),
     )));
+    if matches!(
+        operation,
+        StoreMutation::Labels { .. }
+            | StoreMutation::DeleteLabel { .. }
+            | StoreMutation::Weight { .. }
+    ) {
+        return super::store_labels::mutate(operation, r, &storage).await;
+    }
     if matches!(operation, StoreMutation::RemoveTombstones) {
         let stores = r.state.lock().unwrap().cluster.stores.get_stores();
         let mut failed = Vec::new();

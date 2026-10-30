@@ -18,9 +18,26 @@ use tokio_util::sync::CancellationToken;
 
 #[derive(Clone, Debug)]
 pub enum StoreMutation {
-    Offline { id: u64, force: bool },
+    Offline {
+        id: u64,
+        force: bool,
+    },
     Up(u64),
     RemoveTombstones,
+    Labels {
+        id: u64,
+        labels: Vec<astersql_pd_core::StoreLabel>,
+        force: bool,
+    },
+    DeleteLabel {
+        id: u64,
+        key: String,
+    },
+    Weight {
+        id: u64,
+        leader: f64,
+        region: f64,
+    },
 }
 #[derive(Clone)]
 struct Context {

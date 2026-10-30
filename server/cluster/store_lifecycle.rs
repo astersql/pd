@@ -63,3 +63,30 @@ pub fn store_transition(
     );
     Ok(Some(next))
 }
+
+/// Validate location labels for registration and manual label updates.
+pub fn check_store_location_labels(
+    store: &StoreInfo,
+    keys: &[String],
+    strict: bool,
+) -> Result<(), String> {
+    if !strict {
+        return Ok(());
+    }
+    for key in keys {
+        if store.label_value(key).is_empty() {
+            return Err(format!(
+                "label configuration is incorrect, need to specify the key: {key} "
+            ));
+        }
+    }
+    for label in &store.meta().unwrap().labels {
+        if label.key != "engine" && label.key != "engine_role" && !keys.contains(&label.key) {
+            return Err(format!(
+                "key matching the label was not found in the PD, store label key: {} ",
+                label.key
+            ));
+        }
+    }
+    Ok(())
+}

@@ -138,7 +138,7 @@ pub fn query_unescape(value: &str) -> Result<Vec<u8>, HttpError> {
 
 // encoding/json replaces invalid UTF-8 and unpaired UTF-16 surrogates inside
 // strings. serde_json rejects the latter, so normalize just those escapes.
-fn go_json_strings(bytes: &[u8]) -> Vec<u8> {
+pub(crate) fn go_json_strings(bytes: &[u8]) -> Vec<u8> {
     let text = String::from_utf8_lossy(bytes);
     let bytes = text.as_bytes();
     let mut out = Vec::with_capacity(bytes.len());
