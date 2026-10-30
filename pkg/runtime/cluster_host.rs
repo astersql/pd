@@ -21,6 +21,8 @@ use tokio_util::sync::CancellationToken;
 
 type State = Mutex<HeartbeatEffectsState<ProviderSnapshot<()>>>;
 struct Resources {
+    suspect_cache: Arc<astersql_pd_cache::TTLString<[Vec<u8>; 2]>>,
+    suspect_ranges: astersql_pd_schedule_checker::SuspectRanges,
     progress: Arc<astersql_pd_progress::Manager>,
     previous_store_limits:
         std::collections::BTreeMap<u64, astersql_pd_schedule_config::StoreLimitConfig>,
@@ -276,7 +278,15 @@ impl ClusterHost {
             std::time::Duration::from_secs(10),
             registry,
         )?);
+        let suspect_cache = Arc::new(astersql_pd_cache::TTLString::new(
+            tokio::runtime::Handle::current(),
+            cancel.clone(),
+            std::time::Duration::from_secs(60),
+            astersql_pd_cache::TtlDuration::from_nanos(180_000_000_000),
+        ));
         let resources = Arc::new(AsyncMutex::new(Some(Resources {
+            suspect_ranges: astersql_pd_schedule_checker::SuspectRanges::new(suspect_cache.clone()),
+            suspect_cache,
             progress: progress.clone(),
             previous_store_limits: Default::default(),
             history: hot_history::Maintenance::new(
@@ -888,6 +898,7 @@ impl ClusterHost {
         };
         let mut guard = self.resources.lock().await;
         let result = if let Some(resources) = guard.as_mut() {
+            resources.suspect_cache.shutdown().await;
             resources.syncer.stop().await;
             for runner in &mut resources.runners {
                 runner.stop().await;
@@ -1462,3 +1473,6 @@ mod schedule_operator_write;
 
 #[path = "schedule_scheduler.rs"]
 mod schedule_scheduler;
+
+#[path = "placement_http.rs"]
+mod placement_http;

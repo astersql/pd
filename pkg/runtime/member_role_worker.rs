@@ -126,6 +126,13 @@ impl PdServices for RoleServices {
             .await
     }
 
+    async fn rule(
+        &self,
+        request: astersql_pd_server::http_rule::Request,
+    ) -> Result<(u16, serde_json::Value), String> {
+        self.active().await?.cluster.rule(request).await
+    }
+
     async fn patch_replication(
         &self,
         labels: bool,

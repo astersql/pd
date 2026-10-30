@@ -28,6 +28,7 @@ pub mod http_health;
 mod http_leader;
 pub mod http_member;
 pub mod http_region_schedule;
+pub mod http_rule;
 mod http_store_read;
 mod request_role;
 use astersql_pd_tso::Timestamp;
@@ -47,6 +48,11 @@ pub struct Identity {
 /// Domain operations supplied by the host; transport types stay in this crate.
 #[async_trait]
 pub trait PdServices: Send + Sync {
+    /// Placement management on the existing term coordinator.
+    async fn rule(&self, _request: http_rule::Request) -> Result<(u16, serde_json::Value), String> {
+        Err("server not started".into())
+    }
+
     /// Accelerate the checker pending queue on the active term coordinator.
     async fn accelerate_regions(
         &self,
@@ -843,3 +849,11 @@ pub mod http_checker;
 
 #[cfg(test)]
 mod http_region_schedule_test;
+
+#[cfg(test)]
+#[path = "http_rule_test.rs"]
+mod http_rule_test;
+
+#[cfg(test)]
+#[path = "http_rule_fault_test.rs"]
+mod http_rule_fault_test;

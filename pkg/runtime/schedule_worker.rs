@@ -155,6 +155,11 @@ async fn run(
     let mut push_queue = Default::default();
     let mut fast_operators = Default::default();
     let mut splits = Vec::new();
+    let mut suspect_tick = tokio::time::interval_at(
+        tokio::time::Instant::now() + Duration::from_millis(100),
+        Duration::from_millis(100),
+    );
+    suspect_tick.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Skip);
     let result = async {
         status.send_modify(|s| s.phase = SchedulePhase::Preparing);
         while !coordinator.should_run(start.elapsed()) {
@@ -169,6 +174,7 @@ async fn run(
             super::schedule_scatter::dispatch_new(&coordinator,&resources,&routing,&mut push_queue,&mut fast_operators,&cancel).await?;
             tokio::select! {biased;
                 _=cancel.cancelled()=>return Ok(()),
+                _=suspect_tick.tick()=>{super::placement_http::check_ranges(&coordinator,&resources).await?;},
                 command=requests.recv()=>{if let Some(command)=command {super::schedule_scatter::serve(command,&mut coordinator,&resources,&labels,&cancel,&mut splits).await;
                     super::schedule_scatter::dispatch_new(&coordinator,&resources,&routing,&mut push_queue,&mut fast_operators,&cancel).await?;}},
                 _=tokio::time::sleep(history_wait.min(if splits.is_empty() { Duration::from_secs(3) } else { Duration::from_millis(10) }))=>{}
@@ -212,6 +218,7 @@ async fn run(
             super::schedule_scatter::dispatch_new(&coordinator,&resources,&routing,&mut push_queue,&mut fast_operators,&cancel).await?;
             tokio::select! {biased;
                 _=cancel.cancelled()=>break,
+                _=suspect_tick.tick()=>{super::placement_http::check_ranges(&coordinator,&resources).await?;continue;},
                 _=ticker.tick()=>{},
                 command=requests.recv()=>{if let Some(command)=command {super::schedule_scatter::serve(command,&mut coordinator,&resources,&labels,&cancel,&mut splits).await;
                     super::schedule_scatter::dispatch_new(&coordinator,&resources,&routing,&mut push_queue,&mut fast_operators,&cancel).await?;} continue;},

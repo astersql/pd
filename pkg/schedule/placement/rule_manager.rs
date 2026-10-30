@@ -38,11 +38,16 @@ pub struct RuleManager {
 }
 /// Validated rule candidate for an enclosing host transaction. Publish only after commit.
 pub struct PreparedRuleUpdate {
+    changed: bool,
     rule: Rule,
     config: RuleConfig,
     list: RuleList,
 }
 impl PreparedRuleUpdate {
+    /// Whether trimming left a rule mutation requiring persistence.
+    pub fn changed(&self) -> bool {
+        self.changed
+    }
     /// Immutable persistence model validated together with the candidate rule list.
     pub fn rule(&self) -> &Rule {
         &self.rule
@@ -62,9 +67,40 @@ impl RuleManager {
         patch.set_rule(rule.clone());
         RuleList::build(patch.adjust().rules().cloned())?;
         patch.trim();
+        let changed = patch.mutation_counts().0 > 0;
         let config = patch.commit(now);
         let list = RuleList::build(config.rules().cloned())?;
-        Ok(PreparedRuleUpdate { rule, config, list })
+        Ok(PreparedRuleUpdate {
+            changed,
+            rule,
+            config,
+            list,
+        })
+    }
+    /// Validate a deletion for a host-owned fenced transaction without publishing.
+    pub fn prepare_delete(
+        &self,
+        group: &str,
+        id: &str,
+        now: u64,
+    ) -> Result<PreparedRuleUpdate, RuleManagerError> {
+        let mut patch = self.config.begin_patch();
+        patch.delete_rule(group, id);
+        RuleList::build(patch.adjust().rules().cloned())?;
+        patch.trim();
+        let changed = patch.mutation_counts().0 > 0;
+        let config = patch.commit(now);
+        let list = RuleList::build(config.rules().cloned())?;
+        Ok(PreparedRuleUpdate {
+            changed,
+            rule: Rule {
+                group_id: group.into(),
+                id: id.into(),
+                ..Default::default()
+            },
+            config,
+            list,
+        })
     }
     /// Publish an already committed candidate without IO or cancellation points.
     pub fn publish_rule(&mut self, update: PreparedRuleUpdate) {
@@ -128,9 +164,14 @@ impl RuleManager {
             return Err(error("endKey should be greater than startKey"));
         }
         if self.key_type == "table" || self.key_type == "txn" {
-            for key in [&rule.start_key, &rule.end_key] {
-                if !key.is_empty() && astersql_pd_codec::decode_bytes(key).is_err() {
-                    return Err(error("key should be encoded in configured mode"));
+            for (name, key) in [("start", &rule.start_key), ("end", &rule.end_key)] {
+                if !key.is_empty() {
+                    if let Err(e) = astersql_pd_codec::decode_bytes(key) {
+                        return Err(error(&format!(
+                            "{name} key should be encoded in {} mode: {e}",
+                            self.key_type
+                        )));
+                    }
                 }
             }
         }
