@@ -46,6 +46,13 @@ pub struct Identity {
 /// Domain operations supplied by the host; transport types stay in this crate.
 #[async_trait]
 pub trait PdServices: Send + Sync {
+    /// Read canonical running and retained operators through the host queue.
+    async fn operator_read(
+        &self,
+        _query: http_operator_read::Query,
+    ) -> Result<serde_json::Value, String> {
+        Err("server not started".into())
+    }
     fn identity(&self) -> &Identity;
     /// Host configuration snapshot; defaults do not include live dynamic overrides.
     async fn configuration(
@@ -771,3 +778,7 @@ pub mod http_hotspot;
 mod http_hotspot_history;
 #[cfg(test)]
 mod http_hotspot_history_test;
+#[cfg(test)]
+mod http_operator_read_test;
+
+pub mod http_operator_read;

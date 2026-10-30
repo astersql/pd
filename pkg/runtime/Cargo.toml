@@ -10,6 +10,8 @@ path = "lib.rs"
 
 [dependencies]
 chrono.workspace = true
+chrono-tz.workspace = true
+iana-time-zone.workspace = true
 astersql-pd-schedule-handler.workspace = true
 astersql-pd-progress.workspace = true
 astersql-pd-storelimit.workspace = true

@@ -219,7 +219,7 @@ impl<V> Builder<'_, V> {
         }
         let op = Operator::new(
             &self.description,
-            "joint replica changes",
+            &self.operator_brief(options, true),
             self.region.meta().id,
             self.region.meta().epoch.clone(),
             p.kind,

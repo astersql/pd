@@ -420,6 +420,15 @@ impl PdServices for RoleServices {
     ) -> Result<String, String> {
         self.active().await?.cluster.region_label(region, key).await
     }
+    async fn operator_read(
+        &self,
+        query: astersql_pd_server::http_operator_read::Query,
+    ) -> Result<serde_json::Value, String> {
+        if self.current().is_none() {
+            return Err("[PD:cluster:ErrNotBootstrapped]TiKV cluster not bootstrapped, please start TiKV first".into());
+        }
+        self.active().await?.cluster.operator_read(query).await
+    }
     async fn operator(
         &self,
         id: u64,

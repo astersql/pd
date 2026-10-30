@@ -184,7 +184,7 @@ impl<'a, V> Builder<'a, V> {
         }
         let op = Operator::new(
             &self.description,
-            "ordinary replica changes",
+            &self.operator_brief(options, false),
             self.region.meta().id,
             self.region.meta().epoch.clone(),
             p.kind,
@@ -302,3 +302,103 @@ mod leader;
 
 #[path = "builder_joint.rs"]
 mod joint;
+
+impl<V> Builder<'_, V> {
+    /// Preserve Go Builder.brief precedence over the immutable change snapshot.
+    pub(super) fn operator_brief(&self, options: SimpleBuildOptions, joint: bool) -> String {
+        let (mut add, mut remove, mut promote, mut demote) =
+            (Vec::new(), Vec::new(), Vec::new(), Vec::new());
+        let mut witness = crate::builder_witness::WitnessPlan::default();
+        let mut effective_targets = self.target_peers.clone();
+        for (&store, old) in &self.origin_peers {
+            let Some(new) = self.target_peers.get(&store) else {
+                remove.push(store);
+                continue;
+            };
+            let effective = witness.peer(old, new);
+            effective_targets.insert(store, effective.clone());
+            if old.is_learner() && !effective.is_learner() {
+                promote.push(store)
+            } else if !old.is_learner() && effective.is_learner() {
+                if joint {
+                    demote.push(store)
+                } else {
+                    remove.push(store)
+                }
+            }
+        }
+        for (&store, new) in &effective_targets {
+            if self
+                .origin_peers
+                .get(&store)
+                .is_none_or(|old| !joint && !old.is_learner() && new.is_learner())
+            {
+                add.push(store)
+            }
+        }
+        let list = |ids: &[u64]| {
+            format!(
+                "[{}]",
+                ids.iter().map(u64::to_string).collect::<Vec<_>>().join(" ")
+            )
+        };
+        if !add.is_empty() && !remove.is_empty() {
+            format!(
+                "{}: store {} to {}",
+                if options.add_light_peer && options.remove_light_peer {
+                    "mv light peer"
+                } else {
+                    "mv peer"
+                },
+                list(&remove),
+                list(&add)
+            )
+        } else if !add.is_empty() {
+            format!("add peer: store {}", list(&add))
+        }
+        // Go's promote/remove branch intentionally prints these two sets reversed.
+        else if !remove.is_empty() && !promote.is_empty() {
+            format!(
+                "promote peer: store {}, rm peer: store {}",
+                list(&remove),
+                list(&promote)
+            )
+        } else if !remove.is_empty() && !demote.is_empty() {
+            format!(
+                "demote peer: store {}, rm peer: store {}",
+                list(&demote),
+                list(&remove)
+            )
+        } else if !remove.is_empty() {
+            format!("rm peer: store {}", list(&remove))
+        } else if !promote.is_empty() {
+            format!("promote peer: store {}", list(&promote))
+        } else if !demote.is_empty() {
+            format!("demote peer: store {}", list(&demote))
+        } else if !witness.witnesses.is_empty() {
+            format!(
+                "switch peer: store {} to witness",
+                list(&witness.witnesses.keys().copied().collect::<Vec<_>>())
+            )
+        } else if !witness.non_witnesses.is_empty() {
+            format!(
+                "switch peer: store {} to non-witness",
+                list(&witness.non_witnesses.keys().copied().collect::<Vec<_>>())
+            )
+        } else if !self.target_leaders.is_empty() {
+            format!(
+                "evict leader: from store {} to one in {}, or to {} (for compatibility)",
+                self.origin_leader,
+                list(&self.target_leaders),
+                self.target_leader
+            )
+        } else if self.origin_leader != self.target_leader {
+            format!(
+                "transfer leader: store {} to {}",
+                self.origin_leader, self.target_leader
+            )
+        } else {
+            String::new()
+        }
+    }
+}

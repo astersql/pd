@@ -44,6 +44,7 @@ struct Resources {
 /// The node creates workers on its supplied executor and joins them on shutdown.
 /// Read handles retain no storage or workers after shutdown.
 pub struct ClusterHost {
+    operator_clock: schedule_operator_read::ClockMap,
     #[cfg(test)]
     state: Weak<State>,
     stores: astersql_pd_core::StoresInfo,
@@ -173,6 +174,7 @@ impl ClusterHost {
         leader: Arc<astersql_pd_member::Leadership>,
         allocator: Arc<astersql_pd_id::Allocator>,
     ) -> Result<Self, crate::NodeError> {
+        let operator_clock = schedule_operator_read::ClockMap::new();
         let scheduling_cluster = cluster.clone();
         let stores = cluster.stores.clone();
         let mut persisted_config = restored_config.clone().unwrap_or_default();
@@ -535,6 +537,7 @@ impl ClusterHost {
             progress.gc(&progress_cancel).await;
         });
         Ok(Self {
+            operator_clock,
             progress_worker: AsyncMutex::new(Some(progress_worker)),
             stores,
             schedule_requests,
@@ -1450,3 +1453,6 @@ mod store_limits;
 
 #[path = "hot_history.rs"]
 mod hot_history;
+
+#[path = "schedule_operator_read.rs"]
+mod schedule_operator_read;

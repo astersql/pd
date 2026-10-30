@@ -37,6 +37,8 @@ astersql-pd-schedule-affinity = { path = "pkg/schedule/affinity" }
 regex = "=1.13.1"
 astersql-pd-schedule-placement = { path = "pkg/schedule/placement" }
 astersql-pd-schedule-labeler = { path = "pkg/schedule/labeler" }
+chrono-tz = "=0.10.4"
+iana-time-zone = "=0.1.65"
 chrono = { version = "=0.4.42", default-features = false, features = ["std", "clock"] }
 astersql-pd-schedule-plan = { path = "pkg/schedule/plan" }
 astersql-pd-schedule-rangelist = { path = "pkg/schedule/rangelist" }
