@@ -31,6 +31,7 @@ struct Resources {
     schedule_observations: std::collections::BTreeSet<u64>,
     state: Arc<State>,
     hot: HotStat,
+    history: hot_history::Maintenance,
     runners: [ConcurrentRunner; 3],
     storage: Arc<StorageEndpoint>,
     paths: ClusterPaths,
@@ -166,6 +167,7 @@ impl ClusterHost {
         restored_config: Option<astersql_pd_server_config::PersistedConfig>,
         store: Arc<dyn MetaStore>,
         cluster_id: u64,
+        member_id: u64,
         cancel: CancellationToken,
         registry: &prometheus::Registry,
         leader: Arc<astersql_pd_member::Leadership>,
@@ -275,6 +277,21 @@ impl ClusterHost {
         let resources = Arc::new(AsyncMutex::new(Some(Resources {
             progress: progress.clone(),
             previous_store_limits: Default::default(),
+            history: hot_history::Maintenance::new(
+                store.clone(),
+                cluster_id,
+                member_id,
+                std::time::Duration::from_nanos(
+                    state
+                        .lock()
+                        .unwrap()
+                        .config
+                        .schedule
+                        .hot_regions_write_interval
+                        .as_nanos()
+                        .max(1) as u64,
+                ),
+            ),
             meta_store: store,
             leader,
             allocator,
@@ -1430,3 +1447,6 @@ fn check_store_admission(
 
 #[path = "store_limits.rs"]
 mod store_limits;
+
+#[path = "hot_history.rs"]
+mod hot_history;

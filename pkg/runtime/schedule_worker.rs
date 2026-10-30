@@ -158,13 +158,20 @@ async fn run(
     let result = async {
         status.send_modify(|s| s.phase = SchedulePhase::Preparing);
         while !coordinator.should_run(start.elapsed()) {
+            // History sampling is not gated by scheduler preparation.
+            let history_wait={
+                let mut guard=resources.lock().await;
+                let r=guard.as_mut().ok_or("node stopped")?;
+                if let Err(e)=super::hot_history::maintain(r,&coordinator,&cancel).await{*diagnostics.lock().unwrap()=Some(e);}
+                r.history.wait()
+            };
             super::schedule_split::drive(&mut splits, &mut coordinator, &resources).await;
             super::schedule_scatter::dispatch_new(&coordinator,&resources,&routing,&mut push_queue,&mut fast_operators,&cancel).await?;
             tokio::select! {biased;
                 _=cancel.cancelled()=>return Ok(()),
                 command=requests.recv()=>{if let Some(command)=command {super::schedule_scatter::serve(command,&mut coordinator,&resources,&labels,&cancel,&mut splits).await;
                     super::schedule_scatter::dispatch_new(&coordinator,&resources,&routing,&mut push_queue,&mut fast_operators,&cancel).await?;}},
-                _=tokio::time::sleep(if splits.is_empty() { Duration::from_secs(3) } else { Duration::from_millis(10) })=>{}
+                _=tokio::time::sleep(history_wait.min(if splits.is_empty() { Duration::from_secs(3) } else { Duration::from_millis(10) }))=>{}
             }
         }
         if cancel.is_cancelled() {
@@ -217,6 +224,10 @@ async fn run(
             }
             let admission = coordinator.operator_handle();
             let config = r.state.lock().unwrap().config.clone();
+            if let Err(e) = super::hot_history::maintain(r, &coordinator, &cancel).await {
+                *diagnostics.lock().unwrap() = Some(e);
+            }
+
             let mut dispatch = ControllerDispatch::new(
                 &admission,
                 &cluster,

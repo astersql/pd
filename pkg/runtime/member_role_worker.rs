@@ -96,6 +96,24 @@ impl RoleServices {
 }
 #[async_trait::async_trait]
 impl PdServices for RoleServices {
+    async fn hotspot_history(
+        &self,
+        query: astersql_pd_storage::HistoryQuery,
+    ) -> Result<Option<Vec<astersql_pd_storage::HistoryHotRegion>>, String> {
+        let store = self.store.upgrade().ok_or("server not started")?;
+        let cancel = astersql_pd_server::request_context::current()
+            .map(|c| c.cancel)
+            .unwrap_or_default();
+        astersql_pd_storage::HotHistory::new(
+            store,
+            self.identity.cluster_id,
+            self.identity.member_id,
+        )
+        .query(&query, &cancel)
+        .await
+        .map_err(|e| e.to_string())
+    }
+
     async fn patch_server_config(
         &self,
         key: String,

@@ -9,6 +9,7 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
+chrono.workspace = true
 astersql-pd-schedule-handler.workspace = true
 astersql-pd-progress.workspace = true
 astersql-pd-storelimit.workspace = true

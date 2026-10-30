@@ -230,6 +230,13 @@ pub trait PdServices: Send + Sync {
     async fn probe_status(&self) -> Result<http_health::ReadyStatus, String> {
         Err("local readiness is not configured".into())
     }
+    /// Read this member's durable hot-region history, including before bootstrap.
+    async fn hotspot_history(
+        &self,
+        _query: astersql_pd_storage::HistoryQuery,
+    ) -> Result<Option<Vec<astersql_pd_storage::HistoryHotRegion>>, String> {
+        Err("hot-region history is not configured".into())
+    }
     async fn healthy(&self) -> Result<(), String>;
     async fn alloc_id(&self) -> Result<u64, String>;
     /// Reserve one indivisible batch and return its last ID and count.
@@ -760,3 +767,7 @@ mod http_region_check;
 mod http_hotspot_test;
 
 pub mod http_hotspot;
+
+mod http_hotspot_history;
+#[cfg(test)]
+mod http_hotspot_history_test;

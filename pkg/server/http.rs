@@ -45,5 +45,9 @@ pub fn router(services: Arc<dyn PdServices>, cancel: CancellationToken) -> axum:
             services.clone(),
             cancel.clone(),
         ))
+        .merge(crate::http_hotspot_history::router(
+            services.clone(),
+            cancel.clone(),
+        ))
         .merge(crate::http_schedule_config_write::router(services, cancel))
 }

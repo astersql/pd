@@ -518,6 +518,7 @@ pub(crate) async fn prepare_term(
                 cancel.clone(),
             )),
             config.cluster_id,
+            config.member_id,
             cancel.clone(),
             &registry,
             leader.clone(),

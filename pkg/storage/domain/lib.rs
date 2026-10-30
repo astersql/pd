@@ -15,3 +15,6 @@ mod rule_endpoint;
 #[path = "../endpoint/scheduler_endpoint.rs"]
 mod scheduler_endpoint;
 pub use batch_ops::{MAX_BATCH_OPS, run_batch_op_in_txn};
+
+mod hot_history;
+pub use hot_history::{HistoryError, HistoryHotRegion, HistoryQuery, HotHistory};
