@@ -8,6 +8,11 @@ use astersql_pd_schedule_scatter::{ScatterBatchError, ScatterBatchFailure, Scatt
 use astersql_pd_server::grpc_scatter::*;
 use tokio::sync::oneshot;
 pub(super) enum Command {
+    StoreCleanup(Vec<u64>),
+    Store(
+        astersql_pd_server::http_store_state::StoreMutation,
+        oneshot::Sender<Result<(), String>>,
+    ),
     ServerConfig(
         String,
         serde_json::Value,
@@ -85,6 +90,15 @@ pub(super) async fn serve(
     splits: &mut Vec<super::schedule_split::Pending>,
 ) {
     match command {
+        Command::StoreCleanup(ids) => {
+            tokio::select! {biased;_=cancel.cancelled()=>{},_=super::store_lifecycle::cleanup(ids,coordinator,resources,cancel)=>{}}
+        }
+
+        Command::Store(operation, mut reply) => {
+            let work = super::store_lifecycle::mutate(operation, coordinator, resources, cancel);
+            tokio::select! {biased;_=cancel.cancelled()=>{},_=reply.closed()=>{},r=work=>{let _=reply.send(r);}}
+        }
+
         Command::ServerConfig(key, value, mut reply) => {
             let work = super::server_config::update(key, value, coordinator, resources, cancel);
             tokio::select! {biased; _=cancel.cancelled()=>{},_=reply.closed()=>{},result=work=>{let _=reply.send(result);}}

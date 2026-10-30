@@ -21,6 +21,8 @@ use tokio_util::sync::CancellationToken;
 
 type State = Mutex<HeartbeatEffectsState<ProviderSnapshot<()>>>;
 struct Resources {
+    previous_store_limits:
+        std::collections::BTreeMap<u64, astersql_pd_schedule_config::StoreLimitConfig>,
     meta_store: Arc<dyn MetaStore>,
     leader: Arc<astersql_pd_member::Leadership>,
     allocator: Arc<astersql_pd_id::Allocator>,
@@ -215,6 +217,7 @@ impl ClusterHost {
             serde_json::to_value(persisted_config.persistence_snapshot())
                 .map_err(|e| e.to_string())?;
         let resources = Arc::new(AsyncMutex::new(Some(Resources {
+            previous_store_limits: Default::default(),
             meta_store: store,
             leader,
             allocator,
@@ -230,6 +233,8 @@ impl ClusterHost {
             downstreams: syncer.downstreams(),
             syncer,
         })));
+        let (schedule_requests, schedule_rx) = tokio::sync::mpsc::channel(64);
+        let cleanup_requests = schedule_requests.clone();
         let worker_resources = resources.clone();
         let worker_cancel = cancel.clone();
         let start = tokio::time::Instant::now();
@@ -251,6 +256,7 @@ impl ClusterHost {
             std::time::Duration::from_secs(10),
             move || {
                 let resources = worker_resources.clone();
+                let cleanup_requests = cleanup_requests.clone();
                 let cancel = worker_cancel.clone();
                 let errors = worker_errors.clone();
                 let preparation = preparation.clone();
@@ -271,6 +277,17 @@ impl ClusterHost {
                         );
                         preparation.check(&state.cluster, start.elapsed())
                     };
+                    let candidates = resources
+                        .state
+                        .lock()
+                        .unwrap()
+                        .cluster
+                        .stores
+                        .get_stores()
+                        .into_iter()
+                        .filter(|s| s.is_removing() || s.is_removed())
+                        .map(|s| s.id())
+                        .collect::<Vec<_>>();
                     let result = check_store_states(
                         &resources.state,
                         &resources.storage,
@@ -280,14 +297,20 @@ impl ClusterHost {
                     )
                     .await;
                     *errors.lock().unwrap() = result;
-                    let state = resources.state.lock().unwrap();
-                    for store in state.cluster.stores.get_stores() {
-                        if store.is_removed() {
-                            resources
-                                .hot
-                                .stores_stats
-                                .remove_rolling_store_stats(store.id());
+                    {
+                        let state = resources.state.lock().unwrap();
+                        for store in state.cluster.stores.get_stores() {
+                            if store.is_removed() {
+                                resources
+                                    .hot
+                                    .stores_stats
+                                    .remove_rolling_store_stats(store.id());
+                            }
                         }
+                    }
+                    drop(guard);
+                    if !candidates.is_empty() {
+                        tokio::select! {biased;_=cancel.cancelled()=>{},_=cleanup_requests.send(schedule_scatter::Command::StoreCleanup(candidates))=>{}}
                     }
                 }
             },
@@ -411,7 +434,6 @@ impl ClusterHost {
         );
         let schedule_error = Arc::new(Mutex::new(None));
         let schedule_initialized = Arc::new(std::sync::atomic::AtomicBool::new(false));
-        let (schedule_requests, schedule_rx) = tokio::sync::mpsc::channel(64);
         let (schedule_routing, schedule_worker, schedule_status) =
             schedule_worker::ScheduleWorker::start(
                 resources.clone(),
@@ -1140,3 +1162,6 @@ mod server_config;
 #[cfg(test)]
 #[path = "server_config_test.rs"]
 mod server_config_test;
+
+#[path = "store_lifecycle.rs"]
+mod store_lifecycle;

@@ -355,6 +355,12 @@ impl PdServices for RoleServices {
             .map_err(astersql_pd_server::grpc_store::StoreError::Other)?;
         term.cluster.register_store(store).await
     }
+    async fn mutate_store(
+        &self,
+        operation: astersql_pd_server::http_store_state::StoreMutation,
+    ) -> Result<(), String> {
+        self.active().await?.cluster.mutate_store(operation).await
+    }
     async fn stores(&self) -> Result<Vec<astersql_pd_core::StoreMeta>, String> {
         self.active().await?.cluster.registered_stores().await
     }

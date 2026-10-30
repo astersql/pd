@@ -116,6 +116,12 @@ impl PdServices for Application {
     ) -> Result<(), astersql_pd_server::grpc_store::StoreError> {
         self.cluster.register_store(store).await
     }
+    async fn mutate_store(
+        &self,
+        operation: astersql_pd_server::http_store_state::StoreMutation,
+    ) -> Result<(), String> {
+        self.cluster.mutate_store(operation).await
+    }
     async fn stores(&self) -> Result<Vec<astersql_pd_core::StoreMeta>, String> {
         self.cluster.registered_stores().await
     }

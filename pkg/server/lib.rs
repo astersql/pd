@@ -171,6 +171,13 @@ pub trait PdServices: Send + Sync {
             "store registration is not configured".into(),
         ))
     }
+    /// Apply a lifecycle command through the host admission and persistence boundary.
+    async fn mutate_store(
+        &self,
+        _operation: http_store_state::StoreMutation,
+    ) -> Result<(), String> {
+        Err("store lifecycle is not configured".into())
+    }
     /// List metadata from the same view used by heartbeats and GetStore.
     async fn stores(&self) -> Result<Vec<astersql_pd_core::StoreMeta>, String> {
         Err("store listing is not configured".into())
@@ -627,3 +634,9 @@ mod http_server_config_write_fault_test;
 #[cfg(test)]
 #[path = "http_store_read_test.rs"]
 mod http_store_read_test;
+
+#[cfg(test)]
+#[path = "http_store_state_test.rs"]
+mod http_store_state_test;
+
+pub mod http_store_state;
