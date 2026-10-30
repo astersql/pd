@@ -126,6 +126,12 @@ impl PdServices for RoleServices {
             .await
     }
 
+    async fn affinity_read(
+        &self,
+        request: astersql_pd_server::http_affinity_read::Request,
+    ) -> Result<(u16, serde_json::Value), String> {
+        self.active().await?.cluster.affinity_read(request).await
+    }
     async fn region_label_rules(
         &self,
         request: astersql_pd_server::http_region_label::Request,

@@ -1479,3 +1479,6 @@ mod placement_http;
 
 #[path = "region_label_http.rs"]
 mod region_label_http;
+
+#[path = "affinity_read_http.rs"]
+mod affinity_read_http;

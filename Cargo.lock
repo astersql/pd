@@ -445,6 +445,7 @@ dependencies = [
  "astersql-pd-proto",
  "astersql-pd-ratelimit",
  "astersql-pd-schedule",
+ "astersql-pd-schedule-affinity",
  "astersql-pd-schedule-checker",
  "astersql-pd-schedule-config",
  "astersql-pd-schedule-filter",

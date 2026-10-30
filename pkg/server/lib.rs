@@ -48,6 +48,14 @@ pub struct Identity {
 /// Domain operations supplied by the host; transport types stay in this crate.
 #[async_trait]
 pub trait PdServices: Send + Sync {
+    /// Read affinity state from the active term's canonical manager.
+    async fn affinity_read(
+        &self,
+        _request: http_affinity_read::Request,
+    ) -> Result<(u16, serde_json::Value), String> {
+        Err("server not started".into())
+    }
+
     /// Placement management on the existing term coordinator.
     /// Access the active term's region-label rules and region label snapshots.
     async fn region_label_rules(
@@ -876,3 +884,9 @@ pub mod http_rule_group;
 mod http_region_label_test;
 
 pub mod http_region_label;
+
+#[cfg(test)]
+#[path = "http_affinity_read_test.rs"]
+mod http_affinity_read_test;
+
+pub mod http_affinity_read;

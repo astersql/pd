@@ -9,6 +9,7 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
+astersql-pd-schedule-affinity.workspace = true
 astersql-pd-schedule-checker.workspace = true
 chrono.workspace = true
 chrono-tz.workspace = true
