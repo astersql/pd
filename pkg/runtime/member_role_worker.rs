@@ -96,6 +96,11 @@ impl RoleServices {
 }
 #[async_trait::async_trait]
 impl PdServices for RoleServices {
+    async fn cluster_observation(
+        &self,
+    ) -> Result<astersql_pd_server::http_cluster::ClusterObservation, String> {
+        self.active().await?.cluster.http_observation().await
+    }
     async fn member_metadata(&self, id: u64) -> astersql_pd_server::http_member::MemberMetadata {
         let Some(store) = self.store.upgrade() else {
             return Default::default();

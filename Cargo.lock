@@ -830,6 +830,7 @@ name = "astersql-pd-server"
 version = "0.1.0"
 dependencies = [
  "astersql-pd-cluster",
+ "astersql-pd-compat-tests",
  "astersql-pd-core",
  "astersql-pd-core-constant",
  "astersql-pd-id",
@@ -861,6 +862,7 @@ dependencies = [
  "async-trait",
  "axum",
  "base64",
+ "chrono",
  "flate2",
  "futures-util",
  "http-body-util",

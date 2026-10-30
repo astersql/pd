@@ -7,6 +7,7 @@ license.workspace = true
 [lib]
 path = "lib.rs"
 [dependencies]
+chrono.workspace = true
 flate2.workspace = true
 hyper.workspace = true
 hyper-util.workspace = true
@@ -39,6 +40,7 @@ prometheus.workspace = true
 futures-util.workspace = true
 
 [dev-dependencies]
+astersql-pd-compat-tests.workspace = true
 prost-types.workspace = true
 tonic-prost.workspace = true
 astersql-pd-id.workspace = true

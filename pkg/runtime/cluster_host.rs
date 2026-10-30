@@ -64,6 +64,44 @@ pub struct ClusterHost {
     cancel: CancellationToken,
 }
 impl ClusterHost {
+    pub(crate) async fn http_observation(
+        &self,
+    ) -> Result<astersql_pd_server::http_cluster::ClusterObservation, String> {
+        let guard = self.resources.lock().await;
+        let r = guard.as_ref().ok_or("server not started")?;
+        if self.cancel.is_cancelled() {
+            return Err("server not started".into());
+        }
+        let bootstrapped = r
+            .storage
+            .load_meta(&r.paths)
+            .await
+            .map_err(|e| e.to_string())?
+            .is_some();
+        let max_peer_count = r.persisted_config.config.replication.max_replicas as u32;
+        let state = r.state.lock().unwrap();
+        let regions = &state.cluster.regions;
+        let initialized = regions.tree_len() > 1
+            || regions.region_by_key(&[], false).is_some_and(|r| {
+                r.voters().len() >= max_peer_count as usize && r.pending_peers().is_empty()
+            });
+        // Bootstrap currently admits only the majority manager. Never invent a DR state.
+        let replication_status = if bootstrapped {
+            if r.persisted_config.config.replication_mode.replication_mode != "majority" {
+                return Err("replication manager is not configured".into());
+            }
+            // Gogo CompactTextString omits the default MAJORITY enum.
+            Some(String::new())
+        } else {
+            None
+        };
+        Ok(astersql_pd_server::http_cluster::ClusterObservation {
+            max_peer_count,
+            initialized,
+            replication_status,
+        })
+    }
+
     pub(crate) async fn new(
         cluster: BasicCluster,
         config: ProviderSnapshot<()>,

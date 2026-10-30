@@ -21,6 +21,7 @@ pub mod grpc_store;
 mod grpc_tso;
 mod grpc_unsupported;
 mod http;
+pub mod http_cluster;
 pub mod http_contract;
 pub mod http_health;
 mod http_leader;
@@ -44,6 +45,9 @@ pub struct Identity {
 #[async_trait]
 pub trait PdServices: Send + Sync {
     fn identity(&self) -> &Identity;
+    async fn cluster_observation(&self) -> Result<http_cluster::ClusterObservation, String> {
+        Err("server not started".into())
+    }
     async fn member_metadata(&self, _id: u64) -> http_member::MemberMetadata {
         Default::default()
     }
@@ -552,3 +556,11 @@ mod http_member_test;
 
 #[cfg(test)]
 mod http_leader_test;
+
+#[cfg(test)]
+#[path = "http_cluster_test.rs"]
+mod http_cluster_test;
+
+#[cfg(test)]
+#[path = "http_cluster_fault_test.rs"]
+mod http_cluster_fault_test;
