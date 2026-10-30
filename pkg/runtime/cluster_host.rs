@@ -1017,6 +1017,38 @@ impl Resources {
 
 #[async_trait::async_trait]
 impl astersql_pd_server::ClusterReadService for ClusterHost {
+    async fn region_anomalies(
+        &self,
+        kind: astersql_pd_statistics::RegionStatisticType,
+    ) -> Result<Vec<Arc<RegionInfo>>, String> {
+        let guard = self.resources.lock().await;
+        let r = guard.as_ref().ok_or("node stopped")?;
+        let state = r.state.lock().unwrap();
+        Ok(state
+            .region_stats
+            .as_ref()
+            .map(|stats| {
+                stats
+                    .region_ids_by_type(kind)
+                    .into_iter()
+                    .filter_map(|id| state.cluster.regions.get_region(id))
+                    .collect()
+            })
+            .unwrap_or_default())
+    }
+    async fn region_range_holes(&self) -> Result<Vec<[String; 2]>, String> {
+        let guard = self.resources.lock().await;
+        let r = guard.as_ref().ok_or("node stopped")?;
+        Ok(r.state.lock().unwrap().cluster.regions.get_range_holes())
+    }
+    async fn regions_replicated(&self, start: &str, end: &str) -> Result<String, String> {
+        let (tx, rx) = tokio::sync::oneshot::channel();
+        tokio::select! {biased;_=self.cancel.cancelled()=>Err("server not started".into()),result=async{
+            self.schedule_requests.send(schedule_scatter::Command::Replicated(start.into(),end.into(),tx)).await.map_err(|_|"scheduling stopped")?;
+            rx.await.map_err(|_|"scheduling stopped")?
+        }=>result}
+    }
+
     async fn region_statistics(
         &self,
         start: &[u8],

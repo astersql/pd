@@ -526,6 +526,23 @@ impl RegionHeartbeatService for RoleServices {
 }
 #[async_trait::async_trait]
 impl ClusterReadService for RoleServices {
+    async fn region_anomalies(
+        &self,
+        kind: astersql_pd_statistics::RegionStatisticType,
+    ) -> Result<Vec<Arc<astersql_pd_core::RegionInfo>>, String> {
+        self.active().await?.cluster.region_anomalies(kind).await
+    }
+    async fn region_range_holes(&self) -> Result<Vec<[String; 2]>, String> {
+        self.active().await?.cluster.region_range_holes().await
+    }
+    async fn regions_replicated(&self, start: &str, end: &str) -> Result<String, String> {
+        self.active()
+            .await?
+            .cluster
+            .regions_replicated(start, end)
+            .await
+    }
+
     async fn region_statistics(
         &self,
         start: &[u8],
@@ -935,6 +952,14 @@ impl astersql_pd_server::bucket_heartbeat_adapter::BucketHeartbeatService for Ro
 struct FollowerRead(Arc<tokio::sync::Mutex<astersql_pd_server::sync_transport::SyncFollowerState>>);
 #[async_trait::async_trait]
 impl ClusterReadService for FollowerRead {
+    async fn region_range_holes(&self) -> Result<Vec<[String; 2]>, String> {
+        let state = self.0.lock().await;
+        if !state.apply.is_running() {
+            return Err("cluster not bootstrapped".into());
+        }
+        Ok(state.cluster.regions.get_range_holes())
+    }
+
     async fn region_list(
         &self,
         store: Option<(u64, Option<astersql_pd_core::RegionRole>)>,

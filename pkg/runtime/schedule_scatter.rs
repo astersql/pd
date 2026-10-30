@@ -8,6 +8,7 @@ use astersql_pd_schedule_scatter::{ScatterBatchError, ScatterBatchFailure, Scatt
 use astersql_pd_server::grpc_scatter::*;
 use tokio::sync::oneshot;
 pub(super) enum Command {
+    Replicated(String, String, oneshot::Sender<Result<String, String>>),
     RegionLabel(
         Arc<astersql_pd_core::RegionInfo>,
         String,
@@ -107,6 +108,20 @@ pub(super) async fn serve(
     splits: &mut Vec<super::schedule_split::Pending>,
 ) {
     match command {
+        Command::Replicated(start, end, mut reply) => {
+            let work = async {
+                let guard = resources.lock().await;
+                let r = guard.as_ref().ok_or("server not started")?;
+                r.leader.validate().await.map_err(|e| e.to_string())?;
+                let mut state = r.state.lock().unwrap();
+                astersql_pd_schedule_handler::Handler::new(Some(coordinator))
+                    .check_regions_replicated(&start, &end, &mut state.rules, now().1 as i128)
+                    .map(str::to_owned)
+                    .map_err(|e| e.to_string())
+            };
+            tokio::select! {biased;_=cancel.cancelled()=>{},_=reply.closed()=>{},r=work=>{let _=reply.send(r);}}
+        }
+
         Command::RegionLabel(region, key, reply) => {
             let _ = reply.send(Ok(labels.get_region_label(&region, &key, now().1 as i128)));
         }

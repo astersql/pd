@@ -260,6 +260,21 @@ pub trait PdServices: Send + Sync {
 /// Host-owned metadata lookup; protocol conversion remains in the server adapter.
 #[async_trait]
 pub trait ClusterReadService: Send + Sync {
+    /// Read the heartbeat-owned anomaly index against current Region snapshots.
+    async fn region_anomalies(
+        &self,
+        _kind: astersql_pd_statistics::RegionStatisticType,
+    ) -> Result<Vec<Arc<astersql_pd_core::RegionInfo>>, String> {
+        Err("region checks are not configured".into())
+    }
+    async fn region_range_holes(&self) -> Result<Vec<[String; 2]>, String> {
+        Err("range holes are not configured".into())
+    }
+    /// Check fits and pending membership on the serving coordinator.
+    async fn regions_replicated(&self, _start: &str, _end: &str) -> Result<String, String> {
+        Err("replication checks are not configured".into())
+    }
+
     /// Aggregate canonical range and hot-cache snapshots without transport types.
     async fn region_statistics(
         &self,
@@ -728,3 +743,9 @@ mod http_region_top;
 mod http_region_stats_test;
 
 mod http_region_stats;
+
+#[cfg(test)]
+#[path = "http_region_check_test.rs"]
+mod http_region_check_test;
+
+mod http_region_check;

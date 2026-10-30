@@ -31,6 +31,9 @@ pub(crate) fn router(services: Arc<dyn PdServices>, cancel: CancellationToken) -
         .route("/pd/api/v1/regions/key", get(handle))
         .route("/pd/api/v1/regions/count", get(handle))
         .route("/pd/api/v1/regions/store/{id}", get(handle));
+    for path in crate::http_region_check::PATHS {
+        router = router.route(path, get(handle));
+    }
     for dimension in crate::http_region_top::DIMENSIONS {
         router = router.route(&format!("/pd/api/v1/regions/{dimension}"), get(handle));
     }
@@ -124,12 +127,35 @@ async fn handle(State(s): State<Context>, OriginalUri(uri): OriginalUri) -> Resp
         .map(|c| c.cancel)
         .unwrap_or_else(|| s.cancel.child_token());
     let work = async {
+        // net/url ignores malformed pairs and keeps the first value.
+        let mut query = std::collections::HashMap::new();
+        for pair in uri
+            .query()
+            .unwrap_or_default()
+            .split('&')
+            .filter(|p| !p.contains(';'))
+        {
+            let (k, v) = pair.split_once('=').unwrap_or((pair, ""));
+            if let (Ok(k), Ok(v)) = (query_unescape(k), query_unescape(v)) {
+                query.entry(k).or_insert(v);
+            }
+        }
+        if uri.path().ends_with("/regions/replicated")
+            && (!query.contains_key(b"startKey".as_slice())
+                || !query.contains_key(b"endKey".as_slice()))
+        {
+            return crate::http_region_check::not_found();
+        }
         let follower = s.services.healthy().await.is_err_and(|e| e == "not leader");
         let cold =
             "[PD:cluster:ErrNotBootstrapped]TiKV cluster not bootstrapped, please start TiKV first";
-        // Go mounts stats/region on clusterRouter; only histogram routes may
-        // use the synchronized follower Region cache.
-        if follower && uri.path() == "/pd/api/v1/stats/region" {
+        // Cluster-only observations reject explicitly local follower handling;
+        // histograms and range holes may use the synchronized cache.
+        if follower
+            && (uri.path() == "/pd/api/v1/stats/region"
+                || (crate::http_region_check::PATHS.contains(&uri.path())
+                    && !uri.path().ends_with("/range-holes")))
+        {
             return error(StatusCode::INTERNAL_SERVER_ERROR, cold);
         }
         if !follower {
@@ -165,18 +191,8 @@ async fn handle(State(s): State<Context>, OriginalUri(uri): OriginalUri) -> Resp
                 Err(e) => error(StatusCode::INTERNAL_SERVER_ERROR, e),
             };
         }
-        // net/url ignores malformed pairs and keeps the first value.
-        let mut query = std::collections::HashMap::new();
-        for pair in uri
-            .query()
-            .unwrap_or_default()
-            .split('&')
-            .filter(|p| !p.contains(';'))
-        {
-            let (k, v) = pair.split_once('=').unwrap_or((pair, ""));
-            if let (Ok(k), Ok(v)) = (query_unescape(k), query_unescape(v)) {
-                query.entry(k).or_insert(v);
-            }
+        if crate::http_region_check::PATHS.contains(&uri.path()) {
+            return crate::http_region_check::respond(service, uri.path(), &query, &cancel).await;
         }
         if uri.path().ends_with("/hist-size")
             || uri.path().ends_with("/hist-keys")
