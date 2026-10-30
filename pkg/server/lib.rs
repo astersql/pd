@@ -260,6 +260,11 @@ pub trait PdServices: Send + Sync {
 /// Host-owned metadata lookup; protocol conversion remains in the server adapter.
 #[async_trait]
 pub trait ClusterReadService: Send + Sync {
+    /// Observe live hotspot windows through the serving term.
+    async fn hotspot(&self, _query: http_hotspot::Query) -> Result<serde_json::Value, String> {
+        Err("hotspot statistics are not configured".into())
+    }
+
     /// Read the heartbeat-owned anomaly index against current Region snapshots.
     async fn region_anomalies(
         &self,
@@ -749,3 +754,9 @@ mod http_region_stats;
 mod http_region_check_test;
 
 mod http_region_check;
+
+#[cfg(test)]
+#[path = "http_hotspot_test.rs"]
+mod http_hotspot_test;
+
+pub mod http_hotspot;

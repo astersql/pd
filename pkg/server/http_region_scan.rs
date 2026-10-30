@@ -31,7 +31,10 @@ pub(crate) fn router(services: Arc<dyn PdServices>, cancel: CancellationToken) -
         .route("/pd/api/v1/regions/key", get(handle))
         .route("/pd/api/v1/regions/count", get(handle))
         .route("/pd/api/v1/regions/store/{id}", get(handle));
-    for path in crate::http_region_check::PATHS {
+    for path in crate::http_region_check::PATHS
+        .iter()
+        .chain(crate::http_hotspot::PATHS)
+    {
         router = router.route(path, get(handle));
     }
     for dimension in crate::http_region_top::DIMENSIONS {
@@ -151,6 +154,22 @@ async fn handle(State(s): State<Context>, OriginalUri(uri): OriginalUri) -> Resp
             "[PD:cluster:ErrNotBootstrapped]TiKV cluster not bootstrapped, please start TiKV first";
         // Cluster-only observations reject explicitly local follower handling;
         // histograms and range holes may use the synchronized cache.
+        if crate::http_hotspot::PATHS.contains(&uri.path()) {
+            let available = match s.services.is_bootstrapped().await {
+                Ok(v) => v && !follower,
+                Err(e) => return error(StatusCode::INTERNAL_SERVER_ERROR, e),
+            };
+            return crate::http_hotspot::respond(
+                if available {
+                    s.services.cluster_read_service()
+                } else {
+                    None
+                },
+                uri.path(),
+                uri.query().unwrap_or_default(),
+            )
+            .await;
+        }
         if follower
             && (uri.path() == "/pd/api/v1/stats/region"
                 || (crate::http_region_check::PATHS.contains(&uri.path())

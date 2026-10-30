@@ -8,6 +8,10 @@ use astersql_pd_schedule_scatter::{ScatterBatchError, ScatterBatchFailure, Scatt
 use astersql_pd_server::grpc_scatter::*;
 use tokio::sync::oneshot;
 pub(super) enum Command {
+    Hotspot(
+        astersql_pd_server::http_hotspot::Query,
+        oneshot::Sender<Result<serde_json::Value, String>>,
+    ),
     Replicated(String, String, oneshot::Sender<Result<String, String>>),
     RegionLabel(
         Arc<astersql_pd_core::RegionInfo>,
@@ -108,6 +112,74 @@ pub(super) async fn serve(
     splits: &mut Vec<super::schedule_split::Pending>,
 ) {
     match command {
+        Command::Hotspot(query, mut reply) => {
+            let work = async {
+                use astersql_pd_server::http_hotspot::Query;
+                use astersql_pd_statistics_utils::RWType;
+                let guard = resources.lock().await;
+                let r = guard.as_ref().ok_or("server not started")?;
+                r.leader.validate().await.map_err(|e| e.to_string())?;
+                let handler = astersql_pd_schedule_handler::Handler::new(Some(coordinator));
+                let value = match query {
+                    Query::Store(id) => {
+                        handler.get_store(id).map_err(|_| {
+                            format!("[PD:core:ErrStoreNotFound]store {} not found", id)
+                        })?;
+                        return Ok(serde_json::Value::Null);
+                    }
+                    Query::Buckets(ids) => serde_json::to_value(
+                        handler
+                            .get_hot_buckets(&r.hot.bucket_client(), &ids, cancel)
+                            .await
+                            .map_err(|e| e.to_string())?,
+                    ),
+                    Query::Stores => serde_json::to_value(
+                        handler.get_hot_stores(&r.hot).map_err(|e| e.to_string())?,
+                    ),
+                    Query::Regions { write, ids } => {
+                        use astersql_pd_statistics::StoreStatInformer;
+                        let rw = if write { RWType::WRITE } else { RWType::READ };
+                        let mut degree = coordinator
+                            .get_config()
+                            .get_hot_region_cache_hits_threshold();
+                        // Go's scheduling controller scales read degrees to the
+                        // 60s region reporting window (store reports arrive every 10s).
+                        if rw == RWType::READ {
+                            degree = degree.wrapping_mul(
+                                (RWType::WRITE.report_interval() / RWType::READ.report_interval())
+                                    as i64,
+                            );
+                        }
+                        let peers = r
+                            .hot
+                            .hot_cache
+                            .get_hot_peer_stats(rw, degree)
+                            .await
+                            .map_err(|e| e.to_string())?
+                            .into_iter()
+                            .collect();
+                        let empty = std::collections::HashMap::new();
+                        let loads = r.hot.get_stores_loads();
+                        serde_json::to_value(
+                            handler
+                                .get_hot_regions(
+                                    if write { RWType::WRITE } else { RWType::READ },
+                                    &ids,
+                                    &astersql_pd_schedule::HotObservationInputs {
+                                        loads: &loads,
+                                        read: if write { &empty } else { &peers },
+                                        write: if write { &peers } else { &empty },
+                                    },
+                                )
+                                .map_err(|e| e.to_string())?,
+                        )
+                    }
+                };
+                value.map_err(|e| e.to_string())
+            };
+            tokio::select! {biased;_=cancel.cancelled()=>{},_=reply.closed()=>{},result=work=>{let _=reply.send(result);}}
+        }
+
         Command::Replicated(start, end, mut reply) => {
             let work = async {
                 let guard = resources.lock().await;

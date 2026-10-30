@@ -234,6 +234,15 @@ impl ClusterHost {
                 .await?;
         }
         let hot = HotStat::new(&tokio::runtime::Handle::current(), registry, 128)?;
+        for store in cluster
+            .stores
+            .get_stores()
+            .iter()
+            .filter(|s| !s.is_removed())
+        {
+            hot.stores_stats
+                .get_or_create_rolling_store_stats(store.id());
+        }
         let mut runners = std::array::from_fn(|_| ConcurrentRunner::new(None));
         for runner in &mut runners {
             runner.start(&cancel);
@@ -633,6 +642,10 @@ impl ClusterHost {
             .await
             .map_err(|e| e.to_string())?;
         if committed {
+            resources
+                .hot
+                .stores_stats
+                .get_or_create_rolling_store_stats(store.id);
             let mut state = resources.state.lock().unwrap();
             state
                 .cluster
@@ -808,6 +821,10 @@ impl ClusterHost {
                 state.cluster.stores.put_store(Arc::new(next));
             }
         }
+        resources
+            .hot
+            .stores_stats
+            .get_or_create_rolling_store_stats(registered_id);
         store_limits::ensure_registered_limit(registered_id, resources).await;
         self.update_split_version(resources).await;
         Ok(())
@@ -1045,6 +1062,17 @@ impl astersql_pd_server::ClusterReadService for ClusterHost {
         let (tx, rx) = tokio::sync::oneshot::channel();
         tokio::select! {biased;_=self.cancel.cancelled()=>Err("server not started".into()),result=async{
             self.schedule_requests.send(schedule_scatter::Command::Replicated(start.into(),end.into(),tx)).await.map_err(|_|"scheduling stopped")?;
+            rx.await.map_err(|_|"scheduling stopped")?
+        }=>result}
+    }
+
+    async fn hotspot(
+        &self,
+        query: astersql_pd_server::http_hotspot::Query,
+    ) -> Result<serde_json::Value, String> {
+        let (tx, rx) = tokio::sync::oneshot::channel();
+        tokio::select! {biased; _=self.cancel.cancelled()=>Err("server not started".into()), result=async {
+            self.schedule_requests.send(schedule_scatter::Command::Hotspot(query, tx)).await.map_err(|_|"scheduling stopped")?;
             rx.await.map_err(|_|"scheduling stopped")?
         }=>result}
     }

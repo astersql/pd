@@ -526,6 +526,13 @@ impl RegionHeartbeatService for RoleServices {
 }
 #[async_trait::async_trait]
 impl ClusterReadService for RoleServices {
+    async fn hotspot(
+        &self,
+        query: astersql_pd_server::http_hotspot::Query,
+    ) -> Result<serde_json::Value, String> {
+        self.active().await?.cluster.hotspot(query).await
+    }
+
     async fn region_anomalies(
         &self,
         kind: astersql_pd_statistics::RegionStatisticType,
