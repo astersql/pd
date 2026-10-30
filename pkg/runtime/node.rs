@@ -187,6 +187,7 @@ pub struct PdNodeBuilder {
     runtime: Handle,
     cluster: astersql_pd_core::BasicCluster,
     diagnostics: Option<Arc<crate::etcd_diagnostics::EtcdMemberDiagnostics>>,
+    member_admin: Option<Arc<crate::member_admin::EtcdMemberAdmin>>,
     cancellation: CancellationToken,
 }
 impl PdNodeBuilder {
@@ -195,6 +196,7 @@ impl PdNodeBuilder {
             runtime,
             cluster: astersql_pd_core::BasicCluster::new(),
             diagnostics: None,
+            member_admin: None,
             cancellation: cancellation.child_token(),
         }
     }
@@ -204,6 +206,14 @@ impl PdNodeBuilder {
         diagnostics: Arc<crate::etcd_diagnostics::EtcdMemberDiagnostics>,
     ) -> Self {
         self.diagnostics = Some(diagnostics);
+        self
+    }
+    /// Explicitly dedicate an independent etcd member to this PD identity.
+    pub fn with_etcd_member_admin(
+        mut self,
+        admin: Arc<crate::member_admin::EtcdMemberAdmin>,
+    ) -> Self {
+        self.member_admin = Some(admin);
         self
     }
     /// Injects the canonical cluster rather than creating adapter-local caches.
@@ -230,6 +240,7 @@ impl PdNodeBuilder {
                 cancel,
                 self.cluster,
                 self.diagnostics,
+                self.member_admin,
             ))
             .await?
     }
@@ -242,6 +253,7 @@ async fn initialize_node(
     cancel: CancellationToken,
     cluster: astersql_pd_core::BasicCluster,
     diagnostics: Option<Arc<crate::etcd_diagnostics::EtcdMemberDiagnostics>>,
+    member_admin: Option<Arc<crate::member_admin::EtcdMemberAdmin>>,
 ) -> Result<PdNode, NodeError> {
     let mut config = config;
     config.client_url = crate::net_address::Endpoint::parse(&config.client_url)?
@@ -251,6 +263,16 @@ async fn initialize_node(
         tokio::select! { biased;
             _ = cancel.cancelled() => return Err("node is stopped".into()),
             result = diagnostics.bind(store.as_ref(), config.cluster_id, config.member_id) => result?,
+        }
+    }
+    tokio::select! { biased;
+        _ = cancel.cancelled() => return Err("node is stopped".into()),
+        result = crate::member_admin::ensure_admitted(store.as_ref(), config.cluster_id, config.member_id) => result?,
+    }
+    if let Some(admin) = &member_admin {
+        tokio::select! { biased;
+            _ = cancel.cancelled() => return Err("node is stopped".into()),
+            result = admin.bind(store.as_ref(), config.cluster_id, config.member_id) => result?,
         }
     }
     let events = Arc::new(Mutex::new(vec!["storage"]));
@@ -292,6 +314,7 @@ async fn initialize_node(
         Err(error) => return Err(error.into()),
     };
     services.set_diagnostics(diagnostics);
+    services.set_member_admin(member_admin.clone());
     services.replace(initial.clone());
     record(&events, "services");
     let router = astersql_pd_server::router(services.clone(), cancel.clone());
@@ -326,6 +349,8 @@ async fn initialize_node(
                 std::task::Poll::Pending => server.await,
             }
         });
+        let member_cluster = config.cluster_id;
+        let member_id = config.member_id;
         let roles = crate::member_role_worker::run(
             services.clone(),
             member,
@@ -335,7 +360,34 @@ async fn initialize_node(
             worker_cancel.clone(),
         );
         tokio::pin!(roles);
+        let monitor_store = store.clone();
+        let monitor_cancel = worker_cancel.clone();
+        let managed = member_admin.is_some();
+        let mut membership = Box::pin(async move {
+            loop {
+                tokio::select! { biased;
+                    _ = monitor_cancel.cancelled() => break,
+                    _ = tokio::time::sleep(std::time::Duration::from_millis(100)) => {}
+                }
+                if let Err(error) = crate::member_admin::ensure_admitted(
+                    monitor_store.as_ref(),
+                    member_cluster,
+                    member_id,
+                )
+                .await
+                {
+                    if managed || error == "PD member has been revoked" {
+                        break;
+                    }
+                }
+            }
+        });
         let (result, finished) = tokio::select! {
+            _ = &mut membership => {
+                worker_cancel.cancel();
+                let result = (&mut roles).await;
+                (result, false)
+            },
             result = &mut server => (result.map_err(Into::into), true),
             result = &mut roles => (result, false),
         };
@@ -353,6 +405,7 @@ async fn initialize_node(
         drop(server);
         record(&worker_events, "background-joined");
         record(&worker_events, "leadership-released");
+        drop(membership);
         drop((services, store));
         record(&worker_events, "storage-released");
         result?;

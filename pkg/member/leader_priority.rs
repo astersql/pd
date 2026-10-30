@@ -2,7 +2,7 @@
 use crate::Leadership;
 use astersql_pd_election::ElectionError;
 use astersql_pd_keypath::ClusterPaths;
-use astersql_pd_storage_domain::{Consistency, MetaStore, Mutation, Read, StoreError};
+use astersql_pd_storage_domain::{Compare, Consistency, MetaStore, Mutation, Read, StoreError};
 use std::sync::Arc;
 use tokio_util::sync::CancellationToken;
 
@@ -58,13 +58,14 @@ impl LeaderPriority {
         &self,
         term: &Leadership,
         mutation: Mutation,
+        compares: Vec<Compare>,
     ) -> Result<(), LeaderPriorityError> {
         if !term.uses_store(&self.store) || term.cluster_id() != self.paths.cluster_id() {
             return Err(LeaderPriorityError::InvalidTerm);
         }
         let result = tokio::select! { biased;
             _ = self.cancel.cancelled() => return Err(LeaderPriorityError::Cancelled),
-            result = term.transact(vec![], vec![mutation]) => result,
+            result = term.transact(compares, vec![mutation]) => result,
         };
         match result {
             Ok(commit) if commit.succeeded => Ok(()),
@@ -88,6 +89,32 @@ impl LeaderPriority {
                 self.paths.member_leader_priority_path(id).as_bytes(),
                 priority.to_string().as_bytes(),
             ),
+            vec![],
+        )
+        .await
+    }
+    /// Update only a registered, non-revoked PD member. The membership checks
+    /// share the fenced transaction, preventing stale HTTP lookup/write races.
+    pub async fn set_registered_member_leader_priority(
+        &self,
+        term: &Leadership,
+        id: u64,
+        priority: i64,
+    ) -> Result<(), LeaderPriorityError> {
+        let cluster = self.paths.cluster_id();
+        self.write(
+            term,
+            Mutation::put(
+                self.paths.member_leader_priority_path(id).as_bytes(),
+                priority.to_string().as_bytes(),
+            ),
+            vec![
+                Compare::Exists(format!("/pd/{cluster}/rust/members/{id}").into_bytes()),
+                Compare::CreateRevision(
+                    format!("/pd/{cluster}/rust/removed-members/{id}").into_bytes(),
+                    0,
+                ),
+            ],
         )
         .await
     }
@@ -102,6 +129,7 @@ impl LeaderPriority {
             Mutation::Delete {
                 key: self.paths.member_leader_priority_path(id).into_bytes(),
             },
+            vec![],
         )
         .await
     }

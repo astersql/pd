@@ -78,13 +78,40 @@ impl EtcdMemberDiagnostics {
         self.validate_store(store).await?;
         let key = format!("/pd/{pd_cluster}/rust/diagnostic-members/{pd_member}").into_bytes();
         let value = format!("{}:{}", self.cluster, self.member).into_bytes();
-        store
+        let snapshot = store
+            .read(Read::prefix(b"/pd/", Consistency::Linearizable))
+            .await
+            .map_err(|e| e.to_string())?;
+        let owner_key = crate::member_admin::owner_key(self.cluster, self.member);
+        let owner = format!("{pd_cluster}:{pd_member}");
+        if snapshot
+            .entries
+            .iter()
+            .find(|e| e.key == owner_key)
+            .is_some_and(|e| e.value != owner.as_bytes())
+        {
+            return Err("etcd member is exclusively owned by another PD member".into());
+        }
+        let existing = snapshot.entries.iter().find(|e| e.key == key);
+        if existing.is_some_and(|e| e.value != value) {
+            return Err("persisted PD to etcd member binding mismatch".into());
+        }
+        let commit = store
             .transact(
-                vec![Compare::CreateRevision(key.clone(), 0)],
-                vec![Mutation::put(&key, &value)],
+                vec![
+                    crate::member_admin::guard_compare(&snapshot),
+                    Compare::ModRevision(key.clone(), existing.map_or(0, |e| e.mod_revision)),
+                ],
+                vec![
+                    Mutation::put(&key, &value),
+                    Mutation::put(crate::member_admin::BINDING_GUARD, b"1"),
+                ],
             )
             .await
             .map_err(|e| e.to_string())?;
+        if !commit.succeeded {
+            return Err("member binding changed concurrently; retry startup".into());
+        }
         let snapshot = store
             .read(Read::range(&key, b"", Consistency::Linearizable))
             .await

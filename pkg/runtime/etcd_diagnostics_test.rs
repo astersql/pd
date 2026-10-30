@@ -232,7 +232,7 @@ async fn task_043_binding_faults_and_real_alarm() {
     }
 }
 
-struct Process {
+pub(crate) struct Process {
     child: std::process::Child,
     directory: std::path::PathBuf,
 }
@@ -243,11 +243,11 @@ impl Drop for Process {
         let _ = std::fs::remove_dir_all(&self.directory);
     }
 }
-fn address() -> String {
+pub(crate) fn address() -> String {
     let socket = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
     format!("http://{}", socket.local_addr().unwrap())
 }
-fn launch(
+pub(crate) fn launch(
     binary: &str,
     name: &str,
     client: &str,
@@ -286,7 +286,7 @@ fn launch(
         .unwrap();
     Process { child, directory }
 }
-async fn wait_status(url: &str) -> etcd_client::Client {
+pub(crate) async fn wait_status(url: &str) -> etcd_client::Client {
     tokio::time::timeout(Duration::from_secs(25), async {
         loop {
             if let Ok(mut client) = etcd_client::Client::connect(

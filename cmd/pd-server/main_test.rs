@@ -14,6 +14,7 @@ fn standalone_runtime_lifecycle() {
             crate::entry::Config {
                 diagnostic_endpoint: None,
                 diagnostic_member: None,
+                dedicated_member: false,
                 endpoint: fixture.endpoint.clone(),
                 client: "http://127.0.0.1:0".into(),
                 peer: "http://127.0.0.1:2380".into(),

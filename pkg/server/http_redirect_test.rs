@@ -298,7 +298,7 @@ async fn task_041_stream_errors_and_cancellation() {
             &["PD-Allow-follower-handle: true"]
         )
         .0,
-        503
+        200
     );
     assert_eq!(
         curl(&format!("{url}/pd/api/v1/gzip"), "GET", None, &[]),

@@ -18,6 +18,7 @@ pub struct Member {
     store: Arc<dyn MetaStore>,
     cancel: CancellationToken,
     cluster_id: u64,
+    member_id: u64,
     value: Vec<u8>,
 }
 impl Member {
@@ -36,12 +37,33 @@ impl Member {
         let commit = cancellable(
             &cancel,
             store.transact(
-                vec![Compare::CreateRevision(key.clone(), 0)],
+                vec![
+                    Compare::CreateRevision(key.clone(), 0),
+                    Compare::CreateRevision(
+                        format!("/pd/{cluster_id}/rust/removed-members/{member_id}").into_bytes(),
+                        0,
+                    ),
+                ],
                 vec![Mutation::put(&key, &value)],
             ),
         )
         .await?;
         if !commit.succeeded {
+            let revoked = format!("/pd/{cluster_id}/rust/removed-members/{member_id}");
+            if !cancellable(
+                &cancel,
+                store.read(Read::range(
+                    revoked.as_bytes(),
+                    b"",
+                    Consistency::Linearizable,
+                )),
+            )
+            .await?
+            .entries
+            .is_empty()
+            {
+                return Err(MemberError::IdentityConflict);
+            }
             let snapshot = cancellable(
                 &cancel,
                 store.read(Read::prefix(&key, Consistency::Linearizable)),
@@ -59,17 +81,27 @@ impl Member {
             store,
             cancel,
             cluster_id,
+            member_id,
             value,
         })
     }
     /// Attempt one election. No private runtime or detached keepalive task is created.
     pub async fn campaign(&self, ttl_seconds: i64) -> Result<Leadership> {
-        Leadership::campaign(
+        Leadership::campaign_with_key(
             self.store.clone(),
             self.cancel.clone(),
             self.cluster_id,
+            format!("/pd/{}/leader", self.cluster_id).into_bytes(),
             self.value.clone(),
             ttl_seconds,
+            vec![Compare::CreateRevision(
+                format!(
+                    "/pd/{}/rust/removed-members/{}",
+                    self.cluster_id, self.member_id
+                )
+                .into_bytes(),
+                0,
+            )],
         )
         .await
     }

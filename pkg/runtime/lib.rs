@@ -147,3 +147,11 @@ mod http_health_test;
 pub mod etcd_diagnostics;
 #[cfg(test)]
 mod etcd_diagnostics_test;
+
+pub mod member_admin;
+
+#[cfg(test)]
+mod member_admin_test;
+
+#[cfg(test)]
+mod member_admin_fault_test;

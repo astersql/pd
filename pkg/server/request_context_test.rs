@@ -22,6 +22,10 @@ impl PdServices for Services {
     fn discovery_store(&self) -> Option<Arc<dyn MetaStore>> {
         Some(self.store.clone())
     }
+    async fn member_metadata(&self, _id: u64) -> crate::http_member::MemberMetadata {
+        let _ = self.healthy().await;
+        Default::default()
+    }
     async fn healthy(&self) -> Result<(), String> {
         self.seen.lock().unwrap().push(request_context::current());
         if let Some(context) = request_context::current() {
@@ -94,6 +98,22 @@ async fn task_040_behavior() {
                 b"/pd/40/leader",
                 &pdpb::Member {
                     member_id: 1,
+                    client_urls: vec![url.clone()],
+                    ..Default::default()
+                }
+                .encode_to_vec(),
+            )],
+        )
+        .await
+        .unwrap();
+    store
+        .transact(
+            vec![],
+            vec![Mutation::put(
+                b"/pd/40/rust/members/1",
+                &pdpb::Member {
+                    member_id: 1,
+                    name: "ctx".into(),
                     client_urls: vec![url.clone()],
                     ..Default::default()
                 }

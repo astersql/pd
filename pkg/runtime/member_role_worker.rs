@@ -15,6 +15,7 @@ use tokio_util::sync::CancellationToken;
 pub(crate) struct RoleServices {
     identity: NodeConfig,
     listening: std::sync::atomic::AtomicBool,
+    admin: RwLock<Option<Arc<crate::member_admin::EtcdMemberAdmin>>>,
     diagnostics: RwLock<Option<Arc<crate::etcd_diagnostics::EtcdMemberDiagnostics>>>,
     follower: FollowerRead,
     store: Weak<dyn MetaStore>,
@@ -40,10 +41,17 @@ impl RoleServices {
             ))),
             listening: std::sync::atomic::AtomicBool::new(false),
             diagnostics: RwLock::new(None),
+            admin: RwLock::new(None),
             identity,
             store: Arc::downgrade(&store),
             term: RwLock::new(None),
         }
+    }
+    pub(crate) fn set_member_admin(
+        &self,
+        admin: Option<Arc<crate::member_admin::EtcdMemberAdmin>>,
+    ) {
+        *self.admin.write().unwrap() = admin;
     }
     pub(crate) fn set_diagnostics(
         &self,
@@ -62,6 +70,12 @@ impl RoleServices {
         *self.term.write().unwrap() = term;
     }
     async fn active(&self) -> Result<Arc<Application>, String> {
+        crate::member_admin::ensure_admitted(
+            self.store.upgrade().ok_or("server not started")?.as_ref(),
+            self.identity.cluster_id,
+            self.identity.member_id,
+        )
+        .await?;
         let term = self.current().ok_or("not leader")?;
         term.healthy().await?;
         Ok(term)
@@ -69,6 +83,64 @@ impl RoleServices {
 }
 #[async_trait::async_trait]
 impl PdServices for RoleServices {
+    async fn member_metadata(&self, id: u64) -> astersql_pd_server::http_member::MemberMetadata {
+        let Some(store) = self.store.upgrade() else {
+            return Default::default();
+        };
+        let cancel = astersql_pd_server::request_context::current()
+            .map(|c| c.cancel)
+            .unwrap_or_default();
+        let info = astersql_pd_member::MemberInfo::new(
+            store.clone(),
+            cancel.clone(),
+            self.identity.cluster_id,
+        );
+        let priority =
+            astersql_pd_member::LeaderPriority::new(store, cancel, self.identity.cluster_id);
+        astersql_pd_server::http_member::MemberMetadata {
+            binary_version: String::from_utf8_lossy(
+                &info.get_member_binary_version(id).await.unwrap_or_default(),
+            )
+            .into_owned(),
+            deploy_path: String::from_utf8_lossy(
+                &info.get_member_deploy_path(id).await.unwrap_or_default(),
+            )
+            .into_owned(),
+            git_hash: String::from_utf8_lossy(
+                &info.get_member_git_hash(id).await.unwrap_or_default(),
+            )
+            .into_owned(),
+            leader_priority: priority
+                .get_member_leader_priority(id)
+                .await
+                .unwrap_or_default(),
+        }
+    }
+    async fn set_member_priority(&self, id: u64, priority: i64) -> Result<(), String> {
+        let term = self.active().await?;
+        let store = self.store.upgrade().ok_or("server not started")?;
+        let cancel = astersql_pd_server::request_context::current()
+            .map(|c| c.cancel)
+            .unwrap_or_else(|| term.cancel.child_token());
+        astersql_pd_member::LeaderPriority::new(store, cancel, self.identity.cluster_id)
+            .set_registered_member_leader_priority(&term.leader, id, priority)
+            .await
+            .map_err(|e| e.to_string())
+    }
+    async fn remove_member(&self, id: u64) -> Result<(), String> {
+        let term = self.active().await?;
+        let admin = self.admin.read().unwrap().clone().ok_or(
+            "dedicated member ownership is not configured; shared backend removal refused",
+        )?;
+        admin
+            .remove(
+                self.store.upgrade().ok_or("server not started")?,
+                &term.leader,
+                self.identity.cluster_id,
+                id,
+            )
+            .await
+    }
     fn identity(&self) -> &NodeConfig {
         &self.identity
     }
@@ -482,6 +554,20 @@ pub(crate) async fn run(
         Ok(())
     }
     .await;
+    // Host shutdown can race with follower promotion after the election commit
+    // but before prepare_term publishes services. Its typed cancellation is a
+    // normal shutdown; unrelated backend/setup errors still propagate.
+    let result = match result {
+        Err(error)
+            if cancel.is_cancelled()
+                && error
+                    .downcast_ref::<MemberError>()
+                    .is_some_and(|e| matches!(e, MemberError::Cancelled)) =>
+        {
+            Ok(())
+        }
+        other => other,
+    };
     if let Some(term) = services.current() {
         services.replace(None);
         let cleanup = retire(term, &registry).await;

@@ -23,6 +23,7 @@ mod grpc_unsupported;
 mod http;
 pub mod http_contract;
 pub mod http_health;
+pub mod http_member;
 mod request_role;
 use astersql_pd_tso::Timestamp;
 use async_trait::async_trait;
@@ -42,6 +43,16 @@ pub struct Identity {
 #[async_trait]
 pub trait PdServices: Send + Sync {
     fn identity(&self) -> &Identity;
+    async fn member_metadata(&self, _id: u64) -> http_member::MemberMetadata {
+        Default::default()
+    }
+    async fn set_member_priority(&self, _id: u64, _priority: i64) -> Result<(), String> {
+        Err("member priority is not configured".into())
+    }
+    async fn remove_member(&self, _id: u64) -> Result<(), String> {
+        Err("dedicated member ownership is not configured".into())
+    }
+
     /// Optional store state service supplied by the host.
     fn store_heartbeat_service(
         &self,
@@ -236,7 +247,7 @@ pub fn router(services: Arc<dyn PdServices>, cancel: CancellationToken) -> axum:
         }),
     ))
     .into_axum_router()
-    .merge(http::router(services.clone()))
+    .merge(http::router(services.clone(), cancel.clone()))
     .merge(http_health::router(services.clone(), cancel.clone()))
     .layer(axum::middleware::from_fn_with_state(
         http_redirect::RedirectState {
@@ -529,3 +540,7 @@ mod grpc_forward;
 
 #[cfg(test)]
 mod http_health_test;
+
+#[cfg(test)]
+#[path = "http_member_test.rs"]
+mod http_member_test;

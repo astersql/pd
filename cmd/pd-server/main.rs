@@ -9,6 +9,7 @@ pub(crate) struct Config {
     pub endpoint: String,
     pub diagnostic_endpoint: Option<String>,
     pub diagnostic_member: Option<u64>,
+    pub dedicated_member: bool,
     pub client: String,
     pub peer: String,
     pub name: String,
@@ -21,6 +22,7 @@ impl Config {
             endpoint: String::new(),
             diagnostic_endpoint: None,
             diagnostic_member: None,
+            dedicated_member: false,
             client: "http://127.0.0.1:2379".into(),
             peer: "http://127.0.0.1:2380".into(),
             name: "pd".into(),
@@ -32,6 +34,7 @@ impl Config {
             match key {
                 "--etcd-endpoints" => config.endpoint = value.into(),
                 "--etcd-member-endpoint" => config.diagnostic_endpoint = Some(value.into()),
+                "--etcd-member-exclusive" => config.dedicated_member = value.parse()?,
                 "--etcd-member-id" => config.diagnostic_member = Some(value.parse()?),
                 "--client-urls" => config.client = value.into(),
                 "--peer-urls" => config.peer = value.into(),
@@ -52,6 +55,11 @@ impl Config {
             return Err(
                 "--etcd-member-endpoint and nonzero --etcd-member-id must be supplied together"
                     .into(),
+            );
+        }
+        if config.dedicated_member && config.diagnostic_member.is_none() {
+            return Err(
+                "exclusive ownership requires an explicit etcd member endpoint and ID".into(),
             );
         }
         Ok(config)
@@ -83,13 +91,22 @@ pub(crate) async fn run_until(
         PdNodeBuilder::new(tokio::runtime::Handle::current(), CancellationToken::new());
     if let (Some(endpoint), Some(member)) = (config.diagnostic_endpoint, config.diagnostic_member) {
         let diagnostics = astersql_pd_runtime::etcd_diagnostics::EtcdMemberDiagnostics::connect(
-            endpoint,
+            endpoint.clone(),
             member,
             Duration::from_secs(2),
         )
         .await?;
         diagnostics.validate_store(store.as_ref()).await?;
         builder = builder.with_etcd_member_diagnostics(Arc::new(diagnostics));
+        if config.dedicated_member {
+            let admin = astersql_pd_runtime::member_admin::EtcdMemberAdmin::connect(
+                endpoint,
+                member,
+                Duration::from_secs(2),
+            )
+            .await?;
+            builder = builder.with_etcd_member_admin(Arc::new(admin));
+        }
     }
     let identity =
         astersql_pd_runtime::bootstrap_config(store.as_ref(), config.name, client, peer).await?;
@@ -115,7 +132,7 @@ pub fn main() -> ExitCode {
     let args: Vec<_> = std::env::args().skip(1).collect();
     if args == ["--help"] || args == ["-h"] {
         println!(
-            "pd-server [--etcd-member-endpoint=URL --etcd-member-id=ID] --etcd-endpoints=http://127.0.0.1:2379 [--client-urls=http://127.0.0.1:2381] [--name=pd]\nMinimal classic PD; external etcd is a transitional dependency."
+            "pd-server [--etcd-member-endpoint=URL --etcd-member-id=ID --etcd-member-exclusive=true] --etcd-endpoints=http://127.0.0.1:2379 [--client-urls=http://127.0.0.1:2381] [--name=pd]\nMinimal classic PD; external etcd is a transitional dependency."
         );
         return ExitCode::SUCCESS;
     }
