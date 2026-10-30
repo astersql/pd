@@ -6,10 +6,10 @@ use astersql_pd_storage::{
 use std::sync::Arc;
 use tokio_util::sync::CancellationToken;
 // Only gates real backend IO: failures still come from the real etcd transaction.
-struct ConfigStore {
-    inner: Arc<dyn MetaStore>,
-    mode: std::sync::atomic::AtomicU8,
-    entered: tokio::sync::Notify,
+pub(crate) struct ConfigStore {
+    pub(crate) inner: Arc<dyn MetaStore>,
+    pub(crate) mode: std::sync::atomic::AtomicU8,
+    pub(crate) entered: tokio::sync::Notify,
 }
 #[async_trait::async_trait]
 impl MetaStore for ConfigStore {

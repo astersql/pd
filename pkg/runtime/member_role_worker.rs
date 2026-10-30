@@ -96,6 +96,18 @@ impl RoleServices {
 }
 #[async_trait::async_trait]
 impl PdServices for RoleServices {
+    async fn patch_replication(
+        &self,
+        labels: bool,
+        patch: serde_json::Value,
+    ) -> Result<(), String> {
+        self.active()
+            .await?
+            .cluster
+            .patch_replication(labels, patch)
+            .await
+    }
+
     async fn patch_schedule(&self, patch: serde_json::Value) -> Result<(), String> {
         self.active().await?.cluster.patch_schedule(patch).await
     }

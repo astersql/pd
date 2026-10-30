@@ -36,7 +36,42 @@ pub struct RuleManager {
     initialized: bool,
     key_type: String,
 }
+/// Validated rule candidate for an enclosing host transaction. Publish only after commit.
+pub struct PreparedRuleUpdate {
+    rule: Rule,
+    config: RuleConfig,
+    list: RuleList,
+}
+impl PreparedRuleUpdate {
+    /// Immutable persistence model validated together with the candidate rule list.
+    pub fn rule(&self) -> &Rule {
+        &self.rule
+    }
+}
 impl RuleManager {
+    /// Validate without persistence or publication; caller serializes preparation and commit.
+    pub fn prepare_rule<C: SharedConfigProvider + ?Sized>(
+        &self,
+        mut rule: Rule,
+        now: u64,
+        conf: &C,
+        stores: &[StoreInfo],
+    ) -> Result<PreparedRuleUpdate, RuleManagerError> {
+        self.adjust_rule(&mut rule, conf, stores)?;
+        let mut patch = self.config.begin_patch();
+        patch.set_rule(rule.clone());
+        RuleList::build(patch.adjust().rules().cloned())?;
+        patch.trim();
+        let config = patch.commit(now);
+        let list = RuleList::build(config.rules().cloned())?;
+        Ok(PreparedRuleUpdate { rule, config, list })
+    }
+    /// Publish an already committed candidate without IO or cancellation points.
+    pub fn publish_rule(&mut self, update: PreparedRuleUpdate) {
+        self.config = update.config;
+        self.list = Some(update.list);
+    }
+
     pub fn new<S: AsRef<StorageEndpoint> + ?Sized>(storage: Arc<S>, paths: ClusterPaths) -> Self {
         let storage = Arc::new(storage.as_ref().as_ref().clone());
         Self {

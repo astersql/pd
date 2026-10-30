@@ -1124,3 +1124,10 @@ mod schedule_scatter;
 
 #[path = "schedule_split.rs"]
 mod schedule_split;
+
+#[path = "replication_config.rs"]
+mod replication_config;
+
+#[cfg(test)]
+#[path = "replication_config_test.rs"]
+mod replication_config_test;

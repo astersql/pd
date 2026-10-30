@@ -220,7 +220,7 @@ fn duration_error(value: &str) -> String {
 
 // Locate decoded keys rather than searching their spelling: JSON permits escaped
 // field names and arbitrary whitespace. Nested values are consumed as one token.
-fn field_bounds(bytes: &[u8], wanted: &str) -> Option<(usize, usize)> {
+pub(crate) fn field_bounds(bytes: &[u8], wanted: &str) -> Option<(usize, usize)> {
     let mut cursor = bytes.iter().position(|b| *b == b'{')? + 1;
     loop {
         cursor += bytes
