@@ -7,6 +7,7 @@ license.workspace = true
 [lib]
 path = "lib.rs"
 [dependencies]
+regex.workspace = true
 astersql-pd-server-config.workspace = true
 chrono.workspace = true
 flate2.workspace = true

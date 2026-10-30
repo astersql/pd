@@ -27,6 +27,7 @@ pub mod http_contract;
 pub mod http_health;
 mod http_leader;
 pub mod http_member;
+mod http_store_read;
 mod request_role;
 use astersql_pd_tso::Timestamp;
 use async_trait::async_trait;
@@ -622,3 +623,7 @@ mod http_server_config_write;
 
 #[cfg(test)]
 mod http_server_config_write_fault_test;
+
+#[cfg(test)]
+#[path = "http_store_read_test.rs"]
+mod http_store_read_test;
