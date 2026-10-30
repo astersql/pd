@@ -282,6 +282,13 @@ impl astersql_pd_syncer::DownstreamSender for WireSender {
 pub(crate) struct SyncGrpc(pub Grpc);
 #[tonic::async_trait]
 impl Pd for SyncGrpc {
+    async fn is_snapshot_recovering(
+        &self,
+        r: Request<pdpb::IsSnapshotRecoveringRequest>,
+    ) -> Result<Response<pdpb::IsSnapshotRecoveringResponse>, Status> {
+        self.0.is_snapshot_recovering(r).await
+    }
+
     async fn watch_gc_safe_point_v2(
         &self,
         r: Request<pdpb::WatchGcSafePointV2Request>,

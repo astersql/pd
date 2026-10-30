@@ -35,6 +35,36 @@ impl Grpc {
 }
 #[tonic::async_trait]
 impl Pd for Grpc {
+    async fn is_snapshot_recovering(
+        &self,
+        _r: Request<pdpb::IsSnapshotRecoveringRequest>,
+    ) -> Result<Response<pdpb::IsSnapshotRecoveringResponse>, Status> {
+        if self.cancel.is_cancelled() {
+            return Err(Status::unavailable("server not started"));
+        }
+        let result = tokio::select! { biased;
+            _ = self.cancel.cancelled() => Err("context canceled".into()),
+            result = crate::http_admin_markers::marker(self.services.as_ref(), false, None) => result,
+        };
+        let (marked, error) = match result {
+            Ok(marked) => (marked, None),
+            Err(message) => (
+                false,
+                Some(pdpb::Error {
+                    r#type: pdpb::ErrorType::Unknown as i32,
+                    message,
+                }),
+            ),
+        };
+        Ok(Response::new(pdpb::IsSnapshotRecoveringResponse {
+            header: Some(pdpb::ResponseHeader {
+                cluster_id: self.services.identity().cluster_id,
+                error,
+            }),
+            marked,
+        }))
+    }
+
     async fn watch_gc_safe_point_v2(
         &self,
         _r: Request<pdpb::WatchGcSafePointV2Request>,

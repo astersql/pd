@@ -22,6 +22,7 @@ mod grpc_tso;
 mod grpc_unsupported;
 mod http;
 pub mod http_admin_cache;
+pub mod http_admin_markers;
 pub mod http_cluster;
 mod http_config_read;
 pub mod http_contract;
@@ -49,6 +50,10 @@ pub struct Identity {
 /// Domain operations supplied by the host; transport types stay in this crate.
 #[async_trait]
 pub trait PdServices: Send + Sync {
+    /// Shared authoritative store, available independently of leader/bootstrap state.
+    fn recovery_marker_store(&self) -> Option<Arc<dyn astersql_pd_storage::MetaStore>> {
+        None
+    }
     /// Mutate the existing region cache or storage under host admission.
     async fn admin_region(
         &self,
@@ -909,3 +914,7 @@ pub mod http_affinity_write;
 #[cfg(test)]
 #[path = "http_admin_cache_test.rs"]
 mod http_admin_cache_test;
+
+#[cfg(test)]
+#[path = "http_admin_markers_test.rs"]
+mod http_admin_markers_test;

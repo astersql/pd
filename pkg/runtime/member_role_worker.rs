@@ -107,6 +107,10 @@ impl RoleServices {
 }
 #[async_trait::async_trait]
 impl PdServices for RoleServices {
+    fn recovery_marker_store(&self) -> Option<Arc<dyn MetaStore>> {
+        self.store.upgrade()
+    }
+
     async fn admin_region(
         &self,
         command: astersql_pd_server::http_admin_cache::Command,

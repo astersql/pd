@@ -113,7 +113,10 @@ async fn verify_pending(url: &str) {
             .await
             .unwrap(),
     );
-    for (method, owner) in OWNERS.iter().filter(|(_, owner)| *owner > 37) {
+    for (method, owner) in OWNERS
+        .iter()
+        .filter(|(_, owner)| *owner > 37 && *owner != 74)
+    {
         assert!([74, 78].contains(owner));
         if ["WatchGCSafePointV2", "WatchGCStates"].contains(method) {
             continue;
