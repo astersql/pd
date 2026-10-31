@@ -35,6 +35,14 @@ impl ServiceLimit {
             config: Arc::new(Mutex::new(None)),
         }
     }
+    pub(crate) async fn audit_enabled(&self) -> bool {
+        if self.services.recovery_marker_store().is_none() {
+            return false;
+        }
+        let mut config = self.config.lock().await;
+        self.load(&mut config).await.is_ok()
+            && config.as_ref().is_some_and(|c| c.audit_config.enable_audit)
+    }
     fn endpoint(&self) -> Result<StorageEndpoint, String> {
         Ok(StorageEndpoint::new(
             self.services

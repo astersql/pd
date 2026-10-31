@@ -46,6 +46,10 @@ mod http_v2_boundary;
 #[cfg(test)]
 mod http_v2_boundary_test;
 mod request_role;
+pub mod service_audit;
+#[cfg(test)]
+#[path = "service_audit_test.rs"]
+mod service_audit_test;
 use astersql_pd_tso::Timestamp;
 use async_trait::async_trait;
 use std::sync::Arc;
@@ -466,6 +470,14 @@ pub trait ClusterReadService: Send + Sync {
 }
 /// One router, listener and cancellation scope for HTTP/1 and HTTP/2 gRPC.
 pub fn router(services: Arc<dyn PdServices>, cancel: CancellationToken) -> axum::Router {
+    router_with_audit(services, cancel, None)
+}
+/// Assemble the existing listener with an optional host-owned access audit sink.
+pub fn router_with_audit(
+    services: Arc<dyn PdServices>,
+    cancel: CancellationToken,
+    audit: Option<service_audit::Audit>,
+) -> axum::Router {
     let limits = http_service_limit::ServiceLimit::new(services.clone(), &cancel);
     tonic::service::Routes::new(astersql_pd_proto::pdpb::pd_server::PdServer::new(
         sync_transport::SyncGrpc(grpc::Grpc {
@@ -482,7 +494,7 @@ pub fn router(services: Arc<dyn PdServices>, cancel: CancellationToken) -> axum:
         http_service_limit::middleware,
     ))
     .layer(axum::middleware::from_fn_with_state(
-        limits,
+        limits.clone(),
         grpc_service_limit::middleware,
     ))
     .layer(axum::middleware::from_fn_with_state(
@@ -498,6 +510,10 @@ pub fn router(services: Arc<dyn PdServices>, cancel: CancellationToken) -> axum:
             cancel: cancel.clone(),
         },
         http_redirect::middleware,
+    ))
+    .layer(axum::middleware::from_fn_with_state(
+        service_audit::State { limits, audit },
+        service_audit::middleware,
     ))
     .layer(axum::middleware::from_fn_with_state(
         request_context::ContextState::new(cancel),
