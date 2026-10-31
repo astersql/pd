@@ -21,8 +21,8 @@ readonly = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(readonly)
 
 
-def runtime_pair(go, rust, target, directory, env):
-    """Observe merged identity over real HTTP and graceful SIGTERM shutdown."""
+def runtime_pair(go, rust, target, directory, env, shutdown=signal.SIGTERM):
+    """Observe merged identity over real HTTP and signal-driven shutdown."""
     fixtures = sorted(target.glob('rust-etcd-fixture-*'), key=lambda p: p.stat().st_mtime)
     assert fixtures, 'package tests must first build the read-only etcd fixture'
     fixture_binary = fixtures[-1]
@@ -75,8 +75,8 @@ def runtime_pair(go, rust, target, directory, env):
             member = members['members'][0]
             assert member['name'] == 'from-cli' and member['client_urls'] == [client]
             assert member['peer_urls'] == [peer]
-            server.send_signal(signal.SIGTERM)
-            assert server.wait(timeout=15) == 0
+            server.send_signal(shutdown)
+            assert server.wait(timeout=15) == (0 if shutdown == signal.SIGTERM else 1)
             with socket.socket() as listener:
                 listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
                 listener.bind(('127.0.0.1', int(client.rsplit(':', 1)[1])))

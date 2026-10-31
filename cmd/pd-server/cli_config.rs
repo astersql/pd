@@ -4,16 +4,39 @@ use crate::entry::{Config, ProcessError};
 use astersql_pd_server_config::{ConfigDefaultsContext, decode_toml_config};
 use std::collections::BTreeMap;
 
+pub(crate) const BOOLEAN_FLAGS: &[&str] = &[
+    "--force-new-cluster",
+    "--config-check",
+    "--etcd-member-exclusive",
+];
+pub(crate) const STRING_FLAGS: &[&str] = &[
+    "--config",
+    "--name",
+    "--data-dir",
+    "--client-urls",
+    "--peer-urls",
+    "--advertise-client-urls",
+    "--advertise-peer-urls",
+    "--initial-cluster",
+    "--join",
+    "--metrics-addr",
+    "--log-level",
+    "--log-file",
+    "--cacert",
+    "--cert",
+    "--key",
+    "--etcd-endpoints",
+    "--etcd-member-endpoint",
+    "--etcd-member-id",
+];
+
 pub(crate) fn parse(args: impl Iterator<Item = String>) -> Result<Config, ProcessError> {
     let mut flags = BTreeMap::new();
     let mut args = args.peekable();
     while let Some(arg) = args.next() {
         let (key, value) = if let Some((key, value)) = arg.split_once('=') {
             (key.to_owned(), value.to_owned())
-        } else if matches!(
-            arg.as_str(),
-            "--force-new-cluster" | "--config-check" | "--etcd-member-exclusive"
-        ) {
+        } else if BOOLEAN_FLAGS.contains(&arg.as_str()) {
             (arg, "true".to_owned())
         } else {
             let value = args
@@ -25,36 +48,10 @@ pub(crate) fn parse(args: impl Iterator<Item = String>) -> Result<Config, Proces
             "-L" => "--log-level".into(),
             other => other.to_owned(),
         };
-        if !matches!(
-            key.as_str(),
-            "--config"
-                | "--config-check"
-                | "--name"
-                | "--data-dir"
-                | "--client-urls"
-                | "--peer-urls"
-                | "--advertise-client-urls"
-                | "--advertise-peer-urls"
-                | "--initial-cluster"
-                | "--join"
-                | "--metrics-addr"
-                | "--log-level"
-                | "--log-file"
-                | "--cacert"
-                | "--cert"
-                | "--key"
-                | "--force-new-cluster"
-                | "--etcd-endpoints"
-                | "--etcd-member-endpoint"
-                | "--etcd-member-id"
-                | "--etcd-member-exclusive"
-        ) {
+        if !STRING_FLAGS.contains(&key.as_str()) && !BOOLEAN_FLAGS.contains(&key.as_str()) {
             return Err(format!("unsupported option: {key}").into());
         }
-        if matches!(
-            key.as_str(),
-            "--config-check" | "--force-new-cluster" | "--etcd-member-exclusive"
-        ) {
+        if BOOLEAN_FLAGS.contains(&key.as_str()) {
             boolean(&value)?;
         }
         flags.insert(key, value);
@@ -163,9 +160,6 @@ pub(crate) fn parse(args: impl Iterator<Item = String>) -> Result<Config, Proces
         advertise_peer: Some(values.scalars.advertise_peer_urls.clone()),
         security: values,
     };
-    if config.endpoint.is_empty() && !config_check {
-        return Err("--etcd-endpoints is required for the transitional backend".into());
-    }
     if config.diagnostic_endpoint.is_some() != config.diagnostic_member.is_some()
         || config.diagnostic_member == Some(0)
     {
@@ -179,7 +173,7 @@ pub(crate) fn parse(args: impl Iterator<Item = String>) -> Result<Config, Proces
     Ok(config)
 }
 
-fn boolean(value: &str) -> Result<bool, ProcessError> {
+pub(crate) fn boolean(value: &str) -> Result<bool, ProcessError> {
     match value {
         "true" | "TRUE" | "True" | "1" | "t" | "T" => Ok(true),
         "false" | "FALSE" | "False" | "0" | "f" | "F" => Ok(false),

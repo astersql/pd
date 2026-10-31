@@ -15,5 +15,6 @@
 
 行为测试显式注册在 `lib.rs` 的 `cli_config_test` 模块；真实 Go/Rust
 进程差分入口为 `scripts/cli-config-oracle.py`，证据见
-`docs/rust/server-api/task-090.md`。help/完整退出码契约仍由任务91覆盖，
-日志宿主安装由任务92负责，本模块仅合并配置值。
+`docs/rust/server-api/task-090.md`。help/version语法与退出分类由 `cli_exit.rs`
+和 `main.rs` 处理，见 `docs/rust/server-api/task-091.md`；缺少外部etcd参数
+在进程启动边界拒绝，不阻止version或配置校验。日志宿主安装由任务92负责。

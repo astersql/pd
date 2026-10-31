@@ -12,3 +12,8 @@ mod main_test;
 mod cli_config_test;
 
 mod cli_config;
+
+#[cfg(test)]
+mod cli_exit_test;
+
+mod cli_exit;

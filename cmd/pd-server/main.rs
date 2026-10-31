@@ -122,20 +122,28 @@ pub(crate) async fn run_until(
 }
 /// Owns CLI, process signals and the standalone executor.
 pub fn main() -> ExitCode {
-    let args: Vec<_> = std::env::args().skip(1).collect();
-    if args == ["--help"] || args == ["-h"] {
-        println!(
-            "pd-server [--config=FILE] [--config-check] [--etcd-member-endpoint=URL --etcd-member-id=ID --etcd-member-exclusive=true] --etcd-endpoints=http://127.0.0.1:2379 [--client-urls=http://127.0.0.1:2381] [--name=pd] [--join=URL] [--cert=FILE --key=FILE --cacert=FILE]\nMinimal classic PD; external etcd is a transitional dependency."
-        );
-        return ExitCode::SUCCESS;
-    }
-    let config = match Config::parse(args.into_iter()) {
-        Ok(config) => config,
+    let args = match crate::cli_exit::parse(crate::cli_exit::process_args()) {
+        Ok(args) => args,
         Err(error) => {
-            eprintln!("{error}");
-            return ExitCode::from(2);
+            println!("Error: {error}\n{}", crate::cli_exit::HELP);
+            return ExitCode::FAILURE;
         }
     };
+    if args.help {
+        print!("{}", crate::cli_exit::HELP);
+        return ExitCode::SUCCESS;
+    }
+    let config = match Config::parse(args.config.into_iter()) {
+        Ok(config) => config,
+        Err(error) => {
+            println!("{error}");
+            return ExitCode::SUCCESS;
+        }
+    };
+    if args.version {
+        println!("{}", crate::cli_exit::version());
+        return ExitCode::SUCCESS;
+    }
     if config.config_check {
         if config.security.warning_msgs.is_empty() {
             println!("config check successful");
@@ -145,6 +153,10 @@ pub fn main() -> ExitCode {
             }
         }
         return ExitCode::SUCCESS;
+    }
+    if config.endpoint.is_empty() {
+        eprintln!("pd-server: --etcd-endpoints is required for the transitional backend");
+        return ExitCode::FAILURE;
     }
     for warning in &config.security.warning_msgs {
         eprintln!("warning: {warning}");
@@ -157,7 +169,7 @@ pub fn main() -> ExitCode {
     match result {
         Ok(_) => ExitCode::SUCCESS,
         Err(error) => {
-            eprintln!("pd-server: {error}");
+            println!("pd-server: {error}");
             ExitCode::FAILURE
         }
     }
@@ -165,10 +177,23 @@ pub fn main() -> ExitCode {
 async fn shutdown_signal() -> Result<(), std::io::Error> {
     #[cfg(unix)]
     {
-        let mut terminate =
-            tokio::signal::unix::signal(tokio::signal::unix::SignalKind::terminate())?;
-        tokio::select! { result=tokio::signal::ctrl_c()=>result, _=terminate.recv()=>Ok(()) }
+        use tokio::signal::unix::{SignalKind, signal};
+        let mut terminate = signal(SignalKind::terminate())?;
+        let mut hangup = signal(SignalKind::hangup())?;
+        let mut quit = signal(SignalKind::quit())?;
+        tokio::select! {
+            result = tokio::signal::ctrl_c() => {
+                result?;
+                Err(std::io::Error::other("interrupted by SIGINT"))
+            }
+            _ = terminate.recv() => Ok(()),
+            _ = hangup.recv() => Err(std::io::Error::other("interrupted by SIGHUP")),
+            _ = quit.recv() => Err(std::io::Error::other("interrupted by SIGQUIT")),
+        }
     }
     #[cfg(not(unix))]
-    tokio::signal::ctrl_c().await
+    {
+        tokio::signal::ctrl_c().await?;
+        Err(std::io::Error::other("interrupted by SIGINT"))
+    }
 }
