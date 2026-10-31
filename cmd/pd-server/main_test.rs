@@ -1,7 +1,7 @@
 // Copyright 2026 AsterSQL.
 #[allow(dead_code)]
 #[path = "../../pkg/storage/kv/etcd_fixture_test.rs"]
-mod fixture;
+pub(crate) mod fixture;
 #[test]
 fn standalone_runtime_lifecycle() {
     let fixture = fixture::Fixture::start();
@@ -12,6 +12,8 @@ fn standalone_runtime_lifecycle() {
     let events = runtime
         .block_on(crate::entry::run_until(
             crate::entry::Config {
+                config_check: false,
+                unsupported: Vec::new(),
                 diagnostic_endpoint: None,
                 diagnostic_member: None,
                 dedicated_member: false,

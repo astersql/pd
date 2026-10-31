@@ -166,6 +166,7 @@ dependencies = [
  "astersql-pd-storage",
  "astersql-pd-storage-kv",
  "prometheus",
+ "rustix",
  "serde_json",
  "tokio",
  "tokio-util",

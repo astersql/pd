@@ -7,3 +7,8 @@ pub use entry::main;
 #[cfg(test)]
 #[path = "main_test.rs"]
 mod main_test;
+
+#[cfg(test)]
+mod cli_config_test;
+
+mod cli_config;

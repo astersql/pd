@@ -3,9 +3,11 @@ use astersql_pd_runtime::PdNodeBuilder;
 use astersql_pd_storage::{EtcdMetaStore, MetaStore};
 use std::{error::Error, future::Future, process::ExitCode, sync::Arc, time::Duration};
 use tokio_util::sync::CancellationToken;
-type ProcessError = Box<dyn Error + Send + Sync>;
+pub(crate) type ProcessError = Box<dyn Error + Send + Sync>;
 
 pub(crate) struct Config {
+    pub config_check: bool,
+    pub unsupported: Vec<String>,
     pub endpoint: String,
     pub join: String,
     pub security: astersql_pd_server_config::Config,
@@ -20,63 +22,21 @@ pub(crate) struct Config {
 }
 impl Config {
     pub(crate) fn parse(args: impl Iterator<Item = String>) -> Result<Self, ProcessError> {
-        let mut config = Self {
-            endpoint: String::new(),
-            join: String::new(),
-            security: Default::default(),
-            diagnostic_endpoint: None,
-            diagnostic_member: None,
-            dedicated_member: false,
-            client: "http://127.0.0.1:2379".into(),
-            peer: "http://127.0.0.1:2380".into(),
-            name: "pd".into(),
-            advertise_client: None,
-            advertise_peer: None,
-        };
-        for arg in args {
-            let (key, value) = arg.split_once('=').ok_or("expected --option=value")?;
-            match key {
-                "--etcd-endpoints" => config.endpoint = value.into(),
-                "--etcd-member-endpoint" => config.diagnostic_endpoint = Some(value.into()),
-                "--etcd-member-exclusive" => config.dedicated_member = value.parse()?,
-                "--etcd-member-id" => config.diagnostic_member = Some(value.parse()?),
-                "--client-urls" => config.client = value.into(),
-                "--peer-urls" => config.peer = value.into(),
-                "--cert" => config.security.security.tls.cert_path = value.into(),
-                "--key" => config.security.security.tls.key_path = value.into(),
-                "--cacert" => config.security.security.tls.ca_path = value.into(),
-                "--join" => config.join = value.into(),
-                "--name" => config.name = value.into(),
-                "--advertise-client-urls" => config.advertise_client = Some(value.into()),
-                "--advertise-peer-urls" => config.advertise_peer = Some(value.into()),
-                // Compatibility harness supplies Go process metadata. No local storage is opened.
-                "--data-dir" | "--initial-cluster" => {}
-                _ => return Err(format!("unsupported option: {key}").into()),
-            }
-        }
-        if config.endpoint.is_empty() {
-            return Err("--etcd-endpoints is required for the transitional backend".into());
-        }
-        if config.diagnostic_endpoint.is_some() != config.diagnostic_member.is_some()
-            || config.diagnostic_member == Some(0)
-        {
-            return Err(
-                "--etcd-member-endpoint and nonzero --etcd-member-id must be supplied together"
-                    .into(),
-            );
-        }
-        if config.dedicated_member && config.diagnostic_member.is_none() {
-            return Err(
-                "exclusive ownership requires an explicit etcd member endpoint and ID".into(),
-            );
-        }
-        Ok(config)
+        crate::cli_config::parse(args)
     }
 }
+
 pub(crate) async fn run_until(
     config: Config,
     shutdown: impl Future<Output = Result<(), std::io::Error>>,
 ) -> Result<Vec<&'static str>, ProcessError> {
+    if !config.unsupported.is_empty() {
+        return Err(format!(
+            "external MetaStore backend cannot apply: {}",
+            config.unsupported.join(", ")
+        )
+        .into());
+    }
     use astersql_pd_runtime::net_address::Endpoint;
     let endpoint = Endpoint::parse(&config.client)?;
     let advertised = Endpoint::parse(config.advertise_client.as_deref().unwrap_or(&config.client))?;
@@ -165,7 +125,7 @@ pub fn main() -> ExitCode {
     let args: Vec<_> = std::env::args().skip(1).collect();
     if args == ["--help"] || args == ["-h"] {
         println!(
-            "pd-server [--etcd-member-endpoint=URL --etcd-member-id=ID --etcd-member-exclusive=true] --etcd-endpoints=http://127.0.0.1:2379 [--client-urls=http://127.0.0.1:2381] [--name=pd] [--join=URL] [--cert=FILE --key=FILE --cacert=FILE]\nMinimal classic PD; external etcd is a transitional dependency."
+            "pd-server [--config=FILE] [--config-check] [--etcd-member-endpoint=URL --etcd-member-id=ID --etcd-member-exclusive=true] --etcd-endpoints=http://127.0.0.1:2379 [--client-urls=http://127.0.0.1:2381] [--name=pd] [--join=URL] [--cert=FILE --key=FILE --cacert=FILE]\nMinimal classic PD; external etcd is a transitional dependency."
         );
         return ExitCode::SUCCESS;
     }
@@ -176,6 +136,19 @@ pub fn main() -> ExitCode {
             return ExitCode::from(2);
         }
     };
+    if config.config_check {
+        if config.security.warning_msgs.is_empty() {
+            println!("config check successful");
+        } else {
+            for warning in &config.security.warning_msgs {
+                println!("{warning}");
+            }
+        }
+        return ExitCode::SUCCESS;
+    }
+    for warning in &config.security.warning_msgs {
+        eprintln!("warning: {warning}");
+    }
     let result = tokio::runtime::Builder::new_multi_thread()
         .enable_all()
         .build()

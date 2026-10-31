@@ -75,16 +75,20 @@ impl Server {
             command
                 .args([
                     "--name=compat",
-                    &format!("--data-dir={}", dir.join("data").display()),
                     &format!("--client-urls={url}"),
                     &format!("--advertise-client-urls={url}"),
                     &format!("--peer-urls={peer_url}"),
                     &format!("--advertise-peer-urls={peer_url}"),
-                    &format!("--initial-cluster=compat={peer_url}"),
                 ])
-                .args(extra)
                 .stdout(Stdio::from(log.try_clone()?))
                 .stderr(Stdio::from(log));
+            // Rust's external MetaStore does not own an embedded-etcd data
+            // directory or bootstrap topology. Pass those flags only to Go.
+            if !extra.iter().any(|arg| arg.starts_with("--etcd-endpoints=")) {
+                command.arg(format!("--data-dir={}", dir.join("data").display()));
+                command.arg(format!("--initial-cluster=compat={peer_url}"));
+            }
+            command.args(extra);
             drop((client, peer));
             Ok(Self {
                 child: command.spawn()?,

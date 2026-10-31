@@ -13,6 +13,7 @@ name = "pd-server"
 path = "bin_main.rs"
 
 [dependencies]
+rustix.workspace = true
 astersql-pd-server-config.workspace = true
 astersql-pd-runtime.workspace = true
 tokio.workspace = true
