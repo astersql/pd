@@ -338,3 +338,23 @@ pub fn run_minimal(mode: &str, go: &Path, rust: Option<&Path>) -> Result<(), Str
     println!("health-member: supported PD fields equal; graceful process cleanup verified");
     Ok(())
 }
+
+impl Server {
+    /// Restart a multi-member process preserving the caller's full topology and identity.
+    pub fn resume_with_args(&mut self, binary: &Path, args: &[String]) -> Result<(), String> {
+        if self.child.try_wait().map_err(|e| e.to_string())?.is_none() {
+            return Err("cannot resume a running server".into());
+        }
+        let log = fs::OpenOptions::new()
+            .append(true)
+            .open(self.dir.join("server.log"))
+            .map_err(|e| e.to_string())?;
+        self.child = Command::new(binary)
+            .args(args)
+            .stdout(Stdio::from(log.try_clone().map_err(|e| e.to_string())?))
+            .stderr(Stdio::from(log))
+            .spawn()
+            .map_err(|e| e.to_string())?;
+        Ok(())
+    }
+}

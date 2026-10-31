@@ -17,3 +17,8 @@ mod state_regression_test;
 pub mod readonly_oracle;
 #[cfg(test)]
 mod readonly_oracle_test;
+
+#[cfg(test)]
+mod rolling_restart;
+#[cfg(test)]
+mod rolling_restart_test;
