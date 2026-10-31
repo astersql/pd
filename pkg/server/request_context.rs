@@ -149,13 +149,7 @@ pub(crate) async fn middleware(
     let service_label = if grpc {
         path.to_owned()
     } else {
-        match (request.method().as_str(), path) {
-            ("GET" | "HEAD", "/pd/api/v1/health") => "GetHealthStatus",
-            ("GET" | "HEAD", "/pd/api/v1/members") => "GetMembers",
-            ("GET" | "HEAD", "/pd/api/v1/ping") => "Ping",
-            _ => "",
-        }
-        .to_owned()
+        crate::http_service_limit::service_label(request.method().as_str(), path).to_owned()
     };
     let headers = request.headers();
     let supplied = header(headers, "x-request-id");

@@ -33,6 +33,10 @@ pub mod http_member;
 pub mod http_region_schedule;
 pub mod http_resolved_ts;
 pub mod http_rule;
+mod http_service_limit;
+#[cfg(test)]
+#[path = "http_service_limit_test.rs"]
+mod http_service_limit_test;
 mod http_store_read;
 mod http_v2_boundary;
 #[cfg(test)]
@@ -458,6 +462,7 @@ pub trait ClusterReadService: Send + Sync {
 }
 /// One router, listener and cancellation scope for HTTP/1 and HTTP/2 gRPC.
 pub fn router(services: Arc<dyn PdServices>, cancel: CancellationToken) -> axum::Router {
+    let limits = http_service_limit::ServiceLimit::new(services.clone(), &cancel);
     tonic::service::Routes::new(astersql_pd_proto::pdpb::pd_server::PdServer::new(
         sync_transport::SyncGrpc(grpc::Grpc {
             services: services.clone(),
@@ -467,6 +472,11 @@ pub fn router(services: Arc<dyn PdServices>, cancel: CancellationToken) -> axum:
     .into_axum_router()
     .merge(http::router(services.clone(), cancel.clone()))
     .merge(http_health::router(services.clone(), cancel.clone()))
+    .merge(http_service_limit::router(limits.clone()))
+    .layer(axum::middleware::from_fn_with_state(
+        limits,
+        http_service_limit::middleware,
+    ))
     .layer(axum::middleware::from_fn_with_state(
         http_redirect::RedirectState {
             services: services.clone(),
