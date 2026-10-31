@@ -60,7 +60,16 @@ impl Listener {
             };
             builder.with_client_cert_verifier(verifier)
         };
-        let mut tls = builder.with_single_cert(certs, key)?;
+        // Validate at startup, then re-read the pair on every full handshake.
+        let _ = rustls::sign::CertifiedKey::from_der(
+            certs,
+            key,
+            &rustls::crypto::ring::default_provider(),
+        )?;
+        let mut tls = builder.with_cert_resolver(Arc::new(ReloadCertificate {
+            cert: security.cert_path.clone(),
+            key: security.key_path.clone(),
+        }));
         tls.alpn_protocols = vec![b"h2".to_vec(), b"http/1.1".to_vec()];
         Ok(Self {
             tcp,
@@ -189,5 +198,29 @@ impl rustls::server::danger::ClientCertVerifier for AllowedCN {
     }
     fn supported_verify_schemes(&self) -> Vec<rustls::SignatureScheme> {
         self.chain.supported_verify_schemes()
+    }
+}
+
+/// Matches etcd TLSInfo.GetCertificate: errors reject this handshake only.
+/// Trust roots and client identity policy remain fixed for this listener.
+#[derive(Debug)]
+struct ReloadCertificate {
+    cert: String,
+    key: String,
+}
+impl rustls::server::ResolvesServerCert for ReloadCertificate {
+    fn resolve(
+        &self,
+        _: rustls::server::ClientHello<'_>,
+    ) -> Option<Arc<rustls::sign::CertifiedKey>> {
+        let cert = std::fs::read(&self.cert).ok()?;
+        let key = std::fs::read(&self.key).ok()?;
+        let certs = CertificateDer::pem_slice_iter(&cert)
+            .collect::<Result<Vec<_>, _>>()
+            .ok()?;
+        let key = PrivateKeyDer::from_pem_slice(&key).ok()?;
+        rustls::sign::CertifiedKey::from_der(certs, key, &rustls::crypto::ring::default_provider())
+            .ok()
+            .map(Arc::new)
     }
 }

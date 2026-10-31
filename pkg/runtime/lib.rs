@@ -167,3 +167,6 @@ mod tls_listener;
 
 #[cfg(test)]
 mod mtls_listener_test;
+
+#[cfg(test)]
+mod tls_reload_test;

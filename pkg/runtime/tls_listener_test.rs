@@ -67,7 +67,7 @@ pub(super) fn http(c: &Certificates, url: &str, ca: &str, client: &str) -> (bool
     let (body, status) = text.rsplit_once('\n').unwrap();
     (out.status.success(), status.parse().unwrap(), body.into())
 }
-async fn rpc(
+pub(super) async fn rpc(
     c: &Certificates,
     url: &str,
     domain: &str,
