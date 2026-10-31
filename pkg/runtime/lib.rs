@@ -190,3 +190,7 @@ mod join_resume;
 mod start_cleanup_test;
 
 mod start_cleanup;
+
+mod ready_gate;
+#[cfg(test)]
+mod ready_gate_test;

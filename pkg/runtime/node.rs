@@ -628,7 +628,7 @@ async fn initialize_node(
     Ok(PdNode {
         cancellation: cancel,
         cluster: cluster_view,
-        ready: Some(rx),
+        ready: crate::ready_gate::ReadyGate::new(rx),
         worker: Some(worker),
         events,
     })
@@ -753,7 +753,7 @@ pub(crate) async fn prepare_term(
 pub struct PdNode {
     cluster: Arc<crate::member_role_worker::RoleServices>,
     cancellation: CancellationToken,
-    ready: Option<oneshot::Receiver<()>>,
+    ready: crate::ready_gate::ReadyGate,
     worker: Option<JoinHandle<Result<(), NodeError>>>,
     events: Events,
 }
@@ -769,19 +769,31 @@ impl PdNode {
         self.cluster.current().map(|term| term.cluster.clone())
     }
     pub async fn ready(&mut self) -> Result<(), NodeError> {
-        if let Some(ready) = self.ready.take() {
-            if let Err(error) = ready.await {
-                // The sender closes before retirement finishes. Join the owning
-                // worker before returning so retry observes released resources
-                // and receives the original initialization error.
-                self.wait().await?;
-                return Err(error.into());
+        if let Err(error) = self.ready.wait().await {
+            self.wait().await?;
+            return Err(error.into());
+        }
+        loop {
+            tokio::select! { biased;
+                _ = self.cancellation.cancelled() => return Err("node is stopped".into()),
+                status = self.cluster.probe_status() => {
+                    let status = status?;
+                    if !status.is_bootstrapped || status.region_loaded {
+                        if let Some(term) = self.cluster.current() {
+                            term.healthy().await?;
+                        }
+                        if self.cancellation.is_cancelled() {
+                            return Err("node is stopped".into());
+                        }
+                        return Ok(());
+                    }
+                }
+            }
+            tokio::select! { biased;
+                _ = self.cancellation.cancelled() => return Err("node is stopped".into()),
+                _ = tokio::time::sleep(std::time::Duration::from_millis(10)) => {}
             }
         }
-        if self.cancellation.is_cancelled() {
-            return Err("node is stopped".into());
-        }
-        Ok(())
     }
     pub fn events(&self) -> Vec<&'static str> {
         self.events.lock().unwrap().clone()
