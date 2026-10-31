@@ -194,3 +194,6 @@ mod start_cleanup;
 mod ready_gate;
 #[cfg(test)]
 mod ready_gate_test;
+
+#[cfg(test)]
+mod shutdown_workers_test;

@@ -590,21 +590,24 @@ async fn initialize_node(
             let result = tokio::select! {
                 _ = &mut membership => {
                     worker_cancel.cancel();
-                    let result = (&mut roles).await;
-                    (result, false)
+                    // Retirement may wait for backend IO. Keep polling the
+                    // listener shutdown while joining roles so admission stops
+                    // before a slow lease revoke can hold the node open.
+                    let (role_result, server_result) = tokio::join!(&mut roles, &mut server);
+                    (role_result.and_then(|()| server_result.map_err(Into::into)), true, true)
                 },
-                result = &mut server => (result.map_err(Into::into), true),
-                result = &mut roles => (result, false),
+                result = &mut server => (result.map_err(Into::into), true, false),
+                result = &mut roles => (result, false, true),
             };
             worker_cancel.cancel();
             result
         };
         let monitor = metrics.run_worker(worker_cancel.clone());
-        let ((result, finished), (), ()) = tokio::join!(serving, push, monitor);
+        let ((result, finished, roles_finished), (), ()) = tokio::join!(serving, push, monitor);
         services.set_listening(false);
         worker_cancel.cancel();
         record(&worker_events, "stop-admission");
-        if finished {
+        if !roles_finished {
             let _ = (&mut roles).await;
         }
         let drained = if finished {

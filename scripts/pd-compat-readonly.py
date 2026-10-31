@@ -46,9 +46,9 @@ def binary(name):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--mode', choices=['go', 'rust', 'dual'], default=os.environ.get('PD_COMPAT_MODE', 'dual'))
-    parser.add_argument('--case', choices=['health-member', 'tso', 'cluster-host', 'cluster-restore', 'member-role', 'bucket-heartbeat', 'sync-regions', 'store-state', 'store-stats', 'store-config', 'cluster-metrics', 'resolved-ts', 'schedule-coordinator', 'request-role', 'members', 'bootstrap', 'alloc-id', 'store-registration', 'region-lookup', 'region-scan', 'region-query', 'ask-split', 'report-split', 'cluster-config', 'scatter', 'split-regions', 'split-scatter', 'global-config', 'global-watch', 'report-min-resolved-ts', 'external-timestamp', 'classic-tso', 'deprecated-rpc'], action='append')
+    parser.add_argument('--case', choices=['health-member', 'tso', 'cluster-host', 'cluster-restore', 'member-role', 'bucket-heartbeat', 'sync-regions', 'store-state', 'store-stats', 'store-config', 'cluster-metrics', 'resolved-ts', 'schedule-coordinator', 'request-role', 'members', 'bootstrap', 'alloc-id', 'store-registration', 'region-lookup', 'region-scan', 'region-query', 'ask-split', 'report-split', 'cluster-config', 'scatter', 'split-regions', 'split-scatter', 'global-config', 'shutdown-workers', 'global-watch', 'report-min-resolved-ts', 'external-timestamp', 'classic-tso', 'deprecated-rpc'], action='append')
     args = parser.parse_args()
-    if any(case in (args.case or []) for case in ['cluster-host', 'cluster-restore', 'member-role', 'bucket-heartbeat', 'sync-regions', 'store-state', 'store-stats', 'store-config', 'cluster-metrics', 'resolved-ts', 'schedule-coordinator', 'request-role', 'members', 'bootstrap', 'alloc-id', 'store-registration', 'region-lookup', 'region-scan', 'region-query', 'ask-split', 'report-split', 'cluster-config', 'scatter', 'split-regions', 'split-scatter', 'global-config', 'global-watch', 'report-min-resolved-ts', 'external-timestamp', 'classic-tso', 'deprecated-rpc']) and args.mode != 'dual':
+    if any(case in (args.case or []) for case in ['cluster-host', 'cluster-restore', 'member-role', 'bucket-heartbeat', 'sync-regions', 'store-state', 'store-stats', 'store-config', 'cluster-metrics', 'resolved-ts', 'schedule-coordinator', 'request-role', 'members', 'bootstrap', 'alloc-id', 'store-registration', 'region-lookup', 'region-scan', 'region-query', 'ask-split', 'report-split', 'cluster-config', 'scatter', 'split-regions', 'split-scatter', 'global-config', 'shutdown-workers', 'global-watch', 'report-min-resolved-ts', 'external-timestamp', 'classic-tso', 'deprecated-rpc']) and args.mode != 'dual':
         raise ValueError('cluster-host, cluster-restore and member-role require dual mode')
     go = binary('PD_COMPAT_GO_BIN') if args.mode != 'rust' else None
     rust = binary('PD_COMPAT_RUST_BIN') if args.mode != 'go' else None
@@ -82,6 +82,7 @@ def main():
         'pkg/server/grpc_tso.rs', 'pkg/server/grpc_tso_test.rs', 'pkg/server/grpc_tso_scenarios_test.rs', 'pkg/runtime/grpc_tso_differential_test.rs', 'pkg/runtime/grpc_tso_clock_test.rs', 'pkg/runtime/tso.rs',
         'pkg/server/grpc_external_ts.rs', 'pkg/server/grpc_external_ts_test.rs', 'pkg/server/grpc_external_ts_scenarios_test.rs', 'pkg/runtime/grpc_external_ts_differential_test.rs', 'pkg/runtime/grpc_external_ts_fault_test.rs',
         'pkg/server/grpc_resolved_ts.rs', 'pkg/server/grpc_resolved_ts_test.rs', 'pkg/server/grpc_resolved_ts_scenarios_test.rs', 'pkg/runtime/grpc_resolved_ts_differential_test.rs', 'pkg/runtime/cluster_host.rs',
+        'pkg/runtime/shutdown_workers_test.rs',
         'pkg/server/grpc_global_watch.rs', 'pkg/server/grpc_global_watch_test.rs', 'pkg/server/grpc_global_watch_scenarios_test.rs', 'pkg/runtime/grpc_global_watch_differential_test.rs',
         'pkg/storage/kv/memory_store.rs', 'pkg/storage/kv/contract_test.rs', 'pkg/storage/kv/meta_store_test.rs', 'pkg/storage/kv/etcd_store_test.rs',
         'pkg/server/grpc_global_config.rs', 'pkg/server/grpc_global_config_test.rs', 'pkg/server/grpc_global_config_scenarios_test.rs', 'pkg/runtime/grpc_global_config_differential_test.rs',
@@ -159,6 +160,10 @@ def main():
             if case == 'report-min-resolved-ts':
                 command = ['cargo', 'test', '--locked', '-p', 'astersql-pd-runtime', '--lib',
                            'readonly_report_min_resolved_ts_differential', '--', '--ignored']
+            if case == 'shutdown-workers':
+                command = ['cargo', 'test', '--locked', '-p', 'astersql-pd-runtime', '--lib',
+                           'shutdown_workers_test::task_095_readonly_shutdown_differential',
+                           '--', '--ignored', '--exact']
             if case == 'global-watch':
                 command = ['cargo', 'test', '--locked', '-p', 'astersql-pd-runtime', '--lib',
                            'readonly_global_watch_differential', '--', '--ignored']
