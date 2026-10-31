@@ -34,6 +34,9 @@ pub mod http_region_schedule;
 pub mod http_resolved_ts;
 pub mod http_rule;
 mod http_store_read;
+mod http_v2_boundary;
+#[cfg(test)]
+mod http_v2_boundary_test;
 mod request_role;
 use astersql_pd_tso::Timestamp;
 use async_trait::async_trait;
