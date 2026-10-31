@@ -1,6 +1,6 @@
 # 任务076：TSO恢复管理HTTP
 
-状态：已完成，待回归。实现、聚焦、Go差分、server包级及workspace check已通过；完整workspace存在无关fixture失败，待批次统一回归。
+状态：已完成。批次75–85实现结束后的最终回归全部通过；历史失败与中断记录保留，见文末。
 
 基准 `3ab5a2ae7`；依赖[任务075](task-075.md)已核验，复用[任务004](task-004.md)只读Go入口。协议固定kvproto `f8ad079c8e9812ed5900b0c12b5f1d97171464c4`；无依赖、feature或Go变更。
 
@@ -51,8 +51,35 @@ Go oracle为[pkg/tso/admin.go](../../../pkg/tso/admin.go)的ResetTS、[pkg/tso/t
 
 最终1101项Go/模块文件（含ignored/untracked）存在性、SHA-256及Git状态与开始一致；1315项Rust/Cargo输入在完整回归前后SHA-256一致，plan.md字节不变。Python AST、Markdown链接、gzip/JSON往返及git diff --check通过。
 
-本任务33个fixture临时二进制仅在核实持有PID已退出且lsof无引用后清理，共1,267,658,304字节；未删除之前已有的fixture。全部本任务服务、worker、Go差分进程组与槽位产物进程已结束，自己的slot-1锁已释放，缓存保留。编号任务文件按用户最新收尾要求标记“已完成，待回归”并保留。原有prompt.md变更不纳入提交。
+本任务33个fixture临时二进制仅在核实持有PID已退出且lsof无引用后清理，共1,267,658,304字节；未删除之前已有的fixture。全部本任务服务、worker、Go差分进程组与槽位产物进程已结束，自己的slot-1锁已释放，缓存保留。编号任务文件按用户当时的收尾要求标记“已完成，待回归”并保留（后续最终回归见下）。原有prompt.md变更不纳入提交。
 
 Go二进制SHA-256为`b9baaf7b6160a6ea1e3e3dc72ae059f317b0066838b676680105daceed297bdc`，build info为go1.26.8且缺VCS revision。
 
 [压缩原始证据](task-076-evidence.json.gz)，SHA-256 `9c2c2b547d51097e12b79dbb0ef0fdd0ab5e90e972ffb616a7ca19b22b3169a1`。包含预期行为失败、renderer差分失败与修复通过、最终命令/输出/退出码/有效测试数、首轮全量失败、单项重跑、按用户指令中断的重复全量、Go/Rust保护集合、来源映射、缓存压缩及进程/锁/临时fixture清理证据。
+
+
+## 批次75–85结束后的最终回归（2026-10-31）
+
+以最新共享工作区基准`ed889a6c810df5af0539e23057b4e7e5f8212d88`重新运行全部所需检查。本轮没有修改实现、测试、配置或依赖，仅补充当前验证证据。源码仍保留上述已声明的兼容范围和主题8边界。
+
+动态原子领取共享槽位1，`CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1`；所有Cargo、只读supervisor及子进程继承同一路径，默认features，`CARGO_BUILD_JOBS=2 RUST_TEST_THREADS=2 GOMAXPROCS=2`。Go差分设置`PD_COMPAT_GO_BIN=$PWD/bin/pd-server`，继续复用已有二进制，不构建Go服务、不执行Go测试或failpoint命令。
+
+| 确切命令 | 退出码 | 有效测试数量 |
+| --- | ---: | --- |
+| `cargo metadata --format-version 1 --no-deps` | 0 | 静态检查 |
+| `cargo fmt --all -- --check` | 0 | 静态检查 |
+| `cargo test --locked -p astersql-pd-server --lib task_076_ -- --nocapture` | 0 | 2通过、0失败、1忽略 |
+| `python3 scripts/http-admin-recover-tso-oracle.py` | 0 | 1通过、0失败、0忽略 |
+| `cargo test --locked -p astersql-pd-storage-endpoint --lib meta_service_group_test::meta_service_group_etcd -- --exact --nocapture` | 0 | 1通过、0失败、0忽略 |
+| `cargo check --locked -p astersql-pd-server` | 0 | 静态检查 |
+| `cargo test --locked -p astersql-pd-server -- --nocapture` | 0 | 271通过、0失败、39忽略 |
+| `cargo check --workspace --locked` | 0 | 静态检查 |
+| `cargo test --workspace --locked` | 0 | 2178通过、0失败、76忽略 |
+
+聚焦测试中的1项条件忽略是Go差分，已由只读supervisor单独显式执行通过；其他既有忽略项不计为通过。真实Go差分仍比较12组HTTP状态、原始正文及Content-Type，并观察同一Oracle的RPC副作用、重启与第二节点转发。
+
+之前失败的`meta_service_group_test::meta_service_group_etcd`在单项复跑和完整workspace中均通过，包含同WAL重启恢复及停机后的读/提交错误。此前fixture退出本轮未复现；没有修改源码或添加重试掩盖问题，也不把历史低磁盘空间推断为已证实的根因。完整workspace及server包级当前均为0失败，结束“待回归”状态。
+
+本轮1101项Go/模块文件（含ignored/untracked）的存在性、SHA-256和Git状态前后一致，plan.md字节未变；1332项Rust/Cargo输入集合及内容哈希在回归期间不变。所有命令进程组及Go差分进程组清理成功，自己的槽位锁已释放，编译缓存保留。仅在确认PID已退出且lsof无打开引用后，清理本轮29个fixture临时二进制，共1114002752字节；原有fixture和其他任务产物未删除。
+
+[本轮完整原始证据](task-076-regression.json.gz)，SHA-256 `84ae4bc34113b3da90f329ce9d1a69499d66ba5b7a4ac935bde9207537addb35`，包含当前基准、确切命令、完整输出、退出码、有效测试数、Go/Rust输入保护集合、Go差分、共享槽位和清理记录。原始[实现阶段证据](task-076-evidence.json.gz)保留不变。验证完成后删除编号任务文件，不修改只读plan.md；原有prompt.md变更继续排除在提交之外。
