@@ -16,6 +16,7 @@ fn standalone_runtime_lifecycle() {
                 diagnostic_member: None,
                 dedicated_member: false,
                 endpoint: fixture.endpoint.clone(),
+                join: String::new(),
                 security: Default::default(),
                 client: "http://127.0.0.1:0".into(),
                 peer: "http://127.0.0.1:2380".into(),
@@ -156,4 +157,35 @@ async fn task_083_cli_https() {
     };
     crate::entry::run_until(config, shutdown).await.unwrap();
     tokio::net::TcpListener::bind(address).await.unwrap();
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn task_088_cli_join_uses_existing_store() {
+    use astersql_pd_storage::{Consistency, MetaStore, Read};
+    let fixture = fixture::Fixture::start();
+    let args = [
+        format!("--etcd-endpoints={}", fixture.endpoint),
+        "--client-urls=http://127.0.0.1:0".into(),
+        "--join=http://existing:2379".into(),
+    ];
+    let config = crate::entry::Config::parse(args.into_iter()).unwrap();
+    assert_eq!(config.join, "http://existing:2379");
+    let error = crate::entry::run_until(config, async { Ok(()) })
+        .await
+        .unwrap_err();
+    assert!(
+        error
+            .to_string()
+            .contains("existing external MetaStore cluster identity")
+    );
+    assert!(
+        fixture
+            .store()
+            .await
+            .read(Read::prefix(b"/pd/", Consistency::Linearizable))
+            .await
+            .unwrap()
+            .entries
+            .is_empty()
+    );
 }

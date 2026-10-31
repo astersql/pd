@@ -266,6 +266,7 @@ pub struct PdNodeBuilder {
     cancellation: CancellationToken,
     listener_config: astersql_pd_server_config::Config,
     telemetry_config: Option<astersql_pd_server_config::Config>,
+    join: String,
 }
 impl PdNodeBuilder {
     pub fn new(runtime: Handle, cancellation: CancellationToken) -> Self {
@@ -277,6 +278,7 @@ impl PdNodeBuilder {
             cancellation: cancellation.child_token(),
             listener_config: Default::default(),
             telemetry_config: None,
+            join: String::new(),
         }
     }
     /// Bind diagnostics to an explicitly configured independent etcd member.
@@ -311,6 +313,12 @@ impl PdNodeBuilder {
         self.telemetry_config = Some(config);
         self
     }
+    /// Requests fresh admission against the explicitly supplied external MetaStore.
+    /// Empty means bootstrap/restart, preserving the durable member identity.
+    pub fn with_join(mut self, join: impl Into<String>) -> Self {
+        self.join = join.into();
+        self
+    }
     /// Reserves leadership and a durable TSO window before accepting traffic.
     pub async fn start(
         self,
@@ -333,6 +341,7 @@ impl PdNodeBuilder {
                 self.member_admin,
                 self.listener_config,
                 self.telemetry_config,
+                self.join,
             ))
             .await?
     }
@@ -348,13 +357,23 @@ async fn initialize_node(
     member_admin: Option<Arc<crate::member_admin::EtcdMemberAdmin>>,
     listener_config: astersql_pd_server_config::Config,
     telemetry_config: Option<astersql_pd_server_config::Config>,
+    join: String,
 ) -> Result<PdNode, NodeError> {
+    let join_config = config.clone();
     let mut config = config;
     config.client_url = crate::net_address::Endpoint::parse(&config.client_url)?
         .advertised_url(listener.local_addr()?)?;
     let listener =
         crate::tls_listener::Listener::new(listener, &config.client_url, &listener_config)?;
     config.peer_url = crate::net_address::Endpoint::parse(&config.peer_url)?.url();
+    crate::join_preflight::check_advertised(
+        store.as_ref(),
+        &join_config,
+        &join,
+        &config.client_url,
+        &cancel,
+    )
+    .await?;
     // Detect collector ownership conflicts before any persistent member binding.
     let telemetry_config = telemetry_config.unwrap_or_else(|| listener_config.clone());
     let metrics = astersql_pd_server::service_metrics::ServiceMetrics::register(registry.clone())?;

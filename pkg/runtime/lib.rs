@@ -176,3 +176,7 @@ mod metrics_startup_test;
 
 #[cfg(test)]
 mod shared_listener_test;
+
+pub mod join_preflight;
+#[cfg(test)]
+mod join_preflight_test;
