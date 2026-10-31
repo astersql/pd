@@ -26,9 +26,17 @@ impl Config {
     }
 }
 
+#[cfg(test)]
 pub(crate) async fn run_until(
     config: Config,
     shutdown: impl Future<Output = Result<(), std::io::Error>>,
+) -> Result<Vec<&'static str>, ProcessError> {
+    run_with_logging(config, shutdown, None).await
+}
+async fn run_with_logging(
+    config: Config,
+    shutdown: impl Future<Output = Result<(), std::io::Error>>,
+    log_level: Option<Arc<dyn astersql_pd_logutil::LogLevelControl>>,
 ) -> Result<Vec<&'static str>, ProcessError> {
     if !config.unsupported.is_empty() {
         return Err(format!(
@@ -82,6 +90,9 @@ pub(crate) async fn run_until(
         PdNodeBuilder::new(tokio::runtime::Handle::current(), CancellationToken::new())
             .with_listener_config(config.security)
             .with_join(config.join);
+    if let Some(control) = log_level {
+        builder = builder.with_log_level_control(control);
+    }
     if let (Some(endpoint), Some(member)) = (config.diagnostic_endpoint, config.diagnostic_member) {
         let diagnostics = astersql_pd_runtime::etcd_diagnostics::EtcdMemberDiagnostics::connect(
             endpoint.clone(),
@@ -112,12 +123,12 @@ pub(crate) async fn run_until(
         )
         .await?;
     node.ready().await?;
-    println!("PD ready: {:?}", node.events());
+    tracing::info!(target: "pd", "PD ready");
     let signal_result =
         tokio::select! { result = shutdown => result, result = node.wait() => { result?; Ok(()) } };
     node.shutdown().await?;
     signal_result?;
-    println!("PD stopped: {:?}", node.events());
+    tracing::info!(target: "pd", "PD stopped");
     Ok(node.events())
 }
 /// Owns CLI, process signals and the standalone executor.
@@ -136,7 +147,7 @@ pub fn main() -> ExitCode {
     let config = match Config::parse(args.config.into_iter()) {
         Ok(config) => config,
         Err(error) => {
-            println!("{error}");
+            println!("{}", crate::cli_logging::config_error(&error.to_string()));
             return ExitCode::SUCCESS;
         }
     };
@@ -158,18 +169,37 @@ pub fn main() -> ExitCode {
         eprintln!("pd-server: --etcd-endpoints is required for the transitional backend");
         return ExitCode::FAILURE;
     }
-    for warning in &config.security.warning_msgs {
-        eprintln!("warning: {warning}");
+    let log_level = match crate::cli_logging::init(&config.security.log) {
+        Ok(control) => control,
+        Err(_) => {
+            println!("pd-server: log initialization failed");
+            return ExitCode::FAILURE;
+        }
+    };
+    for _ in &config.security.warning_msgs {
+        tracing::warn!(target: "pd", "deprecated configuration option");
     }
     let result = tokio::runtime::Builder::new_multi_thread()
         .enable_all()
         .build()
         .map_err(ProcessError::from)
-        .and_then(|runtime| runtime.block_on(run_until(config, shutdown_signal())));
+        .and_then(|runtime| {
+            runtime.block_on(run_with_logging(config, shutdown_signal(), Some(log_level)))
+        });
     match result {
         Ok(_) => ExitCode::SUCCESS,
         Err(error) => {
-            println!("pd-server: {error}");
+            // Backend errors can embed credential-bearing endpoints or config.
+            // Keep only a stable classification at the process logging boundary.
+            if error
+                .to_string()
+                .to_ascii_lowercase()
+                .contains("address already in use")
+            {
+                tracing::error!(target: "pd", "pd-server: Address already in use");
+            } else {
+                tracing::error!(target: "pd", "pd-server: startup or runtime failed");
+            }
             ExitCode::FAILURE
         }
     }

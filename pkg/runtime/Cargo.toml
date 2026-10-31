@@ -9,6 +9,7 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
+astersql-pd-logutil.workspace = true
 base64.workspace = true
 astersql-pd-keyutil.workspace = true
 astersql-pd-schedule-affinity.workspace = true

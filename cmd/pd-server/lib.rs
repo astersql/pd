@@ -17,3 +17,8 @@ mod cli_config;
 mod cli_exit_test;
 
 mod cli_exit;
+
+#[cfg(test)]
+mod cli_logging_test;
+
+mod cli_logging;

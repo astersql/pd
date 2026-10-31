@@ -13,6 +13,9 @@ name = "pd-server"
 path = "bin_main.rs"
 
 [dependencies]
+tracing.workspace = true
+tracing-subscriber.workspace = true
+astersql-pd-logutil.workspace = true
 rustix.workspace = true
 astersql-pd-server-config.workspace = true
 astersql-pd-runtime.workspace = true

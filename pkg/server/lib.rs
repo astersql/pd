@@ -75,6 +75,11 @@ pub struct Identity {
 /// Domain operations supplied by the host; transport types stay in this crate.
 #[async_trait]
 pub trait PdServices: Send + Sync {
+    /// Optional host policy; embedded libraries never install a logger.
+    fn log_level_control(&self) -> Option<Arc<dyn astersql_pd_logutil::LogLevelControl>> {
+        None
+    }
+
     /// None when the host has not explicitly assigned a consensus member.
     async fn consensus_metrics(&self) -> Option<service_metrics::ConsensusMetrics> {
         None
@@ -1090,3 +1095,5 @@ async fn protocol_dispatch(
         Err(never) => match never {},
     }
 }
+
+mod http_log;

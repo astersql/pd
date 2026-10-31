@@ -18,6 +18,7 @@ type RegionReset = (
 );
 pub(crate) struct RoleServices {
     identity: NodeConfig,
+    log_level: RwLock<Option<Arc<dyn astersql_pd_logutil::LogLevelControl>>>,
     telemetry: RwLock<Option<Arc<astersql_pd_server_config::Config>>>,
     metrics: RwLock<Weak<astersql_pd_server::service_metrics::ServiceMetrics>>,
     listening: std::sync::atomic::AtomicBool,
@@ -36,6 +37,7 @@ impl RoleServices {
             Arc::new(astersql_pd_storage::MemoryStore::default());
         let (region_resets, region_reset_rx) = tokio::sync::mpsc::channel(16);
         Self {
+            log_level: RwLock::new(None),
             telemetry: RwLock::new(None),
             metrics: RwLock::new(Weak::new()),
             region_resets,
@@ -61,6 +63,12 @@ impl RoleServices {
             store: Arc::downgrade(&store),
             term: RwLock::new(None),
         }
+    }
+    pub(crate) fn set_log_level_control(
+        &self,
+        control: Option<Arc<dyn astersql_pd_logutil::LogLevelControl>>,
+    ) {
+        *self.log_level.write().unwrap() = control;
     }
     pub(crate) fn set_telemetry(
         &self,
@@ -119,6 +127,10 @@ impl RoleServices {
 }
 #[async_trait::async_trait]
 impl PdServices for RoleServices {
+    fn log_level_control(&self) -> Option<Arc<dyn astersql_pd_logutil::LogLevelControl>> {
+        self.log_level.read().unwrap().clone()
+    }
+
     async fn consensus_metrics(
         &self,
     ) -> Option<astersql_pd_server::service_metrics::ConsensusMetrics> {

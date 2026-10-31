@@ -118,3 +118,10 @@ fn null_default<'de, T: serde::Deserialize<'de> + Default, D: serde::Deserialize
 
 #[cfg(test)]
 mod config_test;
+
+/// Host-owned logging policy. Transport adapters may only request a level change;
+/// they cannot replace the subscriber, writer, format, or redaction policy.
+pub trait LogLevelControl: Send + Sync {
+    /// Updates the threshold, preserving it on invalid input.
+    fn set_level(&self, level: &str) -> Result<(), String>;
+}

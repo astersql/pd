@@ -267,6 +267,7 @@ pub struct PdNodeBuilder {
     listener_config: astersql_pd_server_config::Config,
     telemetry_config: Option<astersql_pd_server_config::Config>,
     join: String,
+    log_level: Option<Arc<dyn astersql_pd_logutil::LogLevelControl>>,
 }
 impl PdNodeBuilder {
     pub fn new(runtime: Handle, cancellation: CancellationToken) -> Self {
@@ -279,6 +280,7 @@ impl PdNodeBuilder {
             listener_config: Default::default(),
             telemetry_config: None,
             join: String::new(),
+            log_level: None,
         }
     }
     /// Bind diagnostics to an explicitly configured independent etcd member.
@@ -313,6 +315,14 @@ impl PdNodeBuilder {
         self.telemetry_config = Some(config);
         self
     }
+    /// Supplies host-owned log filtering without installing any global subscriber.
+    pub fn with_log_level_control(
+        mut self,
+        control: Arc<dyn astersql_pd_logutil::LogLevelControl>,
+    ) -> Self {
+        self.log_level = Some(control);
+        self
+    }
     /// Requests fresh admission against the explicitly supplied external MetaStore.
     /// Empty means bootstrap/restart, preserving the durable member identity.
     pub fn with_join(mut self, join: impl Into<String>) -> Self {
@@ -345,6 +355,7 @@ impl PdNodeBuilder {
                 self.listener_config,
                 self.telemetry_config,
                 self.join,
+                self.log_level,
             ))
             .await?;
         if result.is_ok() {
@@ -373,6 +384,7 @@ async fn initialize_node(
     listener_config: astersql_pd_server_config::Config,
     telemetry_config: Option<astersql_pd_server_config::Config>,
     join: String,
+    log_level: Option<Arc<dyn astersql_pd_logutil::LogLevelControl>>,
 ) -> Result<PdNode, NodeError> {
     let join_config = config.clone();
     let mut config = config;
@@ -443,6 +455,7 @@ async fn initialize_node(
         store.clone(),
     ));
     services.set_telemetry(Arc::new(telemetry_config.clone()), &metrics);
+    services.set_log_level_control(log_level);
     services.set_member_admin(member_admin.clone());
     let eligible = tokio::select! { biased;
         _ = cancel.cancelled() => return Err("node is stopped".into()),
