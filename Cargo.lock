@@ -947,6 +947,7 @@ dependencies = [
  "tokio-util",
  "tonic",
  "tonic-prost",
+ "tower",
  "x509-parser",
 ]
 

@@ -173,3 +173,6 @@ mod tls_reload_test;
 
 #[cfg(test)]
 mod metrics_startup_test;
+
+#[cfg(test)]
+mod shared_listener_test;

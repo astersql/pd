@@ -507,7 +507,6 @@ pub fn router_with_metrics(
         Some(service_audit::Audit::new(metrics.clone())),
         Some(metrics.clone()),
     )
-    .merge(metrics.router())
 }
 /// Assemble the existing listener with an optional host-owned access audit sink.
 pub fn router_with_audit(
@@ -524,49 +523,63 @@ fn router_with_options(
     metrics: Option<Arc<service_metrics::ServiceMetrics>>,
 ) -> axum::Router {
     let limits = http_service_limit::ServiceLimit::new(services.clone(), &cancel);
+    let metrics_router = metrics.as_ref().map(|metrics| metrics.clone().router());
     if let Some(metrics) = metrics {
         metrics.set_limits(limits.clone());
     }
-    tonic::service::Routes::new(astersql_pd_proto::pdpb::pd_server::PdServer::new(
+    let grpc = tonic::service::Routes::new(astersql_pd_proto::pdpb::pd_server::PdServer::new(
         sync_transport::SyncGrpc(grpc::Grpc {
             services: services.clone(),
             cancel: cancel.clone(),
         }),
     ))
-    .into_axum_router()
-    .merge(http::router(services.clone(), cancel.clone()))
-    .merge(http_health::router(services.clone(), cancel.clone()))
-    .merge(http_service_limit::router(limits.clone()))
-    .layer(axum::middleware::from_fn_with_state(
-        limits.clone(),
-        http_service_limit::middleware,
-    ))
-    .layer(axum::middleware::from_fn_with_state(
-        limits.clone(),
-        grpc_service_limit::middleware,
-    ))
-    .layer(axum::middleware::from_fn_with_state(
-        http_redirect::RedirectState {
-            services: services.clone(),
-            cancel: cancel.clone(),
-        },
-        grpc_forward::middleware,
-    ))
-    .layer(axum::middleware::from_fn_with_state(
-        http_redirect::RedirectState {
-            services,
-            cancel: cancel.clone(),
-        },
-        http_redirect::middleware,
-    ))
-    .layer(axum::middleware::from_fn_with_state(
-        service_audit::State { limits, audit },
-        service_audit::middleware,
-    ))
-    .layer(axum::middleware::from_fn_with_state(
-        request_context::ContextState::new(cancel),
-        request_context::middleware,
-    ))
+    .into_axum_router();
+    let router = http::router(services.clone(), cancel.clone())
+        .merge(http_health::router(services.clone(), cancel.clone()))
+        .merge(http_service_limit::router(limits.clone()))
+        .fallback(|| async { axum::http::StatusCode::NOT_FOUND })
+        .layer(axum::middleware::from_fn_with_state(
+            grpc.clone(),
+            protocol_dispatch,
+        ))
+        .layer(axum::middleware::from_fn_with_state(
+            limits.clone(),
+            http_service_limit::middleware,
+        ))
+        .layer(axum::middleware::from_fn_with_state(
+            limits.clone(),
+            grpc_service_limit::middleware,
+        ))
+        .layer(axum::middleware::from_fn_with_state(
+            http_redirect::RedirectState {
+                services: services.clone(),
+                cancel: cancel.clone(),
+            },
+            grpc_forward::middleware,
+        ))
+        .layer(axum::middleware::from_fn_with_state(
+            http_redirect::RedirectState {
+                services,
+                cancel: cancel.clone(),
+            },
+            http_redirect::middleware,
+        ))
+        .layer(axum::middleware::from_fn_with_state(
+            service_audit::State { limits, audit },
+            service_audit::middleware,
+        ))
+        .layer(axum::middleware::from_fn_with_state(
+            request_context::ContextState::new(cancel),
+            request_context::middleware,
+        ));
+    // Metrics keep their existing audit/admission scope while sharing dispatch.
+    match metrics_router {
+        Some(metrics) => router.merge(metrics.layer(axum::middleware::from_fn_with_state(
+            grpc,
+            protocol_dispatch,
+        ))),
+        None => router,
+    }
 }
 
 pub mod core_trace;
@@ -1036,3 +1049,44 @@ mod service_metrics_test;
 
 #[cfg(test)]
 mod service_metrics_rpc_test;
+
+// Preserve Go's registered HTTP prefix priority, then select the fallback
+// protocol. Tonic's unimplemented fallback must not swallow ordinary HTTP 404s.
+async fn protocol_dispatch(
+    axum::extract::State(grpc): axum::extract::State<axum::Router>,
+    request: axum::extract::Request,
+    next: axum::middleware::Next,
+) -> axum::response::Response {
+    use tower::ServiceExt;
+    let content = request
+        .headers()
+        .get(axum::http::header::CONTENT_TYPE)
+        .and_then(|value| value.to_str().ok())
+        .unwrap_or("");
+    if request.uri().path().starts_with("/pd/")
+        || request.version() != axum::http::Version::HTTP_2
+        || !content.contains("application/grpc")
+    {
+        return next.run(request).await;
+    }
+    // grpc-go accepts only the exact subtype or its +format / ;parameters forms.
+    if content != "application/grpc"
+        && !content.starts_with("application/grpc+")
+        && !content.starts_with("application/grpc;")
+    {
+        use axum::response::IntoResponse;
+        return (
+            axum::http::StatusCode::UNSUPPORTED_MEDIA_TYPE,
+            [
+                ("content-type", "text/plain; charset=utf-8"),
+                ("x-content-type-options", "nosniff"),
+            ],
+            format!("invalid gRPC request content-type {content:?}\n"),
+        )
+            .into_response();
+    }
+    match grpc.oneshot(request).await {
+        Ok(response) => response,
+        Err(never) => match never {},
+    }
+}
