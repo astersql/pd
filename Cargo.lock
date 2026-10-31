@@ -162,15 +162,19 @@ name = "astersql-pd-cmd-pd-server"
 version = "0.1.0"
 dependencies = [
  "astersql-pd-logutil",
+ "astersql-pd-proto",
  "astersql-pd-runtime",
  "astersql-pd-server-config",
  "astersql-pd-storage",
  "astersql-pd-storage-kv",
  "prometheus",
+ "prost",
  "rustix",
  "serde_json",
  "tokio",
+ "tokio-stream",
  "tokio-util",
+ "tonic",
  "tracing",
  "tracing-subscriber",
 ]

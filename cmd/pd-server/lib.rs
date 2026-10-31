@@ -22,3 +22,6 @@ mod cli_exit;
 mod cli_logging_test;
 
 mod cli_logging;
+
+#[cfg(test)]
+mod process_shutdown_test;
