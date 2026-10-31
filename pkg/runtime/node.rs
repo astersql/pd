@@ -264,6 +264,7 @@ pub struct PdNodeBuilder {
     diagnostics: Option<Arc<crate::etcd_diagnostics::EtcdMemberDiagnostics>>,
     member_admin: Option<Arc<crate::member_admin::EtcdMemberAdmin>>,
     cancellation: CancellationToken,
+    listener_config: astersql_pd_server_config::Config,
 }
 impl PdNodeBuilder {
     pub fn new(runtime: Handle, cancellation: CancellationToken) -> Self {
@@ -273,6 +274,7 @@ impl PdNodeBuilder {
             diagnostics: None,
             member_admin: None,
             cancellation: cancellation.child_token(),
+            listener_config: Default::default(),
         }
     }
     /// Bind diagnostics to an explicitly configured independent etcd member.
@@ -296,6 +298,11 @@ impl PdNodeBuilder {
         self.cluster = cluster;
         self
     }
+    /// Configures the inbound transport using canonical PD security settings.
+    pub fn with_listener_config(mut self, config: astersql_pd_server_config::Config) -> Self {
+        self.listener_config = config;
+        self
+    }
     /// Reserves leadership and a durable TSO window before accepting traffic.
     pub async fn start(
         self,
@@ -316,6 +323,7 @@ impl PdNodeBuilder {
                 self.cluster,
                 self.diagnostics,
                 self.member_admin,
+                self.listener_config,
             ))
             .await?
     }
@@ -329,10 +337,13 @@ async fn initialize_node(
     cluster: astersql_pd_core::BasicCluster,
     diagnostics: Option<Arc<crate::etcd_diagnostics::EtcdMemberDiagnostics>>,
     member_admin: Option<Arc<crate::member_admin::EtcdMemberAdmin>>,
+    listener_config: astersql_pd_server_config::Config,
 ) -> Result<PdNode, NodeError> {
     let mut config = config;
     config.client_url = crate::net_address::Endpoint::parse(&config.client_url)?
         .advertised_url(listener.local_addr()?)?;
+    let listener =
+        crate::tls_listener::Listener::new(listener, &config.client_url, &listener_config)?;
     config.peer_url = crate::net_address::Endpoint::parse(&config.peer_url)?.url();
     if let Some(diagnostics) = &diagnostics {
         tokio::select! { biased;
@@ -411,12 +422,7 @@ async fn initialize_node(
     let worker_cancel = cancel.clone();
     let cluster_view = services.clone();
     let worker = tokio::spawn(async move {
-        let server = axum::serve(
-            listener,
-            router.into_make_service_with_connect_info::<std::net::SocketAddr>(),
-        )
-        .with_graceful_shutdown(worker_cancel.clone().cancelled_owned());
-        let mut server = Box::pin(std::future::IntoFuture::into_future(server));
+        let mut server = crate::tls_listener::serve(listener, router, worker_cancel.clone());
         // Poll the serving future before publishing readiness. A listener that
         // terminates immediately must never acknowledge initialization.
         let first = std::future::poll_fn(|cx| {

@@ -151,13 +151,16 @@ async fn task_039_reserved_listener_lifecycle() {
 #[tokio::test]
 async fn task_039_bind_errors_and_drop() {
     use crate::net_address::Endpoint;
-    assert!(
-        Endpoint::parse("https://127.0.0.1:0")
-            .unwrap()
-            .bind()
-            .await
-            .is_err()
-    );
+    // HTTPS now reserves TCP; PdNodeBuilder validates and wraps it before serving.
+    let tls = Endpoint::parse("https://127.0.0.1:0")
+        .unwrap()
+        .bind()
+        .await
+        .unwrap();
+    let tls_address = tls.local_addr().unwrap();
+    assert!(tokio::net::TcpListener::bind(tls_address).await.is_err());
+    drop(tls);
+    assert_released(tls_address).await;
     assert!(
         Endpoint::parse("http://localhost")
             .unwrap()

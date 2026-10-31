@@ -162,6 +162,7 @@ name = "astersql-pd-cmd-pd-server"
 version = "0.1.0"
 dependencies = [
  "astersql-pd-runtime",
+ "astersql-pd-server-config",
  "astersql-pd-storage",
  "astersql-pd-storage-kv",
  "prometheus",

@@ -7,6 +7,7 @@ type ProcessError = Box<dyn Error + Send + Sync>;
 
 pub(crate) struct Config {
     pub endpoint: String,
+    pub security: astersql_pd_server_config::Config,
     pub diagnostic_endpoint: Option<String>,
     pub diagnostic_member: Option<u64>,
     pub dedicated_member: bool,
@@ -20,6 +21,7 @@ impl Config {
     pub(crate) fn parse(args: impl Iterator<Item = String>) -> Result<Self, ProcessError> {
         let mut config = Self {
             endpoint: String::new(),
+            security: Default::default(),
             diagnostic_endpoint: None,
             diagnostic_member: None,
             dedicated_member: false,
@@ -38,6 +40,9 @@ impl Config {
                 "--etcd-member-id" => config.diagnostic_member = Some(value.parse()?),
                 "--client-urls" => config.client = value.into(),
                 "--peer-urls" => config.peer = value.into(),
+                "--cert" => config.security.security.tls.cert_path = value.into(),
+                "--key" => config.security.security.tls.key_path = value.into(),
+                "--cacert" => config.security.security.tls.ca_path = value.into(),
                 "--name" => config.name = value.into(),
                 "--advertise-client-urls" => config.advertise_client = Some(value.into()),
                 "--advertise-peer-urls" => config.advertise_peer = Some(value.into()),
@@ -75,6 +80,9 @@ pub(crate) async fn run_until(
     let peer = Endpoint::parse(config.advertise_peer.as_deref().unwrap_or(&config.peer))?.url();
     Endpoint::parse(&config.peer)?;
     let listener = endpoint.bind().await?;
+    if endpoint.url().starts_with("https://") != advertised.url().starts_with("https://") {
+        return Err("listener and advertised client schemes must match".into());
+    }
     let client = advertised.advertised_url(listener.local_addr()?)?;
     let store: Arc<dyn MetaStore> = Arc::new(
         EtcdMetaStore::connect(
@@ -88,7 +96,8 @@ pub(crate) async fn run_until(
         .await?,
     );
     let mut builder =
-        PdNodeBuilder::new(tokio::runtime::Handle::current(), CancellationToken::new());
+        PdNodeBuilder::new(tokio::runtime::Handle::current(), CancellationToken::new())
+            .with_listener_config(config.security);
     if let (Some(endpoint), Some(member)) = (config.diagnostic_endpoint, config.diagnostic_member) {
         let diagnostics = astersql_pd_runtime::etcd_diagnostics::EtcdMemberDiagnostics::connect(
             endpoint.clone(),
@@ -132,7 +141,7 @@ pub fn main() -> ExitCode {
     let args: Vec<_> = std::env::args().skip(1).collect();
     if args == ["--help"] || args == ["-h"] {
         println!(
-            "pd-server [--etcd-member-endpoint=URL --etcd-member-id=ID --etcd-member-exclusive=true] --etcd-endpoints=http://127.0.0.1:2379 [--client-urls=http://127.0.0.1:2381] [--name=pd]\nMinimal classic PD; external etcd is a transitional dependency."
+            "pd-server [--etcd-member-endpoint=URL --etcd-member-id=ID --etcd-member-exclusive=true] --etcd-endpoints=http://127.0.0.1:2379 [--client-urls=http://127.0.0.1:2381] [--name=pd] [--cert=FILE --key=FILE --cacert=FILE]\nMinimal classic PD; external etcd is a transitional dependency."
         );
         return ExitCode::SUCCESS;
     }

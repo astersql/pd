@@ -82,19 +82,12 @@ impl Endpoint {
         format!("{}://{}", self.scheme, self.authority())
     }
     /// Reserves the socket until the returned listener is moved into the host.
-    /// TLS is explicitly rejected until a TLS acceptor is supplied by the host.
+    /// The host must wrap HTTPS reservations in a configured TLS listener.
     pub async fn bind(&self) -> Result<TcpListener, NodeError> {
-        self.require_plaintext()?;
         if self.port.is_none() {
             return Err("listener endpoint requires an explicit port".into());
         }
         Ok(TcpListener::bind((self.host.as_str(), self.port.unwrap())).await?)
-    }
-    fn require_plaintext(&self) -> Result<(), NodeError> {
-        if self.scheme != "http" {
-            return Err("TLS listener is not configured".into());
-        }
-        Ok(())
     }
     /// Substitutes the assigned port for an explicit zero port. The host stays
     /// explicit: wildcard listeners never silently become loopback advertisements.
@@ -107,7 +100,6 @@ impl Endpoint {
         Ok(endpoint.url())
     }
     pub(crate) fn validate_advertised(&self) -> Result<(), NodeError> {
-        self.require_plaintext()?;
         if self
             .host
             .parse::<IpAddr>()
