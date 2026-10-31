@@ -23,6 +23,7 @@ mod grpc_unsupported;
 mod http;
 pub mod http_admin_cache;
 pub mod http_admin_markers;
+pub mod http_admin_recover_id;
 pub mod http_cluster;
 mod http_config_read;
 pub mod http_contract;
@@ -53,6 +54,10 @@ pub trait PdServices: Send + Sync {
     /// Shared authoritative store, available independently of leader/bootstrap state.
     fn recovery_marker_store(&self) -> Option<Arc<dyn astersql_pd_storage::MetaStore>> {
         None
+    }
+    /// Reset the active term's canonical persistent ID allocator.
+    async fn recover_alloc_id(&self, _id: u64) -> Result<(), String> {
+        Err("server not started".into())
     }
     /// Mutate the existing region cache or storage under host admission.
     async fn admin_region(
@@ -918,3 +923,7 @@ mod http_admin_cache_test;
 #[cfg(test)]
 #[path = "http_admin_markers_test.rs"]
 mod http_admin_markers_test;
+
+#[cfg(test)]
+#[path = "http_admin_recover_id_test.rs"]
+mod http_admin_recover_id_test;

@@ -210,6 +210,17 @@ impl PdServices for Application {
     > {
         self.cluster.split_ids(region, count, batch, reason).await
     }
+    async fn recover_alloc_id(&self, id: u64) -> Result<(), String> {
+        self.allocator
+            .set_base(id)
+            .await
+            .map_err(|error| match error {
+                astersql_pd_id::AllocatorError::Exhausted => {
+                    "[PD:idalloc:ErrIDExhausted]id exhausted".into()
+                }
+                other => other.to_string(),
+            })
+    }
     async fn alloc_id(&self) -> Result<u64, String> {
         self.requests.inc();
         self.allocator.alloc().await.map_err(|e| e.to_string())

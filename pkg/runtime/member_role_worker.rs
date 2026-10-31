@@ -627,6 +627,9 @@ impl PdServices for RoleServices {
             .split_ids(region, count, batch, reason)
             .await
     }
+    async fn recover_alloc_id(&self, id: u64) -> Result<(), String> {
+        self.active().await?.recover_alloc_id(id).await
+    }
     async fn alloc_id(&self) -> Result<u64, String> {
         self.active().await?.alloc_id().await
     }
