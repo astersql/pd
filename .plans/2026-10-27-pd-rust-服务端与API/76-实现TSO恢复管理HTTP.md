@@ -2,7 +2,7 @@
 
 批次：【批次 76】依赖批次 75（含此前传递依赖）
 
-状态：未开始
+状态：已完成，待回归
 
 目的：仅接通reset-ts，按Go防倒退和上限规则操作真实Oracle；local TSO转移明确主题8依赖。
 
@@ -79,3 +79,15 @@
 ## 完成
 
 该行为及本任务全部来源行获得当前证据才标记已完成；不得把扩大范围作为修改Go或绕过验证的授权。只能在本任务文件记阻塞；因无关环境无法验证可标记已完成，待回归并保留文件，但缺失领域能力或必要兼容证据须保持已阻塞。提交规则与删除规则见对应prompt；不修改plan.md或来源史诗。
+
+
+## 本次执行与待统一回归（2026-10-31）
+
+- 已实现reset-ts至当前term真实Oracle，完成Go防倒退/gap/force规则、持久窗口和HTTP/RPC接线；local TSO转移保留主题8边界。
+- 聚焦`cargo test --locked -p astersql-pd-server --lib task_076_ -- --nocapture`退出0：2通过、1条件忽略；该忽略的Go差分由`PD_COMPAT_GO_BIN=$PWD/bin/pd-server python3 scripts/http-admin-recover-tso-oracle.py`单独运行，退出0、1通过。
+- server全包退出0：255通过、37既有条件忽略。metadata、fmt --check、server check、workspace check均退出0。
+- `cargo test --workspace --locked`退出101：1960通过、1失败、74忽略。无关失败为`meta_service_group_test::meta_service_group_etcd`，etcd fixture等待确认文件时子进程退出（etcd_fixture_test.rs:77）。日志缺确切退出原因；当时可用空间很低。未修改该测试或生产源码。
+- 在停止全部Cargo及槽位进程并做缓存内容校验/透明压缩后，单项`cargo test --locked -p astersql-pd-storage-endpoint --lib meta_service_group_test::meta_service_group_etcd -- --exact --nocapture`退出0：1通过。
+- 第二轮workspace在用户要求停止重复无关全量回归后，经SIGINT及子进程清理退出-2；不作为通过证据。按用户最新收尾契约保留本任务，供全部实现批次结束后统一恢复回归。
+- 实际动态领取槽位1；CARGO_TARGET_DIR=/Users/Shared/work/dir/data/codes/pd/target/rust-slot-1。自己的锁和全部本任务进程已清理，缓存保留。1101项Go/模块及只读plan.md不变。
+- 完整证据：docs/rust/server-api/task-076.md、task-076-evidence.json.gz。
