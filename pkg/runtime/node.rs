@@ -265,6 +265,7 @@ pub struct PdNodeBuilder {
     member_admin: Option<Arc<crate::member_admin::EtcdMemberAdmin>>,
     cancellation: CancellationToken,
     listener_config: astersql_pd_server_config::Config,
+    telemetry_config: Option<astersql_pd_server_config::Config>,
 }
 impl PdNodeBuilder {
     pub fn new(runtime: Handle, cancellation: CancellationToken) -> Self {
@@ -275,6 +276,7 @@ impl PdNodeBuilder {
             member_admin: None,
             cancellation: cancellation.child_token(),
             listener_config: Default::default(),
+            telemetry_config: None,
         }
     }
     /// Bind diagnostics to an explicitly configured independent etcd member.
@@ -298,9 +300,15 @@ impl PdNodeBuilder {
         self.cluster = cluster;
         self
     }
-    /// Configures the inbound transport using canonical PD security settings.
+    /// Configures inbound TLS and host metric query/push transports.
     pub fn with_listener_config(mut self, config: astersql_pd_server_config::Config) -> Self {
         self.listener_config = config;
+        self
+    }
+    /// Configure metric destinations and outbound credentials independently of
+    /// inbound listener policy. Defaults to the canonical listener configuration.
+    pub fn with_telemetry_config(mut self, config: astersql_pd_server_config::Config) -> Self {
+        self.telemetry_config = Some(config);
         self
     }
     /// Reserves leadership and a durable TSO window before accepting traffic.
@@ -324,6 +332,7 @@ impl PdNodeBuilder {
                 self.diagnostics,
                 self.member_admin,
                 self.listener_config,
+                self.telemetry_config,
             ))
             .await?
     }
@@ -338,6 +347,7 @@ async fn initialize_node(
     diagnostics: Option<Arc<crate::etcd_diagnostics::EtcdMemberDiagnostics>>,
     member_admin: Option<Arc<crate::member_admin::EtcdMemberAdmin>>,
     listener_config: astersql_pd_server_config::Config,
+    telemetry_config: Option<astersql_pd_server_config::Config>,
 ) -> Result<PdNode, NodeError> {
     let mut config = config;
     config.client_url = crate::net_address::Endpoint::parse(&config.client_url)?
@@ -345,6 +355,11 @@ async fn initialize_node(
     let listener =
         crate::tls_listener::Listener::new(listener, &config.client_url, &listener_config)?;
     config.peer_url = crate::net_address::Endpoint::parse(&config.peer_url)?.url();
+    // Detect collector ownership conflicts before any persistent member binding.
+    let telemetry_config = telemetry_config.unwrap_or_else(|| listener_config.clone());
+    let metrics = astersql_pd_server::service_metrics::ServiceMetrics::register(registry.clone())?;
+    metrics.prepare_transport(&telemetry_config)?;
+    metrics.set_cluster(config.cluster_id);
     if let Some(diagnostics) = &diagnostics {
         tokio::select! { biased;
             _ = cancel.cancelled() => return Err("node is stopped".into()),
@@ -381,6 +396,7 @@ async fn initialize_node(
         config.clone(),
         store.clone(),
     ));
+    services.set_telemetry(Arc::new(telemetry_config.clone()), &metrics);
     services.set_member_admin(member_admin.clone());
     let initial = if !services.eligible().await? {
         None
@@ -415,7 +431,8 @@ async fn initialize_node(
     services.set_diagnostics(diagnostics);
     services.replace(initial.clone());
     record(&events, "services");
-    let router = astersql_pd_server::router(services.clone(), cancel.clone());
+    let router =
+        astersql_pd_server::router_with_metrics(services.clone(), cancel.clone(), metrics.clone());
     record(&events, "listener");
     let (tx, rx) = oneshot::channel();
     let worker_events = events.clone();
@@ -486,15 +503,30 @@ async fn initialize_node(
                 }
             }
         });
-        let (result, finished) = tokio::select! {
-            _ = &mut membership => {
-                worker_cancel.cancel();
-                let result = (&mut roles).await;
-                (result, false)
-            },
-            result = &mut server => (result.map_err(Into::into), true),
-            result = &mut roles => (result, false),
+        let push = astersql_pd_server::service_metrics::push_worker(
+            registry.clone(),
+            Arc::new(telemetry_config),
+            rustix::system::uname()
+                .nodename()
+                .to_string_lossy()
+                .into_owned(),
+            worker_cancel.clone(),
+        );
+        let serving = async {
+            let result = tokio::select! {
+                _ = &mut membership => {
+                    worker_cancel.cancel();
+                    let result = (&mut roles).await;
+                    (result, false)
+                },
+                result = &mut server => (result.map_err(Into::into), true),
+                result = &mut roles => (result, false),
+            };
+            worker_cancel.cancel();
+            result
         };
+        let monitor = metrics.run_worker(worker_cancel.clone());
+        let ((result, finished), (), ()) = tokio::join!(serving, push, monitor);
         services.set_listening(false);
         worker_cancel.cancel();
         record(&worker_events, "stop-admission");

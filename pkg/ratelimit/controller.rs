@@ -77,7 +77,7 @@ impl Controller {
         Ok(controller)
     }
 
-    /// Collects configured concurrency every 15 seconds until close or cancellation.
+    /// Collects interval peak concurrency every 15 seconds until close or cancellation.
     /// No task is spawned internally; the host owns and joins this future.
     pub async fn run_metrics(&self) {
         let Some((api_type, gauge)) = &self.metrics else {
@@ -91,14 +91,28 @@ impl Controller {
                 biased;
                 _ = self.cancellation.cancelled() => return,
                 _ = interval.tick() => {
-                    let limiters: Vec<_> = self.state.lock().await.limiters.iter()
-                        .map(|(label, limiter)| (label.clone(), limiter.clone())).collect();
-                    for (label, limiter) in limiters {
-                        let (limit, _) = limiter.concurrency_status().await;
-                        gauge.with_label_values(&[api_type, &label]).set(limit as f64);
-                    }
+                    self.collect_metrics(api_type,gauge).await;
                 }
             }
+        }
+    }
+
+    /// Collect interval peak admissions, resetting each baseline to current
+    /// work, as Go getMaxConcurrency does. The host owns gauge registration.
+    pub async fn collect_metrics(&self, api_type: &str, gauge: &prometheus::GaugeVec) {
+        let limiters: Vec<_> = self
+            .state
+            .lock()
+            .await
+            .limiters
+            .iter()
+            .map(|(label, limiter)| (label.clone(), limiter.clone()))
+            .collect();
+        for (label, limiter) in limiters {
+            let concurrency = limiter.concurrency_limiter().await;
+            gauge
+                .with_label_values(&[api_type, &label])
+                .set(concurrency.get_max_concurrency() as f64);
         }
     }
 

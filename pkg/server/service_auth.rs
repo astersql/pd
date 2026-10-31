@@ -213,14 +213,19 @@ impl rustls::server::ResolvesServerCert for ReloadCertificate {
         &self,
         _: rustls::server::ClientHello<'_>,
     ) -> Option<Arc<rustls::sign::CertifiedKey>> {
-        let cert = std::fs::read(&self.cert).ok()?;
-        let key = std::fs::read(&self.key).ok()?;
-        let certs = CertificateDer::pem_slice_iter(&cert)
-            .collect::<Result<Vec<_>, _>>()
-            .ok()?;
-        let key = PrivateKeyDer::from_pem_slice(&key).ok()?;
-        rustls::sign::CertifiedKey::from_der(certs, key, &rustls::crypto::ring::default_provider())
-            .ok()
-            .map(Arc::new)
+        certified_key(&self.cert, &self.key)
     }
+}
+
+/// Read a complete key pair for one handshake, shared by server and metric client resolvers.
+pub(crate) fn certified_key(cert: &str, key: &str) -> Option<Arc<rustls::sign::CertifiedKey>> {
+    let cert = std::fs::read(cert).ok()?;
+    let key = std::fs::read(key).ok()?;
+    let certs = CertificateDer::pem_slice_iter(&cert)
+        .collect::<Result<Vec<_>, _>>()
+        .ok()?;
+    let key = PrivateKeyDer::from_pem_slice(&key).ok()?;
+    rustls::sign::CertifiedKey::from_der(certs, key, &rustls::crypto::ring::default_provider())
+        .ok()
+        .map(Arc::new)
 }

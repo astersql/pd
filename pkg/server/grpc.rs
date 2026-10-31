@@ -273,13 +273,27 @@ impl Pd for Grpc {
         &self,
         r: Request<pdpb::ScanRegionsRequest>,
     ) -> Result<Response<pdpb::ScanRegionsResponse>, Status> {
-        self.scan_regions_request(r).await.map(Response::new)
+        let result = self.scan_regions_request(r).await;
+        if let (Some(metrics), Ok(response)) = (self.services.service_metrics(), &result) {
+            metrics.region_result(
+                "ScanRegions",
+                response.header.as_ref().is_some_and(|h| h.error.is_some()),
+            );
+        }
+        result.map(Response::new)
     }
     async fn batch_scan_regions(
         &self,
         r: Request<pdpb::BatchScanRegionsRequest>,
     ) -> Result<Response<pdpb::BatchScanRegionsResponse>, Status> {
-        self.batch_scan_regions_request(r).await.map(Response::new)
+        let result = self.batch_scan_regions_request(r).await;
+        if let (Some(metrics), Ok(response)) = (self.services.service_metrics(), &result) {
+            metrics.region_result(
+                "BatchScanRegions",
+                response.header.as_ref().is_some_and(|h| h.error.is_some()),
+            );
+        }
+        result.map(Response::new)
     }
     async fn get_region_by_id(
         &self,
@@ -287,16 +301,23 @@ impl Pd for Grpc {
     ) -> Result<Response<pdpb::GetRegionResponse>, Status> {
         let allow = request.metadata().contains_key("pd-allow-follower-handle");
         let r = request.into_inner();
-        self.lookup_region(
-            r.header.as_ref(),
-            None,
-            r.region_id,
-            false,
-            r.need_buckets,
-            allow,
-        )
-        .await
-        .map(Response::new)
+        let result = self
+            .lookup_region(
+                r.header.as_ref(),
+                None,
+                r.region_id,
+                false,
+                r.need_buckets,
+                allow,
+            )
+            .await;
+        if let (Some(metrics), Ok(response)) = (self.services.service_metrics(), &result) {
+            metrics.region_result(
+                "GetRegionByID",
+                response.header.as_ref().is_some_and(|h| h.error.is_some()),
+            );
+        }
+        result.map(Response::new)
     }
 
     async fn report_buckets(
@@ -336,11 +357,46 @@ impl Pd for Grpc {
                 if let Some(buckets) = request.buckets.filter(|b| !b.keys.is_empty()) {
                     // Canonical host admission owns the applied flag and worker
                     // submission. Missing regions are ignored and reception continues.
-                    let _ = service
+                    let metric_labels = if let Some(metrics) = self.services.service_metrics() {
+                        let leader = if let Some(read) = self.services.cluster_read_service() {
+                            read.region(buckets.region_id)
+                                .await
+                                .ok()
+                                .flatten()
+                                .and_then(|r| r.leader().map(|p| p.store_id))
+                        } else {
+                            None
+                        };
+                        match leader {
+                            Some(id) => {
+                                crate::service_store_metrics::labels(self.services.as_ref(), id)
+                                    .await
+                                    .map(|(m, a)| (m, id, a))
+                            }
+                            None => Some((metrics, 0, String::new())),
+                        }
+                    } else {
+                        None
+                    };
+                    if let Some((m, id, a)) = &metric_labels {
+                        m.stores.counter(*id, a, true, "recv");
+                    }
+                    let period = buckets.period_in_ms / 1000;
+                    let started = std::time::Instant::now();
+                    let result = service
                         .bucket_heartbeat(crate::bucket_heartbeat_adapter::bucket_from_proto(
                             buckets,
                         ))
                         .await;
+                    if let Some((m, id, a)) = metric_labels {
+                        m.stores
+                            .counter(id, &a, true, if result.is_ok() { "ok" } else { "err" });
+                        if result.is_ok() {
+                            m.stores.observe(id, &a, "interval", period as f64);
+                            m.stores
+                                .observe(id, &a, "bucket", started.elapsed().as_secs_f64());
+                        }
+                    }
                 }
                 Ok::<_, Status>(None)
             };
@@ -377,8 +433,15 @@ impl Pd for Grpc {
         // The output owns the receive loop, including the in-flight state future.
         // Accepted reports produce no ack; cancellation/drop detaches no worker.
         let output = futures_util::stream::unfold(
-            (input, services, cancel, false, commands_tx),
-            |(mut input, services, cancel, terminal, commands_tx)| async move {
+            (
+                input,
+                services,
+                cancel,
+                false,
+                commands_tx,
+                None::<std::time::Instant>,
+            ),
+            |(mut input, services, cancel, terminal, commands_tx, mut last_bind)| async move {
                 if terminal {
                     cancel.cancel();
                     return None;
@@ -395,7 +458,10 @@ impl Pd for Grpc {
                             return None;
                         }
                         Err(e) => {
-                            return Some((Err(e), (input, services, cancel, true, commands_tx)));
+                            return Some((
+                                Err(e),
+                                (input, services, cancel, true, commands_tx, last_bind),
+                            ));
                         }
                     };
                     let cluster_id = services.identity().cluster_id;
@@ -450,18 +516,49 @@ impl Pd for Grpc {
                             Some(astersql_pd_core::NodeState::Removed) => return Ok(None),
                             _ => {}
                         }
-                        service
-                            .bind_heartbeat(
+                        let metric_labels =
+                            crate::service_store_metrics::labels(services.as_ref(), store_id).await;
+                        if let Some((m, a)) = &metric_labels {
+                            m.stores.counter(store_id, a, false, "recv");
+                            let now = std::time::SystemTime::now()
+                                .duration_since(std::time::UNIX_EPOCH)
+                                .unwrap_or_default()
+                                .as_secs() as f64;
+                            m.stores.observe(
                                 store_id,
-                                std::sync::Arc::new(
-                                    crate::heartbeat_stream_adapter::CommandStream {
-                                        sender: commands_tx.clone(),
-                                        cancellation: cancel.clone(),
-                                    },
-                                ),
-                            )
-                            .await
-                            .map_err(|e| Status::unavailable(e.0))?;
+                                a,
+                                "region_latency",
+                                now - req.interval.as_ref().map_or(0, |i| i.end_timestamp) as f64,
+                            );
+                        }
+                        let interval = services.telemetry_config().map_or(60_000_000_000, |c| {
+                            c.scalars.heartbeat_stream_bind_interval.as_nanos()
+                        });
+                        if last_bind.is_none_or(|at| {
+                            at.elapsed()
+                                > std::time::Duration::from_nanos(if interval > 0 {
+                                    interval as u64
+                                } else {
+                                    60_000_000_000
+                                })
+                        }) {
+                            service
+                                .bind_heartbeat(
+                                    store_id,
+                                    std::sync::Arc::new(
+                                        crate::heartbeat_stream_adapter::CommandStream {
+                                            sender: commands_tx.clone(),
+                                            cancellation: cancel.clone(),
+                                        },
+                                    ),
+                                )
+                                .await
+                                .map_err(|e| Status::unavailable(e.0))?;
+                            last_bind = Some(std::time::Instant::now());
+                            if let Some((m, a)) = &metric_labels {
+                                m.stores.counter(store_id, a, false, "bind");
+                            }
+                        }
                         let target = req.leader.clone();
                         let region = match crate::core_region_adapter::region_from_heartbeat(
                             req,
@@ -488,10 +585,29 @@ impl Pd for Grpc {
                         } else {
                             None
                         };
+                        let started = std::time::Instant::now();
                         let error = match invalid {
                             Some(message) => Some(message.into()),
                             None => service.region_heartbeat(region).await.err().map(|e| e.0),
                         };
+                        if let Some((m, a)) = metric_labels {
+                            let status = match invalid {
+                                Some("invalid request leader") => "invalid-leader",
+                                Some("invalid request region") => "invalid-region",
+                                Some(_) => "no-peer",
+                                None if error.is_some() => "err",
+                                None => "ok",
+                            };
+                            m.stores.counter(store_id, &a, false, status);
+                            if error.is_none() {
+                                m.stores.observe(
+                                    store_id,
+                                    &a,
+                                    "region",
+                                    started.elapsed().as_secs_f64(),
+                                );
+                            }
+                        }
                         Ok(error.map(|message| {
                             (
                                 error_response(pdpb::ErrorType::Unknown, message, target),
@@ -508,13 +624,13 @@ impl Pd for Grpc {
                         Ok(Some((response, terminal))) => {
                             return Some((
                                 Ok(response),
-                                (input, services, cancel, terminal, commands_tx),
+                                (input, services, cancel, terminal, commands_tx, last_bind),
                             ));
                         }
                         Err(error) => {
                             return Some((
                                 Err(error),
-                                (input, services, cancel, true, commands_tx),
+                                (input, services, cancel, true, commands_tx, last_bind),
                             ));
                         }
                     }
@@ -569,8 +685,22 @@ impl Pd for Grpc {
                 "store recovery and DR status are unsupported",
             ));
         }
+        let metric_labels =
+            crate::service_store_metrics::labels(self.services.as_ref(), stats.store_id).await;
+        let metric_store = stats.store_id;
+        let started = std::time::Instant::now();
         let stats = crate::core_store_adapter::store_stats_from_proto(Some(stats)).unwrap();
         let result = service.store_heartbeat(stats).await;
+        if result.is_ok()
+            && let Some((metrics, address)) = metric_labels
+        {
+            metrics.stores.observe(
+                metric_store,
+                &address,
+                "store",
+                started.elapsed().as_secs_f64(),
+            );
+        }
         let mut header = self.header().unwrap();
         let state = match result {
             Ok(state) => match state {
@@ -712,6 +842,10 @@ impl Pd for Grpc {
                                 req.header.as_ref().map(|h| h.cluster_id).unwrap_or(0)
                             )))
                         } else {
+                            let _measurement = services.service_metrics().map(|m| {
+                                m.tso_batch.observe(f64::from(req.count));
+                                m.tso_handling.start_timer()
+                            });
                             tokio::select! { biased;
                                 _ = cancel.cancelled() => return None,
                                 result = services.timestamp(req.count) => result,

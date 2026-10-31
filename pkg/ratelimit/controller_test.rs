@@ -188,3 +188,19 @@ async fn controller_qps_and_metrics() {
             .all(|m| m.get_gauge().get_value() == 0.0)
     );
 }
+
+#[tokio::test]
+async fn task_086_collect_peak_not_limit() {
+    let c = Controller::new(&CancellationToken::new());
+    c.update("a", &[O::Concurrency(10)]).await;
+    let first = c.allow("a").await.unwrap();
+    let second = c.allow("a").await.unwrap();
+    first.done();
+    second.done();
+    let gauge =
+        prometheus::GaugeVec::new(prometheus::Opts::new("peak", "peak"), &["kind", "api"]).unwrap();
+    c.collect_metrics("http", &gauge).await;
+    assert_eq!(gauge.with_label_values(&["http", "a"]).get(), 2.0);
+    c.collect_metrics("http", &gauge).await;
+    assert_eq!(gauge.with_label_values(&["http", "a"]).get(), 0.0);
+}

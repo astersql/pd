@@ -64,6 +64,7 @@ impl Grpc {
             } else {
                 self.services.cluster_read_service()
             };
+            let started = std::time::Instant::now();
             let result = if let Some(service) = service {
                 service
                     .query_regions(
@@ -125,6 +126,12 @@ impl Grpc {
                     })
                     .unwrap_or_default();
                 response.regions_by_id.insert(id, wire);
+            }
+            if let Some(metrics) = self.services.service_metrics() {
+                metrics
+                    .query_handling
+                    .observe(started.elapsed().as_secs_f64());
+                metrics.region_result("QueryRegion", false);
             }
             Ok(response)
         };

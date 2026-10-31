@@ -35,6 +35,26 @@ impl ServiceLimit {
             config: Arc::new(Mutex::new(None)),
         }
     }
+    pub(crate) async fn consensus_metrics(
+        &self,
+    ) -> Option<crate::service_metrics::ConsensusMetrics> {
+        self.services.consensus_metrics().await
+    }
+    pub(crate) async fn store_ids(&self) -> Option<Vec<u64>> {
+        Some(
+            self.services
+                .stores()
+                .await
+                .ok()?
+                .into_iter()
+                .map(|s| s.id)
+                .collect(),
+        )
+    }
+    pub(crate) async fn collect_metrics(&self, gauge: &prometheus::GaugeVec) {
+        self.controller.collect_metrics("http", gauge).await;
+        self.grpc_controller.collect_metrics("grpc", gauge).await;
+    }
     pub(crate) async fn audit_enabled(&self) -> bool {
         if self.services.recovery_marker_store().is_none() {
             return false;
@@ -72,7 +92,7 @@ impl ServiceLimit {
                 serde_json::from_value(serde_json::to_value(map).map_err(|e| e.to_string())?)
                     .map_err(|e| e.to_string())?;
             for (label, dim) in entries {
-                if !allowlisted(&label) {
+                if !allowlisted(&label) && ROUTES.iter().any(|route| route.2 == label) {
                     self.controller.update(&label, &[option(dim)]).await;
                 }
             }
@@ -82,6 +102,9 @@ impl ServiceLimit {
                 serde_json::from_value(serde_json::to_value(map).map_err(|e| e.to_string())?)
                     .map_err(|e| e.to_string())?;
             for (label, dim) in entries {
+                if !crate::grpc_service_limit::known_label(&label) {
+                    continue;
+                }
                 self.grpc_controller.update(&label, &[option(dim)]).await;
             }
         }
@@ -172,11 +195,48 @@ pub(crate) async fn middleware(
         _=cancel.cancelled()=>return text(StatusCode::SERVICE_UNAVAILABLE,"request cancelled"),
         result=admit=>match result {Ok(guard)=>guard,Err(response)=>return response}
     };
-    // Each existing handler owns its cancellation response contract. The guard
-    // survives until it returns or its future is dropped, without replacing that response.
+    // Streaming handlers return headers before their work finishes. Keep the
+    // admission with the actual body, including disconnect and cancellation.
     let response = next.run(request).await;
-    drop(admission);
-    response
+    match admission {
+        None => response,
+        Some(admission) => response.map(|body| {
+            Body::new(AdmissionBody {
+                body,
+                admission: Some(admission),
+            })
+        }),
+    }
+}
+
+struct AdmissionBody {
+    body: Body,
+    admission: Option<Admission>,
+}
+impl hyper::body::Body for AdmissionBody {
+    type Data = axum::body::Bytes;
+    type Error = axum::Error;
+    fn poll_frame(
+        self: std::pin::Pin<&mut Self>,
+        cx: &mut std::task::Context<'_>,
+    ) -> std::task::Poll<Option<Result<hyper::body::Frame<Self::Data>, Self::Error>>> {
+        let this = self.get_mut();
+        let frame = std::pin::Pin::new(&mut this.body).poll_frame(cx);
+        if matches!(
+            frame,
+            std::task::Poll::Ready(None) | std::task::Poll::Ready(Some(Err(_)))
+        ) || this.body.is_end_stream()
+        {
+            this.admission.take();
+        }
+        frame
+    }
+    fn is_end_stream(&self) -> bool {
+        self.body.is_end_stream()
+    }
+    fn size_hint(&self) -> hyper::body::SizeHint {
+        self.body.size_hint()
+    }
 }
 
 pub(crate) fn router(s: ServiceLimit) -> Router {

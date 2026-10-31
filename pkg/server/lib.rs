@@ -34,6 +34,7 @@ pub mod http_contract;
 pub mod http_health;
 mod http_leader;
 pub mod http_member;
+mod http_metric;
 pub mod http_region_schedule;
 pub mod http_resolved_ts;
 pub mod http_rule;
@@ -45,6 +46,8 @@ mod http_store_read;
 mod http_v2_boundary;
 #[cfg(test)]
 mod http_v2_boundary_test;
+mod metric_proto;
+mod metric_transport;
 mod request_role;
 pub mod service_audit;
 #[cfg(test)]
@@ -53,6 +56,8 @@ mod service_audit_test;
 pub mod service_auth;
 #[cfg(test)]
 mod service_auth_test;
+pub mod service_metrics;
+mod service_store_metrics;
 use astersql_pd_tso::Timestamp;
 use async_trait::async_trait;
 use std::sync::Arc;
@@ -70,6 +75,20 @@ pub struct Identity {
 /// Domain operations supplied by the host; transport types stay in this crate.
 #[async_trait]
 pub trait PdServices: Send + Sync {
+    /// None when the host has not explicitly assigned a consensus member.
+    async fn consensus_metrics(&self) -> Option<service_metrics::ConsensusMetrics> {
+        None
+    }
+
+    /// Immutable host telemetry/security settings, independent of leader terms.
+    fn telemetry_config(&self) -> Option<Arc<astersql_pd_server_config::Config>> {
+        None
+    }
+    /// Listener-owned measurements; weak host references avoid retaining registrations.
+    fn service_metrics(&self) -> Option<Arc<service_metrics::ServiceMetrics>> {
+        None
+    }
+
     /// Shared authoritative store, available independently of leader/bootstrap state.
     fn recovery_marker_store(&self) -> Option<Arc<dyn astersql_pd_storage::MetaStore>> {
         None
@@ -475,13 +494,39 @@ pub trait ClusterReadService: Send + Sync {
 pub fn router(services: Arc<dyn PdServices>, cancel: CancellationToken) -> axum::Router {
     router_with_audit(services, cancel, None)
 }
+/// Attach the host registry to the canonical HTTP/gRPC listener. Registrations
+/// live through connection draining and are reclaimed when the router is dropped.
+pub fn router_with_metrics(
+    services: Arc<dyn PdServices>,
+    cancel: CancellationToken,
+    metrics: Arc<service_metrics::ServiceMetrics>,
+) -> axum::Router {
+    router_with_options(
+        services,
+        cancel,
+        Some(service_audit::Audit::new(metrics.clone())),
+        Some(metrics.clone()),
+    )
+    .merge(metrics.router())
+}
 /// Assemble the existing listener with an optional host-owned access audit sink.
 pub fn router_with_audit(
     services: Arc<dyn PdServices>,
     cancel: CancellationToken,
     audit: Option<service_audit::Audit>,
 ) -> axum::Router {
+    router_with_options(services, cancel, audit, None)
+}
+fn router_with_options(
+    services: Arc<dyn PdServices>,
+    cancel: CancellationToken,
+    audit: Option<service_audit::Audit>,
+    metrics: Option<Arc<service_metrics::ServiceMetrics>>,
+) -> axum::Router {
     let limits = http_service_limit::ServiceLimit::new(services.clone(), &cancel);
+    if let Some(metrics) = metrics {
+        metrics.set_limits(limits.clone());
+    }
     tonic::service::Routes::new(astersql_pd_proto::pdpb::pd_server::PdServer::new(
         sync_transport::SyncGrpc(grpc::Grpc {
             services: services.clone(),
@@ -985,3 +1030,9 @@ mod http_admin_recover_tso;
 #[cfg(test)]
 #[path = "http_resolved_ts_test.rs"]
 mod http_resolved_ts_test;
+
+#[cfg(test)]
+mod service_metrics_test;
+
+#[cfg(test)]
+mod service_metrics_rpc_test;

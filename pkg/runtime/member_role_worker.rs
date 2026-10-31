@@ -18,6 +18,8 @@ type RegionReset = (
 );
 pub(crate) struct RoleServices {
     identity: NodeConfig,
+    telemetry: RwLock<Option<Arc<astersql_pd_server_config::Config>>>,
+    metrics: RwLock<Weak<astersql_pd_server::service_metrics::ServiceMetrics>>,
     listening: std::sync::atomic::AtomicBool,
     admin: RwLock<Option<Arc<crate::member_admin::EtcdMemberAdmin>>>,
     diagnostics: RwLock<Option<Arc<crate::etcd_diagnostics::EtcdMemberDiagnostics>>>,
@@ -34,6 +36,8 @@ impl RoleServices {
             Arc::new(astersql_pd_storage::MemoryStore::default());
         let (region_resets, region_reset_rx) = tokio::sync::mpsc::channel(16);
         Self {
+            telemetry: RwLock::new(None),
+            metrics: RwLock::new(Weak::new()),
             region_resets,
             region_reset_rx: tokio::sync::Mutex::new(region_reset_rx),
             follower: FollowerRead(Arc::new(tokio::sync::Mutex::new(
@@ -57,6 +61,14 @@ impl RoleServices {
             store: Arc::downgrade(&store),
             term: RwLock::new(None),
         }
+    }
+    pub(crate) fn set_telemetry(
+        &self,
+        config: Arc<astersql_pd_server_config::Config>,
+        metrics: &Arc<astersql_pd_server::service_metrics::ServiceMetrics>,
+    ) {
+        *self.telemetry.write().unwrap() = Some(config);
+        *self.metrics.write().unwrap() = Arc::downgrade(metrics);
     }
     pub(crate) fn set_member_admin(
         &self,
@@ -107,6 +119,20 @@ impl RoleServices {
 }
 #[async_trait::async_trait]
 impl PdServices for RoleServices {
+    async fn consensus_metrics(
+        &self,
+    ) -> Option<astersql_pd_server::service_metrics::ConsensusMetrics> {
+        let diagnostics = self.diagnostics.read().unwrap().clone()?;
+        diagnostics.raft_metrics().await.ok()
+    }
+
+    fn telemetry_config(&self) -> Option<Arc<astersql_pd_server_config::Config>> {
+        self.telemetry.read().unwrap().clone()
+    }
+    fn service_metrics(&self) -> Option<Arc<astersql_pd_server::service_metrics::ServiceMetrics>> {
+        self.metrics.read().unwrap().upgrade()
+    }
+
     fn recovery_marker_store(&self) -> Option<Arc<dyn MetaStore>> {
         self.store.upgrade()
     }
@@ -293,6 +319,24 @@ impl PdServices for RoleServices {
         config.cluster_version = dynamic.cluster_version;
         config.keyspace = dynamic.keyspace;
         config.microservice = dynamic.microservice;
+        if let Some(telemetry) = self.telemetry_config() {
+            if !telemetry.pd_server.metric_storage.is_empty() {
+                config.pd_server.metric_storage = telemetry.pd_server.metric_storage.clone();
+            }
+            if !telemetry.metric.push_address.is_empty()
+                || !telemetry.metric.push_job.is_empty()
+                || telemetry.metric.push_interval.as_nanos() != 0
+            {
+                config.metric = telemetry.metric.clone();
+            }
+            if !telemetry.security.tls.ca_path.is_empty()
+                || !telemetry.security.tls.cert_path.is_empty()
+                || !telemetry.security.tls.key_path.is_empty()
+            {
+                config.security.tls = telemetry.security.tls.clone();
+            }
+        }
+
         Ok(config)
     }
 
@@ -473,7 +517,13 @@ impl PdServices for RoleServices {
         &self,
         operation: astersql_pd_server::http_store_state::StoreMutation,
     ) -> Result<(), String> {
-        self.active().await?.cluster.mutate_store(operation).await
+        self.active().await?.cluster.mutate_store(operation).await?;
+        if let Some(metrics) = self.service_metrics()
+            && let Ok(stores) = self.stores().await
+        {
+            metrics.retain_stores(stores.into_iter().map(|s| s.id));
+        }
+        Ok(())
     }
     async fn store_progress(
         &self,

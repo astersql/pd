@@ -14,15 +14,27 @@ impl Grpc {
     ) -> Result<pdpb::GetRegionResponse, Status> {
         let allow = request.metadata().contains_key("pd-allow-follower-handle");
         let r = request.into_inner();
-        self.lookup_region(
-            r.header.as_ref(),
-            Some(&r.region_key),
-            0,
-            previous,
-            r.need_buckets,
-            allow,
-        )
-        .await
+        let result = self
+            .lookup_region(
+                r.header.as_ref(),
+                Some(&r.region_key),
+                0,
+                previous,
+                r.need_buckets,
+                allow,
+            )
+            .await;
+        if let (Some(metrics), Ok(response)) = (self.services.service_metrics(), &result) {
+            metrics.region_result(
+                if previous {
+                    "GetPrevRegion"
+                } else {
+                    "GetRegion"
+                },
+                response.header.as_ref().is_some_and(|h| h.error.is_some()),
+            );
+        }
+        result
     }
     pub(crate) async fn lookup_region(
         &self,

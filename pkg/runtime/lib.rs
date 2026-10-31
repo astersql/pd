@@ -170,3 +170,6 @@ mod mtls_listener_test;
 
 #[cfg(test)]
 mod tls_reload_test;
+
+#[cfg(test)]
+mod metrics_startup_test;

@@ -55,6 +55,19 @@ impl EtcdMemberDiagnostics {
         }
         Ok(())
     }
+    /// Read actual term/commit/apply values from the already bound member.
+    pub async fn raft_metrics(
+        &self,
+    ) -> Result<astersql_pd_server::service_metrics::ConsensusMetrics, String> {
+        let mut client = self.client.clone();
+        let response = self.bounded(client.status()).await?;
+        self.verify_header(response.header())?;
+        Ok(astersql_pd_server::service_metrics::ConsensusMetrics {
+            term: response.raft_term(),
+            applied_index: response.raft_applied_index(),
+            committed_index: response.raft_index(),
+        })
+    }
     /// Verify that diagnostics and canonical metadata refer to the same backend cluster.
     pub async fn validate_store(&self, store: &dyn MetaStore) -> Result<(), String> {
         if store

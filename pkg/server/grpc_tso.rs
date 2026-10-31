@@ -9,10 +9,18 @@ impl Grpc {
         request: pdpb::GetMinTsRequest,
     ) -> Result<Response<pdpb::GetMinTsResponse>, Status> {
         self.check(request.header.as_ref()).await?;
+        let started = std::time::Instant::now();
         let timestamp = tokio::select! { biased;
             _ = self.cancel.cancelled() => return Err(Status::unavailable("server not started")),
             result = self.services.timestamp(1) => result,
         };
+        if timestamp.is_ok()
+            && let Some(metrics) = self.services.service_metrics()
+        {
+            metrics
+                .tso_handling
+                .observe(started.elapsed().as_secs_f64());
+        }
         // Go's classic branch ignores internalErr after admission. Preserve its
         // zero timestamp on generation failure; MCS error headers are separate.
         let timestamp = timestamp
