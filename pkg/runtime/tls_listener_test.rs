@@ -4,9 +4,9 @@ use astersql_pd_proto::pdpb::{self, pd_client::PdClient};
 use astersql_pd_storage::{Consistency, MetaStore, Read};
 use std::{path::PathBuf, sync::Arc, time::Duration};
 use tokio_util::sync::CancellationToken;
-struct Certificates(PathBuf, bool);
+pub(super) struct Certificates(PathBuf, bool);
 impl Certificates {
-    fn new() -> Self {
+    pub(super) fn new() -> Self {
         if let Ok(path) = std::env::var("PD_TLS_CERTIFICATES") {
             return Self(path.into(), false);
         }
@@ -26,10 +26,10 @@ impl Certificates {
         );
         Self(path, true)
     }
-    fn path(&self, name: &str) -> String {
+    pub(super) fn path(&self, name: &str) -> String {
         self.0.join(name).to_str().unwrap().into()
     }
-    fn config(&self) -> astersql_pd_server_config::Config {
+    pub(super) fn config(&self) -> astersql_pd_server_config::Config {
         let mut config = astersql_pd_server_config::Config::default();
         config.security.tls.cert_path = self.path("server.pem");
         config.security.tls.key_path = self.path("server.key");
@@ -44,7 +44,7 @@ impl Drop for Certificates {
         }
     }
 }
-fn http(c: &Certificates, url: &str, ca: &str, client: &str) -> (bool, u16, String) {
+pub(super) fn http(c: &Certificates, url: &str, ca: &str, client: &str) -> (bool, u16, String) {
     let out = std::process::Command::new("curl")
         .args([
             "-fsS",
