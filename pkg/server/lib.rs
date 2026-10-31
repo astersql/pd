@@ -15,6 +15,10 @@ mod grpc_region_scan;
 mod grpc_report_split;
 mod grpc_resolved_ts;
 pub mod grpc_scatter;
+mod grpc_service_limit;
+#[cfg(test)]
+#[path = "grpc_service_limit_test.rs"]
+mod grpc_service_limit_test;
 pub mod grpc_split_regions;
 mod grpc_split_scatter;
 pub mod grpc_store;
@@ -474,8 +478,12 @@ pub fn router(services: Arc<dyn PdServices>, cancel: CancellationToken) -> axum:
     .merge(http_health::router(services.clone(), cancel.clone()))
     .merge(http_service_limit::router(limits.clone()))
     .layer(axum::middleware::from_fn_with_state(
-        limits,
+        limits.clone(),
         http_service_limit::middleware,
+    ))
+    .layer(axum::middleware::from_fn_with_state(
+        limits,
+        grpc_service_limit::middleware,
     ))
     .layer(axum::middleware::from_fn_with_state(
         http_redirect::RedirectState {

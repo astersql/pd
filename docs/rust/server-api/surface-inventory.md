@@ -1,5 +1,7 @@
 # 配置、指标、命令与安全入口契约清单
 
+任务80补记：C-240–247中gRPC开关与grpc-limiter-config经真实HTTP配置、tonic方法准入、长流取消和持久恢复验证，见 [task-080](task-080.md)。HTTP与gRPC共享codec、分用Controller；审计与领域runner/metrics不计本任务新行为。
+
 基准 HEAD：`ca5ae0ce726d54df173fe56f6046f08c20425b32`。任务1、2清单已读取，文档依赖满足。此处仅盘点事实，不解除任何行为准入。
 
 任务17补记：运行时从恢复的 `schedulers-v2`（C-099）及等待operator上限（C-082）装配既有Coordinator，保留完整动态配置与StoreConfig；证据见 [task-017](task-017.md)。通用动态配置API、完整策略指标与安全表面仍归各owner。

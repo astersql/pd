@@ -250,9 +250,9 @@ use astersql_pd_storage::{
     Commit, Compare, Lease, LeaseId, MetaStore, MetaWatch, Mutation, RawTxnOp, RawTxnResponse,
     Read, Revision, Snapshot,
 };
-struct LimitStore {
-    inner: Arc<dyn MetaStore>,
-    mode: std::sync::atomic::AtomicU8,
+pub(super) struct LimitStore {
+    pub(super) inner: Arc<dyn MetaStore>,
+    pub(super) mode: std::sync::atomic::AtomicU8,
 }
 #[async_trait::async_trait]
 impl MetaStore for LimitStore {

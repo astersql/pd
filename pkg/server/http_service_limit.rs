@@ -23,6 +23,7 @@ use tokio_util::sync::CancellationToken;
 pub(crate) struct ServiceLimit {
     services: Arc<dyn PdServices>,
     controller: Arc<Controller>,
+    grpc_controller: Arc<Controller>,
     config: Arc<Mutex<Option<ServiceMiddlewareConfig>>>,
 }
 impl ServiceLimit {
@@ -30,6 +31,7 @@ impl ServiceLimit {
         Self {
             services,
             controller: Arc::new(Controller::new(cancel)),
+            grpc_controller: Arc::new(Controller::new(cancel)),
             config: Arc::new(Mutex::new(None)),
         }
     }
@@ -67,7 +69,37 @@ impl ServiceLimit {
                 }
             }
         }
+        if let Some(map) = &cfg.grpc_rate_limit_config.limiter_config {
+            let entries: std::collections::BTreeMap<String, MiddlewareDimensionConfig> =
+                serde_json::from_value(serde_json::to_value(map).map_err(|e| e.to_string())?)
+                    .map_err(|e| e.to_string())?;
+            for (label, dim) in entries {
+                self.grpc_controller.update(&label, &[option(dim)]).await;
+            }
+        }
         Ok(())
+    }
+    pub(crate) async fn grpc_admit(&self, label: &str) -> Result<Option<Admission>, tonic::Status> {
+        if self.services.recovery_marker_store().is_none() {
+            return Ok(None);
+        }
+        let mut config = self.config.lock().await;
+        self.load(&mut config)
+            .await
+            .map_err(tonic::Status::unavailable)?;
+        if !config
+            .as_ref()
+            .unwrap()
+            .grpc_rate_limit_config
+            .enable_rate_limit
+        {
+            return Ok(None);
+        }
+        self.grpc_controller
+            .allow(label)
+            .await
+            .map(|done| Some(Admission(done)))
+            .map_err(|e| tonic::Status::resource_exhausted(e.to_string()))
     }
 }
 fn option(d: MiddlewareDimensionConfig) -> ControllerOption {
@@ -89,7 +121,7 @@ fn text(status: StatusCode, body: impl Into<String>) -> Response {
         .into_response()
 }
 // Complete on response, handler error, cancellation, or unwinding; Done is idempotent.
-struct Admission(ControllerDone);
+pub(crate) struct Admission(ControllerDone);
 impl Drop for Admission {
     fn drop(&mut self) {
         self.0.done();
@@ -149,6 +181,10 @@ pub(crate) fn router(s: ServiceLimit) -> Router {
             "/pd/api/v1/service-middleware/config/rate-limit",
             axum::routing::post(rate),
         )
+        .route(
+            "/pd/api/v1/service-middleware/config/grpc-rate-limit",
+            axum::routing::post(grpc_rate),
+        )
         .with_state(s)
 }
 async fn cancellable(work: impl std::future::Future<Output = Response>) -> Response {
@@ -164,7 +200,7 @@ async fn update(state: State<ServiceLimit>, body: Body) -> Response {
     cancellable(update_inner(state, body)).await
 }
 async fn rate(state: State<ServiceLimit>, body: Body) -> Response {
-    cancellable(rate_inner(state, body)).await
+    cancellable(rate_inner(state, body, false)).await
 }
 async fn read_inner(State(s): State<ServiceLimit>) -> Response {
     let mut cfg = s.config.lock().await;
@@ -238,39 +274,53 @@ async fn update_inner(State(s): State<ServiceLimit>, body: Body) -> Response {
     *config = Some(candidate);
     text(StatusCode::OK, "The service-middleware config is updated.")
 }
-async fn rate_inner(State(s): State<ServiceLimit>, body: Body) -> Response {
+async fn grpc_rate(state: State<ServiceLimit>, body: Body) -> Response {
+    cancellable(rate_inner(state, body, true)).await
+}
+async fn rate_inner(State(s): State<ServiceLimit>, body: Body, grpc: bool) -> Response {
     let input = match crate::http_contract::read_json_object(body).await {
         Ok(v) => v.unwrap_or_default(),
         Err(e) => return e.into_response(),
     };
     let string = |key: &str| input.get(key).and_then(Value::as_str).unwrap_or("");
-    let label = match string("type") {
-        "" if !input.get("type").is_some_and(Value::is_string) => {
-            return text(StatusCode::BAD_REQUEST, "The type is empty.");
+    let label = if grpc {
+        let label = string("label");
+        if label.is_empty() {
+            return text(StatusCode::BAD_REQUEST, "The label is empty.");
         }
-        "label" => {
-            let label = string("label");
-            if label.is_empty() {
-                return text(StatusCode::BAD_REQUEST, "The label is empty.");
-            }
-            if !ROUTES.iter().any(|r| r.2 == label) {
-                return text(StatusCode::BAD_REQUEST, "There is no label matched.");
-            }
-            label
+        if !crate::grpc_service_limit::known_label(label) {
+            return text(StatusCode::BAD_REQUEST, "There is no label matched.");
         }
-        "path" => {
-            if string("path").is_empty() {
-                return text(StatusCode::BAD_REQUEST, "The path is empty.");
+        label
+    } else {
+        match string("type") {
+            "" if !input.get("type").is_some_and(Value::is_string) => {
+                return text(StatusCode::BAD_REQUEST, "The type is empty.");
             }
-            let label = access_label(string("method"), string("path"));
-            if label.is_empty() {
-                return text(StatusCode::BAD_REQUEST, "There is no label matched.");
+            "label" => {
+                let label = string("label");
+                if label.is_empty() {
+                    return text(StatusCode::BAD_REQUEST, "The label is empty.");
+                }
+                if !ROUTES.iter().any(|r| r.2 == label) {
+                    return text(StatusCode::BAD_REQUEST, "There is no label matched.");
+                }
+                label
             }
-            label
+            "path" => {
+                if string("path").is_empty() {
+                    return text(StatusCode::BAD_REQUEST, "The path is empty.");
+                }
+                let label = access_label(string("method"), string("path"));
+                if label.is_empty() {
+                    return text(StatusCode::BAD_REQUEST, "There is no label matched.");
+                }
+                label
+            }
+            _ => return text(StatusCode::BAD_REQUEST, "The type is invalid."),
         }
-        _ => return text(StatusCode::BAD_REQUEST, "The type is invalid."),
     };
-    if allowlisted(label) {
+    if !grpc && allowlisted(label) {
         return text(
             StatusCode::BAD_REQUEST,
             "This service is in allow list whose config can not be changed.",
@@ -280,14 +330,25 @@ async fn rate_inner(State(s): State<ServiceLimit>, body: Body) -> Response {
     if let Err(e) = s.load(&mut config).await {
         return text(StatusCode::INTERNAL_SERVER_ERROR, e);
     }
+    let section = if grpc {
+        "grpc-rate-limit"
+    } else {
+        "rate-limit"
+    };
+    let key = if grpc {
+        "grpc-limiter-config"
+    } else {
+        "limiter-config"
+    };
+    let controller = if grpc {
+        &s.grpc_controller
+    } else {
+        &s.controller
+    };
     let mut value = serde_json::to_value(config.as_ref().unwrap()).unwrap();
-    let mut dim: MiddlewareDimensionConfig = serde_json::from_value(
-        value["rate-limit"]["limiter-config"]
-            .get(label)
-            .cloned()
-            .unwrap_or(json!({})),
-    )
-    .unwrap();
+    let mut dim: MiddlewareDimensionConfig =
+        serde_json::from_value(value[section][key].get(label).cloned().unwrap_or(json!({})))
+            .unwrap();
     let mut changed = false;
     if let Some(n) = input.get("concurrency").and_then(Value::as_f64) {
         dim.concurrency_limit = n as u64;
@@ -299,24 +360,26 @@ async fn rate_inner(State(s): State<ServiceLimit>, body: Body) -> Response {
         changed = true;
     }
     if !changed {
-        return text(StatusCode::OK, "Rate limiter is not changed.");
+        return text(
+            StatusCode::OK,
+            if grpc {
+                "gRPC limiter is not changed."
+            } else {
+                "Rate limiter is not changed."
+            },
+        );
     }
-    let old_dim = config
-        .as_ref()
-        .unwrap()
-        .rate_limit_config
-        .limiter_config
-        .as_ref()
-        .and_then(|m| m.get(label))
-        .unwrap_or_default();
-    let status = s.controller.update(label, &[option(dim)]).await;
+    let old_dim: MiddlewareDimensionConfig =
+        serde_json::from_value(value[section][key].get(label).cloned().unwrap_or(json!({})))
+            .unwrap();
+    let status = controller.update(label, &[option(dim)]).await;
     let deleted = status & 8 != 0;
     if deleted {
-        if let Some(map) = value["rate-limit"]["limiter-config"].as_object_mut() {
+        if let Some(map) = value[section][key].as_object_mut() {
             map.remove(label);
         }
     } else {
-        value["rate-limit"]["limiter-config"][label] = serde_json::to_value(dim).unwrap();
+        value[section][key][label] = serde_json::to_value(dim).unwrap();
     }
     let candidate: ServiceMiddlewareConfig = serde_json::from_value(value).unwrap();
     if let Err(e) = s
@@ -326,7 +389,7 @@ async fn rate_inner(State(s): State<ServiceLimit>, body: Body) -> Response {
         .await
     {
         if deleted {
-            s.controller.update(label, &[option(old_dim)]).await;
+            controller.update(label, &[option(old_dim)]).await;
         }
         return text(StatusCode::INTERNAL_SERVER_ERROR, e.to_string());
     }
@@ -334,9 +397,17 @@ async fn rate_inner(State(s): State<ServiceLimit>, body: Body) -> Response {
     text(
         StatusCode::OK,
         if deleted {
-            "Rate limiter is deleted."
+            if grpc {
+                "gRPC limiter is deleted."
+            } else {
+                "Rate limiter is deleted."
+            }
         } else {
-            "Rate limiter is updated."
+            if grpc {
+                "gRPC limiter is updated."
+            } else {
+                "Rate limiter is updated."
+            }
         },
     )
 }
