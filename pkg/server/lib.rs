@@ -31,6 +31,7 @@ pub mod http_health;
 mod http_leader;
 pub mod http_member;
 pub mod http_region_schedule;
+pub mod http_resolved_ts;
 pub mod http_rule;
 mod http_store_read;
 mod request_role;
@@ -243,6 +244,10 @@ pub trait PdServices: Send + Sync {
     /// Validate monotonicity, publish in memory, then persist, matching Go ordering.
     async fn set_external_timestamp(&self, _timestamp: u64) -> Result<(), String> {
         Err("external timestamp is not configured".into())
+    }
+    /// Read the serving generation resolved timestamp snapshot.
+    async fn resolved_ts_observation(&self) -> Result<http_resolved_ts::Observation, String> {
+        Err("server not started".into())
     }
     /// Apply a report to the canonical store cache; aggregation persists separately.
     async fn report_min_resolved_ts(&self, _store_id: u64, _ts: u64) -> Result<(), String> {
@@ -936,3 +941,7 @@ mod http_admin_recover_id_test;
 mod http_admin_recover_tso_test;
 
 mod http_admin_recover_tso;
+
+#[cfg(test)]
+#[path = "http_resolved_ts_test.rs"]
+mod http_resolved_ts_test;

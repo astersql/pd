@@ -107,6 +107,11 @@ impl PdServices for Application {
     async fn set_external_timestamp(&self, timestamp: u64) -> Result<(), String> {
         self.cluster.set_external_timestamp(timestamp).await
     }
+    async fn resolved_ts_observation(
+        &self,
+    ) -> Result<astersql_pd_server::http_resolved_ts::Observation, String> {
+        self.cluster.resolved_ts_observation().await
+    }
     async fn report_min_resolved_ts(&self, store_id: u64, ts: u64) -> Result<(), String> {
         self.cluster.report_min_resolved_ts(store_id, ts).await
     }

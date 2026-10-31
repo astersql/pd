@@ -784,6 +784,46 @@ impl ClusterHost {
             .await
             .map_err(|e| e.to_string())
     }
+    /// Observe the same reports and initialization predicate used by the worker.
+    pub(crate) async fn resolved_ts_observation(
+        &self,
+    ) -> Result<astersql_pd_server::http_resolved_ts::Observation, String> {
+        let guard = self.resources.lock().await;
+        let r = guard.as_ref().ok_or("server not started")?;
+        if self.cancel.is_cancelled() {
+            return Err("node stopped".into());
+        }
+        let state = r.state.lock().unwrap();
+        let regions = &state.cluster.regions;
+        let initialized = regions.tree_len() > 1
+            || regions.region_by_key(&[], false).is_some_and(|region| {
+                region.voters().len() >= state.config.replication.max_replicas as usize
+                    && region.pending_peers().is_empty()
+            });
+        Ok(astersql_pd_server::http_resolved_ts::Observation {
+            minimum: if initialized {
+                self.min_resolved_ts()
+            } else {
+                u64::MAX
+            },
+            stores: state
+                .cluster
+                .stores
+                .get_stores()
+                .iter()
+                .map(|s| {
+                    (
+                        s.id(),
+                        if initialized && s.is_available_for_min_resolved_ts() {
+                            s.min_resolved_ts()
+                        } else {
+                            u64::MAX
+                        },
+                    )
+                })
+                .collect(),
+        })
+    }
     /// Replace a store report under the same lock as lifecycle transitions.
     pub async fn report_min_resolved_ts(&self, store_id: u64, ts: u64) -> Result<(), String> {
         let resources = self.resources.lock().await;

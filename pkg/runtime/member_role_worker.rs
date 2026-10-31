@@ -447,6 +447,11 @@ impl PdServices for RoleServices {
             .set_external_timestamp(timestamp)
             .await
     }
+    async fn resolved_ts_observation(
+        &self,
+    ) -> Result<astersql_pd_server::http_resolved_ts::Observation, String> {
+        self.active().await?.cluster.resolved_ts_observation().await
+    }
     async fn report_min_resolved_ts(&self, store_id: u64, ts: u64) -> Result<(), String> {
         self.active()
             .await?
