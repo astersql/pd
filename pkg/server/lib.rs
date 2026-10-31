@@ -55,6 +55,10 @@ pub trait PdServices: Send + Sync {
     fn recovery_marker_store(&self) -> Option<Arc<dyn astersql_pd_storage::MetaStore>> {
         None
     }
+    /// Reset the active term's canonical timestamp oracle.
+    async fn reset_timestamp(&self, _tso: u64, _force: bool) -> Result<(), String> {
+        Err("[PD:server:ErrServerNotStarted]server not started".into())
+    }
     /// Reset the active term's canonical persistent ID allocator.
     async fn recover_alloc_id(&self, _id: u64) -> Result<(), String> {
         Err("server not started".into())
@@ -927,3 +931,8 @@ mod http_admin_markers_test;
 #[cfg(test)]
 #[path = "http_admin_recover_id_test.rs"]
 mod http_admin_recover_id_test;
+
+#[cfg(test)]
+mod http_admin_recover_tso_test;
+
+mod http_admin_recover_tso;

@@ -23,6 +23,8 @@ pub struct Timestamp {
 
 #[derive(Debug, thiserror::Error)]
 pub enum TsoError {
+    #[error("[PD:tso:ErrResetUserTimestamp]reset user timestamp failed, {0}")]
+    ResetRejected(&'static str),
     #[error(transparent)]
     Store(#[from] StoreError),
     #[error(transparent)]
@@ -230,6 +232,61 @@ impl Oracle {
         next.logical += count;
         window.timestamp = next;
         Ok(next)
+    }
+    /// Reset the canonical window atomically, preserving Go's strict upper bound.
+    /// Forced restore ignores older values and bypasses only the configured gap.
+    pub async fn reset(&self, tso: u64, force: bool, max_gap_millis: i64) -> Result<(), TsoError> {
+        tokio::select! {biased;
+            _ = self.cancel.cancelled() => Err(TsoError::Cancelled),
+            result = self.reset_inner(tso, force, max_gap_millis) => result,
+        }
+    }
+    async fn reset_inner(
+        &self,
+        tso: u64,
+        force: bool,
+        max_gap_millis: i64,
+    ) -> Result<(), TsoError> {
+        let mut window = self.window.lock().await;
+        self.leader.validate().await?;
+        let next = Timestamp {
+            physical: tso >> 18,
+            logical: (tso & (u64::from(MAX_LOGICAL) - 1)) as u32,
+        };
+        if next <= window.timestamp {
+            self.fence(window.saved_nanos, vec![]).await?;
+            if force {
+                return Ok(());
+            }
+            return Err(TsoError::ResetRejected(
+                if next.physical < window.timestamp.physical {
+                    "the specified ts is smaller than now"
+                } else {
+                    "the specified counter is smaller than now"
+                },
+            ));
+        }
+        if !force
+            && i128::from(next.physical - window.timestamp.physical) >= i128::from(max_gap_millis)
+        {
+            return Err(TsoError::ResetRejected(
+                "the specified ts is too larger than now",
+            ));
+        }
+        let end = self.end(next.physical)?;
+        let extend = (next.physical + 1) * NANOS_PER_MILLI >= window.saved_nanos;
+        let writes = if extend {
+            vec![Mutation::put(&self.key, &end.to_be_bytes())]
+        } else {
+            vec![]
+        };
+        self.fence(window.saved_nanos, writes).await?;
+        window.timestamp = next;
+        window.overflowed = false;
+        if extend {
+            window.saved_nanos = end;
+        }
+        Ok(())
     }
     /// Advance physical time and extend the saved window before using it. Safe on rollback.
     /// Host scheduling replaces Go's update loop; no worker is detached by this library.

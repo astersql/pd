@@ -237,6 +237,16 @@ impl PdServices for Application {
                 other => other.to_string(),
             })
     }
+    async fn reset_timestamp(&self, tso: u64, force: bool) -> Result<(), String> {
+        let config = self.cluster.configuration().await?;
+        self.oracle
+            .reset(tso, force, config.pd_server.max_reset_ts_gap.as_nanos() / 1_000_000)
+            .await
+            .map_err(|e| match e {
+            astersql_pd_tso::TsoError::WindowLost => "[PD:etcd:ErrEtcdTxnConflict]etcd transaction failed, conflicted and rolled back".into(),
+            other => other.to_string(),
+        })
+    }
     async fn timestamp(&self, count: u32) -> Result<Timestamp, String> {
         self.requests.inc();
         crate::tso::allocate(&self.oracle, &self.leader, count).await

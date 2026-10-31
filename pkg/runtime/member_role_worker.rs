@@ -636,6 +636,19 @@ impl PdServices for RoleServices {
     async fn alloc_ids(&self, count: u32) -> Result<(u64, u32), String> {
         self.active().await?.alloc_ids(count).await
     }
+    async fn reset_timestamp(&self, tso: u64, force: bool) -> Result<(), String> {
+        self.active()
+            .await
+            .map_err(|e| match e.as_str() {
+                "server not started" => "[PD:server:ErrServerNotStarted]server not started".into(),
+                "not leader" => {
+                    "[PD:tso:ErrResetUserTimestamp]reset user timestamp failed, not leader".into()
+                }
+                _ => e,
+            })?
+            .reset_timestamp(tso, force)
+            .await
+    }
     async fn timestamp(&self, count: u32) -> Result<astersql_pd_tso::Timestamp, String> {
         self.current()
             .ok_or_else(|| crate::tso::generation_error("requested pd is not leader of cluster"))?
