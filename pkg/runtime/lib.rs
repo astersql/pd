@@ -197,3 +197,6 @@ mod ready_gate_test;
 
 #[cfg(test)]
 mod shutdown_workers_test;
+
+#[cfg(test)]
+mod embedded_isolation_test;
