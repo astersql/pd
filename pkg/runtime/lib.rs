@@ -180,3 +180,8 @@ mod shared_listener_test;
 pub mod join_preflight;
 #[cfg(test)]
 mod join_preflight_test;
+
+#[cfg(test)]
+mod join_resume_test;
+
+mod join_resume;

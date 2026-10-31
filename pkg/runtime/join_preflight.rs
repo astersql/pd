@@ -52,6 +52,13 @@ pub(crate) async fn check_advertised(
         .map(canonical)
         .collect::<Result<Vec<_>, _>>()?;
     peers.sort();
+    let mut resume_config = config.clone();
+    resume_config.client_url = advertised_client_url.to_owned();
+    resume_config.peer_url = Endpoint::parse(&config.peer_url)?.url();
+    let resuming = tokio::select! { biased;
+        _ = cancel.cancelled() => return Err("node is stopped".into()),
+        result = crate::join_resume::pending(store, &resume_config) => result?,
+    };
     let key = format!("/pd/{}/rust/members/", config.cluster_id);
     let snapshot = tokio::select! { biased;
         _ = cancel.cancelled() => return Err("node is stopped".into()),
@@ -83,13 +90,16 @@ pub(crate) async fn check_advertised(
             }
         }
     }
-    if members.iter().any(|member| member.name == config.name) {
+    if members.iter().any(|member| {
+        member.name == config.name
+            && !(resuming && member.encode_to_vec() == crate::join_resume::value(&resume_config))
+    }) {
         return Err("missing data or join a duplicated pd".into());
     }
-    if members
-        .iter()
-        .any(|member| member.member_id == config.member_id)
-    {
+    if members.iter().any(|member| {
+        member.member_id == config.member_id
+            && !(resuming && member.encode_to_vec() == crate::join_resume::value(&resume_config))
+    }) {
         return Err("member identity conflict".into());
     }
     let mut target_found = false;

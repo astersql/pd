@@ -329,7 +329,10 @@ impl PdNodeBuilder {
     ) -> Result<PdNode, NodeError> {
         // Initialization runs on the supplied executor, including when the caller uses another one.
         let cancel = self.cancellation.clone();
-        self.runtime
+        // Cancellation follows the caller's start future, including timeout/drop.
+        let mut guard = StartGuard(Some(cancel.clone()));
+        let result = self
+            .runtime
             .spawn(initialize_node(
                 store,
                 config,
@@ -343,7 +346,19 @@ impl PdNodeBuilder {
                 self.telemetry_config,
                 self.join,
             ))
-            .await?
+            .await?;
+        if result.is_ok() {
+            guard.0 = None;
+        }
+        result
+    }
+}
+struct StartGuard(Option<CancellationToken>);
+impl Drop for StartGuard {
+    fn drop(&mut self) {
+        if let Some(cancel) = &self.0 {
+            cancel.cancel();
+        }
     }
 }
 async fn initialize_node(
@@ -395,6 +410,18 @@ async fn initialize_node(
             result = admin.bind(store.as_ref(), config.cluster_id, config.member_id) => result?,
         }
     }
+    if !join.is_empty() {
+        tokio::select! { biased;
+            _ = cancel.cancelled() => return Err("node is stopped".into()),
+            result = crate::join_resume::register(store.as_ref(), &config) => result?,
+        }
+    }
+    // A restart without --join can also finish a previously interrupted admission.
+    let unfinished_join = !join.is_empty()
+        || tokio::select! { biased;
+            _ = cancel.cancelled() => return Err("node is stopped".into()),
+            result = crate::join_resume::pending(store.as_ref(), &config) => result?,
+        };
     let events = Arc::new(Mutex::new(vec!["storage"]));
     let member = Member::bootstrap(
         store.clone(),
@@ -417,7 +444,11 @@ async fn initialize_node(
     ));
     services.set_telemetry(Arc::new(telemetry_config.clone()), &metrics);
     services.set_member_admin(member_admin.clone());
-    let initial = if !services.eligible().await? {
+    let eligible = tokio::select! { biased;
+        _ = cancel.cancelled() => return Err("node is stopped".into()),
+        result = services.eligible() => result?,
+    };
+    let initial = if !eligible {
         None
     } else {
         match member.campaign(5).await {
@@ -465,6 +496,17 @@ async fn initialize_node(
             std::task::Poll::Ready(std::future::Future::poll(server.as_mut(), cx))
         })
         .await;
+        let completion = if first.is_pending() && !worker_cancel.is_cancelled() && unfinished_join {
+            tokio::select! { biased;
+                _ = worker_cancel.cancelled() => Err("node is stopped".into()),
+                result = crate::join_resume::complete(store.as_ref(), &config) => result,
+            }
+        } else {
+            Ok(())
+        };
+        if completion.is_err() {
+            worker_cancel.cancel();
+        }
         if first.is_pending() && !worker_cancel.is_cancelled() {
             services.set_listening(true);
             record(&worker_events, "ready");
@@ -565,6 +607,7 @@ async fn initialize_node(
         record(&worker_events, "storage-released");
         result?;
         drained?;
+        completion?;
         Ok(())
     });
     Ok(PdNode {
