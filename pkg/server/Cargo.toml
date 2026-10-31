@@ -7,6 +7,9 @@ license.workspace = true
 [lib]
 path = "lib.rs"
 [dependencies]
+rustls.workspace = true
+tokio-rustls.workspace = true
+x509-parser.workspace = true
 astersql-pd-ratelimit.workspace = true
 astersql-pd-schedule-handler.workspace = true
 astersql-pd-response.workspace = true

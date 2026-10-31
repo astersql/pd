@@ -50,6 +50,9 @@ pub mod service_audit;
 #[cfg(test)]
 #[path = "service_audit_test.rs"]
 mod service_audit_test;
+pub mod service_auth;
+#[cfg(test)]
+mod service_auth_test;
 use astersql_pd_tso::Timestamp;
 use async_trait::async_trait;
 use std::sync::Arc;

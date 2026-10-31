@@ -143,7 +143,13 @@ pub(crate) async fn middleware(
     let peer = request
         .extensions()
         .get::<ConnectInfo<SocketAddr>>()
-        .map(|v| v.0);
+        .map(|v| v.0)
+        .or_else(|| {
+            request
+                .extensions()
+                .get::<ConnectInfo<crate::service_auth::PeerAddr>>()
+                .map(|v| v.0.0)
+        });
     let path = request.uri().path();
     let grpc = path.starts_with("/pdpb.PD/");
     let service_label = if grpc {
