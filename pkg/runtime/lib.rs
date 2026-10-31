@@ -185,3 +185,8 @@ mod join_preflight_test;
 mod join_resume_test;
 
 mod join_resume;
+
+#[cfg(test)]
+mod start_cleanup_test;
+
+mod start_cleanup;

@@ -618,9 +618,11 @@ async fn initialize_node(
         drop(membership);
         drop((services, store));
         record(&worker_events, "storage-released");
+        // Admission failure is the initiating error; cleanup has already run.
+        // Do not replace it with a secondary serving/retirement failure.
+        completion?;
         result?;
         drained?;
-        completion?;
         Ok(())
     });
     Ok(PdNode {
@@ -713,8 +715,8 @@ pub(crate) async fn prepare_term(
         let cluster = match created {
             Ok(cluster) => Arc::new(cluster),
             Err(error) => {
-                registry.unregister(Box::new(requests))?;
-                return Err(error);
+                let cleanup = registry.unregister(Box::new(requests)).map_err(Into::into);
+                return Err(crate::start_cleanup::preserve(error, cleanup));
             }
         };
         Ok::<_, NodeError>(Arc::new(Application {
@@ -736,12 +738,13 @@ pub(crate) async fn prepare_term(
             // failures must still propagate before reporting graceful shutdown.
             let interrupted = cancel.is_cancelled();
             cancel.cancel();
-            leader.resign().await?;
-            return Err(if interrupted {
+            let cleanup = leader.resign().await.map_err(Into::into);
+            let error = if interrupted {
                 astersql_pd_member::MemberError::Cancelled.into()
             } else {
                 error
-            });
+            };
+            return Err(crate::start_cleanup::preserve(error, cleanup));
         }
     };
     Ok(application)
@@ -767,7 +770,13 @@ impl PdNode {
     }
     pub async fn ready(&mut self) -> Result<(), NodeError> {
         if let Some(ready) = self.ready.take() {
-            ready.await?;
+            if let Err(error) = ready.await {
+                // The sender closes before retirement finishes. Join the owning
+                // worker before returning so retry observes released resources
+                // and receives the original initialization error.
+                self.wait().await?;
+                return Err(error.into());
+            }
         }
         if self.cancellation.is_cancelled() {
             return Err("node is stopped".into());
