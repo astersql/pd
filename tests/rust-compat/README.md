@@ -1,12 +1,11 @@
 # PD compatibility acceptance entrypoint
 
-`run-pd-compat.sh --mode go|rust|dual --case health-member` runs the same
+Use the read-only supervisor and existing Go binaries for Go/Rust compatibility.
+`run-pd-compat-readonly.sh --mode go|rust|dual --case health-member` runs the
 reviewed fixture against isolated real PD processes. Set absolute
-`PD_COMPAT_GO_BIN` / `PD_COMPAT_RUST_BIN` to use existing binaries. Without a Go
-binary the script builds the current source with `without_dashboard`; it installs
-only the module-pinned failpoint tool and invokes the existing make restoration
-target before and after testing. Rust must implement the same server arguments
-and APIs before using rust/dual. The current lifecycle shell is not a PD oracle.
+`PD_COMPAT_GO_BIN` / `PD_COMPAT_RUST_BIN`; missing or invalid binaries fail before
+startup. The legacy `run-pd-compat.sh` builds Go and rewrites failpoints and must
+not be used under the Go read-only contract.
 
 Before **any** Cargo command, atomically claim the first available repository
 slot 1–10 with `mkdir target/rust-slot-locks/slot-N.lock` (create the parent first).
@@ -16,10 +15,30 @@ child using its artifacts have exited, then remove your owner record and `rmdir`
 your lock on success, failure and interruption. Keep compilation caches. Never
 remove another session's lock without checking its processes.
 
-Run `cargo test -p astersql-pd-compat-tests -- --nocapture` for the harness tests,
-then `./scripts/run-pd-compat.sh --mode go --case health-member` for the actual
-Go oracle. The deliberately incompatible Rust fixture service tests orchestration
-only; its passing results are not evidence of Rust PD business compatibility.
+After claiming a slot, build the Rust binary and run the protocol regression:
+
+```sh
+cargo build --locked -p astersql-pd-cmd-pd-server --bin pd-server
+export PD_COMPAT_MODE=dual
+export PD_COMPAT_GO_BIN="$PWD/bin/pd-server"
+export PD_COMPAT_RUST_BIN="$CARGO_TARGET_DIR/debug/pd-server"
+cargo test --locked -p astersql-pd-compat-tests --lib task_100_ -- --nocapture
+```
+
+Run from the repository root, with default features. `task_100_behavior` requires
+all 41 implemented classic PD matrix methods through 23 real differential
+entrypoints, including explicit execution of the existing ignored oracle tests.
+The independent negative controls retain error/status/default/enum differences.
+See [task 100 evidence](../../docs/rust/server-api/task-100.md) for method mapping,
+backend topology differences and complete validation commands.
+
+`cargo test --locked -p astersql-pd-compat-tests -- --nocapture` additionally runs
+the package regressions; the task 100 test always runs dual mode and requires the
+existing Go oracle even when the surrounding package uses its default environment.
+The package also needs task 99's existing Go benchmark binaries in the claimed
+slot; its read-only setup is documented in [task 99](../../docs/rust/server-api/task-099.md).
+The deliberately incompatible fixture service tests orchestration and negative
+controls only; it is not Rust PD business compatibility evidence.
 
 ## Reviewed oracle and normalization
 
@@ -36,8 +55,9 @@ JSON object ordering is irrelevant. Arrays remain ordered. Only registered
 member/cluster IDs and advertised client/peer URLs in named fields are replaced;
 ID equality relationships and nonidentity values survive. Missing fields, unknown
 fields, errors, health, member count and all selected config values remain exact.
-Full health/member responses are compared in dual mode, including version and
-deploy metadata: expected future platform differences require reviewed new rules.
+Per-surface deployment metadata rules remain explicit: gRPC membership checks
+its default metadata, while the minimal HTTP member adapter omits the three
+reviewed build/deployment fields. These omissions do not apply to errors or state.
 
 The protobuf TSO adapter decodes the pinned generated type, retaining optional
 message presence, errors, count, logical time and suffix bits. Explicit physical

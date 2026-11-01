@@ -72,6 +72,12 @@ async fn sync_scenario() -> serde_json::Value {
         .unwrap()
         .unwrap_err();
     assert_eq!(error.code(), tonic::Code::Unavailable);
+    assert_eq!(error.message(), "region syncer stream closed");
+    println!(
+        "Rust sync terminal transport: {:?}: {}",
+        error.code(),
+        error.message()
+    );
     drop((sync_tx, stream, client));
     tokio::time::timeout(Duration::from_secs(5), node.wait())
         .await
@@ -360,15 +366,40 @@ async fn readonly_sync_regions_differential() {
     let (sync_tx, mut stream) = subscribe(&mut client, id, u64::MAX).await;
     check_frame(&next(&mut stream).await, id, 5);
     next(&mut stream).await;
-    server.stop().unwrap();
-    assert_eq!(
-        tokio::time::timeout(Duration::from_secs(5), stream.message())
-            .await
-            .unwrap()
-            .unwrap_err()
-            .code(),
-        tonic::Code::Unavailable
+    // Keep receiving while the Go process drains its streams; otherwise the
+    // transport may discard an unread close frame when the connection shuts down.
+    let stopping = tokio::task::spawn_blocking(move || server.stop().unwrap());
+    let terminal = tokio::time::timeout(Duration::from_secs(5), stream.message())
+        .await
+        .unwrap();
+    let error = match terminal {
+        Ok(Some(frame)) => {
+            // Go closeAllClient sends this application error before stopping the
+            // RPC. Delivery races server shutdown; compare every field if it arrives.
+            astersql_pd_compat_tests::harness::verify_sync_terminal_frame(&frame, id).unwrap();
+            println!("Go sync terminal application frame: {frame:?}");
+            tokio::time::timeout(Duration::from_secs(5), stream.message())
+                .await
+                .unwrap()
+                .unwrap_err()
+        }
+        Err(error) => error,
+        Ok(None) => panic!("SyncRegions shutdown must retain its Unavailable status"),
+    };
+    assert_eq!(error.code(), tonic::Code::Unavailable);
+    assert!(
+        matches!(
+            error.message(),
+            "region syncer stopped" | "region syncer stream closed"
+        ),
+        "unexpected terminal status: {error:?}"
     );
+    println!(
+        "Go sync terminal transport: {:?}: {}",
+        error.code(),
+        error.message()
+    );
+    stopping.await.unwrap();
     drop((sync_tx, stream));
 }
 

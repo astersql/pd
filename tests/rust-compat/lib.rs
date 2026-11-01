@@ -27,3 +27,8 @@ mod rolling_restart_test;
 mod go_client_acceptance;
 #[cfg(test)]
 mod go_client_acceptance_test;
+
+#[cfg(test)]
+mod grpc_regression;
+#[cfg(test)]
+mod grpc_regression_test;

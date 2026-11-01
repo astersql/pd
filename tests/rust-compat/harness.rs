@@ -358,3 +358,29 @@ impl Server {
         Ok(())
     }
 }
+
+/// Validate every field of Go's optional terminal SyncRegions application error.
+/// The transport's following Unavailable status is checked separately by the caller.
+pub fn verify_sync_terminal_frame(
+    frame: &astersql_pd_proto::pdpb::SyncRegionResponse,
+    cluster_id: u64,
+) -> Result<(), String> {
+    use astersql_pd_proto::pdpb;
+    let expected = pdpb::SyncRegionResponse {
+        header: Some(pdpb::ResponseHeader {
+            cluster_id,
+            error: Some(pdpb::Error {
+                r#type: pdpb::ErrorType::Unknown as i32,
+                message: "server stopped, close the region syncer client".into(),
+            }),
+        }),
+        ..Default::default()
+    };
+    if frame == &expected {
+        Ok(())
+    } else {
+        Err(format!(
+            "unexpected sync terminal frame: {frame:?}; expected {expected:?}"
+        ))
+    }
+}
