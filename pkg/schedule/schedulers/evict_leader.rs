@@ -206,7 +206,7 @@ impl EvictLeaderScheduler {
                 let mut candidates = Vec::new();
                 for target in ctx.cluster.get_follower_stores(&region) {
                     if !excluded.contains(&target.id())
-                        && state.target(ctx.config, &target).await.is_ok()
+                        && state.target_metrics(ctx.config, &target).await.is_ok()
                     {
                         candidates.push(target.id());
                     }
@@ -242,6 +242,12 @@ impl EvictLeaderScheduler {
                     .await
                 {
                     Ok(op) => {
+                        op.add_start_metric(
+                            ctx.cluster
+                                .regions()
+                                .metrics()
+                                .scheduler_event_metrics("evict-leader-scheduler", "new-operator"),
+                        );
                         op.set_priority_level(PriorityLevel::URGENT);
                         once.push(Arc::new(op));
                     }

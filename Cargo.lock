@@ -190,8 +190,10 @@ dependencies = [
  "astersql-pd-cache",
  "astersql-pd-cluster",
  "astersql-pd-core",
+ "astersql-pd-core-constant",
  "astersql-pd-keypath",
  "astersql-pd-keyutil",
+ "astersql-pd-progress",
  "astersql-pd-proto",
  "astersql-pd-ratelimit",
  "astersql-pd-schedule",
@@ -204,6 +206,7 @@ dependencies = [
  "astersql-pd-schedule-labeler",
  "astersql-pd-schedule-operator",
  "astersql-pd-schedule-placement",
+ "astersql-pd-schedule-plan",
  "astersql-pd-schedule-scatter",
  "astersql-pd-schedule-schedulers",
  "astersql-pd-server",
@@ -244,6 +247,7 @@ dependencies = [
  "astersql-pd-core-constant",
  "astersql-pd-movingaverage",
  "astersql-pd-storelimit",
+ "prometheus",
  "serde",
  "serde_json",
  "tokio",
@@ -257,6 +261,8 @@ version = "0.1.0"
 name = "astersql-pd-election"
 version = "0.1.0"
 dependencies = [
+ "prometheus",
+ "astersql-pd-metricutil",
  "astersql-pd-storage-domain",
  "astersql-pd-storage-kv",
  "async-trait",
@@ -301,6 +307,7 @@ dependencies = [
 name = "astersql-pd-id"
 version = "0.1.0"
 dependencies = [
+ "prometheus",
  "astersql-pd-member",
  "astersql-pd-storage-domain",
  "astersql-pd-storage-kv",
@@ -376,6 +383,7 @@ dependencies = [
 name = "astersql-pd-metricutil"
 version = "0.1.0"
 dependencies = [
+ "prometheus",
  "astersql-pd-typeutil",
  "serde",
 ]
@@ -440,6 +448,7 @@ dependencies = [
 name = "astersql-pd-ratelimit"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-metricutil",
  "astersql-pd-errs",
  "astersql-pd-syncutil",
  "prometheus",
@@ -481,6 +490,7 @@ dependencies = [
 name = "astersql-pd-runtime"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-metricutil",
  "astersql-pd-cache",
  "astersql-pd-cluster",
  "astersql-pd-compat-tests",
@@ -596,6 +606,7 @@ dependencies = [
 name = "astersql-pd-schedule-checker"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-metricutil",
  "astersql-pd-cache",
  "astersql-pd-codec",
  "astersql-pd-core",
@@ -774,6 +785,8 @@ dependencies = [
 name = "astersql-pd-schedule-operator"
 version = "0.1.0"
 dependencies = [
+ "prometheus",
+ "astersql-pd-metricutil",
  "astersql-pd-core",
  "astersql-pd-core-constant",
  "astersql-pd-schedule-config",
@@ -898,6 +911,10 @@ dependencies = [
 name = "astersql-pd-server"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-schedule",
+ "astersql-pd-schedule-affinity",
+ "astersql-pd-schedule-scatter",
+ "astersql-pd-metricutil",
  "astersql-pd-cluster",
  "astersql-pd-compat-tests",
  "astersql-pd-core",
@@ -992,6 +1009,7 @@ version = "0.1.0"
 name = "astersql-pd-statistics"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-metricutil",
  "astersql-pd-core",
  "astersql-pd-core-constant",
  "astersql-pd-keypath",
@@ -1132,6 +1150,8 @@ dependencies = [
 name = "astersql-pd-tso"
 version = "0.1.0"
 dependencies = [
+ "prometheus",
+ "astersql-pd-metricutil",
  "astersql-pd-member",
  "astersql-pd-storage-kv",
  "serde_json",

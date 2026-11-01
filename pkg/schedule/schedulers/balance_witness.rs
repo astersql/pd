@@ -146,9 +146,9 @@ impl BalanceWitnessScheduler {
         let special = SpecialUseFilter::new(name, &[]);
         let mut sources = Vec::new();
         for s in &stores {
-            let mut status = state.source(ctx.config, s).await;
+            let mut status = state.source_metrics(ctx.config, s).await;
             if status.is_ok() {
-                status = special.source(ctx.config, s);
+                status = special.source_metrics(ctx.config, s);
             }
             if status.is_ok() {
                 sources.push(s.clone());
@@ -176,7 +176,8 @@ impl BalanceWitnessScheduler {
                 .map(|s| ctx.cluster.store_region_count(s.id()))
                 .max()
                 .unwrap_or(0),
-        );
+        )
+        .with_metric_name("balance-witness-scheduler");
         for _ in 0..self.quota.get_limit(source.id()) {
             let regions = ctx.cluster.rand_witness_regions(
                 source.id(),
@@ -230,14 +231,14 @@ impl BalanceWitnessScheduler {
                     step: 2,
                     ..Default::default()
                 };
-                let mut status = state.target(ctx.config, &target).await;
+                let mut status = state.target_metrics(ctx.config, &target).await;
                 if status.is_ok() {
-                    status = special.target(ctx.config, &target);
+                    status = special.target_metrics(ctx.config, &target);
                 }
                 if status.is_ok()
                     && let Some(guard) = &guard
                 {
-                    status = guard.target(ctx.config, &target);
+                    status = guard.target_metrics(ctx.config, &target);
                 }
                 if !status.is_ok() {
                     if dry_run {

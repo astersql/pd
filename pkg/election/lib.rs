@@ -33,3 +33,5 @@ mod watch_reset;
 pub use watch_reset::*;
 #[cfg(test)]
 mod watch_reset_test;
+
+mod metrics;

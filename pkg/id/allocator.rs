@@ -36,6 +36,7 @@ pub struct Allocator {
     step: u64,
     effective_end: u64,
     window: Mutex<Window>,
+    metrics: std::sync::OnceLock<prometheus::Gauge>,
 }
 impl Allocator {
     /// Construct an allocator with an explicit scope and keyspace kernel mode.
@@ -58,6 +59,7 @@ impl Allocator {
             step: if step == 0 { DEFAULT_ALLOC_STEP } else { step },
             effective_end: namespace.effective_end(),
             window: Mutex::new(Window::default()),
+            metrics: Default::default(),
         })
     }
     /// Construct the existing global allocator.
@@ -74,6 +76,10 @@ impl Allocator {
             step,
             crate::AllocatorNamespace::Global,
         )
+    }
+    /// Attach the host's cached global reservation gauge before use.
+    pub fn set_metrics(&self, gauge: prometheus::Gauge) {
+        let _ = self.metrics.set(gauge);
     }
     /// Return the next ID after validating the term at a linearization point.
     pub async fn alloc(&self) -> Result<u64, AllocatorError> {
@@ -103,6 +109,9 @@ impl Allocator {
             }
             window.next = end.wrapping_sub(self.step);
             window.end = end;
+            if let Some(metrics) = self.metrics.get() {
+                metrics.set(end as f64);
+            }
             Ok(())
         };
         tokio::select! {biased; _=self.cancel.cancelled()=>Err(AllocatorError::Cancelled), result=reset=>result}
@@ -159,6 +168,9 @@ impl Allocator {
                     if commit.succeeded {
                         window.next = base;
                         window.end = end;
+                        if let Some(metrics) = self.metrics.get() {
+                            metrics.set(end as f64);
+                        }
                         break;
                     }
                     tokio::task::yield_now().await;

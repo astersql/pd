@@ -32,3 +32,9 @@ mod go_client_acceptance_test;
 mod grpc_regression;
 #[cfg(test)]
 mod grpc_regression_test;
+
+#[cfg(test)]
+mod http_regression_test;
+
+#[cfg(test)]
+mod http_regression;

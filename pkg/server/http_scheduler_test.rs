@@ -228,7 +228,18 @@ async fn observe(url: &str, id: u64) -> Value {
             if request(url, "GET", "", Value::Null)
                 .1
                 .as_array()
-                .is_some_and(|a| !a.is_empty())
+                .is_some_and(|a| {
+                    a.len() == 5
+                        && [
+                            "balance-leader-scheduler",
+                            "balance-region-scheduler",
+                            "balance-hot-region-scheduler",
+                            "evict-slow-store-scheduler",
+                            "evict-stopping-store-scheduler",
+                        ]
+                        .iter()
+                        .all(|name| a.iter().any(|value| value == name))
+                })
             {
                 break;
             }

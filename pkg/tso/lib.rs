@@ -8,3 +8,6 @@ extern crate self as astersql_pd_tso;
 mod oracle_test;
 #[cfg(test)]
 mod restart_test;
+
+mod metrics;
+pub use metrics::OracleMetrics;

@@ -35,6 +35,9 @@ impl ServiceLimit {
             config: Arc::new(Mutex::new(None)),
         }
     }
+    pub(crate) async fn backend_health(&self) -> Vec<astersql_pd_storage::BackendHealth> {
+        self.services.backend_health().await
+    }
     pub(crate) async fn consensus_metrics(
         &self,
     ) -> Option<crate::service_metrics::ConsensusMetrics> {

@@ -66,12 +66,34 @@ pub struct HotDispatchResult<'a> {
 }
 /// Four independent solver search states. RNG, preparation, cache admission and
 /// pending lifecycle belong to the host; Schedule receives the sampled random word.
+struct HotMetricHandles {
+    skip: Option<prometheus::Counter>,
+    allow_revert: [Option<prometheus::Counter>; 4],
+}
 pub struct HotScheduler {
+    metrics: std::sync::OnceLock<HotMetricHandles>,
     observed_support: Option<(bool, bool)>,
     config: HotRegionParams,
     solvers: [HotSolver; 4],
 }
 impl HotScheduler {
+    /// Cache handles once; solving remains independent of any registry/runtime.
+    pub fn set_metrics(&self, metrics: &astersql_pd_core::metrics::CoreMetrics) {
+        self.metrics.get_or_init(|| HotMetricHandles {
+            skip: metrics.scheduler_event_metrics("balance-hot-region-scheduler", "skip"),
+            allow_revert: std::array::from_fn(|i| {
+                let resource = HotResource::ALL[i];
+                let operation = match resource.operation() {
+                    HotSourceOperation::MovePeer => "move-peer",
+                    HotSourceOperation::TransferLeader => "transfer-leader",
+                };
+                metrics.scheduler_event_metrics(
+                    "balance-hot-region-scheduler",
+                    &format!("{}-{operation}-allow-search-revert-regions", resource.rw()),
+                )
+            }),
+        });
+    }
     /// Capability observations are lazy, matching Go's first scheduling attempt.
     pub fn observed_support(&self) -> Option<(bool, bool)> {
         self.observed_support
@@ -114,6 +136,7 @@ impl HotScheduler {
             )?);
         }
         Ok(Self {
+            metrics: Default::default(),
             observed_support: None,
             config,
             solvers: solvers.try_into().ok().expect("four resources"),
@@ -171,6 +194,15 @@ impl HotScheduler {
             let mut result = self.solvers[r as usize]
                 .solve(&candidates[r as usize], ctx)
                 .await;
+            if self.solvers[r as usize].search_revert_regions_enabled() {
+                if let Some(counter) = self
+                    .metrics
+                    .get()
+                    .and_then(|m| m.allow_revert[r as usize].as_ref())
+                {
+                    counter.inc();
+                }
+            }
             out.errors.append(&mut result.errors);
             if !result.operators.is_empty() {
                 out.offers.push((r, result));
@@ -183,6 +215,9 @@ impl HotScheduler {
             out.offers.swap(0, 1);
         }
         if out.offers.is_empty() {
+            if let Some(counter) = self.metrics.get().and_then(|m| m.skip.as_ref()) {
+                counter.inc();
+            }
             out.diagnostic = Some(HotScheduleDiagnostic::NoSolution);
         }
         out

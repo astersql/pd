@@ -17,7 +17,25 @@ impl RegionState {
         &mut self,
         region: Arc<RegionInfo>,
     ) -> Result<Vec<Arc<RegionInfo>>, StaleRegionError> {
-        self.pre_check_put_region(&region).2?;
+        let metrics = self.metrics.clone();
+        let (origin, overlaps) = {
+            let _stage = metrics.stage_metrics(3);
+            let origin = self.get_region(region.meta().id);
+            let overlaps = if origin
+                .as_ref()
+                .is_none_or(|old| old.meta().key_range != region.meta().key_range)
+            {
+                self.root.overlaps(&region)
+            } else {
+                vec![]
+            };
+            (origin, overlaps)
+        };
+        {
+            let _stage = metrics.stage_metrics(4);
+            crate::region_stale::check_region(&region, origin.as_deref(), &overlaps)?;
+        }
+        let _stage = metrics.stage_metrics(5);
         Ok(self.set_region(region).1)
     }
 

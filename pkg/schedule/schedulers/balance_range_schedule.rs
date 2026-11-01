@@ -105,8 +105,8 @@ impl BalanceRangeScheduler {
         for s in ctx.cluster.get_stores() {
             let flash = s.label_value("engine") == "tiflash";
             if flash == (job.engine == "tiflash")
-                && state.source(ctx.config, &s).await.is_ok()
-                && storage.source(ctx.config, &s).is_ok()
+                && state.source_metrics(ctx.config, &s).await.is_ok()
+                && storage.source_metrics(ctx.config, &s).is_ok()
             {
                 available.push(s);
             }
@@ -206,6 +206,14 @@ impl BalanceRangeScheduler {
             }
         }
         let Some((index, job)) = jobs.peek().map(|(i, j)| (i, j.clone())) else {
+            if let Some(counter) = ctx
+                .cluster
+                .regions()
+                .metrics()
+                .scheduler_event_metrics(NAME, "no-job")
+            {
+                counter.inc();
+            }
             return Ok(false);
         };
         if job.status == JobStatus::Pending {
@@ -244,7 +252,9 @@ impl BalanceRangeScheduler {
         let special = SpecialUseFilter::new(NAME, &[]);
         let mut sources = vec![];
         for s in &self.stores {
-            if state.source(ctx.config, s).await.is_ok() && special.source(ctx.config, s).is_ok() {
+            if state.source_metrics(ctx.config, s).await.is_ok()
+                && special.source_metrics(ctx.config, s).is_ok()
+            {
                 sources.push(s);
             }
         }
@@ -332,9 +342,9 @@ impl BalanceRangeScheduler {
                 let existing = region.get_store_peer(target.id()).is_some();
                 if (job.rule != Rule::LeaderScatter && existing)
                     || region.leader().is_some_and(|p| p.store_id == target.id())
-                    || !state.target(ctx.config, target).await.is_ok()
-                    || !special.target(ctx.config, target).is_ok()
-                    || !guard.target(ctx.config, target).is_ok()
+                    || !state.target_metrics(ctx.config, target).await.is_ok()
+                    || !special.target_metrics(ctx.config, target).is_ok()
+                    || !guard.target_metrics(ctx.config, target).is_ok()
                 {
                     continue;
                 }

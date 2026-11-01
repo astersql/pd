@@ -370,7 +370,7 @@ impl RuleFaultChecker {
             now_unix_nanos: ctx.replica.now_unix_nanos,
             ..Default::default()
         };
-        state.target(ctx.replica.config, &s).await.is_ok()
+        state.target_metrics(ctx.replica.config, &s).await.is_ok()
             && fit.rule_fits.iter().any(|rf| {
                 matches!(rf.rule.role, PeerRoleType::Leader | PeerRoleType::Voter)
                     && match_label_constraints(Some(&s), &rf.rule.label_constraints)

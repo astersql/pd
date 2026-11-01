@@ -46,6 +46,7 @@ impl ScatterCounts {
                 } else {
                     "tikv"
                 };
+                store.record_scatter_metrics(false, engine);
                 self.set(
                     group,
                     engine,
@@ -55,6 +56,9 @@ impl ScatterCounts {
                         .wrapping_add(1),
                 );
             }
+        }
+        if let Some(store) = stores.get_store(leader) {
+            store.record_scatter_metrics(true, "tikv");
         }
         self.set(
             group,

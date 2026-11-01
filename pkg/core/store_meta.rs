@@ -26,6 +26,9 @@ pub struct StoreMeta {
 /// The zero value has zero weights; `new` initializes both weights to one.
 #[derive(Default)]
 pub struct StoreInfo {
+    pub(crate) filter_metrics: std::sync::Arc<
+        std::sync::RwLock<Option<std::sync::Arc<dyn crate::metrics::StoreMetricSink>>>,
+    >,
     pub(crate) min_resolved_ts: u64,
     pub(crate) leader_count: i64,
     pub(crate) region_count: i64,
@@ -47,9 +50,35 @@ pub struct StoreInfo {
 }
 
 impl StoreInfo {
+    /// Publish projected solver values only while this store remains live.
+    pub fn record_balance_metrics(
+        &self,
+        scheduler: &str,
+        source: bool,
+        influence: i64,
+        tolerance: i64,
+    ) {
+        let metrics = self.filter_metrics.read().unwrap().clone();
+        if let Some(metrics) = metrics {
+            metrics.balance_metrics(scheduler, source, self.id(), influence, tolerance);
+        }
+    }
+    pub fn record_scatter_metrics(&self, leader: bool, engine: &str) {
+        let metrics = self.filter_metrics.read().unwrap().clone();
+        if let Some(metrics) = metrics {
+            metrics.scatter_metrics(self.id(), leader, engine);
+        }
+    }
+    pub fn record_filter_metrics(&self, scope: &str, kind: &str, source: bool) {
+        let metrics = self.filter_metrics.read().unwrap().clone();
+        if let Some(metrics) = metrics {
+            metrics.rejected_metrics(scope, kind, source, self.id());
+        }
+    }
     /// Construct a store with default scheduling weights, even without metadata.
     pub fn new(meta: impl Into<Option<StoreMeta>>) -> Self {
         Self {
+            filter_metrics: Default::default(),
             min_resolved_ts: 0,
             leader_count: 0,
             region_count: 0,

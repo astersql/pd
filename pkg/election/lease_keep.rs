@@ -85,7 +85,8 @@ impl Leadership {
                     let term = self.clone();
                     let start = term.expiry.request_start();
                     requests.spawn(async move {
-                        tokio::time::timeout(term.timeout, async {
+                        let mut timer=term.metrics.get().map(|m|m.request());
+                        let response=tokio::time::timeout(term.timeout, async {
                             term.validate().await?;
                             let lease = term.store.keep_alive(term.lease).await
                                 .map_err(|e| match e {
@@ -94,11 +95,20 @@ impl Leadership {
                                 })?;
                             term.validate().await?;
                             Ok((start, lease.ttl_seconds))
-                        }).await.unwrap_or(Err(ElectionError::Store(astersql_pd_storage_domain::StoreError::Unavailable)))
+                        }).await.unwrap_or(Err(ElectionError::Store(astersql_pd_storage_domain::StoreError::Unavailable)));
+                        if let Some(timer)=timer.as_mut() {timer.complete(&response);}
+                        if let (Some(metrics),Ok((_,ttl)))=(term.metrics.get(),&response) {metrics.response(*ttl);}
+                        response
                     });
                 }
             }
         };
+        if let Some(metrics) = self.metrics.get() {
+            metrics.terminate(match exit {
+                LeaseKeepExit::Cancelled => 2,
+                LeaseKeepExit::TimedOut | LeaseKeepExit::NotLeader => 1,
+            });
+        }
         // Cancel and drain every in-flight request before reporting join completion.
         requests.abort_all();
         while requests.join_next().await.is_some() {}

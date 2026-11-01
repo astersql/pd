@@ -94,7 +94,7 @@ async fn transfer<C: BasicCluster, P: SchedulerConfigProvider>(
             continue;
         }
         if let Some(store) = ctx.cluster.get_store(*id) {
-            if filter.target(ctx.config, &store).await.is_ok() {
+            if filter.target_metrics(ctx.config, &store).await.is_ok() {
                 targets.push(*id);
             }
         }

@@ -87,23 +87,23 @@ impl<C: SharedConfigProvider> ReplicaStrategy<'_, C> {
         let strict = self.state(false, self.fast_failover);
         let mut eligible = Vec::new();
         for store in self.stores {
-            if !excluded.target(self.conf, store).is_ok()
-                || !storage.target(self.conf, store).is_ok()
-                || !special.target(self.conf, store).is_ok()
-                || !relaxed.target(self.conf, store).await.is_ok()
+            if !excluded.target_metrics(self.conf, store).is_ok()
+                || !storage.target_metrics(self.conf, store).is_ok()
+                || !special.target_metrics(self.conf, store).is_ok()
+                || !relaxed.target_metrics(self.conf, store).await.is_ok()
             {
                 continue;
             }
             if isolation
                 .as_ref()
-                .is_some_and(|f| !f.target(self.conf, store).is_ok())
+                .is_some_and(|f| !f.target_metrics(self.conf, store).is_ok())
             {
                 continue;
             }
             if extra
                 .iter()
                 .chain(self.extra_filters.iter())
-                .any(|f| !f.target(self.conf, store).is_ok())
+                .any(|f| !f.target_metrics(self.conf, store).is_ok())
             {
                 continue;
             }
@@ -115,7 +115,7 @@ impl<C: SharedConfigProvider> ReplicaStrategy<'_, C> {
         }
         let mut healthy = Vec::new();
         for store in top.pick_all() {
-            if strict.target(self.conf, store).await.is_ok() {
+            if strict.target_metrics(self.conf, store).await.is_ok() {
                 healthy.push(store.clone());
             }
         }
@@ -155,7 +155,7 @@ impl<C: SharedConfigProvider> ReplicaStrategy<'_, C> {
         let filter = self.state(temporary, false);
         let mut stores = Vec::new();
         for store in co {
-            if filter.source(self.conf, store).await.is_ok() {
+            if filter.source_metrics(self.conf, store).await.is_ok() {
                 stores.push(store.clone());
             }
         }

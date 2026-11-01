@@ -110,6 +110,7 @@ pub struct ConcurrentRunner {
     max_pending_tasks: usize,
     cancel: CancellationToken,
     worker: Option<JoinHandle<()>>,
+    metrics: Option<Arc<crate::RunnerMetrics>>,
 }
 impl ConcurrentRunner {
     /// Creates a stopped runner; `None` admits tasks without a token.
@@ -123,9 +124,15 @@ impl ConcurrentRunner {
             max_pending_tasks: 20_000_000,
             cancel: CancellationToken::new(),
             worker: None,
+            metrics: None,
         }
     }
 
+    /// Attach the host-owned measurements before starting this runner.
+    pub fn set_metrics(&mut self, metrics: crate::RunnerMetrics) {
+        assert!(self.worker.is_none(), "configure metrics before starting");
+        self.metrics = Some(Arc::new(metrics));
+    }
     /// Configures pending admission limits before starting. Retained submissions
     /// bypass age rejection, but cannot bypass the pending task count limit.
     pub fn with_queue_limits(mut self, max_age: Duration, max_tasks: usize) -> Self {
@@ -150,12 +157,27 @@ impl ConcurrentRunner {
         let (sender, mut receiver) = mpsc::channel::<Task>(1);
         self.sender = Some(sender.clone());
         let pending = self.pending.clone();
+        let metrics = self.metrics.clone();
         self.worker = Some(tokio::spawn(async move {
             let mut tasks = JoinSet::new();
+            let mut collection = tokio::time::interval_at(
+                Instant::now() + Duration::from_secs(5),
+                Duration::from_secs(5),
+            );
+            collection.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Skip);
             loop {
                 tokio::select! {
                     biased;
                     _ = cancel.cancelled() => break,
+                    _ = collection.tick(), if metrics.is_some() => {
+                        let metrics=metrics.as_ref().unwrap();
+                        let pending=pending.lock().unwrap();
+                        metrics.waiting.set(pending.order.front().map_or(0.,|id|pending.entries[id].submitted_at.elapsed().as_secs_f64()));
+                        for (name,child) in &metrics.tasks {
+                            let count=pending.entries.keys().filter(|id|match id {TaskId::Named(_,task)=>task==name,TaskId::Anonymous(_)=>name.is_empty()}).count();
+                            child.pending.set(count as f64);
+                        }
+                    },
                     _ = tasks.join_next(), if !tasks.is_empty() => {
                         pending.lock().unwrap().dispatch(&sender);
                     },
@@ -181,6 +203,9 @@ impl ConcurrentRunner {
             }
             receiver.close();
             pending.lock().unwrap().clear();
+            if let Some(metrics) = metrics {
+                metrics.reset();
+            }
             drop(receiver);
             tasks.abort_all();
             while tasks.join_next().await.is_some() {}
@@ -222,6 +247,27 @@ impl ConcurrentRunner {
 
     fn submit(&self, id: TaskId, retained: bool, task: Task) -> Result<(), RunnerError> {
         let sender = self.sender.as_ref().ok_or(RunnerError::Stopped)?;
+        let name = match &id {
+            TaskId::Named(_, name) => name.as_str(),
+            TaskId::Anonymous(_) => "",
+        };
+        let child = self
+            .metrics
+            .as_ref()
+            .and_then(|m| m.tasks.get(name))
+            .cloned();
+        let task = if let Some(child) = child.clone() {
+            Box::new(move |cancel| {
+                Box::pin(async move {
+                    let begin = std::time::Instant::now();
+                    task(cancel).await;
+                    child.duration.observe(begin.elapsed().as_secs_f64());
+                    child.succeeded.inc();
+                }) as Pin<Box<dyn Future<Output = ()> + Send>>
+            }) as Task
+        } else {
+            task
+        };
         let mut pending = self.pending.lock().unwrap();
         if self.cancel.is_cancelled() || sender.is_closed() {
             return Err(RunnerError::Stopped);
@@ -248,6 +294,11 @@ impl ConcurrentRunner {
             Ok(())
         };
         pending.dispatch(sender);
+        if matches!(result, Err(RunnerError::MaxWaitingTasksExceeded)) {
+            if let Some(child) = child {
+                child.failed.inc();
+            }
+        }
         result
     }
 

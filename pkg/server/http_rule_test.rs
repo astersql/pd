@@ -272,6 +272,18 @@ async fn task_068_queries_mutation_and_restart() {
         .await
         .unwrap();
     node.ready().await.unwrap();
+    // Preserve suspect-range queue entries while this fixture inspects them.
+    assert_eq!(
+        request(
+            &url,
+            "POST",
+            "/pd/api/v1/config/schedule",
+            r#"{"halt-scheduling":"true"}"#
+        )
+        .0,
+        200
+    );
+
     let observations = observe(&url, 7682).await;
     println!("Rust observations: {observations}");
     assert_eq!(

@@ -99,7 +99,11 @@ pub fn submit_region_heartbeat<C: CheckerConfigProvider + Send + 'static>(
         });
         (result, repair, collect)
     };
+    let metrics = state.lock().unwrap().cluster.regions.metrics();
     let guide = result.guide;
+    if guide.save_cache {
+        metrics.region_event_metrics(0);
+    }
     let id = result.region.meta().id;
     let changed = guide.save_cache || guide.save_kv;
     let mut receipt = HeartbeatEffectsReceipt {
@@ -117,6 +121,7 @@ pub fn submit_region_heartbeat<C: CheckerConfigProvider + Send + 'static>(
         );
     }
     if guide.save_cache || (!changed && repair_subtree) {
+        let _stage = metrics.stage_metrics(6);
         let shared = state.clone();
         let region = receipt.heartbeat.region.clone();
         receipt.enqueue(
@@ -138,6 +143,7 @@ pub fn submit_region_heartbeat<C: CheckerConfigProvider + Send + 'static>(
         );
     }
     if !changed {
+        let _stage = metrics.stage_metrics(8);
         return Ok(receipt);
     }
     if !receipt.heartbeat.overlaps.is_empty() {
@@ -185,6 +191,7 @@ pub fn submit_region_heartbeat<C: CheckerConfigProvider + Send + 'static>(
         if let Some(storage) = storage {
             let overlaps = receipt.heartbeat.overlaps.clone();
             let region = receipt.heartbeat.region.clone();
+            let metrics = metrics.clone();
             receipt.enqueue(
                 runners.misc,
                 HeartbeatEffect::SaveRegionToKV,
@@ -204,11 +211,13 @@ pub fn submit_region_heartbeat<C: CheckerConfigProvider + Send + 'static>(
                     if let Err(error) = storage.save_region(&paths, region.meta()).await {
                         failures.push(HeartbeatEffectFailure::SaveRegion(id, error));
                     }
+                    metrics.region_event_metrics(1);
                     Some(failures)
                 },
             );
         }
     }
+    let _other_stage = metrics.stage_metrics(8);
     if guide.save_kv || guide.need_sync {
         if let Some(downstreams) = downstreams {
             let region = receipt.heartbeat.region.clone();
@@ -282,6 +291,8 @@ fn submit_collect<C: CheckerConfigProvider + Send + 'static>(
     kind: HeartbeatEffect,
     now: i64,
 ) {
+    let metrics = shared.lock().unwrap().cluster.regions.metrics();
+    let _stage = metrics.stage_metrics(7);
     let event = receipt.heartbeat.region.clone();
     receipt.enqueue(runner, kind, false, move |cancel| async move {
         let mut state = shared.lock().unwrap();

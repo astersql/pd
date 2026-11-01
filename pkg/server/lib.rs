@@ -85,6 +85,9 @@ pub trait PdServices: Send + Sync {
         None
     }
 
+    async fn backend_health(&self) -> Vec<astersql_pd_storage::BackendHealth> {
+        Vec::new()
+    }
     /// Immutable host telemetry/security settings, independent of leader terms.
     fn telemetry_config(&self) -> Option<Arc<astersql_pd_server_config::Config>> {
         None

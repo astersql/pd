@@ -569,5 +569,5 @@ fn task_110_eager_source_events() {
         })
         .collect();
     assert_eq!(actual, expected);
-    assert_eq!(actual.len(), 101);
+    assert_eq!(actual.len(), 104);
 }

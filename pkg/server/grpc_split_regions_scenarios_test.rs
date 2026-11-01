@@ -310,11 +310,15 @@ async fn observe_transport(client: &mut Client, id: u64, url: Option<&str>) -> V
         .unwrap()
         .into_inner();
     assert_eq!(r.region.unwrap(), region(101, b"a", b"m", version + 1));
-    output.push(json!([
-        format!("{:?}", cancelled.code()),
-        cancelled.message(),
-        "cancelled-without-boundary"
-    ]));
+    // Tonic may surface its deadline as a local timer status or an HTTP/2
+    // stream-reset status. Preserve both raw fields as evidence; the semantic
+    // assertion above and unchanged persisted region are the cancellation oracle.
+    println!(
+        "split client deadline raw status: {:?}: {}",
+        cancelled.code(),
+        cancelled.message()
+    );
+    output.push(json!(["client-deadline", "cancelled-without-boundary"]));
     drop(tx);
     drop(stream);
     json!(output)

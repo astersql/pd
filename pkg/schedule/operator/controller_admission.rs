@@ -48,6 +48,9 @@ pub(super) struct AdmissionState {
 impl AdmissionState {
     fn detach(&mut self, id: u64) -> Option<Arc<Operator>> {
         let op = self.operators.remove(&id)?;
+        if let Some(metrics) = op.metrics.get() {
+            metrics.event("remove");
+        }
         *self
             .counts
             .get_mut(&op.scheduler_kind().0)
@@ -74,12 +77,24 @@ impl AdmissionState {
 pub struct ControllerAdmission {
     pub(super) state: Mutex<AdmissionState>,
     max_waiting: std::sync::atomic::AtomicU64,
+    metrics: std::sync::OnceLock<Arc<astersql_pd_metricutil::ClassicMetrics>>,
 }
 impl ControllerAdmission {
     pub fn new(max_waiting: u64) -> Self {
         Self {
             state: Mutex::new(AdmissionState::default()),
             max_waiting: std::sync::atomic::AtomicU64::new(max_waiting),
+            metrics: Default::default(),
+        }
+    }
+    pub fn set_metrics(&self, scope: Arc<astersql_pd_metricutil::ClassicMetrics>) {
+        let _ = self.metrics.set(scope);
+    }
+    pub(super) fn bind_metrics(&self, ops: &[Arc<Operator>]) {
+        if let Some(scope) = self.metrics.get() {
+            for op in ops {
+                op.set_metrics(scope.clone());
+            }
         }
     }
     /// Change the waiting limit while retaining admitted operators and counts.
@@ -118,6 +133,7 @@ impl ControllerAdmission {
         ops: &[Arc<Operator>],
         promoting: bool,
     ) -> Result<(), AdmissionError> {
+        self.bind_metrics(ops);
         if !Self::valid_batch(ops) {
             return Err(AdmissionError::InvalidBatch);
         }
@@ -145,13 +161,29 @@ impl ControllerAdmission {
                 Some(CancelReason::RegionNotFound)
             };
             if let Some(reason) = reason {
+                if let Some(metrics) = op.metrics.get() {
+                    metrics.event(match reason {
+                        CancelReason::RegionNotFound => "not-found",
+                        CancelReason::EpochNotMatch => "epoch-not-match",
+                        CancelReason::AlreadyExist => "already-have",
+                        CancelReason::NotInCreateStatus => "unexpected-status",
+                        CancelReason::ExceedWaitLimit => "exceed-max-waiting",
+                        _ => "unexpected",
+                    });
+                }
                 return Err(Self::reject(ops, reason));
             }
         }
         // Evaluate every member: expiry itself changes CREATED to EXPIRED.
         let mut expired = false;
         for op in ops {
-            expired |= op.check_expired();
+            let this_expired = op.check_expired();
+            if this_expired {
+                if let Some(metrics) = op.metrics.get() {
+                    metrics.event("expired");
+                }
+            }
+            expired |= this_expired;
         }
         if expired {
             return Err(Self::reject(ops, CancelReason::Expired));
@@ -185,6 +217,10 @@ impl ControllerAdmission {
             removed.push(old);
         }
         for op in ops {
+            op.observe_start_metrics();
+            if let Some(metrics) = op.metrics.get() {
+                metrics.started(op.approximate_size());
+            }
             state.operators.insert(op.region_id(), op.clone());
             *state.counts.entry(op.scheduler_kind().0).or_default() += 1;
         }
@@ -225,6 +261,10 @@ impl ControllerAdmission {
             state.waiting.put_operator(ops[0].clone())?;
         }
         state.waiting_counts.inc_count(ops[0].desc());
+        if let Some(metrics) = ops[0].metrics.get() {
+            metrics.event("put");
+            metrics.event("promote-add");
+        }
         Ok(())
     }
     /// Skip invalid/stale batches until one is admitted or the queue empties.
@@ -237,6 +277,9 @@ impl ControllerAdmission {
         let mut state = self.state.lock().expect("admission poisoned");
         while let Some(ops) = state.waiting.get_operator(random)? {
             state.waiting_counts.dec_count(ops[0].desc());
+            if let Some(metrics) = ops[0].metrics.get() {
+                metrics.event("get");
+            }
             match self.admit(&mut state, cluster, &ops, true) {
                 Ok(out) => return Ok(Some(out)),
                 Err(AdmissionError::Rejected(_)) => continue,

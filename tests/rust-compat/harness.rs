@@ -21,6 +21,13 @@ pub struct Server {
     pub peer: String,
 }
 impl Server {
+    /// Endpoint of the metadata backend owned by this real process fixture.
+    pub fn metadata_url(&self) -> &str {
+        self._etcd
+            .as_ref()
+            .map_or(&self.url, |fixture| &fixture.endpoint)
+    }
+
     pub fn start_rust(binary: &Path) -> io::Result<Self> {
         let etcd = fixture::Fixture::start();
         let mut server =

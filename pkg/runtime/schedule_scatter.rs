@@ -547,6 +547,11 @@ pub(super) async fn serve(
                     .await
                     .map_err(|e| e.to_string())?;
                 // No await between durable completion and publication to all consumers.
+                if let Some(metrics) = &r.metrics {
+                    metrics
+                        .classic
+                        .scheduling_metrics(next.config.schedule.halt_scheduling);
+                }
                 r.persisted_config = next;
                 let mut state = r.state.lock().unwrap();
                 state.config.schedule = r.persisted_config.config.schedule.clone();

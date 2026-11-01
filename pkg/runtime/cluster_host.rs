@@ -2,7 +2,8 @@
 //! Shared canonical cluster state owned by the serving scope.
 use astersql_pd_cluster::{
     HeartbeatEffectsState, HeartbeatRunners, StatePipeline, StateSnapshot, StoreConfigWorker,
-    StoreStateWorker, StoreStatsWorker, check_store_states, refresh_store_stats, sync_store_config,
+    StoreStateWorker, StoreStatsWorker, check_store_states, refresh_store_stats,
+    sync_store_config_observed,
 };
 use astersql_pd_core::{BasicCluster, NodeState, RegionInfo, StoreStats};
 use astersql_pd_keypath::ClusterPaths;
@@ -21,6 +22,9 @@ use tokio_util::sync::CancellationToken;
 
 type State = Mutex<HeartbeatEffectsState<ProviderSnapshot<()>>>;
 struct Resources {
+    metrics: Option<Arc<astersql_pd_server::service_metrics::DomainMetricHandles>>,
+    metrics_error: Mutex<Option<String>>,
+    network_metrics: Mutex<std::collections::BTreeMap<u64, prometheus::Counter>>,
     suspect_cache: Arc<astersql_pd_cache::TTLString<[Vec<u8>; 2]>>,
     suspect_ranges: astersql_pd_schedule_checker::SuspectRanges,
     progress: Arc<astersql_pd_progress::Manager>,
@@ -30,7 +34,9 @@ struct Resources {
     leader: Arc<astersql_pd_member::Leadership>,
     allocator: Arc<astersql_pd_id::Allocator>,
     schedule_creations: std::collections::BTreeSet<u64>,
-    schedule_observations: std::collections::BTreeSet<u64>,
+    schedule_operators: Option<Arc<astersql_pd_schedule_operator::ControllerAdmission>>,
+    schedule_observations:
+        std::collections::BTreeMap<u64, Arc<astersql_pd_schedule_operator::Operator>>,
     state: Arc<State>,
     hot: HotStat,
     history: hot_history::Maintenance,
@@ -57,6 +63,7 @@ pub struct ClusterHost {
     progress_worker: AsyncMutex<Option<tokio::task::JoinHandle<()>>>,
     stats_worker: AsyncMutex<Option<StoreStatsWorker>>,
     config_worker: AsyncMutex<Option<StoreConfigWorker>>,
+    config_wake: Arc<tokio::sync::Notify>,
     metrics_worker: AsyncMutex<Option<astersql_pd_cluster::ClusterMetricsWorker>>,
     schedule_requests: tokio::sync::mpsc::Sender<schedule_scatter::Command>,
     schedule_status: tokio::sync::watch::Receiver<ScheduleStatus>,
@@ -73,6 +80,13 @@ pub struct ClusterHost {
     cancel: CancellationToken,
 }
 impl ClusterHost {
+    pub async fn metrics_collection_error(&self) -> Option<String> {
+        self.resources
+            .lock()
+            .await
+            .as_ref()
+            .and_then(|r| r.metrics_error.lock().unwrap().clone())
+    }
     pub(crate) async fn admin_region(
         &self,
         command: astersql_pd_server::http_admin_cache::Command,
@@ -233,7 +247,14 @@ impl ClusterHost {
         registry: &prometheus::Registry,
         leader: Arc<astersql_pd_member::Leadership>,
         allocator: Arc<astersql_pd_id::Allocator>,
+        metrics: Option<Arc<astersql_pd_server::service_metrics::DomainMetricHandles>>,
     ) -> Result<Self, crate::NodeError> {
+        let _start_metrics = metrics.as_ref().map(|m| {
+            m.classic
+                .raft_cluster_start_duration
+                .with_label_values(&["non-bootstrap"])
+                .start_timer()
+        });
         let operator_clock = schedule_operator_read::ClockMap::new();
         let scheduling_cluster = cluster.clone();
         let stores = cluster.stores.clone();
@@ -308,7 +329,26 @@ impl ClusterHost {
                 .get_or_create_rolling_store_stats(store.id());
         }
         let mut runners = std::array::from_fn(|_| ConcurrentRunner::new(None));
-        for runner in &mut runners {
+        for (runner, name) in
+            runners
+                .iter_mut()
+                .zip(["heartbeat-async", "misc-async", "sync-region-async"])
+        {
+            if let Some(metrics) = &metrics {
+                runner.set_metrics(astersql_pd_ratelimit::RunnerMetrics::new(
+                    &metrics.classic,
+                    name,
+                    &[
+                        "",
+                        "UpdateSubTree",
+                        "HandleOverlaps",
+                        "ObserveRegionStatsAsync",
+                        "CollectRegionStatsAsync",
+                        "SaveRegionToKV",
+                        "SyncRegionToFollower",
+                    ],
+                ));
+            }
             runner.start(&cancel);
         }
         let state = Arc::new(Mutex::new(HeartbeatEffectsState {
@@ -325,6 +365,9 @@ impl ClusterHost {
             HistoryBuffer::new(100)?,
             std::time::Duration::from_secs(10),
         ));
+        if let Some(metrics) = &metrics {
+            syncer.downstreams().attach_metrics(metrics.sync.clone());
+        }
         #[cfg(test)]
         let state_weak = Arc::downgrade(&state);
         let syncer_weak = Arc::downgrade(&syncer);
@@ -342,7 +385,15 @@ impl ClusterHost {
             std::time::Duration::from_secs(60),
             astersql_pd_cache::TtlDuration::from_nanos(180_000_000_000),
         ));
+        if let Some(metrics) = &metrics {
+            if let Some(stats) = state.lock().unwrap().region_stats.as_mut() {
+                stats.set_metrics(metrics.statistics.clone());
+            }
+        }
         let resources = Arc::new(AsyncMutex::new(Some(Resources {
+            metrics: metrics.clone(),
+            metrics_error: Mutex::new(None),
+            network_metrics: Mutex::new(Default::default()),
             suspect_ranges: astersql_pd_schedule_checker::SuspectRanges::new(suspect_cache.clone()),
             suspect_cache,
             progress: progress.clone(),
@@ -366,6 +417,7 @@ impl ClusterHost {
             leader,
             allocator,
             schedule_creations: Default::default(),
+            schedule_operators: None,
             schedule_observations: Default::default(),
             state: state.clone(),
             hot,
@@ -472,8 +524,10 @@ impl ClusterHost {
         );
         let stats_resources = resources.clone();
         let stats_cancel = cancel.clone();
-        let stats_worker =
-            StoreStatsWorker::start(&tokio::runtime::Handle::current(), &cancel, move || {
+        let stats_worker = StoreStatsWorker::start(
+            &tokio::runtime::Handle::current(),
+            &cancel,
+            move || {
                 let resources = stats_resources.clone();
                 let cancel = stats_cancel.clone();
                 async move {
@@ -484,9 +538,132 @@ impl ClusterHost {
                     if cancel.is_cancelled() || resources.leader.validate().await.is_err() {
                         return;
                     }
-                    refresh_store_stats(&resources.state.lock().unwrap().cluster);
+                    let begin = std::time::Instant::now();
+                    if let Some(metrics) = &resources.metrics {
+                        let (ids, active) = {
+                            let state = resources.state.lock().unwrap();
+                            (
+                                state
+                                    .cluster
+                                    .regions
+                                    .get_regions()
+                                    .iter()
+                                    .map(|r| r.meta().id)
+                                    .collect(),
+                                state
+                                    .cluster
+                                    .stores
+                                    .get_stores()
+                                    .iter()
+                                    .filter(|s| !s.is_removed())
+                                    .map(|s| s.id())
+                                    .collect::<std::collections::BTreeSet<_>>(),
+                            )
+                        };
+                        let result = tokio::select! {biased;
+                            _=cancel.cancelled()=>return,
+                            result=resources.hot.hot_cache.collect_metrics(&metrics.statistics,now().1,&active)=>result,
+                        };
+                        *resources.metrics_error.lock().unwrap() =
+                            result.err().map(|e| e.to_string());
+                        if let Ok(snapshot) = resources.hot.snapshot(0, ids).await {
+                            let read = snapshot.read.into_iter().collect();
+                            let write = snapshot.write.into_iter().collect();
+                            let state = resources.state.lock().unwrap();
+                            let stores = state
+                                .cluster
+                                .stores
+                                .get_stores()
+                                .iter()
+                                .map(|s| s.as_ref().clone())
+                                .collect::<Vec<_>>();
+                            let infos = astersql_pd_statistics::summary_store_infos(&stores);
+                            for rw in [
+                                astersql_pd_statistics_utils::RWType::READ,
+                                astersql_pd_statistics_utils::RWType::WRITE,
+                            ] {
+                                for kind in [
+                                    astersql_pd_core_constant::ResourceKind::LEADER,
+                                    astersql_pd_core_constant::ResourceKind::REGION,
+                                ] {
+                                    let details = astersql_pd_statistics::summary_stores_load(
+                                        &infos,
+                                        &snapshot.stores,
+                                        None,
+                                        if rw == astersql_pd_statistics_utils::RWType::READ {
+                                            &read
+                                        } else {
+                                            &write
+                                        },
+                                        true,
+                                        rw,
+                                        kind,
+                                        std::time::Duration::from_nanos(now().1 as u64),
+                                    )
+                                    .into_values()
+                                    .collect::<Vec<_>>();
+                                    metrics
+                                        .statistics
+                                        .collect_hot_load_summary(&details, rw, kind);
+                                }
+                            }
+                            metrics.hotspot.collect_hot_spot_metrics(
+                                &state.cluster,
+                                &stores,
+                                &astersql_pd_schedule::HotObservationInputs {
+                                    loads: &snapshot.stores,
+                                    read: &read,
+                                    write: &write,
+                                },
+                            );
+                        }
+                    }
+                    let mut state = resources.state.lock().unwrap();
+                    refresh_store_stats(&state.cluster);
+                    let regions = state.cluster.regions.get_regions();
+                    let labels = state.config.replication.location_labels.clone();
+                    let labels = labels
+                        .as_slice()
+                        .iter()
+                        .map(String::as_str)
+                        .collect::<Vec<_>>();
+                    for region in regions {
+                        let stores = state.cluster.stores.get_region_stores(&region);
+                        let stores = stores
+                            .iter()
+                            .filter(|store| !store.is_tiflash_write())
+                            .map(AsRef::as_ref)
+                            .collect::<Vec<_>>();
+                        state.label_stats.observe(&region, &stores, &labels);
+                    }
+                    state.label_stats.clear_defunct_regions();
+                    if let Some(metrics) = &resources.metrics {
+                        let mut census =
+                            astersql_pd_statistics::StoreStatisticsMap::new(&state.config);
+                        for store in state.cluster.stores.get_stores() {
+                            census.observe(&store, now().1 as i128);
+                            metrics
+                                .statistics
+                                .observe_hot_stat(&store, &resources.hot.stores_stats);
+                        }
+                        metrics
+                            .statistics
+                            .collect_store_statistics(&census.collect())
+                            .expect("canonical metric labels");
+                        if let Some(stats) = &state.region_stats {
+                            metrics.statistics.collect_region_statistics(stats);
+                        }
+                        metrics
+                            .statistics
+                            .collect_label_statistics(&state.label_stats);
+                        metrics
+                            .classic
+                            .update_store_stats_gauge
+                            .set(begin.elapsed().as_secs_f64());
+                    }
                 }
-            });
+            },
+        );
         let config_resources = resources.clone();
         let store_config_error = Arc::new(Mutex::new(None));
         let config_error = store_config_error.clone();
@@ -599,6 +776,7 @@ impl ClusterHost {
                 schedule_error.clone(),
                 schedule_initialized.clone(),
                 cluster_id,
+                metrics.as_ref().map(|m| m.heartbeat.clone()),
             );
         let progress_cancel = cancel.clone();
         let progress_worker = tokio::runtime::Handle::current().spawn(async move {
@@ -625,6 +803,7 @@ impl ClusterHost {
             resources,
             store_worker: AsyncMutex::new(Some(store_worker)),
             stats_worker: AsyncMutex::new(Some(stats_worker)),
+            config_wake: config_worker.wake_handle(),
             config_worker: AsyncMutex::new(Some(config_worker)),
             metrics_worker: AsyncMutex::new(Some(metrics_worker)),
             store_config_error,
@@ -716,6 +895,7 @@ impl ClusterHost {
                 "bootstrap replication mode requires a configured replication manager".into(),
             );
         }
+        let bootstrap_begin = std::time::Instant::now();
         let nanos = std::time::SystemTime::now()
             .duration_since(std::time::UNIX_EPOCH)
             .map_err(|e| e.to_string())?
@@ -730,6 +910,13 @@ impl ClusterHost {
             .await
             .map_err(|e| e.to_string())?;
         if committed {
+            if let Some(metrics) = &resources.metrics {
+                metrics
+                    .classic
+                    .raft_cluster_start_duration
+                    .with_label_values(&["bootstrap"])
+                    .observe(bootstrap_begin.elapsed().as_secs_f64());
+            }
             resources
                 .hot
                 .stores_stats
@@ -744,6 +931,7 @@ impl ClusterHost {
                 .regions
                 .check_and_put_region(Arc::new(RegionInfo::new(region, None, vec![], vec![])));
             state.cluster.update_all_store_status();
+            self.config_wake.notify_one();
         }
         Ok(committed)
     }
@@ -1035,7 +1223,60 @@ impl StoreHeartbeatService for ClusterHost {
             .await
             .map_err(|e| StoreHeartbeatError::Other(e.to_string()))?;
         let mut state = resources.state.lock().unwrap();
-        apply_store_heartbeat(&mut state.cluster, Some(&resources.hot), &stats, now().1)
+        let result =
+            apply_store_heartbeat(&mut state.cluster, Some(&resources.hot), &stats, now().1)?;
+        if state
+            .cluster
+            .stores
+            .get_store(stats.store_id)
+            .is_some_and(|s| !s.is_removed())
+        {
+            let slow = state.cluster.stores.avg_network_slow_score(stats.store_id) >= 99;
+            if slow {
+                state
+                    .cluster
+                    .stores
+                    .trigger_network_slow_evict(stats.store_id);
+            } else {
+                state
+                    .cluster
+                    .stores
+                    .reset_trigger_network_slow_evict(stats.store_id);
+            }
+            if let Some(metrics) = &resources.metrics {
+                let mut children = resources.network_metrics.lock().unwrap();
+                if slow {
+                    children
+                        .entry(stats.store_id)
+                        .or_insert_with(|| {
+                            metrics
+                                .classic
+                                .store_trigger_network_slow_evict
+                                .with_label_values(&[&stats.store_id.to_string()])
+                        })
+                        .inc();
+                } else {
+                    children.remove(&stats.store_id);
+                    let _ = metrics
+                        .classic
+                        .store_trigger_network_slow_evict
+                        .remove_label_values(&[&stats.store_id.to_string()]);
+                }
+                if state
+                    .cluster
+                    .stores
+                    .get_store(stats.store_id)
+                    .is_none_or(|s| s.is_removed())
+                {
+                    children.remove(&stats.store_id);
+                    let _ = metrics
+                        .classic
+                        .store_trigger_network_slow_evict
+                        .remove_label_values(&[&stats.store_id.to_string()]);
+                }
+            }
+        }
+        Ok(result)
     }
 }
 #[async_trait::async_trait]
@@ -1080,11 +1321,33 @@ impl RegionHeartbeatService for ClusterHost {
             .map_err(|e| RegionHeartbeatError(e.to_string()))?;
         let id = region.meta().id;
         let (seconds, nanos) = now();
+        resources
+            .state
+            .lock()
+            .unwrap()
+            .cluster
+            .regions
+            .metrics()
+            .set_breakdown_metrics(
+                resources
+                    .persisted_config
+                    .config
+                    .schedule
+                    .enable_heartbeat_breakdown_metrics,
+            );
         let _receipt = resources
             .pipeline()
             .region(region, seconds, nanos)
             .map_err(|e| RegionHeartbeatError(e.to_string()))?;
-        resources.schedule_observations.insert(id);
+        // Dispatch only to the operation present when this report was accepted.
+        // An old queued heartbeat must not act on a later admission/replacement.
+        if let Some(operator) = resources
+            .schedule_operators
+            .as_ref()
+            .and_then(|operators| operators.get_operator(id))
+        {
+            resources.schedule_observations.insert(id, operator);
+        }
         Ok(())
     }
 }
@@ -1111,9 +1374,14 @@ impl Resources {
         if candidates.is_empty() {
             *candidates = self.state.lock().unwrap().cluster.stores.get_stores();
         }
-        let result = sync_store_config(candidates, cancel).await;
-        let config = match result {
-            Ok(Some(config)) => config,
+        let failure = |address: &str| {
+            if let Some(metrics) = &self.metrics {
+                metrics.classic.store_config_metrics(address, "fail");
+            }
+        };
+        let result = sync_store_config_observed(candidates, cancel, Some(&failure)).await;
+        let report = match result {
+            Ok(Some(report)) => report,
             other => {
                 // Go refreshes the candidate snapshot only when no Store succeeded.
                 *candidates = self.state.lock().unwrap().cluster.stores.get_stores();
@@ -1125,17 +1393,35 @@ impl Resources {
         }
         self.leader.validate().await?;
         let old = self.state.lock().unwrap().config.store.clone();
-        if config == old {
+        if report.config == old {
+            if let Some(metrics) = &self.metrics {
+                metrics
+                    .classic
+                    .store_config_metrics(&report.address, "succ");
+            }
             return Ok(());
         }
         let mut next = self.persisted_config.clone();
-        next.store = config;
+        next.store = report.config;
         if !old.is_raft_kv2() && next.store.is_raft_kv2() {
             next.config.schedule.store_limit_version = "v2".into();
         }
         // Admission is held across this transaction. A failed write never publishes
         // a candidate; cancellation joins admitted writes instead of dropping them.
-        next.persist(&self.storage, &self.paths).await?;
+        if let Err(error) = next.persist(&self.storage, &self.paths).await {
+            failure(&report.address);
+            return Err(error.into());
+        }
+        if let Some(metrics) = &self.metrics {
+            if !old.is_raft_kv2() && next.store.is_raft_kv2() {
+                metrics
+                    .classic
+                    .store_config_metrics(&report.address, "raft-v2");
+            }
+            metrics
+                .classic
+                .store_config_metrics(&report.address, "succ");
+        }
         {
             let mut state = self.state.lock().unwrap();
             state.config.store = next.store.clone();
@@ -1214,13 +1500,16 @@ impl astersql_pd_server::ClusterReadService for ClusterHost {
         hot: bool,
         engine: &str,
     ) -> Result<astersql_pd_statistics::RegionStats, String> {
+        use astersql_pd_schedule_filter::{
+            EngineFilter, Filter, not_special_engines, special_engines,
+        };
         use astersql_pd_statistics::{RegionStats, with_store_map_option};
         let guard = self.resources.lock().await;
         if self.cancel.is_cancelled() {
             return Err("node stopped".into());
         }
         let resources = guard.as_ref().ok_or("node stopped")?;
-        let (regions, stores) = {
+        let (regions, stores, config) = {
             let state = resources.state.lock().unwrap();
             if count {
                 return Ok(RegionStats {
@@ -1231,6 +1520,7 @@ impl astersql_pd_server::ClusterReadService for ClusterHost {
             (
                 state.cluster.regions.scan_regions(start, end, 0),
                 state.cluster.stores.get_stores(),
+                state.config.clone(),
             )
         };
         let snapshot = if hot {
@@ -1244,12 +1534,21 @@ impl astersql_pd_server::ClusterReadService for ClusterHost {
         } else {
             None
         };
+        let engine_filter = if hot {
+            match engine {
+                "tikv" => Some(EngineFilter::new("user", not_special_engines())),
+                "tiflash" => Some(EngineFilter::new("user", special_engines())),
+                _ => None,
+            }
+        } else {
+            None
+        };
         let stores: std::collections::BTreeMap<_, _> = stores
             .into_iter()
-            .filter(|s| match engine {
-                "tikv" => s.label_value("engine") != "tiflash",
-                "tiflash" => s.label_value("engine") == "tiflash",
-                _ => true,
+            .filter(|s| {
+                engine_filter
+                    .as_ref()
+                    .is_none_or(|filter| filter.source_metrics(&config, s).is_ok())
             })
             .map(|s| (s.id(), s.label_value("engine").to_owned()))
             .collect();
@@ -1466,6 +1765,9 @@ mod store_config_worker_test;
 #[cfg(test)]
 #[path = "resolved_ts_worker_test.rs"]
 mod resolved_ts_worker_test;
+
+#[path = "schedule_check.rs"]
+mod schedule_check;
 
 #[path = "schedule_worker.rs"]
 mod schedule_worker;

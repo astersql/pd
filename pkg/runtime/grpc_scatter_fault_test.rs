@@ -17,6 +17,15 @@ async fn task_029_storage_error_and_cancel() {
         mode: std::sync::atomic::AtomicU8::new(0),
         entered: tokio::sync::Notify::new(),
     });
+    // Isolate this manual request from the real automatic checker patrol.
+    // Halting scheduling still permits explicit scatter operations.
+    astersql_pd_storage_endpoint::StorageEndpoint::new(backend.clone())
+        .save_config(
+            &astersql_pd_keypath::ClusterPaths::new(2902),
+            &serde_json::json!({"schedule":{"halt-scheduling":"true"}}),
+        )
+        .await
+        .unwrap();
     let cancel = CancellationToken::new();
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
     let url = format!("http://{}", listener.local_addr().unwrap());

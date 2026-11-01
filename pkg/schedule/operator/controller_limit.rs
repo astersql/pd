@@ -149,7 +149,13 @@ impl ControllerAdmission {
         ops: &[Arc<Operator>],
     ) -> Result<AdmissionOutcome, AdmissionError> {
         let mut state = self.state.lock().expect("admission poisoned");
+        self.bind_metrics(ops);
         if exceed_store_limit(ops, cluster, config).await {
+            for op in ops {
+                if let Some(metrics) = op.metrics.get() {
+                    metrics.exceeded();
+                }
+            }
             return Err(Self::reject(ops, CancelReason::ExceedStoreLimit));
         }
         let out = self.admit(&mut state, cluster, ops, false)?;
@@ -169,7 +175,16 @@ impl ControllerAdmission {
         let mut state = self.state.lock().expect("admission poisoned");
         while let Some(ops) = state.waiting.get_operator(random)? {
             state.waiting_counts.dec_count(ops[0].desc());
+            self.bind_metrics(&ops);
+            if let Some(metrics) = ops[0].metrics.get() {
+                metrics.event("get");
+            }
             if exceed_store_limit(&ops, cluster, config).await {
+                for op in &ops {
+                    if let Some(metrics) = op.metrics.get() {
+                        metrics.exceeded();
+                    }
+                }
                 Self::reject(&ops, CancelReason::ExceedStoreLimit);
                 continue;
             }
@@ -181,7 +196,14 @@ impl ControllerAdmission {
                     }
                     return Ok(Some(out));
                 }
-                Err(AdmissionError::Rejected(_)) => continue,
+                Err(AdmissionError::Rejected(_)) => {
+                    for op in &ops {
+                        if let Some(metrics) = op.metrics.get() {
+                            metrics.event("check-failed");
+                        }
+                    }
+                    continue;
+                }
                 Err(e) => return Err(e),
             }
         }

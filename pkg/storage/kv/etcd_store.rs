@@ -14,6 +14,7 @@ use tokio_util::sync::CancellationToken;
 pub struct EtcdMetaStore {
     client: Client,
     timeout: Duration,
+    endpoints: Vec<String>,
 }
 impl EtcdMetaStore {
     fn new_watch(
@@ -47,7 +48,11 @@ impl EtcdMetaStore {
             .await
             .map_err(|_| StoreError::Unavailable)?
             .map_err(map_error)?;
-        Ok(Self { client, timeout })
+        Ok(Self {
+            client,
+            timeout,
+            endpoints: endpoints.to_vec(),
+        })
     }
     async fn bounded<T>(
         &self,
@@ -127,6 +132,36 @@ fn prefix_end(prefix: &[u8]) -> Vec<u8> {
 }
 #[async_trait]
 impl MetaStore for EtcdMetaStore {
+    async fn backend_health(&self) -> Vec<BackendHealth> {
+        let mut observations = Vec::with_capacity(self.endpoints.len());
+        for endpoint in &self.endpoints {
+            let begin = std::time::Instant::now();
+            let response = tokio::time::timeout(self.timeout, async {
+                let mut client = Client::connect(
+                    [endpoint.clone()],
+                    Some(
+                        ConnectOptions::new()
+                            .with_connect_timeout(self.timeout)
+                            .with_require_leader(true),
+                    ),
+                )
+                .await?;
+                client.get("health", None).await
+            })
+            .await;
+            let healthy = match response {
+                Ok(Ok(_)) => true,
+                Ok(Err(error)) => map_error(error) == StoreError::PermissionDenied,
+                Err(_) => false,
+            };
+            observations.push(BackendHealth {
+                endpoint: endpoint.clone(),
+                healthy,
+                elapsed: begin.elapsed(),
+            });
+        }
+        observations
+    }
     async fn consensus_cluster_id(&self) -> Result<Option<u64>> {
         let mut client = self.client.clone();
         let status = self.bounded(client.status()).await?;

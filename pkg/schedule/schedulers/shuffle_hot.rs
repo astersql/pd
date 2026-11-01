@@ -195,9 +195,9 @@ impl ShuffleHotScheduler {
             let mut destinations = Vec::new();
             for store in &stores {
                 if region.get_store_peer(store.id()).is_none()
-                    && state.target(ctx.config, store).await.is_ok()
-                    && evicted.target(ctx.config, store).is_ok()
-                    && placement.target(ctx.config, store).is_ok()
+                    && state.target_metrics(ctx.config, store).await.is_ok()
+                    && evicted.target_metrics(ctx.config, store).is_ok()
+                    && placement.target_metrics(ctx.config, store).is_ok()
                 {
                     destinations.push(store.id());
                 }

@@ -176,6 +176,9 @@ pub struct Operator {
     timeout_nanos: i64,
     priority: RwLock<PriorityLevel>,
     health_check: AtomicBool,
+    pub(crate) metrics: std::sync::OnceLock<crate::operator_metrics::OperatorMetrics>,
+    start_counters: Mutex<Vec<prometheus::Counter>>,
+    finish_counters: Mutex<Vec<prometheus::Counter>>,
 }
 impl Operator {
     #[allow(clippy::too_many_arguments)]
@@ -266,12 +269,41 @@ impl Operator {
                 PriorityLevel::MEDIUM
             }),
             health_check: AtomicBool::new(false),
+            metrics: Default::default(),
+            start_counters: Default::default(),
+            finish_counters: Default::default(),
         }
     }
     /// Decorate a newly built operation before publishing it to the controller.
     pub fn decorate(&mut self, desc: String, kind: OpKind) {
         self.desc = desc;
         self.kind = self.kind | kind;
+    }
+    /// Attach cached source counters before admitting the operation.
+    pub fn add_start_metric(&self, counter: Option<prometheus::Counter>) {
+        if let Some(counter) = counter {
+            self.start_counters.lock().unwrap().push(counter);
+        }
+    }
+    /// Finished counters are observed only for a successful terminal burial.
+    pub fn add_finish_metric(&self, counter: Option<prometheus::Counter>) {
+        if let Some(counter) = counter {
+            self.finish_counters.lock().unwrap().push(counter);
+        }
+    }
+    pub(crate) fn observe_start_metrics(&self) {
+        for counter in self.start_counters.lock().unwrap().iter() {
+            counter.inc();
+        }
+    }
+    pub(crate) fn observe_finish_metrics(&self) {
+        for counter in self.finish_counters.lock().unwrap().iter() {
+            counter.inc();
+        }
+    }
+    pub(crate) fn set_metrics(&self, scope: Arc<astersql_pd_metricutil::ClassicMetrics>) {
+        self.metrics
+            .get_or_init(|| crate::operator_metrics::OperatorMetrics::new(scope, self));
     }
     pub fn desc(&self) -> &str {
         &self.desc
@@ -386,7 +418,16 @@ impl Operator {
             if !self.steps[i].is_finish(region) {
                 break;
             }
-            state.finished[i] = Some(self.clock.as_ref().map_or_else(Instant::now, |c| c.now()));
+            let now = self.clock.as_ref().map_or_else(Instant::now, |c| c.now());
+            let begin = if i == 0 {
+                self.reach_time_of(STARTED)
+            } else {
+                state.finished[i - 1]
+            };
+            if let (Some(metrics), Some(begin)) = (self.metrics.get(), begin) {
+                metrics.step(i, now.saturating_duration_since(begin));
+            }
+            state.finished[i] = Some(now);
             state.current += 1;
         }
         let next = self.steps.get(state.current);

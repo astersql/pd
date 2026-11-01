@@ -282,6 +282,23 @@ async fn observe(url: &str, id: u64) -> Value {
         .await
         .unwrap()
         .unwrap();
+    // Require a completed coordinator tick across preparation, without replaying old heartbeats
+    // against operators admitted after those reports.
+    tokio::time::timeout(std::time::Duration::from_secs(30), async {
+        loop {
+            let (status, body, _) = crate::service_metrics_test::fetch(url, "/metrics");
+            assert_eq!(status, 200);
+            if body.lines().any(|line| {
+                line.starts_with("pd_scheduler_status{")
+                    && line.contains("kind=\"balance-leader-scheduler\"")
+            }) {
+                break;
+            }
+            tokio::time::sleep(std::time::Duration::from_millis(20)).await;
+        }
+    })
+    .await
+    .expect("coordinator completes preparation and its first metric collection");
     let objects = request(url, "?object=false");
     assert_eq!(objects.0, 200);
     let objects = objects.1.as_array().unwrap();
@@ -548,6 +565,18 @@ async fn observe(url: &str, id: u64) -> Value {
     }
     assert_eq!(request(url, "").1, json!([]));
     observations.push(json!({"canceled":canceled.len(),"retained_status":"CANCEL"}));
+    let (status, exposition, _) = crate::service_metrics_test::fetch(url, "/metrics");
+    assert_eq!(status, 200);
+    assert!(
+        exposition
+            .lines()
+            .any(|line| line.starts_with("pd_schedule_operators_count{")
+                && line.contains("event=\"promote-stale\"")
+                && line.rsplit_once(' ').unwrap().1.parse::<f64>().unwrap() > 0.0),
+        "a newly received epoch mismatch must publish promote-stale"
+    );
+    tokio::time::sleep(std::time::Duration::from_secs(2)).await;
+
     println!("operator objects: {objects:?}; strings: {strings:?}; records: {records:?}");
     observations.push(json!({"running":objects.len(),"commands":commands.len(),"records":records.len(),"statuses":["RUNNING","SUCCESS"],"text_contract":true}));
     drop(tx);

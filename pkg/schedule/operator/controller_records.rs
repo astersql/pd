@@ -104,7 +104,14 @@ impl ControllerRecords {
                 None
             },
         };
+        if let Some(metrics) = op.metrics.get() {
+            metrics.event(observation.event);
+            if let Some(duration) = observation.running_time {
+                metrics.finished(duration);
+            }
+        }
         if status == SUCCESS {
+            op.observe_finish_metrics();
             for callback in self.success_callbacks.iter().flatten() {
                 callback(&op);
             }

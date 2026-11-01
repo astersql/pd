@@ -16,6 +16,9 @@ use std::{
 };
 
 pub(super) struct PolicyInputs<'a> {
+    pub schedule_counter: Option<prometheus::Counter>,
+    pub scheduler_metrics: Option<SchedulerMetrics>,
+    pub labeler_denied: Option<prometheus::IntCounter>,
     pub diagnostic: Option<DiagnosticRecorder>,
     pub diagnostic_recorded: bool,
     pub cluster: &'a BasicCluster,
@@ -74,6 +77,9 @@ impl PolicyInputs<'_> {
         &mut self,
         policy: &mut BuiltinScheduler,
     ) -> Result<Vec<Arc<Operator>>, String> {
+        if let Some(counter) = &self.schedule_counter {
+            counter.inc();
+        }
         let nanos = now().1 as i128;
         let mut random = |len: usize| {
             if len == 0 {
@@ -326,7 +332,13 @@ impl PolicyInputs<'_> {
                 Duration::from_nanos(params.history_sample_interval.as_nanos().max(0) as u64),
             );
         }
-        let details = hot_details(self.cluster, self.statistics, self.hot, params);
+        let details = hot_details(
+            self.cluster,
+            self.statistics,
+            self.hot,
+            params,
+            self.scheduler_metrics.as_ref(),
+        )?;
         let regions = self
             .admission
             .operators()
@@ -393,7 +405,8 @@ fn hot_details(
     stats: &StatisticsSnapshot,
     pending: &mut HotLoadProjection,
     config: Option<&HotRegionParams>,
-) -> [Vec<astersql_pd_statistics::StoreLoadDetail>; 4] {
+    metrics: Option<&SchedulerMetrics>,
+) -> Result<[Vec<astersql_pd_statistics::StoreLoadDetail>; 4], String> {
     use astersql_pd_core_constant::ResourceKind;
     use astersql_pd_statistics::{summary_store_infos, summary_stores_load};
     let stores = cluster
@@ -404,7 +417,12 @@ fn hot_details(
         .collect::<Vec<_>>();
     let mut infos = summary_store_infos(&stores);
     pending.summary_pending_influence(&mut infos, config, &WallClock);
-    std::array::from_fn(|i| {
+    if let Some(metrics) = metrics {
+        metrics
+            .collect_hot_pending_metrics(cluster, &infos)
+            .map_err(|error| error.to_string())?;
+    }
+    Ok(std::array::from_fn(|i| {
         let resource = HotResource::ALL[i];
         let peers = if resource.rw() == astersql_pd_statistics_utils::RWType::READ {
             &stats.read
@@ -428,7 +446,7 @@ fn hot_details(
         )
         .into_values()
         .collect()
-    })
+    }))
 }
 struct WallClock;
 impl astersql_pd_schedule_operator::Clock for WallClock {
@@ -451,6 +469,7 @@ async fn hot_schedule(
     use astersql_pd_schedule_filter::PlacementGuardContext;
     use astersql_pd_statistics_utils::RWType;
     let params = params.effective(true, true);
+    scheduler.set_metrics(&cluster.regions.metrics());
     struct Offer {
         resource: usize,
         source: usize,
@@ -504,6 +523,28 @@ async fn hot_schedule(
         ];
         let placement_v2 = config.is_placement_rules_enabled();
         for (s, decision) in source.filter_src_stores(&details[i], placement_v2, restricted) {
+            if let Some(counter) = cluster.regions.metrics().scheduler_counter_metrics(
+                "pd_scheduler_hot_region",
+                &[
+                    &format!(
+                        "src-store-{}-{}-{}",
+                        if decision.admitted() {
+                            "succ"
+                        } else {
+                            "failed"
+                        },
+                        resource.rw(),
+                        if resource.operation() == HotSourceOperation::TransferLeader {
+                            "leader"
+                        } else {
+                            "peer"
+                        }
+                    ),
+                    &s.store_summary_info.store_info.id().to_string(),
+                ],
+            ) {
+                counter.inc();
+            }
             if !decision.admitted() {
                 continue;
             }
@@ -651,7 +692,35 @@ async fn hot_schedule(
             .find(|p| p.region_id == id)
             .cloned()
     });
-    Ok(admitted.map(|(_, r)| r.operators).unwrap_or_default())
+    Ok(admitted
+        .map(|(_, r)| {
+            for (op, decoration) in r.operators.iter().zip(&r.decorations) {
+                for event in decoration.counters {
+                    op.add_start_metric(cluster.regions.metrics().scheduler_event_metrics(
+                        "balance-hot-region-scheduler",
+                        if event == "new-operator" {
+                            "new_operator"
+                        } else {
+                            event
+                        },
+                    ));
+                }
+                for (store, direction) in &decoration.directions {
+                    op.add_finish_metric(cluster.regions.metrics().scheduler_counter_metrics(
+                        "pd_scheduler_hot_region_direction",
+                        &[
+                            decoration.operation,
+                            decoration.rw,
+                            &store.to_string(),
+                            direction,
+                            &decoration.dimension,
+                        ],
+                    ));
+                }
+            }
+            r.operators
+        })
+        .unwrap_or_default())
 }
 
 struct BorrowedPolicy<'a, 'b> {
@@ -707,6 +776,7 @@ impl PolicyInputs<'_> {
     ) -> Result<Vec<Arc<Operator>>, String> {
         let cluster = Arc::new(self.cluster.clone());
         let labels = self.labels.clone();
+        let labeler_denied = self.labeler_denied.clone();
         let adapter = BorrowedPolicy {
             inputs: self,
             policy,
@@ -717,6 +787,9 @@ impl PolicyInputs<'_> {
             });
         controller.labeler = Some(labels);
         controller.set_interval(interval.as_nanos() as i64);
+        if let Some(counter) = labeler_denied {
+            controller.set_labeler_metrics(counter);
+        }
         let output = controller.schedule(false).await;
         *interval = Duration::from_nanos(controller.interval() as u64);
         output

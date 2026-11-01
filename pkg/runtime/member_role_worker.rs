@@ -22,6 +22,7 @@ pub(crate) struct RoleServices {
     telemetry: RwLock<Option<Arc<astersql_pd_server_config::Config>>>,
     metrics: RwLock<Weak<astersql_pd_server::service_metrics::ServiceMetrics>>,
     listening: std::sync::atomic::AtomicBool,
+    telemetry_metrics: std::sync::OnceLock<(prometheus::Gauge, prometheus::Gauge)>,
     admin: RwLock<Option<Arc<crate::member_admin::EtcdMemberAdmin>>>,
     diagnostics: RwLock<Option<Arc<crate::etcd_diagnostics::EtcdMemberDiagnostics>>>,
     follower: FollowerRead,
@@ -57,6 +58,7 @@ impl RoleServices {
             ))),
             follower_store,
             listening: std::sync::atomic::AtomicBool::new(false),
+            telemetry_metrics: Default::default(),
             diagnostics: RwLock::new(None),
             admin: RwLock::new(None),
             identity,
@@ -77,6 +79,24 @@ impl RoleServices {
     ) {
         *self.telemetry.write().unwrap() = Some(config);
         *self.metrics.write().unwrap() = Arc::downgrade(metrics);
+        self.telemetry_metrics.get_or_init(|| {
+            (
+                metrics
+                    .classic
+                    .service_member_gauge
+                    .with_label_values(&["PD"]),
+                metrics
+                    .classic
+                    .member_leader_priority_gauge
+                    .with_label_values::<&str>(&[]),
+            )
+        });
+        self.follower
+            .0
+            .try_lock()
+            .expect("bind telemetry before follower tasks start")
+            .history
+            .attach_metrics(metrics.sync.clone());
     }
     pub(crate) fn set_member_admin(
         &self,
@@ -98,6 +118,9 @@ impl RoleServices {
         self.term.read().unwrap().clone()
     }
     pub(crate) fn replace(&self, term: Option<Arc<Application>>) {
+        if let Some((role, _)) = self.telemetry_metrics.get() {
+            role.set(if term.is_some() { 1. } else { 0. });
+        }
         *self.term.write().unwrap() = term;
     }
     fn managed(&self) -> bool {
@@ -131,6 +154,12 @@ impl PdServices for RoleServices {
         self.log_level.read().unwrap().clone()
     }
 
+    async fn backend_health(&self) -> Vec<astersql_pd_storage::BackendHealth> {
+        match self.store.upgrade() {
+            Some(store) => store.backend_health().await,
+            None => Vec::new(),
+        }
+    }
     async fn consensus_metrics(
         &self,
     ) -> Option<astersql_pd_server::service_metrics::ConsensusMetrics> {
@@ -371,6 +400,15 @@ impl PdServices for RoleServices {
         );
         let priority =
             astersql_pd_member::LeaderPriority::new(store, cancel, self.identity.cluster_id);
+        let leader_priority = priority
+            .get_member_leader_priority(id)
+            .await
+            .unwrap_or_default();
+        if id == self.identity.member_id {
+            if let Some((_, gauge)) = self.telemetry_metrics.get() {
+                gauge.set(leader_priority as f64);
+            }
+        }
         astersql_pd_server::http_member::MemberMetadata {
             binary_version: String::from_utf8_lossy(
                 &info.get_member_binary_version(id).await.unwrap_or_default(),
@@ -384,10 +422,7 @@ impl PdServices for RoleServices {
                 &info.get_member_git_hash(id).await.unwrap_or_default(),
             )
             .into_owned(),
-            leader_priority: priority
-                .get_member_leader_priority(id)
-                .await
-                .unwrap_or_default(),
+            leader_priority,
         }
     }
     async fn set_member_priority(&self, id: u64, priority: i64) -> Result<(), String> {
@@ -1041,13 +1076,19 @@ pub(crate) async fn run(
             }
             match member.campaign(5).await {
                 Ok(leader) => {
+                    let cluster = astersql_pd_core::BasicCluster::new();
+                    if let Some(metrics) = services.service_metrics() {
+                        cluster.regions.set_metrics(metrics.core.clone());
+                        cluster.stores.set_filter_metrics(metrics.store_metric_sink());
+                    }
                     let term = prepare_term(
                         store.clone(),
                         config.clone(),
                         registry.clone(),
                         cancel.child_token(),
-                        astersql_pd_core::BasicCluster::new(),
+                        cluster,
                         Arc::new(leader),
+                        services.service_metrics(),
                     )
                     .await;
                     match term {

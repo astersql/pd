@@ -506,3 +506,22 @@ async fn readonly_cluster_restore_differential() {
     drop(client);
     server.stop().unwrap();
 }
+
+#[tokio::test]
+async fn task_101_fresh_restore_uses_go_placement_default() {
+    let store = Arc::new(MemoryStore::default());
+    let identity = config("127.0.0.1:2379".parse().unwrap());
+    let (_, snapshot, persisted) = crate::cluster_restore::restore(
+        astersql_pd_core::BasicCluster::new(),
+        store,
+        &identity,
+        &CancellationToken::new(),
+    )
+    .await
+    .unwrap();
+    assert!(persisted.is_none());
+    assert!(
+        snapshot.replication.enable_placement_rules,
+        "fresh Go clusters enable placement rules"
+    );
+}

@@ -167,6 +167,9 @@ impl HotSpotMetrics {
             scheduler,
         })
     }
+    pub fn collectors(&self) -> Vec<Box<dyn prometheus::core::Collector>> {
+        vec![Box::new(self.series.lock().unwrap().vector.clone())]
+    }
     /// Accept an immutable store snapshot, then consult the live canonical cluster
     /// after publishing so a buried/deleted store cannot be revived by that snapshot.
     pub fn collect_hot_spot_metrics(
@@ -175,12 +178,12 @@ impl HotSpotMetrics {
         stores: &[astersql_pd_core::StoreInfo],
         input: &HotObservationInputs<'_>,
     ) {
-        let mut series = self.series.lock().unwrap();
         for rw in [RWType::WRITE, RWType::READ] {
             let status = collect_hot_peer_infos(stores, input.peers(rw));
             for store in stores {
                 let id = store.id();
                 let label = id.to_string();
+                let mut series = self.series.lock().unwrap();
                 let mut hot = false;
                 for (role, population) in [("leader", &status.as_leader), ("peer", &status.as_peer)]
                 {
@@ -222,6 +225,11 @@ impl HotSpotMetrics {
                         }
                     }
                 }
+                // Membership deletion takes the store lock before metric locks.
+                // Release metric state before rechecking membership to avoid
+                // inverting that lock order; the post-check still removes a
+                // concurrent publication from an old immutable snapshot.
+                drop(series);
                 // Go deliberately clears BOTH RW pending populations when either
                 // RW snapshot has no hot population. Do not conflate missing/empty.
                 if !hot {
@@ -230,7 +238,7 @@ impl HotSpotMetrics {
                 if !store.is_removed()
                     && cluster.stores.get_store(id).is_none_or(|s| s.is_removed())
                 {
-                    delete_series(&mut series, &label);
+                    delete_series(&mut self.series.lock().unwrap(), &label);
                 }
             }
         }

@@ -27,7 +27,7 @@ async fn task_047_behavior() {
         .unwrap();
     node.ready().await.unwrap();
     let full = observe(&url);
-    assert_eq!(full["replication"]["enable-placement-rules"], "false");
+    assert_eq!(full["replication"]["enable-placement-rules"], "true");
     let defaults = request(&url, "GET", "/pd/api/v1/config/default", "");
     assert_eq!(defaults.0, 200);
     assert_eq!(defaults.1["replication"]["enable-placement-rules"], "true");

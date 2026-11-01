@@ -308,6 +308,8 @@ impl crate::CheckerDispatcher {
             result.admission_error = ctx.operators.enqueue_waiting(ctx.cluster, &ops).err();
             if result.admission_error.is_none() {
                 result.queued = ops;
+            } else {
+                result.rejected = ops;
             }
         }
         result

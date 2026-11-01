@@ -29,9 +29,13 @@ pub fn prepare_region_heartbeat(
     mut region: RegionInfo,
     bucket_enabled: bool,
 ) -> Result<PreparedRegionHeartbeat, StaleRegionError> {
+    let metrics = cluster.regions.metrics();
+    let precheck = metrics.stage_metrics(0);
     let (origin, _, validation) = cluster.regions.pre_check_put_region(&region);
+    drop(precheck);
     validation?;
     region.inherit(origin.as_deref(), bucket_enabled);
+    let _guide_stage = metrics.stage_metrics(2);
     let guide = region_guide(&region, origin.as_deref());
     Ok(PreparedRegionHeartbeat {
         region: Arc::new(region),

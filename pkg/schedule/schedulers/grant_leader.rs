@@ -105,6 +105,12 @@ impl GrantLeaderScheduler {
                 .await
             {
                 Ok(op) => {
+                    op.add_start_metric(
+                        ctx.cluster
+                            .regions()
+                            .metrics()
+                            .scheduler_event_metrics("grant-hot-region-scheduler", "new-operator"),
+                    );
                     op.set_priority_level(PriorityLevel::HIGH);
                     result.operators.push(Arc::new(op));
                 }

@@ -80,6 +80,7 @@ pub struct Oracle {
     key: Vec<u8>,
     interval: u64,
     window: Mutex<Window>,
+    metrics: Option<crate::OracleMetrics>,
 }
 impl Oracle {
     /// Reserve a durable window before publishing any timestamp. Unused time is abandoned.
@@ -90,6 +91,17 @@ impl Oracle {
         cancel: CancellationToken,
         save_interval_millis: u64,
     ) -> Result<Self, TsoError> {
+        Self::new_with_metrics(store, leader, clock, cancel, save_interval_millis, None).await
+    }
+    /// Reserve the initial window with caller-owned metric handles.
+    pub async fn new_with_metrics(
+        store: Arc<dyn MetaStore>,
+        leader: Arc<Leadership>,
+        clock: Arc<dyn Clock>,
+        cancel: CancellationToken,
+        save_interval_millis: u64,
+        metrics: Option<crate::OracleMetrics>,
+    ) -> Result<Self, TsoError> {
         if !leader.uses_store(&store) {
             return Err(TsoError::StoreMismatch);
         }
@@ -97,6 +109,7 @@ impl Oracle {
             return Err(TsoError::InvalidArgument);
         }
         let oracle = Self {
+            metrics,
             key: format!("/pd/{}/timestamp", leader.cluster_id()).into_bytes(),
             store,
             leader,
@@ -116,10 +129,16 @@ impl Oracle {
             _ = oracle.cancel.cancelled() => return Err(TsoError::Cancelled),
             result = oracle.initialize() => result?,
         }
+        if let Some(metrics) = &oracle.metrics {
+            metrics.role.set(1.);
+        }
         Ok(oracle)
     }
     async fn initialize(&self) -> Result<(), TsoError> {
         let mut window = self.window.lock().await;
+        if let Some(metrics) = &self.metrics {
+            metrics.event("sync");
+        }
         loop {
             self.leader.validate().await?;
             let snapshot = self
@@ -152,14 +171,28 @@ impl Oracle {
                 Some(e) => Compare::ModRevision(self.key.clone(), e.mod_revision),
                 None => Compare::CreateRevision(self.key.clone(), 0),
             };
+            let begin = std::time::Instant::now();
             let commit = self
                 .leader
                 .transact(
                     vec![compare],
                     vec![Mutation::put(&self.key, &end.to_be_bytes())],
                 )
-                .await?;
+                .await
+                .map_err(|error| {
+                    if let Some(metrics) = &self.metrics {
+                        metrics.event("err_save_sync_ts");
+                    }
+                    error
+                })?;
             if commit.succeeded {
+                if let Some(metrics) = &self.metrics {
+                    metrics.sync.observe(begin.elapsed().as_secs_f64());
+                    metrics.event("save");
+                }
+                if let Some(metrics) = &self.metrics {
+                    metrics.event("sync_ok");
+                }
                 *window = Window {
                     timestamp: Timestamp {
                         physical,
@@ -212,6 +245,9 @@ impl Oracle {
         let mut window = self.window.lock().await;
         let mut next = window.timestamp;
         if next.logical + count >= MAX_LOGICAL {
+            if let Some(metrics) = &self.metrics {
+                metrics.event("logical_overflow");
+            }
             next.physical = next
                 .physical
                 .checked_add(1)
@@ -248,13 +284,25 @@ impl Oracle {
         max_gap_millis: i64,
     ) -> Result<(), TsoError> {
         let mut window = self.window.lock().await;
-        self.leader.validate().await?;
+        self.leader.validate().await.map_err(|error| {
+            if let Some(metrics) = &self.metrics {
+                metrics.event("err_lease_reset_ts");
+            }
+            error
+        })?;
         let next = Timestamp {
             physical: tso >> 18,
             logical: (tso & (u64::from(MAX_LOGICAL) - 1)) as u32,
         };
         if next <= window.timestamp {
             self.fence(window.saved_nanos, vec![]).await?;
+            if let Some(metrics) = &self.metrics {
+                metrics.event(if next.physical < window.timestamp.physical {
+                    "err_reset_physical_small_ts"
+                } else {
+                    "err_reset_logical_small_ts"
+                });
+            }
             if force {
                 return Ok(());
             }
@@ -269,6 +317,9 @@ impl Oracle {
         if !force
             && i128::from(next.physical - window.timestamp.physical) >= i128::from(max_gap_millis)
         {
+            if let Some(metrics) = &self.metrics {
+                metrics.event("err_reset_large_ts");
+            }
             return Err(TsoError::ResetRejected(
                 "the specified ts is too larger than now",
             ));
@@ -280,7 +331,23 @@ impl Oracle {
         } else {
             vec![]
         };
-        self.fence(window.saved_nanos, writes).await?;
+        let begin = std::time::Instant::now();
+        self.fence(window.saved_nanos, writes)
+            .await
+            .map_err(|error| {
+                if extend {
+                    if let Some(metrics) = &self.metrics {
+                        metrics.event("err_save_reset_ts");
+                    }
+                }
+                error
+            })?;
+        if let Some(metrics) = &self.metrics {
+            if extend {
+                metrics.reset.observe(begin.elapsed().as_secs_f64());
+            }
+            metrics.event("reset_tso_ok");
+        }
         window.timestamp = next;
         window.overflowed = false;
         if extend {
@@ -299,12 +366,27 @@ impl Oracle {
     async fn update_inner(&self) -> Result<(), TsoError> {
         let mut window = self.window.lock().await;
         let now = self.clock.now_millis()?;
+        if let Some(metrics) = &self.metrics {
+            metrics.physical.set(window.timestamp.physical as f64);
+            if now < window.timestamp.physical {
+                metrics.event("system_time_slow");
+            }
+            if now.saturating_sub(window.timestamp.physical) > 150 {
+                metrics.event("slow_save");
+            }
+            metrics
+                .gap
+                .set((i128::from(now) - i128::from(window.timestamp.physical)) as f64);
+        }
         let physical = if now > window.timestamp.physical + 1 {
             now
         } else if window.overflowed || window.timestamp.logical > MAX_LOGICAL / 2 {
             window.timestamp.physical + 1
         } else {
             self.fence(window.saved_nanos, vec![]).await?;
+            if let Some(metrics) = &self.metrics {
+                metrics.event("skip_save");
+            }
             return Ok(());
         };
         // Checked before multiplication, including arbitrary injected clock values.
@@ -315,7 +397,25 @@ impl Oracle {
         } else {
             vec![]
         };
-        self.fence(window.saved_nanos, writes).await?;
+        let begin = std::time::Instant::now();
+        self.fence(window.saved_nanos, writes)
+            .await
+            .map_err(|error| {
+                if extend {
+                    if let Some(metrics) = &self.metrics {
+                        metrics.event("err_save_update_ts");
+                    }
+                }
+                error
+            })?;
+        if extend {
+            if let Some(metrics) = &self.metrics {
+                metrics.update.observe(begin.elapsed().as_secs_f64());
+            }
+        }
+        if let Some(metrics) = &self.metrics {
+            metrics.event("save");
+        }
         window.timestamp = Timestamp {
             physical,
             logical: 0,

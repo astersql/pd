@@ -40,6 +40,7 @@ pub struct Leadership {
     pub(crate) expiry: LeaseExpiry,
     pub(crate) timeout: std::time::Duration,
     pub(crate) keep_cancel: CancellationToken,
+    pub(crate) metrics: std::sync::OnceLock<crate::metrics::LeaseMetrics>,
 }
 impl Leadership {
     /// Attempt one election using the existing PD leader path and opaque value.
@@ -127,6 +128,7 @@ impl Leadership {
                 revision: commit.revision,
                 expiry,
                 timeout: std::time::Duration::from_secs(ttl_seconds as u64),
+                metrics: Default::default(),
             }),
             other => {
                 // Revoke our own lease even for an uncertain commit; TTL bounds cleanup if unavailable.
@@ -144,6 +146,13 @@ impl Leadership {
         self.expiry.is_expired()
     }
 
+    pub fn remaining_ttl(&self) -> f64 {
+        self.expiry.remaining_ttl()
+    }
+    pub fn set_metrics(self: &Arc<Self>, scope: &astersql_pd_metricutil::ClassicMetrics) {
+        self.metrics
+            .get_or_init(|| crate::metrics::LeaseMetrics::new(self, scope));
+    }
     pub fn lease_id(&self) -> LeaseId {
         self.lease
     }
@@ -198,7 +207,15 @@ impl Leadership {
     pub async fn renew(&self) -> Result<()> {
         self.validate().await?;
         let start = self.expiry.request_start();
-        match cancellable(&self.cancel, self.store.keep_alive(self.lease)).await {
+        let mut timer = self.metrics.get().map(|m| m.request());
+        let response = cancellable(&self.cancel, self.store.keep_alive(self.lease)).await;
+        if let Some(timer) = timer.as_mut() {
+            timer.complete(&response);
+        }
+        if let (Some(metrics), Ok(lease)) = (self.metrics.get(), &response) {
+            metrics.response(lease.ttl_seconds);
+        }
+        match response {
             Err(ElectionError::Store(StoreError::LeaseNotFound)) => Err(ElectionError::NotLeader),
             result => {
                 let lease = result?;
@@ -209,6 +226,9 @@ impl Leadership {
     }
     /// Cleanup remains possible after cancellation. Only this term's lease is revoked.
     pub async fn resign(&self) -> Result<()> {
+        if let Some(metrics) = self.metrics.get() {
+            metrics.terminate(2);
+        }
         self.keep_cancel.cancel();
         self.expiry.close();
         match self.store.revoke(self.lease).await {

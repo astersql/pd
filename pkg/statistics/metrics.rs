@@ -74,6 +74,7 @@ type GaugeKey = (&'static str, Vec<String>);
 /// subsequent collection can always recreate a removed series. No global registry
 /// or runtime is installed. The host serializes collection/reset event ordering.
 pub struct StatisticsMetrics {
+    collectors: Vec<std::sync::Arc<dyn Collector>>,
     gauges: BTreeMap<&'static str, GaugeVec>,
     handles: Mutex<BTreeMap<GaugeKey, Gauge>>,
     miss_voter_duration: Histogram,
@@ -115,6 +116,7 @@ impl StatisticsMetrics {
             }
         }
         let result = Self {
+            collectors: collectors.into_iter().map(std::sync::Arc::from).collect(),
             gauges,
             handles: Mutex::new(BTreeMap::new()),
             miss_voter_duration: histogram.with_label_values(&["miss-voter-peer"]),
@@ -124,6 +126,14 @@ impl StatisticsMetrics {
         Ok(result)
     }
 
+    pub fn collectors(&self) -> Vec<Box<dyn Collector>> {
+        self.collectors
+            .iter()
+            .map(|c| {
+                Box::new(astersql_pd_metricutil::SharedCollector(c.clone())) as Box<dyn Collector>
+            })
+            .collect()
+    }
     /// Sets one gauge using the Go declaration's label order. Unknown families or
     /// wrong label counts return errors without publishing a partial sample.
     pub fn set_gauge(&self, family: &str, labels: &[&str], value: f64) -> prometheus::Result<()> {
@@ -213,6 +223,39 @@ impl StatisticsMetrics {
         }
         if let Some(seconds) = durations.down_peer_seconds {
             self.down_peer_duration.observe(seconds as f64);
+        }
+    }
+    /// Publish the existing load aggregation's real per-engine expectations.
+    /// The historical `store` label contains an engine name in Go as well.
+    pub fn collect_hot_load_summary(
+        &self,
+        details: &[crate::StoreLoadDetail],
+        rw: astersql_pd_statistics_utils::RWType,
+        kind: astersql_pd_core_constant::ResourceKind,
+    ) {
+        let mut engines = std::collections::BTreeSet::new();
+        for detail in details {
+            let engine = detail.store_summary_info.store_info.engine();
+            if !engines.insert(engine) {
+                continue;
+            }
+            for (prefix, load) in [
+                ("exp", &detail.load_pred.expect),
+                ("stddev", &detail.load_pred.stddev),
+            ] {
+                for (dim, name) in ["byte", "key", "query", "cpu"].into_iter().enumerate() {
+                    self.set_known(
+                        "pd_scheduler_hot_peers_summary",
+                        &[&format!("{prefix}-{name}-rate-{rw}-{kind}"), engine],
+                        load.loads[dim],
+                    );
+                }
+            }
+            self.set_known(
+                "pd_scheduler_hot_peers_summary",
+                &[&format!("exp-count-rate-{rw}-{kind}"), engine],
+                detail.load_pred.expect.hot_peer_count,
+            );
         }
     }
     /// Publishes label isolation counts; reset is a separate lifecycle event.

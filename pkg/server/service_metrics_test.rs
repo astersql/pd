@@ -3,7 +3,7 @@ use astersql_pd_runtime::{NodeConfig, PdNodeBuilder};
 use std::{sync::Arc, time::Duration};
 use tokio_util::sync::CancellationToken;
 
-fn fetch(url: &str, path: &str) -> (u16, String, String) {
+pub(crate) fn fetch(url: &str, path: &str) -> (u16, String, String) {
     request(url, "GET", path, "")
 }
 fn request(url: &str, method: &str, path: &str, body: &str) -> (u16, String, String) {

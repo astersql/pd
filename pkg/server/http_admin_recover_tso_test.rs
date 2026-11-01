@@ -75,8 +75,29 @@ async fn timestamp(url: &str, id: u64) -> u64 {
     let t = crate::grpc_tso_scenarios_test::minimum(&mut c, id).await;
     (t.physical as u64) << 18 | t.logical as u64
 }
+fn tso_event(url: &str, event: &str) -> f64 {
+    let output = std::process::Command::new("curl")
+        .args(["-fsS", "--max-time", "5", &format!("{url}/metrics")])
+        .output()
+        .unwrap();
+    assert!(output.status.success());
+    let text = String::from_utf8(output.stdout).unwrap();
+    text.lines()
+        .find(|line| {
+            line.starts_with("pd_tso_events{")
+                && line.contains(&format!("type=\"{event}\""))
+                && line.contains("group=\"0\"")
+        })
+        .unwrap_or_else(|| panic!("missing real TSO event {event}"))
+        .rsplit_once(' ')
+        .unwrap()
+        .1
+        .parse()
+        .unwrap()
+}
 async fn observe(url: &str, id: u64) -> Vec<(u16, String, String)> {
     let mut result = vec![];
+    let rejected = tso_event(url, "err_reset_physical_small_ts");
     for (body, status) in [
         (r#"{}"#, 400),
         ("null", 400),
@@ -92,15 +113,20 @@ async fn observe(url: &str, id: u64) -> Vec<(u16, String, String)> {
         assert_eq!(r.0, status, "{r:?}");
         result.push(r);
     }
+    assert_eq!(tso_event(url, "err_reset_physical_small_ts"), rejected + 2.);
+    let completed = tso_event(url, "reset_tso_ok");
     let before = timestamp(url, id).await;
     let target = before + (10000 << 18) + 123;
     let r = reset(url, &format!(r#"{{"tso":"{target}"}}"#));
     assert_eq!(r.0, 200, "{r:?}");
     result.push(r);
     assert!(timestamp(url, id).await > target);
+    assert_eq!(tso_event(url, "reset_tso_ok"), completed + 1.);
+    let large = tso_event(url, "err_reset_large_ts");
     let far = target + (86400000u64 << 18);
     let r = reset(url, &format!(r#"{{"tso":"{far}"}}"#));
     assert_eq!(r.0, 403, "{r:?}");
+    assert_eq!(tso_event(url, "err_reset_large_ts"), large + 1.);
     result.push(r);
     let r = reset(
         url,
@@ -109,6 +135,7 @@ async fn observe(url: &str, id: u64) -> Vec<(u16, String, String)> {
     assert_eq!(r.0, 200, "{r:?}");
     result.push(r);
     assert!(timestamp(url, id).await > far);
+    assert_eq!(tso_event(url, "reset_tso_ok"), completed + 2.);
     result
 }
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]

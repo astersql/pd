@@ -438,6 +438,18 @@ async fn task_069_bulk_atomic_and_restart() {
         .await
         .unwrap();
     node.ready().await.unwrap();
+    // This fixture verifies suspect-range queueing and persistence, before patrol consumption.
+    assert_eq!(
+        crate::http_member_test::request(
+            &url,
+            "POST",
+            "/pd/api/v1/config/schedule",
+            r#"{"halt-scheduling":"true"}"#
+        )
+        .0,
+        200
+    );
+
     println!("Rust observations: {}", observe(&url, 7692).await);
     tokio::time::timeout(std::time::Duration::from_secs(5), async {
         loop {

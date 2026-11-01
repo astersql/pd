@@ -333,6 +333,18 @@ async fn task_067_follower_pending_and_cancel() {
         .await
         .unwrap();
     node.ready().await.unwrap();
+    // Inspect the explicit accelerate queue before the automatic patrol consumes it.
+    assert_eq!(
+        crate::http_member_test::request(
+            &url,
+            "POST",
+            "/pd/api/v1/config/schedule",
+            r#"{"halt-scheduling":"true"}"#
+        )
+        .0,
+        200
+    );
+
     let mut client = PdClient::connect(url.clone()).await.unwrap();
     super::grpc_region_lookup_scenarios_test::prepare(&mut client, 7674).await;
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();

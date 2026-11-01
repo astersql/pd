@@ -239,6 +239,22 @@ impl BalanceLeaderScheduler {
         ctx: &mut LeaderBalanceContext<'_, C, P>,
         dry_run: bool,
     ) -> LeaderBalanceResult {
+        let metrics = ctx.cluster.regions().metrics();
+        let events = [
+            "no-leader-region",
+            "no-follower-region",
+            "region-hot",
+            "skip",
+            "no-target-store",
+            "no-source-store",
+            "new-operator",
+        ]
+        .map(|event| metrics.scheduler_event_metrics("balance-leader-scheduler", event));
+        let observe = |index: usize| {
+            if let Some(counter) = &events[index] {
+                counter.inc();
+            }
+        };
         let policy = ctx.config.get_leader_schedule_policy();
         let kind = ScheduleKind::new(ResourceKind::LEADER, policy);
         let stores = ctx.cluster.get_stores();
@@ -254,9 +270,9 @@ impl BalanceLeaderScheduler {
         let mut targets = Vec::new();
         let mut result = LeaderBalanceResult::default();
         for store in &stores {
-            let status = state.source(ctx.config, store).await;
+            let status = state.source_metrics(ctx.config, store).await;
             let status = if status.is_ok() {
-                special.source(ctx.config, store)
+                special.source_metrics(ctx.config, store)
             } else {
                 status
             };
@@ -269,8 +285,8 @@ impl BalanceLeaderScheduler {
                     ..Default::default()
                 });
             }
-            if state.target(ctx.config, store).await.is_ok()
-                && special.target(ctx.config, store).is_ok()
+            if state.target_metrics(ctx.config, store).await.is_ok()
+                && special.target_metrics(ctx.config, store).is_ok()
             {
                 targets.push(store.clone());
             }
@@ -289,7 +305,8 @@ impl BalanceLeaderScheduler {
                 .map(|s| ctx.cluster.store_region_count(s.id()))
                 .max()
                 .unwrap_or(0),
-        );
+        )
+        .with_metric_name(&self.name);
         let ranges = if self.name == "balance-leader-scheduler" && !ctx.key_ranges.is_empty() {
             ctx.key_ranges
                 .get_non_overlapping_key_ranges(&astersql_pd_keyutil::KeyRange::new(
@@ -352,9 +369,11 @@ impl BalanceLeaderScheduler {
                         }
                     }
                     let Some(region) = selected else {
+                        observe(if out { 0 } else { 1 });
                         continue;
                     };
                     if ctx.statistics.is_region_hot(&region, ctx.hot_degree) {
+                        observe(2);
                         if dry_run && out {
                             result.plans.push(BalanceSchedulerPlan {
                                 source: Some(store.clone()),
@@ -367,11 +386,13 @@ impl BalanceLeaderScheduler {
                         continue;
                     }
                     let Some(src) = ctx.cluster.get_leader_store(&region) else {
+                        observe(0);
                         continue;
                     };
-                    if !state.source(ctx.config, &src).await.is_ok()
-                        || !special.source(ctx.config, &src).is_ok()
+                    if !state.source_metrics(ctx.config, &src).await.is_ok()
+                        || !special.source_metrics(ctx.config, &src).is_ok()
                     {
+                        observe(5);
                         continue;
                     }
                     let mut followers = if out {
@@ -403,14 +424,14 @@ impl BalanceLeaderScheduler {
                     };
                     let leader_guard = guard.leader_safeguard(&self.name, src.id(), None, false);
                     for dst in followers {
-                        let mut status = state.target(ctx.config, &dst).await;
+                        let mut status = state.target_metrics(ctx.config, &dst).await;
                         if status.is_ok() {
-                            status = special.target(ctx.config, &dst);
+                            status = special.target_metrics(ctx.config, &dst);
                         }
                         if status.is_ok()
                             && let Some(guard) = &leader_guard
                         {
-                            status = guard.target(ctx.config, &dst);
+                            status = guard.target_metrics(ctx.config, &dst);
                         }
                         if !status.is_ok() {
                             if dry_run && out {
@@ -435,6 +456,7 @@ impl BalanceLeaderScheduler {
                             .evaluate(&plan, &influence)
                             .expect("selected source and target");
                         if !scores.should_balance() {
+                            observe(3);
                             if dry_run && out {
                                 plan.status = Status::new(StatusCode::STORE_SCORE_DISALLOWED, &[]);
                                 result.plans.push(plan);
@@ -468,6 +490,15 @@ impl BalanceLeaderScheduler {
                                 if used.contains(&region.meta().id) {
                                     break;
                                 }
+                                op.add_start_metric(events[6].clone());
+                                op.add_finish_metric(metrics.scheduler_counter_metrics(
+                                    "pd_scheduler_balance_direction",
+                                    &[&self.name, &src.id().to_string(), "out"],
+                                ));
+                                op.add_finish_metric(metrics.scheduler_counter_metrics(
+                                    "pd_scheduler_balance_direction",
+                                    &[&self.name, &dst.id().to_string(), "in"],
+                                ));
                                 op.additional_info()
                                     .set("sourceScore", format!("{:.2}", scores.source_score));
                                 op.additional_info()
@@ -490,6 +521,7 @@ impl BalanceLeaderScheduler {
                     if found.is_some() {
                         break;
                     }
+                    observe(4);
                 }
                 if let Some((op, region, src, dst)) = found {
                     self.quota.reset_limit(store.id());

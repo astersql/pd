@@ -223,6 +223,13 @@ pub trait MetaWatch: Send {
 /// consumes one revision if it changes state; empty branches consume none.
 /// Never blindly retry Unavailable mutations: the commit may already have happened.
 /// Lease-attached create-if-absent plus Value/Lease comparisons fences leadership.
+/// One bounded backend health observation; the adapter owns endpoint semantics.
+#[derive(Clone, Debug)]
+pub struct BackendHealth {
+    pub endpoint: String,
+    pub healthy: bool,
+    pub elapsed: std::time::Duration,
+}
 #[async_trait]
 pub trait MetaStore: Send + Sync {
     /// Backend consensus cluster identity for validating an explicit diagnostic binding.
@@ -235,6 +242,10 @@ pub trait MetaStore: Send + Sync {
         Ok(None)
     }
 
+    /// Optional transport health probes, scheduled and canceled by the embedding host.
+    async fn backend_health(&self) -> Vec<BackendHealth> {
+        Vec::new()
+    }
     async fn read(&self, request: Read) -> Result<Snapshot>;
     async fn transact(&self, compares: Vec<Compare>, writes: Vec<Mutation>) -> Result<Commit>;
     /// Evaluate comparisons and commit exactly one write branch atomically.

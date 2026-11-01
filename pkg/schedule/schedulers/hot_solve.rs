@@ -214,6 +214,9 @@ impl HotSolver {
     pub fn compare_dst(&self, a: &StoreLoadDetail, b: &StoreLoadDetail) -> i32 {
         self.order.compare_store(a, b, false)
     }
+    pub fn search_revert_regions_enabled(&self) -> bool {
+        matches!(&self.formula,Formula::V2(rank) if rank.search_revert_regions)
+    }
     pub fn set_search_revert_regions(&mut self, best: Option<(i32, bool)>) {
         if let Formula::V2(r) = &mut self.formula {
             r.set_search_revert_regions(best);

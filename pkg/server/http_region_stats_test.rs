@@ -281,6 +281,18 @@ async fn observe(url: &str, id: u64) -> Value {
     assert_eq!(hot.1["store_write_bytes"]["1"], 1048576);
     assert_eq!(hot.1["store_write_keys"]["1"], 100);
     out.push(json!(["hot-write", hot]));
+    let (status, exposition, _) = crate::service_metrics_test::fetch(url, "/metrics");
+    assert_eq!(status, 200);
+    assert!(
+        exposition
+            .lines()
+            .any(|line| line.starts_with("pd_schedule_source_filter{")
+                && line.contains("scope=\"user\"")
+                && line.contains("type=\"engine-filter\"")
+                && line.rsplit_once(' ').unwrap().1.parse::<f64>().unwrap() > 0.0),
+        "hot range engine exclusion must publish a real source-filter rejection"
+    );
+
     json!(out)
 }
 async fn rust_observe() -> Value {

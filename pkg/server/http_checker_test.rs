@@ -209,6 +209,24 @@ async fn observe(url: &str, id: u64) -> Value {
         200
     );
     out.push(json!(["pending", wait_diagnostic(url, "pending").await]));
+    tokio::time::timeout(Duration::from_secs(35), async {
+        loop {
+            let (status, body, _) = crate::service_metrics_test::fetch(url, "/metrics");
+            assert_eq!(status, 200);
+            if body.lines().any(|line| {
+                line.starts_with("pd_schedule_operator_limit{")
+                    && line.contains("type=\"balance-leader-scheduler\"")
+                    && line.contains("name=\"leader\"")
+                    && line.rsplit_once(' ').unwrap().1.parse::<f64>().unwrap() > 0.0
+            }) {
+                break;
+            }
+            tokio::time::sleep(Duration::from_millis(50)).await;
+        }
+    })
+    .await
+    .expect("real scheduling attempt observes the configured leader limit");
+
     let deadline = tokio::time::Instant::now() + Duration::from_secs(30);
     loop {
         let mut r = diagnostic(url, "balance-region-scheduler");
@@ -229,6 +247,69 @@ async fn observe(url: &str, id: u64) -> Value {
         tokio::time::sleep(Duration::from_millis(50)).await;
     }
 
+    // Exercise the debug-only real solver path before retiring this scheduler.
+    assert_eq!(
+        req(
+            url,
+            "POST",
+            "/pd/api/v1/config/schedule",
+            r#"{"leader-schedule-limit":4,"enable-debug-metrics":"true"}"#
+        )
+        .0,
+        200
+    );
+    assert_eq!(
+        req(
+            url,
+            "POST",
+            "/pd/api/v1/schedulers/balance-leader-scheduler",
+            r#"{"delay":0}"#
+        )
+        .0,
+        200
+    );
+    wait_diagnostic(url, "normal").await;
+    let metrics = std::process::Command::new("curl")
+        .args(["-fsS", "--max-time", "5", &format!("{url}/metrics")])
+        .output()
+        .unwrap();
+    assert!(metrics.status.success());
+    let metrics = String::from_utf8(metrics.stdout).unwrap();
+    assert!(
+        metrics
+            .lines()
+            .any(|line| line.starts_with("pd_scheduler_tolerant_resource{")
+                && line.contains("balance-leader-scheduler")
+                && line.ends_with(" 5")),
+        "real tolerance sample: {metrics}"
+    );
+    assert!(
+        metrics
+            .lines()
+            .any(|line| line.starts_with("pd_scheduler_op_influence{")
+                && line.contains("type=\"source\"")),
+        "real source influence sample"
+    );
+    assert!(
+        metrics
+            .lines()
+            .any(|line| line.starts_with("pd_scheduler_op_influence{")
+                && line.contains("type=\"target\"")),
+        "real target influence sample"
+    );
+    // The debug series is cleared when the switch is restored below.
+    tokio::time::sleep(Duration::from_secs(2)).await;
+
+    assert_eq!(
+        req(
+            url,
+            "POST",
+            "/pd/api/v1/config/schedule",
+            r#"{"leader-schedule-limit":0,"enable-debug-metrics":"false"}"#
+        )
+        .0,
+        200
+    );
     assert_eq!(
         req(
             url,
@@ -336,6 +417,8 @@ async fn gate(url: &str, id: u64, client: PdClient<tonic::transport::Channel>) {
     })
     .await
     .unwrap();
+    let mut observer = client.clone();
+    let expected_peers = peers.clone();
     let mut client = client.clone();
     let stream = tokio::spawn(async move {
         client
@@ -346,10 +429,28 @@ async fn gate(url: &str, id: u64, client: PdClient<tonic::transport::Channel>) {
     });
     tokio::time::timeout(Duration::from_secs(30), async {
         loop {
-            if crate::http_member_test::request(url, "GET", "/pd/api/v1/schedulers", "")
-                .1
-                .as_array()
-                .is_some_and(|a| !a.is_empty())
+            let report = observer
+                .get_region_by_id(pdpb::GetRegionByIdRequest {
+                    header: crate::grpc_region_lookup_scenarios_test::header(id),
+                    region_id: 100,
+                    ..Default::default()
+                })
+                .await
+                .unwrap()
+                .into_inner();
+            let accepted = report.region.as_ref().is_some_and(|region| {
+                region.id == 100
+                    && region.peers == expected_peers
+                    && region
+                        .region_epoch
+                        .as_ref()
+                        .is_some_and(|epoch| epoch.version == 3 && epoch.conf_ver == 1)
+            }) && report.leader.as_ref() == Some(&expected_peers[0]);
+            if accepted
+                && crate::http_member_test::request(url, "GET", "/pd/api/v1/schedulers", "")
+                    .1
+                    .as_array()
+                    .is_some_and(|a| !a.is_empty())
             {
                 break;
             }
@@ -466,10 +567,17 @@ async fn task_066_follower_and_cancel() {
         checker(&url, "GET", "merge", ""),
         (200, json!({"paused":true}))
     );
-    assert_eq!(
-        diagnostic(&follower_url, "balance-leader-scheduler"),
-        diagnostic(&url, "balance-leader-scheduler")
-    );
+    let mut follower_diagnostic = diagnostic(&follower_url, "balance-leader-scheduler");
+    let mut leader_diagnostic = diagnostic(&url, "balance-leader-scheduler");
+    for response in [&mut follower_diagnostic, &mut leader_diagnostic] {
+        assert!(
+            response.1["timestamp"]
+                .as_u64()
+                .is_some_and(|time| time > 0)
+        );
+        response.1.as_object_mut().unwrap().remove("timestamp");
+    }
+    assert_eq!(follower_diagnostic, leader_diagnostic);
     follower.shutdown().await.unwrap();
     // Checker state is volatile; its update writes no persistent configuration.
     let read = Read::range(b"/pd/7662/config", b"", Consistency::Linearizable);

@@ -97,7 +97,7 @@ impl RandomMergeScheduler {
         };
         let mut sources = vec![];
         for s in ctx.cluster.get_stores() {
-            if filter.source(rep.conf, &s).await.is_ok() {
+            if filter.source_metrics(rep.conf, &s).await.is_ok() {
                 sources.push(s);
             }
         }

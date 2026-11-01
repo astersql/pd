@@ -328,7 +328,11 @@ impl<'a, V> Builder<'a, V> {
             now_unix_nanos: self.context.now_unix_nanos,
             ..Default::default()
         };
-        if !filter.target(self.context.config, &store).await.is_ok() {
+        if !filter
+            .target_metrics(self.context.config, &store)
+            .await
+            .is_ok()
+        {
             return false;
         }
         self.options.skip_placement_rules_check

@@ -81,6 +81,8 @@ impl<C: CheckerConfigProvider + Send + 'static> StatePipeline<'_, C> {
         )?;
         // Duplicate admissions still carry flow samples; stale reports never reach here.
         // Queue admission is best effort, matching the canonical Go hot-cache boundary.
+        let metrics = self.state.lock().unwrap().cluster.regions.metrics();
+        let _stage = metrics.stage_metrics(1);
         let _ = astersql_pd_cluster_utils::handle_stats_async(
             &self.hot.hot_cache,
             witness,

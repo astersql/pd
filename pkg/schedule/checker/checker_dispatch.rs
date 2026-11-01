@@ -47,6 +47,7 @@ pub struct CheckerDispatchOutcome {
 pub struct CheckerDispatcher {
     patrol_status: Option<tokio::sync::watch::Receiver<crate::PatrolStatus>>,
     metrics: Option<CheckerMetrics>,
+    labeler_denied: Option<prometheus::IntCounter>,
     joint: JointStateChecker,
     split: SplitChecker,
     learner: LearnerChecker,
@@ -67,6 +68,7 @@ impl CheckerDispatcher {
         Self {
             patrol_status: None,
             metrics: None,
+            labeler_denied: None,
             joint: JointStateChecker::default(),
             split: SplitChecker::default(),
             learner: LearnerChecker::default(),
@@ -95,6 +97,9 @@ impl CheckerDispatcher {
             .unwrap_or_default()
     }
     /// Attach one host Registry before dispatch starts; no global registration.
+    pub fn set_labeler_metrics(&mut self, counter: prometheus::IntCounter) {
+        self.labeler_denied = Some(counter);
+    }
     pub fn set_metrics(&mut self, metrics: CheckerMetrics) {
         self.metrics = Some(metrics);
     }
@@ -442,6 +447,9 @@ impl CheckerDispatcher {
             .labels
             .schedule_disabled(region, rep.now_unix_nanos)
         {
+            if let Some(counter) = &self.labeler_denied {
+                counter.inc();
+            }
             out.schedule_denied = true;
             return out;
         }
@@ -627,6 +635,8 @@ impl CheckerDispatcher {
             result.admission_error = ctx.operators.enqueue_waiting(ctx.cluster, &ops).err();
             if result.admission_error.is_none() {
                 result.queued = ops;
+            } else {
+                result.rejected = ops;
             }
             self.remove_pending_processed_region(id);
         }
@@ -636,6 +646,8 @@ impl CheckerDispatcher {
 /// Observable queue/budget result; returned operators retain canonical identity.
 #[derive(Default)]
 pub struct TryAddCheckersOutcome {
+    /// Rejected canonical identities must be buried by the host outside checker locks.
+    pub rejected: Vec<Arc<Operator>>,
     pub queued: Vec<Arc<Operator>>,
     pub errors: Vec<DispatchError>,
     pub store_limited: bool,

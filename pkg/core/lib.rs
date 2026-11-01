@@ -301,3 +301,5 @@ mod basic_cluster_rates_test;
 
 mod regions_shared;
 pub use regions_shared::*;
+
+pub mod metrics;

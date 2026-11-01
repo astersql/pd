@@ -100,7 +100,7 @@ impl LabelScheduler {
             let mut candidates = Vec::new();
             for target in ctx.cluster.get_follower_stores(&region) {
                 if !excluded.contains(&target.id())
-                    && state.target(ctx.config, &target).await.is_ok()
+                    && state.target_metrics(ctx.config, &target).await.is_ok()
                 {
                     candidates.push(target.id());
                 }
@@ -133,7 +133,15 @@ impl LabelScheduler {
                 })
                 .await
             {
-                Ok(op) => result.operators.push(Arc::new(op)),
+                Ok(op) => {
+                    op.add_start_metric(
+                        ctx.cluster
+                            .regions()
+                            .metrics()
+                            .scheduler_event_metrics("label-scheduler", "new-operator"),
+                    );
+                    result.operators.push(Arc::new(op));
+                }
                 Err(error) => result.errors.push(error),
             }
             return result;

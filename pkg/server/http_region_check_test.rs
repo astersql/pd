@@ -65,6 +65,17 @@ async fn observe(url: &str, id: u64) -> Value {
         assert_eq!(r, (404, json!("404 page not found\n")));
         out.push(json!([path, r]));
     }
+    // Keep background rule-pending decisions out of this read/explicit-scatter trace.
+    assert_eq!(
+        crate::http_member_test::request(
+            url,
+            "POST",
+            "/pd/api/v1/config/schedule",
+            r#"{"halt-scheduling":"true"}"#
+        )
+        .0,
+        200
+    );
     let mut client = PdClient::connect(url.to_owned()).await.unwrap();
     let peer = metapb::Peer {
         id: 3,
@@ -122,13 +133,12 @@ async fn observe(url: &str, id: u64) -> Value {
     })
     .await
     .unwrap();
-    let stream = tokio::time::timeout(
-        std::time::Duration::from_secs(20),
-        client.region_heartbeat(tokio_stream::wrappers::ReceiverStream::new(rx)),
-    )
-    .await
-    .unwrap()
-    .unwrap();
+    let mut heartbeat_client = client.clone();
+    let stream = tokio::spawn(async move {
+        heartbeat_client
+            .region_heartbeat(tokio_stream::wrappers::ReceiverStream::new(rx))
+            .await
+    });
     for (version, count, learner, pending, down, size, keys) in [
         (2, 1, false, false, false, 1, 0),
         (3, 4, false, false, false, 200, 2000000),
@@ -254,7 +264,12 @@ async fn observe(url: &str, id: u64) -> Value {
         }
     }
     drop(tx);
-    drop(stream);
+    stream.abort();
+    match stream.await {
+        Err(error) => assert!(error.is_cancelled(), "heartbeat sender panicked: {error}"),
+        Ok(Err(status)) => println!("closed heartbeat stream: {status}"),
+        Ok(Ok(response)) => drop(response),
+    }
     // Removing a Store is reflected by a subsequent observation, not recomputed by HTTP.
     assert_eq!(
         crate::http_member_test::request(url, "DELETE", "/pd/api/v1/store/3", "").0,
@@ -286,13 +301,12 @@ async fn observe(url: &str, id: u64) -> Value {
     })
     .await
     .unwrap();
-    let stream = tokio::time::timeout(
-        std::time::Duration::from_secs(20),
-        client.region_heartbeat(tokio_stream::wrappers::ReceiverStream::new(rx)),
-    )
-    .await
-    .unwrap()
-    .unwrap();
+    let mut heartbeat_client = client.clone();
+    let stream = tokio::spawn(async move {
+        heartbeat_client
+            .region_heartbeat(tokio_stream::wrappers::ReceiverStream::new(rx))
+            .await
+    });
     tokio::time::timeout(std::time::Duration::from_secs(20), async {
         loop {
             let r = request(url, "/regions/check/offline-peer");
@@ -335,7 +349,12 @@ async fn observe(url: &str, id: u64) -> Value {
     assert_eq!(state, (200, json!("INPROGRESS")));
     out.push(json!(["scatter-retry-is-not-rule-pending", state]));
     drop(tx);
-    drop(stream);
+    stream.abort();
+    match stream.await {
+        Err(error) => assert!(error.is_cancelled(), "heartbeat sender panicked: {error}"),
+        Ok(Err(status)) => println!("closed heartbeat stream: {status}"),
+        Ok(Ok(response)) => drop(response),
+    }
     json!(out)
 }
 async fn rust_observe() -> Value {

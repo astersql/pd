@@ -53,6 +53,9 @@ impl HeartbeatMetrics {
             series: Mutex::new(HashMap::new()),
         })
     }
+    pub fn collectors(&self) -> Vec<Box<dyn prometheus::core::Collector>> {
+        vec![Box::new(self.counters.clone())]
+    }
     pub(crate) fn record_metrics(
         &self,
         address: &str,

@@ -42,6 +42,7 @@ impl ScheduleWorker {
         error: Arc<Mutex<Option<String>>>,
         initialized: Arc<std::sync::atomic::AtomicBool>,
         cluster_id: u64,
+        heartbeat_metrics: Option<Arc<HeartbeatMetrics>>,
     ) -> (
         RoutingHandle,
         Self,
@@ -53,7 +54,9 @@ impl ScheduleWorker {
         let streams = HeartbeatStreams::start(
             router,
             cluster_id,
-            Arc::new(HeartbeatMetrics::new(&prometheus::Registry::new()).unwrap()),
+            heartbeat_metrics.unwrap_or_else(|| {
+                Arc::new(HeartbeatMetrics::new(&prometheus::Registry::new()).unwrap())
+            }),
             &runtime,
         );
         let worker_routing = routing.clone();
@@ -100,11 +103,11 @@ async fn run(
     status: tokio::sync::watch::Sender<ScheduleStatus>,
 ) -> Result<(), String> {
     let start = tokio::time::Instant::now();
-    let (config, storage, paths) = {
+    let (config, storage, paths, scope) = {
         let guard = resources.lock().await;
         let r = guard.as_ref().ok_or("node stopped")?;
         let config = r.state.lock().unwrap().config.clone();
-        (config, r.storage.clone(), r.paths)
+        (config, r.storage.clone(), r.paths, r.metrics.clone())
     };
     let pending = Arc::new(TTLUint64::new(
         tokio::runtime::Handle::current(),
@@ -120,18 +123,38 @@ async fn run(
         pending: pending.clone(),
         factory: FactoryContext::new(storage.clone(), paths, JobTime(now().1 as i128)),
         scheduler_configuration: configuration,
-        scatter_metrics: ScatterBatchMetrics::new(&prometheus::Registry::new())
-            .map_err(|e| e.to_string())?,
+        scatter_metrics: match &scope {
+            Some(scope) => scope.scatter.clone(),
+            None => {
+                ScatterBatchMetrics::new(&prometheus::Registry::new()).map_err(|e| e.to_string())?
+            }
+        },
         start: Duration::ZERO,
         now_unix_nanos: now().1 as i128,
         split_merge_interval_nanos: 0,
         total_regions: Box::new(move || Ok(counts.regions.total_region_count() as i64)),
         unix_seconds: Arc::new(|| now().0 as u64),
     });
+    if let Some(scope) = &scope {
+        coordinator
+            .get_operator_controller()
+            .set_metrics(scope.classic.clone());
+        coordinator
+            .get_checker_controller()
+            .lock()
+            .unwrap()
+            .set_metrics(scope.checkers.clone());
+        coordinator
+            .get_checker_controller()
+            .lock()
+            .unwrap()
+            .set_labeler_metrics(scope.labeler.denied_checkers.clone());
+    }
     {
         let checker = Arc::downgrade(coordinator.get_checker_controller());
-        let guard = resources.lock().await;
-        let r = guard.as_ref().ok_or("node stopped")?;
+        let mut guard = resources.lock().await;
+        let r = guard.as_mut().ok_or("node stopped")?;
+        r.schedule_operators = Some(coordinator.operator_handle());
         r.progress
             .set_patrol_regions_duration_getter(Arc::new(move || {
                 checker
@@ -140,6 +163,9 @@ async fn run(
                     .unwrap_or_default()
             }));
     }
+    let labeler_creation = scope
+        .as_ref()
+        .map(|m| m.labeler.creation_duration.start_timer());
     let mut labels = Arc::new(
         astersql_pd_schedule_labeler::RegionLabeler::load(
             storage.as_ref().as_ref().clone(),
@@ -149,6 +175,7 @@ async fn run(
         .await
         .map_err(|e| e.to_string())?,
     );
+    drop(labeler_creation);
     let mut affinity = astersql_pd_schedule_affinity::manager::Manager::initialize(
         storage.as_ref(),
         &paths,
@@ -157,6 +184,10 @@ async fn run(
     )
     .await
     .map_err(|e| e.to_string())?;
+    if let Some(scope) = &scope {
+        affinity.set_metrics(scope.affinity.clone());
+        scope.affinity.collect_metrics(&affinity);
+    }
     let affinity_interval =
         astersql_pd_schedule_affinity::availability_loop::DEFAULT_AVAILABILITY_CHECK_INTERVAL;
     let mut affinity_tick = tokio::time::interval_at(
@@ -167,6 +198,13 @@ async fn run(
     let ranges = astersql_pd_schedule_keyrange::Manager::new();
     let mut ids = std::collections::VecDeque::new();
     let mut hot = astersql_pd_schedule_schedulers::HotLoadProjection::default();
+    let mut schedule_metrics = std::collections::BTreeMap::new();
+    let mut limit_metrics = std::collections::BTreeMap::new();
+    let mut checker_patrol = super::schedule_check::PatrolScan::new(
+        &coordinator,
+        scope.as_ref().map(|scope| scope.checkers.clone()),
+    );
+    let mut last_metric_collection = tokio::time::Instant::now() - Duration::from_secs(10);
     let mut push_queue = Default::default();
     let mut fast_operators = Default::default();
     let mut splits = Vec::new();
@@ -261,7 +299,8 @@ async fn run(
             );
             dispatch.push_queue = std::mem::take(&mut push_queue);
             dispatch.fast_operators = std::mem::take(&mut fast_operators);
-            for id in std::mem::take(&mut r.schedule_observations) {
+            for (id, observed_operator) in std::mem::take(&mut r.schedule_observations) {
+                if !admission.get_operator(id).is_some_and(|current| Arc::ptr_eq(&current, &observed_operator)) { continue; }
                 if let Some(region) = cluster.regions.get_region(id) {
                     let out = dispatch
                         .dispatch(
@@ -370,7 +409,21 @@ async fn run(
                 }
                 last_slow = tokio::time::Instant::now();
             }
+            tokio::select! { biased;
+                _ = cancel.cancelled() => break,
+                result = checker_patrol.tick(r, &coordinator, &cluster, &config, &labels, &mut affinity, &mut ids) => result?,
+            }
             let names = coordinator.get_schedulers_controller().names();
+            if last_metric_collection.elapsed()>=Duration::from_secs(10) {
+                if let Some(scope)=&scope {
+                    let controller=coordinator.get_schedulers_controller();
+                    let statuses=names.iter().map(|name|(name.as_str(),controller.is_paused(name,now().0).unwrap_or(true))).collect::<Vec<_>>();
+                    let state=r.state.lock().unwrap();
+                    scope.schedulers.collect_scheduler_metrics(statuses,config.schedule.halt_scheduling,
+                        config.replication.enable_placement_rules.then_some(&state.rules),Some(&labels),now().1 as i128);
+                }
+                last_metric_collection=tokio::time::Instant::now();
+            }
             for name in names {
                 let current = tokio::time::Instant::now();
                 let (due, interval) = intervals
@@ -382,12 +435,35 @@ async fn run(
                 let config = r.state.lock().unwrap().config.clone();
                 let paused=coordinator.get_schedulers_controller().is_paused(&name,now().0).unwrap_or(true);
                 let scheduler=&coordinator.get_schedulers_controller().get(&name).ok_or("scheduler disappeared")?.scheduler;
+                let scheduler_type=scheduler.scheduler_type();
                 let allowed=super::schedule_policy::allowed(&scheduler.policy,&config,&admission);
+                let limit_kind={
+                    use astersql_pd_schedule_schedulers::BuiltinScheduler;
+                    use astersql_pd_schedule_operator::OpKind;
+                    let kind=match &scheduler.policy {
+                            BuiltinScheduler::BalanceRegion(_)|BuiltinScheduler::ShuffleRegion(_)=>OpKind::REGION,
+                            BuiltinScheduler::BalanceWitness(_)=>OpKind::WITNESS,
+                            BuiltinScheduler::RandomMerge(_)=>OpKind::MERGE,
+                            BuiltinScheduler::Hot{..}|BuiltinScheduler::ShuffleHot(_)=>OpKind::HOT_REGION,
+                            BuiltinScheduler::GrantHot(_)=>if admission.operator_count(OpKind::REGION)>=config.schedule.region_schedule_limit {OpKind::REGION}else{OpKind::LEADER},
+                            _=>OpKind::LEADER,
+                        };
+                    kind
+                };
+                if let Some(scope)=&scope {
+                    scope.schedulers.record_metrics("pd_scheduler_status",&[&name,"allow"],if !config.schedule.halt_scheduling && !paused {1.}else{0.}).map_err(|e|e.to_string())?;
+                }
                 if config.schedule.enable_diagnostic {
                     if let Some(recorder)=astersql_pd_schedule_schedulers::DiagnosticRecorder::new(scheduler.scheduler_type()) {
                         let recorder=coordinator.diagnostic_recorders_mut().entry(name.clone()).or_insert(recorder);
                         let status=if !allowed {Some("pending")}else if config.schedule.halt_scheduling {Some("halted")}else if paused {Some("paused")}else{None};
                         if let Some(status)=status {recorder.set_result_from_status(status,now().0 as u64);}
+                    }
+                }
+                if !allowed {
+                    if let Some(scope)=&scope {
+                        let kind=limit_kind;
+                        limit_metrics.entry((scheduler_type.as_str().to_owned(),kind.to_string())).or_insert_with(||scope.classic.operator_limit_counter.with_label_values(&[scheduler_type.as_str(),&kind.to_string()])).inc();
                     }
                 }
                 if !allowed || config.schedule.halt_scheduling || paused {continue;}
@@ -416,7 +492,13 @@ async fn run(
                     .map_err(|e| e.to_string())?;
                 super::schedule_scheduler::observe_hot_support(policy,&r.persisted_config.config.cluster_version)?;
                 let mut state = r.state.lock().unwrap();
+                let schedule_counter=if let Some(scope)=&scope {
+                    Some(schedule_metrics.entry(name.clone()).or_insert(scope.schedulers.scheduler_event_metrics(&scheduler_type,&name,"schedule").map_err(|e|e.to_string())?).clone())
+                } else {None};
                 let mut inputs = super::schedule_policy::PolicyInputs {
+                    schedule_counter,
+                    scheduler_metrics:scope.as_ref().map(|m|m.schedulers.clone()),
+                    labeler_denied:scope.as_ref().map(|m|m.labeler.denied_schedulers.clone()),
                     diagnostic,diagnostic_recorded:false,
                     cluster: &cluster,
                     config: &config,

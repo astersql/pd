@@ -115,6 +115,22 @@ impl BalanceRegionScheduler {
         ctx: &mut RegionBalanceContext<'_, C, P>,
         dry_run: bool,
     ) -> RegionBalanceResult {
+        let metrics = ctx.cluster.regions().metrics();
+        let events = [
+            "no-region",
+            "region-hot",
+            "no-leader",
+            "skip",
+            "create-operator-fail",
+            "no-replacement",
+            "new-operator",
+        ]
+        .map(|event| metrics.scheduler_event_metrics("balance-region-scheduler", event));
+        let observe = |index: usize| {
+            if let Some(counter) = &events[index] {
+                counter.inc();
+            }
+        };
         let mut result = RegionBalanceResult::default();
         let stores = ctx.cluster.get_stores();
         let influence = OpInfluence::new();
@@ -130,13 +146,14 @@ impl BalanceRegionScheduler {
         let mut sources = Vec::new();
         let mut unavailable = HashSet::new();
         for s in &stores {
-            if !state.target(ctx.config, s).await.is_ok() || !special.target(ctx.config, s).is_ok()
+            if !state.target_metrics(ctx.config, s).await.is_ok()
+                || !special.target_metrics(ctx.config, s).is_ok()
             {
                 unavailable.insert(s.id());
             }
-            let mut status = state.source(ctx.config, s).await;
+            let mut status = state.source_metrics(ctx.config, s).await;
             if status.is_ok() {
-                status = special.source(ctx.config, s);
+                status = special.source_metrics(ctx.config, s);
             }
             if status.is_ok() {
                 sources.push(s.clone());
@@ -181,7 +198,8 @@ impl BalanceRegionScheduler {
                 .map(|s| ctx.cluster.store_region_count(s.id()))
                 .max()
                 .unwrap_or(0),
-        );
+        )
+        .with_metric_name(&self.name);
         let snapshot = SnapshotSenderFilter::new(&stores, PriorityLevel::MEDIUM).await;
         let ranges = if self.name == "balance-region-scheduler" && !ctx.key_ranges.is_empty() {
             ctx.key_ranges
@@ -284,6 +302,7 @@ impl BalanceRegionScheduler {
                     }
                 }
                 let Some((region, fit)) = selected else {
+                    observe(0);
                     continue;
                 };
                 let mut plan = BalanceSchedulerPlan {
@@ -293,6 +312,7 @@ impl BalanceRegionScheduler {
                     ..Default::default()
                 };
                 if ctx.statistics.is_region_hot(&region, ctx.hot_degree) {
+                    observe(1);
                     plan.status = Status::new(StatusCode::REGION_HOT, &[]);
                     if dry_run {
                         result.plans.push(plan);
@@ -300,6 +320,7 @@ impl BalanceRegionScheduler {
                     continue;
                 }
                 if region.leader().is_none() {
+                    observe(2);
                     plan.status = Status::new(StatusCode::REGION_NO_LEADER, &[]);
                     if dry_run {
                         result.plans.push(plan);
@@ -327,9 +348,9 @@ impl BalanceRegionScheduler {
                 for target in sources[source_index + 1..].iter().rev() {
                     plan.target = Some(target.clone());
                     plan.step = 2;
-                    let mut status = excluded.target(ctx.config, target);
+                    let mut status = excluded.target_metrics(ctx.config, target);
                     if status.is_ok() {
-                        status = guard.target(ctx.config, target);
+                        status = guard.target_metrics(ctx.config, target);
                     }
                     if !status.is_ok() {
                         if dry_run {
@@ -344,6 +365,7 @@ impl BalanceRegionScheduler {
                         .evaluate(&plan, &influence)
                         .expect("selected source and target");
                     if !scores.should_balance() {
+                        observe(3);
                         if dry_run {
                             let mut p = plan.clone();
                             p.status = Status::new(StatusCode::STORE_SCORE_DISALLOWED, &[]);
@@ -384,6 +406,15 @@ impl BalanceRegionScheduler {
                         .await
                     {
                         Ok(op) => {
+                            op.add_start_metric(events[6].clone());
+                            op.add_finish_metric(metrics.scheduler_counter_metrics(
+                                "pd_scheduler_balance_direction",
+                                &[&self.name, &source.id().to_string(), "out"],
+                            ));
+                            op.add_finish_metric(metrics.scheduler_counter_metrics(
+                                "pd_scheduler_balance_direction",
+                                &[&self.name, &target.id().to_string(), "in"],
+                            ));
                             op.additional_info()
                                 .set("sourceScore", format!("{:.2}", scores.source_score));
                             op.additional_info()
@@ -397,6 +428,7 @@ impl BalanceRegionScheduler {
                             return result;
                         }
                         Err(e) => {
+                            observe(4);
                             result.errors.push(e);
                             plan.status = Status::new(StatusCode::CREATE_OPERATOR_FAILED, &[]);
                             if dry_run {
@@ -406,6 +438,7 @@ impl BalanceRegionScheduler {
                         }
                     }
                 }
+                observe(5);
             }
             self.quota.attenuate(source.id());
         }

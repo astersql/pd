@@ -23,6 +23,7 @@ pub trait SyncAttempt: Send + 'static {
 /// Existing Go history gauges, registered only with the host's registry.
 #[derive(Clone, Debug)]
 pub struct SyncMetrics {
+    vector: GaugeVec,
     sync: Gauge,
     first: Gauge,
     last: Gauge,
@@ -38,12 +39,16 @@ impl SyncMetrics {
             &["type"],
         )?;
         let metrics = Self {
+            vector: gauges.clone(),
             sync: gauges.with_label_values(&["sync_index"]),
             first: gauges.with_label_values(&["first_index"]),
             last: gauges.with_label_values(&["last_index"]),
         };
         registry.register(Box::new(gauges))?;
         Ok(metrics)
+    }
+    pub fn collectors(&self) -> Vec<Box<dyn prometheus::core::Collector>> {
+        vec![Box::new(self.vector.clone())]
     }
     pub(crate) fn record_metrics(&self, assigned: HistoryIndex) {
         self.sync.set(assigned.0 as f64);

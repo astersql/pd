@@ -80,17 +80,32 @@ def main():
                     time.sleep(6)
             assert response[1]['leader']['name'] == 'member-1'
             def keep_etcd_leader_on_first():
-                snapshot = request(urls[0], 'GET', '/pd/api/v1/members')[1]
-                target_id = next(m['member_id'] for m in snapshot['members'] if m['name'] == 'member-1')
-                endpoint = snapshot['etcd_leader']['client_urls'][0]
-                if snapshot['etcd_leader']['member_id'] != target_id:
-                    ctl = Path(os.environ['PD_ETCD_BIN']).with_name('etcdctl')
-                    cmd = [str(ctl), f'--endpoints={endpoint}', 'move-leader', format(target_id, 'x')]
-                    output = subprocess.check_output(cmd, env=env, stderr=subprocess.STDOUT).decode()
-                    record.setdefault('leadership_controls', []).append({'command': cmd, 'output': output})
-                deadline = time.monotonic() + 15
-                while request(urls[0], 'GET', '/pd/api/v1/members')[1].get('etcd_leader', {}).get('name') != 'member-1':
-                    assert time.monotonic() < deadline
+                # A priority update can move etcd leadership before PD's lease
+                # watcher publishes the replacement leader. This trace removes
+                # nonleaders; require both roles to converge before mutation.
+                deadline = time.monotonic() + 25
+                stable = None
+                while True:
+                    snapshot = request(urls[0], 'GET', '/pd/api/v1/members')[1]
+                    target_id = next(m['member_id'] for m in snapshot['members'] if m['name'] == 'member-1')
+                    if snapshot.get('etcd_leader', {}).get('member_id') != target_id:
+                        endpoint = snapshot['etcd_leader']['client_urls'][0]
+                        ctl = Path(os.environ['PD_ETCD_BIN']).with_name('etcdctl')
+                        cmd = [str(ctl), f'--endpoints={endpoint}', 'move-leader', format(target_id, 'x')]
+                        output = subprocess.check_output(cmd, env=env, stderr=subprocess.STDOUT).decode()
+                        record.setdefault('leadership_controls', []).append({'command': cmd, 'output': output})
+                    roles_ready = (snapshot.get('etcd_leader', {}).get('member_id') == target_id
+                                   and snapshot.get('leader', {}).get('member_id') == target_id
+                                   and all(m.get('leader_priority', 0) == 0 for m in snapshot['members']))
+                    if roles_ready:
+                        if stable is None:
+                            stable = time.monotonic()
+                        elif time.monotonic() - stable >= 1:
+                            record.setdefault('stable_removal_roles', []).append(snapshot)
+                            return
+                    else:
+                        stable = None
+                    assert time.monotonic() < deadline, snapshot
                     time.sleep(.1)
             keep_etcd_leader_on_first()
             r = record['responses']
@@ -121,6 +136,23 @@ def main():
                     assert time.monotonic() < deadline, members
                     time.sleep(.05)
             members = wait_names({'member-1', 'member-3'})
+            # The removed daemon must close its established gRPC connection.
+            # Otherwise a still-open, raft-stopped endpoint can receive the next
+            # membership RPC before the Go client's 10-second health patrol.
+            contract.stop(children[1])
+            deadline = time.monotonic() + 25
+            while True:
+                with urllib.request.urlopen(urls[0] + '/metrics', timeout=5) as response:
+                    exposition = response.read().decode()
+                sample = next((line for line in exposition.splitlines()
+                               if line.startswith('pd_server_etcd_client{')
+                               and 'source="server-etcd-client"' in line
+                               and 'type="endpoint"' in line), None)
+                if sample and 0 < float(sample.rsplit(' ', 1)[1]) <= 2:
+                    record['client_endpoint_count_before_second_remove'] = sample
+                    break
+                assert time.monotonic() < deadline, 'Go client endpoint set did not converge after removal'
+                time.sleep(.1)
             keep_etcd_leader_on_first()
             member_id = next(m['member_id'] for m in members if m['name'] == 'member-3')
             r['remove_id'] = request(urls[0], 'DELETE', f'/pd/api/v1/members/id/{member_id}')

@@ -215,8 +215,11 @@ impl HotDestinationSelector {
                         continue;
                     }
                     if context.region.get_store_peer(store.id()).is_none()
-                        && (!move_leader_state.target(context.conf, store).await.is_ok()
-                            || !evicted.target(context.conf, store).is_ok())
+                        && (!move_leader_state
+                            .target_metrics(context.conf, store)
+                            .await
+                            .is_ok()
+                            || !evicted.target_metrics(context.conf, store).is_ok())
                     {
                         continue;
                     }
@@ -244,7 +247,7 @@ impl HotDestinationSelector {
         match self.operation {
             HotSourceOperation::MovePeer => context
                 .safeguard("hot-region", reverse_source, fit)
-                .target(context.conf, reverse_target)
+                .target_metrics(context.conf, reverse_target)
                 .is_ok(),
             HotSourceOperation::TransferLeader => context
                 .leader_safeguard(
@@ -253,7 +256,7 @@ impl HotDestinationSelector {
                     fit,
                     self.rw == RWType::READ,
                 )
-                .is_none_or(|guard| guard.target(context.conf, reverse_target).is_ok()),
+                .is_none_or(|guard| guard.target_metrics(context.conf, reverse_target).is_ok()),
         }
     }
 }

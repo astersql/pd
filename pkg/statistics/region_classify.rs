@@ -64,6 +64,7 @@ struct Entry {
 /// Owned anomaly index. The host serializes mutation and supplies Unix seconds.
 #[derive(Default)]
 pub struct RegionStatistics {
+    metrics: Option<std::sync::Arc<crate::StatisticsMetrics>>,
     index: BTreeMap<u64, Entry>,
     stats: BTreeMap<RegionStatisticType, BTreeSet<u64>>,
 }
@@ -71,6 +72,9 @@ impl RegionStatistics {
     /// Create an empty index.
     pub fn new() -> Self {
         Self::default()
+    }
+    pub fn set_metrics(&mut self, metrics: std::sync::Arc<crate::StatisticsMetrics>) {
+        self.metrics = Some(metrics);
     }
     /// Whether any observation, including a healthy zero bitmap, was recorded.
     pub fn is_observed(&self, id: u64) -> bool {
@@ -208,6 +212,9 @@ impl RegionStatistics {
             entry.down_start = 0;
         }
         entry.bits = bits;
+        if let Some(metrics) = &self.metrics {
+            metrics.observe_region_durations(&durations);
+        }
         durations
     }
 }

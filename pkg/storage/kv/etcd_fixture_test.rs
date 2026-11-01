@@ -15,7 +15,27 @@ pub struct Fixture {
     directory: PathBuf,
     pub endpoint: String,
 }
+/// Restores a deliberately suspended fixture even when an assertion unwinds.
+pub struct Suspension<'a>(&'a mut Fixture);
+impl Drop for Suspension<'_> {
+    fn drop(&mut self) {
+        let _ = Command::new("kill")
+            .args(["-CONT", &self.0.child.id().to_string()])
+            .status();
+    }
+}
 impl Fixture {
+    /// Suspend only this fixture's existing process, retaining sockets and WAL.
+    pub fn suspend(&mut self) -> Suspension<'_> {
+        assert!(
+            Command::new("kill")
+                .args(["-STOP", &self.child.id().to_string()])
+                .status()
+                .unwrap()
+                .success()
+        );
+        Suspension(self)
+    }
     pub fn start() -> Self {
         static BINARY: OnceLock<PathBuf> = OnceLock::new();
         static NEXT: AtomicUsize = AtomicUsize::new(0);

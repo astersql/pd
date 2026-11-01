@@ -20,6 +20,18 @@ use std::{
 /// Owns registrations until every listener/request clone has drained. An error
 /// during construction rolls back only collectors registered by this attempt.
 pub struct ServiceMetrics {
+    pub hotspot: astersql_pd_schedule::HotSpotMetrics,
+    pub labeler: astersql_pd_schedule_labeler::LabelerMetrics,
+    pub affinity: astersql_pd_schedule_affinity::availability_loop::AffinityMetrics,
+    pub sync: astersql_pd_syncer::SyncMetrics,
+    pub filters: astersql_pd_schedule_filter::FilterMetrics,
+    pub statistics: Arc<astersql_pd_statistics::StatisticsMetrics>,
+    pub checkers: astersql_pd_schedule_checker::CheckerMetrics,
+    pub schedulers: astersql_pd_schedule_schedulers::SchedulerMetrics,
+    pub scatter: astersql_pd_schedule_scatter::ScatterBatchMetrics,
+    pub heartbeat: Arc<astersql_pd_schedule_hbstream::stream_lifecycle::HeartbeatMetrics>,
+    pub classic: Arc<astersql_pd_metricutil::ClassicMetrics>,
+    pub core: Arc<astersql_pd_core::metrics::CoreMetrics>,
     pub(crate) stores: crate::service_store_metrics::StoreMetrics,
     registry: Arc<Registry>,
     registered: Vec<Box<dyn Collector>>,
@@ -38,10 +50,55 @@ pub struct ServiceMetrics {
     metadata: prometheus::GaugeVec,
     consensus: prometheus::GaugeVec,
     client_tls: Mutex<Option<Arc<rustls::ClientConfig>>>,
+    backend_children: Mutex<HashMap<String, (prometheus::Gauge, prometheus::Histogram)>>,
+    backend_count: std::sync::OnceLock<prometheus::Gauge>,
 
     children: Mutex<HashMap<&'static str, (prometheus::IntCounter, prometheus::Histogram)>>,
 }
+/// Cloneable domain handles carry values but never retain a registry or service.
+#[derive(Clone)]
+pub struct DomainMetricHandles {
+    pub hotspot: astersql_pd_schedule::HotSpotMetrics,
+    pub labeler: astersql_pd_schedule_labeler::LabelerMetrics,
+    pub affinity: astersql_pd_schedule_affinity::availability_loop::AffinityMetrics,
+    pub sync: astersql_pd_syncer::SyncMetrics,
+    pub filters: astersql_pd_schedule_filter::FilterMetrics,
+    pub classic: Arc<astersql_pd_metricutil::ClassicMetrics>,
+    pub statistics: Arc<astersql_pd_statistics::StatisticsMetrics>,
+    pub checkers: astersql_pd_schedule_checker::CheckerMetrics,
+    pub schedulers: astersql_pd_schedule_schedulers::SchedulerMetrics,
+    pub scatter: astersql_pd_schedule_scatter::ScatterBatchMetrics,
+    pub heartbeat: Arc<astersql_pd_schedule_hbstream::stream_lifecycle::HeartbeatMetrics>,
+}
 impl ServiceMetrics {
+    /// Describe every host-owned collector, including vectors without live children.
+    /// This does not create samples or mutate the registry.
+    pub fn metric_descriptors(&self) -> Vec<prometheus::core::Desc> {
+        self.registered
+            .iter()
+            .flat_map(|collector| collector.desc().into_iter().cloned())
+            .collect()
+    }
+
+    pub fn store_metric_sink(&self) -> Arc<dyn astersql_pd_core::metrics::StoreMetricSink> {
+        Arc::new(StoreMetricSink(self.domain_metrics()))
+    }
+    pub fn domain_metrics(&self) -> Arc<DomainMetricHandles> {
+        Arc::new(DomainMetricHandles {
+            hotspot: self.hotspot.clone(),
+            labeler: self.labeler.clone(),
+            affinity: self.affinity.clone(),
+            sync: self.sync.clone(),
+            filters: self.filters.clone(),
+            classic: self.classic.clone(),
+            statistics: self.statistics.clone(),
+            checkers: self.checkers.clone(),
+            schedulers: self.schedulers.clone(),
+            scatter: self.scatter.clone(),
+            heartbeat: self.heartbeat.clone(),
+        })
+    }
+
     /// Register Go-compatible listener metrics in the supplied host registry.
     pub fn register(registry: Arc<Registry>) -> Result<Arc<Self>, prometheus::Error> {
         let info = GaugeVec::new(
@@ -109,7 +166,32 @@ impl ServiceMetrics {
             Opts::new("pd_cluster_metadata", "Record critical metadata."),
             &["type"],
         )?;
+        let definitions = Registry::new();
+        let schedulers = astersql_pd_schedule_schedulers::SchedulerMetrics::register(&definitions)?;
+        let hotspot =
+            astersql_pd_schedule::HotSpotMetrics::register(&definitions, schedulers.clone())?;
         let mut scope = Self {
+            hotspot,
+            labeler: astersql_pd_schedule_labeler::LabelerMetrics::register(&definitions)?,
+            affinity: astersql_pd_schedule_affinity::availability_loop::AffinityMetrics::register(
+                &definitions,
+            )?
+            .0,
+            sync: astersql_pd_syncer::SyncMetrics::register(&definitions)?,
+            filters: astersql_pd_schedule_filter::FilterMetrics::register(&definitions)?,
+            statistics: Arc::new(astersql_pd_statistics::StatisticsMetrics::register(
+                &definitions,
+            )?),
+            checkers: astersql_pd_schedule_checker::CheckerMetrics::register(&definitions)?,
+            schedulers,
+            scatter: astersql_pd_schedule_scatter::ScatterBatchMetrics::new(&definitions)?,
+            heartbeat: Arc::new(
+                astersql_pd_schedule_hbstream::stream_lifecycle::HeartbeatMetrics::new(
+                    &definitions,
+                )?,
+            ),
+            core: Arc::new(astersql_pd_core::metrics::CoreMetrics::new()?),
+            classic: Arc::new(astersql_pd_metricutil::ClassicMetrics::new()?),
             tso_handling,
             tso_batch,
             query_handling,
@@ -124,6 +206,8 @@ impl ServiceMetrics {
                 &["type"],
             )?,
             client_tls: Mutex::new(None),
+            backend_children: Mutex::new(HashMap::new()),
+            backend_count: Default::default(),
             region_children: Mutex::new(HashMap::new()),
             forward_children: Mutex::new(HashMap::new()),
             stores: crate::service_store_metrics::StoreMetrics::new()?,
@@ -133,6 +217,51 @@ impl ServiceMetrics {
             handling,
             children: Mutex::new(HashMap::new()),
         };
+        for (collector, owned) in scope.core.collectors().zip(scope.core.collectors()) {
+            scope.registry.register(collector)?;
+            scope.registered.push(owned);
+        }
+        for (collector, owned) in scope
+            .classic
+            .collectors()
+            .into_iter()
+            .zip(scope.classic.collectors())
+        {
+            scope.registry.register(collector)?;
+            scope.registered.push(owned);
+        }
+        for (collector, owned) in scope
+            .statistics
+            .collectors()
+            .into_iter()
+            .chain(scope.checkers.collectors())
+            .chain(scope.schedulers.collectors())
+            .chain(scope.scatter.collectors())
+            .chain(scope.heartbeat.collectors())
+            .chain(scope.labeler.collectors())
+            .chain(scope.affinity.collectors())
+            .chain(scope.sync.collectors())
+            .chain(scope.filters.collectors())
+            .chain(scope.hotspot.collectors())
+            .zip(
+                scope
+                    .statistics
+                    .collectors()
+                    .into_iter()
+                    .chain(scope.checkers.collectors())
+                    .chain(scope.schedulers.collectors())
+                    .chain(scope.scatter.collectors())
+                    .chain(scope.heartbeat.collectors())
+                    .chain(scope.labeler.collectors())
+                    .chain(scope.affinity.collectors())
+                    .chain(scope.sync.collectors())
+                    .chain(scope.filters.collectors())
+                    .chain(scope.hotspot.collectors()),
+            )
+        {
+            scope.registry.register(collector)?;
+            scope.registered.push(owned);
+        }
         scope.register_collector(info.clone())?;
         scope.register_collector(scope.handling.clone())?;
         scope.register_collector(scope.requests.clone())?;
@@ -213,6 +342,17 @@ impl ServiceMetrics {
                 .unwrap_or_default()
                 .as_secs_f64(),
         );
+        scope
+            .core
+            .set_region_metrics(["update_cache", "update_kv"].map(|event| {
+                scope
+                    .classic
+                    .region_event_counter
+                    .with_label_values(&[event])
+            }));
+        scope
+            .core
+            .set_scheduler_metrics(Arc::new(scope.schedulers.clone()));
         Ok(Arc::new(scope))
     }
     /// Pin configured client roots at host startup, as Go's HTTP client does.
@@ -283,6 +423,10 @@ impl ServiceMetrics {
             std::time::Duration::from_millis(100),
         );
         tick.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Skip);
+        let limits = self.limits.lock().unwrap().clone();
+        if let Some(limits) = limits {
+            tokio::select! {biased;_=cancel.cancelled()=>return,_=self.collect_backend_metrics(&limits)=>{}}
+        }
         let mut collection = tokio::time::Instant::now() + std::time::Duration::from_secs(15);
         loop {
             let before = clock.now();
@@ -291,10 +435,12 @@ impl ServiceMetrics {
                 self.time_back.inc();
             }
             if tokio::time::Instant::now() >= collection {
+                self.core.collect_wait_metrics();
                 let limits = self.limits.lock().unwrap().clone();
                 if let Some(limits) = limits {
                     let collect = async {
                         limits.collect_metrics(&self.concurrency).await;
+                        self.collect_backend_metrics(&limits).await;
                         if let Some(state) = limits.consensus_metrics().await {
                             for (kind, value) in [
                                 ("term", state.term),
@@ -313,6 +459,36 @@ impl ServiceMetrics {
                 }
                 collection = tokio::time::Instant::now() + std::time::Duration::from_secs(15);
             }
+        }
+    }
+    async fn collect_backend_metrics(&self, limits: &crate::http_service_limit::ServiceLimit) {
+        let observations = limits.backend_health().await;
+        if !observations.is_empty() {
+            self.backend_count
+                .get_or_init(|| {
+                    self.classic
+                        .etcd_state_gauge
+                        .with_label_values(&["server-etcd-client", "endpoint"])
+                })
+                .set(observations.len() as f64);
+        }
+        for observation in observations {
+            let mut children = self.backend_children.lock().unwrap();
+            let (state, latency) =
+                children
+                    .entry(observation.endpoint.clone())
+                    .or_insert_with(|| {
+                        (
+                            self.classic
+                                .etcd_state_gauge
+                                .with_label_values(&["server-etcd-client", &observation.endpoint]),
+                            self.classic
+                                .etcd_endpoint_latency
+                                .with_label_values(&["server-etcd-client", &observation.endpoint]),
+                        )
+                    });
+            state.set(if observation.healthy { 1. } else { 0. });
+            latency.observe(observation.elapsed.as_secs_f64());
         }
     }
     fn register_collector<C: Collector + Clone + 'static>(
@@ -497,4 +673,73 @@ pub struct ConsensusMetrics {
     pub term: u64,
     pub applied_index: u64,
     pub committed_index: u64,
+}
+
+struct StoreMetricSink(Arc<DomainMetricHandles>);
+impl astersql_pd_core::metrics::StoreMetricSink for StoreMetricSink {
+    fn balance_metrics(
+        &self,
+        scheduler: &str,
+        source: bool,
+        id: u64,
+        influence: i64,
+        tolerance: i64,
+    ) {
+        self.0
+            .schedulers
+            .record_metrics(
+                "pd_scheduler_op_influence",
+                &[
+                    scheduler,
+                    &id.to_string(),
+                    if source { "source" } else { "target" },
+                ],
+                influence as f64,
+            )
+            .expect("fixed balance labels");
+        if source {
+            self.0
+                .schedulers
+                .record_metrics(
+                    "pd_scheduler_tolerant_resource",
+                    &[scheduler],
+                    tolerance as f64,
+                )
+                .expect("fixed tolerance labels");
+        }
+    }
+    fn rejected_metrics(&self, scope: &str, kind: &str, source: bool, id: u64) {
+        astersql_pd_core::metrics::StoreMetricSink::rejected_metrics(
+            &self.0.filters,
+            scope,
+            kind,
+            source,
+            id,
+        );
+    }
+    fn scatter_metrics(&self, id: u64, leader: bool, engine: &str) {
+        self.0.classic.scatter_metrics(id, leader, engine);
+    }
+    fn delete_store_metrics(&self, id: u64) {
+        self.0.classic.delete_scatter_metrics(id);
+        self.0.filters.delete_store_metrics(&id.to_string());
+        self.0.heartbeat.delete_store_metrics(id);
+        self.0.hotspot.delete_store_metrics(&id.to_string());
+        self.0.schedulers.delete_store_metrics(&id.to_string());
+        self.0.statistics.reset_store_statistics(&id.to_string());
+        let _ = self
+            .0
+            .classic
+            .store_trigger_network_slow_evict
+            .remove_label_values(&[&id.to_string()]);
+        for leader in ["true", "false"] {
+            for engine in ["tikv", "tiflash"] {
+                let _ = self
+                    .0
+                    .classic
+                    .scatter_distribution_counter
+                    .remove_label_values(&[&id.to_string(), leader, engine]);
+            }
+        }
+    }
 }

@@ -79,6 +79,7 @@ pub struct ScatterBatchOutcome {
 /// Existing Go metric name/labels, cached bounded vocabulary; no global registry.
 #[derive(Clone)]
 pub struct ScatterBatchMetrics {
+    vector: CounterVec,
     counters: BTreeMap<(&'static str, &'static str), Counter>,
 }
 impl ScatterBatchMetrics {
@@ -99,6 +100,9 @@ impl ScatterBatchMetrics {
             ("fail", "other-existed"),
             ("skip", "affinity"),
             ("skip", "hot"),
+            // Go eagerly exports these reserved internal-scatter event children.
+            ("skip", "read-pool-pressure"),
+            ("skip", "balanced-read-cpu"),
             ("fail", ""),
             ("success", ""),
             ("unnecessary", ""),
@@ -106,8 +110,11 @@ impl ScatterBatchMetrics {
         .into_iter()
         .map(|key| (key, vector.with_label_values(&[key.0, key.1])))
         .collect();
-        registry.register(Box::new(vector))?;
-        Ok(Self { counters })
+        registry.register(Box::new(vector.clone()))?;
+        Ok(Self { counters, vector })
+    }
+    pub fn collectors(&self) -> Vec<Box<dyn prometheus::core::Collector>> {
+        vec![Box::new(self.vector.clone())]
     }
     fn inc(&self, kind: &'static str, event: &'static str) {
         self.counters[&(kind, event)].inc();

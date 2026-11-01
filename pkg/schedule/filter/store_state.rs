@@ -202,6 +202,28 @@ impl StoreStateFilter {
         }
         Status::default()
     }
+    pub async fn source_metrics<V>(
+        &self,
+        conf: &dyn SharedConfigProvider<Version = V>,
+        store: &StoreInfo,
+    ) -> Status {
+        let status = self.source(conf, store).await;
+        if !status.is_ok() {
+            store.record_filter_metrics(&self.action_scope, self.reason.get().as_str(), true);
+        }
+        status
+    }
+    pub async fn target_metrics<V>(
+        &self,
+        conf: &dyn SharedConfigProvider<Version = V>,
+        store: &StoreInfo,
+    ) -> Status {
+        let status = self.target(conf, store).await;
+        if !status.is_ok() {
+            store.record_filter_metrics(&self.action_scope, self.reason.get().as_str(), false);
+        }
+        status
+    }
     /// Check leader predicates before peer-removal predicates, stopping on rejection.
     pub async fn source<V>(
         &self,
@@ -270,14 +292,14 @@ impl<V> AsyncFilter<V> for SynchronousFilter<'_, V> {
         conf: &'a dyn SharedConfigProvider<Version = V>,
         store: &'a StoreInfo,
     ) -> Pin<Box<dyn Future<Output = Status> + 'a>> {
-        Box::pin(async move { self.0.source(conf, store) })
+        Box::pin(async move { self.0.source_metrics(conf, store) })
     }
     fn target_async<'a>(
         &'a self,
         conf: &'a dyn SharedConfigProvider<Version = V>,
         store: &'a StoreInfo,
     ) -> Pin<Box<dyn Future<Output = Status> + 'a>> {
-        Box::pin(async move { self.0.target(conf, store) })
+        Box::pin(async move { self.0.target_metrics(conf, store) })
     }
 }
 impl<V> AsyncFilter<V> for StoreStateFilter {
@@ -286,14 +308,14 @@ impl<V> AsyncFilter<V> for StoreStateFilter {
         conf: &'a dyn SharedConfigProvider<Version = V>,
         store: &'a StoreInfo,
     ) -> Pin<Box<dyn Future<Output = Status> + 'a>> {
-        Box::pin(self.source(conf, store))
+        Box::pin(self.source_metrics(conf, store))
     }
     fn target_async<'a>(
         &'a self,
         conf: &'a dyn SharedConfigProvider<Version = V>,
         store: &'a StoreInfo,
     ) -> Pin<Box<dyn Future<Output = Status> + 'a>> {
-        Box::pin(self.target(conf, store))
+        Box::pin(self.target_metrics(conf, store))
     }
 }
 /// Direction and diagnostic step of an asynchronous candidate selection.

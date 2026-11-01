@@ -8,6 +8,7 @@ use std::sync::Arc;
 /// shared concurrent owners may place the registry behind their own lock.
 pub(crate) struct RegionState {
     pub(crate) root: RegionTree,
+    pub(crate) metrics: Arc<crate::metrics::CoreMetrics>,
     pub(crate) subtrees: crate::regions_subtree::SubTrees,
     pub(crate) regions: HashMap<u64, Arc<RegionInfo>>,
 }
@@ -15,6 +16,7 @@ impl Default for RegionState {
     fn default() -> Self {
         Self {
             root: RegionTree::with_count_ref(),
+            metrics: Default::default(),
             subtrees: Default::default(),
             regions: HashMap::new(),
         }

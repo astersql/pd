@@ -25,6 +25,21 @@ async fn task_049_behavior() {
         .await
         .unwrap();
     node.ready().await.unwrap();
+    assert_eq!(
+        request(
+            &url,
+            "POST",
+            "/pd/api/v1/config/replicate",
+            r#"{"max-replicas":5}"#
+        ),
+        (
+            500,
+            serde_json::json!(
+                "[PD:cluster:ErrNotBootstrapped]TiKV cluster not bootstrapped, please start TiKV first"
+            )
+        )
+    );
+    bootstrap(&url).await;
     let response = request(
         &url,
         "POST",

@@ -9,5 +9,6 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
+prometheus.workspace = true
 serde = { workspace = true, features = ["derive"] }
 astersql-pd-typeutil.workspace = true

@@ -30,12 +30,20 @@ impl BalanceScores {
 
 /// A borrowed scheduling generation. Candidate changes do not cache stale scores.
 pub struct BalanceSolver<'a> {
+    metric_name: Option<String>,
     kind: ScheduleKind,
     config: &'a ScheduleConfig,
     average_region_size: i64,
     tolerant_ratio: f64,
 }
 impl<'a> BalanceSolver<'a> {
+    /// Bind the scheduler identity before evaluating real candidate scores.
+    pub fn with_metric_name(mut self, name: &str) -> Self {
+        if self.config.enable_debug_metrics {
+            self.metric_name = Some(name.to_owned());
+        }
+        self
+    }
     /// Explicit input boundary also supports range-cluster tolerance overrides.
     /// `max_region_count` is the maximum *observed* per-store region count.
     pub fn new(
@@ -53,6 +61,7 @@ impl<'a> BalanceSolver<'a> {
             (max_region_count as f64 * 0.005).max(1.0)
         };
         Self {
+            metric_name: None,
             kind,
             config,
             average_region_size,
@@ -133,6 +142,22 @@ impl<'a> BalanceSolver<'a> {
         }
         if target_influence < 0 {
             target_influence = target_influence.wrapping_neg();
+        }
+        if self.config.enable_debug_metrics {
+            if let Some(name) = &self.metric_name {
+                source.record_balance_metrics(
+                    name,
+                    true,
+                    source_influence,
+                    self.tolerant_resource(),
+                );
+                target.record_balance_metrics(
+                    name,
+                    false,
+                    target_influence,
+                    self.tolerant_resource(),
+                );
+            }
         }
         let (source_delta, target_delta) = if self.kind.resource == ResourceKind::REGION {
             (

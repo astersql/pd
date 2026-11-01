@@ -180,9 +180,9 @@ impl<C: SharedConfigProvider> ScatterTargetSelector<'_, C> {
                             continue;
                         }
                         if engine(store) != eng
-                            || !excluded.target(self.config, store).is_ok()
-                            || !guard.target(self.config, store).is_ok()
-                            || !state.target(self.config, store).await.is_ok()
+                            || !excluded.target_metrics(self.config, store).is_ok()
+                            || !guard.target_metrics(self.config, store).is_ok()
+                            || !state.target_metrics(self.config, store).await.is_ok()
                         {
                             continue;
                         }

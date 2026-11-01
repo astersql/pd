@@ -9,6 +9,7 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
+astersql-pd-metricutil.workspace = true
 prometheus.workspace = true
 
 astersql-pd-keyutil.workspace = true

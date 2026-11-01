@@ -184,6 +184,7 @@ pub struct CheckerMetrics {
     pub(crate) inner: Arc<CheckerMetricsInner>,
 }
 pub(crate) struct CheckerMetricsInner {
+    collectors: Vec<Arc<dyn Collector>>,
     events: HashMap<(CheckerMetricKind, &'static str), Counter>,
     checkers: HashMap<CheckerMetricKind, Histogram>,
     phases: HashMap<&'static str, Histogram>,
@@ -282,6 +283,7 @@ impl CheckerMetrics {
         }
         Ok(Self {
             inner: Arc::new(CheckerMetricsInner {
+                collectors: registered.into_iter().map(Arc::from).collect(),
                 events: EVENTS
                     .iter()
                     .map(|&(kind, event)| {
@@ -318,6 +320,15 @@ impl CheckerMetrics {
             }),
         })
     }
+    pub fn collectors(&self) -> Vec<Box<dyn Collector>> {
+        self.inner
+            .collectors
+            .iter()
+            .map(|c| {
+                Box::new(astersql_pd_metricutil::SharedCollector(c.clone())) as Box<dyn Collector>
+            })
+            .collect()
+    }
     /// Reject unknown events before any series creation; no metric labels come from callers.
     pub fn event(&self, checker: CheckerMetricKind, event: &str) -> prometheus::Result<()> {
         let Some(counter) = self.inner.events.get(&(checker, event)) else {
@@ -334,6 +345,16 @@ impl CheckerMetrics {
         if let Some(histogram) = self.inner.checkers.get(&checker) {
             histogram.observe(duration.as_secs_f64());
         }
+    }
+    /// Publish the actual host scan and queue sizes when patrol is serialized by its coordinator.
+    pub fn observe_patrol_scan(&self, elapsed: Duration, priority: usize, pending: usize) {
+        self.inner.phases["scan_regions"].observe(elapsed.as_secs_f64());
+        self.queue_metrics(true, priority);
+        self.queue_metrics(false, pending);
+    }
+    /// Publish a completed scan round; zero clears the value when its term stops.
+    pub fn observe_patrol_round(&self, elapsed: Duration) {
+        self.inner.patrol_time.set(elapsed.as_secs_f64());
     }
     pub(crate) fn phase_metrics(&self, phase: &'static str) -> MetricsTimer {
         MetricsTimer {

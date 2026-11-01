@@ -350,6 +350,20 @@ async fn observe(url: &str, id: u64) -> Value {
     assert!(speed > 0.0);
     assert!((advanced.1["left_seconds"].as_f64().unwrap() * speed - 50.0).abs() < 1e-9);
     output.push(json!(["advanced", advanced]));
+    let (status, exposition, _) = crate::service_metrics_test::fetch(url, "/metrics");
+    assert_eq!(status, 200);
+    for family in ["pd_cluster_progress", "pd_cluster_speed", "pd_cluster_eta"] {
+        assert!(
+            exposition
+                .lines()
+                .any(|line| line.starts_with(&format!("{family}{{"))
+                    && line.contains("store=\"1\"")
+                    && line.contains("action=\"removing\"")),
+            "advanced progress must export its real {family} sample"
+        );
+    }
+    tokio::time::sleep(std::time::Duration::from_secs(2)).await;
+
     let mut configured =
         request(url, "GET", "/pd/api/v1/config/schedule", "").1["store-limit"].clone();
     configured["99"] = json!({"add-peer":19,"remove-peer":20,"transfer-leader-in":21});

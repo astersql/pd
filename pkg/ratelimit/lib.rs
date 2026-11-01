@@ -21,3 +21,6 @@ mod controller_test;
 
 mod runner;
 pub use runner::{ConcurrentRunner, RunnerError, SyncRunner};
+
+mod runner_metrics;
+pub use runner_metrics::RunnerMetrics;

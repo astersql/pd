@@ -171,6 +171,9 @@ impl<'a, C: SharedConfigProvider> ControllerDispatch<'a, C> {
         }
     }
     pub fn schedule(&self, op: Arc<Operator>, now: Instant) {
+        if let Some(metrics) = op.metrics.get() {
+            metrics.created();
+        }
         let region = self.cluster.regions.get_region(op.region_id());
         let step = region.as_deref().and_then(|r| op.check(r));
         let deadline = next_push_deadline(step, now);
@@ -215,6 +218,9 @@ impl<'a, C: SharedConfigProvider> ControllerDispatch<'a, C> {
         let step = op.check(r);
         match op.status() {
             STARTED => {
+                if let Some(metrics) = op.metrics.get() {
+                    metrics.event("check");
+                }
                 if let Some(step) = step {
                     if source == DispatchSource::Heartbeat {
                         if let Err(error) = step.check_in_progress(
@@ -227,6 +233,9 @@ impl<'a, C: SharedConfigProvider> ControllerDispatch<'a, C> {
                             out.stale_error = Some(error);
                             out.removed = self.remove(&op, CancelReason::StaleStatus);
                             if !out.removed.is_empty() {
+                                if let Some(metrics) = op.metrics.get() {
+                                    metrics.event("promote-stale");
+                                }
                                 out.promote_waiting = true;
                                 return Ok(out);
                             }
@@ -236,6 +245,9 @@ impl<'a, C: SharedConfigProvider> ControllerDispatch<'a, C> {
                         if latest.conf_ver.wrapping_sub(origin.conf_ver) > op.conf_ver_changed(r) {
                             out.removed = self.remove(&op, CancelReason::EpochNotMatch);
                             if !out.removed.is_empty() {
+                                if let Some(metrics) = op.metrics.get() {
+                                    metrics.event("promote-stale");
+                                }
                                 out.promote_waiting = true;
                                 return Ok(out);
                             }
@@ -250,6 +262,11 @@ impl<'a, C: SharedConfigProvider> ControllerDispatch<'a, C> {
                 out.completed = Some(op.clone());
                 out.removed = self.admission.detach_operator(&op, &[]);
                 ack_removed_operators(&out.removed, self.cluster, self.config);
+                if !out.removed.is_empty() {
+                    if let Some(metrics) = op.metrics.get() {
+                        metrics.event("promote-success");
+                    }
+                }
                 if op.reach_time_of(STARTED).is_some_and(|start| {
                     now.saturating_duration_since(start) < Duration::from_secs(10)
                 }) {
@@ -258,9 +275,19 @@ impl<'a, C: SharedConfigProvider> ControllerDispatch<'a, C> {
             }
             TIMEOUT => {
                 out.removed = self.remove(&op, CancelReason::Timeout);
+                if !out.removed.is_empty() {
+                    if let Some(metrics) = op.metrics.get() {
+                        metrics.event("promote-timeout");
+                    }
+                }
             }
             _ => {
                 out.removed = self.remove(&op, CancelReason::NotInRunningState);
+                if !out.removed.is_empty() {
+                    if let Some(metrics) = op.metrics.get() {
+                        metrics.event("promote-unexpected");
+                    }
+                }
             }
         }
         out.promote_waiting = !out.removed.is_empty();
@@ -283,6 +310,11 @@ impl<'a, C: SharedConfigProvider> ControllerDispatch<'a, C> {
         };
         let Some(region) = self.cluster.regions.get_region(op.region_id()) else {
             result.removed = self.remove(&op, CancelReason::RegionNotFound);
+            if !result.removed.is_empty() {
+                if let Some(metrics) = op.metrics.get() {
+                    metrics.event("disappear");
+                }
+            }
             return result;
         };
         if op.additional_info().has_related_merge_region()
@@ -290,6 +322,11 @@ impl<'a, C: SharedConfigProvider> ControllerDispatch<'a, C> {
                 > op.region_epoch().copied().unwrap_or_default().version
         {
             result.removed = self.remove(&op, CancelReason::EpochNotMatch);
+            if !result.removed.is_empty() {
+                if let Some(metrics) = op.metrics.get() {
+                    metrics.event("disappear");
+                }
+            }
             return result;
         }
         let step = op.check(&region);

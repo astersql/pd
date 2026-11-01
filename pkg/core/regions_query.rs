@@ -1,7 +1,7 @@
 // Copyright 2026 AsterSQL.
 //! Batched region queries with protocol-independent response snapshots.
 use crate::*;
-use std::{collections::HashMap, sync::Arc};
+use std::{collections::HashMap, sync::Arc, time::Instant};
 /// Query payload containing only the fields exposed by Go QueryRegions.
 #[derive(Debug)]
 pub struct RegionQueryResponse {
@@ -46,6 +46,7 @@ impl RegionState {
     ) -> RegionQueryResult {
         let mut result = RegionQueryResult::default();
         for (input, previous) in [(keys, false), (prev_keys, true)] {
+            let begin = Instant::now();
             let mut positions = Vec::with_capacity(input.len());
             for batch in input.chunks(128) {
                 let regions = if previous {
@@ -65,12 +66,15 @@ impl RegionState {
                     }
                 }
             }
+            self.metrics
+                .observe_query_metrics(usize::from(previous), input.len(), begin.elapsed());
             if previous {
                 result.prev_key_ids = positions;
             } else {
                 result.key_ids = positions;
             }
         }
+        let begin = Instant::now();
         for batch in ids.chunks(128) {
             for &id in batch {
                 if id != 0 {
@@ -82,6 +86,8 @@ impl RegionState {
                 }
             }
         }
+        self.metrics
+            .observe_query_metrics(2, ids.len(), begin.elapsed());
         result
     }
 }

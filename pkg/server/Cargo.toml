@@ -7,6 +7,13 @@ license.workspace = true
 [lib]
 path = "lib.rs"
 [dependencies]
+astersql-pd-schedule.workspace = true
+astersql-pd-schedule-filter.workspace = true
+astersql-pd-schedule-labeler.workspace = true
+astersql-pd-schedule-affinity.workspace = true
+astersql-pd-schedule-checker.workspace = true
+astersql-pd-schedule-scatter.workspace = true
+astersql-pd-metricutil.workspace = true
 astersql-pd-logutil.workspace = true
 tower.workspace = true
 rand.workspace = true
@@ -54,7 +61,6 @@ prometheus.workspace = true
 futures-util.workspace = true
 
 [dev-dependencies]
-astersql-pd-schedule-checker.workspace = true
 astersql-pd-compat-tests.workspace = true
 prost-types.workspace = true
 tonic-prost.workspace = true
@@ -62,9 +68,7 @@ astersql-pd-id.workspace = true
 astersql-pd-member.workspace = true
 astersql-pd-storelimit.workspace = true
 astersql-pd-schedule-core.workspace = true
-astersql-pd-schedule-filter.workspace = true
 astersql-pd-schedule-keyrange.workspace = true
-astersql-pd-schedule-labeler.workspace = true
 astersql-pd-schedule-operator.workspace = true
 astersql-pd-schedule-placement.workspace = true
 astersql-pd-storage-endpoint.workspace = true

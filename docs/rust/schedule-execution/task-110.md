@@ -1,5 +1,6 @@
 # 任务110：调度器指标生命周期
 
+任务101补注：原字面量推导漏掉Go `opType.String()` 声明的三个hot事件；fixture和精确集合断言已修正为104。本文其余101计数是当时验证的历史记录，最终修正证据见[任务101](../server-api/task-101.md)。
 依赖109的实际提交为 `acf6b2afa`；已审查[任务109证据](task-109.md)、canonical
 诊断API、7个之前任务108运行生命周期测试及对应生产路径。任务109为5个聚焦、
 184个包级、1733个workspace测试通过。本任务仅扩展canonical schedulers crate，

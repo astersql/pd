@@ -404,6 +404,14 @@ async fn initialize_node(
     // Detect collector ownership conflicts before any persistent member binding.
     let telemetry_config = telemetry_config.unwrap_or_else(|| listener_config.clone());
     let metrics = astersql_pd_server::service_metrics::ServiceMetrics::register(registry.clone())?;
+    let store: Arc<dyn MetaStore> = Arc::new(crate::store_metrics::MeteredStore::new(
+        store,
+        &metrics.classic,
+    ));
+    cluster.regions.set_metrics(metrics.core.clone());
+    cluster
+        .stores
+        .set_filter_metrics(metrics.store_metric_sink());
     metrics.prepare_transport(&telemetry_config)?;
     metrics.set_cluster(config.cluster_id);
     if let Some(diagnostics) = &diagnostics {
@@ -474,6 +482,7 @@ async fn initialize_node(
                     cancel.child_token(),
                     cluster,
                     Arc::new(leader),
+                    Some(metrics.clone()),
                 )
                 .await
                 {
@@ -644,7 +653,11 @@ pub(crate) async fn prepare_term(
     cancel: CancellationToken,
     cluster: astersql_pd_core::BasicCluster,
     leader: Arc<Leadership>,
+    metrics: Option<Arc<astersql_pd_server::service_metrics::ServiceMetrics>>,
 ) -> Result<Arc<Application>, NodeError> {
+    if let Some(metrics) = &metrics {
+        leader.set_metrics(&metrics.classic);
+    }
     let setup = async {
         let (cluster, cluster_config, restored_config) = {
             let recovery = crate::cluster_restore::restore(
@@ -675,12 +688,14 @@ pub(crate) async fn prepare_term(
             cancel.clone(),
             0,
         )?);
-        let oracle = Oracle::new(
+        if let Some(metrics) = &metrics { allocator.set_metrics(metrics.classic.id_gauge.with_label_values(&["idalloc"])); }
+        let oracle = Oracle::new_with_metrics(
             store.clone(),
             leader.clone(),
             Arc::new(SystemClock),
             cancel.clone(),
             3000,
+            metrics.as_ref().map(|m| astersql_pd_tso::OracleMetrics::new(&m.classic)),
         )
         .await?;
         let requests = prometheus::IntCounter::new(
@@ -703,6 +718,7 @@ pub(crate) async fn prepare_term(
             &registry,
             leader.clone(),
             allocator.clone(),
+            metrics.as_ref().map(|m|m.domain_metrics()),
         );
         tokio::pin!(creation);
         let mut renew = tokio::time::interval(std::time::Duration::from_secs(1));

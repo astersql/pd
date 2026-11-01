@@ -102,6 +102,12 @@ impl FilterMetrics {
             }),
         })
     }
+    pub fn collectors(&self) -> Vec<Box<dyn prometheus::core::Collector>> {
+        vec![
+            Box::new(self.inner.source.clone()),
+            Box::new(self.inner.target.clone()),
+        ]
+    }
     /// Delete every scope and filter for exactly this decimal store label.
     pub fn delete_store_metrics(&self, store_id: &str) {
         let mut series = self.inner.series.lock().unwrap();
@@ -167,12 +173,17 @@ impl FilterCounter {
     /// `None` retains the Go nil-informer behavior. The host must publish removal
     /// before deleting metrics; a later flush then cannot resurrect that store.
     pub fn flush(&mut self, metrics: &FilterMetrics, cluster: Option<&dyn BasicCluster>) {
+        let pending = self
+            .pending
+            .drain()
+            .filter(|((_, _, id), value)| {
+                *value > 0
+                    && cluster.is_none_or(|c| c.get_store(*id).is_some_and(|s| !s.is_removed()))
+            })
+            .collect::<Vec<_>>();
         let mut series = metrics.inner.series.lock().unwrap();
-        for ((action, kind, id), value) in self.pending.drain() {
+        for ((action, kind, id), value) in pending {
             if value == 0 {
-                continue;
-            }
-            if cluster.is_some_and(|c| c.get_store(id).is_none_or(|s| s.is_removed())) {
                 continue;
             }
             let vector = match action {
@@ -186,5 +197,34 @@ impl FilterCounter {
                 });
             metric.inc_by(value as f64);
         }
+    }
+}
+
+impl astersql_pd_core::metrics::StoreMetricSink for FilterMetrics {
+    fn rejected_metrics(&self, scope: &str, kind: &str, source: bool, id: u64) {
+        let action = if source {
+            FilterAction::Source
+        } else {
+            FilterAction::Target
+        };
+        let kind = FilterType(
+            FILTER_NAMES
+                .iter()
+                .position(|name| *name == kind)
+                .map_or(26, |i| i as i64),
+        );
+        let mut series = self.inner.series.lock().unwrap();
+        let vector = if source {
+            &self.inner.source
+        } else {
+            &self.inner.target
+        };
+        series
+            .entry((action, scope.to_owned(), kind, id))
+            .or_insert_with(|| vector.with_label_values(&[scope, kind.as_str(), &id.to_string()]))
+            .inc();
+    }
+    fn delete_store_metrics(&self, id: u64) {
+        self.delete_store_metrics(&id.to_string());
     }
 }

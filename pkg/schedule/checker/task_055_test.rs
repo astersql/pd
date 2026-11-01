@@ -170,6 +170,8 @@ async fn evaluate(
         cluster.regions.set_region(r.clone());
     }
     let ops = ControllerAdmission::new(c["queue_limit"].as_u64().unwrap_or(10));
+    let metric_scope = Arc::new(astersql_pd_metricutil::ClassicMetrics::new().unwrap());
+    ops.set_metrics(metric_scope.clone());
     if let Some(kind) = c["running_kind"].as_str() {
         use astersql_pd_schedule_operator::{OpKind, Operator, TransferLeader};
         let other = region(3, 5, 9, &json!({}));
@@ -248,6 +250,28 @@ async fn evaluate(
             .try_add_operators(&ctx, &mut rules, &mut affinity, Some(&r), &mut || Ok(1000))
             .await;
         assert_eq!(queued.admission_error.is_some(), c["queue_limit"] == 0);
+        assert_eq!(queued.rejected.len(), usize::from(c["queue_limit"] == 0));
+        if c["queue_limit"] == 0 {
+            let records = astersql_pd_schedule_operator::ControllerRecords::default();
+            assert_eq!(
+                records
+                    .bury_removed(&queued.rejected, std::time::Instant::now())
+                    .len(),
+                1
+            );
+            assert!(
+                records
+                    .bury_removed(&queued.rejected, std::time::Instant::now())
+                    .is_empty()
+            );
+            assert_eq!(
+                metric_scope
+                    .operator_counter
+                    .with_label_values(&["promote-learner", "cancel"])
+                    .get(),
+                1.0
+            );
+        }
         assert!(!queued.store_limited);
         assert!(ctl.pending_processed_regions().is_empty());
         if c["queue_limit"] != 0 {

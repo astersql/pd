@@ -194,7 +194,112 @@ async fn observe(url: &str, id: u64) -> Value {
             call(url, "GET", "config/region-label/rules", "")
         ]));
     }
+    label_split_metric_witness(url).await;
     json!(out)
+}
+
+async fn label_split_metric_witness(url: &str) {
+    use std::time::Duration;
+    let request = crate::http_member_test::request;
+    assert_eq!(
+        request(
+            url,
+            "POST",
+            "/pd/api/v1/schedulers/all",
+            r#"{"delay":3600}"#
+        )
+        .0,
+        200
+    );
+    for name in [
+        "joint-state",
+        "learner",
+        "replica",
+        "rule",
+        "affinity",
+        "merge",
+    ] {
+        assert_eq!(
+            request(
+                url,
+                "POST",
+                &format!("/pd/api/v1/checker/{name}"),
+                r#"{"delay":3600}"#
+            )
+            .0,
+            200
+        );
+    }
+    let count = || {
+        let (status, body, _) = crate::service_metrics_test::fetch(url, "/metrics");
+        assert_eq!(status, 200);
+        body.lines()
+            .find_map(|line| {
+                line.strip_prefix(
+                    "pd_schedule_operator_region_size_count{type=\"labeler-split-region\"} ",
+                )
+                .map(|value| value.parse::<f64>().unwrap())
+            })
+            .unwrap_or(0.0)
+    };
+    let before = count();
+    let boundary = json!({"id":"task101-split-witness","index":100,
+        "labels":[{"key":"zone","value":"witness"}],"rule_type":"key-range",
+        "data":[{"start_key":"62","end_key":"63"}]})
+    .to_string();
+    assert_eq!(
+        call(url, "POST", "config/region-label/rule", &boundary).0,
+        200
+    );
+    let deadline = tokio::time::Instant::now() + Duration::from_secs(30);
+    loop {
+        if count() > before {
+            break;
+        }
+        assert!(
+            tokio::time::Instant::now() < deadline,
+            "real label boundary never started a split operator"
+        );
+        // Drain older automatic decisions so this boundary has a deterministic turn.
+        assert_eq!(request(url, "DELETE", "/pd/api/v1/operators", "").0, 200);
+        tokio::time::sleep(Duration::from_millis(200)).await;
+    }
+    // Keep the verified resulting series observable by the read-only supervisor.
+    tokio::time::sleep(Duration::from_secs(2)).await;
+    assert_eq!(
+        call(
+            url,
+            "DELETE",
+            "config/region-label/rule/task101-split-witness",
+            ""
+        )
+        .0,
+        200
+    );
+    assert_eq!(request(url, "DELETE", "/pd/api/v1/operators", "").0, 200);
+    for name in [
+        "joint-state",
+        "learner",
+        "replica",
+        "rule",
+        "affinity",
+        "merge",
+    ] {
+        assert_eq!(
+            request(
+                url,
+                "POST",
+                &format!("/pd/api/v1/checker/{name}"),
+                r#"{"delay":0}"#
+            )
+            .0,
+            200
+        );
+    }
+    assert_eq!(
+        request(url, "POST", "/pd/api/v1/schedulers/all", r#"{"delay":0}"#).0,
+        200
+    );
 }
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
 async fn task_070_rules_and_restart() {

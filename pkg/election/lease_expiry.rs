@@ -51,6 +51,13 @@ impl LeaseExpiry {
         }
         start.checked_add(Duration::from_secs(ttl_seconds as u64))
     }
+    pub(crate) fn remaining_ttl(&self) -> f64 {
+        self.deadline.lock().unwrap().map_or(0., |deadline| {
+            deadline
+                .saturating_duration_since(self.clock.now())
+                .as_secs_f64()
+        })
+    }
     pub(crate) fn close(&self) {
         *self.deadline.lock().unwrap() = None;
     }

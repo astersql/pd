@@ -34,10 +34,14 @@ pub fn handle_bucket_heartbeat(
     worker: Option<&BucketWorkerClient>,
     report: BucketReport,
 ) -> Result<bool, BucketRegionNotFound> {
+    let metrics = cluster.regions.metrics();
     let origin = cluster
         .regions
         .get_region(report.region_id)
-        .ok_or(BucketRegionNotFound(report.region_id))?;
+        .ok_or_else(|| {
+            metrics.bucket_event_metrics(2);
+            BucketRegionNotFound(report.region_id)
+        })?;
     if cluster
         .get_leader_store_by_region_id(report.region_id)
         .is_some_and(|store| store.is_removed())
@@ -58,9 +62,17 @@ pub fn handle_bucket_heartbeat(
             write_qps: report.flows.write_qps.clone(),
         }),
     });
+    if let Some(old) = origin.report_buckets() {
+        if report.version < old.version {
+            metrics.bucket_event_metrics(0);
+        } else if report.version == old.version {
+            metrics.bucket_event_metrics(1);
+        }
+    }
     let mut next = origin.as_ref().clone();
     let applied =
         retry_bucket_update(|| next.compare_and_set_report_buckets(Some(buckets.clone())));
+    metrics.bucket_event_metrics(if applied { 4 } else { 3 });
     if applied {
         // Equal/stale reports succeed without changing the snapshot. Publish only
         // replacements, updating both root and role indexes under the host lock.

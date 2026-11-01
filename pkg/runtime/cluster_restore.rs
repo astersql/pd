@@ -38,8 +38,6 @@ pub(crate) async fn restore(
             .schedule
             .adjust(&Default::default(), true, &mut ScheduleDefaults::default())?;
         config.replication.adjust(&Default::default())?;
-        // Preserve the host's existing no-rule default until a persisted setting exists.
-        config.replication.enable_placement_rules = false;
         if found {
             config.schedule = persisted.config.schedule.clone();
             config.replication = persisted.config.replication.clone();

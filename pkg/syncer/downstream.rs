@@ -218,7 +218,7 @@ impl Downstreams {
             entry.notify.notify_one();
         }
     }
-    pub(crate) fn attach_metrics(&self, metrics: crate::SyncMetrics) {
+    pub fn attach_metrics(&self, metrics: crate::SyncMetrics) {
         self.0.lock().unwrap().history.attach_metrics(metrics);
     }
     /// Names of currently bound streams in lexical order.

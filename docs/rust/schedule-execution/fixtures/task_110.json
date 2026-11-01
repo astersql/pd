@@ -250,6 +250,14 @@
     ],
     [
       "balance-hot-region-scheduler",
+      "move-leader"
+    ],
+    [
+      "balance-hot-region-scheduler",
+      "move-peer"
+    ],
+    [
+      "balance-hot-region-scheduler",
       "need_split_before_move_peer"
     ],
     [
@@ -331,6 +339,10 @@
     [
       "balance-hot-region-scheduler",
       "split_success"
+    ],
+    [
+      "balance-hot-region-scheduler",
+      "transfer-leader"
     ],
     [
       "balance-hot-region-scheduler",
@@ -636,5 +648,14 @@
       "transfer-witness-leader-scheduler",
       "schedule"
     ]
-  ]
+  ],
+  "symbolic_event_derivation": {
+    "source": "pkg/schedule/schedulers/metrics.go; pkg/schedule/schedulers/hot_region.go opType.String",
+    "resolved": {
+      "moveLeader.String()": "move-leader",
+      "movePeer.String()": "move-peer",
+      "transferLeader.String()": "transfer-leader"
+    },
+    "correction": "task 101 resolves three eager symbolic declarations omitted by the original literal-only source derivation"
+  }
 }

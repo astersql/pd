@@ -250,14 +250,14 @@ impl GrantHotScheduler {
             let Some(store) = ctx.cluster.stores.get_store(id) else {
                 continue;
             };
-            if !placement.target(ctx.config, &store).is_ok()
-                || !state.target(ctx.config, &store).await.is_ok()
+            if !placement.target_metrics(ctx.config, &store).is_ok()
+                || !state.target_metrics(ctx.config, &store).await.is_ok()
             {
                 continue;
             }
             if !is_leader
                 && (region.get_store_peer(id).is_some()
-                    || !evicted.target(ctx.config, &store).is_ok())
+                    || !evicted.target_metrics(ctx.config, &store).is_ok())
             {
                 continue;
             }

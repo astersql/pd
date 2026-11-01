@@ -80,8 +80,8 @@ impl ShuffleLeaderScheduler {
         let special = SpecialUseFilter::new("shuffle-leader-scheduler", &[]);
         let mut candidates = vec![];
         for store in ctx.cluster.get_stores() {
-            if state.target(ctx.config, &store).await.is_ok()
-                && special.target(ctx.config, &store).is_ok()
+            if state.target_metrics(ctx.config, &store).await.is_ok()
+                && special.target_metrics(ctx.config, &store).is_ok()
             {
                 candidates.push(store.id());
             }
@@ -126,6 +126,12 @@ impl ShuffleLeaderScheduler {
             .await
         {
             Ok(op) => {
+                op.add_start_metric(
+                    ctx.cluster
+                        .regions()
+                        .metrics()
+                        .scheduler_event_metrics("shuffle-leader-scheduler", "new-operator"),
+                );
                 op.set_priority_level(PriorityLevel::LOW);
                 result.operators.push(Arc::new(op));
             }

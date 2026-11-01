@@ -149,7 +149,9 @@ impl ShuffleRegionScheduler {
         stores.sort_by_key(|s| s.id());
         let mut sources = vec![];
         for (i, s) in stores.iter().enumerate() {
-            if state.source(ctx.config, s).await.is_ok() && special.source(ctx.config, s).is_ok() {
+            if state.source_metrics(ctx.config, s).await.is_ok()
+                && special.source_metrics(ctx.config, s).is_ok()
+            {
                 sources.push(i);
             }
         }
@@ -212,9 +214,9 @@ impl ShuffleRegionScheduler {
         let mut targets = vec![];
         for store in &stores {
             if region.get_store_peer(store.id()).is_none()
-                && state.target(ctx.config, store).await.is_ok()
-                && special.target(ctx.config, store).is_ok()
-                && placement.target(ctx.config, store).is_ok()
+                && state.target_metrics(ctx.config, store).await.is_ok()
+                && special.target_metrics(ctx.config, store).is_ok()
+                && placement.target_metrics(ctx.config, store).is_ok()
             {
                 targets.push(store.id());
             }
@@ -252,6 +254,12 @@ impl ShuffleRegionScheduler {
             .await
         {
             Ok(op) => {
+                op.add_start_metric(
+                    ctx.cluster
+                        .regions()
+                        .metrics()
+                        .scheduler_event_metrics("shuffle-region-scheduler", "new-operator"),
+                );
                 op.set_priority_level(PriorityLevel::LOW);
                 out.operators.push(Arc::new(op));
             }

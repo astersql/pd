@@ -36,3 +36,17 @@ fn null_default<'de, T: serde::Deserialize<'de> + Default, D: serde::Deserialize
 
 #[cfg(test)]
 mod config_test;
+
+pub mod classic_metrics;
+pub use classic_metrics::ClassicMetrics;
+
+/// A boxed clone of a shared, host-registered collector.
+pub struct SharedCollector(pub std::sync::Arc<dyn prometheus::core::Collector>);
+impl prometheus::core::Collector for SharedCollector {
+    fn desc(&self) -> Vec<&prometheus::core::Desc> {
+        self.0.desc()
+    }
+    fn collect(&self) -> Vec<prometheus::proto::MetricFamily> {
+        self.0.collect()
+    }
+}

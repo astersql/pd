@@ -180,6 +180,9 @@ const DEFINITIONS: &[Definition] = &[
 ];
 // Frozen eager event vocabulary from Go package initialization.
 const INITIAL_EVENTS: &[(&str, &str)] = &[
+    ("balance-hot-region-scheduler", "move-leader"),
+    ("balance-hot-region-scheduler", "move-peer"),
+    ("balance-hot-region-scheduler", "transfer-leader"),
     ("balance-hot-region-scheduler", "abnormal_replica"),
     ("balance-hot-region-scheduler", "create_operator_failed"),
     ("balance-hot-region-scheduler", "hot_buckets_not_valid"),
@@ -406,6 +409,14 @@ impl SchedulerMetrics {
         }
         Ok(metrics)
     }
+    pub fn collectors(&self) -> Vec<Box<dyn Collector>> {
+        self.families
+            .lock()
+            .unwrap()
+            .values()
+            .map(|family| family.vector.collector())
+            .collect()
+    }
     /// Set a gauge, increment a counter, or observe a histogram. Arity/type/value
     /// errors are returned before creating a series. Host adapters supply labels
     /// from actual policy events, never region IDs or error text.
@@ -439,6 +450,22 @@ impl SchedulerMetrics {
     }
     /// Cache a counter handle for a real policy event. Event counters survive
     /// ResetSchedulerMetrics in Go; keeping this handle across reset is safe.
+    pub fn counter_metrics(&self, name: &str, labels: &[&str]) -> prometheus::Result<Counter> {
+        let mut families = self.families.lock().unwrap_or_else(|p| p.into_inner());
+        let family = families
+            .get_mut(name)
+            .ok_or_else(|| prometheus::Error::Msg("unknown scheduler counter".into()))?;
+        let Vector::Counter(vector) = &family.vector else {
+            return Err(prometheus::Error::Msg(
+                "scheduler metric is not a counter".into(),
+            ));
+        };
+        let counter = vector.get_metric_with_label_values(labels)?;
+        family
+            .series
+            .insert(labels.iter().map(|s| (*s).to_owned()).collect());
+        Ok(counter)
+    }
     pub fn event_metrics(&self, scheduler_type: &str, event: &str) -> prometheus::Result<Counter> {
         let families = self.families.lock().unwrap_or_else(|p| p.into_inner());
         let Vector::Counter(v) = &families["pd_scheduler_event_count"].vector else {
@@ -708,5 +735,12 @@ impl<S: crate::LoopScheduler> crate::LoopScheduler for MetricsScheduler<S> {
         let result = self.scheduler.clean(cluster).await;
         self.metrics.remove_scheduler_metrics(&self.name);
         result
+    }
+}
+
+impl astersql_pd_core::metrics::SchedulerMetricSink for SchedulerMetrics {
+    fn counter_metrics(&self, family: &str, labels: &[&str]) -> Counter {
+        SchedulerMetrics::counter_metrics(self, family, labels)
+            .expect("source-defined scheduler counter labels")
     }
 }

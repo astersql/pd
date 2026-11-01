@@ -200,3 +200,9 @@ mod shutdown_workers_test;
 
 #[cfg(test)]
 mod embedded_isolation_test;
+
+mod store_metrics;
+
+#[cfg(test)]
+#[path = "store_metrics_test.rs"]
+mod store_metrics_test;

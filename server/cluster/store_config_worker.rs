@@ -11,6 +11,7 @@ use tokio_util::sync::CancellationToken;
 
 /// Immediate synchronization followed by Go's one-minute retry cadence.
 pub struct StoreConfigWorker {
+    wake: std::sync::Arc<tokio::sync::Notify>,
     cancel: CancellationToken,
     join: JoinHandle<()>,
 }
@@ -24,19 +25,28 @@ impl StoreConfigWorker {
     {
         let cancel = parent.child_token();
         let token = cancel.clone();
+        let wake = std::sync::Arc::new(tokio::sync::Notify::new());
+        let worker_wake = wake.clone();
         let join = executor.spawn(async move {
             let mut ticks = tokio::time::interval(Duration::from_secs(60));
             ticks.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Skip);
             loop {
                 tokio::select! { biased;
                     _ = token.cancelled() => break,
+                    _ = worker_wake.notified() => {
+                        if !token.is_cancelled() {sync(token.clone()).await;}
+                    },
                     _ = ticks.tick() => {
                         if !token.is_cancelled() { sync(token.clone()).await; }
                     }
                 }
             }
         });
-        Self { cancel, join }
+        Self { cancel, join, wake }
+    }
+    /// A bootstrap transition wakes the existing worker after stores become visible.
+    pub fn wake_handle(&self) -> std::sync::Arc<tokio::sync::Notify> {
+        self.wake.clone()
     }
     /// Cancel HTTP/retries and join any admitted configuration transaction.
     pub async fn stop(self) -> Result<(), tokio::task::JoinError> {
@@ -47,10 +57,39 @@ impl StoreConfigWorker {
 
 /// Fetch from the first eligible TiKV; failed candidates are removed for this round.
 /// The host refreshes candidates from its shared cluster if no store succeeds.
+/// A successful real HTTP observation, before host persistence/publication.
+pub struct StoreConfigObservation {
+    pub config: StoreConfig,
+    pub address: String,
+}
+type FailureObserver<'a> = Option<&'a (dyn Fn(&str) + Send + Sync)>;
+struct ConfigAttempt<'a> {
+    address: String,
+    failure: FailureObserver<'a>,
+    complete: bool,
+}
+impl Drop for ConfigAttempt<'_> {
+    fn drop(&mut self) {
+        if !self.complete {
+            if let Some(failure) = self.failure {
+                failure(&self.address);
+            }
+        }
+    }
+}
 pub async fn sync_store_config(
     stores: &mut Vec<Arc<StoreInfo>>,
     cancel: &CancellationToken,
 ) -> Result<Option<StoreConfig>, String> {
+    sync_store_config_observed(stores, cancel, None)
+        .await
+        .map(|report| report.map(|report| report.config))
+}
+pub async fn sync_store_config_observed(
+    stores: &mut Vec<Arc<StoreInfo>>,
+    cancel: &CancellationToken,
+    failure: FailureObserver<'_>,
+) -> Result<Option<StoreConfigObservation>, String> {
     let mut index = 0;
     let mut last_error = None;
     while index < stores.len() {
@@ -66,16 +105,23 @@ pub async fn sync_store_config(
             index += 1;
             continue;
         }
-        let result = async {
+        let fetch = async {
             let address = resolve_status_address(store.status_address(), store.address()).await;
-            fetch_store_config(&address, cancel).await
+            let mut attempt = ConfigAttempt {
+                address,
+                failure,
+                complete: false,
+            };
+            let config = fetch_store_config(&attempt.address, cancel).await?;
+            attempt.complete = true;
+            Ok::<_, String>(StoreConfigObservation {
+                config,
+                address: attempt.address.clone(),
+            })
         };
-        let result = tokio::select! { biased;
-            _ = cancel.cancelled() => return Err("store config sync cancelled".into()),
-            value = result => value,
-        };
+        let result = tokio::select! {biased;_=cancel.cancelled()=>return Err("store config sync cancelled".into()),result=fetch=>result};
         match result {
-            Ok(config) => return Ok(Some(config)),
+            Ok(report) => return Ok(Some(report)),
             Err(error) => {
                 last_error = Some(error);
                 stores.remove(index);

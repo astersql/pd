@@ -10,11 +10,20 @@ use tokio::{
 use crate::{LabelerError, RegionLabeler, Timestamp};
 
 /// Collectors owned and registered by the host, never a global registry.
+#[derive(Clone)]
 pub struct LabelerMetrics {
+    pub denied_checkers: prometheus::IntCounter,
+    pub denied_schedulers: prometheus::IntCounter,
     pub events: IntCounterVec,
     pub creation_duration: Histogram,
 }
 impl LabelerMetrics {
+    pub fn collectors(&self) -> Vec<Box<dyn prometheus::core::Collector>> {
+        vec![
+            Box::new(self.events.clone()),
+            Box::new(self.creation_duration.clone()),
+        ]
+    }
     /// Preserve the Go names, help, labels and exponential histogram buckets.
     pub fn register(registry: &Registry) -> Result<Self, prometheus::Error> {
         let events = IntCounterVec::new(
@@ -37,6 +46,8 @@ impl LabelerMetrics {
             return Err(error);
         }
         Ok(Self {
+            denied_checkers: events.with_label_values(&["checkers", "deny"]),
+            denied_schedulers: events.with_label_values(&["schedulers", "deny"]),
             events,
             creation_duration,
         })

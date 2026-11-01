@@ -20,6 +20,28 @@ pub trait Filter<V> {
     fn scope(&self) -> &str;
     /// Stable identity independent of the human-readable scope.
     fn filter_type(&self) -> FilterType;
+    fn source_metrics(
+        &self,
+        conf: &dyn SharedConfigProvider<Version = V>,
+        store: &StoreInfo,
+    ) -> Status {
+        let status = self.source(conf, store);
+        if !status.is_ok() {
+            store.record_filter_metrics(self.scope(), self.filter_type().as_str(), true);
+        }
+        status
+    }
+    fn target_metrics(
+        &self,
+        conf: &dyn SharedConfigProvider<Version = V>,
+        store: &StoreInfo,
+    ) -> Status {
+        let status = self.target(conf, store);
+        if !status.is_ok() {
+            store.record_filter_metrics(self.scope(), self.filter_type().as_str(), false);
+        }
+        status
+    }
     /// Evaluate a source store and retain the complete diagnostic status.
     fn source(&self, conf: &dyn SharedConfigProvider<Version = V>, store: &StoreInfo) -> Status;
     /// Evaluate a target store and retain the complete diagnostic status.
@@ -80,9 +102,9 @@ pub(crate) fn first_rejection<V>(
 ) -> Option<(usize, Status)> {
     filters.iter().enumerate().find_map(|(i, f)| {
         let status = if source {
-            f.source(conf, store)
+            f.source_metrics(conf, store)
         } else {
-            f.target(conf, store)
+            f.target_metrics(conf, store)
         };
         (!status.is_ok()).then_some((i, status))
     })

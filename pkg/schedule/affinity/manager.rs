@@ -38,6 +38,10 @@ pub struct Manager {
     pub key_ranges: BTreeMap<String, GroupKeyRanges>,
 }
 impl Manager {
+    pub fn set_metrics(&mut self, metrics: crate::availability_loop::AffinityMetrics) {
+        self.metrics = Some(metrics);
+    }
+
     /// Loads metadata without starting policy or availability tasks. Time is seconds.
     pub async fn initialize(
         storage: &StorageEndpoint,

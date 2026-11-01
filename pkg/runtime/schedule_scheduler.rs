@@ -252,6 +252,11 @@ pub(super) async fn manage(
                     .map_err(|e| e.to_string())?,
             );
             let result = controller.remove(&name, false).await;
+            if controller.get(&name).is_none() {
+                if let Some(metrics) = &r.metrics {
+                    metrics.schedulers.remove_scheduler_metrics(&name);
+                }
+            }
             publish(controller, r);
             Ok(match result {
                 Ok(()) => (200, json!("The scheduler is removed.")),

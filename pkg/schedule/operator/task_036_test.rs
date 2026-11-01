@@ -691,3 +691,83 @@ async fn task_036_command_versions_and_suppression() {
     }
     assert_eq!(next_push_deadline(None, now), now + Duration::from_secs(5));
 }
+
+#[tokio::test]
+async fn task_101_dispatch_metric_lifecycle() {
+    let mut c = cluster();
+    let cfg = ProviderSnapshot::<()>::default();
+    let a = ControllerAdmission::new(10);
+    let scope = Arc::new(astersql_pd_metricutil::ClassicMetrics::new().unwrap());
+    a.set_metrics(scope.clone());
+    let (h, _router) = StreamRouter::new(router_stores(&c));
+    let d = ControllerDispatch::new(&a, &c, &cfg, &h, 42);
+    let o = op(vec![leader()]);
+    a.enqueue_waiting(&c, &[o.clone()]).unwrap();
+    a.promote_limited_waiting(&c, &cfg, 0.0)
+        .await
+        .unwrap()
+        .unwrap();
+    // No leader suppresses transport, but still checks a real running operator.
+    d.dispatch(
+        &region(0, 4),
+        DispatchSource::Heartbeat,
+        Instant::now(),
+        0,
+        true,
+    )
+    .await
+    .unwrap();
+    assert_eq!(
+        scope
+            .operator_counter
+            .with_label_values(&["dispatch", "check"])
+            .get(),
+        1.0
+    );
+    let out = d
+        .dispatch(
+            &region(2, 4),
+            DispatchSource::Heartbeat,
+            Instant::now(),
+            0,
+            true,
+        )
+        .await
+        .unwrap();
+    let records = ControllerRecords::default();
+    records.bury_removed(&out.removed, Instant::now());
+    records.bury_removed(&out.removed, Instant::now());
+    for event in [
+        "put",
+        "get",
+        "promote-add",
+        "start",
+        "promote-success",
+        "finish",
+    ] {
+        assert_eq!(
+            scope
+                .operator_counter
+                .with_label_values(&["dispatch", event])
+                .get(),
+            1.0,
+            "{event}"
+        );
+    }
+    let missing = op(vec![leader()]);
+    a.add_operators(&c, &[missing.clone()]).unwrap();
+    d.schedule(missing, Instant::now());
+    drop(d);
+    c.regions.reset_region_cache();
+    let d = ControllerDispatch::new(&a, &c, &cfg, &h, 42);
+    d.schedule(a.get_operator(1).unwrap(), Instant::now());
+    let polled = d.poll_due(Instant::now());
+    assert_eq!(polled.removed.len(), 1);
+    assert_eq!(
+        scope
+            .operator_counter
+            .with_label_values(&["dispatch", "disappear"])
+            .get(),
+        1.0
+    );
+}

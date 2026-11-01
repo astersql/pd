@@ -107,4 +107,7 @@ pub(super) async fn check_availability(
         .collect::<Vec<_>>();
     let (seconds, nanos) = now();
     manager.check_groups_availability(&stores, &state.config, nanos as i128, seconds as u64);
+    if let Some(metrics) = &r.metrics {
+        metrics.affinity.collect_metrics(manager);
+    }
 }

@@ -13,18 +13,20 @@ pub const DEFAULT_AVAILABILITY_CHECK_INTERVAL: Duration = Duration::from_secs(10
 /// Cached fixed-label children; no process-global registration.
 #[derive(Clone, Debug)]
 pub struct AffinityMetrics {
+    vector: IntGaugeVec,
     groups: IntGauge,
     regions: IntGauge,
     affinity_regions: IntGauge,
     split_denied: IntGauge,
 }
 impl AffinityMetrics {
-    fn register(registry: &Registry) -> Result<(Self, IntGaugeVec), prometheus::Error> {
+    pub fn register(registry: &Registry) -> Result<(Self, IntGaugeVec), prometheus::Error> {
         let vector = IntGaugeVec::new(
             Opts::new("pd_affinity_status", "Status of the affinity manager."),
             &["type"],
         )?;
         let metrics = Self {
+            vector: vector.clone(),
             groups: vector.with_label_values(&["group-count"]),
             regions: vector.with_label_values(&["region-count"]),
             affinity_regions: vector.with_label_values(&["affinity-region-count"]),
@@ -33,10 +35,13 @@ impl AffinityMetrics {
         registry.register(Box::new(vector.clone()))?;
         Ok((metrics, vector))
     }
+    pub fn collectors(&self) -> Vec<Box<dyn prometheus::core::Collector>> {
+        vec![Box::new(self.vector.clone())]
+    }
     pub(crate) fn record_split_deny_metrics(&self) {
         self.split_denied.inc();
     }
-    fn collect_metrics(&self, manager: &Manager) {
+    pub fn collect_metrics(&self, manager: &Manager) {
         self.groups.set(manager.groups.len() as i64);
         self.regions.set(manager.regions.len() as i64);
         self.affinity_regions

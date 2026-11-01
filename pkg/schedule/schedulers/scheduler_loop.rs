@@ -114,6 +114,7 @@ pub trait LoopScheduler {
 }
 /// Clock/labeler are host-owned boundaries; no private runtime or global state.
 pub struct ScheduleController<S> {
+    labeler_denied: Option<prometheus::IntCounter>,
     pub scheduler: S,
     pub cluster: Arc<CoreCluster>,
     pub control: LoopControl,
@@ -134,9 +135,13 @@ impl<S: LoopScheduler> ScheduleController<S> {
             cluster,
             control,
             labeler: None,
+            labeler_denied: None,
             now_nanos,
             interval,
         }
+    }
+    pub fn set_labeler_metrics(&mut self, counter: prometheus::IntCounter) {
+        self.labeler_denied = Some(counter);
     }
     pub fn interval(&self) -> i64 {
         self.interval
@@ -173,6 +178,9 @@ impl<S: LoopScheduler> ScheduleController<S> {
                         .as_ref()
                         .is_some_and(|l| l.schedule_disabled(&region, (self.now_nanos)().into()))
                 {
+                    if let Some(counter) = &self.labeler_denied {
+                        counter.inc();
+                    }
                     ops.remove(i);
                 } else {
                     i += 1;
