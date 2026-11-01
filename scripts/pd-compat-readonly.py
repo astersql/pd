@@ -46,9 +46,9 @@ def binary(name):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--mode', choices=['go', 'rust', 'dual'], default=os.environ.get('PD_COMPAT_MODE', 'dual'))
-    parser.add_argument('--case', choices=['health-member', 'tso', 'cluster-host', 'cluster-restore', 'member-role', 'bucket-heartbeat', 'sync-regions', 'store-state', 'store-stats', 'store-config', 'cluster-metrics', 'resolved-ts', 'schedule-coordinator', 'request-role', 'members', 'bootstrap', 'alloc-id', 'store-registration', 'region-lookup', 'region-scan', 'region-query', 'ask-split', 'report-split', 'cluster-config', 'scatter', 'split-regions', 'split-scatter', 'global-config', 'process-shutdown', 'rolling-restart', 'embedded-isolation', 'shutdown-workers', 'global-watch', 'report-min-resolved-ts', 'external-timestamp', 'classic-tso', 'deprecated-rpc'], action='append')
+    parser.add_argument('--case', choices=['health-member', 'tso', 'cluster-host', 'cluster-restore', 'member-role', 'bucket-heartbeat', 'sync-regions', 'store-state', 'store-stats', 'store-config', 'cluster-metrics', 'resolved-ts', 'schedule-coordinator', 'request-role', 'members', 'bootstrap', 'alloc-id', 'store-registration', 'region-lookup', 'region-scan', 'region-query', 'ask-split', 'report-split', 'cluster-config', 'scatter', 'split-regions', 'split-scatter', 'global-config', 'process-shutdown', 'rolling-restart', 'go-client-core', 'embedded-isolation', 'shutdown-workers', 'global-watch', 'report-min-resolved-ts', 'external-timestamp', 'classic-tso', 'deprecated-rpc'], action='append')
     args = parser.parse_args()
-    if any(case in (args.case or []) for case in ['cluster-host', 'cluster-restore', 'member-role', 'bucket-heartbeat', 'sync-regions', 'store-state', 'store-stats', 'store-config', 'cluster-metrics', 'resolved-ts', 'schedule-coordinator', 'request-role', 'members', 'bootstrap', 'alloc-id', 'store-registration', 'region-lookup', 'region-scan', 'region-query', 'ask-split', 'report-split', 'cluster-config', 'scatter', 'split-regions', 'split-scatter', 'global-config', 'process-shutdown', 'rolling-restart', 'embedded-isolation', 'shutdown-workers', 'global-watch', 'report-min-resolved-ts', 'external-timestamp', 'classic-tso', 'deprecated-rpc']) and args.mode != 'dual':
+    if any(case in (args.case or []) for case in ['cluster-host', 'cluster-restore', 'member-role', 'bucket-heartbeat', 'sync-regions', 'store-state', 'store-stats', 'store-config', 'cluster-metrics', 'resolved-ts', 'schedule-coordinator', 'request-role', 'members', 'bootstrap', 'alloc-id', 'store-registration', 'region-lookup', 'region-scan', 'region-query', 'ask-split', 'report-split', 'cluster-config', 'scatter', 'split-regions', 'split-scatter', 'global-config', 'process-shutdown', 'rolling-restart', 'go-client-core', 'embedded-isolation', 'shutdown-workers', 'global-watch', 'report-min-resolved-ts', 'external-timestamp', 'classic-tso', 'deprecated-rpc']) and args.mode != 'dual':
         raise ValueError('cluster-host, cluster-restore and member-role require dual mode')
     go = binary('PD_COMPAT_GO_BIN') if args.mode != 'rust' else None
     rust = binary('PD_COMPAT_RUST_BIN') if args.mode != 'go' else None
@@ -95,6 +95,7 @@ def main():
         'tests/rust-compat/health_member_test.rs', 'tests/rust-compat/tso_test.rs',
         'tests/rust-compat/harness.rs', 'tests/rust-compat/readonly_oracle.rs',
         'tests/rust-compat/rolling_restart.rs', 'tests/rust-compat/rolling_restart_test.rs',
+        'tests/rust-compat/go_client_acceptance.rs', 'tests/rust-compat/go_client_acceptance_test.rs',
         'scripts/run-pd-compat-readonly.sh', 'scripts/pd-compat-readonly.py',
         'pkg/proto/build.rs', 'pkg/storage/kv/etcd_fixture_test.rs', 'Cargo.lock',
         'pkg/member/member.rs', 'pkg/runtime/node_test.rs', 'pkg/runtime/member_role_worker.rs', 'pkg/runtime/member_role_worker_test.rs', 'pkg/runtime/cluster_restore.rs', 'pkg/runtime/cluster_restore_test.rs', 'pkg/server/grpc.rs',
@@ -118,6 +119,16 @@ def main():
               'target': str(target), 'before': before, 'go_build_info': info,
               'inputs': {str(p): hashlib.sha256(p.read_bytes()).hexdigest()
                          for p in [go, rust, *fixtures, *sources] if p}, 'commands': []}
+    if 'go-client-core' in (args.case or []):
+        for name in ('pd-region-bench', 'pd-tso-bench', 'pd-heartbeat-bench'):
+            tool = target / name
+            if not tool.is_file() or not os.access(tool, os.X_OK):
+                raise ValueError(f'existing Go client tool required: {tool}')
+            build = subprocess.check_output(['go', 'version', '-m', str(tool)], env=env).decode()
+            if '\tmod\tgithub.com/tikv/pd/tools\t' not in build:
+                raise ValueError(f'not a Go PD tools binary: {tool}')
+            report.setdefault('go_client_build_info', {})[name] = build
+            report['inputs'][str(tool)] = hashlib.sha256(tool.read_bytes()).hexdigest()
     work = Path(tempfile.mkdtemp(prefix='compat-readonly-work-', dir=target))
     env.update(TMPDIR=str(work), PD_COMPAT_WORK_DIR=str(work))
     report['work_directory'] = str(work)
@@ -162,6 +173,9 @@ def main():
             if case == 'report-min-resolved-ts':
                 command = ['cargo', 'test', '--locked', '-p', 'astersql-pd-runtime', '--lib',
                            'readonly_report_min_resolved_ts_differential', '--', '--ignored']
+            if case == 'go-client-core':
+                command = ['cargo', 'test', '--locked', '-p', 'astersql-pd-compat-tests', '--lib',
+                           'task_099_', '--']
             if case == 'rolling-restart':
                 command = ['cargo', 'test', '--locked', '-p', 'astersql-pd-compat-tests', '--lib',
                            'rolling_restart_test::task_098_behavior', '--', '--exact']

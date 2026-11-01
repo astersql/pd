@@ -22,3 +22,8 @@ mod readonly_oracle_test;
 mod rolling_restart;
 #[cfg(test)]
 mod rolling_restart_test;
+
+#[cfg(test)]
+mod go_client_acceptance;
+#[cfg(test)]
+mod go_client_acceptance_test;
