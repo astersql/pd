@@ -265,18 +265,21 @@ async fn task_046_configuration_recovery_and_follower() {
             .await
             .unwrap();
     }
-    let mut addresses = Vec::new();
+    let mut reservations = Vec::new();
     for _ in 0..2 {
-        let reservation = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
-        addresses.push(reservation.local_addr().unwrap());
+        let reservation = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+        reservation.set_nonblocking(true).unwrap();
+        reservations.push(reservation);
     }
     let mut expected = None;
     for _ in 0..2 {
         let mut nodes = Vec::new();
         for id in 1..=2 {
-            let listener = tokio::net::TcpListener::bind(addresses[(id - 1) as usize])
-                .await
-                .unwrap();
+            // Retain the original socket across restarts so other fixtures cannot claim it.
+            let listener = tokio::net::TcpListener::from_std(
+                reservations[(id - 1) as usize].try_clone().unwrap(),
+            )
+            .unwrap();
             let url = format!("http://{}", listener.local_addr().unwrap());
             let mut node =
                 PdNodeBuilder::new(tokio::runtime::Handle::current(), CancellationToken::new())

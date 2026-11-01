@@ -576,16 +576,6 @@ async fn restart_snapshot(url: &str) -> Value {
     }
     gate(url, id, client).await;
 
-    tokio::time::timeout(Duration::from_secs(30), async {
-        loop {
-            if config(url, "balance-leader-scheduler", "GET", "/list", "").0 == 200 {
-                break;
-            }
-            tokio::time::sleep(Duration::from_millis(20)).await;
-        }
-    })
-    .await
-    .unwrap();
     let mut out = vec![];
     for name in [
         "balance-leader-scheduler",
@@ -598,7 +588,19 @@ async fn restart_snapshot(url: &str) -> Value {
         "evict-slow-trend-scheduler",
         "grant-hot-region-scheduler",
     ] {
-        let r = config(url, name, "GET", "/list", "");
+        // Scheduler handlers are restored one by one after the server becomes ready.
+        let r = tokio::time::timeout(Duration::from_secs(30), async {
+            loop {
+                let response = config(url, name, "GET", "/list", "");
+                if response.0 == 200 {
+                    break response;
+                }
+                assert_eq!(response.0, 404, "restart {name}: {response:?}");
+                tokio::time::sleep(Duration::from_millis(20)).await;
+            }
+        })
+        .await
+        .unwrap_or_else(|_| panic!("scheduler {name} was not restored within 30 seconds"));
         assert_eq!(r.0, 200, "restart {name}: {r:?}");
         out.push(json!([name, r]));
     }

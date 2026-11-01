@@ -96,11 +96,36 @@ pub(crate) async fn prepare(client: &mut Client, id: u64) {
         .unwrap()
         .into_inner();
     for rid in [10, 11, 12] {
-        tokio::time::timeout(Duration::from_secs(20),async {loop{
-   let r=client.get_region_by_id(pdpb::GetRegionByIdRequest{header:header(id),region_id:rid,..Default::default()}).await.unwrap().into_inner();
-   if r.region.as_ref().is_some_and(|r|r.id==rid) && r.leader==Some(peer.clone()){break;}
-   tokio::select!{r=stream.message()=>panic!("unexpected heartbeat error: {r:?}"),_=tokio::time::sleep(Duration::from_millis(20))=>{}}
-  }}).await.unwrap();
+        tokio::time::timeout(Duration::from_secs(20), async {
+            loop {
+                let response = client
+                    .get_region_by_id(pdpb::GetRegionByIdRequest {
+                        header: header(id),
+                        region_id: rid,
+                        ..Default::default()
+                    })
+                    .await
+                    .unwrap()
+                    .into_inner();
+                if response.region.as_ref().is_some_and(|region| region.id == rid)
+                    && response.leader == Some(peer.clone())
+                {
+                    break;
+                }
+                tokio::select! {
+                    response = stream.message() => {
+                        // The live scheduler may send commands while the fixture regions arrive.
+                        let response = response.unwrap().expect("heartbeat stream ended before regions arrived");
+                        let header = response.header.expect("heartbeat response header");
+                        assert_eq!(header.cluster_id, id);
+                        assert!(header.error.is_none(), "heartbeat error: {header:?}");
+                    }
+                    _ = tokio::time::sleep(Duration::from_millis(20)) => {}
+                }
+            }
+        })
+        .await
+        .unwrap();
     }
     drop(tx);
     drop(stream);
