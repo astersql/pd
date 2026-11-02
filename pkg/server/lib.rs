@@ -33,6 +33,7 @@ mod http_config_read;
 pub mod http_contract;
 pub mod http_health;
 mod http_leader;
+mod http_maintenance;
 pub mod http_member;
 mod http_metric;
 pub mod http_region_schedule;
@@ -1100,3 +1101,6 @@ async fn protocol_dispatch(
 }
 
 mod http_log;
+
+#[cfg(test)]
+mod http_maintenance_test;

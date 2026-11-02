@@ -33,6 +33,7 @@ pub struct ServiceMetrics {
     pub classic: Arc<astersql_pd_metricutil::ClassicMetrics>,
     pub core: Arc<astersql_pd_core::metrics::CoreMetrics>,
     pub(crate) stores: crate::service_store_metrics::StoreMetrics,
+    pub(crate) maintenance_tasks: GaugeVec,
     registry: Arc<Registry>,
     registered: Vec<Box<dyn Collector>>,
     requests: IntCounterVec,
@@ -211,6 +212,13 @@ impl ServiceMetrics {
             region_children: Mutex::new(HashMap::new()),
             forward_children: Mutex::new(HashMap::new()),
             stores: crate::service_store_metrics::StoreMetrics::new()?,
+            maintenance_tasks: GaugeVec::new(
+                Opts::new(
+                    "pd_maintenance_task_info",
+                    "Current maintenance task info in PD",
+                ),
+                &["task_type", "task_id"],
+            )?,
             registry,
             registered: Vec::new(),
             requests,
@@ -262,6 +270,7 @@ impl ServiceMetrics {
             scope.registry.register(collector)?;
             scope.registered.push(owned);
         }
+        scope.register_collector(scope.maintenance_tasks.clone())?;
         scope.register_collector(info.clone())?;
         scope.register_collector(scope.handling.clone())?;
         scope.register_collector(scope.requests.clone())?;

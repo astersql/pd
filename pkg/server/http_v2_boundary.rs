@@ -82,14 +82,6 @@ pub(crate) fn router(cancel: CancellationToken) -> Router {
         ("ms/members/{service}", M::GET, "mcs", "theme-8"),
         ("ms/primary/{service}", M::GET, "mcs", "theme-8"),
         ("ms/tso/primary/evict", M::POST, "mcs", "theme-8"),
-        ("maintenance", M::GET, "maintenance", "theme-9"),
-        ("maintenance/{task_type}", M::GET, "maintenance", "theme-9"),
-        (
-            "maintenance/{task_type}/{task_id}",
-            M::PUT.or(M::DELETE),
-            "maintenance",
-            "theme-9",
-        ),
     ] {
         router = router.route(
             &format!("/pd/api/v2/{path}"),

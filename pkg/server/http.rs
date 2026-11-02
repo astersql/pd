@@ -7,6 +7,10 @@ pub fn router(services: Arc<dyn PdServices>, cancel: CancellationToken) -> axum:
         .merge(crate::http_log::router(services.clone(), cancel.clone()))
         .merge(crate::http_member::router(services.clone(), cancel.clone()))
         .merge(crate::http_v2_boundary::router(cancel.clone()))
+        .merge(crate::http_maintenance::router(
+            services.clone(),
+            cancel.clone(),
+        ))
         .merge(crate::http_resolved_ts::router(
             services.clone(),
             cancel.clone(),

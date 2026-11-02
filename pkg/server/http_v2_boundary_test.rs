@@ -67,12 +67,6 @@ fn routes() -> Vec<(String, String, &'static str, &'static str)> {
             "mcs",
             "theme-8",
         ),
-        (
-            include_str!("../../server/apiv2/handlers/maintenance.go"),
-            "maintenance",
-            "maintenance",
-            "theme-9",
-        ),
     ] {
         for m in re.captures_iter(source) {
             let suffix = param.replace_all(&m[2], "1");
@@ -211,7 +205,7 @@ async fn task_078_behavior() {
     })
     .collect();
     node.shutdown().await.unwrap();
-    assert_eq!(observations.len(), 30);
+    assert_eq!(observations.len(), 26);
     assert_eq!(
         before, after,
         "rejected routes must not mutate domain state"
@@ -268,12 +262,7 @@ async fn task_078_cancel_and_unread_body() {
     let response = String::from_utf8_lossy(&bytes[..count]).into_owned();
     drop(socket);
     cancel.cancel();
-    let result = call(
-        &format!("http://{address}"),
-        "PUT",
-        "maintenance/restart/1",
-        "{}",
-    );
+    let result = call(&format!("http://{address}"), "POST", "keyspaces", "{}");
     stop.cancel();
     task.await.unwrap();
     assert!(response.starts_with("HTTP/1.1 503"), "{response}");
@@ -285,7 +274,7 @@ async fn task_078_cancel_and_unread_body() {
         result,
         (
             503,
-            json!({"error":"request_cancelled", "domain":"maintenance", "dependency":"theme-9", "compatible":false})
+            json!({"error":"request_cancelled", "domain":"keyspace", "dependency":"theme-8", "compatible":false})
         )
     );
 }
@@ -319,6 +308,9 @@ async fn task_078_differential() {
     let mut gaps = vec![];
     for entry in oracle["routes"].as_array().unwrap() {
         let path = entry["path"].as_str().unwrap();
+        if path.starts_with("maintenance") {
+            continue;
+        }
         let method = entry["method"].as_str().unwrap();
         let result = call(&url, method, path, "invalid JSON must not reach a domain");
         gaps.push((entry.clone(), result));
@@ -330,7 +322,7 @@ async fn task_078_differential() {
         .map(|(path, go)| (path.clone(), go.clone(), call(&url, "GET", path, "")))
         .collect();
     node.shutdown().await.unwrap();
-    assert_eq!(gaps.len(), 30);
+    assert_eq!(gaps.len(), 26);
     for (go, rust) in gaps {
         // Observe both implementations, but never normalize dependency denials
         // into successful Go behavior or call these unavailable domains equivalent.
