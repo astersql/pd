@@ -319,6 +319,20 @@ async fn scenario(url: &str) -> BTreeMap<String, f64> {
         assert_eq!(delta, expected, "heartbeat measurement {key}");
         observed.insert(key.into(), delta);
     }
+    let (operator_sample, delta) = operator_disappearance(url, &mut client, header.clone()).await;
+    observed.insert(operator_sample, delta);
+    if let Ok(directory) = std::env::var("PD_METRICS_SNAPSHOTS") {
+        let kind = if std::env::var("PD_METRICS_GO_URL").as_deref() == Ok(url) {
+            "go"
+        } else {
+            "rust"
+        };
+        std::fs::write(
+            std::path::Path::new(&directory).join(format!("{kind}.txt")),
+            scrape(url),
+        )
+        .unwrap();
+    }
     println!(
         "task086 rpc_metrics {}",
         serde_json::to_string(&observed).unwrap()
@@ -438,5 +452,98 @@ async fn task_086_pd_forward_is_not_mcs_failure() {
     }
     for registry in registries {
         assert!(registry.gather().is_empty());
+    }
+}
+
+// Exercise disappearance deliberately: incidental scheduler activity in unrelated
+// HTTP cases is not a reproducible trigger for this finite metric label.
+async fn operator_disappearance(
+    url: &str,
+    client: &mut PdClient<tonic::transport::Channel>,
+    header: Option<pdpb::RequestHeader>,
+) -> (String, f64) {
+    let reply = client
+        .put_store(pdpb::PutStoreRequest {
+            header: header.clone(),
+            store: Some(metapb::Store {
+                id: 2,
+                address: "127.0.0.1:20161".into(),
+                ..Default::default()
+            }),
+            ..Default::default()
+        })
+        .await
+        .unwrap()
+        .into_inner();
+    assert!(reply.header.unwrap().error.is_none());
+    let reply = client
+        .store_heartbeat(pdpb::StoreHeartbeatRequest {
+            header: header.clone(),
+            stats: Some(pdpb::StoreStats {
+                store_id: 2,
+                capacity: 1 << 30,
+                available: 1 << 29,
+                ..Default::default()
+            }),
+            ..Default::default()
+        })
+        .await
+        .unwrap()
+        .into_inner();
+    assert!(reply.header.unwrap().error.is_none());
+    let http = |method: &str, path: &str, body: &str| {
+        let output = std::process::Command::new("curl")
+            .args([
+                "-sS",
+                "--max-time",
+                "5",
+                "-X",
+                method,
+                "-H",
+                "Content-Type: application/json",
+                "--data-binary",
+                body,
+                "-w",
+                "\n%{http_code}",
+                &format!("{url}/pd/api/v1/{path}"),
+            ])
+            .output()
+            .unwrap();
+        assert!(output.status.success());
+        let text = String::from_utf8(output.stdout).unwrap();
+        let (body, status) = text.rsplit_once('\n').unwrap();
+        assert_eq!(status, "200", "{method} {path}: {body}");
+    };
+    http("DELETE", "operators", "");
+    http(
+        "POST",
+        "operators",
+        r#"{"name":"add-peer","region_id":2,"store_id":2}"#,
+    );
+    let operator = client
+        .get_operator(pdpb::GetOperatorRequest {
+            header,
+            region_id: 2,
+        })
+        .await
+        .unwrap()
+        .into_inner();
+    assert!(operator.header.unwrap().error.is_none());
+    let desc = String::from_utf8(operator.desc).unwrap();
+    let key = format!("pd_schedule_operators_count{{event=\"disappear\",type=\"{desc}\"}}");
+    let before = sample(&scrape(url), &key);
+    http("DELETE", "admin/cache/region/2", "");
+    let deadline = tokio::time::Instant::now() + std::time::Duration::from_secs(10);
+    loop {
+        let delta = sample(&scrape(url), &key) - before;
+        if delta > 0.0 {
+            assert_eq!(delta, 1.0);
+            return (key, delta);
+        }
+        assert!(
+            tokio::time::Instant::now() < deadline,
+            "missing real disappearance observation: {key}"
+        );
+        tokio::time::sleep(std::time::Duration::from_millis(20)).await;
     }
 }

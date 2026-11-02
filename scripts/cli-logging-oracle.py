@@ -44,19 +44,9 @@ def observe(kind, binary, target, directory, env):
     children = []
     try:
         if kind == 'rust':
-            fixtures = sorted(target.glob('rust-etcd-fixture-*'), key=lambda p: p.stat().st_mtime)
-            assert fixtures
-            fixture_dir = work / 'fixture'
-            fixture_dir.mkdir()
-            with (work / 'fixture.log').open('wb') as output:
-                child = subprocess.Popen([str(fixtures[-1]), str(fixture_dir)], stdin=subprocess.PIPE,
-                                         stdout=output, stderr=output, env=env, start_new_session=True)
+            child, _, endpoint = config.readonly.start_storage_fixture(target, work / 'fixture', env)
             children.append(child)
-            deadline = time.monotonic() + 30
-            while not (fixture_dir / 'ready').exists():
-                assert child.poll() is None and time.monotonic() < deadline
-                time.sleep(0.05)
-            extra = ['--etcd-endpoints=' + (fixture_dir / 'ready').read_text()]
+            extra = ['--etcd-endpoints=' + endpoint]
         else:
             extra = ['--data-dir=' + str(work / 'data')]
         client, peer = url(), url()

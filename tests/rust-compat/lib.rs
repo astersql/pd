@@ -38,3 +38,8 @@ mod http_regression_test;
 
 #[cfg(test)]
 mod http_regression;
+
+#[cfg(test)]
+mod workspace_acceptance;
+#[cfg(test)]
+mod workspace_acceptance_test;

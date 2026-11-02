@@ -23,9 +23,7 @@ spec.loader.exec_module(readonly)
 
 def runtime_pair(go, rust, target, directory, env, shutdown=signal.SIGTERM):
     """Observe merged identity over real HTTP and signal-driven shutdown."""
-    fixtures = sorted(target.glob('rust-etcd-fixture-*'), key=lambda p: p.stat().st_mtime)
-    assert fixtures, 'package tests must first build the read-only etcd fixture'
-    fixture_binary = fixtures[-1]
+    fixture_binary = None
     observations = []
     for kind, binary in [('go', go), ('rust', rust)]:
         work = Path(directory) / kind
@@ -34,18 +32,9 @@ def runtime_pair(go, rust, target, directory, env, shutdown=signal.SIGTERM):
         try:
             extra = []
             if kind == 'rust':
-                fixture_dir = work / 'fixture'
-                fixture_dir.mkdir()
-                log = (work / 'fixture.log').open('wb')
-                fixture = subprocess.Popen([str(fixture_binary), str(fixture_dir)], stdin=subprocess.PIPE,
-                                           stdout=log, stderr=log, env=env, start_new_session=True)
-                log.close()
+                fixture, fixture_binary, endpoint = readonly.start_storage_fixture(target, work / 'fixture', env)
                 children.append(fixture)
-                deadline = time.monotonic() + 20
-                while not (fixture_dir / 'ready').exists():
-                    assert fixture.poll() is None and time.monotonic() < deadline
-                    time.sleep(0.05)
-                extra = ['--etcd-endpoints=' + (fixture_dir / 'ready').read_text()]
+                extra = ['--etcd-endpoints=' + endpoint]
             else:
                 extra = ['--data-dir=' + str(work / 'data')]
             def url():

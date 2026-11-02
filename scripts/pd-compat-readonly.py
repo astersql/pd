@@ -8,6 +8,8 @@ import os
 import re
 from pathlib import Path
 import signal
+import socket
+import urllib.request
 import shutil
 import tempfile
 import subprocess
@@ -16,6 +18,55 @@ import time
 
 ROOT = Path(__file__).resolve().parent.parent
 MODULES = {'go.mod', 'go.sum', 'go.work', 'go.work.sum'}
+
+
+def start_storage_fixture(target, directory, env):
+    """Start a caller-owned fixture without building Go when a pinned binary exists."""
+    native = env.get('PD_COMPAT_ETCD_BIN')
+    if native:
+        binary = Path(native)
+        assert binary.is_absolute() and binary.is_file()
+        version = subprocess.check_output([str(binary), '--version'], env=env).decode()
+        assert 'etcd Version: 3.5.15' in version.splitlines(), version
+        listeners = [socket.socket(), socket.socket()]
+        try:
+            for listener in listeners:
+                listener.bind(('127.0.0.1', 0))
+            client, peer = [f'http://127.0.0.1:{s.getsockname()[1]}' for s in listeners]
+        finally:
+            for listener in listeners:
+                listener.close()
+        command = [str(binary), '--name=default', f'--data-dir={directory / "data"}',
+                   f'--listen-client-urls={client}', f'--advertise-client-urls={client}',
+                   f'--listen-peer-urls={peer}', f'--initial-advertise-peer-urls={peer}',
+                   f'--initial-cluster=default={peer}', '--log-level=error']
+    else:
+        fixtures = sorted(target.glob('rust-etcd-fixture-*'), key=lambda p: p.stat().st_mtime)
+        assert fixtures, 'set PD_COMPAT_ETCD_BIN or build the read-only fixture first'
+        binary = fixtures[-1]
+        command = [str(binary), str(directory)]
+    directory.mkdir()
+    with (directory / 'fixture.log').open('wb') as output:
+        child = subprocess.Popen(command, stdin=subprocess.DEVNULL if native else subprocess.PIPE,
+                                 stdout=output, stderr=output, env=env, start_new_session=True)
+    try:
+        deadline = time.monotonic() + 25
+        while True:
+            assert child.poll() is None, (directory / 'fixture.log').read_text()
+            if native:
+                try:
+                    with urllib.request.urlopen(client + '/health', timeout=0.5) as response:
+                        if response.status == 200:
+                            return child, binary, client
+                except OSError:
+                    pass
+            elif (directory / 'ready').exists():
+                return child, binary, (directory / 'ready').read_text()
+            assert time.monotonic() < deadline, 'fixture readiness timeout'
+            time.sleep(0.05)
+    except BaseException:
+        cleanup(child)
+        raise
 
 
 def snapshot():

@@ -1,13 +1,19 @@
-# 最小 Rust PD 运行主链
+# Rust PD 运行链和验收边界
 
-当前实现是单节点 classic PD 的纵向 MVP，使用真实 `EtcdMetaStore`。
-外部 etcd 是过渡依赖；这不代表完成 embedded etcd 的生产替代。
-不支持 follower 转发、多成员拓扑、TLS、region heartbeat、调度或 MCS。
-未移植的 PD RPC 由 tonic 默认实现明确返回 `UNIMPLEMENTED`。
+独立进程和嵌入宿主共用 `PdNodeBuilder`、领域句柄、MetaStore和宿主Registry。
+生产入口使用真实 `EtcdMetaStore` 与外部etcd；测试fixture直接启动官方etcd二进制，
+不会因此成为原生Rust后端或Go embedded-etcd拓扑的等价实现。
+
+当前服务已超出最初的单节点MVP：已有集群与心跳装配、调度worker、成员管理、
+follower转发、TLS、HTTP配置与管理API、指标和关闭流程。
+[任务100](server-api/task-100.md)记录41个classic PD方法的历史回归范围，
+[任务101](server-api/task-101.md)记录HTTP/配置/指标目录及其明确的后续依赖。
+这些局部证据不能推导为全部领域兼容；[任务102](server-api/task-102.md)记录当前
+修复、实际重跑结果、oracle版本限制及尚未解除的最终准入缺口。
 
 ## 启动与嵌入
 
-先按任务的 Cargo 共享槽位规则领取槽位并设置绝对 `CARGO_TARGET_DIR`：
+先按任务的共享槽位规则领取槽位并设置绝对路径 `CARGO_TARGET_DIR`：
 
 ```sh
 cargo build --locked -p astersql-pd-cmd-pd-server --bin pd-server
@@ -16,58 +22,50 @@ cargo build --locked -p astersql-pd-cmd-pd-server --bin pd-server
   --client-urls=http://127.0.0.1:2381 --name=pd
 ```
 
-进程入口拥有 Tokio runtime 和 SIGINT/SIGTERM。嵌入宿主调用
-`bootstrap_config` 装载持久化集群 ID，然后向 `PdNodeBuilder::new(handle, cancel)`
-的 `start(store, config, listener, registry)` 传入共享资源。库不安装全局信号、
-日志订阅器或私有 executor。名字生成稳定 member ID，bootstrap 会校验持久化身份；
-更改地址或身份需要显式迁移，不能静默覆盖。
+进程入口拥有Tokio runtime、信号和日志初始化。嵌入宿主通过 `bootstrap_config`
+装载持久化集群ID，再调用 `PdNodeBuilder::new(handle, cancel).start(...)`，传入
+共享存储、配置、listener和Registry。库不安装全局信号或日志订阅器，也不创建私有
+executor。持久化身份包含成员和地址，重启或重建宿主需要保留身份，变更需显式迁移。
 
-启动顺序：storage → leadership → services → listener → ready。
-关闭顺序：stop-admission → background-joined → leadership-released → storage-released。
-`shutdown()` 可重复调用，等待关闭；`Drop` 请求取消，宿主需要等待
-`shutdown()` 或 `wait()` 才能确定资源已回收。宿主取消令牌不会被节点反向取消。
-领导租约每秒续期，TSO 每 50ms 更新；续期/时间窗口失败使服务停止并由 `wait()`
-返回错误。初始化失败会释放本次租约与监听器。
+服务在同一listener上提供HTTP与gRPC；TLS、认证、转发和准入逻辑由宿主装配。
+`--data-dir`、`--initial-cluster` 等兼容CLI参数不意味着Rust入口启动了Go embedded
+etcd或本地生产后端。实际元数据仍来自 `--etcd-endpoints`。
 
-HTTP `/pd/api/v1/health`、`/pd/api/v1/members` 和 PD gRPC 共用同一个 listener。
-健康和成员请求执行真实 leadership fencing；ID 和 TSO 使用持久化窗口。
-当前 ID RPC 只支持单个 ID，批量请求返回 `UNIMPLEMENTED`。
-TSO 支持全局流、校验 cluster ID/count，取消或客户端断开即销毁响应流，
-没有为每条流分离后台任务。
+宿主创建并管理worker和Registry scope。`shutdown()`/`wait()`负责等待关闭，
+`Drop`仅请求取消；重复关闭应安全。领导租约、TSO、集群观察与调度worker服从宿主
+和term取消。启动失败需要回收已取得的资源，正常关闭后释放listener、租约和指标。
 
-共享 Registry 注册 `pd_rust_requests_total` Counter（无 labels），统计进入 ID/TSO
-领域层的请求尝试，关闭时注销。新名称不替代 Go 指标；共享 registry 的重复注册
-返回启动错误，不在可嵌入库里 panic。这里只暴露 registry，不承诺完整 Go metrics API。
+## 已接通的maintenance边界
 
-兼容测试使用的 Go CLI 元数据参数 `--data-dir`、`--initial-cluster`、advertise URLs
-不用于创建 Go/本地存储；当前服务只开放 `--client-urls` 指定的一个 HTTP 明文监听器。
+`/pd/api/v2/maintenance` 的四种注册方法复用现有StorageEndpoint，与其他服务共享
+同一个MetaStore。全局锁在事务中排斥不同任务类型；查询、冲突、删除和坏记录处理
+有独立真实TCP测试。etcd停止、WAL重启和客户端重建后仍可读取任务，
+`pd_maintenance_task_info`仅在成功变更后更新，宿主退出注销。
+本轮真实Go/Rust双进程差分覆盖11个成功/错误场景，原始响应和时间归一化口径见任务102。
 
-## 行为基准与验收边界
+GC、keyspace、TSO/meta-service组和MCS的必要领域能力仍有缺口；明确503拒绝或
+生成的UNIMPLEMENTED不算兼容实现。主题8/9/10依赖、原生后端durability与embedded
+拓扑不能因外部etcd测试成功而被声明完成。
 
-Go oracle 是 `server/api/{health,member}.go`、`server/grpc_service.go` 的
-GetMembers、AllocID 和 Tso；协议使用固定 kvproto commit。测试调用真实 Go/Rust
-进程、curl、tonic 客户端及独立 etcd 测试进程，不用固定响应服务替代 Rust 验收。
+## 只读验证入口
+
+验证需要先领取Cargo槽位；所有子进程继承该槽位。可设置
+`PD_COMPAT_ETCD_BIN=/absolute/path/to/etcd` 复用已存在的官方3.5.15二进制，
+Rust fixture与CLI只读supervisor均可直接启动它，不必现场编译Go fixture。
+HTTP/member supervisor另使用 `PD_ETCD_BIN`，并要求同目录有etcdctl。
+未设置native入口时，保留原有已安装Go工具链与只读源码构建fixture的路线。
+
+双进程比较须提供绝对路径 `PD_COMPAT_GO_BIN`、
+`PD_COMPAT_RUST_BIN="$CARGO_TARGET_DIR/debug/pd-server"` 和 `PD_COMPAT_MODE=dual`。
+完整协议验收的Go oracle必须匹配固定kvproto `f8ad079c8e9812ed5900b0c12b5f1d97171464c4`；
+一个较旧发布二进制可验证未变化的maintenance契约，但不能证明较新protobuf字段兼容。
 
 ```sh
-cargo test --locked -p astersql-pd-server -p astersql-pd-runtime \
-  -p astersql-pd-cmd-pd-server -p astersql-pd-compat-tests -- --nocapture
-./scripts/run-pd-compat.sh --mode dual --case health-member --case tso
+cargo test --locked -p astersql-pd-server --lib task_102_ -- --nocapture
+./scripts/run-pd-compat-readonly.sh --mode dual --case health-member --case tso
 ```
 
-health-member MVP 差分比较 HTTP 状态、完整 health 数组、响应 header、成员数量、
-成员及 PD leader 的 name/member_id/client_urls/peer_urls、leader_priority、dc_location，
-以及 tso_allocator_leaders，并验证 ID 和地址关联；未审查的新字段会使差分失败。
-cluster/member ID 与监听端口按观察值归一化。此基准显式不比较 Go embedded-etcd
-`etcd_leader` 拓扑、成员 binary_version/git_hash/deploy_path，
-也不比较范围外 config API；因此不能据此宣称完整 GetMembers API 等价。
-原来的完整响应/config 差分 helper 和反例检测测试仍保留。
-
-TSO 差分在同一个双向流中请求 1、3、1，逐项验证严格单调、同 physical 时的
-logical 增量和跨 physical 时的 logical 重置。比较归一化 physical 原点及 logical
-增量后的 protobuf 内容、header、count、suffix_bits；0 count 的 gRPC code/message
-逐字比较。物理时钟与 tick 调度不同，不直接要求独立进程的绝对时间或 logical
-累计值相等。客户端先发送第一条请求，再等待响应 header，兼容 Go 的延迟发头行为。
-
-真实 etcd 测试还覆盖重复 shutdown、端口/租约立即复用、启动失败回收、租约丢失
-停止服务、保持打开的流关闭，以及共享 registry 的注册/注销。独立进程差分用
-SIGTERM 要求成功退出，随后检查端口关闭和临时目录删除。
+Go源码和模块文件保持只读；不要使用会注入failpoint、生成Go源码或整理Go模块的
+旧验证入口代替上述流程。显式 `GOMODCACHE` 可以提供已有的固定协议ZIP，Rust
+构建仍核对原校验和且只提取proto。测试通过数、跳过项、失败和清理结果分别记录，
+不把ignored、零测试或缺少oracle的运行计作完整兼容通过。

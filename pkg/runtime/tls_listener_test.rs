@@ -111,7 +111,30 @@ pub(super) async fn rpc(
     Ok(id.id)
 }
 fn bad_alpn(c: &Certificates, url: &str) {
-    let code = "import ssl,socket,sys; c=ssl.create_default_context(cafile=sys.argv[1]); c.load_cert_chain(sys.argv[2],sys.argv[3]); c.set_alpn_protocols(['invalid-pd']); host,port=sys.argv[4].removeprefix('https://').split(':'); s=socket.create_connection((host,int(port)),timeout=3); c.wrap_socket(s,server_hostname=host)";
+    // Compare the wire alert, since macOS LibreSSL does not name alert 120.
+    // TLS 1.2 keeps this negotiation failure plaintext and independently observable.
+    let code = r#"
+import ssl,socket,sys
+c=ssl.create_default_context(cafile=sys.argv[1])
+c.load_cert_chain(sys.argv[2],sys.argv[3])
+c.maximum_version=ssl.TLSVersion.TLSv1_2
+c.set_alpn_protocols(['invalid-pd'])
+incoming,outgoing=ssl.MemoryBIO(),ssl.MemoryBIO()
+client=c.wrap_bio(incoming,outgoing,server_side=False,server_hostname='localhost')
+try:
+    client.do_handshake()
+except ssl.SSLWantReadError:
+    pass
+host,port=sys.argv[4].removeprefix('https://').split(':')
+with socket.create_connection((host,int(port)),timeout=3) as connection:
+    connection.sendall(outgoing.read())
+    record=b''
+    while len(record)<7:
+        chunk=connection.recv(7-len(record))
+        assert chunk,'peer closed without a TLS alert'
+        record+=chunk
+assert record[0]==21 and record[3:5]==bytes([0,2]) and record[5:]==bytes([2,120]),record.hex()
+"#;
     let out = std::process::Command::new("python3")
         .args([
             "-c",
@@ -123,9 +146,8 @@ fn bad_alpn(c: &Certificates, url: &str) {
         ])
         .output()
         .unwrap();
-    assert!(!out.status.success(), "unsupported ALPN must fail");
     assert!(
-        String::from_utf8_lossy(&out.stderr).contains("no application protocol"),
+        out.status.success(),
         "{}",
         String::from_utf8_lossy(&out.stderr)
     );

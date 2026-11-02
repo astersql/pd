@@ -1,0 +1,49 @@
+{
+  "source": "docs/rust/server-api/task-078-evidence.json.gz",
+  "source_sha256": "d6a27465e52e7eebcce642cd1599ef0c5dc373f0c7e017a9ce2af77bd4d665f8",
+  "oracle": "http-v2-boundary-oracle-1793412638716141000.json",
+  "request_body": "invalid JSON must not reach a domain",
+  "observations": [
+    {
+      "compatible": false,
+      "go": {
+        "body": "\"Maintenance task started successfully.\"",
+        "content_type": "application/json; charset=utf-8",
+        "status": 200
+      },
+      "method": "PUT",
+      "path": "maintenance/1/1"
+    },
+    {
+      "compatible": false,
+      "go": {
+        "body": "[{\"type\":\"1\",\"id\":\"1\",\"start_timestamp\":1793412641,\"description\":\"invalid JSON must not reach a domain\"}]",
+        "content_type": "application/json; charset=utf-8",
+        "status": 200
+      },
+      "method": "GET",
+      "path": "maintenance"
+    },
+    {
+      "compatible": false,
+      "go": {
+        "body": "{\"type\":\"1\",\"id\":\"1\",\"start_timestamp\":1793412641,\"description\":\"invalid JSON must not reach a domain\"}",
+        "content_type": "application/json; charset=utf-8",
+        "status": 200
+      },
+      "method": "GET",
+      "path": "maintenance/1"
+    },
+    {
+      "compatible": false,
+      "go": {
+        "body": "\"Maintenance task deleted successfully.\"",
+        "content_type": "application/json; charset=utf-8",
+        "status": 200
+      },
+      "method": "DELETE",
+      "path": "maintenance/1/1"
+    }
+  ],
+  "normalization": "start_timestamp: compare one actual positive timestamp across both GETs, then replace with frozen timestamp; compare every other JSON field, HTTP status and content-type exactly"
+}

@@ -30,7 +30,15 @@ pub(crate) fn router(services: Arc<dyn PdServices>, cancel: CancellationToken) -
         .with_state(Context { services, cancel })
 }
 fn response(status: u16, value: Value) -> Response {
-    (StatusCode::from_u16(status).unwrap(), axum::Json(value)).into_response()
+    (
+        StatusCode::from_u16(status).unwrap(),
+        [(
+            axum::http::header::CONTENT_TYPE,
+            "application/json; charset=utf-8",
+        )],
+        axum::Json(value),
+    )
+        .into_response()
 }
 impl Context {
     fn endpoint(&self) -> Result<(StorageEndpoint, ClusterPaths), String> {

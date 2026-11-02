@@ -1,7 +1,7 @@
 // Copyright 2026 AsterSQL.
 use astersql_pd_storage_kv::EtcdMetaStore;
 use std::{
-    io::Write,
+    io::{Read as _, Write},
     path::{Path, PathBuf},
     process::{Child, Command, Stdio},
     sync::{
@@ -14,6 +14,7 @@ pub struct Fixture {
     child: Child,
     directory: PathBuf,
     pub endpoint: String,
+    native: Option<(PathBuf, Vec<String>)>,
 }
 /// Restores a deliberately suspended fixture even when an assertion unwinds.
 pub struct Suspension<'a>(&'a mut Fixture);
@@ -49,6 +50,18 @@ impl Fixture {
                 .expect("claim Cargo shared slot and set absolute CARGO_TARGET_DIR first"),
         );
         assert!(target.is_absolute());
+        let work = std::env::var_os("PD_COMPAT_WORK_DIR")
+            .map(PathBuf::from)
+            .unwrap_or_else(|| target.clone());
+        let directory = work.join(format!(
+            "etcd-contract-{}-{}",
+            std::process::id(),
+            NEXT.fetch_add(1, Ordering::Relaxed)
+        ));
+        std::fs::create_dir_all(&directory).unwrap();
+        if let Some(binary) = std::env::var_os("PD_COMPAT_ETCD_BIN") {
+            return Self::start_native(PathBuf::from(binary), directory);
+        }
         let binary = BINARY.get_or_init(|| {
             let binary = target.join(format!("rust-etcd-fixture-{}", std::process::id()));
             let status = fixture_go(root)
@@ -66,15 +79,6 @@ impl Fixture {
             assert!(status.success(), "Go etcd fixture build failed");
             binary
         });
-        let work = std::env::var_os("PD_COMPAT_WORK_DIR")
-            .map(PathBuf::from)
-            .unwrap_or_else(|| target.clone());
-        let directory = work.join(format!(
-            "etcd-contract-{}-{}",
-            std::process::id(),
-            NEXT.fetch_add(1, Ordering::Relaxed)
-        ));
-        std::fs::create_dir_all(&directory).unwrap();
         let child = Command::new(binary)
             .arg(&directory)
             .stdin(Stdio::piped())
@@ -86,6 +90,7 @@ impl Fixture {
             child,
             directory,
             endpoint: String::new(),
+            native: None,
         };
         fixture.wait_file("ready");
         fixture.endpoint = std::fs::read_to_string(fixture.directory.join("ready")).unwrap();
@@ -104,6 +109,20 @@ impl Fixture {
         }
     }
     pub fn command(&mut self, command: &str, acknowledgement: &str) {
+        if self.native.is_some() {
+            match command {
+                "stop" => terminate_native(&mut self.child),
+                "start" => {
+                    if self.child.try_wait().unwrap().is_some() {
+                        let (binary, args) = self.native.as_ref().unwrap();
+                        self.child = spawn_native(binary, args, &self.directory);
+                        self.wait_native_ready();
+                    }
+                }
+                _ => panic!("unknown native etcd fixture command: {command}"),
+            }
+            return;
+        }
         writeln!(self.child.stdin.as_mut().unwrap(), "{command}").unwrap();
         self.wait_file(acknowledgement);
     }
@@ -115,6 +134,11 @@ impl Fixture {
 }
 impl Drop for Fixture {
     fn drop(&mut self) {
+        if self.native.is_some() {
+            terminate_native(&mut self.child);
+            let _ = std::fs::remove_dir_all(&self.directory);
+            return;
+        }
         drop(self.child.stdin.take()); // EOF requests graceful shutdown, including on test panic.
         let deadline = Instant::now() + Duration::from_secs(5);
         while matches!(self.child.try_wait(), Ok(None)) && Instant::now() < deadline {
@@ -157,4 +181,125 @@ fn fixture_go(root: &Path) -> Command {
     } else {
         PathBuf::from("go")
     })
+}
+
+fn spawn_native(binary: &Path, args: &[String], directory: &Path) -> Child {
+    let log = std::fs::OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open(directory.join("etcd.log"))
+        .unwrap();
+    Command::new(binary)
+        .args(args)
+        .stdin(Stdio::null())
+        .stdout(Stdio::null())
+        .stderr(log)
+        .spawn()
+        .unwrap()
+}
+fn terminate_native(child: &mut Child) {
+    if matches!(child.try_wait(), Ok(Some(_))) {
+        return;
+    }
+    let _ = Command::new("kill")
+        .args(["-CONT", &child.id().to_string()])
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .status();
+    let _ = Command::new("kill")
+        .args(["-TERM", &child.id().to_string()])
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .status();
+    let deadline = Instant::now() + Duration::from_secs(5);
+    while matches!(child.try_wait(), Ok(None)) && Instant::now() < deadline {
+        std::thread::sleep(Duration::from_millis(20));
+    }
+    if matches!(child.try_wait(), Ok(None)) {
+        let _ = child.kill();
+    }
+    let _ = child.wait();
+}
+impl Fixture {
+    fn start_native(binary: PathBuf, directory: PathBuf) -> Self {
+        assert!(
+            binary.is_absolute() && binary.is_file(),
+            "PD_COMPAT_ETCD_BIN must name an existing absolute binary"
+        );
+        let version = Command::new(&binary).arg("--version").output().unwrap();
+        assert!(version.status.success());
+        assert!(
+            String::from_utf8_lossy(&version.stdout)
+                .lines()
+                .any(|line| line == "etcd Version: 3.5.15"),
+            "fixture must use pinned etcd 3.5.15: {version:?}"
+        );
+        let client = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+        let peer = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+        let endpoint = format!("http://{}", client.local_addr().unwrap());
+        let peer_url = format!("http://{}", peer.local_addr().unwrap());
+        let args = vec![
+            "--name=default".into(),
+            format!("--data-dir={}", directory.join("data").display()),
+            format!("--listen-client-urls={endpoint}"),
+            format!("--advertise-client-urls={endpoint}"),
+            format!("--listen-peer-urls={peer_url}"),
+            format!("--initial-advertise-peer-urls={peer_url}"),
+            format!("--initial-cluster=default={peer_url}"),
+            "--log-level=error".into(),
+        ];
+        drop(client);
+        drop(peer);
+        let child = spawn_native(&binary, &args, &directory);
+        let mut fixture = Self {
+            child,
+            directory,
+            endpoint,
+            native: Some((binary, args)),
+        };
+        fixture.wait_native_ready();
+        fixture
+    }
+    fn wait_native_ready(&mut self) {
+        let deadline = Instant::now() + Duration::from_secs(25);
+        let address = self
+            .endpoint
+            .strip_prefix("http://")
+            .unwrap()
+            .parse()
+            .unwrap();
+        loop {
+            assert!(
+                self.child.try_wait().unwrap().is_none(),
+                "native etcd exited: {}",
+                self.directory.display()
+            );
+            if let Ok(mut stream) =
+                std::net::TcpStream::connect_timeout(&address, Duration::from_millis(200))
+            {
+                stream
+                    .set_read_timeout(Some(Duration::from_millis(500)))
+                    .unwrap();
+                stream
+                    .set_write_timeout(Some(Duration::from_millis(500)))
+                    .unwrap();
+                if stream
+                    .write_all(b"GET /health HTTP/1.0\r\nHost: localhost\r\n\r\n")
+                    .is_ok()
+                {
+                    let mut bytes = Vec::new();
+                    if stream.read_to_end(&mut bytes).is_ok() && bytes.starts_with(b"HTTP/1.0 200")
+                    {
+                        return;
+                    }
+                }
+            }
+            assert!(
+                Instant::now() < deadline,
+                "native etcd readiness timeout: {}",
+                self.directory.display()
+            );
+            std::thread::sleep(Duration::from_millis(20));
+        }
+    }
 }

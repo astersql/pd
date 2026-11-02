@@ -28,7 +28,24 @@ fn call(url: &str, method: &str, path: &str, body: &str) -> (u16, Value) {
 }
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
 async fn task_102_maintenance_persistence_and_conflicts() {
-    let store = Arc::new(astersql_pd_storage_kv::MemoryStore::default());
+    maintenance_contract(
+        Arc::new(astersql_pd_storage_kv::MemoryStore::default()),
+        None,
+    )
+    .await;
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn task_102_maintenance_etcd_wal_restart() {
+    let mut fixture = crate::etcd_fixture::Fixture::start();
+    let store = Arc::new(fixture.store().await);
+    maintenance_contract(store, Some(&mut fixture)).await;
+}
+
+async fn maintenance_contract(
+    mut store: Arc<dyn MetaStore>,
+    mut fixture: Option<&mut crate::etcd_fixture::Fixture>,
+) {
     let initial = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
     let address = initial.local_addr().unwrap();
     drop(initial);
@@ -126,5 +143,83 @@ async fn task_102_maintenance_persistence_and_conflicts() {
             registry.gather().is_empty(),
             "host collectors must be released"
         );
+        if !restart {
+            if let Some(fixture) = fixture.as_mut() {
+                fixture.command("stop", "stopped");
+                fixture.command("start", "restarted");
+                store = Arc::new(fixture.store().await);
+            }
+        }
     }
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn task_102_maintenance_frozen_go_contract() {
+    let oracle: Value = serde_json::from_str(include_str!(
+        "../../tests/rust-compat/fixtures/task-102-maintenance-go.json"
+    ))
+    .unwrap();
+    let fixture = crate::etcd_fixture::Fixture::start();
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let url = format!("http://{}", listener.local_addr().unwrap());
+    let mut node = PdNodeBuilder::new(tokio::runtime::Handle::current(), CancellationToken::new())
+        .start(
+            Arc::new(fixture.store().await),
+            NodeConfig {
+                cluster_id: 779,
+                member_id: 1,
+                name: "maintenance-oracle".into(),
+                client_url: url.clone(),
+                peer_url: "http://peer".into(),
+            },
+            listener,
+            Arc::new(prometheus::Registry::new()),
+        )
+        .await
+        .unwrap();
+    node.ready().await.unwrap();
+    let mut timestamp = None;
+    for row in oracle["observations"].as_array().unwrap() {
+        let out = std::process::Command::new("curl")
+            .args([
+                "-sS",
+                "--max-time",
+                "5",
+                "-X",
+                row["method"].as_str().unwrap(),
+                "--data-binary",
+                oracle["request_body"].as_str().unwrap(),
+                "-w",
+                "\n%{http_code}\n%{content_type}",
+                &format!("{url}/pd/api/v2/{}", row["path"].as_str().unwrap()),
+            ])
+            .output()
+            .unwrap();
+        assert!(out.status.success());
+        let text = String::from_utf8(out.stdout).unwrap();
+        let mut parts = text.rsplitn(3, '\n');
+        let content_type = parts.next().unwrap();
+        let status: u64 = parts.next().unwrap().parse().unwrap();
+        let mut actual: Value = serde_json::from_str(parts.next().unwrap()).unwrap();
+        let expected: Value = serde_json::from_str(row["go"]["body"].as_str().unwrap()).unwrap();
+        assert_eq!(status, row["go"]["status"].as_u64().unwrap());
+        assert_eq!(content_type, row["go"]["content_type"].as_str().unwrap());
+        let (task, expected_task) = if actual.is_array() {
+            (actual.get_mut(0).unwrap(), &expected[0])
+        } else {
+            (&mut actual, &expected)
+        };
+        if let Some(value) = task.get_mut("start_timestamp") {
+            let current = value.as_i64().unwrap();
+            assert!(current > 0);
+            assert_eq!(
+                *timestamp.get_or_insert(current),
+                current,
+                "both reads must observe the same persisted timestamp"
+            );
+            *value = expected_task["start_timestamp"].clone();
+        }
+        assert_eq!(actual, expected);
+    }
+    node.shutdown().await.unwrap();
 }
