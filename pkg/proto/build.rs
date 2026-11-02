@@ -12,15 +12,20 @@ fn main() {
     println!("cargo:rerun-if-env-changed=GOMODCACHE");
     // Resolve an existing cache only: downloading a module may create Go files or
     // update sums. Provision the pinned archive outside the read-only workflow.
-    let output = Command::new("go")
-        .args(["env", "GOMODCACHE"])
-        .env("GOWORK", "off")
-        .env("GOFLAGS", "-mod=readonly")
-        .current_dir(env::var_os("OUT_DIR").unwrap())
-        .output()
-        .expect("Go is required to locate the pinned protocol cache");
-    assert!(output.status.success(), "cannot locate Go module cache");
-    let archive = PathBuf::from(String::from_utf8(output.stdout).unwrap().trim()).join(format!(
+    let cache = env::var_os("GOMODCACHE")
+        .map(PathBuf::from)
+        .unwrap_or_else(|| {
+            let output = Command::new("go")
+                .args(["env", "GOMODCACHE"])
+                .env("GOWORK", "off")
+                .env("GOFLAGS", "-mod=readonly")
+                .current_dir(env::var_os("OUT_DIR").unwrap())
+                .output()
+                .expect("set GOMODCACHE to the existing pinned protocol cache or install Go");
+            assert!(output.status.success(), "cannot locate Go module cache");
+            PathBuf::from(String::from_utf8(output.stdout).unwrap().trim())
+        });
+    let archive = cache.join(format!(
         "cache/download/github.com/pingcap/kvproto/@v/{VERSION}.zip"
     ));
     println!("cargo:rerun-if-changed={}", archive.display());
