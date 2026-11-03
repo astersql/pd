@@ -221,3 +221,22 @@ GOPROXY=off和-mod=readonly构建三个工具，可执行文件输出共享槽�
 内部版本9.0.0-e5fc397a；runtime沿用既有Server::start的默认Dashboard设置，
 未传Dashboard关闭标志或额外配置文件。CLI只设置本机动态client/peer地址、
 独立data-dir及initial-cluster；Rust侧通过现有PdNodeBuilder连接真实etcd。
+
+## 收尾任务1完成：授权隔离构建工具（2026-11-03）
+
+用户明确允许仓库外SDK及模块源码，仓库内Go/模块继续只读。
+官方Go1.26.8 darwin/arm64 SDK SHA256为
+`a012b25b571bd0138a03dcd25375ceba866fe5ca822f426d2c66a4de56fd3f4b`，
+校验后解压至`/tmp/pd-task1-go-env/go`。模块、编译缓存和临时目录均在同级隔离目录。
+从现有tools模块以`GOTOOLCHAIN=local GOWORK=off GOFLAGS=-mod=readonly CGO_ENABLED=0`
+构建三个benchmark，输出到共享槽位1根目录，三次构建退出0；三个真实CLI --help均退出0。
+未运行make、failpoint、生成、格式化或tidy流程，1101项仓库Go/模块快照完全一致。
+
+readonly_oracle_test显式包含集成测试后5通过、0忽略；task099真实Go/Rust双实现
+工具访问与选主恢复1通过、0忽略（165.65秒）。固定协议字段回读证据沿用上节已通过结果。
+至此本任务输入与工具验收完成，不代表原102或其他领域阻塞解除。
+
+实际槽位1，CARGO_TARGET_DIR=/Users/xiangmin/worker/code/pd/target/rust-slot-1；
+所有子进程结束后释放自己的锁，保留二进制与缓存。确切命令、SDK/三个工具SHA、
+完整build info、CLI输出及行为日志追加在现有压缩证据
+`tail102_inputs_authorized_build_2026_11_03`，历史失败记录保留。
