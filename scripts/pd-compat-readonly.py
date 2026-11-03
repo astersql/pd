@@ -20,6 +20,18 @@ ROOT = Path(__file__).resolve().parent.parent
 MODULES = {'go.mod', 'go.sum', 'go.work', 'go.work.sum'}
 
 
+def validate_go_build_info(info):
+    """Reject unrelated binaries and protocol drift before starting an oracle."""
+    records = [line.split() for line in info.splitlines()]
+    if not any(len(r) >= 3 and r[0] in ('dep', 'mod') and
+               r[1] == 'github.com/tikv/pd' for r in records):
+        raise ValueError('oracle is not a Go PD artifact')
+    if not any(len(r) >= 3 and r[:3] == [
+            'dep', 'github.com/pingcap/kvproto',
+            'v0.0.0-20261016101550-f8ad079c8e98'] for r in records):
+        raise ValueError('oracle must use pinned kvproto f8ad079c8e98')
+
+
 def start_storage_fixture(target, directory, env):
     """Start a caller-owned fixture without building Go when a pinned binary exists."""
     native = env.get('PD_COMPAT_ETCD_BIN')
@@ -96,6 +108,8 @@ def binary(name):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--require-pinned-protocol', action='store_true',
+                        help='require the exact protocol revision for full wire acceptance')
     parser.add_argument('--mode', choices=['go', 'rust', 'dual'], default=os.environ.get('PD_COMPAT_MODE', 'dual'))
     parser.add_argument('--case', choices=['health-member', 'tso', 'cluster-host', 'cluster-restore', 'member-role', 'bucket-heartbeat', 'sync-regions', 'store-state', 'store-stats', 'store-config', 'cluster-metrics', 'resolved-ts', 'schedule-coordinator', 'request-role', 'members', 'bootstrap', 'alloc-id', 'store-registration', 'region-lookup', 'region-scan', 'region-query', 'ask-split', 'report-split', 'cluster-config', 'scatter', 'split-regions', 'split-scatter', 'global-config', 'process-shutdown', 'rolling-restart', 'go-client-core', 'embedded-isolation', 'shutdown-workers', 'global-watch', 'report-min-resolved-ts', 'external-timestamp', 'classic-tso', 'deprecated-rpc'], action='append')
     args = parser.parse_args()
@@ -124,6 +138,8 @@ def main():
         info = subprocess.check_output(['go', 'version', '-m', str(go)], env=env).decode()
         if '\tdep\tgithub.com/tikv/pd\t' not in info and '\tmod\tgithub.com/tikv/pd\t' not in info:
             raise ValueError('PD_COMPAT_GO_BIN is not a Go PD binary')
+        if args.require_pinned_protocol:
+            validate_go_build_info(info)
     else:
         info = ''
     record = target / f'compat-readonly-{time.time_ns()}.json'

@@ -2,6 +2,29 @@
 //! Preconditions shared by the read-only process harness.
 use std::{os::unix::fs::PermissionsExt, path::Path};
 
+/// Require a real PD module and the exact protocol revision used by the wire tests.
+pub fn validate_go_build_info(info: &str) -> Result<(), String> {
+    let records: Vec<Vec<&str>> = info
+        .lines()
+        .map(|line| line.split_whitespace().collect())
+        .collect();
+    if !records
+        .iter()
+        .any(|r| r.len() >= 3 && matches!(r[0], "dep" | "mod") && r[1] == "github.com/tikv/pd")
+    {
+        return Err("oracle is not a Go PD artifact".into());
+    }
+    if !records.iter().any(|r| {
+        r.len() >= 3
+            && r[0] == "dep"
+            && r[1] == "github.com/pingcap/kvproto"
+            && r[2] == "v0.0.0-20261016101550-f8ad079c8e98"
+    }) {
+        return Err("oracle must use pinned kvproto f8ad079c8e98".into());
+    }
+    Ok(())
+}
+
 /// Reject missing process inputs before starting either implementation.
 pub fn validate(mode: &str, go: &Path, rust: Option<&Path>, fixture: &Path) -> Result<(), String> {
     let binaries = match mode {

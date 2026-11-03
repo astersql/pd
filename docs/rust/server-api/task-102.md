@@ -153,3 +153,71 @@ Rust来丢字段，不能声称完整新协议差分通过。仍需匹配固定�
 受控operator保留该family的真实数值样本，并记录完整exposition SHA-256，
 以复现指标契约验证；原始309MB观察保留在槽位缓存，不把简化报告当作完整数值差分证据。
 GC/keyspace/MCS等必要领域实现和主题8/9/10兼容证据仍缺失，任务102保持阻塞。
+
+## 收尾任务1：固定协议基准已恢复（2026-11-03）
+
+此前仅检查darwin/arm64漏掉了其他可执行架构。本机能执行macOS amd64，
+官方OCI历史产物提供了固定协议版本，无需编译或新增Go源码：
+
+- [官方OCI固定提交manifest](https://us-docker.pkg.dev/v2/pingcap-testing-account/hub/tikv/pd/package/manifests/master-8a51f15_darwin_amd64)，
+  manifest摘要`cb5a2ec19b47ef575a5e9e1cbd701ffcef93cf00dd29d823cd70bd788a31a9c3`。
+- PD归档SHA256 `567292bd6d23e35491d3663126dcc5552a5cfa576ba71f288eacb362ef2a7f0c`；
+  仅提取`pd-server`可执行文件，二进制SHA256
+  `a6856ddbac5cd128ea3f9a598546c33cb3786ebb9b5a51abe3b29ced6025127f`。
+  build info确认Go1.26.8、darwin/amd64和精确kvproto
+  `v0.0.0-20261016101550-f8ad079c8e98`。版本与完整build info保存在压缩证据。
+- 实际基准缓存为`target/rust-slot-1/tail102-inputs/pd-server-f8ad079`；
+  该目录`env.sh`保存dual模式、绝对Go/Rust/etcd/inspector路径。
+  使用前必须重新领取共享槽位；env.sh本身不领取锁。
+- `--require-pinned-protocol`在启动进程前拒绝协议漂移；旧协议、错误二进制、
+  缺失文件三个真实负向探测均退出2。未加该选项的历史窄合同入口保持原行为。
+- `readonly_oracle_test`为4通过、1显式集成测试默认忽略；随后
+  `tail102_inputs_ -- --include-ignored --nocapture`实际2通过、0忽略，
+  包含真实Go build-info读取和版本入口执行。默认忽略未计入通过数。
+- `python3 scripts/pd-compat-readonly.py --require-pinned-protocol --case store-registration`
+  退出0，真实双进程差分1通过、0忽略。Go与Rust均保留
+  `txn_protocol_version_range { min: 1, max: 3 }`，重启后恢复6个相同store；
+  原始响应、错误、归一化口径和副作用沿用现有场景，不丢弃字段。
+
+三个工具仍缺，任务1尚未完成。已核查TiUP bench/ctl归档、官方OCI package
+及image目录；官方产品镜像history最终仅COPY pd-server、pd-ctl、pd-recover。
+[官方构建Dockerfile](https://github.com/PingCAP-QE/artifacts/blob/main/dockerfiles/cd/builders/pd/Dockerfile)
+虽在中间阶段运行`make build tools`，最终镜像只复制上述三个产品程序；
+8286个image标签没有bench/tool/build/cache/intermediate标签。
+完整本机扫描未发现SDK或三个benchmark；现有Linux arm64 VM的只读搜索也无结果，
+Colima未运行，配置的远端SSH均连接失败。没有下载SDK/模块源码或触发远端构建。
+剩余外部输入是已有CI中间阶段`/ws/bin/`的pd-region-bench、pd-tso-bench、
+pd-heartbeat-bench，或其他可执行架构、来源可核对的现成二进制，架构不限于arm64。
+
+槽位1，`CARGO_TARGET_DIR=/Users/xiangmin/worker/code/pd/target/rust-slot-1`；
+命令、退出码、日志和只读快照追加在
+[恢复证据](task-102-resume-evidence.json.gz)的`tail102_inputs_2026_11_03`，保留旧失败记录。
+本轮证据只解除Go oracle缺口，不解除工具、其他领域或原102验收阻塞。
+
+继续核查中间产物：GHCR公开`pingcap-qe/cd/builders/pd`完整分页列出2200个
+标签，未发现cache/bench/tool/building标签；选定Go1.26 builder的配置blob读取
+经三次重试仍TLS EOF，不能声称已逐层核查该blob。
+[官方skaffold配置](https://github.com/PingCAP-QE/artifacts/blob/main/dockerfiles/cd/builders/pd/skaffold.yaml)
+明确发布`target: builder`，该阶段只有SDK/构建依赖，尚未进入含`make build tools`
+的`building`阶段。没有找到公开导出的building阶段或远端BuildKit cache地址。
+GitHub CI的release-8.5 ghpr_build仅运行race/default make，未声明benchmark归档；
+内部Jenkins缓存没有公开读取入口，本机没有对应可用远端会话。
+
+按完整提交号探测fileserver.pingcap.net的centos7/pd-server.tar.gz、
+pd-tools.tar.gz及三个单工具归档均TLS EOF，HTTP master引用也无法访问；
+这些是网络不可达记录，不声称归档不存在。历史TiUP v3.0.1归档实际列目录：
+PD只有pd-server；ctl只有binlogctl、ctl、etcdctl、pd-ctl、tidb-ctl、tikv-ctl。
+三个工具的TiUP nightly linux/amd64候选路径均404。当前可访问官方公开渠道尚无
+可取得的三个工具；内部缓存/文件服务器的可访问性是剩余外部状态。
+
+另一个解除条件是明确允许在仓库外预置Go SDK及全部模块源码/模块文件缓存，
+然后用现有只读Go工具入口、CGO_ENABLED=0、GOTOOLCHAIN=local、GOWORK=off、
+GOPROXY=off和-mod=readonly构建三个工具，可执行文件输出共享槽位。
+这会突破当前“不得新增Go源码（含临时目录）”规则，因此本轮没有执行。
+这是可具体尝试的替代路线；在实际构建及CLI验收之前不保证工具兼容成功，
+不需要修改仓库Go源码或Go模块文件。
+
+固定基准Dashboard编译信息：内置tidb-dashboard e5fc397a69b0，Standalone=No，
+内部版本9.0.0-e5fc397a；runtime沿用既有Server::start的默认Dashboard设置，
+未传Dashboard关闭标志或额外配置文件。CLI只设置本机动态client/peer地址、
+独立data-dir及initial-cluster；Rust侧通过现有PdNodeBuilder连接真实etcd。
