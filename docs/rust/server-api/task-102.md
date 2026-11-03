@@ -319,3 +319,19 @@ group. No Go/module files were written. Slot 1,
 CARGO_TARGET_DIR=/Users/xiangmin/worker/code/pd/target/rust-slot-1; both stages
 released their own locks and retained caches. This does not clear domain or
 original 102 blockers.
+
+## Tail task 5: source audit progress (2026-11-03)
+
+Toolchain recovery succeeded. `cargo metadata --format-version 1 --no-deps`
+exited 0 (75 packages), slot 1,
+CARGO_TARGET_DIR=/Users/xiangmin/worker/code/pd/target/rust-slot-1; lock released.
+Real-format parsing found 1909/365/267 unique existing source paths and
+163/20/26 historical hash changes. Full baseline/current hashes and candidate
+attributions are preserved in tail102_source_audit_2026_11_03 in compressed
+evidence. References and nearby test sources are explicitly candidates, not
+current business certification. Effective behavior tests: 0.
+Normal workspace dependency closure for core, storage-domain, member, tso and
+schedule reaches none of proto/server/runtime. storage-kv's tonic dependency
+is a backend adapter detail requiring public-contract review.
+This is partial audit evidence; source attribution and additions review remain
+in progress. It does not clear domain admission or original task102 blockers.
