@@ -300,3 +300,22 @@ counted as a passing full regression; task6 owns that result. Completed task099
 and earlier package results are retained in the raw log. All owned descendants
 were terminated before slot release. Go/module Git status remained unchanged;
 each configuration supervisor also verified its complete read-only snapshot.
+
+## Tail task 4: Operator HTTP differential (2026-11-03)
+
+Dependencies 1 and 2 are verified above. The historical full-array failure did
+not reproduce with the pinned protocol oracle and existing numeric fixes.
+`PD_COMPAT_MODE=dual python3 scripts/http-operator-write-oracle.py` exited 0:
+1 passed, 0 ignored, 13.18 seconds. Complete request/response/operator arrays
+and restart state matched without changing normalization or removing assertions.
+No Operator implementation change was necessary.
+
+`cargo test --locked -p astersql-pd-server --lib task_063_ -- --nocapture`
+exited 0: 2 passed, 1 explicitly ignored differential (run above), including
+cancellation and follower coverage. Raw arrays, build information and unit
+output are appended under tail102_operator_2026_11_03 in compressed evidence.
+The supervisor verified unchanged Go/module snapshots and cleaned its process
+group. No Go/module files were written. Slot 1,
+CARGO_TARGET_DIR=/Users/xiangmin/worker/code/pd/target/rust-slot-1; both stages
+released their own locks and retained caches. This does not clear domain or
+original 102 blockers.
