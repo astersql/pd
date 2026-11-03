@@ -155,6 +155,36 @@ async fn task_050_differential() {
         .unwrap();
     node.ready().await.unwrap();
 
+    // The default Rust profile matches Go's without_dashboard build.
+    // Verify its real HTTP handler as well as the untouched auto configuration.
+    for base in [&go.url, &url] {
+        println!(
+            "initial {base}: {:?}",
+            request(base, "GET", "/pd/api/v1/config", "")
+        );
+        for path in ["/dashboard/", "/dashboard/index.html"] {
+            let output = std::process::Command::new("curl")
+                .args([
+                    "-sS",
+                    "--max-time",
+                    "5",
+                    "-w",
+                    "\n%{http_code}",
+                    &format!("{base}{path}"),
+                ])
+                .output()
+                .unwrap();
+            assert!(output.status.success());
+            assert_eq!(
+                String::from_utf8(output.stdout).unwrap(),
+                "Dashboard is not built.\n\n200"
+            );
+        }
+        assert_eq!(
+            request(base, "GET", "/pd/api/v1/config/pd-server", "").1["dashboard-address"],
+            "auto"
+        );
+    }
     // Align the intentionally different preexisting placement-rule defaults.
     for u in [&go.url, &url] {
         crate::http_replication_config_write_test::bootstrap(u).await;

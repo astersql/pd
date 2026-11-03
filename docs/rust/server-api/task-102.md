@@ -263,3 +263,40 @@ Both supervisors confirmed unchanged Go/module snapshots and input hashes,
 and cleaned their process groups. Raw responses, fingerprints, normalization
 and side effects are preserved in the existing compressed evidence under
 `tail102_schedule_2026_11_03`. Other domain and original 102 blockers remain.
+
+## Tail task 3: configuration HTTP differential (2026-11-03)
+
+The fixed-protocol Dashboard-enabled oracle reproduced the historical failure:
+Go resolved auto to its HTTP address while Rust retained auto. Built the existing
+read-only Go sources with `-tags without_dashboard`, using the authorized SDK and
+module cache outside the repository, `CGO_ENABLED=0 GOTOOLCHAIN=local GOWORK=off
+GOFLAGS=-mod=readonly`. No generators, failpoints or module edits. Build exited 0;
+build info pins kvproto f8ad079c8e98, matching the existing protocol input.
+The supervisor now requires that build tag instead of accepting mismatched inputs.
+
+The same full task050 differential passed with default auto (not explicit none).
+Added real TCP requests for /dashboard/ and /dashboard/index.html: Go returned
+200 with `Dashboard is not built.\n`; Rust initially returned 404. Added the real
+placeholder handler matching Go's unbuilt profile. The identical supervisor then
+passed, 1 passed/0 ignored; all configuration response/state comparisons remain.
+Initial full configuration responses are retained in the final raw run. Explicit
+addresses, hot writes and errors are compared without dropping Dashboard fields.
+
+`cargo test --locked -p astersql-pd-server --lib task_050_ -- --nocapture` exited 0:
+2 passed, 1 explicitly ignored differential (executed separately by supervisor).
+This covers cancellation, transactional failure and persistence across restart.
+`cargo metadata --format-version 1 --no-deps`, `cargo fmt --all -- --check`, and
+`cargo check --workspace --locked` exited 0.
+
+Slot 1, CARGO_TARGET_DIR=/Users/xiangmin/worker/code/pd/target/rust-slot-1.
+Raw failures and successes, build profile and SHA, initial responses and local
+test output are appended under tail102_config_2026_11_03 in the existing
+compressed evidence; historical failures remain. The certified profile omits
+the Dashboard application, and does not claim full Dashboard domain completion.
+
+Supplementary `cargo test --workspace --locked` was started, then stopped with
+SIGTERM while the long task100/101 compatibility suites were running. It is not
+counted as a passing full regression; task6 owns that result. Completed task099
+and earlier package results are retained in the raw log. All owned descendants
+were terminated before slot release. Go/module Git status remained unchanged;
+each configuration supervisor also verified its complete read-only snapshot.

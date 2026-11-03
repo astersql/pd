@@ -25,6 +25,10 @@ def main():
     before = readonly.snapshot()
     record = {'go_sha256': hashlib.sha256(binary.read_bytes()).hexdigest(),
               'build_info': subprocess.check_output(['go', 'version', '-m', str(binary)]).decode()}
+    # Default Rust builds intentionally omit the Dashboard application.
+    # Require equivalent Go build inputs; runtime 'none' is not equivalent.
+    assert re.search(r'build\s+-tags=.*without_dashboard', record['build_info']), record['build_info']
+    record['profile'] = 'Go without_dashboard; Rust default features; dashboard-address default auto'
     command = ['cargo', 'test', '--locked', '-p', 'astersql-pd-server', '--lib', 'task_050_differential', '--', '--ignored', '--nocapture']
     env = dict(os.environ, GOFLAGS='-mod=readonly', GOWORK='off',
                CGO_ENABLED='0', GOPROXY='off', GOTOOLCHAIN='local')

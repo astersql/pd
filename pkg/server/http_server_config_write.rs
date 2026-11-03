@@ -7,7 +7,7 @@ use axum::{
     extract::{OriginalUri, State},
     http::StatusCode,
     response::Response,
-    routing::post,
+    routing::{any, post},
 };
 use serde_json::{Value, json};
 use std::sync::Arc;
@@ -19,6 +19,8 @@ struct Write {
 }
 pub(crate) fn router(services: Arc<dyn PdServices>, cancel: CancellationToken) -> Router {
     Router::new()
+        .route("/dashboard/", any(dashboard_unbuilt))
+        .route("/dashboard/{*path}", any(dashboard_unbuilt))
         .route("/pd/api/v1/config", post(write))
         .route("/pd/api/v1/config/cluster-version", post(write))
         .with_state(Write { services, cancel })
@@ -237,4 +239,15 @@ fn normalize_numbers(value: &mut Value) {
         }
         _ => {}
     }
+}
+
+// Default builds omit the Dashboard application, matching Go without_dashboard.
+async fn dashboard_unbuilt() -> impl axum::response::IntoResponse {
+    (
+        [(
+            axum::http::header::CONTENT_TYPE,
+            "text/plain; charset=utf-8",
+        )],
+        "Dashboard is not built.\n",
+    )
 }
