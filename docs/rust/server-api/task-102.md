@@ -335,3 +335,49 @@ schedule reaches none of proto/server/runtime. storage-kv's tonic dependency
 is a backend adapter detail requiring public-contract review.
 This is partial audit evidence; source attribution and additions review remain
 in progress. It does not clear domain admission or original task102 blockers.
+
+### Tail task 5 attribution review
+
+All 1909/365/267 frozen source rows have source roles and implementation
+responsibility recorded in the existing compressed evidence. Historical drift
+163/20/26 is linked to preserved runtime input snapshots and actual execution
+lineage (command, exit, test summaries, output digest), not inferred from git
+history. Current input hashes match for 151/16/24 rows; all unmatched rows are
+Markdown documentation, for which runtime execution is inapplicable.
+Input identity does not certify every behavior in a file. Scheduling task067,
+configuration task050 (without_dashboard profile), and Operator task063 retain
+their precise successful real-process scopes and earlier failures. Metrics-only
+reports remain property evidence, never business admission.
+
+Since the source baseline, Rust/Cargo/scripts contain 368 additions and 156
+modifications, no deletions. Every path is listed with current hash, owning
+crate/infrastructure responsibility and test/build/supervisor/implementation
+role. Existing domains are handed off to the original control-plane/MCS and
+production-backend epics; GC/keyspace/MCS/native persistence remain uncertified.
+No domain plan or original102 completion state is changed.
+
+The ADR review uses actual normal workspace closures plus public source
+boundaries: core and storage-domain have no protocol/transport dependencies;
+member/tso/schedule do not reach server/runtime/proto. Storage-kv uses tonic as
+an external-etcd adapter; storage-domain exports domain/byte/JSON contracts.
+The facade only re-exports runtime APIs. A process exit in TSO fault tests is
+explicitly test-only, not production library lifecycle behavior.
+
+### Tail task 5 completed audit validation
+
+`cargo fmt --all` exited 0. With the existing vendored ARM protoc and
+GOMODCACHE=/tmp/pd-task1-go-env/mod, `cargo test --locked -p
+astersql-pd-compat-tests --lib task_102_source_ -- --nocapture` exited 0:
+2 passed, 0 failed, 0 ignored. Negative controls reject missing/zero rows,
+duplicates, stale runtime input hashes and metric-only or absent business
+proof. The second test applies that gate to all 163/20/26 drift records.
+These are two audit tests, not two new live business differentials.
+Earlier missing-PROTOC/GOMODCACHE build failures remain recorded alongside
+the successful retry. Metadata exited 0 (75 packages). Slot 1 used
+CARGO_TARGET_DIR=/Users/xiangmin/worker/code/pd/target/rust-slot-1;
+all owned children finished and the lock was released, caches retained.
+Final Go/module snapshot contains 1101 files including ignored/untracked,
+with empty Git status; no Go/module writes were performed.
+
+This completes the bounded provenance audit and records domain handoff gaps;
+it does not certify unimplemented domains or change original task102 status.

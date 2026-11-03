@@ -969,3 +969,14 @@ ad39b71fe0906d0af3e0647796be16b274dd4d7411bb0ca77ae3b6c0a42c8634  tests/rust-com
 | tsopb.proto | 432ad742b665129ea282ddf6f3c7561a4987bd10d81fa7f16c1cb8d8aaa2115c |
 
 descriptor SHA-256：`b337c0aefcf0e158427ae4c039e78c3fc50cf5c02a55193a6adfbb2dd31f0836`。缓存相对位置：`target/rust-slot-1/debug/build/astersql-pd-proto-069294de19e24919/out/kvproto.bin`。
+
+## 2026-11-03 来源审计交接
+
+真实格式解析基准365项，唯一性及存在性通过，历史漂移20项。
+完整原始/当前哈希、逐项责任、候选测试、实际运行输入引用及命令结果见
+[task-102](task-102.md)及其既有压缩证据的`tail102_source_audit_2026_11_03`。
+快照哈希匹配仅证明输入新鲜度；实际执行链路保留原退出码和有效测试数，
+不将整份来源文件或指标属性视为全部业务通过。缺少运行快照的历史漂移均为
+Markdown文档，运行验证不适用。后续Rust/Cargo/脚本增删单独列入同一审计记录。
+GC/keyspace/MCS/生产后端仍按既有领域缺口交接，未重新拆分或宣布兼容。
+本补记本身是后续文档漂移，既有冻结集合与历史失败记录保持原口径。

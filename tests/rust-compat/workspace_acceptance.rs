@@ -91,3 +91,32 @@ fn normalize_timestamp(value: &mut Value, timestamp: &mut Option<i64>) {
         _ => {}
     }
 }
+
+// Input identity is necessary, but metric properties alone cannot certify behavior.
+pub(crate) fn audit_behavior_evidence(
+    rows: &[(&str, &str)],
+    expected: usize,
+    snapshots: &[(&str, &str)],
+    behavior_passed: bool,
+    metric_only: bool,
+) -> Result<(), &'static str> {
+    if rows.len() != expected || rows.is_empty() {
+        return Err("missing source row");
+    }
+    let mut paths = std::collections::BTreeSet::new();
+    for &(path, hash) in rows {
+        if !paths.insert(path) {
+            return Err("duplicate source row");
+        }
+        if hash.len() != 64 || !hash.bytes().all(|b| b.is_ascii_hexdigit()) {
+            return Err("invalid source hash");
+        }
+        if !snapshots.contains(&(path, hash)) {
+            return Err("stale or missing runtime input");
+        }
+    }
+    if !behavior_passed || metric_only {
+        return Err("missing business evidence");
+    }
+    Ok(())
+}

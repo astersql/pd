@@ -2792,3 +2792,14 @@ Go keypath常量按原文固定，涵盖绝对和相对路径；GC/keyspace/reso
 | [`tests/server/tso/tso_proxy_test.go`](../../../tests/server/tso/tso_proxy_test.go) | 99 | `382e1c05292c5554419aa5ded0bd5524dbcd87452416d47a9eeb562ef6457a12` |
 | [`tests/server/tso/tso_test.go`](../../../tests/server/tso/tso_test.go) | 99 | `7517352ca30e7e42ecffa3f276319beaf07c12af9d48b2f78bc994a92b734065` |
 | [`tests/server/watch/leader_watch_test.go`](../../../tests/server/watch/leader_watch_test.go) | 99 | `80a60ac6b2d2ef7b0ca46712cba34e4c62271cb55beb5e243ddb12164858fc81` |
+
+## 2026-11-03 来源审计交接
+
+真实格式解析基准1909项，唯一性及存在性通过，历史漂移163项。
+完整原始/当前哈希、逐项责任、候选测试、实际运行输入引用及命令结果见
+[task-102](task-102.md)及其既有压缩证据的`tail102_source_audit_2026_11_03`。
+快照哈希匹配仅证明输入新鲜度；实际执行链路保留原退出码和有效测试数，
+不将整份来源文件或指标属性视为全部业务通过。缺少运行快照的历史漂移均为
+Markdown文档，运行验证不适用。后续Rust/Cargo/脚本增删单独列入同一审计记录。
+GC/keyspace/MCS/生产后端仍按既有领域缺口交接，未重新拆分或宣布兼容。
+本补记本身是后续文档漂移，既有冻结集合与历史失败记录保持原口径。
