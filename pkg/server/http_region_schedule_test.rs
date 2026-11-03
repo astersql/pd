@@ -165,6 +165,12 @@ async fn observe(url: &str, id: u64) -> Value {
             r#"[{"start_key":"61","end_key":"6d"},{"start_key":"6d","end_key":"7a"}]"#,
         ),
         ("scatter", "{}"),
+        (
+            "scatter",
+            r#"{"regions_id":[9223372036854775808],"retry_limit":0}"#,
+        ),
+        ("scatter", r#"{"regions_id":[-1],"retry_limit":0}"#),
+        ("scatter", r#"{"regions_id":[10],"retry_limit":0}"#),
         ("scatter", r#"{"regions_id":[1e100],"retry_limit":0}"#),
         (
             "scatter",

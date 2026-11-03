@@ -240,3 +240,26 @@ readonly_oracle_test显式包含集成测试后5通过、0忽略；task099真实
 所有子进程结束后释放自己的锁，保留二进制与缓存。确切命令、SDK/三个工具SHA、
 完整build info、CLI输出及行为日志追加在现有压缩证据
 `tail102_inputs_authorized_build_2026_11_03`，历史失败记录保留。
+
+## Tail task 2: scheduling HTTP differential (2026-11-03)
+
+The original supervisor passed against the pinned darwin/amd64 Go oracle:
+exit 0, 1 passed, 0 ignored. The historical overflow failure did not reproduce.
+Both 1e100 and 2^64 select the heartbeat-registered, read-back 2^63 Region
+(HTTP 200, processed-percentage 0). Saturation to u64::MAX would contradict
+this observation. Preserve the documented amd64 conversion contract; other
+Go architectures are not certified by this run.
+
+Added 2^63, -1 and normal ID 10 to the same real dual-process scenario.
+`PD_COMPAT_MODE=dual python3 scripts/http-region-schedule-oracle.py` again
+exited 0: 1 passed, 0 ignored, 186.89 seconds. Existing batch, errors,
+operator side effects, cancellation and role assertions remain enabled.
+After `cargo fmt --all`, `cargo test --locked -p astersql-pd-server --lib
+ task_067_ -- --nocapture` exited 0: 3 passed, 1 explicitly ignored differential;
+the supervisor executed that ignored test separately.
+
+Slot 1: CARGO_TARGET_DIR=/Users/xiangmin/worker/code/pd/target/rust-slot-1.
+Both supervisors confirmed unchanged Go/module snapshots and input hashes,
+and cleaned their process groups. Raw responses, fingerprints, normalization
+and side effects are preserved in the existing compressed evidence under
+`tail102_schedule_2026_11_03`. Other domain and original 102 blockers remain.
