@@ -13,11 +13,11 @@ use std::{
     },
     time::Duration,
 };
-const KEY: &str = "2f07ec61e5a50284f47f2b402a962ec672e500b26cb3aa568bb1531300c74806";
+pub(super) const KEY: &str = "2f07ec61e5a50284f47f2b402a962ec672e500b26cb3aa568bb1531300c74806";
 static NEXT: AtomicU64 = AtomicU64::new(0);
-struct Directory(PathBuf);
+pub(super) struct Directory(pub(super) PathBuf);
 impl Directory {
-    fn new() -> Self {
+    pub(super) fn new() -> Self {
         let p = PathBuf::from(std::env::var_os("CARGO_TARGET_DIR").unwrap()).join(format!(
             "mcs010-{}-{}",
             std::process::id(),
@@ -32,7 +32,7 @@ impl Drop for Directory {
         let _ = std::fs::remove_dir_all(&self.0);
     }
 }
-fn start_go(dir: &Directory, kind: &str, path: &str) -> Server {
+pub(super) fn start_go(dir: &Directory, kind: &str, path: &str) -> Server {
     let config = dir.0.join("pd.toml");
     std::fs::write(&config,format!("[security.encryption]\ndata-encryption-method = 'aes256-ctr'\n[security.encryption.master-key]\ntype = '{kind}'\npath = {}\n[log]\nformat = 'json'\n",serde_json::to_string(path).unwrap())).unwrap();
     Server::start_with_args(
@@ -41,7 +41,7 @@ fn start_go(dir: &Directory, kind: &str, path: &str) -> Server {
     )
     .unwrap()
 }
-async fn go_content(go: &mut Server) -> (Arc<dyn MetaStore>, EncryptedContent) {
+pub(super) async fn go_content(go: &mut Server) -> (Arc<dyn MetaStore>, EncryptedContent) {
     go.ready_with_timeout(Duration::from_secs(12)).unwrap();
     let store: Arc<dyn MetaStore> = Arc::new(
         EtcdMetaStore::connect(std::slice::from_ref(&go.url), Duration::from_secs(2))

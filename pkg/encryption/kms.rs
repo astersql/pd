@@ -52,7 +52,7 @@ impl MasterKey {
                 region,
                 ..
             } => {
-                if *vendor != "AWS" {
+                if vendor != "AWS" {
                     return Err(error("unsupported KMS vendor: %s", [vendor.to_string()]));
                 }
                 let http = aws_smithy_http_client::Builder::new()

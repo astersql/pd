@@ -344,6 +344,8 @@ dependencies = [
  "aws-smithy-runtime-api",
  "aws-smithy-types",
  "axum",
+ "astersql-pd-election",
+ "tokio-util",
 ]
 
 [[package]]
@@ -1076,6 +1078,8 @@ dependencies = [
  "tower",
  "x509-parser",
  "astersql-pd-replication",
+ "astersql-pd-encryption",
+ "astersql-pd-errs",
 ]
 
 [[package]]

@@ -19,7 +19,7 @@ fn encryption_defaults_and_methods() {
     c.master_key.key_type = "kms".into();
     c.master_key.kms.kms_key_id = "id".into();
     assert!(
-        matches!(c.master_key_meta().unwrap(),MasterKeyMeta::Kms{vendor:"AWS",key_id,..} if key_id=="id")
+        matches!(c.master_key_meta().unwrap(),MasterKeyMeta::Kms{vendor,key_id,..} if vendor=="AWS" && key_id=="id")
     );
     c.master_key.key_type = "file".into();
     c.master_key.file.file_path = "/key".into();

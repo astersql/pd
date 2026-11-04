@@ -9,6 +9,9 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
+astersql-pd-storage-domain.workspace = true
+astersql-pd-election.workspace = true
+tokio.workspace = true
 aws-config.workspace = true
 aws-sdk-kms.workspace = true
 aws-smithy-http-client.workspace = true
@@ -21,6 +24,7 @@ astersql-pd-typeutil.workspace = true
 astersql-pd-errs.workspace = true
 
 [dev-dependencies]
+tokio-util.workspace = true
 aws-smithy-http-client = { workspace = true, features = ["test-util"] }
 aws-credential-types = { workspace = true, features = ["test-util"] }
 aws-smithy-runtime-api.workspace = true
@@ -28,9 +32,7 @@ aws-smithy-types.workspace = true
 axum.workspace = true
 astersql-pd-compat-tests.workspace = true
 astersql-pd-storage-kv.workspace = true
-astersql-pd-storage-domain.workspace = true
 astersql-pd-proto.workspace = true
-tokio.workspace = true
 prost.workspace = true
 
 serde_json.workspace = true

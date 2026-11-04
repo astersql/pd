@@ -7,6 +7,8 @@ license.workspace = true
 [lib]
 path = "lib.rs"
 [dependencies]
+astersql-pd-errs.workspace = true
+astersql-pd-encryption.workspace = true
 astersql-pd-replication.workspace = true
 astersql-pd-schedule.workspace = true
 astersql-pd-schedule-filter.workspace = true

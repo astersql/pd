@@ -116,7 +116,7 @@ async fn mcs_011_errors_and_redaction() {
         "[PD:encryption:ErrEncryptionNewMasterKey]master key config is empty"
     );
     let meta = MasterKeyMeta::Kms {
-        vendor: "OTHER",
+        vendor: "OTHER".into(),
         key_id: String::new(),
         region: String::new(),
         endpoint: String::new(),
@@ -518,7 +518,7 @@ async fn kms_default_chain_child() {
         return;
     }
     let meta = crate::MasterKeyMeta::Kms {
-        vendor: "AWS",
+        vendor: "AWS".into(),
         key_id: "alias/public-test".into(),
         region: "us-east-2".into(),
         endpoint: "http://127.0.0.1:1/ignored".into(),

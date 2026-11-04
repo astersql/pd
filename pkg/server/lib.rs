@@ -1125,3 +1125,5 @@ mod http_log;
 mod http_maintenance_test;
 
 pub mod replication_mode;
+
+pub mod encryption_dictionary;

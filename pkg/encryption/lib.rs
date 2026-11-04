@@ -66,7 +66,7 @@ pub enum EncryptionMethod {
 pub enum MasterKeyMeta {
     Plaintext,
     Kms {
-        vendor: &'static str,
+        vendor: String,
         key_id: String,
         region: String,
         endpoint: String,
@@ -117,7 +117,7 @@ impl EncryptionConfig {
         match self.master_key.key_type.as_str() {
             "plaintext" => Ok(MasterKeyMeta::Plaintext),
             "kms" => Ok(MasterKeyMeta::Kms {
-                vendor: "AWS",
+                vendor: "AWS".into(),
                 key_id: self.master_key.kms.kms_key_id.clone(),
                 region: self.master_key.kms.kms_region.clone(),
                 endpoint: self.master_key.kms.kms_endpoint.clone(),
@@ -159,3 +159,13 @@ mod master_key_file_test;
 mod kms;
 #[cfg(test)]
 mod kms_test;
+
+mod key_dictionary;
+pub use key_dictionary::*;
+#[cfg(test)]
+extern crate self as astersql_pd_encryption;
+#[cfg(test)]
+mod key_dictionary_test;
+#[cfg(test)]
+#[path = "../server/encryption_dictionary.rs"]
+mod protocol_adapter;
