@@ -9,6 +9,7 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
+zeroize.workspace = true
 aes.workspace = true
 aes-gcm.workspace = true
 rand.workspace = true
@@ -17,4 +18,11 @@ astersql-pd-typeutil.workspace = true
 astersql-pd-errs.workspace = true
 
 [dev-dependencies]
+astersql-pd-compat-tests.workspace = true
+astersql-pd-storage-kv.workspace = true
+astersql-pd-storage-domain.workspace = true
+astersql-pd-proto.workspace = true
+tokio.workspace = true
+prost.workspace = true
+
 serde_json.workspace = true

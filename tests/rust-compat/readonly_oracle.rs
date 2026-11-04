@@ -66,3 +66,48 @@ pub fn validate(mode: &str, go: &Path, rust: Option<&Path>, fixture: &Path) -> R
     }
     Ok(())
 }
+
+/// Require the exact Go artifact admitted by the control-plane plan, without rebuilding Go.
+pub fn pinned_go_binary() -> Result<std::path::PathBuf, String> {
+    use sha2::{Digest, Sha256};
+    use std::{path::PathBuf, process::Command};
+    let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..");
+    let binary =
+        PathBuf::from(std::env::var_os("PD_COMPAT_GO_BIN").ok_or("PD_COMPAT_GO_BIN required")?);
+    validate(
+        "go",
+        &binary,
+        None,
+        &root.join("tests/rust-compat/fixtures/health-member.json"),
+    )?;
+    let info = Command::new("go")
+        .args(["version", "-m"])
+        .arg(&binary)
+        .output()
+        .map_err(|e| e.to_string())?;
+    if !info.status.success() {
+        return Err("cannot read Go build metadata".into());
+    }
+    validate_go_build_info(&String::from_utf8(info.stdout).map_err(|e| e.to_string())?)?;
+    let admission = Command::new("gzip")
+        .arg("-dc")
+        .arg(root.join("docs/rust/control-plane-mcs/task-001-evidence.json.gz"))
+        .output()
+        .map_err(|e| e.to_string())?;
+    if !admission.status.success() {
+        return Err("cannot read admission evidence".into());
+    }
+    let admission: serde_json::Value =
+        serde_json::from_slice(&admission.stdout).map_err(|e| e.to_string())?;
+    let expected = admission["binaries"]["go_pd"]["sha256"]
+        .as_str()
+        .ok_or("admission is missing Go artifact digest")?;
+    let actual = format!(
+        "{:x}",
+        Sha256::digest(std::fs::read(&binary).map_err(|e| e.to_string())?)
+    );
+    if actual != expected {
+        return Err("Go artifact digest differs from admission".into());
+    }
+    Ok(binary)
+}

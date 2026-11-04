@@ -150,3 +150,8 @@ mod crypter;
 pub use crypter::*;
 #[cfg(test)]
 mod crypter_test;
+
+mod master_key_file;
+pub use master_key_file::MasterKey;
+#[cfg(test)]
+mod master_key_file_test;

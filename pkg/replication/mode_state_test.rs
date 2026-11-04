@@ -8,7 +8,6 @@ use astersql_pd_proto::{metapb, pdpb};
 use astersql_pd_storage_domain::{MemoryStore, MetaStore, Mutation, StorageEndpoint};
 use astersql_pd_storage_kv::EtcdMetaStore;
 use serde_json::{Value, json};
-use sha2::{Digest, Sha256};
 use std::{path::PathBuf, process::Command, sync::Arc, time::Duration};
 use tokio_util::sync::CancellationToken;
 
@@ -38,34 +37,7 @@ pub(crate) fn post(server: &Server, value: &Value) -> (u16, Value) {
 }
 
 pub(crate) fn pinned_go_binary() -> PathBuf {
-    let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..");
-    let binary = PathBuf::from(std::env::var_os("PD_COMPAT_GO_BIN").unwrap());
-    readonly_oracle::validate(
-        "go",
-        &binary,
-        None,
-        &root.join("tests/rust-compat/fixtures/health-member.json"),
-    )
-    .unwrap();
-    let info = Command::new("go")
-        .args(["version", "-m"])
-        .arg(&binary)
-        .output()
-        .unwrap();
-    assert!(info.status.success());
-    readonly_oracle::validate_go_build_info(&String::from_utf8(info.stdout).unwrap()).unwrap();
-    let admission = Command::new("gzip")
-        .arg("-dc")
-        .arg(root.join("docs/rust/control-plane-mcs/task-001-evidence.json.gz"))
-        .output()
-        .unwrap();
-    assert!(admission.status.success());
-    let admission: Value = serde_json::from_slice(&admission.stdout).unwrap();
-    assert_eq!(
-        format!("{:x}", Sha256::digest(std::fs::read(&binary).unwrap())),
-        admission["binaries"]["go_pd"]["sha256"].as_str().unwrap()
-    );
-    binary
+    readonly_oracle::pinned_go_binary().expect("admitted read-only Go oracle")
 }
 
 async fn go_loaded_state(seed: &[u8], expected_id: u64) -> Value {

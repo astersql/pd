@@ -34,4 +34,3 @@ astersql-pd-member.workspace = true
 astersql-pd-storage-kv.workspace = true
 astersql-pd-compat-tests.workspace = true
 astersql-pd-proto.workspace = true
-sha2.workspace = true
