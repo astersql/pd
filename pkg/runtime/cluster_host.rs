@@ -1345,7 +1345,7 @@ impl StoreHeartbeatService for ClusterHost {
                 .map_err(|e| StoreHeartbeatError::Other(e.to_string()))?;
             let stores = r.state.lock().unwrap().cluster.stores.clone();
             let prepared = controller
-                .prepare_force_leader(&index, &stores)
+                .prepare_recovery_plan(&index, &stores)
                 .map_err(|e| StoreHeartbeatError::Other(e.to_string()))?;
             r.recovery_index = Some(index);
             r.prepared_recovery = prepared;

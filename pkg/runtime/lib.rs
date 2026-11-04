@@ -229,3 +229,7 @@ mod recovery_index_test;
 #[cfg(test)]
 #[path = "force_leader_test.rs"]
 mod force_leader_test;
+
+#[cfg(test)]
+#[path = "demote_failed_test.rs"]
+mod demote_failed_test;

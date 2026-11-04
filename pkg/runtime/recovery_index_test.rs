@@ -71,6 +71,33 @@ pub(crate) async fn report_all_for_mode(
     u64,
     pdpb::StoreHeartbeatResponse,
 ) {
+    report_all_options(
+        url,
+        ReportOptions {
+            commit,
+            joint,
+            ..Default::default()
+        },
+    )
+    .await
+}
+#[derive(Clone, Copy, Default, Debug)]
+pub(crate) struct ReportOptions {
+    pub commit: bool,
+    pub joint: bool,
+    pub forced: bool,
+    pub failed_learner: bool,
+    pub healthy_overlap: bool,
+}
+pub(crate) async fn report_all_options(
+    url: &str,
+    options: ReportOptions,
+) -> (
+    PdClient<tonic::transport::Channel>,
+    u64,
+    u64,
+    pdpb::StoreHeartbeatResponse,
+) {
     let (mut client, cluster, _) = seed(url).await;
     assert_eq!(
         http(
@@ -102,22 +129,11 @@ pub(crate) async fn report_all_for_mode(
         let peers = peers
             .into_iter()
             .map(|mut p| {
-                if p.region_state
-                    .as_ref()
-                    .and_then(|s| s.region.as_ref())
-                    .is_some_and(|r| r.id == 700)
-                {
-                    p.has_commit_merge = commit;
-                    if joint {
-                        for peer in &mut p
-                            .region_state
-                            .as_mut()
-                            .unwrap()
-                            .region
-                            .as_mut()
-                            .unwrap()
-                            .peers
-                        {
+                let region = p.region_state.as_mut().unwrap().region.as_mut().unwrap();
+                if region.id == 700 {
+                    p.has_commit_merge = options.commit;
+                    if options.joint {
+                        for peer in &mut region.peers {
                             peer.role = if peer.store_id <= 2 {
                                 metapb::PeerRole::IncomingVoter as i32
                             } else {
@@ -125,6 +141,28 @@ pub(crate) async fn report_all_for_mode(
                             };
                         }
                     }
+                    if options.failed_learner {
+                        for peer in &mut region.peers {
+                            if peer.store_id == 6 {
+                                peer.role = metapb::PeerRole::Learner as i32;
+                            }
+                        }
+                    }
+                }
+                if region.id == 800 && options.healthy_overlap {
+                    region.peers = [1, 2, 4]
+                        .into_iter()
+                        .map(|id| metapb::Peer {
+                            id: 800 + id,
+                            store_id: id,
+                            ..Default::default()
+                        })
+                        .collect();
+                }
+                if options.forced
+                    && ((region.id == 700 && store == 2) || (region.id == 900 && store == 1))
+                {
+                    p.is_force_leader = true;
                 }
                 p
             })

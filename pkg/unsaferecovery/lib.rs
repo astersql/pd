@@ -26,3 +26,8 @@ pub use force_leader::*;
 #[cfg(test)]
 #[path = "force_leader_test.rs"]
 mod force_leader_test;
+
+mod demote_failed;
+#[cfg(test)]
+#[path = "demote_failed_test.rs"]
+mod demote_failed_test;
