@@ -88,3 +88,7 @@ CARGO_TARGET_DIR=/Users/xiangmin/worker/code/pd/target/rust-slot-1。
 simple rune lowercase结果，不把full Unicode扩展当作Go行为。
 
 最终Go/模块1101项及所有相对文档链接再次核对通过；验证节奏遵循用户明确授权。
+
+恢复夹具补强：使用在无匹配存活store时保持不变的sync/ID42记录，隔离Go后台tick对
+恢复边界的影响；同时比较RPC真实available_stores，保留所有旧async_wait观察。
+最终4项聚焦再次通过（38.67秒），无新忽略。

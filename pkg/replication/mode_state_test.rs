@@ -155,7 +155,7 @@ async fn go_loaded_state(seed: &[u8], expected_id: u64) -> Value {
     } else {
         assert_eq!(http.1["dr-auto-sync"]["state_id"], expected_id);
     }
-    let observed = json!({"http":http,"invalid_config":invalid,"rpc_state_id":rpc.state_id,"seed":String::from_utf8_lossy(seed)});
+    let observed = json!({"http":http,"invalid_config":invalid,"rpc_state_id":rpc.state_id,"rpc_available_stores":rpc.available_stores,"seed":String::from_utf8_lossy(seed)});
     std::fs::write(
         PathBuf::from(std::env::var_os("CARGO_TARGET_DIR").unwrap())
             .join("mcs-004-go-observation.json"),
@@ -169,7 +169,7 @@ async fn go_loaded_state(seed: &[u8], expected_id: u64) -> Value {
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
 async fn mcs_004_behavior() {
-    let seed = br#"{"state":"async_wait","state_id":42,"available_stores":[1]}"#;
+    let seed = br#"{"state":"sync","state_id":42,"available_stores":[1]}"#;
     let go = go_loaded_state(seed, 42).await;
     let store: Arc<dyn MetaStore> = Arc::new(MemoryStore::default());
     let cancel = CancellationToken::new();
@@ -209,17 +209,17 @@ async fn mcs_004_behavior() {
         state.state,
         go["http"][1]["dr-auto-sync"]["state"].as_str().unwrap()
     );
+    assert_eq!(json!(state.available_stores), go["rpc_available_stores"]);
     leader.resign().await.unwrap();
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
 async fn mcs_004_null_and_casefold_match_live_go() {
     for (seed, id) in [
-        (r#"{"ſTATE":"async_wait","ſtate_ID":42}"#.as_bytes(), 42),
+        (r#"{"ſTATE":"sync","ſtate_ID":42}"#.as_bytes(), 42),
         (b"null".as_slice(), 0),
         (
-            br#"{"STATE":"async_wait","state_ID":1,"STATE_ID":42,"available_stores":null}"#
-                .as_slice(),
+            br#"{"STATE":"sync","state_ID":1,"STATE_ID":42,"available_stores":null}"#.as_slice(),
             42,
         ),
     ] {
