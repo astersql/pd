@@ -1,0 +1,103 @@
+{
+  "source": "Go1.26.8/src/crypto/cipher/gcm_test.go",
+  "source_sha256": "a32107bd20524e39e440e86c8365a4671802deafc11578423d94cba602b4a700",
+  "symbol": "aesGCMTests",
+  "scope": "96-bit nonce, 128-bit authentication tag, no AAD, 128/192/256-bit keys",
+  "vectors": [
+    {
+      "key": "11754cd72aec309bf52f7687212e8957",
+      "iv": "3c819d9a9bed087615030b65",
+      "plaintext": "",
+      "ciphertext": "250327c674aaf477aef2675748cf6971"
+    },
+    {
+      "key": "e2e001a36c60d2bf40d69ff5b2b1161ea218db263be16a4e",
+      "iv": "3c819d9a9bed087615030b65",
+      "plaintext": "",
+      "ciphertext": "c7b8da1fe2e3dccc4071ba92a0a57ba8"
+    },
+    {
+      "key": "5394e890d37ba55ec9d5f327f15680f6a63ef5279c79331643ad0af6d2623525",
+      "iv": "3c819d9a9bed087615030b65",
+      "plaintext": "",
+      "ciphertext": "d9b260d4bc4630733ffb642f5ce45726"
+    },
+    {
+      "key": "ca47248ac0b6f8372a97ac43508308ed",
+      "iv": "ffd2b598feabc9019262d2be",
+      "plaintext": "",
+      "ciphertext": "60d20404af527d248d893ae495707d1a"
+    },
+    {
+      "key": "7fddb57453c241d03efbed3ac44e371c",
+      "iv": "ee283a3fc75575e33efd4887",
+      "plaintext": "d5de42b461646c255c87bd2962d3b9a2",
+      "ciphertext": "2ccda4a5415cb91e135c2a0f78c9b2fdb36d1df9b9d5e596f83e8b7f52971cb3"
+    },
+    {
+      "key": "ab72c77b97cb5fe9a382d9fe81ffdbed",
+      "iv": "54cc7dc2c37ec006bcc6d1da",
+      "plaintext": "007c5e5b3e59df24a7c355584fc1518d",
+      "ciphertext": "0e1bde206a07a9c2c1b65300f8c649972b4401346697138c7a4891ee59867d0c"
+    },
+    {
+      "key": "feffe9928665731c6d6a8f9467308308feffe9928665731c",
+      "iv": "54cc7dc2c37ec006bcc6d1da",
+      "plaintext": "007c5e5b3e59df24a7c355584fc1518d",
+      "ciphertext": "7bd53594c28b6c6596feb240199cad4c9badb907fd65bde541b8df3bd444d3a8"
+    },
+    {
+      "key": "feffe9928665731c6d6a8f9467308308feffe9928665731c6d6a8f9467308308",
+      "iv": "54cc7dc2c37ec006bcc6d1da",
+      "plaintext": "007c5e5b3e59df24a7c355584fc1518d",
+      "ciphertext": "d50b9e252b70945d4240d351677eb10f937cdaef6f2822b6a3191654ba41b197"
+    },
+    {
+      "key": "fe9bb47deb3a61e423c2231841cfd1fb",
+      "iv": "4d328eb776f500a2f7fb47aa",
+      "plaintext": "f1cc3818e421876bb6b8bbd6c9",
+      "ciphertext": "b88c5c1977b35b517b0aeae96743fd4727fe5cdb4b5b42818dea7ef8c9"
+    },
+    {
+      "key": "6703df3701a7f54911ca72e24dca046a",
+      "iv": "12823ab601c350ea4bc2488c",
+      "plaintext": "793cd125b0b84a043e3ac67717",
+      "ciphertext": "b2051c80014f42f08735a7b0cd38e6bcd29962e5f2c13626b85a877101"
+    },
+    {
+      "key": "feffe9928665731c6d6a8f9467308308feffe9928665731c",
+      "iv": "12823ab601c350ea4bc2488c",
+      "plaintext": "793cd125b0b84a043e3ac67717",
+      "ciphertext": "e888c2f438caedd4189d26c59f53439b8a7caec29e98c33ebf7e5712d6"
+    },
+    {
+      "key": "feffe9928665731c6d6a8f9467308308feffe9928665731c6d6a8f9467308308",
+      "iv": "12823ab601c350ea4bc2488c",
+      "plaintext": "793cd125b0b84a043e3ac67717",
+      "ciphertext": "e796c39074c7783a38193e3f8d46b355adacca7198d16d879fbfeac6e3"
+    }
+  ],
+  "excluded_different_constructor": {
+    "reason": "These use cipher.NewGCMWithTagSize(...,12), not PD cipher.NewGCM default tag size 16 (Go SDK gcm_test.go:429-436).",
+    "vectors": [
+      {
+        "key": "ab72c77b97cb5fe9a382d9fe81ffdbed",
+        "iv": "54cc7dc2c37ec006bcc6d1da",
+        "plaintext": "007c5e5b3e59df24a7c355584fc1518dabcdefab",
+        "ciphertext": "0e1bde206a07a9c2c1b65300f8c64997b73381a6ff6bc24c5146fbd73361f4fe"
+      },
+      {
+        "key": "feffe9928665731c6d6a8f9467308308feffe9928665731c",
+        "iv": "54cc7dc2c37ec006bcc6d1da",
+        "plaintext": "007c5e5b3e59df24a7c355584fc1518dabcdefab",
+        "ciphertext": "7bd53594c28b6c6596feb240199cad4c23b86a96d423cffa929e68541dc16b28"
+      },
+      {
+        "key": "feffe9928665731c6d6a8f9467308308feffe9928665731c6d6a8f9467308308",
+        "iv": "54cc7dc2c37ec006bcc6d1da",
+        "plaintext": "007c5e5b3e59df24a7c355584fc1518dabcdefab",
+        "ciphertext": "d50b9e252b70945d4240d351677eb10f27fd385388ad3b72b96a2d5dea1240ae"
+      }
+    ]
+  }
+}

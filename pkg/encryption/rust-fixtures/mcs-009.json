@@ -1,0 +1,10 @@
+{
+  "go_source": "pkg/encryption/crypter_test.go",
+  "source_sha256": "f388a57ddcb9cc1d7c101dfd735e229459139f9868e6c3ebe307823c8f4dd144",
+  "symbol": "TestAesGcmCrypter",
+  "key": "ed568fbd8c8018ed2d042a4e5d38d6341486922d401d2022fb81e47c900d3f07",
+  "plaintext": "5c873a18af5e7c7c368cb2635e5a15c7f87282085f4b991e84b78c5967e946d4",
+  "iv": "ba432b70336c40c39ba14c1b",
+  "ciphertext": "bbb9b49546350880cf55d4e4eaccc831c506a4aeae7f6cda9c821d4cb8cfc269dcdaecb09592ef25d7a33b40d3f02208",
+  "tampered_ciphertext_authentication_error": true
+}

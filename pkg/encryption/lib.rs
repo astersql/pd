@@ -55,6 +55,7 @@ pub struct MasterKeyConfig {
 /// Protocol-independent encryption method.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum EncryptionMethod {
+    Unknown(i32),
     Plaintext,
     Aes128Ctr,
     Aes192Ctr,
@@ -144,3 +145,8 @@ fn null_default<'de, T: serde::Deserialize<'de> + Default, D: serde::Deserialize
 
 #[cfg(test)]
 mod config_test;
+
+mod crypter;
+pub use crypter::*;
+#[cfg(test)]
+mod crypter_test;
