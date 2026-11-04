@@ -9,6 +9,9 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
+aws-config.workspace = true
+aws-sdk-kms.workspace = true
+aws-smithy-http-client.workspace = true
 zeroize.workspace = true
 aes.workspace = true
 aes-gcm.workspace = true
@@ -18,6 +21,11 @@ astersql-pd-typeutil.workspace = true
 astersql-pd-errs.workspace = true
 
 [dev-dependencies]
+aws-smithy-http-client = { workspace = true, features = ["test-util"] }
+aws-credential-types = { workspace = true, features = ["test-util"] }
+aws-smithy-runtime-api.workspace = true
+aws-smithy-types.workspace = true
+axum.workspace = true
 astersql-pd-compat-tests.workspace = true
 astersql-pd-storage-kv.workspace = true
 astersql-pd-storage-domain.workspace = true

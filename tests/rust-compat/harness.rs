@@ -64,6 +64,14 @@ impl Server {
         Self::start_with_args(binary, &[])
     }
     pub fn start_with_args(binary: &Path, extra: &[&str]) -> io::Result<Self> {
+        Self::start_with_environment(binary, extra, &[])
+    }
+    /// Set fixture-local environment without mutating the Rust test process.
+    pub fn start_with_environment(
+        binary: &Path,
+        extra: &[&str],
+        environment: &[(String, String)],
+    ) -> io::Result<Self> {
         let dir = std::env::temp_dir().join(format!(
             "pd-compat-{}-{}",
             std::process::id(),
@@ -95,7 +103,9 @@ impl Server {
                 command.arg(format!("--data-dir={}", dir.join("data").display()));
                 command.arg(format!("--initial-cluster=compat={peer_url}"));
             }
-            command.args(extra);
+            command
+                .args(extra)
+                .envs(environment.iter().map(|(key, value)| (key, value)));
             drop((client, peer));
             Ok(Self {
                 child: command.spawn()?,

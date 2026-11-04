@@ -1,5 +1,5 @@
 // Copyright 2026 AsterSQL.
-//! Encryption configuration values, without key IO or KMS initialization.
+//! Encryption configuration, cryptography and explicit master-key backends.
 use astersql_pd_typeutil::Duration;
 use serde::{Deserialize, Serialize};
 /// Pure values from Go Config; no service or IO initialization.
@@ -155,3 +155,7 @@ mod master_key_file;
 pub use master_key_file::MasterKey;
 #[cfg(test)]
 mod master_key_file_test;
+
+mod kms;
+#[cfg(test)]
+mod kms_test;
