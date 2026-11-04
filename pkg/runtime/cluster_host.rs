@@ -1349,21 +1349,28 @@ impl StoreHeartbeatService for ClusterHost {
         }
         let controller = r.recovery.clone();
         let mut controller = controller.lock().await;
-        let ready = controller
-            .collect_report(store, report)
-            .map_err(|e| StoreHeartbeatError::Other(e.to_string()))?;
-        if ready {
-            let index = controller
-                .build_region_index()
-                .map_err(|e| StoreHeartbeatError::Other(e.to_string()))?;
-            let stores = r.state.lock().unwrap().cluster.stores.clone();
-            let mut ids = store_lifecycle::RecoveryIds::new(r.allocator.clone());
-            let prepared = controller
-                .advance_reports(&index, &stores, &mut ids, now().1 as i128)
-                .await
-                .map_err(|e| StoreHeartbeatError::Other(e.to_string()))?;
-            r.recovery_index = Some(index);
-            r.prepared_recovery = prepared;
+        let instant = now().1 as i128;
+        let work = async {
+            controller.check_timeout(instant, |deadline| {
+                self.operator_clock.render_unix_nanos(deadline)
+            })?;
+            if controller.collect_report(store, report)? {
+                r.prepared_recovery = None;
+                let index = controller.build_region_index()?;
+                let stores = r.state.lock().unwrap().cluster.stores.clone();
+                let mut ids = store_lifecycle::RecoveryIds::new(r.allocator.clone());
+                let prepared = controller
+                    .advance_reports(&index, &stores, &mut ids, instant)
+                    .await;
+                r.recovery_index = Some(index);
+                r.prepared_recovery = prepared?;
+            }
+            Ok::<(), astersql_pd_unsaferecovery::RecoveryError>(())
+        }
+        .await;
+        if let Err(error) = work {
+            r.prepared_recovery = None;
+            controller.handle_error(error, instant);
         }
         r.recovery_halted = controller.stage().is_running();
         if controller.take_reset_region_cache() {

@@ -28,6 +28,10 @@ pub(crate) fn router(services: Arc<dyn PdServices>, cancel: CancellationToken) -
             "/pd/api/v1/admin/unsafe/remove-failed-stores/show",
             get(show),
         )
+        .route(
+            "/pd/api/v1/admin/unsafe/remove-failed-stores/abort",
+            post(abort),
+        )
         .with_state(Context { services, cancel })
 }
 fn option<'a>(input: &'a Value, a: &str, b: &str) -> Result<Option<&'a Value>, String> {
@@ -166,4 +170,36 @@ async fn show(State(s): State<Context>) -> Response {
             json_response(StatusCode::OK, &values)
         }
     }
+}
+
+async fn abort(State(s): State<Context>) -> Response {
+    if !s.services.is_bootstrapped().await.unwrap_or(false) {
+        return json_response(
+            StatusCode::INTERNAL_SERVER_ERROR,
+            &"[PD:cluster:ErrNotBootstrapped]TiKV cluster not bootstrapped, please start TiKV first",
+        );
+    }
+    let cancel = request_context::current()
+        .map(|c| c.cancel)
+        .unwrap_or_else(|| s.cancel.child_token());
+    let work = async {
+        match s.services.abort_unsafe_recovery().await {
+            Ok(()) => json_response(StatusCode::OK, &"Request has been accepted."),
+            Err(e) => {
+                let invalid = astersql_pd_unsaferecovery::RecoveryError::Invalid(
+                    "no ongoing unsafe recovery".into(),
+                )
+                .to_string();
+                json_response(
+                    if e == invalid {
+                        StatusCode::BAD_REQUEST
+                    } else {
+                        StatusCode::INTERNAL_SERVER_ERROR
+                    },
+                    &e,
+                )
+            }
+        }
+    };
+    tokio::select! {biased;_=cancel.cancelled()=>json_response(StatusCode::INTERNAL_SERVER_ERROR,&"context canceled"),response=work=>response}
 }

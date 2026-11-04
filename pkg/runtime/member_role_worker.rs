@@ -224,6 +224,9 @@ impl PdServices for RoleServices {
         self.store.upgrade()
     }
 
+    async fn abort_unsafe_recovery(&self) -> Result<(), String> {
+        self.active().await?.cluster.abort_unsafe_recovery().await
+    }
     async fn show_unsafe_recovery(
         &self,
     ) -> Result<Vec<astersql_pd_unsaferecovery::StageOutput>, String> {

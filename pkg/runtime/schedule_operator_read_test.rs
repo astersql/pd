@@ -35,3 +35,24 @@ fn task_062_clock_projection() {
         "1970-01-01 00:00:00.1234567 +0000 UTC m=+0.000000000"
     );
 }
+#[test]
+fn mcs_024_deadline_projection_reuses_host_zone_and_monotonic_mapping() {
+    let origin = Instant::now();
+    let clock = ClockMap {
+        monotonic: origin,
+        wall: SystemTime::UNIX_EPOCH + Duration::from_nanos(123_456_700),
+        zone: Some(chrono_tz::Asia::Shanghai),
+    };
+    assert_eq!(
+        clock.render_unix_nanos(123_456_700),
+        clock.render(Some(origin))
+    );
+    assert_eq!(
+        clock.render_unix_nanos(1_123_456_700),
+        clock.render(Some(origin + Duration::from_secs(1)))
+    );
+    assert_eq!(
+        clock.render_unix_nanos(-876_543_300),
+        clock.render(Some(origin - Duration::from_secs(1)))
+    );
+}

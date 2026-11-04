@@ -49,3 +49,8 @@ mod dispatch_plan_test;
 
 mod dispatch_plan;
 pub use dispatch_plan::*;
+
+mod recovery_timeout;
+#[cfg(test)]
+#[path = "recovery_timeout_test.rs"]
+mod recovery_timeout_test;

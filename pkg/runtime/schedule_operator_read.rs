@@ -29,6 +29,24 @@ impl ClockMap {
             self.wall - (self.monotonic - t)
         }
     }
+    pub(super) fn render_unix_nanos(&self, nanos: i128) -> String {
+        let origin = match self.wall.duration_since(SystemTime::UNIX_EPOCH) {
+            Ok(d) => d.as_nanos() as i128,
+            Err(e) => -(e.duration().as_nanos() as i128),
+        };
+        let delta = nanos - origin;
+        let offset = u64::try_from(delta.unsigned_abs())
+            .ok()
+            .map(Duration::from_nanos);
+        let instant = offset.and_then(|d| {
+            if delta >= 0 {
+                self.monotonic.checked_add(d)
+            } else {
+                self.monotonic.checked_sub(d)
+            }
+        });
+        self.render(instant)
+    }
     fn render(&self, t: Option<Instant>) -> String {
         let Some(t) = t else {
             return "0001-01-01 00:00:00 +0000 UTC".into();

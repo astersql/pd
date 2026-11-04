@@ -245,3 +245,7 @@ mod empty_region_test;
 #[cfg(test)]
 #[path = "recovery_dispatch_test.rs"]
 mod recovery_dispatch_test;
+
+#[cfg(test)]
+#[path = "recovery_timeout_test.rs"]
+mod recovery_timeout_test;

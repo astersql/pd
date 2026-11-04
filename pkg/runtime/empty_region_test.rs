@@ -198,16 +198,13 @@ async fn mcs_022_native_empty_region_plans_and_real_allocator_effects_match_go()
         let blocked = matches!(mode, Mode::Overlap | Mode::NoTiKv);
         let no_work = matches!(mode, Mode::Contiguous);
         let mut plans = BTreeMap::new();
+        let mut go_frames = BTreeMap::new();
         if !no_work {
             plans.insert(3, go_completion.recovery_plan.clone().unwrap());
             for store in [1, 2] {
-                plans.insert(
-                    store,
-                    heartbeat(&mut go_client, go_cluster, store, 1, None)
-                        .await
-                        .recovery_plan
-                        .unwrap(),
-                );
+                let response = heartbeat(&mut go_client, go_cluster, store, 1, None).await;
+                plans.insert(store, response.recovery_plan.clone().unwrap());
+                go_frames.insert(store, response);
             }
         }
         let go_error = if blocked {
@@ -263,17 +260,73 @@ async fn mcs_022_native_empty_region_plans_and_real_allocator_effects_match_go()
         let (mut rust_client, rust_cluster, rust_step, rust_completion) =
             report_all(&url, mode).await;
         let prepared = node.cluster().unsafe_recovery_plan().await.unwrap();
+        assert_eq!(
+            crate::recovery_dispatch_test::normalized_frame(
+                rust_completion.clone(),
+                rust_cluster,
+                rust_step
+            ),
+            crate::recovery_dispatch_test::normalized_frame(
+                go_completion.clone(),
+                go_cluster,
+                go_step
+            ),
+            "{mode:?}: complete completion frame"
+        );
+        if !no_work {
+            assert_eq!(
+                rust_completion.recovery_plan.as_ref().unwrap().step,
+                rust_step + 1
+            );
+            for store in [1, 2] {
+                let response = heartbeat(&mut rust_client, rust_cluster, store, 1, None).await;
+                assert_eq!(response.recovery_plan.as_ref().unwrap().step, rust_step + 1);
+                assert_eq!(plans[&store].step, go_step + 1);
+                assert_eq!(
+                    crate::recovery_dispatch_test::normalized_frame(
+                        response,
+                        rust_cluster,
+                        rust_step
+                    ),
+                    crate::recovery_dispatch_test::normalized_frame(
+                        go_frames[&store].clone(),
+                        go_cluster,
+                        go_step
+                    ),
+                    "{mode:?}: complete store {store} dispatch frame"
+                );
+            }
+        }
         if blocked {
             assert!(prepared.is_none());
-            let error = &rust_completion
-                .header
-                .as_ref()
+            assert!(
+                rust_completion.header.as_ref().unwrap().error.is_none(),
+                "controller errors enter bounded exit instead of an RPC failure"
+            );
+            let show = http(&url, "admin/unsafe/remove-failed-stores/show", None);
+            let reason = show
+                .1
+                .as_array()
                 .unwrap()
-                .error
-                .as_ref()
-                .expect("generator rejection must be observable")
-                .message;
-            assert_eq!(Some(error), go_error.as_ref());
+                .iter()
+                .flat_map(|v| {
+                    v.get("details")
+                        .and_then(serde_json::Value::as_array)
+                        .into_iter()
+                        .flatten()
+                })
+                .filter_map(serde_json::Value::as_str)
+                .find_map(|s| s.strip_prefix("triggered by error: "))
+                .expect("generator rejection must enter ExitForceLeader");
+            assert_eq!(Some(reason), go_error.as_deref());
+            assert_eq!(
+                node.cluster()
+                    .unsafe_recovery_start_state()
+                    .await
+                    .unwrap()
+                    .0,
+                Stage::ExitForceLeader
+            );
             assert!(plans.values().all(|p| p.creates.is_empty()));
         } else if no_work {
             assert!(prepared.is_none());
@@ -326,7 +379,7 @@ async fn mcs_022_native_empty_region_plans_and_real_allocator_effects_match_go()
         node.shutdown().await.unwrap();
         go.stop().unwrap();
         println!(
-            "{mode:?}: actual Go/Rust allocator (boundary, header revision, key mod_revision) {go_boundary:?}/{rust_boundary:?}, next ID {go_next}/{rust_next}, collect step {go_step}/{rust_step}; create payloads or generator error exact, phase dispatch remains task23/24"
+            "{mode:?}: actual Go/Rust allocator (boundary, header revision, key mod_revision) {go_boundary:?}/{rust_boundary:?}, next ID {go_next}/{rust_next}, collect step {go_step}/{rust_step}; complete dispatch frames, generator error exit, exact ID payloads and allocator side effects match"
         );
     }
 }

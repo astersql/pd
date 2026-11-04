@@ -45,3 +45,5 @@ ForceLeader→Demote→ExitForceLeader→Finished多轮流程。外部store报�
 通过真实gRPC查询验证缓存是否保留或清空；完成后halt解除且Show稳定。
 
 错误、主动abort及整体超时后的best-effort退出仍属任务024，尚未标记完成。
+
+后续更新：上述分发/错误退出限制已由[任务024](task-024.md)的当前完整心跳帧及多轮差分补齐。

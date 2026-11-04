@@ -88,7 +88,7 @@ watcher/额度集成测试和测试工具。只补此清单，不改只读plan�
 | 21 生成TiFlash清理计划 | generateTombstoneTiFlashLearnerPlan只清理目标learner，不误删TiKV可恢复副本。 | 2 | `pkg/unsaferecovery/lib.rs`（存在）；`pkg/unsaferecovery/tiflash_cleanup.rs`（存在） | [task-021](task-021.md)：6聚焦+25相邻通过；真实Go新鲜度清理与TiKV保留；待统一全量回归 |
 | 22 生成空Region补洞计划 | generateCreateEmptyRegionPlan覆盖头尾和整段空洞，paranoid选项与TiKV候选筛选匹配Go，禁止覆盖健康数据范围。 | 2 | `pkg/unsaferecovery/empty_region.rs`；宿主真实ID接线 | [当前证据](task-022.md)，7聚焦+37相邻通过，待统一回归 |
 | 23 分发并推进恢复计划 | dispatchPlan按阶段心跳确认推进，重复下发幂等，退出force-leader后恢复调度并提供稳定Show结果。 | 2 | `pkg/unsaferecovery/dispatch_plan.rs`；生产心跳及Show接线 | [当前证据](task-023.md)，5聚焦+46相邻通过，待统一回归 |
-| 24 终止超时恢复任务 | AbortFailedStoresRemoval与checkTimeout在错误、无心跳及主动终止时停止下发并回收运行状态；接通现有管理API而不重写其通用层。 | 2 | `pkg/runtime/lib.rs`（存在）；`pkg/runtime/node.rs`（存在）；`pkg/server/lib.rs`（存在）；`pkg/unsaferecovery/lib.rs`（拟建）；`pkg/unsaferecovery/recovery_timeout.rs`（拟建） | 待当前行为证据 |
+| 24 终止超时恢复任务 | AbortFailedStoresRemoval与checkTimeout在错误、无心跳及主动终止时停止下发并回收运行状态；接通现有管理API而不重写其通用层。 | 2 | `pkg/runtime/lib.rs`（存在）；`pkg/runtime/node.rs`（存在）；`pkg/server/lib.rs`（存在）；`pkg/unsaferecovery/lib.rs`（拟建）；`pkg/unsaferecovery/recovery_timeout.rs`（拟建） | [当前证据](task-024.md)，5聚焦+54相邻通过，待统一回归 |
 | 25 实现键空间标识与边界 | 校验ID和名称及保留空间，生成raw/txn边界和label rule，覆盖最大ID及不合法编码。 | 5 | `pkg/keyspace/keyspace_bounds.rs`（拟建）；`pkg/keyspace/lib.rs`（拟建） | 待当前行为证据 |
 | 26 实现键空间范围缓存 | Cache的Save/Delete/范围查找和跨键空间分割键保持有序、边界与删除可见性。 | 4 | `pkg/keyspace/keyspace_cache.rs`（拟建）；`pkg/keyspace/lib.rs`（拟建） | 待当前行为证据 |
 | 27 分配元服务分组 | PickGroup与AssignToGroup在事务中更新计数，空间创建失败回滚分配且并发不会丢失计数。 | 2 | `pkg/keyspace/lib.rs`（拟建）；`pkg/keyspace/meta_group_assign.rs`（拟建） | 待当前行为证据 |

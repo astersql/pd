@@ -30,7 +30,7 @@ fn normalized_show(mut value: Value) -> Value {
     }
     value
 }
-fn normalized_frame(
+pub(crate) fn normalized_frame(
     mut response: pdpb::StoreHeartbeatResponse,
     cluster: u64,
     base: u64,

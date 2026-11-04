@@ -274,11 +274,31 @@ impl ClusterHost {
     pub async fn show_unsafe_recovery(
         &self,
     ) -> Result<Vec<astersql_pd_unsaferecovery::StageOutput>, String> {
-        let guard = self.resources.lock().await;
-        let r = guard.as_ref().ok_or("node stopped")?;
+        let mut guard = self.resources.lock().await;
+        let r = guard.as_mut().ok_or("node stopped")?;
         r.leader.validate().await.map_err(|e| e.to_string())?;
-        let c = r.recovery.lock().await;
-        Ok(c.show(now().1 as i128))
+        let controller = r.recovery.clone();
+        let mut c = controller.lock().await;
+        let instant = now().1 as i128;
+        if let Err(error) = c.check_timeout(instant, |deadline| {
+            self.operator_clock.render_unix_nanos(deadline)
+        }) {
+            c.handle_error(error, instant);
+            r.prepared_recovery = None;
+        }
+        r.recovery_halted = c.stage().is_running();
+        Ok(c.show(instant))
+    }
+    pub async fn abort_unsafe_recovery(&self) -> Result<(), String> {
+        let mut guard = self.resources.lock().await;
+        let r = guard.as_mut().ok_or("node stopped")?;
+        r.leader.validate().await.map_err(|e| e.to_string())?;
+        let controller = r.recovery.clone();
+        let mut c = controller.lock().await;
+        c.abort(now().1 as i128).map_err(|e| e.to_string())?;
+        r.prepared_recovery = None;
+        r.recovery_halted = c.stage().is_running();
+        Ok(())
     }
     pub async fn unsafe_recovery_plan(
         &self,
