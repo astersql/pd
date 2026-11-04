@@ -145,6 +145,9 @@ def main():
     record = target / f'compat-readonly-{time.time_ns()}.json'
     before = snapshot()
     sources = [ROOT / name for name in (
+        'scripts/pd-compat-readonly.py', 'tests/rust-compat/oracle_runner.rs',
+        'tests/rust-compat/oracle_runner_test.rs', 'tests/rust-compat/readonly_oracle.rs',
+        'tests/rust-compat/harness.rs',
         'pkg/server/grpc_unsupported.rs', 'pkg/server/grpc_unsupported_test.rs', 'pkg/server/grpc_unsupported_scenarios_test.rs', 'pkg/runtime/grpc_unsupported_differential_test.rs',
         'pkg/server/grpc_tso.rs', 'pkg/server/grpc_tso_test.rs', 'pkg/server/grpc_tso_scenarios_test.rs', 'pkg/runtime/grpc_tso_differential_test.rs', 'pkg/runtime/grpc_tso_clock_test.rs', 'pkg/runtime/tso.rs',
         'pkg/server/grpc_external_ts.rs', 'pkg/server/grpc_external_ts_test.rs', 'pkg/server/grpc_external_ts_scenarios_test.rs', 'pkg/runtime/grpc_external_ts_differential_test.rs', 'pkg/runtime/grpc_external_ts_fault_test.rs',

@@ -14,6 +14,10 @@ mod state_regression;
 #[cfg(test)]
 mod state_regression_test;
 
+#[cfg(test)]
+mod oracle_runner;
+#[cfg(test)]
+mod oracle_runner_test;
 pub mod readonly_oracle;
 #[cfg(test)]
 mod readonly_oracle_test;
