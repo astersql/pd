@@ -17,6 +17,7 @@ type RegionReset = (
     tokio::sync::oneshot::Sender<Result<(), String>>,
 );
 pub(crate) struct RoleServices {
+    pub(crate) encryption: std::sync::OnceLock<Weak<crate::encryption::EncryptionResources>>,
     pub(crate) file_directory: std::sync::OnceLock<std::path::PathBuf>,
     identity: NodeConfig,
     log_level: RwLock<Option<Arc<dyn astersql_pd_logutil::LogLevelControl>>>,
@@ -40,6 +41,7 @@ impl RoleServices {
         let (region_resets, region_reset_rx) = tokio::sync::mpsc::channel(16);
         Self {
             file_directory: Default::default(),
+            encryption: Default::default(),
             log_level: RwLock::new(None),
             telemetry: RwLock::new(None),
             metrics: RwLock::new(Weak::new()),
@@ -281,6 +283,12 @@ impl PdServices for RoleServices {
             self.identity.cluster_id,
             self.identity.member_id,
         )
+        .with_cipher(crate::hot_history_encryption::codec(
+            self.encryption
+                .get()
+                .and_then(Weak::upgrade)
+                .map(|keys| keys.dictionary.clone()),
+        ))
         .query(&query, &cancel)
         .await
         .map_err(|e| e.to_string())
@@ -966,6 +974,9 @@ pub(crate) fn retryable_role_error(error: &NodeError) -> bool {
 }
 async fn retire(term: Arc<Application>, registry: &prometheus::Registry) -> Result<(), NodeError> {
     term.cancel.cancel();
+    if let Some(encryption) = term.encryption.as_ref().and_then(Weak::upgrade) {
+        encryption.rotation.clear_leadership_if(&term.leader).await;
+    }
     let stopped = term.cluster.shutdown().await;
     // etcd can briefly reject linearizable operations while MoveLeader commits.
     // The term is already cancelled; retry only its own lease cleanup, bounded.
@@ -1127,6 +1138,7 @@ pub(crate) async fn run(
                         Arc::new(leader),
                         services.service_metrics(),
                         services.telemetry_config(),
+                        services.encryption.get().and_then(Weak::upgrade),
                     )
                     .await;
                     match term {

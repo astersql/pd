@@ -9,15 +9,25 @@ use astersql_pd_storage_endpoint::StorageEndpoint;
 use std::sync::Arc;
 use tokio_util::sync::CancellationToken;
 
+#[cfg(test)]
 pub(crate) async fn restore(
-    mut cluster: BasicCluster,
+    cluster: BasicCluster,
     store: Arc<dyn MetaStore>,
     identity: &crate::NodeConfig,
     cancel: &CancellationToken,
 ) -> Result<(BasicCluster, ProviderSnapshot<()>, Option<PersistedConfig>), crate::NodeError> {
+    restore_with_encryption(cluster, store, identity, cancel, None).await
+}
+pub(crate) async fn restore_with_encryption(
+    mut cluster: BasicCluster,
+    store: Arc<dyn MetaStore>,
+    identity: &crate::NodeConfig,
+    cancel: &CancellationToken,
+    encryption: Option<Arc<astersql_pd_encryption::DictionaryStorage>>,
+) -> Result<(BasicCluster, ProviderSnapshot<()>, Option<PersistedConfig>), crate::NodeError> {
     let recover = async {
         let paths = ClusterPaths::new(identity.cluster_id);
-        let mut endpoint = StorageEndpoint::new(store);
+        let mut endpoint = StorageEndpoint::new(store).with_encryption_keys(encryption);
         let mut persisted = PersistedConfig::default();
         let cwd = std::env::current_dir()?;
         let found = persisted

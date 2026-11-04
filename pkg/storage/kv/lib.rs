@@ -40,4 +40,6 @@ mod raw_range_test;
 #[cfg(test)]
 mod txn_cancel_test;
 
-pub use astersql_pd_storage_domain::{HistoryError, HistoryHotRegion, HistoryQuery, HotHistory};
+pub use astersql_pd_storage_domain::{
+    HistoryCipher, HistoryError, HistoryHotRegion, HistoryQuery, HotHistory,
+};

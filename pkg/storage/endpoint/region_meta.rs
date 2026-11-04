@@ -1,7 +1,7 @@
 // Copyright 2026 AsterSQL.
 
 use crate::{EndpointError, LoadState, StorageEndpoint, protobuf};
-use astersql_pd_core::{KeyRange, Peer, PeerRole, RegionEpoch, RegionMeta};
+use astersql_pd_core::{KeyRange, Peer, PeerRole, RegionEncryptionMeta, RegionEpoch, RegionMeta};
 use astersql_pd_keypath::ClusterPaths;
 use astersql_pd_storage_kv::Base;
 use prost::Message;
@@ -13,6 +13,8 @@ pub enum RegionMetaError {
     Endpoint(#[from] EndpointError),
     #[error("region encryption metadata requires an encryption key manager")]
     Encrypted,
+    #[error(transparent)]
+    Crypto(#[from] astersql_pd_encryption::RegionCipherError),
 }
 /// Load failure with Go's existence flag, including malformed nonempty values.
 #[derive(Debug, thiserror::Error)]
@@ -93,7 +95,10 @@ impl From<&RegionMeta> for WireRegion {
                     },
                 })
                 .collect(),
-            encryption: None,
+            encryption: meta.encryption_meta.as_ref().map(|meta| WireEncryption {
+                key_id: meta.key_id,
+                iv: meta.iv.clone(),
+            }),
             is_in_flashback: meta.is_in_flashback,
             flashback_start_ts: meta.flashback_start_ts,
         }
@@ -102,9 +107,6 @@ impl From<&RegionMeta> for WireRegion {
 impl TryFrom<WireRegion> for RegionMeta {
     type Error = RegionMetaError;
     fn try_from(w: WireRegion) -> Result<Self, Self::Error> {
-        if w.encryption.is_some() {
-            return Err(RegionMetaError::Encrypted);
-        }
         Ok(Self {
             id: w.id,
             key_range: KeyRange {
@@ -131,7 +133,10 @@ impl TryFrom<WireRegion> for RegionMeta {
                     },
                 })
                 .collect(),
-            encryption_meta: None,
+            encryption_meta: w.encryption.map(|meta| RegionEncryptionMeta {
+                key_id: meta.key_id,
+                iv: meta.iv,
+            }),
             is_in_flashback: w.is_in_flashback,
             flashback_start_ts: w.flashback_start_ts,
         })
@@ -154,7 +159,7 @@ impl StorageEndpoint {
         match state {
             LoadState::Missing | LoadState::Empty => Ok(None),
             LoadState::Value(bytes) => {
-                let result = decode_region(&bytes);
+                let result = self.decode_region(&bytes).await;
                 result.map(Some).map_err(|source| RegionLoadError {
                     found: true,
                     source,
@@ -162,19 +167,25 @@ impl StorageEndpoint {
             }
         }
     }
-    /// Save unencrypted metadata, rejecting encrypted inputs before writing.
+    /// Encrypt an owned copy through the shared dictionary before writing.
     pub async fn save_region(
         &self,
         paths: &ClusterPaths,
         meta: &RegionMeta,
     ) -> Result<(), RegionMetaError> {
-        if meta.encryption_meta.is_some() {
-            return Err(RegionMetaError::Encrypted);
-        }
+        let encrypted =
+            astersql_pd_encryption::encrypt_region(Some(meta), self.encryption_keys.as_deref())
+                .map_err(|error| {
+                    if self.encryption_keys.is_none() && meta.encryption_meta.is_some() {
+                        RegionMetaError::Encrypted
+                    } else {
+                        error.into()
+                    }
+                })?;
         protobuf::save(
             self,
             paths.region_path(meta.id).as_bytes(),
-            &WireRegion::from(meta),
+            &WireRegion::from(encrypted.as_ref()),
         )
         .await?;
         Ok(())
@@ -193,11 +204,24 @@ impl StorageEndpoint {
     }
 }
 
-pub(super) fn decode_region(bytes: &[u8]) -> Result<RegionMeta, RegionMetaError> {
-    WireRegion::decode(bytes)
-        .map_err(|error| EndpointError::ProtoUnmarshal(Box::new(error)))
-        .map_err(RegionMetaError::from)
-        .and_then(RegionMeta::try_from)
+impl StorageEndpoint {
+    pub(super) async fn decode_region(&self, bytes: &[u8]) -> Result<RegionMeta, RegionMetaError> {
+        let mut meta = WireRegion::decode(bytes)
+            .map_err(|error| EndpointError::ProtoUnmarshal(Box::new(error)))
+            .map_err(RegionMetaError::from)
+            .and_then(RegionMeta::try_from)?;
+        let encrypted = meta.encryption_meta.is_some();
+        astersql_pd_encryption::decrypt_region(Some(&mut meta), self.encryption_keys.as_deref())
+            .await
+            .map_err(|error| {
+                if self.encryption_keys.is_none() && encrypted {
+                    RegionMetaError::Encrypted
+                } else {
+                    error.into()
+                }
+            })?;
+        Ok(meta)
+    }
 }
 
 pub(crate) fn bootstrap_bytes(meta: &RegionMeta) -> Vec<u8> {

@@ -22,6 +22,8 @@ use tokio_util::sync::CancellationToken;
 
 type State = Mutex<HeartbeatEffectsState<ProviderSnapshot<()>>>;
 struct Resources {
+    encryption_keys: Option<Arc<astersql_pd_encryption::DictionaryStorage>>,
+    encryption_error: Option<String>,
     replication: Option<Arc<astersql_pd_replication::ModeManager>>,
     replication_transport_config: Option<Arc<astersql_pd_server_config::Config>>,
     replicated_states: Arc<AsyncMutex<std::collections::BTreeMap<u64, u64>>>,
@@ -86,6 +88,13 @@ pub struct ClusterHost {
     cancel: CancellationToken,
 }
 impl ClusterHost {
+    pub async fn encryption_persistence_error(&self) -> Option<String> {
+        self.resources
+            .lock()
+            .await
+            .as_ref()
+            .and_then(|r| r.encryption_error.clone())
+    }
     pub async fn metrics_collection_error(&self) -> Option<String> {
         self.resources
             .lock()
@@ -255,6 +264,7 @@ impl ClusterHost {
         leader: Arc<astersql_pd_member::Leadership>,
         allocator: Arc<astersql_pd_id::Allocator>,
         metrics: Option<Arc<astersql_pd_server::service_metrics::DomainMetricHandles>>,
+        encryption: Option<Arc<crate::encryption::EncryptionResources>>,
     ) -> Result<Self, crate::NodeError> {
         let _start_metrics = metrics.as_ref().map(|m| {
             m.classic
@@ -283,7 +293,13 @@ impl ClusterHost {
         persisted_config.config.replication = config.replication.clone();
         persisted_config.store = config.store.clone();
         let metrics_store = store.clone();
-        let storage = Arc::new(StorageEndpoint::new(store.clone()));
+        let encryption_keys = encryption.as_ref().map(|keys| keys.dictionary.clone());
+        if let Some(keys) = &encryption {
+            persisted_config.config.security.encryption = keys.config.clone();
+        }
+        let storage = Arc::new(
+            StorageEndpoint::new(store.clone()).with_encryption_keys(encryption_keys.clone()),
+        );
         let paths = ClusterPaths::new(cluster_id);
         let replication = if storage.load_meta(&paths).await?.is_some() {
             Some(
@@ -415,6 +431,8 @@ impl ClusterHost {
             }
         }
         let resources = Arc::new(AsyncMutex::new(Some(Resources {
+            encryption_keys: encryption_keys.clone(),
+            encryption_error: None,
             replication,
             replication_transport_config: None,
             replicated_states: Arc::new(AsyncMutex::new(Default::default())),
@@ -440,7 +458,8 @@ impl ClusterHost {
                         .as_nanos()
                         .max(1) as u64,
                 ),
-            ),
+            )
+            .with_encryption(encryption_keys),
             meta_store: store,
             leader,
             allocator,
@@ -925,7 +944,8 @@ impl ClusterHost {
             .duration_since(std::time::UNIX_EPOCH)
             .map_err(|e| e.to_string())?
             .as_nanos() as u64;
-        let endpoint = StorageEndpoint::new(backend);
+        let endpoint =
+            StorageEndpoint::new(backend).with_encryption_keys(resources.encryption_keys.clone());
         let meta = astersql_pd_storage_endpoint::Cluster {
             id: resources.paths.cluster_id(),
             max_peer_count: resources.persisted_config.config.replication.max_replicas as u32,
@@ -935,6 +955,19 @@ impl ClusterHost {
             .await
             .map_err(|e| e.to_string())?;
         if committed {
+            // Go first commits bootstrap metadata, then saves its region through
+            // the configured storage adapter; a failed secondary save is recorded.
+            if let Some(keys) = &resources.encryption_keys {
+                match keys.get_current_key() {
+                    Ok(Some(_)) => {
+                        if let Err(error) = endpoint.save_region(&resources.paths, &region).await {
+                            resources.encryption_error = Some(error.to_string());
+                        }
+                    }
+                    Ok(None) => {}
+                    Err(error) => resources.encryption_error = Some(error.to_string()),
+                }
+            }
             let manager = replication_mode::manager(
                 resources.persisted_config.config.replication_mode.clone(),
                 resources.meta_store.clone(),

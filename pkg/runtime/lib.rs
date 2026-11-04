@@ -206,3 +206,10 @@ mod store_metrics;
 #[cfg(test)]
 #[path = "store_metrics_test.rs"]
 mod store_metrics_test;
+
+mod encryption;
+
+#[cfg(test)]
+mod region_encryption_test;
+
+mod hot_history_encryption;

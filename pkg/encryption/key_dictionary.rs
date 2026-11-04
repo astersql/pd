@@ -104,7 +104,7 @@ impl DictionaryStorage {
             )
             .instantiate([] as [String; 0])
         })?;
-        let master = MasterKey::from_config(Some(meta), &envelope.ciphertext_key).await?;
+        let master = Box::pin(MasterKey::from_config(Some(meta), &envelope.ciphertext_key)).await?;
         let plaintext = Zeroizing::new(master.decrypt(&envelope.content, &envelope.iv)?);
         let keys = self.codec.decode_keys(&plaintext)?;
         let next = KeySnapshot {
@@ -140,7 +140,7 @@ impl DictionaryStorage {
             )
             .instantiate([] as [String; 0]));
         }
-        let master = MasterKey::from_config(Some(meta), &[]).await?;
+        let master = Box::pin(MasterKey::from_config(Some(meta), &[])).await?;
         if master.is_plaintext() {
             for key in keys.keys.values_mut() {
                 key.was_exposed = true;

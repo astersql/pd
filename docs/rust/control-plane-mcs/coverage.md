@@ -79,7 +79,7 @@ watcher/额度集成测试和测试工具。只补此清单，不改只读plan�
 | 12 持久化密钥字典 | 加载和保存key dictionary保持revision、当前key与历史key一致，损坏字典及提交失败不替换可读快照。 | 8 | `pkg/encryption/key_dictionary.rs`（拟建）；`pkg/encryption/lib.rs`（存在） | [6聚焦+8相邻通过，待统一回归](task-012.md) |
 | 13 实现任期内密钥轮换 | 仅有效leader轮换密钥，处理碰撞重试与明文暴露标志；旧任期和事务失败不得发布新key。 | 8 | `pkg/encryption/key_rotation.rs`（拟建）；`pkg/encryption/lib.rs`（存在） | [5聚焦+14相邻通过，待统一回归](task-013.md) |
 | 14 恢复密钥字典监听 | watch更新、断线重连和compaction重建后密钥快照收敛，关闭后不再更新。 | 8 | `pkg/encryption/key_watch.rs`（拟建）；`pkg/encryption/lib.rs`（存在） | [5聚焦+23相邻通过，待统一回归](task-014.md) |
-| 15 接通Region边界加密 | region start/end key按既有方法与key ID加解密，保留输入对象、空边界和未知key错误；存储适配调用同一实现。 | 8 | `pkg/encryption/lib.rs`（存在）；`pkg/encryption/region_crypter.rs`（拟建）；`pkg/runtime/lib.rs`（存在）；`pkg/runtime/node.rs`（存在）；`pkg/server/lib.rs`（存在） | 待当前行为证据 |
+| 15 接通Region边界加密 | region start/end key按既有方法与key ID加解密，保留输入对象、空边界和未知key错误；存储适配调用同一实现。 | 8 | `pkg/encryption/lib.rs`（存在）；`pkg/encryption/region_crypter.rs`（存在）；`pkg/runtime/lib.rs`（存在）；`pkg/runtime/node.rs`（存在）；`pkg/server/lib.rs`（存在） | [task-015](task-015.md)：9聚焦+34相邻通过；真实Go LevelDB双向CTR、heartbeat重启、历史key；待统一全量回归 |
 | 16 验证恢复请求与阶段启动 | RemoveFailedStoresWithOptions拒绝非法或冲突请求，显式选项和自动识别模式产生一致初始阶段且暂停调度。 | 2 | `pkg/unsaferecovery/lib.rs`（拟建）；`pkg/unsaferecovery/recovery_start.rs`（拟建） | 待当前行为证据 |
 | 17 收集恢复心跳报告 | CollectReport与HandleStoreHeartbeat仅收取当前阶段报告，重复、迟到与缺失报告不提前进入下一阶段。 | 2 | `pkg/unsaferecovery/collect_report.rs`（拟建）；`pkg/unsaferecovery/lib.rs`（拟建） | 待当前行为证据 |
 | 18 构建恢复Region索引 | 按epoch与raft新鲜度构建重叠region索引，覆盖空范围、未初始化peer及merge重叠选择。 | 2 | `pkg/unsaferecovery/lib.rs`（拟建）；`pkg/unsaferecovery/region_index.rs`（拟建） | 待当前行为证据 |

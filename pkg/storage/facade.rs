@@ -27,6 +27,18 @@ impl Storage {
         }
     }
 
+    /// Use one dictionary for default and attached region persistence adapters.
+    pub fn with_encryption_keys(
+        mut self,
+        keys: Option<Arc<astersql_pd_encryption::DictionaryStorage>>,
+    ) -> Self {
+        self.endpoint = self.endpoint.with_encryption_keys(keys.clone());
+        self.region_storage = self
+            .region_storage
+            .map(|endpoint| endpoint.with_encryption_keys(keys));
+        self
+    }
+
     /// Access the existing KV API, including callback and conditional transactions.
     pub fn base(&self) -> Base<'_> {
         Base::new(self.store.as_ref())

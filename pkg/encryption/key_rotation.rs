@@ -7,15 +7,22 @@ use crate::{
 use astersql_pd_election::Leadership;
 use astersql_pd_errs::{ErrorTemplate, TypedError, catalog::*};
 use astersql_pd_storage_domain::Commit;
-use std::sync::Arc;
+use std::sync::{Arc, Mutex, Weak};
+use tokio_util::sync::CancellationToken;
 pub type KeyClock = Arc<dyn Fn() -> i128 + Send + Sync>;
 pub trait CryptoRandom: rand::RngCore + rand::CryptoRng + Send {}
 impl<T: rand::RngCore + rand::CryptoRng + Send> CryptoRandom for T {}
 struct RotationState {
+    cancel: CancellationToken,
     term: Option<Arc<Leadership>>,
     random: Box<dyn CryptoRandom>,
 }
+struct RotationActivity {
+    term: Weak<Leadership>,
+    cancel: CancellationToken,
+}
 pub struct KeyRotation {
+    activity: Mutex<Option<RotationActivity>>,
     storage: Arc<DictionaryStorage>,
     method: EncryptionMethod,
     period: i64,
@@ -49,7 +56,9 @@ impl KeyRotation {
             period: config.data_key_rotation_period.as_nanos(),
             master_key: config.master_key_meta()?,
             clock,
+            activity: Mutex::new(None),
             state: tokio::sync::Mutex::new(RotationState {
+                cancel: CancellationToken::new(),
                 term: None,
                 random: Box::new(random),
             }),
@@ -69,7 +78,27 @@ impl KeyRotation {
         &self,
         term: Option<Arc<Leadership>>,
     ) -> Result<Option<Commit>, TypedError> {
+        let cancel = CancellationToken::new();
+        {
+            let mut active = self
+                .activity
+                .lock()
+                .expect("key rotation activity poisoned");
+            if let Some(previous) = active.as_ref() {
+                previous.cancel.cancel();
+            }
+            // Publish intent before awaiting the operation mutex, so a later
+            // retirement can cancel even an assignment still queued for admission.
+            *active = Some(RotationActivity {
+                term: term.as_ref().map(Arc::downgrade).unwrap_or_default(),
+                cancel: cancel.clone(),
+            });
+        }
         let mut state = self.state.lock().await;
+        if cancel.is_cancelled() {
+            return Ok(None);
+        }
+        state.cancel = cancel;
         state.term = term;
         self.rotate(&mut state, true).await
     }
@@ -77,7 +106,51 @@ impl KeyRotation {
         let mut state = self.state.lock().await;
         self.rotate(&mut state, false).await
     }
+    /// Retiring a captured term cancels its in-flight I/O before waiting for its mutex.
+    pub async fn clear_leadership_if(&self, expected: &Arc<Leadership>) {
+        if let Some(active) = self
+            .activity
+            .lock()
+            .expect("key rotation activity poisoned")
+            .as_ref()
+        {
+            if active
+                .term
+                .upgrade()
+                .is_some_and(|term| Arc::ptr_eq(&term, expected))
+            {
+                active.cancel.cancel();
+            }
+        }
+        let mut state = self.state.lock().await;
+        if state
+            .term
+            .as_ref()
+            .is_some_and(|term| Arc::ptr_eq(term, expected))
+        {
+            state.term = None;
+            let mut active = self
+                .activity
+                .lock()
+                .expect("key rotation activity poisoned");
+            if active.as_ref().is_some_and(|a| {
+                a.term
+                    .upgrade()
+                    .is_some_and(|term| Arc::ptr_eq(&term, expected))
+            }) {
+                *active = None;
+            }
+        }
+    }
     async fn rotate(
+        &self,
+        state: &mut RotationState,
+        force: bool,
+    ) -> Result<Option<Commit>, TypedError> {
+        let cancel = state.cancel.clone();
+        tokio::select! {biased;_=cancel.cancelled()=>Ok(None),result=self.rotate_inner(state,force)=>result}
+    }
+    async fn rotate_inner(
         &self,
         state: &mut RotationState,
         force: bool,

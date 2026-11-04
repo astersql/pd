@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 use tokio_util::sync::CancellationToken;
 
-/// Persisted and HTTP-visible plaintext history. Encrypted inputs fail closed.
+/// Plaintext history values; a host adapter may encode storage-only ciphertext.
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(default)]
 pub struct HistoryHotRegion {
@@ -58,10 +58,19 @@ pub enum HistoryError {
     EncryptionUnavailable,
     #[error("json: unsupported value: non-finite hotspot load")]
     NonFinite,
+    #[error("{0}")]
+    Cipher(#[source] Box<dyn std::error::Error + Send + Sync>),
+}
+/// Host conversion keeps cryptography and key lookup outside storage contracts.
+#[async_trait::async_trait]
+pub trait HistoryCipher: Send + Sync {
+    fn encrypt(&self, row: &HistoryHotRegion) -> Result<HistoryHotRegion, HistoryError>;
+    async fn decrypt(&self, row: HistoryHotRegion) -> Result<HistoryHotRegion, HistoryError>;
 }
 /// Separate per-member namespace preserves Go's local historical database boundary.
 #[derive(Clone)]
 pub struct HotHistory {
+    cipher: Option<Arc<dyn HistoryCipher>>,
     store: Arc<dyn MetaStore>,
     root: String,
     writes: Arc<tokio::sync::Mutex<()>>,
@@ -69,6 +78,7 @@ pub struct HotHistory {
 impl HotHistory {
     pub fn new(store: Arc<dyn MetaStore>, cluster_id: u64, member_id: u64) -> Self {
         Self {
+            cipher: None,
             store,
             writes: Arc::new(tokio::sync::Mutex::new(())),
             root: format!("/pd/{cluster_id}/rust/hot-history/{member_id}"),
@@ -90,6 +100,10 @@ impl HotHistory {
         format!("{}/rows/{}", self.root, parts.join("/")).into_bytes()
     }
     /// Go uses (type, timestamp, region), so the last peer for that key wins.
+    pub fn with_cipher(mut self, cipher: Option<Arc<dyn HistoryCipher>>) -> Self {
+        self.cipher = cipher;
+        self
+    }
     pub fn encode(&self, rows: &[HistoryHotRegion]) -> Result<Vec<Mutation>, HistoryError> {
         let mut batch = std::collections::BTreeMap::new();
         for row in rows {
@@ -102,9 +116,14 @@ impl HotHistory {
             {
                 return Err(HistoryError::NonFinite);
             }
+            let encoded = if let Some(cipher) = &self.cipher {
+                cipher.encrypt(row)?
+            } else {
+                row.clone()
+            };
             batch.insert(
                 self.key(&row.hot_region_type, row.update_time, row.region_id),
-                serde_json::to_vec(row)?,
+                serde_json::to_vec(&encoded)?,
             );
         }
         Ok(batch
@@ -245,8 +264,10 @@ impl HotHistory {
                 request.start = Some(next);
             }
             for bytes in latest.values() {
-                let row: HistoryHotRegion = serde_json::from_slice(bytes)?;
-                if row.encryption_meta.is_some() {
+                let mut row: HistoryHotRegion = serde_json::from_slice(bytes)?;
+                if let Some(cipher) = &self.cipher {
+                    row = tokio::select! {biased;_=cancel.cancelled()=>return Err(StoreError::Cancelled.into()),result=cipher.decrypt(row)=>result?};
+                } else if row.encryption_meta.is_some() {
                     return Err(HistoryError::EncryptionUnavailable);
                 }
                 if q.matches(&row) {

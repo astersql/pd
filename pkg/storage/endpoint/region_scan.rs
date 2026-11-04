@@ -1,5 +1,5 @@
 // Copyright 2026 AsterSQL.
-use crate::{EndpointError, RegionMetaError, StorageEndpoint, region_meta::decode_region};
+use crate::{EndpointError, RegionMetaError, StorageEndpoint};
 use astersql_pd_core::RegionInfo;
 use astersql_pd_keypath::ClusterPaths;
 use astersql_pd_storage_kv::{Consistency, Read};
@@ -49,7 +49,7 @@ impl StorageEndpoint {
                 return Err(RegionScanError::Cancelled);
             }
             for entry in &page.entries {
-                let meta = decode_region(&entry.value)?;
+                let meta = self.decode_region(&entry.value).await?;
                 self.next_region_id = meta.id.wrapping_add(1);
                 for overlap in put(RegionInfo::new(meta, None, vec![], vec![])) {
                     self.delete_region(paths, overlap.meta()).await?;

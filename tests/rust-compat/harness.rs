@@ -41,6 +41,13 @@ impl Server {
     }
     /// Multi-member etcd may need to transfer Raft leadership before exiting.
     pub fn stop_with_timeout(&mut self, timeout: Duration) -> Result<(), String> {
+        if let Some(status) = self.child.try_wait().map_err(|e| e.to_string())? {
+            return if status.success() {
+                Ok(())
+            } else {
+                Err(format!("shutdown: {status}; {}", self.logs()))
+            };
+        }
         let status = Command::new("kill")
             .args(["-TERM", &self.child.id().to_string()])
             .status()

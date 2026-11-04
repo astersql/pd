@@ -9,6 +9,7 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
+astersql-pd-encryption.workspace = true
 astersql-pd-storage-domain.workspace = true
 astersql-pd-core.workspace = true
 astersql-pd-typeutil.workspace = true
@@ -23,4 +24,6 @@ thiserror.workspace = true
 astersql-pd-proto.workspace = true
 
 [dev-dependencies]
+astersql-pd-election.workspace = true
+astersql-pd-errs.workspace = true
 async-trait.workspace = true

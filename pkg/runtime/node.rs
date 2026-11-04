@@ -67,6 +67,7 @@ fn record(events: &Events, event: &'static str) {
 }
 
 pub(crate) struct Application {
+    pub(crate) encryption: Option<std::sync::Weak<crate::encryption::EncryptionResources>>,
     identity: Identity,
     pub(crate) cluster: Arc<crate::cluster_host::ClusterHost>,
     pub(crate) leader: Arc<Leadership>,
@@ -471,10 +472,17 @@ async fn initialize_node(
         .encode_to_vec(),
     )
     .await?;
+    let encryption = crate::encryption::EncryptionResources::start(
+        store.clone(),
+        listener_config.security.encryption.clone(),
+        &cancel,
+    )
+    .await?;
     let services = Arc::new(crate::member_role_worker::RoleServices::new(
         config.clone(),
         store.clone(),
     ));
+    let _ = services.encryption.set(Arc::downgrade(&encryption));
     services.set_telemetry(Arc::new(telemetry_config.clone()), &metrics);
     if !listener_config.scalars.data_dir.is_empty() {
         let _ = services
@@ -503,6 +511,7 @@ async fn initialize_node(
                     Arc::new(leader),
                     Some(metrics.clone()),
                     Some(Arc::new(telemetry_config.clone())),
+                    Some(encryption.clone()),
                 )
                 .await
                 {
@@ -645,6 +654,7 @@ async fn initialize_node(
             (&mut server).await
         };
         drop(server);
+        let encryption_cleanup = encryption.shutdown().await;
         record(&worker_events, "background-joined");
         record(&worker_events, "leadership-released");
         drop(membership);
@@ -653,6 +663,7 @@ async fn initialize_node(
         // Admission failure is the initiating error; cleanup has already run.
         // Do not replace it with a secondary serving/retirement failure.
         completion?;
+        encryption_cleanup?;
         result?;
         drained?;
         Ok(())
@@ -675,13 +686,16 @@ pub(crate) async fn prepare_term(
     leader: Arc<Leadership>,
     metrics: Option<Arc<astersql_pd_server::service_metrics::ServiceMetrics>>,
     transport_config: Option<Arc<astersql_pd_server_config::Config>>,
+    encryption: Option<Arc<crate::encryption::EncryptionResources>>,
 ) -> Result<Arc<Application>, NodeError> {
     if let Some(metrics) = &metrics {
         leader.set_metrics(&metrics.classic);
     }
     let setup = async {
         let (cluster, cluster_config, restored_config) = {
-            let recovery = crate::cluster_restore::restore(
+            let recovery = async {
+                if let Some(keys)=&encryption {keys.rotation.set_leadership(Some(leader.clone())).await?;}
+                crate::cluster_restore::restore_with_encryption(
                 cluster,
                 Arc::new(crate::member_role_worker::TermStore::new(
                     store.clone(),
@@ -690,7 +704,9 @@ pub(crate) async fn prepare_term(
                 )),
                 &config,
                 &cancel,
-            );
+                encryption.as_ref().map(|keys|keys.dictionary.clone()),
+            ).await
+            };
             tokio::pin!(recovery);
             let mut renew = tokio::time::interval(std::time::Duration::from_secs(1));
             // Large snapshots must not exhaust the election lease before serving starts.
@@ -740,6 +756,7 @@ pub(crate) async fn prepare_term(
             leader.clone(),
             allocator.clone(),
             metrics.as_ref().map(|m|m.domain_metrics()),
+            encryption.clone(),
         );
         tokio::pin!(creation);
         let mut renew = tokio::time::interval(std::time::Duration::from_secs(1));
@@ -761,6 +778,7 @@ pub(crate) async fn prepare_term(
         };
         cluster.set_replication_transport_config(transport_config).await;
         Ok::<_, NodeError>(Arc::new(Application {
+            encryption:encryption.as_ref().map(Arc::downgrade),
             cluster,
             identity: config,
             leader: leader.clone(),
@@ -779,6 +797,9 @@ pub(crate) async fn prepare_term(
             // failures must still propagate before reporting graceful shutdown.
             let interrupted = cancel.is_cancelled();
             cancel.cancel();
+            if let Some(keys) = &encryption {
+                keys.rotation.clear_leadership_if(&leader).await;
+            }
             let cleanup = leader.resign().await.map_err(Into::into);
             let error = if interrupted {
                 astersql_pd_member::MemberError::Cancelled.into()

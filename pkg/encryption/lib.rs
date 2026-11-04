@@ -183,3 +183,8 @@ mod key_watch_test;
 #[cfg(test)]
 #[path = "../storage/kv/etcd_fixture_test.rs"]
 mod etcd_fixture;
+
+mod region_crypter;
+pub use region_crypter::*;
+#[cfg(test)]
+mod region_crypter_test;

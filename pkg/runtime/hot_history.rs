@@ -42,6 +42,15 @@ impl Maintenance {
             pending: BTreeMap::new(),
         }
     }
+    pub(super) fn with_encryption(
+        mut self,
+        keys: Option<Arc<astersql_pd_encryption::DictionaryStorage>>,
+    ) -> Self {
+        self.store = self
+            .store
+            .with_cipher(crate::hot_history_encryption::codec(keys));
+        self
+    }
     fn flush_due(&mut self, next: Duration) -> bool {
         if self.last_flush.elapsed() < self.interval {
             return false;
@@ -102,16 +111,6 @@ pub(super) async fn maintain(
     }
     if days == 0 {
         return Ok(());
-    }
-    let method = r
-        .persisted_config
-        .config
-        .security
-        .encryption
-        .data_encryption_method
-        .as_str();
-    if !matches!(method, "" | "plaintext") {
-        return Err("history region encryption key manager is not configured".into());
     }
     use astersql_pd_statistics::StoreStatInformer;
     use astersql_pd_statistics_utils::RWType;

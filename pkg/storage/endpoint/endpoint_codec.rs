@@ -7,6 +7,7 @@ use std::sync::Arc;
 pub struct StorageEndpoint {
     pub(crate) store: Arc<dyn MetaStore>,
     pub(crate) next_region_id: u64,
+    pub(crate) encryption_keys: Option<Arc<astersql_pd_encryption::DictionaryStorage>>,
     domain: astersql_pd_storage_domain::StorageEndpoint,
 }
 impl StorageEndpoint {
@@ -15,7 +16,16 @@ impl StorageEndpoint {
             domain: astersql_pd_storage_domain::StorageEndpoint::new(store.clone()),
             store,
             next_region_id: 0,
+            encryption_keys: None,
         }
+    }
+    /// Bind the host's shared dictionary to region read/write adapters.
+    pub fn with_encryption_keys(
+        mut self,
+        keys: Option<Arc<astersql_pd_encryption::DictionaryStorage>>,
+    ) -> Self {
+        self.encryption_keys = keys;
+        self
     }
 }
 impl AsRef<astersql_pd_storage_domain::StorageEndpoint> for StorageEndpoint {

@@ -147,3 +147,12 @@ mod gc_batch_read_test;
 pub use astersql_pd_storage_domain::{MAX_BATCH_OPS, run_batch_op_in_txn};
 #[cfg(test)]
 mod batch_ops_test;
+
+#[cfg(test)]
+#[path = "../../server/encryption_dictionary.rs"]
+mod encryption_dictionary;
+#[cfg(test)]
+#[path = "../kv/etcd_fixture_test.rs"]
+mod etcd_fixture;
+#[cfg(test)]
+mod region_encryption_test;
