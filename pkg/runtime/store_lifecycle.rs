@@ -403,3 +403,19 @@ impl astersql_pd_unsaferecovery::RecoveryCluster for RecoveryAdmission<'_> {
         self.r.recovery_halted = halt;
     }
 }
+
+pub(super) struct RecoveryIds(Arc<astersql_pd_id::Allocator>);
+impl RecoveryIds {
+    pub(super) fn new(allocator: Arc<astersql_pd_id::Allocator>) -> Self {
+        Self(allocator)
+    }
+}
+#[async_trait::async_trait]
+impl astersql_pd_unsaferecovery::RecoveryIdAllocator for RecoveryIds {
+    async fn allocate(&mut self) -> Result<u64, astersql_pd_unsaferecovery::RecoveryError> {
+        self.0
+            .alloc()
+            .await
+            .map_err(|e| astersql_pd_unsaferecovery::RecoveryError::Backend(e.to_string()))
+    }
+}

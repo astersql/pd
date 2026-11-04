@@ -23,6 +23,7 @@ pub struct RecoveryPlan {
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub struct PlanBatch {
     pub plans: BTreeMap<u64, RecoveryPlan>,
+    pub newly_created_regions: BTreeSet<u64>,
     pub affected_regions: BTreeSet<u64>,
     pub affected_meta_regions: BTreeSet<u64>,
     pub affected_table_ids: BTreeSet<i64>,

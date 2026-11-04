@@ -12,6 +12,8 @@ astersql-pd-core.workspace = true
 astersql-pd-errs.workspace = true
 async-trait.workspace = true
 [dev-dependencies]
+astersql-pd-id.workspace = true
+astersql-pd-member.workspace = true
 astersql-pd-storage-kv.workspace = true
 astersql-pd-storage.workspace = true
 astersql-pd-storage-endpoint.workspace = true

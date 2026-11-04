@@ -1296,6 +1296,8 @@ dependencies = [
  "tokio",
  "tokio-util",
  "astersql-pd-codec",
+ "astersql-pd-id",
+ "astersql-pd-member",
 ]
 
 [[package]]

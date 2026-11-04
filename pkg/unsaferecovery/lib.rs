@@ -36,3 +36,9 @@ mod tiflash_cleanup;
 #[cfg(test)]
 #[path = "tiflash_cleanup_test.rs"]
 mod tiflash_cleanup_test;
+
+mod empty_region;
+pub use empty_region::*;
+#[cfg(test)]
+#[path = "empty_region_test.rs"]
+mod empty_region_test;

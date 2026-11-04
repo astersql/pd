@@ -1348,8 +1348,10 @@ impl StoreHeartbeatService for ClusterHost {
                 .build_region_index()
                 .map_err(|e| StoreHeartbeatError::Other(e.to_string()))?;
             let stores = r.state.lock().unwrap().cluster.stores.clone();
+            let mut ids = store_lifecycle::RecoveryIds::new(r.allocator.clone());
             let prepared = controller
-                .prepare_recovery_plan(&index, &stores)
+                .prepare_recovery_with_ids(&index, &stores, &mut ids)
+                .await
                 .map_err(|e| StoreHeartbeatError::Other(e.to_string()))?;
             r.recovery_index = Some(index);
             r.prepared_recovery = prepared;

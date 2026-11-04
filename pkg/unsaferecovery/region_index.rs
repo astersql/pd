@@ -160,9 +160,9 @@ impl RecoveryIndex {
         }
         Ok(leader)
     }
-    pub fn find_overlap_with_empty<'a, 'b>(
+    pub fn find_overlap_with_empty<'a, 'b, R: std::borrow::Borrow<RegionMeta>>(
         &'a self,
-        empty: &'b [RegionMeta],
+        empty: &'b [R],
     ) -> Option<(&'a RegionItem, &'b RegionMeta)> {
         if empty.is_empty() {
             return None;
@@ -188,18 +188,22 @@ impl RecoveryIndex {
         None
     }
 }
-pub fn first_empty_overlap<'a>(
-    empty: &'a [RegionMeta],
+pub fn first_empty_overlap<'a, R: std::borrow::Borrow<RegionMeta>>(
+    empty: &'a [R],
     region: &RegionMeta,
 ) -> Option<&'a RegionMeta> {
     let start = &region.key_range.start_key;
     let end = &region.key_range.end_key;
-    let i =
-        empty.partition_point(|r| !r.key_range.end_key.is_empty() && r.key_range.end_key <= *start);
+    let i = empty.partition_point(|r| {
+        let r = r.borrow();
+        !r.key_range.end_key.is_empty() && r.key_range.end_key <= *start
+    });
     empty
         .get(i)
+        .map(std::borrow::Borrow::borrow)
         .filter(|r| end.is_empty() || r.key_range.start_key < *end)
 }
+
 impl Controller {
     pub fn build_region_index(&self) -> Result<RecoveryIndex, RecoveryError> {
         let mut result = RecoveryIndex::default();
