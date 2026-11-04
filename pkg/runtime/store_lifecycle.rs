@@ -271,6 +271,17 @@ pub(super) async fn cleanup(
 }
 
 impl ClusterHost {
+    pub async fn unsafe_recovery_reports(
+        &self,
+    ) -> Result<
+        std::collections::BTreeMap<u64, Option<astersql_pd_unsaferecovery::StoreReport>>,
+        String,
+    > {
+        let guard = self.resources.lock().await;
+        let r = guard.as_ref().ok_or("node stopped")?;
+        let snapshot = r.recovery.lock().await.reports().clone();
+        Ok(snapshot)
+    }
     pub async fn start_unsafe_recovery(
         &self,
         request: astersql_pd_unsaferecovery::StartRequest,

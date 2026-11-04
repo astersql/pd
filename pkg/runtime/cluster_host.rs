@@ -1303,6 +1303,43 @@ impl ClusterHost {
 }
 #[async_trait::async_trait]
 impl StoreHeartbeatService for ClusterHost {
+    fn recovery_enabled(&self) -> bool {
+        true
+    }
+    async fn recovery_heartbeat(
+        &self,
+        store: u64,
+        report: Option<astersql_pd_unsaferecovery::StoreReport>,
+    ) -> Result<(NodeState, Option<u64>), StoreHeartbeatError> {
+        let guard = self.resources.lock().await;
+        let r = guard
+            .as_ref()
+            .ok_or_else(|| StoreHeartbeatError::Other("node stopped".into()))?;
+        r.leader
+            .validate()
+            .await
+            .map_err(|e| StoreHeartbeatError::Other(e.to_string()))?;
+        let store_info = r
+            .state
+            .lock()
+            .unwrap()
+            .cluster
+            .stores
+            .get_store(store)
+            .ok_or(StoreHeartbeatError::StoreNotFound(store))?;
+        if store_info.is_removed() {
+            return Err(StoreHeartbeatError::Removed);
+        }
+        let mut controller = r.recovery.lock().await;
+        controller
+            .collect_report(store, report)
+            .map_err(|e| StoreHeartbeatError::Other(e.to_string()))?;
+        Ok((
+            store_info.node_state(),
+            controller.request_report(store, now().1 as i128),
+        ))
+    }
+
     async fn store_heartbeat(&self, stats: StoreStats) -> Result<NodeState, StoreHeartbeatError> {
         let resources = self.resources.lock().await;
         if self.cancel.is_cancelled() {

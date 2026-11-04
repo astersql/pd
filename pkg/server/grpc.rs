@@ -680,7 +680,7 @@ impl Pd for Grpc {
         })?;
         // These fields belong to recovery/replication controllers outside this
         // state adapter. In particular a recovery report must bypass statistics.
-        if request.store_report.is_some() {
+        if request.store_report.is_some() && !service.recovery_enabled() {
             return Err(Status::unimplemented(
                 "store recovery and DR status are unsupported",
             ));
@@ -702,8 +702,31 @@ impl Pd for Grpc {
         let metric_store = stats.store_id;
         let started = std::time::Instant::now();
         let stats = crate::core_store_adapter::store_stats_from_proto(Some(stats)).unwrap();
-        let result = service.store_heartbeat(stats).await;
+        let is_recovery_report = request.store_report.is_some();
+        let mut request_step = None;
+        let mut result = if let Some(report) = request.store_report {
+            service
+                .recovery_heartbeat(
+                    metric_store,
+                    Some(crate::recovery_report_adapter::from_proto(report)),
+                )
+                .await
+                .map(|(state, step)| {
+                    request_step = step;
+                    state
+                })
+        } else {
+            service.store_heartbeat(stats).await
+        };
+        if result.is_ok() && !is_recovery_report && service.recovery_enabled() {
+            match service.recovery_heartbeat(metric_store, None).await {
+                Ok((_, step)) => request_step = step,
+                Err(error) => result = Err(error),
+            }
+        }
+
         if result.is_ok()
+            && !is_recovery_report
             && let Some((metrics, address)) = metric_labels
         {
             metrics.stores.observe(
@@ -774,6 +797,10 @@ impl Pd for Grpc {
             header: Some(header),
             state,
             replication_status,
+            recovery_plan: request_step.map(|step| pdpb::RecoveryPlan {
+                step,
+                ..Default::default()
+            }),
             ..Default::default()
         }))
     }

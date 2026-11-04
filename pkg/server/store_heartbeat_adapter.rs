@@ -16,6 +16,19 @@ pub enum StoreHeartbeatError {
 /// No transport values, scheduler, runtime or worker ownership crosses this API.
 #[async_trait::async_trait]
 pub trait StoreHeartbeatService: Send + Sync {
+    fn recovery_enabled(&self) -> bool {
+        false
+    }
+    async fn recovery_heartbeat(
+        &self,
+        _store: u64,
+        _report: Option<astersql_pd_unsaferecovery::StoreReport>,
+    ) -> Result<(NodeState, Option<u64>), StoreHeartbeatError> {
+        Err(StoreHeartbeatError::Other(
+            "recovery state service is not configured".into(),
+        ))
+    }
+
     async fn store_heartbeat(&self, stats: StoreStats) -> Result<NodeState, StoreHeartbeatError>;
 }
 

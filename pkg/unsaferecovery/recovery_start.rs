@@ -88,7 +88,9 @@ pub struct Controller {
     pub(crate) step: u64,
     pub(crate) recovery_start_step: u64,
     pub(crate) failed_stores: BTreeSet<u64>,
-    pub(crate) expected_reports: BTreeMap<u64, bool>,
+    pub(crate) num_stores_reported: usize,
+    pub(crate) report_requests: BTreeMap<u64, i128>,
+    pub(crate) expected_reports: BTreeMap<u64, Option<crate::StoreReport>>,
     pub(crate) timeout_unix_nanos: i128,
     pub(crate) auto_detect: bool,
     pub(crate) plan_execution_timeout_nanos: i64,
@@ -113,6 +115,8 @@ impl Controller {
             recovery_start_step: 0,
             failed_stores: BTreeSet::new(),
             expected_reports: BTreeMap::new(),
+            num_stores_reported: 0,
+            report_requests: BTreeMap::new(),
             timeout_unix_nanos: 0,
             auto_detect: false,
             plan_execution_timeout_nanos: 60_000_000_000,
@@ -151,6 +155,8 @@ impl Controller {
                 }
             }
         }
+        self.num_stores_reported = 0;
+        self.report_requests.clear();
         self.failed_stores = request.failed_stores;
         self.auto_detect = request.auto_detect;
         self.expected_reports = cluster
@@ -161,7 +167,7 @@ impl Controller {
                     && !s.is_physically_destroyed()
                     && !self.failed_stores.contains(&s.id())
             })
-            .map(|s| (s.id(), false))
+            .map(|s| (s.id(), None))
             .collect();
         // Go time.Duration(uint64 seconds) multiplication uses signed int64 wrapping.
         self.timeout_unix_nanos =

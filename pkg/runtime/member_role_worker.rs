@@ -822,6 +822,22 @@ impl PdServices for RoleServices {
 }
 #[async_trait::async_trait]
 impl StoreHeartbeatService for RoleServices {
+    fn recovery_enabled(&self) -> bool {
+        true
+    }
+    async fn recovery_heartbeat(
+        &self,
+        store: u64,
+        report: Option<astersql_pd_unsaferecovery::StoreReport>,
+    ) -> Result<(astersql_pd_core::NodeState, Option<u64>), StoreHeartbeatError> {
+        self.active()
+            .await
+            .map_err(StoreHeartbeatError::Other)?
+            .cluster
+            .recovery_heartbeat(store, report)
+            .await
+    }
+
     async fn store_heartbeat(
         &self,
         stats: astersql_pd_core::StoreStats,

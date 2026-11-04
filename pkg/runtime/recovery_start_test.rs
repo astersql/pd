@@ -9,7 +9,7 @@ use astersql_pd_storage_endpoint::StorageEndpoint;
 use serde_json::{Value, json};
 use std::{sync::Arc, time::Duration};
 use tokio_util::sync::CancellationToken;
-fn http(url: &str, path: &str, body: Option<&Value>) -> (u16, Value) {
+pub(crate) fn http(url: &str, path: &str, body: Option<&Value>) -> (u16, Value) {
     let mut cmd = std::process::Command::new("curl");
     cmd.args(["-sS", "--max-time", "6", "-w", "\n%{http_code}"]);
     if let Some(body) = body {
@@ -32,7 +32,7 @@ fn http(url: &str, path: &str, body: Option<&Value>) -> (u16, Value) {
     let (body, status) = output.rsplit_once('\n').unwrap();
     (status.parse().unwrap(), serde_json::from_str(body).unwrap())
 }
-async fn seed(url: &str) -> (PdClient<tonic::transport::Channel>, u64, metapb::Region) {
+pub(crate) async fn seed(url: &str) -> (PdClient<tonic::transport::Channel>, u64, metapb::Region) {
     let mut client = PdClient::connect(url.to_owned()).await.unwrap();
     let cluster = client
         .get_members(pdpb::GetMembersRequest::default())

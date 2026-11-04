@@ -50,6 +50,7 @@ mod http_v2_boundary;
 mod http_v2_boundary_test;
 mod metric_proto;
 mod metric_transport;
+mod recovery_report_adapter;
 mod request_role;
 pub mod service_audit;
 #[cfg(test)]

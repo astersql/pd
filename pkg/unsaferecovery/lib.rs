@@ -8,3 +8,9 @@ mod recovery_start_test;
 #[cfg(test)]
 #[path = "../storage/kv/etcd_fixture_test.rs"]
 mod etcd_fixture;
+
+mod collect_report;
+pub use collect_report::*;
+#[cfg(test)]
+#[path = "collect_report_test.rs"]
+mod collect_report_test;
