@@ -89,7 +89,7 @@ pub(crate) async fn go_wait_scenario(
         PathBuf::from(std::env::var_os("CARGO_TARGET_DIR").unwrap())
             .join(format!("mcs005-{}.toml", std::process::id())),
     );
-    std::fs::write(&file.0, "[pd-server]\nkey-type = 'raw'\n").unwrap();
+    std::fs::write(&file.0, "[pd-server]\nkey-type = 'raw'\n[schedule]\nreplica-schedule-limit = 0\nregion-schedule-limit = 0\nleader-schedule-limit = 0\nmerge-schedule-limit = 0\n").unwrap();
     let arg = format!("--config={}", file.0.display());
     let mut server = Server::start_with_args(&binary, &[&arg]).unwrap();
     server.ready().unwrap();

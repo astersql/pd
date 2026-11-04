@@ -137,6 +137,7 @@ pub struct ModeManager {
     allocator: Arc<Allocator>,
     pub(crate) cancel: CancellationToken,
     clock: ModeClock,
+    pub(crate) recovery: Mutex<crate::sync_recover::RecoveryProgress>,
     pub(crate) reports: Mutex<std::collections::HashMap<u64, crate::StoreDRStatus>>,
 }
 
@@ -181,6 +182,7 @@ impl ModeManager {
             cancel,
             clock,
             reports: Mutex::new(Default::default()),
+            recovery: Mutex::new(Default::default()),
         };
         if manager.cancel.is_cancelled() {
             return Err(ModeError::Cancelled);
@@ -221,6 +223,7 @@ impl ModeManager {
         {
             let status = self.new_status("sync_recover").await?;
             self.persist(&status).await?;
+            *self.recovery.lock().await = Default::default();
             state.dr_auto_sync = status;
         }
         state.config = config;

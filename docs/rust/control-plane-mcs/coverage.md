@@ -71,7 +71,7 @@ watcher/额度集成测试和测试工具。只补此清单，不改只读plan�
 | 4 恢复复制模式持久状态 | NewReplicationModeManager与UpdateConfig恢复模式和state ID，非法模式或持久化失败不发布新状态。 | 3 | `pkg/replication/lib.rs`（拟建）；`pkg/replication/mode_state.rs`（拟建） | [4聚焦+9相邻通过，待统一回归](task-004.md) |
 | 5 实现同步转异步等待 | 按minimalUpVoters和store存活状态从sync转async_wait；多数派边界、可用副本不足与重复tick不错误推进。 | 3 | `pkg/replication/async_wait.rs`（拟建）；`pkg/replication/lib.rs`（拟建） | [4聚焦+4相邻通过，待统一回归](task-005.md) |
 | 6 实现异步确认与超时 | async_wait等待store确认后转async，覆盖未确认、超时和重复报告，保持state ID与暂停split条件。 | 3 | `pkg/replication/async_confirm.rs`（拟建）；`pkg/replication/lib.rs`（拟建） | [4聚焦+4相邻通过，待统一回归](task-006.md) |
-| 7 实现同步恢复进度 | async转sync_recover再回sync；恢复region扫描覆盖split与merge，进度和状态发布符合Go oracle。 | 3 | `pkg/replication/lib.rs`（拟建）；`pkg/replication/sync_recover.rs`（拟建） | 待当前行为证据 |
+| 7 实现同步恢复进度 | async转sync_recover再回sync；恢复region扫描覆盖split与merge，进度和状态发布符合Go oracle。 | 3 | `pkg/replication/lib.rs`（拟建）；`pkg/replication/sync_recover.rs`（拟建） | [4聚焦+5相邻通过，待统一回归](task-007.md) |
 | 8 接通复制状态运行周期 | 运行时启动单个复制模式worker，心跳报告驱动同一manager并暴露HTTP状态与对应指标；切主取消旧worker不再写状态。 | 3 | `pkg/replication/lib.rs`（拟建）；`pkg/replication/mode_worker.rs`（拟建）；`pkg/runtime/lib.rs`（存在）；`pkg/runtime/node.rs`（存在）；`pkg/server/lib.rs`（存在） | 待当前行为证据 |
 | 9 实现数据密钥密码操作 | KeyLength与数据密钥生成覆盖所有既有AES模式；使用Go已保存向量验证GCM密文与认证失败，随机密钥使用密码学随机源。 | 10 | `pkg/encryption/crypter.rs`（拟建）；`pkg/encryption/lib.rs`（存在） | 待当前行为证据 |
 | 10 读取文件主密钥 | 明文与文件主密钥加载及封装解封装匹配Go；长度错误、缺失文件与损坏密文明确报错且日志不含密钥。 | 10 | `pkg/encryption/lib.rs`（存在）；`pkg/encryption/master_key_file.rs`（拟建） | 待当前行为证据 |

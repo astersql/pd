@@ -10,12 +10,15 @@ use astersql_pd_storage_domain::{Consistency, MemoryStore, MetaStore, Read};
 use serde_json::{Value, json};
 use std::{sync::Arc, time::Duration};
 
-#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
-async fn mcs_006_behavior() {
-    let now = chrono::Utc::now().timestamp_nanos_opt().unwrap();
-    let metas = stores(now);
-    let (mut server, backend, paths, waiting) =
-        go_wait_scenario(&metas, rules(), "async_wait").await;
+pub(crate) async fn go_async_scenario(
+    metas: &[astersql_pd_core::StoreMeta],
+) -> (
+    astersql_pd_compat_tests::harness::Server,
+    Arc<dyn MetaStore>,
+    astersql_pd_keypath::ClusterPaths,
+    Value,
+) {
+    let (server, backend, paths, waiting) = go_wait_scenario(metas, rules(), "async_wait").await;
     let mut client = pdpb::pd_client::PdClient::connect(server.url.clone())
         .await
         .unwrap();
@@ -137,6 +140,14 @@ async fn mcs_006_behavior() {
         json!(observations),
         go
     );
+    (server, backend, paths, go)
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn mcs_006_behavior() {
+    let now = chrono::Utc::now().timestamp_nanos_opt().unwrap();
+    let metas = stores(now);
+    let (mut server, _, _, go) = go_async_scenario(&metas).await;
     server.stop().unwrap();
     let store: Arc<dyn MetaStore> = Arc::new(MemoryStore::default());
     let (manager, leader, _, _) = local_manager(store, 606).await;

@@ -21,3 +21,7 @@ mod async_confirm;
 pub use async_confirm::StoreDRStatus;
 #[cfg(test)]
 mod async_confirm_test;
+
+mod sync_recover;
+#[cfg(test)]
+mod sync_recover_test;
