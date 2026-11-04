@@ -1298,6 +1298,7 @@ dependencies = [
  "astersql-pd-codec",
  "astersql-pd-id",
  "astersql-pd-member",
+ "astersql-pd-typeutil",
 ]
 
 [[package]]

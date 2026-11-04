@@ -85,7 +85,8 @@ pub fn diff_region_key_info(origin: &RegionMeta, other: &RegionMeta) -> String {
         )
     )
 }
-fn peer_text(peer: &Peer) -> String {
+/// Exact Go-compatible peer diagnostics, including the trailing space.
+pub fn peer_text(peer: &Peer) -> String {
     let mut out = String::new();
     scalar(&mut out, "id", peer.id);
     scalar(&mut out, "store_id", peer.store_id);

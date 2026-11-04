@@ -42,3 +42,10 @@ pub use empty_region::*;
 #[cfg(test)]
 #[path = "empty_region_test.rs"]
 mod empty_region_test;
+
+#[cfg(test)]
+#[path = "dispatch_plan_test.rs"]
+mod dispatch_plan_test;
+
+mod dispatch_plan;
+pub use dispatch_plan::*;

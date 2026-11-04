@@ -78,11 +78,15 @@ impl RecoverySteps {
     pub fn new(seed: u64) -> Self {
         Self(AtomicU64::new(seed))
     }
-    fn next(&self) -> u64 {
+    pub(crate) fn next(&self) -> u64 {
         self.0.fetch_add(1, Ordering::SeqCst).wrapping_add(1)
     }
 }
 pub struct Controller {
+    pub(crate) plans: BTreeMap<u64, crate::RecoveryPlan>,
+    pub(crate) affected: crate::PlanBatch,
+    pub(crate) output: Vec<crate::StageOutput>,
+    pub(crate) reset_region_cache: bool,
     pub(crate) steps: Arc<RecoverySteps>,
     pub(crate) recovery_error: Option<RecoveryError>,
     pub(crate) stage: Stage,
@@ -110,6 +114,10 @@ impl Controller {
 
     pub fn new(steps: Arc<RecoverySteps>) -> Self {
         Self {
+            plans: BTreeMap::new(),
+            affected: crate::PlanBatch::default(),
+            output: Vec::new(),
+            reset_region_cache: false,
             steps,
             recovery_error: None,
             stage: Stage::Idle,
@@ -157,6 +165,10 @@ impl Controller {
                 }
             }
         }
+        self.plans.clear();
+        self.affected = crate::PlanBatch::default();
+        self.output.clear();
+        self.reset_region_cache = false;
         self.recovery_error = None;
         self.num_stores_reported = 0;
         self.report_requests.clear();
@@ -177,14 +189,14 @@ impl Controller {
             now + i128::from((request.timeout_seconds as i64).wrapping_mul(1_000_000_000));
         self.recovery_start_step = self.steps.next();
         // Go changeStage(CollectReport) advances once more after recording the run start.
-        self.step = self.steps.next();
+
         self.plan_execution_timeout_nanos = if request.options.plan_execution_timeout_nanos > 0 {
             request.options.plan_execution_timeout_nanos
         } else {
             60_000_000_000
         };
         self.disable_paranoid_check = request.options.disable_paranoid_check;
-        self.stage = Stage::CollectReport;
+        self.change_stage(Stage::CollectReport, now);
         cluster.set_recovery_halt(true);
         Ok(())
     }

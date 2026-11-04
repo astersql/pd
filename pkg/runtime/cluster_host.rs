@@ -1311,6 +1311,14 @@ impl ClusterHost {
 }
 #[async_trait::async_trait]
 impl StoreHeartbeatService for ClusterHost {
+    async fn heartbeat_cluster_version(&self) -> Result<String, StoreHeartbeatError> {
+        let guard = self.resources.lock().await;
+        let r = guard
+            .as_ref()
+            .ok_or_else(|| StoreHeartbeatError::Other("node stopped".into()))?;
+        Ok(r.persisted_config.config.cluster_version.to_string())
+    }
+
     fn recovery_enabled(&self) -> bool {
         true
     }
@@ -1318,7 +1326,8 @@ impl StoreHeartbeatService for ClusterHost {
         &self,
         store: u64,
         report: Option<astersql_pd_unsaferecovery::StoreReport>,
-    ) -> Result<(NodeState, Option<u64>), StoreHeartbeatError> {
+    ) -> Result<(NodeState, Option<astersql_pd_unsaferecovery::RecoveryPlan>), StoreHeartbeatError>
+    {
         let mut guard = self.resources.lock().await;
         let r = guard
             .as_mut()
@@ -1350,15 +1359,19 @@ impl StoreHeartbeatService for ClusterHost {
             let stores = r.state.lock().unwrap().cluster.stores.clone();
             let mut ids = store_lifecycle::RecoveryIds::new(r.allocator.clone());
             let prepared = controller
-                .prepare_recovery_with_ids(&index, &stores, &mut ids)
+                .advance_reports(&index, &stores, &mut ids, now().1 as i128)
                 .await
                 .map_err(|e| StoreHeartbeatError::Other(e.to_string()))?;
             r.recovery_index = Some(index);
             r.prepared_recovery = prepared;
         }
+        r.recovery_halted = controller.stage().is_running();
+        if controller.take_reset_region_cache() {
+            r.state.lock().unwrap().cluster.regions.reset_region_cache();
+        }
         Ok((
             store_info.node_state(),
-            controller.request_report(store, now().1 as i128),
+            controller.dispatch_plan(store, now().1 as i128),
         ))
     }
 

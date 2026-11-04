@@ -78,6 +78,11 @@ pub(crate) struct Application {
 }
 #[async_trait::async_trait]
 impl PdServices for Application {
+    async fn show_unsafe_recovery(
+        &self,
+    ) -> Result<Vec<astersql_pd_unsaferecovery::StageOutput>, String> {
+        self.cluster.show_unsafe_recovery().await
+    }
     async fn start_unsafe_recovery(
         &self,
         request: astersql_pd_unsaferecovery::StartRequest,

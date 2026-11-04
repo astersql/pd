@@ -7,7 +7,7 @@ use astersql_pd_member::Leadership;
 use astersql_pd_storage::{Consistency, MetaStore, Read};
 use std::sync::Arc;
 use tokio_util::sync::CancellationToken;
-struct Ids {
+pub(super) struct Ids {
     allocator: Arc<Allocator>,
     cancel: CancellationToken,
 }
@@ -20,7 +20,7 @@ impl RecoveryIdAllocator for Ids {
             .map_err(|e| RecoveryError::Backend(e.to_string()))
     }
 }
-async fn ids(store: Arc<dyn MetaStore>, step: u64) -> (Arc<Leadership>, Ids) {
+pub(super) async fn ids(store: Arc<dyn MetaStore>, step: u64) -> (Arc<Leadership>, Ids) {
     let term = Arc::new(
         Leadership::campaign(
             store.clone(),

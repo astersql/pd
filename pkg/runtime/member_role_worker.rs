@@ -224,6 +224,11 @@ impl PdServices for RoleServices {
         self.store.upgrade()
     }
 
+    async fn show_unsafe_recovery(
+        &self,
+    ) -> Result<Vec<astersql_pd_unsaferecovery::StageOutput>, String> {
+        self.active().await?.cluster.show_unsafe_recovery().await
+    }
     async fn start_unsafe_recovery(
         &self,
         request: astersql_pd_unsaferecovery::StartRequest,
@@ -822,6 +827,15 @@ impl PdServices for RoleServices {
 }
 #[async_trait::async_trait]
 impl StoreHeartbeatService for RoleServices {
+    async fn heartbeat_cluster_version(&self) -> Result<String, StoreHeartbeatError> {
+        self.active()
+            .await
+            .map_err(StoreHeartbeatError::Other)?
+            .cluster
+            .heartbeat_cluster_version()
+            .await
+    }
+
     fn recovery_enabled(&self) -> bool {
         true
     }
@@ -829,7 +843,13 @@ impl StoreHeartbeatService for RoleServices {
         &self,
         store: u64,
         report: Option<astersql_pd_unsaferecovery::StoreReport>,
-    ) -> Result<(astersql_pd_core::NodeState, Option<u64>), StoreHeartbeatError> {
+    ) -> Result<
+        (
+            astersql_pd_core::NodeState,
+            Option<astersql_pd_unsaferecovery::RecoveryPlan>,
+        ),
+        StoreHeartbeatError,
+    > {
         self.active()
             .await
             .map_err(StoreHeartbeatError::Other)?

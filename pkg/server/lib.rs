@@ -78,6 +78,12 @@ pub struct Identity {
 /// Domain operations supplied by the host; transport types stay in this crate.
 #[async_trait]
 pub trait PdServices: Send + Sync {
+    async fn show_unsafe_recovery(
+        &self,
+    ) -> Result<Vec<astersql_pd_unsaferecovery::StageOutput>, String> {
+        Err("server not started".into())
+    }
+
     async fn start_unsafe_recovery(
         &self,
         _request: astersql_pd_unsaferecovery::StartRequest,

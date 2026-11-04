@@ -2,7 +2,7 @@
 use super::*;
 use astersql_pd_core::{Peer, RegionEpoch, RegionMeta, StoreInfo, StoreMeta, StoresInfo};
 use std::sync::Arc;
-fn fixture() -> (Controller, RecoveryIndex, StoresInfo) {
+pub(super) fn fixture() -> (Controller, RecoveryIndex, StoresInfo) {
     let mut c = Controller::new(Arc::new(RecoverySteps::new(19)));
     c.auto_detect = true;
     let stores = StoresInfo::new();

@@ -29,7 +29,12 @@ impl ClusterHost {
                 .filter_map(|s| s.meta().cloned())
                 .map(|s| {
                     serde_json::from_value::<astersql_pd_server_config::ClusterVersion>(
-                        serde_json::Value::String(s.version.trim_start_matches('v').into()),
+                        serde_json::Value::String(if s.version.is_empty() {
+                            // versioninfo.ParseVersion uses Base for legacy stores.
+                            "1.0.0".into()
+                        } else {
+                            s.version.strip_prefix('v').unwrap_or(&s.version).into()
+                        }),
                     )
                 })
                 .collect::<Result<Vec<_>, _>>()

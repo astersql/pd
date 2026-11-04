@@ -221,14 +221,9 @@ async fn mcs_021_native_cleanup_only_targets_selected_tiflash_and_preserves_tikv
             );
         }
         let reports = node.cluster().unsafe_recovery_reports().await.unwrap();
-        assert_eq!(
-            reports[&1].as_ref().unwrap().peers[0]
-                .region
-                .as_ref()
-                .unwrap()
-                .peers[0]
-                .store_id,
-            1
+        assert!(
+            reports.values().all(Option::is_none),
+            "published phase requires fresh confirmations"
         );
         node.shutdown().await.unwrap();
         go.stop().unwrap();

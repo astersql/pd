@@ -6,7 +6,12 @@ use crate::{
 };
 use astersql_pd_unsaferecovery::{RemoveFailedStoresOptions, StartRequest};
 use axum::{
-    Router, body::Body, extract::State, http::StatusCode, response::Response, routing::post,
+    Router,
+    body::Body,
+    extract::State,
+    http::StatusCode,
+    response::Response,
+    routing::{get, post},
 };
 use serde_json::Value;
 use std::sync::Arc;
@@ -19,6 +24,10 @@ struct Context {
 pub(crate) fn router(services: Arc<dyn PdServices>, cancel: CancellationToken) -> Router {
     Router::new()
         .route("/pd/api/v1/admin/unsafe/remove-failed-stores", post(handle))
+        .route(
+            "/pd/api/v1/admin/unsafe/remove-failed-stores/show",
+            get(show),
+        )
         .with_state(Context { services, cancel })
 }
 fn option<'a>(input: &'a Value, a: &str, b: &str) -> Result<Option<&'a Value>, String> {
@@ -107,4 +116,54 @@ async fn handle(State(s): State<Context>, body: Body) -> Response {
         }
     };
     tokio::select! {biased;_=cancel.cancelled()=>json_response(StatusCode::INTERNAL_SERVER_ERROR,&"context canceled"),response=work=>response}
+}
+
+async fn show(State(s): State<Context>) -> Response {
+    if !s.services.is_bootstrapped().await.unwrap_or(false) {
+        return json_response(
+            StatusCode::INTERNAL_SERVER_ERROR,
+            &"[PD:cluster:ErrNotBootstrapped]TiKV cluster not bootstrapped, please start TiKV first",
+        );
+    }
+    match s.services.show_unsafe_recovery().await {
+        Err(e) => json_response(StatusCode::INTERNAL_SERVER_ERROR, &e),
+        Ok(output) => {
+            let values = output
+                .into_iter()
+                .map(|o| {
+                    let mut v = serde_json::Map::new();
+                    v.insert("info".into(), Value::String(o.info));
+                    if let Some(nanos) = o.unix_nanos {
+                        let time = chrono::DateTime::from_timestamp(
+                            nanos.div_euclid(1_000_000_000) as i64,
+                            nanos.rem_euclid(1_000_000_000) as u32,
+                        )
+                        .expect("host wall clock");
+                        v.insert(
+                            "time".into(),
+                            Value::String(
+                                time.with_timezone(&chrono::Local)
+                                    .format("%Y-%m-%d %H:%M:%S%.3f")
+                                    .to_string(),
+                            ),
+                        );
+                    }
+                    if !o.actions.is_empty() {
+                        v.insert(
+                            "actions".into(),
+                            serde_json::to_value(o.actions).expect("plain actions"),
+                        );
+                    }
+                    if !o.details.is_empty() {
+                        v.insert(
+                            "details".into(),
+                            serde_json::to_value(o.details).expect("plain details"),
+                        );
+                    }
+                    Value::Object(v)
+                })
+                .collect::<Vec<_>>();
+            json_response(StatusCode::OK, &values)
+        }
+    }
 }

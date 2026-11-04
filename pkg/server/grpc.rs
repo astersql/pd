@@ -763,8 +763,17 @@ impl Pd for Grpc {
         } else {
             None
         };
+        let cluster_version = if result.is_ok() {
+            service
+                .heartbeat_cluster_version()
+                .await
+                .map_err(|e| Status::unavailable(format!("{e:?}")))?
+        } else {
+            String::new()
+        };
         let mut header = self.header().unwrap();
         let state = match result {
+            Ok(_) if is_recovery_report => 0,
             Ok(state) => match state {
                 astersql_pd_core::NodeState::Preparing => 0,
                 astersql_pd_core::NodeState::Serving => 1,
@@ -797,10 +806,8 @@ impl Pd for Grpc {
             header: Some(header),
             state,
             replication_status,
-            recovery_plan: request_step.map(|step| pdpb::RecoveryPlan {
-                step,
-                ..Default::default()
-            }),
+            cluster_version,
+            recovery_plan: request_step.map(crate::recovery_report_adapter::plan_to_proto),
             ..Default::default()
         }))
     }
