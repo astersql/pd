@@ -205,7 +205,18 @@ async fn task_083_behavior() {
         .read(Read::prefix(b"/pd/", Consistency::Linearizable))
         .await
         .unwrap();
-    assert_eq!(before.entries, after.entries);
+    assert_eq!(
+        before
+            .entries
+            .into_iter()
+            .filter(|e| crate::mtls_listener_test::request_side_effect_key(&e.key, 83))
+            .collect::<Vec<_>>(),
+        after
+            .entries
+            .into_iter()
+            .filter(|e| crate::mtls_listener_test::request_side_effect_key(&e.key, 83))
+            .collect::<Vec<_>>()
+    );
     if let Ok(go) = std::env::var("PD_TLS_GO_URL") {
         assert_eq!(success, http(&c, &go, "ca.pem", "allowed"));
         assert!(rpc(&c, &go, "localhost").await.unwrap() > 0);

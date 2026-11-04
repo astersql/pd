@@ -224,7 +224,16 @@ async fn task_087_behavior() {
                 .await
                 .unwrap();
             assert_eq!(
-                before_errors.entries, after_errors.entries,
+                before_errors
+                    .entries
+                    .into_iter()
+                    .filter(|e| crate::mtls_listener_test::request_side_effect_key(&e.key, 8787))
+                    .collect::<Vec<_>>(),
+                after_errors
+                    .entries
+                    .into_iter()
+                    .filter(|e| crate::mtls_listener_test::request_side_effect_key(&e.key, 8787))
+                    .collect::<Vec<_>>(),
                 "rejected protocol/path requests cannot mutate MetaStore"
             );
             if endpoint != url {

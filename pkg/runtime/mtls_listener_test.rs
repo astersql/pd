@@ -124,12 +124,19 @@ async fn task_084_behavior() {
         assert_eq!(rpc(&c, &url, Some("denied")).await.is_ok(), !restricted);
         if restricted {
             assert_eq!(
-                before_cn.entries,
+                before_cn
+                    .entries
+                    .into_iter()
+                    .filter(|e| request_side_effect_key(&e.key, 84))
+                    .collect::<Vec<_>>(),
                 store
                     .read(Read::prefix(b"/pd/", Consistency::Linearizable))
                     .await
                     .unwrap()
                     .entries
+                    .into_iter()
+                    .filter(|e| request_side_effect_key(&e.key, 84))
+                    .collect::<Vec<_>>()
             );
         }
         let before = store
@@ -143,12 +150,19 @@ async fn task_084_behavior() {
         assert!(!no_identity(&c, &url));
         assert!(rpc(&c, &url, None).await.is_err());
         assert_eq!(
-            before.entries,
+            before
+                .entries
+                .into_iter()
+                .filter(|e| request_side_effect_key(&e.key, 84))
+                .collect::<Vec<_>>(),
             store
                 .read(Read::prefix(b"/pd/", Consistency::Linearizable))
                 .await
                 .unwrap()
                 .entries
+                .into_iter()
+                .filter(|e| request_side_effect_key(&e.key, 84))
+                .collect::<Vec<_>>()
         );
         if let Ok(urls) = std::env::var("PD_MTLS_GO_URLS") {
             let urls: Vec<String> = serde_json::from_str(&urls).unwrap();
@@ -190,5 +204,24 @@ async fn task_084_behavior() {
                 .is_err()
         );
         tokio::net::TcpListener::bind(addr).await.unwrap();
+    }
+}
+
+// The independently running TSO periodically persists its upper bound even
+// when TLS rejects every request. Keep all request-owned rows and revisions.
+pub(crate) fn request_side_effect_key(key: &[u8], cluster_id: u64) -> bool {
+    key != format!("/pd/{cluster_id}/timestamp").as_bytes()
+}
+
+#[test]
+fn task_084_side_effect_snapshot_negative_controls() {
+    assert!(!request_side_effect_key(b"/pd/84/timestamp", 84));
+    for key in [
+        b"/pd/84/alloc_id".as_slice(),
+        b"/pd/84/config",
+        b"/pd/85/timestamp",
+        b"/pd/84/timestamp-extra",
+    ] {
+        assert!(request_side_effect_key(key, 84));
     }
 }

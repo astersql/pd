@@ -381,3 +381,67 @@ with empty Git status; no Go/module writes were performed.
 
 This completes the bounded provenance audit and records domain handoff gaps;
 it does not certify unimplemented domains or change original task102 status.
+
+## Tail task 6: final regression closure (2026-11-04)
+
+Final default-feature regression uses the pinned-protocol darwin/amd64 Go
+`without_dashboard` oracle built read-only at
+`/tmp/pd-task1-go-env/pd-server-without-dashboard-amd64`, official etcd 3.5.15,
+the existing protocol ZIP and absolute vendored ARM protoc. The arm64 oracle's
+out-of-range numeric conversion differs from the certified amd64 contract;
+its failed attempt is retained, not merged into the final result.
+All final tests use `RUST_TEST_THREADS=1`. Heavy unrelated host load and
+interrupted runs are preserved as failures/incomplete, not successful evidence.
+
+The regression exposed and repaired bounded validation defects:
+
+- v2 evidence paths now support an absolute oracle outside the repository,
+  retaining its SHA and all source/input checks.
+- TLS/mTLS/shared-listener rejection snapshots exclude only the exact current
+  cluster's periodically persisted TSO timestamp row. Extracted failed snapshots
+  prove that was the only changed row; all other entries/revisions still compare.
+  A negative control retains alloc_id, config, another cluster and similar keys.
+- health/member cleanup checks the real leader key exists before shutdown and
+  disappears after successful exit, with directory and port cleanup retained;
+  it no longer depends on an internal lifecycle event appearing in CLI logs.
+- checker fixtures assign distinct real store region weights to avoid tied
+  candidate ordering while comparing complete diagnostic reasons unchanged.
+- HTTP concurrency cancellation waits for a real `100 Continue` body-read
+  handshake before probing 429, preventing the probe from rejecting the intended
+  pending request. Cancellation must still return the occupied slot.
+
+Current evidence (exact commands, exits, raw logs, requests/responses, persistent
+side effects, input hashes and cleanup are appended under
+`tail102_final_regression_2026_11_04` in the existing compressed evidence):
+
+| Entry | Exit | Effective result |
+| --- | --- | --- |
+| pd-server build | 0 | executable built |
+| task099 behavior | 0 | 1 passed, 0 ignored |
+| task100 filter | 0 | 3 passed, 0 ignored; also passed in both final full runs |
+| task101 filter | 0 | 14 passed, 0 ignored; 52 real supervisors; final full runs repeat all 52 |
+| server task102 | 0 | 3 passed, 0 ignored |
+| compat task102 explicit ignored | 0 | 2 passed, 0 ignored, final combined-run 52-report JSON input |
+| health_member integration | 0 | 10 passed, 0 ignored |
+| service-limit supervisor | 0 | real Go/Rust replay and 1 explicit cancellation test |
+| metadata / fmt check / workspace check | 0 | all passed |
+| workspace test | 0 | 2252 passed, 0 failed, 82 default ignored |
+| four-crate combined test | 0 | 468 passed, 0 failed, 82 default ignored |
+
+Full commands add `--no-fail-fast` to execute every target, without filtering
+cases. Zero-test/doc targets do not contribute to effective passed counts.
+The final explicit metric check consumes exactly 52 distinct reports, all with
+business exit 0, and observes 53 shared family schemas. Historical 56/54/76
+observations remain historical samples, not substituted for this measurement.
+Metrics property validation does not expand domain admission.
+
+All stages dynamically acquired slot 1:
+`CARGO_TARGET_DIR=/Users/xiangmin/worker/code/pd/target/rust-slot-1`.
+1101 Go/module paths including ignored/untracked retain identical existence,
+SHA and empty Git status from task start through final cleanup. All owned
+processes and fixtures ended before each slot release; caches remain.
+
+This completes the six-item bounded regression/audit closure. Original102
+remains blocked by GC/keyspace/MCS and native production persistence/embedded
+backend evidence; local tests and explicit refusal boundaries do not certify
+those domains. Their existing plans and source epics remain untouched.

@@ -45,7 +45,7 @@ def main():
                ("keyspace", "safe_point", "tso_keyspace_group", "meta_service_group", "microservice", "maintenance")]
     inputs = [binary, Path(__file__), ROOT / "pkg/server/http_v2_boundary.rs",
               ROOT / "pkg/server/http_v2_boundary_test.rs", ROOT / "Cargo.lock", *sources]
-    hashes = lambda: {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest() for p in inputs}
+    hashes = lambda: {str(p.relative_to(ROOT) if p.is_relative_to(ROOT) else p): hashlib.sha256(p.read_bytes()).hexdigest() for p in inputs}
     record = {"inputs": hashes(), "routes": [], "available": {}}
     env = dict(os.environ, GOFLAGS="-mod=readonly", GOWORK="off", CGO_ENABLED="0", GOPROXY="off", GOTOOLCHAIN="local")
     record["build_info"] = subprocess.check_output(["go", "version", "-m", str(binary)], env=env).decode()

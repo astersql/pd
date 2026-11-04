@@ -69,3 +69,17 @@ Go源码和模块文件保持只读；不要使用会注入failpoint、生成Go�
 旧验证入口代替上述流程。显式 `GOMODCACHE` 可以提供已有的固定协议ZIP，Rust
 构建仍核对原校验和且只提取proto。测试通过数、跳过项、失败和清理结果分别记录，
 不把ignored、零测试或缺少oracle的运行计作完整兼容通过。
+
+## 最终回归范围（2026-11-04）
+
+固定协议的 amd64 `without_dashboard` Go oracle 与现有 Rust 服务完成本轮真实
+双进程回归；arm64 的超范围数值转换不并入 amd64 合同。串行测试下，完整 workspace
+2252通过、82默认忽略，四crate联合468通过、82默认忽略，均退出0；52个HTTP/配置/
+指标supervisor全部实际成功。必要ignored差分由原supervisor显式执行并单独计数，
+最后52份成功报告的指标属性重验2通过，观察到53个shared family schema。
+
+验证使用官方etcd 3.5.15及相邻etcdctl：health/member在停止前后检查真实leader键，
+并检查进程成功退出、目录与端口释放。TLS拒绝请求的持久副作用比较只排除对应集群
+后台TSO时间戳行，其余键和值/revision保持精确比较。详细失败、修复、命令与输入
+指纹见[任务102](server-api/task-102.md)。完整回归不解除GC/keyspace/MCS和原生
+生产后端durability/embedded拓扑的独立准入缺口。

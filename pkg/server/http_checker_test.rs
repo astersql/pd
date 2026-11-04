@@ -103,6 +103,21 @@ async fn observe(url: &str, id: u64) -> Value {
         diagnostic(url, "shuffle-leader-scheduler")
     ]));
     let client = bootstrap(url, id).await;
+    // Equal region scores leave source ordering unspecified in both solvers.
+    // Give the real stores distinct weights so diagnostic reasons compare the
+    // same candidate order rather than whichever tied store was visited first.
+    for store_id in 1..=3 {
+        assert_eq!(
+            req(
+                url,
+                "POST",
+                &format!("/pd/api/v1/store/{store_id}/weight"),
+                &format!(r#"{{"leader":1,"region":{store_id}}}"#)
+            )
+            .0,
+            200
+        );
+    }
     for name in [
         "joint-state",
         "split",

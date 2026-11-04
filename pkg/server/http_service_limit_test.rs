@@ -162,7 +162,7 @@ fn observe(url: &str) -> Vec<serde_json::Value> {
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
 async fn task_079_wire_and_cancellation() {
     use astersql_pd_storage::{Consistency, MetaStore, Read};
-    use tokio::io::AsyncWriteExt;
+    use tokio::io::{AsyncReadExt, AsyncWriteExt};
     let fixture = crate::etcd_fixture::Fixture::start();
     let store = Arc::new(fixture.store().await);
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
@@ -191,7 +191,19 @@ async fn task_079_wire_and_cancellation() {
         assert_eq!(serde_json::json!(observations), go["responses"]);
     }
     let mut hanging = tokio::net::TcpStream::connect(addr).await.unwrap();
-    hanging.write_all(b"POST /pd/api/v1/service-middleware/config HTTP/1.1\r\nHost: localhost\r\nContent-Length: 999999\r\n\r\n").await.unwrap();
+    hanging.write_all(b"POST /pd/api/v1/service-middleware/config HTTP/1.1\r\nHost: localhost\r\nContent-Length: 999999\r\nExpect: 100-continue\r\n\r\n").await.unwrap();
+    // Hyper sends Continue when the admitted handler starts reading the body.
+    // Probing with a competing request before this handshake can instead reject
+    // the hanging request and consume the slot we intended to test.
+    let mut admitted = [0; 25];
+    tokio::time::timeout(
+        std::time::Duration::from_secs(5),
+        hanging.read_exact(&mut admitted),
+    )
+    .await
+    .unwrap()
+    .unwrap();
+    assert_eq!(&admitted, b"HTTP/1.1 100 Continue\r\n\r\n");
     let deadline = tokio::time::Instant::now() + std::time::Duration::from_secs(5);
     loop {
         if call(&url, "POST", "service-middleware/config", "{}").0 == 429 {

@@ -325,9 +325,48 @@ pub fn run_minimal(mode: &str, go: &Path, rust: Option<&Path>) -> Result<(), Str
         .map_err(|e| e.to_string())?;
         server.ready()?;
         samples.push(minimal_sample(&server)?);
+        // Inspect the real leased leader key while the caller-owned etcd
+        // fixture stays alive; lifecycle events are not CLI log contracts.
+        let leadership = if is_rust {
+            let (_, members) = server.get("/pd/api/v1/members")?;
+            let id = members["header"]["cluster_id"]
+                .as_u64()
+                .ok_or("missing cluster id")?;
+            let etcd = server
+                ._etcd
+                .as_ref()
+                .ok_or("missing Rust storage fixture")?;
+            let binary = std::env::var_os("PD_COMPAT_ETCD_BIN")
+                .ok_or("native etcd required for leadership cleanup probe")?;
+            Some((
+                PathBuf::from(binary).with_file_name("etcdctl"),
+                etcd.endpoint.clone(),
+                format!("/pd/{id}/leader"),
+            ))
+        } else {
+            None
+        };
+        let read_leader =
+            |(binary, endpoint, key): &(PathBuf, String, String)| -> Result<Vec<u8>, String> {
+                let output = Command::new(binary)
+                    .args(["--endpoints", endpoint, "get", key, "--keys-only"])
+                    .output()
+                    .map_err(|e| e.to_string())?;
+                if !output.status.success() {
+                    return Err(String::from_utf8_lossy(&output.stderr).into_owned());
+                }
+                Ok(output.stdout)
+            };
+        if let Some(probe) = &leadership {
+            if read_leader(probe)?.iter().all(u8::is_ascii_whitespace) {
+                return Err("leader key missing before shutdown".into());
+            }
+        }
         server.stop()?;
-        if is_rust && !server.logs().contains("storage-released") {
-            return Err(server.logs());
+        if let Some(probe) = &leadership {
+            if !read_leader(probe)?.iter().all(u8::is_ascii_whitespace) {
+                return Err("leader key remains after shutdown".into());
+            }
         }
         let address = server.url.trim_start_matches("http://").to_owned();
         let dir = server.dir.clone();
