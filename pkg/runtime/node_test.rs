@@ -38,6 +38,43 @@ async fn shared_runtime_network_lifecycle() {
     assert!(response.status.success());
     let health: serde_json::Value = serde_json::from_slice(&response.stdout).unwrap();
     assert_eq!(health[0]["health"], true);
+    let mut scheduling = node.cluster().watch_schedule();
+    tokio::time::timeout(std::time::Duration::from_secs(5), async {
+        while scheduling.borrow().phase == crate::cluster_host::SchedulePhase::Starting {
+            scheduling.changed().await.unwrap();
+        }
+    })
+    .await
+    .unwrap();
+    assert_eq!(
+        scheduling.borrow().phase,
+        crate::cluster_host::SchedulePhase::Preparing
+    );
+    tokio::time::sleep(std::time::Duration::from_millis(30)).await;
+    assert!(
+        !node.cluster().schedule_initialized(),
+        "unbootstrapped nodes cannot run schedulers or consume IDs"
+    );
+    let reader = fixture.store().await;
+    let reservation = astersql_pd_storage::MetaStore::read(
+        &reader,
+        astersql_pd_storage::Read::range(
+            b"/pd/42/alloc_id",
+            b"",
+            astersql_pd_storage::Consistency::Linearizable,
+        ),
+    )
+    .await
+    .unwrap();
+    assert_eq!(
+        reservation.entries.len(),
+        1,
+        "leader readiness must reserve its ID window"
+    );
+    assert_eq!(
+        u64::from_be_bytes(reservation.entries[0].value.as_slice().try_into().unwrap()),
+        1000
+    );
     let mut client = PdClient::connect(url.clone()).await.unwrap();
     let members = client
         .get_members(pdpb::GetMembersRequest::default())

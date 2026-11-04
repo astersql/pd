@@ -14,3 +14,6 @@ mod allocator_base_test;
 mod allocator_namespace_test;
 #[cfg(test)]
 mod allocator_test;
+
+#[cfg(test)]
+mod allocator_rebase_test;

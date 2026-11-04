@@ -22,6 +22,7 @@ use tokio_util::sync::CancellationToken;
 
 type State = Mutex<HeartbeatEffectsState<ProviderSnapshot<()>>>;
 struct Resources {
+    bootstrapped: bool,
     recovery: Arc<AsyncMutex<astersql_pd_unsaferecovery::Controller>>,
     recovery_index: Option<astersql_pd_unsaferecovery::RecoveryIndex>,
     prepared_recovery: Option<astersql_pd_unsaferecovery::PreparedPlan>,
@@ -307,7 +308,8 @@ impl ClusterHost {
             StorageEndpoint::new(store.clone()).with_encryption_keys(encryption_keys.clone()),
         );
         let paths = ClusterPaths::new(cluster_id);
-        let replication = if storage.load_meta(&paths).await?.is_some() {
+        let bootstrapped = storage.load_meta(&paths).await?.is_some();
+        let replication = if bootstrapped {
             Some(
                 replication_mode::manager(
                     persisted_config.config.replication_mode.clone(),
@@ -437,6 +439,7 @@ impl ClusterHost {
             }
         }
         let resources = Arc::new(AsyncMutex::new(Some(Resources {
+            bootstrapped,
             recovery: Arc::new(AsyncMutex::new(
                 astersql_pd_unsaferecovery::Controller::new(recovery_steps),
             )),
@@ -968,6 +971,7 @@ impl ClusterHost {
             .await
             .map_err(|e| e.to_string())?;
         if committed {
+            resources.bootstrapped = true;
             // Go first commits bootstrap metadata, then saves its region through
             // the configured storage adapter; a failed secondary save is recorded.
             if let Some(keys) = &resources.encryption_keys {

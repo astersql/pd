@@ -16,6 +16,8 @@ pub enum AllocatorError {
     Cancelled,
     #[error("ID space exhausted")]
     Exhausted,
+    #[error("ID reservation transaction conflict")]
+    ReservationConflict,
     #[error("invalid persisted ID boundary")]
     CorruptBoundary,
     #[error("leadership and allocator must share a metadata store")]
@@ -84,6 +86,54 @@ impl Allocator {
     /// Return the next ID after validating the term at a linearization point.
     pub async fn alloc(&self) -> Result<u64, AllocatorError> {
         self.alloc_count(1).await.map(|(last, _)| last)
+    }
+    /// Reserve a fresh window from its persisted boundary without consuming an ID.
+    /// Go invokes Rebase before leader readiness; failed I/O/CAS keeps the old window.
+    pub async fn rebase(&self) -> Result<(), AllocatorError> {
+        let reserve = async {
+            let mut window = self.window.lock().await;
+            let snapshot = self
+                .store
+                .read(Read::range(&self.key, b"", Consistency::Linearizable))
+                .await?;
+            let entry = snapshot.entries.first();
+            let base = match entry {
+                Some(e) => u64::from_be_bytes(
+                    e.value
+                        .as_slice()
+                        .try_into()
+                        .map_err(|_| AllocatorError::CorruptBoundary)?,
+                ),
+                None => 0,
+            };
+            let proposed = base.wrapping_add(self.step);
+            let end = if proposed > self.effective_end {
+                self.effective_end
+            } else {
+                proposed
+            };
+            let compare = match entry {
+                Some(e) => Compare::Value(self.key.clone(), e.value.clone()),
+                None => Compare::CreateRevision(self.key.clone(), 0),
+            };
+            let commit = self
+                .leader
+                .transact(
+                    vec![compare],
+                    vec![Mutation::put(&self.key, &end.to_be_bytes())],
+                )
+                .await?;
+            if !commit.succeeded {
+                return Err(AllocatorError::ReservationConflict);
+            }
+            window.next = end.wrapping_sub(self.step);
+            window.end = end;
+            if let Some(metrics) = self.metrics.get() {
+                metrics.set(end as f64);
+            }
+            Ok(())
+        };
+        tokio::select! {biased;_=self.cancel.cancelled()=>Err(AllocatorError::Cancelled),result=reserve=>result}
     }
     /// Reset the base and persist a new window, matching Go SetBase.
     ///

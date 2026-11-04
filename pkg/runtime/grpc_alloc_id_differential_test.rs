@@ -29,7 +29,7 @@ async fn observe(url: &str, cluster_id: u64) -> (Value, u64) {
             "AllocID count={count}, last={}, returned_count={}",
             r.id, r.count
         );
-        replies.push(json!([count.max(1), r.count]));
+        replies.push(json!([r.id, count.max(1), r.count]));
         last = r.id;
     }
     assert_eq!(
@@ -72,7 +72,7 @@ async fn after_restart(url: &str, cluster_id: u64, last: u64) -> Value {
     assert_eq!(r.count, 3);
     assert!(r.id - 2 > last);
     println!("AllocID restart last={}, previous={last}", r.id);
-    json!([r.id % 1000, r.count, r.id - 2 > last])
+    json!([r.id, r.count, r.id - 2 > last])
 }
 async fn exhausted(url: &str, id: u64) -> Value {
     let mut client = PdClient::connect(url.to_owned()).await.unwrap();

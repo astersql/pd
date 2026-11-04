@@ -995,6 +995,24 @@ impl ClusterReadService for RoleServices {
     }
 }
 pub(crate) fn retryable_role_error(error: &NodeError) -> bool {
+    if error
+        .downcast_ref::<astersql_pd_id::AllocatorError>()
+        .is_some_and(|e| {
+            matches!(
+                e,
+                astersql_pd_id::AllocatorError::ReservationConflict
+                    | astersql_pd_id::AllocatorError::Store(
+                        astersql_pd_storage::StoreError::Unavailable
+                    )
+                    | astersql_pd_id::AllocatorError::Member(MemberError::NotLeader)
+                    | astersql_pd_id::AllocatorError::Member(MemberError::Store(
+                        astersql_pd_storage::StoreError::Unavailable
+                    ))
+            )
+        })
+    {
+        return true;
+    }
     error.downcast_ref::<MemberError>().is_some_and(|e| {
         matches!(
             e,

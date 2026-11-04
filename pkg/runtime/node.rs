@@ -785,6 +785,24 @@ pub(crate) async fn prepare_term(
                 return Err(crate::start_cleanup::preserve(error, cleanup));
             }
         };
+        // Go reserves the next ID window after raft-cluster creation, before ready.
+        // Keep the completed cluster owned while cancellation/renewal races this I/O.
+        let reserved: Result<(),NodeError> = {
+            let reservation=allocator.rebase();
+            tokio::pin!(reservation);
+            loop {
+                tokio::select! {biased;
+                    _=cancel.cancelled()=>break Err(astersql_pd_member::MemberError::Cancelled.into()),
+                    result=&mut reservation=>break result.map_err(Into::into),
+                    _=renew.tick()=>{if let Err(error)=leader.renew().await{break Err(error.into());}},
+                }
+            }
+        };
+        if let Err(error)=reserved {
+            let cleanup=cluster.shutdown().await;
+            let unregistered=registry.unregister(Box::new(requests)).map_err(Into::into);
+            return Err(crate::start_cleanup::preserve(crate::start_cleanup::preserve(error,cleanup),unregistered));
+        }
         cluster.set_replication_transport_config(transport_config).await;
         Ok::<_, NodeError>(Arc::new(Application {
             encryption:encryption.as_ref().map(Arc::downgrade),

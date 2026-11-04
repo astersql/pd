@@ -102,7 +102,6 @@ async fn run(
     initialized: Arc<std::sync::atomic::AtomicBool>,
     status: tokio::sync::watch::Sender<ScheduleStatus>,
 ) -> Result<(), String> {
-    let start = tokio::time::Instant::now();
     let (config, storage, paths, scope) = {
         let guard = resources.lock().await;
         let r = guard.as_ref().ok_or("node stopped")?;
@@ -215,7 +214,14 @@ async fn run(
     suspect_tick.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Skip);
     let result = async {
         status.send_modify(|s| s.phase = SchedulePhase::Preparing);
-        while !coordinator.should_run(start.elapsed()) {
+        let mut prepare_start=None;
+        while {
+            let bootstrapped=resources.lock().await.as_ref().is_some_and(|r|r.bootstrapped);
+            if bootstrapped {
+                let start=prepare_start.get_or_insert_with(tokio::time::Instant::now);
+                !coordinator.should_run(start.elapsed())
+            } else {true}
+        } {
             // History sampling is not gated by scheduler preparation.
             let history_wait={
                 let mut guard=resources.lock().await;

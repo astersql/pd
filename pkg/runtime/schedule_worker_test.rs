@@ -674,6 +674,7 @@ async fn task_017_deterministic_tick_and_shared_state() {
         region
     }
     let store = Arc::new(astersql_pd_storage::MemoryStore::default());
+    crate::node_test::seed_bootstrap(store.clone(), 518).await;
     let endpoint = StorageEndpoint::new(store.clone());
     let paths = ClusterPaths::new(518);
     endpoint.save_config(&paths,&serde_json::json!({"replication":{"max-replicas":2,"enable-placement-rules":"false"},
