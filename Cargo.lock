@@ -411,6 +411,7 @@ dependencies = [
  "astersql-pd-keyspace-constant",
  "astersql-pd-schedule-labeler",
  "serde_json",
+ "astersql-pd-keyutil",
 ]
 
 [[package]]
