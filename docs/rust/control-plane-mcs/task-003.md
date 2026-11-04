@@ -58,4 +58,3 @@ HTTP矩阵尚未全部执行。用户于2026-11-04明确选择“聚焦及相邻
 官方etcd3.5.15及相邻etcdctl、PD_COMPAT_MODE=dual、RUST_TEST_THREADS=1。
 Go源码/模块1101项存在性、SHA及Git状态首尾相同；未生成Go文件或运行Go构建/测试。
 git diff --check退出0。实现和聚焦/相邻验证完成；保留任务文件待最后统一全量回归。
-
