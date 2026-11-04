@@ -15,7 +15,7 @@ use serde_json::{Value, json};
 use std::{path::PathBuf, sync::Arc, time::Duration};
 use tokio_util::sync::CancellationToken;
 
-fn stores(now: i64) -> Vec<StoreMeta> {
+pub(crate) fn stores(now: i64) -> Vec<StoreMeta> {
     (0..7)
         .map(|i| StoreMeta {
             id: (i + 1) * 100,
@@ -36,13 +36,13 @@ fn stores(now: i64) -> Vec<StoreMeta> {
         .collect()
 }
 
-fn rules() -> Vec<Rule> {
+pub(crate) fn rules() -> Vec<Rule> {
     [ ("primary","one",4), ("dr","two",1) ].into_iter().map(|(id,zone,count)| {
         Rule::from_json(json!({"group_id":"dr","id":id,"role":"voter","count":count,"label_constraints":[{"key":"zone","op":"in","values":[zone]}]}).to_string().as_bytes()).unwrap()
     }).collect()
 }
 
-async fn rule_manager(
+pub(crate) async fn rule_manager(
     store: Arc<dyn MetaStore>,
     paths: ClusterPaths,
     rules: Vec<Rule>,
@@ -79,7 +79,11 @@ impl Drop for File {
     }
 }
 
-async fn go_scenario(stores: &[StoreMeta], rules: Vec<Rule>, expected: &str) -> Value {
+pub(crate) async fn go_wait_scenario(
+    stores: &[StoreMeta],
+    rules: Vec<Rule>,
+    expected: &str,
+) -> (Server, Arc<dyn MetaStore>, ClusterPaths, Value) {
     let binary = pinned_go_binary();
     let file = File(
         PathBuf::from(std::env::var_os("CARGO_TARGET_DIR").unwrap())
@@ -186,8 +190,7 @@ async fn go_scenario(stores: &[StoreMeta], rules: Vec<Rule>, expected: &str) -> 
         serde_json::to_vec_pretty(&data).unwrap(),
     )
     .unwrap();
-    server.stop().unwrap();
-    data
+    (server, backend, paths, data)
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
@@ -195,7 +198,8 @@ async fn mcs_005_behavior() {
     let now = chrono::Utc::now().timestamp_nanos_opt().unwrap();
     let metas = stores(now);
     let rules = rules();
-    let go = go_scenario(&metas, rules.clone(), "async_wait").await;
+    let (mut go_server, _, _, go) = go_wait_scenario(&metas, rules.clone(), "async_wait").await;
+    go_server.stop().unwrap();
     let store: Arc<dyn MetaStore> = Arc::new(MemoryStore::default());
     let paths = ClusterPaths::new(505);
     let manager_rules = rule_manager(store.clone(), paths.clone(), rules).await;
@@ -234,7 +238,7 @@ async fn mcs_005_behavior() {
     leader.resign().await.unwrap();
 }
 
-async fn local_manager(
+pub(crate) async fn local_manager(
     store: Arc<dyn MetaStore>,
     id: u64,
 ) -> (

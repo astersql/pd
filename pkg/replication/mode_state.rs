@@ -137,6 +137,7 @@ pub struct ModeManager {
     allocator: Arc<Allocator>,
     pub(crate) cancel: CancellationToken,
     clock: ModeClock,
+    pub(crate) reports: Mutex<std::collections::HashMap<u64, crate::StoreDRStatus>>,
 }
 
 impl ModeManager {
@@ -179,6 +180,7 @@ impl ModeManager {
             allocator,
             cancel,
             clock,
+            reports: Mutex::new(Default::default()),
         };
         if manager.cancel.is_cancelled() {
             return Err(ModeError::Cancelled);
@@ -235,6 +237,7 @@ impl ModeManager {
             state: state.into(),
             state_id: id,
             recover_start: (state == "sync_recover").then(|| (self.clock)()),
+            async_start: (state == "async").then(|| (self.clock)()),
             ..Default::default()
         })
     }

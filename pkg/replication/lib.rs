@@ -16,3 +16,8 @@ mod async_wait_test;
 #[allow(dead_code)]
 #[path = "../storage/kv/etcd_fixture_test.rs"]
 mod fixture;
+
+mod async_confirm;
+pub use async_confirm::StoreDRStatus;
+#[cfg(test)]
+mod async_confirm_test;
