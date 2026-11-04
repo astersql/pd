@@ -12,7 +12,7 @@ use sha2::{Digest, Sha256};
 use std::{path::PathBuf, process::Command, sync::Arc, time::Duration};
 use tokio_util::sync::CancellationToken;
 
-fn dr_config() -> ReplicationModeConfig {
+pub(crate) fn dr_config() -> ReplicationModeConfig {
     let mut config = ReplicationModeConfig::default();
     config.replication_mode = "dr-auto-sync".into();
     config.dr_auto_sync.label_key = "zone".into();
@@ -23,7 +23,7 @@ fn dr_config() -> ReplicationModeConfig {
     config
 }
 
-fn post(server: &Server, value: &Value) -> (u16, Value) {
+pub(crate) fn post(server: &Server, value: &Value) -> (u16, Value) {
     let output = Command::new("curl")
         .args(["-sS", "--max-time", "10", "-X", "POST", "--data-binary"])
         .arg(value.to_string())
@@ -37,7 +37,7 @@ fn post(server: &Server, value: &Value) -> (u16, Value) {
     (code.parse().unwrap(), serde_json::from_str(body).unwrap())
 }
 
-fn pinned_go_binary() -> PathBuf {
+pub(crate) fn pinned_go_binary() -> PathBuf {
     let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..");
     let binary = PathBuf::from(std::env::var_os("PD_COMPAT_GO_BIN").unwrap());
     readonly_oracle::validate(
@@ -250,9 +250,7 @@ async fn mcs_004_null_and_casefold_match_live_go() {
     assert!(serde_json::to_vec(&invalid).is_err());
 }
 
-#[allow(dead_code)]
-#[path = "../storage/kv/etcd_fixture_test.rs"]
-mod fixture;
+use crate::fixture;
 
 async fn local_state_contract(store: Arc<dyn MetaStore>) {
     let cancel = CancellationToken::new();
@@ -583,7 +581,7 @@ async fn mcs_004_write_failure_keeps_old_published_state() {
     proxy.stop().await;
 }
 
-fn bootstrap_request(id: u64) -> pdpb::BootstrapRequest {
+pub(crate) fn bootstrap_request(id: u64) -> pdpb::BootstrapRequest {
     pdpb::BootstrapRequest {
         header: Some(pdpb::RequestHeader {
             cluster_id: id,

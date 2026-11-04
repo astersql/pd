@@ -8,3 +8,11 @@ pub use mode_state::*;
 mod mode_proxy_test;
 #[cfg(test)]
 mod mode_state_test;
+
+mod async_wait;
+#[cfg(test)]
+mod async_wait_test;
+#[cfg(test)]
+#[allow(dead_code)]
+#[path = "../storage/kv/etcd_fixture_test.rs"]
+mod fixture;

@@ -131,11 +131,11 @@ pub type ModeClock = Arc<dyn Fn() -> DateTime<FixedOffset> + Send + Sync>;
 
 /// A durable policy manager sharing the host's metadata store and global allocator.
 pub struct ModeManager {
-    state: Mutex<ModeSnapshot>,
+    pub(crate) state: Mutex<ModeSnapshot>,
     storage: Arc<StorageEndpoint>,
     paths: ClusterPaths,
     allocator: Arc<Allocator>,
-    cancel: CancellationToken,
+    pub(crate) cancel: CancellationToken,
     clock: ModeClock,
 }
 
@@ -225,7 +225,7 @@ impl ModeManager {
         Ok(())
     }
 
-    async fn new_status(&self, state: &str) -> Result<DRAutoSyncStatus, ModeError> {
+    pub(crate) async fn new_status(&self, state: &str) -> Result<DRAutoSyncStatus, ModeError> {
         let id = tokio::select! {
             biased;
             _ = self.cancel.cancelled() => return Err(ModeError::Cancelled),
@@ -239,7 +239,7 @@ impl ModeManager {
         })
     }
 
-    async fn persist(&self, state: &DRAutoSyncStatus) -> Result<(), ModeError> {
+    pub(crate) async fn persist(&self, state: &DRAutoSyncStatus) -> Result<(), ModeError> {
         tokio::select! {
             biased;
             _ = self.cancel.cancelled() => Err(ModeError::Cancelled),
