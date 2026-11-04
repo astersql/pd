@@ -23,6 +23,7 @@ use tokio_util::sync::CancellationToken;
 type State = Mutex<HeartbeatEffectsState<ProviderSnapshot<()>>>;
 struct Resources {
     recovery: Arc<AsyncMutex<astersql_pd_unsaferecovery::Controller>>,
+    recovery_index: Option<astersql_pd_unsaferecovery::RecoveryIndex>,
     recovery_halted: bool,
     recovery_cleanup_error: Option<String>,
     encryption_keys: Option<Arc<astersql_pd_encryption::DictionaryStorage>>,
@@ -438,6 +439,7 @@ impl ClusterHost {
             recovery: Arc::new(AsyncMutex::new(
                 astersql_pd_unsaferecovery::Controller::new(recovery_steps),
             )),
+            recovery_index: None,
             recovery_halted: false,
             recovery_cleanup_error: None,
             encryption_keys: encryption_keys.clone(),
@@ -1311,9 +1313,9 @@ impl StoreHeartbeatService for ClusterHost {
         store: u64,
         report: Option<astersql_pd_unsaferecovery::StoreReport>,
     ) -> Result<(NodeState, Option<u64>), StoreHeartbeatError> {
-        let guard = self.resources.lock().await;
+        let mut guard = self.resources.lock().await;
         let r = guard
-            .as_ref()
+            .as_mut()
             .ok_or_else(|| StoreHeartbeatError::Other("node stopped".into()))?;
         r.leader
             .validate()
@@ -1330,10 +1332,18 @@ impl StoreHeartbeatService for ClusterHost {
         if store_info.is_removed() {
             return Err(StoreHeartbeatError::Removed);
         }
-        let mut controller = r.recovery.lock().await;
-        controller
+        let controller = r.recovery.clone();
+        let mut controller = controller.lock().await;
+        let ready = controller
             .collect_report(store, report)
             .map_err(|e| StoreHeartbeatError::Other(e.to_string()))?;
+        if ready {
+            r.recovery_index = Some(
+                controller
+                    .build_region_index()
+                    .map_err(|e| StoreHeartbeatError::Other(e.to_string()))?,
+            );
+        }
         Ok((
             store_info.node_state(),
             controller.request_report(store, now().1 as i128),

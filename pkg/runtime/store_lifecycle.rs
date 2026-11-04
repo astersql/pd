@@ -271,6 +271,12 @@ pub(super) async fn cleanup(
 }
 
 impl ClusterHost {
+    pub async fn unsafe_recovery_index(
+        &self,
+    ) -> Result<Option<astersql_pd_unsaferecovery::RecoveryIndex>, String> {
+        let guard = self.resources.lock().await;
+        Ok(guard.as_ref().ok_or("node stopped")?.recovery_index.clone())
+    }
     pub async fn unsafe_recovery_reports(
         &self,
     ) -> Result<
@@ -324,6 +330,9 @@ pub(super) async fn start_recovery(
             now().1 as i128,
         )
         .await;
+    if result.is_ok() {
+        r.recovery_index = None;
+    }
     result.map_err(|e| e.to_string())
 }
 struct RecoveryAdmission<'a> {

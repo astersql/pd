@@ -221,3 +221,7 @@ mod recovery_start_test;
 #[cfg(test)]
 #[path = "collect_report_test.rs"]
 mod collect_report_test;
+
+#[cfg(test)]
+#[path = "recovery_index_test.rs"]
+mod recovery_index_test;

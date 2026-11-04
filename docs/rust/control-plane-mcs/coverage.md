@@ -82,7 +82,7 @@ watcher/额度集成测试和测试工具。只补此清单，不改只读plan�
 | 15 接通Region边界加密 | region start/end key按既有方法与key ID加解密，保留输入对象、空边界和未知key错误；存储适配调用同一实现。 | 8 | `pkg/encryption/lib.rs`（存在）；`pkg/encryption/region_crypter.rs`（存在）；`pkg/runtime/lib.rs`（存在）；`pkg/runtime/node.rs`（存在）；`pkg/server/lib.rs`（存在） | [task-015](task-015.md)：9聚焦+34相邻通过；真实Go LevelDB双向CTR、heartbeat重启、历史key；待统一全量回归 |
 | 16 验证恢复请求与阶段启动 | RemoveFailedStoresWithOptions拒绝非法或冲突请求，显式选项和自动识别模式产生一致初始阶段且暂停调度。 | 2 | `pkg/unsaferecovery/lib.rs`（存在）；`pkg/unsaferecovery/recovery_start.rs`（存在） | [task-016](task-016.md)：5聚焦+13相邻通过；真实Go/Rust准入、etcd故障、调度暂停；待统一全量回归 |
 | 17 收集恢复心跳报告 | CollectReport与HandleStoreHeartbeat仅收取当前阶段报告，重复、迟到与缺失报告不提前进入下一阶段。 | 2 | `pkg/unsaferecovery/collect_report.rs`（存在）；`pkg/unsaferecovery/lib.rs`（存在） | [task-017](task-017.md)：4聚焦+13相邻通过；真实Go/Rust当前step、重复/缺失报告、统计旁路；待统一全量回归 |
-| 18 构建恢复Region索引 | 按epoch与raft新鲜度构建重叠region索引，覆盖空范围、未初始化peer及merge重叠选择。 | 2 | `pkg/unsaferecovery/lib.rs`（拟建）；`pkg/unsaferecovery/region_index.rs`（拟建） | 待当前行为证据 |
+| 18 构建恢复Region索引 | 按epoch与raft新鲜度构建重叠region索引，覆盖空范围、未初始化peer及merge重叠选择。 | 2 | `pkg/unsaferecovery/lib.rs`（存在）；`pkg/unsaferecovery/region_index.rs`（存在） | [task-018](task-018.md)：7聚焦+9相邻通过；实际Go计划匹配epoch范围及raft选择；待统一全量回归 |
 | 19 生成ForceLeader计划 | 从报告选择可恢复leader，处理joint state和commit merge；相同输入产生等价计划与受影响region集合。 | 2 | `pkg/unsaferecovery/force_leader.rs`（拟建）；`pkg/unsaferecovery/lib.rs`（拟建） | 待当前行为证据 |
 | 20 生成降级失败副本计划 | generateDemoteFailedVoterPlan仅降级失败投票副本，保留健康peer并正确处理learner。 | 2 | `pkg/unsaferecovery/demote_failed.rs`（拟建）；`pkg/unsaferecovery/lib.rs`（拟建） | 待当前行为证据 |
 | 21 生成TiFlash清理计划 | generateTombstoneTiFlashLearnerPlan只清理目标learner，不误删TiKV可恢复副本。 | 2 | `pkg/unsaferecovery/lib.rs`（拟建）；`pkg/unsaferecovery/tiflash_cleanup.rs`（拟建） | 待当前行为证据 |

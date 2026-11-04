@@ -48,7 +48,7 @@ fn report(step: u64, version: u64) -> pdpb::StoreReport {
         }],
     }
 }
-async fn heartbeat(
+pub(crate) async fn heartbeat(
     client: &mut PdClient<tonic::transport::Channel>,
     cluster: u64,
     store: u64,

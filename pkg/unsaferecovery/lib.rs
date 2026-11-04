@@ -14,3 +14,9 @@ pub use collect_report::*;
 #[cfg(test)]
 #[path = "collect_report_test.rs"]
 mod collect_report_test;
+
+mod region_index;
+pub use region_index::*;
+#[cfg(test)]
+#[path = "region_index_test.rs"]
+mod region_index_test;
