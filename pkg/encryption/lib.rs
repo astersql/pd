@@ -174,3 +174,12 @@ mod key_rotation;
 pub use key_rotation::*;
 #[cfg(test)]
 mod key_rotation_test;
+
+mod key_watch;
+pub use key_watch::*;
+#[cfg(test)]
+mod key_watch_test;
+
+#[cfg(test)]
+#[path = "../storage/kv/etcd_fixture_test.rs"]
+mod etcd_fixture;

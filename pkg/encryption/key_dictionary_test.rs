@@ -1,4 +1,5 @@
 // Copyright 2026 AsterSQL.
+use crate::etcd_fixture as fixture;
 use crate::protocol_adapter::ProtoKeyDictionaryCodec;
 use crate::{
     DataKey, DictionaryStorage, ENCRYPTION_KEYS_PATH, EncryptionMethod, KeyDictionary,
@@ -8,8 +9,6 @@ use astersql_pd_election::Leadership;
 use astersql_pd_storage_domain::{Consistency, MetaStore, Read};
 use std::{collections::BTreeMap, sync::Arc};
 use tokio_util::sync::CancellationToken;
-#[path = "../storage/kv/etcd_fixture_test.rs"]
-mod fixture;
 fn dictionary() -> KeyDictionary {
     KeyDictionary {
         current_key_id: 200,

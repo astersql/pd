@@ -55,6 +55,12 @@ impl KeyRotation {
             }),
         })
     }
+    pub(crate) fn storage(&self) -> Arc<DictionaryStorage> {
+        self.storage.clone()
+    }
+    pub(crate) fn period_nanos(&self) -> i64 {
+        self.period
+    }
     pub fn snapshot(&self) -> KeySnapshot {
         self.storage.snapshot()
     }

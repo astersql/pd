@@ -47,6 +47,9 @@ impl DictionaryStorage {
             published: RwLock::new(KeySnapshot::default()),
         }
     }
+    pub(crate) fn backend(&self) -> Arc<dyn MetaStore> {
+        self.store.clone()
+    }
     pub fn snapshot(&self) -> KeySnapshot {
         self.published
             .read()

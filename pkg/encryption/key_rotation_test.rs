@@ -1,4 +1,5 @@
 // Copyright 2026 AsterSQL.
+use crate::etcd_fixture as fixture;
 use crate::protocol_adapter::ProtoKeyDictionaryCodec;
 use crate::{
     DictionaryStorage, EncryptionConfig, KeyRotation, MasterKeyConfig, MasterKeyFileConfig,
@@ -7,8 +8,6 @@ use astersql_pd_election::Leadership;
 use astersql_pd_storage_domain::MetaStore;
 use std::sync::Arc;
 use tokio_util::sync::CancellationToken;
-#[path = "../storage/kv/etcd_fixture_test.rs"]
-mod fixture;
 fn config(path: &str, method: &str) -> EncryptionConfig {
     let mut config = EncryptionConfig {
         data_encryption_method: method.into(),
