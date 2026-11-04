@@ -87,7 +87,8 @@ async fn mcs_016_behavior() {
     assert_eq!(controller.plan_execution_timeout_nanos, 300_000_000_000);
     assert!(controller.disable_paranoid_check);
     assert_eq!(controller.timeout_unix_nanos, 1_600_000_000_000);
-    assert_eq!(controller.step, 1601);
+    assert_eq!(controller.recovery_start_step, 1601);
+    assert_eq!(controller.step, 1602);
     let durable = cluster
         .endpoint
         .load_store_meta(&ClusterPaths::new(16), 1)
@@ -280,7 +281,8 @@ async fn mcs_016_real_persistence_failure_does_not_start_or_publish_tombstone() 
         .await
         .unwrap();
     assert!(cluster.halt);
-    assert_eq!(controller.step, 1001);
+    assert_eq!(controller.recovery_start_step, 1001);
+    assert_eq!(controller.step, 1002);
     assert_eq!(
         cluster
             .endpoint

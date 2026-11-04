@@ -225,3 +225,7 @@ mod collect_report_test;
 #[cfg(test)]
 #[path = "recovery_index_test.rs"]
 mod recovery_index_test;
+
+#[cfg(test)]
+#[path = "force_leader_test.rs"]
+mod force_leader_test;

@@ -84,6 +84,7 @@ impl RecoverySteps {
 }
 pub struct Controller {
     pub(crate) steps: Arc<RecoverySteps>,
+    pub(crate) recovery_error: Option<RecoveryError>,
     pub(crate) stage: Stage,
     pub(crate) step: u64,
     pub(crate) recovery_start_step: u64,
@@ -110,6 +111,7 @@ impl Controller {
     pub fn new(steps: Arc<RecoverySteps>) -> Self {
         Self {
             steps,
+            recovery_error: None,
             stage: Stage::Idle,
             step: 0,
             recovery_start_step: 0,
@@ -155,6 +157,7 @@ impl Controller {
                 }
             }
         }
+        self.recovery_error = None;
         self.num_stores_reported = 0;
         self.report_requests.clear();
         self.failed_stores = request.failed_stores;
@@ -173,7 +176,8 @@ impl Controller {
         self.timeout_unix_nanos =
             now + i128::from((request.timeout_seconds as i64).wrapping_mul(1_000_000_000));
         self.recovery_start_step = self.steps.next();
-        self.step = self.recovery_start_step;
+        // Go changeStage(CollectReport) advances once more after recording the run start.
+        self.step = self.steps.next();
         self.plan_execution_timeout_nanos = if request.options.plan_execution_timeout_nanos > 0 {
             request.options.plan_execution_timeout_nanos
         } else {

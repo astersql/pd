@@ -5,7 +5,7 @@ fn controller() -> Controller {
     let mut c = Controller::new(Arc::new(RecoverySteps::new(1700)));
     c.stage = Stage::CollectReport;
     c.step = 1701;
-    c.recovery_start_step = 1701;
+    c.recovery_start_step = 1700;
     c.expected_reports = BTreeMap::from([(1, None), (2, None)]);
     c
 }

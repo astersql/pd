@@ -28,3 +28,32 @@ pub fn from_proto(report: pdpb::StoreReport) -> StoreReport {
             .collect(),
     }
 }
+/// Convert a prepared domain plan without assigning a new recovery step.
+pub fn plan_to_proto(plan: astersql_pd_unsaferecovery::RecoveryPlan) -> pdpb::RecoveryPlan {
+    pdpb::RecoveryPlan {
+        creates: plan
+            .creates
+            .into_iter()
+            .map(crate::core_region_adapter::region_to_proto)
+            .collect(),
+        tombstones: plan.tombstones,
+        demotes: plan
+            .demotes
+            .into_iter()
+            .map(|d| pdpb::DemoteFailedVoters {
+                region_id: d.region_id,
+                failed_voters: d
+                    .failed_voters
+                    .into_iter()
+                    .map(crate::core_region_adapter::peer_to_proto)
+                    .collect(),
+            })
+            .collect(),
+        force_leader: plan.force_leader.map(|f| pdpb::ForceLeader {
+            failed_stores: f.failed_stores,
+            enter_force_leaders: f.enter_force_leaders,
+        }),
+        step: plan.step,
+        ..Default::default()
+    }
+}

@@ -24,6 +24,7 @@ type State = Mutex<HeartbeatEffectsState<ProviderSnapshot<()>>>;
 struct Resources {
     recovery: Arc<AsyncMutex<astersql_pd_unsaferecovery::Controller>>,
     recovery_index: Option<astersql_pd_unsaferecovery::RecoveryIndex>,
+    prepared_recovery: Option<astersql_pd_unsaferecovery::PreparedPlan>,
     recovery_halted: bool,
     recovery_cleanup_error: Option<String>,
     encryption_keys: Option<Arc<astersql_pd_encryption::DictionaryStorage>>,
@@ -440,6 +441,7 @@ impl ClusterHost {
                 astersql_pd_unsaferecovery::Controller::new(recovery_steps),
             )),
             recovery_index: None,
+            prepared_recovery: None,
             recovery_halted: false,
             recovery_cleanup_error: None,
             encryption_keys: encryption_keys.clone(),
@@ -1338,11 +1340,15 @@ impl StoreHeartbeatService for ClusterHost {
             .collect_report(store, report)
             .map_err(|e| StoreHeartbeatError::Other(e.to_string()))?;
         if ready {
-            r.recovery_index = Some(
-                controller
-                    .build_region_index()
-                    .map_err(|e| StoreHeartbeatError::Other(e.to_string()))?,
-            );
+            let index = controller
+                .build_region_index()
+                .map_err(|e| StoreHeartbeatError::Other(e.to_string()))?;
+            let stores = r.state.lock().unwrap().cluster.stores.clone();
+            let prepared = controller
+                .prepare_force_leader(&index, &stores)
+                .map_err(|e| StoreHeartbeatError::Other(e.to_string()))?;
+            r.recovery_index = Some(index);
+            r.prepared_recovery = prepared;
         }
         Ok((
             store_info.node_state(),

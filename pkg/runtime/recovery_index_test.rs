@@ -58,6 +58,19 @@ fn peer(
     }
 }
 async fn report_all(url: &str) -> (PdClient<tonic::transport::Channel>, u64, u64) {
+    let (client, cluster, step, _) = report_all_for_mode(url, false, false).await;
+    (client, cluster, step)
+}
+pub(crate) async fn report_all_for_mode(
+    url: &str,
+    commit: bool,
+    joint: bool,
+) -> (
+    PdClient<tonic::transport::Channel>,
+    u64,
+    u64,
+    pdpb::StoreHeartbeatResponse,
+) {
     let (mut client, cluster, _) = seed(url).await;
     assert_eq!(
         http(
@@ -73,6 +86,7 @@ async fn report_all(url: &str) -> (PdClient<tonic::transport::Channel>, u64, u64
         .recovery_plan
         .unwrap()
         .step;
+    let mut completion = None;
     for (store, peers) in [
         (
             1,
@@ -82,22 +96,54 @@ async fn report_all(url: &str) -> (PdClient<tonic::transport::Channel>, u64, u64
                 peer(900, b"m", b"", 8, 1, 1, 10, &[1, 4, 5]),
             ],
         ),
-        (2, vec![peer(700, b"", b"m", 10, 1, 2, 9, &[1, 2, 4, 5, 6])]),
+        (2, vec![peer(700, b"", b"m", 9, 1, 2, 9, &[1, 2, 4, 5, 6])]),
         (3, vec![]),
     ] {
-        heartbeat(
-            &mut client,
-            cluster,
-            store,
-            999,
-            Some(pdpb::StoreReport {
-                step,
-                peer_reports: peers,
-            }),
-        )
-        .await;
+        let peers = peers
+            .into_iter()
+            .map(|mut p| {
+                if p.region_state
+                    .as_ref()
+                    .and_then(|s| s.region.as_ref())
+                    .is_some_and(|r| r.id == 700)
+                {
+                    p.has_commit_merge = commit;
+                    if joint {
+                        for peer in &mut p
+                            .region_state
+                            .as_mut()
+                            .unwrap()
+                            .region
+                            .as_mut()
+                            .unwrap()
+                            .peers
+                        {
+                            peer.role = if peer.store_id <= 2 {
+                                metapb::PeerRole::IncomingVoter as i32
+                            } else {
+                                metapb::PeerRole::DemotingVoter as i32
+                            };
+                        }
+                    }
+                }
+                p
+            })
+            .collect();
+        completion = Some(
+            heartbeat(
+                &mut client,
+                cluster,
+                store,
+                999,
+                Some(pdpb::StoreReport {
+                    step,
+                    peer_reports: peers,
+                }),
+            )
+            .await,
+        );
     }
-    (client, cluster, step)
+    (client, cluster, step, completion.unwrap())
 }
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
 async fn mcs_018_native_index_matches_real_go_epoch_and_raft_selection() {

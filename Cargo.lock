@@ -1295,6 +1295,7 @@ dependencies = [
  "async-trait",
  "tokio",
  "tokio-util",
+ "astersql-pd-codec",
 ]
 
 [[package]]

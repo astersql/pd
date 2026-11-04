@@ -56,3 +56,7 @@ canonical控制器和实际持久记录。随机初始step不跨进程比较，�
 
 本项只证明准入和初始阶段；心跳报告、Region分析、各类恢复计划、重试及终止仍属于
 后续17–24任务。完整包级/workspace测试依用户授权统一执行，保留任务待回归。
+
+后续[任务019](task-019.md)核对Go changeStage尾部后修正初始step：
+recoveryStartStep分配后，进入CollectReport再推进一次，因此当前step=seed+2。
+新增精确断言并重跑全部准入、收集及计划相邻证据；原阶段日志作为历史记录保留。
