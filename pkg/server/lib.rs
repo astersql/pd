@@ -76,6 +76,25 @@ pub struct Identity {
 /// Domain operations supplied by the host; transport types stay in this crate.
 #[async_trait]
 pub trait PdServices: Send + Sync {
+    /// Persist the validated DR file through an explicitly configured host directory.
+    async fn persist_dr_state(&self, _data: Vec<u8>) -> Result<(), String> {
+        Err("data directory is not configured".into())
+    }
+
+    /// The active term's single replication manager; None before bootstrap or when unsupported.
+    async fn replication_mode(
+        &self,
+    ) -> Result<Option<astersql_pd_replication::ModeSnapshot>, String> {
+        Ok(None)
+    }
+    async fn report_store_dr_status(
+        &self,
+        _store: u64,
+        _status: astersql_pd_replication::StoreDRStatus,
+    ) -> Result<(), String> {
+        Err("replication manager is not configured".into())
+    }
+
     /// Optional host policy; embedded libraries never install a logger.
     fn log_level_control(&self) -> Option<Arc<dyn astersql_pd_logutil::LogLevelControl>> {
         None
@@ -1104,3 +1123,5 @@ mod http_log;
 
 #[cfg(test)]
 mod http_maintenance_test;
+
+pub mod replication_mode;

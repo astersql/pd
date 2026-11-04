@@ -680,7 +680,19 @@ impl Pd for Grpc {
         })?;
         // These fields belong to recovery/replication controllers outside this
         // state adapter. In particular a recovery report must bypass statistics.
-        if request.store_report.is_some() || request.dr_autosync_status.is_some() {
+        if request.store_report.is_some() {
+            return Err(Status::unimplemented(
+                "store recovery and DR status are unsupported",
+            ));
+        }
+        if request.dr_autosync_status.is_some()
+            && self
+                .services
+                .replication_mode()
+                .await
+                .map_err(Status::unavailable)?
+                .is_none()
+        {
             return Err(Status::unimplemented(
                 "store recovery and DR status are unsupported",
             ));
@@ -701,6 +713,33 @@ impl Pd for Grpc {
                 started.elapsed().as_secs_f64(),
             );
         }
+        if result.is_ok()
+            && let Some(report) = request.dr_autosync_status
+        {
+            let state =
+                astersql_pd_proto::replication_modepb::DrAutoSyncState::try_from(report.state)
+                    .map(|s| s.as_str_name().to_ascii_lowercase())
+                    .unwrap_or_else(|_| format!("unknown:{}", report.state));
+            self.services
+                .report_store_dr_status(
+                    metric_store,
+                    astersql_pd_replication::StoreDRStatus {
+                        state,
+                        state_id: report.state_id,
+                    },
+                )
+                .await
+                .map_err(Status::unavailable)?;
+        }
+        let replication_status = if result.is_ok() {
+            self.services
+                .replication_mode()
+                .await
+                .map_err(Status::unavailable)?
+                .map(|s| crate::replication_mode::to_proto(&s))
+        } else {
+            None
+        };
         let mut header = self.header().unwrap();
         let state = match result {
             Ok(state) => match state {
@@ -734,6 +773,7 @@ impl Pd for Grpc {
         Ok(Response::new(pdpb::StoreHeartbeatResponse {
             header: Some(header),
             state,
+            replication_status,
             ..Default::default()
         }))
     }

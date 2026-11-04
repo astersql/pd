@@ -7,6 +7,7 @@ license.workspace = true
 [lib]
 path = "lib.rs"
 [dependencies]
+prometheus.workspace = true
 astersql-pd-core.workspace = true
 astersql-pd-schedule-placement.workspace = true
 astersql-pd-configutil.workspace = true
@@ -22,6 +23,8 @@ tokio.workspace = true
 tokio-util.workspace = true
 chrono = { workspace = true, features = ["serde"] }
 [dev-dependencies]
+astersql-pd-runtime.workspace = true
+astersql-pd-server-config.workspace = true
 tokio-stream.workspace = true
 astersql-pd-schedule-config.workspace = true
 astersql-pd-storage-endpoint.workspace = true

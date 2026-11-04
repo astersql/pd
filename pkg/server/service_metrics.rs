@@ -20,6 +20,7 @@ use std::{
 /// Owns registrations until every listener/request clone has drained. An error
 /// during construction rolls back only collectors registered by this attempt.
 pub struct ServiceMetrics {
+    pub replication: astersql_pd_replication::ModeMetrics,
     pub hotspot: astersql_pd_schedule::HotSpotMetrics,
     pub labeler: astersql_pd_schedule_labeler::LabelerMetrics,
     pub affinity: astersql_pd_schedule_affinity::availability_loop::AffinityMetrics,
@@ -59,6 +60,7 @@ pub struct ServiceMetrics {
 /// Cloneable domain handles carry values but never retain a registry or service.
 #[derive(Clone)]
 pub struct DomainMetricHandles {
+    pub replication: astersql_pd_replication::ModeMetrics,
     pub hotspot: astersql_pd_schedule::HotSpotMetrics,
     pub labeler: astersql_pd_schedule_labeler::LabelerMetrics,
     pub affinity: astersql_pd_schedule_affinity::availability_loop::AffinityMetrics,
@@ -86,6 +88,7 @@ impl ServiceMetrics {
     }
     pub fn domain_metrics(&self) -> Arc<DomainMetricHandles> {
         Arc::new(DomainMetricHandles {
+            replication: self.replication.clone(),
             hotspot: self.hotspot.clone(),
             labeler: self.labeler.clone(),
             affinity: self.affinity.clone(),
@@ -193,6 +196,7 @@ impl ServiceMetrics {
             ),
             core: Arc::new(astersql_pd_core::metrics::CoreMetrics::new()?),
             classic: Arc::new(astersql_pd_metricutil::ClassicMetrics::new()?),
+            replication: astersql_pd_replication::ModeMetrics::new()?,
             tso_handling,
             tso_batch,
             query_handling,
@@ -250,6 +254,7 @@ impl ServiceMetrics {
             .chain(scope.affinity.collectors())
             .chain(scope.sync.collectors())
             .chain(scope.filters.collectors())
+            .chain(scope.replication.collectors())
             .chain(scope.hotspot.collectors())
             .zip(
                 scope
@@ -264,6 +269,7 @@ impl ServiceMetrics {
                     .chain(scope.affinity.collectors())
                     .chain(scope.sync.collectors())
                     .chain(scope.filters.collectors())
+                    .chain(scope.replication.collectors())
                     .chain(scope.hotspot.collectors()),
             )
         {

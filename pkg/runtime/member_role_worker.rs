@@ -17,6 +17,7 @@ type RegionReset = (
     tokio::sync::oneshot::Sender<Result<(), String>>,
 );
 pub(crate) struct RoleServices {
+    pub(crate) file_directory: std::sync::OnceLock<std::path::PathBuf>,
     identity: NodeConfig,
     log_level: RwLock<Option<Arc<dyn astersql_pd_logutil::LogLevelControl>>>,
     telemetry: RwLock<Option<Arc<astersql_pd_server_config::Config>>>,
@@ -38,6 +39,7 @@ impl RoleServices {
             Arc::new(astersql_pd_storage::MemoryStore::default());
         let (region_resets, region_reset_rx) = tokio::sync::mpsc::channel(16);
         Self {
+            file_directory: Default::default(),
             log_level: RwLock::new(None),
             telemetry: RwLock::new(None),
             metrics: RwLock::new(Weak::new()),
@@ -150,6 +152,41 @@ impl RoleServices {
 }
 #[async_trait::async_trait]
 impl PdServices for RoleServices {
+    async fn persist_dr_state(&self, data: Vec<u8>) -> Result<(), String> {
+        let directory = self
+            .file_directory
+            .get()
+            .ok_or("data directory is not configured")?;
+        let mut options = tokio::fs::OpenOptions::new();
+        options.write(true).create(true).truncate(true);
+        #[cfg(unix)]
+        options.mode(0o644);
+        use tokio::io::AsyncWriteExt;
+        let mut file = options
+            .open(directory.join("DR_STATE"))
+            .await
+            .map_err(|e| e.to_string())?;
+        file.write_all(&data).await.map_err(|e| e.to_string())?;
+        file.flush().await.map_err(|e| e.to_string())
+    }
+
+    async fn replication_mode(
+        &self,
+    ) -> Result<Option<astersql_pd_replication::ModeSnapshot>, String> {
+        self.active().await?.cluster.replication_snapshot().await
+    }
+    async fn report_store_dr_status(
+        &self,
+        store: u64,
+        status: astersql_pd_replication::StoreDRStatus,
+    ) -> Result<(), String> {
+        self.active()
+            .await?
+            .cluster
+            .report_store_dr_status(store, status)
+            .await
+    }
+
     fn log_level_control(&self) -> Option<Arc<dyn astersql_pd_logutil::LogLevelControl>> {
         self.log_level.read().unwrap().clone()
     }
@@ -1089,6 +1126,7 @@ pub(crate) async fn run(
                         cluster,
                         Arc::new(leader),
                         services.service_metrics(),
+                        services.telemetry_config(),
                     )
                     .await;
                     match term {

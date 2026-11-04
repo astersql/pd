@@ -58,12 +58,21 @@ impl Grpc {
             }
         };
         Ok(Response::new(pdpb::PutStoreResponse {
-            replication_status: header.as_ref().filter(|h| h.error.is_none()).map(|_| {
-                astersql_pd_proto::replication_modepb::ReplicationStatus {
-                    mode: astersql_pd_proto::replication_modepb::ReplicationMode::Majority as i32,
-                    ..Default::default()
+            replication_status: if header.as_ref().is_some_and(|h| h.error.is_none()) {
+                match self
+                    .services
+                    .replication_mode()
+                    .await
+                    .map_err(Status::unavailable)?
+                {
+                    Some(snapshot) => Some(crate::replication_mode::to_proto(&snapshot)),
+                    None => {
+                        Some(astersql_pd_proto::replication_modepb::ReplicationStatus::default())
+                    }
                 }
-            }),
+            } else {
+                None
+            },
             header,
         }))
     }

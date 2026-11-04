@@ -9,6 +9,8 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
+astersql-pd-storage-domain.workspace = true
+astersql-pd-replication.workspace = true
 astersql-pd-metricutil.workspace = true
 astersql-pd-logutil.workspace = true
 base64.workspace = true
@@ -38,7 +40,7 @@ astersql-pd-statistics-utils.workspace = true
 astersql-pd-schedule.workspace = true
 astersql-pd-server-config.workspace = true
 astersql-pd-core-constant.workspace = true
-tokio.workspace = true
+tokio = { workspace = true, features = ["fs"] }
 tokio-util.workspace = true
 astersql-pd-server.workspace = true
 astersql-pd-storage.workspace = true

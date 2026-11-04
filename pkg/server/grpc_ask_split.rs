@@ -199,7 +199,7 @@ fn region_text(r: &astersql_pd_core::RegionMeta) -> String {
     }
     s.trim_end().into()
 }
-fn quote_bytes(bytes: &[u8]) -> String {
+pub(crate) fn quote_bytes(bytes: &[u8]) -> String {
     let mut s = String::from("\"");
     for &b in bytes {
         match b {

@@ -492,6 +492,9 @@ dependencies = [
  "tokio-stream",
  "tokio-util",
  "toml",
+ "astersql-pd-runtime",
+ "astersql-pd-server-config",
+ "prometheus",
 ]
 
 [[package]]
@@ -575,6 +578,8 @@ dependencies = [
  "tokio-stream",
  "tokio-util",
  "tonic",
+ "astersql-pd-replication",
+ "astersql-pd-storage-domain",
 ]
 
 [[package]]
@@ -1006,6 +1011,7 @@ dependencies = [
  "tonic-prost",
  "tower",
  "x509-parser",
+ "astersql-pd-replication",
 ]
 
 [[package]]

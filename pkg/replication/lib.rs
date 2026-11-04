@@ -25,3 +25,8 @@ mod async_confirm_test;
 mod sync_recover;
 #[cfg(test)]
 mod sync_recover_test;
+
+mod mode_worker;
+pub use mode_worker::{ModeMetrics, ModePhase, ModeWorker};
+#[cfg(test)]
+mod mode_worker_test;

@@ -22,6 +22,11 @@ use tokio_util::sync::CancellationToken;
 
 type State = Mutex<HeartbeatEffectsState<ProviderSnapshot<()>>>;
 struct Resources {
+    replication: Option<Arc<astersql_pd_replication::ModeManager>>,
+    replication_transport_config: Option<Arc<astersql_pd_server_config::Config>>,
+    replicated_states: Arc<AsyncMutex<std::collections::BTreeMap<u64, u64>>>,
+    replication_error: Mutex<Option<String>>,
+
     metrics: Option<Arc<astersql_pd_server::service_metrics::DomainMetricHandles>>,
     metrics_error: Mutex<Option<String>>,
     network_metrics: Mutex<std::collections::BTreeMap<u64, prometheus::Counter>>,
@@ -52,6 +57,7 @@ struct Resources {
 /// The node creates workers on its supplied executor and joins them on shutdown.
 /// Read handles retain no storage or workers after shutdown.
 pub struct ClusterHost {
+    mode_worker: AsyncMutex<Option<astersql_pd_replication::ModeWorker>>,
     operator_clock: schedule_operator_read::ClockMap,
     #[cfg(test)]
     state: Weak<State>,
@@ -212,6 +218,17 @@ impl ClusterHost {
             .await
             .map_err(|e| e.to_string())?
             .is_some();
+        let replication_status = if bootstrapped {
+            let manager = r
+                .replication
+                .as_ref()
+                .ok_or("replication manager is not configured")?;
+            Some(astersql_pd_server::replication_mode::compact_status(
+                &manager.snapshot().await,
+            ))
+        } else {
+            None
+        };
         let max_peer_count = r.persisted_config.config.replication.max_replicas as u32;
         let state = r.state.lock().unwrap();
         let regions = &state.cluster.regions;
@@ -219,16 +236,6 @@ impl ClusterHost {
             || regions.region_by_key(&[], false).is_some_and(|r| {
                 r.voters().len() >= max_peer_count as usize && r.pending_peers().is_empty()
             });
-        // Bootstrap currently admits only the majority manager. Never invent a DR state.
-        let replication_status = if bootstrapped {
-            if r.persisted_config.config.replication_mode.replication_mode != "majority" {
-                return Err("replication manager is not configured".into());
-            }
-            // Gogo CompactTextString omits the default MAJORITY enum.
-            Some(String::new())
-        } else {
-            None
-        };
         Ok(astersql_pd_server::http_cluster::ClusterObservation {
             max_peer_count,
             initialized,
@@ -278,6 +285,23 @@ impl ClusterHost {
         let metrics_store = store.clone();
         let storage = Arc::new(StorageEndpoint::new(store.clone()));
         let paths = ClusterPaths::new(cluster_id);
+        let replication = if storage.load_meta(&paths).await?.is_some() {
+            Some(
+                replication_mode::manager(
+                    persisted_config.config.replication_mode.clone(),
+                    store.clone(),
+                    paths,
+                    allocator.clone(),
+                    cancel.clone(),
+                    metrics.as_ref().map(|m| m.replication.clone()),
+                )
+                .await?,
+            )
+        } else {
+            None
+        };
+        let has_replication = replication.is_some();
+
         let external_ts =
             std::sync::atomic::AtomicU64::new(storage.load_external_ts(&paths).await.unwrap_or(0));
         let resolved_error = Arc::new(Mutex::new(None));
@@ -391,6 +415,10 @@ impl ClusterHost {
             }
         }
         let resources = Arc::new(AsyncMutex::new(Some(Resources {
+            replication,
+            replication_transport_config: None,
+            replicated_states: Arc::new(AsyncMutex::new(Default::default())),
+            replication_error: Mutex::new(None),
             metrics: metrics.clone(),
             metrics_error: Mutex::new(None),
             network_metrics: Mutex::new(Default::default()),
@@ -429,6 +457,13 @@ impl ClusterHost {
             downstreams: syncer.downstreams(),
             syncer,
         })));
+        let mode_worker = has_replication.then(|| {
+            replication_mode::start(
+                resources.clone(),
+                cancel.clone(),
+                metrics.as_ref().map(|m| m.replication.clone()),
+            )
+        });
         let (schedule_requests, schedule_rx) = tokio::sync::mpsc::channel(64);
         let cleanup_requests = schedule_requests.clone();
         let worker_resources = resources.clone();
@@ -783,6 +818,7 @@ impl ClusterHost {
             progress.gc(&progress_cancel).await;
         });
         Ok(Self {
+            mode_worker: AsyncMutex::new(mode_worker),
             operator_clock,
             progress_worker: AsyncMutex::new(Some(progress_worker)),
             stores,
@@ -879,21 +915,10 @@ impl ClusterHost {
         store: astersql_pd_core::StoreMeta,
         region: astersql_pd_core::RegionMeta,
     ) -> Result<bool, String> {
-        let guard = self.resources.lock().await;
-        let resources = guard.as_ref().ok_or("node stopped")?;
+        let mut guard = self.resources.lock().await;
+        let resources = guard.as_mut().ok_or("node stopped")?;
         if self.cancel.is_cancelled() {
             return Err("node stopped".into());
-        }
-        if resources
-            .persisted_config
-            .config
-            .replication_mode
-            .replication_mode
-            != "majority"
-        {
-            return Err(
-                "bootstrap replication mode requires a configured replication manager".into(),
-            );
         }
         let bootstrap_begin = std::time::Instant::now();
         let nanos = std::time::SystemTime::now()
@@ -910,6 +935,17 @@ impl ClusterHost {
             .await
             .map_err(|e| e.to_string())?;
         if committed {
+            let manager = replication_mode::manager(
+                resources.persisted_config.config.replication_mode.clone(),
+                resources.meta_store.clone(),
+                resources.paths,
+                resources.allocator.clone(),
+                self.cancel.clone(),
+                resources.metrics.as_ref().map(|m| m.replication.clone()),
+            )
+            .await
+            .map_err(|e| e.to_string())?;
+            resources.replication = Some(manager);
             if let Some(metrics) = &resources.metrics {
                 metrics
                     .classic
@@ -921,17 +957,27 @@ impl ClusterHost {
                 .hot
                 .stores_stats
                 .get_or_create_rolling_store_stats(store.id);
-            let mut state = resources.state.lock().unwrap();
-            state
-                .cluster
-                .stores
-                .put_store(Arc::new(astersql_pd_core::StoreInfo::new(store)));
-            state
-                .cluster
-                .regions
-                .check_and_put_region(Arc::new(RegionInfo::new(region, None, vec![], vec![])));
-            state.cluster.update_all_store_status();
+            {
+                let mut state = resources.state.lock().unwrap();
+                state
+                    .cluster
+                    .stores
+                    .put_store(Arc::new(astersql_pd_core::StoreInfo::new(store)));
+                state
+                    .cluster
+                    .regions
+                    .check_and_put_region(Arc::new(RegionInfo::new(region, None, vec![], vec![])));
+                state.cluster.update_all_store_status();
+            }
             self.config_wake.notify_one();
+            let mut worker = self.mode_worker.lock().await;
+            if worker.is_none() && !self.cancel.is_cancelled() {
+                *worker = Some(replication_mode::start(
+                    self.resources.clone(),
+                    self.cancel.clone(),
+                    resources.metrics.as_ref().map(|m| m.replication.clone()),
+                ));
+            }
         }
         Ok(committed)
     }
@@ -1147,6 +1193,11 @@ impl ClusterHost {
     }
     pub(crate) async fn shutdown(&self) -> Result<(), crate::NodeError> {
         self.cancel.cancel();
+        let mode_error = if let Some(worker) = self.mode_worker.lock().await.take() {
+            worker.stop().await.err()
+        } else {
+            None
+        };
         let progress_error = if let Some(worker) = self.progress_worker.lock().await.take() {
             worker.await.err()
         } else {
@@ -1194,7 +1245,8 @@ impl ClusterHost {
             Ok(())
         };
         guard.take();
-        if let Some(error) = schedule_error
+        if let Some(error) = mode_error
+            .or(schedule_error)
             .or(progress_error)
             .or(worker_error)
             .or(stats_error)
@@ -1885,3 +1937,6 @@ mod affinity_read_http;
 
 #[path = "affinity_write_http.rs"]
 mod affinity_write_http;
+
+#[path = "replication_mode.rs"]
+mod replication_mode;

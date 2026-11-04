@@ -131,6 +131,7 @@ pub type ModeClock = Arc<dyn Fn() -> DateTime<FixedOffset> + Send + Sync>;
 
 /// A durable policy manager sharing the host's metadata store and global allocator.
 pub struct ModeManager {
+    pub(crate) metrics: std::sync::OnceLock<crate::ModeMetrics>,
     pub(crate) state: Mutex<ModeSnapshot>,
     storage: Arc<StorageEndpoint>,
     paths: ClusterPaths,
@@ -172,6 +173,7 @@ impl ModeManager {
     ) -> Result<Self, ModeError> {
         validate(&config)?;
         let mut manager = Self {
+            metrics: Default::default(),
             state: Mutex::new(ModeSnapshot {
                 config,
                 dr_auto_sync: DRAutoSyncStatus::default(),

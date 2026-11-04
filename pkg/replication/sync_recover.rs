@@ -148,6 +148,10 @@ impl ModeManager {
             let mut recovery = self.recovery.lock().await;
             recovery.update(regions, state.dr_auto_sync.state_id);
             let progress = recovery.estimate();
+            if let Some(metrics) = self.metrics.get() {
+                metrics.recovered_regions.set(recovery.count as f64);
+                metrics.recover_progress.set(progress as f64);
+            }
             if progress != 1.0 {
                 state.dr_auto_sync.recover_progress = progress;
                 state.dr_auto_sync.total_regions = recovery.total;

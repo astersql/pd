@@ -77,6 +77,19 @@ pub(crate) struct Application {
 }
 #[async_trait::async_trait]
 impl PdServices for Application {
+    async fn replication_mode(
+        &self,
+    ) -> Result<Option<astersql_pd_replication::ModeSnapshot>, String> {
+        self.cluster.replication_snapshot().await
+    }
+    async fn report_store_dr_status(
+        &self,
+        store: u64,
+        status: astersql_pd_replication::StoreDRStatus,
+    ) -> Result<(), String> {
+        self.cluster.report_store_dr_status(store, status).await
+    }
+
     fn identity(&self) -> &Identity {
         &self.identity
     }
@@ -463,6 +476,12 @@ async fn initialize_node(
         store.clone(),
     ));
     services.set_telemetry(Arc::new(telemetry_config.clone()), &metrics);
+    if !listener_config.scalars.data_dir.is_empty() {
+        let _ = services
+            .file_directory
+            .set(std::path::PathBuf::from(&listener_config.scalars.data_dir));
+    }
+
     services.set_log_level_control(log_level);
     services.set_member_admin(member_admin.clone());
     let eligible = tokio::select! { biased;
@@ -483,6 +502,7 @@ async fn initialize_node(
                     cluster,
                     Arc::new(leader),
                     Some(metrics.clone()),
+                    Some(Arc::new(telemetry_config.clone())),
                 )
                 .await
                 {
@@ -654,6 +674,7 @@ pub(crate) async fn prepare_term(
     cluster: astersql_pd_core::BasicCluster,
     leader: Arc<Leadership>,
     metrics: Option<Arc<astersql_pd_server::service_metrics::ServiceMetrics>>,
+    transport_config: Option<Arc<astersql_pd_server_config::Config>>,
 ) -> Result<Arc<Application>, NodeError> {
     if let Some(metrics) = &metrics {
         leader.set_metrics(&metrics.classic);
@@ -738,6 +759,7 @@ pub(crate) async fn prepare_term(
                 return Err(crate::start_cleanup::preserve(error, cleanup));
             }
         };
+        cluster.set_replication_transport_config(transport_config).await;
         Ok::<_, NodeError>(Arc::new(Application {
             cluster,
             identity: config,
