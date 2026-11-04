@@ -59,6 +59,13 @@ impl Controller {
         index: &RecoveryIndex,
         stores: &StoresInfo,
     ) -> Result<Option<PreparedPlan>, RecoveryError> {
+        let cleanup = self.generate_tombstone_tiflash_learner_plan(index, stores)?;
+        if cleanup.has_work() {
+            return Ok(Some(PreparedPlan {
+                stage: Stage::TombstoneTiFlashLearner,
+                batch: cleanup,
+            }));
+        }
         if let Some(force) = self.prepare_force_leader(index, stores)? {
             return Ok(Some(force));
         }

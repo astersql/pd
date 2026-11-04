@@ -85,7 +85,7 @@ watcher/额度集成测试和测试工具。只补此清单，不改只读plan�
 | 18 构建恢复Region索引 | 按epoch与raft新鲜度构建重叠region索引，覆盖空范围、未初始化peer及merge重叠选择。 | 2 | `pkg/unsaferecovery/lib.rs`（存在）；`pkg/unsaferecovery/region_index.rs`（存在） | [task-018](task-018.md)：7聚焦+9相邻通过；实际Go计划匹配epoch范围及raft选择；待统一全量回归 |
 | 19 生成ForceLeader计划 | 从报告选择可恢复leader，处理joint state和commit merge；相同输入产生等价计划与受影响region集合。 | 2 | `pkg/unsaferecovery/force_leader.rs`（存在）；`pkg/unsaferecovery/lib.rs`（存在） | [task-019](task-019.md)：6聚焦+25相邻通过；真实Go普通/commit-merge/joint计划；修正初始step；待统一全量回归 |
 | 20 生成降级失败副本计划 | generateDemoteFailedVoterPlan仅降级失败投票副本，保留健康peer并正确处理learner。 | 2 | `pkg/unsaferecovery/demote_failed.rs`（存在）；`pkg/unsaferecovery/lib.rs`（存在） | [task-020](task-020.md)：6聚焦+21相邻通过；真实Go四种demote/learner/旧重叠规则；待统一全量回归 |
-| 21 生成TiFlash清理计划 | generateTombstoneTiFlashLearnerPlan只清理目标learner，不误删TiKV可恢复副本。 | 2 | `pkg/unsaferecovery/lib.rs`（拟建）；`pkg/unsaferecovery/tiflash_cleanup.rs`（拟建） | 待当前行为证据 |
+| 21 生成TiFlash清理计划 | generateTombstoneTiFlashLearnerPlan只清理目标learner，不误删TiKV可恢复副本。 | 2 | `pkg/unsaferecovery/lib.rs`（存在）；`pkg/unsaferecovery/tiflash_cleanup.rs`（存在） | [task-021](task-021.md)：6聚焦+25相邻通过；真实Go新鲜度清理与TiKV保留；待统一全量回归 |
 | 22 生成空Region补洞计划 | generateCreateEmptyRegionPlan覆盖头尾和整段空洞，paranoid选项与TiKV候选筛选匹配Go，禁止覆盖健康数据范围。 | 2 | `pkg/unsaferecovery/empty_region.rs`（拟建）；`pkg/unsaferecovery/lib.rs`（拟建） | 待当前行为证据 |
 | 23 分发并推进恢复计划 | dispatchPlan按阶段心跳确认推进，重复下发幂等，退出force-leader后恢复调度并提供稳定Show结果。 | 2 | `pkg/unsaferecovery/dispatch_plan.rs`（拟建）；`pkg/unsaferecovery/lib.rs`（拟建） | 待当前行为证据 |
 | 24 终止超时恢复任务 | AbortFailedStoresRemoval与checkTimeout在错误、无心跳及主动终止时停止下发并回收运行状态；接通现有管理API而不重写其通用层。 | 2 | `pkg/runtime/lib.rs`（存在）；`pkg/runtime/node.rs`（存在）；`pkg/server/lib.rs`（存在）；`pkg/unsaferecovery/lib.rs`（拟建）；`pkg/unsaferecovery/recovery_timeout.rs`（拟建） | 待当前行为证据 |

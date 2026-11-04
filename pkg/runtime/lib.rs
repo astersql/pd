@@ -233,3 +233,7 @@ mod force_leader_test;
 #[cfg(test)]
 #[path = "demote_failed_test.rs"]
 mod demote_failed_test;
+
+#[cfg(test)]
+#[path = "tiflash_cleanup_test.rs"]
+mod tiflash_cleanup_test;
