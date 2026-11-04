@@ -249,3 +249,7 @@ mod recovery_dispatch_test;
 #[cfg(test)]
 #[path = "recovery_timeout_test.rs"]
 mod recovery_timeout_test;
+
+#[cfg(test)]
+#[path = "keyspace_bounds_test.rs"]
+mod keyspace_bounds_test;

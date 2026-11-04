@@ -403,6 +403,17 @@ name = "astersql-pd-keypath"
 version = "0.1.0"
 
 [[package]]
+name = "astersql-pd-keyspace"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-codec",
+ "astersql-pd-kerneltype",
+ "astersql-pd-keyspace-constant",
+ "astersql-pd-schedule-labeler",
+ "serde_json",
+]
+
+[[package]]
 name = "astersql-pd-keyspace-constant"
 version = "0.1.0"
 
@@ -650,6 +661,7 @@ dependencies = [
  "tokio-util",
  "tonic",
  "astersql-pd-unsaferecovery",
+ "astersql-pd-keyspace",
 ]
 
 [[package]]
