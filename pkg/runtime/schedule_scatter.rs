@@ -8,6 +8,10 @@ use astersql_pd_schedule_scatter::{ScatterBatchError, ScatterBatchFailure, Scatt
 use astersql_pd_server::grpc_scatter::*;
 use tokio::sync::oneshot;
 pub(super) enum Command {
+    UnsafeStart(
+        astersql_pd_unsaferecovery::StartRequest,
+        oneshot::Sender<Result<(), String>>,
+    ),
     AffinityRead(
         astersql_pd_server::http_affinity_read::Request,
         oneshot::Sender<Result<(u16, serde_json::Value), String>>,
@@ -468,6 +472,11 @@ pub(super) async fn serve(
 
         Command::StoreCleanup(ids) => {
             tokio::select! {biased;_=cancel.cancelled()=>{},_=super::store_lifecycle::cleanup(ids,coordinator,resources,cancel)=>{}}
+        }
+
+        Command::UnsafeStart(request, mut reply) => {
+            let work = super::store_lifecycle::start_recovery(request, coordinator, resources);
+            tokio::select! {biased;_=cancel.cancelled()=>{},_=reply.closed()=>{},result=work=>{let _=reply.send(result);}}
         }
 
         Command::Store(operation, mut reply) => {

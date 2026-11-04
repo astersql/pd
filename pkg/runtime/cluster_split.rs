@@ -66,7 +66,7 @@ impl ClusterHost {
             .map_err(|e| other(e.to_string()))?;
         {
             let state = r.state.lock().unwrap();
-            if state.config.schedule.halt_scheduling {
+            if state.config.schedule.halt_scheduling || r.recovery_halted {
                 return Err(other(
                     "[PD:cluster:ErrSchedulingIsHalted]scheduling is halted".into(),
                 ));

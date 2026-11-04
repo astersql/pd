@@ -22,6 +22,9 @@ use tokio_util::sync::CancellationToken;
 
 type State = Mutex<HeartbeatEffectsState<ProviderSnapshot<()>>>;
 struct Resources {
+    recovery: Arc<AsyncMutex<astersql_pd_unsaferecovery::Controller>>,
+    recovery_halted: bool,
+    recovery_cleanup_error: Option<String>,
     encryption_keys: Option<Arc<astersql_pd_encryption::DictionaryStorage>>,
     encryption_error: Option<String>,
     replication: Option<Arc<astersql_pd_replication::ModeManager>>,
@@ -265,6 +268,7 @@ impl ClusterHost {
         allocator: Arc<astersql_pd_id::Allocator>,
         metrics: Option<Arc<astersql_pd_server::service_metrics::DomainMetricHandles>>,
         encryption: Option<Arc<crate::encryption::EncryptionResources>>,
+        recovery_steps: Arc<astersql_pd_unsaferecovery::RecoverySteps>,
     ) -> Result<Self, crate::NodeError> {
         let _start_metrics = metrics.as_ref().map(|m| {
             m.classic
@@ -431,6 +435,11 @@ impl ClusterHost {
             }
         }
         let resources = Arc::new(AsyncMutex::new(Some(Resources {
+            recovery: Arc::new(AsyncMutex::new(
+                astersql_pd_unsaferecovery::Controller::new(recovery_steps),
+            )),
+            recovery_halted: false,
+            recovery_cleanup_error: None,
             encryption_keys: encryption_keys.clone(),
             encryption_error: None,
             replication,

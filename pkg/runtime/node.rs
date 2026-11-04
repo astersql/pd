@@ -78,6 +78,12 @@ pub(crate) struct Application {
 }
 #[async_trait::async_trait]
 impl PdServices for Application {
+    async fn start_unsafe_recovery(
+        &self,
+        request: astersql_pd_unsaferecovery::StartRequest,
+    ) -> Result<(), String> {
+        self.cluster.start_unsafe_recovery(request).await
+    }
     async fn replication_mode(
         &self,
     ) -> Result<Option<astersql_pd_replication::ModeSnapshot>, String> {
@@ -512,6 +518,7 @@ async fn initialize_node(
                     Some(metrics.clone()),
                     Some(Arc::new(telemetry_config.clone())),
                     Some(encryption.clone()),
+                    services.recovery_steps.clone(),
                 )
                 .await
                 {
@@ -687,6 +694,7 @@ pub(crate) async fn prepare_term(
     metrics: Option<Arc<astersql_pd_server::service_metrics::ServiceMetrics>>,
     transport_config: Option<Arc<astersql_pd_server_config::Config>>,
     encryption: Option<Arc<crate::encryption::EncryptionResources>>,
+    recovery_steps: Arc<astersql_pd_unsaferecovery::RecoverySteps>,
 ) -> Result<Arc<Application>, NodeError> {
     if let Some(metrics) = &metrics {
         leader.set_metrics(&metrics.classic);
@@ -757,6 +765,7 @@ pub(crate) async fn prepare_term(
             allocator.clone(),
             metrics.as_ref().map(|m|m.domain_metrics()),
             encryption.clone(),
+            recovery_steps.clone(),
         );
         tokio::pin!(creation);
         let mut renew = tokio::time::interval(std::time::Duration::from_secs(1));

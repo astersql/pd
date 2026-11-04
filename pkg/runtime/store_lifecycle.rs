@@ -269,3 +269,106 @@ pub(super) async fn cleanup(
         let _ = remove_limits(id, r, coordinator, &storage).await;
     }
 }
+
+impl ClusterHost {
+    pub async fn start_unsafe_recovery(
+        &self,
+        request: astersql_pd_unsaferecovery::StartRequest,
+    ) -> Result<(), String> {
+        let (tx, rx) = tokio::sync::oneshot::channel();
+        self.schedule_requests
+            .send(schedule_scatter::Command::UnsafeStart(request, tx))
+            .await
+            .map_err(|_| "scheduling stopped")?;
+        rx.await.map_err(|_| "scheduling stopped")?
+    }
+    pub async fn unsafe_recovery_start_state(
+        &self,
+    ) -> Result<(astersql_pd_unsaferecovery::Stage, bool, Vec<u64>, u64), String> {
+        let guard = self.resources.lock().await;
+        let r = guard.as_ref().ok_or("node stopped")?;
+        let c = r.recovery.lock().await;
+        Ok((
+            c.stage(),
+            r.recovery_halted,
+            c.expected_report_stores().collect(),
+            c.step(),
+        ))
+    }
+}
+pub(super) async fn start_recovery(
+    request: astersql_pd_unsaferecovery::StartRequest,
+    coordinator: &mut Coordinator<ProviderSnapshot<()>>,
+    resources: &Arc<AsyncMutex<Option<Resources>>>,
+) -> Result<(), String> {
+    let mut guard = resources.lock().await;
+    let r = guard.as_mut().ok_or("node stopped")?;
+    r.leader.validate().await.map_err(|e| e.to_string())?;
+    let controller = r.recovery.clone();
+    let mut controller = controller.lock().await;
+    let result = controller
+        .remove_failed_stores_with_options(
+            &mut RecoveryAdmission { r, coordinator },
+            request,
+            now().1 as i128,
+        )
+        .await;
+    result.map_err(|e| e.to_string())
+}
+struct RecoveryAdmission<'a> {
+    r: &'a mut Resources,
+    coordinator: &'a mut Coordinator<ProviderSnapshot<()>>,
+}
+#[async_trait::async_trait]
+impl astersql_pd_unsaferecovery::RecoveryCluster for RecoveryAdmission<'_> {
+    fn stores(&self) -> Vec<Arc<astersql_pd_core::StoreInfo>> {
+        self.r.state.lock().unwrap().cluster.stores.get_stores()
+    }
+    async fn bury_store(
+        &mut self,
+        id: u64,
+    ) -> Result<(), astersql_pd_unsaferecovery::RecoveryError> {
+        use astersql_pd_unsaferecovery::RecoveryError;
+        let store = self
+            .r
+            .state
+            .lock()
+            .unwrap()
+            .cluster
+            .stores
+            .get_store(id)
+            .ok_or(RecoveryError::StoreNotFound(id))?;
+        if store.is_removed() {
+            return Ok(());
+        }
+        let mut next = (*store).clone();
+        next.set_store_state(astersql_pd_core::StoreState::Tombstone, None);
+        self.r
+            .storage
+            .save_store_meta(&self.r.paths, next.meta().unwrap())
+            .await
+            .map_err(|e| RecoveryError::Backend(e.to_string()))?;
+        self.r
+            .state
+            .lock()
+            .unwrap()
+            .cluster
+            .stores
+            .put_store(Arc::new(next));
+        let storage = self.r.storage.clone();
+        // Go preserves a successful tombstone when residual limit cleanup fails.
+        if let Err(error) = remove_limits(id, self.r, self.coordinator, &storage).await {
+            self.r.recovery_cleanup_error = Some(error);
+        }
+        self.r.previous_store_limits.remove(&id);
+        {
+            let mut state = self.r.state.lock().unwrap();
+            state.rules.remove_store_cache(id);
+        }
+        self.r.hot.stores_stats.remove_rolling_store_stats(id);
+        Ok(())
+    }
+    fn set_recovery_halt(&mut self, halt: bool) {
+        self.r.recovery_halted = halt;
+    }
+}

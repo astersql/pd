@@ -17,6 +17,7 @@ type RegionReset = (
     tokio::sync::oneshot::Sender<Result<(), String>>,
 );
 pub(crate) struct RoleServices {
+    pub(crate) recovery_steps: Arc<astersql_pd_unsaferecovery::RecoverySteps>,
     pub(crate) encryption: std::sync::OnceLock<Weak<crate::encryption::EncryptionResources>>,
     pub(crate) file_directory: std::sync::OnceLock<std::path::PathBuf>,
     identity: NodeConfig,
@@ -40,6 +41,12 @@ impl RoleServices {
             Arc::new(astersql_pd_storage::MemoryStore::default());
         let (region_resets, region_reset_rx) = tokio::sync::mpsc::channel(16);
         Self {
+            recovery_steps: Arc::new(astersql_pd_unsaferecovery::RecoverySteps::new(
+                std::time::SystemTime::now()
+                    .duration_since(std::time::UNIX_EPOCH)
+                    .unwrap_or_default()
+                    .as_nanos() as u64,
+            )),
             file_directory: Default::default(),
             encryption: Default::default(),
             log_level: RwLock::new(None),
@@ -217,6 +224,16 @@ impl PdServices for RoleServices {
         self.store.upgrade()
     }
 
+    async fn start_unsafe_recovery(
+        &self,
+        request: astersql_pd_unsaferecovery::StartRequest,
+    ) -> Result<(), String> {
+        self.active()
+            .await?
+            .cluster
+            .start_unsafe_recovery(request)
+            .await
+    }
     async fn admin_region(
         &self,
         command: astersql_pd_server::http_admin_cache::Command,
@@ -1139,6 +1156,7 @@ pub(crate) async fn run(
                         services.service_metrics(),
                         services.telemetry_config(),
                         services.encryption.get().and_then(Weak::upgrade),
+                        services.recovery_steps.clone(),
                     )
                     .await;
                     match term {

@@ -1,0 +1,19 @@
+[package]
+name = "astersql-pd-unsaferecovery"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+[lib]
+path = "lib.rs"
+[dependencies]
+astersql-pd-core.workspace = true
+astersql-pd-errs.workspace = true
+async-trait.workspace = true
+[dev-dependencies]
+astersql-pd-storage-kv.workspace = true
+astersql-pd-storage.workspace = true
+astersql-pd-storage-endpoint.workspace = true
+astersql-pd-keypath.workspace = true
+tokio.workspace = true
+tokio-util.workspace = true

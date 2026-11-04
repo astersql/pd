@@ -285,7 +285,8 @@ async fn run(
                 break;
             }
             let admission = coordinator.operator_handle();
-            let config = r.state.lock().unwrap().config.clone();
+            let mut config = r.state.lock().unwrap().config.clone();
+            config.schedule.halt_scheduling |= r.recovery_halted;
             if let Err(e) = super::hot_history::maintain(r, &coordinator, &cancel).await {
                 *diagnostics.lock().unwrap() = Some(e);
             }

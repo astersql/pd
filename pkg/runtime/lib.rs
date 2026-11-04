@@ -213,3 +213,7 @@ mod encryption;
 mod region_encryption_test;
 
 mod hot_history_encryption;
+
+#[cfg(test)]
+#[path = "recovery_start_test.rs"]
+mod recovery_start_test;

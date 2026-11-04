@@ -84,6 +84,10 @@ pub fn router(services: Arc<dyn PdServices>, cancel: CancellationToken) -> axum:
             services.clone(),
             cancel.clone(),
         ))
+        .merge(crate::http_unsafe_recovery::router(
+            services.clone(),
+            cancel.clone(),
+        ))
         .merge(crate::http_store_state::router(
             services.clone(),
             cancel.clone(),

@@ -44,6 +44,7 @@ mod http_service_limit;
 #[path = "http_service_limit_test.rs"]
 mod http_service_limit_test;
 mod http_store_read;
+mod http_unsafe_recovery;
 mod http_v2_boundary;
 #[cfg(test)]
 mod http_v2_boundary_test;
@@ -76,6 +77,12 @@ pub struct Identity {
 /// Domain operations supplied by the host; transport types stay in this crate.
 #[async_trait]
 pub trait PdServices: Send + Sync {
+    async fn start_unsafe_recovery(
+        &self,
+        _request: astersql_pd_unsaferecovery::StartRequest,
+    ) -> Result<(), String> {
+        Err("server not started".into())
+    }
     /// Persist the validated DR file through an explicitly configured host directory.
     async fn persist_dr_state(&self, _data: Vec<u8>) -> Result<(), String> {
         Err("data directory is not configured".into())

@@ -649,6 +649,7 @@ dependencies = [
  "tokio-stream",
  "tokio-util",
  "tonic",
+ "astersql-pd-unsaferecovery",
 ]
 
 [[package]]
@@ -1083,6 +1084,7 @@ dependencies = [
  "tonic-prost",
  "tower",
  "x509-parser",
+ "astersql-pd-unsaferecovery",
 ]
 
 [[package]]
@@ -1278,6 +1280,21 @@ version = "0.1.0"
 dependencies = [
  "serde",
  "serde_json",
+]
+
+[[package]]
+name = "astersql-pd-unsaferecovery"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-core",
+ "astersql-pd-errs",
+ "astersql-pd-keypath",
+ "astersql-pd-storage",
+ "astersql-pd-storage-endpoint",
+ "astersql-pd-storage-kv",
+ "async-trait",
+ "tokio",
+ "tokio-util",
 ]
 
 [[package]]

@@ -9,6 +9,7 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
+astersql-pd-unsaferecovery.workspace = true
 astersql-pd-encryption.workspace = true
 astersql-pd-storage-domain.workspace = true
 astersql-pd-replication.workspace = true
