@@ -409,7 +409,7 @@ pub(crate) fn go_pattern(pattern: &str) -> Result<regex::Regex, String> {
             }
             let mut value = c as u32 - '0' as u32;
             for _ in 0..2 {
-                if let Some(c) = chars.peek().filter(|c| ('0'..='7').contains(c)).copied() {
+                if let Some(c) = chars.peek().filter(|c| ('0'..='7').contains(*c)).copied() {
                     chars.next();
                     value = value * 8 + c as u32 - '0' as u32;
                 } else {
