@@ -169,3 +169,8 @@ mod key_dictionary_test;
 #[cfg(test)]
 #[path = "../server/encryption_dictionary.rs"]
 mod protocol_adapter;
+
+mod key_rotation;
+pub use key_rotation::*;
+#[cfg(test)]
+mod key_rotation_test;

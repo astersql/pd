@@ -77,7 +77,7 @@ watcher/额度集成测试和测试工具。只补此清单，不改只读plan�
 | 10 读取文件主密钥 | 明文与文件主密钥加载及封装解封装匹配Go；长度错误、缺失文件与损坏密文明确报错且日志不含密钥。 | 10 | `pkg/encryption/lib.rs`（存在）；`pkg/encryption/master_key_file.rs`（拟建） | [4聚焦+11相邻通过，待统一回归](task-010.md) |
 | 11 接入KMS主密钥 | 复用官方AWS Rust SDK凭据链完成数据密钥封装解封装；用官方测试替身验证错误映射、region与endpoint和日志脱敏，不访问真实付费资源。 | 11 | `pkg/encryption/kms.rs`（拟建）；`pkg/encryption/lib.rs`（存在） | [4聚焦+14相邻通过，待统一回归](task-011.md) |
 | 12 持久化密钥字典 | 加载和保存key dictionary保持revision、当前key与历史key一致，损坏字典及提交失败不替换可读快照。 | 8 | `pkg/encryption/key_dictionary.rs`（拟建）；`pkg/encryption/lib.rs`（存在） | [6聚焦+8相邻通过，待统一回归](task-012.md) |
-| 13 实现任期内密钥轮换 | 仅有效leader轮换密钥，处理碰撞重试与明文暴露标志；旧任期和事务失败不得发布新key。 | 8 | `pkg/encryption/key_rotation.rs`（拟建）；`pkg/encryption/lib.rs`（存在） | 待当前行为证据 |
+| 13 实现任期内密钥轮换 | 仅有效leader轮换密钥，处理碰撞重试与明文暴露标志；旧任期和事务失败不得发布新key。 | 8 | `pkg/encryption/key_rotation.rs`（拟建）；`pkg/encryption/lib.rs`（存在） | [5聚焦+14相邻通过，待统一回归](task-013.md) |
 | 14 恢复密钥字典监听 | watch更新、断线重连和compaction重建后密钥快照收敛，关闭后不再更新。 | 8 | `pkg/encryption/key_watch.rs`（拟建）；`pkg/encryption/lib.rs`（存在） | 待当前行为证据 |
 | 15 接通Region边界加密 | region start/end key按既有方法与key ID加解密，保留输入对象、空边界和未知key错误；存储适配调用同一实现。 | 8 | `pkg/encryption/lib.rs`（存在）；`pkg/encryption/region_crypter.rs`（拟建）；`pkg/runtime/lib.rs`（存在）；`pkg/runtime/node.rs`（存在）；`pkg/server/lib.rs`（存在） | 待当前行为证据 |
 | 16 验证恢复请求与阶段启动 | RemoveFailedStoresWithOptions拒绝非法或冲突请求，显式选项和自动识别模式产生一致初始阶段且暂停调度。 | 2 | `pkg/unsaferecovery/lib.rs`（拟建）；`pkg/unsaferecovery/recovery_start.rs`（拟建） | 待当前行为证据 |

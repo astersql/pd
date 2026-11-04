@@ -6,7 +6,7 @@ use aes_gcm::{
     aead::{Aead, consts::U12},
 };
 use astersql_pd_errs::{ErrorTemplate, TypedError, catalog::*};
-use rand::{RngCore, rngs::OsRng};
+use rand::{CryptoRng, RngCore, rngs::OsRng};
 use std::{error::Error, fmt};
 type Aes192Gcm = AesGcm<aes::Aes192, U12>;
 
@@ -102,9 +102,17 @@ pub fn new_data_key(
     method: EncryptionMethod,
     creation_time: u64,
 ) -> Result<(u64, DataKey), TypedError> {
+    new_data_key_with_rng(method, creation_time, &mut OsRng)
+}
+/// The host may provide a cryptographic entropy source; the default remains OsRng.
+pub fn new_data_key_with_rng<R: RngCore + CryptoRng + ?Sized>(
+    method: EncryptionMethod,
+    creation_time: u64,
+    random: &mut R,
+) -> Result<(u64, DataKey), TypedError> {
     let length = key_length(method)?;
     let mut id = [0; 8];
-    OsRng.try_fill_bytes(&mut id).map_err(|e| {
+    random.try_fill_bytes(&mut id).map_err(|e| {
         ErrorTemplate::new(
             ERR_ENCRYPTION_NEW_DATA_KEY.code(),
             "fail to generate data key id",
@@ -112,7 +120,7 @@ pub fn new_data_key(
         .with_source([] as [String; 0], e)
     })?;
     let mut key = vec![0; length];
-    OsRng.try_fill_bytes(&mut key).map_err(|e| {
+    random.try_fill_bytes(&mut key).map_err(|e| {
         ErrorTemplate::new(
             ERR_ENCRYPTION_NEW_DATA_KEY.code(),
             "fail to generate data key",

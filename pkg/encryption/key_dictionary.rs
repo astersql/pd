@@ -56,6 +56,9 @@ impl DictionaryStorage {
     /// Initial absence is permitted; deletion after a successful load is an error.
     pub async fn load(&self) -> Result<KeySnapshot, TypedError> {
         let _operation = self.operation.lock().await;
+        self.load_locked().await
+    }
+    async fn load_locked(&self) -> Result<KeySnapshot, TypedError> {
         let rows = self
             .store
             .read(Read::range(
@@ -116,9 +119,17 @@ impl DictionaryStorage {
         &self,
         leadership: &Leadership,
         meta: &MasterKeyMeta,
-        mut keys: KeyDictionary,
+        keys: KeyDictionary,
     ) -> Result<Commit, TypedError> {
         let _operation = self.operation.lock().await;
+        self.save_locked(leadership, meta, keys).await
+    }
+    async fn save_locked(
+        &self,
+        leadership: &Leadership,
+        meta: &MasterKeyMeta,
+        mut keys: KeyDictionary,
+    ) -> Result<Commit, TypedError> {
         if !leadership.uses_store(&self.store) {
             return Err(ErrorTemplate::new(
                 ERR_ENCRYPTION_SAVE_DATA_KEYS.code(),
@@ -161,5 +172,32 @@ impl DictionaryStorage {
             );
         }
         Ok(receipt)
+    }
+}
+
+/// One manager operation keeps reload/save/readback serialized with watcher loads.
+pub(crate) struct DictionaryOperation<'a> {
+    storage: &'a DictionaryStorage,
+    _guard: tokio::sync::MutexGuard<'a, ()>,
+}
+impl DictionaryStorage {
+    pub(crate) async fn begin_operation(&self) -> DictionaryOperation<'_> {
+        DictionaryOperation {
+            storage: self,
+            _guard: self.operation.lock().await,
+        }
+    }
+}
+impl DictionaryOperation<'_> {
+    pub(crate) async fn load(&self) -> Result<KeySnapshot, TypedError> {
+        self.storage.load_locked().await
+    }
+    pub(crate) async fn save(
+        &self,
+        term: &Leadership,
+        meta: &MasterKeyMeta,
+        keys: KeyDictionary,
+    ) -> Result<Commit, TypedError> {
+        self.storage.save_locked(term, meta, keys).await
     }
 }
