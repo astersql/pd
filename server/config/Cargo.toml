@@ -9,6 +9,7 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
+astersql-pd-replication.workspace = true
 astersql-pd-configutil.workspace = true
 astersql-pd-typeutil.workspace = true
 serde = { workspace = true, features = ["derive"] }

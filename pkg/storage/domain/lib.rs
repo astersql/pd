@@ -10,6 +10,8 @@ mod affinity_endpoint;
 mod batch_ops;
 #[path = "../endpoint/config_endpoint.rs"]
 mod config_endpoint;
+#[path = "../endpoint/replication_endpoint.rs"]
+mod replication_endpoint;
 #[path = "../endpoint/rule_endpoint.rs"]
 mod rule_endpoint;
 #[path = "../endpoint/scheduler_endpoint.rs"]

@@ -18,7 +18,8 @@ fn replication_config_normalize_and_preserve_mode() {
         ("majority ", ""),
         ("dr--auto-sync", ""),
         ("雪", ""),
-        ("MAJORİTY", ""),
+        // Verified against the pinned Go server's public configuration endpoint.
+        ("MAJORİTY", "majority"),
     ] {
         assert_eq!(normalize_replication_mode(input), expected, "{input:?}");
         let mut config = ReplicationModeConfig {

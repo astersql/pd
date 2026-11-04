@@ -68,7 +68,7 @@ watcher/额度集成测试和测试工具。只补此清单，不改只读plan�
 | 1 核对主题七准入证据 | 逐项核对主题7协议、存储、选主、运行时和调度公开API的当前证据；标明未提交并行变更与未完成依赖，建立实际crate映射，缺失前置证据不得放行代码任务。 | 1 | `pkg/proto/build.rs`（存在） | [准入完成](admission.md) |
 | 2 固定来源覆盖清单 | 按生产包、公开符号、API、指标、持久化键、failpoint和Go测试列出主题8范围；每行映射本计划任务，识别已有实现与缺口，固定Go提交及协议摘要。 | 0 | `pkg/proto/build.rs`（存在） | 本清单；盘点完成 |
 | 3 建立只读协议差分入口 | 复用已有Go二进制及只读fixtures，驱动同场景Go和Rust端点，保留状态码、响应和副作用；输入不匹配必须失败，缺少二进制不得跳过或输出通过。 | 1 | `pkg/proto/build.rs`（存在）；`tests/rust-compat/lib.rs`（存在）；`tests/rust-compat/oracle_runner.rs`（拟建） | [聚焦通过，待统一回归](task-003.md) |
-| 4 恢复复制模式持久状态 | NewReplicationModeManager与UpdateConfig恢复模式和state ID，非法模式或持久化失败不发布新状态。 | 3 | `pkg/replication/lib.rs`（拟建）；`pkg/replication/mode_state.rs`（拟建） | 待当前行为证据 |
+| 4 恢复复制模式持久状态 | NewReplicationModeManager与UpdateConfig恢复模式和state ID，非法模式或持久化失败不发布新状态。 | 3 | `pkg/replication/lib.rs`（拟建）；`pkg/replication/mode_state.rs`（拟建） | [4聚焦+9相邻通过，待统一回归](task-004.md) |
 | 5 实现同步转异步等待 | 按minimalUpVoters和store存活状态从sync转async_wait；多数派边界、可用副本不足与重复tick不错误推进。 | 3 | `pkg/replication/async_wait.rs`（拟建）；`pkg/replication/lib.rs`（拟建） | 待当前行为证据 |
 | 6 实现异步确认与超时 | async_wait等待store确认后转async，覆盖未确认、超时和重复报告，保持state ID与暂停split条件。 | 3 | `pkg/replication/async_confirm.rs`（拟建）；`pkg/replication/lib.rs`（拟建） | 待当前行为证据 |
 | 7 实现同步恢复进度 | async转sync_recover再回sync；恢复region扫描覆盖split与merge，进度和状态发布符合Go oracle。 | 3 | `pkg/replication/lib.rs`（拟建）；`pkg/replication/sync_recover.rs`（拟建） | 待当前行为证据 |
