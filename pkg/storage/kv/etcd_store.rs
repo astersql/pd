@@ -34,6 +34,7 @@ impl EtcdMetaStore {
             previous: Default::default(),
             with_previous,
             cancelled: false,
+            progress_request: None,
         }))
     }
 
@@ -386,9 +387,10 @@ struct EtcdWatch {
     next: Revision,
     active: Option<(etcd_client::Watcher, etcd_client::WatchStream)>,
     cancelled: bool,
+    progress_request: Option<std::time::Instant>,
 }
 impl EtcdWatch {
-    async fn receive(&mut self) -> Result<WatchBatch> {
+    async fn receive(&mut self, progress: bool) -> Result<WatchBatch> {
         loop {
             if self.active.is_none() {
                 let mut client = self.store.client.clone();
@@ -404,17 +406,37 @@ impl EtcdWatch {
                 };
                 self.active = Some(
                     self.store
-                        .bounded(client.watch(key, Some(options.with_start_revision(self.next))))
+                        .bounded(
+                            client.watch(
+                                key,
+                                Some(
+                                    options
+                                        .with_start_revision(self.next)
+                                        .with_progress_notify(),
+                                ),
+                            ),
+                        )
                         .await?,
                 );
             }
-            let message = self
-                .active
-                .as_mut()
-                .expect("watch established")
-                .1
-                .message()
-                .await;
+            let wait = self
+                .progress_request
+                .get_or_insert_with(|| std::time::Instant::now() + Duration::from_secs(1))
+                .saturating_duration_since(std::time::Instant::now());
+            let active = self.active.as_mut().expect("watch established");
+            let message = if progress {
+                match tokio::time::timeout(wait, active.1.message()).await {
+                    Ok(message) => message,
+                    Err(_) => {
+                        active.0.request_progress().await.map_err(map_error)?;
+                        self.progress_request =
+                            Some(std::time::Instant::now() + Duration::from_secs(1));
+                        continue;
+                    }
+                }
+            } else {
+                active.1.message().await
+            };
             let response = match message {
                 Ok(Some(response)) => response,
                 Ok(None) => {
@@ -459,6 +481,11 @@ impl EtcdWatch {
                     })
                 })
                 .collect();
+            if progress && !response.created() && events.is_empty() {
+                let revision = revision(response.header())?;
+                self.next = self.next.max(revision + 1);
+                return Ok(WatchBatch { events, revision });
+            }
             if let Some(last) = events.last() {
                 // Created/progress headers may be ahead of replayed events; never use them as a cursor.
                 let revision = last.revision();
@@ -470,6 +497,16 @@ impl EtcdWatch {
 }
 #[async_trait]
 impl MetaWatch for EtcdWatch {
+    async fn next_with_progress(&mut self, cancel: &CancellationToken) -> Result<WatchBatch> {
+        if self.cancelled {
+            return Err(StoreError::Cancelled);
+        }
+        tokio::select! { biased;
+            _ = cancel.cancelled() => {self.active=None;self.cancelled=true;Err(StoreError::Cancelled)},
+            result = self.receive(true) => result,
+        }
+    }
+
     fn previous_value(&self, event: &Event) -> Option<Vec<u8>> {
         self.previous
             .get(&(event.revision(), event.key().to_vec()))
@@ -486,7 +523,7 @@ impl MetaWatch for EtcdWatch {
                 // Dropping both stream ends closes the RPC, including on a partitioned endpoint.
                 self.active = None; self.cancelled = true; Err(StoreError::Cancelled)
             },
-            result = self.receive() => result,
+            result = self.receive(false) => result,
         }
     }
 }

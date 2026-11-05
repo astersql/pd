@@ -216,6 +216,11 @@ pub trait MetaWatch: Send {
     }
 
     async fn next(&mut self, cancel: &CancellationToken) -> Result<WatchBatch>;
+    /// Opt in to ordered empty progress batches when the backend supports them.
+    /// Created headers are never progress. Event batches retain their event revision.
+    async fn next_with_progress(&mut self, cancel: &CancellationToken) -> Result<WatchBatch> {
+        self.next(cancel).await
+    }
 }
 
 /// Minimal PD metadata contract. Futures may be dropped to cancel requests.

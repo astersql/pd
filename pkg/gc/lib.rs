@@ -39,3 +39,8 @@ mod enabled_snapshot;
 pub use enabled_snapshot::*;
 #[cfg(test)]
 mod enabled_snapshot_test;
+
+mod enabled_watch;
+pub use enabled_watch::*;
+#[cfg(test)]
+mod enabled_watch_test;

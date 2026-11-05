@@ -113,7 +113,7 @@ watcher/额度集成测试和测试工具。只补此清单，不改只读plan�
 | 46 维护全局GC屏障 | SetGlobalGCBarrier与删除跨空间检查最大事务安全点，非法全局屏障不部分生效。 | 11 | `pkg/gc/gc_global_barrier.rs`；`pkg/gc/lib.rs` | 已完成；6专项/31包级，双内核原例、13组Set/5组Delete/分页与WAL差分；[证据](task-046.md) |
 | 47 推进GC安全点 | AdvanceGCSafePoint受事务安全点和全局及局部屏障约束；既有Compatible入口映射同一状态机，无新增旧格式迁移。 | 11 | `pkg/gc/gc_safe_point.rs`、`legacy_service_safe_point.rs`；同一GC manager | [task-047](task-047.md)：10专项/41包级、Go双内核各6叶例、25组在线RPC及WAL差分 |
 | 48 快照加载启用键空间 | 固定revision分页扫描启用空间，页面边界与损坏meta处理匹配Go，不混合两个revision。 | 11 | `pkg/gc/enabled_snapshot.rs`；`pkg/gc/lib.rs` | 已验证，见[task-048](task-048.md) |
-| 49 恢复启用键空间监听 | 从快照revision接续watch，删除、compaction和重连后snapshotAtLeast满足进度屏障。 | 11 | `pkg/gc/enabled_watch.rs`（拟建）；`pkg/gc/lib.rs`（拟建） | 待当前行为证据 |
+| 49 恢复启用键空间监听 | 从快照revision接续watch，删除、compaction和重连后snapshotAtLeast满足进度屏障。 | 11 | `pkg/gc/enabled_watch.rs`；`pkg/gc/lib.rs` | 已验证，见[task-049](task-049.md) |
 | 50 批量预热GC缓存 | 预热按分页和批量限制读取状态，前台读取与预热并发不覆盖新状态。 | 12 | `pkg/gc/gc_warmup.rs`（拟建）；`pkg/gc/lib.rs`（拟建） | 待当前行为证据 |
 | 51 重试GC预热失败 | 重试队列按期限调度失败scope，取消时停止重试，重复事件不造成忙循环或饥饿。 | 12 | `pkg/gc/gc_retry.rs`（拟建）；`pkg/gc/lib.rs`（拟建） | 待当前行为证据 |
 | 52 隔离GC领导任期 | OnNodeBecomesLeader创建新generation并回收旧任务，旧加载结果不能回写新缓存。 | 12 | `pkg/gc/gc_generation.rs`（拟建）；`pkg/gc/lib.rs`（拟建） | 待当前行为证据 |

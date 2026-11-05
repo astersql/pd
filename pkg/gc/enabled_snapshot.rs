@@ -19,7 +19,7 @@ pub struct EnabledSnapshot {
     pub entries: BTreeMap<u32, EnabledKeyspace>,
     pub revision: i64,
 }
-#[derive(Debug, thiserror::Error)]
+#[derive(Clone, Debug, thiserror::Error)]
 pub enum EnabledSnapshotError {
     #[error(transparent)]
     Store(#[from] StoreError),
