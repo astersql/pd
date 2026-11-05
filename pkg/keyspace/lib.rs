@@ -39,3 +39,9 @@ pub use group_membership::*;
 #[cfg(test)]
 #[path = "group_membership_test.rs"]
 mod group_membership_test;
+
+mod group_split;
+pub use group_split::*;
+#[cfg(test)]
+#[path = "group_split_test.rs"]
+mod group_split_test;

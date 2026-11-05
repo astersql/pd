@@ -407,6 +407,7 @@ version = "0.1.0"
 name = "astersql-pd-keyspace"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-mcs-constant",
  "astersql-pd-storage-endpoint",
  "async-trait",
  "astersql-pd-keypath",

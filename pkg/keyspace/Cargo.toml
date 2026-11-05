@@ -7,6 +7,7 @@ license.workspace = true
 [lib]
 path = "lib.rs"
 [dependencies]
+astersql-pd-mcs-constant.workspace = true
 astersql-pd-keyutil.workspace = true
 astersql-pd-codec.workspace = true
 astersql-pd-keyspace-constant.workspace = true
