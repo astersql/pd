@@ -2,7 +2,7 @@
 
 批次：【批次 22】依赖批次 21（含此前传递依赖）
 
-状态：未开始
+状态：已完成，待回归验证
 
 目的：generateCreateEmptyRegionPlan覆盖头尾和整段空洞，paranoid选项与TiKV候选筛选匹配Go，禁止覆盖健康数据范围。
 

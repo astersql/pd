@@ -2,7 +2,7 @@
 
 批次：【批次 21】依赖批次 20（含此前传递依赖）
 
-状态：未开始
+状态：已完成，待回归
 
 目的：generateTombstoneTiFlashLearnerPlan只清理目标learner，不误删TiKV可恢复副本。
 
