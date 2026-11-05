@@ -105,3 +105,6 @@ mod accept_gc_04_test;
 
 #[cfg(test)]
 mod accept_gc_05_test;
+
+#[cfg(test)]
+mod accept_gc_06_test;

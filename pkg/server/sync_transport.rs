@@ -282,6 +282,18 @@ impl astersql_pd_syncer::DownstreamSender for WireSender {
 pub(crate) struct SyncGrpc(pub Grpc);
 #[tonic::async_trait]
 impl Pd for SyncGrpc {
+    async fn set_gc_barrier(
+        &self,
+        r: Request<pdpb::SetGcBarrierRequest>,
+    ) -> Result<Response<pdpb::SetGcBarrierResponse>, Status> {
+        self.0.set_gc_barrier(r).await
+    }
+    async fn delete_gc_barrier(
+        &self,
+        r: Request<pdpb::DeleteGcBarrierRequest>,
+    ) -> Result<Response<pdpb::DeleteGcBarrierResponse>, Status> {
+        self.0.delete_gc_barrier(r).await
+    }
     async fn advance_txn_safe_point(
         &self,
         r: Request<pdpb::AdvanceTxnSafePointRequest>,

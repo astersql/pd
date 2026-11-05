@@ -35,6 +35,18 @@ impl Grpc {
 }
 #[tonic::async_trait]
 impl Pd for Grpc {
+    async fn set_gc_barrier(
+        &self,
+        r: Request<pdpb::SetGcBarrierRequest>,
+    ) -> Result<Response<pdpb::SetGcBarrierResponse>, Status> {
+        self.set_gc_barrier_request(r.into_inner()).await
+    }
+    async fn delete_gc_barrier(
+        &self,
+        r: Request<pdpb::DeleteGcBarrierRequest>,
+    ) -> Result<Response<pdpb::DeleteGcBarrierResponse>, Status> {
+        self.delete_gc_barrier_request(r.into_inner()).await
+    }
     async fn advance_txn_safe_point(
         &self,
         r: Request<pdpb::AdvanceTxnSafePointRequest>,

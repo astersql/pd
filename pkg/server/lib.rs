@@ -7,6 +7,7 @@ mod grpc_bootstrap;
 mod grpc_cluster_config;
 mod grpc_external_ts;
 mod grpc_gc_advance;
+mod grpc_gc_barrier;
 mod grpc_gc_legacy;
 mod grpc_gc_v2;
 mod grpc_global_config;

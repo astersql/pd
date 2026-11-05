@@ -4,7 +4,7 @@ use crate::grpc::Grpc;
 use astersql_pd_proto::pdpb;
 use astersql_pd_storage_domain::BarrierTime;
 use tonic::{Response, Status};
-fn scope(s: Option<pdpb::KeyspaceScope>) -> u32 {
+pub(crate) fn scope(s: Option<pdpb::KeyspaceScope>) -> u32 {
     match s {
         None => astersql_pd_keypath::NULL_KEYSPACE_ID,
         Some(s) => match s.keyspace {
