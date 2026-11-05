@@ -103,11 +103,11 @@ pub enum GCReadError {
 }
 type Pair = (u64, u64);
 type Flight = watch::Receiver<Option<Result<(), GCReadError>>>;
-struct Generation {
-    id: u64,
-    cancel: CancellationToken,
-    work: TaskTracker,
-    flights: Mutex<BTreeMap<u32, Flight>>,
+pub(crate) struct Generation {
+    pub(crate) id: u64,
+    pub(crate) cancel: CancellationToken,
+    pub(crate) work: TaskTracker,
+    pub(crate) flights: Mutex<BTreeMap<u32, Flight>>,
 }
 impl Generation {
     fn retire(&self) {
@@ -116,15 +116,15 @@ impl Generation {
         self.work.close();
     }
 }
-struct Shared {
-    active: AtomicU64,
-    cache: RwLock<BTreeMap<u32, Pair>>,
-    gate: AsyncRwLock<()>,
+pub(crate) struct Shared {
+    pub(crate) active: AtomicU64,
+    pub(crate) cache: RwLock<BTreeMap<u32, Pair>>,
+    pub(crate) gate: AsyncRwLock<()>,
 }
 /// Host-owned role lifetime. Dropping fences and cancels its pending I/O; shutdown also joins it.
 pub struct GCLeadership {
     generation: Arc<Generation>,
-    shared: Arc<Shared>,
+    pub(crate) shared: Arc<Shared>,
 }
 impl GCLeadership {
     pub fn retire(&self) {
@@ -156,7 +156,7 @@ pub struct GCStateManager {
     pub(crate) paths: ClusterPaths,
     pub(crate) keyspaces: Arc<KeyspaceManager>,
     host: Handle,
-    shared: Arc<Shared>,
+    pub(crate) shared: Arc<Shared>,
     generation: Mutex<Option<Arc<Generation>>>,
     lifecycle: tokio::sync::Mutex<()>,
     next: AtomicU64,
@@ -249,7 +249,7 @@ impl GCStateManager {
         }
         Ok(id)
     }
-    fn generation(&self) -> Option<Arc<Generation>> {
+    pub(crate) fn generation(&self) -> Option<Arc<Generation>> {
         self.generation
             .lock()
             .unwrap()
@@ -257,7 +257,7 @@ impl GCStateManager {
             .filter(|g| self.shared.active.load(Ordering::Acquire) == g.id)
             .cloned()
     }
-    fn cached(&self, g: &Generation, id: u32) -> Result<Option<Pair>, GCReadError> {
+    pub(crate) fn cached(&self, g: &Generation, id: u32) -> Result<Option<Pair>, GCReadError> {
         if self.shared.active.load(Ordering::Acquire) != g.id || g.cancel.is_cancelled() {
             return Err(GCReadError::NotLeader);
         }
@@ -407,19 +407,15 @@ impl GCStateManager {
                     let shared = self.shared.clone();
                     let storage = self.storage.clone();
                     let paths = self.paths.clone();
+                    let claims = crate::gc_warmup::Claims {
+                        generation: gen_copy.clone(),
+                        shared: shared.clone(),
+                        owned: vec![(id, sender)],
+                    };
                     g.work.spawn_on(async move {
-                        let result=async {
-                            let _guard=tokio::select!{biased;_=gen_copy.cancel.cancelled()=>return Err(GCReadError::NotLeader),guard=shared.gate.read()=>guard};
-                            if shared.active.load(Ordering::Acquire)!=gen_copy.id {return Err(GCReadError::NotLeader);}
-                            let mut rows=storage.load_gc_safe_point_pairs(&paths,&[id],&gen_copy.cancel).await.map_err(|e|GCReadError::Batch(Arc::new(e)))?;
-                            if shared.active.load(Ordering::Acquire)!=gen_copy.id || gen_copy.cancel.is_cancelled(){return Err(GCReadError::NotLeader);}
-                            let row=rows.remove(0);if let Some(e)=row.err{return Err(GCReadError::SafePoint(Arc::new(e)));}
-                            shared.cache.write().unwrap().insert(id,(row.txn_safe_point,row.gc_safe_point));Ok(())
-                        }.await;
-                        // Never hold the scheduling lock across I/O or manager locks.
-                        let result = if shared.active.load(Ordering::Acquire) != gen_copy.id || gen_copy.cancel.is_cancelled() { Err(GCReadError::NotLeader) } else { result };
-                        gen_copy.flights.lock().unwrap().remove(&id);
-                        let _=sender.send(Some(result));
+                        let token=gen_copy.cancel.clone();
+                        let _guard=tokio::select!{biased;_=token.cancelled()=>return,guard=shared.gate.read()=>guard};
+                        let _=crate::gc_warmup::load_claimed_gc_batch(storage,paths,claims,&token).await;
                     },&self.host);
                     receiver
                 }

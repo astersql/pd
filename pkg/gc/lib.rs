@@ -44,3 +44,8 @@ mod enabled_watch;
 pub use enabled_watch::*;
 #[cfg(test)]
 mod enabled_watch_test;
+
+mod gc_warmup;
+pub use gc_warmup::*;
+#[cfg(test)]
+mod gc_warmup_test;
