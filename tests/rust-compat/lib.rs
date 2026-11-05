@@ -90,3 +90,6 @@ mod txn_safe_point_oracle_test;
 
 #[cfg(test)]
 mod gc_barrier_oracle_test;
+
+#[cfg(test)]
+mod gc_global_barrier_oracle_test;

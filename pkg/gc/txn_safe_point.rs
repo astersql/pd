@@ -227,6 +227,12 @@ impl PreparedTxnSafePointAdvance<'_> {
 }
 /// Go fmt %+q renders printable non-ASCII runes as escapes and preserves invalid bytes.
 fn ascii_quote(bytes: &[u8]) -> String {
+    quote(bytes, true)
+}
+pub(crate) fn go_quote(bytes: &[u8]) -> String {
+    quote(bytes, false)
+}
+fn quote(bytes: &[u8], ascii: bool) -> String {
     let mut out = String::from("\"");
     let mut cursor = 0;
     while cursor < bytes.len() {
@@ -250,7 +256,13 @@ fn ascii_quote(bytes: &[u8]) -> String {
                 '\u{8}' => out.push_str("\\b"),
                 '\u{b}' => out.push_str("\\v"),
                 '\u{c}' => out.push_str("\\f"),
-                c if (' '..='~').contains(&c) => out.push(c),
+                c if (' '..='~').contains(&c)
+                    || (!ascii
+                        && !c.is_control()
+                        && !c.escape_debug().to_string().starts_with("\\u{")) =>
+                {
+                    out.push(c)
+                }
                 c => {
                     let n = c as u32;
                     if n < 128 {

@@ -40,6 +40,17 @@ impl GCState {
 }
 #[derive(Clone, Debug, thiserror::Error)]
 pub enum GCReadError {
+    #[error(
+        "[PD:gc:ErrGlobalGCBarrierTSBehindTxnSafePoint]trying to set a global GC barrier on ts {barrier} which is already behind the txn safe point {txn} of keyspace {keyspace}"
+    )]
+    GlobalBarrierBehind {
+        barrier: u64,
+        txn: u64,
+        keyspace: String,
+    },
+    #[error("keyspace metadata scan did not advance")]
+    NonAdvancingKeyspaceScan,
+
     #[error("[PD:common:ErrInvalidArgument]invalid argument for {argument}: {value}")]
     InvalidArgument {
         argument: &'static str,

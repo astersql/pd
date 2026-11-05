@@ -21,3 +21,8 @@ mod gc_barrier;
 pub use gc_barrier::*;
 #[cfg(test)]
 mod gc_barrier_test;
+
+mod gc_global_barrier;
+pub use gc_global_barrier::*;
+#[cfg(test)]
+mod gc_global_barrier_test;
