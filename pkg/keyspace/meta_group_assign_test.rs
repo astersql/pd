@@ -210,3 +210,64 @@ async fn mcs_027_assignment_count_five_and_disabled_groups() {
     assert_eq!(count(store.as_ref(), "a").await, 5);
     assert_eq!(count(store.as_ref(), "b").await, 5);
 }
+
+/// Replay the exact enabled group IDs and count inputs from the isolated Go suite.
+#[tokio::test]
+async fn mcs_027_replays_direct_go_cases() {
+    let fixture = fixture::Fixture::start();
+    let store: Arc<dyn MetaStore> = Arc::new(fixture.store().await);
+    let paths = ClusterPaths::new(42);
+    let groups: BTreeMap<String, String> = (0..3)
+        .map(|n| {
+            (
+                format!("etcd-group-{n}"),
+                format!("etcd-group-{n}.tidb-serverless.cluster.svc.local"),
+            )
+        })
+        .collect();
+    let endpoint = StorageEndpoint::new(store.clone());
+    let manager = MetaServiceGroupManager::new(store.clone(), paths.clone(), groups.clone());
+    assert!(matches!(
+        manager.assign_to_group(1).await,
+        Err(CallbackTxnError::Callback(
+            GroupAssignmentError::NoAvailableGroups
+        ))
+    ));
+    assert!(matches!(
+        manager.assign_to_group(-1).await,
+        Err(CallbackTxnError::Callback(
+            GroupAssignmentError::InvalidCount
+        ))
+    ));
+    for increment in [5, 1] {
+        Base::new(store.as_ref())
+            .run_in_txn(async |txn| {
+                for id in groups.keys() {
+                    endpoint.save_meta_service_group_status(
+                        txn,
+                        &paths,
+                        id,
+                        Some(&MetaServiceGroupStatus {
+                            assignment_count: 0,
+                            enabled: true,
+                        }),
+                    )?;
+                }
+                Ok::<_, astersql_pd_storage_domain::EndpointError>(())
+            })
+            .await
+            .unwrap();
+        let selected = if increment == 5 {
+            manager.assign_to_group(5).await.unwrap()
+        } else {
+            manager.pick_group().await.unwrap()
+        };
+        assert!(groups.contains_key(&selected));
+        for id in groups.keys() {
+            assert_eq!(
+                count(store.as_ref(), id).await,
+                if *id == selected { increment } else { 0 }
+            );
+        }
+    }
+}

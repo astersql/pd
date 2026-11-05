@@ -1,9 +1,8 @@
 # 任务027：元服务分组分配的实现推进
 
-2026-11-05，基准 `4d4695aeb798f33a70d583627c29c7aedcd3f9a5`。
-本轮由服务端验收任务3授权推进传递依赖27。Rust分配内核及聚焦验证已交付，
-直接AssignToGroup逐例Go oracle仍缺失；本项未通过完整领域准入，不宣称27或GC验收完成。
-唯一当前外部阻塞、取证尝试和解除条件记录在服务端验收任务3中。
+状态：已完成。2026-11-05；实现基准`4d4695aeb798f33a70d583627c29c7aedcd3f9a5`，
+续验基准`7a9cfd191`。用户已明确授权隔离构建和运行现有Go测试，源码和模块仍只读。
+先前直接AssignToGroup逐例oracle缺口已解除，任务28可继续；这不代表GC验收完成。
 原始日志、请求响应、输入指纹、Go守卫、CI及Docker核查见
 [task-027-evidence.json.gz](task-027-evidence.json.gz)。
 
@@ -66,7 +65,7 @@ reservation计数1/2/3；重复创建返回500后Go计数仍3。原始响应和R
 Go源码/模块1101项首尾存在性、SHA与受保护路径Git状态一致；未构建/测试/生成Go，
 未运行make、failpoint、模块整理。新增依赖只作用于Rust Cargo；锁文件只保留本项新依赖边。
 
-## 外部证据边界
+## 历史外部证据边界（下方续验已解除）
 
 已保存的CI raw日志和本轮浏览器读到的1430行完整日志都只有
 `TestMetaServiceGroupTestSuite`汇总，缺少`TestAssignToGroup`、
@@ -80,3 +79,41 @@ linux/amd64。隔离、只读、无网络容器中扫描无`*.test`、`pd-ut`或
 PD程序为commit `89998850efa4effedb7542ee64c965d4e428fedc`，kvproto为
 `9192d38c8b67`，与本任务固定`f8ad079c8e98`不符；没有采用其替换已准入oracle。
 所有本任务容器已删除，镜像按用户要求保留。没有在Docker中构建或生成Go。
+
+
+## 2026-11-05：隔离同源Go逐例运行，解除准入阻塞
+
+当前源码原样只读，未复制/编辑Go源码或模块，也没有failpoint、make或生成/整理命令。
+先尝试官方`golang:1.26.8-bookworm`linux/amd64镜像，源码/模块缓存只读挂载、独立缓存
+及输出；因缓存缺少两个Linux专用依赖，setup退出1，0用例，不计行为失败。
+转用已缓存Go 1.26.8 darwin/arm64 SDK，目标为darwin/amd64，CGO=0、without_dashboard；
+系统沙箱禁止写仓库、模块缓存及SDK，网络在构建和四项直接用例阶段禁用。
+构建中编译器临时中间产物仅在独立可写输出目录生成并自动清理，未新增任何仓库/缓存
+输入Go源文件。源码目录touch负向探针返回Operation not permitted，退出1，文件未创建。
+
+`go test -c -tags=without_dashboard -p=2 -o <isolated>/keyspace-darwin-amd64.test ./pkg/keyspace`
+退出0；`GOCACHE`、`GOTMPDIR`使用独立目录，`GOMODCACHE`只读、`GOFLAGS=-mod=readonly`、
+`GOTOOLCHAIN=local`、`GOPROXY=off`。Go源码/模块1101项首尾SHA及存在性完全一致。
+通过`go tool test2json -t -p github.com/tikv/pd/pkg/keyspace <binary>`执行精确过滤，
+`-test.count=1 -test.timeout=120s`；四个子例各有run/pass事件，退出0、4通过/0失败/0跳过：
+
+- `TestMetaServiceGroupTestSuite/TestAssignToGroup`（三个enabled、初始0组，count=5）。
+- `.../TestAssignToGroupRejectsNegativeCount`（count=-1，InvalidAssignmentCount）。
+- `.../TestPickGroup`（同样三个组，仅所选组计数变1）。
+- `.../TestGetAssignmentCountsInitialZero`（初始组全禁用，自动分配返回错误）。
+
+Rust新增`mcs_027_replays_direct_go_cases`，使用相同三个ID和地址、初始状态、5/-1/1输入，
+在真实etcd执行同样状态断言；并列选择只比较合法组及其计数，不伪造Go随机选择的具体ID。
+最终`cargo test --locked -p astersql-pd-keyspace --lib mcs_027_ -- --nocapture`退出0，
+5通过/0失败/0忽略；`cargo check --locked -p astersql-pd-keyspace`退出0。
+格式化先于测试，原子动态槽位1，绝对CARGO_TARGET_DIR仍为上文路径；所有子进程退出后释放锁。
+
+同时同样隔离构建既有`pkg/storage/kv`测试，运行`^TestEtcd$`退出0、1通过，真实embedded
+etcd执行值/版本冲突、额外条件和已取消context的原断言，不需failpoint。
+既有Rust callback事务/并发/故障/WAL与Go创建路径证据继续保留，不以MemoryStore
+直接用例替代持久化证据。另跑全部元服务分组Go suite：16个独立子例通过，0失败，
+健康检查用例使用实际etcd与网络，用于接续任务28，不提前认证其Rust实现。
+
+本轮完整命令、环境、构建失败/成功日志、17个去重Go用例的JSONL、二进制和源码摘要、
+首尾守卫以及Rust精确输出见[task-027-oracle-resume.json.gz](task-027-oracle-resume.json.gz)。
+直接四例包含在16个suite子例中，不重复累计。旧证据包保持原样以免把历史缺口冒充通过。
