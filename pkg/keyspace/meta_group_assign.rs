@@ -114,7 +114,7 @@ impl MetaServiceGroupManager {
         txn.commit().await
     }
 
-    async fn rollback_in_txn<'store>(
+    pub(crate) async fn rollback_in_txn<'store>(
         &'store self,
         txn: &mut CallbackTxn<'store>,
         group: &str,

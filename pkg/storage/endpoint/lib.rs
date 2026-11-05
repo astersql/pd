@@ -78,7 +78,8 @@ mod service_limits;
 mod service_limits_test;
 
 mod keyspace_meta;
-pub use keyspace_meta::{Keyspace, KeyspaceIdentity, KeyspaceMetaError};
+pub use astersql_pd_storage_domain::{Keyspace, KeyspaceIdentity, KeyspaceMetaError};
+pub use keyspace_meta::ProtobufKeyspaceCodec;
 #[cfg(test)]
 mod keyspace_meta_test;
 

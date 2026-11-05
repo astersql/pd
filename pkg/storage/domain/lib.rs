@@ -30,3 +30,8 @@ mod keyspace_group_state;
 pub use keyspace_group_state::{KeyspaceGroup, MergeState, OptionalKeyspaceGroupState, SplitState};
 mod keyspace_group_store;
 pub use keyspace_group_store::KeyspaceGroupStoreError;
+
+mod keyspace_meta;
+pub use keyspace_meta::{
+    Keyspace, KeyspaceCodec, KeyspaceIdentity, KeyspaceMetaError, KeyspaceStorage,
+};

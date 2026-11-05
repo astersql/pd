@@ -75,3 +75,9 @@ pub use keyspace_split::*;
 #[cfg(test)]
 #[path = "keyspace_split_test.rs"]
 mod keyspace_split_test;
+
+mod keyspace_create;
+pub use keyspace_create::*;
+#[cfg(test)]
+#[path = "keyspace_create_test.rs"]
+mod keyspace_create_test;

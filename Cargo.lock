@@ -235,13 +235,15 @@ name = "astersql-pd-compat-tests"
 version = "0.1.0"
 dependencies = [
  "astersql-pd-balancer",
- "astersql-pd-keyspace",
  "astersql-pd-cache",
  "astersql-pd-cluster",
  "astersql-pd-core",
  "astersql-pd-core-constant",
+ "astersql-pd-id",
  "astersql-pd-keypath",
+ "astersql-pd-keyspace",
  "astersql-pd-keyutil",
+ "astersql-pd-member",
  "astersql-pd-progress",
  "astersql-pd-proto",
  "astersql-pd-ratelimit",
@@ -409,28 +411,30 @@ version = "0.1.0"
 name = "astersql-pd-keyspace"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-balancer",
+ "astersql-pd-codec",
  "astersql-pd-core",
+ "astersql-pd-election",
  "astersql-pd-errs",
  "astersql-pd-etcdutil",
- "serde",
- "astersql-pd-election",
- "astersql-pd-typeutil",
- "astersql-pd-balancer",
- "tokio-util",
- "astersql-pd-mcs-constant",
- "astersql-pd-storage-endpoint",
- "async-trait",
+ "astersql-pd-id",
+ "astersql-pd-kerneltype",
  "astersql-pd-keypath",
+ "astersql-pd-keyspace-constant",
+ "astersql-pd-keyutil",
+ "astersql-pd-mcs-constant",
+ "astersql-pd-member",
+ "astersql-pd-schedule-labeler",
  "astersql-pd-storage-domain",
+ "astersql-pd-storage-endpoint",
  "astersql-pd-storage-kv",
+ "astersql-pd-typeutil",
+ "async-trait",
+ "serde",
+ "serde_json",
  "thiserror 2.0.21",
  "tokio",
- "astersql-pd-codec",
- "astersql-pd-kerneltype",
- "astersql-pd-keyspace-constant",
- "astersql-pd-schedule-labeler",
- "serde_json",
- "astersql-pd-keyutil",
+ "tokio-util",
 ]
 
 [[package]]
@@ -629,6 +633,7 @@ dependencies = [
  "astersql-pd-encryption",
  "astersql-pd-id",
  "astersql-pd-keypath",
+ "astersql-pd-keyspace",
  "astersql-pd-keyutil",
  "astersql-pd-logutil",
  "astersql-pd-member",
@@ -663,6 +668,7 @@ dependencies = [
  "astersql-pd-storelimit",
  "astersql-pd-syncer",
  "astersql-pd-tso",
+ "astersql-pd-unsaferecovery",
  "async-trait",
  "axum",
  "base64",
@@ -680,8 +686,6 @@ dependencies = [
  "tokio-stream",
  "tokio-util",
  "tonic",
- "astersql-pd-unsaferecovery",
- "astersql-pd-keyspace",
 ]
 
 [[package]]
@@ -1090,6 +1094,7 @@ dependencies = [
  "astersql-pd-syncer",
  "astersql-pd-tso",
  "astersql-pd-typeutil",
+ "astersql-pd-unsaferecovery",
  "async-trait",
  "axum",
  "base64",
@@ -1116,7 +1121,6 @@ dependencies = [
  "tonic-prost",
  "tower",
  "x509-parser",
- "astersql-pd-unsaferecovery",
 ]
 
 [[package]]
@@ -1318,19 +1322,19 @@ dependencies = [
 name = "astersql-pd-unsaferecovery"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-codec",
  "astersql-pd-core",
  "astersql-pd-errs",
+ "astersql-pd-id",
  "astersql-pd-keypath",
+ "astersql-pd-member",
  "astersql-pd-storage",
  "astersql-pd-storage-endpoint",
  "astersql-pd-storage-kv",
+ "astersql-pd-typeutil",
  "async-trait",
  "tokio",
  "tokio-util",
- "astersql-pd-codec",
- "astersql-pd-id",
- "astersql-pd-member",
- "astersql-pd-typeutil",
 ]
 
 [[package]]
