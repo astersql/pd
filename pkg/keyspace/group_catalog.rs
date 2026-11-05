@@ -21,7 +21,7 @@ pub enum GroupCatalogError {
     #[error("transaction conflict")]
     Conflict,
 }
-fn commit_error(error: CallbackTxnError<Infallible>) -> GroupCatalogError {
+pub(crate) fn commit_error(error: CallbackTxnError<Infallible>) -> GroupCatalogError {
     match error {
         CallbackTxnError::Conflict => GroupCatalogError::Conflict,
         CallbackTxnError::Store(error) => GroupCatalogError::Store(error),

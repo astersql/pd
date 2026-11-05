@@ -33,3 +33,9 @@ pub use group_catalog::*;
 #[cfg(test)]
 #[path = "group_catalog_test.rs"]
 mod group_catalog_test;
+
+mod group_membership;
+pub use group_membership::*;
+#[cfg(test)]
+#[path = "group_membership_test.rs"]
+mod group_membership_test;

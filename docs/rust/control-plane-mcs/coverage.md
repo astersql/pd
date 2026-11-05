@@ -94,7 +94,7 @@ watcher/额度集成测试和测试工具。只补此清单，不改只读plan�
 | 27 分配元服务分组 | PickGroup与AssignToGroup在事务中更新计数，空间创建失败回滚分配且并发不会丢失计数。 | 2 | `pkg/keyspace/lib.rs`；`pkg/keyspace/meta_group_assign.rs` | [已完成](task-027.md)：5项Rust聚焦；同源Go直接四例、真实etcd冲突/取消及WAL/创建路径证据齐备 |
 | 28 更新元服务分组端点 | UpdateGroupsSafely验证端点健康及已分配空间限制，失败不发布部分配置；AttachEndpoints不污染原始配置。 | 2 | `pkg/keyspace/lib.rs`；`pkg/keyspace/meta_group_update.rs` | [已完成](task-028.md)：7聚焦、22包级、Go健康/目录及7规范化逐例通过；宿主装配待131 |
 | 29 管理时间戳分组目录 | Bootstrap及分组CRUD保持默认组和user-kind索引，分页与非法删除匹配Go。 | 3 | `pkg/keyspace/group_catalog.rs`；`pkg/storage/domain/keyspace_group_*.rs` | 已完成：[task-029](task-029.md)，Go 3例、Rust 2项真实etcd及相邻12项；默认组/CRUD/分页/重启索引 |
-| 30 更新键空间分组归属 | UpdateKeyspaceGroup在源目标间原子迁移成员，条件不匹配与重试不重复计数。 | 3 | `pkg/keyspace/group_membership.rs`（拟建）；`pkg/keyspace/lib.rs`（拟建） | 待当前行为证据 |
+| 30 更新键空间分组归属 | UpdateKeyspaceGroup在源目标间原子迁移成员，条件不匹配与重试不重复计数。 | 3 | `pkg/keyspace/group_membership.rs` | 已完成：[task-030](task-030.md)，Go 3叶例、Rust 4项真实etcd；迁移/重复/保护/实际提交失败及WAL恢复 |
 | 31 拆分时间戳分组 | SplitKeyspaceGroupByID及FinishSplit维护源目标状态和成员归属，拒绝并发冲突拆分。 | 3 | `pkg/keyspace/group_split.rs`（拟建）；`pkg/keyspace/lib.rs`（拟建） | 待当前行为证据 |
 | 32 合并时间戳分组 | MergeKeyspaceGroups和FinishMerge含默认组合并遵守容量、状态与重试语义。 | 3 | `pkg/keyspace/group_merge.rs`（拟建）；`pkg/keyspace/lib.rs`（拟建） | 待当前行为证据 |
 | 33 分配时间戳服务成员 | AllocNodes与SetNodes及priority更新基于去重节点列表，副本不足和无效候选不破坏现有成员。 | 3 | `pkg/keyspace/group_nodes.rs`（拟建）；`pkg/keyspace/lib.rs`（拟建） | 待当前行为证据 |
