@@ -40,6 +40,12 @@ impl GCState {
 }
 #[derive(Clone, Debug, thiserror::Error)]
 pub enum GCReadError {
+    #[error(
+        "[PD:gc:ErrDecreasingTxnSafePoint]trying to update txn safe point to a smaller value, current value: {current}, given: {given}"
+    )]
+    DecreasingTxnSafePoint { current: u64, given: u64 },
+    #[error("stored GC barrier is null")]
+    NullBarrier,
     #[error(transparent)]
     Keyspace(Arc<KeyspaceError>),
     #[error(transparent)]
@@ -118,6 +124,8 @@ pub struct GCStateManager {
     generation: Mutex<Option<Arc<Generation>>>,
     lifecycle: tokio::sync::Mutex<()>,
     next: AtomicU64,
+    pub(crate) diagnostic_time:
+        Arc<dyn Fn(astersql_pd_storage_domain::BarrierTime) -> String + Send + Sync>,
 }
 impl Drop for GCStateManager {
     fn drop(&mut self) {
@@ -147,6 +155,7 @@ impl GCStateManager {
             generation: Mutex::new(None),
             lifecycle: tokio::sync::Mutex::new(()),
             next: AtomicU64::new(1),
+            diagnostic_time: Arc::new(crate::txn_safe_point::utc_time),
         }
     }
     pub async fn on_node_becomes_leader(&self) -> GCLeadership {
@@ -418,5 +427,40 @@ impl PreparedGCRead<'_> {
             .await
             .map_err(|e| GCReadError::Transaction(Arc::new(e)))?;
         Ok((self.state, self.globals))
+    }
+}
+
+impl GCStateManager {
+    /// Supply the host's diagnostic timezone rendering; storage and expiry comparisons remain absolute.
+    pub fn with_diagnostic_time_formatter(
+        mut self,
+        format: Arc<dyn Fn(astersql_pd_storage_domain::BarrierTime) -> String + Send + Sync>,
+    ) -> Self {
+        self.diagnostic_time = format;
+        self
+    }
+    pub(crate) async fn mutation_lock(&self) -> tokio::sync::RwLockWriteGuard<'_, ()> {
+        self.shared.gate.write().await
+    }
+    pub(crate) fn publish_points(&self, id: u32, txn: u64, gc: u64) {
+        self.shared.cache.write().unwrap().insert(id, (txn, gc));
+    }
+    pub(crate) fn invalidate_points(&self, id: u32) {
+        self.shared.cache.write().unwrap().remove(&id);
+    }
+}
+impl From<SafePointReadError> for GCReadError {
+    fn from(error: SafePointReadError) -> Self {
+        Self::SafePoint(Arc::new(error))
+    }
+}
+impl From<EndpointError> for GCReadError {
+    fn from(error: EndpointError) -> Self {
+        Self::Endpoint(Arc::new(error))
+    }
+}
+impl From<GCStateTxnError<Infallible>> for GCReadError {
+    fn from(error: GCStateTxnError<Infallible>) -> Self {
+        Self::Transaction(Arc::new(error))
     }
 }

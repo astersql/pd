@@ -84,3 +84,6 @@ mod group_remove_oracle_test;
 
 #[cfg(test)]
 mod gc_read_oracle_test;
+
+#[cfg(test)]
+mod txn_safe_point_oracle_test;

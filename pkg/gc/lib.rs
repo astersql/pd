@@ -11,3 +11,8 @@ mod gc_read_test;
 #[cfg(test)]
 #[path = "../storage/kv/response_gate_test.rs"]
 mod response_gate_test;
+
+mod txn_safe_point;
+pub use txn_safe_point::*;
+#[cfg(test)]
+mod txn_safe_point_test;

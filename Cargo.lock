@@ -271,6 +271,8 @@ dependencies = [
  "astersql-pd-storage-kv",
  "astersql-pd-syncer",
  "async-trait",
+ "chrono",
+ "chrono-tz",
  "prometheus",
  "prost",
  "serde_json",

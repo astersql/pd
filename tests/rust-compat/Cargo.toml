@@ -32,6 +32,8 @@ name = "tso"
 path = "tso_test.rs"
 
 [dev-dependencies]
+chrono.workspace = true
+chrono-tz.workspace = true
 astersql-pd-gc.workspace = true
 astersql-pd-id.workspace = true
 astersql-pd-member.workspace = true

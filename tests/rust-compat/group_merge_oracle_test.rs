@@ -28,10 +28,19 @@ pub(crate) async fn start_bootstrapped_go_with_args(
     mode: Option<&str>,
     args: &[&str],
 ) -> (crate::harness::Server, u64) {
+    start_bootstrapped_go_with_environment(mode, args, &[]).await
+}
+
+pub(crate) async fn start_bootstrapped_go_with_environment(
+    mode: Option<&str>,
+    args: &[&str],
+    extra: &[(String, String)],
+) -> (crate::harness::Server, u64) {
     let binary = crate::readonly_oracle::pinned_go_binary().unwrap();
-    let environment = mode
+    let mut environment = mode
         .map(|mode| vec![("PD_SERVICE_MODE".into(), mode.into())])
         .unwrap_or_default();
+    environment.extend_from_slice(extra);
     let mut go =
         crate::harness::Server::start_with_environment(&binary, args, &environment).unwrap();
     go.ready().unwrap();
