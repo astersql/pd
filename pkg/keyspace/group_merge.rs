@@ -38,6 +38,7 @@ impl KeyspaceGroupManager {
             )
             .into());
         }
+        let _stability = self.membership_gate.write().await;
         let _membership = self.membership_mutex.lock().await;
         let mut index = self.groups.write().await;
         let endpoint = StorageEndpoint::new(self.store.clone());

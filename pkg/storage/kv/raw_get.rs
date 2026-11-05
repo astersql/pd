@@ -39,7 +39,7 @@ pub struct RawTxnResponse {
 /// Validate both branches before execution, including unselected reads.
 #[doc(hidden)]
 pub fn validate_raw(compares: &[Compare], ops: &[RawTxnOp]) -> Result<()> {
-    if compares.len() + ops.len() > 128
+    if compares.len().max(ops.len()) > 128
         || ops
             .iter()
             .any(|op| matches!(op, RawTxnOp::Get(key) if key.is_empty()))

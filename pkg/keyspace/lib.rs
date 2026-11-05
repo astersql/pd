@@ -105,3 +105,9 @@ pub use keyspace_bootstrap::{BootstrapWork, PreallocationOutcome};
 #[cfg(test)]
 #[path = "keyspace_bootstrap_test.rs"]
 mod keyspace_bootstrap_test;
+
+mod group_remove;
+pub use group_remove::*;
+#[cfg(test)]
+#[path = "group_remove_test.rs"]
+mod group_remove_test;

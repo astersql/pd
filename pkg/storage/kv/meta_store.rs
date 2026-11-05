@@ -147,7 +147,7 @@ impl Mutation {
     }
 }
 pub(crate) fn validate_txn(compares: &[Compare], writes: &[Mutation]) -> Result<()> {
-    if compares.len() + writes.len() > 128
+    if compares.len().max(writes.len()) > 128
         || writes.iter().enumerate().any(|(i, w)| {
             w.key().is_empty()
                 || writes[..i].iter().any(|other| other.key() == w.key())

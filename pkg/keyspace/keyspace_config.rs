@@ -43,6 +43,10 @@ impl KeyspaceManager {
         let may_move = mutations
             .iter()
             .any(|m| matches!(m.key.as_str(), "user_kind" | "tso_keyspace_group_id"));
+        let _stability = match (&self.resources.groups, may_move) {
+            (Some(g), true) => Some(g.membership_gate.write().await),
+            _ => None,
+        };
         let _membership = match (&self.resources.groups, may_move) {
             (Some(g), true) => Some(g.membership_mutex.lock().await),
             _ => None,
@@ -146,6 +150,7 @@ impl KeyspaceManager {
         drop(directory);
         drop(_mutation);
         drop(_membership);
+        drop(_stability);
         Ok(self.decorate(meta).await)
     }
 }

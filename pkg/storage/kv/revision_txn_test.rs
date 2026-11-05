@@ -162,3 +162,43 @@ async fn revision_txn_etcd() {
     let fixture = fixture::Fixture::start();
     revision_txn_contract(&fixture.store().await).await;
 }
+
+async fn independent_branch_budget(store: &dyn MetaStore) {
+    // etcd checks max(compare, success, failure), rather than their sum.
+    let compares = (0..128)
+        .map(|i| Compare::NotExists(format!("budget/{i}").into_bytes()))
+        .collect::<Vec<_>>();
+    let writes = (0..128)
+        .map(|i| Mutation::put(format!("budget/{i}").as_bytes(), b"committed"))
+        .collect::<Vec<_>>();
+    assert!(
+        store
+            .transact(compares.clone(), writes.clone())
+            .await
+            .unwrap()
+            .succeeded
+    );
+    let before = snapshot(store).await;
+    let mut too_many = writes.clone();
+    too_many.push(Mutation::put(b"budget/overflow", b"bad"));
+    assert!(matches!(
+        store.transact(vec![], too_many).await,
+        Err(StoreError::InvalidArgument)
+    ));
+    let mut too_many = compares;
+    too_many.push(Compare::NotExists(b"budget/overflow".to_vec()));
+    assert!(matches!(
+        store.transact(too_many, vec![]).await,
+        Err(StoreError::InvalidArgument)
+    ));
+    assert_eq!(snapshot(store).await.entries, before.entries);
+}
+#[tokio::test]
+async fn mcs_042_independent_branch_budget_memory() {
+    independent_branch_budget(&MemoryStore::default()).await;
+}
+#[tokio::test]
+async fn mcs_042_independent_branch_budget_etcd() {
+    let f = fixture::Fixture::start();
+    independent_branch_budget(&f.store().await).await;
+}

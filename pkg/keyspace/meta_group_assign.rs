@@ -123,6 +123,17 @@ impl MetaServiceGroupManager {
         txn: &mut CallbackTxn<'_>,
         group: &str,
     ) -> Result<(), GroupAssignmentError> {
+        self.decrement_in_txn(txn, group, 1).await
+    }
+    pub(crate) async fn decrement_in_txn(
+        &self,
+        txn: &mut CallbackTxn<'_>,
+        group: &str,
+        count: i64,
+    ) -> Result<(), GroupAssignmentError> {
+        if group.is_empty() || count <= 0 {
+            return Ok(());
+        }
         let endpoint = StorageEndpoint::new(self.store.clone());
         let groups = BTreeMap::from([(group.to_owned(), String::new())]);
         let mut statuses = endpoint
@@ -130,7 +141,7 @@ impl MetaServiceGroupManager {
             .await?;
         let status = statuses.get_mut(group).expect("requested group");
         if !group.is_empty() && status.assignment_count != 0 {
-            status.assignment_count = status.assignment_count.wrapping_sub(1).max(0);
+            status.assignment_count = status.assignment_count.wrapping_sub(count).max(0);
             endpoint.save_meta_service_group_status(txn, &self.paths, group, Some(status))?;
         }
         Ok(())

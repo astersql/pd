@@ -126,10 +126,13 @@ impl KeyspaceManager {
             meta_service_group: group,
         })
     }
-    pub(crate) fn publish_removed(&self, ids: &[u32]) {
+    pub(crate) fn evict_cached(&self, ids: &[u32]) {
         for &id in ids {
             self.cache.delete_keyspace(id);
         }
+    }
+    pub(crate) fn publish_removed(&self, ids: &[u32]) {
+        self.evict_cached(ids);
         let observer = self.removal_observer.read().unwrap().clone();
         if let Some(observer) = observer {
             for &id in ids {

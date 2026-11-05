@@ -44,6 +44,16 @@ impl Fixture {
     pub fn start_with_native_ports(
         first_ports: Option<(std::net::TcpListener, std::net::TcpListener)>,
     ) -> Self {
+        Self::start_with_native_options(first_ports, None)
+    }
+    /// Use the real server's explicit operation budget for bounded transaction contracts.
+    pub fn start_with_txn_limit(limit: u32) -> Self {
+        Self::start_with_native_options(None, Some(limit))
+    }
+    fn start_with_native_options(
+        first_ports: Option<(std::net::TcpListener, std::net::TcpListener)>,
+        txn_limit: Option<u32>,
+    ) -> Self {
         static BINARY: OnceLock<PathBuf> = OnceLock::new();
         static NEXT: AtomicUsize = AtomicUsize::new(0);
         let manifest = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
@@ -66,8 +76,12 @@ impl Fixture {
         ));
         std::fs::create_dir_all(&directory).unwrap();
         if let Some(binary) = std::env::var_os("PD_COMPAT_ETCD_BIN") {
-            return Self::start_native(PathBuf::from(binary), directory, first_ports);
+            return Self::start_native(PathBuf::from(binary), directory, first_ports, txn_limit);
         }
+        assert!(
+            txn_limit.is_none(),
+            "transaction limits require the pinned native fixture"
+        );
         assert!(
             first_ports.is_none(),
             "reserved ports require the pinned native fixture"
@@ -235,6 +249,7 @@ impl Fixture {
         binary: PathBuf,
         directory: PathBuf,
         mut first_ports: Option<(std::net::TcpListener, std::net::TcpListener)>,
+        txn_limit: Option<u32>,
     ) -> Self {
         assert!(
             binary.is_absolute() && binary.is_file(),
@@ -258,7 +273,7 @@ impl Fixture {
             });
             let endpoint = format!("http://{}", client.local_addr().unwrap());
             let peer_url = format!("http://{}", peer.local_addr().unwrap());
-            let args = vec![
+            let mut args = vec![
                 "--name=default".into(),
                 format!("--data-dir={}", directory.join("data").display()),
                 format!("--listen-client-urls={endpoint}"),
@@ -268,6 +283,9 @@ impl Fixture {
                 format!("--initial-cluster=default={peer_url}"),
                 "--log-level=error".into(),
             ];
+            if let Some(limit) = txn_limit {
+                args.push(format!("--max-txn-ops={limit}"));
+            }
             drop(client);
             drop(peer);
             let child = spawn_native(&binary, &args, &directory);

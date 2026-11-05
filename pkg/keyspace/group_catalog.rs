@@ -48,6 +48,7 @@ pub struct KeyspaceGroupManager {
     pub(crate) paths: ClusterPaths,
     pub(crate) groups: RwLock<GroupIndex>,
     pub(crate) membership_mutex: Mutex<()>,
+    pub(crate) membership_gate: RwLock<()>,
     pub(crate) nodes: Arc<astersql_pd_balancer::RoundRobin<String>>,
     pub(crate) reconcile: std::sync::Mutex<Option<std::sync::Weak<crate::GroupReconcileTerm>>>,
 }
@@ -58,6 +59,7 @@ impl KeyspaceGroupManager {
             paths,
             groups: RwLock::new(empty_index()),
             membership_mutex: Mutex::new(()),
+            membership_gate: RwLock::new(()),
             nodes: Arc::new(astersql_pd_balancer::RoundRobin::new()),
             reconcile: std::sync::Mutex::new(None),
         }
@@ -90,6 +92,7 @@ impl KeyspaceGroupManager {
     }
     /// Create a batch atomically; an existing group aborts every buffered write.
     pub async fn create_groups(&self, groups: &[KeyspaceGroup]) -> Result<(), GroupCatalogError> {
+        let _stability = self.membership_gate.write().await;
         let _membership = self.membership_mutex.lock().await;
         let mut index = self.groups.write().await;
         let endpoint = StorageEndpoint::new(self.store.clone());
@@ -150,6 +153,7 @@ impl KeyspaceGroupManager {
         if id == 0 {
             return Err(KeyspaceGroupStoreError::ModifyDefaultKeyspaceGroup.into());
         }
+        let _stability = self.membership_gate.write().await;
         let _membership = self.membership_mutex.lock().await;
         let mut index = self.groups.write().await;
         let endpoint = StorageEndpoint::new(self.store.clone());

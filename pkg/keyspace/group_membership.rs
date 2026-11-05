@@ -102,6 +102,7 @@ impl KeyspaceGroupManager {
         new_kind: UserKind,
         keyspace_id: u32,
     ) -> Result<(), GroupMembershipError> {
+        let _stability = self.membership_gate.write().await;
         let _membership = self.membership_mutex.lock().await;
         self.update_keyspace_group_locked(
             old_group_id,
