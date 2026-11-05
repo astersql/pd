@@ -23,6 +23,16 @@ pub struct CallbackTxn<'a> {
 }
 
 impl<'a> Base<'a> {
+    /// Start caller-owned buffered work. No backend transaction is committed yet.
+    /// This also permits Send domain futures without generic async callbacks.
+    pub fn begin_txn(&self) -> CallbackTxn<'a> {
+        CallbackTxn {
+            store: self.store,
+            conditions: vec![],
+            operations: vec![],
+        }
+    }
+
     /// Run once and commit only after the callback succeeds. No automatic retry.
     pub async fn run_in_txn<T, E, F>(
         &self,
@@ -43,27 +53,31 @@ impl<'a> Base<'a> {
     where
         F: AsyncFnOnce(&mut CallbackTxn<'a>) -> std::result::Result<T, E>,
     {
-        let mut txn = CallbackTxn {
-            store: self.store,
-            conditions,
-            operations: vec![],
-        };
+        let mut txn = self.begin_txn();
+        txn.conditions = conditions;
         let value = callback(&mut txn)
             .await
             .map_err(CallbackTxnError::Callback)?;
-        let commit = self
-            .store
-            .transact(txn.conditions, txn.operations)
-            .await
-            .map_err(CallbackTxnError::Store)?;
-        if !commit.succeeded {
-            return Err(CallbackTxnError::Conflict);
-        }
+        txn.commit().await?;
         Ok(value)
     }
 }
 
 impl CallbackTxn<'_> {
+    /// Consume and commit buffered operations once, preserving optimistic conflicts.
+    /// Dropping an uncommitted transaction discards all buffered operations.
+    pub async fn commit<E>(self) -> std::result::Result<(), CallbackTxnError<E>> {
+        let commit = self
+            .store
+            .transact(self.conditions, self.operations)
+            .await
+            .map_err(CallbackTxnError::Store)?;
+        if !commit.succeeded {
+            return Err(CallbackTxnError::Conflict);
+        }
+        Ok(())
+    }
+
     /// Buffer a put without writing to the backend.
     pub fn save(&mut self, key: &[u8], value: &[u8]) -> Result<()> {
         self.operations.push(Mutation::put(key, value));

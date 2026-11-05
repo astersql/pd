@@ -50,3 +50,7 @@ mod workspace_acceptance_test;
 
 #[cfg(test)]
 mod accept_dependency_test;
+
+#[cfg(test)]
+#[path = "meta_group_assignment_oracle_test.rs"]
+mod meta_group_assignment_oracle_test;

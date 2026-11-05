@@ -32,6 +32,7 @@ name = "tso"
 path = "tso_test.rs"
 
 [dev-dependencies]
+astersql-pd-keyspace.workspace = true
 astersql-pd-core-constant.workspace = true
 astersql-pd-schedule-plan.workspace = true
 astersql-pd-progress.workspace = true

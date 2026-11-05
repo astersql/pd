@@ -234,6 +234,7 @@ version = "0.1.0"
 name = "astersql-pd-compat-tests"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-keyspace",
  "astersql-pd-cache",
  "astersql-pd-cluster",
  "astersql-pd-core",
@@ -406,6 +407,11 @@ version = "0.1.0"
 name = "astersql-pd-keyspace"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-keypath",
+ "astersql-pd-storage-domain",
+ "astersql-pd-storage-kv",
+ "thiserror 2.0.21",
+ "tokio",
  "astersql-pd-codec",
  "astersql-pd-kerneltype",
  "astersql-pd-keyspace-constant",

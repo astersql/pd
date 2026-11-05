@@ -10,3 +10,9 @@ pub use keyspace_cache::*;
 #[cfg(test)]
 #[path = "keyspace_cache_test.rs"]
 mod keyspace_cache_test;
+
+mod meta_group_assign;
+pub use meta_group_assign::*;
+#[cfg(test)]
+#[path = "meta_group_assign_test.rs"]
+mod meta_group_assign_test;

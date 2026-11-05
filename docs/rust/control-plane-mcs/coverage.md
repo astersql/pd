@@ -91,7 +91,7 @@ watcher/额度集成测试和测试工具。只补此清单，不改只读plan�
 | 24 终止超时恢复任务 | AbortFailedStoresRemoval与checkTimeout在错误、无心跳及主动终止时停止下发并回收运行状态；接通现有管理API而不重写其通用层。 | 2 | `pkg/runtime/lib.rs`（存在）；`pkg/runtime/node.rs`（存在）；`pkg/server/lib.rs`（存在）；`pkg/unsaferecovery/lib.rs`（拟建）；`pkg/unsaferecovery/recovery_timeout.rs`（拟建） | [当前证据](task-024.md)，5聚焦+54相邻通过，待统一回归 |
 | 25 实现键空间标识与边界 | 校验ID和名称及保留空间，生成raw/txn边界和label rule，覆盖最大ID及不合法编码。 | 5 | `pkg/keyspace/keyspace_bounds.rs`；复用codec/labeler | [当前证据](task-025.md)，5聚焦+45相邻通过，待统一回归 |
 | 26 实现键空间范围缓存 | Cache的Save/Delete/范围查找和跨键空间分割键保持有序、边界与删除可见性。 | 4 | `pkg/keyspace/keyspace_cache.rs`；真实共享缓存及分割算法 | [实现与当前证据](task-026.md)，65项Rust验证通过；同源Go四项逐例JUnit及14/12组断言重放通过，已解除差分阻塞，待统一工作区回归 |
-| 27 分配元服务分组 | PickGroup与AssignToGroup在事务中更新计数，空间创建失败回滚分配且并发不会丢失计数。 | 2 | `pkg/keyspace/lib.rs`（拟建）；`pkg/keyspace/meta_group_assign.rs`（拟建） | 待当前行为证据 |
+| 27 分配元服务分组 | PickGroup与AssignToGroup在事务中更新计数，空间创建失败回滚分配且并发不会丢失计数。 | 2 | `pkg/keyspace/lib.rs`；`pkg/keyspace/meta_group_assign.rs` | [实现推进与验证](task-027.md)：4项Rust聚焦及1项真实创建差分；直接AssignToGroup逐例oracle缺失，未准入 |
 | 28 更新元服务分组端点 | UpdateGroupsSafely验证端点健康及已分配空间限制，失败不发布部分配置；AttachEndpoints不污染原始配置。 | 2 | `pkg/keyspace/lib.rs`（拟建）；`pkg/keyspace/meta_group_update.rs`（拟建） | 待当前行为证据 |
 | 29 管理时间戳分组目录 | Bootstrap及分组CRUD保持默认组和user-kind索引，分页与非法删除匹配Go。 | 3 | `pkg/keyspace/group_catalog.rs`（拟建）；`pkg/keyspace/lib.rs`（拟建） | 待当前行为证据 |
 | 30 更新键空间分组归属 | UpdateKeyspaceGroup在源目标间原子迁移成员，条件不匹配与重试不重复计数。 | 3 | `pkg/keyspace/group_membership.rs`（拟建）；`pkg/keyspace/lib.rs`（拟建） | 待当前行为证据 |

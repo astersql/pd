@@ -20,3 +20,6 @@ pub use batch_ops::{MAX_BATCH_OPS, run_batch_op_in_txn};
 
 mod hot_history;
 pub use hot_history::{HistoryCipher, HistoryError, HistoryHotRegion, HistoryQuery, HotHistory};
+
+mod meta_service_group;
+pub use meta_service_group::MetaServiceGroupStatus;

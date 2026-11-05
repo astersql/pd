@@ -13,3 +13,9 @@ astersql-pd-keyspace-constant.workspace = true
 astersql-pd-kerneltype.workspace = true
 astersql-pd-schedule-labeler.workspace = true
 serde_json.workspace = true
+astersql-pd-storage-domain.workspace = true
+astersql-pd-keypath.workspace = true
+thiserror.workspace = true
+[dev-dependencies]
+astersql-pd-storage-kv.workspace = true
+tokio.workspace = true
