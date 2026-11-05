@@ -47,3 +47,6 @@ mod http_regression;
 mod workspace_acceptance;
 #[cfg(test)]
 mod workspace_acceptance_test;
+
+#[cfg(test)]
+mod accept_dependency_test;
