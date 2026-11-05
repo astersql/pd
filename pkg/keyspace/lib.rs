@@ -93,3 +93,9 @@ pub use keyspace_state::*;
 #[cfg(test)]
 #[path = "keyspace_state_test.rs"]
 mod keyspace_state_test;
+
+mod keyspace_remove;
+pub use keyspace_remove::{GCBarrierInvalidator, PreparedKeyspaceRemoval};
+#[cfg(test)]
+#[path = "keyspace_remove_test.rs"]
+mod keyspace_remove_test;

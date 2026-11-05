@@ -412,6 +412,7 @@ name = "astersql-pd-keyspace"
 version = "0.1.0"
 dependencies = [
  "astersql-pd-balancer",
+ "astersql-pd-cache",
  "astersql-pd-codec",
  "astersql-pd-core",
  "astersql-pd-election",

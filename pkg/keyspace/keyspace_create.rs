@@ -109,6 +109,7 @@ pub struct KeyspaceManager {
     pub cache: Arc<Cache>,
     pub(crate) mutation: Mutex<()>,
     pub(crate) resources: KeyspaceCreateResources,
+    pub(crate) removal_observer: RwLock<Option<crate::GCBarrierInvalidator>>,
 }
 impl KeyspaceManager {
     pub fn new(storage: KeyspaceStorage) -> Self {
@@ -120,6 +121,7 @@ impl KeyspaceManager {
             cache: Arc::new(Cache::default()),
             mutation: Mutex::new(()),
             resources,
+            removal_observer: RwLock::new(None),
         }
     }
     pub(crate) fn publish(&self, meta: &Keyspace) {

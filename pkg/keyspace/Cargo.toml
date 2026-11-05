@@ -29,6 +29,7 @@ thiserror.workspace = true
 tokio.workspace = true
 async-trait.workspace = true
 [dev-dependencies]
+astersql-pd-cache.workspace = true
 astersql-pd-member.workspace = true
 astersql-pd-storage-kv.workspace = true
 astersql-pd-storage-endpoint.workspace = true
