@@ -99,3 +99,6 @@ mod gc_safe_point_oracle_test;
 
 #[cfg(test)]
 mod accept_gc_03_test;
+
+#[cfg(test)]
+mod accept_gc_04_test;

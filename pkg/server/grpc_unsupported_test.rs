@@ -124,6 +124,9 @@ async fn verify_pending(url: &str) {
             "GetGCSafePoint",
             "UpdateGCSafePoint",
             "UpdateServiceGCSafePoint",
+            "GetGCSafePointV2",
+            "UpdateGCSafePointV2",
+            "UpdateServiceSafePointV2",
         ]
         .contains(method)
         {
