@@ -26,3 +26,11 @@ mod gc_global_barrier;
 pub use gc_global_barrier::*;
 #[cfg(test)]
 mod gc_global_barrier_test;
+
+mod gc_safe_point;
+pub use gc_safe_point::*;
+#[cfg(test)]
+mod gc_safe_point_test;
+
+mod legacy_service_safe_point;
+pub use legacy_service_safe_point::*;

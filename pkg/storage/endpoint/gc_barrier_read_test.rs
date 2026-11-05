@@ -146,7 +146,7 @@ async fn contract(store: Arc<dyn MetaStore>) {
                 .unwrap();
             assert!(matches!(
                 ep.compatible_load_tidb_min_start_ts(&paths, scope).await,
-                Err(SafePointReadError::ParseUint)
+                Err(SafePointReadError::ParseUint(_))
             ));
         }
     }

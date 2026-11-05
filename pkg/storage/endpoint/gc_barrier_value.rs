@@ -250,3 +250,43 @@ macro_rules! json_codec {
 }
 json_codec!(ServiceSafePoint);
 json_codec!(GlobalGCBarrier);
+
+impl ServiceSafePoint {
+    /// Legacy service IDs are protobuf bytes. Preserve Go's invalid-UTF8 JSON replacement escapes.
+    pub fn to_json_with_raw_service_id(&self, id: &[u8]) -> Result<Vec<u8>, EndpointError> {
+        let ordinary = self.to_json()?;
+        let prefix = b"{\"service_id\":";
+        let old = go_json(&self.service_id)?;
+        assert!(ordinary.starts_with(prefix) && ordinary[prefix.len()..].starts_with(&old));
+        let mut output = prefix.to_vec();
+        output.extend(json_string_bytes(id)?);
+        output.extend_from_slice(&ordinary[prefix.len() + old.len()..]);
+        Ok(output)
+    }
+}
+fn json_string_bytes(bytes: &[u8]) -> Result<Vec<u8>, EndpointError> {
+    let mut output = vec![b'"'];
+    let mut position = 0;
+    while position < bytes.len() {
+        let remaining = &bytes[position..];
+        match std::str::from_utf8(remaining) {
+            Ok(text) => {
+                let encoded = go_json(&text)?;
+                output.extend_from_slice(&encoded[1..encoded.len() - 1]);
+                position = bytes.len();
+            }
+            Err(error) => {
+                let length = error.valid_up_to();
+                if length > 0 {
+                    let text = std::str::from_utf8(&remaining[..length]).expect("validated prefix");
+                    let encoded = go_json(&text)?;
+                    output.extend_from_slice(&encoded[1..encoded.len() - 1]);
+                }
+                output.extend_from_slice(b"\\ufffd");
+                position += length + 1;
+            }
+        }
+    }
+    output.push(b'"');
+    Ok(output)
+}

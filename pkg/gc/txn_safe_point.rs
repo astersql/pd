@@ -21,7 +21,7 @@ pub struct PreparedTxnSafePointAdvance<'a> {
     result: AdvanceTxnSafePointResult,
     cancel: CancellationToken,
 }
-struct CacheOutcome<'a> {
+pub(crate) struct CacheOutcome<'a> {
     manager: &'a GCStateManager,
     id: u32,
     confirmed: bool,
@@ -71,7 +71,7 @@ impl GCStateManager {
             }
         }
     }
-    async fn stage_txn_advance(
+    pub(crate) async fn stage_txn_advance(
         &self,
         id: u32,
         target: u64,
@@ -213,77 +213,19 @@ impl PreparedTxnSafePointAdvance<'_> {
             result,
             cancel,
         } = self;
-        let mut outcome = CacheOutcome {
-            manager,
-            id,
-            confirmed: false,
-        };
+        let mut outcome = CacheOutcome::new(manager, id);
         tokio::select! {biased;_=cancel.cancelled()=>return Err(GCReadError::Cancelled),response=transaction.commit()=>response?};
-        manager.publish_points(id, result.new_txn_safe_point, gc);
-        outcome.confirmed = true;
+        outcome.publish(result.new_txn_safe_point, gc);
         drop(guard);
         Ok(result)
     }
 }
 /// Go fmt %+q renders printable non-ASCII runes as escapes and preserves invalid bytes.
 fn ascii_quote(bytes: &[u8]) -> String {
-    quote(bytes, true)
+    astersql_pd_typeutil::go_quote_bytes(bytes, true)
 }
 pub(crate) fn go_quote(bytes: &[u8]) -> String {
-    quote(bytes, false)
-}
-fn quote(bytes: &[u8], ascii: bool) -> String {
-    let mut out = String::from("\"");
-    let mut cursor = 0;
-    while cursor < bytes.len() {
-        let tail = &bytes[cursor..];
-        let (valid, length) = match std::str::from_utf8(tail) {
-            Ok(s) => (s, s.len()),
-            Err(e) => (
-                std::str::from_utf8(&tail[..e.valid_up_to()]).unwrap(),
-                e.valid_up_to(),
-            ),
-        };
-        for c in valid.chars() {
-            use std::fmt::Write;
-            match c {
-                '"' => out.push_str("\\\""),
-                '\\' => out.push_str("\\\\"),
-                '\n' => out.push_str("\\n"),
-                '\r' => out.push_str("\\r"),
-                '\t' => out.push_str("\\t"),
-                '\u{7}' => out.push_str("\\a"),
-                '\u{8}' => out.push_str("\\b"),
-                '\u{b}' => out.push_str("\\v"),
-                '\u{c}' => out.push_str("\\f"),
-                c if (' '..='~').contains(&c)
-                    || (!ascii
-                        && !c.is_control()
-                        && !c.escape_debug().to_string().starts_with("\\u{")) =>
-                {
-                    out.push(c)
-                }
-                c => {
-                    let n = c as u32;
-                    if n < 128 {
-                        write!(out, "\\x{n:02x}").unwrap()
-                    } else if n <= 0xffff {
-                        write!(out, "\\u{n:04x}").unwrap()
-                    } else {
-                        write!(out, "\\U{n:08x}").unwrap()
-                    }
-                }
-            }
-        }
-        cursor += length;
-        if cursor < bytes.len() {
-            use std::fmt::Write;
-            write!(out, "\\x{:02x}", bytes[cursor]).unwrap();
-            cursor += 1;
-        }
-    }
-    out.push('"');
-    out
+    astersql_pd_typeutil::go_quote_bytes(bytes, false)
 }
 /// Absolute persisted expiration values use whole seconds; host may supply a local-zone formatter.
 pub(crate) fn utc_time(time: BarrierTime) -> String {
@@ -306,4 +248,18 @@ pub(crate) fn utc_time(time: BarrierTime) -> String {
         day_seconds % 3600 / 60,
         day_seconds % 60
     )
+}
+
+impl<'a> CacheOutcome<'a> {
+    pub(crate) fn new(manager: &'a GCStateManager, id: u32) -> Self {
+        Self {
+            manager,
+            id,
+            confirmed: false,
+        }
+    }
+    pub(crate) fn publish(&mut self, txn: u64, gc: u64) {
+        self.manager.publish_points(self.id, txn, gc);
+        self.confirmed = true;
+    }
 }

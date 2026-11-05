@@ -50,11 +50,11 @@ async fn contract(store: Arc<dyn MetaStore>) {
     for (row, id) in results.iter().zip(ids) {
         assert_eq!(row.keyspace_id, id);
         if id == 11 {
-            assert!(matches!(row.err, Some(SafePointReadError::ParseUint)));
+            assert!(matches!(row.err, Some(SafePointReadError::ParseUint(_))));
             assert_eq!((row.txn_safe_point, row.gc_safe_point), (0, 0));
         } else if id == 15 {
             // Go decodeTxnSafePoint returns ParseUint's saturated value and error.
-            assert!(matches!(row.err, Some(SafePointReadError::ParseUint)));
+            assert!(matches!(row.err, Some(SafePointReadError::ParseUint(_))));
             assert_eq!((row.txn_safe_point, row.gc_safe_point), (u64::MAX, 0));
         } else if id == 12 {
             assert!(matches!(
@@ -300,7 +300,10 @@ fn gc_batch_read_response_validation() {
         );
     }
     let rows = gc_batch_read::decode_response(&ids, &keys, good).unwrap();
-    assert!(matches!(rows[0].err, Some(SafePointReadError::ParseUint)));
+    assert!(matches!(
+        rows[0].err,
+        Some(SafePointReadError::ParseUint(_))
+    ));
 }
 
 // A real TCP response gate exercises cancellation after dispatch without replacing

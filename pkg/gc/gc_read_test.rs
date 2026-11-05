@@ -173,7 +173,7 @@ async fn mcs_043_decode_failure_no_partial_cache_and_barrier_filtering() {
         .unwrap();
     let error = m.get_gc_state(2, true).await.unwrap_err();
     assert!(
-        matches!(error,GCReadError::SafePoint(ref e) if matches!(e.as_ref(),astersql_pd_storage_domain::SafePointReadError::ParseUint))
+        matches!(error,GCReadError::SafePoint(ref e) if matches!(e.as_ref(),astersql_pd_storage_domain::SafePointReadError::ParseUint(_)))
     );
     base.save(m.paths.txn_safe_point_path(2).as_bytes(), b"999")
         .await

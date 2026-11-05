@@ -3,14 +3,15 @@
 use crate::StorageEndpoint;
 use crate::kv::{Base, StoreError};
 use astersql_pd_keypath::{ClusterPaths, NULL_KEYSPACE_ID};
+use astersql_pd_typeutil::{GoParseUintError, GoUintBase, parse_uint64_with_base};
 use serde::{Deserialize, Deserializer, de};
 use std::fmt;
 
 /// Safe point syntax, JSON schema and backend failures remain distinguishable.
 #[derive(Debug, thiserror::Error)]
 pub enum SafePointReadError {
-    #[error("parse uint error")]
-    ParseUint,
+    #[error("[PD:strconv:ErrStrconvParseUint]parse uint error: {0}")]
+    ParseUint(GoParseUintError),
     #[error("json unmarshal: {0}")]
     JsonUnmarshal(serde_json::Error),
     #[error(transparent)]
@@ -54,20 +55,11 @@ pub(super) fn decode_txn_safe_point(raw: &[u8]) -> Result<u64, SafePointReadErro
 // Go returns the saturated ParseUint value together with an overflow error.
 // The batch API exposes both; the scalar API returns only the error.
 pub(super) fn decode_txn_safe_point_parts(raw: &[u8]) -> (u64, Option<SafePointReadError>) {
-    let mut value = 0u64;
-    for &digit in raw {
-        if !digit.is_ascii_digit() {
-            return (0, Some(SafePointReadError::ParseUint));
-        }
-        match value
-            .checked_mul(10)
-            .and_then(|v| v.checked_add(u64::from(digit - b'0')))
-        {
-            Some(next) => value = next,
-            None => return (u64::MAX, Some(SafePointReadError::ParseUint)),
-        }
+    if raw.is_empty() {
+        return (0, None);
     }
-    (value, None)
+    let (value, error) = parse_uint64_with_base(raw, GoUintBase::Decimal);
+    (value, error.map(SafePointReadError::ParseUint))
 }
 
 pub(super) fn decode_gc_safe_point(raw: &[u8], id: u32) -> Result<u64, SafePointReadError> {
@@ -75,29 +67,19 @@ pub(super) fn decode_gc_safe_point(raw: &[u8], id: u32) -> Result<u64, SafePoint
         return Ok(0);
     }
     if id == NULL_KEYSPACE_ID {
-        return parse_uint(raw, 16);
+        return parse_hex_point(raw);
     }
     serde_json::from_slice::<KeyspaceSafePoint>(raw)
         .map(|v| v.0)
         .map_err(SafePointReadError::JsonUnmarshal)
 }
 
-fn parse_uint(raw: &[u8], radix: u32) -> Result<u64, SafePointReadError> {
-    // Explicit-base Go ParseUint rejects signs, prefixes, separators and whitespace.
-    if !raw.iter().all(|b| {
-        if radix == 16 {
-            b.is_ascii_hexdigit()
-        } else {
-            b.is_ascii_digit()
-        }
-    }) {
-        return Err(SafePointReadError::ParseUint);
+fn parse_hex_point(raw: &[u8]) -> Result<u64, SafePointReadError> {
+    let (value, error) = parse_uint64_with_base(raw, GoUintBase::Hexadecimal);
+    match error {
+        Some(error) => Err(SafePointReadError::ParseUint(error)),
+        None => Ok(value),
     }
-    u64::from_str_radix(
-        std::str::from_utf8(raw).map_err(|_| SafePointReadError::ParseUint)?,
-        radix,
-    )
-    .map_err(|_| SafePointReadError::ParseUint)
 }
 
 struct KeyspaceSafePoint(u64);

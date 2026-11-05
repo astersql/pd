@@ -127,7 +127,7 @@ async fn contract(store: Arc<dyn MetaStore>) {
             })
             .await;
         assert!(
-            matches!(result, Err(GCStateTxnError::ParseRevision)),
+            matches!(result, Err(GCStateTxnError::ParseRevision(_))),
             "{raw}"
         );
         assert!(!called);

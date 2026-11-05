@@ -58,13 +58,13 @@ pub fn encode_gc_safe_point(keyspace_id: u32, safe_point: u64) -> String {
 pub enum GCStateTxnError<E> {
     #[error("callback failed: {0}")]
     Callback(E),
-    #[error("parse uint error")]
-    ParseRevision,
-    #[error("etcd transaction conflict")]
+    #[error(transparent)]
+    ParseRevision(astersql_pd_typeutil::GoParseUintError),
+    #[error("[PD:etcd:ErrEtcdTxnConflict]etcd transaction failed, conflicted and rolled back")]
     Conflict,
     #[error("unexpected number of results: {expected} != {actual}")]
     ResponseCount { expected: usize, actual: usize },
-    #[error(transparent)]
+    #[error("{}",gc_transaction_store_message(.0))]
     Store(#[from] StoreError),
 }
 
@@ -98,13 +98,14 @@ impl StorageEndpoint {
         let revision = if current.is_empty() {
             0u64
         } else {
-            if !current.iter().all(u8::is_ascii_digit) {
-                return Err(GCStateTxnError::ParseRevision);
+            let (value, error) = astersql_pd_typeutil::parse_uint64_with_base(
+                &current,
+                astersql_pd_typeutil::GoUintBase::Decimal,
+            );
+            if let Some(error) = error {
+                return Err(GCStateTxnError::ParseRevision(error));
             }
-            std::str::from_utf8(&current)
-                .ok()
-                .and_then(|s| s.parse::<u64>().ok())
-                .ok_or(GCStateTxnError::ParseRevision)?
+            value
         };
         Ok(PreparedGCStateTxn {
             store: self.store.clone(),
@@ -167,11 +168,18 @@ impl PreparedGCStateTxn<'_> {
 fn promote_txn_error<E>(error: GCStateTxnError<std::convert::Infallible>) -> GCStateTxnError<E> {
     match error {
         GCStateTxnError::Callback(never) => match never {},
-        GCStateTxnError::ParseRevision => GCStateTxnError::ParseRevision,
+        GCStateTxnError::ParseRevision(error) => GCStateTxnError::ParseRevision(error),
         GCStateTxnError::Conflict => GCStateTxnError::Conflict,
         GCStateTxnError::ResponseCount { expected, actual } => {
             GCStateTxnError::ResponseCount { expected, actual }
         }
         GCStateTxnError::Store(error) => GCStateTxnError::Store(error),
+    }
+}
+
+fn gc_transaction_store_message(error: &StoreError) -> String {
+    match error {
+        StoreError::RequestTooLarge=>"[PD:etcd:ErrEtcdTxnInternal]internal etcd transaction error occurred: etcdserver: request is too large".into(),
+        _=>error.to_string(),
     }
 }

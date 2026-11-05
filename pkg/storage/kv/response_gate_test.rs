@@ -6,6 +6,7 @@ pub(crate) struct ResponseGate {
     pub(crate) armed: Arc<std::sync::atomic::AtomicBool>,
     pub(crate) held: Arc<tokio::sync::Notify>,
     stop: CancellationToken,
+    arm_on: Arc<std::sync::Mutex<Option<Vec<u8>>>>,
     release: Arc<tokio::sync::Notify>,
     task: Option<tokio::task::JoinHandle<()>>,
 }
@@ -19,6 +20,8 @@ impl ResponseGate {
         let armed = Arc::new(std::sync::atomic::AtomicBool::new(false));
         let held = Arc::new(tokio::sync::Notify::new());
         let stop = CancellationToken::new();
+        let arm_on = Arc::new(std::sync::Mutex::new(None::<Vec<u8>>));
+        let trigger = arm_on.clone();
         let release = Arc::new(tokio::sync::Notify::new());
         let released = release.clone();
         let (gate, signal, shutdown) = (armed.clone(), held.clone(), stop.clone());
@@ -28,11 +31,38 @@ impl ResponseGate {
                 let upstream = tokio::net::TcpStream::connect(upstream).await.unwrap();
                 let (mut dr, mut dw) = downstream.into_split();
                 let (mut ur, mut uw) = upstream.into_split();
-                let requests = tokio::io::copy(&mut dr, &mut uw);
+                let requests = async {
+                    let mut buf = [0; 65536];
+                    let mut recent = Vec::new();
+                    loop {
+                        let Ok(n) = dr.read(&mut buf).await else {
+                            break;
+                        };
+                        if n == 0 {
+                            break;
+                        }
+                        let needle = trigger.lock().unwrap().clone();
+                        if let Some(needle) = needle {
+                            recent.extend_from_slice(&buf[..n]);
+                            if recent.windows(needle.len()).any(|part| part == needle) {
+                                gate.store(true, Ordering::SeqCst);
+                                trigger.lock().unwrap().take();
+                            }
+                            if recent.len() > needle.len() {
+                                recent.drain(..recent.len() - needle.len());
+                            }
+                        }
+                        if uw.write_all(&buf[..n]).await.is_err() {
+                            break;
+                        }
+                    }
+                };
                 let responses = async {
                     let mut buf = [0; 65536];
                     loop {
-                        let n = ur.read(&mut buf).await.unwrap();
+                        let Ok(n) = ur.read(&mut buf).await else {
+                            break;
+                        };
                         if n == 0 {
                             break;
                         }
@@ -46,6 +76,7 @@ impl ResponseGate {
                     }
                 };
                 tokio::select! { _ = requests => {}, _ = responses => {} }
+                drop((dr, dw, ur, uw));
                 std::future::pending::<()>().await;
             };
             tokio::select! { _ = shutdown.cancelled() => {}, _ = work => {} }
@@ -55,9 +86,15 @@ impl ResponseGate {
             armed,
             held,
             stop,
+            arm_on,
             release,
             task: Some(task),
         }
+    }
+    /// Arms at a real outbound key, so earlier read replies pass and the subsequent write reply is held.
+    pub(crate) fn arm_on_key(&self, key: &[u8]) {
+        assert!(!key.is_empty());
+        *self.arm_on.lock().unwrap() = Some(key.to_vec());
     }
     pub(crate) fn release(&self) {
         self.armed.store(false, std::sync::atomic::Ordering::SeqCst);

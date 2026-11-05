@@ -126,14 +126,14 @@ async fn contract(store: Arc<dyn MetaStore>) {
         assert!(
             matches!(
                 ep.load_gc_safe_point(&paths, NULL_KEYSPACE_ID).await,
-                Err(SafePointReadError::ParseUint)
+                Err(SafePointReadError::ParseUint(_))
             ),
             "{raw:?}"
         );
         assert!(
             matches!(
                 ep.load_txn_safe_point(&paths, 0).await,
-                Err(SafePointReadError::ParseUint)
+                Err(SafePointReadError::ParseUint(_))
             ),
             "{raw:?}"
         );

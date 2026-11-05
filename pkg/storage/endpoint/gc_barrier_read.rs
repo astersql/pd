@@ -11,9 +11,9 @@ use serde::de::DeserializeOwned;
 impl StorageEndpoint {
     async fn load_barrier_json<T: DeserializeOwned>(
         &self,
-        key: &str,
+        key: &[u8],
     ) -> Result<Option<T>, EndpointError> {
-        match self.load(key.as_bytes()).await? {
+        match self.load(key).await? {
             LoadState::Missing | LoadState::Empty => Ok(None),
             LoadState::Value(bytes) => {
                 serde_json::from_slice(&bytes).map_err(EndpointError::JsonUnmarshal)
@@ -44,8 +44,20 @@ impl StorageEndpoint {
         keyspace_id: u32,
         id: &str,
     ) -> Result<Option<GCBarrier>, EndpointError> {
+        self.load_gc_barrier_with_service_id(paths, keyspace_id, id.as_bytes())
+            .await
+    }
+    /// Reads the exact byte-valued legacy service key and decodes its canonical JSON value.
+    pub async fn load_gc_barrier_with_service_id(
+        &self,
+        paths: &ClusterPaths,
+        keyspace_id: u32,
+        id: &[u8],
+    ) -> Result<Option<GCBarrier>, EndpointError> {
+        let mut key = paths.gc_barrier_prefix(keyspace_id).into_bytes();
+        key.extend_from_slice(id);
         Ok(self
-            .load_barrier_json::<ServiceSafePoint>(&paths.gc_barrier_path(keyspace_id, id))
+            .load_barrier_json::<ServiceSafePoint>(&key)
             .await?
             .as_ref()
             .map(GCBarrier::from_service_safe_point))
@@ -72,7 +84,7 @@ impl StorageEndpoint {
         paths: &ClusterPaths,
         id: &str,
     ) -> Result<Option<GlobalGCBarrier>, EndpointError> {
-        self.load_barrier_json(&paths.global_gc_barrier_path(id))
+        self.load_barrier_json(paths.global_gc_barrier_path(id).as_bytes())
             .await
     }
 
@@ -111,13 +123,13 @@ impl StorageEndpoint {
             .await?;
         let mut minimum = None;
         for entry in snapshot.entries {
-            if entry.value.is_empty() || !entry.value.iter().all(u8::is_ascii_digit) {
-                return Err(SafePointReadError::ParseUint);
+            let (value, error) = astersql_pd_typeutil::parse_uint64_with_base(
+                &entry.value,
+                astersql_pd_typeutil::GoUintBase::Decimal,
+            );
+            if let Some(error) = error {
+                return Err(SafePointReadError::ParseUint(error));
             }
-            let value = std::str::from_utf8(&entry.value)
-                .ok()
-                .and_then(|s| s.parse::<u64>().ok())
-                .ok_or(SafePointReadError::ParseUint)?;
             if minimum.as_ref().is_none_or(|(_, old)| value < *old) {
                 minimum = Some((entry.key[prefix.len()..].to_vec(), value));
             }

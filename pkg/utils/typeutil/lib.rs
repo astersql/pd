@@ -36,3 +36,8 @@ mod time_test;
 
 #[cfg(test)]
 mod clone_test;
+
+mod go_uint;
+pub use go_uint::*;
+#[cfg(test)]
+mod go_uint_test;

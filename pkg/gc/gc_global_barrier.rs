@@ -50,6 +50,23 @@ impl GCStateManager {
         }
         validate_name(name)?;
         let guard = tokio::select! {biased;_=cancel.cancelled()=>return Err(GCReadError::Cancelled),guard=self.mutation_lock()=>guard};
+        let (transaction, barrier) = tokio::select! {biased;_=cancel.cancelled()=>return Err(GCReadError::Cancelled),result=self.stage_global_barrier_set(name,ts,ttl,now)=>result}?;
+
+        Ok(PreparedGlobalGCBarrierChange {
+            guard,
+            transaction,
+            barrier: Some(barrier),
+            cancel: cancel.clone(),
+        })
+    }
+
+    pub(crate) async fn stage_global_barrier_set(
+        &self,
+        name: &str,
+        ts: u64,
+        ttl: Duration,
+        now: BarrierTime,
+    ) -> Result<(PreparedGCStateTxn<'_>, GlobalGCBarrier), GCReadError> {
         let mut expiration = now.add_nanos(ttl.as_nanos());
         let barrier = GlobalGCBarrier::new(
             name,
@@ -60,21 +77,38 @@ impl GCStateManager {
                 Some(&mut expiration)
             },
         );
-        let transaction = tokio::select! {biased;_=cancel.cancelled()=>return Err(GCReadError::Cancelled),result=async {
-            let mut transaction=self.storage.begin_gc_state_transaction(&self.paths).await?;
-            let maximum=self.max_txn_in_transaction(&transaction).await?;
-            if ts<maximum.safe_point {
-                let keyspace=if maximum.keyspace_id==NULL_KEYSPACE_ID{"<null_keyspace>".into()}else{format!("{{ name: {}, id: {} }}",crate::txn_safe_point::go_quote(maximum.keyspace_name.as_bytes()),maximum.keyspace_id)};
-                return Err(GCReadError::GlobalBarrierBehind{barrier:ts,txn:maximum.safe_point,keyspace});
-            }
-            transaction.batch.set_global_gc_barrier(&barrier)?;Ok::<_,GCReadError>(transaction)
-        }=>result}?;
-        Ok(PreparedGlobalGCBarrierChange {
-            guard,
-            transaction,
-            barrier: Some(barrier),
-            cancel: cancel.clone(),
-        })
+        let mut transaction = self.storage.begin_gc_state_transaction(&self.paths).await?;
+        let maximum = self.max_txn_in_transaction(&transaction).await?;
+        if ts < maximum.safe_point {
+            let keyspace = if maximum.keyspace_id == NULL_KEYSPACE_ID {
+                "<null_keyspace>".into()
+            } else {
+                format!(
+                    "{{ name: {}, id: {} }}",
+                    crate::txn_safe_point::go_quote(maximum.keyspace_name.as_bytes()),
+                    maximum.keyspace_id
+                )
+            };
+            return Err(GCReadError::GlobalBarrierBehind {
+                barrier: ts,
+                txn: maximum.safe_point,
+                keyspace,
+            });
+        }
+        transaction.batch.set_global_gc_barrier(&barrier)?;
+        Ok((transaction, barrier))
+    }
+    pub(crate) async fn stage_global_barrier_delete(
+        &self,
+        name: &str,
+    ) -> Result<(PreparedGCStateTxn<'_>, Option<GlobalGCBarrier>), GCReadError> {
+        let mut transaction = self.storage.begin_gc_state_transaction(&self.paths).await?;
+        let barrier = self
+            .storage
+            .load_global_gc_barrier(&self.paths, name)
+            .await?;
+        transaction.batch.delete_global_gc_barrier(name);
+        Ok((transaction, barrier))
     }
     pub(crate) async fn max_txn_in_transaction(
         &self,
@@ -155,9 +189,8 @@ impl GCStateManager {
     ) -> Result<PreparedGlobalGCBarrierChange<'_>, GCReadError> {
         validate_name(name)?;
         let guard = tokio::select! {biased;_=cancel.cancelled()=>return Err(GCReadError::Cancelled),guard=self.mutation_lock()=>guard};
-        let (transaction, barrier) = tokio::select! {biased;_=cancel.cancelled()=>return Err(GCReadError::Cancelled),result=async {
-            let mut transaction=self.storage.begin_gc_state_transaction(&self.paths).await?;let barrier=self.storage.load_global_gc_barrier(&self.paths,name).await?;transaction.batch.delete_global_gc_barrier(name);Ok::<_,GCReadError>((transaction,barrier))
-        }=>result}?;
+        let (transaction, barrier) = tokio::select! {biased;_=cancel.cancelled()=>return Err(GCReadError::Cancelled),result=self.stage_global_barrier_delete(name)=>result}?;
+
         Ok(PreparedGlobalGCBarrierChange {
             guard,
             transaction,

@@ -41,6 +41,17 @@ impl GCState {
 #[derive(Clone, Debug, thiserror::Error)]
 pub enum GCReadError {
     #[error(
+        "[PD:gc:ErrDecreasingGCSafePoint]trying to update GC safe point to a smaller value, current value: {current}, given: {given}"
+    )]
+    DecreasingGCSafePoint { current: u64, given: u64 },
+    #[error(
+        "[PD:gc:ErrGCSafePointExceedsTxnSafePoint]trying to update GC safe point to a too large value that exceeds the txn safe point, current value: {current}, given: {given}, current txn safe point: {txn}"
+    )]
+    GCExceedsTxn { current: u64, given: u64, txn: u64 },
+    #[error("TTL of gc_worker's service safe point must be infinity")]
+    LegacyWorkerTTL,
+
+    #[error(
         "[PD:gc:ErrGlobalGCBarrierTSBehindTxnSafePoint]trying to set a global GC barrier on ts {barrier} which is already behind the txn safe point {txn} of keyspace {keyspace}"
     )]
     GlobalBarrierBehind {

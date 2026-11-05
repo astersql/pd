@@ -45,27 +45,11 @@ impl GCStateManager {
         }
         let id = self.redirect(id, true).await?;
         let guard = tokio::select! {biased;_=cancel.cancelled()=>return Err(GCReadError::Cancelled),guard=self.mutation_lock()=>guard};
-        validate_id(name)?;
-        let mut expiration = now.add_nanos(ttl.as_nanos());
-        let barrier = GCBarrier::new(
-            name,
-            ts,
-            if ttl.as_nanos() == i64::MAX {
-                None
-            } else {
-                Some(&mut expiration)
-            },
-        );
-        let result = tokio::select! {biased;_=cancel.cancelled()=>return Err(GCReadError::Cancelled),result=async {
-            let mut transaction=self.storage.begin_gc_state_transaction(&self.paths).await?;
-            let txn=self.storage.load_txn_safe_point(&self.paths,id).await?;
-            if ts<txn {return Err(GCReadError::BarrierBehind{barrier:ts,txn});}
-            transaction.batch.set_gc_barrier(id,&barrier)?;
-            Ok::<_,GCReadError>(transaction)
-        }=>result}?;
+        let (transaction, barrier) = tokio::select! {biased;_=cancel.cancelled()=>return Err(GCReadError::Cancelled),result=self.stage_gc_barrier_set(id,name.as_bytes(),ts,ttl,now)=>result}?;
+
         Ok(PreparedGCBarrierChange {
             guard,
-            transaction: result,
+            transaction,
             barrier: Some(barrier),
             cancel: cancel.clone(),
         })
@@ -88,19 +72,60 @@ impl GCStateManager {
     ) -> Result<PreparedGCBarrierChange<'_>, GCReadError> {
         let id = self.redirect(id, true).await?;
         let guard = tokio::select! {biased;_=cancel.cancelled()=>return Err(GCReadError::Cancelled),guard=self.mutation_lock()=>guard};
-        validate_id(name)?;
-        let (transaction, barrier) = tokio::select! {biased;_=cancel.cancelled()=>return Err(GCReadError::Cancelled),result=async {
-            let mut transaction=self.storage.begin_gc_state_transaction(&self.paths).await?;
-            let barrier=self.storage.load_gc_barrier(&self.paths,id,name).await?;
-            transaction.batch.delete_gc_barrier(id,name);
-            Ok::<_,GCReadError>((transaction,barrier))
-        }=>result}?;
+        let (transaction, barrier) = tokio::select! {biased;_=cancel.cancelled()=>return Err(GCReadError::Cancelled),result=self.stage_gc_barrier_delete(id,name.as_bytes())=>result}?;
+
         Ok(PreparedGCBarrierChange {
             guard,
             transaction,
             barrier,
             cancel: cancel.clone(),
         })
+    }
+
+    pub(crate) async fn stage_gc_barrier_set(
+        &self,
+        id: u32,
+        name: &[u8],
+        ts: u64,
+        ttl: Duration,
+        now: BarrierTime,
+    ) -> Result<(PreparedGCStateTxn<'_>, GCBarrier), GCReadError> {
+        validate_id(name)?;
+        let mut expiration = now.add_nanos(ttl.as_nanos());
+        let barrier = GCBarrier::new(
+            String::from_utf8_lossy(name).into_owned(),
+            ts,
+            if ttl.as_nanos() == i64::MAX {
+                None
+            } else {
+                Some(&mut expiration)
+            },
+        );
+        let mut transaction = self.storage.begin_gc_state_transaction(&self.paths).await?;
+        let txn = self.storage.load_txn_safe_point(&self.paths, id).await?;
+        if ts < txn {
+            return Err(GCReadError::BarrierBehind { barrier: ts, txn });
+        }
+        transaction
+            .batch
+            .set_gc_barrier_with_service_id(id, name, &barrier)?;
+        Ok((transaction, barrier))
+    }
+    pub(crate) async fn stage_gc_barrier_delete(
+        &self,
+        id: u32,
+        name: &[u8],
+    ) -> Result<(PreparedGCStateTxn<'_>, Option<GCBarrier>), GCReadError> {
+        validate_id(name)?;
+        let mut transaction = self.storage.begin_gc_state_transaction(&self.paths).await?;
+        let barrier = self
+            .storage
+            .load_gc_barrier_with_service_id(&self.paths, id, name)
+            .await?;
+        transaction
+            .batch
+            .delete_gc_barrier_with_service_id(id, name);
+        Ok((transaction, barrier))
     }
     /// The legacy HTTP force-delete bypasses ordinary reserved/empty ID and record-decode constraints.
     pub async fn force_delete_service_gc_safe_point(&self, name: &str) -> Result<(), GCReadError> {
@@ -111,9 +136,9 @@ impl GCStateManager {
         Ok(())
     }
 }
-fn validate_id(name: &str) -> Result<(), GCReadError> {
-    if name == "gc_worker" {
-        return Err(GCReadError::ReservedBarrierId(name.into()));
+fn validate_id(name: &[u8]) -> Result<(), GCReadError> {
+    if name == b"gc_worker" {
+        return Err(GCReadError::ReservedBarrierId("gc_worker".into()));
     }
     if name.is_empty() {
         return Err(GCReadError::InvalidArgument {
