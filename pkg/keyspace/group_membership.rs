@@ -103,6 +103,23 @@ impl KeyspaceGroupManager {
         keyspace_id: u32,
     ) -> Result<(), GroupMembershipError> {
         let _membership = self.membership_mutex.lock().await;
+        self.update_keyspace_group_locked(
+            old_group_id,
+            new_group_id,
+            old_kind,
+            new_kind,
+            keyspace_id,
+        )
+        .await
+    }
+    pub(crate) async fn update_keyspace_group_locked(
+        &self,
+        old_group_id: &str,
+        new_group_id: &str,
+        old_kind: UserKind,
+        new_kind: UserKind,
+        keyspace_id: u32,
+    ) -> Result<(), GroupMembershipError> {
         let old_id = parse_group_id(old_group_id)?;
         let new_id = parse_group_id(new_group_id)?;
         let mut index = self.groups.write().await;

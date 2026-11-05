@@ -81,3 +81,9 @@ pub use keyspace_create::*;
 #[cfg(test)]
 #[path = "keyspace_create_test.rs"]
 mod keyspace_create_test;
+
+mod keyspace_config;
+pub use keyspace_config::*;
+#[cfg(test)]
+#[path = "keyspace_config_test.rs"]
+mod keyspace_config_test;

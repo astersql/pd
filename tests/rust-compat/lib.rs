@@ -66,3 +66,6 @@ mod keyspace_split_oracle_test;
 
 #[cfg(test)]
 mod keyspace_create_oracle_test;
+
+#[cfg(test)]
+mod keyspace_config_oracle_test;

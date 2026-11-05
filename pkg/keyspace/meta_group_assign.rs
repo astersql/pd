@@ -13,6 +13,10 @@ use tokio::sync::{Mutex, RwLock, RwLockReadGuard};
 pub enum GroupAssignmentError {
     #[error("no available meta-service groups")]
     NoAvailableGroups,
+    #[error("[PD:keyspace:ErrUnknownMetaServiceGroup]unknown meta-service group")]
+    UnknownGroup,
+    #[error("[PD:keyspace:ErrMetaServiceGroupDisabled]meta-service group is disabled")]
+    DisabledGroup,
     #[error("invalid assignment count")]
     InvalidCount,
     #[error(transparent)]
@@ -114,9 +118,9 @@ impl MetaServiceGroupManager {
         txn.commit().await
     }
 
-    pub(crate) async fn rollback_in_txn<'store>(
-        &'store self,
-        txn: &mut CallbackTxn<'store>,
+    pub(crate) async fn rollback_in_txn(
+        &self,
+        txn: &mut CallbackTxn<'_>,
         group: &str,
     ) -> Result<(), GroupAssignmentError> {
         let endpoint = StorageEndpoint::new(self.store.clone());

@@ -102,7 +102,7 @@ watcher/额度集成测试和测试工具。只补此清单，不改只读plan�
 | 35 自动拆分超大分组 | 巡检只拆分超过限制的分组并选择可用ID，ID耗尽与取消保持现状。 | 3 | `pkg/keyspace/group_patrol.rs`；复用split/reconcile | 已完成：[task-035](task-035.md)，Go 9巡检+5 ID叶例、Rust 8项；真实4096组耗尽/取消/故障/WAL/任期 |
 | 36 完成键空间Region分割 | 创建时复用labeler和splitter等待边界到位；超时、取消和已存在边界遵循Go的可观察结果。 | 5 | `pkg/keyspace/keyspace_split.rs`；共享labeler/Core索引 | 已完成：[task-036](task-036.md)，6聚焦/65包级；Go三例及五组真实HTTP/心跳/取消/WAL差分 |
 | 37 创建并查询键空间 | CreateKeyspace和CreateKeyspaceByID原子维护name与ID索引，重名冲突及LoadRange分页匹配Go。 | 5 | `pkg/keyspace/keyspace_create.rs`；中性KeyspaceStorage及pinned codec | 已完成：[task-037](task-037.md)，9聚焦/74包级/18相邻；两项在线Go创建/查询/分页/组归属/物理字节/WAL差分 |
-| 38 更新键空间配置前置条件 | UpdateKeyspaceConfigWithPreconditions按CAS合并与删除配置，前置条件不满足或事务失败保持原状态。 | 5 | `pkg/keyspace/keyspace_config.rs`（拟建）；`pkg/keyspace/lib.rs`（拟建） | 待当前行为证据 |
+| 38 更新键空间配置前置条件 | UpdateKeyspaceConfigWithPreconditions按CAS合并与删除配置，前置条件不满足或事务失败保持原状态。 | 5 | `pkg/keyspace/keyspace_config.rs`；复用assignment/membership事务 | 已完成：[task-038](task-038.md)，5聚焦/79包级；Go叶例及八组patch/真实提交拒绝/WAL差分；明确保留Go独立TSO提交阶段 |
 | 39 迁移键空间生命周期 | UpdateKeyspaceState和ByID入口遵循状态转移限制，保护保留空间并按原行为失效GC缓存。 | 5 | `pkg/keyspace/keyspace_state.rs`（拟建）；`pkg/keyspace/lib.rs`（拟建） | 待当前行为证据 |
 | 40 删除键空间元数据 | 删除仅作用于符合状态与前置条件的空间，原子清理name索引、分组计数及缓存，失败可重试。 | 5 | `pkg/keyspace/keyspace_remove.rs`（拟建）；`pkg/keyspace/lib.rs`（拟建） | 待当前行为证据 |
 | 41 初始化保留键空间 | Bootstrap重复运行幂等，初始化默认及保留空间；事务失败不产生半成品索引。 | 5 | `pkg/keyspace/keyspace_bootstrap.rs`（拟建）；`pkg/keyspace/lib.rs`（拟建） | 待当前行为证据 |

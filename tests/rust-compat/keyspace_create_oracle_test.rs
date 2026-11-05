@@ -15,7 +15,7 @@ use std::{
 };
 use tokio::sync::Mutex;
 use tokio_util::sync::CancellationToken;
-fn dto(meta: &Keyspace) -> Value {
+pub(crate) fn dto(meta: &Keyspace) -> Value {
     let mut value = json!({"id":meta.id(),"name":meta.name,"state":match meta.state{0=>"ENABLED",1=>"DISABLED",2=>"ARCHIVED",3=>"TOMBSTONE",_=>"UNKNOWN"},"created_at":meta.created_at,"state_changed_at":meta.state_changed_at});
     if !meta.config.is_empty() {
         value["config"] = json!(meta.config);

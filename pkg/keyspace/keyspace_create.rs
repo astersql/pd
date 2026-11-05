@@ -42,10 +42,14 @@ pub enum KeyspaceError {
         error: KeyspaceSplitFailure,
         cleanup_error: Option<Box<KeyspaceError>>,
     },
+    #[error(
+        "[PD:keyspace:ErrKeyspaceConfigPreconditionFailed]keyspace config precondition failed, {0}"
+    )]
+    ConfigPrecondition(String),
     #[error("transaction conflict")]
     Conflict,
 }
-fn commit_error(e: CallbackTxnError<Infallible>) -> KeyspaceError {
+pub(crate) fn commit_error(e: CallbackTxnError<Infallible>) -> KeyspaceError {
     match e {
         CallbackTxnError::Conflict => KeyspaceError::Conflict,
         CallbackTxnError::Store(e) => e.into(),
@@ -156,7 +160,7 @@ impl KeyspaceManager {
         self.publish(meta);
         Ok(())
     }
-    async fn decorate(&self, mut meta: Keyspace) -> Keyspace {
+    pub(crate) async fn decorate(&self, mut meta: Keyspace) -> Keyspace {
         if let Some(m) = &self.resources.meta_groups {
             meta.config = m
                 .attach_endpoints(&meta.config.into_iter().collect())
