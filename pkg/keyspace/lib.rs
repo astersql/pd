@@ -87,3 +87,9 @@ pub use keyspace_config::*;
 #[cfg(test)]
 #[path = "keyspace_config_test.rs"]
 mod keyspace_config_test;
+
+mod keyspace_state;
+pub use keyspace_state::*;
+#[cfg(test)]
+#[path = "keyspace_state_test.rs"]
+mod keyspace_state_test;

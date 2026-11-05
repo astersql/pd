@@ -69,3 +69,6 @@ mod keyspace_create_oracle_test;
 
 #[cfg(test)]
 mod keyspace_config_oracle_test;
+
+#[cfg(test)]
+mod keyspace_state_oracle_test;

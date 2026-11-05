@@ -122,7 +122,7 @@ impl KeyspaceManager {
             resources,
         }
     }
-    fn publish(&self, meta: &Keyspace) {
+    pub(crate) fn publish(&self, meta: &Keyspace) {
         self.cache.save(
             meta.id(),
             meta.name.clone(),
@@ -390,32 +390,9 @@ impl KeyspaceManager {
         txn.commit::<Infallible>().await.map_err(commit_error)
     }
     async fn enable_created(&self, meta: &Keyspace) -> Result<(), KeyspaceError> {
-        if self.resources.kernel.is_protected_id(meta.id()) {
-            return Err(KeyspaceError::Validation(
-                match self.resources.kernel {Kernel::Classic=>"[PD:keyspace:ErrModifyDefaultKeyspace]cannot modify default keyspace's state",Kernel::NextGeneration=>"[PD:keyspace:ErrModifyReservedKeyspace]cannot modify reserved keyspace's state"}.into(),
-            ));
-        }
-        let _mutation = self.mutation.lock().await;
-        let mut txn = Base::new(self.storage.store.as_ref()).begin_txn();
-        let mut persisted = self
-            .storage
-            .load_keyspace_meta(&mut txn, &self.storage.paths, meta.id())
-            .await?
-            .ok_or(KeyspaceError::NotFound)?;
-        if !matches!(persisted.state, 0 | 1) {
-            return Err(KeyspaceError::Validation(
-                "cannot enable keyspace from current state".into(),
-            ));
-        }
-        if persisted.state != 0 {
-            persisted.state = 0;
-            persisted.state_changed_at = meta.created_at;
-        }
-        self.storage
-            .save_keyspace_meta(&mut txn, &self.storage.paths, &persisted)?;
-        txn.commit::<Infallible>().await.map_err(commit_error)?;
-        self.publish(&persisted);
-        Ok(())
+        self.update_state_by_id(meta.id(), 0, meta.created_at)
+            .await
+            .map(|_| ())
     }
 }
 impl KeyspaceGroupManager {
