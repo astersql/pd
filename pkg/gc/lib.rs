@@ -49,3 +49,7 @@ mod gc_warmup;
 pub use gc_warmup::*;
 #[cfg(test)]
 mod gc_warmup_test;
+
+mod gc_retry;
+#[cfg(test)]
+mod gc_retry_test;

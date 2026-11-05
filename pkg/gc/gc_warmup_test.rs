@@ -4,7 +4,7 @@ use astersql_pd_keypath::{ClusterPaths, NULL_KEYSPACE_ID};
 use astersql_pd_storage_domain::{Base, Keyspace, KeyspaceIdentity, MetaStore, StorageEndpoint};
 use std::{collections::HashMap, sync::Arc};
 use tokio_util::sync::CancellationToken;
-async fn setup(store: Arc<dyn MetaStore>, reader: Arc<dyn MetaStore>) -> GCStateManager {
+pub(crate) async fn setup(store: Arc<dyn MetaStore>, reader: Arc<dyn MetaStore>) -> GCStateManager {
     let paths = ClusterPaths::new(42);
     let keys = astersql_pd_storage_endpoint::StorageEndpoint::new(store.clone())
         .keyspace_storage(paths.clone());

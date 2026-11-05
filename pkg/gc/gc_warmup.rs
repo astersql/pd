@@ -144,6 +144,7 @@ struct Scope {
     running: bool,
     joined: Option<GCLoadWaiter>,
     error: Option<GCReadError>,
+    retry_delay: Duration,
 }
 struct WarmupState {
     scopes: BTreeMap<u32, Scope>,
@@ -152,6 +153,8 @@ struct WarmupState {
     reconciled: bool,
     remaining: usize,
     next_joined: Option<Instant>,
+    joined: BTreeSet<u32>,
+    retries: crate::gc_retry::GCRetryQueue,
 }
 struct WarmupInput {
     accepting: bool,
@@ -198,6 +201,8 @@ impl GCWarmup {
                 reconciled: false,
                 remaining: 1,
                 next_joined: None,
+                joined: BTreeSet::new(),
+                retries: Default::default(),
             }),
             changed: watch::channel(0).0,
             started: AtomicBool::new(false),
@@ -287,6 +292,8 @@ impl Drop for WarmupCleanup<'_> {
         let mut state = self.0.state.lock().unwrap();
         state.scopes.clear();
         state.candidates.clear();
+        state.joined.clear();
+        state.retries.clear();
         drop(state);
         self.0.stopped.store(true, Ordering::Release);
         self.0.signal();
@@ -340,49 +347,80 @@ impl GCWarmup {
             }
             state.scopes.retain(|id, _| targets.contains(id));
             state.candidates.retain(|id| targets.contains(id));
+            state.joined.retain(|id| targets.contains(id));
+            state.retries.retain(|id| targets.contains(&id));
             state.remaining = state.scopes.values().filter(|s| !s.completed).count();
             state.reconciled = true;
         }
     }
-    fn record(state: &mut WarmupState, id: u32, result: Result<(), GCReadError>) {
+    fn record(state: &mut WarmupState, id: u32, result: Result<(), GCReadError>, now: Instant) {
+        state.joined.remove(&id);
         if let Some(scope) = state.scopes.get_mut(&id) {
+            if scope.completed {
+                return;
+            }
             scope.running = false;
             scope.joined = None;
             match result {
                 Ok(()) => {
-                    if !scope.completed {
-                        scope.completed = true;
-                        state.remaining -= 1;
-                    }
+                    scope.completed = true;
+                    state.remaining -= 1;
                     scope.error = None;
+                    state.retries.remove(id);
                 }
-                Err(error) => scope.error = Some(error),
+                Err(error) => {
+                    scope.error = Some(error);
+                    scope.retry_delay = crate::gc_retry::next_retry_delay(scope.retry_delay);
+                    state.retries.schedule(id, now + scope.retry_delay);
+                }
             }
         }
     }
     fn refresh_joined(state: &mut WarmupState, now: Instant) {
+        if state.joined.is_empty() {
+            state.next_joined = None;
+            return;
+        }
         if state.next_joined.is_some_and(|deadline| deadline > now) {
             return;
         }
         let ready: Vec<_> = state
-            .scopes
+            .joined
             .iter()
-            .filter_map(|(id, scope)| {
-                scope
-                    .joined
-                    .as_ref()
-                    .and_then(|flight| flight.try_result())
+            .filter_map(|id| {
+                state
+                    .scopes
+                    .get(id)
+                    .and_then(|s| s.joined.as_ref())
+                    .and_then(|f| f.try_result())
                     .map(|r| (*id, r))
             })
             .collect();
         for (id, result) in ready {
-            Self::record(state, id, result);
+            Self::record(state, id, result, now);
         }
-        state.next_joined = state
-            .scopes
-            .values()
-            .any(|s| s.joined.is_some())
-            .then_some(now + Duration::from_millis(100));
+        state.next_joined = (!state.joined.is_empty()).then_some(now + Duration::from_millis(100));
+    }
+    fn refresh(&self, state: &mut WarmupState, now: Instant) {
+        Self::refresh_joined(state, now);
+        for id in state.retries.pop_due(now, MAX_GC_SAFE_POINT_BATCH_SIZE) {
+            if state.reconciled
+                && id != NULL_KEYSPACE_ID
+                && self
+                    .index
+                    .as_ref()
+                    .is_some_and(|index| index.can_skip_gc_state_warmup(id))
+            {
+                Self::record(state, id, Ok(()), now);
+                continue;
+            }
+            if let Some(scope) = state.scopes.get_mut(&id)
+                && !scope.completed
+            {
+                scope.queued = true;
+                state.candidates.push_back(id);
+            }
+        }
     }
     fn next_candidate(&self) -> Option<u32> {
         let mut state = self.state.lock().unwrap();
@@ -418,7 +456,7 @@ impl GCWarmup {
                 if !state.null_pending {
                     self.ingest(&mut state);
                     self.reconcile(&mut state);
-                    Self::refresh_joined(&mut state, Instant::now());
+                    self.refresh(&mut state, Instant::now());
                 }
                 if self.finished.load(Ordering::Acquire) {
                     WarmupAction::Done
@@ -433,7 +471,13 @@ impl GCWarmup {
                 } else if !state.candidates.is_empty() {
                     WarmupAction::Candidates
                 } else {
-                    WarmupAction::Wait(state.next_joined)
+                    WarmupAction::Wait(
+                        state
+                            .next_joined
+                            .into_iter()
+                            .chain(state.retries.deadline())
+                            .min(),
+                    )
                 }
             };
             let result = match action {
@@ -463,18 +507,20 @@ impl GCWarmup {
             };
             {
                 let mut state = self.state.lock().unwrap();
+                let now = Instant::now();
                 for id in result.completed {
-                    Self::record(&mut state, id, Ok(()));
+                    Self::record(&mut state, id, Ok(()), now);
                 }
                 for (id, error) in result.failed {
-                    Self::record(&mut state, id, Err(error));
+                    Self::record(&mut state, id, Err(error), now);
                 }
                 for (id, flight) in result.joined {
                     if let Some(scope) = state.scopes.get_mut(&id) {
                         scope.running = false;
                         scope.joined = Some(flight);
+                        state.joined.insert(id);
                         if state.next_joined.is_none() {
-                            state.next_joined = Some(Instant::now() + Duration::from_millis(100));
+                            state.next_joined = Some(now + Duration::from_millis(100));
                         }
                     }
                 }
