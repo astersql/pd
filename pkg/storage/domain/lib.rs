@@ -23,3 +23,10 @@ pub use hot_history::{HistoryCipher, HistoryError, HistoryHotRegion, HistoryQuer
 
 mod meta_service_group;
 pub use meta_service_group::MetaServiceGroupStatus;
+
+mod keyspace_group_value;
+pub use keyspace_group_value::{KeyspaceGroupMember, UserKind};
+mod keyspace_group_state;
+pub use keyspace_group_state::{KeyspaceGroup, MergeState, OptionalKeyspaceGroupState, SplitState};
+mod keyspace_group_store;
+pub use keyspace_group_store::KeyspaceGroupStoreError;

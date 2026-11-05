@@ -27,3 +27,9 @@ mod meta_group_update_test;
 #[allow(dead_code)]
 #[path = "../storage/kv/etcd_fixture_test.rs"]
 mod etcd_fixture;
+
+mod group_catalog;
+pub use group_catalog::*;
+#[cfg(test)]
+#[path = "group_catalog_test.rs"]
+mod group_catalog_test;
