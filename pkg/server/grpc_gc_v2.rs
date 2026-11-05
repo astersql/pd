@@ -5,6 +5,45 @@ use astersql_pd_proto::pdpb;
 use astersql_pd_storage_domain::BarrierTime;
 use tonic::{Response, Status};
 impl Grpc {
+    pub(crate) async fn get_all_gc_safe_point_v2_request(
+        &self,
+        r: pdpb::GetAllGcSafePointV2Request,
+    ) -> Result<Response<pdpb::GetAllGcSafePointV2Response>, Status> {
+        self.check(r.header.as_ref()).await?;
+        if let Some(header) = self.bootstrap_header().await? {
+            return Ok(Response::new(pdpb::GetAllGcSafePointV2Response {
+                header: Some(header),
+                ..Default::default()
+            }));
+        }
+        let result = tokio::select! {biased;
+            _=self.cancel.cancelled()=>return Err(Status::unavailable("server not started")),
+            result=async{self.services.gc_manager().await?.get_all_keyspaces_gc_states(true).await.map_err(|e|e.to_string())}=>result,
+        };
+        let mut header = self.header();
+        let gc_safe_points = match result {
+            Ok(states) => states
+                .into_values()
+                .filter(|s| s.keyspace_id != astersql_pd_keypath::NULL_KEYSPACE_ID)
+                .map(|s| pdpb::GcSafePointV2 {
+                    keyspace: Some(pdpb::gc_safe_point_v2::Keyspace::KeyspaceId(s.keyspace_id)),
+                    gc_safe_point: s.gc_safe_point,
+                })
+                .collect(),
+            Err(message) => {
+                header.as_mut().unwrap().error = Some(pdpb::Error {
+                    r#type: pdpb::ErrorType::Unknown as i32,
+                    message,
+                });
+                vec![]
+            }
+        };
+        Ok(Response::new(pdpb::GetAllGcSafePointV2Response {
+            header,
+            gc_safe_points,
+            revision: 0,
+        }))
+    }
     pub(crate) async fn get_gc_safe_point_v2_request(
         &self,
         r: pdpb::GetGcSafePointV2Request,

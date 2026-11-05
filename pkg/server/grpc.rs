@@ -35,6 +35,12 @@ impl Grpc {
 }
 #[tonic::async_trait]
 impl Pd for Grpc {
+    async fn get_all_gc_safe_point_v2(
+        &self,
+        r: Request<pdpb::GetAllGcSafePointV2Request>,
+    ) -> Result<Response<pdpb::GetAllGcSafePointV2Response>, Status> {
+        self.get_all_gc_safe_point_v2_request(r.into_inner()).await
+    }
     async fn get_gc_safe_point_v2(
         &self,
         r: Request<pdpb::GetGcSafePointV2Request>,
