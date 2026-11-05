@@ -69,7 +69,10 @@ impl Drop for GroupReconcileTerm {
         self.cancel.cancel();
     }
 }
-fn needs_allocation(members: &[KeyspaceGroupMember], nodes: &BTreeMap<String, String>) -> bool {
+pub(crate) fn needs_allocation(
+    members: &[KeyspaceGroupMember],
+    nodes: &BTreeMap<String, String>,
+) -> bool {
     let mut existing = BTreeSet::new();
     for member in members {
         let address = trim_scheme(&member.address);
@@ -459,23 +462,49 @@ impl KeyspaceGroupManager {
         term: &GroupReconcileTerm,
     ) -> Result<GroupReconcileReport, GroupReconcileError> {
         self.with_reconcile_term(term, || ())?;
-        let mut report = GroupReconcileReport::default();
         if self.get_nodes_count() == 0 {
-            return Ok(report);
+            return Ok(GroupReconcileReport::default());
         }
-        for id in term.groups_needing_allocation(&self.nodes.get_all()) {
-            self.with_reconcile_term(term, || ())?;
+        Ok(self
+            .reconcile_candidate_ids(
+                term.groups_needing_allocation(&self.nodes.get_all()),
+                &term.cancel,
+                Some(term),
+            )
+            .await)
+    }
+    pub(crate) async fn reconcile_candidate_ids(
+        &self,
+        ids: Vec<u32>,
+        cancel: &CancellationToken,
+        term: Option<&GroupReconcileTerm>,
+    ) -> GroupReconcileReport {
+        let mut report = GroupReconcileReport::default();
+        for id in ids {
+            if cancel.is_cancelled() {
+                report.aborted = true;
+                break;
+            }
             report.attempted.push(id);
-            if let Err(error) = self
-                .alloc_nodes_in_term(
-                    id,
-                    None,
-                    DEFAULT_KEYSPACE_GROUP_REPLICA_COUNT,
-                    &term.cancel,
-                    Some(term),
-                )
-                .await
-            {
+            let result = if let Some(term) = term {
+                match self.with_reconcile_term(term, || ()) {
+                    Ok(()) => {
+                        self.alloc_nodes_in_term(
+                            id,
+                            None,
+                            DEFAULT_KEYSPACE_GROUP_REPLICA_COUNT,
+                            cancel,
+                            Some(term),
+                        )
+                        .await
+                    }
+                    Err(error) => Err(GroupNodesError::Catalog(GroupCatalogError::Store(error))),
+                }
+            } else {
+                self.alloc_nodes(id, None, DEFAULT_KEYSPACE_GROUP_REPLICA_COUNT, cancel)
+                    .await
+            };
+            if let Err(error) = result {
                 let abort = abort_group_reconcile(&error);
                 report.failures.push((id, error));
                 if abort {
@@ -484,6 +513,6 @@ impl KeyspaceGroupManager {
                 }
             }
         }
-        Ok(report)
+        report
     }
 }

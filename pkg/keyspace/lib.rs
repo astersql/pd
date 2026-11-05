@@ -63,3 +63,9 @@ pub use group_reconcile::*;
 #[cfg(test)]
 #[path = "group_reconcile_test.rs"]
 mod group_reconcile_test;
+
+mod group_patrol;
+pub use group_patrol::*;
+#[cfg(test)]
+#[path = "group_patrol_test.rs"]
+mod group_patrol_test;

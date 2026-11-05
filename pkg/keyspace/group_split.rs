@@ -11,6 +11,8 @@ use std::{collections::BTreeSet, convert::Infallible};
 pub enum GroupSplitError {
     #[error(transparent)]
     Catalog(#[from] GroupCatalogError),
+    #[error(transparent)]
+    Leadership(#[from] astersql_pd_election::ElectionError),
     #[error("[PD:keyspace:ErrKeyspaceGroupNotExists]keyspace group {0} does not exist")]
     NotExists(u32),
     #[error("[PD:keyspace:ErrKeyspaceGroupNotInSplit]keyspace group {0} is not in split state")]
@@ -92,6 +94,28 @@ impl KeyspaceGroupManager {
         keys: &[u32],
         range: &[u32],
     ) -> Result<(), GroupSplitError> {
+        self.split_group_in_term(source, target, keys, range, None, None)
+            .await
+    }
+    pub(crate) async fn split_group_in_term(
+        &self,
+        source: u32,
+        target: u32,
+        keys: &[u32],
+        range: &[u32],
+        cancel: Option<&tokio_util::sync::CancellationToken>,
+        term: Option<&crate::GroupReconcileTerm>,
+    ) -> Result<(), GroupSplitError> {
+        if cancel.is_some_and(tokio_util::sync::CancellationToken::is_cancelled) {
+            return Err(GroupCatalogError::Store(
+                astersql_pd_storage_domain::StoreError::Cancelled,
+            )
+            .into());
+        }
+        if let Some(term) = term {
+            self.with_reconcile_term(term, || ())
+                .map_err(GroupCatalogError::Store)?;
+        }
         let _membership = self.membership_mutex.lock().await;
         let mut index = self.groups.write().await;
         let endpoint = StorageEndpoint::new(self.store.clone());
@@ -151,9 +175,42 @@ impl KeyspaceGroupManager {
         endpoint
             .save_keyspace_group(&mut txn, &self.paths, &source_group)
             .map_err(GroupCatalogError::from)?;
-        txn.commit::<Infallible>().await.map_err(commit_error)?;
-        put_index(&mut index, source_group);
-        put_index(&mut index, target_group);
+        if cancel.is_some_and(tokio_util::sync::CancellationToken::is_cancelled) {
+            return Err(GroupCatalogError::Store(
+                astersql_pd_storage_domain::StoreError::Cancelled,
+            )
+            .into());
+        }
+        let commit = async {
+            if let Some(term) = term {
+                let (compares, writes) = txn.into_parts();
+                let commit = term.leadership.transact(compares, writes).await?;
+                if !commit.succeeded {
+                    return Err(GroupCatalogError::Conflict.into());
+                }
+                Ok(())
+            } else {
+                txn.commit::<Infallible>()
+                    .await
+                    .map_err(commit_error)
+                    .map_err(GroupSplitError::from)
+            }
+        };
+        if let Some(cancel) = cancel {
+            tokio::select! {biased;result=commit=>result?,_=cancel.cancelled()=>return Err(GroupCatalogError::Store(astersql_pd_storage_domain::StoreError::Unavailable).into())}
+        } else {
+            commit.await?;
+        }
+        if let Some(term) = term {
+            self.with_reconcile_term(term, || {
+                put_index(&mut index, source_group);
+                put_index(&mut index, target_group);
+            })
+            .map_err(GroupCatalogError::Store)?;
+        } else {
+            put_index(&mut index, source_group);
+            put_index(&mut index, target_group);
+        }
         Ok(())
     }
     /// Clear both split states by target ID after validating current stored roles.
