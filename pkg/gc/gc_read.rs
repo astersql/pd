@@ -195,6 +195,14 @@ impl GCStateManager {
         }
     }
     pub async fn on_node_becomes_leader(&self) -> GCLeadership {
+        self.on_node_becomes_leader_with_cancel(&CancellationToken::new())
+            .await
+    }
+    /// Bind the generation to the actual host term without spawning a private cancellation worker.
+    pub async fn on_node_becomes_leader_with_cancel(
+        &self,
+        host: &CancellationToken,
+    ) -> GCLeadership {
         let _reset = self.lifecycle.lock().await;
         self.shared.active.store(0, Ordering::Release);
         let old = self.generation.lock().unwrap().take();
@@ -206,7 +214,7 @@ impl GCStateManager {
         self.shared.cache.write().unwrap().clear();
         let generation = Arc::new(Generation {
             id: self.next.fetch_add(1, Ordering::Relaxed),
-            cancel: CancellationToken::new(),
+            cancel: host.child_token(),
             work: TaskTracker::new(),
             flights: Mutex::new(BTreeMap::new()),
         });
@@ -250,11 +258,11 @@ impl GCStateManager {
             .cloned()
     }
     fn cached(&self, g: &Generation, id: u32) -> Result<Option<Pair>, GCReadError> {
-        if self.shared.active.load(Ordering::Acquire) != g.id {
+        if self.shared.active.load(Ordering::Acquire) != g.id || g.cancel.is_cancelled() {
             return Err(GCReadError::NotLeader);
         }
         let value = self.shared.cache.read().unwrap().get(&id).copied();
-        if self.shared.active.load(Ordering::Acquire) != g.id {
+        if self.shared.active.load(Ordering::Acquire) != g.id || g.cancel.is_cancelled() {
             return Err(GCReadError::NotLeader);
         }
         Ok(value)
@@ -431,7 +439,7 @@ impl GCStateManager {
             }
         }
         let _guard = tokio::select! {biased;_=cancel.cancelled()=>return Err(GCReadError::Cancelled),_=g.cancel.cancelled()=>return Err(GCReadError::NotLeader),guard=self.shared.gate.read()=>guard};
-        if self.shared.active.load(Ordering::Acquire) != g.id {
+        if self.shared.active.load(Ordering::Acquire) != g.id || g.cancel.is_cancelled() {
             return Err(GCReadError::NotLeader);
         }
         let ids = [id];
@@ -440,7 +448,7 @@ impl GCStateManager {
             _=g.cancel.cancelled()=>return Err(GCReadError::NotLeader),
             result=self.storage.load_gc_safe_point_pairs(&self.paths,&ids,cancel)=>result.map_err(|e|GCReadError::Batch(Arc::new(e)))?,
         };
-        if self.shared.active.load(Ordering::Acquire) != g.id {
+        if self.shared.active.load(Ordering::Acquire) != g.id || g.cancel.is_cancelled() {
             return Err(GCReadError::NotLeader);
         }
         let row = rows.into_iter().next().unwrap();
@@ -479,6 +487,15 @@ impl GCStateManager {
         self.shared.gate.write().await
     }
     pub(crate) fn publish_points(&self, id: u32, txn: u64, gc: u64) {
+        if self
+            .generation
+            .lock()
+            .unwrap()
+            .as_ref()
+            .is_some_and(|g| g.cancel.is_cancelled())
+        {
+            return;
+        }
         self.shared.cache.write().unwrap().insert(id, (txn, gc));
     }
     pub(crate) fn invalidate_points(&self, id: u32) {

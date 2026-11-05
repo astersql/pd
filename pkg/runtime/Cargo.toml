@@ -9,6 +9,8 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
+astersql-pd-gc.workspace = true
+astersql-pd-keyspace.workspace = true
 astersql-pd-unsaferecovery.workspace = true
 astersql-pd-encryption.workspace = true
 astersql-pd-storage-domain.workspace = true
@@ -65,7 +67,6 @@ astersql-pd-storage-endpoint.workspace = true
 astersql-pd-syncer.workspace = true
 astersql-pd-statistics-buckets.workspace = true
 [dev-dependencies]
-astersql-pd-keyspace.workspace = true
 rusty-leveldb.workspace = true
 astersql-pd-compat-tests.workspace = true
 astersql-pd-storage-kv.workspace = true

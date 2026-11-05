@@ -1051,6 +1051,7 @@ async fn retire(term: Arc<Application>, registry: &prometheus::Registry) -> Resu
     if let Some(encryption) = term.encryption.as_ref().and_then(Weak::upgrade) {
         encryption.rotation.clear_leadership_if(&term.leader).await;
     }
+    term.gc.shutdown().await;
     let stopped = term.cluster.shutdown().await;
     // etcd can briefly reject linearizable operations while MoveLeader commits.
     // The term is already cancelled; retry only its own lease cleanup, bounded.
@@ -1322,11 +1323,24 @@ impl MetaStore for TermStore {
     }
     async fn transact_raw(
         &self,
-        _: Vec<astersql_pd_storage::Compare>,
-        _: Vec<astersql_pd_storage::RawTxnOp>,
-        _: Vec<astersql_pd_storage::RawTxnOp>,
+        compares: Vec<astersql_pd_storage::Compare>,
+        ops: Vec<astersql_pd_storage::RawTxnOp>,
+        otherwise: Vec<astersql_pd_storage::RawTxnOp>,
     ) -> astersql_pd_storage::Result<astersql_pd_storage::RawTxnResponse> {
-        Err(astersql_pd_storage::StoreError::PermissionDenied)
+        if !otherwise.is_empty() {
+            return Err(astersql_pd_storage::StoreError::PermissionDenied);
+        }
+        if self.cancel.is_cancelled() || self.leader.is_expired() {
+            return Err(astersql_pd_storage::StoreError::Cancelled);
+        }
+        tokio::select! {biased;
+            _=self.cancel.cancelled()=>Err(astersql_pd_storage::StoreError::Cancelled),
+            result=self.leader.transact_raw(compares,ops)=>result.map_err(|error|match error {
+                MemberError::Store(error)=>error,
+                MemberError::Cancelled=>astersql_pd_storage::StoreError::Cancelled,
+                _=>astersql_pd_storage::StoreError::PermissionDenied,
+            }),
+        }
     }
     async fn watch(
         &self,

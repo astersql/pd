@@ -652,6 +652,7 @@ dependencies = [
  "astersql-pd-core",
  "astersql-pd-core-constant",
  "astersql-pd-encryption",
+ "astersql-pd-gc",
  "astersql-pd-id",
  "astersql-pd-keypath",
  "astersql-pd-keyspace",

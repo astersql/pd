@@ -196,7 +196,7 @@ watcher/额度集成测试和测试工具。只补此清单，不改只读plan�
 | 129 暴露规则与亲和查询 | placement、label及affinity只读HTTP复用领域manager，路径参数和缺失对象错误保持Go行为。 | 3 | `pkg/mcs/scheduling/server/apis/v1/lib.rs`（拟建）；`pkg/mcs/scheduling/server/apis/v1/scheduling_api_rules.rs`（拟建） | 待当前行为证据 |
 | 130 暴露调度管理动作 | cache清理、加速、scatter和split映射已有领域handler，health、config、日志和primary路由复用公共处理器。 | 3 | `pkg/mcs/scheduling/server/apis/v1/lib.rs`（拟建）；`pkg/mcs/scheduling/server/apis/v1/scheduling_api_admin.rs`（拟建） | 待当前行为证据 |
 | 131 接通键空间领域服务 | PD宿主注入同一keyspace及分组manager，Keyspace gRPC与管理HTTP操作同一状态并验证启动恢复。 | 6 | `pkg/runtime/control_keyspace.rs`（拟建）；`pkg/runtime/lib.rs`（存在）；`pkg/runtime/node.rs`（存在）；`pkg/server/lib.rs`（存在） | 待当前行为证据 |
-| 132 接通GC领域服务 | PD宿主为GC服务提供任期与取消令牌，GC管理入口复用同一manager，换主不发布旧generation状态。 | 5 | `pkg/runtime/control_gc.rs`（拟建）；`pkg/runtime/lib.rs`（存在）；`pkg/runtime/node.rs`（存在）；`pkg/server/lib.rs`（存在） | 待当前行为证据 |
+| 132 接通GC领域服务 | PD宿主提供真实任期及取消，当前任期复用同一GC manager。 | 11 | `pkg/runtime/control_gc.rs`、`node.rs`、TermStore | [task-132](task-132.md)：2项真实etcd换主/ABA专项、GC41及宿主回归；旧版RPC由外层3验收 |
 | 133 接通复制模式领域服务 | PD宿主向既有心跳路径注入同一replication manager，管理API与心跳报告观察一致状态。 | 5 | `pkg/runtime/control_replication.rs`（拟建）；`pkg/runtime/lib.rs`（存在）；`pkg/runtime/node.rs`（存在）；`pkg/server/lib.rs`（存在） | 待当前行为证据 |
 | 134 接通加密领域服务 | PD宿主启动同一key manager并向Region存储注入加密适配，重启可解密且关闭结束轮换watch。 | 7 | `pkg/runtime/control_encryption.rs`（拟建）；`pkg/runtime/lib.rs`（存在）；`pkg/runtime/node.rs`（存在）；`pkg/server/lib.rs`（存在） | 待当前行为证据 |
 | 135 接通恢复控制器领域服务 | PD宿主连接同一recovery controller到管理API和Store心跳，恢复阶段切换与调度暂停可观察一致。 | 5 | `pkg/runtime/control_recovery.rs`（拟建）；`pkg/runtime/lib.rs`（存在）；`pkg/runtime/node.rs`（存在）；`pkg/server/lib.rs`（存在） | 待当前行为证据 |

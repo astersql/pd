@@ -253,3 +253,8 @@ mod recovery_timeout_test;
 #[cfg(test)]
 #[path = "keyspace_bounds_test.rs"]
 mod keyspace_bounds_test;
+
+#[cfg(test)]
+mod control_gc_test;
+
+mod control_gc;

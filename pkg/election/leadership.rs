@@ -203,6 +203,23 @@ impl Leadership {
         }
         Ok(commit)
     }
+    /// Atomically fence ordered read/write operations. No failure branch may write after a lost term.
+    pub async fn transact_raw(
+        &self,
+        mut compares: Vec<Compare>,
+        ops: Vec<RawTxnOp>,
+    ) -> Result<RawTxnResponse> {
+        if ops.iter().any(|op| matches!(op, RawTxnOp::Write(Mutation::Put{key,..}|Mutation::Delete{key}) if key==&self.key)) {
+            return Err(ElectionError::InvalidArgument);
+        }
+        compares.extend(self.comparisons());
+        let response =
+            cancellable(&self.cancel, self.store.transact_raw(compares, ops, vec![])).await?;
+        if !response.succeeded {
+            self.validate().await?;
+        }
+        Ok(response)
+    }
     /// Caller schedules explicit renewals on its shared runtime.
     pub async fn renew(&self) -> Result<()> {
         self.validate().await?;

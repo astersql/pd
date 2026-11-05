@@ -71,6 +71,7 @@ pub(crate) struct Application {
     identity: Identity,
     pub(crate) cluster: Arc<crate::cluster_host::ClusterHost>,
     pub(crate) leader: Arc<Leadership>,
+    pub(crate) gc: crate::control_gc::GCResources,
     allocator: Arc<Allocator>,
     pub(crate) oracle: Oracle,
     pub(crate) requests: prometheus::IntCounter,
@@ -812,7 +813,9 @@ pub(crate) async fn prepare_term(
             return Err(crate::start_cleanup::preserve(crate::start_cleanup::preserve(error,cleanup),unregistered));
         }
         cluster.set_replication_transport_config(transport_config).await;
+        let gc=crate::control_gc::GCResources::new(store.clone(), leader.clone(), &cancel, config.cluster_id).await;
         Ok::<_, NodeError>(Arc::new(Application {
+            gc,
             encryption:encryption.as_ref().map(Arc::downgrade),
             cluster,
             identity: config,
@@ -855,6 +858,13 @@ pub struct PdNode {
     events: Events,
 }
 impl PdNode {
+    /// The host-owned GC manager for the current serving term.
+    pub fn gc_manager(&self) -> Option<Arc<astersql_pd_gc::GCStateManager>> {
+        self.cluster
+            .current()
+            .filter(|term| !term.cancel.is_cancelled() && !term.leader.is_expired())
+            .map(|term| term.gc.manager.clone())
+    }
     /// Host read adapters share the active leader cache.
     /// Panics on a follower; use `try_cluster` when the node may change roles.
     pub fn cluster(&self) -> Arc<crate::cluster_host::ClusterHost> {

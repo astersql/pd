@@ -1,0 +1,186 @@
+// Copyright 2026 AsterSQL.
+use crate::{NodeConfig, PdNodeBuilder};
+use astersql_pd_keypath::{ClusterPaths, NULL_KEYSPACE_ID};
+use astersql_pd_storage::{Base, MetaStore};
+use astersql_pd_storage_domain::StorageEndpoint;
+use std::sync::Arc;
+use tokio_util::sync::CancellationToken;
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn mcs_132_behavior() {
+    let f = crate::node_test::fixture::Fixture::start();
+    let store: Arc<dyn MetaStore> = Arc::new(f.store().await);
+    let cancel = CancellationToken::new();
+    let mut nodes = vec![];
+    for member in 1..=2 {
+        let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let url = format!("http://{}", listener.local_addr().unwrap());
+        let mut node = PdNodeBuilder::new(tokio::runtime::Handle::current(), cancel.clone())
+            .start(
+                store.clone(),
+                NodeConfig {
+                    cluster_id: 132,
+                    member_id: member,
+                    name: format!("gc-{member}"),
+                    client_url: url,
+                    peer_url: format!("http://peer:{member}"),
+                },
+                listener,
+                Arc::new(prometheus::Registry::new()),
+            )
+            .await
+            .unwrap();
+        node.ready().await.unwrap();
+        nodes.push(node);
+    }
+    assert!(
+        nodes[0].gc_manager().is_some(),
+        "serving host must expose the canonical GC manager"
+    );
+    assert!(
+        nodes[1].gc_manager().is_none(),
+        "follower has no serving manager"
+    );
+    let old = nodes[0].gc_manager().unwrap();
+    assert!(Arc::ptr_eq(&old, &nodes[0].gc_manager().unwrap()));
+    let p = ClusterPaths::new(132);
+    let ep = StorageEndpoint::new(store.clone());
+    let mut tx = ep.begin_gc_state_transaction(&p).await.unwrap();
+    tx.batch.set_txn_safe_point(NULL_KEYSPACE_ID, 100);
+    tx.commit().await.unwrap();
+    old.compatible_update_gc_safe_point(NULL_KEYSPACE_ID, 20)
+        .await
+        .unwrap();
+    assert_eq!(
+        old.get_gc_state(NULL_KEYSPACE_ID, true)
+            .await
+            .unwrap()
+            .gc_safe_point,
+        20
+    );
+    nodes[0].shutdown().await.unwrap();
+    assert!(
+        old.compatible_load_gc_safe_point(NULL_KEYSPACE_ID)
+            .await
+            .is_err(),
+        "retired cache cannot serve"
+    );
+    assert!(
+        old.compatible_update_gc_safe_point(NULL_KEYSPACE_ID, 30)
+            .await
+            .is_err()
+    );
+    let next = tokio::time::timeout(std::time::Duration::from_secs(10), async {
+        loop {
+            if let Some(m) = nodes[1].gc_manager() {
+                break m;
+            }
+            tokio::time::sleep(std::time::Duration::from_millis(20)).await;
+        }
+    })
+    .await
+    .unwrap();
+    assert!(!Arc::ptr_eq(&old, &next));
+    assert_eq!(
+        next.compatible_load_gc_safe_point(NULL_KEYSPACE_ID)
+            .await
+            .unwrap(),
+        20
+    );
+    next.compatible_update_gc_safe_point(NULL_KEYSPACE_ID, 40)
+        .await
+        .unwrap();
+    assert!(
+        old.compatible_update_gc_safe_point(NULL_KEYSPACE_ID, 50)
+            .await
+            .is_err()
+    );
+    assert_eq!(
+        ep.load_gc_safe_point(&p, NULL_KEYSPACE_ID).await.unwrap(),
+        40
+    );
+    nodes[1].shutdown().await.unwrap();
+    assert!(
+        next.compatible_load_gc_safe_point(NULL_KEYSPACE_ID)
+            .await
+            .is_err()
+    );
+    assert_eq!(
+        Base::new(store.as_ref())
+            .load(p.gc_safe_point_path(NULL_KEYSPACE_ID).as_bytes())
+            .await
+            .unwrap(),
+        b"28"
+    );
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn mcs_132_real_term_replacement_fences_prepared_raw_commit() {
+    use astersql_pd_gc::GCStateManager;
+    use astersql_pd_keyspace::KeyspaceManager;
+    use astersql_pd_member::Leadership;
+    let f = crate::node_test::fixture::Fixture::start();
+    let store: Arc<dyn MetaStore> = Arc::new(f.store().await);
+    let p = ClusterPaths::new(133);
+    let cancel = CancellationToken::new();
+    let leader = Arc::new(
+        Leadership::campaign(
+            store.clone(),
+            cancel.clone(),
+            133,
+            b"same-value".to_vec(),
+            10,
+        )
+        .await
+        .unwrap(),
+    );
+    let bound: Arc<dyn MetaStore> = Arc::new(crate::member_role_worker::TermStore::new(
+        store.clone(),
+        leader.clone(),
+        cancel.clone(),
+    ));
+    let m = GCStateManager::new(
+        StorageEndpoint::new(bound.clone()),
+        p.clone(),
+        Arc::new(KeyspaceManager::new(
+            astersql_pd_storage_endpoint::StorageEndpoint::new(bound).keyspace_storage(p.clone()),
+        )),
+        tokio::runtime::Handle::current(),
+    );
+    let role = m.on_node_becomes_leader_with_cancel(&cancel).await;
+    let ep = StorageEndpoint::new(store.clone());
+    let mut tx = ep.begin_gc_state_transaction(&p).await.unwrap();
+    tx.batch.set_txn_safe_point(NULL_KEYSPACE_ID, 100);
+    tx.commit().await.unwrap();
+    let pending = m
+        .prepare_gc_safe_point(
+            NULL_KEYSPACE_ID,
+            30,
+            astersql_pd_gc::GCSafePointMode::Compatible,
+            &CancellationToken::new(),
+        )
+        .await
+        .unwrap();
+    // Same opaque value, new lease and revision: the old cancel token is deliberately still live.
+    Base::new(store.as_ref())
+        .remove(b"/pd/133/leader")
+        .await
+        .unwrap();
+    let replacement = Leadership::campaign(
+        store.clone(),
+        CancellationToken::new(),
+        133,
+        b"same-value".to_vec(),
+        10,
+    )
+    .await
+    .unwrap();
+    assert!(pending.commit().await.is_err());
+    assert_eq!(
+        ep.load_gc_safe_point(&p, NULL_KEYSPACE_ID).await.unwrap(),
+        0
+    );
+    role.shutdown().await;
+    leader.resign().await.unwrap();
+    replacement.validate().await.unwrap();
+    replacement.resign().await.unwrap();
+}
