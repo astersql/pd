@@ -21,6 +21,8 @@ use tokio_util::sync::CancellationToken;
 pub enum GroupNodesError {
     #[error(transparent)]
     Catalog(#[from] GroupCatalogError),
+    #[error(transparent)]
+    Leadership(#[from] astersql_pd_election::ElectionError),
     #[error("[PD:keyspace:ErrKeyspaceGroupNotExists]keyspace group {0} does not exist")]
     NotExists(u32),
     #[error("[PD:keyspace:ErrKeyspaceGroupInMerging]keyspace group {0} is in merging state")]
@@ -65,16 +67,29 @@ async fn checked_group(
 async fn commit_alloc(
     txn: CallbackTxn<'_>,
     cancel: &CancellationToken,
+    term: Option<&astersql_pd_election::Leadership>,
 ) -> Result<(), GroupNodesError> {
     if cancel.is_cancelled() {
         return Err(GroupNodesError::Cancelled);
     }
-    tokio::select! {
-        biased;
-        result=txn.commit::<Infallible>()=>result.map_err(commit_error).map_err(Into::into),
-        _=cancel.cancelled()=>Err(GroupCatalogError::Store(StoreError::Unavailable).into()),
-    }
+    let commit = async {
+        if let Some(term) = term {
+            let (compares, writes) = txn.into_parts();
+            let commit = term.transact(compares, writes).await?;
+            if !commit.succeeded {
+                return Err(GroupCatalogError::Conflict.into());
+            }
+            Ok(())
+        } else {
+            txn.commit::<Infallible>()
+                .await
+                .map_err(commit_error)
+                .map_err(Into::into)
+        }
+    };
+    tokio::select! {biased;result=commit=>result,_=cancel.cancelled()=>Err(GroupCatalogError::Store(StoreError::Unavailable).into())}
 }
+
 impl KeyspaceGroupManager {
     /// Use the host's shared discovery balancer; no discovery worker is spawned here.
     pub fn with_nodes_balancer(mut self, nodes: Arc<RoundRobin<String>>) -> Self {
@@ -101,6 +116,17 @@ impl KeyspaceGroupManager {
         existing: Option<BTreeSet<String>>,
         desired: usize,
         cancel: &CancellationToken,
+    ) -> Result<Option<Vec<KeyspaceGroupMember>>, GroupNodesError> {
+        self.alloc_nodes_in_term(id, existing, desired, cancel, None)
+            .await
+    }
+    pub(crate) async fn alloc_nodes_in_term(
+        &self,
+        id: u32,
+        existing: Option<BTreeSet<String>>,
+        desired: usize,
+        cancel: &CancellationToken,
+        term: Option<&crate::GroupReconcileTerm>,
     ) -> Result<Option<Vec<KeyspaceGroupMember>>, GroupNodesError> {
         let mut index = self.groups.write().await;
         let deadline = tokio::time::Instant::now() + Duration::from_secs(1);
@@ -131,8 +157,8 @@ impl KeyspaceGroupManager {
                 && count == available.len())
                 || count >= desired
             {
-                commit_alloc(txn, cancel).await?;
-                put_index(&mut index, group);
+                commit_alloc(txn, cancel, term.map(|term| term.leadership.as_ref())).await?;
+                self.publish_allocated(term, &mut index, group)?;
                 return Ok(None);
             }
             existing
@@ -169,9 +195,23 @@ impl KeyspaceGroupManager {
         endpoint
             .save_keyspace_group(&mut txn, &self.paths, &group)
             .map_err(GroupCatalogError::from)?;
-        commit_alloc(txn, cancel).await?;
-        put_index(&mut index, group);
+        commit_alloc(txn, cancel, term.map(|term| term.leadership.as_ref())).await?;
+        self.publish_allocated(term, &mut index, group)?;
         Ok(Some(nodes))
+    }
+    fn publish_allocated(
+        &self,
+        term: Option<&crate::GroupReconcileTerm>,
+        index: &mut crate::group_catalog::GroupIndex,
+        group: KeyspaceGroup,
+    ) -> Result<(), GroupNodesError> {
+        if let Some(term) = term {
+            self.with_reconcile_term(term, || put_index(index, group))
+                .map_err(GroupCatalogError::Store)?;
+        } else {
+            put_index(index, group);
+        }
+        Ok(())
     }
     async fn change_nodes<F>(&self, id: u32, change: F) -> Result<(), GroupNodesError>
     where

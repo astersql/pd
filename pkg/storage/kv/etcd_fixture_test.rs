@@ -38,6 +38,12 @@ impl Fixture {
         Suspension(self)
     }
     pub fn start() -> Self {
+        Self::start_with_native_ports(None)
+    }
+    /// Supply the first reservation to exercise an actual initial bind collision.
+    pub fn start_with_native_ports(
+        first_ports: Option<(std::net::TcpListener, std::net::TcpListener)>,
+    ) -> Self {
         static BINARY: OnceLock<PathBuf> = OnceLock::new();
         static NEXT: AtomicUsize = AtomicUsize::new(0);
         let manifest = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
@@ -60,8 +66,12 @@ impl Fixture {
         ));
         std::fs::create_dir_all(&directory).unwrap();
         if let Some(binary) = std::env::var_os("PD_COMPAT_ETCD_BIN") {
-            return Self::start_native(PathBuf::from(binary), directory);
+            return Self::start_native(PathBuf::from(binary), directory, first_ports);
         }
+        assert!(
+            first_ports.is_none(),
+            "reserved ports require the pinned native fixture"
+        );
         let binary = BINARY.get_or_init(|| {
             let binary = target.join(format!("rust-etcd-fixture-{}", std::process::id()));
             let status = fixture_go(root)
@@ -221,7 +231,11 @@ fn terminate_native(child: &mut Child) {
     let _ = child.wait();
 }
 impl Fixture {
-    fn start_native(binary: PathBuf, directory: PathBuf) -> Self {
+    fn start_native(
+        binary: PathBuf,
+        directory: PathBuf,
+        mut first_ports: Option<(std::net::TcpListener, std::net::TcpListener)>,
+    ) -> Self {
         assert!(
             binary.is_absolute() && binary.is_file(),
             "PD_COMPAT_ETCD_BIN must name an existing absolute binary"
@@ -234,33 +248,58 @@ impl Fixture {
                 .any(|line| line == "etcd Version: 3.5.15"),
             "fixture must use pinned etcd 3.5.15: {version:?}"
         );
-        let client = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
-        let peer = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
-        let endpoint = format!("http://{}", client.local_addr().unwrap());
-        let peer_url = format!("http://{}", peer.local_addr().unwrap());
-        let args = vec![
-            "--name=default".into(),
-            format!("--data-dir={}", directory.join("data").display()),
-            format!("--listen-client-urls={endpoint}"),
-            format!("--advertise-client-urls={endpoint}"),
-            format!("--listen-peer-urls={peer_url}"),
-            format!("--initial-advertise-peer-urls={peer_url}"),
-            format!("--initial-cluster=default={peer_url}"),
-            "--log-level=error".into(),
-        ];
-        drop(client);
-        drop(peer);
-        let child = spawn_native(&binary, &args, &directory);
-        let mut fixture = Self {
-            child,
-            directory,
-            endpoint,
-            native: Some((binary, args)),
-        };
-        fixture.wait_native_ready();
-        fixture
+        for attempt in 0..5 {
+            std::fs::create_dir_all(&directory).unwrap();
+            let (client, peer) = first_ports.take().unwrap_or_else(|| {
+                (
+                    std::net::TcpListener::bind("127.0.0.1:0").unwrap(),
+                    std::net::TcpListener::bind("127.0.0.1:0").unwrap(),
+                )
+            });
+            let endpoint = format!("http://{}", client.local_addr().unwrap());
+            let peer_url = format!("http://{}", peer.local_addr().unwrap());
+            let args = vec![
+                "--name=default".into(),
+                format!("--data-dir={}", directory.join("data").display()),
+                format!("--listen-client-urls={endpoint}"),
+                format!("--advertise-client-urls={endpoint}"),
+                format!("--listen-peer-urls={peer_url}"),
+                format!("--initial-advertise-peer-urls={peer_url}"),
+                format!("--initial-cluster=default={peer_url}"),
+                "--log-level=error".into(),
+            ];
+            drop(client);
+            drop(peer);
+            let child = spawn_native(&binary, &args, &directory);
+            let mut fixture = Self {
+                child,
+                directory: directory.clone(),
+                endpoint,
+                native: Some((binary.clone(), args)),
+            };
+            match fixture.try_wait_native_ready() {
+                Ok(()) => return fixture,
+                Err(error)
+                    if attempt < 4
+                        && error.starts_with("native etcd exited:")
+                        && error.contains("bind: address already in use") =>
+                {
+                    eprintln!(
+                        "initial native bind collision; retrying reservation {}/5: {error}",
+                        attempt + 1
+                    );
+                    drop(fixture);
+                }
+                Err(error) => panic!("{error}"),
+            }
+        }
+        unreachable!("each initial reservation returns or reports its final failure")
     }
     fn wait_native_ready(&mut self) {
+        self.try_wait_native_ready()
+            .unwrap_or_else(|error| panic!("{error}"));
+    }
+    fn try_wait_native_ready(&mut self) -> Result<(), String> {
         let deadline = Instant::now() + Duration::from_secs(25);
         let address = self
             .endpoint
@@ -269,12 +308,13 @@ impl Fixture {
             .parse()
             .unwrap();
         loop {
-            assert!(
-                self.child.try_wait().unwrap().is_none(),
-                "native etcd exited: {}: {}",
-                self.directory.display(),
-                std::fs::read_to_string(self.directory.join("etcd.log")).unwrap_or_default()
-            );
+            if self.child.try_wait().unwrap().is_some() {
+                return Err(format!(
+                    "native etcd exited: {}: {}",
+                    self.directory.display(),
+                    std::fs::read_to_string(self.directory.join("etcd.log")).unwrap_or_default()
+                ));
+            }
             if let Ok(mut stream) =
                 std::net::TcpStream::connect_timeout(&address, Duration::from_millis(200))
             {
@@ -291,15 +331,17 @@ impl Fixture {
                     let mut bytes = Vec::new();
                     if stream.read_to_end(&mut bytes).is_ok() && bytes.starts_with(b"HTTP/1.0 200")
                     {
-                        return;
+                        return Ok(());
                     }
                 }
             }
-            assert!(
-                Instant::now() < deadline,
-                "native etcd readiness timeout: {}",
-                self.directory.display()
-            );
+            if Instant::now() >= deadline {
+                return Err(format!(
+                    "native etcd readiness timeout: {}: {}",
+                    self.directory.display(),
+                    std::fs::read_to_string(self.directory.join("etcd.log")).unwrap_or_default()
+                ));
+            }
             std::thread::sleep(Duration::from_millis(20));
         }
     }

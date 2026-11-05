@@ -1,5 +1,5 @@
 // Copyright 2026 AsterSQL.
-use astersql_pd_storage_kv::{Lease, LeaseId, MetaStore, Mutation, StoreError};
+use astersql_pd_storage_domain::{Lease, LeaseId, MetaStore, Mutation, StoreError};
 
 /// Failure to grant or write, retaining the lease for recovery if cleanup fails.
 #[derive(Debug, Clone, PartialEq, Eq)]

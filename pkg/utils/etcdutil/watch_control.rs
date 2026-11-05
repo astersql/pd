@@ -1,7 +1,7 @@
 // Copyright 2026 AsterSQL.
 use std::sync::{Arc, Mutex};
 
-use astersql_pd_storage_kv::{MetaStore, Result, Revision, StoreError, WatchBatch};
+use astersql_pd_storage_domain::{MetaStore, Result, Revision, StoreError, WatchBatch};
 use tokio::{
     sync::{Mutex as AsyncMutex, mpsc},
     time::{Duration, Instant},

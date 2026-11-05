@@ -1,7 +1,7 @@
 // Copyright 2026 AsterSQL.
 use std::{collections::BTreeSet, sync::Arc};
 
-use astersql_pd_storage_kv::{Event, MetaStore, Result, Revision, StoreError, WatchBatch};
+use astersql_pd_storage_domain::{Event, MetaStore, Result, Revision, StoreError, WatchBatch};
 use tokio_util::sync::CancellationToken;
 
 use crate::{LoadedSnapshot, SnapshotWatch};

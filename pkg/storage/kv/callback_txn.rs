@@ -64,6 +64,12 @@ impl<'a> Base<'a> {
 }
 
 impl CallbackTxn<'_> {
+    /// Transfer buffered read guards and writes to a host's fenced commit boundary.
+    /// The host must preserve both vectors and use the same MetaStore resource.
+    pub fn into_parts(self) -> (Vec<Compare>, Vec<Mutation>) {
+        (self.conditions, self.operations)
+    }
+
     /// Consume and commit buffered operations once, preserving optimistic conflicts.
     /// Dropping an uncommitted transaction discards all buffered operations.
     pub async fn commit<E>(self) -> std::result::Result<(), CallbackTxnError<E>> {

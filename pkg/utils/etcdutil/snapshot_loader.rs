@@ -1,5 +1,7 @@
 // Copyright 2026 AsterSQL.
-use astersql_pd_storage_kv::{Consistency, Entry, MetaStore, Read, Result, Revision, StoreError};
+use astersql_pd_storage_domain::{
+    Consistency, Entry, MetaStore, Read, Result, Revision, StoreError,
+};
 use tokio_util::sync::CancellationToken;
 
 /// A complete snapshot, ready for the caller to publish atomically.

@@ -359,6 +359,7 @@ version = "0.1.0"
 name = "astersql-pd-etcdutil"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-storage-domain",
  "astersql-pd-storage-kv",
  "async-trait",
  "tokio",
@@ -408,6 +409,9 @@ version = "0.1.0"
 name = "astersql-pd-keyspace"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-etcdutil",
+ "serde",
+ "astersql-pd-election",
  "astersql-pd-typeutil",
  "astersql-pd-balancer",
  "tokio-util",

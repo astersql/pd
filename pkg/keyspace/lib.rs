@@ -57,3 +57,9 @@ pub use group_nodes::*;
 #[cfg(test)]
 #[path = "group_nodes_test.rs"]
 mod group_nodes_test;
+
+mod group_reconcile;
+pub use group_reconcile::*;
+#[cfg(test)]
+#[path = "group_reconcile_test.rs"]
+mod group_reconcile_test;

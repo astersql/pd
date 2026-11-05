@@ -29,7 +29,7 @@ pub(crate) fn commit_error(error: CallbackTxnError<Infallible>) -> GroupCatalogE
     }
 }
 pub(crate) type GroupIndex = BTreeMap<i64, BTreeMap<u32, KeyspaceGroup>>;
-fn empty_index() -> GroupIndex {
+pub(crate) fn empty_index() -> GroupIndex {
     (0..3).map(|kind| (kind, BTreeMap::new())).collect()
 }
 pub(crate) fn put_index(index: &mut GroupIndex, group: KeyspaceGroup) {
@@ -49,6 +49,7 @@ pub struct KeyspaceGroupManager {
     pub(crate) groups: RwLock<GroupIndex>,
     pub(crate) membership_mutex: Mutex<()>,
     pub(crate) nodes: Arc<astersql_pd_balancer::RoundRobin<String>>,
+    pub(crate) reconcile: std::sync::Mutex<Option<std::sync::Weak<crate::GroupReconcileTerm>>>,
 }
 impl KeyspaceGroupManager {
     pub fn new(store: Arc<dyn MetaStore>, paths: ClusterPaths) -> Self {
@@ -58,6 +59,7 @@ impl KeyspaceGroupManager {
             groups: RwLock::new(empty_index()),
             membership_mutex: Mutex::new(()),
             nodes: Arc::new(astersql_pd_balancer::RoundRobin::new()),
+            reconcile: std::sync::Mutex::new(None),
         }
     }
     /// Ensure the classic default group and reload all current user-kind entries.
