@@ -35,3 +35,32 @@ mod keyspace_meta;
 pub use keyspace_meta::{
     Keyspace, KeyspaceCodec, KeyspaceIdentity, KeyspaceMetaError, KeyspaceStorage,
 };
+
+#[path = "../endpoint/gc_barrier_value.rs"]
+mod gc_barrier_value;
+pub use gc_barrier_value::{BarrierTime, GCBarrier, GlobalGCBarrier, ServiceSafePoint};
+
+#[path = "../endpoint/gc_safepoint_read.rs"]
+mod gc_safepoint_read;
+pub use gc_safepoint_read::SafePointReadError;
+
+#[path = "../endpoint/gc_barrier_read.rs"]
+mod gc_barrier_read;
+
+#[path = "../endpoint/gc_state_txn.rs"]
+mod gc_state_txn;
+pub use gc_state_txn::{GCStateTxnError, GCStateWriteBatch, PreparedGCStateTxn};
+
+#[path = "../endpoint/gc_barrier_txn.rs"]
+mod gc_barrier_txn;
+
+#[path = "../endpoint/gc_batch_read.rs"]
+mod gc_batch_read;
+pub use gc_batch_read::{
+    GCSafePointBatchError, GCSafePointReadResult, MAX_GC_SAFE_POINT_BATCH_SIZE,
+};
+
+#[doc(hidden)]
+pub use gc_batch_read::decode_response as decode_gc_pair_response;
+#[doc(hidden)]
+pub use gc_state_txn::encode_gc_safe_point;

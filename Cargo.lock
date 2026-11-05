@@ -239,6 +239,7 @@ dependencies = [
  "astersql-pd-cluster",
  "astersql-pd-core",
  "astersql-pd-core-constant",
+ "astersql-pd-gc",
  "astersql-pd-id",
  "astersql-pd-keypath",
  "astersql-pd-keyspace",
@@ -364,6 +365,21 @@ dependencies = [
  "astersql-pd-storage-domain",
  "astersql-pd-storage-kv",
  "async-trait",
+ "tokio",
+ "tokio-util",
+]
+
+[[package]]
+name = "astersql-pd-gc"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-keypath",
+ "astersql-pd-keyspace",
+ "astersql-pd-keyspace-constant",
+ "astersql-pd-storage-domain",
+ "astersql-pd-storage-endpoint",
+ "astersql-pd-storage-kv",
+ "thiserror 2.0.21",
  "tokio",
  "tokio-util",
 ]
@@ -1212,6 +1228,7 @@ name = "astersql-pd-storage-domain"
 version = "0.1.0"
 dependencies = [
  "astersql-pd-keypath",
+ "astersql-pd-typeutil",
  "async-trait",
  "serde",
  "serde_json",

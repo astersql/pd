@@ -1,9 +1,7 @@
 // Copyright 2026 AsterSQL.
 
+use crate::kv::{Base, Mutation, RawTxn, RawTxnCmpType, RawTxnCondition, RawTxnOp, StoreError};
 use astersql_pd_keypath::{ClusterPaths, NULL_KEYSPACE_ID};
-use astersql_pd_storage_kv::{
-    Base, Mutation, RawTxn, RawTxnCmpType, RawTxnCondition, RawTxnOp, StoreError,
-};
 
 use crate::StorageEndpoint;
 
@@ -46,7 +44,8 @@ impl<'a> GCStateWriteBatch<'a> {
 }
 
 // Numeric fields are infallible and need no JSON string escaping.
-pub(crate) fn encode_gc_safe_point(keyspace_id: u32, safe_point: u64) -> String {
+#[doc(hidden)]
+pub fn encode_gc_safe_point(keyspace_id: u32, safe_point: u64) -> String {
     if keyspace_id == NULL_KEYSPACE_ID {
         format!("{safe_point:x}")
     } else {
@@ -80,6 +79,20 @@ impl StorageEndpoint {
     where
         F: AsyncFnOnce(&mut GCStateWriteBatch<'_>) -> Result<(), E>,
     {
+        let mut transaction = self
+            .begin_gc_state_transaction(paths)
+            .await
+            .map_err(promote_txn_error)?;
+        callback(&mut transaction.batch)
+            .await
+            .map_err(GCStateTxnError::Callback)?;
+        transaction.commit().await.map_err(promote_txn_error)
+    }
+    /// Begins a revision-validated transaction without retaining a generic async callback.
+    pub async fn begin_gc_state_transaction<'a>(
+        &self,
+        paths: &'a ClusterPaths,
+    ) -> Result<PreparedGCStateTxn<'a>, GCStateTxnError<std::convert::Infallible>> {
         let key = paths.gc_state_revision_path().into_bytes();
         let current = Base::new(self.store.as_ref()).load(&key).await?;
         let revision = if current.is_empty() {
@@ -93,17 +106,39 @@ impl StorageEndpoint {
                 .and_then(|s| s.parse::<u64>().ok())
                 .ok_or(GCStateTxnError::ParseRevision)?
         };
-        let mut batch = GCStateWriteBatch::new(paths);
-        callback(&mut batch)
-            .await
-            .map_err(GCStateTxnError::Callback)?;
+        Ok(PreparedGCStateTxn {
+            store: self.store.clone(),
+            key,
+            current,
+            revision,
+            batch: GCStateWriteBatch::new(paths),
+        })
+    }
+}
+/// Owned backend transaction state; buffered writes remain local until commit.
+pub struct PreparedGCStateTxn<'a> {
+    store: std::sync::Arc<dyn crate::kv::MetaStore>,
+    key: Vec<u8>,
+    current: Vec<u8>,
+    revision: u64,
+    pub batch: GCStateWriteBatch<'a>,
+}
+impl PreparedGCStateTxn<'_> {
+    pub async fn commit(self) -> Result<(), GCStateTxnError<std::convert::Infallible>> {
+        let Self {
+            store,
+            key,
+            current,
+            revision,
+            mut batch,
+        } = self;
         if !batch.ops.is_empty() {
             batch
                 .ops
                 .push(Mutation::put(&key, revision.wrapping_add(1).to_string().as_bytes()).into());
         }
         let count = batch.ops.len();
-        let result = RawTxn::new(self.store.as_ref())
+        let result = RawTxn::new(store.as_ref())
             .when(vec![RawTxnCondition {
                 key,
                 cmp_type: if current.is_empty() {
@@ -126,5 +161,17 @@ impl StorageEndpoint {
             });
         }
         Ok(())
+    }
+}
+
+fn promote_txn_error<E>(error: GCStateTxnError<std::convert::Infallible>) -> GCStateTxnError<E> {
+    match error {
+        GCStateTxnError::Callback(never) => match never {},
+        GCStateTxnError::ParseRevision => GCStateTxnError::ParseRevision,
+        GCStateTxnError::Conflict => GCStateTxnError::Conflict,
+        GCStateTxnError::ResponseCount { expected, actual } => {
+            GCStateTxnError::ResponseCount { expected, actual }
+        }
+        GCStateTxnError::Store(error) => GCStateTxnError::Store(error),
     }
 }

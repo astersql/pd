@@ -81,3 +81,6 @@ mod keyspace_bootstrap_oracle_test;
 
 #[cfg(test)]
 mod group_remove_oracle_test;
+
+#[cfg(test)]
+mod gc_read_oracle_test;

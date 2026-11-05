@@ -1,8 +1,8 @@
 // Copyright 2026 AsterSQL.
 
 use crate::StorageEndpoint;
+use crate::kv::{Base, StoreError};
 use astersql_pd_keypath::{ClusterPaths, NULL_KEYSPACE_ID};
-use astersql_pd_storage_kv::{Base, StoreError};
 use serde::{Deserialize, Deserializer, de};
 use std::fmt;
 

@@ -1,11 +1,11 @@
 // Copyright 2026 AsterSQL.
 
+use crate::kv::{Consistency, Read};
 use crate::{
     EndpointError, GCBarrier, GlobalGCBarrier, LoadState, SafePointReadError, ServiceSafePoint,
     StorageEndpoint,
 };
 use astersql_pd_keypath::ClusterPaths;
-use astersql_pd_storage_kv::{Consistency, Read};
 use serde::de::DeserializeOwned;
 
 impl StorageEndpoint {

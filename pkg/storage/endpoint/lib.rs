@@ -115,35 +115,11 @@ mod maintenance_delete;
 #[cfg(test)]
 mod maintenance_delete_test;
 
-mod gc_barrier_value;
-pub use gc_barrier_value::{BarrierTime, GCBarrier, GlobalGCBarrier, ServiceSafePoint};
-#[cfg(test)]
-mod gc_barrier_value_test;
-
-mod gc_safepoint_read;
-pub use gc_safepoint_read::SafePointReadError;
-#[cfg(test)]
-mod gc_safepoint_read_test;
-
-mod gc_barrier_read;
-#[cfg(test)]
-mod gc_barrier_read_test;
-
-mod gc_state_txn;
-pub use gc_state_txn::{GCStateTxnError, GCStateWriteBatch};
-#[cfg(test)]
-mod gc_state_txn_test;
-
-mod gc_barrier_txn;
-#[cfg(test)]
-mod gc_barrier_txn_test;
-
-mod gc_batch_read;
-pub use gc_batch_read::{
-    GCSafePointBatchError, GCSafePointReadResult, MAX_GC_SAFE_POINT_BATCH_SIZE,
+pub use astersql_pd_storage_domain::{
+    BarrierTime, GCBarrier, GCSafePointBatchError, GCSafePointReadResult, GCStateTxnError,
+    GCStateWriteBatch, GlobalGCBarrier, MAX_GC_SAFE_POINT_BATCH_SIZE, SafePointReadError,
+    ServiceSafePoint,
 };
-#[cfg(test)]
-mod gc_batch_read_test;
 
 pub use astersql_pd_storage_domain::{MAX_BATCH_OPS, run_batch_op_in_txn};
 #[cfg(test)]
@@ -153,7 +129,32 @@ mod batch_ops_test;
 #[path = "../../server/encryption_dictionary.rs"]
 mod encryption_dictionary;
 #[cfg(test)]
-#[path = "../kv/etcd_fixture_test.rs"]
-mod etcd_fixture;
+use endpoint_codec_test::fixture as etcd_fixture;
 #[cfg(test)]
 mod region_encryption_test;
+
+#[cfg(test)]
+mod gc_barrier_read_test;
+#[cfg(test)]
+mod gc_barrier_txn_test;
+#[cfg(test)]
+mod gc_barrier_value_test;
+#[cfg(test)]
+mod gc_batch_read_test;
+#[cfg(test)]
+mod gc_safepoint_read_test;
+#[cfg(test)]
+mod gc_state_txn_test;
+
+#[cfg(test)]
+mod gc_state_txn {
+    pub use astersql_pd_storage_domain::encode_gc_safe_point;
+}
+#[cfg(test)]
+mod gc_batch_read {
+    pub use astersql_pd_storage_domain::decode_gc_pair_response as decode_response;
+}
+
+#[cfg(test)]
+#[path = "../kv/response_gate_test.rs"]
+mod response_gate_test;

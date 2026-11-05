@@ -305,73 +305,7 @@ fn gc_batch_read_response_validation() {
 
 // A real TCP response gate exercises cancellation after dispatch without replacing
 // transactions or their results. Requests always reach the real etcd backend.
-struct ResponseGate {
-    endpoint: String,
-    armed: Arc<std::sync::atomic::AtomicBool>,
-    held: Arc<tokio::sync::Notify>,
-    stop: CancellationToken,
-    task: Option<tokio::task::JoinHandle<()>>,
-}
-impl ResponseGate {
-    async fn start(upstream: &str) -> Self {
-        use std::sync::atomic::Ordering;
-        use tokio::io::{AsyncReadExt, AsyncWriteExt};
-        let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
-        let endpoint = format!("http://{}", listener.local_addr().unwrap());
-        let upstream = upstream.strip_prefix("http://").unwrap().to_owned();
-        let armed = Arc::new(std::sync::atomic::AtomicBool::new(false));
-        let held = Arc::new(tokio::sync::Notify::new());
-        let stop = CancellationToken::new();
-        let (gate, signal, shutdown) = (armed.clone(), held.clone(), stop.clone());
-        let task = tokio::spawn(async move {
-            let work = async {
-                let (downstream, _) = listener.accept().await.unwrap();
-                let upstream = tokio::net::TcpStream::connect(upstream).await.unwrap();
-                let (mut dr, mut dw) = downstream.into_split();
-                let (mut ur, mut uw) = upstream.into_split();
-                let requests = tokio::io::copy(&mut dr, &mut uw);
-                let responses = async {
-                    let mut buf = [0; 65536];
-                    loop {
-                        let n = ur.read(&mut buf).await.unwrap();
-                        if n == 0 {
-                            break;
-                        }
-                        if gate.load(Ordering::SeqCst) {
-                            signal.notify_one();
-                            std::future::pending::<()>().await;
-                        }
-                        if dw.write_all(&buf[..n]).await.is_err() {
-                            break;
-                        }
-                    }
-                };
-                tokio::select! { _ = requests => {}, _ = responses => {} }
-                std::future::pending::<()>().await;
-            };
-            tokio::select! { _ = shutdown.cancelled() => {}, _ = work => {} }
-        });
-        Self {
-            endpoint,
-            armed,
-            held,
-            stop,
-            task: Some(task),
-        }
-    }
-    async fn close(mut self) {
-        self.stop.cancel();
-        self.task.take().unwrap().await.unwrap();
-    }
-}
-impl Drop for ResponseGate {
-    fn drop(&mut self) {
-        self.stop.cancel();
-        if let Some(task) = &self.task {
-            task.abort();
-        }
-    }
-}
+use crate::response_gate_test::ResponseGate;
 
 #[tokio::test]
 async fn gc_batch_read_inflight_cancel_etcd() {

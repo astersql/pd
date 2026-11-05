@@ -1,6 +1,6 @@
 // Copyright 2026 AsterSQL.
 
-use astersql_pd_storage_kv::Mutation;
+use crate::kv::Mutation;
 
 use crate::{EndpointError, GCBarrier, GCStateWriteBatch, GlobalGCBarrier};
 

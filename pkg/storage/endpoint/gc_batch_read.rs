@@ -1,9 +1,9 @@
 // Copyright 2026 AsterSQL.
 
 use crate::gc_safepoint_read::{decode_gc_safe_point, decode_txn_safe_point_parts};
+use crate::kv::{RawTxn, RawTxnOp, RawTxnResponse, StoreError};
 use crate::{SafePointReadError, StorageEndpoint};
 use astersql_pd_keypath::ClusterPaths;
-use astersql_pd_storage_kv::{RawTxn, RawTxnOp, RawTxnResponse, StoreError};
 use std::collections::HashSet;
 use tokio_util::sync::CancellationToken;
 
@@ -73,7 +73,8 @@ impl StorageEndpoint {
 }
 
 // Validate the entire transport response before decoding any row.
-pub(super) fn decode_response(
+#[doc(hidden)]
+pub fn decode_response(
     ids: &[u32],
     keys: &[Vec<u8>],
     response: RawTxnResponse,
