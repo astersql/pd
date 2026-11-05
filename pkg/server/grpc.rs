@@ -35,6 +35,18 @@ impl Grpc {
 }
 #[tonic::async_trait]
 impl Pd for Grpc {
+    async fn get_gc_state(
+        &self,
+        r: Request<pdpb::GetGcStateRequest>,
+    ) -> Result<Response<pdpb::GetGcStateResponse>, Status> {
+        self.get_gc_state_request(r.into_inner()).await
+    }
+    async fn get_all_keyspaces_gc_states(
+        &self,
+        r: Request<pdpb::GetAllKeyspacesGcStatesRequest>,
+    ) -> Result<Response<pdpb::GetAllKeyspacesGcStatesResponse>, Status> {
+        self.get_all_gc_states_request(r.into_inner()).await
+    }
     async fn set_global_gc_barrier(
         &self,
         r: Request<pdpb::SetGlobalGcBarrierRequest>,

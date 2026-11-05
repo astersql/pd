@@ -393,6 +393,14 @@ impl GCStateManager {
         })
     }
 
+    /// Load the global list for the all-keyspace observation API, without reading a scope.
+    pub async fn load_all_global_gc_barriers(&self) -> Result<Vec<GlobalGCBarrier>, GCReadError> {
+        self.storage
+            .load_all_global_gc_barriers(&self.paths)
+            .await
+            .map(|v| v.into_iter().flatten().collect())
+            .map_err(|e| GCReadError::Endpoint(Arc::new(e)))
+    }
     pub async fn get_gc_state_with_global_barriers(
         &self,
         id: u32,

@@ -44,12 +44,6 @@ fn routes() -> Vec<(String, String, &'static str, &'static str)> {
             "theme-8",
         ),
         (
-            include_str!("../../server/apiv2/handlers/safe_point.go"),
-            "gc/safepoint",
-            "gc",
-            "theme-8",
-        ),
-        (
             include_str!("../../server/apiv2/handlers/tso_keyspace_group.go"),
             "tso/keyspace-groups",
             "tso-keyspace-group",
@@ -205,7 +199,7 @@ async fn task_078_behavior() {
     })
     .collect();
     node.shutdown().await.unwrap();
-    assert_eq!(observations.len(), 26);
+    assert_eq!(observations.len(), 25);
     assert_eq!(
         before, after,
         "rejected routes must not mutate domain state"
@@ -308,7 +302,7 @@ async fn task_078_differential() {
     let mut gaps = vec![];
     for entry in oracle["routes"].as_array().unwrap() {
         let path = entry["path"].as_str().unwrap();
-        if path.starts_with("maintenance") {
+        if path.starts_with("maintenance") || path.starts_with("gc/safepoint") {
             continue;
         }
         let method = entry["method"].as_str().unwrap();
@@ -322,7 +316,7 @@ async fn task_078_differential() {
         .map(|(path, go)| (path.clone(), go.clone(), call(&url, "GET", path, "")))
         .collect();
     node.shutdown().await.unwrap();
-    assert_eq!(gaps.len(), 26);
+    assert_eq!(gaps.len(), 25);
     for (go, rust) in gaps {
         // Observe both implementations, but never normalize dependency denials
         // into successful Go behavior or call these unavailable domains equivalent.

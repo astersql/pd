@@ -23,7 +23,6 @@ pub(crate) fn router(cancel: CancellationToken) -> Router {
         ("keyspaces/{name}/config", M::PATCH, "keyspace", "theme-8"),
         ("keyspaces/{name}/state", M::PUT, "keyspace", "theme-8"),
         ("keyspaces/id/{id}", M::GET, "keyspace", "theme-8"),
-        ("gc/safepoint/{keyspace_id}", M::GET, "gc", "theme-8"),
         (
             "tso/keyspace-groups",
             M::POST.or(M::GET),

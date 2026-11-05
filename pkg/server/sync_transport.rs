@@ -282,6 +282,18 @@ impl astersql_pd_syncer::DownstreamSender for WireSender {
 pub(crate) struct SyncGrpc(pub Grpc);
 #[tonic::async_trait]
 impl Pd for SyncGrpc {
+    async fn get_gc_state(
+        &self,
+        r: Request<pdpb::GetGcStateRequest>,
+    ) -> Result<Response<pdpb::GetGcStateResponse>, Status> {
+        self.0.get_gc_state(r).await
+    }
+    async fn get_all_keyspaces_gc_states(
+        &self,
+        r: Request<pdpb::GetAllKeyspacesGcStatesRequest>,
+    ) -> Result<Response<pdpb::GetAllKeyspacesGcStatesResponse>, Status> {
+        self.0.get_all_keyspaces_gc_states(r).await
+    }
     async fn set_global_gc_barrier(
         &self,
         r: Request<pdpb::SetGlobalGcBarrierRequest>,

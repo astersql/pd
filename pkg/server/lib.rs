@@ -1154,3 +1154,6 @@ mod http_maintenance_test;
 pub mod replication_mode;
 
 pub mod encryption_dictionary;
+
+mod grpc_gc_read;
+mod http_gc_read;

@@ -148,6 +148,7 @@ def main():
         'scripts/pd-compat-readonly.py', 'tests/rust-compat/oracle_runner.rs',
         'tests/rust-compat/oracle_runner_test.rs', 'tests/rust-compat/readonly_oracle.rs',
         'tests/rust-compat/harness.rs',
+        'tests/rust-compat/accept_gc_08_test.rs', 'pkg/server/grpc_gc_read.rs', 'pkg/server/http_gc_read.rs',
         'tests/rust-compat/accept_gc_05_test.rs', 'pkg/server/grpc_gc_advance.rs',
         'pkg/server/grpc_unsupported.rs', 'pkg/server/grpc_unsupported_test.rs', 'pkg/server/grpc_unsupported_scenarios_test.rs', 'pkg/runtime/grpc_unsupported_differential_test.rs',
         'pkg/server/grpc_tso.rs', 'pkg/server/grpc_tso_test.rs', 'pkg/server/grpc_tso_scenarios_test.rs', 'pkg/runtime/grpc_tso_differential_test.rs', 'pkg/runtime/grpc_tso_clock_test.rs', 'pkg/runtime/tso.rs',

@@ -158,3 +158,40 @@ impl GCStateManager {
         Ok(LegacyServiceSafePointUpdate { minimum, updated })
     }
 }
+
+/// Legacy HTTP observation, including the synthetic GC worker lower bound.
+pub struct LegacyServiceSafePointList {
+    pub service_safe_points: Vec<astersql_pd_storage_domain::ServiceSafePoint>,
+    pub minimum: u64,
+    pub gc_safe_point: u64,
+}
+impl GCStateManager {
+    /// Preserve the legacy list's minimum selection while using canonical state reads.
+    pub async fn compatible_service_gc_safe_points(
+        &self,
+        now: BarrierTime,
+    ) -> Result<LegacyServiceSafePointList, GCReadError> {
+        let state = self.get_gc_state(NULL_KEYSPACE_ID, false).await?;
+        let mut services: Vec<_> = state
+            .gc_barriers
+            .iter()
+            .map(|b| b.to_service_safe_point(NULL_KEYSPACE_ID))
+            .collect();
+        services.push(astersql_pd_storage_domain::ServiceSafePoint {
+            service_id: "gc_worker".into(),
+            expired_at: i64::MAX,
+            safe_point: state.txn_safe_point,
+            keyspace_id: NULL_KEYSPACE_ID,
+        });
+        let minimum = services
+            .iter()
+            .filter(|s| s.expired_at > now.unix_seconds())
+            .map(|s| s.safe_point)
+            .fold(state.txn_safe_point, u64::min);
+        Ok(LegacyServiceSafePointList {
+            service_safe_points: services,
+            minimum,
+            gc_safe_point: state.gc_safe_point,
+        })
+    }
+}

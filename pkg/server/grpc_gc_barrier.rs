@@ -5,7 +5,7 @@ use astersql_pd_proto::pdpb;
 use astersql_pd_storage_domain::{BarrierTime, GCBarrier, GlobalGCBarrier};
 use astersql_pd_typeutil::{Duration, saturating_std_duration_from_seconds};
 use tonic::{Response, Status};
-fn now() -> Result<BarrierTime, Status> {
+pub(crate) fn now() -> Result<BarrierTime, Status> {
     let n = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
         .map_err(|e| Status::internal(e.to_string()))?;
@@ -14,7 +14,7 @@ fn now() -> Result<BarrierTime, Status> {
         n.subsec_nanos() as i64,
     ))
 }
-fn info(b: GCBarrier, now: BarrierTime) -> pdpb::GcBarrierInfo {
+pub(crate) fn info(b: GCBarrier, now: BarrierTime) -> pdpb::GcBarrierInfo {
     pdpb::GcBarrierInfo {
         barrier_id: b.barrier_id,
         barrier_ts: b.barrier_ts,
@@ -28,7 +28,7 @@ fn info(b: GCBarrier, now: BarrierTime) -> pdpb::GcBarrierInfo {
         }),
     }
 }
-fn global_info(b: GlobalGCBarrier, now: BarrierTime) -> pdpb::GlobalGcBarrierInfo {
+pub(crate) fn global_info(b: GlobalGCBarrier, now: BarrierTime) -> pdpb::GlobalGcBarrierInfo {
     let b = info(
         GCBarrier {
             barrier_id: b.barrier_id,
