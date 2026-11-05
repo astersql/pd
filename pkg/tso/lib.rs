@@ -16,3 +16,9 @@ mod tso_group_watch;
 pub use tso_group_watch::*;
 #[cfg(test)]
 mod tso_group_watch_test;
+
+mod group_handoff;
+pub use group_handoff::reserve_group_handoff;
+
+#[cfg(test)]
+mod group_handoff_test;

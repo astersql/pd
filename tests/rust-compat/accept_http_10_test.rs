@@ -32,7 +32,7 @@ use astersql_pd_proto::{
 use astersql_pd_storage_domain::{Consistency, MetaStore, Read};
 use serde_json::{Value, json};
 use std::{sync::Arc, time::Duration};
-fn http(url: &str, method: &str, path: &str, body: &str) -> Value {
+pub(super) fn http(url: &str, method: &str, path: &str, body: &str) -> Value {
     let out = std::process::Command::new("curl")
         .args([
             "-sS",
@@ -66,9 +66,22 @@ fn http(url: &str, method: &str, path: &str, body: &str) -> Value {
             .filter(|(k, _)| k.eq_ignore_ascii_case("location"))
             .map(|(_, v)| v.trim().to_owned())
     });
+    if let Ok(capture_path) = std::env::var("PD_COMPAT_HTTP_CAPTURE") {
+        use std::io::Write;
+        let mut bytes =
+            serde_json::to_vec(&json!({"url":url,"method":method,"path":path,"raw":raw})).unwrap();
+        bytes.push(b'\n');
+        std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open(capture_path)
+            .unwrap()
+            .write_all(&bytes)
+            .unwrap();
+    }
     json!({"status":status.parse::<u16>().unwrap(),"content_type":ct,"location":location,"body":serde_json::from_str::<Value>(body).unwrap_or(json!(body))})
 }
-async fn rows(store: &dyn MetaStore, p: &ClusterPaths) -> Value {
+pub(super) async fn rows(store: &dyn MetaStore, p: &ClusterPaths) -> Value {
     let s = store
         .read(Read::prefix(
             p.keyspace_group_id_prefix().as_bytes(),

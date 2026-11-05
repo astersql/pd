@@ -146,7 +146,7 @@ watcher/额度集成测试和测试工具。只补此清单，不改只读plan�
 | 79 查询分组与最小时间戳 | FindGroupByKeyspaceID和GetMinTS使用实际分组状态，未运行返回Unavailable且部分组未就绪不返回虚假下界。 | 9 | `pkg/mcs/tso/server/lib.rs`（拟建）；`pkg/mcs/tso/server/tso_service_query.rs`（拟建） | 待当前行为证据 |
 | 80 暴露时间戳管理API | resetTS及分组成员查询调用既有领域服务，校验reset上限与转发目标，HTTP错误格式匹配Go。 | 8 | `pkg/mcs/tso/server/lib.rs`（拟建）；`pkg/mcs/tso/server/tso_service_admin.rs`（拟建） | 待当前行为证据 |
 | 81 暴露时间戳主节点操作 | transfer及evict primary共用expected-primary规则，跨组转发不串组且重复请求不破坏leader。 | 8 | `pkg/mcs/tso/server/lib.rs`（拟建）；`pkg/mcs/tso/server/tso_service_primary.rs`（拟建） | 待当前行为证据 |
-| 82 装配时间戳服务生命周期 | CreateServer对应Rust宿主入口注入同一分组manager，注册前完成ready，关闭释放lease与监听器并清理本服务指标。 | 10 | `pkg/mcs/tso/server/lib.rs`（拟建）；`pkg/mcs/tso/server/tso_service_host.rs`（拟建） | 待当前行为证据 |
+| 82 装配时间戳服务生命周期 | CreateServer对应Rust宿主入口注入同一分组manager，注册前完成ready，关闭释放lease与监听器并清理本服务指标。 | 10 | `pkg/mcs/tso/server/tso_service_host.rs`；唯一canonical库及真实宿主入口 | 本项所需宿主子集已交接：[验收11](../server-api/acceptance/task-11.md)；不代替原任务其它依赖与指标整体验收 |
 | 83 同步路由Store元数据 | 初始化Store快照后接续watch，删除、断线和compaction重建保证BasicCluster最终一致。 | 2 | `pkg/mcs/router/server/meta/lib.rs`（拟建）；`pkg/mcs/router/server/meta/router_store_watch.rs`（拟建） | 待当前行为证据 |
 | 84 校验路由服务配置 | Parse与adjust保留监听及广播地址和TLS默认值，非法backend与Clone隔离符合Go。 | 1 | `pkg/mcs/router/server/config/lib.rs`（拟建）；`pkg/mcs/router/server/config/router_config.rs`（拟建） | 待当前行为证据 |
 | 85 同步路由Region状态 | RegionSyncer复用已有syncer按索引同步Region，切换PD leader及重复事件不回退范围树。 | 6 | `pkg/mcs/router/server/lib.rs`（拟建）；`pkg/mcs/router/server/router_region_sync.rs`（拟建） | 待当前行为证据 |
@@ -208,7 +208,7 @@ watcher/额度集成测试和测试工具。只补此清单，不改只读plan�
 | 141 接通独立路由入口 | 独立Router进程使用与嵌入相同builder，真实查询通过且SIGTERM后端口与服务注册均释放。 | 2 | `cmd/pd-server/bin_main.rs`（存在）；`cmd/pd-server/lib.rs`（存在）；`cmd/pd-server/main.rs`（存在）；`cmd/pd-server/standalone_router.rs`（拟建） | 待当前行为证据 |
 | 142 接通独立资源管理入口 | 独立RM进程使用同一builder与写角色规则，真实令牌请求通过且信号关闭不残留状态写任务。 | 3 | `cmd/pd-server/bin_main.rs`（存在）；`cmd/pd-server/lib.rs`（存在）；`cmd/pd-server/main.rs`（存在）；`cmd/pd-server/standalone_rm.rs`（拟建） | 待当前行为证据 |
 | 143 接通独立调度入口 | 独立Scheduling进程使用同一builder，真实心跳可生成operator响应，启动失败与信号退出清理资源。 | 2 | `cmd/pd-server/bin_main.rs`（存在）；`cmd/pd-server/lib.rs`（存在）；`cmd/pd-server/main.rs`（存在）；`cmd/pd-server/standalone_scheduling.rs`（拟建） | 待当前行为证据 |
-| 144 回归分组拆合跨服务链 | PD keyspace分组操作经MetaStorage与TSO watch传播，拆合期间发号单调且重新查询归属一致。 | 2 | `tests/rust-compat/accept_group.rs`（拟建）；`tests/rust-compat/lib.rs`（存在） | 待当前行为证据 |
+| 144 回归分组拆合跨服务链 | PD keyspace分组操作经MetaStorage与TSO watch传播，拆合期间发号单调且重新查询归属一致。 | 2 | `tests/rust-compat/accept_http_11_test.rs::sa_011_mcs_144_behavior` | 已有Go/Rust真实拆合、merge-all、发号、查询及WAL链证据：[验收11](../server-api/acceptance/task-11.md)；不据此销项其它独立服务协议 |
 | 145 回归路由换主收敛 | PD换主和Region同步断线后Router查询收敛，compaction重建不保留已删除Store。 | 2 | `tests/rust-compat/accept_router.rs`（拟建）；`tests/rust-compat/lib.rs`（存在） | 待当前行为证据 |
 | 146 回归资源写角色链 | PD元数据写经RM watcher生效，RM发令牌仅写运行状态，断线与compaction后无权限绕过或额度重复发放。 | 5 | `tests/rust-compat/accept_rm.rs`（拟建）；`tests/rust-compat/lib.rs`（存在） | 待当前行为证据 |
 | 147 回归调度监听恢复链 | 配置、规则及空间更新经watch驱动真实operator选择，切主及compaction恢复后旧任期不再调度。 | 2 | `tests/rust-compat/accept_scheduling.rs`（拟建）；`tests/rust-compat/lib.rs`（存在） | 待当前行为证据 |

@@ -13,7 +13,7 @@ use axum::{
 use serde_json::{Value, json};
 use std::{collections::BTreeSet, sync::Arc};
 use tokio_util::sync::CancellationToken;
-type Error = (u16, Value);
+pub(super) type Error = (u16, Value);
 fn err(e: impl std::fmt::Display) -> Error {
     (500, json!(e.to_string()))
 }
@@ -32,11 +32,17 @@ pub(crate) fn router(s: Arc<dyn PdServices>, c: CancellationToken) -> Router {
             post(handle).patch(handle),
         )
         .route("/pd/api/v2/tso/keyspace-groups/{id}/{*node}", patch(handle))
-        .route("/pd/api/v2/tso/keyspace-groups/{id}/split", patch(handle))
-        .route("/pd/api/v2/tso/keyspace-groups/{id}/merge", patch(handle))
+        .route(
+            "/pd/api/v2/tso/keyspace-groups/{id}/split",
+            patch(handle).post(handle).delete(handle),
+        )
+        .route(
+            "/pd/api/v2/tso/keyspace-groups/{id}/merge",
+            patch(handle).post(handle).delete(handle),
+        )
         .route(
             "/pd/api/v2/tso/keyspace-groups/{id}/keyspaces",
-            patch(handle),
+            patch(handle).delete(handle),
         )
         .route(
             "/pd/api/v2/tso/keyspace-groups/",
@@ -44,11 +50,29 @@ pub(crate) fn router(s: Arc<dyn PdServices>, c: CancellationToken) -> Router {
         )
         .route(
             "/pd/api/v2/tso/keyspace-groups/{id}/",
-            get(crate::accept_http_09::redirect).delete(crate::accept_http_09::redirect),
+            get(crate::accept_http_09::redirect)
+                .delete(crate::accept_http_09::redirect)
+                .patch(handle),
         )
         .route(
             "/pd/api/v2/tso/keyspace-groups/{id}/alloc/",
-            post(crate::accept_http_09::redirect),
+            post(crate::accept_http_09::redirect).patch(handle),
+        )
+        .route(
+            "/pd/api/v2/tso/keyspace-groups/{id}/split/",
+            post(crate::accept_http_09::redirect)
+                .delete(crate::accept_http_09::redirect)
+                .patch(handle),
+        )
+        .route(
+            "/pd/api/v2/tso/keyspace-groups/{id}/merge/",
+            post(crate::accept_http_09::redirect)
+                .delete(crate::accept_http_09::redirect)
+                .patch(handle),
+        )
+        .route(
+            "/pd/api/v2/tso/keyspace-groups/{id}/keyspaces/",
+            axum::routing::delete(crate::accept_http_09::redirect).patch(handle),
         )
         .with_state((s, c))
 }
@@ -61,7 +85,7 @@ fn group(g: Option<KeyspaceGroup>, hide: bool) -> Value {
     }
     v
 }
-fn bind(bytes: &[u8], structure: &str) -> Result<Value, Error> {
+pub(super) fn bind(bytes: &[u8], structure: &str) -> Result<Value, Error> {
     use serde::Deserialize;
     let mut d = serde_json::Deserializer::from_slice(bytes);
     let value = Value::deserialize(&mut d).map_err(|e| {
@@ -77,24 +101,65 @@ fn bind(bytes: &[u8], structure: &str) -> Result<Value, Error> {
     if value.is_null() {
         return Ok(json!({}));
     }
-    let fields = value.as_object().ok_or_else(|| {
+    value.as_object().ok_or_else(|| {
         binding(format!(
             "json: cannot unmarshal {} into Go value of type handlers.{structure}",
             crate::schedule_admin_balance_leader::json_type(&value)
         ))
     })?;
+    // Go's decoder reports the first invalid field in wire order, including duplicate keys.
+    struct Fields(Vec<(String, Value)>);
+    impl<'de> serde::Deserialize<'de> for Fields {
+        fn deserialize<D: serde::Deserializer<'de>>(d: D) -> Result<Self, D::Error> {
+            struct Visitor;
+            impl<'de> serde::de::Visitor<'de> for Visitor {
+                type Value = Fields;
+                fn expecting(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                    f.write_str("JSON object")
+                }
+                fn visit_map<M: serde::de::MapAccess<'de>>(
+                    self,
+                    mut map: M,
+                ) -> Result<Fields, M::Error> {
+                    let mut fields = Vec::new();
+                    while let Some(field) = map.next_entry()? {
+                        fields.push(field);
+                    }
+                    Ok(Fields(fields))
+                }
+            }
+            d.deserialize_map(Visitor)
+        }
+    }
+    let fields = Fields::deserialize(&mut serde_json::Deserializer::from_slice(bytes))
+        .map_err(|e| binding(e.to_string()))?;
     let mut out = serde_json::Map::new();
-    for (key, value) in fields {
+    for (key, value) in &fields.0 {
         let key = key.to_lowercase();
         let typ = match (structure, key.as_str()) {
             ("CreateKeyspaceGroupParams", "keyspace-groups") => "[]*endpoint.KeyspaceGroup",
             ("AllocNodesForKeyspaceGroupParams", "replica")
             | ("SetPriorityForKeyspaceGroupParams", "priority") => "int",
             ("SetNodesForKeyspaceGroupParams", "nodes") => "[]string",
+            (
+                "SplitKeyspaceGroupByIDParams",
+                "new-id" | "start-keyspace-id" | "end-keyspace-id",
+            ) => "uint32",
+            ("SplitKeyspaceGroupByIDParams" | "RemoveKeyspacesFromGroupParams", "keyspaces")
+            | ("MergeKeyspaceGroupsParams", "merge-list") => "[]uint32",
+            ("MergeKeyspaceGroupsParams", "merge-all-into-default") => "bool",
             _ => continue,
         };
+        if value.is_null() && matches!(typ, "int" | "uint32" | "bool") {
+            // JSON null leaves Go scalar fields unchanged, including repeated fields.
+            continue;
+        }
         if !value.is_null() {
-            let valid = if typ == "int" {
+            let valid = if typ == "uint32" {
+                value.as_u64().is_some_and(|n| n <= u32::MAX as u64)
+            } else if typ == "bool" {
+                value.is_boolean()
+            } else if typ == "int" {
                 value.as_i64().is_some()
             } else {
                 value.is_array()
@@ -102,15 +167,34 @@ fn bind(bytes: &[u8], structure: &str) -> Result<Value, Error> {
             if !valid {
                 return Err(binding(format!(
                     "json: cannot unmarshal {} into Go struct field {structure}.{key} of type {typ}",
-                    crate::schedule_admin_balance_leader::json_type(value)
+                    if value.is_number() && matches!(typ, "uint32" | "int") {
+                        format!("number {value}")
+                    } else {
+                        crate::schedule_admin_balance_leader::json_type(value).to_owned()
+                    }
                 )));
             }
-            if typ == "[]string" {
+            if typ == "[]string" || typ == "[]uint32" {
                 for v in value.as_array().unwrap() {
-                    if !v.is_null() && !v.is_string() {
+                    if !v.is_null()
+                        && !(if typ == "[]string" {
+                            v.is_string()
+                        } else {
+                            v.as_u64().is_some_and(|n| n <= u32::MAX as u64)
+                        })
+                    {
                         return Err(binding(format!(
-                            "json: cannot unmarshal {} into Go struct field {structure}.{key} of type string",
-                            crate::schedule_admin_balance_leader::json_type(v)
+                            "json: cannot unmarshal {} into Go struct field {structure}.{key} of type {}",
+                            if v.is_number() && typ == "[]uint32" {
+                                format!("number {v}")
+                            } else {
+                                crate::schedule_admin_balance_leader::json_type(v).to_owned()
+                            },
+                            if typ == "[]string" {
+                                "string"
+                            } else {
+                                "uint32"
+                            }
                         )));
                     }
                 }
@@ -159,6 +243,13 @@ async fn handle(
                 .filter(|id| *id <= 4096)
                 .ok_or_else(|| bad("invalid keyspace group id"))?
         };
+        if parts.len() == 2
+            && method != Method::PATCH
+            && matches!(parts[1], "split" | "merge" | "keyspaces")
+        {
+            return crate::accept_http_11::operate(s.as_ref(), &c, id, parts[1], &method, body)
+                .await;
+        }
         // Go validates creation and list input before checking API mode.
         let mut create = None;
         if method == Method::POST && path.is_empty() {
@@ -259,13 +350,12 @@ async fn handle(
                 .map_err(err)?
                 .ok_or_else(|| bad("keyspace group does not exist"))?;
             if parts.len() == 1 {
-                let nodes: Vec<String> = serde_json::from_value(
-                    v.get("nodes")
-                        .filter(|v| !v.is_null())
-                        .cloned()
-                        .unwrap_or(json!([])),
-                )
-                .map_err(err)?;
+                let nodes: Vec<String> = v["nodes"]
+                    .as_array()
+                    .into_iter()
+                    .flatten()
+                    .map(|v| v.as_str().unwrap_or_default().to_owned())
+                    .collect();
                 m.refresh_registered_nodes().await.map_err(err)?;
                 if nodes.iter().any(|n| m.registered_node(n).is_none()) {
                     return Err(bad("node does not exist"));

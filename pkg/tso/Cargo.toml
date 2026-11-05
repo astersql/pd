@@ -19,6 +19,7 @@ thiserror.workspace = true
 tokio.workspace = true
 tokio-util.workspace = true
 [dev-dependencies]
+async-trait.workspace = true
 [[test]]
 name = "etcd_behavior"
 path = "etcd_behavior_test.rs"

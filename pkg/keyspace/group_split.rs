@@ -216,6 +216,20 @@ impl KeyspaceGroupManager {
     }
     /// Clear both split states by target ID after validating current stored roles.
     pub async fn finish_split(&self, target: u32) -> Result<(), GroupSplitError> {
+        self.finish_split_checked(target, None).await
+    }
+    /// Complete exactly the transition whose durable TSO handoff was established.
+    pub async fn finish_split_handoff(
+        &self,
+        expected: &astersql_pd_storage_domain::KeyspaceGroup,
+    ) -> Result<(), GroupSplitError> {
+        self.finish_split_checked(expected.id, Some(expected)).await
+    }
+    async fn finish_split_checked(
+        &self,
+        target: u32,
+        expected: Option<&astersql_pd_storage_domain::KeyspaceGroup>,
+    ) -> Result<(), GroupSplitError> {
         let mut index = self.groups.write().await;
         let endpoint = StorageEndpoint::new(self.store.clone());
         let mut txn = Base::new(self.store.as_ref()).begin_txn();
@@ -224,6 +238,9 @@ impl KeyspaceGroupManager {
             .await
             .map_err(GroupCatalogError::from)?
             .ok_or(GroupSplitError::NotExists(target))?;
+        if expected.is_some_and(|e| e != &target_group) {
+            return Err(GroupCatalogError::Conflict.into());
+        }
         if !target_group.is_split_target() {
             return Err(GroupSplitError::NotInSplit(target));
         }

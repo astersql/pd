@@ -86,6 +86,20 @@ impl KeyspaceGroupManager {
     }
     /// Finish only after every recorded source has disappeared, using guarded reads.
     pub async fn finish_merge(&self, target: u32) -> Result<(), GroupMergeError> {
+        self.finish_merge_checked(target, None).await
+    }
+    /// Complete exactly the transition whose durable TSO handoff was established.
+    pub async fn finish_merge_handoff(
+        &self,
+        expected: &astersql_pd_storage_domain::KeyspaceGroup,
+    ) -> Result<(), GroupMergeError> {
+        self.finish_merge_checked(expected.id, Some(expected)).await
+    }
+    async fn finish_merge_checked(
+        &self,
+        target: u32,
+        expected: Option<&astersql_pd_storage_domain::KeyspaceGroup>,
+    ) -> Result<(), GroupMergeError> {
         let mut index = self.groups.write().await;
         let endpoint = StorageEndpoint::new(self.store.clone());
         let mut txn = Base::new(self.store.as_ref()).begin_txn();
@@ -94,6 +108,9 @@ impl KeyspaceGroupManager {
             .await
             .map_err(GroupCatalogError::from)?
             .ok_or(GroupMergeError::NotExists(target))?;
+        if expected.is_some_and(|e| e != &group) {
+            return Err(GroupCatalogError::Conflict.into());
+        }
         if !group.is_merge_target() {
             return Err(GroupMergeError::NotInMerging(target));
         }

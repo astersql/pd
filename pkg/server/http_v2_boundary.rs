@@ -17,24 +17,6 @@ pub(crate) fn router(cancel: CancellationToken) -> Router {
     let mut router = Router::new();
     for (path, methods, domain, dependency) in [
         (
-            "tso/keyspace-groups/{id}/split",
-            M::POST.or(M::DELETE),
-            "tso-keyspace-group",
-            "theme-8",
-        ),
-        (
-            "tso/keyspace-groups/{id}/merge",
-            M::POST.or(M::DELETE),
-            "tso-keyspace-group",
-            "theme-8",
-        ),
-        (
-            "tso/keyspace-groups/{id}/keyspaces",
-            M::DELETE,
-            "tso-keyspace-group",
-            "theme-8",
-        ),
-        (
             "meta-service-groups",
             M::GET.or(M::PATCH),
             "meta-service-group",

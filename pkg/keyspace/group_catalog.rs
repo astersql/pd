@@ -71,6 +71,10 @@ impl KeyspaceGroupManager {
         Err(GroupCatalogError::KeyspaceNotInGroup)
     }
 
+    /// Check that an embedding host supplies this catalog's exact metadata resources.
+    pub fn uses_metadata_store(&self, store: &Arc<dyn MetaStore>, cluster_id: u64) -> bool {
+        Arc::ptr_eq(&self.store, store) && self.paths.cluster_id() == cluster_id
+    }
     pub fn new(store: Arc<dyn MetaStore>, paths: ClusterPaths) -> Self {
         Self {
             store,

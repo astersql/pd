@@ -35,7 +35,10 @@ fn audit(metadata: &Value, sources: &[(String, String)]) -> Result<(), String> {
         let adapter = host
             || matches!(
                 name,
-                "astersql-pd-server" | "astersql-pd-proto" | "astersql-pd-storage-endpoint"
+                "astersql-pd-server"
+                    | "astersql-pd-proto"
+                    | "astersql-pd-storage-endpoint"
+                    | "astersql-pd-mcs-tso-server"
             );
         for dep in package["dependencies"].as_array().unwrap() {
             if dep["kind"] == "dev" {
@@ -66,6 +69,7 @@ fn audit(metadata: &Value, sources: &[(String, String)]) -> Result<(), String> {
         // Adapter paths are explicit, never inferred from the substring "server".
         let adapter = [
             "pkg/server/",
+            "pkg/mcs/tso/server/",
             "pkg/runtime/",
             "pkg/proto/",
             "pkg/storage/endpoint/",
@@ -209,12 +213,22 @@ fn sa_002_dependency_direction() {
             .unwrap_err()
             .contains("facade repeats")
     );
+    let mut disguised = sources.clone();
+    disguised.push((
+        "pkg/mcs/tso/domain_server/leak.rs".into(),
+        "use astersql_pd_proto::tsopb;".into(),
+    ));
+    assert!(
+        audit(&metadata, &disguised)
+            .unwrap_err()
+            .contains("domain protocol reference")
+    );
     let hashes: Vec<_> = sources
         .iter()
         .map(|(p, s)| json!({"path":p,"sha256":format!("{:x}",Sha256::digest(s.as_bytes()))}))
         .collect();
     println!(
-        "packages={} sources={} negative_controls=5 metadata_sha256={:x}",
+        "packages={} sources={} negative_controls=6 metadata_sha256={:x}",
         metadata["packages"].as_array().unwrap().len(),
         sources.len(),
         Sha256::digest(&output.stdout)
@@ -223,7 +237,7 @@ fn sa_002_dependency_direction() {
         std::fs::write(
             path,
             serde_json::to_vec_pretty(
-                &json!({"metadata":metadata,"sources":hashes,"negative_controls":5}),
+                &json!({"metadata":metadata,"sources":hashes,"negative_controls":6}),
             )
             .unwrap(),
         )

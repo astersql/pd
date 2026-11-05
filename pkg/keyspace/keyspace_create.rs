@@ -108,6 +108,7 @@ pub struct KeyspaceManager {
     pub(crate) storage: KeyspaceStorage,
     pub cache: Arc<Cache>,
     pub(crate) mutation: Mutex<()>,
+    pub(crate) split_patrol: Mutex<Option<u32>>,
     pub(crate) resources: KeyspaceCreateResources,
     pub(crate) removal_observer: RwLock<Option<crate::GCBarrierInvalidator>>,
 }
@@ -143,6 +144,7 @@ impl KeyspaceManager {
             storage,
             cache: Arc::new(Cache::default()),
             mutation: Mutex::new(()),
+            split_patrol: Mutex::new(None),
             resources,
             removal_observer: RwLock::new(None),
         }

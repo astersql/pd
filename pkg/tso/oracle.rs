@@ -79,6 +79,7 @@ pub struct Oracle {
     cancel: CancellationToken,
     key: Vec<u8>,
     interval: u64,
+    metadata_guard: Vec<Compare>,
     window: Mutex<Window>,
     metrics: Option<crate::OracleMetrics>,
 }
@@ -110,6 +111,7 @@ impl Oracle {
             save_interval_millis,
             0,
             metrics,
+            vec![],
         )
         .await
     }
@@ -130,8 +132,22 @@ impl Oracle {
             save_interval_millis,
             group_id,
             None,
+            vec![],
         )
         .await
+    }
+    /// Reserve a window whose reads and writes are fenced by authoritative group metadata.
+    pub async fn new_for_group_guarded(
+        store: Arc<dyn MetaStore>,
+        leader: Arc<Leadership>,
+        clock: Arc<dyn Clock>,
+        cancel: CancellationToken,
+        interval: u64,
+        group: u32,
+        guard: Vec<Compare>,
+    ) -> Result<Self, TsoError> {
+        Self::new_for_group_with_metrics(store, leader, clock, cancel, interval, group, None, guard)
+            .await
     }
     async fn new_for_group_with_metrics(
         store: Arc<dyn MetaStore>,
@@ -141,6 +157,7 @@ impl Oracle {
         save_interval_millis: u64,
         group_id: u32,
         metrics: Option<crate::OracleMetrics>,
+        metadata_guard: Vec<Compare>,
     ) -> Result<Self, TsoError> {
         if !leader.uses_store(&store) {
             return Err(TsoError::StoreMismatch);
@@ -150,6 +167,7 @@ impl Oracle {
         }
         let oracle = Self {
             metrics,
+            metadata_guard,
             key: astersql_pd_keypath::ClusterPaths::new(leader.cluster_id())
                 .timestamp_path(group_id)
                 .into_bytes(),
@@ -217,7 +235,11 @@ impl Oracle {
             let commit = self
                 .leader
                 .transact(
-                    vec![compare],
+                    self.metadata_guard
+                        .iter()
+                        .cloned()
+                        .chain([compare])
+                        .collect(),
                     vec![Mutation::put(&self.key, &end.to_be_bytes())],
                 )
                 .await
@@ -245,6 +267,9 @@ impl Oracle {
                 };
                 return Ok(());
             }
+            if !self.metadata_guard.is_empty() {
+                return Err(TsoError::WindowLost);
+            }
             tokio::task::yield_now().await;
         }
     }
@@ -259,10 +284,14 @@ impl Oracle {
         let commit = self
             .leader
             .transact(
-                vec![Compare::Value(
-                    self.key.clone(),
-                    saved.to_be_bytes().to_vec(),
-                )],
+                self.metadata_guard
+                    .iter()
+                    .cloned()
+                    .chain([Compare::Value(
+                        self.key.clone(),
+                        saved.to_be_bytes().to_vec(),
+                    )])
+                    .collect(),
                 writes,
             )
             .await?;

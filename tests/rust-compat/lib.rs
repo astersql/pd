@@ -119,3 +119,6 @@ mod accept_http_09_test;
 
 #[cfg(test)]
 mod accept_http_10_test;
+
+#[cfg(test)]
+mod accept_http_11_test;

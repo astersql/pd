@@ -95,6 +95,51 @@ async fn allocator_worker(
         }))
         .into_bytes();
     while !cancel.is_cancelled() {
+        let metadata_key = paths.keyspace_group_id_path(id).into_bytes();
+        let snapshot = match config
+            .store
+            .read(astersql_pd_storage_domain::Read::prefix(
+                &metadata_key,
+                astersql_pd_storage_domain::Consistency::Linearizable,
+            ))
+            .await
+        {
+            Ok(s) => s,
+            Err(_) => {
+                tokio::select! {_=cancel.cancelled()=>break,_=tokio::time::sleep(Duration::from_millis(100))=>{}}
+                continue;
+            }
+        };
+        let row = snapshot.entries.iter().find(|e| e.key == metadata_key);
+        let metadata_guard = if let Some(row) = row {
+            let group: KeyspaceGroup = match serde_json::from_slice(&row.value) {
+                Ok(g) => g,
+                Err(_) => break,
+            };
+            if !group
+                .members
+                .iter()
+                .flatten()
+                .any(|n| n.is_address_equivalent(&config.address))
+                && !(id == 0 && group.members.as_ref().is_none_or(Vec::is_empty))
+            {
+                break;
+            }
+            if group.is_split_target() || group.is_merging() {
+                break;
+            }
+            vec![astersql_pd_storage_domain::Compare::Value(
+                metadata_key,
+                row.value.clone(),
+            )]
+        } else if id == 0 {
+            vec![astersql_pd_storage_domain::Compare::CreateRevision(
+                metadata_key,
+                0,
+            )]
+        } else {
+            break;
+        };
         let term_cancel = cancel.child_token();
         let elected = Leadership::campaign_with_key(
             config.store.clone(),
@@ -103,18 +148,19 @@ async fn allocator_worker(
             key.clone(),
             (config.participant)(id),
             config.lease_seconds,
-            vec![],
+            metadata_guard.clone(),
         )
         .await;
         if let Ok(term) = elected {
             let term = Arc::new(term);
-            if let Ok(oracle) = Oracle::new_for_group(
+            if let Ok(oracle) = Oracle::new_for_group_guarded(
                 config.store.clone(),
                 term.clone(),
                 config.clock.clone(),
                 term_cancel.clone(),
                 config.save_interval_millis,
                 id,
+                metadata_guard,
             )
             .await
             {
@@ -201,6 +247,18 @@ impl GroupAllocatorWatch {
     /// Resume at the last published revision; transient and compaction recovery
     /// are delegated to the canonical reconciled snapshot/watch implementation.
     pub async fn next(&mut self) -> Result<i64, TsoError> {
+        self.receive_pending().await?;
+        self.apply_pending().await
+    }
+    /// Bound only network receive time, allowing resource shutdown to finish before publication.
+    pub async fn poll_next(&mut self, wait: Duration) -> Result<Option<i64>, TsoError> {
+        match tokio::time::timeout(wait, self.receive_pending()).await {
+            Ok(result) => result?,
+            Err(_) => return Ok(None),
+        }
+        self.apply_pending().await.map(Some)
+    }
+    async fn receive_pending(&mut self) -> Result<(), TsoError> {
         if self.pending.is_none() {
             let mut received = None;
             self.watch
@@ -211,11 +269,14 @@ impl GroupAllocatorWatch {
                 .await?;
             self.pending = received;
         }
-        if let Some(batch) = self.pending.take() {
-            if let Err(error) = self.apply(&batch).await {
-                self.pending = Some(batch);
-                return Err(error);
-            }
+        Ok(())
+    }
+    async fn apply_pending(&mut self) -> Result<i64, TsoError> {
+        // Retain the consumed batch until publication, even if the caller drops this future
+        // while shutdown is waiting for a real lease-revocation RPC.
+        if let Some(batch) = self.pending.clone() {
+            self.apply(&batch).await?;
+            self.pending = None;
         }
         Ok(self.revision)
     }
@@ -311,12 +372,15 @@ impl GroupAllocatorWatch {
                     .flatten()
                     .any(|n| n.is_address_equivalent(&self.config.address))
             })
-            .map(|g| (g.id, g.is_splitting() || g.is_merging()))
+            .map(|g| (g.id, g.is_split_target() || g.is_merging()))
             .collect::<BTreeMap<_, _>>();
         let removed = self
             .allocators
             .iter()
-            .filter(|(id, a)| assigned.get(id).is_none_or(|t| *t != a.transitioning))
+            .filter(|(id, a)| {
+                assigned.get(id).is_none_or(|t| *t != a.transitioning)
+                    || a.worker.as_ref().is_some_and(|w| w.is_finished())
+            })
             .map(|(id, _)| *id)
             .collect::<Vec<_>>();
         for id in removed {
@@ -334,6 +398,10 @@ impl GroupAllocatorWatch {
         Ok(())
     }
     pub async fn shutdown(mut self) -> Result<(), TsoError> {
+        self.stop_allocators().await
+    }
+    /// Stop every owned allocator while retaining the last readable assignment snapshot.
+    pub async fn stop_allocators(&mut self) -> Result<(), TsoError> {
         self.config.cancel.cancel();
         let mut failure = None;
         for (_, allocator) in std::mem::take(&mut self.allocators) {

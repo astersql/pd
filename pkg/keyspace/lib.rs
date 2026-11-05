@@ -114,3 +114,7 @@ mod group_remove_test;
 
 mod keyspace_watch;
 pub use keyspace_watch::KeyspaceWatch;
+
+mod group_transition_prepare;
+#[cfg(test)]
+mod group_transition_prepare_test;

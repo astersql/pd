@@ -244,6 +244,7 @@ dependencies = [
  "astersql-pd-keypath",
  "astersql-pd-keyspace",
  "astersql-pd-keyutil",
+ "astersql-pd-mcs-tso-server",
  "astersql-pd-member",
  "astersql-pd-progress",
  "astersql-pd-proto",
@@ -486,6 +487,29 @@ dependencies = [
 [[package]]
 name = "astersql-pd-mcs-constant"
 version = "0.1.0"
+
+[[package]]
+name = "astersql-pd-mcs-tso-server"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-election",
+ "astersql-pd-keypath",
+ "astersql-pd-keyspace",
+ "astersql-pd-proto",
+ "astersql-pd-storage-domain",
+ "astersql-pd-storage-kv",
+ "astersql-pd-tso",
+ "futures-util",
+ "http-body-util",
+ "hyper",
+ "hyper-util",
+ "prost",
+ "serde_json",
+ "tokio",
+ "tokio-stream",
+ "tokio-util",
+ "tonic",
+]
 
 [[package]]
 name = "astersql-pd-member"
@@ -1336,6 +1360,7 @@ dependencies = [
  "astersql-pd-metricutil",
  "astersql-pd-storage-domain",
  "astersql-pd-storage-kv",
+ "async-trait",
  "prometheus",
  "serde_json",
  "thiserror 2.0.21",

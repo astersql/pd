@@ -38,12 +38,6 @@ fn routes() -> Vec<(String, String, &'static str, &'static str)> {
     let param = regex::Regex::new(r"[:*][A-Za-z_]+").unwrap();
     for (source, prefix, domain, dependency) in [
         (
-            include_str!("../../server/apiv2/handlers/tso_keyspace_group.go"),
-            "tso/keyspace-groups",
-            "tso-keyspace-group",
-            "theme-8",
-        ),
-        (
             include_str!("../../server/apiv2/handlers/meta_service_group.go"),
             "meta-service-groups",
             "meta-service-group",
@@ -193,7 +187,7 @@ async fn task_078_behavior() {
     .map(|p| call(&url, "PATCH", p, "{}"))
     .collect();
     node.shutdown().await.unwrap();
-    assert_eq!(observations.len(), 11);
+    assert_eq!(observations.len(), 6);
     assert_eq!(
         before, after,
         "rejected routes must not mutate domain state"

@@ -1198,3 +1198,7 @@ mod accept_http_09;
 mod grpc_keyspace;
 
 mod accept_http_10;
+
+mod accept_http_11;
+#[cfg(test)]
+mod accept_http_11_test;

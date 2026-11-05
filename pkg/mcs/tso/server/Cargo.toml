@@ -1,0 +1,27 @@
+[package]
+name = "astersql-pd-mcs-tso-server"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+[lib]
+path = "lib.rs"
+[dependencies]
+astersql-pd-tso.workspace = true
+astersql-pd-keyspace.workspace = true
+astersql-pd-storage-domain.workspace = true
+astersql-pd-keypath.workspace = true
+astersql-pd-election.workspace = true
+astersql-pd-proto.workspace = true
+tokio.workspace = true
+tokio-util.workspace = true
+tokio-stream = { workspace = true, features = ["net"] }
+serde_json.workspace = true
+tonic.workspace = true
+prost.workspace = true
+futures-util.workspace = true
+hyper.workspace = true
+hyper-util.workspace = true
+http-body-util.workspace = true
+[dev-dependencies]
+astersql-pd-storage-kv.workspace = true

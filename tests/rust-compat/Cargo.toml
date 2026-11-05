@@ -9,6 +9,7 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
+astersql-pd-mcs-tso-server.workspace = true
 astersql-pd-tso.workspace = true
 sha2.workspace = true
 tokio.workspace = true

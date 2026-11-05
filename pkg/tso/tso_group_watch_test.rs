@@ -3,7 +3,7 @@ use super::*;
 use std::sync::Arc;
 #[allow(dead_code)]
 #[path = "../storage/kv/etcd_fixture_test.rs"]
-mod fixture;
+pub(super) mod fixture;
 fn config(store: Arc<dyn astersql_pd_storage_kv::MetaStore>, address: String) -> GroupWatchConfig {
     GroupWatchConfig {
         store,
@@ -352,4 +352,152 @@ async fn mcs_072_reserved_keyspace_and_assignment_recovery() {
     assert!(w.allocator(0).is_some());
     timestamp(&w, 0).await;
     w.shutdown().await.unwrap();
+}
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn mcs_073_deleted_group_cannot_issue_before_watch_delivery() {
+    let f = fixture::Fixture::start();
+    let store: Arc<dyn MetaStore> = Arc::new(f.store().await);
+    let address = "http://handoff-source".to_owned();
+    write_group(store.as_ref(), 1, vec![101], vec![address.clone()]).await;
+    let w = GroupAllocatorWatch::load(config(store.clone(), address))
+        .await
+        .unwrap();
+    let before = timestamp(&w, 1).await;
+    store
+        .transact(
+            vec![],
+            vec![Mutation::Delete {
+                key: ClusterPaths::new(760)
+                    .keyspace_group_id_path(1)
+                    .into_bytes(),
+            }],
+        )
+        .await
+        .unwrap();
+    let stale = w.allocator(1).unwrap().allocate(1).await;
+    w.shutdown().await.unwrap();
+    assert!(
+        stale.is_err(),
+        "removed source issued {stale:?} after {before:?} before its watch was polled"
+    );
+}
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn mcs_076_cancelled_apply_replays_batch() {
+    let mut f = fixture::Fixture::start();
+    let gate = Arc::new(gated_revoke::Store {
+        inner: Arc::new(f.store().await),
+        blocked: false.into(),
+        entered: tokio::sync::Notify::new(),
+        release: tokio::sync::Notify::new(),
+    });
+    let store: Arc<dyn MetaStore> = gate.clone();
+    let address = "http://apply-replay".to_owned();
+    write_group(store.as_ref(), 1, vec![101], vec![address.clone()]).await;
+    let mut w = GroupAllocatorWatch::load(config(store.clone(), address.clone()))
+        .await
+        .unwrap();
+    timestamp(&w, 1).await;
+    // Establish the real watch before the event; then make lease revocation wait on the actual network.
+    assert!(
+        tokio::time::timeout(Duration::from_millis(100), w.next())
+            .await
+            .is_err()
+    );
+    gate.blocked
+        .store(true, std::sync::atomic::Ordering::SeqCst);
+    let value = serde_json::json!({"id":1,"keyspaces":[101],"members":[{"address":address,"priority":0}],"merge-state":{"merge-list":[2]}});
+    let revision = store
+        .transact(
+            vec![],
+            vec![Mutation::put(
+                ClusterPaths::new(760).keyspace_group_id_path(1).as_bytes(),
+                &serde_json::to_vec(&value).unwrap(),
+            )],
+        )
+        .await
+        .unwrap()
+        .revision;
+    tokio::time::sleep(Duration::from_millis(100)).await;
+    tokio::time::timeout(Duration::from_secs(2), gate.entered.notified())
+        .await
+        .unwrap();
+    let outage = f.suspend();
+    assert!(
+        tokio::time::timeout(Duration::from_millis(20), w.next())
+            .await
+            .is_err()
+    );
+    drop(outage);
+    gate.blocked
+        .store(false, std::sync::atomic::Ordering::SeqCst);
+    gate.release.notify_waiters();
+    tokio::time::timeout(Duration::from_secs(2), w.next())
+        .await
+        .expect("a cancelled resource application must retain its consumed batch")
+        .unwrap();
+    assert_eq!(w.revision(), revision);
+    assert!(w.group(1).unwrap().is_merge_target());
+    assert!(w.allocator(1).unwrap().allocate(1).await.is_err());
+    w.shutdown().await.unwrap();
+}
+mod gated_revoke {
+    use astersql_pd_storage_domain::*;
+    use std::sync::{
+        Arc,
+        atomic::{AtomicBool, Ordering},
+    };
+    pub struct Store {
+        pub inner: Arc<dyn MetaStore>,
+        pub blocked: AtomicBool,
+        pub entered: tokio::sync::Notify,
+        pub release: tokio::sync::Notify,
+    }
+    #[async_trait::async_trait]
+    impl MetaStore for Store {
+        async fn read(&self, r: Read) -> Result<Snapshot> {
+            self.inner.read(r).await
+        }
+        async fn transact(&self, c: Vec<Compare>, w: Vec<Mutation>) -> Result<Commit> {
+            self.inner.transact(c, w).await
+        }
+        async fn transact_branches(
+            &self,
+            c: Vec<Compare>,
+            t: Vec<Mutation>,
+            e: Vec<Mutation>,
+        ) -> Result<Commit> {
+            self.inner.transact_branches(c, t, e).await
+        }
+        async fn transact_raw(
+            &self,
+            c: Vec<Compare>,
+            t: Vec<RawTxnOp>,
+            e: Vec<RawTxnOp>,
+        ) -> Result<RawTxnResponse> {
+            self.inner.transact_raw(c, t, e).await
+        }
+        async fn watch(&self, p: Vec<u8>, r: Revision) -> Result<Box<dyn MetaWatch>> {
+            self.inner.watch(p, r).await
+        }
+        async fn grant(&self, t: i64) -> Result<Lease> {
+            self.inner.grant(t).await
+        }
+        async fn keep_alive(&self, l: LeaseId) -> Result<Lease> {
+            self.inner.keep_alive(l).await
+        }
+        async fn revoke(&self, l: LeaseId) -> Result<()> {
+            while self.blocked.load(Ordering::SeqCst) {
+                let resume = self.release.notified();
+                self.entered.notify_one();
+                resume.await;
+            }
+            self.inner.revoke(l).await
+        }
+        async fn ttl(&self, l: LeaseId) -> Result<i64> {
+            self.inner.ttl(l).await
+        }
+        async fn compact(&self, r: Revision) -> Result<()> {
+            self.inner.compact(r).await
+        }
+    }
 }
