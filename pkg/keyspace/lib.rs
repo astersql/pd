@@ -16,3 +16,14 @@ pub use meta_group_assign::*;
 #[cfg(test)]
 #[path = "meta_group_assign_test.rs"]
 mod meta_group_assign_test;
+
+mod meta_group_update;
+pub use meta_group_update::*;
+#[cfg(test)]
+#[path = "meta_group_update_test.rs"]
+mod meta_group_update_test;
+
+#[cfg(test)]
+#[allow(dead_code)]
+#[path = "../storage/kv/etcd_fixture_test.rs"]
+mod etcd_fixture;

@@ -271,8 +271,9 @@ impl Fixture {
         loop {
             assert!(
                 self.child.try_wait().unwrap().is_none(),
-                "native etcd exited: {}",
-                self.directory.display()
+                "native etcd exited: {}: {}",
+                self.directory.display(),
+                std::fs::read_to_string(self.directory.join("etcd.log")).unwrap_or_default()
             );
             if let Ok(mut stream) =
                 std::net::TcpStream::connect_timeout(&address, Duration::from_millis(200))

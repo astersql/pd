@@ -1,14 +1,12 @@
 // Copyright 2026 AsterSQL.
 
 use super::*;
+use crate::etcd_fixture as fixture;
 use astersql_pd_keypath::ClusterPaths;
 use astersql_pd_storage_domain::{
     Base, CallbackTxnError, MetaServiceGroupStatus, MetaStore, StorageEndpoint,
 };
 use std::{collections::BTreeMap, sync::Arc};
-#[allow(dead_code)]
-#[path = "../storage/kv/etcd_fixture_test.rs"]
-mod fixture;
 
 async fn setup(store: Arc<dyn MetaStore>) -> MetaServiceGroupManager {
     let endpoint = StorageEndpoint::new(store.clone());
