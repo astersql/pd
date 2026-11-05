@@ -105,7 +105,7 @@ watcher/额度集成测试和测试工具。只补此清单，不改只读plan�
 | 38 更新键空间配置前置条件 | UpdateKeyspaceConfigWithPreconditions按CAS合并与删除配置，前置条件不满足或事务失败保持原状态。 | 5 | `pkg/keyspace/keyspace_config.rs`；复用assignment/membership事务 | 已完成：[task-038](task-038.md)，5聚焦/79包级；Go叶例及八组patch/真实提交拒绝/WAL差分；明确保留Go独立TSO提交阶段 |
 | 39 迁移键空间生命周期 | UpdateKeyspaceState和ByID入口遵循状态转移限制，保护保留空间并按原行为失效GC缓存。 | 5 | `pkg/keyspace/keyspace_state.rs`；创建启用复用同一API | 已完成：[task-039](task-039.md)，6聚焦/85包级、37组Go RPC/HTTP/故障/WAL；两内核ID叶例及真实Go GC延迟失效用例 |
 | 40 删除键空间元数据 | 删除仅作用于符合状态与前置条件的空间，原子清理name索引、分组计数及缓存，失败可重试。 | 5 | `pkg/keyspace/keyspace_remove.rs`；prepared事务及提交后观察失效端口 | 已完成：[task-040](task-040.md)，7聚焦/92包级；Go三删除叶例/GC观察叶例及在线原子事件/WAL差分 |
-| 41 初始化保留键空间 | Bootstrap重复运行幂等，初始化默认及保留空间；事务失败不产生半成品索引。 | 5 | `pkg/keyspace/keyspace_bootstrap.rs`（拟建）；`pkg/keyspace/lib.rs`（拟建） | 待当前行为证据 |
+| 41 初始化保留键空间 | Bootstrap重复运行幂等，初始化默认及保留空间；事务失败不产生半成品索引。 | 5 | `pkg/keyspace/keyspace_bootstrap.rs`；host-owned预分配与按kernel初始化分组 | 已完成：[task-041](task-041.md)，5聚焦/97包级、两内核Go原例、真实Go引导/预分配/重复引导/WAL差分 |
 | 42 批量移除分组键空间 | RemoveKeyspacesFromGroup按事务容量分批且每批CAS，部分失败重试不误删不合格空间。 | 3 | `pkg/keyspace/group_remove.rs`（拟建）；`pkg/keyspace/lib.rs`（拟建） | 待当前行为证据 |
 | 43 读取键空间GC状态 | GetGCState从真实存储加载并按管理类型重定向，缓存miss与直接读错误保持一致。 | 11 | `pkg/gc/gc_read.rs`（拟建）；`pkg/gc/lib.rs`（拟建） | 待当前行为证据 |
 | 44 推进事务安全点 | AdvanceTxnSafePoint在CAS中单调推进，过旧值与冲突不倒退。 | 11 | `pkg/gc/lib.rs`（拟建）；`pkg/gc/txn_safe_point.rs`（拟建） | 待当前行为证据 |

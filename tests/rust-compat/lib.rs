@@ -75,3 +75,6 @@ mod keyspace_state_oracle_test;
 
 #[cfg(test)]
 mod keyspace_remove_oracle_test;
+
+#[cfg(test)]
+mod keyspace_bootstrap_oracle_test;

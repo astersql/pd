@@ -398,7 +398,7 @@ impl KeyspaceManager {
     }
 }
 impl KeyspaceGroupManager {
-    async fn creation_group(&self, kind: UserKind) -> Result<u32, KeyspaceError> {
+    pub(crate) async fn creation_group(&self, kind: UserKind) -> Result<u32, KeyspaceError> {
         let index = self.groups.read().await;
         let groups = index
             .get(&kind.0)
@@ -411,7 +411,7 @@ impl KeyspaceGroupManager {
                 KeyspaceError::Validation(format!("no keyspace group for user kind {kind}"))
             })
     }
-    async fn add_created_keyspace(
+    pub(crate) async fn add_created_keyspace(
         &self,
         kind: UserKind,
         group_id: &str,

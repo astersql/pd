@@ -62,12 +62,18 @@ impl KeyspaceGroupManager {
             reconcile: std::sync::Mutex::new(None),
         }
     }
-    /// Ensure the classic default group and reload all current user-kind entries.
+    /// Ensure the current kernel's protected keyspace in the default group and reload the catalog.
     pub async fn bootstrap(&self) -> Result<(), GroupCatalogError> {
+        self.bootstrap_for_kernel(crate::Kernel::current()).await
+    }
+    pub async fn bootstrap_for_kernel(
+        &self,
+        kernel: crate::Kernel,
+    ) -> Result<(), GroupCatalogError> {
         let default = KeyspaceGroup {
             id: 0,
             user_kind: "basic".into(),
-            keyspaces: Some(vec![0]),
+            keyspaces: Some(vec![kernel.bootstrap_identity().0]),
             ..Default::default()
         };
         match self.create_groups(&[default]).await {

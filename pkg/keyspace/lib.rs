@@ -99,3 +99,9 @@ pub use keyspace_remove::{GCBarrierInvalidator, PreparedKeyspaceRemoval};
 #[cfg(test)]
 #[path = "keyspace_remove_test.rs"]
 mod keyspace_remove_test;
+
+mod keyspace_bootstrap;
+pub use keyspace_bootstrap::{BootstrapWork, PreallocationOutcome};
+#[cfg(test)]
+#[path = "keyspace_bootstrap_test.rs"]
+mod keyspace_bootstrap_test;
