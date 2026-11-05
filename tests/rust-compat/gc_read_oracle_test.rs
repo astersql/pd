@@ -310,3 +310,96 @@ async fn mcs_043_state_read_go_differential() {
         std::fs::write(path, serde_json::to_vec_pretty(&report).unwrap()).unwrap();
     }
 }
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+#[ignore = "requires admitted read-only Go binary and official etcd"]
+async fn mcs_053_list_go_differential() {
+    let (go, cluster) = crate::group_merge_oracle_test::start_bootstrapped_go(None).await;
+    let gs: Arc<dyn MetaStore> = Arc::new(
+        astersql_pd_storage_kv::EtcdMetaStore::connect(&[go.url.clone()], Duration::from_secs(2))
+            .await
+            .unwrap(),
+    );
+    let fixture = crate::harness::fixture::Fixture::start();
+    let rs: Arc<dyn MetaStore> = Arc::new(fixture.store().await);
+    let gp = ClusterPaths::new(cluster);
+    let rp = ClusterPaths::new(42);
+    for (store, p) in [(&gs, &gp), (&rs, &rp)] {
+        let wire = astersql_pd_storage_endpoint::StorageEndpoint::new(store.clone());
+        for id in 1001..1125 {
+            let meta = Keyspace {
+                identity: Some(KeyspaceIdentity::Id(id)),
+                name: format!("gc53_{id}"),
+                state: if id == 1003 { 2 } else { 0 },
+                config: if id != 1002 {
+                    HashMap::from([("gc_management_type".into(), "keyspace_level".into())])
+                } else {
+                    HashMap::new()
+                },
+                ..Default::default()
+            };
+            let mut tx = Base::new(store.as_ref()).begin_txn();
+            wire.save_keyspace_meta(&mut tx, p, &meta).unwrap();
+            tx.commit::<String>().await.unwrap();
+        }
+        let ep = StorageEndpoint::new(store.clone());
+        let mut tx = ep.begin_gc_state_transaction(p).await.unwrap();
+        for id in [NULL_KEYSPACE_ID, 1001, 1002, 1003] {
+            tx.batch.set_txn_safe_point(id, 99);
+            tx.batch.set_gc_safe_point(id, 19);
+            tx.batch
+                .set_gc_barrier(
+                    id,
+                    &GCBarrier {
+                        barrier_id: "forever".into(),
+                        barrier_ts: 100,
+                        expiration_time: None,
+                    },
+                )
+                .unwrap();
+        }
+        tx.commit().await.unwrap();
+    }
+    let keys = Arc::new(KeyspaceManager::new(
+        astersql_pd_storage_endpoint::StorageEndpoint::new(rs.clone()).keyspace_storage(rp.clone()),
+    ));
+    let manager = Arc::new(GCStateManager::new(
+        StorageEndpoint::new(rs.clone()),
+        rp.clone(),
+        keys,
+        tokio::runtime::Handle::current(),
+    ));
+    let role = manager.on_node_becomes_leader().await;
+    let mut client = PdClient::connect(go.url.clone()).await.unwrap();
+    let mut report = vec![];
+    for exclude in [true, false, true] {
+        let before_g = physical(gs.as_ref(), &gp).await;
+        let before_r = physical(rs.as_ref(), &rp).await;
+        let response = client
+            .get_all_keyspaces_gc_states(pdpb::GetAllKeyspacesGcStatesRequest {
+                header: Some(pdpb::RequestHeader {
+                    cluster_id: cluster,
+                    ..Default::default()
+                }),
+                exclude_gc_barriers: exclude,
+                exclude_global_gc_barriers: true,
+            })
+            .await
+            .unwrap()
+            .into_inner();
+        assert!(response.header.unwrap().error.is_none());
+        let mut expected = response.gc_states;
+        expected.retain(|s|matches!(s.keyspace_scope.as_ref().and_then(|s|s.keyspace.as_ref()),Some(keyspace_scope::Keyspace::KeyspaceId(id)) if *id>=1001));
+        expected.sort_by_key(|s| format!("{:?}", s.keyspace_scope));
+        let states = manager.get_all_keyspaces_gc_states(exclude).await.unwrap();
+        let mut actual: Vec<_> = states.values().map(dto).collect();
+        actual.sort_by_key(|s| format!("{:?}", s.keyspace_scope));
+        assert_eq!(expected, actual);
+        assert_eq!(before_g, physical(gs.as_ref(), &gp).await);
+        assert_eq!(before_r, physical(rs.as_ref(), &rp).await);
+        report.push(json!({"exclude":exclude,"go":format!("{expected:?}"),"rust":format!("{actual:?}"),"go_before":before_g,"rust_before":before_r}));
+    }
+    role.shutdown().await;
+    if let Some(path) = std::env::var_os("PD_SA053_REPORT") {
+        std::fs::write(path, serde_json::to_vec_pretty(&report).unwrap()).unwrap();
+    }
+}

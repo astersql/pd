@@ -24,15 +24,19 @@ impl GCStateManager {
         ttl_seconds: i64,
         now: BarrierTime,
     ) -> Result<LegacyServiceSafePointUpdate, GCReadError> {
-        let id = self.redirect(id, true).await?;
-        let _guard = self.mutation_lock().await;
+        let epoch = self.shared.barrier_metrics.epoch();
+        let (id, name) = self.redirect_named(id, true).await?;
+        let guard = self.mutation_lock().await;
+        let mut warnings = vec![];
         let (minimum, updated) = if service == b"gc_worker" {
             if ttl_seconds != i64::MAX {
                 return Err(GCReadError::LegacyWorkerTTL);
             }
             let mut outcome = CacheOutcome::new(self, id);
-            let (transaction, result, gc) = self.stage_txn_advance(id, target, now).await?;
+            let (transaction, result, gc, observation) =
+                self.stage_txn_advance(id, target, now, epoch, name).await?;
             transaction.commit().await?;
+            warnings = observation.publish_metrics(&self.shared.barrier_metrics);
             outcome.publish(result.new_txn_safe_point, gc);
             let service = if result.new_txn_safe_point == target {
                 b"gc_worker".to_vec()
@@ -58,26 +62,66 @@ impl GCStateManager {
                         .stage_global_barrier_set("native_br", target, duration, now)
                         .await
                     {
-                        Ok((transaction, _)) => {
-                            transaction.commit().await.map_err(GCReadError::from)
-                        }
+                        Ok((transaction, barrier)) => transaction
+                            .commit()
+                            .await
+                            .map(|_| {
+                                self.shared.barrier_metrics.update_metrics(
+                                    crate::gc_metrics::BarrierMetricScope::Global,
+                                    &astersql_pd_storage_domain::GCBarrier {
+                                        barrier_id: barrier.barrier_id,
+                                        barrier_ts: barrier.barrier_ts,
+                                        expiration_time: barrier.expiration_time,
+                                    },
+                                    now,
+                                )
+                            })
+                            .map_err(GCReadError::from),
                         Err(error) => Err(error),
                     }
                 } else {
                     let (transaction, _) = self.stage_global_barrier_delete("native_br").await?;
-                    transaction.commit().await.map_err(GCReadError::from)
+                    transaction
+                        .commit()
+                        .await
+                        .map(|_| {
+                            self.shared.barrier_metrics.delete_metrics(
+                                crate::gc_metrics::BarrierMetricScope::Global,
+                                "native_br",
+                            )
+                        })
+                        .map_err(GCReadError::from)
                 }
             } else if ttl_seconds > 0 {
                 match self
                     .stage_gc_barrier_set(id, service, target, duration, now)
                     .await
                 {
-                    Ok((transaction, _)) => transaction.commit().await.map_err(GCReadError::from),
+                    Ok((transaction, barrier)) => transaction
+                        .commit()
+                        .await
+                        .map(|_| {
+                            self.shared.barrier_metrics.update_metrics(
+                                crate::gc_metrics::BarrierMetricScope::Keyspace(id),
+                                &barrier,
+                                now,
+                            )
+                        })
+                        .map_err(GCReadError::from),
                     Err(error) => Err(error),
                 }
             } else {
                 let (transaction, _) = self.stage_gc_barrier_delete(id, service).await?;
-                transaction.commit().await.map_err(GCReadError::from)
+                transaction
+                    .commit()
+                    .await
+                    .map(|_| {
+                        self.shared.barrier_metrics.delete_metrics(
+                            crate::gc_metrics::BarrierMetricScope::Keyspace(id),
+                            &String::from_utf8_lossy(service),
+                        )
+                    })
+                    .map_err(GCReadError::from)
             };
             if let Err(error) = write {
                 let ignored = if global {
@@ -107,6 +151,10 @@ impl GCStateManager {
                 ttl_seconds > 0 && point <= target,
             )
         };
+        drop(guard);
+        for warning in warnings {
+            warning.log();
+        }
         Ok(LegacyServiceSafePointUpdate { minimum, updated })
     }
 }

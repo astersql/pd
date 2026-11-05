@@ -20,6 +20,7 @@ use std::{
 /// Owns registrations until every listener/request clone has drained. An error
 /// during construction rolls back only collectors registered by this attempt.
 pub struct ServiceMetrics {
+    pub gc: astersql_pd_gc::GCMetrics,
     pub replication: astersql_pd_replication::ModeMetrics,
     pub hotspot: astersql_pd_schedule::HotSpotMetrics,
     pub labeler: astersql_pd_schedule_labeler::LabelerMetrics,
@@ -175,6 +176,7 @@ impl ServiceMetrics {
         let hotspot =
             astersql_pd_schedule::HotSpotMetrics::register(&definitions, schedulers.clone())?;
         let mut scope = Self {
+            gc: astersql_pd_gc::GCMetrics::new()?,
             hotspot,
             labeler: astersql_pd_schedule_labeler::LabelerMetrics::register(&definitions)?,
             affinity: astersql_pd_schedule_affinity::availability_loop::AffinityMetrics::register(
@@ -229,6 +231,10 @@ impl ServiceMetrics {
             handling,
             children: Mutex::new(HashMap::new()),
         };
+        for (collector, owned) in scope.gc.collectors().zip(scope.gc.collectors()) {
+            scope.registry.register(collector)?;
+            scope.registered.push(owned);
+        }
         for (collector, owned) in scope.core.collectors().zip(scope.core.collectors()) {
             scope.registry.register(collector)?;
             scope.registered.push(owned);

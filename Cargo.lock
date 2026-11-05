@@ -382,10 +382,13 @@ dependencies = [
  "astersql-pd-storage-domain",
  "astersql-pd-storage-endpoint",
  "astersql-pd-storage-kv",
+ "astersql-pd-syncutil",
  "astersql-pd-typeutil",
+ "prometheus",
  "thiserror 2.0.21",
  "tokio",
  "tokio-util",
+ "tracing",
 ]
 
 [[package]]

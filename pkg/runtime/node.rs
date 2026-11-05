@@ -819,6 +819,14 @@ pub(crate) async fn prepare_term(
         }
         cluster.set_replication_transport_config(transport_config).await;
         let gc=crate::control_gc::GCResources::new(store.clone(), leader.clone(), &cancel, config.cluster_id).await;
+        if let Some(metrics) = &metrics {
+            if let Err(error) = gc.manager.attach_gc_metrics(metrics.gc.clone()) {
+                gc.shutdown().await;
+                let cleanup = cluster.shutdown().await;
+                let unregistered = registry.unregister(Box::new(requests)).map_err(Into::into);
+                return Err(crate::start_cleanup::preserve(crate::start_cleanup::preserve(NodeError::from(error.to_string()), cleanup), unregistered));
+            }
+        }
         Ok::<_, NodeError>(Arc::new(Application {
             gc,
             encryption:encryption.as_ref().map(Arc::downgrade),

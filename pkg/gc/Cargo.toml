@@ -7,6 +7,9 @@ license.workspace = true
 [lib]
 path = "lib.rs"
 [dependencies]
+prometheus.workspace = true
+tracing.workspace = true
+astersql-pd-syncutil.workspace = true
 astersql-pd-typeutil.workspace = true
 astersql-pd-keyspace.workspace = true
 astersql-pd-keypath.workspace = true

@@ -19,6 +19,7 @@ pub struct PreparedTxnSafePointAdvance<'a> {
     id: u32,
     gc: u64,
     result: AdvanceTxnSafePointResult,
+    observation: crate::gc_metrics::GCBarrierObservation,
     cancel: CancellationToken,
 }
 pub(crate) struct CacheOutcome<'a> {
@@ -52,17 +53,19 @@ impl GCStateManager {
         now: BarrierTime,
         cancel: &CancellationToken,
     ) -> Result<PreparedTxnSafePointAdvance<'_>, GCReadError> {
-        let id = self.redirect(id, false).await?;
+        let epoch = self.shared.barrier_metrics.epoch();
+        let (id, name) = self.redirect_named(id, false).await?;
         let guard = tokio::select! {biased;_=cancel.cancelled()=>return Err(GCReadError::Cancelled),guard=self.mutation_lock()=>guard};
-        let result = tokio::select! {biased;_=cancel.cancelled()=>Err(GCReadError::Cancelled),result=self.stage_txn_advance(id,target,now)=>result};
+        let result = tokio::select! {biased;_=cancel.cancelled()=>Err(GCReadError::Cancelled),result=self.stage_txn_advance(id,target,now,epoch,name)=>result};
         match result {
-            Ok((transaction, result, gc)) => Ok(PreparedTxnSafePointAdvance {
+            Ok((transaction, result, gc, observation)) => Ok(PreparedTxnSafePointAdvance {
                 manager: self,
                 guard,
                 transaction,
                 id,
                 gc,
                 result,
+                observation,
                 cancel: cancel.clone(),
             }),
             Err(error) => {
@@ -76,7 +79,17 @@ impl GCStateManager {
         id: u32,
         target: u64,
         now: BarrierTime,
-    ) -> Result<(PreparedGCStateTxn<'_>, AdvanceTxnSafePointResult, u64), GCReadError> {
+        epoch: u64,
+        name: String,
+    ) -> Result<
+        (
+            PreparedGCStateTxn<'_>,
+            AdvanceTxnSafePointResult,
+            u64,
+            crate::gc_metrics::GCBarrierObservation,
+        ),
+        GCReadError,
+    > {
         let mut transaction = self.storage.begin_gc_state_transaction(&self.paths).await?;
         let old = self.storage.load_txn_safe_point(&self.paths, id).await?;
         let gc = self.storage.load_gc_safe_point(&self.paths, id).await?;
@@ -91,6 +104,8 @@ impl GCStateManager {
         let mut owner: Option<Vec<u8>> = None;
         let mut global: Option<GlobalGCBarrier> = None;
         let mut legacy = false;
+        let mut observed_local = vec![];
+        let mut observed_global = vec![];
         for barrier in self.storage.load_all_gc_barriers(&self.paths, id).await? {
             let barrier = barrier.ok_or(GCReadError::NullBarrier)?;
             if barrier.barrier_id == "gc_worker" {
@@ -100,6 +115,13 @@ impl GCStateManager {
             if barrier.is_expired(now) {
                 transaction.batch.delete_gc_barrier(id, &barrier.barrier_id);
                 continue;
+            }
+            if crate::gc_metrics::BarrierMetrics::candidate(
+                crate::gc_metrics::BarrierMetricScope::Keyspace(id),
+                &barrier,
+                now,
+            ) {
+                observed_local.push(barrier.clone());
             }
             if barrier.barrier_ts < minimum {
                 minimum = barrier.barrier_ts;
@@ -126,6 +148,18 @@ impl GCStateManager {
                     .batch
                     .delete_global_gc_barrier(&barrier.barrier_id);
                 continue;
+            }
+            let candidate = GCBarrier {
+                barrier_id: String::new(),
+                barrier_ts: barrier.barrier_ts,
+                expiration_time: barrier.expiration_time,
+            };
+            if crate::gc_metrics::BarrierMetrics::candidate(
+                crate::gc_metrics::BarrierMetricScope::Global,
+                &candidate,
+                now,
+            ) {
+                observed_global.push(barrier.clone());
             }
             if barrier.barrier_ts < minimum {
                 minimum = barrier.barrier_ts;
@@ -181,6 +215,14 @@ impl GCStateManager {
                 simulated_service_id: service,
             },
             gc,
+            crate::gc_metrics::GCBarrierObservation {
+                epoch,
+                id,
+                name,
+                local: observed_local,
+                global: observed_global,
+                now,
+            },
         ))
     }
     fn barrier_description(
@@ -211,12 +253,17 @@ impl PreparedTxnSafePointAdvance<'_> {
             id,
             gc,
             result,
+            observation,
             cancel,
         } = self;
         let mut outcome = CacheOutcome::new(manager, id);
         tokio::select! {biased;_=cancel.cancelled()=>return Err(GCReadError::Cancelled),response=transaction.commit()=>response?};
+        let warnings = observation.publish_metrics(&manager.shared.barrier_metrics);
         outcome.publish(result.new_txn_safe_point, gc);
         drop(guard);
+        for warning in warnings {
+            warning.log();
+        }
         Ok(result)
     }
 }

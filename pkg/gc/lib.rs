@@ -57,3 +57,8 @@ mod gc_retry_test;
 mod gc_generation;
 #[cfg(test)]
 mod gc_generation_test;
+
+mod gc_metrics;
+pub use gc_metrics::*;
+#[cfg(test)]
+mod gc_metrics_test;

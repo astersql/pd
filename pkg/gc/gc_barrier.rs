@@ -7,6 +7,10 @@ use tokio::sync::RwLockWriteGuard;
 use tokio_util::sync::CancellationToken;
 /// A revision-validated barrier change under the shared manager write lock.
 pub struct PreparedGCBarrierChange<'a> {
+    manager: &'a GCStateManager,
+    id: u32,
+    name: String,
+    metrics_now: Option<BarrierTime>,
     guard: RwLockWriteGuard<'a, ()>,
     transaction: PreparedGCStateTxn<'a>,
     barrier: Option<GCBarrier>,
@@ -48,6 +52,10 @@ impl GCStateManager {
         let (transaction, barrier) = tokio::select! {biased;_=cancel.cancelled()=>return Err(GCReadError::Cancelled),result=self.stage_gc_barrier_set(id,name.as_bytes(),ts,ttl,now)=>result}?;
 
         Ok(PreparedGCBarrierChange {
+            manager: self,
+            id,
+            name: name.to_owned(),
+            metrics_now: Some(now),
             guard,
             transaction,
             barrier: Some(barrier),
@@ -75,6 +83,10 @@ impl GCStateManager {
         let (transaction, barrier) = tokio::select! {biased;_=cancel.cancelled()=>return Err(GCReadError::Cancelled),result=self.stage_gc_barrier_delete(id,name.as_bytes())=>result}?;
 
         Ok(PreparedGCBarrierChange {
+            manager: self,
+            id,
+            name: name.to_owned(),
+            metrics_now: None,
             guard,
             transaction,
             barrier,
@@ -133,6 +145,10 @@ impl GCStateManager {
         let mut transaction = self.storage.begin_gc_state_transaction(&self.paths).await?;
         transaction.batch.delete_gc_barrier(NULL_KEYSPACE_ID, name);
         transaction.commit().await?;
+        self.shared.barrier_metrics.delete_metrics(
+            crate::gc_metrics::BarrierMetricScope::Keyspace(NULL_KEYSPACE_ID),
+            name,
+        );
         Ok(())
     }
 }
@@ -154,12 +170,27 @@ impl PreparedGCBarrierChange<'_> {
     }
     pub async fn commit(self) -> Result<Option<GCBarrier>, GCReadError> {
         let Self {
+            manager,
+            id,
+            name,
+            metrics_now,
             guard,
             transaction,
             barrier,
             cancel,
         } = self;
         tokio::select! {biased;_=cancel.cancelled()=>return Err(GCReadError::Cancelled),response=transaction.commit()=>response?};
+        let scope = crate::gc_metrics::BarrierMetricScope::Keyspace(id);
+        if let Some(now) = metrics_now {
+            if let Some(barrier) = &barrier {
+                manager
+                    .shared
+                    .barrier_metrics
+                    .update_metrics(scope, barrier, now);
+            }
+        } else {
+            manager.shared.barrier_metrics.delete_metrics(scope, &name);
+        }
         drop(guard);
         Ok(barrier)
     }

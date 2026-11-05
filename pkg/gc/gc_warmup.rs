@@ -96,8 +96,10 @@ impl GCStateManager {
                     continue;
                 }
                 if self.cached(&generation, id)?.is_some() {
+                    self.shared.cache_access_metrics(1);
                     result.completed.push(id);
                 } else if let Some(receiver) = flights.get(&id) {
+                    self.shared.cache_access_metrics(2);
                     result.joined.insert(
                         id,
                         GCLoadWaiter {
@@ -105,6 +107,7 @@ impl GCStateManager {
                         },
                     );
                 } else {
+                    self.shared.cache_access_metrics(2);
                     let (sender, receiver) = watch::channel(None);
                     flights.insert(id, receiver);
                     claims.owned.push((id, sender));

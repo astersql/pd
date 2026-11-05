@@ -258,3 +258,72 @@ async fn mcs_052_actual_host_term_owns_discovery_and_replacement() {
             .is_err()
     );
 }
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn mcs_053_host_metrics_lifetime() {
+    use astersql_pd_storage_domain::BarrierTime;
+    let f = crate::node_test::fixture::Fixture::start();
+    let store: Arc<dyn MetaStore> = Arc::new(f.store().await);
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let url = format!("http://{}", listener.local_addr().unwrap());
+    let registry = Arc::new(prometheus::Registry::new());
+    let mut node = PdNodeBuilder::new(tokio::runtime::Handle::current(), CancellationToken::new())
+        .start(
+            store,
+            NodeConfig {
+                cluster_id: 530,
+                member_id: 1,
+                name: "gc-metrics".into(),
+                client_url: url.clone(),
+                peer_url: "http://peer:1".into(),
+            },
+            listener,
+            registry.clone(),
+        )
+        .await
+        .unwrap();
+    node.ready().await.unwrap();
+    let manager = node.gc_manager().unwrap();
+    let now = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .unwrap();
+    let ts = ((now.as_secs() - 172800) * 1000) << 18;
+    let time = BarrierTime::from_unix(now.as_secs() as i64, 0);
+    manager
+        .set_gc_barrier(
+            NULL_KEYSPACE_ID,
+            "host",
+            ts,
+            "2562047h47m16.854775807s".parse().unwrap(),
+            time,
+        )
+        .await
+        .unwrap();
+    manager
+        .advance_txn_safe_point(NULL_KEYSPACE_ID, ts + 100, time)
+        .await
+        .unwrap();
+    let output = tokio::process::Command::new("curl")
+        .args([
+            "--fail",
+            "--silent",
+            "--max-time",
+            "5",
+            &format!("{url}/metrics"),
+        ])
+        .output()
+        .await
+        .unwrap();
+    assert!(output.status.success());
+    let text = String::from_utf8(output.stdout).unwrap();
+    assert!(
+        text.contains("pd_gc_barrier_timestamp_seconds{barrier_id=\"host\""),
+        "{text}"
+    );
+    node.shutdown().await.unwrap();
+    assert!(
+        registry
+            .gather()
+            .iter()
+            .all(|f| f.name() != "pd_gc_barrier_timestamp_seconds")
+    );
+}

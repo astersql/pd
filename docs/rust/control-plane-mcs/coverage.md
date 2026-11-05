@@ -117,7 +117,7 @@ watcher/额度集成测试和测试工具。只补此清单，不改只读plan�
 | 50 批量预热GC缓存 | 预热按分页和批量限制读取状态，前台读取与预热并发不覆盖新状态。 | 12 | `pkg/gc/gc_warmup.rs`；`pkg/gc/lib.rs` | 已验证，见[task-050](task-050.md) |
 | 51 重试GC预热失败 | 重试队列按期限调度失败scope，取消时停止重试，重复事件不造成忙循环或饥饿。 | 12 | `pkg/gc/gc_retry.rs`；`pkg/gc/lib.rs` | 已验证，见[task-051](task-051.md) |
 | 52 隔离GC领导任期 | OnNodeBecomesLeader创建新generation并回收旧任务，旧加载结果不能回写新缓存。 | 12 | `pkg/gc/gc_generation.rs`；`pkg/gc/lib.rs` | 已验证，见[task-052](task-052.md) |
-| 53 暴露GC状态与屏障指标 | GetAllKeyspacesGCStates与collector读取一致状态，删除空间和换代清理旧标签；接通现有GC管理入口。 | 13 | `pkg/gc/gc_metrics.rs`（拟建）；`pkg/gc/lib.rs`（拟建）；`pkg/runtime/lib.rs`（存在）；`pkg/runtime/node.rs`（存在）；`pkg/server/lib.rs`（存在） | 待当前行为证据 |
+| 53 暴露GC状态与屏障指标 | GetAllKeyspacesGCStates与collector读取一致状态，删除空间和换代清理旧标签；接通现有GC管理入口。 | 13 | `pkg/gc/gc_metrics.rs`；`pkg/gc/lib.rs`；`pkg/runtime/node.rs`；`pkg/server/service_metrics.rs` | [当前真实列表差分、指标生命周期与宿主验证](task-053.md) |
 | 54 校验预期主节点候选 | IsValidPrimaryCandidate去重start时间并校验group成员，失效或非成员候选不能成为预期primary。 | 5 | `pkg/mcs/utils/lib.rs`（拟建）；`pkg/mcs/utils/primary_candidate.rs`（拟建） | 待当前行为证据 |
 | 55 转移预期主节点标记 | TransferPrimary和ExpectedPrimaryCmp在lease与CAS保护下更新标记，旧primary不得覆盖新目标。 | 5 | `pkg/mcs/utils/lib.rs`（拟建）；`pkg/mcs/utils/primary_transfer.rs`（拟建） | 待当前行为证据 |
 | 56 复用公共探针与指标处理 | StatusHandler与PromHandler使用宿主Registry与实际服务状态，多个实例不重复注册且不触碰全局日志或信号。 | 4 | `pkg/mcs/utils/lib.rs`（拟建）；`pkg/mcs/utils/service_probe.rs`（拟建） | 待当前行为证据 |

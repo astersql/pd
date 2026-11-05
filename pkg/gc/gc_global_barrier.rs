@@ -14,6 +14,9 @@ pub struct MaxTxnSafePoint {
 }
 /// One global change validated against the GC revision; point cache remains untouched.
 pub struct PreparedGlobalGCBarrierChange<'a> {
+    manager: &'a GCStateManager,
+    name: String,
+    metrics_now: Option<BarrierTime>,
     guard: RwLockWriteGuard<'a, ()>,
     transaction: PreparedGCStateTxn<'a>,
     barrier: Option<GlobalGCBarrier>,
@@ -53,6 +56,9 @@ impl GCStateManager {
         let (transaction, barrier) = tokio::select! {biased;_=cancel.cancelled()=>return Err(GCReadError::Cancelled),result=self.stage_global_barrier_set(name,ts,ttl,now)=>result}?;
 
         Ok(PreparedGlobalGCBarrierChange {
+            manager: self,
+            name: name.to_owned(),
+            metrics_now: Some(now),
             guard,
             transaction,
             barrier: Some(barrier),
@@ -192,6 +198,9 @@ impl GCStateManager {
         let (transaction, barrier) = tokio::select! {biased;_=cancel.cancelled()=>return Err(GCReadError::Cancelled),result=self.stage_global_barrier_delete(name)=>result}?;
 
         Ok(PreparedGlobalGCBarrierChange {
+            manager: self,
+            name: name.to_owned(),
+            metrics_now: None,
             guard,
             transaction,
             barrier,
@@ -214,12 +223,31 @@ impl PreparedGlobalGCBarrierChange<'_> {
     }
     pub async fn commit(self) -> Result<Option<GlobalGCBarrier>, GCReadError> {
         let Self {
+            manager,
+            name,
+            metrics_now,
             guard,
             transaction,
             barrier,
             cancel,
         } = self;
         tokio::select! {biased;_=cancel.cancelled()=>return Err(GCReadError::Cancelled),result=transaction.commit()=>result?};
+        let scope = crate::gc_metrics::BarrierMetricScope::Global;
+        if let Some(now) = metrics_now {
+            if let Some(barrier) = &barrier {
+                manager.shared.barrier_metrics.update_metrics(
+                    scope,
+                    &astersql_pd_storage_domain::GCBarrier {
+                        barrier_id: barrier.barrier_id.clone(),
+                        barrier_ts: barrier.barrier_ts,
+                        expiration_time: barrier.expiration_time,
+                    },
+                    now,
+                );
+            }
+        } else {
+            manager.shared.barrier_metrics.delete_metrics(scope, &name);
+        }
         drop(guard);
         Ok(barrier)
     }

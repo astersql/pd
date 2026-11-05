@@ -20,6 +20,7 @@ pub struct PreparedGCSafePointAdvance<'a> {
     id: u32,
     txn: u64,
     result: GCSafePointUpdate,
+    target: u64,
     cancel: CancellationToken,
 }
 impl GCStateManager {
@@ -82,6 +83,7 @@ impl GCStateManager {
                 id,
                 txn,
                 result,
+                target,
                 cancel: cancel.clone(),
             }),
             Err(error) => {
@@ -103,11 +105,15 @@ impl PreparedGCSafePointAdvance<'_> {
             id,
             txn,
             result,
+            target,
             cancel,
         } = self;
         let mut outcome = CacheOutcome::new(manager, id);
         tokio::select! {biased;_=cancel.cancelled()=>return Err(GCReadError::Cancelled),response=transaction.commit()=>response?};
         outcome.publish(txn, result.new_gc_safe_point);
+        if id == astersql_pd_keypath::NULL_KEYSPACE_ID {
+            manager.shared.gc_point_metrics(target);
+        }
         drop(guard);
         Ok(result)
     }

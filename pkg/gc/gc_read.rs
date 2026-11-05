@@ -28,7 +28,7 @@ pub struct GCState {
     pub gc_barriers: Vec<GCBarrier>,
 }
 impl GCState {
-    fn pair(id: u32, txn: u64, gc: u64) -> Self {
+    pub(crate) fn pair(id: u32, txn: u64, gc: u64) -> Self {
         Self {
             keyspace_id: id,
             is_keyspace_level: id != NULL_KEYSPACE_ID,
@@ -121,6 +121,8 @@ pub(crate) struct Shared {
     pub(crate) active: AtomicU64,
     pub(crate) cache: RwLock<BTreeMap<u32, Pair>>,
     pub(crate) gate: AsyncRwLock<()>,
+    pub(crate) barrier_metrics: Arc<crate::gc_metrics::BarrierMetrics>,
+    pub(crate) metrics_binding: std::sync::OnceLock<crate::GCMetrics>,
 }
 /// Host-owned role lifetime. Dropping fences and cancels its pending I/O; shutdown also joins it.
 pub struct GCLeadership {
@@ -129,12 +131,14 @@ pub struct GCLeadership {
 }
 impl GCLeadership {
     pub fn retire(&self) {
-        let _ = self.shared.active.compare_exchange(
-            self.generation.id,
-            0,
-            Ordering::AcqRel,
-            Ordering::Acquire,
-        );
+        if self
+            .shared
+            .active
+            .compare_exchange(self.generation.id, 0, Ordering::AcqRel, Ordering::Acquire)
+            .is_ok()
+        {
+            self.shared.retire_gc_metrics();
+        }
         self.generation.retire();
     }
     pub async fn shutdown(self) {
@@ -153,6 +157,8 @@ impl Drop for GCLeadership {
 }
 /// Shared reads use only the supplied host runtime and tracked, cancellable generation tasks.
 pub struct GCStateManager {
+    pub(crate) all_states:
+        [astersql_pd_syncutil::OrderedSingleFlight<BTreeMap<u32, GCState>, GCReadError>; 2],
     pub(crate) storage: StorageEndpoint,
     pub(crate) paths: ClusterPaths,
     pub(crate) keyspaces: Arc<KeyspaceManager>,
@@ -167,6 +173,7 @@ pub struct GCStateManager {
 impl Drop for GCStateManager {
     fn drop(&mut self) {
         self.shared.active.store(0, Ordering::Release);
+        self.shared.retire_gc_metrics();
         if let Some(g) = self.generation.get_mut().unwrap().take() {
             g.retire();
         }
@@ -179,7 +186,15 @@ impl GCStateManager {
         keyspaces: Arc<KeyspaceManager>,
         host: Handle,
     ) -> Self {
+        let barrier_metrics = Arc::new(crate::gc_metrics::BarrierMetrics::default());
+        let observer = Arc::downgrade(&barrier_metrics);
+        keyspaces.set_gc_barrier_invalidator(Some(Arc::new(move |id| {
+            if let Some(metrics) = observer.upgrade() {
+                metrics.invalidate_keyspace_metrics(id);
+            }
+        })));
         Self {
+            all_states: std::array::from_fn(|_| Default::default()),
             storage,
             paths,
             keyspaces,
@@ -188,6 +203,8 @@ impl GCStateManager {
                 active: AtomicU64::new(0),
                 cache: RwLock::new(BTreeMap::new()),
                 gate: AsyncRwLock::new(()),
+                barrier_metrics,
+                metrics_binding: std::sync::OnceLock::new(),
             }),
             generation: Mutex::new(None),
             lifecycle: tokio::sync::Mutex::new(()),
@@ -206,6 +223,7 @@ impl GCStateManager {
     ) -> GCLeadership {
         let _reset = self.lifecycle.lock().await;
         self.shared.active.store(0, Ordering::Release);
+        self.shared.retire_gc_metrics();
         let old = self.generation.lock().unwrap().take();
         if let Some(old) = old {
             old.retire();
@@ -222,14 +240,22 @@ impl GCStateManager {
         });
         *self.generation.lock().unwrap() = Some(generation.clone());
         self.shared.active.store(generation.id, Ordering::Release);
+        self.shared.activate_gc_metrics();
         GCLeadership {
             generation,
             shared: self.shared.clone(),
         }
     }
     pub(crate) async fn redirect(&self, id: u32, user: bool) -> Result<u32, GCReadError> {
+        Ok(self.redirect_named(id, user).await?.0)
+    }
+    pub(crate) async fn redirect_named(
+        &self,
+        id: u32,
+        user: bool,
+    ) -> Result<(u32, String), GCReadError> {
         if id & !VALID_KEYSPACE_ID_MASK != 0 {
-            return Ok(NULL_KEYSPACE_ID);
+            return Ok((NULL_KEYSPACE_ID, String::new()));
         }
         let meta = self
             .keyspaces
@@ -242,14 +268,14 @@ impl GCStateManager {
             .is_none_or(|v| v != "keyspace_level")
         {
             if user {
-                return Ok(NULL_KEYSPACE_ID);
+                return Ok((NULL_KEYSPACE_ID, String::new()));
             }
             return Err(GCReadError::InvalidKeyspace {
                 name: meta.name,
                 id,
             });
         }
-        Ok(id)
+        Ok((id, meta.name))
     }
     pub(crate) fn generation(&self) -> Option<Arc<Generation>> {
         self.generation
@@ -280,13 +306,23 @@ impl GCStateManager {
         cancel: &CancellationToken,
     ) -> Result<GCState, GCReadError> {
         let id = self.redirect(id, true).await?;
+        self.read_gc_state_scope(id, exclude, cancel).await
+    }
+    pub(crate) async fn read_gc_state_scope(
+        &self,
+        id: u32,
+        exclude: bool,
+        cancel: &CancellationToken,
+    ) -> Result<GCState, GCReadError> {
         if exclude && let Some(g) = self.generation() {
             if let Some((txn, gc)) = self.cached(&g, id)? {
+                self.shared.cache_access_metrics(0);
                 return Ok(GCState::pair(id, txn, gc));
             }
             return self.shared_load(&g, id, cancel).await;
         }
         let _guard = tokio::select! {biased;_=cancel.cancelled()=>return Err(GCReadError::Cancelled),guard=self.shared.gate.read()=>guard};
+        self.shared.cache_access_metrics(2);
         let (state, _) = self.read_transaction(id, exclude, false, cancel).await?;
         if exclude {
             self.shared
@@ -398,8 +434,10 @@ impl GCStateManager {
             let mut flight = {
                 let mut flights = g.flights.lock().unwrap();
                 if let Some((t, s)) = self.cached(g, id)? {
+                    self.shared.cache_access_metrics(1);
                     return Ok(GCState::pair(id, t, s));
                 }
+                self.shared.cache_access_metrics(2);
                 if let Some(f) = flights.get(&id) {
                     f.clone()
                 } else {
