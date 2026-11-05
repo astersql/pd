@@ -16,3 +16,8 @@ mod txn_safe_point;
 pub use txn_safe_point::*;
 #[cfg(test)]
 mod txn_safe_point_test;
+
+mod gc_barrier;
+pub use gc_barrier::*;
+#[cfg(test)]
+mod gc_barrier_test;

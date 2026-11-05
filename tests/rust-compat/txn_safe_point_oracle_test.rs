@@ -34,7 +34,7 @@ impl Case {
         }
     }
 }
-async fn records(store: &dyn MetaStore, p: &ClusterPaths, id: u32) -> Value {
+pub(crate) async fn records(store: &dyn MetaStore, p: &ClusterPaths, id: u32) -> Value {
     let keys = [
         p.gc_state_revision_path(),
         p.txn_safe_point_path(id),
@@ -53,7 +53,7 @@ async fn records(store: &dyn MetaStore, p: &ClusterPaths, id: u32) -> Value {
     }
     json!(values)
 }
-fn bytes(state: &Value) -> Value {
+pub(crate) fn bytes(state: &Value) -> Value {
     json!(
         state
             .as_array()

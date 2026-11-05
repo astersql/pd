@@ -109,7 +109,7 @@ watcher/额度集成测试和测试工具。只补此清单，不改只读plan�
 | 42 批量移除分组键空间 | RemoveKeyspacesFromGroup按事务容量分批且每批CAS，部分失败重试不误删不合格空间。 | 3 | `pkg/keyspace/group_remove.rs`；`pkg/keyspace/lib.rs` | 已完成；10聚焦/107包级/34存储，Go原例及两组在线多批事务差分；[证据](task-042.md) |
 | 43 读取键空间GC状态 | GetGCState从真实存储加载并按管理类型重定向，缓存miss与直接读错误保持一致。 | 11 | `pkg/gc/gc_read.rs`；`pkg/gc/lib.rs` | 已完成；8聚焦/104存储/107键空间，双内核Go原例、20组RPC及只读物理状态/WAL差分；[证据](task-043.md) |
 | 44 推进事务安全点 | AdvanceTxnSafePoint在CAS中单调推进，过旧值与冲突不倒退。 | 11 | `pkg/gc/txn_safe_point.rs`；`pkg/gc/lib.rs` | 已完成；9聚焦/17包级，双内核4原例、18组真实RPC/持久状态/WAL差分；[证据](task-044.md) |
-| 45 维护键空间GC屏障 | SetGCBarrier和DeleteGCBarrier保持TTL、最小安全点及服务标识语义，过期屏障不阻止推进。 | 11 | `pkg/gc/gc_barrier.rs`（拟建）；`pkg/gc/lib.rs`（拟建） | 待当前行为证据 |
+| 45 维护键空间GC屏障 | SetGCBarrier和DeleteGCBarrier保持TTL、最小安全点及服务标识语义，过期屏障不阻止推进。 | 11 | `pkg/gc/gc_barrier.rs`；`pkg/gc/lib.rs` | 已完成；8聚焦/25包级/21存储，双内核原例、20组Set及Delete/force HTTP/WAL差分；[证据](task-045.md) |
 | 46 维护全局GC屏障 | SetGlobalGCBarrier与删除跨空间检查最大事务安全点，非法全局屏障不部分生效。 | 11 | `pkg/gc/gc_global_barrier.rs`（拟建）；`pkg/gc/lib.rs`（拟建） | 待当前行为证据 |
 | 47 推进GC安全点 | AdvanceGCSafePoint受事务安全点和全局及局部屏障约束；既有Compatible入口映射同一状态机，无新增旧格式迁移。 | 11 | `pkg/gc/gc_safe_point.rs`（拟建）；`pkg/gc/lib.rs`（拟建） | 待当前行为证据 |
 | 48 快照加载启用键空间 | 固定revision分页扫描启用空间，页面边界与损坏meta处理匹配Go，不混合两个revision。 | 11 | `pkg/gc/enabled_snapshot.rs`（拟建）；`pkg/gc/lib.rs`（拟建） | 待当前行为证据 |

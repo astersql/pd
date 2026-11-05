@@ -25,6 +25,11 @@ impl BarrierTime {
         self.0.div_euclid(NANOS_PER_SECOND) as i64
     }
 
+    /// Adds a signed Go duration without losing the subsecond expiration boundary.
+    pub const fn add_nanos(self, nanos: i64) -> Self {
+        Self(self.0 + nanos as i128)
+    }
+
     fn ceil_second(self) -> Self {
         Self((self.0 + NANOS_PER_SECOND - 1).div_euclid(NANOS_PER_SECOND) * NANOS_PER_SECOND)
     }

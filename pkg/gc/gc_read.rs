@@ -40,6 +40,20 @@ impl GCState {
 }
 #[derive(Clone, Debug, thiserror::Error)]
 pub enum GCReadError {
+    #[error("[PD:common:ErrInvalidArgument]invalid argument for {argument}: {value}")]
+    InvalidArgument {
+        argument: &'static str,
+        value: String,
+    },
+    #[error(
+        "[PD:gc:ErrReservedGCBarrierID]trying to set a GC barrier with a barrier ID that is reserved: {0}"
+    )]
+    ReservedBarrierId(String),
+    #[error(
+        "[PD:gc:ErrGCBarrierTSBehindTxnSafePoint]trying to set a GC barrier on ts {barrier} which is already behind the txn safe point {txn}"
+    )]
+    BarrierBehind { barrier: u64, txn: u64 },
+
     #[error(
         "[PD:gc:ErrDecreasingTxnSafePoint]trying to update txn safe point to a smaller value, current value: {current}, given: {given}"
     )]
