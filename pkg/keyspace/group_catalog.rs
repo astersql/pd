@@ -48,6 +48,7 @@ pub struct KeyspaceGroupManager {
     pub(crate) paths: ClusterPaths,
     pub(crate) groups: RwLock<GroupIndex>,
     pub(crate) membership_mutex: Mutex<()>,
+    pub(crate) nodes: Arc<astersql_pd_balancer::RoundRobin<String>>,
 }
 impl KeyspaceGroupManager {
     pub fn new(store: Arc<dyn MetaStore>, paths: ClusterPaths) -> Self {
@@ -56,6 +57,7 @@ impl KeyspaceGroupManager {
             paths,
             groups: RwLock::new(empty_index()),
             membership_mutex: Mutex::new(()),
+            nodes: Arc::new(astersql_pd_balancer::RoundRobin::new()),
         }
     }
     /// Ensure the classic default group and reload all current user-kind entries.

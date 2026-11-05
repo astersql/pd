@@ -57,3 +57,6 @@ mod meta_group_assignment_oracle_test;
 
 #[cfg(test)]
 mod group_merge_oracle_test;
+
+#[cfg(test)]
+mod group_nodes_oracle_test;

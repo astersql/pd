@@ -7,6 +7,9 @@ license.workspace = true
 [lib]
 path = "lib.rs"
 [dependencies]
+astersql-pd-typeutil.workspace = true
+astersql-pd-balancer.workspace = true
+tokio-util.workspace = true
 astersql-pd-mcs-constant.workspace = true
 astersql-pd-keyutil.workspace = true
 astersql-pd-codec.workspace = true

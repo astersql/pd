@@ -16,9 +16,7 @@ fn receipt(snapshot: &Snapshot) -> serde_json::Value {
     json!({"revision":snapshot.revision,"entries":snapshot.entries.iter().map(|e|json!({"key":String::from_utf8_lossy(&e.key),"value":String::from_utf8_lossy(&e.value),"create_revision":e.create_revision,"mod_revision":e.mod_revision,"lease":e.lease})).collect::<Vec<_>>()})
 }
 
-#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
-#[ignore = "requires the admitted read-only Go PD binary and official etcd"]
-async fn mcs_032_default_group_go_differential() {
+pub(crate) async fn start_api_go() -> (crate::harness::Server, u64) {
     let binary = crate::readonly_oracle::pinned_go_binary().unwrap();
     let mut go = crate::harness::Server::start_with_environment(
         &binary,
@@ -61,6 +59,13 @@ async fn mcs_032_default_group_go_differential() {
         .unwrap()
         .into_inner();
     assert!(bootstrap.header.unwrap().error.is_none());
+    (go, id)
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+#[ignore = "requires the admitted read-only Go PD binary and official etcd"]
+async fn mcs_032_default_group_go_differential() {
+    let (go, id) = start_api_go().await;
     let fixture = crate::harness::fixture::Fixture::start();
     let store: Arc<dyn MetaStore> = Arc::new(fixture.store().await);
     let manager = KeyspaceGroupManager::new(store.clone(), ClusterPaths::new(42));

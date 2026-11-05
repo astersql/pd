@@ -234,6 +234,7 @@ version = "0.1.0"
 name = "astersql-pd-compat-tests"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-balancer",
  "astersql-pd-keyspace",
  "astersql-pd-cache",
  "astersql-pd-cluster",
@@ -407,6 +408,9 @@ version = "0.1.0"
 name = "astersql-pd-keyspace"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-typeutil",
+ "astersql-pd-balancer",
+ "tokio-util",
  "astersql-pd-mcs-constant",
  "astersql-pd-storage-endpoint",
  "async-trait",

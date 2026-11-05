@@ -51,3 +51,9 @@ pub use group_merge::*;
 #[cfg(test)]
 #[path = "group_merge_test.rs"]
 mod group_merge_test;
+
+mod group_nodes;
+pub use group_nodes::*;
+#[cfg(test)]
+#[path = "group_nodes_test.rs"]
+mod group_nodes_test;
