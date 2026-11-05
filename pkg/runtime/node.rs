@@ -79,6 +79,11 @@ pub(crate) struct Application {
 }
 #[async_trait::async_trait]
 impl PdServices for Application {
+    async fn gc_manager(&self) -> Result<Arc<astersql_pd_gc::GCStateManager>, String> {
+        self.healthy().await?;
+        Ok(self.gc.manager.clone())
+    }
+
     async fn abort_unsafe_recovery(&self) -> Result<(), String> {
         self.cluster.abort_unsafe_recovery().await
     }

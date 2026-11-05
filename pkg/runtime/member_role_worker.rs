@@ -161,6 +161,10 @@ impl RoleServices {
 }
 #[async_trait::async_trait]
 impl PdServices for RoleServices {
+    async fn gc_manager(&self) -> Result<Arc<astersql_pd_gc::GCStateManager>, String> {
+        self.active().await?.gc_manager().await
+    }
+
     async fn persist_dr_state(&self, data: Vec<u8>) -> Result<(), String> {
         let directory = self
             .file_directory

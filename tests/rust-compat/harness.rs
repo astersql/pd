@@ -20,6 +20,14 @@ pub struct Server {
     pub url: String,
     pub peer: String,
 }
+pub struct ServerSuspension<'a>(&'a mut Server);
+impl Drop for ServerSuspension<'_> {
+    fn drop(&mut self) {
+        let _ = Command::new("kill")
+            .args(["-CONT", &self.0.child.id().to_string()])
+            .status();
+    }
+}
 impl Server {
     /// Endpoint of the metadata backend owned by this real process fixture.
     pub fn metadata_url(&self) -> &str {
@@ -134,22 +142,47 @@ impl Server {
             .append(true)
             .open(self.dir.join("server.log"))
             .map_err(|e| e.to_string())?;
-        self.child = Command::new(binary)
-            .args(extra)
-            .args([
-                "--name=compat",
-                &format!("--data-dir={}", self.dir.join("data").display()),
-                &format!("--client-urls={}", self.url),
-                &format!("--advertise-client-urls={}", self.url),
-                &format!("--peer-urls={}", self.peer),
-                &format!("--advertise-peer-urls={}", self.peer),
-                &format!("--initial-cluster=compat={}", self.peer),
-            ])
+        let mut command = Command::new(binary);
+        command.args(extra).args([
+            "--name=compat",
+            &format!("--client-urls={}", self.url),
+            &format!("--advertise-client-urls={}", self.url),
+            &format!("--peer-urls={}", self.peer),
+            &format!("--advertise-peer-urls={}", self.peer),
+        ]);
+        if !extra.iter().any(|arg| arg.starts_with("--etcd-endpoints=")) {
+            command.arg(format!("--data-dir={}", self.dir.join("data").display()));
+            command.arg(format!("--initial-cluster=compat={}", self.peer));
+        }
+        self.child = command
             .stdout(Stdio::from(log.try_clone().map_err(|e| e.to_string())?))
             .stderr(Stdio::from(log))
             .spawn()
             .map_err(|e| e.to_string())?;
         Ok(())
+    }
+    /// Restart both the external real etcd WAL and the Rust serving process.
+    pub fn restart_rust(&mut self, binary: &Path) -> Result<(), String> {
+        self.stop()?;
+        let fixture = self
+            ._etcd
+            .as_mut()
+            .ok_or("external Rust metadata fixture required")?;
+        fixture.command("stop", "stopped");
+        fixture.command("start", "restarted");
+        let endpoint = format!("--etcd-endpoints={}", fixture.endpoint);
+        self.restart_with_args(binary, &[&endpoint])
+    }
+    /// Suspend only this owned PD process; the guard resumes it on every exit path.
+    pub fn suspend(&mut self) -> ServerSuspension<'_> {
+        assert!(
+            Command::new("kill")
+                .args(["-STOP", &self.child.id().to_string()])
+                .status()
+                .unwrap()
+                .success()
+        );
+        ServerSuspension(self)
     }
     pub fn ready(&mut self) -> Result<(), String> {
         self.ready_with_timeout(Duration::from_secs(40))

@@ -6,6 +6,7 @@ pub mod grpc_ask_split;
 mod grpc_bootstrap;
 mod grpc_cluster_config;
 mod grpc_external_ts;
+mod grpc_gc_legacy;
 mod grpc_global_config;
 mod grpc_global_watch;
 mod grpc_members;
@@ -78,6 +79,11 @@ pub struct Identity {
 /// Domain operations supplied by the host; transport types stay in this crate.
 #[async_trait]
 pub trait PdServices: Send + Sync {
+    /// Current term's canonical GC manager; followers do not expose one.
+    async fn gc_manager(&self) -> Result<Arc<astersql_pd_gc::GCStateManager>, String> {
+        Err("not leader".into())
+    }
+
     async fn abort_unsafe_recovery(&self) -> Result<(), String> {
         Err("server not started".into())
     }

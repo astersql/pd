@@ -118,7 +118,15 @@ async fn verify_pending(url: &str) {
         .filter(|(_, owner)| *owner > 37 && *owner != 74)
     {
         assert!([74, 78].contains(owner));
-        if ["WatchGCSafePointV2", "WatchGCStates"].contains(method) {
+        if [
+            "WatchGCSafePointV2",
+            "WatchGCStates",
+            "GetGCSafePoint",
+            "UpdateGCSafePoint",
+            "UpdateServiceGCSafePoint",
+        ]
+        .contains(method)
+        {
             continue;
         }
         grpc.ready().await.unwrap();

@@ -72,3 +72,5 @@ Go oracle二进制SHA-256为`b9baaf7b6160a6ea1e3e3dc72ae059f317b0066838b67668010
 Cargo、supervisor、fixture及槽位产物进程已结束；自己的slot-1锁已释放，缓存保留。各supervisor守卫确认Go和测试输入不变，Go/Rust隔离目录与进程组完成清理。编号任务按要求标记完成后删除，原有`prompt.md`变更不纳入提交。
 
 [压缩原始证据](task-078-evidence.json.gz)，SHA-256 `d6a27465e52e7eebcce642cd1599ef0c5dc373f0c7e017a9ce2af77bd4d665f8`。包含预期行为失败、开发纠错、作废的中途验证、最终确切命令/退出码/有效测试数量、逐路由Go/Rust原始结果、来源清单行、Go文件守卫、输入哈希及实际槽位/清理记录。
+
+2026-11-05更新：旧版GetGCSafePoint、UpdateGCSafePoint、UpdateServiceGCSafePoint已由[分项验收03](acceptance/task-03.md)接通同一任期manager并取得双实现运行证据；本文件其余HTTP/v2及GC方法范围不因此标为完成。
