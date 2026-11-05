@@ -60,3 +60,6 @@ mod group_merge_oracle_test;
 
 #[cfg(test)]
 mod group_nodes_oracle_test;
+
+#[cfg(test)]
+mod keyspace_split_oracle_test;

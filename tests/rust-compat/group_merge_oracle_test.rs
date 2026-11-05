@@ -17,13 +17,16 @@ fn receipt(snapshot: &Snapshot) -> serde_json::Value {
 }
 
 pub(crate) async fn start_api_go() -> (crate::harness::Server, u64) {
+    start_bootstrapped_go(Some("api")).await
+}
+
+pub(crate) async fn start_bootstrapped_go(mode: Option<&str>) -> (crate::harness::Server, u64) {
     let binary = crate::readonly_oracle::pinned_go_binary().unwrap();
-    let mut go = crate::harness::Server::start_with_environment(
-        &binary,
-        &[],
-        &[("PD_SERVICE_MODE".into(), "api".into())],
-    )
-    .unwrap();
+    let environment = mode
+        .map(|mode| vec![("PD_SERVICE_MODE".into(), mode.into())])
+        .unwrap_or_default();
+    let mut go =
+        crate::harness::Server::start_with_environment(&binary, &[], &environment).unwrap();
     go.ready().unwrap();
     let mut client = PdClient::connect(go.url.clone()).await.unwrap();
     let id = client

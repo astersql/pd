@@ -100,7 +100,7 @@ watcher/额度集成测试和测试工具。只补此清单，不改只读plan�
 | 33 分配时间戳服务成员 | AllocNodes与SetNodes及priority更新基于去重节点列表，副本不足和无效候选不破坏现有成员。 | 3 | `pkg/keyspace/group_nodes.rs`；`tests/rust-compat/group_nodes_oracle_test.rs` | 已完成：[task-033](task-033.md)，Go 2例+在线注册目录/优先级、Rust 5项真实etcd；去重/事务故障/WAL |
 | 34 恢复分组调和监听 | 节点与分组watch在compaction重载及任期变化后重新分配，旧任期取消后不提交结果。 | 3 | `pkg/keyspace/group_reconcile.rs`；中性`etcdutil`监听 | 已完成：[task-034](task-034.md)，Go 5例、Rust 8项；实际compaction/WAL/任期ABA及错误作用域 |
 | 35 自动拆分超大分组 | 巡检只拆分超过限制的分组并选择可用ID，ID耗尽与取消保持现状。 | 3 | `pkg/keyspace/group_patrol.rs`；复用split/reconcile | 已完成：[task-035](task-035.md)，Go 9巡检+5 ID叶例、Rust 8项；真实4096组耗尽/取消/故障/WAL/任期 |
-| 36 完成键空间Region分割 | 创建时复用labeler和splitter等待边界到位；超时、取消和已存在边界遵循Go的可观察结果。 | 5 | `pkg/keyspace/keyspace_split.rs`（拟建）；`pkg/keyspace/lib.rs`（拟建） | 待当前行为证据 |
+| 36 完成键空间Region分割 | 创建时复用labeler和splitter等待边界到位；超时、取消和已存在边界遵循Go的可观察结果。 | 5 | `pkg/keyspace/keyspace_split.rs`；共享labeler/Core索引 | 已完成：[task-036](task-036.md)，6聚焦/65包级；Go三例及五组真实HTTP/心跳/取消/WAL差分 |
 | 37 创建并查询键空间 | CreateKeyspace和CreateKeyspaceByID原子维护name与ID索引，重名冲突及LoadRange分页匹配Go。 | 5 | `pkg/keyspace/keyspace_create.rs`（拟建）；`pkg/keyspace/lib.rs`（拟建） | 待当前行为证据 |
 | 38 更新键空间配置前置条件 | UpdateKeyspaceConfigWithPreconditions按CAS合并与删除配置，前置条件不满足或事务失败保持原状态。 | 5 | `pkg/keyspace/keyspace_config.rs`（拟建）；`pkg/keyspace/lib.rs`（拟建） | 待当前行为证据 |
 | 39 迁移键空间生命周期 | UpdateKeyspaceState和ByID入口遵循状态转移限制，保护保留空间并按原行为失效GC缓存。 | 5 | `pkg/keyspace/keyspace_state.rs`（拟建）；`pkg/keyspace/lib.rs`（拟建） | 待当前行为证据 |

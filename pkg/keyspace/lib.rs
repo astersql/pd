@@ -69,3 +69,9 @@ pub use group_patrol::*;
 #[cfg(test)]
 #[path = "group_patrol_test.rs"]
 mod group_patrol_test;
+
+mod keyspace_split;
+pub use keyspace_split::*;
+#[cfg(test)]
+#[path = "keyspace_split_test.rs"]
+mod keyspace_split_test;
