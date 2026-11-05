@@ -27,6 +27,8 @@ fn mcs_026_ranges_tombstones_updates_limits_and_owned_snapshots() {
         c.save(id, format!("ks-{id}"), state);
     }
     assert_eq!(c.get(101).unwrap().name, "ks-101");
+    assert_eq!(c.get(101).unwrap().id, 101);
+    assert_eq!(c.get(101).unwrap().state, KeyspaceState::Archived);
     assert_eq!(c.ids_in_range(100, 103, 1), (vec![102], true));
     assert_eq!(c.ids_in_range(101, 102, 1), (vec![102], true));
     assert_eq!(c.ids_in_range(103, 104, 1), (vec![], false));
@@ -53,6 +55,12 @@ fn mcs_026_ranges_tombstones_updates_limits_and_owned_snapshots() {
     c.delete_keyspace(101);
     c.delete_keyspace(101);
     assert!(c.get(101).is_none());
+    let mut after_delete = vec![];
+    c.scan_all(|id, _| {
+        after_delete.push(id);
+        true
+    });
+    assert_eq!(after_delete, [100, 102, 103]);
     assert_eq!(c.ids_in_range(100, 103, 5), (vec![102, 100], true));
     c.save(102, "gone", KeyspaceState::Tombstone);
     assert!(!c.keyspace_exist(102));
@@ -197,7 +205,8 @@ fn mcs_026_concurrent_mutations_publish_complete_items_and_ordered_ranges() {
     assert!(ids.iter().all(|id| id % 2 == 1));
 }
 /// Fixed input/assertion pairs from the byte-identical upstream Go tests.
-/// The upstream CI receipt is aggregate-only; this does not claim a new Go run.
+/// The matching Go execution receipt is preserved in task-026-resume-evidence.json.gz.
+/// This replays historical Go assertions, rather than claiming a new local Go run.
 #[test]
 fn mcs_026_replays_upstream_fixed_span_and_split_assertions_on_real_cache() {
     use astersql_pd_codec::encode_bytes;
@@ -276,11 +285,9 @@ fn mcs_026_replays_upstream_fixed_span_and_split_assertions_on_real_cache() {
             false,
         ),
     ] {
-        assert_eq!(
-            region_spans_multiple_keyspaces(&start, &end, Some(c)),
-            expected,
-            "Go fixture: {name}"
-        );
+        let actual = region_spans_multiple_keyspaces(&start, &end, Some(c));
+        assert_eq!(actual, expected, "Go fixture: {name}");
+        println!("Go span fixture {name}: {actual}");
     }
     let specific = Cache::default();
     for id in [100, 101, 102] {
@@ -388,10 +395,8 @@ fn mcs_026_replays_upstream_fixed_span_and_split_assertions_on_real_cache() {
             vec![],
         ),
     ] {
-        assert_eq!(
-            get_keyspace_split_keys(&start, &end, mode, Some(c)),
-            expected,
-            "Go fixture: {name}"
-        );
+        let actual = get_keyspace_split_keys(&start, &end, mode, Some(c));
+        assert_eq!(actual, expected, "Go fixture: {name}");
+        println!("Go split fixture {name}: {actual:?}");
     }
 }
