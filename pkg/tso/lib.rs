@@ -11,3 +11,8 @@ mod restart_test;
 
 mod metrics;
 pub use metrics::OracleMetrics;
+
+mod tso_group_watch;
+pub use tso_group_watch::*;
+#[cfg(test)]
+mod tso_group_watch_test;

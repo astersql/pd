@@ -73,7 +73,7 @@ fn domain(e: KeyspaceError) -> (u16, Value) {
     };
     (status, json!(e.to_string()))
 }
-fn uint(raw: &str, bits: u32, kind: &str) -> Result<u64, (u16, Value)> {
+pub(crate) fn uint(raw: &str, bits: u32, kind: &str) -> Result<u64, (u16, Value)> {
     raw.parse::<u64>()
         .ok()
         .filter(|n| !raw.starts_with(['+', '-']) && (bits == 64 || *n <= u32::MAX as u64))
@@ -422,7 +422,7 @@ async fn handle(
         .into_response()
 }
 
-fn query(raw: &str) -> BTreeMap<String, String> {
+pub(crate) fn query(raw: &str) -> BTreeMap<String, String> {
     let mut out = BTreeMap::new();
     for part in raw.split('&') {
         let (k, v) = part.split_once('=').unwrap_or((part, ""));
@@ -437,7 +437,7 @@ fn query(raw: &str) -> BTreeMap<String, String> {
     out
 }
 
-async fn redirect(OriginalUri(uri): OriginalUri, method: Method) -> Response {
+pub(crate) async fn redirect(OriginalUri(uri): OriginalUri, method: Method) -> Response {
     let mut location = uri.path().trim_end_matches('/').to_string();
     if let Some(query) = uri.query() {
         location.push('?');

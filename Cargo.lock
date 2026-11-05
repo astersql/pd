@@ -270,6 +270,7 @@ dependencies = [
  "astersql-pd-storage-endpoint",
  "astersql-pd-storage-kv",
  "astersql-pd-syncer",
+ "astersql-pd-tso",
  "astersql-pd-typeutil",
  "async-trait",
  "chrono",
@@ -1329,8 +1330,11 @@ dependencies = [
 name = "astersql-pd-tso"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-etcdutil",
+ "astersql-pd-keypath",
  "astersql-pd-member",
  "astersql-pd-metricutil",
+ "astersql-pd-storage-domain",
  "astersql-pd-storage-kv",
  "prometheus",
  "serde_json",

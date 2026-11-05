@@ -15,6 +15,7 @@ pub(crate) mod fixture;
 static NEXT: AtomicU64 = AtomicU64::new(0);
 pub struct Server {
     child: Child,
+    environment: Vec<(String, String)>,
     _etcd: Option<fixture::Fixture>,
     pub dir: PathBuf,
     pub url: String,
@@ -138,6 +139,7 @@ impl Server {
             drop((client, peer));
             Ok(Self {
                 child: command.spawn()?,
+                environment: environment.to_vec(),
                 _etcd: None,
                 dir: dir.clone(),
                 url,
@@ -157,6 +159,7 @@ impl Server {
             .open(self.dir.join("server.log"))
             .map_err(|e| e.to_string())?;
         let mut command = Command::new(binary);
+        command.envs(self.environment.iter().map(|(k, v)| (k, v)));
         command.args(extra).args([
             "--name=compat",
             &format!("--client-urls={}", self.url),

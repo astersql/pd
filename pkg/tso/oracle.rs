@@ -102,6 +102,46 @@ impl Oracle {
         save_interval_millis: u64,
         metrics: Option<crate::OracleMetrics>,
     ) -> Result<Self, TsoError> {
+        Self::new_for_group_with_metrics(
+            store,
+            leader,
+            clock,
+            cancel,
+            save_interval_millis,
+            0,
+            metrics,
+        )
+        .await
+    }
+    /// Reserve a canonical group's durable window under its own election term.
+    pub async fn new_for_group(
+        store: Arc<dyn MetaStore>,
+        leader: Arc<Leadership>,
+        clock: Arc<dyn Clock>,
+        cancel: CancellationToken,
+        save_interval_millis: u64,
+        group_id: u32,
+    ) -> Result<Self, TsoError> {
+        Self::new_for_group_with_metrics(
+            store,
+            leader,
+            clock,
+            cancel,
+            save_interval_millis,
+            group_id,
+            None,
+        )
+        .await
+    }
+    async fn new_for_group_with_metrics(
+        store: Arc<dyn MetaStore>,
+        leader: Arc<Leadership>,
+        clock: Arc<dyn Clock>,
+        cancel: CancellationToken,
+        save_interval_millis: u64,
+        group_id: u32,
+        metrics: Option<crate::OracleMetrics>,
+    ) -> Result<Self, TsoError> {
         if !leader.uses_store(&store) {
             return Err(TsoError::StoreMismatch);
         }
@@ -110,7 +150,9 @@ impl Oracle {
         }
         let oracle = Self {
             metrics,
-            key: format!("/pd/{}/timestamp", leader.cluster_id()).into_bytes(),
+            key: astersql_pd_keypath::ClusterPaths::new(leader.cluster_id())
+                .timestamp_path(group_id)
+                .into_bytes(),
             store,
             leader,
             clock,

@@ -1196,3 +1196,5 @@ mod http_gc_read;
 mod accept_http_09;
 
 mod grpc_keyspace;
+
+mod accept_http_10;

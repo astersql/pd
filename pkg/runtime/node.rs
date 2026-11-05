@@ -74,7 +74,7 @@ pub(crate) struct Application {
     pub(crate) gc: crate::control_gc::GCResources,
     pub(crate) keyspaces: crate::control_keyspace::KeyspaceResources,
     allocator: Arc<Allocator>,
-    pub(crate) oracle: Oracle,
+    pub(crate) oracle: Option<Oracle>,
     pub(crate) requests: prometheus::IntCounter,
     pub(crate) cancel: CancellationToken,
 }
@@ -325,7 +325,7 @@ impl PdServices for Application {
     }
     async fn reset_timestamp(&self, tso: u64, force: bool) -> Result<(), String> {
         let config = self.cluster.configuration().await?;
-        self.oracle
+        self.oracle.as_ref().ok_or("tso service is not initialized")?
             .reset(tso, force, config.pd_server.max_reset_ts_gap.as_nanos() / 1_000_000)
             .await
             .map_err(|e| match e {
@@ -335,7 +335,14 @@ impl PdServices for Application {
     }
     async fn timestamp(&self, count: u32) -> Result<Timestamp, String> {
         self.requests.inc();
-        crate::tso::allocate(&self.oracle, &self.leader, count).await
+        crate::tso::allocate(
+            self.oracle
+                .as_ref()
+                .ok_or("tso service is not initialized")?,
+            &self.leader,
+            count,
+        )
+        .await
     }
 }
 /// Starts services on the host's executor without installing process-global state.
@@ -809,7 +816,7 @@ pub(crate) async fn prepare_term(
             0,
         )?);
         if let Some(metrics) = &metrics { allocator.set_metrics(metrics.classic.id_gauge.with_label_values(&["idalloc"])); }
-        let oracle = Oracle::new_with_metrics(
+        let oracle = if keyspace_groups { None } else { Some(Oracle::new_with_metrics(
             store.clone(),
             leader.clone(),
             Arc::new(SystemClock),
@@ -817,7 +824,7 @@ pub(crate) async fn prepare_term(
             3000,
             metrics.as_ref().map(|m| astersql_pd_tso::OracleMetrics::new(&m.classic)),
         )
-        .await?;
+        .await?) };
         let requests = prometheus::IntCounter::new(
             "pd_rust_requests_total",
             "Minimal Rust PD domain requests",

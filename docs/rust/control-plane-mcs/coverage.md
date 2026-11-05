@@ -136,11 +136,11 @@ watcher/额度集成测试和测试工具。只补此清单，不改只读plan�
 | 69 转换时间戳数值 | ComposeTS和ParseTS边界及比较复用已有tso领域数值，协议转换留在适配层不重复时钟算法。 | 5 | `pkg/utils/tsoutil/lib.rs`（拟建）；`pkg/utils/tsoutil/timestamp_value.rs`（拟建） | 待当前行为证据 |
 | 70 分发合并时间戳请求 | TSODispatcher批量汇聚count并正确分配响应，PD和TSO协议工厂共用分发逻辑，错误传播不泄漏pending请求。 | 5 | `pkg/utils/tsoutil/lib.rs`（拟建）；`pkg/utils/tsoutil/tso_dispatch.rs`（拟建） | 待当前行为证据 |
 | 71 处理转发超时与停止 | WatchTSDeadline取消超时流，Stop完成所有排队请求；重连与重复停止不会双重完成请求。 | 5 | `pkg/utils/tsoutil/lib.rs`（拟建）；`pkg/utils/tsoutil/tso_deadline.rs`（拟建） | 待当前行为证据 |
-| 72 装载分组时间戳分配器 | KeyspaceGroupManager根据元数据装配现有allocator，增删组收敛且默认组与保留空间映射正确。 | 4 | `pkg/tso/lib.rs`（存在）；`pkg/tso/tso_group_load.rs`（拟建） | 待当前行为证据 |
-| 73 隔离分组时间戳领导权 | 每组使用现有选主与fencing，失去lease后不再发号，重新选主仍保持组内时间戳单调。 | 3 | `pkg/tso/lib.rs`（存在）；`pkg/tso/tso_group_leader.rs`（拟建） | 待当前行为证据 |
+| 72 装载分组时间戳分配器 | KeyspaceGroupManager根据元数据装配现有allocator，增删组收敛且默认组与保留空间映射正确。 | 4 | `pkg/tso/tso_group_watch.rs`；canonical Oracle | 已完成：[task-072](task-072.md)，2聚焦通过、Go同源动态/保留空间输入、真实发号和资源清理 |
+| 73 隔离分组时间戳领导权 | 每组使用现有选主与fencing，失去lease后不再发号，重新选主仍保持组内时间戳单调。 | 3 | `pkg/tso/tso_group_watch.rs`；`pkg/tso/oracle.rs` | 已完成：[task-073](task-073.md)，真实双候选/lease撤销/交接/WAL，classic差分通过 |
 | 74 交接拆分分组时间戳 | 拆分目标同步源组时间戳后才serving，失败重试不能提前放行或生成倒退时间戳。 | 3 | `pkg/tso/lib.rs`（存在）；`pkg/tso/tso_group_split.rs`（拟建） | 待当前行为证据 |
 | 75 交接合并分组时间戳 | 合并取各源组上界并完成元数据状态更新，部分源不可用时不错误宣告完成。 | 3 | `pkg/tso/lib.rs`（存在）；`pkg/tso/tso_group_merge.rs`（拟建） | 待当前行为证据 |
-| 76 恢复分组分配器监听 | watch重连与compaction后重建实际分配器集合，关闭被删除组并释放其lease和worker。 | 3 | `pkg/tso/lib.rs`（存在）；`pkg/tso/tso_group_watch.rs`（拟建） | 待当前行为证据 |
+| 76 恢复分组分配器监听 | watch重连与compaction后重建实际分配器集合，关闭被删除组并释放其lease和worker。 | 3 | `pkg/tso/tso_group_watch.rs`；canonical ReconciledWatch | 已完成：[task-076](task-076.md)，2聚焦通过，真实故障/compaction/修复重载及allocator lease清理 |
 | 77 校验时间戳服务配置 | 配置默认值与Parse及Adjust匹配Go，非法监听地址和更新周期在启动前报错。 | 9 | `pkg/mcs/tso/server/lib.rs`（拟建）；`pkg/mcs/tso/server/tso_service_config.rs`（拟建） | 待当前行为证据 |
 | 78 实现时间戳服务流 | Tso校验cluster与keyspace group并调用既有allocator和dispatcher；双向流count、错误与取消和Go一致。 | 9 | `pkg/mcs/tso/server/lib.rs`（拟建）；`pkg/mcs/tso/server/tso_service_stream.rs`（拟建） | 待当前行为证据 |
 | 79 查询分组与最小时间戳 | FindGroupByKeyspaceID和GetMinTS使用实际分组状态，未运行返回Unavailable且部分组未就绪不返回虚假下界。 | 9 | `pkg/mcs/tso/server/lib.rs`（拟建）；`pkg/mcs/tso/server/tso_service_query.rs`（拟建） | 待当前行为证据 |

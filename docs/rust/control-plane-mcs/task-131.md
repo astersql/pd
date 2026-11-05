@@ -31,3 +31,8 @@ metadata、workspace check、fmt check、Python语法和diff check均通过，�
 
 外部etcd仅证明过渡适配与当前WAL重载；原生生产后端的durability仍归验收17–18。
 Go源码/模块1101项首尾不变。实际Cargo槽位和最终检查结果以验收09回执为准。
+
+验收10补齐分组HTTP和任期成员调和工作：注册候选由同一MetaStore读取，1秒驱动既有canonical调和；关闭时取消并join。
+API模式不再创建classic Oracle，避免与独立默认MCS组共享窗口；本轮classic差分、受控时钟及mcs_131_相邻测试通过。
+HTTP创建enterprise分组后，键空间按user-kind归属该组，Keyspace gRPC和HTTP目录读取一致；
+具体原始响应、持久状态及验证见[验收10](../server-api/acceptance/task-10.md)。

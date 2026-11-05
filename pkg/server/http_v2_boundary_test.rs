@@ -57,7 +57,15 @@ fn routes() -> Vec<(String, String, &'static str, &'static str)> {
         ),
     ] {
         for m in re.captures_iter(source) {
-            let suffix = param.replace_all(&m[2], "1");
+            let suffix_raw = &m[2];
+            if prefix == "tso/keyspace-groups"
+                && !suffix_raw.contains("split")
+                && !suffix_raw.contains("merge")
+                && !suffix_raw.ends_with("keyspaces")
+            {
+                continue;
+            }
+            let suffix = param.replace_all(suffix_raw, "1");
             routes.push((
                 m[1].into(),
                 format!("{prefix}/{}", suffix.trim_start_matches('/'))
@@ -185,7 +193,7 @@ async fn task_078_behavior() {
     .map(|p| call(&url, "PATCH", p, "{}"))
     .collect();
     node.shutdown().await.unwrap();
-    assert_eq!(observations.len(), 18);
+    assert_eq!(observations.len(), 11);
     assert_eq!(
         before, after,
         "rejected routes must not mutate domain state"
@@ -211,8 +219,8 @@ async fn task_078_behavior() {
     assert_eq!(root.0, 404);
     assert_eq!(wrong_method.0, 405);
     for result in ambiguous {
-        assert_eq!(result.0, 503);
-        assert_eq!(result.1["compatible"], false);
+        assert_eq!(result.0, 500);
+        assert_eq!(result.1, "keyspace group manager is not initialized");
     }
 }
 

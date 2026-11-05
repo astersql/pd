@@ -19,6 +19,10 @@ use tokio_util::sync::CancellationToken;
 /// Allocation and persisted membership failures.
 #[derive(Debug, thiserror::Error)]
 pub enum GroupNodesError {
+    #[error(
+        "[PD:keyspace:ErrKeyspaceGroupPrimaryNotFound]primary of keyspace group does not exist"
+    )]
+    PrimaryNotFound,
     #[error(transparent)]
     Catalog(#[from] GroupCatalogError),
     #[error(transparent)]
@@ -267,5 +271,88 @@ impl KeyspaceGroupManager {
             Ok(())
         })
         .await
+    }
+}
+
+impl KeyspaceGroupManager {
+    /// Refresh the registered candidates from the same authoritative host store.
+    pub async fn refresh_registered_nodes(&self) -> Result<(), GroupNodesError> {
+        use astersql_pd_storage_domain::{Consistency, Read};
+        let rows = self
+            .store
+            .read(Read::prefix(
+                self.paths.service_path("tso").as_bytes(),
+                Consistency::Linearizable,
+            ))
+            .await
+            .map_err(GroupCatalogError::from)?;
+        let mut nodes = Vec::new();
+        for row in rows.entries {
+            nodes.push(
+                crate::group_reconcile::registry_address(&row.value)
+                    .map_err(GroupCatalogError::from)?,
+            );
+        }
+        for node in self.nodes.get_all() {
+            if !nodes.contains(&node) {
+                self.nodes.delete(node);
+            }
+        }
+        for node in nodes {
+            self.nodes.put(node);
+        }
+        Ok(())
+    }
+    /// Return the opaque election participant for conversion by the transport adapter.
+    pub async fn primary_record(&self, id: u32) -> Result<Vec<u8>, GroupNodesError> {
+        use astersql_pd_storage_domain::{Consistency, Read};
+        if self.get_group(id).await?.is_none() {
+            return Err(GroupNodesError::NotExists(id));
+        }
+        let key = self
+            .paths
+            .election_path(Some(&astersql_pd_keypath::MsParam {
+                service_name: "tso".into(),
+                group_id: id,
+            }));
+        let rows = self
+            .store
+            .read(Read::range(key.as_bytes(), b"", Consistency::Linearizable))
+            .await
+            .map_err(GroupCatalogError::from)?;
+        rows.entries
+            .into_iter()
+            .next()
+            .map(|r| r.value)
+            .ok_or(GroupNodesError::PrimaryNotFound)
+    }
+}
+
+impl KeyspaceGroupManager {
+    /// Host-driven periodic reconciliation; commits use the injected term-fenced store.
+    pub async fn reconcile_registered_nodes(
+        &self,
+        cancel: &CancellationToken,
+    ) -> Result<crate::GroupReconcileReport, GroupNodesError> {
+        self.refresh_registered_nodes().await?;
+        let nodes = unique_tso_nodes(&self.nodes.get_all());
+        if nodes.is_empty() {
+            return Ok(crate::GroupReconcileReport::default());
+        }
+        let candidates = self
+            .get_groups(0, 0)
+            .await?
+            .into_iter()
+            .filter(|g| {
+                !g.is_splitting()
+                    && !g.is_merging()
+                    && crate::group_reconcile::needs_allocation(
+                        g.members.as_deref().unwrap_or_default(),
+                        &nodes,
+                    )
+            })
+            .map(|g| g.id)
+            .collect();
+        Ok(self.reconcile_candidate_ids(candidates, cancel, None).await)
     }
 }

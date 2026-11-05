@@ -17,45 +17,20 @@ pub(crate) fn router(cancel: CancellationToken) -> Router {
     let mut router = Router::new();
     for (path, methods, domain, dependency) in [
         (
-            "tso/keyspace-groups",
-            M::POST.or(M::GET),
-            "tso-keyspace-group",
-            "theme-8",
-        ),
-        (
-            "tso/keyspace-groups/{id}",
-            M::GET.or(M::DELETE).or(M::PATCH),
-            "tso-keyspace-group",
-            "theme-8",
-        ),
-        (
-            "tso/keyspace-groups/{id}/{*node}",
-            M::PATCH,
-            "tso-keyspace-group",
-            "theme-8",
-        ),
-        // PATCH catch-all remains reachable on paths that have more specific methods.
-        (
-            "tso/keyspace-groups/{id}/alloc",
-            M::POST.or(M::PATCH),
-            "tso-keyspace-group",
-            "theme-8",
-        ),
-        (
             "tso/keyspace-groups/{id}/split",
-            M::POST.or(M::DELETE).or(M::PATCH),
+            M::POST.or(M::DELETE),
             "tso-keyspace-group",
             "theme-8",
         ),
         (
             "tso/keyspace-groups/{id}/merge",
-            M::POST.or(M::DELETE).or(M::PATCH),
+            M::POST.or(M::DELETE),
             "tso-keyspace-group",
             "theme-8",
         ),
         (
             "tso/keyspace-groups/{id}/keyspaces",
-            M::DELETE.or(M::PATCH),
+            M::DELETE,
             "tso-keyspace-group",
             "theme-8",
         ),

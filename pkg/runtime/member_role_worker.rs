@@ -1141,7 +1141,7 @@ pub(crate) async fn run(
                         _ = renew.tick() => term.leader.renew().await.map_err(|e| e.to_string()),
                         _ = tick.tick() => {
                             match services.eligible().await {
-                                Ok(true) => term.oracle.update().await.map_err(|e| e.to_string()),
+                                Ok(true) => match &term.oracle { Some(oracle) => oracle.update().await.map_err(|e| e.to_string()), None => Ok(()) },
                                 _ => Err("consensus leadership lost".into()),
                             }
                         },

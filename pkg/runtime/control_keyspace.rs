@@ -164,6 +164,26 @@ impl KeyspaceResources {
             .get_or_try_init(|| async {
                 if let Some(groups) = &self.groups {
                     groups.bootstrap().await.map_err(|e| e.to_string())?;
+                    let groups = groups.clone();
+                    let cancel = self.cancel.clone();
+                    let errors = self.errors.clone();
+                    self.work.spawn(async move {
+                        let interval = std::time::Duration::from_secs(1);
+                        let mut tick = tokio::time::interval_at(tokio::time::Instant::now() + interval, interval);
+                        tick.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Skip);
+                        loop {
+                            tokio::select! { biased; _ = cancel.cancelled() => break, _ = tick.tick() => {} }
+                            let result = groups.reconcile_registered_nodes(&cancel).await;
+                            let messages = match result {
+                                Ok(report) => report.failures.into_iter().map(|(id,error)|format!("reconcile group {id}: {error}")).collect::<Vec<_>>(),
+                                Err(error) => vec![format!("reconcile groups: {error}")],
+                            };
+                            let mut errors = errors.lock().unwrap();
+                            errors.extend(messages);
+                            let excess = errors.len().saturating_sub(128);
+                            errors.drain(..excess);
+                        }
+                    });
                 }
                 Ok::<_, String>(())
             })

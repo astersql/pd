@@ -152,7 +152,7 @@ fn path_id(key: &[u8]) -> Result<u32, StoreError> {
         .and_then(|id| id.parse().ok())
         .ok_or(StoreError::Backend)
 }
-fn registry_address(data: &[u8]) -> Result<String, StoreError> {
+pub(crate) fn registry_address(data: &[u8]) -> Result<String, StoreError> {
     let value: serde_json::Value = serde_json::from_slice(data).map_err(|_| StoreError::Backend)?;
     if value.is_null() {
         return Ok(String::new());
