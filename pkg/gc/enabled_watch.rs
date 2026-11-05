@@ -1,6 +1,7 @@
 // Copyright 2026 AsterSQL.
 use crate::{EnabledKeyspace, EnabledSnapshot, EnabledSnapshotError, EnabledSnapshotLoader};
 use astersql_pd_storage_domain::{Event, KeyValuePair, StoreError};
+use std::sync::atomic::{AtomicUsize, Ordering};
 use std::{
     collections::BTreeMap,
     sync::{Arc, Mutex},
@@ -16,6 +17,7 @@ struct IndexState {
 /// One host-owned leadership term's enabled metadata index. Run once, cancel and join at retirement.
 pub struct EnabledKeyspaceIndex {
     loader: EnabledSnapshotLoader,
+    load_concurrency: AtomicUsize,
     state: Mutex<IndexState>,
     changed: tokio::sync::watch::Sender<u64>,
 }
@@ -34,10 +36,24 @@ pub struct EnabledIndexHooks {
 impl EnabledKeyspaceIndex {
     pub fn new(loader: EnabledSnapshotLoader) -> Self {
         Self {
+            load_concurrency: AtomicUsize::new(loader.concurrency),
             loader,
             state: Mutex::new(IndexState::default()),
             changed: tokio::sync::watch::channel(0).0,
         }
+    }
+    /// Snapshot a validated host setting at the beginning of each load attempt.
+    pub fn set_load_concurrency(&self, concurrency: usize) -> Result<(), EnabledSnapshotError> {
+        if concurrency == 0 {
+            return Err(EnabledSnapshotError::Invalid(
+                "keyspace load concurrency must be positive".into(),
+            ));
+        }
+        self.load_concurrency.store(concurrency, Ordering::Release);
+        Ok(())
+    }
+    pub fn load_concurrency(&self) -> usize {
+        self.load_concurrency.load(Ordering::Acquire)
     }
     fn signal(&self) {
         self.changed.send_modify(|v| *v = v.wrapping_add(1));
@@ -79,7 +95,9 @@ impl EnabledKeyspaceIndex {
         let mut retry = Duration::from_secs(1);
         while !cancel.is_cancelled() {
             let callback = hooks.on_page.clone().unwrap_or_else(|| Arc::new(|_| {}));
-            let snapshot = self.loader.load_with_pages(cancel, callback).await;
+            let mut loader = self.loader.clone();
+            loader.concurrency = self.load_concurrency();
+            let snapshot = loader.load_with_pages(cancel, callback).await;
             if let Ok(snapshot) = snapshot {
                 let revision = snapshot.revision;
                 {

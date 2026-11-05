@@ -184,3 +184,77 @@ async fn mcs_132_real_term_replacement_fences_prepared_raw_commit() {
     replacement.validate().await.unwrap();
     replacement.resign().await.unwrap();
 }
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn mcs_052_actual_host_term_owns_discovery_and_replacement() {
+    let f = crate::node_test::fixture::Fixture::start();
+    let store: Arc<dyn MetaStore> = Arc::new(f.store().await);
+    let cancel = CancellationToken::new();
+    let mut nodes = vec![];
+    for member in 1..=2 {
+        let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let url = format!("http://{}", listener.local_addr().unwrap());
+        let mut node = PdNodeBuilder::new(tokio::runtime::Handle::current(), cancel.clone())
+            .start(
+                store.clone(),
+                NodeConfig {
+                    cluster_id: 520,
+                    member_id: member,
+                    name: format!("discovery-{member}"),
+                    client_url: url,
+                    peer_url: format!("http://peer:{member}"),
+                },
+                listener,
+                Arc::new(prometheus::Registry::new()),
+            )
+            .await
+            .unwrap();
+        node.ready().await.unwrap();
+        nodes.push(node);
+    }
+    let old = nodes[0].gc_manager().unwrap();
+    assert!(old.enabled_keyspace_index().is_none());
+    assert!(nodes[1].gc_manager().is_none());
+    let old_index = old.start_metadata_discovery(2, 2).await.unwrap();
+    tokio::time::timeout(
+        std::time::Duration::from_secs(5),
+        old_index.snapshot_at_least(1, &cancel),
+    )
+    .await
+    .unwrap()
+    .unwrap();
+    nodes[0].shutdown().await.unwrap();
+    assert!(
+        old_index
+            .snapshot_at_least(0, &CancellationToken::new())
+            .await
+            .is_err()
+    );
+    assert!(old.start_metadata_discovery(2, 2).await.is_err());
+    let next = tokio::time::timeout(std::time::Duration::from_secs(10), async {
+        loop {
+            if let Some(manager) = nodes[1].gc_manager() {
+                break manager;
+            }
+            tokio::time::sleep(std::time::Duration::from_millis(20)).await;
+        }
+    })
+    .await
+    .unwrap();
+    assert!(!Arc::ptr_eq(&old, &next));
+    let next_index = next.start_metadata_discovery(2, 2).await.unwrap();
+    tokio::time::timeout(
+        std::time::Duration::from_secs(5),
+        next_index.snapshot_at_least(1, &cancel),
+    )
+    .await
+    .unwrap()
+    .unwrap();
+    nodes[1].shutdown().await.unwrap();
+    assert!(
+        next_index
+            .snapshot_at_least(0, &CancellationToken::new())
+            .await
+            .is_err()
+    );
+}

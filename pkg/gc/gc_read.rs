@@ -108,6 +108,7 @@ pub(crate) struct Generation {
     pub(crate) cancel: CancellationToken,
     pub(crate) work: TaskTracker,
     pub(crate) flights: Mutex<BTreeMap<u32, Flight>>,
+    pub(crate) discovery: Mutex<Option<Arc<crate::EnabledKeyspaceIndex>>>,
 }
 impl Generation {
     fn retire(&self) {
@@ -155,10 +156,10 @@ pub struct GCStateManager {
     pub(crate) storage: StorageEndpoint,
     pub(crate) paths: ClusterPaths,
     pub(crate) keyspaces: Arc<KeyspaceManager>,
-    host: Handle,
+    pub(crate) host: Handle,
     pub(crate) shared: Arc<Shared>,
     generation: Mutex<Option<Arc<Generation>>>,
-    lifecycle: tokio::sync::Mutex<()>,
+    pub(crate) lifecycle: tokio::sync::Mutex<()>,
     next: AtomicU64,
     pub(crate) diagnostic_time:
         Arc<dyn Fn(astersql_pd_storage_domain::BarrierTime) -> String + Send + Sync>,
@@ -217,6 +218,7 @@ impl GCStateManager {
             cancel: host.child_token(),
             work: TaskTracker::new(),
             flights: Mutex::new(BTreeMap::new()),
+            discovery: Mutex::new(None),
         });
         *self.generation.lock().unwrap() = Some(generation.clone());
         self.shared.active.store(generation.id, Ordering::Release);

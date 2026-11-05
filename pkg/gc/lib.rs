@@ -53,3 +53,7 @@ mod gc_warmup_test;
 mod gc_retry;
 #[cfg(test)]
 mod gc_retry_test;
+
+mod gc_generation;
+#[cfg(test)]
+mod gc_generation_test;

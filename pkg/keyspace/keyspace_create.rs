@@ -112,6 +112,10 @@ pub struct KeyspaceManager {
     pub(crate) removal_observer: RwLock<Option<crate::GCBarrierInvalidator>>,
 }
 impl KeyspaceManager {
+    /// Clone the same host-owned metadata backend and codec for revision-pinned readers.
+    pub fn metadata_storage(&self) -> KeyspaceStorage {
+        self.storage.clone()
+    }
     pub fn new(storage: KeyspaceStorage) -> Self {
         Self::with_resources(storage, KeyspaceCreateResources::default())
     }
