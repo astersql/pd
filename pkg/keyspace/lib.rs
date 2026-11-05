@@ -45,3 +45,9 @@ pub use group_split::*;
 #[cfg(test)]
 #[path = "group_split_test.rs"]
 mod group_split_test;
+
+mod group_merge;
+pub use group_merge::*;
+#[cfg(test)]
+#[path = "group_merge_test.rs"]
+mod group_merge_test;

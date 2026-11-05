@@ -54,3 +54,6 @@ mod accept_dependency_test;
 #[cfg(test)]
 #[path = "meta_group_assignment_oracle_test.rs"]
 mod meta_group_assignment_oracle_test;
+
+#[cfg(test)]
+mod group_merge_oracle_test;

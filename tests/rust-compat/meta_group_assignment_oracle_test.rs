@@ -7,7 +7,7 @@ use astersql_pd_proto::{
 use serde_json::{Value, json};
 use std::{process::Command, sync::Arc};
 
-fn http(url: &str, method: &str, body: Value) -> (u16, Value) {
+pub(crate) fn http(url: &str, method: &str, body: Value) -> (u16, Value) {
     let output = Command::new("curl")
         .args([
             "--silent",
