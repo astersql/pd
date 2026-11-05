@@ -72,6 +72,7 @@ pub(crate) struct Application {
     pub(crate) cluster: Arc<crate::cluster_host::ClusterHost>,
     pub(crate) leader: Arc<Leadership>,
     pub(crate) gc: crate::control_gc::GCResources,
+    pub(crate) keyspaces: crate::control_keyspace::KeyspaceResources,
     allocator: Arc<Allocator>,
     pub(crate) oracle: Oracle,
     pub(crate) requests: prometheus::IntCounter,
@@ -79,6 +80,52 @@ pub(crate) struct Application {
 }
 #[async_trait::async_trait]
 impl PdServices for Application {
+    async fn create_keyspace(
+        &self,
+        request: astersql_pd_keyspace::CreateKeyspaceRequest,
+        cancel: CancellationToken,
+    ) -> Result<astersql_pd_storage_domain::Keyspace, astersql_pd_keyspace::KeyspaceError> {
+        let manager = self
+            .keyspace_manager()
+            .await
+            .map_err(astersql_pd_keyspace::KeyspaceError::Validation)?;
+        self.keyspaces
+            .track(async move { manager.create(&cancel, request).await })
+            .await
+    }
+    async fn create_keyspace_by_id(
+        &self,
+        request: astersql_pd_keyspace::CreateKeyspaceByIdRequest,
+        cancel: CancellationToken,
+    ) -> Result<astersql_pd_storage_domain::Keyspace, astersql_pd_keyspace::KeyspaceError> {
+        let manager = self
+            .keyspace_manager()
+            .await
+            .map_err(astersql_pd_keyspace::KeyspaceError::Validation)?;
+        self.keyspaces
+            .track(async move { manager.create_by_id(&cancel, request).await })
+            .await
+    }
+
+    async fn keyspace_manager(&self) -> Result<Arc<astersql_pd_keyspace::KeyspaceManager>, String> {
+        self.healthy().await?;
+        self.keyspaces.refresh(&self.cluster).await?;
+        if self.cluster.keyspace_bootstrapped().await {
+            self.keyspaces.initialize().await?;
+        }
+        Ok(self.keyspaces.manager.clone())
+    }
+    async fn keyspace_group_manager(
+        &self,
+    ) -> Result<Arc<astersql_pd_keyspace::KeyspaceGroupManager>, String> {
+        self.healthy().await?;
+        self.keyspaces.initialize().await?;
+        self.keyspaces
+            .groups
+            .clone()
+            .ok_or("keyspace group manager is not initialized".into())
+    }
+
     async fn gc_manager(&self) -> Result<Arc<astersql_pd_gc::GCStateManager>, String> {
         self.healthy().await?;
         Ok(self.gc.manager.clone())
@@ -293,6 +340,7 @@ impl PdServices for Application {
 }
 /// Starts services on the host's executor without installing process-global state.
 pub struct PdNodeBuilder {
+    keyspace_groups: bool,
     runtime: Handle,
     cluster: astersql_pd_core::BasicCluster,
     diagnostics: Option<Arc<crate::etcd_diagnostics::EtcdMemberDiagnostics>>,
@@ -306,6 +354,7 @@ pub struct PdNodeBuilder {
 impl PdNodeBuilder {
     pub fn new(runtime: Handle, cancellation: CancellationToken) -> Self {
         Self {
+            keyspace_groups: false,
             runtime,
             cluster: astersql_pd_core::BasicCluster::new(),
             diagnostics: None,
@@ -334,6 +383,11 @@ impl PdNodeBuilder {
         self
     }
     /// Injects the canonical cluster rather than creating adapter-local caches.
+    /// Enable the same group manager used by API-mode keyspace operations.
+    pub fn with_keyspace_groups(mut self, enabled: bool) -> Self {
+        self.keyspace_groups = enabled;
+        self
+    }
     pub fn with_cluster(mut self, cluster: astersql_pd_core::BasicCluster) -> Self {
         self.cluster = cluster;
         self
@@ -384,6 +438,7 @@ impl PdNodeBuilder {
                 registry,
                 cancel,
                 self.cluster,
+                self.keyspace_groups,
                 self.diagnostics,
                 self.member_admin,
                 self.listener_config,
@@ -413,6 +468,7 @@ async fn initialize_node(
     registry: Arc<prometheus::Registry>,
     cancel: CancellationToken,
     cluster: astersql_pd_core::BasicCluster,
+    keyspace_groups: bool,
     diagnostics: Option<Arc<crate::etcd_diagnostics::EtcdMemberDiagnostics>>,
     member_admin: Option<Arc<crate::member_admin::EtcdMemberAdmin>>,
     listener_config: astersql_pd_server_config::Config,
@@ -503,6 +559,9 @@ async fn initialize_node(
         store.clone(),
     ));
     let _ = services.encryption.set(Arc::downgrade(&encryption));
+    services
+        .keyspace_groups
+        .store(keyspace_groups, std::sync::atomic::Ordering::Release);
     services.set_telemetry(Arc::new(telemetry_config.clone()), &metrics);
     if !listener_config.scalars.data_dir.is_empty() {
         let _ = services
@@ -533,6 +592,7 @@ async fn initialize_node(
                     Some(Arc::new(telemetry_config.clone())),
                     Some(encryption.clone()),
                     services.recovery_steps.clone(),
+                    keyspace_groups,
                 )
                 .await
                 {
@@ -709,6 +769,7 @@ pub(crate) async fn prepare_term(
     transport_config: Option<Arc<astersql_pd_server_config::Config>>,
     encryption: Option<Arc<crate::encryption::EncryptionResources>>,
     recovery_steps: Arc<astersql_pd_unsaferecovery::RecoverySteps>,
+    keyspace_groups: bool,
 ) -> Result<Arc<Application>, NodeError> {
     if let Some(metrics) = &metrics {
         leader.set_metrics(&metrics.classic);
@@ -818,7 +879,31 @@ pub(crate) async fn prepare_term(
             return Err(crate::start_cleanup::preserve(crate::start_cleanup::preserve(error,cleanup),unregistered));
         }
         cluster.set_replication_transport_config(transport_config).await;
-        let gc=crate::control_gc::GCResources::new(store.clone(), leader.clone(), &cancel, config.cluster_id).await;
+        let keyspaces={
+        let keyspace_setup=async {
+            let resources=crate::control_keyspace::KeyspaceResources::new(store.clone(), leader.clone(), &cancel, &cluster, config.cluster_id, keyspace_groups).await?;
+            if cluster.keyspace_bootstrapped().await {resources.initialize().await?;}
+            Ok::<_,String>(resources)
+        };
+        tokio::pin!(keyspace_setup);
+        loop {
+            let result=tokio::select!{biased;
+                _=cancel.cancelled()=>Err("operation cancelled".into()),
+                result=&mut keyspace_setup=>result,
+                _=renew.tick()=>{if let Err(error)=leader.renew().await{break Err(NodeError::from(error));}continue;}
+            };
+            break result.map_err(NodeError::from);
+        }
+        };
+        let keyspaces=match keyspaces {
+            Ok(resources)=>resources,
+            Err(error)=>{
+                let cleanup=cluster.shutdown().await;
+                let unregistered=registry.unregister(Box::new(requests)).map_err(Into::into);
+                return Err(crate::start_cleanup::preserve(crate::start_cleanup::preserve(error,cleanup),unregistered));
+            }
+        };
+        let gc=crate::control_gc::GCResources::new(store.clone(), leader.clone(), &cancel, config.cluster_id, keyspaces.manager.clone()).await;
         if let Some(metrics) = &metrics {
             if let Err(error) = gc.manager.attach_gc_metrics(metrics.gc.clone()) {
                 gc.shutdown().await;
@@ -829,6 +914,7 @@ pub(crate) async fn prepare_term(
         }
         Ok::<_, NodeError>(Arc::new(Application {
             gc,
+            keyspaces,
             encryption:encryption.as_ref().map(Arc::downgrade),
             cluster,
             identity: config,
@@ -871,6 +957,13 @@ pub struct PdNode {
     events: Events,
 }
 impl PdNode {
+    /// Return the current term's canonical keyspace manager without retaining a retired host.
+    pub fn keyspace_manager(&self) -> Option<Arc<astersql_pd_keyspace::KeyspaceManager>> {
+        self.cluster
+            .current()
+            .filter(|t| !t.cancel.is_cancelled() && !t.leader.is_expired())
+            .map(|t| t.keyspaces.manager.clone())
+    }
     /// The host-owned GC manager for the current serving term.
     pub fn gc_manager(&self) -> Option<Arc<astersql_pd_gc::GCStateManager>> {
         self.cluster

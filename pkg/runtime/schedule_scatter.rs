@@ -8,6 +8,12 @@ use astersql_pd_schedule_scatter::{ScatterBatchError, ScatterBatchFailure, Scatt
 use astersql_pd_server::grpc_scatter::*;
 use tokio::sync::oneshot;
 pub(super) enum Command {
+    KeyspaceLabel(
+        Option<astersql_pd_schedule_labeler::LabelRule>,
+        String,
+        i128,
+        oneshot::Sender<Result<(), astersql_pd_schedule_labeler::LabelerError>>,
+    ),
     UnsafeStart(
         astersql_pd_unsaferecovery::StartRequest,
         oneshot::Sender<Result<(), String>>,
@@ -242,6 +248,20 @@ pub(super) async fn serve(
             tokio::select! {biased;_=cancel.cancelled()=>{},_=reply.closed()=>{},r=work=>{let _=reply.send(r);}}
         }
 
+        Command::KeyspaceLabel(rule, id, now, reply) => {
+            let result = match Arc::get_mut(labels) {
+                Some(owner) => match rule {
+                    Some(rule) => owner.set_label_rule(rule, now).await,
+                    None => owner.delete_label_rule(&id).await,
+                },
+                None => Err(astersql_pd_schedule_labeler::LabelerError::Load(
+                    astersql_pd_storage_domain::EndpointError::Store(
+                        astersql_pd_storage::StoreError::Unavailable,
+                    ),
+                )),
+            };
+            let _ = reply.send(result);
+        }
         Command::LabelRules(request, mut reply) => {
             let work = async {
                 // Scheduler policy calls only borrow/clone this Arc until their

@@ -38,12 +38,6 @@ fn routes() -> Vec<(String, String, &'static str, &'static str)> {
     let param = regex::Regex::new(r"[:*][A-Za-z_]+").unwrap();
     for (source, prefix, domain, dependency) in [
         (
-            include_str!("../../server/apiv2/handlers/keyspace.go"),
-            "keyspaces",
-            "keyspace",
-            "theme-8",
-        ),
-        (
             include_str!("../../server/apiv2/handlers/tso_keyspace_group.go"),
             "tso/keyspace-groups",
             "tso-keyspace-group",
@@ -182,24 +176,16 @@ async fn task_078_behavior() {
     let root = call(&url, "GET", "", "");
     let wrong_method = call(&url, "DELETE", "keyspaces", "");
     let ambiguous: Vec<_> = [
-        "keyspaces/id",
         "tso/keyspace-groups/1/split",
         "tso/keyspace-groups/1/merge",
         "tso/keyspace-groups/1/alloc",
         "tso/keyspace-groups/1/keyspaces",
     ]
     .into_iter()
-    .map(|p| {
-        call(
-            &url,
-            if p == "keyspaces/id" { "GET" } else { "PATCH" },
-            p,
-            "{}",
-        )
-    })
+    .map(|p| call(&url, "PATCH", p, "{}"))
     .collect();
     node.shutdown().await.unwrap();
-    assert_eq!(observations.len(), 25);
+    assert_eq!(observations.len(), 18);
     assert_eq!(
         before, after,
         "rejected routes must not mutate domain state"
@@ -250,13 +236,18 @@ async fn task_078_cancel_and_unread_body() {
         .set_read_timeout(Some(std::time::Duration::from_secs(3)))
         .unwrap();
     // A denied route must not wait for or deserialize an untrusted streaming body.
-    socket.write_all(b"POST /pd/api/v2/keyspaces HTTP/1.1\r\nHost: localhost\r\nContent-Length: 999999\r\n\r\n").unwrap();
+    socket.write_all(b"POST /pd/api/v2/ms/tso/primary/evict HTTP/1.1\r\nHost: localhost\r\nContent-Length: 999999\r\n\r\n").unwrap();
     let mut bytes = [0; 4096];
     let count = socket.read(&mut bytes).unwrap();
     let response = String::from_utf8_lossy(&bytes[..count]).into_owned();
     drop(socket);
     cancel.cancel();
-    let result = call(&format!("http://{address}"), "POST", "keyspaces", "{}");
+    let result = call(
+        &format!("http://{address}"),
+        "POST",
+        "ms/tso/primary/evict",
+        "{}",
+    );
     stop.cancel();
     task.await.unwrap();
     assert!(response.starts_with("HTTP/1.1 503"), "{response}");
@@ -268,7 +259,7 @@ async fn task_078_cancel_and_unread_body() {
         result,
         (
             503,
-            json!({"error":"request_cancelled", "domain":"keyspace", "dependency":"theme-8", "compatible":false})
+            json!({"error":"request_cancelled", "domain":"mcs", "dependency":"theme-8", "compatible":false})
         )
     );
 }

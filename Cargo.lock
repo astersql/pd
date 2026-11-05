@@ -1086,6 +1086,7 @@ dependencies = [
  "astersql-pd-gc",
  "astersql-pd-id",
  "astersql-pd-keypath",
+ "astersql-pd-keyspace",
  "astersql-pd-keyutil",
  "astersql-pd-logutil",
  "astersql-pd-member",

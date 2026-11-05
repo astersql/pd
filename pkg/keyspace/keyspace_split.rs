@@ -2,7 +2,7 @@
 use crate::{BoundType, build_label_rule, make_region_bound};
 use astersql_pd_core::RegionsInfo;
 use astersql_pd_errs::TypedError;
-use astersql_pd_schedule_labeler::{LabelerError, RegionLabeler, Timestamp};
+use astersql_pd_schedule_labeler::{LabelRule, LabelerError, RegionLabeler, Timestamp};
 use std::{
     sync::{Arc, RwLock},
     time::Duration,
@@ -50,16 +50,42 @@ impl std::error::Error for KeyspaceSplitFailure {
         Some(&self.error)
     }
 }
+/// Host adapter for the canonical serialized labeler; split/wait policy remains here.
+#[async_trait::async_trait]
+pub trait KeyspaceLabeler: Send + Sync {
+    async fn set(&self, rule: LabelRule, now: Timestamp) -> Result<(), LabelerError>;
+    async fn delete(&self, id: &str) -> Result<(), LabelerError>;
+}
+#[async_trait::async_trait]
+impl KeyspaceLabeler for Mutex<RegionLabeler> {
+    async fn set(&self, rule: LabelRule, now: Timestamp) -> Result<(), LabelerError> {
+        self.lock().await.set_label_rule(rule, now).await
+    }
+    async fn delete(&self, id: &str) -> Result<(), LabelerError> {
+        self.lock().await.delete_label_rule(id).await
+    }
+}
 /// Registers boundaries on the canonical labeler and observes the shared region index.
 #[derive(Clone)]
 pub struct KeyspaceRegionSplit {
-    labeler: Option<Arc<Mutex<RegionLabeler>>>,
+    labeler: Option<Arc<dyn KeyspaceLabeler>>,
     regions: Option<RegionsInfo>,
     config: Arc<RwLock<KeyspaceSplitConfig>>,
 }
 impl KeyspaceRegionSplit {
     pub fn new(
         labeler: Option<Arc<Mutex<RegionLabeler>>>,
+        regions: Option<RegionsInfo>,
+        config: Arc<RwLock<KeyspaceSplitConfig>>,
+    ) -> Self {
+        Self::with_labeler(
+            labeler.map(|l| l as Arc<dyn KeyspaceLabeler>),
+            regions,
+            config,
+        )
+    }
+    pub fn with_labeler(
+        labeler: Option<Arc<dyn KeyspaceLabeler>>,
         regions: Option<RegionsInfo>,
         config: Arc<RwLock<KeyspaceSplitConfig>>,
     ) -> Self {
@@ -86,16 +112,14 @@ impl KeyspaceRegionSplit {
         let rule = build_label_rule(id, bound);
         let rule_id = rule.id.clone();
         labeler
-            .lock()
-            .await
-            .set_label_rule(rule, now)
+            .set(rule, now)
             .await
             .map_err(|error| KeyspaceSplitFailure {
                 error: KeyspaceSplitError::Labeler(error),
                 cleanup_error: None,
             })?;
         if wait && let Err(error) = self.wait_for_boundaries(cancel, id, bound).await {
-            let cleanup_error = labeler.lock().await.delete_label_rule(&rule_id).await.err();
+            let cleanup_error = labeler.delete(&rule_id).await.err();
             return Err(KeyspaceSplitFailure {
                 error,
                 cleanup_error,

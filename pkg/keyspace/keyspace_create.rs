@@ -112,6 +112,25 @@ pub struct KeyspaceManager {
     pub(crate) removal_observer: RwLock<Option<crate::GCBarrierInvalidator>>,
 }
 impl KeyspaceManager {
+    /// Verify the canonical region index before allowing name-based client admission.
+    pub fn check_region_bound(&self, meta: &Keyspace) -> bool {
+        let bound = meta
+            .config
+            .get("region_bound_type")
+            .map(|s| {
+                if s == "txn" {
+                    BoundType::Txn
+                } else {
+                    BoundType::Raw
+                }
+            })
+            .unwrap_or(self.resources.config.read().unwrap().bound);
+        self.resources
+            .splitter
+            .as_ref()
+            .is_some_and(|s| s.has_boundaries(meta.id(), bound))
+    }
+
     /// Clone the same host-owned metadata backend and codec for revision-pinned readers.
     pub fn metadata_storage(&self) -> KeyspaceStorage {
         self.storage.clone()

@@ -88,6 +88,9 @@ async fn run_with_logging(
     }
     let mut builder =
         PdNodeBuilder::new(tokio::runtime::Handle::current(), CancellationToken::new())
+            .with_keyspace_groups(
+                std::env::var("PD_SERVICE_MODE").is_ok_and(|s| s.eq_ignore_ascii_case("api")),
+            )
             .with_listener_config(config.security)
             .with_join(config.join);
     if let Some(control) = log_level {

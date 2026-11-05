@@ -94,6 +94,58 @@ pub struct ClusterHost {
     cancel: CancellationToken,
 }
 impl ClusterHost {
+    pub(crate) async fn keyspace_configuration(
+        &self,
+    ) -> Result<astersql_pd_server_config::Config, String> {
+        let guard = self.resources.lock().await;
+        let r = guard.as_ref().ok_or("server not started")?;
+        let mut config = r.persisted_config.config.clone();
+        if self.restored_config.is_none()
+            && let Some(input) = &r.replication_transport_config
+        {
+            config.keyspace = input.keyspace.clone();
+            config.pd_server.key_type = input.pd_server.key_type.clone();
+        }
+        Ok(config)
+    }
+
+    pub(crate) async fn keyspace_bootstrapped(&self) -> bool {
+        self.resources
+            .lock()
+            .await
+            .as_ref()
+            .is_some_and(|r| r.bootstrapped)
+    }
+
+    pub(crate) async fn keyspace_regions(&self) -> Result<astersql_pd_core::RegionsInfo, String> {
+        let guard = self.resources.lock().await;
+        Ok(guard
+            .as_ref()
+            .ok_or("server not started")?
+            .state
+            .lock()
+            .unwrap()
+            .cluster
+            .regions
+            .clone())
+    }
+    pub(crate) async fn keyspace_label(
+        &self,
+        rule: Option<astersql_pd_schedule_labeler::LabelRule>,
+        id: String,
+        now: i128,
+    ) -> Result<(), astersql_pd_schedule_labeler::LabelerError> {
+        let (tx, rx) = tokio::sync::oneshot::channel();
+        let unavailable = || {
+            astersql_pd_schedule_labeler::LabelerError::Load(
+                astersql_pd_storage_domain::EndpointError::Store(
+                    astersql_pd_storage::StoreError::Unavailable,
+                ),
+            )
+        };
+        tokio::select! { biased; _=self.cancel.cancelled()=>Err(unavailable()), result=async { self.schedule_requests.send(schedule_scatter::Command::KeyspaceLabel(rule,id,now,tx)).await.map_err(|_|unavailable())?; rx.await.map_err(|_|unavailable())? }=>result }
+    }
+
     pub async fn encryption_persistence_error(&self) -> Option<String> {
         self.resources
             .lock()

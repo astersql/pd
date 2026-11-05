@@ -17,6 +17,7 @@ impl GCResources {
         leader: Arc<Leadership>,
         cancel: &CancellationToken,
         cluster: u64,
+        keyspaces: Arc<KeyspaceManager>,
     ) -> Self {
         let store: Arc<dyn MetaStore> = Arc::new(crate::member_role_worker::TermStore::new(
             store,
@@ -24,10 +25,6 @@ impl GCResources {
             cancel.clone(),
         ));
         let paths = ClusterPaths::new(cluster);
-        let keyspaces = Arc::new(KeyspaceManager::new(
-            astersql_pd_storage_endpoint::StorageEndpoint::new(store.clone())
-                .keyspace_storage(paths.clone()),
-        ));
         let manager = Arc::new(GCStateManager::new(
             astersql_pd_storage_domain::StorageEndpoint::new(store),
             paths,

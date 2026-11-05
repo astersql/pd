@@ -82,6 +82,35 @@ pub struct Identity {
 /// Domain operations supplied by the host; transport types stay in this crate.
 #[async_trait]
 pub trait PdServices: Send + Sync {
+    /// Host-tracked creation must finish domain rollback after a caller disconnects.
+    async fn create_keyspace(
+        &self,
+        _request: astersql_pd_keyspace::CreateKeyspaceRequest,
+        _cancel: CancellationToken,
+    ) -> Result<astersql_pd_storage_domain::Keyspace, astersql_pd_keyspace::KeyspaceError> {
+        Err(astersql_pd_keyspace::KeyspaceError::Validation(
+            "keyspace manager is not initialized".into(),
+        ))
+    }
+    async fn create_keyspace_by_id(
+        &self,
+        _request: astersql_pd_keyspace::CreateKeyspaceByIdRequest,
+        _cancel: CancellationToken,
+    ) -> Result<astersql_pd_storage_domain::Keyspace, astersql_pd_keyspace::KeyspaceError> {
+        Err(astersql_pd_keyspace::KeyspaceError::Validation(
+            "keyspace manager is not initialized".into(),
+        ))
+    }
+
+    async fn keyspace_manager(&self) -> Result<Arc<astersql_pd_keyspace::KeyspaceManager>, String> {
+        Err("keyspace manager is not initialized".into())
+    }
+    async fn keyspace_group_manager(
+        &self,
+    ) -> Result<Arc<astersql_pd_keyspace::KeyspaceGroupManager>, String> {
+        Err("keyspace group manager is not initialized".into())
+    }
+
     /// Current term's canonical GC manager; followers do not expose one.
     async fn gc_manager(&self) -> Result<Arc<astersql_pd_gc::GCStateManager>, String> {
         Err("not leader".into())
@@ -588,6 +617,12 @@ fn router_with_options(
             cancel: cancel.clone(),
         }),
     ))
+    .add_service(
+        astersql_pd_proto::keyspacepb::keyspace_server::KeyspaceServer::new(grpc::Grpc {
+            services: services.clone(),
+            cancel: cancel.clone(),
+        }),
+    )
     .into_axum_router();
     let router = http::router(services.clone(), cancel.clone())
         .merge(http_health::router(services.clone(), cancel.clone()))
@@ -1157,3 +1192,7 @@ pub mod encryption_dictionary;
 
 mod grpc_gc_read;
 mod http_gc_read;
+
+mod accept_http_09;
+
+mod grpc_keyspace;

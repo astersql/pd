@@ -10,6 +10,8 @@ use tokio::sync::{Mutex, RwLock};
 /// Catalog errors retain Go's default and split-group deletion guards.
 #[derive(Debug, thiserror::Error)]
 pub enum GroupCatalogError {
+    #[error("[PD:keyspace:ErrKeyspaceNotInAnyKeyspaceGroup]keyspace is not in any keyspace group")]
+    KeyspaceNotInGroup,
     #[error("[PD:keyspace:ErrKeyspaceGroupExists]keyspace group already exists")]
     Exists,
     #[error("[PD:keyspace:ErrKeyspaceGroupInSplit]keyspace group {0} is in split state")]
@@ -53,6 +55,22 @@ pub struct KeyspaceGroupManager {
     pub(crate) reconcile: std::sync::Mutex<Option<std::sync::Weak<crate::GroupReconcileTerm>>>,
 }
 impl KeyspaceGroupManager {
+    /// Find the authoritative group in the host's current catalog.
+    pub async fn get_group_by_keyspace_id(&self, id: u32) -> Result<u32, GroupCatalogError> {
+        for groups in self.groups.read().await.values() {
+            for group in groups.values() {
+                if group
+                    .keyspaces
+                    .as_ref()
+                    .is_some_and(|ids| ids.contains(&id))
+                {
+                    return Ok(group.id);
+                }
+            }
+        }
+        Err(GroupCatalogError::KeyspaceNotInGroup)
+    }
+
     pub fn new(store: Arc<dyn MetaStore>, paths: ClusterPaths) -> Self {
         Self {
             store,

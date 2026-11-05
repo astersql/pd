@@ -37,9 +37,23 @@ impl Server {
     }
 
     pub fn start_rust(binary: &Path) -> io::Result<Self> {
+        Self::start_rust_with_args(binary, &[])
+    }
+    /// Start the same external-backend fixture with caller-owned configuration.
+    pub fn start_rust_with_args(binary: &Path, extra: &[&str]) -> io::Result<Self> {
+        Self::start_rust_with_environment(binary, extra, &[])
+    }
+    /// Keep explicit process environment scoped to this fixture.
+    pub fn start_rust_with_environment(
+        binary: &Path,
+        extra: &[&str],
+        environment: &[(String, String)],
+    ) -> io::Result<Self> {
         let etcd = fixture::Fixture::start();
-        let mut server =
-            Self::start_with_args(binary, &[&format!("--etcd-endpoints={}", etcd.endpoint)])?;
+        let endpoint = format!("--etcd-endpoints={}", etcd.endpoint);
+        let mut args = vec![endpoint.as_str()];
+        args.extend_from_slice(extra);
+        let mut server = Self::start_with_environment(binary, &args, environment)?;
         server._etcd = Some(etcd);
         Ok(server)
     }

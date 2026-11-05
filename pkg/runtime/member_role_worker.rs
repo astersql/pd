@@ -17,6 +17,7 @@ type RegionReset = (
     tokio::sync::oneshot::Sender<Result<(), String>>,
 );
 pub(crate) struct RoleServices {
+    pub(crate) keyspace_groups: std::sync::atomic::AtomicBool,
     pub(crate) recovery_steps: Arc<astersql_pd_unsaferecovery::RecoverySteps>,
     pub(crate) encryption: std::sync::OnceLock<Weak<crate::encryption::EncryptionResources>>,
     pub(crate) file_directory: std::sync::OnceLock<std::path::PathBuf>,
@@ -41,6 +42,7 @@ impl RoleServices {
             Arc::new(astersql_pd_storage::MemoryStore::default());
         let (region_resets, region_reset_rx) = tokio::sync::mpsc::channel(16);
         Self {
+            keyspace_groups: std::sync::atomic::AtomicBool::new(false),
             recovery_steps: Arc::new(astersql_pd_unsaferecovery::RecoverySteps::new(
                 std::time::SystemTime::now()
                     .duration_since(std::time::UNIX_EPOCH)
@@ -161,6 +163,38 @@ impl RoleServices {
 }
 #[async_trait::async_trait]
 impl PdServices for RoleServices {
+    async fn create_keyspace(
+        &self,
+        request: astersql_pd_keyspace::CreateKeyspaceRequest,
+        cancel: CancellationToken,
+    ) -> Result<astersql_pd_storage_domain::Keyspace, astersql_pd_keyspace::KeyspaceError> {
+        self.active()
+            .await
+            .map_err(astersql_pd_keyspace::KeyspaceError::Validation)?
+            .create_keyspace(request, cancel)
+            .await
+    }
+    async fn create_keyspace_by_id(
+        &self,
+        request: astersql_pd_keyspace::CreateKeyspaceByIdRequest,
+        cancel: CancellationToken,
+    ) -> Result<astersql_pd_storage_domain::Keyspace, astersql_pd_keyspace::KeyspaceError> {
+        self.active()
+            .await
+            .map_err(astersql_pd_keyspace::KeyspaceError::Validation)?
+            .create_keyspace_by_id(request, cancel)
+            .await
+    }
+
+    async fn keyspace_manager(&self) -> Result<Arc<astersql_pd_keyspace::KeyspaceManager>, String> {
+        self.active().await?.keyspace_manager().await
+    }
+    async fn keyspace_group_manager(
+        &self,
+    ) -> Result<Arc<astersql_pd_keyspace::KeyspaceGroupManager>, String> {
+        self.active().await?.keyspace_group_manager().await
+    }
+
     async fn gc_manager(&self) -> Result<Arc<astersql_pd_gc::GCStateManager>, String> {
         self.active().await?.gc_manager().await
     }
@@ -600,7 +634,11 @@ impl PdServices for RoleServices {
             term.leader.clone(),
             term.cancel.clone(),
         ));
-        term.cluster.bootstrap(backend, store, region).await
+        let committed = term.cluster.bootstrap(backend, store, region).await?;
+        if committed && let Err(error) = term.keyspaces.bootstrap().await {
+            term.keyspaces.record_error(error);
+        }
+        Ok(committed)
     }
     async fn external_timestamp(&self) -> Result<u64, String> {
         self.active().await?.cluster.external_timestamp().await
@@ -1055,6 +1093,7 @@ async fn retire(term: Arc<Application>, registry: &prometheus::Registry) -> Resu
     if let Some(encryption) = term.encryption.as_ref().and_then(Weak::upgrade) {
         encryption.rotation.clear_leadership_if(&term.leader).await;
     }
+    term.keyspaces.shutdown().await;
     term.gc.shutdown().await;
     let stopped = term.cluster.shutdown().await;
     // etcd can briefly reject linearizable operations while MoveLeader commits.
@@ -1219,6 +1258,7 @@ pub(crate) async fn run(
                         services.telemetry_config(),
                         services.encryption.get().and_then(Weak::upgrade),
                         services.recovery_steps.clone(),
+                        services.keyspace_groups.load(std::sync::atomic::Ordering::Acquire),
                     )
                     .await;
                     match term {

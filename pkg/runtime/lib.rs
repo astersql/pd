@@ -258,3 +258,7 @@ mod keyspace_bounds_test;
 mod control_gc_test;
 
 mod control_gc;
+
+mod control_keyspace;
+#[cfg(test)]
+mod control_keyspace_test;

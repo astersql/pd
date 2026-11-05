@@ -16,13 +16,6 @@ pub(crate) fn router(cancel: CancellationToken) -> Router {
     use MethodFilter as M;
     let mut router = Router::new();
     for (path, methods, domain, dependency) in [
-        ("keyspaces", M::GET.or(M::POST), "keyspace", "theme-8"),
-        // Gin has method-specific path trees: GET /keyspaces/id is also a name lookup.
-        ("keyspaces/id", M::POST.or(M::GET), "keyspace", "theme-8"),
-        ("keyspaces/{name}", M::GET, "keyspace", "theme-8"),
-        ("keyspaces/{name}/config", M::PATCH, "keyspace", "theme-8"),
-        ("keyspaces/{name}/state", M::PUT, "keyspace", "theme-8"),
-        ("keyspaces/id/{id}", M::GET, "keyspace", "theme-8"),
         (
             "tso/keyspace-groups",
             M::POST.or(M::GET),

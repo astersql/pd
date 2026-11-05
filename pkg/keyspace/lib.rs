@@ -111,3 +111,6 @@ pub use group_remove::*;
 #[cfg(test)]
 #[path = "group_remove_test.rs"]
 mod group_remove_test;
+
+mod keyspace_watch;
+pub use keyspace_watch::KeyspaceWatch;
