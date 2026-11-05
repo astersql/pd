@@ -35,6 +35,18 @@ impl Grpc {
 }
 #[tonic::async_trait]
 impl Pd for Grpc {
+    async fn set_global_gc_barrier(
+        &self,
+        r: Request<pdpb::SetGlobalGcBarrierRequest>,
+    ) -> Result<Response<pdpb::SetGlobalGcBarrierResponse>, Status> {
+        self.set_global_gc_barrier_request(r.into_inner()).await
+    }
+    async fn delete_global_gc_barrier(
+        &self,
+        r: Request<pdpb::DeleteGlobalGcBarrierRequest>,
+    ) -> Result<Response<pdpb::DeleteGlobalGcBarrierResponse>, Status> {
+        self.delete_global_gc_barrier_request(r.into_inner()).await
+    }
     async fn set_gc_barrier(
         &self,
         r: Request<pdpb::SetGcBarrierRequest>,
