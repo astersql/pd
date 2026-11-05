@@ -124,6 +124,8 @@ async fn verify_pending(url: &str) {
             "GetGCSafePoint",
             "UpdateGCSafePoint",
             "UpdateServiceGCSafePoint",
+            "AdvanceTxnSafePoint",
+            "AdvanceGCSafePoint",
             "GetAllGCSafePointV2",
             "GetGCSafePointV2",
             "UpdateGCSafePointV2",
