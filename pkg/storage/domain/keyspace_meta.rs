@@ -69,6 +69,10 @@ impl KeyspaceStorage {
     }
 }
 impl KeyspaceStorage {
+    /// Decode persisted metadata using the host codec without reading another revision.
+    pub fn decode_persisted(&self, bytes: &[u8]) -> Result<Keyspace, KeyspaceMetaError> {
+        self.codec.decode(bytes).map_err(KeyspaceMetaError::Decode)
+    }
     /// Buffer metadata in the caller's transaction; does not create the name index.
     pub fn save_keyspace_meta(
         &self,

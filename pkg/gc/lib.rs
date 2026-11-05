@@ -34,3 +34,8 @@ mod gc_safe_point_test;
 
 mod legacy_service_safe_point;
 pub use legacy_service_safe_point::*;
+
+mod enabled_snapshot;
+pub use enabled_snapshot::*;
+#[cfg(test)]
+mod enabled_snapshot_test;

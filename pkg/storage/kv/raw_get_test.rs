@@ -3,6 +3,7 @@ use crate::{fixture, *};
 
 fn pair(key: &[u8], value: &[u8]) -> RawTxnResponseItem {
     RawTxnResponseItem {
+        more: false,
         key_value_pairs: vec![KeyValuePair {
             key: key.to_vec(),
             value: value.to_vec(),

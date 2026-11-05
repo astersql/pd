@@ -219,12 +219,16 @@ impl MetaStore for MemoryStore {
                             Some(end) => entry.key < *end,
                             None => entry.key.starts_with(&read.prefix),
                         })
-                        .take(if limit == 0 { usize::MAX } else { limit })
+                        .take(if limit == 0 { usize::MAX } else { limit + 1 })
                         .map(|entry| KeyValuePair {
                             key: entry.key.clone(),
                             value: entry.value.clone(),
                         })
                         .collect();
+                    if limit > 0 && item.key_value_pairs.len() > limit {
+                        item.more = true;
+                        item.key_value_pairs.truncate(limit);
+                    }
                 }
                 RawTxnOp::Write(w) => match w {
                     Mutation::Put { key, value, lease } => {

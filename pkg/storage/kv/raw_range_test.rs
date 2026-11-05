@@ -10,6 +10,7 @@ fn range(key: &[u8], end: &[u8], limit: usize) -> RawTxnOp {
 }
 fn item(pairs: &[(&[u8], &[u8])]) -> RawTxnResponseItem {
     RawTxnResponseItem {
+        more: false,
         key_value_pairs: pairs
             .iter()
             .map(|(key, value)| KeyValuePair {
@@ -87,6 +88,7 @@ async fn raw_range_contract(store: &dyn MetaStore) {
             .unwrap();
         let response = txn.commit().await.unwrap();
         let mut expected: Vec<_> = cases.iter().map(|(_, _, _, p)| item(p)).collect();
+        expected[1].more = true;
         expected.insert(1, RawTxnResponseItem::default());
         expected.push(item(&[(b"aa", b"")]));
         assert_eq!(response.responses, expected, "branch={succeeds}");
@@ -104,6 +106,7 @@ async fn raw_range_contract(store: &dyn MetaStore) {
         .await
         .unwrap();
     let expected = RawTxnResponseItem {
+        more: false,
         key_value_pairs: before
             .entries
             .iter()

@@ -27,6 +27,8 @@ pub struct KeyValuePair {
 /// One item per selected operation; writes and missing gets have no pairs.
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct RawTxnResponseItem {
+    /// True when a limited range has additional keys at the transaction revision.
+    pub more: bool,
     pub key_value_pairs: Vec<KeyValuePair>,
 }
 #[derive(Debug, Clone)]

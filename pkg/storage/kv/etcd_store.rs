@@ -506,6 +506,7 @@ pub(crate) fn decode_raw(
         let item = match (op, response) {
             (RawTxnOp::Get(_) | RawTxnOp::GetRange { .. }, etcd_client::TxnOpResponse::Get(r)) => {
                 RawTxnResponseItem {
+                    more: r.more(),
                     key_value_pairs: r
                         .kvs()
                         .iter()

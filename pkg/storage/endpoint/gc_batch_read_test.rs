@@ -261,6 +261,7 @@ fn gc_batch_read_response_validation() {
         revision: 1,
         responses: vec![
             RawTxnResponseItem {
+                more: false,
                 key_value_pairs: vec![KeyValuePair {
                     key: keys[0].clone(),
                     value: b"invalid".to_vec(),
