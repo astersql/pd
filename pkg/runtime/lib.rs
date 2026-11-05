@@ -262,3 +262,8 @@ mod control_gc;
 mod control_keyspace;
 #[cfg(test)]
 mod control_keyspace_test;
+
+mod meta_group_http;
+
+#[cfg(test)]
+mod meta_group_http_test;

@@ -105,6 +105,18 @@ pub trait PdServices: Send + Sync {
     async fn keyspace_manager(&self) -> Result<Arc<astersql_pd_keyspace::KeyspaceManager>, String> {
         Err("keyspace manager is not initialized".into())
     }
+    async fn meta_service_group_manager(
+        &self,
+    ) -> Result<Arc<astersql_pd_keyspace::MetaServiceGroupManager>, String> {
+        Err("meta-service groups manager is not initialized".into())
+    }
+    async fn patch_meta_service_groups(
+        &self,
+        _patch: std::collections::BTreeMap<String, Option<String>>,
+        _cancel: CancellationToken,
+    ) -> Result<(), (u16, String)> {
+        Err((500, "meta-service groups manager is not initialized".into()))
+    }
     async fn keyspace_group_manager(
         &self,
     ) -> Result<Arc<astersql_pd_keyspace::KeyspaceGroupManager>, String> {
@@ -1202,3 +1214,5 @@ mod accept_http_10;
 mod accept_http_11;
 #[cfg(test)]
 mod accept_http_11_test;
+
+mod accept_http_12;

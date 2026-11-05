@@ -42,6 +42,7 @@ pub(crate) struct KeyspaceResources {
     pub manager: Arc<KeyspaceManager>,
     pub groups: Option<Arc<KeyspaceGroupManager>>,
     initialized: tokio::sync::OnceCell<()>,
+    pub meta_update: tokio::sync::Mutex<()>,
     creation_config: Arc<RwLock<KeyspaceCreateConfig>>,
     split_config: Arc<RwLock<KeyspaceSplitConfig>>,
 }
@@ -57,6 +58,15 @@ impl KeyspaceResources {
             .spawn(work)
             .await
             .map_err(|e| KeyspaceError::Validation(e.to_string()))?
+    }
+    pub async fn track_meta_update(
+        &self,
+        work: impl std::future::Future<Output = Result<(), (u16, String)>> + Send + 'static,
+    ) -> Result<(), (u16, String)> {
+        self.work
+            .spawn(work)
+            .await
+            .map_err(|e| (500, e.to_string()))?
     }
     pub async fn shutdown(&self) {
         self.cancel.cancel();
@@ -92,15 +102,21 @@ impl KeyspaceResources {
         let config = cluster.keyspace_configuration().await?;
         let groups = groups_enabled
             .then(|| Arc::new(KeyspaceGroupManager::new(store.clone(), paths.clone())));
-        let meta_groups = Arc::new(MetaServiceGroupManager::new(
-            store.clone(),
-            paths.clone(),
-            config
-                .keyspace
-                .meta_service_groups
-                .clone()
-                .unwrap_or_default(),
-        ));
+        let meta_groups = Arc::new(
+            MetaServiceGroupManager::new(
+                store.clone(),
+                paths.clone(),
+                config
+                    .keyspace
+                    .meta_service_groups
+                    .clone()
+                    .unwrap_or_default(),
+            )
+            .with_assignment_counter(Arc::new(MetaGroupKeyspaceCounter(
+                astersql_pd_storage_endpoint::StorageEndpoint::new(store.clone())
+                    .keyspace_storage(paths.clone()),
+            ))),
+        );
         let split_config = Arc::new(RwLock::new(KeyspaceSplitConfig {
             interval: std::time::Duration::from_nanos(
                 config.keyspace.check_region_split_interval.as_nanos() as u64,
@@ -142,6 +158,7 @@ impl KeyspaceResources {
             manager,
             groups,
             initialized: tokio::sync::OnceCell::new(),
+            meta_update: tokio::sync::Mutex::new(()),
             creation_config,
             split_config,
         })

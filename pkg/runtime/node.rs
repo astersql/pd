@@ -115,6 +115,63 @@ impl PdServices for Application {
         }
         Ok(self.keyspaces.manager.clone())
     }
+    async fn meta_service_group_manager(
+        &self,
+    ) -> Result<Arc<astersql_pd_keyspace::MetaServiceGroupManager>, String> {
+        self.healthy().await?;
+        self.keyspaces
+            .manager
+            .meta_service_group_manager()
+            .ok_or("meta-service groups manager is not initialized".into())
+    }
+    async fn patch_meta_service_groups(
+        &self,
+        patch: std::collections::BTreeMap<String, Option<String>>,
+        cancel: CancellationToken,
+    ) -> Result<(), (u16, String)> {
+        self.healthy().await.map_err(|e| (500, e))?;
+        let _update = self.keyspaces.meta_update.lock().await;
+        let manager = self
+            .keyspaces
+            .manager
+            .meta_service_group_manager()
+            .ok_or((500, "meta-service groups manager is not initialized".into()))?;
+        let mut groups = manager.get_groups().await;
+        let mut deleted = Vec::new();
+        for (id, value) in patch {
+            if let Some(value) = value {
+                groups.insert(id, value);
+            } else {
+                groups.remove(&id);
+                deleted.push(id);
+            }
+        }
+        let health = crate::meta_group_http::Health(
+            self.cluster.clone(),
+            cancel.clone(),
+            self.cancel.clone(),
+        );
+        let outcome = manager
+            .update_groups_safely(
+                groups,
+                &deleted,
+                &health,
+                |groups| async {
+                    if cancel.is_cancelled() {
+                        return Err("context canceled".into());
+                    }
+                    // Once admitted, complete durable publication even if the HTTP caller leaves.
+                    self.cluster.persist_meta_groups(groups).await
+                },
+                || {},
+            )
+            .await
+            .map_err(crate::meta_group_http::update_error)?;
+        if let Some(error) = outcome.cleanup_error {
+            self.keyspaces.record_error(error.to_string());
+        }
+        Ok(())
+    }
     async fn keyspace_group_manager(
         &self,
     ) -> Result<Arc<astersql_pd_keyspace::KeyspaceGroupManager>, String> {

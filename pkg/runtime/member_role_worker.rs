@@ -189,6 +189,23 @@ impl PdServices for RoleServices {
     async fn keyspace_manager(&self) -> Result<Arc<astersql_pd_keyspace::KeyspaceManager>, String> {
         self.active().await?.keyspace_manager().await
     }
+    async fn meta_service_group_manager(
+        &self,
+    ) -> Result<Arc<astersql_pd_keyspace::MetaServiceGroupManager>, String> {
+        self.active().await?.meta_service_group_manager().await
+    }
+    async fn patch_meta_service_groups(
+        &self,
+        patch: std::collections::BTreeMap<String, Option<String>>,
+        cancel: CancellationToken,
+    ) -> Result<(), (u16, String)> {
+        let application = self.active().await.map_err(|e| (500, e))?;
+        let owned = application.clone();
+        application
+            .keyspaces
+            .track_meta_update(async move { owned.patch_meta_service_groups(patch, cancel).await })
+            .await
+    }
     async fn keyspace_group_manager(
         &self,
     ) -> Result<Arc<astersql_pd_keyspace::KeyspaceGroupManager>, String> {

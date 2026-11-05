@@ -109,6 +109,44 @@ impl ClusterHost {
         Ok(config)
     }
 
+    pub(crate) async fn meta_group_health_configuration(
+        &self,
+    ) -> Result<astersql_pd_server_config::Config, String> {
+        let guard = self.resources.lock().await;
+        let r = guard.as_ref().ok_or("server not started")?;
+        Ok(r.replication_transport_config
+            .as_deref()
+            .cloned()
+            .unwrap_or_else(|| r.persisted_config.config.clone()))
+    }
+    pub(crate) async fn persist_meta_groups(
+        &self,
+        groups: std::collections::BTreeMap<String, String>,
+    ) -> Result<(), String> {
+        let mut guard = self.resources.lock().await;
+        let r = guard.as_mut().ok_or("server not started")?;
+        let mut next = r.persisted_config.clone();
+        if self.restored_config.is_none()
+            && let Some(input) = &r.replication_transport_config
+        {
+            next.config.keyspace = input.keyspace.clone();
+        }
+        next.config.keyspace.meta_service_groups = Some(groups.clone());
+        let storage = StorageEndpoint::new(Arc::new(crate::member_role_worker::TermStore::new(
+            r.meta_store.clone(),
+            r.leader.clone(),
+            self.cancel.clone(),
+        )));
+        next.persist(&storage, &r.paths).await.map_err(|error| match error {
+            astersql_pd_server_config::ConfigPersistenceError::Endpoint(astersql_pd_storage_domain::EndpointError::Store(astersql_pd_storage::StoreError::RequestTooLarge)) => "[PD:etcd:ErrEtcdKVPut]etcdserver: request is too large: etcdserver: request is too large".into(),
+            error => error.to_string(),
+        })?;
+        r.persisted_config = next;
+        if let Some(config) = &mut r.replication_transport_config {
+            Arc::make_mut(config).keyspace.meta_service_groups = Some(groups);
+        }
+        Ok(())
+    }
     pub(crate) async fn keyspace_bootstrapped(&self) -> bool {
         self.resources
             .lock()

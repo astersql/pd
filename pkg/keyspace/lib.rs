@@ -118,3 +118,9 @@ pub use keyspace_watch::KeyspaceWatch;
 mod group_transition_prepare;
 #[cfg(test)]
 mod group_transition_prepare_test;
+
+mod meta_group_status;
+pub use meta_group_status::MetaGroupKeyspaceCounter;
+
+#[cfg(test)]
+mod meta_group_status_test;

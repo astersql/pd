@@ -132,6 +132,10 @@ impl KeyspaceManager {
             .is_some_and(|s| s.has_boundaries(meta.id(), bound))
     }
 
+    /// Shared manager used by both keyspace operations and host transports.
+    pub fn meta_service_group_manager(&self) -> Option<Arc<MetaServiceGroupManager>> {
+        self.resources.meta_groups.clone()
+    }
     /// Clone the same host-owned metadata backend and codec for revision-pinned readers.
     pub fn metadata_storage(&self) -> KeyspaceStorage {
         self.storage.clone()

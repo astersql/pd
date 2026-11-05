@@ -122,3 +122,6 @@ mod accept_http_10_test;
 
 #[cfg(test)]
 mod accept_http_11_test;
+
+#[cfg(test)]
+mod accept_http_12_test;

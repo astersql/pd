@@ -16,18 +16,6 @@ pub(crate) fn router(cancel: CancellationToken) -> Router {
     use MethodFilter as M;
     let mut router = Router::new();
     for (path, methods, domain, dependency) in [
-        (
-            "meta-service-groups",
-            M::GET.or(M::PATCH),
-            "meta-service-group",
-            "theme-8",
-        ),
-        (
-            "meta-service-groups/{id}/status",
-            M::PATCH,
-            "meta-service-group",
-            "theme-8",
-        ),
         ("ms/members/{service}", M::GET, "mcs", "theme-8"),
         ("ms/primary/{service}", M::GET, "mcs", "theme-8"),
         ("ms/tso/primary/evict", M::POST, "mcs", "theme-8"),
