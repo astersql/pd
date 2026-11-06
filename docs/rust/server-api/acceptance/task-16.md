@@ -532,3 +532,21 @@ amd64对照触发16KiB/4KiB页大小差异，遵循验收15已有的同架构准
 完整阶段日志、最初注册red、环境/架构错误、两个架构产物摘要与实际机器/日志回执
 保存在[公共注册压缩回执](task-16-common-registration.json.gz)。同一次native组合命令
 记录为1通过/1失败，后续独立amd64 ServerInfo命令0失败，未将组合命令伪记为全绿。
+
+## HTTP入口与出站TLS配置兼容修正（进行中）
+
+2026-11-07，基准`8aba1bede`。为TLS部署矩阵增加真实Go/Rust启动对照：相同
+有效CA/证书/私钥配置、HTTP client URL，检查明文GetMembers和HTTP config保留路径。
+Go正常启动并接受明文gRPC，初始Rust启动失败；原始成员protobuf与失败日志已保存。
+修正canonical Runtime listener按URL scheme选择入站协议；HTTP配置仍复用既有
+client_auth工厂校验证书，证书继续用于出站客户端，不以配置文件路径强制HTTPS。
+
+差分已由失败转通过，原有缺失证书负例也通过：HTTP/HTTPS都拒绝无效凭据，
+释放listener且不产生metadata副作用。没有删除、重试或放宽负例断言，也没有建立
+第二套TLS/证书解析实现。这是完整TLS矩阵的一项配置前提，不代表全部MCS TLS可用。
+
+本阶段现成Go/Rust差分1通过/0失败/0忽略；无效凭据与listener/metadata清理1通过，
+workspace check、格式、metadata及1142项只读守卫通过。原始red/green与产物摘要见
+[HTTP/TLS配置压缩回执](task-16-http-tls-config.json.gz)。MCS的TLS listener选择策略
+与classic URL策略不同：Go BaseServer在cmux之前按ToServerTLSConfig包装tls.Listener；
+后续须以真实MCS部署矩阵验证，不由此推断MCS已支持TLS配置。

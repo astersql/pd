@@ -150,3 +150,6 @@ mod accept_extra_scheduling_service_test;
 
 #[cfg(test)]
 mod accept_extra_common_registration_test;
+
+#[cfg(test)]
+mod accept_extra_transport_config_test;

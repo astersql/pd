@@ -20,9 +20,12 @@ impl Listener {
             Ok(Self::Tls(astersql_pd_server::service_auth::Listener::new(
                 tcp, config,
             )?))
-        } else if !tls.cert_path.is_empty() || !tls.key_path.is_empty() || !tls.ca_path.is_empty() {
-            Err("TLS credentials require an HTTPS client endpoint".into())
         } else {
+            // Go selects inbound transport from the URL scheme. The same
+            // security values may still configure outbound clients on HTTP.
+            if !tls.cert_path.is_empty() || !tls.key_path.is_empty() || !tls.ca_path.is_empty() {
+                astersql_pd_server::client_auth::configuration(tls)?;
+            }
             Ok(Self::Plain(tcp))
         }
     }
