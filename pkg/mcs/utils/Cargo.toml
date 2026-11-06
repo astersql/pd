@@ -1,0 +1,20 @@
+[package]
+name = "astersql-pd-mcs-utils"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+[lib]
+path = "lib.rs"
+[dependencies]
+astersql-pd-mcs-discovery.workspace = true
+astersql-pd-keypath.workspace = true
+astersql-pd-storage-domain.workspace = true
+astersql-pd-election.workspace = true
+astersql-pd-typeutil.workspace = true
+rand.workspace = true
+
+[dev-dependencies]
+astersql-pd-storage-kv.workspace = true
+tokio.workspace = true
+tokio-util.workspace = true

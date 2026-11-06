@@ -629,6 +629,10 @@ impl PdServices for RoleServices {
         .map(|meta| meta.is_some())
         .map_err(|error| error.to_string())
     }
+    fn mcs_enabled(&self) -> bool {
+        self.keyspace_groups
+            .load(std::sync::atomic::Ordering::Acquire)
+    }
     fn discovery_store(&self) -> Option<Arc<dyn MetaStore>> {
         self.store.upgrade()
     }

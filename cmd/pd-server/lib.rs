@@ -25,3 +25,5 @@ mod cli_logging;
 
 #[cfg(test)]
 mod process_shutdown_test;
+
+mod standalone_tso;

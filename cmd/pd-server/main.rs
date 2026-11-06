@@ -136,6 +136,11 @@ async fn run_with_logging(
 }
 /// Owns CLI, process signals and the standalone executor.
 pub fn main() -> ExitCode {
+    let raw = std::env::args().skip(1).collect::<Vec<_>>();
+    if raw.first().is_some_and(|s| s == "services") && raw.get(1).is_some_and(|s| s == "tso") {
+        return crate::standalone_tso::main(raw[2..].to_vec());
+    }
+
     let args = match crate::cli_exit::parse(crate::cli_exit::process_args()) {
         Ok(args) => args,
         Err(error) => {
@@ -207,7 +212,7 @@ pub fn main() -> ExitCode {
         }
     }
 }
-async fn shutdown_signal() -> Result<(), std::io::Error> {
+pub(crate) async fn shutdown_signal() -> Result<(), std::io::Error> {
     #[cfg(unix)]
     {
         use tokio::signal::unix::{SignalKind, signal};

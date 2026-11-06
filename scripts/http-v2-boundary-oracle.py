@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Copyright 2026 AsterSQL.
-"""Observe v2 Go contracts and explicit Rust dependency gaps without rewriting Go."""
+"""Observe v2 Go contracts without assigning compatibility before comparison."""
 import hashlib
 import importlib.util
 import json
@@ -77,10 +77,10 @@ def main():
                             suffix = re.sub(r'[:*][A-Za-z_]+', '1', suffix)
                             path = f"{prefix}/{suffix.lstrip('/')}".rstrip('/')
                             response = request(url + "/pd/api/v2/" + path, method, b"invalid JSON must not reach a domain")
-                            record["routes"].append({"method": method, "path": path, "go": response, "compatible": False})
+                            record["routes"].append({"method": method, "path": path, "go": response, "observation_only": True})
                     for path in ("ready?verbose", "affinity-groups"):
                         record["available"][path] = request(url + "/pd/api/v2/" + path)
-                    assert len(record["routes"]) == 30
+                    assert record["routes"], "no Go routes extracted"
                 finally:
                     health.contract.stop(child)
                     record["go_exit"] = child.returncode

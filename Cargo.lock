@@ -208,12 +208,17 @@ dependencies = [
 name = "astersql-pd-cmd-pd-server"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-keypath",
+ "astersql-pd-keyspace",
  "astersql-pd-logutil",
+ "astersql-pd-mcs-discovery",
+ "astersql-pd-mcs-tso-server",
  "astersql-pd-proto",
  "astersql-pd-runtime",
  "astersql-pd-server-config",
  "astersql-pd-storage",
  "astersql-pd-storage-kv",
+ "astersql-pd-tso",
  "prometheus",
  "prost",
  "rustix",
@@ -489,26 +494,60 @@ name = "astersql-pd-mcs-constant"
 version = "0.1.0"
 
 [[package]]
+name = "astersql-pd-mcs-discovery"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-keypath",
+ "astersql-pd-storage-domain",
+ "astersql-pd-storage-kv",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.21",
+ "tokio",
+ "tokio-util",
+]
+
+[[package]]
 name = "astersql-pd-mcs-tso-server"
 version = "0.1.0"
 dependencies = [
  "astersql-pd-election",
  "astersql-pd-keypath",
  "astersql-pd-keyspace",
+ "astersql-pd-mcs-discovery",
+ "astersql-pd-mcs-utils",
  "astersql-pd-proto",
  "astersql-pd-storage-domain",
  "astersql-pd-storage-kv",
  "astersql-pd-tso",
+ "astersql-pd-typeutil",
+ "axum",
  "futures-util",
  "http-body-util",
  "hyper",
  "hyper-util",
  "prost",
+ "serde",
  "serde_json",
  "tokio",
  "tokio-stream",
  "tokio-util",
  "tonic",
+]
+
+[[package]]
+name = "astersql-pd-mcs-utils"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-election",
+ "astersql-pd-keypath",
+ "astersql-pd-mcs-discovery",
+ "astersql-pd-storage-domain",
+ "astersql-pd-storage-kv",
+ "astersql-pd-typeutil",
+ "rand",
+ "tokio",
+ "tokio-util",
 ]
 
 [[package]]
@@ -1114,6 +1153,7 @@ dependencies = [
  "astersql-pd-keyspace",
  "astersql-pd-keyutil",
  "astersql-pd-logutil",
+ "astersql-pd-mcs-discovery",
  "astersql-pd-member",
  "astersql-pd-metricutil",
  "astersql-pd-proto",
@@ -1356,6 +1396,8 @@ version = "0.1.0"
 dependencies = [
  "astersql-pd-etcdutil",
  "astersql-pd-keypath",
+ "astersql-pd-mcs-discovery",
+ "astersql-pd-mcs-utils",
  "astersql-pd-member",
  "astersql-pd-metricutil",
  "astersql-pd-storage-domain",

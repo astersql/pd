@@ -7,3 +7,5 @@ mod grpc_service;
 mod tso_service_host_test;
 
 mod transition_http;
+
+mod primary_http;

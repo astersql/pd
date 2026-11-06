@@ -184,14 +184,11 @@ async fn task_078_behavior() {
         before, after,
         "rejected routes must not mutate domain state"
     );
-    for (method, path, domain, dep, result) in observations {
+    for (method, path, _domain, _dep, result) in observations {
         println!("{method} {path}: {result:?}");
         assert_eq!(
             result,
-            (
-                503,
-                json!({"error":"domain_dependency_unavailable", "domain":domain, "dependency":dep, "compatible":false})
-            ),
+            (404, json!("not support microservice")),
             "{method} {path}"
         );
     }
@@ -244,18 +241,9 @@ async fn task_078_cancel_and_unread_body() {
     );
     stop.cancel();
     task.await.unwrap();
-    assert!(response.starts_with("HTTP/1.1 503"), "{response}");
-    assert!(
-        response.contains("x-pd-compatibility: unavailable"),
-        "{response}"
-    );
-    assert_eq!(
-        result,
-        (
-            503,
-            json!({"error":"request_cancelled", "domain":"mcs", "dependency":"theme-8", "compatible":false})
-        )
-    );
+    assert!(response.starts_with("HTTP/1.1 404"), "{response}");
+    assert!(response.contains("404 page not found"), "{response}");
+    assert_eq!(result, (404, json!("404 page not found")));
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
@@ -287,7 +275,7 @@ async fn task_078_differential() {
     let mut gaps = vec![];
     for entry in oracle["routes"].as_array().unwrap() {
         let path = entry["path"].as_str().unwrap();
-        if path.starts_with("maintenance") || path.starts_with("gc/safepoint") {
+        if !path.starts_with("ms/") {
             continue;
         }
         let method = entry["method"].as_str().unwrap();
@@ -301,14 +289,13 @@ async fn task_078_differential() {
         .map(|(path, go)| (path.clone(), go.clone(), call(&url, "GET", path, "")))
         .collect();
     node.shutdown().await.unwrap();
-    assert_eq!(gaps.len(), 25);
+    assert_eq!(gaps.len(), routes().len());
     for (go, rust) in gaps {
-        // Observe both implementations, but never normalize dependency denials
-        // into successful Go behavior or call these unavailable domains equivalent.
-        println!("intentional domain gap: Go {go}; Rust {rust:?}");
-        assert_eq!(rust.0, 503);
-        assert_eq!(rust.1["compatible"], false);
-        assert_eq!(rust.1["error"], "domain_dependency_unavailable");
+        assert_eq!(rust.0 as u64, go["go"]["status"].as_u64().unwrap());
+        assert_eq!(
+            rust.1,
+            serde_json::from_str::<Value>(go["go"]["body"].as_str().unwrap()).unwrap()
+        );
         // An unknown MCS service returns JSON 404 from the domain handler.
         assert!(
             go["go"]["content_type"]

@@ -222,3 +222,16 @@ watcher/额度集成测试和测试工具。只补此清单，不改只读plan�
 34个补充来源逐项复核到相应行为任务；Go源码/模块1101项首尾SHA与状态一致。
 文档链接存在性和git diff --check退出0。无Cargo调用，新增行为测试0。
 任务003的只读差分接线及聚焦验证见[task-003.md](task-003.md)；完整回归留待统一执行。其余“拟建”仍不表示接口可用。
+
+## 服务端验收13的MCS接口交接（2026-11-06）
+
+[当前证据](../server-api/acceptance/task-13.md)及其压缩回执给出原58–61的六字段
+ServiceRegistryEntry、注册lease归属/重建/撤销、损坏记录与未知服务读取的实际公共API；
+实现归属 `pkg/mcs/discovery`，不放在PD HTTP适配中。
+原54/55的candidate/expected-primary/lease/CAS/fencing归属 `pkg/mcs/utils/expected_primary.rs`，
+canonical allocator消费它完成实际campaign和驱逐。
+原81/82/136的既有TsoServiceHost复用同一监听器及allocator watch承载HTTP和tonic，
+原140的独立TSO命令消费同一宿主。真实Go/Rust成员、primary、驱逐、旧任期停止发放、
+注册过期、WAL恢复及错误/取消证据已接收；原有MCS拆合实链相邻回归通过。
+这只交接验收13实际消费的接口，不将上述任务的其它配置、服务、指标、TLS拓扑或全部RPC
+标为已完成；不新增平行factory/BaseServer或第二套选主实现。

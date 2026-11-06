@@ -355,6 +355,9 @@ pub trait PdServices: Send + Sync {
         Ok(true)
     }
     /// Shared canonical discovery metadata, independent of the local leader term.
+    fn mcs_enabled(&self) -> bool {
+        false
+    }
     fn discovery_store(&self) -> Option<Arc<dyn astersql_pd_storage::MetaStore>> {
         None
     }
@@ -1216,3 +1219,5 @@ mod accept_http_11;
 mod accept_http_11_test;
 
 mod accept_http_12;
+
+mod accept_http_13;

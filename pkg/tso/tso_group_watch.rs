@@ -27,6 +27,7 @@ pub struct GroupAllocator {
     pub id: u32,
     oracle: Arc<tokio::sync::RwLock<Option<Arc<Oracle>>>>,
     cancel: CancellationToken,
+    term: Arc<tokio::sync::RwLock<Option<Arc<Leadership>>>>,
     transitioning: bool,
     worker: Option<tokio::task::JoinHandle<()>>,
 }
@@ -48,6 +49,46 @@ impl GroupAllocator {
             .ok_or(TsoError::Member(astersql_pd_member::MemberError::NotLeader))?;
         oracle.allocate(count).await
     }
+    /// Transfer this allocator's current term using the shared expected-primary algorithm.
+    pub async fn transfer(
+        &self,
+        config: &GroupWatchConfig,
+        entries: &[astersql_pd_mcs_discovery::ServiceRegistryEntry],
+        target: &str,
+        members: &[String],
+    ) -> Result<(), String> {
+        let term = self
+            .term
+            .read()
+            .await
+            .clone()
+            .ok_or("current member is not serving as primary, please check leadership")?;
+        astersql_pd_mcs_utils::transfer_primary(
+            config.store.as_ref(),
+            &term,
+            &ClusterPaths::new(config.cluster_id),
+            &MsParam {
+                service_name: "tso".into(),
+                group_id: self.id,
+            },
+            entries,
+            &config.address,
+            target,
+            members,
+            config.lease_seconds,
+        )
+        .await?;
+        *self.oracle.write().await = None;
+        Ok(())
+    }
+    pub async fn is_primary(&self) -> bool {
+        self.term
+            .read()
+            .await
+            .as_ref()
+            .is_some_and(|t| !t.is_expired())
+            && self.oracle.read().await.is_some()
+    }
     pub async fn shutdown(mut self) -> Result<(), TsoError> {
         self.cancel.cancel();
         if let Some(worker) = self.worker.take() {
@@ -58,16 +99,19 @@ impl GroupAllocator {
     fn start(config: &GroupWatchConfig, id: u32, transitioning: bool) -> Self {
         let cancel = config.cancel.child_token();
         let oracle = Arc::new(tokio::sync::RwLock::new(None));
+        let term = Arc::new(tokio::sync::RwLock::new(None));
         let worker = config.runtime.spawn(allocator_worker(
             config.clone(),
             id,
             transitioning,
             cancel.clone(),
             oracle.clone(),
+            term.clone(),
         ));
         Self {
             id,
             oracle,
+            term,
             cancel,
             transitioning,
             worker: Some(worker),
@@ -80,6 +124,7 @@ async fn allocator_worker(
     transitioning: bool,
     cancel: CancellationToken,
     state: Arc<tokio::sync::RwLock<Option<Arc<Oracle>>>>,
+    serving_term: Arc<tokio::sync::RwLock<Option<Arc<Leadership>>>>,
 ) {
     // Split/merge handoff remains owned by its domain tasks. Never serve a fresh
     // independent window before those tasks have established a safe boundary.
@@ -140,6 +185,42 @@ async fn allocator_worker(
         } else {
             break;
         };
+        let param = MsParam {
+            service_name: "tso".into(),
+            group_id: id,
+        };
+        let expected = match astersql_pd_mcs_utils::expected_primary(
+            config.store.as_ref(),
+            &paths,
+            &param,
+        )
+        .await
+        {
+            Ok(e) => e,
+            Err(_) => {
+                tokio::select! {_=cancel.cancelled()=>break,_=tokio::time::sleep(Duration::from_millis(100))=>{}}
+                continue;
+            }
+        };
+        if expected.as_ref().is_some_and(|e| {
+            !astersql_pd_mcs_utils::identifies(
+                &astersql_pd_mcs_discovery::ServiceRegistryEntry {
+                    service_addr: config.address.clone(),
+                    ..Default::default()
+                },
+                &String::from_utf8_lossy(&e.value),
+            )
+        }) {
+            tokio::select! {_=cancel.cancelled()=>break,_=tokio::time::sleep(Duration::from_millis(50))=>{}}
+            continue;
+        }
+        let mut campaign_guard = metadata_guard.clone();
+        if let Some(e) = &expected {
+            campaign_guard.push(astersql_pd_storage_domain::Compare::Value(
+                e.key.clone(),
+                e.value.clone(),
+            ));
+        }
         let term_cancel = cancel.child_token();
         let elected = Leadership::campaign_with_key(
             config.store.clone(),
@@ -148,11 +229,20 @@ async fn allocator_worker(
             key.clone(),
             (config.participant)(id),
             config.lease_seconds,
-            metadata_guard.clone(),
+            campaign_guard,
         )
         .await;
         if let Ok(term) = elected {
             let term = Arc::new(term);
+            if let Some(e) = &expected {
+                let _ = astersql_pd_mcs_utils::clear_expected_primary(
+                    config.store.as_ref(),
+                    e.key.clone(),
+                    e,
+                )
+                .await;
+            }
+            *serving_term.write().await = Some(term.clone());
             if let Ok(oracle) = Oracle::new_for_group_guarded(
                 config.store.clone(),
                 term.clone(),
@@ -180,6 +270,7 @@ async fn allocator_worker(
                 }
                 *state.write().await = None;
             }
+            *serving_term.write().await = None;
             term_cancel.cancel();
             // Cleanup is allowed after cancellation; revoke only this election's lease.
             let _ = term.resign().await;
@@ -401,6 +492,62 @@ impl GroupAllocatorWatch {
         self.stop_allocators().await
     }
     /// Stop every owned allocator while retaining the last readable assignment snapshot.
+    /// Evict primary groups after validating all candidates and split states.
+    pub async fn evict_primaries(
+        &mut self,
+        entries: &[astersql_pd_mcs_discovery::ServiceRegistryEntry],
+        target: &str,
+    ) -> Result<std::collections::BTreeMap<u32, String>, (u16, String)> {
+        let mut ids = vec![];
+        for (id, a) in &self.allocators {
+            if a.is_primary().await {
+                ids.push(*id);
+            }
+        }
+        for id in &ids {
+            if let Some(group) = self.groups.get(id) {
+                if group.is_split_source() || group.is_split_target() {
+                    return Err((
+                        500,
+                        format!(
+                            "[PD:keyspace:ErrKeyspaceGroupInSplit]keyspace group {id} is in split"
+                        ),
+                    ));
+                }
+                let members = group
+                    .members
+                    .iter()
+                    .flatten()
+                    .map(|m| m.address.clone())
+                    .collect::<Vec<_>>();
+                if !astersql_pd_mcs_utils::is_valid_primary_candidate(entries, target, &members) {
+                    return Err((
+                        400,
+                        format!("new_primary {target:?} is not a member of keyspace group {id}"),
+                    ));
+                }
+            }
+        }
+        let mut results = std::collections::BTreeMap::new();
+        for id in ids {
+            let members = self
+                .groups
+                .get(&id)
+                .map(|g| {
+                    g.members
+                        .iter()
+                        .flatten()
+                        .map(|m| m.address.clone())
+                        .collect::<Vec<_>>()
+                })
+                .unwrap_or_default();
+            let result = self.allocators[&id]
+                .transfer(&self.config, entries, target, &members)
+                .await;
+            results.insert(id, result.map_or_else(|e| e, |_| "success".into()));
+        }
+        Ok(results)
+    }
     pub async fn stop_allocators(&mut self) -> Result<(), TsoError> {
         self.config.cancel.cancel();
         let mut failure = None;

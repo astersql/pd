@@ -13,6 +13,13 @@ name = "pd-server"
 path = "bin_main.rs"
 
 [dependencies]
+astersql-pd-mcs-tso-server.workspace = true
+astersql-pd-mcs-discovery.workspace = true
+astersql-pd-tso.workspace = true
+astersql-pd-keyspace.workspace = true
+astersql-pd-keypath.workspace = true
+astersql-pd-proto.workspace = true
+prost.workspace = true
 tracing.workspace = true
 tracing-subscriber.workspace = true
 astersql-pd-logutil.workspace = true
@@ -24,8 +31,6 @@ tokio-util.workspace = true
 astersql-pd-storage.workspace = true
 prometheus.workspace = true
 [dev-dependencies]
-astersql-pd-proto.workspace = true
-prost.workspace = true
 tonic.workspace = true
 tokio-stream.workspace = true
 astersql-pd-storage-kv.workspace = true
