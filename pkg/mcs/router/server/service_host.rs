@@ -68,7 +68,8 @@ impl RouterHost {
                 Ok(
                     astersql_pd_mcs_server::auxiliary_routes(diagnostics_runtime, cancel, log_file)
                         .add_service(RouterServer::new(service))
-                        .into_axum_router(),
+                        .into_axum_router()
+                        .fallback(astersql_pd_mcs_server::unregistered_service),
                 )
             },
             vec![],

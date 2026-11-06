@@ -162,3 +162,6 @@ mod accept_extra_mcs_backend_tls_test;
 
 #[cfg(test)]
 mod accept_extra_mcs_process_config_test;
+
+#[cfg(test)]
+mod accept_extra_unregistered_test;

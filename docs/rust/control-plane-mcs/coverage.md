@@ -319,3 +319,9 @@ Scheduling独立初始化增量：局部移除MCS对PD cluster meta的误用，c
 按角色准备缓存，classic bootstrap条件保留；实际租约稳定/在线bootstrap/心跳protobuf
 证据见[验收16阶段记录](../server-api/acceptance/task-16.md#scheduling独立primary与在线bootstrap阶段进行中)。
 仍不代替完整调度策略watch或故障矩阵。
+
+未注册服务边界增量：七方法在classic及四MCS共70次实际负向RPC比较完整code/message，
+并核对HTTP未知路径404。公共tonic fallback修补空错误文本及HTTP 200泄漏，不安装领域桩。
+MCS信号处理提前安装，非TERM信号同样等待宿主lease清理；32组实际信号观察边界及
+历史失败见[验收16阶段说明](../server-api/acceptance/task-16.md#未注册服务回退与mcs信号清理阶段进行中)。
+初始化中取消和完整故障矩阵仍待后续专项，未关闭148或22/23。

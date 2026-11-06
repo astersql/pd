@@ -683,7 +683,8 @@ fn router_with_options(
             grpc_resource_proxy::RegisteredResourceManager::new(services.clone(), cancel.clone()),
         ),
     )
-    .into_axum_router();
+    .into_axum_router()
+    .fallback(astersql_pd_mcs_server::unregistered_service);
     let router = http::router(services.clone(), cancel.clone())
         .merge(http_health::router(services.clone(), cancel.clone()))
         .merge(http_service_limit::router(limits.clone()))

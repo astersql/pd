@@ -32,3 +32,6 @@ pub mod http_transport;
 
 /// Default MCS primary lease, shared with the canonical constant package.
 pub use astersql_pd_mcs_constant::DEFAULT_LEASE;
+
+mod unregistered_service;
+pub use unregistered_service::unregistered_service;

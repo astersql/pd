@@ -28,6 +28,8 @@ pub(crate) fn main(args: Vec<String>) -> ExitCode {
         .map_err(|e| e.to_string())
         .and_then(|runtime| {
             runtime.block_on(async {
+                let shutdown =
+                    super::entry::prepare_shutdown_signal().map_err(|e| e.to_string())?;
                 let cancel = tokio_util::sync::CancellationToken::new();
                 let _transport_lifetime = cancel.clone().drop_guard();
                 let backend_store = crate::backend_transport::connect(&config, &cancel).await?;
@@ -126,10 +128,10 @@ pub(crate) fn main(args: Vec<String>) -> ExitCode {
                 )
                 .await
                 .map_err(|e| e.to_string())?;
-                super::entry::shutdown_signal()
-                    .await
-                    .map_err(|e| e.to_string())?;
-                host.shutdown().await.map_err(|e| e.to_string())
+                let signal = shutdown.await;
+                let cleanup = host.shutdown().await.map_err(|e| e.to_string());
+                signal.map_err(|e| e.to_string())?;
+                cleanup
             })
         });
     match result {

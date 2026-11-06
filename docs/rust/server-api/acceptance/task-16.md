@@ -706,3 +706,43 @@ cluster is not initialized。原始失败先落盘后断言，不用仅源码推
 classic网络生命周期1通过，保留未bootstrap不调度、不消耗ID的原断言。
 workspace check、fmt、metadata通过。完整失败、最终protobuf/租约采样及源码/二进制
 摘要见[Scheduling在线bootstrap回执](task-16-scheduling-bootstrap.json.gz)。
+
+## 未注册服务回退与MCS信号清理阶段（进行中）
+
+固定协议中Deadlock两方法、TraceRecordPubSub一方法、Namespace四方法在Go注册链中
+未注册；本阶段用实际typed RPC核验classic及四种MCS，两个实现共70次负向调用。
+含Detect单帧半关闭及Subscribe服务端流，均要求Unimplemented；最初差分实际失败于
+Go的unknown service文本与Rust空文本。额外实际HTTP探测又捕获Rust MCS未知路径
+返回HTTP 200，Go为404；保留两次原始red。
+
+补丁只给tonic路由集安装canonical公共protocol fallback，以tonic Status生成Go同义
+未知服务响应，普通HTTP维持404；不安装三个服务的tonic默认桩，不虚构领域实现。
+BaseServer或宿主的任意自定义fallback未被覆盖，TSO既有HTTP路由仍独立合并。
+最终比较70次RPC完整code/message，不归一文本；10次HTTP仅断言404，原body保留，
+不把Go/Rust HTTP错误body相等列为已验证。
+
+已注册Diagnostics/health回归一度捕获sidecar退出为SIGTERM信号15、无正常退出码。
+只读核对Go四种包装器在Run前安装信号，而Rust原来在宿主启动后才轮询并安装。
+CLI新增提前安装/随后等待的信号入口，通知在初始化期间缓冲；库不安装进程信号。
+Root classic保留原shutdown_signal异步包装，MCS在backend/listener之前准备信号。
+
+对已经构建且指纹保存的pre-signal现成二进制追加实际信号red，没有改坏当前源码重建：
+Rust RM收到INT后退出1但registry仍有1项。原来非TERM信号通过问号提前返回，跳过了
+异步宿主shutdown。现在无论TERM或INT/HUP/QUIT，都先等待宿主清理，再返回信号
+退出结果；SDK传输的drop guard仍在lease清理之后生效。
+
+信号矩阵初版只等registry键，曾使Go Router在store watcher尚初始化时收到HUP，
+Run以ctx canceled fatal退出并留下键；该实际启动取消记录保留。正常运行关闭的
+专项前置改为registry及真实health均已就绪，不再把注册发布当成初始化完成；
+退出码、registry为空及端口关闭断言保持。此阶段不声称覆盖初始化中取消的所有行为。
+最终两测试通过：70负向RPC加10 HTTP观察，以及32组信号（四角色×四信号×双实现）。
+TERM退出0，其它退出1，全部registry清空、端口关闭；不是把观察数当成测试数。
+Diagnostics/health原有真实Go/Rust专项另1通过/0失败/0忽略，已注册路由保持可达。
+完整跨域故障、启动取消、TLS及148仍单列，不因此关闭整项16或后续22/23。
+
+classic现成Go/Rust进程关闭专项实际显式启用后1通过/0失败/0忽略，验证退出码、
+bind失败重试、端口/身份/leadership复用、ID增加及持久写保留。原日志明确仍有Go
+TSO/heartbeat终止Unknown与Rust EOF差别，此专项本身不要求该终止文本相等，
+不据此关闭完整验收22。workspace check/fmt/metadata通过。
+完整输入、red/green、32组信号及pre-signal产物指纹、只读守卫见
+[未注册协议与信号阶段回执](task-16-unregistered-signals.json.gz)。

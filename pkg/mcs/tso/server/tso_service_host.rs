@@ -195,7 +195,8 @@ impl TsoServiceHost {
                 log_file,
             )
             .add_service(TsoServer::new(service))
-            .into_axum_router(),
+            .into_axum_router()
+            .fallback(astersql_pd_mcs_server::unregistered_service),
         );
         let serve = config.runtime.spawn(async move {
             let result = axum::serve(listener, app)

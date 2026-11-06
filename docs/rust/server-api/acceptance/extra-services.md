@@ -25,7 +25,7 @@
 | TSO | 独立MCS注册，classic不注册该服务 | canonical TsoServiceHost及三个方法已存在；[验收11](task-11.md)/[13](task-13.md)只交付已消费子集，不能替代所有方法/TLS/取消的双模式回执 |
 | Router | 独立MCS注册，classic不注册该服务 | canonical七方法Service、RouterHost和services router入口已接通；[阶段证据](task-16.md)覆盖Go上游的空/真实缓存查询、错误与EOF，不能替代完整145/148、TLS或配置验收；86/87/137/141仍按各自范围交付 |
 | Scheduling | 独立MCS注册，classic不注册该服务 | canonical七方法和独立入口已接通，复用ClusterHost/公共辅助服务/TLS，在线bootstrap阶段已有实际对照；119–123/139/143/147/148完整领域/故障矩阵继续保留 |
-| Deadlock / TraceRecordPubSub / Namespace | descriptor传递导入，当前Go注册链未见注册 | 仅核对未注册边界，不虚构领域实现。Namespace历史“独立MCS”描述无注册源码支持，不据此新增服务；本轮未执行负向RPC |
+| Deadlock / TraceRecordPubSub / Namespace | descriptor传递导入，当前Go注册链未见注册 | classic及四MCS的七方法70次负向RPC已比较完整Unimplemented状态/文本，另核对10次HTTP 404；Namespace历史“独立MCS”描述无注册源码支持，不新增领域实现，见[阶段回执](task-16.md#未注册服务回退与mcs信号清理阶段进行中) |
 
 Go来源为 `server/server.go:316–341`及五个MCS的
 `server/grpc_service.go::RegisterGRPCService`；Rust入口为
@@ -177,3 +177,11 @@ Scheduling primary不依赖PD cluster meta已存在；真实Go/Rust专项验证P
 ClusterHost并保留classic PD bootstrap门槛，详见
 [阶段说明](task-16.md#scheduling独立primary与在线bootstrap阶段进行中)。
 故障/compaction与完整配置watch及148仍保留。
+
+## 未注册路由与信号边界增量（2026-11-07）
+
+Deadlock/TraceRecordPubSub/Namespace七方法的70次实际RPC均与Go保持unknown service
+Unimplemented；普通未知HTTP路径保持404，不以默认业务服务实现替代“未注册”。
+MCS在listener前准备信号，并在TERM/INT/HUP/QUIT后等待宿主清理；32组退出/registry/
+端口观察通过。实际red及当前边界见
+[阶段说明](task-16.md#未注册服务回退与mcs信号清理阶段进行中)，不替代148或完整22/23。

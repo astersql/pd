@@ -225,26 +225,34 @@ pub fn main() -> ExitCode {
         }
     }
 }
-pub(crate) async fn shutdown_signal() -> Result<(), std::io::Error> {
+/// Install process signals before publishing listeners; the caller decides when
+/// to await them. Notifications received during startup remain buffered.
+pub(crate) fn prepare_shutdown_signal()
+-> Result<impl std::future::Future<Output = Result<(), std::io::Error>>, std::io::Error> {
     #[cfg(unix)]
     {
         use tokio::signal::unix::{SignalKind, signal};
         let mut terminate = signal(SignalKind::terminate())?;
+        let mut interrupt = signal(SignalKind::interrupt())?;
         let mut hangup = signal(SignalKind::hangup())?;
         let mut quit = signal(SignalKind::quit())?;
-        tokio::select! {
-            result = tokio::signal::ctrl_c() => {
-                result?;
-                Err(std::io::Error::other("interrupted by SIGINT"))
+        Ok(async move {
+            tokio::select! {
+                _=interrupt.recv()=>Err(std::io::Error::other("interrupted by SIGINT")),
+                _=terminate.recv()=>Ok(()),
+                _=hangup.recv()=>Err(std::io::Error::other("interrupted by SIGHUP")),
+                _=quit.recv()=>Err(std::io::Error::other("interrupted by SIGQUIT")),
             }
-            _ = terminate.recv() => Ok(()),
-            _ = hangup.recv() => Err(std::io::Error::other("interrupted by SIGHUP")),
-            _ = quit.recv() => Err(std::io::Error::other("interrupted by SIGQUIT")),
-        }
+        })
     }
     #[cfg(not(unix))]
     {
-        tokio::signal::ctrl_c().await?;
-        Err(std::io::Error::other("interrupted by SIGINT"))
+        Ok(async {
+            tokio::signal::ctrl_c().await?;
+            Err(std::io::Error::other("interrupted by SIGINT"))
+        })
     }
+}
+pub(crate) async fn shutdown_signal() -> Result<(), std::io::Error> {
+    prepare_shutdown_signal()?.await
 }
