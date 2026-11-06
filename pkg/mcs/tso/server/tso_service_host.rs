@@ -17,57 +17,71 @@ pub struct TsoServiceHost {
 impl TsoServiceHost {
     /// Load the authoritative assignment before publishing a lease-backed registry entry.
     /// The injected manager is the same PD catalog used by its HTTP boundary.
-    pub async fn start(
+    pub async fn start<L>(
         config: GroupWatchConfig,
         groups: Arc<KeyspaceGroupManager>,
-        listener: tokio::net::TcpListener,
-    ) -> Result<Self, TsoError> {
+        listener: L,
+    ) -> Result<Self, TsoError>
+    where
+        L: axum::serve::Listener<Addr = std::net::SocketAddr> + Send + 'static,
+    {
         Self::start_inner(config, groups, listener, None, None, String::new()).await
     }
     /// Independent TSO hosts complete transitions through the PD leader's existing HTTP API.
-    pub async fn start_with_pd_http(
+    pub async fn start_with_pd_http<L>(
         config: GroupWatchConfig,
         groups: Arc<KeyspaceGroupManager>,
-        listener: tokio::net::TcpListener,
+        listener: L,
         pd_url: String,
-    ) -> Result<Self, TsoError> {
+    ) -> Result<Self, TsoError>
+    where
+        L: axum::serve::Listener<Addr = std::net::SocketAddr> + Send + 'static,
+    {
         Self::start_inner(config, groups, listener, Some(pd_url), None, String::new()).await
     }
     /// Start the same embedded host with process identity supplied by its caller.
-    pub async fn start_with_entry(
+    pub async fn start_with_entry<L>(
         config: GroupWatchConfig,
         groups: Arc<KeyspaceGroupManager>,
-        listener: tokio::net::TcpListener,
+        listener: L,
         pd_url: Option<String>,
         entry: ServiceRegistryEntry,
-    ) -> Result<Self, TsoError> {
+    ) -> Result<Self, TsoError>
+    where
+        L: axum::serve::Listener<Addr = std::net::SocketAddr> + Send + 'static,
+    {
         Self::start_inner(config, groups, listener, pd_url, Some(entry), String::new()).await
     }
     /// Start with diagnostics reading the embedding host's log location.
-    pub async fn start_with_log_file(
+    pub async fn start_with_log_file<L>(
         config: GroupWatchConfig,
         groups: Arc<KeyspaceGroupManager>,
-        listener: tokio::net::TcpListener,
+        listener: L,
         pd_url: Option<String>,
         entry: ServiceRegistryEntry,
         log_file: String,
-    ) -> Result<Self, TsoError> {
+    ) -> Result<Self, TsoError>
+    where
+        L: axum::serve::Listener<Addr = std::net::SocketAddr> + Send + 'static,
+    {
         Self::start_inner(config, groups, listener, pd_url, Some(entry), log_file).await
     }
-    async fn start_inner(
+    async fn start_inner<L>(
         config: GroupWatchConfig,
         groups: Arc<KeyspaceGroupManager>,
-        listener: tokio::net::TcpListener,
+        listener: L,
         pd_url: Option<String>,
         entry: Option<ServiceRegistryEntry>,
         log_file: String,
-    ) -> Result<Self, TsoError> {
+    ) -> Result<Self, TsoError>
+    where
+        L: axum::serve::Listener<Addr = std::net::SocketAddr> + Send + 'static,
+    {
         if !groups.uses_metadata_store(&config.store, config.cluster_id) {
             return Err(TsoError::StoreMismatch);
         }
-        let address = listener
-            .local_addr()
-            .map_err(|_| TsoError::InvalidArgument)?;
+        let address =
+            axum::serve::Listener::local_addr(&listener).map_err(|_| TsoError::InvalidArgument)?;
         let cancel = config.cancel.child_token();
         let mut owned = config.clone();
         owned.cancel = cancel.clone();

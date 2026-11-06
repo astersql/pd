@@ -4,17 +4,16 @@ use astersql_pd_proto::pdpb::{self, pd_client::PdClient};
 use prost::Message;
 use serde_json::json;
 use std::{path::PathBuf, time::Duration};
-struct Work(PathBuf);
+pub(super) struct Work(pub(super) PathBuf);
 impl Drop for Work {
     fn drop(&mut self) {
         let _ = std::fs::remove_dir_all(&self.0);
     }
 }
-#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
-async fn sa_016_http_listener_keeps_valid_outbound_tls_configuration() {
+pub(super) fn certificates(label: &str) -> Work {
     let work = Work(
         PathBuf::from(std::env::var_os("CARGO_TARGET_DIR").unwrap())
-            .join(format!("sa016-http-tls-{}", std::process::id())),
+            .join(format!("sa016-{label}-{}", std::process::id())),
     );
     let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..");
     assert!(
@@ -26,6 +25,11 @@ async fn sa_016_http_listener_keeps_valid_outbound_tls_configuration() {
             .unwrap()
             .success()
     );
+    work
+}
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn sa_016_http_listener_keeps_valid_outbound_tls_configuration() {
+    let work = certificates("http-tls");
     let config = work.0.join("http.toml");
     let cert = work.0.join("server.pem").display().to_string();
     let key = work.0.join("server.key").display().to_string();

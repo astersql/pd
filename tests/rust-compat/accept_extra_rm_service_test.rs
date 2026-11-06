@@ -33,6 +33,15 @@ impl Sidecar {
         Self::start_service(binary, backend, "resource-manager", scheme)
     }
     pub(super) fn start_service(binary: &Path, backend: &str, service: &str, scheme: &str) -> Self {
+        Self::start_service_with_args(binary, backend, service, scheme, &[])
+    }
+    pub(super) fn start_service_with_args(
+        binary: &Path,
+        backend: &str,
+        service: &str,
+        scheme: &str,
+        extra: &[&str],
+    ) -> Self {
         let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
         let url = format!("http://{}", listener.local_addr().unwrap());
         let advertised = url.replacen("http://", &format!("{scheme}://"), 1);
@@ -53,6 +62,7 @@ impl Sidecar {
                 &format!("--advertise-listen-addr={advertised}"),
                 "--name=accept-rm",
             ])
+            .args(extra)
             .stdout(Stdio::from(output.try_clone().unwrap()))
             .stderr(Stdio::from(output));
         drop(listener);

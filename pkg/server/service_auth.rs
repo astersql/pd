@@ -1,5 +1,5 @@
 // Copyright 2026 AsterSQL.
-//! Client-facing PD authentication: TLS chain validation and Go's CN allowlist.
+//! Host-owned TLS authentication with Go's PD and MCS client certificate policies.
 //! Authentication happens before HTTP routing, RPC dispatch, or forwarding.
 use rustls::{
     RootCertStore, ServerConfig,
@@ -27,7 +27,21 @@ impl Listener {
         tcp: TcpListener,
         config: &astersql_pd_server_config::Config,
     ) -> Result<Self, Box<dyn std::error::Error + Send + Sync>> {
-        let security = &config.security.tls;
+        Self::with_policy(tcp, &config.security.tls, false)
+    }
+    /// Construct the common MCS TLS listener. Go verifies certificates when
+    /// supplied and applies every nonempty CN allowlist, including one name.
+    pub fn for_microservice(
+        tcp: TcpListener,
+        security: &astersql_pd_grpcutil::TLSConfig,
+    ) -> Result<Self, Box<dyn std::error::Error + Send + Sync>> {
+        Self::with_policy(tcp, security, true)
+    }
+    fn with_policy(
+        tcp: TcpListener,
+        security: &astersql_pd_grpcutil::TLSConfig,
+        microservice: bool,
+    ) -> Result<Self, Box<dyn std::error::Error + Send + Sync>> {
         let cert = std::fs::read(&security.cert_path)?;
         let key = std::fs::read(&security.key_path)?;
         let certs = CertificateDer::pem_slice_iter(&cert).collect::<Result<Vec<_>, _>>()?;
@@ -35,29 +49,39 @@ impl Listener {
         let builder =
             ServerConfig::builder_with_provider(Arc::new(rustls::crypto::ring::default_provider()))
                 .with_safe_default_protocol_versions()?;
-        let builder = if security.ca_path.is_empty() {
+        let builder = if security.ca_path.is_empty() && !microservice {
             builder.with_no_client_auth()
         } else {
-            let ca = std::fs::read(&security.ca_path)?;
             let mut roots = RootCertStore::empty();
-            for cert in CertificateDer::pem_slice_iter(&ca) {
-                roots.add(cert?)?;
+            if security.ca_path.is_empty() {
+                for cert in rustls_native_certs::load_native_certs().certs {
+                    roots.add(cert)?;
+                }
+            } else {
+                let ca = std::fs::read(&security.ca_path)?;
+                for cert in CertificateDer::pem_slice_iter(&ca) {
+                    roots.add(cert?)?;
+                }
             }
+            let allowed = security.cert_allowed_c_ns.clone().unwrap_or_default();
             let verifier = rustls::server::WebPkiClientVerifier::builder_with_provider(
                 Arc::new(roots),
                 Arc::new(rustls::crypto::ring::default_provider()),
-            )
-            .build()?;
-            let allowed = security.cert_allowed_c_ns.clone().unwrap_or_default();
-            let verifier: Arc<dyn rustls::server::danger::ClientCertVerifier> = if allowed.len() > 1
-            {
-                Arc::new(AllowedCN {
-                    chain: verifier,
-                    allowed,
-                })
+            );
+            let verifier = if microservice && allowed.is_empty() {
+                verifier.allow_unauthenticated().build()?
             } else {
-                verifier
+                verifier.build()?
             };
+            let verifier: Arc<dyn rustls::server::danger::ClientCertVerifier> =
+                if allowed.len() > 1 || (microservice && !allowed.is_empty()) {
+                    Arc::new(AllowedCN {
+                        chain: verifier,
+                        allowed,
+                    })
+                } else {
+                    verifier
+                };
             builder.with_client_cert_verifier(verifier)
         };
         // Validate at startup, then re-read the pair on every full handshake.

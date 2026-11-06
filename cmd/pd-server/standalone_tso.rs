@@ -4,43 +4,25 @@ use astersql_pd_storage::{Consistency, EtcdMetaStore, MetaStore, Read};
 use prost::Message;
 use std::{process::ExitCode, sync::Arc, time::Duration};
 pub(crate) fn main(args: Vec<String>) -> ExitCode {
-    let mut flags = std::collections::BTreeMap::new();
-    let mut it = args.into_iter();
-    while let Some(arg) = it.next() {
-        let (key, value) = if let Some((k, v)) = arg.split_once('=') {
-            (k.to_owned(), v.to_owned())
-        } else {
-            let Some(value) = it.next() else {
-                eprintln!("missing value for {arg}");
-                return ExitCode::FAILURE;
-            };
-            (arg, value)
-        };
-        if !matches!(
-            key.as_str(),
-            "--backend-endpoints" | "--listen-addr" | "--advertise-listen-addr" | "--name"
-        ) {
-            eprintln!("unsupported tso option: {key}");
+    let config = match crate::mcs_config::Config::parse(args) {
+        Ok(config) => config,
+        Err(_) => {
+            eprintln!("microservice configuration could not be loaded or validated");
             return ExitCode::FAILURE;
         }
-        flags.insert(key, value);
+    };
+    if super::cli_logging::init(&config.log).is_err() {
+        eprintln!("microservice logger initialization failed");
+        return ExitCode::FAILURE;
     }
-    let backend = flags
-        .get("--backend-endpoints")
-        .cloned()
-        .unwrap_or_else(|| "http://127.0.0.1:2379".into());
-    let listen = flags
-        .get("--listen-addr")
-        .cloned()
-        .unwrap_or_else(|| "http://127.0.0.1:3379".into());
-    let address = flags
-        .get("--advertise-listen-addr")
-        .cloned()
-        .unwrap_or_else(|| listen.clone());
-    let name = flags
-        .get("--name")
-        .cloned()
-        .unwrap_or_else(|| address.clone());
+    if config.validate_client_credentials().is_err() {
+        eprintln!("microservice TLS credentials could not be loaded or validated");
+        return ExitCode::FAILURE;
+    }
+    let backend = config.backend_endpoints.clone();
+    let listen = config.listen_addr.clone();
+    let address = config.advertise_listen_addr.clone();
+    let name = config.name.clone();
     let result = tokio::runtime::Builder::new_multi_thread()
         .enable_all()
         .build()
@@ -80,6 +62,8 @@ pub(crate) fn main(args: Vec<String>) -> ExitCode {
                     .map_err(|e| e.to_string())?
                     .advertised_url(listener.local_addr().map_err(|e| e.to_string())?)
                     .map_err(|e| e.to_string())?;
+                let listener = config.listener(listener)?;
+                let log_file = config.log.file.filename.clone();
                 let participant_name = name.clone();
                 let participant_address = advertised.clone();
                 let cancel = tokio_util::sync::CancellationToken::new();
@@ -136,12 +120,13 @@ pub(crate) fn main(args: Vec<String>) -> ExitCode {
                         .as_secs() as i64,
                     ..Default::default()
                 };
-                let host = astersql_pd_mcs_tso_server::TsoServiceHost::start_with_entry(
+                let host = astersql_pd_mcs_tso_server::TsoServiceHost::start_with_log_file(
                     config,
                     groups,
                     listener,
                     Some(pd_url),
                     entry,
+                    log_file,
                 )
                 .await
                 .map_err(|e| e.to_string())?;

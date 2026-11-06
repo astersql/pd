@@ -290,3 +290,12 @@ Diagnostics工厂，HTTP selector与日志RE2规则共享同一解析函数。
 [阶段证据](../server-api/acceptance/task-16.md#公共mcs-diagnostics与health注册阶段进行中)
 记录四种MCS原先Unimplemented的对照及宿主日志/Watch生命周期测试；不把公共health
 新增为kvproto 42方法或批量关闭原任务，完整配置、指标、TLS和换主矩阵继续。
+
+## MCS前端TLS/配置增量（验收16，2026-11-07）
+
+cmd统一调用纯值适配与既有controller TOML decoder、logger、TLS/auth工厂，
+TSO宿主支持同一调用者提供的axum listener。Go/Rust四种服务的前端认证/配置子集
+见[当前证据](../server-api/acceptance/task-16.md#mcs前端tls与共用配置入口阶段进行中)。
+测试保留真实--config/空参数/controller类型/raw凭据及历史--log-file失败，
+不将120次认证探测当成120个Rust测试或全部业务方法覆盖。原62/82/88/123/148等
+配置、指标、部署和领域故障责任仍未整体验收；HTTPS backend等继续实施。

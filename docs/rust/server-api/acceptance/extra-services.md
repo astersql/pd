@@ -140,3 +140,11 @@ Go/Rust心跳、错误/EOF、空请求与PD-owned分裂ID对照，以及空闲�
 health Check/List/Watch采用固定grpc-go descriptor，独立于本表42个kvproto wire ID。
 [当前阶段证据](task-16.md#公共mcs-diagnostics与health注册阶段进行中)保留四种MCS
 初始全部Unimplemented的真实差分，不改变Diagnostics原14/15及装配62/88/123/148责任。
+
+## MCS前端TLS/配置增量（2026-11-07）
+
+四种MCS共用配置文件/非空参数合并和宿主日志入口，TLS沿用同一认证内核的MCS策略，
+有CA无CN限制时客户端证书可选，单个CN也限制。120次真实Go/Rust认证探测、RM无CA
+系统根验证、参数合并与controller TOML启动类型对照已通过；详见
+[阶段说明](task-16.md#mcs前端tls与共用配置入口阶段进行中)。
+这不关闭完整SDK HTTPS backend、TSO HTTPS transition、配置/租约及148领域故障矩阵。

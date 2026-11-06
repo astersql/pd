@@ -153,3 +153,6 @@ mod accept_extra_common_registration_test;
 
 #[cfg(test)]
 mod accept_extra_transport_config_test;
+
+#[cfg(test)]
+mod accept_extra_mcs_tls_test;

@@ -550,3 +550,52 @@ workspace check、格式、metadata及1142项只读守卫通过。原始red/gree
 [HTTP/TLS配置压缩回执](task-16-http-tls-config.json.gz)。MCS的TLS listener选择策略
 与classic URL策略不同：Go BaseServer在cmux之前按ToServerTLSConfig包装tls.Listener；
 后续须以真实MCS部署矩阵验证，不由此推断MCS已支持TLS配置。
+
+## MCS前端TLS与共用配置入口阶段（进行中）
+
+2026-11-07，基准`435fe4961`。四种MCS共用CLI文件/参数适配，支持transport、
+security、log及既有ControllerConfig字段；复用ConfigMetaData和controller默认值，
+不复制RU算法。非空命令行值覆盖文件，空字符串遵循Go AdjustCommandLineString保留
+文件值，`--config=`不打开空路径。原有四参数入口继续调用同一适配器。
+
+原始Go/Rust red：Go RM在配置文件提供证书时正常通过四种客户端认证探测，
+Rust不接受`--config`；随后真实合并差分发现Rust错误清空文件证书和读取空配置路径。
+三种合并场景（空证书参数、空配置参数、非空参数替换缺失文件证书）已由失败转通过。
+另用已核验SHA的历史amd64产物实际运行配置日志red：Go四种服务读取成功，历史Rust
+不接受`--log-file`；这是复用现成历史二进制，不是改坏当前实现制造失败。
+
+MCS TLS listener由文件证书/私钥字段选择，独立于HTTP/HTTPS URI，按Go InitListener在路由前
+完成认证。复用canonical `service_auth::Listener`、文件证书重载、WebPKI和CN解析；
+新增microservice策略，不改变classic的单CN例外。MCS有CA但无CN限制时客户端证书可选；
+非空CN列表含单个名称也限制认证。未指定CA时，匿名连接仍可用，提供证书则以系统根验证。
+TSO宿主改为接受调用者提供的同一种axum listener，不建立私有runtime或第二套TLS内核。
+Router/Scheduling出站连接复用既有client_auth及可刷新delegate工厂；显式凭据不按URI
+降级。当前SDK HTTPS backend和TSO HTTPS transition仍待后续接线，未声称全部TLS可用。
+
+四种MCS各三种CN策略、五种客户端身份、两个实现的120次实际认证探测通过；
+成功比较health响应，拒绝保留完整错误诊断，不将不同TLS实现的错误文本归一后称逐字相同。
+最终同一二进制重跑TLS/CN及参数合并共2测试通过/0失败/0忽略。
+RM无CA的独立五身份对照也通过（两个实现共10次）；四种MCS实际配置日志读取对照通过。
+日志生产者和Diagnostics共享同一宿主路径，固定轮转输入与运行日志分开，比较实际protobuf。
+这些是前端认证/配置子集，不是RM token、Router同步、Scheduling命令或148整体验收。
+
+classic认证四种策略的既有Rust专项通过（1测试，保留16组HTTP读写/gRPC观察）；
+本轮未将它冒充新的classic Go差分。配置日志差分在四种MCS上通过，包含实际logger
+文件初始化及轮转固定输入。额外发现controller TOML的布尔/整数/小数字面量不能
+直接套用JSON的string标签，真实Go正常启动而Rust拒绝；改为复用RM canonical
+`decode_toml`和存在性默认值后该启动对照通过，未另写转换/默认值算法。
+此启动测试不据此声称RU策略已经在运行时生效；该原有差分缺口继续保留。
+
+最后的凭据预检补齐另一真实差异：只有无效SSLCABytes且无文件identity时，Go拒绝
+启动，Rust初始却提供明文服务。四种CLI现在在backend/listener装配前调用同一既有
+client_auth工厂校验出站file/byte凭据，修补未配置gRPC delegate的RM/TSO分支；
+CA文件单独存在且无identity不据此启用gRPC TLS，保留Go的显式凭据规则。
+仍需后续完成HTTPS backend SDK连接及各领域完整部署/故障矩阵，不将本阶段子集销项。
+
+所有生产修正后的同一最终产物上，MCS frontend模块五项Go/Rust测试通过，
+0失败/0忽略；默认明文RM六方法/metadata watch的现有实际Go/Rust专项亦通过。
+不再重复已通过且未修改的metrics、机器观测或完整runtime回归。
+
+最终TSO泛型listener宿主（GetMinTS、重复注册、打开的TSO/health流关闭）专项通过。
+workspace check与1142项只读守卫通过，原来的无关计划变更保持。完整原始失败、
+当前产物、历史产物指纹及请求/诊断见[MCS前端TLS压缩回执](task-16-mcs-front-tls.json.gz)。

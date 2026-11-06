@@ -158,3 +158,82 @@ async fn sa_016_all_mcs_share_diagnostics_and_health_registration() {
         );
     }
 }
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn sa_016_all_mcs_diagnostics_reads_configured_host_log_file() {
+    let work = super::accept_extra_transport_config_test::certificates("mcs-log");
+    let go = crate::readonly_oracle::pinned_go_binary().unwrap();
+    let rust = PathBuf::from(std::env::var_os("PD_COMPAT_RUST_BIN").unwrap());
+    let mut records = vec![];
+    for (binary, label) in [(&go, "go"), (&rust, "rust")] {
+        let mut pd = Server::start(&go).unwrap();
+        pd.ready().unwrap();
+        for service in ["resource-manager", "router", "scheduling", "tso"] {
+            let active = work.0.join(format!("{label}-{service}.log"));
+            let fixture = work.0.join(format!("{label}-{service}-fixed.log"));
+            std::fs::write(
+                &fixture,
+                "[2020/01/01 00:00:00.000 +00:00] [INFO] [mcs log probe]\n",
+            )
+            .unwrap();
+            let arg = format!("--log-file={}", active.display());
+            let mut sidecar = Sidecar::start_service_with_args(
+                binary,
+                pd.metadata_url(),
+                service,
+                "http",
+                &[&arg],
+            );
+            let mut client=tokio::time::timeout(Duration::from_secs(15),async {
+                loop {
+                    match DiagnosticsClient::connect(sidecar.url.clone()).await {
+                        Ok(client)=>break client,
+                        Err(_)=>{
+                            if let Some(status)=sidecar.child.try_wait().unwrap() {
+                                records.push(json!({"binary":label,"service":service,"startup_failed":status.to_string(),"logs":sidecar.logs()}));
+                                save_configured_log(&records);
+                                panic!("{service} exited: {}",sidecar.logs());
+                            }
+                            tokio::time::sleep(Duration::from_millis(20)).await;
+                        }
+                    }
+                }
+            }).await.unwrap();
+            assert!(
+                active.is_file(),
+                "logger must initialize the configured host file"
+            );
+            let mut stream = client
+                .search_log(d::SearchLogRequest {
+                    start_time: 1577836800000,
+                    end_time: 1577836800001,
+                    patterns: vec!["mcs log probe".into()],
+                    ..Default::default()
+                })
+                .await
+                .unwrap()
+                .into_inner();
+            let mut responses = vec![];
+            let mut count = 0;
+            while let Some(response) = stream.message().await.unwrap() {
+                count += response.messages.len();
+                responses.push(response.encode_to_vec());
+            }
+            assert_eq!(count, 1);
+            records.push(json!({"binary":label,"service":service,"responses":responses,"configured_logger_created":true}));
+            save_configured_log(&records);
+            sidecar.stop();
+        }
+        pd.stop().unwrap();
+    }
+    save_configured_log(&records);
+    for n in 0..4 {
+        assert_eq!(records[n]["responses"], records[n + 4]["responses"]);
+    }
+}
+
+fn save_configured_log(records: &[Value]) {
+    let path = PathBuf::from(std::env::var_os("PD_SA016_EVIDENCE").unwrap())
+        .with_extension("configured-mcs-log.json");
+    std::fs::write(path, serde_json::to_vec(records).unwrap()).unwrap();
+}

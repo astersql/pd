@@ -29,3 +29,5 @@ mod process_shutdown_test;
 mod standalone_tso;
 
 mod standalone_mcs;
+
+mod mcs_config;
