@@ -18,16 +18,10 @@ pub(crate) async fn connect(
     let plain = Arc::new(DelegateConnections::new(runtime.clone(), cancel, None));
     // Go returns nil TLS for CA-only file configuration. HTTPS then uses system
     // roots; an explicit HTTP endpoint drops even configured TLS credentials.
-    let has_credentials = config.has_client_credentials();
-    let security = if has_credentials {
-        config.security.tls.clone()
-    } else {
-        Default::default()
-    };
     let secure = Arc::new(DelegateConnections::new_with_rustls_factory(
         runtime,
         cancel,
-        Arc::new(move || astersql_pd_server::client_auth::configuration(&security).map(Arc::new)),
+        config.client_tls_policy(),
     ));
     EtcdMetaStore::connect_with_transport_factory(
         &endpoints,

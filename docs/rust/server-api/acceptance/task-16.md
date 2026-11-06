@@ -627,3 +627,32 @@ Go源契约明确显式HTTP端点丢弃TLS、HTTPS端点必须TLS；虽然SDK支
 完整输入、源码与二进制摘要、原始red/green及校验命令见
 [MCS原生SDK传输回执](task-16-mcs-backend-tls.json.gz)。该回执仅接收上述范围，
 不因此关闭四MCS完整HTTPS部署或148。
+
+## TSO HTTPS交接与公共HTTP驱动阶段（进行中）
+
+真实TLS listener上的TSO completion专项先失败为InvalidArgument：旧函数只接受HTTP。
+该red为Rust真实网络测试，Go部分仅只读核对finishSplit/finishMerge及DELETE路由，
+不冒充本轮Go自动分组交接差分。后续通过新增调用者提供的TLS策略入口补齐HTTPS；
+保留原嵌入API，旧无TLS策略入口遇HTTPS仍拒绝，不降级为明文。
+
+HTTP驱动从原metric_transport提取到canonical MCS公共包，沿用原有连接/响应流驱动、
+取消、绝对超时和body资源所有权；metrics继续自己解析/校验并固定DNS目标，TSO
+提供控制面目标及宿主策略。没有另建TLS算法、独立runtime或后台HTTP驱动任务。
+CLI的gRPC delegate、原生SDK及TSO HTTP现在共用同一client_tls_policy工厂，
+文件信任/identity及CN策略仍由原client_auth实现，按新连接读取配置。
+
+TLS专项包含split/merge准确DELETE路径、远端503、无TLS策略、正确CA但无客户端
+identity、不可信CA与取消；拒绝请求均未到达应用。此测试仅验证HTTP completion
+传输契约，不等同完整分组迁移的时间戳保留或并发故障证据。
+因HTTP内核移动，已重跑现有metrics HTTP/HTTPS两种真实上游专项，包括GET/POST、
+gzip、转发头、错误/重定向及取消。两次各1通过/0失败/0忽略，都是Rust回归，
+没有运行metrics全矩阵、旧Go构建链或把历史Go响应当本轮结果。
+
+四MCS真实HTTPS backend对照已通过：双方都使用实际启动并选出leader的Go PD所有者，
+不是native etcd中伪造PD leader。八组观察（四服务×双实现）均完成TLS health、
+非零租约注册及优雅退出后的注册键删除；TSO真实读取PD leader后启动。
+本项仍未覆盖八组中的所有业务RPC/自动迁移；明确不将readiness冒充领域验收。
+TSO crate最终2通过/0失败/0忽略（原宿主生命周期及新TLS completion），doc-tests为0；
+workspace check、fmt、metadata及1142项只读守卫通过。
+原始输入/失败/成功、当前二进制及源码指纹见
+[TSO HTTPS与公共HTTP阶段回执](task-16-tso-https.json.gz)。

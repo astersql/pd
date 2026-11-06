@@ -155,3 +155,10 @@ health Check/List/Watch采用固定grpc-go descriptor，独立于本表42个kvpr
 保留每端点独立健康探测与宿主取消。真实RM双向TLS注册red及存储契约见
 [阶段说明](task-16.md#mcs-https后端与原生sdk传输阶段进行中)。
 不因此关闭TSO HTTPS transition、各领域完整故障差分及148责任。
+
+## TSO HTTPS completion增量（2026-11-07）
+
+TSO独立宿主接受调用者的TLS策略，完成split/merge时共用从metrics提取的请求级
+HTTP驱动，保留取消、超时及响应流资源所有权；旧无策略入口对HTTPS仍失败关闭。
+[阶段证据](task-16.md#tso-https交接与公共http驱动阶段进行中)区分TLS传输专项、
+metrics Rust回归与完整分组交接差分，不据此关闭148。

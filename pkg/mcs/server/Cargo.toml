@@ -25,6 +25,7 @@ hyper-util.workspace = true
 tower.workspace = true
 rustls.workspace = true
 tokio-rustls.workspace = true
+http-body-util.workspace = true
 [dev-dependencies]
 astersql-pd-storage-kv.workspace = true
 astersql-pd-mcs-metastorage-server.workspace = true

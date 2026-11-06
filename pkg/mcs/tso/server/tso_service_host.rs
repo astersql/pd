@@ -25,7 +25,7 @@ impl TsoServiceHost {
     where
         L: axum::serve::Listener<Addr = std::net::SocketAddr> + Send + 'static,
     {
-        Self::start_inner(config, groups, listener, None, None, String::new()).await
+        Self::start_inner(config, groups, listener, None, None, String::new(), None).await
     }
     /// Independent TSO hosts complete transitions through the PD leader's existing HTTP API.
     pub async fn start_with_pd_http<L>(
@@ -37,7 +37,16 @@ impl TsoServiceHost {
     where
         L: axum::serve::Listener<Addr = std::net::SocketAddr> + Send + 'static,
     {
-        Self::start_inner(config, groups, listener, Some(pd_url), None, String::new()).await
+        Self::start_inner(
+            config,
+            groups,
+            listener,
+            Some(pd_url),
+            None,
+            String::new(),
+            None,
+        )
+        .await
     }
     /// Start the same embedded host with process identity supplied by its caller.
     pub async fn start_with_entry<L>(
@@ -50,7 +59,16 @@ impl TsoServiceHost {
     where
         L: axum::serve::Listener<Addr = std::net::SocketAddr> + Send + 'static,
     {
-        Self::start_inner(config, groups, listener, pd_url, Some(entry), String::new()).await
+        Self::start_inner(
+            config,
+            groups,
+            listener,
+            pd_url,
+            Some(entry),
+            String::new(),
+            None,
+        )
+        .await
     }
     /// Start with diagnostics reading the embedding host's log location.
     pub async fn start_with_log_file<L>(
@@ -64,7 +82,40 @@ impl TsoServiceHost {
     where
         L: axum::serve::Listener<Addr = std::net::SocketAddr> + Send + 'static,
     {
-        Self::start_inner(config, groups, listener, pd_url, Some(entry), log_file).await
+        Self::start_inner(
+            config,
+            groups,
+            listener,
+            pd_url,
+            Some(entry),
+            log_file,
+            None,
+        )
+        .await
+    }
+    /// Supply the embedding process's refreshed HTTP TLS policy for transition completion.
+    pub async fn start_with_client_tls<L>(
+        config: GroupWatchConfig,
+        groups: Arc<KeyspaceGroupManager>,
+        listener: L,
+        pd_url: Option<String>,
+        entry: ServiceRegistryEntry,
+        log_file: String,
+        client_tls: astersql_pd_mcs_server::ClientTlsFactory,
+    ) -> Result<Self, TsoError>
+    where
+        L: axum::serve::Listener<Addr = std::net::SocketAddr> + Send + 'static,
+    {
+        Self::start_inner(
+            config,
+            groups,
+            listener,
+            pd_url,
+            Some(entry),
+            log_file,
+            Some(client_tls),
+        )
+        .await
     }
     async fn start_inner<L>(
         config: GroupWatchConfig,
@@ -73,6 +124,7 @@ impl TsoServiceHost {
         pd_url: Option<String>,
         entry: Option<ServiceRegistryEntry>,
         log_file: String,
+        client_tls: Option<astersql_pd_mcs_server::ClientTlsFactory>,
     ) -> Result<Self, TsoError>
     where
         L: axum::serve::Listener<Addr = std::net::SocketAddr> + Send + 'static,
@@ -180,7 +232,7 @@ impl TsoServiceHost {
                             if !g.is_split_target() && !g.is_merge_target() { continue; }
                             if astersql_pd_tso::reserve_group_handoff(&owned, &g).await.is_ok() {
                                 let done = if let Some(url)=&pd_url {
-                                    crate::transition_http::finish(url,&g,&loop_cancel).await.map_err(|e|e.to_string())
+                                    crate::transition_http::finish(url,&g,&loop_cancel,client_tls.as_ref()).await.map_err(|e|e.to_string())
                                 } else if g.is_split_target() {
                                     groups.finish_split_handoff(&g).await.map_err(|e| e.to_string())
                                 } else {

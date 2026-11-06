@@ -59,6 +59,7 @@ pub(crate) fn main(args: Vec<String>) -> ExitCode {
                     .map_err(|e| e.to_string())?;
                 let listener = config.listener(listener)?;
                 let log_file = config.log.file.filename.clone();
+                let client_tls = config.client_tls_policy();
                 let participant_name = name.clone();
                 let participant_address = advertised.clone();
                 let config = astersql_pd_tso::GroupWatchConfig {
@@ -114,13 +115,14 @@ pub(crate) fn main(args: Vec<String>) -> ExitCode {
                         .as_secs() as i64,
                     ..Default::default()
                 };
-                let host = astersql_pd_mcs_tso_server::TsoServiceHost::start_with_log_file(
+                let host = astersql_pd_mcs_tso_server::TsoServiceHost::start_with_client_tls(
                     config,
                     groups,
                     listener,
                     Some(pd_url),
                     entry,
                     log_file,
+                    client_tls,
                 )
                 .await
                 .map_err(|e| e.to_string())?;

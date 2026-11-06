@@ -128,20 +128,27 @@ impl Config {
         }
         Ok(())
     }
+    pub(crate) fn client_tls_policy(&self) -> astersql_pd_mcs_server::ClientTlsFactory {
+        let security = if self.has_client_credentials() {
+            self.security.tls.clone()
+        } else {
+            Default::default()
+        };
+        std::sync::Arc::new(move || {
+            astersql_pd_server::client_auth::configuration(&security).map(std::sync::Arc::new)
+        })
+    }
     pub(crate) fn delegates(
         &self,
         runtime: tokio::runtime::Handle,
         cancel: &tokio_util::sync::CancellationToken,
     ) -> Result<std::sync::Arc<astersql_pd_mcs_server::DelegateConnections>, String> {
-        let tls = self.security.tls.clone();
         let pool = if self.has_client_credentials() {
             self.validate_client_credentials()?;
             astersql_pd_mcs_server::DelegateConnections::new_with_rustls_factory(
                 runtime,
                 cancel,
-                std::sync::Arc::new(move || {
-                    astersql_pd_server::client_auth::configuration(&tls).map(std::sync::Arc::new)
-                }),
+                self.client_tls_policy(),
             )
         } else {
             astersql_pd_mcs_server::DelegateConnections::new(runtime, cancel, None)

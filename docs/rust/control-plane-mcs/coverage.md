@@ -304,3 +304,8 @@ MCS原生SDK传输增量：具体EtcdMetaStore通过调用者工厂复用公共�
 MetaStore trait不含传输类型；每端点健康探测保持独立。真实双向TLS注册及存储契约
 见[验收16阶段说明](../server-api/acceptance/task-16.md#mcs-https后端与原生sdk传输阶段进行中)。
 TSO HTTPS transition与完整领域故障矩阵仍保留原拥有任务，不作为148完成证据。
+
+TSO HTTPS completion接线复用canonical公共HTTP驱动和宿主client_tls_policy，
+metrics保留原目标校验及DNS固定。实际TLS传输拒绝/成功与HTTP/HTTPS metrics
+回归边界见[验收16阶段记录](../server-api/acceptance/task-16.md#tso-https交接与公共http驱动阶段进行中)。
+完整分组迁移和故障差分继续归148，不由传输专项代替。

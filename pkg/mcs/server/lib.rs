@@ -27,3 +27,5 @@ mod auxiliary_test;
 
 mod owned_channel;
 pub use owned_channel::OwnedDelegateChannel;
+
+pub mod http_transport;
