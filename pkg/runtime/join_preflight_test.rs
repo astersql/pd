@@ -14,14 +14,38 @@ fn identity(id: u64, name: &str, client: &str, peer: &str) -> NodeConfig {
         peer_url: peer.into(),
     }
 }
+fn bind_reserved(address: std::net::SocketAddr) -> std::io::Result<tokio::net::TcpListener> {
+    let socket = tokio::net::TcpSocket::new_v4()?;
+    socket.set_reuseaddr(true)?;
+    socket.bind(address)?;
+    socket.listen(1024)
+}
 async fn attempt(
     store: Arc<dyn MetaStore>,
     config: NodeConfig,
     join: &str,
     cancel: CancellationToken,
 ) -> Result<crate::PdNode, crate::NodeError> {
-    let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
-    let address = listener.local_addr().unwrap();
+    // A connected socket reserves this ephemeral source port while allowing an
+    // explicit SO_REUSEADDR listener at the same address. Other :0 fixtures cannot
+    // steal the just-closed listener's address before the release assertion.
+    let sink = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let reservation = tokio::net::TcpSocket::new_v4().unwrap();
+    reservation.set_reuseaddr(true).unwrap();
+    reservation.bind("127.0.0.1:0".parse().unwrap()).unwrap();
+    let address = reservation.local_addr().unwrap();
+    let _reservation = reservation
+        .connect(sink.local_addr().unwrap())
+        .await
+        .unwrap();
+    let _peer = sink.accept().await.unwrap().0;
+    drop(sink);
+    let listener = bind_reserved(address).unwrap();
+    assert_eq!(
+        bind_reserved(address).unwrap_err().kind(),
+        std::io::ErrorKind::AddrInUse,
+        "the reservation must not permit overlapping listeners"
+    );
     let result = PdNodeBuilder::new(tokio::runtime::Handle::current(), cancel)
         .with_join(join)
         .start(
@@ -32,7 +56,7 @@ async fn attempt(
         )
         .await;
     if result.is_err() {
-        tokio::net::TcpListener::bind(address).await.unwrap();
+        bind_reserved(address).unwrap();
     }
     result
 }

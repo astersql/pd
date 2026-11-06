@@ -67,6 +67,7 @@ fn record(events: &Events, event: &'static str) {
 }
 
 pub(crate) struct Application {
+    pub(crate) resource_groups: crate::control_resource::ResourceResources,
     pub(crate) encryption: Option<std::sync::Weak<crate::encryption::EncryptionResources>>,
     identity: Identity,
     pub(crate) cluster: Arc<crate::cluster_host::ClusterHost>,
@@ -80,6 +81,13 @@ pub(crate) struct Application {
 }
 #[async_trait::async_trait]
 impl PdServices for Application {
+    async fn resource_groups(
+        &self,
+    ) -> Result<Arc<tokio::sync::Mutex<astersql_pd_rm_server::Manager>>, String> {
+        self.healthy().await?;
+        Ok(self.resource_groups.manager.clone())
+    }
+
     async fn create_keyspace(
         &self,
         request: astersql_pd_keyspace::CreateKeyspaceRequest,
@@ -618,208 +626,230 @@ async fn initialize_node(
         &cancel,
     )
     .await?;
-    let services = Arc::new(crate::member_role_worker::RoleServices::new(
-        config.clone(),
-        store.clone(),
-    ));
-    let _ = services.encryption.set(Arc::downgrade(&encryption));
-    services
-        .keyspace_groups
-        .store(keyspace_groups, std::sync::atomic::Ordering::Release);
-    services.set_telemetry(Arc::new(telemetry_config.clone()), &metrics);
-    if !listener_config.scalars.data_dir.is_empty() {
-        let _ = services
-            .file_directory
-            .set(std::path::PathBuf::from(&listener_config.scalars.data_dir));
-    }
-
-    services.set_log_level_control(log_level);
-    services.set_member_admin(member_admin.clone());
-    let eligible = tokio::select! { biased;
-        _ = cancel.cancelled() => return Err("node is stopped".into()),
-        result = services.eligible() => result?,
-    };
-    let initial = if !eligible {
-        None
-    } else {
-        match member.campaign(5).await {
-            Ok(leader) => {
-                record(&events, "leadership");
-                match prepare_term(
-                    store.clone(),
-                    config.clone(),
-                    registry.clone(),
-                    cancel.child_token(),
-                    cluster,
-                    Arc::new(leader),
-                    Some(metrics.clone()),
-                    Some(Arc::new(telemetry_config.clone())),
-                    Some(encryption.clone()),
-                    services.recovery_steps.clone(),
-                    keyspace_groups,
-                )
-                .await
-                {
-                    Ok(term) => Some(term),
-                    Err(error)
-                        if member_admin.is_some()
-                            && crate::member_role_worker::retryable_role_error(&error) =>
-                    {
-                        None
-                    }
-                    Err(error) => return Err(error),
-                }
-            }
-            Err(astersql_pd_member::MemberError::Contended) => None,
-            Err(error) => return Err(error.into()),
-        }
-    };
-    services.set_diagnostics(diagnostics);
-    services.replace(initial.clone());
-    record(&events, "services");
-    let router =
-        astersql_pd_server::router_with_metrics(services.clone(), cancel.clone(), metrics.clone());
-    record(&events, "listener");
-    let (tx, rx) = oneshot::channel();
-    let worker_events = events.clone();
-    let worker_cancel = cancel.clone();
-    let cluster_view = services.clone();
-    let worker = tokio::spawn(async move {
-        let mut server = crate::tls_listener::serve(listener, router, worker_cancel.clone());
-        // Poll the serving future before publishing readiness. A listener that
-        // terminates immediately must never acknowledge initialization.
-        let first = std::future::poll_fn(|cx| {
-            std::task::Poll::Ready(std::future::Future::poll(server.as_mut(), cx))
-        })
-        .await;
-        let completion = if first.is_pending() && !worker_cancel.is_cancelled() && unfinished_join {
-            tokio::select! { biased;
-                _ = worker_cancel.cancelled() => Err("node is stopped".into()),
-                result = crate::join_resume::complete(store.as_ref(), &config) => result,
-            }
-        } else {
-            Ok(())
-        };
-        if completion.is_err() {
-            worker_cancel.cancel();
-        }
-        if first.is_pending() && !worker_cancel.is_cancelled() {
-            services.set_listening(true);
-            record(&worker_events, "ready");
-            let _ = tx.send(());
-        } else {
-            drop(tx);
-        }
-        let mut server = Box::pin(async move {
-            match first {
-                std::task::Poll::Ready(result) => result,
-                std::task::Poll::Pending => server.await,
-            }
-        });
-        let member_cluster = config.cluster_id;
-        let member_id = config.member_id;
-        let roles = crate::member_role_worker::run(
-            services.clone(),
-            member,
+    let failed_encryption = encryption.clone();
+    let failed_cancel = cancel.clone();
+    let initialized = async {
+        let services = Arc::new(crate::member_role_worker::RoleServices::new(
+            config.clone(),
             store.clone(),
-            config,
-            registry.clone(),
-            worker_cancel.clone(),
-        );
-        tokio::pin!(roles);
-        let monitor_store = store.clone();
-        let monitor_cancel = worker_cancel.clone();
-        let managed = member_admin.is_some();
-        let mut membership = Box::pin(async move {
-            let mut unavailable_since = None;
-            loop {
-                tokio::select! { biased;
-                    _ = monitor_cancel.cancelled() => break,
-                    _ = tokio::time::sleep(std::time::Duration::from_millis(100)) => {}
-                }
-                if let Err(error) = crate::member_admin::ensure_admitted(
-                    monitor_store.as_ref(),
-                    member_cluster,
-                    member_id,
-                )
-                .await
-                {
-                    if error == "PD member has been revoked" {
-                        break;
-                    }
-                    if managed {
-                        // Keep admission fail-closed, but tolerate the brief
-                        // linearizable-read interruption during consensus transfer.
-                        let start = unavailable_since.get_or_insert_with(tokio::time::Instant::now);
-                        if start.elapsed() >= std::time::Duration::from_secs(2) {
-                            break;
+        ));
+        let _ = services.encryption.set(Arc::downgrade(&encryption));
+        services
+            .keyspace_groups
+            .store(keyspace_groups, std::sync::atomic::Ordering::Release);
+        services.set_telemetry(Arc::new(telemetry_config.clone()), &metrics);
+        if !listener_config.scalars.data_dir.is_empty() {
+            let _ = services
+                .file_directory
+                .set(std::path::PathBuf::from(&listener_config.scalars.data_dir));
+        }
+
+        services.set_log_level_control(log_level);
+        services.set_member_admin(member_admin.clone());
+        let eligible = tokio::select! { biased;
+            _ = cancel.cancelled() => return Err("node is stopped".into()),
+            result = services.eligible() => result?,
+        };
+        let initial = if !eligible {
+            None
+        } else {
+            match member.campaign(5).await {
+                Ok(leader) => {
+                    record(&events, "leadership");
+                    match prepare_term(
+                        store.clone(),
+                        config.clone(),
+                        registry.clone(),
+                        cancel.child_token(),
+                        cluster,
+                        Arc::new(leader),
+                        Some(metrics.clone()),
+                        Some(Arc::new(telemetry_config.clone())),
+                        Some(encryption.clone()),
+                        services.recovery_steps.clone(),
+                        keyspace_groups,
+                    )
+                    .await
+                    {
+                        Ok(term) => Some(term),
+                        Err(error)
+                            if member_admin.is_some()
+                                && crate::member_role_worker::retryable_role_error(&error) =>
+                        {
+                            None
                         }
+                        Err(error) => return Err(error),
+                    }
+                }
+                Err(astersql_pd_member::MemberError::Contended) => None,
+                Err(error) => return Err(error.into()),
+            }
+        };
+        services.set_diagnostics(diagnostics);
+        services.replace(initial.clone());
+        record(&events, "services");
+        let router = astersql_pd_server::router_with_metrics(
+            services.clone(),
+            cancel.clone(),
+            metrics.clone(),
+        );
+        record(&events, "listener");
+        let (tx, rx) = oneshot::channel();
+        let worker_events = events.clone();
+        let worker_cancel = cancel.clone();
+        let cluster_view = services.clone();
+        let worker = tokio::spawn(async move {
+            let mut server = crate::tls_listener::serve(listener, router, worker_cancel.clone());
+            // Poll the serving future before publishing readiness. A listener that
+            // terminates immediately must never acknowledge initialization.
+            let first = std::future::poll_fn(|cx| {
+                std::task::Poll::Ready(std::future::Future::poll(server.as_mut(), cx))
+            })
+            .await;
+            let completion =
+                if first.is_pending() && !worker_cancel.is_cancelled() && unfinished_join {
+                    tokio::select! { biased;
+                        _ = worker_cancel.cancelled() => Err("node is stopped".into()),
+                        result = crate::join_resume::complete(store.as_ref(), &config) => result,
                     }
                 } else {
-                    unavailable_since = None;
-                }
+                    Ok(())
+                };
+            if completion.is_err() {
+                worker_cancel.cancel();
             }
-        });
-        let push = astersql_pd_server::service_metrics::push_worker(
-            registry.clone(),
-            Arc::new(telemetry_config),
-            rustix::system::uname()
-                .nodename()
-                .to_string_lossy()
-                .into_owned(),
-            worker_cancel.clone(),
-        );
-        let serving = async {
-            let result = tokio::select! {
-                _ = &mut membership => {
-                    worker_cancel.cancel();
-                    // Retirement may wait for backend IO. Keep polling the
-                    // listener shutdown while joining roles so admission stops
-                    // before a slow lease revoke can hold the node open.
-                    let (role_result, server_result) = tokio::join!(&mut roles, &mut server);
-                    (role_result.and_then(|()| server_result.map_err(Into::into)), true, true)
-                },
-                result = &mut server => (result.map_err(Into::into), true, false),
-                result = &mut roles => (result, false, true),
+            if first.is_pending() && !worker_cancel.is_cancelled() {
+                services.set_listening(true);
+                record(&worker_events, "ready");
+                let _ = tx.send(());
+            } else {
+                drop(tx);
+            }
+            let mut server = Box::pin(async move {
+                match first {
+                    std::task::Poll::Ready(result) => result,
+                    std::task::Poll::Pending => server.await,
+                }
+            });
+            let member_cluster = config.cluster_id;
+            let member_id = config.member_id;
+            let roles = crate::member_role_worker::run(
+                services.clone(),
+                member,
+                store.clone(),
+                config,
+                registry.clone(),
+                worker_cancel.clone(),
+            );
+            tokio::pin!(roles);
+            let monitor_store = store.clone();
+            let monitor_cancel = worker_cancel.clone();
+            let managed = member_admin.is_some();
+            let mut membership = Box::pin(async move {
+                let mut unavailable_since = None;
+                loop {
+                    tokio::select! { biased;
+                        _ = monitor_cancel.cancelled() => break,
+                        _ = tokio::time::sleep(std::time::Duration::from_millis(100)) => {}
+                    }
+                    if let Err(error) = crate::member_admin::ensure_admitted(
+                        monitor_store.as_ref(),
+                        member_cluster,
+                        member_id,
+                    )
+                    .await
+                    {
+                        if error == "PD member has been revoked" {
+                            break;
+                        }
+                        if managed {
+                            // Keep admission fail-closed, but tolerate the brief
+                            // linearizable-read interruption during consensus transfer.
+                            let start =
+                                unavailable_since.get_or_insert_with(tokio::time::Instant::now);
+                            if start.elapsed() >= std::time::Duration::from_secs(2) {
+                                break;
+                            }
+                        }
+                    } else {
+                        unavailable_since = None;
+                    }
+                }
+            });
+            let push = astersql_pd_server::service_metrics::push_worker(
+                registry.clone(),
+                Arc::new(telemetry_config),
+                rustix::system::uname()
+                    .nodename()
+                    .to_string_lossy()
+                    .into_owned(),
+                worker_cancel.clone(),
+            );
+            let serving = async {
+                let result = tokio::select! {
+                    _ = &mut membership => {
+                        worker_cancel.cancel();
+                        // Retirement may wait for backend IO. Keep polling the
+                        // listener shutdown while joining roles so admission stops
+                        // before a slow lease revoke can hold the node open.
+                        let (role_result, server_result) = tokio::join!(&mut roles, &mut server);
+                        (role_result.and_then(|()| server_result.map_err(Into::into)), true, true)
+                    },
+                    result = &mut server => (result.map_err(Into::into), true, false),
+                    result = &mut roles => (result, false, true),
+                };
+                worker_cancel.cancel();
+                result
             };
+            let monitor = metrics.run_worker(worker_cancel.clone());
+            let ((result, finished, roles_finished), (), ()) = tokio::join!(serving, push, monitor);
+            services.set_listening(false);
             worker_cancel.cancel();
-            result
-        };
-        let monitor = metrics.run_worker(worker_cancel.clone());
-        let ((result, finished, roles_finished), (), ()) = tokio::join!(serving, push, monitor);
-        services.set_listening(false);
-        worker_cancel.cancel();
-        record(&worker_events, "stop-admission");
-        if !roles_finished {
-            let _ = (&mut roles).await;
-        }
-        let drained = if finished {
+            record(&worker_events, "stop-admission");
+            if !roles_finished {
+                let _ = (&mut roles).await;
+            }
+            let drained = if finished {
+                Ok(())
+            } else {
+                (&mut server).await
+            };
+            drop(server);
+            let encryption_cleanup = encryption.shutdown().await;
+            record(&worker_events, "background-joined");
+            record(&worker_events, "leadership-released");
+            drop(membership);
+            drop((services, store));
+            record(&worker_events, "storage-released");
+            // Admission failure is the initiating error; cleanup has already run.
+            // Do not replace it with a secondary serving/retirement failure.
+            completion?;
+            encryption_cleanup?;
+            result?;
+            drained?;
             Ok(())
-        } else {
-            (&mut server).await
-        };
-        drop(server);
-        let encryption_cleanup = encryption.shutdown().await;
-        record(&worker_events, "background-joined");
-        record(&worker_events, "leadership-released");
-        drop(membership);
-        drop((services, store));
-        record(&worker_events, "storage-released");
-        // Admission failure is the initiating error; cleanup has already run.
-        // Do not replace it with a secondary serving/retirement failure.
-        completion?;
-        encryption_cleanup?;
-        result?;
-        drained?;
-        Ok(())
-    });
-    Ok(PdNode {
-        cancellation: cancel,
-        cluster: cluster_view,
-        ready: crate::ready_gate::ReadyGate::new(rx),
-        worker: Some(worker),
-        events,
-    })
+        });
+        Ok(PdNode {
+            cancellation: cancel,
+            cluster: cluster_view,
+            ready: crate::ready_gate::ReadyGate::new(rx),
+            worker: Some(worker),
+            events,
+        })
+    }
+    .await;
+    match initialized {
+        Ok(node) => Ok(node),
+        Err(error) => {
+            // Aborting KeyWatch in Drop only schedules cancellation. Join it before
+            // returning a failed start so the caller can immediately reuse its store.
+            failed_cancel.cancel();
+            Err(crate::start_cleanup::preserve(
+                error,
+                failed_encryption.shutdown().await,
+            ))
+        }
+    }
 }
 
 pub(crate) async fn prepare_term(
@@ -838,6 +868,9 @@ pub(crate) async fn prepare_term(
     if let Some(metrics) = &metrics {
         leader.set_metrics(&metrics.classic);
     }
+    let resource_controller = transport_config
+        .as_ref()
+        .map(|config| config.controller.clone());
     let setup = async {
         let (cluster, cluster_config, restored_config) = {
             let recovery = async {
@@ -976,7 +1009,21 @@ pub(crate) async fn prepare_term(
                 return Err(crate::start_cleanup::preserve(crate::start_cleanup::preserve(NodeError::from(error.to_string()), cleanup), unregistered));
             }
         }
+        let resource_groups=match async {
+            let controller=match resource_controller {Some(controller)=>controller,None=>cluster.configuration().await?.controller};
+            crate::control_resource::ResourceResources::new(store.clone(),leader.clone(),&cancel,astersql_pd_rm_server::WriteRole::LegacyAll,controller).await
+        }.await {
+            Ok(resources)=>resources,
+            Err(error)=>{
+                gc.shutdown().await;
+                keyspaces.shutdown().await;
+                let cleanup=cluster.shutdown().await;
+                let unregistered=registry.unregister(Box::new(requests)).map_err(Into::into);
+                return Err(crate::start_cleanup::preserve(crate::start_cleanup::preserve(NodeError::from(error),cleanup),unregistered));
+            }
+        };
         Ok::<_, NodeError>(Arc::new(Application {
+            resource_groups,
             gc,
             keyspaces,
             encryption:encryption.as_ref().map(Arc::downgrade),

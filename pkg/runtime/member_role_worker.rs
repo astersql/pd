@@ -163,6 +163,12 @@ impl RoleServices {
 }
 #[async_trait::async_trait]
 impl PdServices for RoleServices {
+    async fn resource_groups(
+        &self,
+    ) -> Result<Arc<tokio::sync::Mutex<astersql_pd_rm_server::Manager>>, String> {
+        self.active().await?.resource_groups().await
+    }
+
     async fn create_keyspace(
         &self,
         request: astersql_pd_keyspace::CreateKeyspaceRequest,
@@ -1114,6 +1120,7 @@ async fn retire(term: Arc<Application>, registry: &prometheus::Registry) -> Resu
     if let Some(encryption) = term.encryption.as_ref().and_then(Weak::upgrade) {
         encryption.rotation.clear_leadership_if(&term.leader).await;
     }
+    term.resource_groups.shutdown().await;
     term.keyspaces.shutdown().await;
     term.gc.shutdown().await;
     let stopped = term.cluster.shutdown().await;

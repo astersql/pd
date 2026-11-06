@@ -269,3 +269,8 @@ mod meta_group_http;
 mod meta_group_http_test;
 #[cfg(test)]
 mod metastorage_host_test;
+
+mod control_resource;
+
+#[cfg(test)]
+mod resource_manager_host_test;

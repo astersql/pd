@@ -1,8 +1,8 @@
 # 额外gRPC服务注册与责任交接
 
 2026-11-06，审计基准 `128c50050748fac7820b48039759d77a522929ec`。
-**责任计划及MetaStorage前置已接收，整体协议验收尚未完成。** 最初只读审计之后，
-用户已授权实施；MetaStorage新增实现与真实运行证据见下表65–68。
+**责任计划、MetaStorage前置及classic RM RU子集已有证据，整体协议验收尚未完成。** 最初只读审计之后，
+用户已授权实施；MetaStorage见下表65–68，classic RM阶段见[本轮回执](task-16.md#classic-rm-ru前置阶段)。
 其它服务继续保留各自缺口，不代表42方法均通过。
 检查记录及恢复条件见[task-16.md](task-16.md)。
 
@@ -20,7 +20,7 @@
 | --- | --- | --- |
 | Keyspace | classic始终注册 | 同条件已注册；[131](../../control-plane-mcs/task-131.md)和[验收09](task-09.md)交付manager共享、读写、初始/后续watch及WAL子集；LookupKeyspace双方保留Unimplemented，不是功能完成；流重连/取消/compaction/EOF仍须精确关联回执 |
 | Diagnostics | classic始终注册 | 同条件已注册；[14](task-14.md)41配对日志场景，[15](task-15.md)21配对机器信息场景；ServerInfo只准入macOS amd64/CGO=0，退出进程时SearchLog传输错误差异交22；不将历史记录计为本轮执行 |
-| ResourceManager | fallback=true由registry装配真实RM；false装配classic proxy | 两分支尚无Rust服务装配；canonical RM crate只有配置。实施100/101，条件注册138，双模式148 |
+| ResourceManager | fallback=true由registry装配真实RM；false装配classic proxy | classic RU六方法已接通并取得fallback=true进程回执；当前路由仍无条件安装本地适配器，不能验收fallback=false。代理/条件装配100/101/138及双模式148继续实施 |
 | MetaStorage | registry始终注册，含classic | 已有canonical四方法及同一listener接线；[65](../../control-plane-mcs/task-065.md)/[66](../../control-plane-mcs/task-066.md)/[67](../../control-plane-mcs/task-067.md)/[68](../../control-plane-mcs/task-068.md)交付当前进程/嵌入、故障/流/WAL证据，148继续完整双模式/TLS组合，不扩大为整体16完成 |
 | TSO | 独立MCS注册，classic不注册该服务 | canonical TsoServiceHost及三个方法已存在；[验收11](task-11.md)/[13](task-13.md)只交付已消费子集，不能替代所有方法/TLS/取消的双模式回执 |
 | Router | 独立MCS注册，classic不注册该服务 | canonical Rust服务缺失；86/87实现，137嵌入，141独立，145恢复，148差分 |
@@ -29,7 +29,7 @@
 
 Go来源为 `server/server.go:316–341`及五个MCS的
 `server/grpc_service.go::RegisterGRPCService`；Rust入口为
-`pkg/server/lib.rs:632–651`及
+`pkg/server/lib.rs::router_with_options`及
 `pkg/mcs/tso/server/tso_service_host.rs:113`。
 Go Router源码的ScanRegions helper不在固定descriptor中，不能增加为注册方法。
 

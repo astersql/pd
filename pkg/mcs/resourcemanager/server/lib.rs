@@ -241,3 +241,26 @@ pub fn decode_toml(input: &str) -> Result<(ControllerConfig, ConfigMetaData), St
     }
     Ok((config, meta))
 }
+
+mod rm_group;
+pub use rm_group::*;
+mod rm_write_role;
+pub use rm_write_role::WriteRole;
+mod rm_state;
+pub use rm_state::{Manager, Persistence};
+mod grpc_codec;
+mod grpc_service;
+mod grpc_storage;
+pub use grpc_service::{Host, Service};
+
+#[cfg(test)]
+mod rm_state_test;
+
+mod rm_bucket;
+mod rm_slot;
+pub use rm_bucket::BucketRuntime;
+
+#[cfg(test)]
+mod rm_bucket_test;
+
+mod rm_controller;

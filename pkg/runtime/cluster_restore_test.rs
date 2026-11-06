@@ -215,7 +215,11 @@ async fn task_006_corrupt_data_releases_resources() {
         );
         assert!(!parent.is_cancelled());
         assert!(registry.gather().is_empty());
-        assert_eq!(Arc::strong_count(&store), 1);
+        assert_eq!(
+            Arc::strong_count(&store),
+            1,
+            "corrupt recovery must release backend after key {key}"
+        );
         let listener = tokio::net::TcpListener::bind(address).await.unwrap();
         store
             .transact(

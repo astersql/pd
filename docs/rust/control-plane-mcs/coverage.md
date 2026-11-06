@@ -154,18 +154,18 @@ watcher/额度集成测试和测试工具。只补此清单，不改只读plan�
 | 87 暴露路由范围扫描 | ScanRegions与BatchScanRegions保持范围边界、limit和连续性校验，跨split和空范围匹配Go。 | 6 | `pkg/mcs/router/server/lib.rs`（拟建）；`pkg/mcs/router/server/router_scan.rs`（拟建） | 待当前行为证据 |
 | 88 装配路由服务生命周期 | 只有Store与Region初始化完成后才ready；停服撤销注册并停止sync，HTTP探针及本服务指标反映真实状态。 | 8 | `pkg/mcs/router/server/lib.rs`（拟建）；`pkg/mcs/router/server/router_host.rs`（拟建） | 待当前行为证据 |
 | 89 校验资源服务启动配置 | 扩展现有RU配置以覆盖NewConfig、Parse和Adjust启动字段，验证监听、backend和TLS及controller配置默认值，不重复已有配置类型。 | 4 | `pkg/mcs/resourcemanager/server/lib.rs`（存在）；`pkg/mcs/resourcemanager/server/rm_start_config.rs`（拟建） | 待当前行为证据 |
-| 90 实现令牌桶补充与借贷 | GroupTokenBucket随时间补充、负债和burst设置变化保持Go结果，覆盖零速率及非有限输入。 | 14 | `pkg/mcs/resourcemanager/server/lib.rs`（存在）；`pkg/mcs/resourcemanager/server/rm_bucket.rs`（拟建） | 待当前行为证据 |
-| 91 实现客户端令牌槽分配 | 按clientUniqueID分配slot并回收过期slot，借贷平衡和并发请求不重复发放令牌。 | 16 | `pkg/mcs/resourcemanager/server/lib.rs`（存在）；`pkg/mcs/resourcemanager/server/rm_slot.rs`（拟建） | 待当前行为证据 |
-| 92 维护资源组配置 | ResourceGroup.ApplySettings与PatchSettings验证RU模式及priority，Clone隔离可变状态，设置变更不重置运行余额。 | 15 | `pkg/mcs/resourcemanager/server/lib.rs`（存在）；`pkg/mcs/resourcemanager/server/rm_group.rs`（拟建） | 待当前行为证据 |
-| 93 隔离键空间资源组 | 按keyspace管理默认组、保留组和普通组，CRUD持久化与重启恢复不跨空间泄漏。 | 15 | `pkg/mcs/resourcemanager/server/lib.rs`（存在）；`pkg/mcs/resourcemanager/server/rm_keyspace.rs`（拟建） | 待当前行为证据 |
-| 94 控制资源组写角色 | LegacyAll、PDMetaOnly与RMTokenOnly严格区分元数据和运行状态写权限，禁止路径保持明确错误。 | 13 | `pkg/mcs/resourcemanager/server/lib.rs`（存在）；`pkg/mcs/resourcemanager/server/rm_write_role.rs`（拟建） | 待当前行为证据 |
-| 95 持久化资源组运行余额 | persistLoop只在可写角色和有效任期保存状态，重启恢复余额，失败与取消不覆盖新值。 | 15 | `pkg/mcs/resourcemanager/server/lib.rs`（存在）；`pkg/mcs/resourcemanager/server/rm_state.rs`（拟建） | 待当前行为证据 |
+| 90 实现令牌桶补充与借贷 | GroupTokenBucket随时间补充、负债和burst设置变化保持Go结果，覆盖零速率及非有限输入。 | 14 | `pkg/mcs/resourcemanager/server/rm_bucket.rs`（存在；复用canonical crate） | classic RU阶段已实装并有运行证据；[阶段边界](../server-api/acceptance/task-16.md#classic-rm-ru前置阶段)，本拥有任务尚未整体验收 |
+| 91 实现客户端令牌槽分配 | 按clientUniqueID分配slot并回收过期slot，借贷平衡和并发请求不重复发放令牌。 | 16 | `pkg/mcs/resourcemanager/server/rm_slot.rs`（存在；复用canonical crate） | classic RU阶段已实装并有运行证据；[阶段边界](../server-api/acceptance/task-16.md#classic-rm-ru前置阶段)，本拥有任务尚未整体验收 |
+| 92 维护资源组配置 | ResourceGroup.ApplySettings与PatchSettings验证RU模式及priority，Clone隔离可变状态，设置变更不重置运行余额。 | 15 | `pkg/mcs/resourcemanager/server/rm_group.rs`（存在；复用canonical crate） | classic RU阶段已实装并有运行证据；[阶段边界](../server-api/acceptance/task-16.md#classic-rm-ru前置阶段)，本拥有任务尚未整体验收 |
+| 93 隔离键空间资源组 | 按keyspace管理默认组、保留组和普通组，CRUD持久化与重启恢复不跨空间泄漏。 | 15 | `pkg/mcs/resourcemanager/server/rm_state.rs`（存在；复用canonical crate） | classic RU阶段已实装并有运行证据；[阶段边界](../server-api/acceptance/task-16.md#classic-rm-ru前置阶段)，本拥有任务尚未整体验收 |
+| 94 控制资源组写角色 | LegacyAll、PDMetaOnly与RMTokenOnly严格区分元数据和运行状态写权限，禁止路径保持明确错误。 | 13 | `pkg/mcs/resourcemanager/server/rm_write_role.rs`（存在；复用canonical crate） | classic RU阶段已实装并有运行证据；[阶段边界](../server-api/acceptance/task-16.md#classic-rm-ru前置阶段)，本拥有任务尚未整体验收 |
+| 95 持久化资源组运行余额 | persistLoop只在可写角色和有效任期保存状态，重启恢复余额，失败与取消不覆盖新值。 | 15 | `pkg/mcs/resourcemanager/server/rm_state.rs`（存在；复用canonical crate） | classic RU阶段已实装并有运行证据；[阶段边界](../server-api/acceptance/task-16.md#classic-rm-ru前置阶段)，本拥有任务尚未整体验收 |
 | 96 限制键空间总服务额度 | ServiceLimiter按时间补充并在多个组间限制总额度，零与burst及更新后上限一致。 | 15 | `pkg/mcs/resourcemanager/server/lib.rs`（存在）；`pkg/mcs/resourcemanager/server/rm_service_limit.rs`（拟建） | 待当前行为证据 |
 | 97 分配优先级组填充速率 | 按真实RU需求及priority分配基础和burst额度，空需求与过期tracker清理不造成超发。 | 15 | `pkg/mcs/resourcemanager/server/lib.rs`（存在）；`pkg/mcs/resourcemanager/server/rm_conciliate.rs`（拟建） | 待当前行为证据 |
 | 98 监听资源管理元数据 | metadata watcher按快照revision恢复resource group、service limit和配置，删除与compaction后不保留幽灵组。 | 14 | `pkg/mcs/resourcemanager/server/lib.rs`（存在）；`pkg/mcs/resourcemanager/server/rm_watch.rs`（拟建） | 待当前行为证据 |
-| 99 应用RU版本策略 | 默认与keyspace override选择版本，非法版本不生效，运行更新不污染其他空间。 | 17 | `pkg/mcs/resourcemanager/server/lib.rs`（存在）；`pkg/mcs/resourcemanager/server/rm_ru_policy.rs`（拟建） | 待当前行为证据 |
-| 100 暴露资源组gRPC管理 | Get/List/Add/Modify/Delete映射同一manager并遵守写角色，非serving与缺失资源返回Go对应状态。 | 14 | `pkg/mcs/resourcemanager/server/lib.rs`（存在）；`pkg/mcs/resourcemanager/server/rm_grpc_metadata.rs`（拟建） | 待当前行为证据 |
-| 101 暴露令牌申请流 | AcquireTokenBuckets处理多组申请及消费报告，流关闭与部分组错误不会泄漏额度或污染其他空间。 | 14 | `pkg/mcs/resourcemanager/server/lib.rs`（存在）；`pkg/mcs/resourcemanager/server/rm_grpc_token.rs`（拟建） | 待当前行为证据 |
+| 99 应用RU版本策略 | 默认与keyspace override选择版本，非法版本不生效，运行更新不污染其他空间。 | 17 | `pkg/mcs/resourcemanager/server/rm_controller.rs`（存在；复用canonical crate） | classic RU阶段已实装并有运行证据；[阶段边界](../server-api/acceptance/task-16.md#classic-rm-ru前置阶段)，本拥有任务尚未整体验收 |
+| 100 暴露资源组gRPC管理 | Get/List/Add/Modify/Delete映射同一manager并遵守写角色，非serving与缺失资源返回Go对应状态。 | 14 | `pkg/mcs/resourcemanager/server/grpc_service.rs`（存在；复用canonical crate） | classic RU阶段已实装并有运行证据；[阶段边界](../server-api/acceptance/task-16.md#classic-rm-ru前置阶段)，本拥有任务尚未整体验收 |
+| 101 暴露令牌申请流 | AcquireTokenBuckets处理多组申请及消费报告，流关闭与部分组错误不会泄漏额度或污染其他空间。 | 14 | `pkg/mcs/resourcemanager/server/grpc_service.rs`（存在；复用canonical crate） | classic RU阶段已实装并有运行证据；[阶段边界](../server-api/acceptance/task-16.md#classic-rm-ru前置阶段)，本拥有任务尚未整体验收 |
 | 102 聚合资源消费计量 | RU collector对OLTP、OLAP及跨AZ分类聚合与Go一致，删除组清理数据；复用已有metering writer契约不扩展主题9运维范围。 | 15 | `pkg/mcs/resourcemanager/server/lib.rs`（存在）；`pkg/mcs/resourcemanager/server/rm_metering.rs`（拟建） | 待当前行为证据 |
 | 103 导出资源消费指标 | 消费计数与最大速率按既有label和刷新窗口导出，删除组与服务关闭清理宿主Registry。 | 17 | `pkg/mcs/resourcemanager/server/lib.rs`（存在）；`pkg/mcs/resourcemanager/server/rm_metrics.rs`（拟建） | 待当前行为证据 |
 | 104 装配资源管理生命周期 | 扩展现有配置crate而非重建；初始化元数据与选主后ready，切主停止旧persistLoop，shutdown回收worker与lease。 | 15 | `pkg/mcs/resourcemanager/server/lib.rs`（存在）；`pkg/mcs/resourcemanager/server/rm_host.rs`（拟建） | 待当前行为证据 |
@@ -202,7 +202,7 @@ watcher/额度集成测试和测试工具。只补此清单，不改只读plan�
 | 135 接通恢复控制器领域服务 | PD宿主连接同一recovery controller到管理API和Store心跳，恢复阶段切换与调度暂停可观察一致。 | 5 | `pkg/runtime/control_recovery.rs`（拟建）；`pkg/runtime/lib.rs`（存在）；`pkg/runtime/node.rs`（存在）；`pkg/server/lib.rs`（存在） | 待当前行为证据 |
 | 136 装配嵌入时间戳服务 | 宿主注入Handle、listener、取消令牌及Registry启动TSO服务，两个实例隔离且退出不停止宿主。 | 6 | `pkg/runtime/embed_tso.rs`（拟建）；`pkg/runtime/lib.rs`（存在）；`pkg/runtime/node.rs`（存在） | 待当前行为证据 |
 | 137 装配嵌入路由服务 | 宿主共享runtime启动Router并通过真实查询确认缓存就绪，关闭回收监听器而保留宿主其他角色。 | 7 | `pkg/runtime/embed_router.rs`（拟建）；`pkg/runtime/lib.rs`（存在）；`pkg/runtime/node.rs`（存在） | 待当前行为证据 |
-| 138 装配嵌入资源管理服务 | 宿主共享runtime启动RM并完成实际令牌请求，关闭只释放本实例任务与lease。 | 7 | `pkg/runtime/embed_rm.rs`（拟建）；`pkg/runtime/lib.rs`（存在）；`pkg/runtime/node.rs`（存在） | 待当前行为证据 |
+| 138 装配嵌入资源管理服务 | 宿主共享runtime启动RM并完成实际令牌请求，关闭只释放本实例任务与lease。 | 7 | `pkg/runtime/control_resource.rs`（存在；复用canonical crate） | classic RU阶段已实装并有运行证据；[阶段边界](../server-api/acceptance/task-16.md#classic-rm-ru前置阶段)，本拥有任务尚未整体验收 |
 | 139 装配嵌入调度服务 | 宿主共享runtime启动Scheduling处理真实心跳，shutdown后没有延迟operator输出。 | 6 | `pkg/runtime/embed_scheduling.rs`（拟建）；`pkg/runtime/lib.rs`（存在）；`pkg/runtime/node.rs`（存在） | 待当前行为证据 |
 | 140 接通独立时间戳入口 | 在现有命令入口按Go已有服务选择启动相同TSO宿主，配置错误退出码与信号关闭可观察；不新增猜测性开关。 | 2 | `cmd/pd-server/bin_main.rs`（存在）；`cmd/pd-server/lib.rs`（存在）；`cmd/pd-server/main.rs`（存在）；`cmd/pd-server/standalone_tso.rs`（拟建） | 待当前行为证据 |
 | 141 接通独立路由入口 | 独立Router进程使用与嵌入相同builder，真实查询通过且SIGTERM后端口与服务注册均释放。 | 2 | `cmd/pd-server/bin_main.rs`（存在）；`cmd/pd-server/lib.rs`（存在）；`cmd/pd-server/main.rs`（存在）；`cmd/pd-server/standalone_router.rs`（拟建） | 待当前行为证据 |

@@ -172,3 +172,89 @@ Go只运行现成服务与只读`go version -m`，没有Go编译/测试或生成
 before=1、持久窗口1000、fault仍armed但返回1129起的IDs，后台预取干扰了窗口边界。
 在该夹具禁用自动scheduler并延迟checker巡检后保留原故障/取消断言，专项及同4线程
 完整runtime包通过；修复前0/1专项、105/1/38全包失败均保存，不覆盖或隐藏。
+
+## Classic RM RU前置阶段
+
+2026-11-06，代码基准`461359230`。本阶段在原canonical
+`pkg/mcs/resourcemanager/server`中补RU资源组、客户端槽位、借贷、写角色、
+JSON状态及protobuf适配，接通classic本地六个RPC。领域值不含protobuf；
+`grpc_codec`和`grpc_storage`为原schema的边界转换，没有在server/router复制内核。
+
+`pkg/runtime/control_resource.rs`在leader任期ready前加载，同一MetaStore由现有
+TermStore约束写入；宿主拥有一分钟持久化任务，并在退休时取消、等待它。
+`PdServices::resource_groups`只返回当前有效任期的canonical manager；
+服务层不保存第二份缓存，也不创建runtime、信号或转发worker。
+令牌流按读取需求推动，首请求处理后提交headers，逐请求检查serving并保留半关闭。
+
+真实red包括：初始List/令牌流Unimplemented；重启RU统计覆盖而未累加；
+非有限余额错误丢PD JSON错误码；controller未继承宿主配置及部分覆盖丢默认值；
+状态标量null和无效RFC3339时间戳处理不同。原始输出保留，未删除或放宽这些断言。
+controller使用宿主原始调整值，不把不包含该启动设置的动态配置恢复对象当作来源。
+重启时统计值与Go一样累加设置和状态中的消耗；无效时间戳整条状态不应用。
+
+本阶段5个真实Go/Rust进程测试均通过（0失败/0忽略），分别覆盖：
+
+- 五个元数据方法、排序/默认组/空keyspace wrapper、priority与UTF-8字节边界，
+  失败Modify的部分内存变更、Add幂等覆盖、物理protobuf/JSON删除及双方WAL恢复。
+- 无限/有限/速率控制/调节模式、两个client share、零申请清理、缺组/缺设置、
+  非有限申请抑制及恢复、未知RU枚举后继行为、后台消耗、非法后台/TiFlash组合、半关闭。
+- NaN/+Inf/-Inf余额：设置已实际保存，但JSON状态未保存、缓存未发布；
+  RPC错误完整保留Go的PD错误码与具体非有限值。
+- 自定义controller、部分JSON覆盖、单字段类型错误、null标量/值结构和根null的5组启动/恢复。
+- null状态字段、非法时间戳、无RU字段、根null及有效状态的5组重启输入。
+
+空闲stream deadline的原始client错误分别保留为HTTP/2 reset与本地Timeout expired。
+Tonic本地`status.rs`与`transport/service/grpc_timeout.rs`确认它们来自竞争的客户端
+HTTP/2取消和deadline路径，均为Cancelled；只对该客户端生成文本分列原样回执，
+仍严格断言Cancelled、至少250ms且小于2s的300ms请求预算，不归一化应用错误或余额。
+
+真实宿主专项已通过：两个调用方runtime中的listener共享同一实际etcd；
+ready前即存在default状态；follower拒绝；实际等待一分钟定时写入余额；
+关闭旧leader结束流，继任者恢复190000余额；父token和原runtime仍可用。
+此专项不冒充Go双成员差分，也不重复累计到完整runtime结果外。
+
+阶段包级/工作区回归结果和原始压缩回执在本段末尾登记。
+本阶段不销项90–101、138或148：服务总额度与priority协调、元数据watcher、
+RU策略实际应用、独立RM、fallback=false路由/连接池/代理、双模式TLS等仍继续。
+当前本地适配器无条件注册，不能将fallback=true回执用作条件注册证明。
+Go本身未实现Raw模式且构造会panic；Rust库对非RU新组返回`no implementation`，
+不将其称为已实现Raw模式或与Go进程崩溃完全等价；本阶段wire准入为RU组。
+完整server包此前8项未通过仍由上段22/23/24交接持有，未改写为本阶段通过。
+
+完整runtime首次回归实际为106通过/1失败/38历史忽略：
+`cluster_restore_test::task_006_corrupt_data_releases_resources`在损坏数据启动失败后
+看到后端Arc计数2而非1。随后单项诊断曾通过，未把它冒充稳定回归通过。
+检查发现初始化错误路径只依赖KeyWatch的Drop/abort，未join取消任务；
+在初始化返回错误前显式取消并等待加密watch，保留原错误及清理失败信息，
+原计数、registry和listener释放断言不变，仅补诊断键名。专项随后通过；
+完整包修复后结果另列于最终阶段表，不覆盖106/1/38原日志。
+
+第二轮默认线程完整包仍如实记录106/1/38：清理用例已通过，另一条
+`join_preflight_test::task_088_behavior`的端口重绑窗口遭AddrInUse。
+夹具改为连接态source-port reservation，保持端口不被其它:0夹具复用；
+预先严格断言原listener活着时重绑必须失败，启动失败后同地址重绑必须成功。
+未用SO_REUSEPORT、重试掩盖、放宽断言或跳过测试。4项preflight专项通过。
+完整包按上一阶段同一4线程准入重跑，**107通过/0失败/38既有忽略**；
+不是把默认线程两轮失败改写为通过，也未将既有忽略算成验收。
+
+[本阶段不可覆盖原始回执](task-16-rm.json.gz)保存所有`rm-*`命令/完整日志和5类
+RPC JSON、保护守卫、输入与当前源码/二进制摘要及运行器。最终结果：
+
+| 最终检查 | 退出码与有效结果 |
+| --- | --- |
+| `cargo test --locked -p astersql-pd-rm-server` | exit0，7通过/0失败/0忽略；doc-test 0不计行为 |
+| `cargo test --locked -p astersql-pd-runtime --lib -- --test-threads=4` | exit0，107通过/0失败/38既有忽略 |
+| `cargo test --locked -p astersql-pd-compat-tests --lib sa_016_rm_ -- --nocapture --test-threads=1` | 当前二进制重建后exit0，5通过/0失败/0忽略 |
+| `cargo test --locked -p astersql-pd-runtime --lib join_preflight_test:: -- --nocapture` | exit0，4通过；已包含在107项中 |
+| `cargo test --locked -p astersql-pd-runtime --lib mcs_138_resource_groups_are_term_owned_and_periodically_durable -- --nocapture` | exit0，1通过；已包含在107项中 |
+| `cargo build --locked -p astersql-pd-cmd-pd-server --bin pd-server` | exit0，运行该当前源码二进制做5类RPC差分 |
+| `cargo fmt --all -- --check` | exit0 |
+| `cargo check --workspace --locked` | exit0 |
+| `cargo metadata --format-version 1 --no-deps` | exit0 |
+
+本阶段命令动态领取槽位1，绝对
+`CARGO_TARGET_DIR=/Users/xiangmin/worker/code/pd/target/rust-slot-1`。
+所有阶段子进程结束后释放自己的锁，保留缓存；未改其它槽位。
+五项现成输入摘要重新匹配，Go/模块1101项及plan.md 41项仍与总守卫一致。
+没有Go构建、Go测试、生成器、make或failpoint写入；Go只运行已有PD二进制及只读build-info。
+工作区完整test仍由后续24集中执行，当前完整server包的8项未通过没有被覆盖。

@@ -9,6 +9,8 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
+tracing.workspace = true
+astersql-pd-rm-server.workspace = true
 tonic.workspace = true
 astersql-pd-gc.workspace = true
 astersql-pd-keyspace.workspace = true
