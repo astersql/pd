@@ -111,9 +111,9 @@ def main():
     parser.add_argument('--require-pinned-protocol', action='store_true',
                         help='require the exact protocol revision for full wire acceptance')
     parser.add_argument('--mode', choices=['go', 'rust', 'dual'], default=os.environ.get('PD_COMPAT_MODE', 'dual'))
-    parser.add_argument('--case', choices=['health-member', 'tso', 'cluster-host', 'cluster-restore', 'member-role', 'bucket-heartbeat', 'sync-regions', 'store-state', 'store-stats', 'store-config', 'cluster-metrics', 'resolved-ts', 'schedule-coordinator', 'request-role', 'members', 'bootstrap', 'alloc-id', 'store-registration', 'region-lookup', 'region-scan', 'region-query', 'ask-split', 'report-split', 'cluster-config', 'scatter', 'split-regions', 'split-scatter', 'global-config', 'process-shutdown', 'rolling-restart', 'go-client-core', 'embedded-isolation', 'shutdown-workers', 'global-watch', 'report-min-resolved-ts', 'external-timestamp', 'classic-tso', 'deprecated-rpc'], action='append')
+    parser.add_argument('--case', choices=['health-member', 'tso', 'cluster-host', 'cluster-restore', 'member-role', 'bucket-heartbeat', 'sync-regions', 'store-state', 'store-stats', 'store-config', 'cluster-metrics', 'resolved-ts', 'schedule-coordinator', 'request-role', 'members', 'bootstrap', 'alloc-id', 'store-registration', 'region-lookup', 'region-scan', 'region-query', 'ask-split', 'report-split', 'cluster-config', 'scatter', 'split-regions', 'split-scatter', 'global-config', 'process-shutdown', 'rolling-restart', 'go-client-core', 'embedded-isolation', 'shutdown-workers', 'global-watch', 'report-min-resolved-ts', 'external-timestamp', 'classic-tso', 'deprecated-rpc', 'diagnostics-info'], action='append')
     args = parser.parse_args()
-    if any(case in (args.case or []) for case in ['cluster-host', 'cluster-restore', 'member-role', 'bucket-heartbeat', 'sync-regions', 'store-state', 'store-stats', 'store-config', 'cluster-metrics', 'resolved-ts', 'schedule-coordinator', 'request-role', 'members', 'bootstrap', 'alloc-id', 'store-registration', 'region-lookup', 'region-scan', 'region-query', 'ask-split', 'report-split', 'cluster-config', 'scatter', 'split-regions', 'split-scatter', 'global-config', 'process-shutdown', 'rolling-restart', 'go-client-core', 'embedded-isolation', 'shutdown-workers', 'global-watch', 'report-min-resolved-ts', 'external-timestamp', 'classic-tso', 'deprecated-rpc']) and args.mode != 'dual':
+    if any(case in (args.case or []) for case in ['cluster-host', 'cluster-restore', 'member-role', 'bucket-heartbeat', 'sync-regions', 'store-state', 'store-stats', 'store-config', 'cluster-metrics', 'resolved-ts', 'schedule-coordinator', 'request-role', 'members', 'bootstrap', 'alloc-id', 'store-registration', 'region-lookup', 'region-scan', 'region-query', 'ask-split', 'report-split', 'cluster-config', 'scatter', 'split-regions', 'split-scatter', 'global-config', 'process-shutdown', 'rolling-restart', 'go-client-core', 'embedded-isolation', 'shutdown-workers', 'global-watch', 'report-min-resolved-ts', 'external-timestamp', 'classic-tso', 'deprecated-rpc', 'diagnostics-info']) and args.mode != 'dual':
         raise ValueError('cluster-host, cluster-restore and member-role require dual mode')
     go = binary('PD_COMPAT_GO_BIN') if args.mode != 'rust' else None
     rust = binary('PD_COMPAT_RUST_BIN') if args.mode != 'go' else None
@@ -129,6 +129,8 @@ def main():
     if go and rust and os.path.samefile(go, rust):
         raise ValueError('dual requires distinct Go and Rust binaries')
     fixtures = [ROOT / 'tests/rust-compat/fixtures/health-member.json']
+    if 'diagnostics-info' in (args.case or []):
+        fixtures.append(ROOT / 'tests/rust-compat/fixtures/diagnostics-info-darwin-amd64.json')
     for fixture in fixtures:
         if not isinstance(json.loads(fixture.read_text()), dict) or not json.loads(fixture.read_text()):
             raise ValueError(f'nonempty fixture required: {fixture}')
@@ -148,6 +150,8 @@ def main():
         'scripts/pd-compat-readonly.py', 'tests/rust-compat/oracle_runner.rs',
         'tests/rust-compat/oracle_runner_test.rs', 'tests/rust-compat/readonly_oracle.rs',
         'tests/rust-compat/harness.rs',
+        'tests/rust-compat/accept_diagnostics_info_test.rs', 'pkg/server/diagnostics_info.rs',
+        'pkg/server/diagnostics_info_test.rs', 'pkg/server/diagnostics_log.rs',
         'tests/rust-compat/accept_http_09_test.rs', 'pkg/server/accept_http_09.rs', 'pkg/server/grpc_keyspace.rs', 'pkg/runtime/control_keyspace.rs', 'pkg/keyspace/keyspace_watch.rs',
         'tests/rust-compat/accept_gc_08_test.rs', 'pkg/server/grpc_gc_read.rs', 'pkg/server/http_gc_read.rs',
         'tests/rust-compat/accept_gc_05_test.rs', 'pkg/server/grpc_gc_advance.rs',
@@ -216,6 +220,9 @@ def main():
             command = ['cargo', 'test', '--locked', '-p', 'astersql-pd-compat-tests', '--test',
                        'health_member' if case == 'health-member' else 'tso',
                        'health_member_processes' if case == 'health-member' else 'tso_processes', '--']
+            if case == 'diagnostics-info':
+                command = ['cargo', 'test', '--locked', '-p', 'astersql-pd-compat-tests', '--lib',
+                           'sa_015_server_info', '--']
             if case == 'alloc-id':
                 command = ['cargo', 'test', '--locked', '-p', 'astersql-pd-runtime', '--lib',
                            'readonly_alloc_id_differential', '--', '--ignored']

@@ -8,6 +8,7 @@ rust-version = "1.85"
 license = "Apache-2.0"
 
 [workspace.dependencies]
+libc = "=0.2.191"
 astersql-pd-mcs-utils = { path = "pkg/mcs/utils" }
 astersql-pd-mcs-discovery = { path = "pkg/mcs/discovery" }
 astersql-pd-mcs-tso-server = { path = "pkg/mcs/tso/server" }

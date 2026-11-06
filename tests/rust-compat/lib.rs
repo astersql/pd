@@ -131,3 +131,6 @@ mod accept_http_13_test;
 
 #[cfg(test)]
 mod accept_diagnostics_log_test;
+
+#[cfg(test)]
+mod accept_diagnostics_info_test;

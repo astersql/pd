@@ -1,5 +1,6 @@
 // Copyright 2026 AsterSQL.
 //! HTTP and gRPC adapters for the minimal classic PD role.
+mod diagnostics_info;
 mod diagnostics_log;
 mod grpc;
 mod grpc_alloc_id;

@@ -52,6 +52,17 @@ impl Drop for LogStream {
 
 #[tonic::async_trait]
 impl Diagnostics for DiagnosticsLog {
+    async fn server_info(
+        &self,
+        request: Request<astersql_pd_proto::diagnosticspb::ServerInfoRequest>,
+    ) -> Result<Response<astersql_pd_proto::diagnosticspb::ServerInfoResponse>, Status> {
+        let tp = request.into_inner().tp;
+        tokio::task::spawn_blocking(move || crate::diagnostics_info::collect(tp))
+            .await
+            .map_err(|error| Status::internal(error.to_string()))?
+            .map(Response::new)
+    }
+
     async fn search_log(
         &self,
         request: Request<SearchLogRequest>,
