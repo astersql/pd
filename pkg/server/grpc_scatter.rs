@@ -34,7 +34,21 @@ pub enum ScatterError {
 pub struct OperatorResult {
     pub desc: Vec<u8>,
     pub kind: Vec<u8>,
+    /// Canonical domain OpStatus; convert with operator_status for protobuf.
     pub status: u32,
+}
+/// Convert canonical operator state to the distinct pdpb wire enum. Go retains
+/// RUNNING + 1 for CREATED/unknown states and maps expiration to TIMEOUT.
+pub fn operator_status(status: u32) -> i32 {
+    let wire = match status {
+        1 => pdpb::OperatorStatus::Running,
+        2 => pdpb::OperatorStatus::Success,
+        3 => pdpb::OperatorStatus::Cancel,
+        4 => pdpb::OperatorStatus::Replace,
+        5 | 6 => pdpb::OperatorStatus::Timeout,
+        _ => return pdpb::OperatorStatus::Running as i32 + 1,
+    };
+    wire as i32
 }
 impl Grpc {
     pub(crate) async fn scatter_request(
@@ -124,14 +138,7 @@ impl Grpc {
             response.region_id = r.region_id;
             response.desc = result.desc;
             response.kind = result.kind;
-            response.status = match result.status {
-                1 => 4,
-                2 => 0,
-                3 => 2,
-                4 => 3,
-                5 | 6 => 1,
-                _ => 5,
-            };
+            response.status = operator_status(result.status);
         } else {
             response.header.as_mut().unwrap().error = Some(pdpb::Error {
                 r#type: pdpb::ErrorType::RegionNotFound as i32,

@@ -1678,7 +1678,7 @@ impl RegionHeartbeatService for ClusterHost {
     }
 }
 fn planner_id(
-    remote: Option<&astersql_pd_mcs_scheduling_server::RemoteIds>,
+    remote: Option<&Arc<astersql_pd_mcs_scheduling_server::RemoteIds>>,
     cached: &mut std::collections::VecDeque<u64>,
     exhausted: &'static str,
 ) -> Result<u64, astersql_pd_schedule_operator::BuilderError> {

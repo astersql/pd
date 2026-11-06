@@ -746,3 +746,31 @@ TSO/heartbeat终止Unknown与Rust EOF差别，此专项本身不要求该终止�
 不据此关闭完整验收22。workspace check/fmt/metadata通过。
 完整输入、red/green、32组信号及pre-signal产物指纹、只读守卫见
 [未注册协议与信号阶段回执](task-16-unregistered-signals.json.gz)。
+
+## Scheduling实际命令与operator状态阶段（进行中）
+
+新增真实Go/Rust独立Scheduling差分，使用真实API模式Go PD的Bootstrap、PutStore、
+StoreHeartbeat和双向RegionHeartbeat，不伪造PD leader。三个场景分别覆盖默认keyspace
+边界split、默认cluster version的单peer变更、5.0.0的ConfChangeV2；共六个进程观察，
+三个测试。比较首条命令与GetOperator完整protobuf，只归零独立集群的cluster ID，
+原bytes保留；严格核对PD AllocID增量和PD region持久键不变。
+
+实际red首先捕获Rust把领域STARTED(1)直接写成wire TIMEOUT(1)，Go为RUNNING(4)。
+复用classic现有映射并提取公共转换后，split命令和运行状态一致。副本规划进一步
+捕获RemoteIds在blocking actor的LocalSet内调用block_in_place发生panic；此前不含
+LocalSet的专项未覆盖真实上下文。强化后的单线程宿主专项先复现，再让调用者提供
+的runtime驱动真实AllocID future，blocking actor只接收结果，不新增runtime或线程。
+
+随后真实wire差分捕获Rust始终发ConfChangeV2，而Go默认版本发单peer变更；Rust在
+operator等待入场期间重复规划，还额外消耗14个PD ID。调用既有canonical admission
+在checker入队后立即promotion，并复用现有版本比较实现Go的5.0兼容门槛；scatter与
+worker命令发送使用同一权威配置。没有弱化ID断言或归一两种peer命令。
+5.0场景最初TOML把semver写成字符串被Go拒绝，改用Go接受的版本表，此为fixture
+错误，独立保留日志，不作为行为差异。
+
+最终三个命令专项通过，默认及5.0版本分别核对完整单peer/ConfChangeV2命令、运行中
+operator和恰好一次peer ID分配；split不消耗peer ID。七方法/心跳/在线bootstrap模块
+及blocking LocalSet、classic初始化回归另行检查，具体计数和执行日志见
+[Scheduling命令阶段回执](task-16-scheduling-operators.json.gz)。当前仅证明首条命令与
+运行状态，不声称operator ACK/完成/取消、完整bucket、reason/affinity、配置watch或
+切主故障矩阵已完成；16、148及后续验收继续。

@@ -300,6 +300,7 @@ async fn run(
                 break;
             }
             let admission = coordinator.operator_handle();
+            let conf_change_v2 = super::cluster_split::supports_conf_change_v2(&r.persisted_config.config.cluster_version);
             let mut config = r.state.lock().unwrap().config.clone();
             config.schedule.halt_scheduling |= r.recovery_halted;
             if let Err(e) = super::hot_history::maintain(r, &coordinator, &cancel).await {
@@ -324,7 +325,7 @@ async fn run(
                             DispatchSource::Heartbeat,
                             tokio::time::Instant::now().into_std(),
                             now().1 as i128,
-                            true,
+                            conf_change_v2,
                         )
                         .await
                         .map_err(|e| e.to_string())?;
@@ -338,7 +339,7 @@ async fn run(
                     .push_due(
                         tokio::time::Instant::now().into_std(),
                         now().1 as i128,
-                        true,
+                        conf_change_v2,
                     )
                     .await
                     .map_err(|e| e.to_string())?
@@ -364,7 +365,7 @@ async fn run(
                                     DispatchSource::Create,
                                     tokio::time::Instant::now().into_std(),
                                     now().1 as i128,
-                                    true,
+                                    conf_change_v2,
                                 )
                                 .await
                                 .map_err(|e| e.to_string())?;
@@ -583,7 +584,7 @@ async fn run(
                                     DispatchSource::Create,
                                     tokio::time::Instant::now().into_std(),
                                     now().1 as i128,
-                                    true,
+                                    conf_change_v2,
                                 )
                                 .await
                                 .map_err(|e| e.to_string())?;

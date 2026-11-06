@@ -182,3 +182,14 @@ pub(super) fn compare_version(
 #[cfg(test)]
 #[path = "split_version_test.rs"]
 mod split_version_test;
+
+/// Match Go's ConfChangeV2 feature compatibility at the 5.0 release line.
+/// Patch/pre-release differences on that same major/minor remain compatible.
+pub(super) fn supports_conf_change_v2(version: &astersql_pd_server_config::ClusterVersion) -> bool {
+    let floor = astersql_pd_server_config::ClusterVersion {
+        major: 5,
+        ..Default::default()
+    };
+    compare_version(&floor, version).is_lt()
+        || (floor.major == version.major && floor.minor == version.minor)
+}

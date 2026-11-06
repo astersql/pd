@@ -95,7 +95,7 @@ impl PolicyInputs<'_> {
         };
         let mut allocate = || {
             planner_id(
-                self.remote_ids.as_deref(),
+                self.remote_ids.as_ref(),
                 self.ids,
                 "scheduler reservation exhausted",
             )

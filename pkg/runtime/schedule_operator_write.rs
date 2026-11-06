@@ -117,7 +117,7 @@ pub(super) async fn write(
         },
         || {
             planner_id(
-                remote.as_deref(),
+                remote.as_ref(),
                 &mut allocated,
                 "operator reservation exhausted",
             )

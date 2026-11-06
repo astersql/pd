@@ -4,7 +4,7 @@ use astersql_pd_proto::schedulingpb::{self as p, scheduling_server::Scheduling};
 use astersql_pd_server::{
     PdServices,
     grpc_ask_split::SplitError,
-    grpc_scatter::{ScatterError, ScatterRequest},
+    grpc_scatter::{ScatterError, ScatterRequest, operator_status},
     grpc_split_regions::SplitRequest,
 };
 use std::sync::Arc;
@@ -151,7 +151,7 @@ impl Scheduling for Service {
                 region_id: id,
                 desc: operator.desc,
                 kind: operator.kind,
-                status: operator.status as i32,
+                status: operator_status(operator.status),
             },
             None => p::GetOperatorResponse {
                 header: Some(self.error(p::ErrorType::Unknown, "region not found")),

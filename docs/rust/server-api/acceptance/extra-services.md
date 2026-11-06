@@ -185,3 +185,10 @@ Unimplemented；普通未知HTTP路径保持404，不以默认业务服务实现
 MCS在listener前准备信号，并在TERM/INT/HUP/QUIT后等待宿主清理；32组退出/registry/
 端口观察通过。实际red及当前边界见
 [阶段说明](task-16.md#未注册服务回退与mcs信号清理阶段进行中)，不替代148或完整22/23。
+
+Scheduling实际命令增量：三个真实Go/Rust场景比较默认label split、单peer变更与5.0
+ConfChangeV2的首条命令及运行中operator，严格检查PD ID和region持久键。修复领域/wire
+状态映射、blocking LocalSet真实AllocID、checker即时promotion及版本门槛，复用现有
+领域内核。历史red、回归和证明边界见
+[阶段说明](task-16.md#scheduling实际命令与operator状态阶段进行中)。
+operator ACK/完成/取消及完整watch/故障仍待验证，不关闭148或16。

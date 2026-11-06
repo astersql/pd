@@ -735,12 +735,12 @@ async fn scatter(
         &hot,
         Some(&affinity),
         now().1 as i128,
-        true,
+        super::cluster_split::supports_conf_change_v2(&r.persisted_config.config.cluster_version),
     );
     let remote = r.remote_ids.clone();
     let mut allocate = || {
         planner_id(
-            remote.as_deref(),
+            remote.as_ref(),
             &mut allocated,
             "scatter reservation exhausted",
         )
@@ -867,7 +867,9 @@ pub(super) async fn dispatch_new(
                         astersql_pd_schedule_operator::DispatchSource::Create,
                         tokio::time::Instant::now().into_std(),
                         now().1 as i128,
-                        true,
+                        super::cluster_split::supports_conf_change_v2(
+                            &r.persisted_config.config.cluster_version,
+                        ),
                     )
                     .await
                     .map_err(|e| e.to_string())?;

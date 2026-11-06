@@ -58,10 +58,19 @@ impl RemoteIds {
         };
         tokio::select! {biased;_=self.cancel.cancelled()=>Ok(()),result=work=>result}
     }
-    /// Canonical planners request IDs synchronously on the supplied blocking
-    /// executor. Yield its runtime entry before polling the real async RPC.
-    pub fn alloc_one_blocking(&self) -> Result<u64, Status> {
-        tokio::task::block_in_place(|| self.runtime.block_on(self.alloc_count(1))).map(|r| r.0)
+    /// Request one ID from the caller's dedicated blocking actor, including a
+    /// LocalSet running on that actor. The supplied runtime drives the real RPC;
+    /// no nested block_on, private runtime, or additional thread is created.
+    pub fn alloc_one_blocking(self: &Arc<Self>) -> Result<u64, Status> {
+        let (send, receive) = std::sync::mpsc::sync_channel(1);
+        let owner = self.clone();
+        let _allocation = self.runtime.spawn(async move {
+            let result = owner.alloc_count(1).await.map(|range| range.0);
+            let _ = send.send(result);
+        });
+        receive
+            .recv()
+            .map_err(|_| Status::unavailable("PD allocation task stopped"))?
     }
     pub async fn alloc_count(&self, count: u32) -> Result<(u64, u32), Status> {
         let target = match self.target.read().unwrap().clone() {

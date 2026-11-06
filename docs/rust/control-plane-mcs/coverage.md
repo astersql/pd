@@ -325,3 +325,10 @@ Scheduling独立初始化增量：局部移除MCS对PD cluster meta的误用，c
 MCS信号处理提前安装，非TERM信号同样等待宿主lease清理；32组实际信号观察边界及
 历史失败见[验收16阶段说明](../server-api/acceptance/task-16.md#未注册服务回退与mcs信号清理阶段进行中)。
 初始化中取消和完整故障矩阵仍待后续专项，未关闭148或22/23。
+
+Scheduling实际命令增量：三个真实Go/Rust场景比较默认label split、单peer变更与5.0
+ConfChangeV2的首条命令及运行中operator，严格检查PD ID和region持久键。修复领域/wire
+状态映射、blocking LocalSet真实AllocID、checker即时promotion及版本门槛，复用现有
+领域内核。历史red、回归和证明边界见
+[阶段说明](../server-api/acceptance/task-16.md#scheduling实际命令与operator状态阶段进行中)。
+operator ACK/完成/取消及完整watch/故障仍待验证，不关闭148或16。

@@ -61,7 +61,10 @@ async fn mcs_139_remote_planner_ids_use_supplied_blocking_context_on_single_thre
     ids.refresh(&lookup).await.unwrap();
     let supplied = runtime.clone();
     let allocation = runtime
-        .spawn_blocking(move || supplied.block_on(async move { ids.alloc_one_blocking() }))
+        .spawn_blocking(move || {
+            let local = tokio::task::LocalSet::new();
+            supplied.block_on(local.run_until(async move { ids.alloc_one_blocking() }))
+        })
         .await
         .unwrap()
         .unwrap();
@@ -75,7 +78,7 @@ async fn mcs_139_remote_planner_ids_use_supplied_blocking_context_on_single_thre
     assert_eq!(after, baseline + 2);
     let path = std::path::PathBuf::from(std::env::var_os("PD_SA016_EVIDENCE").unwrap())
         .with_extension("scheduling-blocking.json");
-    std::fs::write(path,serde_json::to_vec(&serde_json::json!({"host":"single-thread Tokio with caller blocking handle","before":baseline,"allocated":allocation,"after":after,"missing":missing.message()})).unwrap()).unwrap();
+    std::fs::write(path,serde_json::to_vec(&serde_json::json!({"host":"single-thread Tokio with caller-owned blocking LocalSet actor","before":baseline,"allocated":allocation,"after":after,"missing":missing.message()})).unwrap()).unwrap();
     cancel.cancel();
     delegates.shutdown();
     pd.stop().unwrap();

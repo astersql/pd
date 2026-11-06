@@ -136,7 +136,9 @@ impl PatrolScan {
                             stores: &cluster.stores,
                             rules: &[],
                             now_unix_nanos: now().1 as i128,
-                            supports_conf_change_v2: true,
+                            supports_conf_change_v2: super::cluster_split::supports_conf_change_v2(
+                                &r.persisted_config.config.cluster_version,
+                            ),
                         },
                         witness_enabled: config.is_witness_allowed(),
                     },
@@ -166,7 +168,7 @@ impl PatrolScan {
                     affinity,
                     &region,
                     source,
-                    &mut || planner_id(remote.as_deref(), ids, "checker reservation exhausted"),
+                    &mut || planner_id(remote.as_ref(), ids, "checker reservation exhausted"),
                 )
                 .await;
             drop(checker);
@@ -174,6 +176,21 @@ impl PatrolScan {
             coordinator
                 .get_operator_records()
                 .bury_removed(&result.rejected, std::time::Instant::now());
+            // Compose Go AddWaitingOperator: enqueue and promotion are one
+            // admission action, before another patrol can allocate fresh IDs.
+            if !result.queued.is_empty() {
+                if let Some(promoted) = admission
+                    .promote_limited_waiting(cluster, config, rand::random())
+                    .await
+                    .map_err(|e| e.to_string())?
+                {
+                    coordinator
+                        .get_operator_records()
+                        .bury_removed(&promoted.removed, std::time::Instant::now());
+                    r.schedule_creations
+                        .extend(promoted.admitted.iter().map(|op| op.region_id()));
+                }
+            }
             if !result.errors.is_empty() {
                 *r.metrics_error.lock().unwrap() =
                     Some(format!("checker {id}: {:?}", result.errors));
