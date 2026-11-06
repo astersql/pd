@@ -29,6 +29,8 @@ impl EtcdMetaStore {
         Ok(Box::new(EtcdWatch {
             store: self.clone(),
             prefix,
+            range_end: None,
+            header_revision: None,
             next: start_revision,
             active: None,
             previous: Default::default(),
@@ -54,6 +56,49 @@ impl EtcdMetaStore {
             timeout,
             endpoints: endpoints.to_vec(),
         })
+    }
+    async fn read_with_count(&self, r: Read) -> Result<(Snapshot, i64)> {
+        r.validate()?;
+        let start = r
+            .start
+            .clone()
+            .filter(|s| !s.is_empty())
+            .unwrap_or_else(|| {
+                if r.prefix.is_empty() {
+                    vec![0]
+                } else {
+                    r.prefix.clone()
+                }
+            });
+        let end = r.end.clone().unwrap_or_else(|| prefix_end(&r.prefix));
+        let mut options = GetOptions::new().with_range(end).with_limit(r.limit as i64);
+        if r.consistency == Consistency::Serializable {
+            options = options.with_serializable();
+        }
+        if let Some(rev) = r.revision {
+            options = options.with_revision(rev);
+        }
+        let mut client = self.client.clone();
+        let response = self
+            .bounded(client.get(start, Some(options)))
+            .await
+            .map_err(|e| match e {
+                StoreError::Compacted {
+                    compact_revision, ..
+                } => StoreError::Compacted {
+                    requested: r.revision.unwrap_or(0),
+                    compact_revision,
+                },
+                other => other,
+            })?;
+        Ok((
+            Snapshot {
+                revision: revision(response.header())?,
+                entries: response.kvs().iter().map(entry).collect(),
+                more: response.more(),
+            },
+            response.count(),
+        ))
     }
     async fn bounded<T>(
         &self,
@@ -111,6 +156,7 @@ pub(crate) fn map_error(error: etcd_client::Error) -> StoreError {
 }
 fn entry(kv: &etcd_client::KeyValue) -> Entry {
     Entry {
+        version: kv.version(),
         key: kv.key().to_vec(),
         value: kv.value().to_vec(),
         create_revision: kv.create_revision(),
@@ -175,44 +221,10 @@ impl MetaStore for EtcdMetaStore {
     }
 
     async fn read(&self, r: Read) -> Result<Snapshot> {
-        r.validate()?;
-        let start = r
-            .start
-            .clone()
-            .filter(|s| !s.is_empty())
-            .unwrap_or_else(|| {
-                if r.prefix.is_empty() {
-                    vec![0]
-                } else {
-                    r.prefix.clone()
-                }
-            });
-        let end = r.end.clone().unwrap_or_else(|| prefix_end(&r.prefix));
-        let mut options = GetOptions::new().with_range(end).with_limit(r.limit as i64);
-        if r.consistency == Consistency::Serializable {
-            options = options.with_serializable();
-        }
-        if let Some(rev) = r.revision {
-            options = options.with_revision(rev);
-        }
-        let mut client = self.client.clone();
-        let response = self
-            .bounded(client.get(start, Some(options)))
-            .await
-            .map_err(|e| match e {
-                StoreError::Compacted {
-                    compact_revision, ..
-                } => StoreError::Compacted {
-                    requested: r.revision.unwrap_or(0),
-                    compact_revision,
-                },
-                other => other,
-            })?;
-        Ok(Snapshot {
-            revision: revision(response.header())?,
-            entries: response.kvs().iter().map(entry).collect(),
-            more: response.more(),
-        })
+        self.read_with_count(r).await.map(|(snapshot, _)| snapshot)
+    }
+    async fn read_counted(&self, r: Read) -> Result<(Snapshot, i64)> {
+        self.read_with_count(r).await
     }
     async fn transact(&self, compares: Vec<Compare>, writes: Vec<Mutation>) -> Result<Commit> {
         self.transact_branches(compares, writes, vec![]).await
@@ -330,6 +342,30 @@ impl MetaStore for EtcdMetaStore {
     ) -> Result<Box<dyn MetaWatch>> {
         self.new_watch(prefix, start_revision, true)
     }
+    async fn watch_range(
+        &self,
+        key: Vec<u8>,
+        end: Vec<u8>,
+        start_revision: Revision,
+        previous: bool,
+    ) -> Result<Box<dyn MetaWatch>> {
+        if key.is_empty() {
+            return Err(StoreError::InvalidArgument);
+        }
+        let start_revision = start_revision.max(0);
+        Ok(Box::new(EtcdWatch {
+            with_previous: previous,
+            previous: Default::default(),
+            store: self.clone(),
+            prefix: key,
+            range_end: Some(end),
+            header_revision: None,
+            next: start_revision,
+            active: None,
+            cancelled: false,
+            progress_request: None,
+        }))
+    }
     async fn grant(&self, ttl_seconds: i64) -> Result<Lease> {
         if !(1..=i32::MAX as i64).contains(&ttl_seconds) {
             return Err(StoreError::InvalidArgument);
@@ -380,6 +416,8 @@ impl MetaStore for EtcdMetaStore {
     }
 }
 struct EtcdWatch {
+    header_revision: Option<Revision>,
+    range_end: Option<Vec<u8>>,
     with_previous: bool,
     previous: std::collections::BTreeMap<(Revision, Vec<u8>), Vec<u8>>,
     store: EtcdMetaStore,
@@ -394,7 +432,12 @@ impl EtcdWatch {
         loop {
             if self.active.is_none() {
                 let mut client = self.store.client.clone();
-                let (key, options) = if self.prefix.is_empty() {
+                let (key, options) = if let Some(end) = &self.range_end {
+                    (
+                        self.prefix.clone(),
+                        WatchOptions::new().with_range(end.clone()),
+                    )
+                } else if self.prefix.is_empty() {
                     (vec![0], WatchOptions::new().with_all_keys())
                 } else {
                     (self.prefix.clone(), WatchOptions::new().with_prefix())
@@ -459,6 +502,7 @@ impl EtcdWatch {
                 self.active = None;
                 return Err(StoreError::Unavailable);
             }
+            self.header_revision = response.header().map(|header| header.revision());
             self.previous.clear();
             for event in response.events() {
                 if let (Some(kv), Some(previous)) = (event.kv(), event.prev_kv()) {
@@ -497,6 +541,9 @@ impl EtcdWatch {
 }
 #[async_trait]
 impl MetaWatch for EtcdWatch {
+    fn header_revision(&self) -> Option<Revision> {
+        self.header_revision
+    }
     async fn next_with_progress(&mut self, cancel: &CancellationToken) -> Result<WatchBatch> {
         if self.cancelled {
             return Err(StoreError::Cancelled);

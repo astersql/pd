@@ -267,3 +267,5 @@ mod meta_group_http;
 
 #[cfg(test)]
 mod meta_group_http_test;
+#[cfg(test)]
+mod metastorage_host_test;

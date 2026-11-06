@@ -10,6 +10,8 @@ mod meta_store_test;
 
 #[cfg(test)]
 mod bounded_range_test;
+#[cfg(test)]
+mod metadata_range_test;
 
 #[cfg(test)]
 mod base_kv_test;

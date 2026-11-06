@@ -1,0 +1,16 @@
+[package]
+name = "astersql-pd-mcs-metastorage-server"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+[lib]
+path = "lib.rs"
+[dependencies]
+astersql-pd-storage-domain.workspace = true
+astersql-pd-proto.workspace = true
+async-trait.workspace = true
+tokio.workspace = true
+tokio-util.workspace = true
+futures-util.workspace = true
+tonic.workspace = true

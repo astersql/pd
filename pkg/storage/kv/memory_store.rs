@@ -235,6 +235,7 @@ impl MetaStore for MemoryStore {
                         let create_revision =
                             s.keys.get(&key).map_or(s.revision, |e| e.create_revision);
                         let entry = Entry {
+                            version: s.keys.get(&key).map_or(1, |entry| entry.version + 1),
                             key: key.clone(),
                             value,
                             lease,
@@ -274,6 +275,7 @@ impl MetaStore for MemoryStore {
             prefix,
             next: start_revision,
             previous: BTreeMap::new(),
+            header_revision: None,
             cancelled: false,
         }))
     }
@@ -339,6 +341,7 @@ impl MetaStore for MemoryStore {
     }
 }
 struct MemoryWatch {
+    header_revision: Option<Revision>,
     previous: BTreeMap<(Revision, Vec<u8>), Vec<u8>>,
     store: MemoryStore,
     prefix: Vec<u8>,
@@ -347,6 +350,9 @@ struct MemoryWatch {
 }
 #[async_trait]
 impl MetaWatch for MemoryWatch {
+    fn header_revision(&self) -> Option<Revision> {
+        self.header_revision
+    }
     fn previous_value(&self, event: &Event) -> Option<Vec<u8>> {
         self.previous
             .get(&(event.revision(), event.key().to_vec()))
@@ -374,6 +380,7 @@ impl MetaWatch for MemoryWatch {
                     .cloned()
                     .collect();
                 if let Some(last) = events.last() {
+                    self.header_revision = Some(s.revision);
                     let revision = last.revision();
                     self.next = revision + 1;
                     self.previous = events

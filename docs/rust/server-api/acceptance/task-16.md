@@ -1,7 +1,9 @@
 # 验收16：额外gRPC注册与责任交接审计
 
 2026-11-06；基准HEAD `128c50050748fac7820b48039759d77a522929ec`。
-状态：**已阻塞**。已完成文档范围内的责任修复，尚未获得整项协议验收证据。
+后续实施说明：用户已解除此前纯文档/Cargo/服务实现的限制，允许按原拥有任务
+继续Rust实施及现成Go oracle验证。当前正在实施，尚未获得整项协议验收证据；
+下文是提交9ceedb1be时的只读审计和当时授权边界，不再作为停止实施的理由。
 方法责任和注册条件见[extra-services.md](extra-services.md)。
 
 ## 本次实际交付
@@ -109,3 +111,64 @@ Go只读守卫使用git ls-files的cached/others与ignored并集，比较1101项
 未生成临时Go文件，未执行Cargo、Go、make、failpoint或构建。
 仅提交四份原任务实施计划、控制面coverage及本项两份交接/审计文档；
 编号16保留已阻塞，原有无关计划删除/未跟踪计划保持。
+
+## MetaStorage前置65–68实施与验收
+
+2026-11-06，代码基准`9ceedb1beb0e1f3be359f7a7d3f9eb5186ce3850`。
+用户已解除纯文档限制，本阶段实际实现并验证原拥有任务65–68。
+第16项仍在实施，RM/Router/Scheduling及148整体验收继续，未标为完成或阻塞。
+[原始压缩回执](task-16-metastorage.json.gz)保存47个阶段命令及全部日志，
+包含真实red和最终green、RPC、独立物理状态、源码/二进制/准入输入摘要、
+Go/plan首尾守卫与运行器；后续实现不得覆盖本阶段原始失败。
+
+实现详情见[65](../../control-plane-mcs/task-065.md)、
+[66](../../control-plane-mcs/task-066.md)、[67](../../control-plane-mcs/task-067.md)、
+[68](../../control-plane-mcs/task-068.md)。服务实现只在canonical MetaStorage crate；
+server窄桥接注入原Host资源，领域存储接口保持后端无关且不含protobuf。
+MetaStore新增一致count、范围watch及真实KV version；响应header revision与重放游标分列，
+避免历史回放把header错误改为最后事件revision。8个流请求保存12条回执/侧，
+另有14个读取和11个写删配对；数字不是把回执行数当成有效测试数。
+
+| 本轮最终命令 | 退出码与有效结果 |
+| --- | --- |
+| `cargo test --locked -p astersql-pd-mcs-metastorage-server` | exit0，4通过/0失败/0忽略；doc-test 0不计行为通过 |
+| `cargo test --locked -p astersql-pd-storage-kv --lib -- --nocapture` | exit0，36通过/0失败/0忽略 |
+| `cargo test --locked -p astersql-pd-election --lib -- --nocapture` | exit0，19通过/0失败/0忽略 |
+| `cargo test --locked -p astersql-pd-runtime --lib -- --test-threads=4` | 修复夹具后的最终exit0，106通过/0失败/38历史忽略 |
+| `cargo test --locked -p astersql-pd-compat-tests --lib sa_016_metastorage_ -- --nocapture --test-threads=1` | exit0，3通过/0失败/0忽略，包含真实双侧WAL重启 |
+| `cargo test --locked -p astersql-pd-runtime --lib mcs_068_ -- --nocapture` | exit0，1通过/0失败/0忽略；已包含在runtime包106项中，不重复累计 |
+| `cargo build --locked -p astersql-pd-cmd-pd-server --bin pd-server` | exit0，当前源码实际二进制 |
+| `cargo metadata --format-version 1 --no-deps` | exit0 |
+| `cargo fmt --all -- --check` | exit0 |
+| `cargo check --workspace --locked` | exit0 |
+
+最终实际槽位为1，绝对`CARGO_TARGET_DIR=/Users/xiangmin/worker/code/pd/target/rust-slot-1`；
+最初一次内存单元阶段动态领取槽位2，未使用其二进制执行wire。阶段结束释放自己的锁，
+缓存保留；现成Go、官方etcd/etcdctl、protoc及固定kvproto ZIP五项摘要匹配。
+Go只运行现成服务与只读`go version -m`，没有Go编译/测试或生成/整理；
+1101项Go/模块和41项plan.md首尾一致。完整workspace test集中于24，不以编译替代它。
+
+### 额外完整server包未通过的交接
+
+`cargo test --locked -p astersql-pd-server --lib`真实执行exit101：
+283通过/8失败/39历史忽略。原日志完整保留，**未把该包认证为通过**。
+本阶段MetaStorage四方法与宿主的专项/真实差分已通过，不以以下旧断言替代其证据，
+也不为凑通过而删除或放宽它们；后续22/23/24必须按原行为核查并修复。
+
+| 原测试 | 当前失败症状 | 唯一后续验收拥有者 |
+| --- | --- | --- |
+| `grpc_alloc_id_test::task_021_behavior` | 重启near-u64边界后持久ID值998与旧MAX断言不等；需对照既有Go Rebase wrap证据 | 22 |
+| `http_config_read_fault_test::task_047_follower_recovery_fault_and_cancel` | 等待SchedulePhase::Running超时 | 23 |
+| `http_schedule_config_write_fault_test::task_048_fault_cancel_and_concurrent` | 等待SchedulePhase::Running超时 | 23 |
+| `http_replication_config_write_fault_test::task_049_fault_cancel_and_concurrent` | 等待SchedulePhase::Running超时 | 23 |
+| `http_hotspot_history_test::task_061_persistence_filters_pages_and_errors` | 无效加密key先被校验，错误不同于旧缺manager断言 | 23 |
+| `http_hotspot_history_test::task_061_sampler_and_restart` | 采样仍运行时取的快照与关闭/重启后的历史行集合不等 | 23 |
+| `http_maintenance_test::task_102_maintenance_etcd_wal_restart` | 释放reservation再重绑地址遇AddrInUse | 23 |
+| `http_region_label_test::task_070_storage_failure_and_cancel` | 默认空间标签存在，旧saved.is_empty断言失败 | 23 |
+
+24消费22/23的修复结果再完整工作区回归。这些当前症状尚未全部归因完成，
+不宣称已在原基准重跑证明，更不以“待回归”绕过必需领域或oracle证据。
+与本阶段直接相邻的AskBatchSplit allocator故障夹具已实际修复：诊断回执显示
+before=1、持久窗口1000、fault仍armed但返回1129起的IDs，后台预取干扰了窗口边界。
+在该夹具禁用自动scheduler并延迟checker巡检后保留原故障/取消断言，专项及同4线程
+完整runtime包通过；修复前0/1专项、105/1/38全包失败均保存，不覆盖或隐藏。

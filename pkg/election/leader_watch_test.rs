@@ -49,6 +49,7 @@ async fn behavior(store: Arc<dyn MetaStore>) {
     assert_eq!(
         receive(&mut watch, &cancel).await,
         Event::Put(Entry {
+            version: 2,
             key: key.to_vec(),
             value: b"inclusive".to_vec(),
             create_revision: start - 1,

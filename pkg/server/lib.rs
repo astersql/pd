@@ -648,6 +648,14 @@ fn router_with_options(
             },
         ),
     )
+    .add_service(
+        astersql_pd_proto::meta_storagepb::meta_storage_server::MetaStorageServer::new(
+            astersql_pd_mcs_metastorage_server::Service::new(
+                Arc::new(grpc_metastorage::MetastorageHost(services.clone())),
+                cancel.clone(),
+            ),
+        ),
+    )
     .into_axum_router();
     let router = http::router(services.clone(), cancel.clone())
         .merge(http_health::router(services.clone(), cancel.clone()))
@@ -1231,3 +1239,4 @@ mod accept_http_11_test;
 mod accept_http_12;
 
 mod accept_http_13;
+mod grpc_metastorage;

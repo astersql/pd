@@ -8,6 +8,8 @@ mod callback_txn;
 mod memory_store;
 #[path = "../kv/meta_store.rs"]
 mod meta_store;
+#[path = "../kv/range_watch.rs"]
+mod range_watch;
 #[path = "../kv/raw_branches.rs"]
 mod raw_branches;
 #[path = "../kv/raw_compare.rs"]

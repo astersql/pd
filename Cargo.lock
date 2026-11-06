@@ -508,6 +508,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "astersql-pd-mcs-metastorage-server"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-proto",
+ "astersql-pd-storage-domain",
+ "async-trait",
+ "futures-util",
+ "tokio",
+ "tokio-util",
+ "tonic",
+]
+
+[[package]]
 name = "astersql-pd-mcs-tso-server"
 version = "0.1.0"
 dependencies = [
@@ -1154,6 +1167,7 @@ dependencies = [
  "astersql-pd-keyutil",
  "astersql-pd-logutil",
  "astersql-pd-mcs-discovery",
+ "astersql-pd-mcs-metastorage-server",
  "astersql-pd-member",
  "astersql-pd-metricutil",
  "astersql-pd-proto",

@@ -99,6 +99,8 @@ pub struct Entry {
     pub value: Vec<u8>,
     pub create_revision: Revision,
     pub mod_revision: Revision,
+    /// Number of writes since the current creation; deletion resets the next value to one.
+    pub version: i64,
     pub lease: Option<LeaseId>,
 }
 #[derive(Debug, Clone)]
@@ -209,6 +211,11 @@ pub struct WatchBatch {
 /// Unavailable is retryable via next(); Compacted requires a fresh snapshot + watch.
 #[async_trait]
 pub trait MetaWatch: Send {
+    /// Backend response header for the last batch, independent of its replay cursor.
+    /// Historical event batches can have a newer response header than their last event.
+    fn header_revision(&self) -> Option<Revision> {
+        None
+    }
     /// Previous bytes for a delete in the most recently returned batch, if retained.
     /// Call before next(): advancing the watch may release this batch's history.
     fn previous_value(&self, _event: &Event) -> Option<Vec<u8>> {
@@ -252,6 +259,19 @@ pub trait MetaStore: Send + Sync {
         Vec::new()
     }
     async fn read(&self, request: Read) -> Result<Snapshot>;
+    /// Read one consistent snapshot and the total matching key count before its limit.
+    /// Backends can override this to avoid materializing the entire matching range.
+    async fn read_counted(&self, mut request: Read) -> Result<(Snapshot, i64)> {
+        let limit = request.limit;
+        request.limit = 0;
+        let mut snapshot = self.read(request).await?;
+        let count = snapshot.entries.len() as i64;
+        if limit != 0 && snapshot.entries.len() > limit {
+            snapshot.entries.truncate(limit);
+            snapshot.more = true;
+        }
+        Ok((snapshot, count))
+    }
     async fn transact(&self, compares: Vec<Compare>, writes: Vec<Mutation>) -> Result<Commit>;
     /// Evaluate comparisons and commit exactly one write branch atomically.
     async fn transact_branches(
@@ -276,6 +296,49 @@ pub trait MetaStore: Send + Sync {
         start_revision: Revision,
     ) -> Result<Box<dyn MetaWatch>> {
         self.watch(prefix, start_revision).await
+    }
+    /// Watch an exact key, a byte range, or all keys from `key` when end is one NUL.
+    /// Empty end selects a point; positive start_revision is inclusive, otherwise watch from now.
+    async fn watch_range(
+        &self,
+        key: Vec<u8>,
+        end: Vec<u8>,
+        start_revision: Revision,
+        previous: bool,
+    ) -> Result<Box<dyn MetaWatch>> {
+        if key.is_empty() {
+            return Err(StoreError::InvalidArgument);
+        }
+        let start_revision = if start_revision > 0 {
+            start_revision
+        } else {
+            self.read(Read::prefix(b"", Consistency::Linearizable))
+                .await?
+                .revision
+                .checked_add(1)
+                .ok_or(StoreError::Backend)?
+        };
+        let prefix = if end.is_empty() {
+            key.clone()
+        } else if end == [0] {
+            vec![]
+        } else {
+            key.iter()
+                .zip(&end)
+                .take_while(|(a, b)| a == b)
+                .map(|(a, _)| *a)
+                .collect()
+        };
+        let watch = if previous {
+            self.watch_with_previous(prefix, start_revision).await?
+        } else {
+            self.watch(prefix, start_revision).await?
+        };
+        Ok(Box::new(crate::kv::range_watch::RangeWatch {
+            watch,
+            key,
+            end,
+        }))
     }
     async fn grant(&self, ttl_seconds: i64) -> Result<Lease>;
     async fn keep_alive(&self, lease: LeaseId) -> Result<Lease>;

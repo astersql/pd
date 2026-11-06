@@ -129,10 +129,10 @@ watcher/额度集成测试和测试工具。只补此清单，不改只读plan�
 | 62 装配共享宿主监听器 | BaseServer以宿主Tokio handle与listener运行HTTP和gRPC，ready只在路由就绪后发布；绑定失败回收已创建资源。 | 2 | `pkg/mcs/server/base_listener.rs`（拟建）；`pkg/mcs/server/lib.rs`（拟建）；`pkg/runtime/node.rs`（存在） | 待当前行为证据 |
 | 63 回收代理连接池 | GetDelegateClient复用正确TLS目标连接，关闭时取消进行中的请求并回收全部连接，跨宿主无串用。 | 2 | `pkg/mcs/server/delegate_connections.rs`（拟建）；`pkg/mcs/server/lib.rs`（拟建）；`pkg/runtime/node.rs`（存在） | 待当前行为证据 |
 | 64 关闭服务与回调 | start callbacks只在就绪后调用，取消时等待所有后台任务及长流退出，重复shutdown安全且保留宿主runtime。 | 2 | `pkg/mcs/server/base_shutdown.rs`（拟建）；`pkg/mcs/server/lib.rs`（拟建）；`pkg/runtime/node.rs`（存在） | 待当前行为证据 |
-| 65 暴露元存储范围读取 | MetaStorage.Get将range及revision映射到现有MetaStore，响应header和非serving错误匹配Go。 | 2 | `pkg/mcs/metastorage/server/lib.rs`（拟建）；`pkg/mcs/metastorage/server/metastorage_get.rs`（拟建） | 待当前行为证据 |
-| 66 暴露元存储写入删除 | Put和Delete保持lease及prevKV与revision语义，失败不伪造成功header。 | 2 | `pkg/mcs/metastorage/server/lib.rs`（拟建）；`pkg/mcs/metastorage/server/metastorage_write.rs`（拟建） | 待当前行为证据 |
-| 67 暴露元存储事件流 | Watch从指定revision推送事件与prevKV，DATA_COMPACTED含真实压缩revision并终止流，取消无泄漏。 | 2 | `pkg/mcs/metastorage/server/lib.rs`（拟建）；`pkg/mcs/metastorage/server/metastorage_watch.rs`（拟建） | 待当前行为证据 |
-| 68 装配元存储服务 | 通过registry在现有宿主暴露同一MetaStore实例，独立宿主与嵌入宿主读写一致，不新建第二份存储状态。 | 2 | `pkg/mcs/metastorage/server/lib.rs`（拟建）；`pkg/mcs/metastorage/server/metastorage_host.rs`（拟建） | 待当前行为证据 |
+| 65 暴露元存储范围读取 | MetaStorage.Get将range及revision映射到现有MetaStore，响应header和非serving错误匹配Go。 | 2 | `pkg/mcs/metastorage/server/lib.rs`；MetaStore::read_counted | [已完成](task-065.md)：14个Go/Rust读取配对，含真实follower拒绝 |
+| 66 暴露元存储写入删除 | Put和Delete保持lease及prevKV与revision语义，失败不伪造成功header。 | 2 | `pkg/mcs/metastorage/server/metastorage_write.rs` | [已完成](task-066.md)：11个Go/Rust写删配对及真实lease/存储状态 |
+| 67 暴露元存储事件流 | Watch从指定revision推送事件与prevKV，DATA_COMPACTED含真实压缩revision并终止流，取消无泄漏。 | 2 | `pkg/mcs/metastorage/server/metastorage_watch.rs`；canonical MetaWatch | [已完成](task-067.md)：8种流请求，原始事件/终态、header游标分离及WAL重连 |
+| 68 装配元存储服务 | 通过registry在现有宿主暴露同一MetaStore实例，独立宿主与嵌入宿主读写一致，不新建第二份存储状态。 | 2 | `pkg/server/grpc_metastorage.rs`；`pkg/runtime/metastorage_host_test.rs` | [已完成](task-068.md)：真实独立进程和双嵌入节点，共享状态/切主/EOF |
 | 69 转换时间戳数值 | ComposeTS和ParseTS边界及比较复用已有tso领域数值，协议转换留在适配层不重复时钟算法。 | 5 | `pkg/utils/tsoutil/lib.rs`（拟建）；`pkg/utils/tsoutil/timestamp_value.rs`（拟建） | 待当前行为证据 |
 | 70 分发合并时间戳请求 | TSODispatcher批量汇聚count并正确分配响应，PD和TSO协议工厂共用分发逻辑，错误传播不泄漏pending请求。 | 5 | `pkg/utils/tsoutil/lib.rs`（拟建）；`pkg/utils/tsoutil/tso_dispatch.rs`（拟建） | 待当前行为证据 |
 | 71 处理转发超时与停止 | WatchTSDeadline取消超时流，Stop完成所有排队请求；重连与重复停止不会双重完成请求。 | 5 | `pkg/utils/tsoutil/lib.rs`（拟建）；`pkg/utils/tsoutil/tso_deadline.rs`（拟建） | 待当前行为证据 |
