@@ -95,6 +95,20 @@ async fn task_026_storage_error_and_cancel() {
         mode: std::sync::atomic::AtomicU8::new(0),
         entered: tokio::sync::Notify::new(),
     });
+    // The real checker/scheduler loops reserve batches from this same allocator.
+    // Keep those unrelated consumers idle so draining the window establishes the
+    // durable boundary for this manual split; halt-scheduling would deny the RPC.
+    let schedulers = astersql_pd_schedule_config::ScheduleDefaults::default()
+        .schedulers
+        .into_iter()
+        .map(|mut scheduler| {
+            scheduler.disable = true;
+            scheduler
+        })
+        .collect::<Vec<_>>();
+    astersql_pd_storage_endpoint::StorageEndpoint::new(store.clone())
+        .save_config(&astersql_pd_keypath::ClusterPaths::new(2602),&serde_json::json!({"schedule":{"patrol-region-interval":"1h","schedulers-v2":schedulers}}))
+        .await.unwrap();
     let cancel = CancellationToken::new();
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
     let url = format!("http://{}", listener.local_addr().unwrap());
@@ -177,7 +191,11 @@ async fn task_026_storage_error_and_cancel() {
         .await
         .unwrap()
         .into_inner();
-    assert!(r.ids.is_empty());
+    assert!(
+        r.ids.is_empty(),
+        "allocation before={allocated}, durable={before:?}, armed={}, response={r:?}",
+        store.mode.load(std::sync::atomic::Ordering::SeqCst)
+    );
     assert_eq!(
         r.header.unwrap().error.unwrap().r#type,
         pdpb::ErrorType::Unknown as i32
