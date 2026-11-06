@@ -1,0 +1,27 @@
+[package]
+name = "astersql-pd-mcs-router-server"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+[lib]
+path = "lib.rs"
+[dependencies]
+astersql-pd-etcdutil.workspace = true
+astersql-pd-syncer.workspace = true
+astersql-pd-server.workspace = true
+astersql-pd-core.workspace = true
+astersql-pd-grpcutil.workspace = true
+astersql-pd-proto.workspace = true
+astersql-pd-mcs-server.workspace = true
+astersql-pd-mcs-discovery.workspace = true
+astersql-pd-storage-domain.workspace = true
+astersql-pd-keypath.workspace = true
+prost.workspace = true
+tonic.workspace = true
+tokio-stream.workspace = true
+tokio.workspace = true
+tokio-util.workspace = true
+futures-util.workspace = true
+axum.workspace = true
+[dev-dependencies]

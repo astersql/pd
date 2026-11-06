@@ -28,4 +28,4 @@ mod process_shutdown_test;
 
 mod standalone_tso;
 
-mod standalone_rm;
+mod standalone_mcs;

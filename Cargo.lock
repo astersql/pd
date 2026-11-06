@@ -208,10 +208,13 @@ dependencies = [
 name = "astersql-pd-cmd-pd-server"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-core",
  "astersql-pd-keypath",
  "astersql-pd-keyspace",
  "astersql-pd-logutil",
  "astersql-pd-mcs-discovery",
+ "astersql-pd-mcs-router-server",
+ "astersql-pd-mcs-server",
  "astersql-pd-mcs-tso-server",
  "astersql-pd-proto",
  "astersql-pd-rm-server",
@@ -404,6 +407,8 @@ dependencies = [
 name = "astersql-pd-grpcutil"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-core",
+ "astersql-pd-proto",
  "base64",
  "serde",
  "serde_json",
@@ -518,6 +523,29 @@ dependencies = [
  "async-trait",
  "futures-util",
  "tokio",
+ "tokio-util",
+ "tonic",
+]
+
+[[package]]
+name = "astersql-pd-mcs-router-server"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-core",
+ "astersql-pd-etcdutil",
+ "astersql-pd-grpcutil",
+ "astersql-pd-keypath",
+ "astersql-pd-mcs-discovery",
+ "astersql-pd-mcs-server",
+ "astersql-pd-proto",
+ "astersql-pd-server",
+ "astersql-pd-storage-domain",
+ "astersql-pd-syncer",
+ "axum",
+ "futures-util",
+ "prost",
+ "tokio",
+ "tokio-stream",
  "tokio-util",
  "tonic",
 ]

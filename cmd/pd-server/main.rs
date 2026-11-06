@@ -148,9 +148,11 @@ pub fn main() -> ExitCode {
     }
 
     if raw.first().is_some_and(|s| s == "services")
-        && raw.get(1).is_some_and(|s| s == "resource-manager")
+        && raw
+            .get(1)
+            .is_some_and(|s| matches!(s.as_str(), "resource-manager" | "router"))
     {
-        return crate::standalone_rm::main(raw[2..].to_vec());
+        return crate::standalone_mcs::main(&raw[1], raw[2..].to_vec());
     }
     let args = match crate::cli_exit::parse(crate::cli_exit::process_args()) {
         Ok(args) => args,

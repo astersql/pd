@@ -28,6 +28,32 @@ pub struct SyncApplyResponse {
     pub buckets: Vec<Option<RegionBucketMeta>>,
     pub leaders: Vec<Option<Peer>>,
 }
+impl SyncApplyResponse {
+    /// Build canonical sync region snapshots. Both PD followers and routers use
+    /// this conversion; their admission and persistence policies remain separate.
+    pub fn into_regions(self) -> impl Iterator<Item = astersql_pd_core::RegionInfo> {
+        let has_stats = self.stats.len() == self.regions.len();
+        let has_buckets = self.buckets.len() == self.regions.len();
+        self.regions.into_iter().enumerate().map(move |(i, meta)| {
+            let leader = self.leaders.get(i).cloned().flatten().filter(|p| p.id != 0);
+            let mut region = astersql_pd_core::RegionInfo::new(meta, leader, vec![], vec![]);
+            region.set_source(astersql_pd_core::RegionSource::Sync);
+            if has_stats {
+                let s = &self.stats[i];
+                let target = region.stats_mut();
+                target.written_bytes = s.written_bytes;
+                target.written_keys = s.written_keys;
+                target.read_bytes = s.read_bytes;
+                target.read_keys = s.read_keys;
+            }
+            if has_buckets {
+                // Go SetBuckets treats version zero as an absent placeholder.
+                region.set_bucket_meta(self.buckets[i].clone().filter(|b| b.version > 0));
+            }
+            region
+        })
+    }
+}
 #[derive(Debug, Default, PartialEq, Eq)]
 /// Application counts; storage failures preserve Go best-effort semantics.
 pub struct ApplyOutcome {
@@ -123,32 +149,11 @@ impl ClientApply {
         if !frame.positional && history.next_index() != response.start_index {
             history.reset_with_index(response.start_index);
         }
-        let has_stats = response.stats.len() == response.regions.len();
-        let has_buckets = response.buckets.len() == response.regions.len();
         let mut outcome = ApplyOutcome {
             handled: true,
             ..Default::default()
         };
-        for (i, meta) in response.regions.into_iter().enumerate() {
-            let leader = response
-                .leaders
-                .get(i)
-                .cloned()
-                .flatten()
-                .filter(|p| p.id != 0);
-            let mut region = astersql_pd_core::RegionInfo::new(meta, leader, vec![], vec![]);
-            region.set_source(astersql_pd_core::RegionSource::Sync);
-            if has_stats {
-                let s = &response.stats[i];
-                let target = region.stats_mut();
-                target.written_bytes = s.written_bytes;
-                target.written_keys = s.written_keys;
-                target.read_bytes = s.read_bytes;
-                target.read_keys = s.read_keys;
-            }
-            if has_buckets {
-                region.set_bucket_meta(response.buckets[i].clone());
-            }
+        for region in response.into_regions() {
             let (origin, _, precheck) = cluster.regions.pre_check_put_region(&region);
             if precheck.is_err() {
                 outcome.stale += 1;

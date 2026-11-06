@@ -398,3 +398,47 @@ Router/Scheduling注册继续实施，100/101/138/148保持未销项。
 共享槽位1。原始输入、输出、失败及证书轮换回执保存在
 [本阶段不可变压缩回执](task-16-rm-tls-primary.json.gz)。不重复执行已经通过且本轮
 未改动的完整runtime集合；其最近107通过/38历史忽略仍按前阶段证据范围引用。
+
+## Router注册与共享查询转换阶段（进行中）
+
+基准`23517469c`，2026-11-07。初次有效Go fixture已执行七方法及QueryRegion EOF，
+Rust现成二进制在`services router`返回unknown option，作为实际注册缺失red。
+最初无header夹具在Go错误请求触发transport失败；源码RequestCounter直接访问header，
+后续统一传入存在但cluster ID为0的header，不把该Go夹具失败当作Rust red。
+
+新增canonical `astersql-pd-mcs-router-server`，只注册固定七方法，未添加Go源码helper
+ScanRegions到descriptor。Service读取宿主同一BasicCluster。Router unary与Go一致
+不执行PD leader/bootstrap及cluster ID门禁；QueryRegion校验ID，逐请求读取当前
+缓存，保留缺失ID的空RegionResponse；正常半关闭排空后EOF。
+原有point/query/scan wire组装及core store/region转换移至grpcutil，原PD模块
+re-export或调用共享实现，未复制BasicCluster查询、范围索引或持久化内核。
+
+RouterHost接受宿主executor/listener/MetaStore/cache/delegate pool，启动store快照与
+ReconciledWatch，复用primary观察器发现PD leader，并接收SyncRegions。独立CLI
+复用RM的既有四标志启动边界；新增`standalone_mcs.rs`取代RM专用入口，不安装
+库内runtime或PD election。配置/TLS与完整换主/重连故障矩阵继续由原拥有任务交付。
+
+真实已bootstrap缓存线级red发现Go空占位bucket（version=0）在Rust被投影为存在的
+Buckets。Go `core/region_option.go::SetBuckets`及PD/Router同步调用方均要求版本>0；
+在共享SyncApplyResponse投影中修正，并新增0/1版本回归。未改变canonical core
+SetBucketMeta的其它调用语义。Rust首版red二进制未单独保存摘要；保留失败命令、
+原始双方protobuf帧及精确差异，不冒充已保存该二进制。
+
+目前七方法Go/Rust进程测试通过，包含空cache、bootstrap后region/store真实同步、
+查询错误cluster、单项/前项/ID/范围/Store/全Store与QueryRegion EOF；逐方法保存
+实际protobuf帧，仅对不同进程cluster ID做显式比较归一化。三个包级专项覆盖
+共享cache实时替换、范围验证/空leader存在性、嵌入store watch更新/删除及停服后
+保留client连接关闭。空起点“必须报空洞”的首次测试预期与Go/core规则不符，改用
+非空起点后通过；没有为此修改生产查询逻辑，也不算真实领域red。
+
+未交付完整双部署TLS、RM watcher故障/策略应用、PD follower写转发、Router换主与
+Scheduling注册；验收16和所有相关未完成拥有任务继续执行，不能据本阶段批量销项。
+
+共享PD follower同步应用回归11通过、0失败、0忽略，包含原生etcd重叠与持久化故障、
+完整同步位置、数组长度、零leader及新增零bucket版本；未重复执行无变更的RM/TLS
+完整矩阵。classic读取专项和最终workspace检查按本阶段原始回执记录。
+
+classic region lookup/query/scan专项3通过，共享store/region转换9通过；共用CLI的
+Go/Rust独立RM回归1通过。workspace check、fmt check、metadata及CLI build均exit0。
+[本阶段压缩回执](task-16-router.json.gz)保留实际槽位、源码/工具摘要、成功与失败、
+原始帧和未覆盖边界；全workspace test仍由验收24统一执行，未改变历史失败范围。

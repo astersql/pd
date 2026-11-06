@@ -20,16 +20,19 @@ impl Drop for File {
         let _ = std::fs::remove_file(&self.0);
     }
 }
-struct Sidecar {
-    child: Child,
+pub(super) struct Sidecar {
+    pub(super) child: Child,
     log: File,
-    url: String,
+    pub(super) url: String,
 }
 impl Sidecar {
     fn start(binary: &Path, backend: &str) -> Self {
         Self::start_with_scheme(binary, backend, "http")
     }
     fn start_with_scheme(binary: &Path, backend: &str, scheme: &str) -> Self {
+        Self::start_service(binary, backend, "resource-manager", scheme)
+    }
+    pub(super) fn start_service(binary: &Path, backend: &str, service: &str, scheme: &str) -> Self {
         let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
         let url = format!("http://{}", listener.local_addr().unwrap());
         let advertised = url.replacen("http://", &format!("{scheme}://"), 1);
@@ -44,7 +47,7 @@ impl Sidecar {
         command
             .args([
                 "services",
-                "resource-manager",
+                service,
                 &format!("--backend-endpoints={backend}"),
                 &format!("--listen-addr={url}"),
                 &format!("--advertise-listen-addr={advertised}"),
@@ -56,10 +59,10 @@ impl Sidecar {
         let child = command.spawn().unwrap();
         Self { child, log, url }
     }
-    fn logs(&self) -> String {
+    pub(super) fn logs(&self) -> String {
         std::fs::read_to_string(&self.log.0).unwrap_or_default()
     }
-    fn stop(&mut self) {
+    pub(super) fn stop(&mut self) {
         if self.child.try_wait().unwrap().is_none() {
             assert!(
                 Command::new("kill")

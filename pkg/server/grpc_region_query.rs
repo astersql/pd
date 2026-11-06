@@ -1,9 +1,6 @@
 // Copyright 2026 AsterSQL.
 //! Ordered, demand-driven queries of the host's current region view.
-use crate::{
-    core_region_adapter::{peer_to_proto, region_to_proto},
-    grpc::Grpc,
-};
+use crate::grpc::Grpc;
 use astersql_pd_proto::pdpb;
 use std::pin::Pin;
 use tokio_stream::Stream;
@@ -91,42 +88,8 @@ impl Grpc {
                 });
                 return Ok(response);
             };
-            response.key_id_map = result.key_ids;
-            response.prev_key_id_map = result.prev_key_ids;
-            for (id, region) in result.regions_by_id {
-                let wire = region
-                    .map(|r| pdpb::RegionResponse {
-                        region: Some(region_to_proto(r.region)),
-                        leader: r.leader.map(peer_to_proto),
-                        down_peers: r
-                            .down_peers
-                            .into_iter()
-                            .map(|p| pdpb::PeerStats {
-                                peer: Some(peer_to_proto(p.peer)),
-                                down_seconds: p.down_seconds,
-                            })
-                            .collect(),
-                        pending_peers: r.pending_peers.into_iter().map(peer_to_proto).collect(),
-                        buckets: r.buckets.map(|b| astersql_pd_proto::metapb::Buckets {
-                            region_id: b.region_id,
-                            version: b.version,
-                            keys: b.keys.clone(),
-                            period_in_ms: b.period_in_ms,
-                            stats: b.stats.as_ref().map(|s| {
-                                astersql_pd_proto::metapb::BucketStats {
-                                    read_bytes: s.read_bytes.clone(),
-                                    read_keys: s.read_keys.clone(),
-                                    read_qps: s.read_qps.clone(),
-                                    write_bytes: s.write_bytes.clone(),
-                                    write_keys: s.write_keys.clone(),
-                                    write_qps: s.write_qps.clone(),
-                                }
-                            }),
-                        }),
-                    })
-                    .unwrap_or_default();
-                response.regions_by_id.insert(id, wire);
-            }
+            response =
+                astersql_pd_grpcutil::cluster_read::query(response.header.take().unwrap(), result);
             if let Some(metrics) = self.services.service_metrics() {
                 metrics
                     .query_handling

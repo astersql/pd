@@ -549,3 +549,22 @@ async fn state_task_37_client_apply_checkpoint_failure_keeps_assigned_record() {
         b"111"
     );
 }
+
+#[test]
+fn sync_projection_zero_version_bucket_is_absent() {
+    for version in [0, 1] {
+        let response = crate::SyncApplyResponse {
+            regions: vec![astersql_pd_core::RegionMeta {
+                id: 7,
+                ..Default::default()
+            }],
+            buckets: vec![Some(astersql_pd_core::RegionBucketMeta {
+                version,
+                keys: vec![b"a".to_vec()],
+            })],
+            ..Default::default()
+        };
+        let region = response.into_regions().next().unwrap();
+        assert_eq!(region.buckets().is_some(), version > 0);
+    }
+}

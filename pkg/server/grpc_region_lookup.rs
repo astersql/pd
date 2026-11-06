@@ -1,9 +1,6 @@
 // Copyright 2026 AsterSQL.
 //! Point lookups over host-owned canonical leader or synchronized follower views.
-use crate::{
-    core_region_adapter::{peer_to_proto, region_to_proto},
-    grpc::Grpc,
-};
+use crate::grpc::Grpc;
 use astersql_pd_proto::pdpb;
 use tonic::{Request, Status};
 impl Grpc {
@@ -95,44 +92,11 @@ impl Grpc {
                     message: "region not found".into(),
                 });
             }
-            let mut response = pdpb::GetRegionResponse {
-                header: Some(header),
-                ..Default::default()
-            };
-            if let Some(r) = region {
-                response.region = Some(region_to_proto(r.meta().clone()));
-                response.leader = r.leader().cloned().map(peer_to_proto);
-                response.down_peers = r
-                    .down_peers()
-                    .iter()
-                    .map(|p| pdpb::PeerStats {
-                        peer: Some(peer_to_proto(p.peer.clone())),
-                        down_seconds: p.down_seconds,
-                    })
-                    .collect();
-                response.pending_peers = r
-                    .pending_peers()
-                    .iter()
-                    .cloned()
-                    .map(peer_to_proto)
-                    .collect();
-                if need_buckets && !follower && self.services.region_buckets_enabled() {
-                    response.buckets = r.buckets().map(|b| astersql_pd_proto::metapb::Buckets {
-                        region_id: b.region_id,
-                        version: b.version,
-                        keys: b.keys,
-                        period_in_ms: b.period_in_ms,
-                        stats: b.stats.map(|s| astersql_pd_proto::metapb::BucketStats {
-                            read_bytes: s.read_bytes,
-                            read_keys: s.read_keys,
-                            read_qps: s.read_qps,
-                            write_bytes: s.write_bytes,
-                            write_keys: s.write_keys,
-                            write_qps: s.write_qps,
-                        }),
-                    });
-                }
-            }
+            let response = astersql_pd_grpcutil::cluster_read::point(
+                header,
+                region.as_deref(),
+                need_buckets && !follower && self.services.region_buckets_enabled(),
+            );
             Ok(response)
         };
         tokio::select! {biased; _=self.cancel.cancelled()=>Err(Status::unavailable("server not started")), result=operation=>result}

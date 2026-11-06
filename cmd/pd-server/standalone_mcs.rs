@@ -1,7 +1,7 @@
 // Copyright 2026 AsterSQL.
 use astersql_pd_storage::{Consistency, EtcdMetaStore, MetaStore, Read};
 use std::{process::ExitCode, sync::Arc, time::Duration};
-pub(crate) fn main(args: Vec<String>) -> ExitCode {
+pub(crate) fn main(service: &str, args: Vec<String>) -> ExitCode {
     let mut flags = std::collections::BTreeMap::new();
     let mut it = args.into_iter();
     while let Some(arg) = it.next() {
@@ -18,7 +18,7 @@ pub(crate) fn main(args: Vec<String>) -> ExitCode {
             key.as_str(),
             "--backend-endpoints" | "--listen-addr" | "--advertise-listen-addr" | "--name"
         ) {
-            eprintln!("unsupported resource-manager option: {key}");
+            eprintln!("unsupported {service} option: {key}");
             return ExitCode::FAILURE;
         }
         flags.insert(key, value);
@@ -96,29 +96,65 @@ pub(crate) fn main(args: Vec<String>) -> ExitCode {
                 };
                 let mut controller = astersql_pd_rm_server::ControllerConfig::default();
                 controller.adjust(&Default::default());
-                let host = astersql_pd_rm_server::ResourceManagerHost::start(
-                    astersql_pd_rm_server::HostConfig {
-                        runtime: tokio::runtime::Handle::current(),
-                        cancel,
-                        store,
-                        cluster_id: cluster,
-                        entry,
-                        controller,
-                    },
-                    listener,
-                )
-                .await?;
+                let host = match service {
+                    "router" => {
+                        let delegates = Arc::new(astersql_pd_mcs_server::DelegateConnections::new(
+                            tokio::runtime::Handle::current(),
+                            &cancel,
+                            None,
+                        ));
+                        Host::Router(
+                            astersql_pd_mcs_router_server::RouterHost::start(
+                                astersql_pd_mcs_router_server::HostConfig {
+                                    runtime: tokio::runtime::Handle::current(),
+                                    cancel,
+                                    store,
+                                    cluster_id: cluster,
+                                    entry,
+                                    cluster: Arc::new(std::sync::Mutex::new(
+                                        astersql_pd_core::BasicCluster::new(),
+                                    )),
+                                    delegates,
+                                },
+                                listener,
+                            )
+                            .await?,
+                        )
+                    }
+                    _ => Host::ResourceManager(
+                        astersql_pd_rm_server::ResourceManagerHost::start(
+                            astersql_pd_rm_server::HostConfig {
+                                runtime: tokio::runtime::Handle::current(),
+                                cancel,
+                                store,
+                                cluster_id: cluster,
+                                entry,
+                                controller,
+                            },
+                            listener,
+                        )
+                        .await?,
+                    ),
+                };
                 super::entry::shutdown_signal()
                     .await
                     .map_err(|e| e.to_string())?;
-                host.shutdown().await.map_err(|e| e.to_string())
+                match host {
+                    Host::Router(host) => host.shutdown().await,
+                    Host::ResourceManager(host) => host.shutdown().await,
+                }
             })
         });
     match result {
         Ok(()) => ExitCode::SUCCESS,
         Err(e) => {
-            eprintln!("resource-manager startup or runtime failed: {e}");
+            eprintln!("{service} startup or runtime failed: {e}");
             ExitCode::FAILURE
         }
     }
+}
+
+enum Host {
+    Router(astersql_pd_mcs_router_server::RouterHost),
+    ResourceManager(astersql_pd_rm_server::ResourceManagerHost),
 }

@@ -252,3 +252,18 @@ canonical allocator消费它完成实际campaign和驱逐。
 上述100/101/138/148编号文件已补实施与失败/通过验证计划，状态仍未开始。
 110仅拥有HTTP redirector，不拥有上述gRPC代理。表中的任务号指控制面与MCS计划，
 不是服务端验收同号任务；不得在验收16重新实现其领域算法。
+
+## Router注册增量（验收16，2026-11-07）
+
+86/87新增canonical `pkg/mcs/router/server/router_query.rs`，七个固定descriptor方法
+共享BasicCluster及`pkg/utils/grpcutil`的现有wire转换；classic继续不注册Router。
+原PD转换模块保留为兼容re-export，PD健康/leader/bootstrap检查仍在原适配层。
+137/141新增`RouterHost`和`services router`入口；宿主提供executor、MetaStore、
+listener、缓存与delegate连接，不创建私有runtime或PD election。
+83/85复用ReconciledWatch和canonical同步帧投影：store元数据、删除及region同步
+进入同一缓存，不引入第二套region索引；PD follower仍独立执行陈旧检查及持久化。
+
+当前证据见[验收16阶段回执](../server-api/acceptance/task-16.md)。已有实际
+Go/Rust Router七方法的空/已bootstrap缓存、QueryRegion错误与EOF对照，
+以及嵌入缓存更新/删除/关闭连接专项；不是83–88、137/141/145/148的整体验收。
+完整配置/TLS、换主/故障收敛、探针和指标尚须对应拥有任务补齐，编号文件保持未完成。

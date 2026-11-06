@@ -20,10 +20,10 @@
 | --- | --- | --- |
 | Keyspace | classic始终注册 | 同条件已注册；[131](../../control-plane-mcs/task-131.md)和[验收09](task-09.md)交付manager共享、读写、初始/后续watch及WAL子集；LookupKeyspace双方保留Unimplemented，不是功能完成；流重连/取消/compaction/EOF仍须精确关联回执 |
 | Diagnostics | classic始终注册 | 同条件已注册；[14](task-14.md)41配对日志场景，[15](task-15.md)21配对机器信息场景；ServerInfo只准入macOS amd64/CGO=0，退出进程时SearchLog传输错误差异交22；不将历史记录计为本轮执行 |
-| ResourceManager | fallback=true由registry装配真实RM；false装配classic proxy | classic RU六方法已接通并取得fallback=true进程回执；当前路由仍无条件安装本地适配器，不能验收fallback=false。代理/条件装配100/101/138及双模式148继续实施 |
+| ResourceManager | fallback=true由registry装配真实RM；false装配classic proxy | classic按fallback条件注册本地RM或代理；已有12项Go/Rust进程回执、四种PD/RM组合及缓存primary观察，见[阶段证据](task-16.md)。完整TLS、follower故障及148继续实施，不销项100/101/138 |
 | MetaStorage | registry始终注册，含classic | 已有canonical四方法及同一listener接线；[65](../../control-plane-mcs/task-065.md)/[66](../../control-plane-mcs/task-066.md)/[67](../../control-plane-mcs/task-067.md)/[68](../../control-plane-mcs/task-068.md)交付当前进程/嵌入、故障/流/WAL证据，148继续完整双模式/TLS组合，不扩大为整体16完成 |
 | TSO | 独立MCS注册，classic不注册该服务 | canonical TsoServiceHost及三个方法已存在；[验收11](task-11.md)/[13](task-13.md)只交付已消费子集，不能替代所有方法/TLS/取消的双模式回执 |
-| Router | 独立MCS注册，classic不注册该服务 | canonical Rust服务缺失；86/87实现，137嵌入，141独立，145恢复，148差分 |
+| Router | 独立MCS注册，classic不注册该服务 | canonical七方法Service、RouterHost和services router入口已接通；[阶段证据](task-16.md)覆盖Go上游的空/真实缓存查询、错误与EOF，不能替代完整145/148、TLS或配置验收；86/87/137/141仍按各自范围交付 |
 | Scheduling | 独立MCS注册，classic不注册该服务 | canonical Rust服务缺失；119–122实现，139嵌入，143独立，147恢复，148差分 |
 | Deadlock / TraceRecordPubSub / Namespace | descriptor传递导入，当前Go注册链未见注册 | 仅核对未注册边界，不虚构领域实现。Namespace历史“独立MCS”描述无注册源码支持，不据此新增服务；本轮未执行负向RPC |
 

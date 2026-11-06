@@ -59,3 +59,7 @@ fn null_default<'de, T: serde::Deserialize<'de> + Default, D: serde::Deserialize
 
 #[cfg(test)]
 mod config_test;
+
+pub mod cluster_read;
+pub mod core_region_adapter;
+pub mod core_store_adapter;

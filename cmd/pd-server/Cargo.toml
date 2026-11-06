@@ -13,6 +13,9 @@ name = "pd-server"
 path = "bin_main.rs"
 
 [dependencies]
+astersql-pd-mcs-router-server.workspace = true
+astersql-pd-core.workspace = true
+astersql-pd-mcs-server.workspace = true
 astersql-pd-rm-server.workspace = true
 astersql-pd-mcs-tso-server.workspace = true
 astersql-pd-mcs-discovery.workspace = true

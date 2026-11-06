@@ -1,9 +1,6 @@
 // Copyright 2026 AsterSQL.
 //! Range scan transport over the canonical host cache.
-use crate::{
-    core_region_adapter::{peer_to_proto, region_to_proto},
-    grpc::Grpc,
-};
+use crate::grpc::Grpc;
 use astersql_pd_core::{BatchScanRegionsOptions, KeyRange};
 use astersql_pd_proto::pdpb;
 use tonic::{Request, Status};
@@ -192,24 +189,4 @@ fn not_found() -> pdpb::Error {
         message: "region not found".into(),
     }
 }
-fn wire_region(r: &astersql_pd_core::RegionInfo) -> pdpb::Region {
-    pdpb::Region {
-        region: Some(region_to_proto(r.meta().clone())),
-        leader: Some(r.leader().cloned().map(peer_to_proto).unwrap_or_default()),
-        down_peers: r
-            .down_peers()
-            .iter()
-            .map(|p| pdpb::PeerStats {
-                peer: Some(peer_to_proto(p.peer.clone())),
-                down_seconds: p.down_seconds,
-            })
-            .collect(),
-        pending_peers: r
-            .pending_peers()
-            .iter()
-            .cloned()
-            .map(peer_to_proto)
-            .collect(),
-        ..Default::default()
-    }
-}
+use astersql_pd_grpcutil::cluster_read::region as wire_region;
