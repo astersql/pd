@@ -309,3 +309,8 @@ TSO HTTPS completion接线复用canonical公共HTTP驱动和宿主client_tls_pol
 metrics保留原目标校验及DNS固定。实际TLS传输拒绝/成功与HTTP/HTTPS metrics
 回归边界见[验收16阶段记录](../server-api/acceptance/task-16.md#tso-https交接与公共http驱动阶段进行中)。
 完整分组迁移和故障差分继续归148，不由传输专项代替。
+
+MCS进程配置增量：角色默认name与primary lease传入canonical宿主，registry lease
+保持独立5；controller TOML仅RM解释。16组真实租约/名称及8组角色类型观察见
+[验收16阶段记录](../server-api/acceptance/task-16.md#mcs名称与primary租约配置阶段进行中)。
+完整配置与未bootstrap Scheduling primary观察仍保留后续责任，不作为148完成回执。

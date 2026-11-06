@@ -12,13 +12,15 @@ pub(crate) struct Config {
     pub listen_addr: String,
     pub advertise_listen_addr: String,
     pub name: String,
+    #[serde(rename = "lease")]
+    pub leader_lease: i64,
     pub security: SecurityConfig,
     pub log: LogConfig,
     #[serde(skip)]
     pub controller: astersql_pd_rm_server::ControllerConfig,
 }
 impl Config {
-    pub(crate) fn parse(args: Vec<String>) -> Result<Self, String> {
+    pub(crate) fn parse(service: &str, args: Vec<String>) -> Result<Self, String> {
         let mut flags = BTreeMap::new();
         let mut it = args.into_iter();
         while let Some(arg) = it.next() {
@@ -52,14 +54,23 @@ impl Config {
         } else {
             String::new()
         };
-        let mut config: Self = toml::from_str(&source).map_err(|e| e.to_string())?;
+        let mut table: toml::Table = toml::from_str(&source).map_err(|e| e.to_string())?;
+        if service == "router" {
+            table.remove("lease");
+        }
+        let mut config: Self = table
+            .clone()
+            .try_into()
+            .map_err(|e: toml::de::Error| e.to_string())?;
         // Reuse the canonical decoders for TOML forms and presence-sensitive
         // controller defaults, including explicitly configured zero costs.
         let metadata = astersql_pd_server_config::decode_toml_scalars(&source)
             .map_err(|e| e.to_string())?
             .metadata;
-        let table: toml::Table = toml::from_str(&source).map_err(|e| e.to_string())?;
-        if let Some(controller) = table.get("controller") {
+        if let Some(controller) = table
+            .get("controller")
+            .filter(|_| service == "resource-manager")
+        {
             let source = toml::to_string(controller).map_err(|e| e.to_string())?;
             let (mut controller, metadata) = astersql_pd_rm_server::decode_toml(&source)?;
             controller.adjust(&metadata);
@@ -93,7 +104,20 @@ impl Config {
             config.advertise_listen_addr = config.listen_addr.clone();
         }
         if config.name.is_empty() {
-            config.name = config.advertise_listen_addr.clone();
+            let prefix = match service {
+                "resource-manager" => "resource manager",
+                "router" => "router",
+                "scheduling" => "scheduling",
+                "tso" => "tso",
+                _ => return Err("unknown microservice".into()),
+            };
+            config.name = format!(
+                "{prefix}-{}",
+                rustix::system::uname().nodename().to_string_lossy()
+            );
+        }
+        if config.leader_lease == 0 {
+            config.leader_lease = astersql_pd_mcs_server::DEFAULT_LEASE;
         }
         config
             .log

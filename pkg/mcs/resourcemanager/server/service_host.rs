@@ -88,6 +88,24 @@ impl ResourceManagerHost {
     where
         L: axum::serve::Listener<Addr = SocketAddr> + Send + 'static,
     {
+        Self::start_with_primary_lease(
+            config,
+            listener,
+            log_file,
+            astersql_pd_mcs_server::DEFAULT_LEASE,
+        )
+        .await
+    }
+    /// Use the caller's primary lease while keeping registry leases independent.
+    pub async fn start_with_primary_lease<L>(
+        config: HostConfig,
+        listener: L,
+        log_file: String,
+        primary_lease: i64,
+    ) -> Result<Self, String>
+    where
+        L: axum::serve::Listener<Addr = SocketAddr> + Send + 'static,
+    {
         let cancel = config.cancel.child_token();
         let state = Arc::new(State {
             cluster_id: config.cluster_id,
@@ -133,7 +151,7 @@ impl ResourceManagerHost {
         };
         let worker_state = state.clone();
         let worker = config.runtime.clone().spawn(async move {
-            run(config, worker_state).await;
+            run(config, worker_state, primary_lease).await;
         });
         Ok(Self {
             state,
@@ -165,7 +183,7 @@ impl Drop for ResourceManagerHost {
 async fn pause(cancel: &CancellationToken) {
     tokio::select! {_=cancel.cancelled()=>{},_=tokio::time::sleep(Duration::from_millis(100))=>{}}
 }
-async fn run(config: HostConfig, state: Arc<State>) {
+async fn run(config: HostConfig, state: Arc<State>, primary_lease: i64) {
     let paths = ClusterPaths::new(config.cluster_id);
     let param = MsParam {
         service_name: "resource_manager".into(),
@@ -220,7 +238,7 @@ async fn run(config: HostConfig, state: Arc<State>) {
                     config.cluster_id,
                     key.clone(),
                     value.clone(),
-                    5,
+                    primary_lease,
                     guards,
                 )
                 .await

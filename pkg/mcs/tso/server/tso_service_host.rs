@@ -156,7 +156,7 @@ impl TsoServiceHost {
             "tso",
             &config.address,
             entry.serialize().map_err(|_| TsoError::InvalidArgument)?,
-            config.lease_seconds,
+            astersql_pd_mcs_server::DEFAULT_LEASE,
         )
         .await;
         let registry = match registry {

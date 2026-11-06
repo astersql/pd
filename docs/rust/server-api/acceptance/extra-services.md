@@ -162,3 +162,10 @@ TSO独立宿主接受调用者的TLS策略，完成split/merge时共用从metric
 HTTP驱动，保留取消、超时及响应流资源所有权；旧无策略入口对HTTPS仍失败关闭。
 [阶段证据](task-16.md#tso-https交接与公共http驱动阶段进行中)区分TLS传输专项、
 metrics Rust回归与完整分组交接差分，不据此关闭148。
+
+## MCS名称与primary lease增量（2026-11-07）
+
+角色默认name和配置primary lease已有实际Go/Rust租约/registry对照，注册lease独立5，
+Router不选primary；controller表只由RM解码。参见
+[阶段记录](task-16.md#mcs名称与primary租约配置阶段进行中)。
+未bootstrap的Scheduling初始化/primary生命周期仍需专项验证，完整配置和148未关闭。

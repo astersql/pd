@@ -4,7 +4,7 @@ use astersql_pd_storage::{Consistency, MetaStore, Read};
 use prost::Message;
 use std::{process::ExitCode, sync::Arc};
 pub(crate) fn main(args: Vec<String>) -> ExitCode {
-    let config = match crate::mcs_config::Config::parse(args) {
+    let config = match crate::mcs_config::Config::parse("tso", args) {
         Ok(config) => config,
         Err(_) => {
             eprintln!("microservice configuration could not be loaded or validated");
@@ -78,7 +78,7 @@ pub(crate) fn main(args: Vec<String>) -> ExitCode {
                         .encode_to_vec()
                     }),
                     clock: Arc::new(astersql_pd_tso::SystemClock),
-                    lease_seconds: 3,
+                    lease_seconds: config.leader_lease,
                     save_interval_millis: 1000,
                 };
                 let leader_key = format!("/pd/{cluster}/leader");

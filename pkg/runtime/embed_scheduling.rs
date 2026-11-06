@@ -173,6 +173,24 @@ impl SchedulingHost {
     where
         L: axum::serve::Listener<Addr = SocketAddr> + Send + 'static,
     {
+        Self::start_with_primary_lease(
+            config,
+            listener,
+            log_file,
+            astersql_pd_mcs_server::DEFAULT_LEASE,
+        )
+        .await
+    }
+    /// Use the caller's primary lease while keeping registry leases independent.
+    pub async fn start_with_primary_lease<L>(
+        config: SchedulingHostConfig,
+        listener: L,
+        log_file: String,
+        primary_lease: i64,
+    ) -> Result<Self, String>
+    where
+        L: axum::serve::Listener<Addr = SocketAddr> + Send + 'static,
+    {
         let cancel = config.cancel.child_token();
         let state = Arc::new(State {
             cluster_id: config.cluster_id,
@@ -224,7 +242,7 @@ impl SchedulingHost {
         let task_state = state.clone();
         let runtime = config.runtime.clone();
         let worker = runtime.spawn(async move {
-            run(config, task_state).await;
+            run(config, task_state, primary_lease).await;
         });
         Ok(Self {
             state,
@@ -381,7 +399,7 @@ async fn open(
     });
     Ok((term, watch))
 }
-async fn run(config: SchedulingHostConfig, state: Arc<State>) {
+async fn run(config: SchedulingHostConfig, state: Arc<State>, primary_lease: i64) {
     let paths = ClusterPaths::new(config.cluster_id);
     let param = MsParam {
         service_name: "scheduling".into(),
@@ -435,7 +453,7 @@ async fn run(config: SchedulingHostConfig, state: Arc<State>) {
                     config.cluster_id,
                     key.clone(),
                     value.clone(),
-                    5,
+                    primary_lease,
                     guards,
                 )
                 .await

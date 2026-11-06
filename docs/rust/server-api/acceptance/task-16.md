@@ -656,3 +656,31 @@ TSO crate最终2通过/0失败/0忽略（原宿主生命周期及新TLS completi
 workspace check、fmt、metadata及1142项只读守卫通过。
 原始输入/失败/成功、当前二进制及源码指纹见
 [TSO HTTPS与公共HTTP阶段回执](task-16-tso-https.json.gz)。
+
+## MCS名称与primary租约配置阶段（进行中）
+
+真实Go/Rust进程及固定etcdctl对照捕获：配置lease=9时Go primary租约为9，Rust仍为5；
+默认name在Go为角色前缀加主机名（RM前缀保留空格），Rust却使用advertise地址。
+先收集未bootstrap场景时，还观察到Rust Scheduling primary被快速撤销，TTL探针
+取得已消失租约；该原始失败保留，未bootstrap初始化/primary生命周期继续单列验证。
+配置专项改用真实Bootstrap RPC完成的PD API所有者隔离测试前置，仍确实失败于9对5，
+不是用bootstrap抹去配置差异或把旧失败当通过。
+
+CLI共用配置入口按角色命名，零lease使用canonical默认值5；RM/Scheduling新增
+调用者primary lease入口，旧嵌入API仍采用5。TSO将配置传入已有GroupWatchConfig，
+registry lease独立固定5，不跟随primary配置。Router没有primary，不套用其它角色lease。
+具体配置中的controller只由RM调用既有canonical TOML解码器，其它角色保留Go的
+未知表边界；不把未知表的RM字段类型错误扩大为所有MCS的启动失败。
+
+最终两测试通过/0失败/0忽略：16组lease/name观察（四角色×两配置×双实现），
+以及8组controller类型启动观察（四角色×双实现）。primary比较etcdctl granted-ttl，
+不比较随时间递减的剩余TTL；registry固定为5，primary默认5/配置9，名称逐角色相等。
+一次green因health已可访问但注册事务仍在发布中而过早读取键，原始失败保留；
+测试增加有界等待实际注册键，租约、名称和存在性断言不弱化。一次文本编辑脚本
+定位失败未修改文件，其后运行通过；修正定位并实际写入同步后，最终模块再次通过。
+这些不代表完整配置、TSO时间窗口参数、Scheduling文件配置或全部148故障矩阵完成。
+
+TSO原宿主生命周期专项另1通过/0失败/0忽略，workspace check/fmt/metadata通过；
+完整原始输入、失败与最终16/8组观察及只读守卫见
+[MCS进程配置压缩回执](task-16-mcs-process-config.json.gz)。
+仍需处理未bootstrap Scheduling观察及其它剩余配置/领域证据，不关闭本项。

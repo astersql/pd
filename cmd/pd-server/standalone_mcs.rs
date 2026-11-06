@@ -2,7 +2,7 @@
 use astersql_pd_storage::{Consistency, MetaStore, Read};
 use std::{process::ExitCode, sync::Arc};
 pub(crate) fn main(service: &str, args: Vec<String>) -> ExitCode {
-    let config = match crate::mcs_config::Config::parse(args) {
+    let config = match crate::mcs_config::Config::parse(service, args) {
         Ok(config) => config,
         Err(_) => {
             eprintln!("microservice configuration could not be loaded or validated");
@@ -77,7 +77,7 @@ pub(crate) fn main(service: &str, args: Vec<String>) -> ExitCode {
                         let delegates =
                             config.delegates(tokio::runtime::Handle::current(), &cancel)?;
                         Host::Scheduling(
-                            astersql_pd_runtime::SchedulingHost::start_with_log_file(
+                            astersql_pd_runtime::SchedulingHost::start_with_primary_lease(
                                 astersql_pd_runtime::SchedulingHostConfig {
                                     runtime: tokio::runtime::Handle::current(),
                                     cancel,
@@ -98,6 +98,7 @@ pub(crate) fn main(service: &str, args: Vec<String>) -> ExitCode {
                                 },
                                 listener,
                                 config.log.file.filename.clone(),
+                                config.leader_lease,
                             )
                             .await?,
                         )
@@ -125,7 +126,7 @@ pub(crate) fn main(service: &str, args: Vec<String>) -> ExitCode {
                         )
                     }
                     _ => Host::ResourceManager(
-                        astersql_pd_rm_server::ResourceManagerHost::start_with_log_file(
+                        astersql_pd_rm_server::ResourceManagerHost::start_with_primary_lease(
                             astersql_pd_rm_server::HostConfig {
                                 runtime: tokio::runtime::Handle::current(),
                                 cancel,
@@ -136,6 +137,7 @@ pub(crate) fn main(service: &str, args: Vec<String>) -> ExitCode {
                             },
                             listener,
                             config.log.file.filename.clone(),
+                            config.leader_lease,
                         )
                         .await?,
                     ),

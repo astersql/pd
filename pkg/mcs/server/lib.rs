@@ -29,3 +29,6 @@ mod owned_channel;
 pub use owned_channel::OwnedDelegateChannel;
 
 pub mod http_transport;
+
+/// Default MCS primary lease, shared with the canonical constant package.
+pub use astersql_pd_mcs_constant::DEFAULT_LEASE;
