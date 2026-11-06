@@ -46,7 +46,7 @@ def main():
             return f'http://127.0.0.1:{sock.getsockname()[1]}'
     output = target / f'service-metrics-oracle-{time.time_ns()}.json'
     try:
-        for case in ['empty', 'http', 'denied', 'https', 'bad-ca', 'bad-host']:
+        for case in ['empty', 'http', 'denied', 'https', 'bad-ca', 'bad-host', 'bad-cn']:
             children = []
             item = dict(case=case)
             record['cases'].append(item)
@@ -59,7 +59,7 @@ def main():
                 extra_backend = None
                 security = ''
                 ca = cert = key = None
-                if case in ['https', 'bad-ca', 'bad-host']:
+                if case in ['https', 'bad-ca', 'bad-host', 'bad-cn']:
                     certs = work / 'certs'
                     module('auth_fixture', 'scripts/service-auth-oracle.py').certificates(certs)
                     if case != 'bad-host':
@@ -73,6 +73,8 @@ def main():
                     ca = certs / ('rogue.pem' if case == 'bad-ca' else 'ca.pem')
                     cert, key = certs / 'server.pem', certs / 'server.key'
                     security = '[security]\n' + '\n'.join(f'{name}={json.dumps(str(path))}' for name, path in [('cacert-path', ca), ('cert-path', cert), ('key-path', key)]) + '\n'
+                    if case == 'bad-cn':
+                        security += 'cert-allowed-cn=["not-server"]\n'
 
                 text = '' if case == 'empty' else f'[pd-server]\nmetric-storage={json.dumps(query_upstream)}\n'
                 if case in ['http', 'https']:
@@ -98,6 +100,8 @@ def main():
                         run_env = dict(env, PD_METRICS_GO_URL=url, PD_METRICS_STORAGE_URL='' if case == 'empty' else (f'http://127.0.0.1:{backend.server_port}' if case == 'denied' else query_upstream))
                         if ca:
                             run_env.update(PD_METRICS_CA=str(ca), PD_METRICS_CERT=str(cert), PD_METRICS_KEY=str(key))
+                        if case == 'bad-cn':
+                            run_env['PD_METRICS_PEER_CNS'] = json.dumps(['not-server'])
                         if case in ['http', 'https']:
                             run_env.update(PD_METRICS_UPSTREAM_URL=query_upstream, PD_METRICS_CONTROL_URL=upstream, PD_METRICS_PUSH_ADDRESS=f'http://demo:p%40ss@127.0.0.1:{backend.server_port}', PD_METRICS_PUSH_JOB=f'oracle/rust/{case}', PD_GO_PUSH_JOB=f'oracle/go/{case}')
                         if case == 'http':

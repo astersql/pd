@@ -67,6 +67,10 @@ async fn task_086_behavior() {
         config.security.tls.key_path = std::env::var("PD_METRICS_KEY").unwrap();
     }
 
+    if let Ok(names) = std::env::var("PD_METRICS_PEER_CNS") {
+        config.security.tls.cert_allowed_c_ns = Some(serde_json::from_str(&names).unwrap());
+    }
+
     if let Ok(address) = std::env::var("PD_METRICS_PUSH_ADDRESS") {
         config.metric.push_address = address;
         config.metric.push_job = std::env::var("PD_METRICS_PUSH_JOB").unwrap();

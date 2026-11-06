@@ -133,45 +133,7 @@ impl rustls::server::danger::ClientCertVerifier for AllowedCN {
         now: rustls::pki_types::UnixTime,
     ) -> Result<rustls::server::danger::ClientCertVerified, rustls::Error> {
         let verified = self.chain.verify_client_cert(end, intermediates, now)?;
-        let (_, cert) = x509_parser::parse_x509_certificate(end.as_ref()).map_err(|_| {
-            rustls::Error::InvalidCertificate(rustls::CertificateError::BadEncoding)
-        })?;
-        // Go pkix.Name.CommonName contains the last CN in the subject.
-        let cn = cert
-            .subject()
-            .iter_common_name()
-            .last()
-            .map(|cn| {
-                let value = cn.attr_value();
-                match value.tag() {
-                    x509_parser::asn1_rs::Tag::TeletexString => {
-                        Ok(value.data.iter().map(|b| char::from(*b)).collect())
-                    }
-                    x509_parser::asn1_rs::Tag::BmpString => {
-                        if value.data.len() % 2 != 0 {
-                            return Err(());
-                        }
-                        let mut points = value
-                            .data
-                            .chunks_exact(2)
-                            .map(|s| u16::from_be_bytes([s[0], s[1]]))
-                            .collect::<Vec<_>>();
-                        if points.last() == Some(&0) {
-                            points.pop();
-                        }
-                        if points.iter().any(
-                            |p| matches!(*p,0xd800..=0xdfff | 0xfdd0..=0xfdef | 0xfffe..=0xffff),
-                        ) {
-                            return Err(());
-                        }
-                        String::from_utf16(&points).map_err(|_| ())
-                    }
-                    _ => cn.as_str().map(str::to_owned).map_err(|_| ()),
-                }
-            })
-            .transpose()
-            .map_err(|_| rustls::Error::InvalidCertificate(rustls::CertificateError::BadEncoding))?
-            .unwrap_or_default();
+        let cn = certificate_common_name(end)?;
         if self.allowed.iter().any(|allowed| allowed == &cn) {
             Ok(verified)
         } else {
@@ -228,4 +190,47 @@ pub(crate) fn certified_key(cert: &str, key: &str) -> Option<Arc<rustls::sign::C
     rustls::sign::CertifiedKey::from_der(certs, key, &rustls::crypto::ring::default_provider())
         .ok()
         .map(Arc::new)
+}
+
+/// Go pkix.Name.CommonName is the last CN, with Go's ASN.1 string decoding.
+pub(crate) fn certificate_common_name(end: &CertificateDer<'_>) -> Result<String, rustls::Error> {
+    let (_, cert) = x509_parser::parse_x509_certificate(end.as_ref())
+        .map_err(|_| rustls::Error::InvalidCertificate(rustls::CertificateError::BadEncoding))?;
+    // Go pkix.Name.CommonName contains the last CN in the subject.
+    let cn =
+        cert.subject()
+            .iter_common_name()
+            .last()
+            .map(|cn| {
+                let value = cn.attr_value();
+                match value.tag() {
+                    x509_parser::asn1_rs::Tag::TeletexString => {
+                        Ok(value.data.iter().map(|b| char::from(*b)).collect())
+                    }
+                    x509_parser::asn1_rs::Tag::BmpString => {
+                        if value.data.len() % 2 != 0 {
+                            return Err(());
+                        }
+                        let mut points = value
+                            .data
+                            .chunks_exact(2)
+                            .map(|s| u16::from_be_bytes([s[0], s[1]]))
+                            .collect::<Vec<_>>();
+                        if points.last() == Some(&0) {
+                            points.pop();
+                        }
+                        if points.iter().any(
+                            |p| matches!(*p,0xd800..=0xdfff | 0xfdd0..=0xfdef | 0xfffe..=0xffff),
+                        ) {
+                            return Err(());
+                        }
+                        String::from_utf16(&points).map_err(|_| ())
+                    }
+                    _ => cn.as_str().map(str::to_owned).map_err(|_| ()),
+                }
+            })
+            .transpose()
+            .map_err(|_| rustls::Error::InvalidCertificate(rustls::CertificateError::BadEncoding))?
+            .unwrap_or_default();
+    Ok(cn)
 }

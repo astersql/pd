@@ -6,7 +6,6 @@ use astersql_pd_proto::resource_manager::{
     self as p, resource_manager_client::ResourceManagerClient,
     resource_manager_server::ResourceManager,
 };
-use astersql_pd_storage_domain::{Consistency, Read};
 use futures_util::{Future, stream};
 use prost::Message;
 use std::{
@@ -41,11 +40,11 @@ struct Proxy {
     services: Arc<dyn PdServices>,
     cancel: CancellationToken,
     pool: Result<Arc<DelegateConnections>, String>,
+    primary: Option<Arc<astersql_pd_mcs_server::PrimaryObserver>>,
 }
 fn client_tls(
     value: Option<astersql_pd_grpcutil::TLSConfig>,
-) -> Result<Option<tonic::transport::ClientTlsConfig>, String> {
-    use tonic::transport::{Certificate, ClientTlsConfig, Identity};
+) -> Result<Option<Arc<rustls::ClientConfig>>, String> {
     let Some(value) = value else {
         return Ok(None);
     };
@@ -55,30 +54,7 @@ fn client_tls(
     if !bytes && value.cert_path.is_empty() && value.key_path.is_empty() {
         return Ok(None);
     }
-    let (ca, cert, key) = if bytes {
-        (
-            value.sslca_bytes.unwrap_or_default(),
-            value.ssl_cert_bytes.unwrap_or_default(),
-            value.sslkey_bytes.unwrap_or_default(),
-        )
-    } else {
-        (
-            if value.ca_path.is_empty() {
-                vec![]
-            } else {
-                std::fs::read(&value.ca_path).map_err(|e| e.to_string())?
-            },
-            std::fs::read(&value.cert_path).map_err(|e| e.to_string())?,
-            std::fs::read(&value.key_path).map_err(|e| e.to_string())?,
-        )
-    };
-    let mut tls = ClientTlsConfig::new().identity(Identity::from_pem(cert, key));
-    tls = if ca.is_empty() {
-        tls.with_enabled_roots()
-    } else {
-        tls.ca_certificate(Certificate::from_pem(ca))
-    };
-    Ok(Some(tls))
+    crate::client_auth::configuration(&value).map(|configured| Some(Arc::new(configured)))
 }
 fn same(first: &str, second: &str) -> bool {
     crate::grpc_forward::base(first).is_some_and(|a| Some(a) == crate::grpc_forward::base(second))
@@ -122,17 +98,50 @@ fn rebuild(status: &Status) -> bool {
 }
 impl Proxy {
     fn new(services: Arc<dyn PdServices>, cancel: CancellationToken) -> Self {
-        let pool = client_tls(services.delegate_security()).map(|tls| {
-            Arc::new(DelegateConnections::new(
-                tokio::runtime::Handle::current(),
-                &cancel,
-                tls,
-            ))
+        let security = services.delegate_security();
+        let pool = client_tls(security.clone()).map(|configured| {
+            let runtime = tokio::runtime::Handle::current();
+            match configured {
+                None => Arc::new(DelegateConnections::new(runtime, &cancel, None)),
+                Some(_) => Arc::new(DelegateConnections::new_with_rustls_factory(
+                    runtime,
+                    &cancel,
+                    Arc::new(move || {
+                        client_tls(security.clone())?
+                            .ok_or_else(|| "delegate TLS policy missing".into())
+                    }),
+                )),
+            }
         });
+        let primary = if services.mcs_enabled() {
+            services.discovery_store().map(|store| {
+                let key = astersql_pd_keypath::ClusterPaths::new(services.identity().cluster_id)
+                    .election_path(Some(&astersql_pd_keypath::MsParam {
+                        service_name: "resource_manager".into(),
+                        group_id: 0,
+                    }));
+                Arc::new(astersql_pd_mcs_server::PrimaryObserver::start(
+                    &tokio::runtime::Handle::current(),
+                    &cancel,
+                    store,
+                    key.into_bytes(),
+                    |bytes| {
+                        p::Participant::decode(bytes)
+                            .ok()?
+                            .listen_urls
+                            .into_iter()
+                            .next()
+                    },
+                ))
+            })
+        } else {
+            None
+        };
         Self {
             services,
             cancel,
             pool,
+            primary,
         }
     }
     fn pool(&self) -> Result<&Arc<DelegateConnections>, Status> {
@@ -153,37 +162,17 @@ impl Proxy {
     async fn primary(&self) -> Result<String, Status> {
         let unavailable = || Status::unavailable("resource manager service is not available");
         for _ in 0..25 {
-            if self.services.mcs_enabled() {
-                if let Some(store) = self.services.discovery_store() {
-                    let key =
-                        astersql_pd_keypath::ClusterPaths::new(self.services.identity().cluster_id)
-                            .election_path(Some(&astersql_pd_keypath::MsParam {
-                                service_name: "resource_manager".into(),
-                                group_id: 0,
-                            }));
-                    if let Ok(snapshot) = store
-                        .read(Read::range(key.as_bytes(), b"", Consistency::Linearizable))
-                        .await
-                    {
-                        if let Some(row) = snapshot.entries.first() {
-                            if let Ok(participant) = p::Participant::decode(row.value.as_slice()) {
-                                if let Some(target) = participant
-                                    .listen_urls
-                                    .into_iter()
-                                    .next()
-                                    .filter(|url| !url.is_empty())
-                                {
-                                    if same(&target, &self.services.identity().client_url) {
-                                        return Err(Status::unavailable(
-                                            "Microservice mode should not support resource manager requests",
-                                        ));
-                                    }
-                                    return Ok(target);
-                                }
-                            }
-                        }
-                    }
+            if let Some(target) = self
+                .primary
+                .as_ref()
+                .and_then(|observer| observer.current())
+            {
+                if same(&target, &self.services.identity().client_url) {
+                    return Err(Status::unavailable(
+                        "Microservice mode should not support resource manager requests",
+                    ));
                 }
+                return Ok(target);
             }
             tokio::select! {_=self.cancel.clone().cancelled_owned()=>return Err(unavailable()),_=tokio::time::sleep(Duration::from_millis(100))=>{}}
         }

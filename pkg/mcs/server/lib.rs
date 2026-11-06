@@ -6,6 +6,11 @@ pub use base_listener::{BaseServer, StartCallback};
 #[cfg(test)]
 mod base_listener_test;
 mod delegate_connections;
-pub use delegate_connections::{DelegateChannel, DelegateConnections};
+pub use delegate_connections::{ClientTlsFactory, DelegateChannel, DelegateConnections};
 #[cfg(test)]
 mod delegate_connections_test;
+
+mod primary_observer;
+pub use primary_observer::PrimaryObserver;
+#[cfg(test)]
+mod primary_observer_test;

@@ -1264,3 +1264,5 @@ mod grpc_metastorage;
 mod grpc_resource_manager;
 
 mod grpc_resource_proxy;
+
+pub mod client_auth;

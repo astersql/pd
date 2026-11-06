@@ -366,3 +366,35 @@ TLS与错误分类两个专项各1项通过；完整runtime在4线程下107通�
 workspace check、fmt check、metadata与CLI build均exit0，槽位1；1142项保护无差异。
 [不可变原始回执](task-16-rm-proxy.json.gz)保留成功/失败、错误夹具、原始RPC与摘要。
 完整workspace test仍由验收24集中执行，旧server包8项失败未改写为本阶段通过。
+
+## 出站TLS与primary观察阶段（进行中）
+
+2026-11-07，基准`f0b658330`。出站HTTP与gRPC共用
+`pkg/server/client_auth.rs`，在正常证书链、主机名及签名校验之后应用文件配置的
+服务端CN列表（包括单个CN）；字节凭据优先于路径且遵循Go字节配置无CN回调的
+分支。PD入站单CN例外保持原有行为。客户端关闭会话恢复，确保重连重新读取文件
+身份，不会通过旧TLS会话绕过已轮换客户端证书的校验。
+
+真实网络验证先后发现服务端单CN限制缺失、轮换客户端身份后仍恢复旧会话两个
+行为失败；修正后通过。现成Go指标代理与Rust共享出站策略的七种场景
+（empty/http/denied/https/bad-ca/bad-host/bad-cn）通过；既有四种PD入站鉴权
+对照也通过。这些结果不替代完整RM TLS四部署矩阵。
+
+`pkg/mcs/server/primary_observer.rs`新增编码无关的宿主观察器，由调用方提供
+canonical Participant解码，复用LeaderWatch。第一次线性一致快照后从revision+1
+监听，只响应精确key。成功delete或空快照清除缓存，暂时元存储错误保留已观察
+地址；compaction后重新取快照并对齐删除。取消与drop终止宿主任务。PD RM代理
+改为读取该缓存，保留既有25次缺失等待，不再每次RPC查询元存储。依据Go
+`server/server.go::initServicePrimaryWatcher/GetServicePrimaryAddr`，缓存本身不
+代表目标存活，不在转发前追加健康探测。
+
+三个专项通过：连续更新/相邻key过滤/删除、原生etcd暂停期间缓存可读与恢复后
+更新、单线程确定性制造watch cursor落后于compaction并验证缺失对齐及新primary。
+共享宿主包共9项通过，0失败/0忽略。上述观察专项是Rust契约验证，尚不冒充Go/Rust
+完整故障差分。PD follower写转发、独立服务TLS入口、RM watch策略应用与
+Router/Scheduling注册继续实施，100/101/138/148保持未销项。
+
+本阶段RM真实线级回归12通过、0失败、0忽略；CLI build与workspace check使用
+共享槽位1。原始输入、输出、失败及证书轮换回执保存在
+[本阶段不可变压缩回执](task-16-rm-tls-primary.json.gz)。不重复执行已经通过且本轮
+未改动的完整runtime集合；其最近107通过/38历史忽略仍按前阶段证据范围引用。

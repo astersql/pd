@@ -105,10 +105,12 @@ async fn mcs_063_proxy_tls_credentials_ignore_uri_scheme_and_enforce_ca_and_cn()
         ("rogue.pem", "allowed", false),
         ("ca.pem", "rogue", false),
     ] {
-        let pool = DelegateConnections::new(
+        let pool = DelegateConnections::new_with_rustls(
             tokio::runtime::Handle::current(),
             &parent,
-            client_tls(Some(certificates.config(ca, identity))).unwrap(),
+            client_tls(Some(certificates.config(ca, identity)))
+                .unwrap()
+                .unwrap(),
         );
         let response = tokio::time::timeout(Duration::from_secs(4), async {
             let mut client = MetaStorageClient::new(pool.get(&target).await?);
@@ -132,15 +134,49 @@ async fn mcs_063_proxy_tls_credentials_ignore_uri_scheme_and_enforce_ca_and_cn()
         }
         pool.shutdown();
     }
+    let mut accepted_policy = certificates.config("ca.pem", "allowed");
+    accepted_policy.cert_allowed_c_ns = Some(vec!["server".into()]);
+    let pool = DelegateConnections::new_with_rustls(
+        tokio::runtime::Handle::current(),
+        &parent,
+        client_tls(Some(accepted_policy)).unwrap().unwrap(),
+    );
+    let mut client = MetaStorageClient::new(pool.get(&target).await.unwrap());
+    client.get(p::GetRequest::default()).await.unwrap();
+    pool.shutdown();
+    let mut peer_policy = certificates.config("ca.pem", "allowed");
+    peer_policy.cert_allowed_c_ns = Some(vec!["not-server".into()]);
+    let pool = DelegateConnections::new_with_rustls(
+        tokio::runtime::Handle::current(),
+        &parent,
+        client_tls(Some(peer_policy)).unwrap().unwrap(),
+    );
+    let rejected = async {
+        let mut client = MetaStorageClient::new(pool.get(&target).await?);
+        client
+            .get(p::GetRequest {
+                key: b"hello".to_vec(),
+                ..Default::default()
+            })
+            .await
+            .map(|r| r.into_inner())
+    }
+    .await;
+    assert!(
+        rejected.is_err(),
+        "outbound peer CN not present in the configured allowlist must be rejected"
+    );
+    pool.shutdown();
     let mut bytes = astersql_pd_grpcutil::TLSConfig::default();
     bytes.sslca_bytes = Some(std::fs::read(certificates.path("ca.pem")).unwrap());
     bytes.ssl_cert_bytes = Some(std::fs::read(certificates.path("allowed.pem")).unwrap());
     bytes.sslkey_bytes = Some(std::fs::read(certificates.path("allowed.key")).unwrap());
     bytes.cert_path = "missing path must be ignored when byte credentials are present".into();
-    let pool = DelegateConnections::new(
+    bytes.cert_allowed_c_ns = Some(vec!["not-server".into()]);
+    let pool = DelegateConnections::new_with_rustls(
         tokio::runtime::Handle::current(),
         &parent,
-        client_tls(Some(bytes)).unwrap(),
+        client_tls(Some(bytes)).unwrap().unwrap(),
     );
     let mut client = MetaStorageClient::new(pool.get(&target).await.unwrap());
     assert_eq!(
@@ -156,6 +192,90 @@ async fn mcs_063_proxy_tls_credentials_ignore_uri_scheme_and_enforce_ca_and_cn()
             .value,
         b"authenticated"
     );
+    pool.shutdown();
+    // A cached connection keeps its established trust. Rebuilds refresh the CA
+    // through the host factory, and full handshakes reload file client identities.
+    let rotated = Certificates::new();
+    std::fs::copy(
+        certificates.path("ca.pem"),
+        certificates.path("trust-live.pem"),
+    )
+    .unwrap();
+    let mut refresh = certificates.config("trust-live.pem", "allowed");
+    refresh.cert_allowed_c_ns = Some(vec!["server".into()]);
+    let factory = refresh.clone();
+    let pool = DelegateConnections::new_with_rustls_factory(
+        tokio::runtime::Handle::current(),
+        &parent,
+        Arc::new(move || client_tls(Some(factory.clone()))?.ok_or_else(|| "missing TLS".into())),
+    );
+    let mut client = MetaStorageClient::new(pool.get(&target).await.unwrap());
+    client.get(p::GetRequest::default()).await.unwrap();
+    std::fs::copy(rotated.path("server.pem"), certificates.path("server.pem")).unwrap();
+    std::fs::copy(rotated.path("server.key"), certificates.path("server.key")).unwrap();
+    client.get(p::GetRequest::default()).await.unwrap();
+    pool.invalidate(&target);
+    assert!(
+        pool.get(&target).await.is_err(),
+        "old trust cannot authenticate rotated server CA"
+    );
+    std::fs::copy(rotated.path("ca.pem"), certificates.path("trust-live.pem")).unwrap();
+    pool.invalidate(&target);
+    let mut client = MetaStorageClient::new(pool.get(&target).await.unwrap());
+    client.get(p::GetRequest::default()).await.unwrap();
+    pool.shutdown();
+    std::fs::copy(
+        certificates.path("allowed.pem"),
+        certificates.path("client-live.pem"),
+    )
+    .unwrap();
+    std::fs::copy(
+        certificates.path("allowed.key"),
+        certificates.path("client-live.key"),
+    )
+    .unwrap();
+    let mut live = certificates.config("trust-live.pem", "client-live");
+    live.cert_allowed_c_ns = Some(vec!["server".into()]);
+    let pool = DelegateConnections::new_with_rustls(
+        tokio::runtime::Handle::current(),
+        &parent,
+        client_tls(Some(live)).unwrap().unwrap(),
+    );
+    let mut client = MetaStorageClient::new(pool.get(&target).await.unwrap());
+    client.get(p::GetRequest::default()).await.unwrap();
+    std::fs::copy(
+        certificates.path("denied.pem"),
+        certificates.path("client-live.pem"),
+    )
+    .unwrap();
+    std::fs::copy(
+        certificates.path("denied.key"),
+        certificates.path("client-live.key"),
+    )
+    .unwrap();
+    pool.invalidate(&target);
+    let denied = async {
+        let mut client = MetaStorageClient::new(pool.get(&target).await?);
+        client.get(p::GetRequest::default()).await
+    }
+    .await;
+    assert!(
+        denied.is_err(),
+        "same client policy must reload the denied leaf at a new handshake"
+    );
+    std::fs::copy(
+        certificates.path("allowed.pem"),
+        certificates.path("client-live.pem"),
+    )
+    .unwrap();
+    std::fs::copy(
+        certificates.path("allowed.key"),
+        certificates.path("client-live.key"),
+    )
+    .unwrap();
+    pool.invalidate(&target);
+    let mut client = MetaStorageClient::new(pool.get(&target).await.unwrap());
+    client.get(p::GetRequest::default()).await.unwrap();
     pool.shutdown();
     server.shutdown().await.unwrap();
     assert!(!parent.is_cancelled());

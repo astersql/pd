@@ -7,6 +7,8 @@ license.workspace = true
 [lib]
 path = "lib.rs"
 [dependencies]
+astersql-pd-storage-domain.workspace = true
+astersql-pd-election.workspace = true
 axum.workspace = true
 tokio.workspace = true
 tokio-util.workspace = true
@@ -15,8 +17,10 @@ tonic.workspace = true
 hyper.workspace = true
 hyper-util.workspace = true
 tower.workspace = true
+rustls.workspace = true
+tokio-rustls.workspace = true
 [dev-dependencies]
+astersql-pd-storage-kv.workspace = true
 astersql-pd-mcs-metastorage-server.workspace = true
-astersql-pd-storage-domain.workspace = true
 astersql-pd-proto.workspace = true
 async-trait.workspace = true

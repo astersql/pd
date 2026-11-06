@@ -526,15 +526,19 @@ dependencies = [
 name = "astersql-pd-mcs-server"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-election",
  "astersql-pd-mcs-constant",
  "astersql-pd-mcs-metastorage-server",
  "astersql-pd-proto",
  "astersql-pd-storage-domain",
+ "astersql-pd-storage-kv",
  "async-trait",
  "axum",
  "hyper",
  "hyper-util",
+ "rustls",
  "tokio",
+ "tokio-rustls",
  "tokio-util",
  "tonic",
  "tower",

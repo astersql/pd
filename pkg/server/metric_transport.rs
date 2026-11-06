@@ -6,7 +6,7 @@ use axum::{
 };
 use futures_util::{Future, Stream};
 use http_body_util::BodyStream;
-use rustls::pki_types::{CertificateDer, ServerName, pem::PemObject};
+use rustls::pki_types::ServerName;
 use std::{
     net::{IpAddr, SocketAddr},
     sync::Arc,
@@ -151,58 +151,7 @@ impl<T: tokio::io::AsyncRead + tokio::io::AsyncWrite + Unpin + Send> Io for T {}
 pub(crate) fn tls(
     config: &astersql_pd_server_config::Config,
 ) -> Result<rustls::ClientConfig, String> {
-    let mut roots = rustls::RootCertStore::empty();
-    let security = &config.security.tls;
-    if security.ca_path.is_empty() {
-        for cert in rustls_native_certs::load_native_certs().certs {
-            roots.add(cert).map_err(|_| "invalid native CA")?;
-        }
-    } else {
-        let bytes = std::fs::read(&security.ca_path).map_err(|_| "cannot read CA")?;
-        for cert in CertificateDer::pem_slice_iter(&bytes) {
-            roots
-                .add(cert.map_err(|_| "invalid CA")?)
-                .map_err(|_| "invalid CA")?;
-        }
-    }
-    if !security.ca_path.is_empty() && roots.is_empty() {
-        return Err("invalid CA".into());
-    }
-    let builder = rustls::ClientConfig::builder_with_provider(Arc::new(
-        rustls::crypto::ring::default_provider(),
-    ))
-    .with_safe_default_protocol_versions()
-    .map_err(|_| "TLS versions")?
-    .with_root_certificates(roots);
-    if security.cert_path.is_empty() && security.key_path.is_empty() {
-        Ok(builder.with_no_client_auth())
-    } else {
-        crate::service_auth::certified_key(&security.cert_path, &security.key_path)
-            .ok_or("invalid client credentials")?;
-        Ok(builder.with_client_cert_resolver(Arc::new(ReloadClient {
-            cert: security.cert_path.clone(),
-            key: security.key_path.clone(),
-        })))
-    }
-}
-#[derive(Debug)]
-struct ReloadClient {
-    cert: String,
-    key: String,
-}
-impl rustls::client::ResolvesClientCert for ReloadClient {
-    fn resolve(
-        &self,
-        _: &[&[u8]],
-        schemes: &[rustls::SignatureScheme],
-    ) -> Option<Arc<rustls::sign::CertifiedKey>> {
-        let key = crate::service_auth::certified_key(&self.cert, &self.key)?;
-        key.key.choose_scheme(schemes)?;
-        Some(key)
-    }
-    fn has_certs(&self) -> bool {
-        true
-    }
+    crate::client_auth::configuration(&config.security.tls)
 }
 pub(crate) async fn send(
     target: Target,
