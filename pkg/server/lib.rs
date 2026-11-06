@@ -1,5 +1,6 @@
 // Copyright 2026 AsterSQL.
 //! HTTP and gRPC adapters for the minimal classic PD role.
+mod diagnostics_log;
 mod grpc;
 mod grpc_alloc_id;
 pub mod grpc_ask_split;
@@ -637,6 +638,14 @@ fn router_with_options(
             services: services.clone(),
             cancel: cancel.clone(),
         }),
+    )
+    .add_service(
+        astersql_pd_proto::diagnosticspb::diagnostics_server::DiagnosticsServer::new(
+            diagnostics_log::DiagnosticsLog {
+                services: services.clone(),
+                cancel: cancel.clone(),
+            },
+        ),
     )
     .into_axum_router();
     let router = http::router(services.clone(), cancel.clone())
