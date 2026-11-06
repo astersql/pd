@@ -11,3 +11,12 @@ axum.workspace = true
 tokio.workspace = true
 tokio-util.workspace = true
 astersql-pd-mcs-constant.workspace = true
+tonic.workspace = true
+hyper.workspace = true
+hyper-util.workspace = true
+tower.workspace = true
+[dev-dependencies]
+astersql-pd-mcs-metastorage-server.workspace = true
+astersql-pd-storage-domain.workspace = true
+astersql-pd-proto.workspace = true
+async-trait.workspace = true

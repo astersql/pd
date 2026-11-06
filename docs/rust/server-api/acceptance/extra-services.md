@@ -116,3 +116,11 @@ classic未注册的7项只分配审计责任，不分配新领域实现。
 
 上述仍不是classic fallback=false代理、TLS、watch compaction或148整体验收，
 42个wire ID与唯一拥有任务保持原分配，不能批量标记100/101/138完成。
+
+## Classic RM代理增量（2026-11-07）
+
+fallback条件装配与五加一代理现已有运行实现，见
+[代理阶段证据](task-16.md#classic-rm代理与连接池阶段)。宿主明确选择metadata-only
+写角色；四种PD/RM语言组合已对半关闭和protobuf响应做实际比较。连接池集中于
+canonical MCS公共包。原任务继续保留，尚缺完整primary缓存、follower/TLS故障矩阵
+及其他服务装配；此增量不改42个wire ID及唯一方法拥有者。

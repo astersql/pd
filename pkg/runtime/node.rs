@@ -412,6 +412,7 @@ impl PdServices for Application {
 }
 /// Starts services on the host's executor without installing process-global state.
 pub struct PdNodeBuilder {
+    resource_manager_fallback: bool,
     keyspace_groups: bool,
     runtime: Handle,
     cluster: astersql_pd_core::BasicCluster,
@@ -426,6 +427,7 @@ pub struct PdNodeBuilder {
 impl PdNodeBuilder {
     pub fn new(runtime: Handle, cancellation: CancellationToken) -> Self {
         Self {
+            resource_manager_fallback: true,
             keyspace_groups: false,
             runtime,
             cluster: astersql_pd_core::BasicCluster::new(),
@@ -462,6 +464,11 @@ impl PdNodeBuilder {
     }
     pub fn with_cluster(mut self, cluster: astersql_pd_core::BasicCluster) -> Self {
         self.cluster = cluster;
+        self
+    }
+    /// Select embedded RM serving or PD metadata ownership with RM proxying.
+    pub fn with_resource_manager_fallback(mut self, enabled: bool) -> Self {
+        self.resource_manager_fallback = enabled;
         self
     }
     /// Configures inbound TLS and host metric query/push transports.
@@ -511,6 +518,7 @@ impl PdNodeBuilder {
                 cancel,
                 self.cluster,
                 self.keyspace_groups,
+                self.resource_manager_fallback,
                 self.diagnostics,
                 self.member_admin,
                 self.listener_config,
@@ -541,6 +549,7 @@ async fn initialize_node(
     cancel: CancellationToken,
     cluster: astersql_pd_core::BasicCluster,
     keyspace_groups: bool,
+    resource_manager_fallback: bool,
     diagnostics: Option<Arc<crate::etcd_diagnostics::EtcdMemberDiagnostics>>,
     member_admin: Option<Arc<crate::member_admin::EtcdMemberAdmin>>,
     listener_config: astersql_pd_server_config::Config,
@@ -633,6 +642,10 @@ async fn initialize_node(
             config.clone(),
             store.clone(),
         ));
+        services.resource_manager_fallback.store(
+            resource_manager_fallback,
+            std::sync::atomic::Ordering::Release,
+        );
         let _ = services.encryption.set(Arc::downgrade(&encryption));
         services
             .keyspace_groups
@@ -668,6 +681,7 @@ async fn initialize_node(
                         Some(encryption.clone()),
                         services.recovery_steps.clone(),
                         keyspace_groups,
+                        resource_manager_fallback,
                     )
                     .await
                     {
@@ -864,6 +878,7 @@ pub(crate) async fn prepare_term(
     encryption: Option<Arc<crate::encryption::EncryptionResources>>,
     recovery_steps: Arc<astersql_pd_unsaferecovery::RecoverySteps>,
     keyspace_groups: bool,
+    resource_manager_fallback: bool,
 ) -> Result<Arc<Application>, NodeError> {
     if let Some(metrics) = &metrics {
         leader.set_metrics(&metrics.classic);
@@ -1011,7 +1026,7 @@ pub(crate) async fn prepare_term(
         }
         let resource_groups=match async {
             let controller=match resource_controller {Some(controller)=>controller,None=>cluster.configuration().await?.controller};
-            crate::control_resource::ResourceResources::new(store.clone(),leader.clone(),&cancel,astersql_pd_rm_server::WriteRole::LegacyAll,controller).await
+            crate::control_resource::ResourceResources::new(store.clone(),leader.clone(),&cancel,if resource_manager_fallback {astersql_pd_rm_server::WriteRole::LegacyAll}else{astersql_pd_rm_server::WriteRole::PdMetaOnly},controller).await
         }.await {
             Ok(resources)=>resources,
             Err(error)=>{

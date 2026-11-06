@@ -91,6 +91,12 @@ async fn run_with_logging(
             .with_keyspace_groups(
                 std::env::var("PD_SERVICE_MODE").is_ok_and(|s| s.eq_ignore_ascii_case("api")),
             )
+            .with_resource_manager_fallback(
+                config
+                    .security
+                    .microservice
+                    .is_resource_manager_fallback_enabled(),
+            )
             .with_listener_config(config.security)
             .with_join(config.join);
     if let Some(control) = log_level {

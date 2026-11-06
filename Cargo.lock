@@ -250,6 +250,7 @@ dependencies = [
  "astersql-pd-keypath",
  "astersql-pd-keyspace",
  "astersql-pd-keyutil",
+ "astersql-pd-mcs-server",
  "astersql-pd-mcs-tso-server",
  "astersql-pd-member",
  "astersql-pd-progress",
@@ -526,9 +527,17 @@ name = "astersql-pd-mcs-server"
 version = "0.1.0"
 dependencies = [
  "astersql-pd-mcs-constant",
+ "astersql-pd-mcs-metastorage-server",
+ "astersql-pd-proto",
+ "astersql-pd-storage-domain",
+ "async-trait",
  "axum",
+ "hyper",
+ "hyper-util",
  "tokio",
  "tokio-util",
+ "tonic",
+ "tower",
 ]
 
 [[package]]
@@ -771,6 +780,7 @@ dependencies = [
  "astersql-pd-core-constant",
  "astersql-pd-encryption",
  "astersql-pd-gc",
+ "astersql-pd-grpcutil",
  "astersql-pd-id",
  "astersql-pd-keypath",
  "astersql-pd-keyspace",
@@ -1201,6 +1211,7 @@ dependencies = [
  "astersql-pd-encryption",
  "astersql-pd-errs",
  "astersql-pd-gc",
+ "astersql-pd-grpcutil",
  "astersql-pd-id",
  "astersql-pd-keypath",
  "astersql-pd-keyspace",
@@ -1208,6 +1219,7 @@ dependencies = [
  "astersql-pd-logutil",
  "astersql-pd-mcs-discovery",
  "astersql-pd-mcs-metastorage-server",
+ "astersql-pd-mcs-server",
  "astersql-pd-member",
  "astersql-pd-metricutil",
  "astersql-pd-proto",
@@ -1249,6 +1261,7 @@ dependencies = [
  "chrono",
  "flate2",
  "futures-util",
+ "h2",
  "http-body-util",
  "hyper",
  "hyper-util",

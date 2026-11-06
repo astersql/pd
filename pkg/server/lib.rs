@@ -84,6 +84,14 @@ pub struct Identity {
 /// Domain operations supplied by the host; transport types stay in this crate.
 #[async_trait]
 pub trait PdServices: Send + Sync {
+    /// Startup registration policy; the embedding host adjusts configuration first.
+    fn resource_manager_fallback_enabled(&self) -> bool {
+        true
+    }
+    fn delegate_security(&self) -> Option<astersql_pd_grpcutil::TLSConfig> {
+        None
+    }
+
     /// The current host term's canonical resource groups, initialized before serving.
     async fn resource_groups(
         &self,
@@ -665,10 +673,7 @@ fn router_with_options(
     )
     .add_service(
         astersql_pd_proto::resource_manager::resource_manager_server::ResourceManagerServer::new(
-            astersql_pd_rm_server::Service::new(
-                Arc::new(grpc_resource_manager::ResourceManagerHost(services.clone())),
-                cancel.clone(),
-            ),
+            grpc_resource_proxy::RegisteredResourceManager::new(services.clone(), cancel.clone()),
         ),
     )
     .into_axum_router();
@@ -1257,3 +1262,5 @@ mod accept_http_13;
 mod grpc_metastorage;
 
 mod grpc_resource_manager;
+
+mod grpc_resource_proxy;

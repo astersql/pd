@@ -60,11 +60,11 @@ fn allowed(path: &str) -> bool {
             | "DeleteGlobalGCBarrier"
     )
 }
-fn base(url: &str) -> Option<&str> {
+pub(crate) fn base(url: &str) -> Option<&str> {
     url.strip_prefix("http://")
         .or_else(|| url.strip_prefix("https://"))
 }
-fn timeout(value: &str) -> Option<Duration> {
+pub(crate) fn timeout(value: &str) -> Option<Duration> {
     if !(2..=9).contains(&value.len()) {
         return None;
     }

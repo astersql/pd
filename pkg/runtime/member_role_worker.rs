@@ -17,6 +17,7 @@ type RegionReset = (
     tokio::sync::oneshot::Sender<Result<(), String>>,
 );
 pub(crate) struct RoleServices {
+    pub(crate) resource_manager_fallback: std::sync::atomic::AtomicBool,
     pub(crate) keyspace_groups: std::sync::atomic::AtomicBool,
     pub(crate) recovery_steps: Arc<astersql_pd_unsaferecovery::RecoverySteps>,
     pub(crate) encryption: std::sync::OnceLock<Weak<crate::encryption::EncryptionResources>>,
@@ -42,6 +43,7 @@ impl RoleServices {
             Arc::new(astersql_pd_storage::MemoryStore::default());
         let (region_resets, region_reset_rx) = tokio::sync::mpsc::channel(16);
         Self {
+            resource_manager_fallback: std::sync::atomic::AtomicBool::new(true),
             keyspace_groups: std::sync::atomic::AtomicBool::new(false),
             recovery_steps: Arc::new(astersql_pd_unsaferecovery::RecoverySteps::new(
                 std::time::SystemTime::now()
@@ -163,6 +165,15 @@ impl RoleServices {
 }
 #[async_trait::async_trait]
 impl PdServices for RoleServices {
+    fn resource_manager_fallback_enabled(&self) -> bool {
+        self.resource_manager_fallback
+            .load(std::sync::atomic::Ordering::Acquire)
+    }
+    fn delegate_security(&self) -> Option<astersql_pd_grpcutil::TLSConfig> {
+        self.telemetry_config()
+            .map(|config| config.security.tls.clone())
+    }
+
     async fn resource_groups(
         &self,
     ) -> Result<Arc<tokio::sync::Mutex<astersql_pd_rm_server::Manager>>, String> {
@@ -1287,6 +1298,7 @@ pub(crate) async fn run(
                         services.encryption.get().and_then(Weak::upgrade),
                         services.recovery_steps.clone(),
                         services.keyspace_groups.load(std::sync::atomic::Ordering::Acquire),
+                        services.resource_manager_fallback.load(std::sync::atomic::Ordering::Acquire),
                     )
                     .await;
                     match term {

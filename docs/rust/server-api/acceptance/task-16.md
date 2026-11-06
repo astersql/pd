@@ -313,3 +313,56 @@ runtime诊断运行重叠，原始记录如实保留，不用该次通过证明�
 
 不可变[本阶段压缩回执](task-16-rm-quota-watch.json.gz)保留所有阶段命令、真实red、
 原始RPC请求/响应、失败日志、工具与源码摘要以及上述未覆盖边界。
+
+## Classic RM代理与连接池阶段
+
+2026-11-07，基准`ec8873856`。本阶段继续验收16，不销项100/101/138/148。
+CLI把调整后的fallback开关显式传给宿主；库builder默认仍启用嵌入RM。
+同一listener只注册一个ResourceManager适配器：true复用canonical真实Service，
+false使用PD metadata-only任期manager处理写入，读取与token流转发到RM primary。
+Nil group/空名称先返回InvalidArgument；forwarded-host校验当前PD leader，远程写
+清空该metadata后转发；本地写仍由原manager与LeadershipStore完成。
+
+`pkg/mcs/server/delegate_connections.rs`集中按目标复用连接和宿主TLS策略，使用
+给定executor、取消token及可取消IO。返回的DelegateChannel只弱引用宿主持有的
+连接；克隆client不能在pool关闭后保留连接资源。失效、重复关闭、进行中的Watch、
+两个宿主/两个目标隔离以及未完成TLS握手取消均有真实连接测试。
+Go按配置凭据选择传输而不依URI scheme自动启用TLS；真实Go/Rust测试曾在
+https标记的明文RM地址上失败，修正后http/https两种地址均通过。
+
+四个真实行为red分别是Rust无primary时错误返回本地default组、同目标建立两条
+TCP连接、URI scheme误选TLS，以及上游退出时将连接IO错误映射为Unknown。
+最后一项通过有本地错误来源的h2/IO类型识别改为Unavailable；业务Unknown的
+message/details/metadata保持不变。h2使用既有锁文件中的0.4.20，只增加直接类型
+依赖与workspace声明，未引入另一HTTP/2实现或字符串匹配错误分类。
+
+当前已取得的线级证据包括：
+
+- API模式、fallback=false，Go/Rust PD分别连接同一现成Go RM；无primary错误、
+  五个管理方法、写入参数校验、伪造forwarded-host拒绝、元数据写入无token状态、
+  运行设置/删除监听，以及http/https标记地址。对双方实际存储与响应取证。
+- PD/RM的Go/Go、Rust/Go、Go/Rust、Rust/Rust四组合；逐字节比较三批protobuf响应，
+  包括未知RU枚举、缺失组、空批次、客户端半关闭后响应顺序及EOF，不重放请求。
+- 第一条RPC独占前端连接关闭后，另一条流仍实际申请到9 token；双方行为一致。
+  最初“另一条流必须结束”的源码推断被Go运行证据否定，两个失败夹具原始日志保留，
+  未据此修改Rust生产行为，也不将其冒充Rust行为red。
+- 上游RM退出并有下一帧输入时，双方均以Unavailable结束旧流；随后发现新primary，
+  新流实际取得7 token。原始Go与Tonic连接错误文本分别保留；只校正已证明的错误码，
+  不把框架生成文本称为相同，不改写业务错误。
+- TLS专项使用canonical service_auth listener验证信任CA、入站客户端CN拒绝、
+  不受信CA/身份拒绝、按配置加密http标记地址，以及字节凭据优先于路径。
+  这不替代完整Go/Rust TLS双部署矩阵，也不证明客户端对服务端CN策略已实现。
+
+`rmp-proxy-red`首次使用非API夹具，Go本身不启动primary watcher；修正为双方
+`PD_SERVICE_MODE=api`后才取得`rmp-api-proxy-red`真实Rust失败。编译/类型错误、
+取消夹具的错误推断均分开保存，不算领域TDD失败。
+
+仍需：primary缓存/断连观察语义（当前代理按请求读取发现数据）、PD follower写转发
+故障矩阵、出站服务端CN约束及完整TLS/证书重载、watch compaction、Router/Scheduling
+注册和148整体验收。接下来继续这些实现；不会用本阶段通过批量关闭拥有任务。
+
+本阶段最终校验：12项真实Go/Rust RM测试通过（0失败/0忽略）；共享宿主包6项通过；
+TLS与错误分类两个专项各1项通过；完整runtime在4线程下107通过/38历史忽略。
+workspace check、fmt check、metadata与CLI build均exit0，槽位1；1142项保护无差异。
+[不可变原始回执](task-16-rm-proxy.json.gz)保留成功/失败、错误夹具、原始RPC与摘要。
+完整workspace test仍由验收24集中执行，旧server包8项失败未改写为本阶段通过。

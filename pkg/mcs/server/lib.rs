@@ -5,3 +5,7 @@ mod cancellable_io;
 pub use base_listener::{BaseServer, StartCallback};
 #[cfg(test)]
 mod base_listener_test;
+mod delegate_connections;
+pub use delegate_connections::{DelegateChannel, DelegateConnections};
+#[cfg(test)]
+mod delegate_connections_test;

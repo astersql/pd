@@ -27,8 +27,12 @@ struct Sidecar {
 }
 impl Sidecar {
     fn start(binary: &Path, backend: &str) -> Self {
+        Self::start_with_scheme(binary, backend, "http")
+    }
+    fn start_with_scheme(binary: &Path, backend: &str, scheme: &str) -> Self {
         let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
         let url = format!("http://{}", listener.local_addr().unwrap());
+        let advertised = url.replacen("http://", &format!("{scheme}://"), 1);
         let path = std::env::temp_dir().join(format!(
             "pd-sa016-rm-{}-{}.log",
             std::process::id(),
@@ -43,7 +47,7 @@ impl Sidecar {
                 "resource-manager",
                 &format!("--backend-endpoints={backend}"),
                 &format!("--listen-addr={url}"),
-                &format!("--advertise-listen-addr={url}"),
+                &format!("--advertise-listen-addr={advertised}"),
                 "--name=accept-rm",
             ])
             .stdout(Stdio::from(output.try_clone().unwrap()))
@@ -368,6 +372,584 @@ async fn sa_016_rm_standalone_metadata_watch() {
         records.push(json!({"rust":is_rust,"stage":"shutdown retained stream","response":format!("{ended:?}")}));
         save(&records);
         drop(send);
+        pd.stop().unwrap();
+    }
+}
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn sa_016_rm_classic_proxy_routes_reads_and_preserves_metadata_ownership() {
+    let go = crate::readonly_oracle::pinned_go_binary().unwrap();
+    let rust = PathBuf::from(std::env::var_os("PD_COMPAT_RUST_BIN").unwrap());
+    let config =
+        File(std::env::temp_dir().join(format!("pd-sa016-rm-proxy-{}.toml", std::process::id())));
+    std::fs::write(
+        &config.0,
+        "[micro-service]\nenable-resource-manager-fallback = false\n",
+    )
+    .unwrap();
+    let argument = format!("--config={}", config.0.display());
+    let mut records = Vec::new();
+    for (binary, is_rust, scheme) in [
+        (&go, false, "http"),
+        (&rust, true, "http"),
+        (&go, false, "https"),
+        (&rust, true, "https"),
+    ] {
+        records.push(json!({"rust":is_rust,"advertised_scheme":scheme,"stage":"scenario"}));
+        save(&records);
+        let environment = [("PD_SERVICE_MODE".into(), "api".into())];
+        let mut pd = if is_rust {
+            Server::start_rust_with_environment(binary, &[&argument], &environment)
+        } else {
+            Server::start_with_environment(binary, &[&argument], &environment)
+        }
+        .unwrap();
+        pd.ready().unwrap();
+        let mut client = ResourceManagerClient::connect(pd.url.clone())
+            .await
+            .unwrap();
+        let error = client
+            .list_resource_groups(p::ListResourceGroupsRequest::default())
+            .await
+            .unwrap_err();
+        records
+            .push(json!({"rust":is_rust,"stage":"proxy no primary","error":format!("{error:?}")}));
+        save(&records);
+        assert_eq!(error.code(), tonic::Code::Unavailable);
+        assert_eq!(error.message(), "resource manager service is not available");
+        for error in [
+            client
+                .add_resource_group(p::PutResourceGroupRequest::default())
+                .await
+                .unwrap_err(),
+            client
+                .modify_resource_group(p::PutResourceGroupRequest::default())
+                .await
+                .unwrap_err(),
+        ] {
+            assert_eq!(error.code(), tonic::Code::InvalidArgument);
+            assert_eq!(error.message(), "resource group is required");
+        }
+        let error = client
+            .delete_resource_group(p::DeleteResourceGroupRequest::default())
+            .await
+            .unwrap_err();
+        assert_eq!(error.code(), tonic::Code::InvalidArgument);
+        assert_eq!(error.message(), "resource group name is required");
+        client
+            .add_resource_group(p::PutResourceGroupRequest {
+                group: Some(group(9, 75.0)),
+            })
+            .await
+            .unwrap();
+        let store = EtcdMetaStore::connect(&[pd.metadata_url().into()], Duration::from_secs(3))
+            .await
+            .unwrap();
+        let setting = store
+            .read(Read::range(
+                astersql_pd_keypath::keyspace_resource_group_setting_path(7, "watched").as_bytes(),
+                b"",
+                Consistency::Linearizable,
+            ))
+            .await
+            .unwrap();
+        let state = store
+            .read(Read::range(
+                astersql_pd_keypath::keyspace_resource_group_state_path(7, "watched").as_bytes(),
+                b"",
+                Consistency::Linearizable,
+            ))
+            .await
+            .unwrap();
+        records.push(json!({"rust":is_rust,"stage":"metadata-only PD write","settings":format!("{setting:?}"),"state":format!("{state:?}")}));
+        save(&records);
+        assert_eq!(setting.entries.len(), 1);
+        assert!(
+            state.entries.is_empty(),
+            "metadata-only PD must not create token state"
+        );
+        let mut sidecar = Sidecar::start_with_scheme(&go, pd.metadata_url(), scheme);
+        let request = p::GetResourceGroupRequest {
+            resource_group_name: "watched".into(),
+            keyspace_id: scoped(),
+            ..Default::default()
+        };
+        let deadline = tokio::time::Instant::now() + Duration::from_secs(15);
+        loop {
+            match client.get_resource_group(request.clone()).await {
+                Ok(response) => {
+                    assert_eq!(response.into_inner().group.unwrap().priority, 9);
+                    break;
+                }
+                Err(error) => {
+                    assert!(
+                        tokio::time::Instant::now() < deadline,
+                        "proxy not ready: {error}: {}",
+                        sidecar.logs()
+                    );
+                    tokio::time::sleep(Duration::from_millis(25)).await;
+                }
+            }
+        }
+        let mut forged = tonic::Request::new(p::PutResourceGroupRequest {
+            group: Some(group(12, 25.0)),
+        });
+        forged.metadata_mut().insert(
+            "pd-forwarded-host",
+            "http://invalid.example:2379".parse().unwrap(),
+        );
+        let error = client.modify_resource_group(forged).await.unwrap_err();
+        assert_eq!(error.code(), tonic::Code::InvalidArgument);
+        records.push(json!({"rust":is_rust,"stage":"forged PD target rejected","error":format!("{error:?}")}));
+        save(&records);
+        client
+            .modify_resource_group(p::PutResourceGroupRequest {
+                group: Some(group(12, 25.0)),
+            })
+            .await
+            .unwrap();
+        let deadline = tokio::time::Instant::now() + Duration::from_secs(5);
+        loop {
+            let group = client
+                .get_resource_group(request.clone())
+                .await
+                .unwrap()
+                .into_inner()
+                .group
+                .unwrap();
+            if group.priority == 12 {
+                assert_eq!(group.r_u_settings.unwrap().r_u.unwrap().tokens, 75.0);
+                break;
+            }
+            assert!(
+                tokio::time::Instant::now() < deadline,
+                "proxy read bypasses primary metadata watcher"
+            );
+            tokio::time::sleep(Duration::from_millis(25)).await;
+        }
+        let listed = client
+            .list_resource_groups(p::ListResourceGroupsRequest {
+                keyspace_id: scoped(),
+                ..Default::default()
+            })
+            .await
+            .unwrap()
+            .into_inner();
+        assert!(
+            listed
+                .groups
+                .iter()
+                .any(|group| group.name == "watched" && group.priority == 12)
+        );
+        records.push(json!({"rust":is_rust,"stage":"proxy live primary read","response":format!("{listed:?}")}));
+        save(&records);
+        client
+            .delete_resource_group(p::DeleteResourceGroupRequest {
+                resource_group_name: "watched".into(),
+                keyspace_id: scoped(),
+            })
+            .await
+            .unwrap();
+        let deadline = tokio::time::Instant::now() + Duration::from_secs(5);
+        loop {
+            match client.get_resource_group(request.clone()).await {
+                Err(error) => {
+                    assert_eq!(error.code(), tonic::Code::Unknown);
+                    assert!(error.message().contains("resource group does not exist"));
+                    records.push(json!({"rust":is_rust,"stage":"proxy deletion observed","error":format!("{error:?}")}));
+                    save(&records);
+                    break;
+                }
+                Ok(_) => {
+                    assert!(
+                        tokio::time::Instant::now() < deadline,
+                        "deleted group remains visible through proxy"
+                    );
+                    tokio::time::sleep(Duration::from_millis(25)).await;
+                }
+            }
+        }
+        sidecar.stop();
+        pd.stop().unwrap();
+    }
+}
+fn proxy_token_request(value: f64) -> p::TokenBucketsRequest {
+    p::TokenBucketsRequest {
+        requests: vec![p::TokenBucketRequest {
+            resource_group_name: "watched".into(),
+            keyspace_id: scoped(),
+            request: Some(p::token_bucket_request::Request::RuItems(
+                p::token_bucket_request::RequestRu {
+                    request_r_u: vec![p::RequestUnitItem { r#type: 0, value }],
+                },
+            )),
+            ..Default::default()
+        }],
+        target_request_period_ms: 5000,
+        client_unique_id: 23,
+    }
+}
+async fn proxy_ready(
+    client: &mut ResourceManagerClient<tonic::transport::Channel>,
+    sidecar: &Sidecar,
+) {
+    let deadline = tokio::time::Instant::now() + Duration::from_secs(15);
+    loop {
+        if client
+            .get_resource_group(p::GetResourceGroupRequest {
+                resource_group_name: "watched".into(),
+                keyspace_id: scoped(),
+                ..Default::default()
+            })
+            .await
+            .is_ok()
+        {
+            return;
+        }
+        assert!(
+            tokio::time::Instant::now() < deadline,
+            "proxy primary not ready: {}",
+            sidecar.logs()
+        );
+        tokio::time::sleep(Duration::from_millis(25)).await;
+    }
+}
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn sa_016_rm_proxy_token_frames_half_close_and_both_service_deployments() {
+    use prost::Message;
+    let go = crate::readonly_oracle::pinned_go_binary().unwrap();
+    let rust = PathBuf::from(std::env::var_os("PD_COMPAT_RUST_BIN").unwrap());
+    let config = File(std::env::temp_dir().join(format!(
+        "pd-sa016-rm-token-proxy-{}.toml",
+        std::process::id()
+    )));
+    std::fs::write(
+        &config.0,
+        "[micro-service]\nenable-resource-manager-fallback = false\n",
+    )
+    .unwrap();
+    let argument = format!("--config={}", config.0.display());
+    let environment = [("PD_SERVICE_MODE".into(), "api".into())];
+    let mut expected = None;
+    let mut records = Vec::new();
+    for (pd_rust, rm_rust) in [(false, false), (true, false), (false, true), (true, true)] {
+        let binary = if pd_rust { &rust } else { &go };
+        let mut pd = if pd_rust {
+            Server::start_rust_with_environment(binary, &[&argument], &environment)
+        } else {
+            Server::start_with_environment(binary, &[&argument], &environment)
+        }
+        .unwrap();
+        pd.ready().unwrap();
+        let mut client = ResourceManagerClient::connect(pd.url.clone())
+            .await
+            .unwrap();
+        let mut resource = group(9, 75.0);
+        resource
+            .r_u_settings
+            .as_mut()
+            .unwrap()
+            .r_u
+            .as_mut()
+            .unwrap()
+            .settings
+            .as_mut()
+            .unwrap()
+            .burst_limit = -1;
+        client
+            .add_resource_group(p::PutResourceGroupRequest {
+                group: Some(resource),
+            })
+            .await
+            .unwrap();
+        let mut sidecar = Sidecar::start(if rm_rust { &rust } else { &go }, pd.metadata_url());
+        proxy_ready(&mut client, &sidecar).await;
+        let mut first = proxy_token_request(5.0);
+        if let Some(p::token_bucket_request::Request::RuItems(items)) =
+            &mut first.requests[0].request
+        {
+            items.request_r_u.push(p::RequestUnitItem {
+                r#type: 99,
+                value: 999.0,
+            });
+        }
+        let mut second = proxy_token_request(7.0);
+        let mut missing = second.requests[0].clone();
+        missing.resource_group_name = "missing".into();
+        second.requests.push(missing);
+        let input = [first, second, p::TokenBucketsRequest::default()];
+        let (send, receive) = tokio::sync::mpsc::channel(4);
+        for request in &input {
+            send.send(request.clone()).await.unwrap();
+        }
+        drop(send);
+        let mut stream = client
+            .acquire_token_buckets(tokio_stream::wrappers::ReceiverStream::new(receive))
+            .await
+            .unwrap()
+            .into_inner();
+        let mut frames = Vec::new();
+        while let Some(response) = tokio::time::timeout(Duration::from_secs(3), stream.message())
+            .await
+            .expect("half-close must drain responses and EOF")
+            .unwrap()
+        {
+            records.push(json!({"pd_rust":pd_rust,"rm_rust":rm_rust,"stage":"proxy token response","response":format!("{response:?}")}));
+            save(&records);
+            frames.push(response);
+        }
+        assert_eq!(frames.len(), 3);
+        assert_eq!(frames[0].responses[0].granted_r_u_tokens.len(), 2);
+        assert_eq!(
+            frames[0].responses[0].granted_r_u_tokens[0]
+                .granted_tokens
+                .as_ref()
+                .unwrap()
+                .tokens,
+            5.0
+        );
+        assert_eq!(
+            frames[0].responses[0].granted_r_u_tokens[1]
+                .granted_tokens
+                .as_ref()
+                .unwrap()
+                .tokens,
+            5.0
+        );
+        assert_eq!(frames[1].responses.len(), 1);
+        assert_eq!(
+            frames[1].responses[0].granted_r_u_tokens[0]
+                .granted_tokens
+                .as_ref()
+                .unwrap()
+                .tokens,
+            7.0
+        );
+        assert!(frames[2].responses.is_empty());
+        let encoded = frames
+            .iter()
+            .map(Message::encode_to_vec)
+            .collect::<Vec<_>>();
+        if let Some(expected) = &expected {
+            assert_eq!(
+                &encoded, expected,
+                "forwarding must preserve exact frame order and protobuf values"
+            );
+        } else {
+            expected = Some(encoded);
+        }
+        records.push(json!({"pd_rust":pd_rust,"rm_rust":rm_rust,"stage":"half-close drained exact responses and EOF","requests":input.iter().map(|r|format!("{r:?}")).collect::<Vec<_>>()}));
+        save(&records);
+        sidecar.stop();
+        pd.stop().unwrap();
+    }
+}
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn sa_016_rm_proxy_frontend_disconnect_preserves_other_stream() {
+    let go = crate::readonly_oracle::pinned_go_binary().unwrap();
+    let rust = PathBuf::from(std::env::var_os("PD_COMPAT_RUST_BIN").unwrap());
+    let config = File(std::env::temp_dir().join(format!(
+        "pd-sa016-rm-cancel-proxy-{}.toml",
+        std::process::id()
+    )));
+    std::fs::write(
+        &config.0,
+        "[micro-service]\nenable-resource-manager-fallback = false\n",
+    )
+    .unwrap();
+    let argument = format!("--config={}", config.0.display());
+    let environment = [("PD_SERVICE_MODE".into(), "api".into())];
+    let mut records = Vec::new();
+    for (binary, is_rust) in [(&go, false), (&rust, true)] {
+        let mut pd = if is_rust {
+            Server::start_rust_with_environment(binary, &[&argument], &environment)
+        } else {
+            Server::start_with_environment(binary, &[&argument], &environment)
+        }
+        .unwrap();
+        pd.ready().unwrap();
+        let mut client = ResourceManagerClient::connect(pd.url.clone())
+            .await
+            .unwrap();
+        let mut resource = group(9, 75.0);
+        resource
+            .r_u_settings
+            .as_mut()
+            .unwrap()
+            .r_u
+            .as_mut()
+            .unwrap()
+            .settings
+            .as_mut()
+            .unwrap()
+            .burst_limit = -1;
+        client
+            .add_resource_group(p::PutResourceGroupRequest {
+                group: Some(resource),
+            })
+            .await
+            .unwrap();
+        let mut sidecar = Sidecar::start(&go, pd.metadata_url());
+        proxy_ready(&mut client, &sidecar).await;
+        let (send_a, receive_a) = tokio::sync::mpsc::channel(1);
+        send_a.send(proxy_token_request(5.0)).await.unwrap();
+        let front = astersql_pd_mcs_server::DelegateConnections::new(
+            tokio::runtime::Handle::current(),
+            &tokio_util::sync::CancellationToken::new(),
+            None,
+        );
+        let mut client_a = ResourceManagerClient::new(front.get(&pd.url).await.unwrap());
+        let mut a = client_a
+            .acquire_token_buckets(tokio_stream::wrappers::ReceiverStream::new(receive_a))
+            .await
+            .unwrap()
+            .into_inner();
+        assert!(a.message().await.unwrap().is_some());
+        let (send_b, receive_b) = tokio::sync::mpsc::channel(1);
+        let mut request_b = proxy_token_request(7.0);
+        request_b.client_unique_id = 24;
+        send_b.send(request_b).await.unwrap();
+        let mut b = client
+            .acquire_token_buckets(tokio_stream::wrappers::ReceiverStream::new(receive_b))
+            .await
+            .unwrap()
+            .into_inner();
+        assert!(b.message().await.unwrap().is_some());
+        front.shutdown();
+        let first_end = tokio::time::timeout(Duration::from_secs(1), a.message())
+            .await
+            .unwrap();
+        assert!(
+            !matches!(first_end, Ok(Some(_))),
+            "frontend connection shutdown must terminate the first RPC"
+        );
+        // Both senders stay alive; closing the owned frontend TCP transport is cancellation.
+        let mut next = proxy_token_request(9.0);
+        next.client_unique_id = 24;
+        send_b.send(next).await.unwrap();
+        let response = tokio::time::timeout(Duration::from_secs(3), b.message()).await;
+        records.push(json!({"rust":is_rust,"stage":"frontend disconnect and independent live stream","other_stream":format!("{response:?}"),"first_sender_closed":send_a.is_closed(),"first_stream":format!("{first_end:?}")}));
+        save(&records);
+        let response = response
+            .expect("other stream must keep responding after frontend disconnect")
+            .unwrap()
+            .unwrap();
+        assert_eq!(
+            response.responses[0].granted_r_u_tokens[0]
+                .granted_tokens
+                .as_ref()
+                .unwrap()
+                .tokens,
+            9.0
+        );
+        drop(send_a);
+        drop(send_b);
+        drop(b);
+        proxy_ready(&mut client, &sidecar).await;
+        sidecar.stop();
+        pd.stop().unwrap();
+    }
+}
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn sa_016_rm_proxy_upstream_loss_then_next_send_ends_without_replay() {
+    let go = crate::readonly_oracle::pinned_go_binary().unwrap();
+    let rust = PathBuf::from(std::env::var_os("PD_COMPAT_RUST_BIN").unwrap());
+    let config = File(std::env::temp_dir().join(format!(
+        "pd-sa016-rm-loss-proxy-{}.toml",
+        std::process::id()
+    )));
+    std::fs::write(
+        &config.0,
+        "[micro-service]\nenable-resource-manager-fallback = false\n",
+    )
+    .unwrap();
+    let argument = format!("--config={}", config.0.display());
+    let environment = [("PD_SERVICE_MODE".into(), "api".into())];
+    let mut records = Vec::new();
+    let mut expected = None;
+    for (binary, is_rust) in [(&go, false), (&rust, true)] {
+        let mut pd = if is_rust {
+            Server::start_rust_with_environment(binary, &[&argument], &environment)
+        } else {
+            Server::start_with_environment(binary, &[&argument], &environment)
+        }
+        .unwrap();
+        pd.ready().unwrap();
+        let mut client = ResourceManagerClient::connect(pd.url.clone())
+            .await
+            .unwrap();
+        let mut resource = group(9, 75.0);
+        resource
+            .r_u_settings
+            .as_mut()
+            .unwrap()
+            .r_u
+            .as_mut()
+            .unwrap()
+            .settings
+            .as_mut()
+            .unwrap()
+            .burst_limit = -1;
+        client
+            .add_resource_group(p::PutResourceGroupRequest {
+                group: Some(resource),
+            })
+            .await
+            .unwrap();
+        let mut sidecar = Sidecar::start(&go, pd.metadata_url());
+        proxy_ready(&mut client, &sidecar).await;
+        let (send, receive) = tokio::sync::mpsc::channel(1);
+        send.send(proxy_token_request(5.0)).await.unwrap();
+        let mut stream = client
+            .acquire_token_buckets(tokio_stream::wrappers::ReceiverStream::new(receive))
+            .await
+            .unwrap()
+            .into_inner();
+        assert!(stream.message().await.unwrap().is_some());
+        sidecar.stop();
+        let sent = send.send(proxy_token_request(9.0)).await;
+        let ended = tokio::time::timeout(Duration::from_secs(3), stream.message()).await;
+        records.push(json!({"rust":is_rust,"stage":"upstream stopped then next input","send":format!("{sent:?}"),"result":format!("{ended:?}")}));
+        save(&records);
+        let status = match ended {
+            Ok(Err(error)) => Some(error.code()),
+            Ok(Ok(None)) => None,
+            other => {
+                panic!("proxy must terminate without replaying after upstream exit: {other:?}")
+            }
+        };
+        if let Some(expected) = expected {
+            assert_eq!(
+                status, expected,
+                "upstream transport error code must match Go proxy"
+            );
+        } else {
+            expected = Some(status);
+        }
+        drop(send);
+        drop(stream);
+        sidecar = Sidecar::start(&go, pd.metadata_url());
+        proxy_ready(&mut client, &sidecar).await;
+        let (send, receive) = tokio::sync::mpsc::channel(1);
+        send.send(proxy_token_request(7.0)).await.unwrap();
+        drop(send);
+        let mut stream = client
+            .acquire_token_buckets(tokio_stream::wrappers::ReceiverStream::new(receive))
+            .await
+            .unwrap()
+            .into_inner();
+        let response = stream.message().await.unwrap().unwrap();
+        assert_eq!(
+            response.responses[0].granted_r_u_tokens[0]
+                .granted_tokens
+                .as_ref()
+                .unwrap()
+                .tokens,
+            7.0
+        );
+        assert!(stream.message().await.unwrap().is_none());
+        records.push(json!({"rust":is_rust,"stage":"fresh primary new stream","response":format!("{response:?}")}));
+        save(&records);
+        sidecar.stop();
         pd.stop().unwrap();
     }
 }
