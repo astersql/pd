@@ -8,6 +8,8 @@ use tonic::{Response, Status};
 
 /// Transport-independent request forwarded to the term-owned scheduling task.
 pub struct ScatterRequest {
+    /// Distinguish an empty batch from the classic single-region request.
+    pub batch: bool,
     /// A range is resolved by the same coordinator that plans and admits the batch.
     pub range: Option<astersql_pd_core::KeyRange>,
     pub ids: Vec<u64>,
@@ -55,6 +57,7 @@ impl Grpc {
             ))
         });
         let request = ScatterRequest {
+            batch: !r.regions_id.is_empty(),
             range: None,
             ids: r.regions_id,
             single: r.region_id,

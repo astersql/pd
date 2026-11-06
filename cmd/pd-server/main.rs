@@ -150,7 +150,7 @@ pub fn main() -> ExitCode {
     if raw.first().is_some_and(|s| s == "services")
         && raw
             .get(1)
-            .is_some_and(|s| matches!(s.as_str(), "resource-manager" | "router"))
+            .is_some_and(|s| matches!(s.as_str(), "resource-manager" | "router" | "scheduling"))
     {
         return crate::standalone_mcs::main(&raw[1], raw[2..].to_vec());
     }

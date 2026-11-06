@@ -175,6 +175,7 @@ pub(super) async fn manage(
                 now: JobTime(now().1 as i128),
                 query_supported: ctx.query_supported,
                 cpu_supported: ctx.cpu_supported,
+                persist_global_config: ctx.persist_global_config,
                 hot_inputs: ctx.hot_inputs.clone(),
             };
             let policy = match registry.create_args(&name.into(), &refs, &factory) {

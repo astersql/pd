@@ -5,3 +5,9 @@ pub use expected_primary::*;
 
 #[cfg(test)]
 mod expected_primary_test;
+
+mod store_watch;
+pub use store_watch::StoreWatcher;
+
+#[cfg(test)]
+mod store_watch_test;

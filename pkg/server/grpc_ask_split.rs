@@ -10,6 +10,8 @@ use tonic::{Response, Status};
 pub enum SplitError {
     Validation(RegionValidationError),
     Other(String),
+    /// An upstream RPC failed; adapters retain its original status and metadata.
+    Forwarded(tonic::Status),
 }
 /// One result region and its peers, in request order.
 pub type SplitIds = Vec<(u64, Vec<u64>)>;
@@ -70,25 +72,7 @@ impl Grpc {
             Ok(ids) => (self.header().unwrap(), ids),
             Err(error) => failure(
                 pdpb::ErrorType::Unknown,
-                match error {
-                    SplitError::Other(message) => message,
-                    SplitError::Validation(RegionValidationError::InvalidEpoch {
-                        request,
-                        current,
-                    }) => format!(
-                        "invalid region epoch, request: {}, current: {}",
-                        if epoch_present {
-                            epoch_text(request)
-                        } else {
-                            "<nil>".into()
-                        },
-                        epoch_text(current)
-                    ),
-                    SplitError::Validation(RegionValidationError::NotFound { request }) => format!(
-                        "region not found, request region: {}",
-                        region_text(&request)
-                    ),
-                },
+                error_message(error, epoch_present),
             ),
         })
     }
@@ -123,6 +107,28 @@ impl Grpc {
                 })
                 .collect(),
         }))
+    }
+}
+/// Preserve canonical validation text for classic and scheduling adapters.
+pub fn error_message(error: SplitError, epoch_present: bool) -> String {
+    match error {
+        SplitError::Other(message) => message,
+        SplitError::Forwarded(status) => status.message().into(),
+        SplitError::Validation(RegionValidationError::InvalidEpoch { request, current }) => {
+            format!(
+                "invalid region epoch, request: {}, current: {}",
+                if epoch_present {
+                    epoch_text(request)
+                } else {
+                    "<nil>".into()
+                },
+                epoch_text(current)
+            )
+        }
+        SplitError::Validation(RegionValidationError::NotFound { request }) => format!(
+            "region not found, request region: {}",
+            region_text(&request)
+        ),
     }
 }
 fn epoch_text(e: astersql_pd_core::RegionEpoch) -> String {

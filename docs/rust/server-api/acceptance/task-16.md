@@ -442,3 +442,50 @@ classic region lookup/query/scan专项3通过，共享store/region转换9通过�
 Go/Rust独立RM回归1通过。workspace check、fmt check、metadata及CLI build均exit0。
 [本阶段压缩回执](task-16-router.json.gz)保留实际槽位、源码/工具摘要、成功与失败、
 原始帧和未覆盖边界；全workspace test仍由验收24统一执行，未改变历史失败范围。
+
+## Scheduling注册、心跳角色与PD ID所有权阶段（进行中）
+
+2026-11-07，基准`36321c916`。新增canonical
+`pkg/mcs/scheduling/server`，七个固定descriptor方法复用现有PD wire转换、
+ClusterHost/coordinator/operator与心跳内核；`SchedulingHost`由调用者提供executor、
+MetaStore、listener、delegate pool、registry和PD发现策略，独立入口是
+`services scheduling`。不构造PdNode、私有runtime或第二套调度器。
+原119–123/139/143/147/148保持未完成；当前不是完整配置、TLS及故障验收。
+
+角色拆分明确PD拥有region元数据、follower同步历史、全局配置和ID持久状态。
+Scheduling角色仅向同一BasicCluster提交心跳/统计，沿用canonical规划与命令流；
+不启动PD store状态、resolved-ts或成员指标worker，不写回整份PD配置。
+Router与Scheduling共享`pkg/mcs/utils/StoreWatcher`，保留本地store统计，强制刷新和
+compaction快照协调删除，整批decode失败不发布部分缓存。
+
+实际Go/Rust sidecar对照覆盖七方法注册、真实bootstrap后的store/region心跳、
+缺失store/operator、空split/scatter、无region的AskBatchSplit、两类流终止以及
+有效AskBatchSplit。双方均连接现成Go PD作为元数据/ID拥有者；保留原始protobuf、
+PD region entry与mod_revision以及绝对ID，不用成功的自测冒充双语言差分。
+Go活跃RegionHeartbeat收到输入EOF返回`Unknown: EOF`，未激活任期收到首帧则返回
+NotBootstrapped再正常EOF；二者不是统一成一种终止行为。nil/空bucket帧可跳过。
+
+记录的真实行为red包括：Rust缺少Scheduling CLI入口；空ScatterRegions错误被当成
+单region查询；空闲调度器在无operator时提前消耗128个PD ID。最后一项由同一组
+有效心跳后读取PD AllocID的持久副作用发现：Go前后ID为1、2，Rust为1、130。
+修复为仅在canonical planner实际要求新ID时调用PD，不预留Scheduling批次；
+classic PD原分配策略保留。首次找不到PD客户端与后续成功分配均单独保存。
+Go的成员刷新是收到通知或一分钟timer后查询etcd共识leader的client URL，
+不是读取PD primary key。CLI保留此默认策略；嵌入宿主显式提供PdLeaderLookup。
+独立Rust PD与外置etcd的显式发现配置仍待实现，不能假设etcd地址就是PD地址。
+
+同步规划回调使用调用者提供的阻塞执行器与Handle发起真实AllocID，未建立私有runtime；
+单线程Tokio宿主专项通过，PD计数仅增加实际请求的一个ID。分配RPC失败不自动重放，
+通知成员刷新并使旧连接失效；旧PD count兼容fallback尚待专项故障对照。
+编译错误、Go fixture对首次发现/EOF的错误假设不计入生产行为red。
+
+本阶段压缩回执将固定当前源码、二进制、原始失败与最终通过记录。
+后续继续补正bucket/operator命令、split reason/affinity、配置watch/切主与取消、
+全部MCS Diagnostics/health注册及TLS部署矩阵；42个wire ID保持原唯一拥有任务。
+
+本阶段最终验证：Scheduling真实Go/Rust两项0失败/0忽略；未激活任期1项、
+单线程宿主真实分配1项、共享store watcher 2项、scheduler恢复/PD配置归属6项、
+Router 3项、classic AskBatchSplit与Scatter各1项均通过。Runtime全包108通过、
+0失败、38项历史条件测试忽略；没有把这些忽略计入通过，也没有扩大为workspace全测试。
+原有1142项Go/模块/plan.md守卫一致。原始证据保存于
+[Scheduling压缩回执](task-16-scheduling.json.gz)，包含最初red的二进制摘要及Rust patch。

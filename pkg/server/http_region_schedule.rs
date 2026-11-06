@@ -326,6 +326,7 @@ async fn handle(
         }
         match services
             .scatter(ScatterRequest {
+                batch: true,
                 range: keys
                     .map(|(start_key, end_key)| astersql_pd_core::KeyRange { start_key, end_key }),
                 ids,

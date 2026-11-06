@@ -120,12 +120,14 @@ pub async fn restore_schedulers(
             .collect::<Result<_, _>>()?,
     );
     let ctx = controller.context();
-    report.persistence_error = ctx
-        .storage
-        .save_config(&ctx.paths, controller.configuration())
-        .await
-        .err()
-        .map(|e| e.to_string());
+    if ctx.persist_global_config {
+        report.persistence_error = ctx
+            .storage
+            .save_config(&ctx.paths, controller.configuration())
+            .await
+            .err()
+            .map(|e| e.to_string());
+    }
     Ok(report)
 }
 fn check_cancelled(cancellation: &CancellationToken) -> Result<(), SchedulerRestoreError> {

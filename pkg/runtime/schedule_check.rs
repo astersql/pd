@@ -7,7 +7,6 @@ use astersql_pd_schedule_checker::{
     RuleMissingContext, patrol_scan_limit,
 };
 use astersql_pd_schedule_config::{CheckerConfigProvider, SharedConfigProvider};
-use astersql_pd_schedule_operator::BuilderError;
 use std::{
     collections::{BTreeSet, VecDeque},
     time::Duration,
@@ -125,12 +124,8 @@ impl PatrolScan {
                 checker.lock().unwrap().priority.remove_priority_region(id);
                 continue;
             };
-            if ids.len() < 64 {
-                let (last, count) = r
-                    .allocator
-                    .alloc_count(128)
-                    .await
-                    .map_err(|e| e.to_string())?;
+            if r.role == ClusterRole::Pd && ids.len() < 64 {
+                let (last, count) = r.alloc_count(128).await.map_err(|e| e.to_string())?;
                 ids.extend(last - u64::from(count) + 1..=last);
             }
             let ctx = CheckerDispatchContext {
@@ -154,6 +149,7 @@ impl PatrolScan {
                 operators: &admission,
                 hot_regions: &hot,
             };
+            let remote = r.remote_ids.clone();
             let mut state = r.state.lock().unwrap();
             let mut checker = checker.lock().unwrap();
             checker.priority.inspect(
@@ -170,11 +166,7 @@ impl PatrolScan {
                     affinity,
                     &region,
                     source,
-                    &mut || {
-                        ids.pop_front().ok_or_else(|| {
-                            BuilderError::Allocation("checker reservation exhausted".into())
-                        })
-                    },
+                    &mut || planner_id(remote.as_deref(), ids, "checker reservation exhausted"),
                 )
                 .await;
             drop(checker);

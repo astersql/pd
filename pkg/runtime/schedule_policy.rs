@@ -32,6 +32,7 @@ pub(super) struct PolicyInputs<'a> {
     pub storage: &'a StorageEndpoint,
     pub paths: ClusterPaths,
     pub ids: &'a mut VecDeque<u64>,
+    pub remote_ids: Option<Arc<astersql_pd_mcs_scheduling_server::RemoteIds>>,
     pub hot: &'a mut HotLoadProjection,
 }
 pub(super) fn allowed(
@@ -93,9 +94,11 @@ impl PolicyInputs<'_> {
             values.shuffle(&mut rand::thread_rng());
         };
         let mut allocate = || {
-            self.ids
-                .pop_front()
-                .ok_or_else(|| BuilderError::Allocation("scheduler reservation exhausted".into()))
+            planner_id(
+                self.remote_ids.as_deref(),
+                self.ids,
+                "scheduler reservation exhausted",
+            )
         };
         let influence = self.admission.get_op_influence(Some(self.cluster), &[]);
         self.fast.add_to_at(

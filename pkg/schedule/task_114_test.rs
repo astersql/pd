@@ -9,13 +9,20 @@ use astersql_pd_schedule_config::ProviderSnapshot;
 use astersql_pd_schedule_hbstream::routing::StreamRouter;
 use astersql_pd_schedule_scatter::ScatterBatchMetrics;
 use astersql_pd_schedule_schedulers::{BuiltinScheduler, FactoryContext, JobTime};
-use astersql_pd_storage_domain::MemoryStore;
 use astersql_pd_storage_domain::StorageEndpoint;
+use astersql_pd_storage_domain::{MemoryStore, MetaStore};
 use std::{sync::Arc, time::Duration};
 use tokio_util::sync::CancellationToken;
 fn setup(
     config: serde_json::Value,
     backend: Arc<dyn astersql_pd_storage_domain::MetaStore>,
+) -> (Coordinator<ProviderSnapshot<()>>, Arc<TTLUint64<()>>) {
+    setup_with_persistence(config, backend, true)
+}
+fn setup_with_persistence(
+    config: serde_json::Value,
+    backend: Arc<dyn astersql_pd_storage_domain::MetaStore>,
+    persist_global_config: bool,
 ) -> (Coordinator<ProviderSnapshot<()>>, Arc<TTLUint64<()>>) {
     let mut cluster = BasicCluster::new();
     let peers: Vec<_> = (1..=3)
@@ -66,7 +73,8 @@ fn setup(
             Arc::new(StorageEndpoint::new(backend)),
             ClusterPaths::new(114),
             JobTime(0),
-        ),
+        )
+        .with_global_config_persistence(persist_global_config),
         scheduler_configuration: config,
         scatter_metrics: ScatterBatchMetrics::new(&prometheus::Registry::new()).unwrap(),
         start: Duration::ZERO,
@@ -76,6 +84,52 @@ fn setup(
         unix_seconds: Arc::new(|| 0),
     });
     (c, pending)
+}
+#[tokio::test]
+async fn task_114_scheduling_role_keeps_global_config_pd_owned() {
+    let backend = Arc::new(MemoryStore::default());
+    let config = serde_json::json!({"schedule":{"schedulers-v2":[{"type":"label"}]},"pd-owned":37});
+    let endpoint = StorageEndpoint::new(backend.clone());
+    let paths = ClusterPaths::new(114);
+    endpoint.save_config(&paths, &config).await.unwrap();
+    let before = backend
+        .read(astersql_pd_storage_domain::Read::prefix(
+            b"",
+            astersql_pd_storage_domain::Consistency::Linearizable,
+        ))
+        .await
+        .unwrap();
+    let (mut c, pending) = setup_with_persistence(config, backend.clone(), false);
+    let report = c
+        .init_schedulers(true, &CancellationToken::new())
+        .await
+        .unwrap();
+    assert!(report.persistence_error.is_none());
+    assert_eq!(c.get_schedulers_controller().names(), ["label-scheduler"]);
+    c.get_schedulers_controller_mut()
+        .remove("label-scheduler", false)
+        .await
+        .unwrap();
+    let after = backend
+        .read(astersql_pd_storage_domain::Read::prefix(
+            b"",
+            astersql_pd_storage_domain::Consistency::Linearizable,
+        ))
+        .await
+        .unwrap();
+    let original = before
+        .entries
+        .iter()
+        .find(|entry| entry.key == paths.config_path().as_bytes())
+        .unwrap();
+    let current = after
+        .entries
+        .iter()
+        .find(|entry| entry.key == original.key)
+        .unwrap();
+    assert_eq!(current.value, original.value);
+    assert_eq!(current.mod_revision, original.mod_revision);
+    pending.shutdown().await;
 }
 #[tokio::test]
 async fn task_114_behavior_cases() {

@@ -124,3 +124,11 @@ fallback条件装配与五加一代理现已有运行实现，见
 写角色；四种PD/RM语言组合已对半关闭和protobuf响应做实际比较。连接池集中于
 canonical MCS公共包。原任务继续保留，尚缺完整primary缓存、follower/TLS故障矩阵
 及其他服务装配；此增量不改42个wire ID及唯一方法拥有者。
+
+## Scheduling注册增量（2026-11-07）
+
+七个Scheduling方法已有canonical实现与独立入口，复用现有ClusterHost领域能力。
+[当前阶段证据](task-16.md#scheduling注册心跳角色与pd-id所有权阶段进行中)包含真实
+Go/Rust心跳、错误/EOF、空请求与PD-owned分裂ID对照，以及空闲调度器不消耗ID、
+不持久化PD region元数据的副作用验证。119–123/139/143/147/148尚未整体验收。
+全MCS公共Diagnostics/health仍需装配，不能把业务七方法等同完整listener注册。

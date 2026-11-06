@@ -144,3 +144,6 @@ mod accept_extra_rm_service_test;
 
 #[cfg(test)]
 mod accept_extra_router_service_test;
+
+#[cfg(test)]
+mod accept_extra_scheduling_service_test;

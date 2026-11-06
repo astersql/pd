@@ -9,6 +9,12 @@ license.workspace = true
 path = "lib.rs"
 
 [dependencies]
+futures-util.workspace = true
+astersql-pd-mcs-scheduling-server.workspace = true
+astersql-pd-mcs-utils.workspace = true
+astersql-pd-mcs-server.workspace = true
+astersql-pd-mcs-discovery.workspace = true
+astersql-pd-memberutil.workspace = true
 astersql-pd-grpcutil.workspace = true
 tracing.workspace = true
 astersql-pd-rm-server.workspace = true

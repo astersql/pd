@@ -7,7 +7,7 @@ use astersql_pd_schedule_hbstream::{
 };
 use tokio::sync::mpsc;
 use tokio_util::sync::CancellationToken;
-pub(crate) struct CommandStream {
+pub struct CommandStream {
     pub sender: mpsc::Sender<HeartbeatMessage>,
     pub cancellation: CancellationToken,
 }

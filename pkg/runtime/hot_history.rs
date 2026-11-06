@@ -88,6 +88,9 @@ pub(super) async fn maintain(
     >,
     cancel: &CancellationToken,
 ) -> Result<(), String> {
+    if r.role == super::ClusterRole::Scheduling {
+        return Ok(());
+    }
     let config = r.state.lock().unwrap().config.clone();
     let interval =
         Duration::from_nanos(config.schedule.hot_regions_write_interval.as_nanos().max(1) as u64);

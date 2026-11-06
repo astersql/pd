@@ -55,6 +55,20 @@ impl ClusterHost {
             }
         }
     }
+    pub(crate) async fn validate_scheduling_split(
+        &self,
+        region: &astersql_pd_core::RegionMeta,
+    ) -> Result<(), SplitError> {
+        let guard = self.resources.lock().await;
+        let r = guard
+            .as_ref()
+            .ok_or_else(|| SplitError::Other("node stopped".into()))?;
+        r.leader
+            .validate()
+            .await
+            .map_err(|e| SplitError::Other(e.to_string()))?;
+        validate_region(r, region)
+    }
     pub(crate) async fn split_ids(
         &self,
         region: astersql_pd_core::RegionMeta,
@@ -69,28 +83,7 @@ impl ClusterHost {
             .validate()
             .await
             .map_err(|e| other(e.to_string()))?;
-        {
-            let state = r.state.lock().unwrap();
-            if state.config.schedule.halt_scheduling || r.recovery_halted {
-                return Err(other(
-                    "[PD:cluster:ErrSchedulingIsHalted]scheduling is halted".into(),
-                ));
-            }
-            if !state.config.schedule.enable_ti_kv_split_region {
-                return Err(other(
-                    "[PD:scheduler:ErrSchedulerTiKVSplitDisabled]tikv split region disabled".into(),
-                ));
-            }
-            state
-                .cluster
-                .regions
-                .valid_region(&region)
-                .map_err(SplitError::Validation)?;
-            let mode = &r.persisted_config.config.replication_mode;
-            if mode.replication_mode == "dr-auto-sync" && mode.dr_auto_sync.pause_region_split {
-                return Err(other("region split is paused by replication mode".into()));
-            }
-        }
+        validate_region(r, &region)?;
         let mut ids = Vec::new();
         for _ in 0..count {
             let id = r.allocator.alloc().await.map_err(|e| {
@@ -113,6 +106,35 @@ impl ClusterHost {
         }
         Ok(ids)
     }
+}
+
+fn validate_region(r: &Resources, region: &astersql_pd_core::RegionMeta) -> Result<(), SplitError> {
+    let other = SplitError::Other;
+    let state = r.state.lock().unwrap();
+    if state.config.schedule.halt_scheduling || r.recovery_halted {
+        return Err(other(
+            "[PD:cluster:ErrSchedulingIsHalted]scheduling is halted".into(),
+        ));
+    }
+    if !state.config.schedule.enable_ti_kv_split_region {
+        return Err(other(
+            "[PD:scheduler:ErrSchedulerTiKVSplitDisabled]tikv split region disabled".into(),
+        ));
+    }
+    state
+        .cluster
+        .regions
+        .valid_region(&region)
+        .map_err(SplitError::Validation)?;
+    let mode = &r.persisted_config.config.replication_mode;
+    if r.role == ClusterRole::Pd
+        && mode.replication_mode == "dr-auto-sync"
+        && mode.dr_auto_sync.pause_region_split
+    {
+        return Err(other("region split is paused by replication mode".into()));
+    }
+
+    Ok(())
 }
 
 pub(super) fn compare_version(

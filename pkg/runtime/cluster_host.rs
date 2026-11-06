@@ -21,7 +21,14 @@ use tokio::sync::Mutex as AsyncMutex;
 use tokio_util::sync::CancellationToken;
 
 type State = Mutex<HeartbeatEffectsState<ProviderSnapshot<()>>>;
+/// Selects ownership of persistence and background workers over one domain kernel.
+#[derive(Clone, Copy, PartialEq, Eq)]
+pub(crate) enum ClusterRole {
+    Pd,
+    Scheduling,
+}
 struct Resources {
+    role: ClusterRole,
     bootstrapped: bool,
     recovery: Arc<AsyncMutex<astersql_pd_unsaferecovery::Controller>>,
     recovery_index: Option<astersql_pd_unsaferecovery::RecoveryIndex>,
@@ -46,6 +53,7 @@ struct Resources {
     meta_store: Arc<dyn MetaStore>,
     leader: Arc<astersql_pd_member::Leadership>,
     allocator: Arc<astersql_pd_id::Allocator>,
+    remote_ids: Option<Arc<astersql_pd_mcs_scheduling_server::RemoteIds>>,
     schedule_creations: std::collections::BTreeSet<u64>,
     schedule_operators: Option<Arc<astersql_pd_schedule_operator::ControllerAdmission>>,
     schedule_observations:
@@ -363,6 +371,46 @@ impl ClusterHost {
         encryption: Option<Arc<crate::encryption::EncryptionResources>>,
         recovery_steps: Arc<astersql_pd_unsaferecovery::RecoverySteps>,
     ) -> Result<Self, crate::NodeError> {
+        Self::new_with_role(
+            cluster,
+            config,
+            restored_config,
+            store,
+            cluster_id,
+            member_id,
+            cancel,
+            registry,
+            leader,
+            allocator,
+            metrics,
+            encryption,
+            recovery_steps,
+            ClusterRole::Pd,
+            None,
+        )
+        .await
+    }
+
+    pub(crate) async fn new_with_role(
+        cluster: BasicCluster,
+        config: ProviderSnapshot<()>,
+        restored_config: Option<astersql_pd_server_config::PersistedConfig>,
+        store: Arc<dyn MetaStore>,
+        cluster_id: u64,
+        member_id: u64,
+        cancel: CancellationToken,
+        registry: &prometheus::Registry,
+        leader: Arc<astersql_pd_member::Leadership>,
+        allocator: Arc<astersql_pd_id::Allocator>,
+        metrics: Option<Arc<astersql_pd_server::service_metrics::DomainMetricHandles>>,
+        encryption: Option<Arc<crate::encryption::EncryptionResources>>,
+        recovery_steps: Arc<astersql_pd_unsaferecovery::RecoverySteps>,
+        role: ClusterRole,
+        remote_ids: Option<Arc<astersql_pd_mcs_scheduling_server::RemoteIds>>,
+    ) -> Result<Self, crate::NodeError> {
+        if role == ClusterRole::Scheduling && remote_ids.is_none() {
+            return Err("scheduling ID capability missing".into());
+        }
         let _start_metrics = metrics.as_ref().map(|m| {
             m.classic
                 .raft_cluster_start_duration
@@ -399,7 +447,7 @@ impl ClusterHost {
         );
         let paths = ClusterPaths::new(cluster_id);
         let bootstrapped = storage.load_meta(&paths).await?.is_some();
-        let replication = if bootstrapped {
+        let replication = if bootstrapped && role == ClusterRole::Pd {
             Some(
                 replication_mode::manager(
                     persisted_config.config.replication_mode.clone(),
@@ -529,6 +577,8 @@ impl ClusterHost {
             }
         }
         let resources = Arc::new(AsyncMutex::new(Some(Resources {
+            role,
+            remote_ids,
             bootstrapped,
             recovery: Arc::new(AsyncMutex::new(
                 astersql_pd_unsaferecovery::Controller::new(recovery_steps),
@@ -606,7 +656,7 @@ impl ClusterHost {
         ));
         let store_check_errors = Arc::new(Mutex::new(Vec::new()));
         let worker_errors = store_check_errors.clone();
-        let store_worker = StoreStateWorker::start(
+        let store_worker = (role == ClusterRole::Pd).then(|| StoreStateWorker::start(
             &tokio::runtime::Handle::current(),
             &cancel,
             std::time::Duration::from_secs(10),
@@ -681,10 +731,10 @@ impl ClusterHost {
                     }
                 }
             },
-        );
+        ));
         let stats_resources = resources.clone();
         let stats_cancel = cancel.clone();
-        let stats_worker = StoreStatsWorker::start(
+        let stats_worker = (role == ClusterRole::Pd).then(|| StoreStatsWorker::start(
             &tokio::runtime::Handle::current(),
             &cancel,
             move || {
@@ -823,12 +873,12 @@ impl ClusterHost {
                     }
                 }
             },
-        );
+        ));
         let config_resources = resources.clone();
         let store_config_error = Arc::new(Mutex::new(None));
         let config_error = store_config_error.clone();
         let candidates = Arc::new(AsyncMutex::new(Vec::new()));
-        let config_worker =
+        let config_worker = (role == ClusterRole::Pd).then(|| {
             StoreConfigWorker::start(&tokio::runtime::Handle::current(), &cancel, move |cancel| {
                 let resources = config_resources.clone();
                 let candidates = candidates.clone();
@@ -844,86 +894,94 @@ impl ClusterHost {
                         .await;
                     *error.lock().unwrap() = result.err().map(|e| e.to_string());
                 }
-            });
-        let metrics_worker = astersql_pd_cluster::ClusterMetricsWorker::start(
-            &tokio::runtime::Handle::current(),
-            &cancel,
-            registry,
-            move || {
-                let store = metrics_store.clone();
-                async move {
-                    use astersql_pd_storage::{Consistency, Read};
-                    use prost::Message;
-                    let prefix = format!("/pd/{cluster_id}/rust/members/");
-                    let snapshot = store
-                        .read(Read::prefix(prefix.as_bytes(), Consistency::Linearizable))
-                        .await
-                        .map_err(|e| e.to_string())?;
-                    snapshot
-                        .entries
-                        .into_iter()
-                        .map(|entry| {
-                            let member =
-                                astersql_pd_proto::pdpb::Member::decode(entry.value.as_slice())
+            })
+        });
+        let metrics_worker = (role == ClusterRole::Pd)
+            .then(|| {
+                astersql_pd_cluster::ClusterMetricsWorker::start(
+                    &tokio::runtime::Handle::current(),
+                    &cancel,
+                    registry,
+                    move || {
+                        let store = metrics_store.clone();
+                        async move {
+                            use astersql_pd_storage::{Consistency, Read};
+                            use prost::Message;
+                            let prefix = format!("/pd/{cluster_id}/rust/members/");
+                            let snapshot = store
+                                .read(Read::prefix(prefix.as_bytes(), Consistency::Linearizable))
+                                .await
+                                .map_err(|e| e.to_string())?;
+                            snapshot
+                                .entries
+                                .into_iter()
+                                .map(|entry| {
+                                    let member = astersql_pd_proto::pdpb::Member::decode(
+                                        entry.value.as_slice(),
+                                    )
                                     .map_err(|e| e.to_string())?;
-                            Ok(astersql_pd_cluster::HealthMember {
-                                name: member.name,
-                                client_urls: member.client_urls,
-                            })
-                        })
-                        .collect()
-                }
-            },
-        )?;
+                                    Ok(astersql_pd_cluster::HealthMember {
+                                        name: member.name,
+                                        client_urls: member.client_urls,
+                                    })
+                                })
+                                .collect()
+                        }
+                    },
+                )
+            })
+            .transpose()?;
         let worker_resources = resources.clone();
         let current = min_resolved_ts.clone();
         let error = resolved_error.clone();
         let configured = resolved_interval.clone();
         let worker_cancel = cancel.clone();
-        let resolved_worker = astersql_pd_cluster::ResolvedTsWorker::start(
-            &tokio::runtime::Handle::current(),
-            &cancel,
-            move || {
-                std::time::Duration::from_nanos(
-                    configured.load(std::sync::atomic::Ordering::Relaxed),
-                )
-            },
-            move || {
-                let resources = worker_resources.clone();
-                let current = current.clone();
-                let error = error.clone();
-                let cancel = worker_cancel.clone();
-                async move {
-                    let guard = resources.lock().await;
-                    let Some(resources) = guard.as_ref() else {
-                        return;
-                    };
-                    if cancel.is_cancelled() {
-                        return;
-                    }
-                    if let Err(e) = resources.leader.validate().await {
-                        *error.lock().unwrap() = Some(e.to_string());
-                        return;
-                    }
-                    let candidate = {
-                        let state = resources.state.lock().unwrap();
-                        astersql_pd_cluster::min_resolved_ts_candidate(
-                            &state.cluster,
-                            state.config.replication.max_replicas as usize,
-                        )
-                    };
-                    *error.lock().unwrap() = astersql_pd_cluster::refresh_min_resolved_ts(
-                        candidate,
-                        &current,
-                        &resources.storage,
-                        &resources.paths,
+        let resolved_worker = (role == ClusterRole::Pd).then(|| {
+            astersql_pd_cluster::ResolvedTsWorker::start(
+                &tokio::runtime::Handle::current(),
+                &cancel,
+                move || {
+                    std::time::Duration::from_nanos(
+                        configured.load(std::sync::atomic::Ordering::Relaxed),
                     )
-                    .await
-                    .err()
-                    .map(|e| e.to_string());
-                }
-            },
-        );
+                },
+                move || {
+                    let resources = worker_resources.clone();
+                    let current = current.clone();
+                    let error = error.clone();
+                    let cancel = worker_cancel.clone();
+                    async move {
+                        let guard = resources.lock().await;
+                        let Some(resources) = guard.as_ref() else {
+                            return;
+                        };
+                        if cancel.is_cancelled() {
+                            return;
+                        }
+                        if let Err(e) = resources.leader.validate().await {
+                            *error.lock().unwrap() = Some(e.to_string());
+                            return;
+                        }
+                        let candidate = {
+                            let state = resources.state.lock().unwrap();
+                            astersql_pd_cluster::min_resolved_ts_candidate(
+                                &state.cluster,
+                                state.config.replication.max_replicas as usize,
+                            )
+                        };
+                        *error.lock().unwrap() = astersql_pd_cluster::refresh_min_resolved_ts(
+                            candidate,
+                            &current,
+                            &resources.storage,
+                            &resources.paths,
+                        )
+                        .await
+                        .err()
+                        .map(|e| e.to_string());
+                    }
+                },
+            )
+        });
         let schedule_error = Arc::new(Mutex::new(None));
         let schedule_initialized = Arc::new(std::sync::atomic::AtomicBool::new(false));
         let (schedule_routing, schedule_worker, schedule_status) =
@@ -953,7 +1011,7 @@ impl ClusterHost {
             schedule_routing,
             schedule_error,
             schedule_initialized,
-            resolved_worker: AsyncMutex::new(Some(resolved_worker)),
+            resolved_worker: AsyncMutex::new(resolved_worker),
             external_ts,
             min_resolved_ts,
             resolved_error,
@@ -962,11 +1020,14 @@ impl ClusterHost {
             state: state_weak,
             restored_config,
             resources,
-            store_worker: AsyncMutex::new(Some(store_worker)),
-            stats_worker: AsyncMutex::new(Some(stats_worker)),
-            config_wake: config_worker.wake_handle(),
-            config_worker: AsyncMutex::new(Some(config_worker)),
-            metrics_worker: AsyncMutex::new(Some(metrics_worker)),
+            store_worker: AsyncMutex::new(store_worker),
+            stats_worker: AsyncMutex::new(stats_worker),
+            config_wake: config_worker.as_ref().map_or_else(
+                || Arc::new(tokio::sync::Notify::new()),
+                StoreConfigWorker::wake_handle,
+            ),
+            config_worker: AsyncMutex::new(config_worker),
+            metrics_worker: AsyncMutex::new(metrics_worker),
             store_config_error,
             store_check_errors,
             cancel,
@@ -1598,10 +1659,12 @@ impl RegionHeartbeatService for ClusterHost {
                     .schedule
                     .enable_heartbeat_breakdown_metrics,
             );
-        let _receipt = resources
-            .pipeline()
-            .region(region, seconds, nanos)
-            .map_err(|e| RegionHeartbeatError(e.to_string()))?;
+        let pipeline = resources.pipeline();
+        let result = match resources.role {
+            ClusterRole::Pd => pipeline.region(region, seconds, nanos),
+            ClusterRole::Scheduling => pipeline.region_for_scheduling(region, seconds, nanos),
+        };
+        let _receipt = result.map_err(|e| RegionHeartbeatError(e.to_string()))?;
         // Dispatch only to the operation present when this report was accepted.
         // An old queued heartbeat must not act on a later admission/replacement.
         if let Some(operator) = resources
@@ -1614,6 +1677,22 @@ impl RegionHeartbeatService for ClusterHost {
         Ok(())
     }
 }
+fn planner_id(
+    remote: Option<&astersql_pd_mcs_scheduling_server::RemoteIds>,
+    cached: &mut std::collections::VecDeque<u64>,
+    exhausted: &'static str,
+) -> Result<u64, astersql_pd_schedule_operator::BuilderError> {
+    use astersql_pd_schedule_operator::BuilderError;
+    match remote {
+        Some(remote) => remote
+            .alloc_one_blocking()
+            .map_err(|e| BuilderError::Allocation(e.to_string())),
+        None => cached
+            .pop_front()
+            .ok_or_else(|| BuilderError::Allocation(exhausted.into())),
+    }
+}
+
 fn now() -> (i64, i64) {
     let elapsed = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
@@ -1625,6 +1704,23 @@ fn now() -> (i64, i64) {
 }
 
 impl Resources {
+    async fn alloc_count(&self, count: u32) -> Result<(u64, u32), String> {
+        match self.role {
+            ClusterRole::Pd => self
+                .allocator
+                .alloc_count(count)
+                .await
+                .map_err(|e| e.to_string()),
+            ClusterRole::Scheduling => self
+                .remote_ids
+                .as_ref()
+                .ok_or("scheduling ID capability missing")?
+                .alloc_count(count)
+                .await
+                .map_err(|e| e.to_string()),
+        }
+    }
+
     async fn sync_store_configuration(
         &mut self,
         candidates: &mut Vec<Arc<astersql_pd_core::StoreInfo>>,

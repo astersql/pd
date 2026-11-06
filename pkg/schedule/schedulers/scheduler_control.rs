@@ -302,10 +302,12 @@ impl SchedulerController {
             }
         }
         // Go retains the modified cluster options if persistence fails.
-        self.context
-            .storage
-            .save_config(&self.context.paths, &self.configuration)
-            .await?;
+        if self.context.persist_global_config {
+            self.context
+                .storage
+                .save_config(&self.context.paths, &self.configuration)
+                .await?;
+        }
         let scheduler = if handler_only {
             self.handlers.get_mut(name).unwrap()
         } else {

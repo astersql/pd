@@ -102,11 +102,17 @@ async fn run(
     initialized: Arc<std::sync::atomic::AtomicBool>,
     status: tokio::sync::watch::Sender<ScheduleStatus>,
 ) -> Result<(), String> {
-    let (config, storage, paths, scope) = {
+    let (config, storage, paths, scope, role) = {
         let guard = resources.lock().await;
         let r = guard.as_ref().ok_or("node stopped")?;
         let config = r.state.lock().unwrap().config.clone();
-        (config, r.storage.clone(), r.paths, r.metrics.clone())
+        (
+            config,
+            r.storage.clone(),
+            r.paths,
+            r.metrics.clone(),
+            r.role,
+        )
     };
     let pending = Arc::new(TTLUint64::new(
         tokio::runtime::Handle::current(),
@@ -120,7 +126,8 @@ async fn run(
         config: Arc::new(config),
         heartbeat: routing.clone(),
         pending: pending.clone(),
-        factory: FactoryContext::new(storage.clone(), paths, JobTime(now().1 as i128)),
+        factory: FactoryContext::new(storage.clone(), paths, JobTime(now().1 as i128))
+            .with_global_config_persistence(role == ClusterRole::Pd),
         scheduler_configuration: configuration,
         scatter_metrics: match &scope {
             Some(scope) => scope.scatter.clone(),
@@ -227,7 +234,7 @@ async fn run(
                 let mut guard=resources.lock().await;
                 let r=guard.as_mut().ok_or("node stopped")?;
                 if let Err(e)=super::hot_history::maintain(r,&coordinator,&cancel).await{*diagnostics.lock().unwrap()=Some(e);}
-                r.history.wait()
+                if r.role == ClusterRole::Pd { r.history.wait() } else { Duration::from_secs(3) }
             };
             super::schedule_split::drive(&mut splits, &mut coordinator, &resources).await;
             super::schedule_scatter::dispatch_new(&coordinator,&resources,&routing,&mut push_queue,&mut fast_operators,&cancel).await?;
@@ -476,9 +483,9 @@ async fn run(
                 if !allowed || config.schedule.halt_scheduling || paused {continue;}
                 let diagnostic=if config.schedule.enable_diagnostic {coordinator.diagnostic_recorders_mut().remove(&name)}else{None};
                 let policy=&mut coordinator.get_schedulers_controller_mut().get_mut(&name).ok_or("scheduler disappeared")?.scheduler.policy;
-                if ids.len() < 64 {
+                if r.role == ClusterRole::Pd && ids.len() < 64 {
                     let (last, count) = r
-                        .allocator
+
                         .alloc_count(128)
                         .await
                         .map_err(|e| e.to_string())?;
@@ -518,6 +525,7 @@ async fn run(
                     storage: &r.storage,
                     paths: r.paths,
                     ids: &mut ids,
+                    remote_ids: r.remote_ids.clone(),
                     hot: &mut hot,
                 };
                 let output = inputs.schedule(policy, interval, &cancel).await;

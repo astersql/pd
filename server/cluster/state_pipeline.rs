@@ -69,14 +69,34 @@ impl<C: CheckerConfigProvider + Send + 'static> StatePipeline<'_, C> {
         now_unix_nanos: i64,
         witness: Option<&std::sync::mpsc::SyncSender<Arc<RegionInfo>>>,
     ) -> Result<HeartbeatEffectsReceipt, StaleRegionError> {
+        self.region_with_outputs(region, now_unix_seconds, now_unix_nanos, witness, true)
+    }
+    /// Scheduling owns cache/statistics admission while PD owns region metadata
+    /// persistence and follower history. Both roles use the same admission kernel.
+    pub fn region_for_scheduling(
+        &self,
+        region: RegionInfo,
+        now_unix_seconds: i64,
+        now_unix_nanos: i64,
+    ) -> Result<HeartbeatEffectsReceipt, StaleRegionError> {
+        self.region_with_outputs(region, now_unix_seconds, now_unix_nanos, None, false)
+    }
+    fn region_with_outputs(
+        &self,
+        region: RegionInfo,
+        now_unix_seconds: i64,
+        now_unix_nanos: i64,
+        witness: Option<&std::sync::mpsc::SyncSender<Arc<RegionInfo>>>,
+        pd_outputs: bool,
+    ) -> Result<HeartbeatEffectsReceipt, StaleRegionError> {
         let receipt = submit_region_heartbeat(
             self.state,
             region,
             self.bucket_enabled,
             &self.runners,
-            Some(self.storage.clone()),
+            pd_outputs.then(|| self.storage.clone()),
             self.paths,
-            Some(self.downstreams.clone()),
+            pd_outputs.then(|| self.downstreams.clone()),
             now_unix_seconds,
         )?;
         // Duplicate admissions still carry flow samples; stale reports never reach here.

@@ -267,3 +267,17 @@ listener、缓存与delegate连接，不创建私有runtime或PD election。
 Go/Rust Router七方法的空/已bootstrap缓存、QueryRegion错误与EOF对照，
 以及嵌入缓存更新/删除/关闭连接专项；不是83–88、137/141/145/148的整体验收。
 完整配置/TLS、换主/故障收敛、探针和指标尚须对应拥有任务补齐，编号文件保持未完成。
+
+## Scheduling注册增量（验收16，2026-11-07）
+
+119–122七方法已有canonical `pkg/mcs/scheduling/server`及139/143宿主/CLI接线，
+复用ClusterHost调度、心跳、operator与split/scatter领域内核。
+PD角色保持原持久化和ID策略；Scheduling角色由PD公共AllocID获得真实规划ID，
+不预留空闲批次，不写PD region元数据/同步历史或整份配置。
+Router与Scheduling共用StoreWatcher和canonical缓存，不新增索引或私有runtime。
+
+[阶段证据](../server-api/acceptance/task-16.md#scheduling注册心跳角色与pd-id所有权阶段进行中)
+记录真实Go/Rust七方法、有效心跳与分裂分配以及独立元数据/ID副作用；单线程宿主
+阻塞回调执行真实PD RPC的专项已通过。CLI默认PD发现仍采用Go的etcd leader client URL；
+外置etcd/Rust PD拓扑须另补显式发现配置。119–123/139/143/147/148未销项，
+仍缺完整配置watch、reason/affinity、命令流/故障收敛、TLS及公共Diagnostics/health。

@@ -1,13 +1,12 @@
 // Copyright 2026 AsterSQL.
 use crate::Service;
-use astersql_pd_core::{BasicCluster, StoreInfo};
-use astersql_pd_etcdutil::ReconciledWatch;
-use astersql_pd_grpcutil::core_store_adapter::store_from_proto;
+use astersql_pd_core::BasicCluster;
 use astersql_pd_keypath::ClusterPaths;
 use astersql_pd_mcs_discovery::{ServiceRegister, ServiceRegistryEntry};
 use astersql_pd_mcs_server::{BaseServer, DelegateConnections, PrimaryObserver};
-use astersql_pd_proto::{metapb, pdpb, routerpb::router_server::RouterServer};
-use astersql_pd_storage_domain::{Event, MetaStore, StoreError, WatchBatch};
+use astersql_pd_mcs_utils::StoreWatcher;
+use astersql_pd_proto::{pdpb, routerpb::router_server::RouterServer};
+use astersql_pd_storage_domain::MetaStore;
 use prost::Message;
 use std::{
     net::SocketAddr,
@@ -39,24 +38,14 @@ impl RouterHost {
         L: axum::serve::Listener<Addr = SocketAddr> + Send + 'static,
     {
         let cancel = config.cancel.child_token();
-        let (snapshot, mut watch) = ReconciledWatch::load(
+        let stores = config.cluster.lock().unwrap().stores.clone();
+        let mut watch = StoreWatcher::load(
             config.store.clone(),
-            ClusterPaths::new(config.cluster_id)
-                .store_path_prefix()
-                .into_bytes(),
-            true,
-            128,
+            ClusterPaths::new(config.cluster_id),
+            stores,
             &cancel,
         )
         .await
-        .map_err(|e| e.to_string())?;
-        publish_stores(
-            &config.cluster,
-            &WatchBatch {
-                events: snapshot.entries.into_iter().map(Event::Put).collect(),
-                revision: snapshot.revision,
-            },
-        )
         .map_err(|e| e.to_string())?;
         let service = Service::new(config.cluster_id, config.cluster.clone(), cancel.clone());
         let mut listener = BaseServer::start(
@@ -87,12 +76,9 @@ impl RouterHost {
             }
         };
         let task_cancel = cancel.clone();
-        let cluster = config.cluster.clone();
         let metadata = config.runtime.spawn(async move {
             while !task_cancel.is_cancelled() {
-                let result = watch
-                    .apply_next(&task_cancel, |batch| publish_stores(&cluster, batch))
-                    .await;
+                let result = watch.advance(&task_cancel).await;
                 if result.is_err() {
                     pause(&task_cancel).await;
                 }
@@ -129,39 +115,6 @@ impl Drop for RouterHost {
             worker.abort();
         }
     }
-}
-fn publish_stores(cluster: &Mutex<BasicCluster>, batch: &WatchBatch) -> Result<(), StoreError> {
-    // Decode the whole batch before publishing, so a corrupt row cannot partially
-    // mutate the cache while the reconciled observer retains the old cursor.
-    let changes: Vec<_> = batch
-        .events
-        .iter()
-        .map(|event| match event {
-            Event::Put(row) => metapb::Store::decode(row.value.as_slice())
-                .map(|store| (store.id, store_from_proto(Some(store))))
-                .map_err(|_| StoreError::Backend),
-            Event::Delete { key, .. } => std::str::from_utf8(key)
-                .ok()
-                .and_then(|s| s.rsplit('/').next())
-                .and_then(|id| id.parse().ok())
-                .map(|id| (id, None))
-                .ok_or(StoreError::Backend),
-        })
-        .collect::<Result<_, _>>()?;
-    let cluster = cluster.lock().unwrap();
-    for (id, meta) in changes {
-        if let Some(meta) = meta {
-            if !cluster
-                .stores
-                .patch_store(id, |store| store.set_store_meta(&meta))
-            {
-                cluster.stores.put_store(Arc::new(StoreInfo::new(meta)));
-            }
-        } else {
-            cluster.stores.delete_store(id);
-        }
-    }
-    Ok(())
 }
 async fn pause(cancel: &CancellationToken) {
     tokio::select! {_=cancel.cancelled()=>{},_=tokio::time::sleep(Duration::from_millis(100))=>{}}

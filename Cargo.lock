@@ -532,11 +532,11 @@ name = "astersql-pd-mcs-router-server"
 version = "0.1.0"
 dependencies = [
  "astersql-pd-core",
- "astersql-pd-etcdutil",
  "astersql-pd-grpcutil",
  "astersql-pd-keypath",
  "astersql-pd-mcs-discovery",
  "astersql-pd-mcs-server",
+ "astersql-pd-mcs-utils",
  "astersql-pd-proto",
  "astersql-pd-server",
  "astersql-pd-storage-domain",
@@ -546,6 +546,22 @@ dependencies = [
  "prost",
  "tokio",
  "tokio-stream",
+ "tokio-util",
+ "tonic",
+]
+
+[[package]]
+name = "astersql-pd-mcs-scheduling-server"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-core",
+ "astersql-pd-grpcutil",
+ "astersql-pd-mcs-server",
+ "astersql-pd-proto",
+ "astersql-pd-schedule-hbstream",
+ "astersql-pd-server",
+ "futures-util",
+ "tokio",
  "tokio-util",
  "tonic",
 ]
@@ -604,12 +620,17 @@ dependencies = [
 name = "astersql-pd-mcs-utils"
 version = "0.1.0"
 dependencies = [
+ "astersql-pd-core",
  "astersql-pd-election",
+ "astersql-pd-etcdutil",
+ "astersql-pd-grpcutil",
  "astersql-pd-keypath",
  "astersql-pd-mcs-discovery",
+ "astersql-pd-proto",
  "astersql-pd-storage-domain",
  "astersql-pd-storage-kv",
  "astersql-pd-typeutil",
+ "prost",
  "rand",
  "tokio",
  "tokio-util",
@@ -818,7 +839,12 @@ dependencies = [
  "astersql-pd-keyspace",
  "astersql-pd-keyutil",
  "astersql-pd-logutil",
+ "astersql-pd-mcs-discovery",
+ "astersql-pd-mcs-scheduling-server",
+ "astersql-pd-mcs-server",
+ "astersql-pd-mcs-utils",
  "astersql-pd-member",
+ "astersql-pd-memberutil",
  "astersql-pd-metricutil",
  "astersql-pd-progress",
  "astersql-pd-proto",
@@ -858,6 +884,7 @@ dependencies = [
  "chrono",
  "chrono-tz",
  "etcd-client",
+ "futures-util",
  "iana-time-zone",
  "prometheus",
  "prost",

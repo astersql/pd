@@ -274,3 +274,6 @@ mod control_resource;
 
 #[cfg(test)]
 mod resource_manager_host_test;
+
+mod embed_scheduling;
+pub use embed_scheduling::{SchedulingHost, SchedulingHostConfig};

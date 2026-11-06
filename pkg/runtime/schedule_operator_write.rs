@@ -7,7 +7,6 @@ use astersql_pd_schedule_handler::{
     AdminPeerRequest, AdminRangeContext, CreationContext, Handler, OperatorCreation,
     handle_operator_creation,
 };
-use astersql_pd_schedule_operator::BuilderError;
 use astersql_pd_server::http_operator_write::Command;
 use serde_json::{Value, json};
 use std::{collections::VecDeque, sync::Arc};
@@ -79,13 +78,9 @@ pub(super) async fn write(
             .saturating_mul(((*retries).clamp(0, 30) + 1) as usize),
     };
     let mut allocated = VecDeque::new();
-    if width > 0 {
+    if width > 0 && r.role == ClusterRole::Pd {
         let count = u32::try_from(width).map_err(|_| "operator allocation is too large")?;
-        let (last, count) = r
-            .allocator
-            .alloc_count(count)
-            .await
-            .map_err(|e| e.to_string())?;
+        let (last, count) = r.alloc_count(count).await.map_err(|e| e.to_string())?;
         allocated.extend(last - u64::from(count) + 1..=last);
     }
     let config = r.state.lock().unwrap().config.clone();
@@ -105,6 +100,7 @@ pub(super) async fn write(
         now: super::now().0 as u64,
     };
     let mut state = r.state.lock().unwrap();
+    let remote = r.remote_ids.clone();
     let mut response = handle_operator_creation(
         Some(coordinator),
         &input,
@@ -120,9 +116,11 @@ pub(super) async fn write(
             cancellation: cancel,
         },
         || {
-            allocated
-                .pop_front()
-                .ok_or_else(|| BuilderError::Allocation("operator reservation exhausted".into()))
+            planner_id(
+                remote.as_deref(),
+                &mut allocated,
+                "operator reservation exhausted",
+            )
         },
     )
     .await;

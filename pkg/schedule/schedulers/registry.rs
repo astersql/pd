@@ -37,6 +37,8 @@ pub struct FactoryContext {
     pub now: JobTime,
     pub query_supported: bool,
     pub cpu_supported: bool,
+    /// Independent scheduling observes PD global options without persisting them.
+    pub persist_global_config: bool,
     pub hot_inputs: [HotRankInputs; 4],
 }
 impl FactoryContext {
@@ -52,8 +54,13 @@ impl FactoryContext {
             now,
             query_supported: true,
             cpu_supported: true,
+            persist_global_config: true,
             hot_inputs: std::array::from_fn(|_| HotRankInputs::default()),
         }
+    }
+    pub fn with_global_config_persistence(mut self, enabled: bool) -> Self {
+        self.persist_global_config = enabled;
+        self
     }
 }
 /// Exhaustive concrete policies, never BaseScheduler or an empty scheduler.

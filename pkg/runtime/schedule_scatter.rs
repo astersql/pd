@@ -3,7 +3,6 @@
 use super::*;
 use astersql_pd_schedule::Coordinator;
 use astersql_pd_schedule_config::SharedConfigProvider;
-use astersql_pd_schedule_operator::BuilderError;
 use astersql_pd_schedule_scatter::{ScatterBatchError, ScatterBatchFailure, ScatterBatchRequest};
 use astersql_pd_server::grpc_scatter::*;
 use tokio::sync::oneshot;
@@ -673,7 +672,7 @@ async fn scatter(
         .map_err(|e| ScatterError::Other(e.to_string()))?;
     let cluster = coordinator.get_cluster().clone();
     let config = r.state.lock().unwrap().config.clone();
-    let single = if request.ids.is_empty() && request.range.is_none() {
+    let single = if !request.batch && request.ids.is_empty() && request.range.is_none() {
         Some(
             cluster
                 .regions
@@ -705,11 +704,10 @@ async fn scatter(
         .sum::<usize>()
         .saturating_mul((request.retries.clamp(0, 30) + 1) as usize);
     let mut allocated = std::collections::VecDeque::new();
-    if width > 0 {
+    if width > 0 && r.role == ClusterRole::Pd {
         let count = u32::try_from(width)
             .map_err(|_| ScatterError::Other("scatter allocation is too large".into()))?;
         let (last, count) = r
-            .allocator
             .alloc_count(count)
             .await
             .map_err(|e| ScatterError::Other(e.to_string()))?;
@@ -739,10 +737,13 @@ async fn scatter(
         now().1 as i128,
         true,
     );
+    let remote = r.remote_ids.clone();
     let mut allocate = || {
-        allocated
-            .pop_front()
-            .ok_or_else(|| BuilderError::Allocation("scatter reservation exhausted".into()))
+        planner_id(
+            remote.as_deref(),
+            &mut allocated,
+            "scatter reservation exhausted",
+        )
     };
     if let Some(region) = single {
         let mut suspect = Default::default();

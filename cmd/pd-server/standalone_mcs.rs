@@ -45,14 +45,13 @@ pub(crate) fn main(service: &str, args: Vec<String>) -> ExitCode {
         .map_err(|e| e.to_string())
         .and_then(|runtime| {
             runtime.block_on(async {
-                let store: Arc<dyn MetaStore> = Arc::new(
-                    EtcdMetaStore::connect(
-                        &backend.split(',').map(String::from).collect::<Vec<_>>(),
-                        Duration::from_secs(2),
-                    )
-                    .await
-                    .map_err(|e| e.to_string())?,
-                );
+                let backend_store = EtcdMetaStore::connect(
+                    &backend.split(',').map(String::from).collect::<Vec<_>>(),
+                    Duration::from_secs(2),
+                )
+                .await
+                .map_err(|e| e.to_string())?;
+                let store: Arc<dyn MetaStore> = Arc::new(backend_store.clone());
                 let row = store
                     .read(Read::range(
                         b"/pd/cluster_id",
@@ -97,6 +96,37 @@ pub(crate) fn main(service: &str, args: Vec<String>) -> ExitCode {
                 let mut controller = astersql_pd_rm_server::ControllerConfig::default();
                 controller.adjust(&Default::default());
                 let host = match service {
+                    "scheduling" => {
+                        let delegates = Arc::new(astersql_pd_mcs_server::DelegateConnections::new(
+                            tokio::runtime::Handle::current(),
+                            &cancel,
+                            None,
+                        ));
+                        Host::Scheduling(
+                            astersql_pd_runtime::SchedulingHost::start(
+                                astersql_pd_runtime::SchedulingHostConfig {
+                                    runtime: tokio::runtime::Handle::current(),
+                                    cancel,
+                                    store,
+                                    cluster_id: cluster,
+                                    entry,
+                                    delegates,
+                                    registry: Arc::new(prometheus::Registry::new()),
+                                    pd_leader_lookup: Arc::new(move || {
+                                        let backend = backend_store.clone();
+                                        Box::pin(async move {
+                                            backend
+                                                .consensus_leader_client_url()
+                                                .await
+                                                .map_err(|e| e.to_string())
+                                        })
+                                    }),
+                                },
+                                listener,
+                            )
+                            .await?,
+                        )
+                    }
                     "router" => {
                         let delegates = Arc::new(astersql_pd_mcs_server::DelegateConnections::new(
                             tokio::runtime::Handle::current(),
@@ -141,6 +171,7 @@ pub(crate) fn main(service: &str, args: Vec<String>) -> ExitCode {
                     .map_err(|e| e.to_string())?;
                 match host {
                     Host::Router(host) => host.shutdown().await,
+                    Host::Scheduling(host) => host.shutdown().await,
                     Host::ResourceManager(host) => host.shutdown().await,
                 }
             })
@@ -155,6 +186,7 @@ pub(crate) fn main(service: &str, args: Vec<String>) -> ExitCode {
 }
 
 enum Host {
+    Scheduling(astersql_pd_runtime::SchedulingHost),
     Router(astersql_pd_mcs_router_server::RouterHost),
     ResourceManager(astersql_pd_rm_server::ResourceManagerHost),
 }
