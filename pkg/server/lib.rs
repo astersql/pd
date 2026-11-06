@@ -1,7 +1,5 @@
 // Copyright 2026 AsterSQL.
 //! HTTP and gRPC adapters for the minimal classic PD role.
-mod diagnostics_info;
-mod diagnostics_log;
 mod grpc;
 mod grpc_alloc_id;
 pub mod grpc_ask_split;
@@ -657,10 +655,19 @@ fn router_with_options(
     )
     .add_service(
         astersql_pd_proto::diagnosticspb::diagnostics_server::DiagnosticsServer::new(
-            diagnostics_log::DiagnosticsLog {
-                services: services.clone(),
-                cancel: cancel.clone(),
-            },
+            astersql_pd_mcs_server::DiagnosticsService::new(
+                tokio::runtime::Handle::current(),
+                cancel.clone(),
+                {
+                    let services = services.clone();
+                    Arc::new(move || {
+                        services
+                            .telemetry_config()
+                            .map(|c| c.log.file.filename.clone())
+                            .unwrap_or_default()
+                    })
+                },
+            ),
         ),
     )
     .add_service(

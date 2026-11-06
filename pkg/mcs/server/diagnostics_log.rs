@@ -17,9 +17,24 @@ use tokio_stream::{Stream, wrappers::ReceiverStream};
 use tokio_util::sync::CancellationToken;
 use tonic::{Request, Response, Status};
 
-pub(crate) struct DiagnosticsLog {
-    pub services: Arc<dyn crate::PdServices>,
-    pub cancel: CancellationToken,
+/// Diagnostics over host-provided log configuration and blocking executor.
+pub struct DiagnosticsService {
+    log_path: Arc<dyn Fn() -> String + Send + Sync>,
+    runtime: tokio::runtime::Handle,
+    cancel: CancellationToken,
+}
+impl DiagnosticsService {
+    pub fn new(
+        runtime: tokio::runtime::Handle,
+        cancel: CancellationToken,
+        log_path: Arc<dyn Fn() -> String + Send + Sync>,
+    ) -> Self {
+        Self {
+            runtime,
+            cancel,
+            log_path,
+        }
+    }
 }
 
 pub(crate) struct LogStream {
@@ -51,13 +66,14 @@ impl Drop for LogStream {
 }
 
 #[tonic::async_trait]
-impl Diagnostics for DiagnosticsLog {
+impl Diagnostics for DiagnosticsService {
     async fn server_info(
         &self,
         request: Request<astersql_pd_proto::diagnosticspb::ServerInfoRequest>,
     ) -> Result<Response<astersql_pd_proto::diagnosticspb::ServerInfoResponse>, Status> {
         let tp = request.into_inner().tp;
-        tokio::task::spawn_blocking(move || crate::diagnostics_info::collect(tp))
+        self.runtime
+            .spawn_blocking(move || crate::diagnostics_info::collect(tp))
             .await
             .map_err(|error| Status::internal(error.to_string()))?
             .map(Response::new)
@@ -67,17 +83,13 @@ impl Diagnostics for DiagnosticsLog {
         &self,
         request: Request<SearchLogRequest>,
     ) -> Result<Response<tonic::codegen::BoxStream<SearchLogResponse>>, Status> {
-        let path = self
-            .services
-            .telemetry_config()
-            .map(|c| c.log.file.filename.clone())
-            .unwrap_or_default();
+        let path = (self.log_path)();
         let cancel = self.cancel.child_token();
         let worker_cancel = cancel.clone();
         let request = request.into_inner();
         let (tx, receiver) = mpsc::channel(1);
-        let runtime = tokio::runtime::Handle::current();
-        tokio::task::spawn_blocking(move || {
+        let runtime = self.runtime.clone();
+        self.runtime.spawn_blocking(move || {
             let send = |batch| {
                 runtime.block_on(async {
                     tokio::select! { biased;
@@ -308,7 +320,7 @@ fn search(
     let patterns = request
         .patterns
         .iter()
-        .map(|p| crate::http_store_read::go_pattern(p).map_err(Status::unknown))
+        .map(|p| crate::go_pattern(p).map_err(Status::unknown))
         .collect::<Result<Vec<_>, _>>()?;
     let levels = request.levels.iter().fold(0u64, |mask, level| {
         // Go's int64 shift discards bits >=64 and panics on a negative shift.

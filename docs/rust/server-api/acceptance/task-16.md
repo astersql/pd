@@ -489,3 +489,46 @@ Router 3项、classic AskBatchSplit与Scatter各1项均通过。Runtime全包108
 0失败、38项历史条件测试忽略；没有把这些忽略计入通过，也没有扩大为workspace全测试。
 原有1142项Go/模块/plan.md守卫一致。原始证据保存于
 [Scheduling压缩回执](task-16-scheduling.json.gz)，包含最初red的二进制摘要及Rust patch。
+
+## 公共MCS Diagnostics与health注册阶段（进行中）
+
+2026-11-07，基准`8ac591ae9`。现成Go oracle四种MCS均提供Diagnostics及
+`grpc.health.v1.Health/{Check,List,Watch}`；初始Rust四种MCS全部返回Unimplemented。
+实际差分记录四种服务各自的空日志配置错误、未知ServerInfo类型、空/未知health服务
+Check/Watch及List。第一次fixture错误把prost省略的空map key字段计入编码，修正为
+Go响应decode/re-encode后观察到的字节，再记录真正Rust注册失败；不把fixture错误
+作为生产red。原始结果包含全部八个sidecar，不在首个错误后停止收集。
+
+Diagnostics日志读取、机器观测及RE2解析移动到canonical公共`pkg/mcs/server`，
+classic PD与全部MCS复用；不新增领域副本或反向依赖。调用者提供log path getter、
+Tokio Handle及取消scope，文件/机器IO用宿主blocking pool；RE2旧HTTP入口保留窄
+re-export。MCS宿主新增可选日志路径入口，旧调用者仍默认空路径；CLI完整配置仍待补齐。
+公共health只注册Go同样的空service=SERVING，未知Check返回NotFound/unknown service，
+未知Watch首帧SERVICE_UNKNOWN并保持等待。它表示listener可用，不表示primary或bootstrap。
+Watch按需求驱动，不产生每连接后台任务，取消/宿主关闭释放保留流。
+
+health协议由固定grpc-go v1.82.1的FileDescriptorProto生成，来源/摘要在
+`pkg/proto/grpc-health-provenance.json`，descriptor SHA-256为
+`ece2cefbd2f9521efdfadfd89cf3d297c3be45ca4298aa24674b30b397d554d5`。
+从现成Go generated rawDesc只读提取，未运行Go或引入新外部依赖；Rust build只消费
+已固定的871-byte binary descriptor。绑定包含List，单独导出HEALTH_DESCRIPTOR_SET，
+不修改固定kvproto descriptor集合、42 wire ID或方法拥有任务。
+
+公共原有14项专项与新增日志/保留Watch关闭专项通过。四种MCS及classic PD实际差分、
+TSO原业务路由/宿主回归和workspace检查继续，整项16未完成。
+
+原TSO宿主业务GetMinTS、注册/启动错误清理、打开的TSO流与新增保留Health Watch
+关闭测试通过。classic日志完整Go/Rust差分已通过。首次classic回归漏传旧测试必需的
+14/15回执环境变量，修正环境后保留原断言；ServerInfo的native arm64与固定Rosetta
+amd64对照触发16KiB/4KiB页大小差异，遵循验收15已有的同架构准入重新构建amd64，
+不硬编码页大小或修改测试范围。上述环境/架构失败不归为本阶段生产行为red。
+
+同架构amd64 ServerInfo完整Go/Rust差分通过，包含未知类型、follower本机观测、
+命令缺失/恢复/stderr/3秒超时及独立内存区间采样。amd64产物仅复制到所领取槽位内
+独立测试文件，运行结束删除；默认native产物未覆盖。公共注册四种Go/Rust MCS
+差分1项通过，classic日志差分1项通过，ServerInfo同架构差分1项通过，均无忽略。
+
+原kvproto八项兼容测试及workspace check通过；42项固定方法清单不变。
+完整阶段日志、最初注册red、环境/架构错误、两个架构产物摘要与实际机器/日志回执
+保存在[公共注册压缩回执](task-16-common-registration.json.gz)。同一次native组合命令
+记录为1通过/1失败，后续独立amd64 ServerInfo命令0失败，未将组合命令伪记为全绿。

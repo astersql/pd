@@ -14,3 +14,13 @@ mod primary_observer;
 pub use primary_observer::PrimaryObserver;
 #[cfg(test)]
 mod primary_observer_test;
+
+mod auxiliary;
+mod diagnostics_info;
+mod diagnostics_log;
+mod go_pattern;
+pub use auxiliary::auxiliary_routes;
+pub use diagnostics_log::DiagnosticsService;
+pub use go_pattern::go_pattern;
+#[cfg(test)]
+mod auxiliary_test;

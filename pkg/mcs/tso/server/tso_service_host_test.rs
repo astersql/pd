@@ -73,6 +73,16 @@ async fn mcs_082_ready_registry_and_shutdown() {
         .entries;
     assert_eq!(entries.len(), 1);
     assert!(entries[0].lease.is_some());
+    let mut health =
+        astersql_pd_proto::health::health_client::HealthClient::connect(address.clone())
+            .await
+            .unwrap();
+    let mut health_watch = health
+        .watch(astersql_pd_proto::health::HealthCheckRequest::default())
+        .await
+        .unwrap()
+        .into_inner();
+    assert_eq!(health_watch.message().await.unwrap().unwrap().status, 1);
     let mut client = astersql_pd_proto::tsopb::tso_client::TsoClient::connect(address)
         .await
         .unwrap();
@@ -102,6 +112,12 @@ async fn mcs_082_ready_registry_and_shutdown() {
         .await
         .unwrap();
     assert!(!matches!(end, Ok(Some(_))));
+    assert!(
+        tokio::time::timeout(std::time::Duration::from_secs(5), health_watch.message())
+            .await
+            .unwrap()
+            .is_err()
+    );
     drop(sender);
     assert!(
         !cancel.is_cancelled(),

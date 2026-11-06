@@ -294,6 +294,7 @@ dependencies = [
  "tokio-stream",
  "tokio-util",
  "tonic",
+ "tonic-prost",
 ]
 
 [[package]]
@@ -578,11 +579,16 @@ dependencies = [
  "astersql-pd-storage-kv",
  "async-trait",
  "axum",
+ "chrono",
+ "futures-util",
  "hyper",
  "hyper-util",
+ "libc",
+ "regex",
  "rustls",
  "tokio",
  "tokio-rustls",
+ "tokio-stream",
  "tokio-util",
  "tonic",
  "tower",
@@ -596,6 +602,7 @@ dependencies = [
  "astersql-pd-keypath",
  "astersql-pd-keyspace",
  "astersql-pd-mcs-discovery",
+ "astersql-pd-mcs-server",
  "astersql-pd-mcs-utils",
  "astersql-pd-proto",
  "astersql-pd-storage-domain",

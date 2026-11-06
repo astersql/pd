@@ -37,6 +37,17 @@ impl RouterHost {
     where
         L: axum::serve::Listener<Addr = SocketAddr> + Send + 'static,
     {
+        Self::start_with_log_file(config, listener, String::new()).await
+    }
+    /// Register common diagnostics with the log path owned by the embedding host.
+    pub async fn start_with_log_file<L>(
+        config: HostConfig,
+        listener: L,
+        log_file: String,
+    ) -> Result<Self, String>
+    where
+        L: axum::serve::Listener<Addr = SocketAddr> + Send + 'static,
+    {
         let cancel = config.cancel.child_token();
         let stores = config.cluster.lock().unwrap().stores.clone();
         let mut watch = StoreWatcher::load(
@@ -48,11 +59,18 @@ impl RouterHost {
         .await
         .map_err(|e| e.to_string())?;
         let service = Service::new(config.cluster_id, config.cluster.clone(), cancel.clone());
+        let diagnostics_runtime = config.runtime.clone();
         let mut listener = BaseServer::start(
             config.runtime.clone(),
             &cancel,
             listener,
-            move |_| Ok(tonic::service::Routes::new(RouterServer::new(service)).into_axum_router()),
+            move |cancel| {
+                Ok(
+                    astersql_pd_mcs_server::auxiliary_routes(diagnostics_runtime, cancel, log_file)
+                        .add_service(RouterServer::new(service))
+                        .into_axum_router(),
+                )
+            },
             vec![],
         )
         .await?;

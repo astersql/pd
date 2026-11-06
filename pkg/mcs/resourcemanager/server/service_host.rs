@@ -77,6 +77,17 @@ impl ResourceManagerHost {
     where
         L: axum::serve::Listener<Addr = SocketAddr> + Send + 'static,
     {
+        Self::start_with_log_file(config, listener, String::new()).await
+    }
+    /// Register common diagnostics with the log path owned by the embedding host.
+    pub async fn start_with_log_file<L>(
+        config: HostConfig,
+        listener: L,
+        log_file: String,
+    ) -> Result<Self, String>
+    where
+        L: axum::serve::Listener<Addr = SocketAddr> + Send + 'static,
+    {
         let cancel = config.cancel.child_token();
         let state = Arc::new(State {
             cluster_id: config.cluster_id,
@@ -85,13 +96,18 @@ impl ResourceManagerHost {
             term: RwLock::new(None),
         });
         let host = state.clone();
+        let diagnostics_runtime = config.runtime.clone();
         let mut listener = BaseServer::start(
             config.runtime.clone(),
             &cancel,
             listener,
             move |cancel| {
-                let service = ResourceManagerServer::new(Service::new(host, cancel));
-                Ok(tonic::service::Routes::new(service).into_axum_router())
+                let service = ResourceManagerServer::new(Service::new(host, cancel.clone()));
+                Ok(
+                    astersql_pd_mcs_server::auxiliary_routes(diagnostics_runtime, cancel, log_file)
+                        .add_service(service)
+                        .into_axum_router(),
+                )
             },
             vec![],
         )

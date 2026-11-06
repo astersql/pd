@@ -281,3 +281,12 @@ Router与Scheduling共用StoreWatcher和canonical缓存，不新增索引或私�
 阻塞回调执行真实PD RPC的专项已通过。CLI默认PD发现仍采用Go的etcd leader client URL；
 外置etcd/Rust PD拓扑须另补显式发现配置。119–123/139/143/147/148未销项，
 仍缺完整配置watch、reason/affinity、命令流/故障收敛、TLS及公共Diagnostics/health。
+
+## 公共辅助注册增量（验收16，2026-11-07）
+
+62/82/88/123等公共listener装配补接Diagnostics与health Check/List/Watch，复用
+`pkg/mcs/server`唯一实现及固定grpc-go v1.82.1 health descriptor。classic PD共享
+Diagnostics工厂，HTTP selector与日志RE2规则共享同一解析函数。
+[阶段证据](../server-api/acceptance/task-16.md#公共mcs-diagnostics与health注册阶段进行中)
+记录四种MCS原先Unimplemented的对照及宿主日志/Watch生命周期测试；不把公共health
+新增为kvproto 42方法或批量关闭原任务，完整配置、指标、TLS和换主矩阵继续。

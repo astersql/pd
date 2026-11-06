@@ -132,3 +132,11 @@ canonical MCS公共包。原任务继续保留，尚缺完整primary缓存、fol
 Go/Rust心跳、错误/EOF、空请求与PD-owned分裂ID对照，以及空闲调度器不消耗ID、
 不持久化PD region元数据的副作用验证。119–123/139/143/147/148尚未整体验收。
 全MCS公共Diagnostics/health仍需装配，不能把业务七方法等同完整listener注册。
+
+## 公共辅助服务注册增量（2026-11-07）
+
+四种MCS的listener均须同时提供Diagnostics和grpc health；仅注册业务descriptor
+不满足Go的StartGRPCAndHTTPServers。Diagnostics与classic PD共用canonical实现，
+health Check/List/Watch采用固定grpc-go descriptor，独立于本表42个kvproto wire ID。
+[当前阶段证据](task-16.md#公共mcs-diagnostics与health注册阶段进行中)保留四种MCS
+初始全部Unimplemented的真实差分，不改变Diagnostics原14/15及装配62/88/123/148责任。

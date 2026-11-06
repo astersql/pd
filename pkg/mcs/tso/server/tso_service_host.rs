@@ -22,7 +22,7 @@ impl TsoServiceHost {
         groups: Arc<KeyspaceGroupManager>,
         listener: tokio::net::TcpListener,
     ) -> Result<Self, TsoError> {
-        Self::start_inner(config, groups, listener, None, None).await
+        Self::start_inner(config, groups, listener, None, None, String::new()).await
     }
     /// Independent TSO hosts complete transitions through the PD leader's existing HTTP API.
     pub async fn start_with_pd_http(
@@ -31,7 +31,7 @@ impl TsoServiceHost {
         listener: tokio::net::TcpListener,
         pd_url: String,
     ) -> Result<Self, TsoError> {
-        Self::start_inner(config, groups, listener, Some(pd_url), None).await
+        Self::start_inner(config, groups, listener, Some(pd_url), None, String::new()).await
     }
     /// Start the same embedded host with process identity supplied by its caller.
     pub async fn start_with_entry(
@@ -41,7 +41,18 @@ impl TsoServiceHost {
         pd_url: Option<String>,
         entry: ServiceRegistryEntry,
     ) -> Result<Self, TsoError> {
-        Self::start_inner(config, groups, listener, pd_url, Some(entry)).await
+        Self::start_inner(config, groups, listener, pd_url, Some(entry), String::new()).await
+    }
+    /// Start with diagnostics reading the embedding host's log location.
+    pub async fn start_with_log_file(
+        config: GroupWatchConfig,
+        groups: Arc<KeyspaceGroupManager>,
+        listener: tokio::net::TcpListener,
+        pd_url: Option<String>,
+        entry: ServiceRegistryEntry,
+        log_file: String,
+    ) -> Result<Self, TsoError> {
+        Self::start_inner(config, groups, listener, pd_url, Some(entry), log_file).await
     }
     async fn start_inner(
         config: GroupWatchConfig,
@@ -49,6 +60,7 @@ impl TsoServiceHost {
         listener: tokio::net::TcpListener,
         pd_url: Option<String>,
         entry: Option<ServiceRegistryEntry>,
+        log_file: String,
     ) -> Result<Self, TsoError> {
         if !groups.uses_metadata_store(&config.store, config.cluster_id) {
             return Err(TsoError::StoreMismatch);
@@ -110,7 +122,15 @@ impl TsoServiceHost {
             cancel.clone(),
             entry,
         );
-        let app = http.fallback_service(TsoServer::new(service));
+        let app = http.merge(
+            astersql_pd_mcs_server::auxiliary_routes(
+                config.runtime.clone(),
+                cancel.clone(),
+                log_file,
+            )
+            .add_service(TsoServer::new(service))
+            .into_axum_router(),
+        );
         let serve = config.runtime.spawn(async move {
             let result = axum::serve(listener, app)
                 .with_graceful_shutdown(serve_cancel.cancelled_owned())

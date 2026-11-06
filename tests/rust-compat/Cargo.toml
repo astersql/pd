@@ -35,6 +35,7 @@ name = "tso"
 path = "tso_test.rs"
 
 [dev-dependencies]
+tonic-prost.workspace = true
 astersql-pd-typeutil.workspace = true
 chrono.workspace = true
 chrono-tz.workspace = true

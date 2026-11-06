@@ -13,3 +13,11 @@ pub const SOURCE_COMMIT: &str = "f8ad079c8e9812ed5900b0c12b5f1d97171464c4";
 #[cfg(test)]
 #[path = "proto_compat_test.rs"]
 mod proto_compat_test;
+
+/// grpc-go v1.82.1 health protocol; separate from the fixed kvproto service inventory.
+pub mod health {
+    include!(concat!(env!("OUT_DIR"), "/grpc.health.v1.rs"));
+}
+/// Health FileDescriptorProto provenance is recorded alongside the pinned binary input.
+pub const HEALTH_DESCRIPTOR_SET: &[u8] =
+    include_bytes!(concat!(env!("OUT_DIR"), "/grpc-health.bin"));

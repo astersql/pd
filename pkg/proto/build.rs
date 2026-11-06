@@ -2,6 +2,7 @@
 
 use std::{env, fs, path::PathBuf, process::Command};
 
+use prost::Message;
 use sha2::{Digest, Sha256};
 
 const VERSION: &str = "v0.0.0-20261016101550-f8ad079c8e98";
@@ -84,4 +85,17 @@ fn main() {
             &[proto, include, protoc_bin_vendored::include_path().unwrap()],
         )
         .expect("generate pinned kvproto tonic/prost bindings");
+    // grpc-go v1.82.1 health descriptor, kept separate from the kvproto inventory.
+    println!("cargo:rerun-if-changed=grpc-health-v1.file-descriptor.bin");
+    let health = include_bytes!("grpc-health-v1.file-descriptor.bin");
+    assert_eq!(
+        format!("{:x}", Sha256::digest(health)),
+        "ece2cefbd2f9521efdfadfd89cf3d297c3be45ca4298aa24674b30b397d554d5"
+    );
+    let file = prost_types::FileDescriptorProto::decode(health.as_slice()).unwrap();
+    let health_set = prost_types::FileDescriptorSet { file: vec![file] };
+    fs::write(out.join("grpc-health.bin"), health_set.encode_to_vec()).unwrap();
+    tonic_prost_build::configure()
+        .compile_fds(health_set)
+        .expect("generate pinned grpc-go health bindings");
 }
