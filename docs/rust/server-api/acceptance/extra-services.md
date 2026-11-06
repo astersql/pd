@@ -105,3 +105,14 @@ classic未注册的7项只分配审计责任，不分配新领域实现。
 未重写领域或修改只读plan.md。保留历史task-002覆盖压缩回执不变；
 [控制面coverage补充](../../control-plane-mcs/coverage.md#验收16补充classic-rm代理责任2026-11-06)
 使历史未收录的proxy来源获得当前明确责任。
+
+## 独立RM增量证据（2026-11-07）
+
+六个RM方法现在也由`pkg/mcs/resourcemanager/server/service_host.rs`在独立listener
+提供；`services resource-manager`不再是缺失入口。现成Go PD为双方共享的
+元数据上游，Go/Rust sidecar对照覆盖注册/participant ID、五个管理方法、token流、
+实时设置/删除及保留流关闭。三个管理写方法按独立服务策略拒绝；设置事件不重复
+增加token delta。详见[阶段证据](task-16.md#rm配额协调与独立宿主阶段)。
+
+上述仍不是classic fallback=false代理、TLS、watch compaction或148整体验收，
+42个wire ID与唯一拥有任务保持原分配，不能批量标记100/101/138完成。

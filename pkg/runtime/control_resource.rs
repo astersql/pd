@@ -35,9 +35,24 @@ impl ResourceResources {
                 tokio::time::Instant::now() + std::time::Duration::from_secs(60),
                 std::time::Duration::from_secs(60),
             );
+            let mut reconcile = tokio::time::interval_at(
+                tokio::time::Instant::now() + std::time::Duration::from_secs(1),
+                std::time::Duration::from_secs(1),
+            );
+            let mut cleanup = tokio::time::interval_at(
+                tokio::time::Instant::now() + std::time::Duration::from_secs(60),
+                std::time::Duration::from_secs(60),
+            );
             loop {
                 tokio::select! {biased;
                     _=stopped.cancelled()=>break,
+                    _=reconcile.tick()=>{
+                        tokio::select!{biased;_=stopped.cancelled()=>break,_=async{state.lock().await.conciliate();}=>{}}
+                    }
+                    _=cleanup.tick()=>{
+                        let now=std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap_or_default().as_nanos()as i64;
+                        tokio::select!{biased;_=stopped.cancelled()=>break,_=async{state.lock().await.cleanup_demand_trackers(now);}=>{}}
+                    }
                     _=ticker.tick()=>{
                         tokio::select!{biased;
                             _=stopped.cancelled()=>break,

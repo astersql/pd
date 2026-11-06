@@ -56,7 +56,17 @@ async fn attempt(
         )
         .await;
     if result.is_err() {
-        bind_reserved(address).unwrap();
+        if let Err(error) = bind_reserved(address) {
+            let owners = std::process::Command::new("lsof")
+                .args(["-nP", &format!("-iTCP:{}", address.port())])
+                .output()
+                .map(|output| String::from_utf8_lossy(&output.stdout).into_owned())
+                .unwrap_or_default();
+            panic!(
+                "listener {address} was not released after {:?}: {error}; port owners:\n{owners}",
+                result.as_ref().err()
+            );
+        }
     }
     result
 }

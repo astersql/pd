@@ -16,3 +16,5 @@ mod leader_priority;
 pub use leader_priority::*;
 #[cfg(test)]
 mod leader_priority_test;
+
+pub use astersql_pd_election::LeadershipStore;

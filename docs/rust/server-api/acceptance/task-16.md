@@ -258,3 +258,58 @@ RPC JSON、保护守卫、输入与当前源码/二进制摘要及运行器。�
 五项现成输入摘要重新匹配，Go/模块1101项及plan.md 41项仍与总守卫一致。
 没有Go构建、Go测试、生成器、make或failpoint写入；Go只运行已有PD二进制及只读build-info。
 工作区完整test仍由后续24集中执行，当前完整server包的8项未通过没有被覆盖。
+
+## RM配额、协调与独立宿主阶段
+
+2026-11-07，基准提交`02a8c198e`。本阶段继续验收16，尚不销项原拥有任务。
+`rm_service_limit`在同一keyspace的多个组之间共享可补充额度，最多积累5秒额度；
+`rm_conciliate`使用真实客户端需求EMA，按priority和同级比例覆盖运行速率，
+不改写持久配置。宿主驱动1秒协调和60秒过期tracker清理；覆盖组桶时保留
+属于keyspace manager的需求tracker，删除组时清除它。
+
+真实Go/Rust失败后通过的场景：额度10的两个无限组在补充后共享50 token，
+其他keyspace保持独立；priority变化使两组运行burst由100/50反转为50/100，
+配置仍为100。原始额度与协调请求、响应及观察时间均保留，不归一化余额。
+
+独立`services resource-manager`使用原canonical RM crate和新增的canonical
+`pkg/mcs/server`公共listener；后者接受宿主runtime handle、listener和取消token，
+只在完整路由交给worker后执行start callback。公共listener关闭时取消已接受IO，
+有界等待worker；测试验证保留连接关闭、端口释放、callback失败回收和父runtime继续工作。
+`pkg/utils/memberutil`集中Go SHA256前8字节小端participant ID。
+原runtime的TermStore原样移至`pkg/election/leadership_store.rs`，两处宿主复用同一
+任期栅栏；没有第二套选主或持久化内核。独立宿主复用ServiceRegister、Leadership、
+LeaseKeep、LeaderWatch及expected-primary工具，按原`resource_manager`路径注册和选主。
+
+独立服务初始快照版先通过注册ID、读取和写入拒绝，真实失败在实时priority未更新；
+随后从单个线性一致快照的revision+1订阅元数据。设置事件只改配置，不重复增加
+metadata中的token delta；状态事件保留运行slot/override/tracker，删除设置清除组。
+服务继续使用同一manager；未在transport中建立平行缓存。独立RM拒绝三个写RPC，
+错误为FailedPrecondition和`resource group metadata writes must be handled by PD`。
+六方法真实进程测试已通过，包含token分配、设置/删除及关闭后保留流退出。
+同一现成Go PD作为双方元数据上游；此场景不冒充Rust classic代理验收。
+
+本阶段仍缺watch断连/compaction故障差分、完整RU策略运行应用、classic
+fallback=false的metadata-only角色与代理池、TLS及双部署148矩阵。当前经典RM
+适配仍无条件本地注册，不能以独立服务通过代替条件装配或代理证据。
+`rms-watcher-red`记录的是一次Cargo包名输入错误；真正行为red为
+`rms-watcher-behavior-red`的实时priority断言，不将编译或命令错误计作TDD失败。
+当前结果如下；先前两个阶段回执不覆盖。
+
+| 验证 | 结果 |
+|---|---|
+| RM包级 | 14通过、0失败、0忽略 |
+| 共享listener / member ID / election | 2 / 1 / 19通过，均0失败、0忽略 |
+| 最终Go/Rust RM线级回归 | 8通过、0失败、0忽略，逐测试真实运行双方进程 |
+| 最新完整runtime（4线程） | 107通过、0失败、38历史忽略 |
+| workspace check、fmt check、metadata、CLI build | exit0，使用共享槽位1 |
+| Go/module/plan.md保护检查 | 1142项无差异 |
+
+相邻首次完整runtime仍有106通过/1失败/38忽略，失败是join preflight在返回
+错误后立即重绑定端口得到AddrInUse。没有删除释放断言或增加重试；仅在失败时
+补实际错误与端口owner诊断。专项4项与后续完整107项通过，不能据此认定偶发问题
+已修复。三个操作系统socket探针未发现端口碰撞；其中3.57秒wildcard探针与第二次
+runtime诊断运行重叠，原始记录如实保留，不用该次通过证明首个失败的根因。
+该不确定项继续交验收22/23/24集中回归处理，不阻止继续实施代理。
+
+不可变[本阶段压缩回执](task-16-rm-quota-watch.json.gz)保留所有阶段命令、真实red、
+原始RPC请求/响应、失败日志、工具与源码摘要以及上述未覆盖边界。

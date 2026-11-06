@@ -141,6 +141,11 @@ pub fn main() -> ExitCode {
         return crate::standalone_tso::main(raw[2..].to_vec());
     }
 
+    if raw.first().is_some_and(|s| s == "services")
+        && raw.get(1).is_some_and(|s| s == "resource-manager")
+    {
+        return crate::standalone_rm::main(raw[2..].to_vec());
+    }
     let args = match crate::cli_exit::parse(crate::cli_exit::process_args()) {
         Ok(args) => args,
         Err(error) => {

@@ -35,3 +35,6 @@ pub use watch_reset::*;
 mod watch_reset_test;
 
 mod metrics;
+
+mod leadership_store;
+pub use leadership_store::LeadershipStore;

@@ -9,6 +9,9 @@ use tonic::{Request, Response, Status};
 #[async_trait::async_trait]
 pub trait Host: Send + Sync {
     async fn manager(&self) -> Result<Arc<Mutex<Manager>>, Status>;
+    fn reject_metadata_writes(&self) -> bool {
+        false
+    }
     async fn consumption_keyspace_exists(&self, id: u32) -> bool;
 }
 #[derive(Clone)]
@@ -67,6 +70,11 @@ impl ResourceManager for Service {
         req: Request<p::PutResourceGroupRequest>,
     ) -> Result<Response<p::PutResourceGroupResponse>, Status> {
         let mut state = self.manager().await?;
+        if self.host.reject_metadata_writes() {
+            return Err(Status::failed_precondition(
+                "resource group metadata writes must be handled by PD",
+            ));
+        }
         let group = req.into_inner().group.unwrap_or_default();
         let id = codec::keyspace(group.keyspace_id.as_ref());
         state
@@ -83,6 +91,11 @@ impl ResourceManager for Service {
         req: Request<p::PutResourceGroupRequest>,
     ) -> Result<Response<p::PutResourceGroupResponse>, Status> {
         let mut state = self.manager().await?;
+        if self.host.reject_metadata_writes() {
+            return Err(Status::failed_precondition(
+                "resource group metadata writes must be handled by PD",
+            ));
+        }
         let group = req.into_inner().group.unwrap_or_default();
         let id = codec::keyspace(group.keyspace_id.as_ref());
         state
@@ -100,6 +113,11 @@ impl ResourceManager for Service {
     ) -> Result<Response<p::DeleteResourceGroupResponse>, Status> {
         let req = req.into_inner();
         let mut state = self.manager().await?;
+        if self.host.reject_metadata_writes() {
+            return Err(Status::failed_precondition(
+                "resource group metadata writes must be handled by PD",
+            ));
+        }
         state
             .delete(
                 codec::keyspace(req.keyspace_id.as_ref()),

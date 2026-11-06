@@ -61,6 +61,20 @@ impl Persistence for Storage {
             .map(|((id, _), (g, s))| (id, g, s))
             .collect())
     }
+    async fn limits(&self) -> Result<Vec<(u32, f64)>, String> {
+        let mut limits = Vec::new();
+        StorageEndpoint::new(self.0.clone())
+            .load_service_limits(|id, rate| limits.push((id, rate)))
+            .await
+            .map_err(|e| e.to_string())?;
+        Ok(limits)
+    }
+    async fn save_limit(&self, id: u32, rate: f64) -> Result<(), String> {
+        StorageEndpoint::new(self.0.clone())
+            .save_service_limit(id, rate)
+            .await
+            .map_err(|e| e.to_string())
+    }
     async fn save_setting(&self, id: u32, g: &Group) -> Result<(), String> {
         StorageEndpoint::new(self.0.clone())
             .save_resource_group_setting(id, &g.name, &encode(g, id).encode_to_vec())

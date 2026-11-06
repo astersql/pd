@@ -13,6 +13,7 @@ name = "pd-server"
 path = "bin_main.rs"
 
 [dependencies]
+astersql-pd-rm-server.workspace = true
 astersql-pd-mcs-tso-server.workspace = true
 astersql-pd-mcs-discovery.workspace = true
 astersql-pd-tso.workspace = true

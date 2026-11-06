@@ -264,3 +264,20 @@ pub use rm_bucket::BucketRuntime;
 mod rm_bucket_test;
 
 mod rm_controller;
+
+mod rm_service_limit;
+pub use rm_service_limit::ServiceLimit;
+#[cfg(test)]
+mod rm_service_limit_test;
+
+mod rm_conciliate;
+
+#[cfg(test)]
+mod rm_conciliate_test;
+
+mod service_host;
+pub use service_host::{HostConfig, ResourceManagerHost};
+
+mod grpc_metadata;
+#[cfg(test)]
+mod grpc_metadata_test;

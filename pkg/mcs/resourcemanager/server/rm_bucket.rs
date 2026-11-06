@@ -5,6 +5,7 @@ use crate::{Bucket, BucketState};
 use std::collections::BTreeMap;
 #[derive(Clone, Debug, Default)]
 pub struct BucketRuntime {
+    pub(crate) has_tracker: bool,
     pub initialized: bool,
     pub last_update: Option<i128>,
     pub override_fill_rate: Option<f64>,
@@ -197,6 +198,7 @@ impl BucketRuntime {
         client: u64,
     ) -> Option<(Bucket, i64)> {
         bucket.settings.as_ref()?;
+        self.has_tracker = true;
         self.demands
             .entry(client)
             .or_default()

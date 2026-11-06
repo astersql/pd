@@ -214,6 +214,7 @@ dependencies = [
  "astersql-pd-mcs-discovery",
  "astersql-pd-mcs-tso-server",
  "astersql-pd-proto",
+ "astersql-pd-rm-server",
  "astersql-pd-runtime",
  "astersql-pd-server-config",
  "astersql-pd-storage",
@@ -521,6 +522,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "astersql-pd-mcs-server"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-mcs-constant",
+ "axum",
+ "tokio",
+ "tokio-util",
+]
+
+[[package]]
 name = "astersql-pd-mcs-tso-server"
 version = "0.1.0"
 dependencies = [
@@ -574,6 +585,13 @@ dependencies = [
  "thiserror 2.0.21",
  "tokio",
  "tokio-util",
+]
+
+[[package]]
+name = "astersql-pd-memberutil"
+version = "0.1.0"
+dependencies = [
+ "sha2",
 ]
 
 [[package]]
@@ -716,14 +734,20 @@ name = "astersql-pd-rm-server"
 version = "0.1.0"
 dependencies = [
  "astersql-pd-configutil",
+ "astersql-pd-election",
  "astersql-pd-errs",
  "astersql-pd-keypath",
+ "astersql-pd-mcs-discovery",
+ "astersql-pd-mcs-server",
+ "astersql-pd-mcs-utils",
+ "astersql-pd-memberutil",
  "astersql-pd-proto",
  "astersql-pd-storage-domain",
  "astersql-pd-storage-endpoint",
  "astersql-pd-storage-kv",
  "astersql-pd-typeutil",
  "async-trait",
+ "axum",
  "chrono",
  "futures-util",
  "prost",
@@ -733,6 +757,7 @@ dependencies = [
  "tokio-util",
  "toml",
  "tonic",
+ "tracing",
 ]
 
 [[package]]

@@ -27,3 +27,5 @@ mod cli_logging;
 mod process_shutdown_test;
 
 mod standalone_tso;
+
+mod standalone_rm;

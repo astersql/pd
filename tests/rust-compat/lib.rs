@@ -138,3 +138,6 @@ mod accept_diagnostics_info_test;
 mod accept_extra_metastorage_test;
 #[cfg(test)]
 mod accept_extra_rm_test;
+
+#[cfg(test)]
+mod accept_extra_rm_service_test;

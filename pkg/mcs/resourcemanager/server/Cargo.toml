@@ -28,5 +28,13 @@ tonic.workspace = true
 
 chrono.workspace = true
 
+astersql-pd-mcs-server.workspace = true
+astersql-pd-mcs-discovery.workspace = true
+astersql-pd-mcs-utils.workspace = true
+astersql-pd-memberutil.workspace = true
+astersql-pd-election.workspace = true
+axum.workspace = true
+tracing.workspace = true
+
 [dev-dependencies]
 astersql-pd-storage-kv.workspace = true

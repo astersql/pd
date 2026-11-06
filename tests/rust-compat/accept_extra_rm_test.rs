@@ -888,3 +888,278 @@ async fn sa_016_rm_restore_state_boundaries() {
         }
     }
 }
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn sa_016_rm_quota() {
+    let go = crate::readonly_oracle::pinned_go_binary().unwrap();
+    let rust = PathBuf::from(std::env::var_os("PD_COMPAT_RUST_BIN").unwrap());
+    let mut records = Vec::new();
+    for (binary, is_rust) in [(&go, false), (&rust, true)] {
+        let mut server = if is_rust {
+            Server::start_rust(binary)
+        } else {
+            Server::start(binary)
+        }
+        .unwrap();
+        server.ready().unwrap();
+        let mut client = ResourceManagerClient::connect(server.url.clone())
+            .await
+            .unwrap();
+        let mut other = group("other", u32::MAX);
+        other.ru_stats = None;
+        let bucket = other.r_u_settings.as_mut().unwrap().r_u.as_mut().unwrap();
+        bucket.tokens = 0.0;
+        bucket.settings.as_mut().unwrap().fill_rate = i32::MAX as u64;
+        bucket.settings.as_mut().unwrap().burst_limit = -1;
+        client
+            .add_resource_group(p::PutResourceGroupRequest { group: Some(other) })
+            .await
+            .unwrap();
+        let store = EtcdMetaStore::connect(&[server.metadata_url().into()], Duration::from_secs(3))
+            .await
+            .unwrap();
+        let key = astersql_pd_keypath::keyspace_service_limit_path(u32::MAX);
+        let written = store
+            .transact(
+                vec![],
+                vec![astersql_pd_storage_domain::Mutation::put(
+                    key.as_bytes(),
+                    b"10",
+                )],
+            )
+            .await
+            .unwrap();
+        if is_rust {
+            server.restart_rust(binary).unwrap();
+        } else {
+            server.restart_with_args(binary, &[]).unwrap();
+        }
+        server.ready().unwrap();
+        client = ResourceManagerClient::connect(server.url.clone())
+            .await
+            .unwrap();
+        // Both independent process clocks have more than five seconds to fill the
+        // shared 5*rate service bucket, making the first 50-token grant exact.
+        tokio::time::sleep(Duration::from_millis(5500)).await;
+        let mut request = token_request("default", 100000.0, 41);
+        request
+            .requests
+            .push(token_request("other", 100000.0, 41).requests.remove(0));
+        let mut unscoped = token_request("default", 100000.0, 41).requests.remove(0);
+        unscoped.keyspace_id = keyspace(7);
+        request.requests.push(unscoped);
+        let (send, recv) = tokio::sync::mpsc::channel(1);
+        send.send(request.clone()).await.unwrap();
+        let started = tokio::time::Instant::now();
+        let mut stream = client
+            .acquire_token_buckets(tokio_stream::wrappers::ReceiverStream::new(recv))
+            .await
+            .unwrap()
+            .into_inner();
+        let mut total = 0.0;
+        for batch in 0..2 {
+            if batch == 1 {
+                tokio::time::sleep(Duration::from_millis(200)).await;
+                send.send(request.clone()).await.unwrap();
+            }
+            let response = tokio::time::timeout(Duration::from_secs(3), stream.message())
+                .await
+                .unwrap()
+                .unwrap()
+                .unwrap();
+            let elapsed = started.elapsed();
+            records.push(json!({"rust":is_rust,"scenario":"keyspace service limit shared by two groups","batch":batch,"request":format!("{request:?}"),"response":format!("{response:?}"),"elapsed_ms":elapsed.as_millis()}));
+            let path = PathBuf::from(std::env::var_os("PD_SA016_EVIDENCE").unwrap());
+            let path = path.with_file_name(format!(
+                "{}-quota.json",
+                path.file_name().unwrap().to_string_lossy()
+            ));
+            std::fs::write(path, serde_json::to_vec(&records).unwrap()).unwrap();
+            assert_eq!(response.responses.len(), 3);
+            for item in &response.responses[..2] {
+                let grant = &item.granted_r_u_tokens[0];
+                let tokens = grant.granted_tokens.as_ref().unwrap();
+                assert_eq!(
+                    tokens.settings.as_ref().unwrap().burst_limit,
+                    10,
+                    "stored service limits must invalidate unlimited client buckets"
+                );
+                assert!((0.0..=50.0).contains(&tokens.tokens));
+                assert_eq!(
+                    grant.trickle_time_ms,
+                    (tokens.tokens * 100.0).round() as i64
+                );
+                total += tokens.tokens;
+            }
+            if batch == 0 {
+                assert_eq!(
+                    response.responses[0].granted_r_u_tokens[0]
+                        .granted_tokens
+                        .as_ref()
+                        .unwrap()
+                        .tokens,
+                    50.0
+                );
+            }
+            assert!(
+                total <= 50.0 + 10.0 * elapsed.as_secs_f64() + 0.001,
+                "groups must share one quota and retain its debt: total={total}, elapsed={elapsed:?}"
+            );
+            let unscoped = &response.responses[2].granted_r_u_tokens[0];
+            assert_eq!(unscoped.granted_tokens.as_ref().unwrap().tokens, 100000.0);
+            assert_eq!(unscoped.trickle_time_ms, 0);
+        }
+        assert!(
+            total >= 51.5,
+            "the shared quota must refill between batches: {total}"
+        );
+        let persisted = store
+            .read(Read::range(key.as_bytes(), b"", Consistency::Linearizable))
+            .await
+            .unwrap();
+        assert_eq!(persisted.entries[0].mod_revision, written.revision);
+        assert_eq!(persisted.entries[0].value, b"10");
+        drop(send);
+        assert!(stream.message().await.unwrap().is_none());
+        server.stop().unwrap();
+    }
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn sa_016_rm_priority() {
+    let go = crate::readonly_oracle::pinned_go_binary().unwrap();
+    let rust = PathBuf::from(std::env::var_os("PD_COMPAT_RUST_BIN").unwrap());
+    let mut records = Vec::new();
+    for (binary, is_rust) in [(&go, false), (&rust, true)] {
+        let mut server = if is_rust {
+            Server::start_rust(binary)
+        } else {
+            Server::start(binary)
+        }
+        .unwrap();
+        server.ready().unwrap();
+        let mut client = ResourceManagerClient::connect(server.url.clone())
+            .await
+            .unwrap();
+        let configured = |name: &str, priority| {
+            let mut group = group(name, u32::MAX);
+            group.priority = priority;
+            group.ru_stats = None;
+            let bucket = group.r_u_settings.as_mut().unwrap().r_u.as_mut().unwrap();
+            bucket.tokens = 0.0;
+            bucket.settings.as_mut().unwrap().fill_rate = 100;
+            bucket.settings.as_mut().unwrap().burst_limit = 100;
+            group
+        };
+        for group in [configured("high", 16), configured("low", 1)] {
+            client
+                .add_resource_group(p::PutResourceGroupRequest { group: Some(group) })
+                .await
+                .unwrap();
+        }
+        let store = EtcdMetaStore::connect(&[server.metadata_url().into()], Duration::from_secs(3))
+            .await
+            .unwrap();
+        let key = astersql_pd_keypath::keyspace_service_limit_path(u32::MAX);
+        store
+            .transact(
+                vec![],
+                vec![astersql_pd_storage_domain::Mutation::put(
+                    key.as_bytes(),
+                    b"150",
+                )],
+            )
+            .await
+            .unwrap();
+        if is_rust {
+            server.restart_rust(binary).unwrap();
+        } else {
+            server.restart_with_args(binary, &[]).unwrap();
+        }
+        server.ready().unwrap();
+        client = ResourceManagerClient::connect(server.url.clone())
+            .await
+            .unwrap();
+        let mut request = token_request("high", 1000.0, 99);
+        request
+            .requests
+            .push(token_request("low", 1000.0, 99).requests.remove(0));
+        let (send, recv) = tokio::sync::mpsc::channel(1);
+        send.send(request.clone()).await.unwrap();
+        let mut stream = client
+            .acquire_token_buckets(tokio_stream::wrappers::ReceiverStream::new(recv))
+            .await
+            .unwrap()
+            .into_inner();
+        stream.message().await.unwrap().unwrap();
+        tokio::time::sleep(Duration::from_millis(200)).await;
+        exchange(&send, &mut stream, request.clone()).await;
+        for (stage, expected) in [
+            ("high priority wins basic demand", [100, 50]),
+            ("priority changes reverse allocation", [50, 100]),
+        ] {
+            if stage.starts_with("priority changes") {
+                for group in [configured("high", 1), configured("low", 16)] {
+                    client
+                        .modify_resource_group(p::PutResourceGroupRequest { group: Some(group) })
+                        .await
+                        .unwrap();
+                }
+            }
+            let deadline = tokio::time::Instant::now() + Duration::from_secs(4);
+            loop {
+                let response = exchange(&send, &mut stream, request.clone()).await;
+                let bursts: Vec<_> = response
+                    .responses
+                    .iter()
+                    .map(|r| {
+                        r.granted_r_u_tokens[0]
+                            .granted_tokens
+                            .as_ref()
+                            .unwrap()
+                            .settings
+                            .as_ref()
+                            .unwrap()
+                            .burst_limit
+                    })
+                    .collect();
+                records.push(json!({"rust":is_rust,"scenario":stage,"request":format!("{request:?}"),"response":format!("{response:?}"),"burst_limits":bursts}));
+                let path = PathBuf::from(std::env::var_os("PD_SA016_EVIDENCE").unwrap());
+                let path = path.with_file_name(format!(
+                    "{}-priority.json",
+                    path.file_name().unwrap().to_string_lossy()
+                ));
+                std::fs::write(path, serde_json::to_vec(&records).unwrap()).unwrap();
+                if bursts == expected {
+                    break;
+                }
+                assert!(
+                    tokio::time::Instant::now() < deadline,
+                    "priority coordination did not take effect: expected {expected:?}, got {bursts:?}"
+                );
+                tokio::time::sleep(Duration::from_millis(100)).await;
+            }
+        }
+        for name in ["high", "low"] {
+            let group = client
+                .get_resource_group(p::GetResourceGroupRequest {
+                    resource_group_name: name.into(),
+                    ..Default::default()
+                })
+                .await
+                .unwrap()
+                .into_inner()
+                .group
+                .unwrap();
+            let settings = group.r_u_settings.unwrap().r_u.unwrap().settings.unwrap();
+            assert_eq!(settings.fill_rate, 100);
+            assert_eq!(
+                settings.burst_limit, 100,
+                "runtime shares must not replace configured settings"
+            );
+        }
+        drop(send);
+        assert!(stream.message().await.unwrap().is_none());
+        server.stop().unwrap();
+    }
+}
