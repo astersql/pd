@@ -76,6 +76,43 @@
 - 所需证据：Go版本及来源行、失败断言与通过结果、真实差分输入输出及副作用、确切命令与退出码、有效测试数、实际槽位和绝对CARGO_TARGET_DIR；正常/失败/中断均清理本任务进程和锁，保留缓存。
 - 开始与结束对全部Go及模块文件（含untracked）记录存在性、SHA-256与Git状态；本任务不得新增任何差异，也不得还原他人改动。最后运行`git diff --check`。
 
+## 验收16补充：classic元数据代理的唯一拥有者
+
+2026-11-06补充实施计划，状态仍为未开始；此节不是实现或运行回执。
+保持原批次100依赖99，串行执行；101复用本项公共代理连接资源。
+按无人值守方式执行：常规、可逆、低风险事项自行选择符合仓库约定的最佳可行方案，遇到问题先调查修复并继续；仅在关键歧义无法消除或确需新增授权时集中询问，记录决策和阻塞证据，不重复请求已有授权。
+
+- 唯一实现责任：`resource_manager.ResourceManager/{ListResourceGroups,GetResourceGroup,AddResourceGroup,ModifyResourceGroup,DeleteResourceGroup}`
+  在真实RM和classic fallback关闭的代理分支均归100。101只负责AcquireTokenBuckets；
+  138只装配条件注册；148只汇总差分，不重写本项方法。110的HTTP redirector不承担gRPC。
+- 增补只读来源：`server/resource_group_proxy_service.go:38–203`、
+  `server/server.go:316–341`、`server/config/config.go:865–904`、
+  `pkg/utils/grpcutil/grpcutil.go`中ResetForwardContext/NeedRebuildConnection及其实际定义/调用链；
+  开始实现前用rg确认现行符号位置，不能用HTTP重定向推导gRPC契约。
+- 拟扩展现有`pkg/server/lib.rs`的PdServices边界；拟建窄适配
+  `pkg/server/grpc_resource_metadata.rs`及独立
+  `pkg/server/grpc_resource_metadata_test.rs`并显式注册。
+  仅转换协议、路由和错误；manager、写角色及MetaStore复用canonical RM领域。
+  地址发现、宿主连接池及关闭资源由本项定义一次，101直接消费，禁止第二套连接池。
+- 源码契约：List/Get转发RM primary；缺地址或指向本机按Go返回Unavailable。
+  Add/Modify先拒绝nil group，Delete先拒绝空name；
+  三种写操作按PD leader及forwarded-host校验转发，目标为本地leader时调用同一
+  PDMetaOnly metadataManager，不转发到RM写元数据。转发上下文按Go重置，
+  无leader、缺manager、连接需重建等路径保留原code/message和连接清理语义；
+  不把所有六方法统一转发RM，不在不确定写入失败后无条件重试。
+- TDD新增`mcs_100_classic_metadata_proxy`及同前缀错误/写角色用例：
+  通过真实tonic listener验证读请求到RM、写请求到PD leader；
+  无RM时合法本地PD写仍持久化、读返回Unavailable；错误输入不产生持久副作用。
+  覆盖非leader、非法forwarded-host、连接失效后重建和资源关闭。
+  使用真实MetaStore/etcd与服务，断网在实际连接边界注入，不以mock次数代替响应/状态。
+- 先接可编译接口并记录上述行为失败，再最小实现；原RM领域命令保持，
+  另运行`cargo test --locked -p astersql-pd-server --lib mcs_100_ -- --nocapture`，
+  包级`cargo check --locked -p astersql-pd-server`及受影响回归。
+  遵守本文件Cargo槽位和Go只读规则；本次补计划不执行这些命令。
+- 完成证据必须在`docs/rust/control-plane-mcs/task-100.md`逐方法记录
+  真实Go/Rust请求响应、固定输入摘要、退出码、有效测试数、
+  元数据revision/原始值及失败不写入，交138/148消费。缺Go oracle不可用源码推导代替。
+
 ## 完成
 
 仅当本行为及对应来源行获得当前完整证据时标记`已完成`；有实际代码、测试、配置或文档变更使用`$git-commit`提交本任务范围，排除其他任务和用户已有改动。仅任务文件状态更新/删除不单独提交。完成证据存入持久文档后在最终回复报告并删除本任务文件；只在本任务文件记录阻塞。无关环境阻止验证时可标记`已完成，待回归`并保留文件，但缺少领域实现或必需差分不得以此绕过。不得修改任何plan.md或来源史诗；不得扩大为其他子系统重写。

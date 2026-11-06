@@ -235,3 +235,20 @@ canonical allocator消费它完成实际campaign和驱逐。
 注册过期、WAL恢复及错误/取消证据已接收；原有MCS拆合实链相邻回归通过。
 这只交接验收13实际消费的接口，不将上述任务的其它配置、服务、指标、TLS拓扑或全部RPC
 标为已完成；不新增平行factory/BaseServer或第二套选主实现。
+
+## 验收16补充：classic RM代理责任（2026-11-06）
+
+历史task-002 manifest/records没有收录`server/resource_group_proxy_service.go`。
+保留历史压缩回执不变；本节增量分配当前来源，**不是实现或差分通过**。
+[完整42方法交接](../server-api/acceptance/extra-services.md)及
+[审计证据](../server-api/acceptance/task-16.md)给出稳定wire ID和注册边界。
+
+| 当前增补只读来源/方法 | 唯一实施责任 | 装配/差分交付 |
+| --- | --- | --- |
+| resource_group_proxy_service.go::ListResourceGroups、GetResourceGroup、AddResourceGroup、ModifyResourceGroup、DeleteResourceGroup | 100；含RM读代理、PD元数据leader写路由及共用发现/连接池 | 138负责classic条件装配；148负责双模式差分 |
+| resource_group_proxy_service.go::AcquireTokenBuckets | 101；复用100连接资源，双向转发及取消/EOF清理 | 138负责classic条件装配；148负责双模式差分 |
+| server.go::ServiceRegister及MicroserviceConfig::IsResourceManagerFallbackEnabled | 138；fallback true真实RM，false同一classic代理，保留PD元数据manager初始化 | 148逐分支比对RPC与持久副作用 |
+
+上述100/101/138/148编号文件已补实施与失败/通过验证计划，状态仍未开始。
+110仅拥有HTTP redirector，不拥有上述gRPC代理。表中的任务号指控制面与MCS计划，
+不是服务端验收同号任务；不得在验收16重新实现其领域算法。
