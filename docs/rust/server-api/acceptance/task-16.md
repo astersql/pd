@@ -684,3 +684,25 @@ TSO原宿主生命周期专项另1通过/0失败/0忽略，workspace check/fmt/m
 完整原始输入、失败与最终16/8组观察及只读守卫见
 [MCS进程配置压缩回执](task-16-mcs-process-config.json.gz)。
 仍需处理未bootstrap Scheduling观察及其它剩余配置/领域证据，不关闭本项。
+
+## Scheduling独立primary与在线bootstrap阶段（进行中）
+
+接收名称/租约专项暴露的未bootstrap观察后，新增真实Go/Rust专项先失败：PD API
+所有者尚无cluster meta时，Go的Scheduling primary十次采样均持有同一租约；
+Rust九次无primary，一次瞬时出现。Go GetOperator为region not found，Rust为
+cluster is not initialized。原始失败先落盘后断言，不用仅源码推导代替差分。
+
+原因是Rust MCS open误用了classic PD的meta存在性门槛；移除此局部门槛，MCS
+继续复用canonical ClusterHost。共享调度worker的准备条件按角色处理：Scheduling
+自己的缓存可以准备，classic PD仍要求真实bootstrap；没有伪造元数据或重写bootstrap。
+
+增强的同一专项通过：十次采样跨约一秒保持primary完整value/lease/create/mod revision
+不变；通过真正PD Bootstrap RPC后同一MCS进程及primary租约不变，store watcher
+看到新增store并接受StoreHeartbeat。GetOperator在bootstrap前后以及store heartbeat
+比较完整protobuf，只把两次独立PD所有者的cluster ID置零，原始bytes同时保留。
+这是有限primary/初始化差分，不替代完整故障、compaction或调度策略watch矩阵。
+
+最终Scheduling模块3通过/0失败/0忽略，包括原七方法/EOF与心跳/PD-owned split ID；
+classic网络生命周期1通过，保留未bootstrap不调度、不消耗ID的原断言。
+workspace check、fmt、metadata通过。完整失败、最终protobuf/租约采样及源码/二进制
+摘要见[Scheduling在线bootstrap回执](task-16-scheduling-bootstrap.json.gz)。

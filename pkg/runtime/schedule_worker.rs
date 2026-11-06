@@ -223,8 +223,10 @@ async fn run(
         status.send_modify(|s| s.phase = SchedulePhase::Preparing);
         let mut prepare_start=None;
         while {
-            let bootstrapped=resources.lock().await.as_ref().is_some_and(|r|r.bootstrapped);
-            if bootstrapped {
+            // MCS prepares its own cache independently; PD still waits for its
+            // authoritative bootstrap transaction before enabling scheduling.
+            let can_prepare=resources.lock().await.as_ref().is_some_and(|r|r.role == ClusterRole::Scheduling || r.bootstrapped);
+            if can_prepare {
                 let start=prepare_start.get_or_insert_with(tokio::time::Instant::now);
                 !coordinator.should_run(start.elapsed())
             } else {true}

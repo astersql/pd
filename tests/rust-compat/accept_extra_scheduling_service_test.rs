@@ -488,3 +488,225 @@ fn save_active(records: &[serde_json::Value]) {
         .with_extension("scheduling-active.json");
     std::fs::write(path, serde_json::to_vec(records).unwrap()).unwrap();
 }
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn sa_016_scheduling_primary_survives_before_pd_bootstrap_and_observes_live_bootstrap() {
+    use astersql_pd_keypath::{ClusterPaths, MsParam};
+    use astersql_pd_storage_kv::{Consistency, EtcdMetaStore, MetaStore, Read};
+    let go = crate::readonly_oracle::pinned_go_binary().unwrap();
+    let rust = PathBuf::from(std::env::var_os("PD_COMPAT_RUST_BIN").unwrap());
+    let mut records = vec![];
+    for (binary, is_rust) in [(&go, false), (&rust, true)] {
+        let mut pd =
+            Server::start_with_environment(&go, &[], &[("PD_SERVICE_MODE".into(), "api".into())])
+                .unwrap();
+        pd.ready().unwrap();
+        let mut owner = pdpb::pd_client::PdClient::connect(pd.url.clone())
+            .await
+            .unwrap();
+        let cluster = owner
+            .get_members(pdpb::GetMembersRequest::default())
+            .await
+            .unwrap()
+            .into_inner()
+            .header
+            .unwrap()
+            .cluster_id;
+        let store = EtcdMetaStore::connect(&[pd.url.clone()], Duration::from_secs(2))
+            .await
+            .unwrap();
+        let key = ClusterPaths::new(cluster).election_path(Some(&MsParam {
+            service_name: "scheduling".into(),
+            group_id: 0,
+        }));
+        let mut sidecar = Sidecar::start_service(binary, &pd.url, "scheduling", "http");
+        let deadline = std::time::Instant::now() + Duration::from_secs(12);
+        let mut client = loop {
+            if let Ok(client) = SchedulingClient::connect(sidecar.url.clone()).await {
+                break client;
+            }
+            assert!(
+                std::time::Instant::now() < deadline,
+                "scheduling connect: {}",
+                sidecar.logs()
+            );
+            tokio::time::sleep(Duration::from_millis(20)).await;
+        };
+        loop {
+            if !store
+                .read(Read::range(key.as_bytes(), b"", Consistency::Linearizable))
+                .await
+                .unwrap()
+                .entries
+                .is_empty()
+            {
+                break;
+            }
+            assert!(
+                std::time::Instant::now() < deadline,
+                "primary campaign: {}",
+                sidecar.logs()
+            );
+            tokio::time::sleep(Duration::from_millis(20)).await;
+        }
+        tokio::time::sleep(Duration::from_millis(250)).await;
+        let mut samples = vec![];
+        for _ in 0..10 {
+            let rows = store
+                .read(Read::range(key.as_bytes(), b"", Consistency::Linearizable))
+                .await
+                .unwrap();
+            samples.push(json!({"revision":rows.revision,"entries":rows.entries.iter().map(|e|json!({"lease":e.lease,"create_revision":e.create_revision,"mod_revision":e.mod_revision,"value":e.value})).collect::<Vec<_>>()}));
+            tokio::time::sleep(Duration::from_millis(100)).await;
+        }
+        let request = p::GetOperatorRequest {
+            header: Some(p::RequestHeader {
+                cluster_id: cluster,
+                sender_id: 0,
+            }),
+            region_id: 2,
+        };
+        let mut before = client
+            .get_operator(request.clone())
+            .await
+            .unwrap()
+            .into_inner();
+        let raw_before = before.encode_to_vec();
+        before.header.as_mut().unwrap().cluster_id = 0;
+        assert!(
+            owner
+                .bootstrap(pdpb::BootstrapRequest {
+                    header: Some(pdpb::RequestHeader {
+                        cluster_id: cluster,
+                        ..Default::default()
+                    }),
+                    store: Some(metapb::Store {
+                        id: 1,
+                        address: "live-bootstrap".into(),
+                        ..Default::default()
+                    }),
+                    region: Some(metapb::Region {
+                        id: 2,
+                        peers: vec![metapb::Peer {
+                            id: 3,
+                            store_id: 1,
+                            ..Default::default()
+                        }],
+                        ..Default::default()
+                    }),
+                })
+                .await
+                .unwrap()
+                .into_inner()
+                .header
+                .unwrap()
+                .error
+                .is_none()
+        );
+        let deadline = std::time::Instant::now() + Duration::from_secs(12);
+        let mut after = loop {
+            let response = client
+                .get_operator(request.clone())
+                .await
+                .unwrap()
+                .into_inner();
+            if !response
+                .header
+                .as_ref()
+                .unwrap()
+                .error
+                .as_ref()
+                .is_some_and(|e| e.r#type == p::ErrorType::NotBootstrapped as i32)
+            {
+                break response;
+            }
+            assert!(
+                std::time::Instant::now() < deadline,
+                "live bootstrap not observed: {}",
+                sidecar.logs()
+            );
+            tokio::time::sleep(Duration::from_millis(30)).await;
+        };
+        let deadline = std::time::Instant::now() + Duration::from_secs(12);
+        let mut heartbeat = loop {
+            match client
+                .store_heartbeat(p::StoreHeartbeatRequest {
+                    header: request.header.clone(),
+                    stats: Some(pdpb::StoreStats {
+                        store_id: 1,
+                        capacity: 100,
+                        available: 90,
+                        ..Default::default()
+                    }),
+                    ..Default::default()
+                })
+                .await
+            {
+                Ok(response)
+                    if response
+                        .get_ref()
+                        .header
+                        .as_ref()
+                        .is_some_and(|h| h.error.is_none()) =>
+                {
+                    break response.into_inner();
+                }
+                _ => {
+                    assert!(
+                        std::time::Instant::now() < deadline,
+                        "live bootstrap store not observed: {}",
+                        sidecar.logs()
+                    );
+                    tokio::time::sleep(Duration::from_millis(30)).await;
+                }
+            }
+        };
+        let heartbeat_raw = heartbeat.encode_to_vec();
+        heartbeat.header.as_mut().unwrap().cluster_id = 0;
+        let after_primary = store
+            .read(Read::range(key.as_bytes(), b"", Consistency::Linearizable))
+            .await
+            .unwrap()
+            .entries;
+        let after_primary=json!(after_primary.iter().map(|e|json!({"lease":e.lease,"create_revision":e.create_revision,"mod_revision":e.mod_revision,"value":e.value})).collect::<Vec<_>>());
+        let raw_after = after.encode_to_vec();
+        after.header.as_mut().unwrap().cluster_id = 0;
+        records.push(json!({"rust":is_rust,"primary_samples":samples,"after_primary":after_primary,"store_heartbeat_raw":heartbeat_raw,"store_heartbeat_normalized":heartbeat.encode_to_vec(),"before_raw":raw_before,"before_normalized":before.encode_to_vec(),"after_raw":raw_after,"after_normalized":after.encode_to_vec(),"logs":sidecar.logs()}));
+        sidecar.stop();
+        drop(store);
+        drop(owner);
+        pd.stop().unwrap();
+    }
+    let path = PathBuf::from(std::env::var_os("PD_SA016_EVIDENCE").unwrap())
+        .with_extension("scheduling-bootstrap.json");
+    std::fs::write(path, serde_json::to_vec(&records).unwrap()).unwrap();
+    for row in &records {
+        let samples = row["primary_samples"].as_array().unwrap();
+        let first = &samples[0]["entries"];
+        assert_eq!(
+            &row["after_primary"], first,
+            "bootstrap must preserve Scheduling primary: {row}"
+        );
+        assert_eq!(
+            first.as_array().map(Vec::len),
+            Some(1),
+            "primary absent: {row}"
+        );
+        assert!(
+            samples.iter().all(|sample| sample["entries"] == *first),
+            "primary churn before PD bootstrap: {row}"
+        );
+    }
+    assert_eq!(
+        records[0]["before_normalized"],
+        records[1]["before_normalized"]
+    );
+    assert_eq!(
+        records[0]["after_normalized"],
+        records[1]["after_normalized"]
+    );
+    assert_eq!(
+        records[0]["store_heartbeat_normalized"],
+        records[1]["store_heartbeat_normalized"]
+    );
+}

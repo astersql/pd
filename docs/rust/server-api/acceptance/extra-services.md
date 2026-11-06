@@ -24,7 +24,7 @@
 | MetaStorage | registry始终注册，含classic | 已有canonical四方法及同一listener接线；[65](../../control-plane-mcs/task-065.md)/[66](../../control-plane-mcs/task-066.md)/[67](../../control-plane-mcs/task-067.md)/[68](../../control-plane-mcs/task-068.md)交付当前进程/嵌入、故障/流/WAL证据，148继续完整双模式/TLS组合，不扩大为整体16完成 |
 | TSO | 独立MCS注册，classic不注册该服务 | canonical TsoServiceHost及三个方法已存在；[验收11](task-11.md)/[13](task-13.md)只交付已消费子集，不能替代所有方法/TLS/取消的双模式回执 |
 | Router | 独立MCS注册，classic不注册该服务 | canonical七方法Service、RouterHost和services router入口已接通；[阶段证据](task-16.md)覆盖Go上游的空/真实缓存查询、错误与EOF，不能替代完整145/148、TLS或配置验收；86/87/137/141仍按各自范围交付 |
-| Scheduling | 独立MCS注册，classic不注册该服务 | canonical Rust服务缺失；119–122实现，139嵌入，143独立，147恢复，148差分 |
+| Scheduling | 独立MCS注册，classic不注册该服务 | canonical七方法和独立入口已接通，复用ClusterHost/公共辅助服务/TLS，在线bootstrap阶段已有实际对照；119–123/139/143/147/148完整领域/故障矩阵继续保留 |
 | Deadlock / TraceRecordPubSub / Namespace | descriptor传递导入，当前Go注册链未见注册 | 仅核对未注册边界，不虚构领域实现。Namespace历史“独立MCS”描述无注册源码支持，不据此新增服务；本轮未执行负向RPC |
 
 Go来源为 `server/server.go:316–341`及五个MCS的
@@ -169,3 +169,11 @@ metrics Rust回归与完整分组交接差分，不据此关闭148。
 Router不选primary；controller表只由RM解码。参见
 [阶段记录](task-16.md#mcs名称与primary租约配置阶段进行中)。
 未bootstrap的Scheduling初始化/primary生命周期仍需专项验证，完整配置和148未关闭。
+
+## Scheduling在线bootstrap增量（2026-11-07）
+
+Scheduling primary不依赖PD cluster meta已存在；真实Go/Rust专项验证PD bootstrap
+前保持租约、同进程观察在线bootstrap后的store并接收心跳。实现沿用canonical
+ClusterHost并保留classic PD bootstrap门槛，详见
+[阶段说明](task-16.md#scheduling独立primary与在线bootstrap阶段进行中)。
+故障/compaction与完整配置watch及148仍保留。

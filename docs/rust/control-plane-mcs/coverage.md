@@ -314,3 +314,8 @@ MCS进程配置增量：角色默认name与primary lease传入canonical宿主，
 保持独立5；controller TOML仅RM解释。16组真实租约/名称及8组角色类型观察见
 [验收16阶段记录](../server-api/acceptance/task-16.md#mcs名称与primary租约配置阶段进行中)。
 完整配置与未bootstrap Scheduling primary观察仍保留后续责任，不作为148完成回执。
+
+Scheduling独立初始化增量：局部移除MCS对PD cluster meta的误用，canonical调度worker
+按角色准备缓存，classic bootstrap条件保留；实际租约稳定/在线bootstrap/心跳protobuf
+证据见[验收16阶段记录](../server-api/acceptance/task-16.md#scheduling独立primary与在线bootstrap阶段进行中)。
+仍不代替完整调度策略watch或故障矩阵。

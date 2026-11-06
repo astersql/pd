@@ -288,14 +288,8 @@ async fn open(
         cancel.clone(),
     ));
     let endpoint = StorageEndpoint::new(fenced.clone());
-    if endpoint
-        .load_meta(&paths)
-        .await
-        .map_err(|e| e.to_string())?
-        .is_none()
-    {
-        return Err("cluster is not initialized".into());
-    }
+    // A Scheduling primary owns an independent in-memory cache. Go starts it
+    // before PD bootstrap and lets the metadata watcher populate stores later.
     let mut persisted = PersistedConfig::default();
     let cwd = std::env::current_dir().map_err(|e| e.to_string())?;
     let found = persisted
