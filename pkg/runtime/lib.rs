@@ -276,4 +276,5 @@ mod control_resource;
 mod resource_manager_host_test;
 
 mod embed_scheduling;
+pub use astersql_pd_mcs_scheduling_server::PdLeaderLookup;
 pub use embed_scheduling::{SchedulingHost, SchedulingHostConfig};

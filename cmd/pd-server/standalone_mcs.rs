@@ -82,21 +82,18 @@ pub(crate) fn main(service: &str, args: Vec<String>) -> ExitCode {
                             astersql_pd_runtime::SchedulingHost::start_with_primary_lease(
                                 astersql_pd_runtime::SchedulingHostConfig {
                                     runtime: tokio::runtime::Handle::current(),
-                                    cancel,
+                                    cancel: cancel.clone(),
                                     store,
                                     cluster_id: cluster,
                                     entry,
                                     delegates,
                                     registry: Arc::new(prometheus::Registry::new()),
-                                    pd_leader_lookup: Arc::new(move || {
-                                        let backend = backend_store.clone();
-                                        Box::pin(async move {
-                                            backend
-                                                .consensus_leader_client_url()
-                                                .await
-                                                .map_err(|e| e.to_string())
-                                        })
-                                    }),
+                                    pd_leader_lookup: crate::pd_discovery::lookup(
+                                        &config.pd_discovery,
+                                        backend_store.clone(),
+                                        cluster,
+                                        cancel.clone(),
+                                    ),
                                 },
                                 listener,
                                 config.log.file.filename.clone(),

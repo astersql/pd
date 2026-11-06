@@ -788,3 +788,38 @@ SUCCESS protobuf、两次ACK输入（仅cluster ID归零），保存原bytes及�
 入场到完成的两种格式，取消、超时、换主、重复/乱序ACK及split完成仍未整体验收。
 输入、原始日志及源码摘要见[Scheduling ACK阶段回执](task-16-scheduling-ack.json.gz)。
 16、148与后续验收保持进行中。
+
+## Scheduling外置后端发现与PD启动配置阶段（进行中）
+
+同一真实replica learner/ACK/SUCCESS场景扩展至Rust PD API模式加独立原生etcd，
+与Go PD API模式加embedded etcd的原场景比较。不是让Go Scheduling连接不支持的
+外置Rust PD拓扑。初次实际失败于Rust PD忽略已接受文件的动态配置：API返回默认
+max-replicas=3而文件为2。CLI现在通过新增显式startup_config能力把已经adjust的
+配置传入canonical恢复，持久文档存在时仍由既有reload优先；listener/telemetry配置
+能力保持独立，不把传输配置隐式当成领域配置。
+
+曾尝试在此恢复时主动持久化首份配置，但独立真实restart差分否定该假设：Go API
+未bootstrap时config key不存在，文件改成4/true后重启应采用新文件。撤销主动写入，
+保留该失败日志。专项现验证初次2/false、重启4/true，前后config key都缺失；不把
+尚未验证的“文件总被存储覆盖”写为验收结论。既有文档优先沿用canonical reload；独立库专项验证已有replicas=5覆盖启动replicas=2，
+并保持存储value/revision不变。
+
+配置正确后，旧默认发现策略在native拓扑真实等待30秒仍没有规划命令，PD ID没有
+用于peer。Go默认取etcd leader client URL，而native etcd URL并不是Rust PD URL。
+Scheduling CLI增加明确部署选项`--pd-discovery=primary-key`（TOML `pd-discovery`），
+通过canonical election key读取实际租约选出的pdpb.Member及其client URL；没有伪造
+member/leader或实现etcd协议桥。默认`etcd-leader`继续原SDK调用；新策略读取带取消
+和两秒超时，通过原RemoteIds通知/周期刷新与调用者连接池使用，不新增私有runtime。
+该选项只供Scheduling，非法策略/其它角色flag会被拒绝。
+
+本机过渡部署示例：先启动带`--etcd-endpoints=http://127.0.0.1:2379`的Rust PD，
+再运行`pd-server services scheduling --backend-endpoints=http://127.0.0.1:2379 --listen-addr=http://127.0.0.1:3379 --pd-discovery=primary-key`。
+其它name/地址/TLS设置仍用既有公共入口。仅这是外置EtcdMetaStore过渡路径，不能
+据此声称无外部etcd启动、原生Rust生产持久化、掉电或嵌入式替代验收通过。
+
+最终native拓扑正常learner命令、promotion、ACK和SUCCESS与Go基线完整protobuf
+一致（仅cluster ID归零）；保留实际primary Member bytes，明确核对native etcd
+consensus URL不等于PD URL，恰好一次peer ID分配且PD region持久键不变。
+完整命令模块、启动文件restart及默认策略/生命周期回归和检查计数见
+[外置发现与启动配置回执](task-16-scheduling-discovery.json.gz)。
+TLS换主、故障时发现收敛、配置watch及148/16/17–25仍待继续。

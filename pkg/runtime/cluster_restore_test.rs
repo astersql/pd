@@ -529,3 +529,35 @@ async fn task_101_fresh_restore_uses_go_placement_default() {
         "fresh Go clusters enable placement rules"
     );
 }
+
+#[tokio::test]
+async fn sa_016_existing_dynamic_document_takes_precedence_over_startup_file() {
+    let store = Arc::new(MemoryStore::default());
+    seed(store.clone(), 606).await;
+    let paths = ClusterPaths::new(606);
+    let key = paths.config_path();
+    let before = store
+        .read(Read::range(key.as_bytes(), b"", Consistency::Linearizable))
+        .await
+        .unwrap();
+    let mut startup = astersql_pd_server_config::Config::default();
+    startup.replication.max_replicas = 2;
+    let identity = config("127.0.0.1:2379".parse().unwrap());
+    let (_, provider, persisted) = crate::cluster_restore::restore_with_encryption(
+        astersql_pd_core::BasicCluster::new(),
+        store.clone(),
+        &identity,
+        &CancellationToken::new(),
+        None,
+        Some(&startup),
+    )
+    .await
+    .unwrap();
+    assert_eq!(provider.replication.max_replicas, 5);
+    assert_eq!(persisted.unwrap().config.replication.max_replicas, 5);
+    let after = store
+        .read(Read::range(key.as_bytes(), b"", Consistency::Linearizable))
+        .await
+        .unwrap();
+    assert_eq!(before.entries, after.entries);
+}

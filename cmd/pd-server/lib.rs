@@ -36,3 +36,8 @@ mod backend_transport;
 
 #[cfg(test)]
 mod backend_transport_test;
+
+mod pd_discovery;
+
+#[cfg(test)]
+mod pd_discovery_test;

@@ -16,7 +16,7 @@ pub(crate) async fn restore(
     identity: &crate::NodeConfig,
     cancel: &CancellationToken,
 ) -> Result<(BasicCluster, ProviderSnapshot<()>, Option<PersistedConfig>), crate::NodeError> {
-    restore_with_encryption(cluster, store, identity, cancel, None).await
+    restore_with_encryption(cluster, store, identity, cancel, None, None).await
 }
 pub(crate) async fn restore_with_encryption(
     mut cluster: BasicCluster,
@@ -24,11 +24,15 @@ pub(crate) async fn restore_with_encryption(
     identity: &crate::NodeConfig,
     cancel: &CancellationToken,
     encryption: Option<Arc<astersql_pd_encryption::DictionaryStorage>>,
+    startup: Option<&astersql_pd_server_config::Config>,
 ) -> Result<(BasicCluster, ProviderSnapshot<()>, Option<PersistedConfig>), crate::NodeError> {
     let recover = async {
         let paths = ClusterPaths::new(identity.cluster_id);
         let mut endpoint = StorageEndpoint::new(store).with_encryption_keys(encryption);
-        let mut persisted = PersistedConfig::default();
+        let mut persisted = PersistedConfig {
+            config: startup.cloned().unwrap_or_default(),
+            ..Default::default()
+        };
         let cwd = std::env::current_dir()?;
         let found = persisted
             .reload(
@@ -41,6 +45,7 @@ pub(crate) async fn restore_with_encryption(
                 &mut ScheduleDefaults::default(),
             )
             .await?;
+        let found = found || startup.is_some();
         let mut config = ProviderSnapshot::default();
         // A missing persisted document still needs Go's lifecycle defaults;
         // raw zero values would immediately promote every preparing store.

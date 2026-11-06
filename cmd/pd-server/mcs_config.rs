@@ -12,6 +12,7 @@ pub(crate) struct Config {
     pub listen_addr: String,
     pub advertise_listen_addr: String,
     pub name: String,
+    pub pd_discovery: String,
     #[serde(rename = "lease")]
     pub leader_lease: i64,
     pub security: SecurityConfig,
@@ -32,6 +33,10 @@ impl Config {
                     .ok_or_else(|| format!("missing value for {arg}"))?;
                 (arg, value)
             };
+            if key == "--pd-discovery" && service == "scheduling" {
+                flags.insert(key, value);
+                continue;
+            }
             if !matches!(
                 key.as_str(),
                 "--config"
@@ -55,6 +60,9 @@ impl Config {
             String::new()
         };
         let mut table: toml::Table = toml::from_str(&source).map_err(|e| e.to_string())?;
+        if service != "scheduling" {
+            table.remove("pd-discovery");
+        }
         if service == "router" {
             table.remove("lease");
         }
@@ -89,6 +97,13 @@ impl Config {
         flag!("--listen-addr", config.listen_addr);
         flag!("--advertise-listen-addr", config.advertise_listen_addr);
         flag!("--name", config.name);
+        flag!("--pd-discovery", config.pd_discovery);
+        if config.pd_discovery.is_empty() {
+            config.pd_discovery = "etcd-leader".into();
+        }
+        if !matches!(config.pd_discovery.as_str(), "etcd-leader" | "primary-key") {
+            return Err("invalid PD discovery policy".into());
+        }
         flag!("--cacert", config.security.tls.ca_path);
         flag!("--cert", config.security.tls.cert_path);
         flag!("--key", config.security.tls.key_path);

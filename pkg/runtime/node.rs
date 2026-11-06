@@ -420,6 +420,7 @@ pub struct PdNodeBuilder {
     member_admin: Option<Arc<crate::member_admin::EtcdMemberAdmin>>,
     cancellation: CancellationToken,
     listener_config: astersql_pd_server_config::Config,
+    startup_config: Option<Arc<astersql_pd_server_config::Config>>,
     telemetry_config: Option<astersql_pd_server_config::Config>,
     join: String,
     log_level: Option<Arc<dyn astersql_pd_logutil::LogLevelControl>>,
@@ -435,6 +436,7 @@ impl PdNodeBuilder {
             member_admin: None,
             cancellation: cancellation.child_token(),
             listener_config: Default::default(),
+            startup_config: None,
             telemetry_config: None,
             join: String::new(),
             log_level: None,
@@ -469,6 +471,12 @@ impl PdNodeBuilder {
     /// Select embedded RM serving or PD metadata ownership with RM proxying.
     pub fn with_resource_manager_fallback(mut self, enabled: bool) -> Self {
         self.resource_manager_fallback = enabled;
+        self
+    }
+    /// Supplies already adjusted process configuration for the first dynamic
+    /// document. Existing persisted configuration takes precedence on restart.
+    pub fn with_startup_config(mut self, config: astersql_pd_server_config::Config) -> Self {
+        self.startup_config = Some(Arc::new(config));
         self
     }
     /// Configures inbound TLS and host metric query/push transports.
@@ -522,6 +530,7 @@ impl PdNodeBuilder {
                 self.diagnostics,
                 self.member_admin,
                 self.listener_config,
+                self.startup_config,
                 self.telemetry_config,
                 self.join,
                 self.log_level,
@@ -553,6 +562,7 @@ async fn initialize_node(
     diagnostics: Option<Arc<crate::etcd_diagnostics::EtcdMemberDiagnostics>>,
     member_admin: Option<Arc<crate::member_admin::EtcdMemberAdmin>>,
     listener_config: astersql_pd_server_config::Config,
+    startup_config: Option<Arc<astersql_pd_server_config::Config>>,
     telemetry_config: Option<astersql_pd_server_config::Config>,
     join: String,
     log_level: Option<Arc<dyn astersql_pd_logutil::LogLevelControl>>,
@@ -642,6 +652,9 @@ async fn initialize_node(
             config.clone(),
             store.clone(),
         ));
+        if let Some(config) = &startup_config {
+            let _ = services.startup_config.set(config.clone());
+        }
         services.resource_manager_fallback.store(
             resource_manager_fallback,
             std::sync::atomic::Ordering::Release,
@@ -678,6 +691,7 @@ async fn initialize_node(
                         Arc::new(leader),
                         Some(metrics.clone()),
                         Some(Arc::new(telemetry_config.clone())),
+                        startup_config.clone(),
                         Some(encryption.clone()),
                         services.recovery_steps.clone(),
                         keyspace_groups,
@@ -875,6 +889,7 @@ pub(crate) async fn prepare_term(
     leader: Arc<Leadership>,
     metrics: Option<Arc<astersql_pd_server::service_metrics::ServiceMetrics>>,
     transport_config: Option<Arc<astersql_pd_server_config::Config>>,
+    startup_config: Option<Arc<astersql_pd_server_config::Config>>,
     encryption: Option<Arc<crate::encryption::EncryptionResources>>,
     recovery_steps: Arc<astersql_pd_unsaferecovery::RecoverySteps>,
     keyspace_groups: bool,
@@ -900,6 +915,7 @@ pub(crate) async fn prepare_term(
                 &config,
                 &cancel,
                 encryption.as_ref().map(|keys|keys.dictionary.clone()),
+                startup_config.as_deref(),
             ).await
             };
             tokio::pin!(recovery);

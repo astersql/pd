@@ -14,6 +14,8 @@ fn save(records: &[Value], profile: &str) {
     std::fs::write(path, serde_json::to_vec(records).unwrap()).unwrap();
 }
 async fn scenario(profile: &str) {
+    let native = profile.starts_with("native-");
+    let case = profile.strip_prefix("native-").unwrap_or(profile);
     let go = crate::readonly_oracle::pinned_go_binary().unwrap();
     let rust = PathBuf::from(std::env::var_os("PD_COMPAT_RUST_BIN").unwrap());
     let work = Work(std::env::temp_dir().join(format!(
@@ -26,7 +28,7 @@ async fn scenario(profile: &str) {
         &config,
         format!(
             "{}[replication]\nmax-replicas=2\nenable-placement-rules=false\n",
-            if profile.starts_with("replica-v2") {
+            if case.starts_with("replica-v2") {
                 "cluster-version={Major=5,Minor=0,Patch=0}\n"
             } else {
                 ""
@@ -37,11 +39,12 @@ async fn scenario(profile: &str) {
     let arg = format!("--config={}", config.display());
     let mut records = vec![];
     for (binary, is_rust) in [(&go, false), (&rust, true)] {
-        let mut owner = crate::harness::Server::start_with_environment(
-            &go,
-            &[&arg],
-            &[("PD_SERVICE_MODE".into(), "api".into())],
-        )
+        let environment = [("PD_SERVICE_MODE".into(), "api".into())];
+        let mut owner = if native && is_rust {
+            crate::harness::Server::start_rust_with_environment(&rust, &[&arg], &environment)
+        } else {
+            crate::harness::Server::start_with_environment(&go, &[&arg], &environment)
+        }
         .unwrap();
         owner.ready().unwrap();
         let configuration = owner.get("/pd/api/v1/config").unwrap();
@@ -82,7 +85,7 @@ async fn scenario(profile: &str) {
         let store1 = metapb::Store {
             id: 1,
             address: "operator-store-one".into(),
-            version: if profile.starts_with("replica-v2") {
+            version: if case.starts_with("replica-v2") {
                 "5.0.0".into()
             } else {
                 String::new()
@@ -110,7 +113,7 @@ async fn scenario(profile: &str) {
                 store: Some(metapb::Store {
                     id: 2,
                     address: "operator-store-two".into(),
-                    version: if profile.starts_with("replica-v2") {
+                    version: if case.starts_with("replica-v2") {
                         "5.0.0".into()
                     } else {
                         String::new()
@@ -128,9 +131,10 @@ async fn scenario(profile: &str) {
             .error
             .is_none()
         );
-        let backend = EtcdMetaStore::connect(&[owner.url.clone()], Duration::from_secs(2))
-            .await
-            .unwrap();
+        let backend =
+            EtcdMetaStore::connect(&[owner.metadata_url().into()], Duration::from_secs(2))
+                .await
+                .unwrap();
         let region_key = astersql_pd_keypath::ClusterPaths::new(cluster).region_path(2);
         let before = backend
             .read(Read::range(
@@ -149,7 +153,18 @@ async fn scenario(profile: &str) {
             .unwrap()
             .into_inner()
             .id;
-        let mut sidecar = Sidecar::start_service(binary, &owner.url, "scheduling", "http");
+        let discovery = if native && is_rust {
+            vec!["--pd-discovery=primary-key"]
+        } else {
+            vec![]
+        };
+        let mut sidecar = Sidecar::start_service_with_args(
+            binary,
+            owner.metadata_url(),
+            "scheduling",
+            "http",
+            &discovery,
+        );
         let header = Some(p::RequestHeader {
             cluster_id: cluster,
             sender_id: 0,
@@ -214,7 +229,7 @@ async fn scenario(profile: &str) {
             }
         }
         let mut reported = region;
-        if profile.starts_with("replica") {
+        if case.starts_with("replica") {
             reported.start_key = b"a".to_vec();
             reported.end_key = b"b".to_vec();
             reported.region_epoch.as_mut().unwrap().version = 2;
@@ -244,7 +259,22 @@ async fn scenario(profile: &str) {
             Ok::<_, String>((response, stream))
         })
         .await;
-        let mut row = json!({"rust":is_rust,"profile":profile,"request":request.encode_to_vec(),"baseline_pd_id":baseline});
+        let consensus_client = backend.consensus_leader_client_url().await.unwrap();
+        let primary_key = astersql_pd_keypath::ClusterPaths::new(cluster).election_path(None);
+        let primary = backend
+            .read(Read::range(
+                primary_key.as_bytes(),
+                b"",
+                Consistency::Linearizable,
+            ))
+            .await
+            .unwrap();
+        let primary_member = pdpb::Member::decode(primary.entries[0].value.as_slice()).unwrap();
+        assert!(primary_member.client_urls.contains(&owner.url));
+        if native && is_rust {
+            assert_ne!(consensus_client.as_deref(), Some(owner.url.as_str()));
+        }
+        let mut row = json!({"metadata_url":owner.metadata_url(),"pd_url":owner.url,"consensus_client":consensus_client,"primary_member_raw":primary.entries[0].value,"rust":is_rust,"profile":profile,"request":request.encode_to_vec(),"baseline_pd_id":baseline});
         if let Ok(Ok((mut command, mut stream))) = result {
             row["split_command"] = json!(command.split_region.is_some());
             row["peer_command"] =
@@ -265,7 +295,7 @@ async fn scenario(profile: &str) {
             operator.header.as_mut().unwrap().cluster_id = 0;
             row["operator_normalized"] = json!(operator.encode_to_vec());
             row["operator_debug"] = json!(format!("{operator:?}"));
-            if profile.ends_with("complete") {
+            if case.ends_with("complete") {
                 row["completion"] = match tokio::time::timeout(
                     Duration::from_secs(20),
                     complete_replica(&mut client, &sender, &mut stream, &request, &command),
@@ -315,16 +345,16 @@ async fn scenario(profile: &str) {
     for row in &records {
         assert!(row.get("error").is_none(), "real scheduling command: {row}");
         assert_eq!(row["pd_region_unchanged"], true);
-        assert_eq!(row["split_command"], profile == "split");
-        assert_eq!(row["peer_command"], profile.starts_with("replica"));
+        assert_eq!(row["split_command"], case == "split");
+        assert_eq!(row["peer_command"], case.starts_with("replica"));
         assert_eq!(
             row["after_pd_id"].as_u64().unwrap(),
             row["baseline_pd_id"].as_u64().unwrap()
-                + if profile.starts_with("replica") { 2 } else { 1 },
+                + if case.starts_with("replica") { 2 } else { 1 },
             "planner ID consumption must match the operation: {row}"
         );
     }
-    if profile.ends_with("complete") {
+    if case.ends_with("complete") {
         for row in &records {
             assert!(
                 row["completion"].get("error").is_none(),
@@ -463,4 +493,9 @@ async fn sa_016_scheduling_ack_replica_promotes_and_completes() {
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
 async fn sa_016_scheduling_ack_replica_v2_promotes_and_completes() {
     scenario("replica-v2-complete").await;
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn sa_016_scheduling_native_pd_replica_ack_uses_real_pd_discovery() {
+    scenario("native-replica-complete").await;
 }

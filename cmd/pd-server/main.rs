@@ -97,6 +97,7 @@ async fn run_with_logging(
                     .microservice
                     .is_resource_manager_fallback_enabled(),
             )
+            .with_startup_config(config.security.clone())
             .with_listener_config(config.security)
             .with_join(config.join);
     if let Some(control) = log_level {

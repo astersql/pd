@@ -17,6 +17,7 @@ type RegionReset = (
     tokio::sync::oneshot::Sender<Result<(), String>>,
 );
 pub(crate) struct RoleServices {
+    pub(crate) startup_config: std::sync::OnceLock<Arc<astersql_pd_server_config::Config>>,
     pub(crate) resource_manager_fallback: std::sync::atomic::AtomicBool,
     pub(crate) keyspace_groups: std::sync::atomic::AtomicBool,
     pub(crate) recovery_steps: Arc<astersql_pd_unsaferecovery::RecoverySteps>,
@@ -52,6 +53,7 @@ impl RoleServices {
                     .as_nanos() as u64,
             )),
             file_directory: Default::default(),
+            startup_config: Default::default(),
             encryption: Default::default(),
             log_level: RwLock::new(None),
             telemetry: RwLock::new(None),
@@ -1295,6 +1297,7 @@ pub(crate) async fn run(
                         Arc::new(leader),
                         services.service_metrics(),
                         services.telemetry_config(),
+                        services.startup_config.get().cloned(),
                         services.encryption.get().and_then(Weak::upgrade),
                         services.recovery_steps.clone(),
                         services.keyspace_groups.load(std::sync::atomic::Ordering::Acquire),

@@ -337,3 +337,10 @@ Scheduling正常learner生命周期增量：实际双向流依次ACK AddLearner�
 两种版本格式的promotion及SUCCESS完整protobuf、ACK输入、PD ID/region副作用一致。
 [阶段证据](../server-api/acceptance/task-16.md#scheduling-learner-ack与完成阶段进行中)
 记录新增2专项及全模块5通过，取消/故障/乱序等边界仍待验证。
+
+Scheduling外置后端部署增量：Rust CLI可显式选择`--pd-discovery=primary-key`读取
+真实PD election Member，默认etcd-leader策略保持；Rust PD启动文件动态配置沿用
+canonical恢复，未bootstrap不额外写config key。实际native etcd+Rust PD命令/ACK
+与Go embedded拓扑、文件restart差分见
+[阶段说明](../server-api/acceptance/task-16.md#scheduling外置后端发现与pd启动配置阶段进行中)。
+此为外置后端过渡证据，不是原生Rust持久化或完整换主/TLS/watch/148完成回执。
