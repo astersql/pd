@@ -114,7 +114,7 @@ impl Config {
                 .map_err(|e| e.to_string())
         }
     }
-    fn has_client_credentials(&self) -> bool {
+    pub(crate) fn has_client_credentials(&self) -> bool {
         let tls = &self.security.tls;
         !tls.cert_path.is_empty()
             || !tls.key_path.is_empty()

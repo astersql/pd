@@ -299,3 +299,8 @@ TSO宿主支持同一调用者提供的axum listener。Go/Rust四种服务的前
 测试保留真实--config/空参数/controller类型/raw凭据及历史--log-file失败，
 不将120次认证探测当成120个Rust测试或全部业务方法覆盖。原62/82/88/123/148等
 配置、指标、部署和领域故障责任仍未整体验收；HTTPS backend等继续实施。
+
+MCS原生SDK传输增量：具体EtcdMetaStore通过调用者工厂复用公共连接池和TLS策略，
+MetaStore trait不含传输类型；每端点健康探测保持独立。真实双向TLS注册及存储契约
+见[验收16阶段说明](../server-api/acceptance/task-16.md#mcs-https后端与原生sdk传输阶段进行中)。
+TSO HTTPS transition与完整领域故障矩阵仍保留原拥有任务，不作为148完成证据。

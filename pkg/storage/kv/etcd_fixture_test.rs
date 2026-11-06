@@ -44,15 +44,24 @@ impl Fixture {
     pub fn start_with_native_ports(
         first_ports: Option<(std::net::TcpListener, std::net::TcpListener)>,
     ) -> Self {
-        Self::start_with_native_options(first_ports, None)
+        Self::start_with_native_options(first_ports, None, None)
     }
     /// Use the real server's explicit operation budget for bounded transaction contracts.
     pub fn start_with_txn_limit(limit: u32) -> Self {
-        Self::start_with_native_options(None, Some(limit))
+        Self::start_with_native_options(None, Some(limit), None)
+    }
+    /// Start the pinned native server with real mutual TLS; never builds Go.
+    pub fn start_with_tls(certificates: &Path) -> Self {
+        assert!(
+            std::env::var_os("PD_COMPAT_ETCD_BIN").is_some(),
+            "TLS fixture requires the pinned native server"
+        );
+        Self::start_with_native_options(None, None, Some(certificates.to_owned()))
     }
     fn start_with_native_options(
         first_ports: Option<(std::net::TcpListener, std::net::TcpListener)>,
         txn_limit: Option<u32>,
+        certificates: Option<PathBuf>,
     ) -> Self {
         static BINARY: OnceLock<PathBuf> = OnceLock::new();
         static NEXT: AtomicUsize = AtomicUsize::new(0);
@@ -76,7 +85,13 @@ impl Fixture {
         ));
         std::fs::create_dir_all(&directory).unwrap();
         if let Some(binary) = std::env::var_os("PD_COMPAT_ETCD_BIN") {
-            return Self::start_native(PathBuf::from(binary), directory, first_ports, txn_limit);
+            return Self::start_native(
+                PathBuf::from(binary),
+                directory,
+                first_ports,
+                txn_limit,
+                certificates,
+            );
         }
         assert!(
             txn_limit.is_none(),
@@ -250,6 +265,7 @@ impl Fixture {
         directory: PathBuf,
         mut first_ports: Option<(std::net::TcpListener, std::net::TcpListener)>,
         txn_limit: Option<u32>,
+        certificates: Option<PathBuf>,
     ) -> Self {
         assert!(
             binary.is_absolute() && binary.is_file(),
@@ -271,7 +287,15 @@ impl Fixture {
                     std::net::TcpListener::bind("127.0.0.1:0").unwrap(),
                 )
             });
-            let endpoint = format!("http://{}", client.local_addr().unwrap());
+            let endpoint = format!(
+                "{}://{}",
+                if certificates.is_some() {
+                    "https"
+                } else {
+                    "http"
+                },
+                client.local_addr().unwrap()
+            );
             let peer_url = format!("http://{}", peer.local_addr().unwrap());
             let mut args = vec![
                 "--name=default".into(),
@@ -283,6 +307,17 @@ impl Fixture {
                 format!("--initial-cluster=default={peer_url}"),
                 "--log-level=error".into(),
             ];
+            if let Some(certificates) = &certificates {
+                args.extend([
+                    format!("--cert-file={}", certificates.join("server.pem").display()),
+                    format!("--key-file={}", certificates.join("server.key").display()),
+                    format!(
+                        "--trusted-ca-file={}",
+                        certificates.join("ca.pem").display()
+                    ),
+                    "--client-cert-auth=true".into(),
+                ]);
+            }
             if let Some(limit) = txn_limit {
                 args.push(format!("--max-txn-ops={limit}"));
             }
@@ -313,11 +348,96 @@ impl Fixture {
         }
         unreachable!("each initial reservation returns or reports its final failure")
     }
+    fn tls_files(&self) -> Option<(String, String, String)> {
+        let (_, args) = self.native.as_ref()?;
+        let value = |prefix: &str| {
+            args.iter()
+                .find_map(|arg| arg.strip_prefix(prefix))
+                .map(str::to_owned)
+        };
+        Some((
+            value("--trusted-ca-file=")?,
+            value("--cert-file=")?,
+            value("--key-file=")?,
+        ))
+    }
+    fn try_wait_native_tls_ready(&mut self) -> Result<(), String> {
+        let (ca, cert, key) = self.tls_files().ok_or("missing native TLS paths")?;
+        let deadline = Instant::now() + Duration::from_secs(25);
+        loop {
+            if self.child.try_wait().unwrap().is_some() {
+                return Err(format!(
+                    "native etcd exited: {}",
+                    std::fs::read_to_string(self.directory.join("etcd.log")).unwrap_or_default()
+                ));
+            }
+            let result = Command::new("curl")
+                .args([
+                    "-fsS",
+                    "--max-time",
+                    "1",
+                    "--cacert",
+                    &ca,
+                    "--cert",
+                    &cert,
+                    "--key",
+                    &key,
+                    &format!("{}/health", self.endpoint),
+                ])
+                .output()
+                .map_err(|e| e.to_string())?;
+            if result.status.success() {
+                return Ok(());
+            }
+            if Instant::now() >= deadline {
+                return Err(format!(
+                    "native TLS etcd readiness timeout: {}",
+                    String::from_utf8_lossy(&result.stderr)
+                ));
+            }
+            std::thread::sleep(Duration::from_millis(20));
+        }
+    }
+    /// Execute the already admitted native etcdctl against this fixture.
+    pub fn native_ctl(&self, args: &[&str], input: Option<&[u8]>) -> std::process::Output {
+        let binary = PathBuf::from(
+            std::env::var_os("PD_ETCDCTL_BIN").expect("pinned native etcdctl required"),
+        );
+        assert!(binary.is_absolute() && binary.is_file());
+        let mut command = Command::new(binary);
+        command.args([
+            format!("--endpoints={}", self.endpoint),
+            "--command-timeout=3s".into(),
+            "--dial-timeout=2s".into(),
+        ]);
+        if let Some((ca, cert, key)) = self.tls_files() {
+            command.args([
+                format!("--cacert={ca}"),
+                format!("--cert={cert}"),
+                format!("--key={key}"),
+            ]);
+        }
+        let mut child = command
+            .args(args)
+            .stdin(Stdio::piped())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .spawn()
+            .unwrap();
+        if let Some(input) = input {
+            child.stdin.as_mut().unwrap().write_all(input).unwrap();
+        }
+        drop(child.stdin.take());
+        child.wait_with_output().unwrap()
+    }
     fn wait_native_ready(&mut self) {
         self.try_wait_native_ready()
             .unwrap_or_else(|error| panic!("{error}"));
     }
     fn try_wait_native_ready(&mut self) -> Result<(), String> {
+        if self.endpoint.starts_with("https://") {
+            return self.try_wait_native_tls_ready();
+        }
         let deadline = Instant::now() + Duration::from_secs(25);
         let address = self
             .endpoint

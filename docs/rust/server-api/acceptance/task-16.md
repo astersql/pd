@@ -599,3 +599,31 @@ CA文件单独存在且无identity不据此启用gRPC TLS，保留Go的显式凭
 最终TSO泛型listener宿主（GetMinTS、重复注册、打开的TSO/health流关闭）专项通过。
 workspace check与1142项只读守卫通过，原来的无关计划变更保持。完整原始失败、
 当前产物、历史产物指纹及请求/诊断见[MCS前端TLS压缩回执](task-16-mcs-front-tls.json.gz)。
+
+## MCS HTTPS后端与原生SDK传输阶段（进行中）
+
+真实native etcd 3.5.15双向TLS对照先观察到：现成Go RM正常读取cluster ID并注册，
+Rust启动报metadata unavailable、注册键不存在。修正复用现有DelegateConnections、
+client_auth和etcd-client 0.17的raw-channel/Custom入口，不复制SDK、协议或TLS连接器。
+新OwnedDelegateChannel供SDK强持有宿主连接池；普通代理仍使用原弱持有通道。
+仅建立连接失败时尝试下一端点，请求发出后的远端错误不触发重放，避免不确定写入重复。
+取消令牌由进程拥有，退出路径在宿主租约清理后才取消传输，启动失败同样释放资源。
+
+MetaStore trait保持后端中立；具体EtcdMetaStore接受调用者的传输工厂，主SDK使用
+多端点通道，每端点健康探针使用隔离的单端点SDK客户端。真实TLS存储契约涵盖CAS、
+watch重放、压缩及恢复、租约续期/撤销、断开端点与健康端点隔离，以及取消后不可访问。
+独立真实HTTP 503故障服务确认已发送请求不会连接第二个健康服务器。
+
+Go源契约明确显式HTTP端点丢弃TLS、HTTPS端点必须TLS；虽然SDK支持无scheme地址，
+实际Go MCS在进入SDK前即拒绝该地址，对照已捕获并保留相同的进程校验边界。
+仅CA文件无identity时ToClientTLSConfig返回nil，HTTPS使用系统根。CLI共用后端装配
+按该规则复用现有凭据工厂，保持TSO/Router/Scheduling/RM同一入口。TLS阶段不能被
+解释为完整四MCS领域差分；TSO HTTPS transition、完整配置/故障矩阵及148仍待完成。
+
+最终RM进程三profile×双实现共六组观察通过：显式HTTPS、配置凭据的HTTP均健康注册，
+注册项有非零lease且正常退出后删除；无scheme地址均在服务前拒绝、不产生注册。
+四MCS前端120次认证探测回归通过。原生TLS存储专项1、连接所有权/取消与不重放专项2
+均通过，0失败/0忽略；并非把契约内断言数或网络观察数当测试数。
+完整输入、源码与二进制摘要、原始red/green及校验命令见
+[MCS原生SDK传输回执](task-16-mcs-backend-tls.json.gz)。该回执仅接收上述范围，
+不因此关闭四MCS完整HTTPS部署或148。

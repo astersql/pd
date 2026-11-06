@@ -24,3 +24,6 @@ pub use diagnostics_log::DiagnosticsService;
 pub use go_pattern::go_pattern;
 #[cfg(test)]
 mod auxiliary_test;
+
+mod owned_channel;
+pub use owned_channel::OwnedDelegateChannel;

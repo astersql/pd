@@ -12,10 +12,11 @@ path = "lib.rs"
 astersql-pd-storage-domain.workspace = true
 async-trait.workspace = true
 thiserror.workspace = true
-etcd-client.workspace = true
+etcd-client = { workspace = true, features = ["raw-channel"] }
 tokio.workspace = true
 tokio-util.workspace = true
 tonic.workspace = true
+tower.workspace = true
 
 [[test]]
 name = "etcd_contract"

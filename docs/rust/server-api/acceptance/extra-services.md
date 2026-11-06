@@ -148,3 +148,10 @@ health Check/List/Watch采用固定grpc-go descriptor，独立于本表42个kvpr
 系统根验证、参数合并与controller TOML启动类型对照已通过；详见
 [阶段说明](task-16.md#mcs前端tls与共用配置入口阶段进行中)。
 这不关闭完整SDK HTTPS backend、TSO HTTPS transition、配置/租约及148领域故障矩阵。
+
+## MCS原生SDK后端传输增量（2026-11-07）
+
+四种进程共用后端传输工厂，原生etcd SDK通过现有delegate内核连接HTTP或HTTPS，
+保留每端点独立健康探测与宿主取消。真实RM双向TLS注册red及存储契约见
+[阶段说明](task-16.md#mcs-https后端与原生sdk传输阶段进行中)。
+不因此关闭TSO HTTPS transition、各领域完整故障差分及148责任。

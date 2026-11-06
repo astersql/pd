@@ -1,8 +1,8 @@
 // Copyright 2026 AsterSQL.
 use astersql_pd_keypath::ClusterPaths;
-use astersql_pd_storage::{Consistency, EtcdMetaStore, MetaStore, Read};
+use astersql_pd_storage::{Consistency, MetaStore, Read};
 use prost::Message;
-use std::{process::ExitCode, sync::Arc, time::Duration};
+use std::{process::ExitCode, sync::Arc};
 pub(crate) fn main(args: Vec<String>) -> ExitCode {
     let config = match crate::mcs_config::Config::parse(args) {
         Ok(config) => config,
@@ -19,7 +19,6 @@ pub(crate) fn main(args: Vec<String>) -> ExitCode {
         eprintln!("microservice TLS credentials could not be loaded or validated");
         return ExitCode::FAILURE;
     }
-    let backend = config.backend_endpoints.clone();
     let listen = config.listen_addr.clone();
     let address = config.advertise_listen_addr.clone();
     let name = config.name.clone();
@@ -29,14 +28,10 @@ pub(crate) fn main(args: Vec<String>) -> ExitCode {
         .map_err(|e| e.to_string())
         .and_then(|runtime| {
             runtime.block_on(async {
-                let store: Arc<dyn MetaStore> = Arc::new(
-                    EtcdMetaStore::connect(
-                        &backend.split(',').map(String::from).collect::<Vec<_>>(),
-                        Duration::from_secs(2),
-                    )
-                    .await
-                    .map_err(|e| e.to_string())?,
-                );
+                let cancel = tokio_util::sync::CancellationToken::new();
+                let _transport_lifetime = cancel.clone().drop_guard();
+                let backend_store = crate::backend_transport::connect(&config, &cancel).await?;
+                let store: Arc<dyn MetaStore> = Arc::new(backend_store.clone());
                 let row = store
                     .read(Read::range(
                         b"/pd/cluster_id",
@@ -66,7 +61,6 @@ pub(crate) fn main(args: Vec<String>) -> ExitCode {
                 let log_file = config.log.file.filename.clone();
                 let participant_name = name.clone();
                 let participant_address = advertised.clone();
-                let cancel = tokio_util::sync::CancellationToken::new();
                 let config = astersql_pd_tso::GroupWatchConfig {
                     store: store.clone(),
                     runtime: tokio::runtime::Handle::current(),

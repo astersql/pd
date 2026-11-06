@@ -47,7 +47,7 @@ async fn probe(url: &str, certs: &Path, client: Option<&str>) -> Value {
         Err(error) => json!({"accepted":false,"error":error.to_string()}),
     }
 }
-async fn ready(sidecar: &mut Sidecar, certs: &Path) -> Value {
+pub(super) async fn ready(sidecar: &mut Sidecar, certs: &Path) -> Value {
     ready_as(sidecar, certs, Some("allowed")).await
 }
 async fn ready_as(sidecar: &mut Sidecar, certs: &Path, identity: Option<&str>) -> Value {

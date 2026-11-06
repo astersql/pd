@@ -15,6 +15,7 @@ pub struct EtcdMetaStore {
     client: Client,
     timeout: Duration,
     endpoints: Vec<String>,
+    health_clients: Option<Vec<Client>>,
 }
 impl EtcdMetaStore {
     fn new_watch(
@@ -55,6 +56,64 @@ impl EtcdMetaStore {
             client,
             timeout,
             endpoints: endpoints.to_vec(),
+            health_clients: None,
+        })
+    }
+    /// Connect the unchanged native SDK through caller-owned transports. The
+    /// factory also supplies isolated per-endpoint health paths with identical
+    /// credentials; no transport types enter the backend-neutral MetaStore trait.
+    pub async fn connect_with_transport_factory<S, F>(
+        endpoints: &[String],
+        timeout: Duration,
+        factory: F,
+    ) -> Result<Self>
+    where
+        S: tower::Service<
+                tonic::codegen::http::Request<tonic::body::Body>,
+                Response = tonic::codegen::http::Response<tonic::body::Body>,
+            > + Clone
+            + Send
+            + Sync
+            + 'static,
+        S::Error: Into<tower::BoxError>,
+        S::Future: Send + 'static,
+        F: Fn(&[String]) -> Result<S>,
+    {
+        use tower::ServiceExt;
+        if endpoints.is_empty() || timeout.is_zero() {
+            return Err(StoreError::InvalidArgument);
+        }
+        let connect = |targets: &[String]| {
+            let transport = factory(targets)?;
+            let service = tower::util::BoxCloneSyncService::new(
+                transport.map_err(Into::<tower::BoxError>::into),
+            );
+            Ok::<_, StoreError>(Client::from_channel(
+                etcd_client::Channel::Custom(service),
+                Some(
+                    ConnectOptions::new()
+                        .with_connect_timeout(timeout)
+                        .with_require_leader(true),
+                ),
+            ))
+        };
+        let client = tokio::time::timeout(timeout, connect(endpoints)?)
+            .await
+            .map_err(|_| StoreError::Unavailable)?
+            .map_err(map_error)?;
+        let mut health_clients = Vec::with_capacity(endpoints.len());
+        for endpoint in endpoints {
+            let client = tokio::time::timeout(timeout, connect(std::slice::from_ref(endpoint))?)
+                .await
+                .map_err(|_| StoreError::Unavailable)?
+                .map_err(map_error)?;
+            health_clients.push(client);
+        }
+        Ok(Self {
+            client,
+            timeout,
+            endpoints: endpoints.to_vec(),
+            health_clients: Some(health_clients),
         })
     }
     async fn read_with_count(&self, r: Read) -> Result<(Snapshot, i64)> {
@@ -181,18 +240,22 @@ fn prefix_end(prefix: &[u8]) -> Vec<u8> {
 impl MetaStore for EtcdMetaStore {
     async fn backend_health(&self) -> Vec<BackendHealth> {
         let mut observations = Vec::with_capacity(self.endpoints.len());
-        for endpoint in &self.endpoints {
+        for (index, endpoint) in self.endpoints.iter().enumerate() {
             let begin = std::time::Instant::now();
             let response = tokio::time::timeout(self.timeout, async {
-                let mut client = Client::connect(
-                    [endpoint.clone()],
-                    Some(
-                        ConnectOptions::new()
-                            .with_connect_timeout(self.timeout)
-                            .with_require_leader(true),
-                    ),
-                )
-                .await?;
+                let mut client = if let Some(clients) = &self.health_clients {
+                    clients[index].clone()
+                } else {
+                    Client::connect(
+                        [endpoint.clone()],
+                        Some(
+                            ConnectOptions::new()
+                                .with_connect_timeout(self.timeout)
+                                .with_require_leader(true),
+                        ),
+                    )
+                    .await?
+                };
                 client.get("health", None).await
             })
             .await;

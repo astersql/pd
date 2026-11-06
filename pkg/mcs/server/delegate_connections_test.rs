@@ -211,3 +211,96 @@ async fn mcs_063_explicit_plaintext_credentials_override_https_target_scheme() {
     pool.shutdown();
     server.shutdown().await.unwrap();
 }
+
+#[tokio::test]
+async fn owned_sdk_transport_retains_pool_and_falls_back_only_before_sending() {
+    let parent = CancellationToken::new();
+    let (mut server, accepted) = serve_store(&parent, b"owned").await;
+    let reserved = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let dead = format!("http://{}", reserved.local_addr().unwrap());
+    drop(reserved);
+    let pool = Arc::new(DelegateConnections::new(
+        tokio::runtime::Handle::current(),
+        &parent,
+        None,
+    ));
+    let channel = super::OwnedDelegateChannel::new(vec![
+        (dead, pool.clone()),
+        (format!("http://{}", server.address), pool.clone()),
+    ])
+    .unwrap();
+    drop(pool);
+    let mut client = MetaStorageClient::new(channel);
+    let response = client
+        .get(p::GetRequest {
+            key: b"hello".to_vec(),
+            ..Default::default()
+        })
+        .await
+        .unwrap()
+        .into_inner();
+    assert_eq!(response.kvs[0].value, b"owned");
+    assert_eq!(accepted.load(Ordering::SeqCst), 1);
+    parent.cancel();
+    assert!(
+        client
+            .get(p::GetRequest {
+                key: b"hello".to_vec(),
+                ..Default::default()
+            })
+            .await
+            .is_err()
+    );
+    server.shutdown().await.unwrap();
+}
+
+#[tokio::test]
+async fn owned_sdk_transport_does_not_replay_after_remote_failure() {
+    let parent = CancellationToken::new();
+    let received = Arc::new(AtomicUsize::new(0));
+    let observed = received.clone();
+    let mut failed = BaseServer::start(
+        tokio::runtime::Handle::current(),
+        &parent,
+        tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap(),
+        move |_| {
+            Ok(axum::Router::new().fallback(move || {
+                let observed = observed.clone();
+                async move {
+                    observed.fetch_add(1, Ordering::SeqCst);
+                    axum::http::StatusCode::SERVICE_UNAVAILABLE
+                }
+            }))
+        },
+        vec![],
+    )
+    .await
+    .unwrap();
+    let (mut healthy, accepted) = serve_store(&parent, b"must-not-replay").await;
+    let pool = Arc::new(DelegateConnections::new(
+        tokio::runtime::Handle::current(),
+        &parent,
+        None,
+    ));
+    let channel = super::OwnedDelegateChannel::new(vec![
+        (format!("http://{}", failed.address), pool.clone()),
+        (format!("http://{}", healthy.address), pool),
+    ])
+    .unwrap();
+    let mut client = MetaStorageClient::new(channel);
+    assert_eq!(
+        client
+            .get(p::GetRequest {
+                key: b"hello".to_vec(),
+                ..Default::default()
+            })
+            .await
+            .unwrap_err()
+            .code(),
+        tonic::Code::Unavailable
+    );
+    assert_eq!(received.load(Ordering::SeqCst), 1);
+    assert_eq!(accepted.load(Ordering::SeqCst), 0);
+    failed.shutdown().await.unwrap();
+    healthy.shutdown().await.unwrap();
+}
