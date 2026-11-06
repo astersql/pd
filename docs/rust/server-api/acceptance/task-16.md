@@ -774,3 +774,17 @@ operator和恰好一次peer ID分配；split不消耗peer ID。七方法/心跳/
 [Scheduling命令阶段回执](task-16-scheduling-operators.json.gz)。当前仅证明首条命令与
 运行状态，不声称operator ACK/完成/取消、完整bucket、reason/affinity、配置watch或
 切主故障矩阵已完成；16、148及后续验收继续。
+
+## Scheduling learner ACK与完成阶段（进行中）
+
+在前阶段实际命令修复后，额外两个真实Go/Rust场景依照收到的AddLearnerNode命令
+回报learner及conf_ver增加，再接收真实AddNode promotion并回报voter及下一conf_ver，
+持续查询直到GetOperator SUCCESS。默认版本及5.0版本分别核对完整promotion和
+SUCCESS protobuf、两次ACK输入（仅cluster ID归零），保存原bytes及实际观察到的
+命令，不预先伪造成功状态。PD peer ID仍恰好消耗一个，PD region持久键不变。
+
+两专项首次运行均通过，无额外生产补丁或人为red；扩展后的整个命令模块5通过/0失败/
+0忽略，fmt通过。原Go/module及plan守卫保持1142项无变化。当前补充的是正常learner
+入场到完成的两种格式，取消、超时、换主、重复/乱序ACK及split完成仍未整体验收。
+输入、原始日志及源码摘要见[Scheduling ACK阶段回执](task-16-scheduling-ack.json.gz)。
+16、148与后续验收保持进行中。

@@ -26,7 +26,7 @@ async fn scenario(profile: &str) {
         &config,
         format!(
             "{}[replication]\nmax-replicas=2\nenable-placement-rules=false\n",
-            if profile == "replica-v2" {
+            if profile.starts_with("replica-v2") {
                 "cluster-version={Major=5,Minor=0,Patch=0}\n"
             } else {
                 ""
@@ -82,7 +82,7 @@ async fn scenario(profile: &str) {
         let store1 = metapb::Store {
             id: 1,
             address: "operator-store-one".into(),
-            version: if profile == "replica-v2" {
+            version: if profile.starts_with("replica-v2") {
                 "5.0.0".into()
             } else {
                 String::new()
@@ -110,7 +110,7 @@ async fn scenario(profile: &str) {
                 store: Some(metapb::Store {
                     id: 2,
                     address: "operator-store-two".into(),
-                    version: if profile == "replica-v2" {
+                    version: if profile.starts_with("replica-v2") {
                         "5.0.0".into()
                     } else {
                         String::new()
@@ -265,6 +265,17 @@ async fn scenario(profile: &str) {
             operator.header.as_mut().unwrap().cluster_id = 0;
             row["operator_normalized"] = json!(operator.encode_to_vec());
             row["operator_debug"] = json!(format!("{operator:?}"));
+            if profile.ends_with("complete") {
+                row["completion"] = match tokio::time::timeout(
+                    Duration::from_secs(20),
+                    complete_replica(&mut client, &sender, &mut stream, &request, &command),
+                )
+                .await
+                {
+                    Ok(Ok(value)) => value,
+                    other => json!({"error":format!("{other:?}")}),
+                };
+            }
             drop(sender);
             row["stream_terminal"] = json!(format!(
                 "{:?}",
@@ -313,6 +324,26 @@ async fn scenario(profile: &str) {
             "planner ID consumption must match the operation: {row}"
         );
     }
+    if profile.ends_with("complete") {
+        for row in &records {
+            assert!(
+                row["completion"].get("error").is_none(),
+                "replica completion: {row}"
+            );
+        }
+        assert_eq!(
+            records[0]["completion"]["promotion_normalized"],
+            records[1]["completion"]["promotion_normalized"]
+        );
+        assert_eq!(
+            records[0]["completion"]["success_normalized"],
+            records[1]["completion"]["success_normalized"]
+        );
+        assert_eq!(
+            records[0]["completion"]["acknowledgements"],
+            records[1]["completion"]["acknowledgements"]
+        );
+    }
     assert_eq!(
         records[0]["command_normalized"],
         records[1]["command_normalized"]
@@ -335,4 +366,101 @@ async fn sa_016_scheduling_live_replica_command_and_pd_owned_peer_id() {
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
 async fn sa_016_scheduling_live_replica_v2_command_and_pd_owned_peer_id() {
     scenario("replica-v2").await;
+}
+
+// Apply only the exact peer changes received on the real heartbeat stream.
+async fn complete_replica(
+    client: &mut p::scheduling_client::SchedulingClient<tonic::transport::Channel>,
+    sender: &tokio::sync::mpsc::Sender<p::RegionHeartbeatRequest>,
+    stream: &mut tonic::Streaming<p::RegionHeartbeatResponse>,
+    initial: &p::RegionHeartbeatRequest,
+    command: &p::RegionHeartbeatResponse,
+) -> Result<Value, String> {
+    let change = command
+        .change_peer
+        .clone()
+        .or_else(|| command.change_peer_v2.as_ref()?.changes.first().cloned())
+        .ok_or("missing learner change")?;
+    if change.change_type != astersql_pd_proto::eraftpb::ConfChangeType::AddLearnerNode as i32 {
+        return Err(format!("expected learner: {change:?}"));
+    }
+    let peer = change.peer.ok_or("missing learner peer")?;
+    let mut request = initial.clone();
+    let region = request.region.as_mut().unwrap();
+    region.peers.push(peer.clone());
+    region.region_epoch.as_mut().unwrap().conf_ver += 1;
+    let first = request.encode_to_vec();
+    let mut first_request = request.clone();
+    sender
+        .send(request.clone())
+        .await
+        .map_err(|e| e.to_string())?;
+    let mut observed = vec![];
+    let mut promotion = loop {
+        let response = stream
+            .message()
+            .await
+            .map_err(|e| e.to_string())?
+            .ok_or("EOF before promotion")?;
+        observed.push(response.encode_to_vec());
+        let change = response
+            .change_peer
+            .as_ref()
+            .or_else(|| response.change_peer_v2.as_ref()?.changes.first());
+        if change.is_some_and(|c| {
+            c.change_type == astersql_pd_proto::eraftpb::ConfChangeType::AddNode as i32
+                && c.peer
+                    .as_ref()
+                    .is_some_and(|p| p.id == peer.id && p.store_id == peer.store_id)
+        }) {
+            break response;
+        }
+    };
+    let promotion_raw = promotion.encode_to_vec();
+    promotion.header.as_mut().unwrap().cluster_id = 0;
+    let region = request.region.as_mut().unwrap();
+    region
+        .peers
+        .iter_mut()
+        .find(|p| p.id == peer.id)
+        .unwrap()
+        .role = metapb::PeerRole::Voter as i32;
+    region.region_epoch.as_mut().unwrap().conf_ver += 1;
+    let second = request.encode_to_vec();
+    sender
+        .send(request.clone())
+        .await
+        .map_err(|e| e.to_string())?;
+    let mut success = loop {
+        let response = client
+            .get_operator(p::GetOperatorRequest {
+                header: initial.header.clone(),
+                region_id: 2,
+            })
+            .await
+            .map_err(|e| e.to_string())?
+            .into_inner();
+        if response.header.as_ref().is_some_and(|h| h.error.is_none())
+            && response.status == pdpb::OperatorStatus::Success as i32
+        {
+            break response;
+        }
+        tokio::time::sleep(Duration::from_millis(15)).await;
+    };
+    let success_raw = success.encode_to_vec();
+    success.header.as_mut().unwrap().cluster_id = 0;
+    // Independent cluster IDs are the only normalized fields in input frames.
+    request.header.as_mut().unwrap().cluster_id = 0;
+    first_request.header.as_mut().unwrap().cluster_id = 0;
+    Ok(
+        json!({"promotion_raw":promotion_raw,"promotion_normalized":promotion.encode_to_vec(),"observed_commands":observed,"success_raw":success_raw,"success_normalized":success.encode_to_vec(),"success_debug":format!("{success:?}"),"acknowledgements_raw":[first,second],"acknowledgements":[first_request.encode_to_vec(),request.encode_to_vec()]}),
+    )
+}
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn sa_016_scheduling_ack_replica_promotes_and_completes() {
+    scenario("replica-complete").await;
+}
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn sa_016_scheduling_ack_replica_v2_promotes_and_completes() {
+    scenario("replica-v2-complete").await;
 }

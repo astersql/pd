@@ -192,3 +192,8 @@ ConfChangeV2的首条命令及运行中operator，严格检查PD ID和region持�
 领域内核。历史red、回归和证明边界见
 [阶段说明](task-16.md#scheduling实际命令与operator状态阶段进行中)。
 operator ACK/完成/取消及完整watch/故障仍待验证，不关闭148或16。
+
+Scheduling正常learner生命周期增量：实际双向流依次ACK AddLearner与promotion，
+两种版本格式的promotion及SUCCESS完整protobuf、ACK输入、PD ID/region副作用一致。
+[阶段证据](task-16.md#scheduling-learner-ack与完成阶段进行中)
+记录新增2专项及全模块5通过，取消/故障/乱序等边界仍待验证。
