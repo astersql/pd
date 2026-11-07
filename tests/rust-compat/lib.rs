@@ -171,3 +171,6 @@ mod accept_extra_scheduling_operator_test;
 
 #[cfg(test)]
 mod accept_startup_config_test;
+
+#[cfg(test)]
+mod accept_extra_scheduling_manual_test;

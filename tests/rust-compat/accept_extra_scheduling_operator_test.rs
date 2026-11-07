@@ -347,6 +347,17 @@ async fn scenario(profile: &str) {
                     other => json!({"error":format!("{other:?}")}),
                 };
             }
+            if case.contains("buckets") {
+                row["bucket_exchange"] = match tokio::time::timeout(
+                    Duration::from_secs(5),
+                    valid_buckets(&mut client, header.clone()),
+                )
+                .await
+                {
+                    Ok(Ok(value)) => value,
+                    result => json!({"error":format!("{result:?}")}),
+                };
+            }
             drop(sender);
             row["stream_terminal"] = json!(format!(
                 "{:?}",
@@ -432,6 +443,22 @@ async fn scenario(profile: &str) {
             row["baseline_pd_id"].as_u64().unwrap()
                 + if case.starts_with("replica") { 2 } else { 1 },
             "planner ID consumption must match the operation: {row}"
+        );
+    }
+    if case.contains("buckets") {
+        for row in &records {
+            assert!(
+                row["bucket_exchange"].get("error").is_none(),
+                "valid buckets: {row}"
+            );
+        }
+        assert_eq!(
+            records[0]["bucket_exchange"]["requests_normalized"],
+            records[1]["bucket_exchange"]["requests_normalized"]
+        );
+        assert_eq!(
+            records[0]["bucket_exchange"]["responses_normalized"],
+            records[1]["bucket_exchange"]["responses_normalized"]
         );
     }
     if case.ends_with("complete") {
@@ -621,4 +648,80 @@ async fn sa_016_scheduling_complete_namespace_authority_after_operator_completio
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
 async fn sa_016_scheduling_observed_placement_rules_keep_pd_namespace_unchanged() {
     scenario("replica-rules-authority-complete").await;
+}
+
+async fn valid_buckets(
+    client: &mut p::scheduling_client::SchedulingClient<tonic::transport::Channel>,
+    header: Option<p::RequestHeader>,
+) -> Result<Value, String> {
+    let requests = [
+        (3, b"a1".to_vec()),
+        (2, b"stale".to_vec()),
+        (3, b"equal".to_vec()),
+        (4, b"a2".to_vec()),
+    ]
+    .into_iter()
+    .map(|(version, middle)| p::RegionBucketsRequest {
+        header: header.clone(),
+        region_epoch: Some(metapb::RegionEpoch {
+            conf_ver: 3,
+            version: 2,
+        }),
+        buckets: Some(metapb::Buckets {
+            region_id: 2,
+            version,
+            keys: vec![b"a".to_vec(), middle, b"b".to_vec()],
+            stats: Some(metapb::BucketStats {
+                read_bytes: vec![200000, 400000],
+                write_bytes: vec![1000, 2000],
+                read_qps: vec![10, 20],
+                write_qps: vec![1, 2],
+                read_keys: vec![2, 4],
+                write_keys: vec![1, 2],
+            }),
+            period_in_ms: 2000,
+        }),
+    })
+    .collect::<Vec<_>>();
+    let raw = requests
+        .iter()
+        .map(Message::encode_to_vec)
+        .collect::<Vec<_>>();
+    let mut stream = client
+        .region_buckets(tokio_stream::iter(requests.clone()))
+        .await
+        .map_err(|e| e.to_string())?
+        .into_inner();
+    let mut responses = vec![];
+    let mut normalized = vec![];
+    for _ in &requests {
+        let mut response = stream
+            .message()
+            .await
+            .map_err(|e| e.to_string())?
+            .ok_or("EOF before all bucket acknowledgements")?;
+        if response.header.as_ref().is_none_or(|h| h.error.is_some()) {
+            return Err(format!("bucket admission: {response:?}"));
+        }
+        responses.push(response.encode_to_vec());
+        response.header.as_mut().unwrap().cluster_id = 0;
+        normalized.push(response.encode_to_vec());
+    }
+    if stream.message().await.map_err(|e| e.to_string())?.is_some() {
+        return Err("unexpected extra bucket response".into());
+    }
+    let normalized_requests = requests
+        .into_iter()
+        .map(|mut r| {
+            r.header.as_mut().unwrap().cluster_id = 0;
+            r.encode_to_vec()
+        })
+        .collect::<Vec<_>>();
+    Ok(
+        json!({"requests_raw":raw,"requests_normalized":normalized_requests,"responses_raw":responses,"responses_normalized":normalized,"terminal":"EOF"}),
+    )
+}
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn sa_016_scheduling_valid_buckets_versions_ack_and_namespace_authority() {
+    scenario("replica-buckets-authority-complete").await;
 }

@@ -572,3 +572,7 @@ mod tests;
 #[cfg(test)]
 #[path = "embed_scheduling_config_test.rs"]
 mod config_tests;
+
+#[cfg(test)]
+#[path = "embed_scheduling_buckets_test.rs"]
+mod buckets_tests;

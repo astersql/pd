@@ -1,5 +1,10 @@
 # 控制面与MCS来源覆盖
 
+16-G有效方法增量：SplitRegions实际命令/子区间完成/PD IDs，ScatterRegions
+实际transfer/ACK/SUCCESS，以及四帧RegionBuckets的wire与嵌入宿主同一cache/
+HotStat已获正向证据。失败夹具保留，完整namespace无排除比较，见
+[证据边界](../server-api/acceptance/task-16.md#scheduling三个有效方法与嵌入缓存证据16-g)。
+
 任务002，2026-11-04。准入见[admission.md](admission.md)。
 本清单固定责任，不认证尚未实现的行为。任务必须依次完成其直接依赖和真实差分。
 

@@ -914,3 +914,29 @@ barrier。原失败及通过日志均保存，没有放宽成“无错误即可�
 [持久空间与投影回执](task-16-scheduling-authority.json.gz)。
 SplitRegions/ScatterRegions/RegionBuckets有效输入及16-D/E/F/H所列缺口继续，
 不在本阶段扩展无关HTTP、指标、全配置或全workspace test矩阵。
+
+## Scheduling三个有效方法与嵌入缓存证据（16-G）
+
+`SplitRegions` 使用实际 `m` 分裂命令；RPC 在观察到两个真实子区间心跳前
+保持未完成，`AskBatchSplit` 从真实 PD 分配三个 ID，之后响应返回新 region ID。
+`ScatterRegions` 对实际双 voter 区间产生 leader transfer，只有真实 ACK 后
+`GetOperator` 才转为 SUCCESS。比较保留完整 protobuf，只归一 cluster ID；
+半关闭后的 EOF/状态也比较。关闭 sidecar 后比较完整持久 namespace，无键排除。
+
+夹具最初用子区间 bootstrap，被 Go 的全范围要求拒绝；改为合法 bootstrap 后
+报告子区间。Split 的首次 ID 请求还实际观察到 `PD leader is not found`，这是
+分配前拒绝并触发发现，夹具仅对此错误等待重试，不重放已发送的分配。
+Scatter 关闭 placement 时双方返回失败 region；debug 日志及只读源码明确
+`allowLeader` 依赖 rule fit。正向夹具改用真实 PD 默认规则，不伪造候选或完成状态；
+同一 group 的合法无操作响应保留，后续实际请求产生并完成 transfer。
+
+有效 `RegionBuckets` 四帧包含新版本3、旧2、相同3及更新4，Go/Rust ACK 与
+EOF 一致，完整 namespace 不变。另一个实际 `SchedulingHost` 在调用者 runtime
+运行，连接真实 Go PD backend、参与选举，typed MCS RPC 输入同样四帧。直接读取
+该宿主同一 canonical cache 和 HotStat，确认旧/同版本不覆盖、新版本更新且有
+hot bucket 记录；PD region 持久条目不变。关闭宿主后调用方 token/runtime 和
+PD 仍可用。这是实际嵌入宿主行为，不是另建 domain 内核或只检查 ACK。
+
+原始命令、失败夹具、protobuf、完整 namespace、共享缓存观察与输入摘要见
+[有效方法回执](task-16-scheduling-methods.json.gz)。该回执关闭本段三个正向方法缺口；
+16-B/D/E/F/H 的明确剩余项仍按有限清单推进，不据此宣称42方法整体完成。

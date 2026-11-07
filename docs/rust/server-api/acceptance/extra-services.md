@@ -1,5 +1,11 @@
 # 额外gRPC服务注册与责任交接
 
+Scheduling有效split/scatter/buckets增量：三个方法已有真实非空领域证据；split
+等待实际子区间心跳并返回PD-owned ID，scatter由ACK完成transfer，buckets同时
+核验wire ACK及实际嵌入宿主的canonical cache/HotStat。关闭后完整namespace
+比较不排除键，见[有效方法说明](task-16.md#scheduling三个有效方法与嵌入缓存证据16-g)。
+本增量不关闭16其它明确流/双模式缺口或后续全配置回归。
+
 2026-11-06，审计基准 `128c50050748fac7820b48039759d77a522929ec`。
 **责任计划、MetaStorage前置及classic RM RU子集已有证据，整体协议验收尚未完成。** 最初只读审计之后，
 用户已授权实施；MetaStorage见下表65–68，classic RM阶段见[本轮回执](task-16.md#classic-rm-ru前置阶段)。
