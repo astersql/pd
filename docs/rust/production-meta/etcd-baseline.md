@@ -49,3 +49,6 @@ VFS 请求和 etcd 一样的 `F_FULLFSYNC` 设备缓存屏障。启用该设置�
 退出0表示采集完成。基线与候选的重启都是正常进程终止，设备掉电另见故障回执。
 [优化前样本](candidate-baseline-before.json)、[最终样本](candidate-baseline.json)、
 [掉电回执](power-evidence.md)。
+
+后续日志重放方案复用了上述冻结阈值和工作负载，三轮通过。上表保留持久应用表
+方案的对照结果。[重放复核](replay-experiment.md)。

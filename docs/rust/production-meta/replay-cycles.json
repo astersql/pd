@@ -1,0 +1,67 @@
+{
+  "seconds": 31.923,
+  "recoveries": [
+    {
+      "cycle": 1,
+      "interrupted_member": 1,
+      "verified_tail": 127
+    },
+    {
+      "cycle": 2,
+      "interrupted_member": 2,
+      "verified_tail": 255
+    },
+    {
+      "cycle": 3,
+      "interrupted_member": 3,
+      "verified_tail": 383
+    },
+    {
+      "cycle": 4,
+      "interrupted_member": 1,
+      "verified_tail": 511
+    },
+    {
+      "cycle": 5,
+      "interrupted_member": 3,
+      "verified_tail": 639
+    },
+    {
+      "cycle": 6,
+      "interrupted_member": 1,
+      "verified_tail": 767
+    },
+    {
+      "cycle": 7,
+      "interrupted_member": 3,
+      "verified_tail": 895
+    },
+    {
+      "cycle": 8,
+      "interrupted_member": 2,
+      "verified_tail": 1023
+    },
+    {
+      "cycle": 9,
+      "interrupted_member": 3,
+      "verified_tail": 1151
+    },
+    {
+      "cycle": 10,
+      "interrupted_member": 2,
+      "verified_tail": 1279
+    },
+    {
+      "cycle": 11,
+      "interrupted_member": 3,
+      "verified_tail": 1407
+    },
+    {
+      "cycle": 12,
+      "interrupted_member": 1,
+      "verified_tail": 1535
+    }
+  ],
+  "confirmed": 1536,
+  "recovered": 1536
+}

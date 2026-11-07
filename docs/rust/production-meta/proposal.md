@@ -20,7 +20,8 @@ rusqlite 0.39.0 和 bundled SQLite 3.51.3，绑定与运行时版本均已核实
 
 - 串行化节点的日志、vote、截断和应用事务。SQLite 采用 `journal_mode=WAL`
   和 `synchronous=FULL`，macOS 额外启用 `fullfsync`。持久事务成功后才触发
-  Raft 日志完成回调。客户端成功等待多数派提交以及本节点应用事务持久化。
+  Raft 日志完成回调。持久应用表路径在成功前另同步应用事务。重放路径等待多数派
+  持久日志和内存应用，重启依靠持久快照、日志重放和线性读屏障恢复派生状态。
   磁盘错误、提交结果未知或任期过期时停止确认。设计依据见
   [RaftLogStorage](https://docs.rs/openraft/0.9.22/openraft/storage/trait.RaftLogStorage.html)
   和 [SQLite PRAGMA](https://sqlite.org/pragma.html#pragma_synchronous)。

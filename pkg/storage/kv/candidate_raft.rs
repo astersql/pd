@@ -5,6 +5,7 @@ use std::fmt::Debug;
 use std::io::{self, Cursor};
 use std::ops::{Bound, RangeBounds};
 use std::sync::{Arc, Mutex};
+use std::time::Instant;
 
 use openraft::storage::{LogFlushed, RaftLogStorage, RaftStateMachine};
 use openraft::{
@@ -17,9 +18,50 @@ use serde::{Deserialize, Serialize, de::DeserializeOwned};
 use sha2::{Digest, Sha256};
 
 use super::candidate::Candidate;
+use super::candidate_profile_test::event;
+
+#[path = "candidate_replay.rs"]
+mod replay;
+pub(super) use replay::Replay;
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub(super) struct PutPair(pub [(Vec<u8>, Vec<u8>); 2]);
+pub(super) struct PutPair(#[serde(with = "pair_codec")] pub [(Vec<u8>, Vec<u8>); 2]);
+
+mod pair_codec {
+    use base64::{Engine, engine::general_purpose::STANDARD};
+    use serde::{Deserialize, Deserializer, Serialize, Serializer};
+
+    type Pair = [(Vec<u8>, Vec<u8>); 2];
+
+    pub(super) fn serialize<S: Serializer>(pair: &Pair, serializer: S) -> Result<S::Ok, S::Error> {
+        pair.each_ref()
+            .map(|(key, value)| (STANDARD.encode(key), STANDARD.encode(value)))
+            .serialize(serializer)
+    }
+
+    pub(super) fn deserialize<'de, D: Deserializer<'de>>(
+        deserializer: D,
+    ) -> Result<Pair, D::Error> {
+        #[derive(Deserialize)]
+        #[serde(untagged)]
+        enum Encoding {
+            Base64([(String, String); 2]),
+            Legacy(Pair),
+        }
+        match Encoding::deserialize(deserializer)? {
+            Encoding::Legacy(pair) => Ok(pair),
+            Encoding::Base64([left, right]) => {
+                let decode = |(key, value): (String, String)| -> Result<_, D::Error> {
+                    Ok((
+                        STANDARD.decode(key).map_err(serde::de::Error::custom)?,
+                        STANDARD.decode(value).map_err(serde::de::Error::custom)?,
+                    ))
+                };
+                Ok([decode(left)?, decode(right)?])
+            }
+        }
+    }
+}
 
 openraft::declare_raft_types!(pub(super) Type: D = PutPair, R = u64);
 
@@ -75,7 +117,7 @@ impl SnapshotEnvelope {
 }
 
 #[derive(Clone)]
-pub(super) struct RaftDisk(Arc<Mutex<Connection>>);
+pub(super) struct RaftDisk(Arc<Mutex<Connection>>, Option<Arc<replay::InstallFence>>);
 
 fn failure(verb: ErrorVerb, error: impl std::fmt::Display) -> StorageError<u64> {
     StorageIOError::new(ErrorSubject::Store, verb, AnyError::error(error)).into()
@@ -102,7 +144,7 @@ fn save<T: Serialize>(db: &Connection, key: &str, value: &T) -> Local<()> {
 
 impl RaftDisk {
     pub(super) fn new(candidate: Candidate) -> Self {
-        Self(Arc::new(Mutex::new(candidate.db)))
+        Self(Arc::new(Mutex::new(candidate.db)), None)
     }
 
     fn read<T>(&self, f: impl FnOnce(&Connection) -> Local<T>) -> StoreResult<T> {
@@ -206,9 +248,12 @@ impl RaftLogStorage<Type> for RaftDisk {
         I: IntoIterator<Item = Entry<Type>> + Send,
         I::IntoIter: Send,
     {
+        let started = Instant::now();
+        let mut last = 0;
         let result = self.write(|db| {
             let mut stmt = db.prepare("INSERT INTO log_entries VALUES (?1, ?2)")?;
             for entry in entries {
+                last = entry.log_id.index;
                 stmt.execute(params![
                     i64::try_from(entry.log_id.index)?,
                     serde_json::to_vec(&entry)?
@@ -216,6 +261,7 @@ impl RaftLogStorage<Type> for RaftDisk {
             }
             Ok(())
         });
+        event("append", last, started);
         callback.log_io_completed(
             result
                 .as_ref()
@@ -236,6 +282,11 @@ impl RaftLogStorage<Type> for RaftDisk {
     }
 
     async fn purge(&mut self, log_id: LogId<u64>) -> StoreResult<()> {
+        if let Some(fence) = &self.1 {
+            // OpenRaft schedules snapshot installation in its state-machine
+            // worker and purge in the core. Wait before physically deleting.
+            fence.wait_for_snapshot(self, log_id).await?;
+        }
         self.write(|db| {
             db.execute(
                 "DELETE FROM log_entries WHERE idx<=?1",
@@ -263,10 +314,13 @@ impl RaftStateMachine<Type> for RaftDisk {
         I: IntoIterator<Item = Entry<Type>> + Send,
         I::IntoIter: Send,
     {
-        self.write(|db| {
+        let started = Instant::now();
+        let mut last = 0;
+        let result = self.write(|db| {
             let mut revision = load::<u64>(db, "revision")?.unwrap_or(0);
             let mut replies = Vec::new();
             for entry in entries {
+                last = entry.log_id.index;
                 match entry.payload {
                     EntryPayload::Blank => {}
                     EntryPayload::Membership(membership) => save(
@@ -291,7 +345,9 @@ impl RaftStateMachine<Type> for RaftDisk {
                 replies.push(revision);
             }
             Ok(replies)
-        })
+        });
+        event("apply", last, started);
+        result
     }
 
     async fn get_snapshot_builder(&mut self) -> Self {

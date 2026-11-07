@@ -22,7 +22,10 @@ use openraft::{
 
 use super::candidate::Candidate;
 use super::candidate_power_vfs_test::{Fault, PowerVfs};
-use super::candidate_raft::{PutPair, RaftDisk, Type};
+use super::candidate_raft::{PutPair, RaftDisk, Replay, Type};
+
+#[path = "candidate_history_test.rs"]
+mod history;
 
 type Nodes = Arc<RwLock<BTreeMap<u64, Raft<Type>>>>;
 type Replicas = BTreeMap<u64, (Raft<Type>, RaftDisk)>;
@@ -95,6 +98,16 @@ async fn start(
     vfs: Option<&str>,
 ) -> (Raft<Type>, RaftDisk) {
     let disk = RaftDisk::new(Candidate::open_using(path, vfs).unwrap());
+    let raft = start_raft(network, id, disk.clone(), disk.clone()).await;
+    (raft, disk)
+}
+
+async fn start_raft(
+    network: &Network,
+    id: u64,
+    disk: RaftDisk,
+    model: impl RaftStateMachine<Type>,
+) -> Raft<Type> {
     let config = Config {
         heartbeat_interval: 30,
         election_timeout_min: 120,
@@ -110,16 +123,16 @@ async fn start(
         id,
         Arc::new(config),
         Network(network.0.clone(), Some(id)),
-        disk.clone(),
-        disk.clone(),
+        disk,
+        model,
     )
     .await
     .unwrap();
     network.0.write().unwrap().insert(id, raft.clone());
-    (raft, disk)
+    raft
 }
 
-async fn leader(nodes: &Replicas) -> u64 {
+async fn leader<T>(nodes: &BTreeMap<u64, (Raft<Type>, T)>) -> u64 {
     tokio::time::timeout(Duration::from_secs(6), async {
         loop {
             for (&id, (node, _)) in nodes {
@@ -164,11 +177,23 @@ async fn boot(root: &Path, vfs: Option<&str>) -> (Paths, Network, Replicas, u64)
     (paths, network, nodes, primary)
 }
 
-async fn shutdown(network: &Network, nodes: Replicas) {
+async fn shutdown<T>(network: &Network, nodes: BTreeMap<u64, (Raft<Type>, T)>) {
     for (raft, _) in nodes.values() {
         raft.shutdown().await.unwrap();
     }
     network.0.write().unwrap().clear();
+}
+
+async fn start_replay(
+    path: &Path,
+    network: &Network,
+    id: u64,
+    vfs: Option<&str>,
+) -> (Raft<Type>, Replay) {
+    let (disk, model) =
+        Replay::open(RaftDisk::new(Candidate::open_using(path, vfs).unwrap())).unwrap();
+    let raft = start_raft(network, id, disk, model.clone()).await;
+    (raft, model)
 }
 
 fn sample() -> PutPair {
@@ -517,4 +542,174 @@ async fn theme10_candidate_io_failure_stops_acknowledgement() {
             confirmed.data
         );
     }
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn theme10_candidate_replay_power_snapshot_membership() {
+    let root = tempfile::tempdir().unwrap();
+    let vfs_name = "pd-candidate-replay-power";
+    let vfs = PowerVfs::new(root.path(), vfs_name);
+    let timeout = Duration::from_secs(7);
+    let network = Network::default();
+    let mut paths = Paths::new();
+    let mut nodes = BTreeMap::new();
+    for id in 1..=3 {
+        let live = root.path().join(format!("node-{id}"));
+        fs::create_dir(&live).unwrap();
+        let path = live.join("meta.db");
+        nodes.insert(id, start_replay(&path, &network, id, Some(vfs_name)).await);
+        paths.insert(id, path);
+    }
+    let voters = nodes
+        .keys()
+        .map(|&id| (id, BasicNode::new(id.to_string())))
+        .collect::<BTreeMap<_, _>>();
+    nodes[&1].0.initialize(voters).await.unwrap();
+    let primary = leader(&nodes).await;
+    let first = tokio::time::timeout(timeout, nodes[&primary].0.client_write(sample()))
+        .await
+        .unwrap()
+        .unwrap();
+    assert_eq!(first.data, 1);
+    for (raft, model) in nodes.values_mut() {
+        raft.wait(Some(timeout))
+            .applied_index_at_least(Some(first.log_id.index), "before older snapshot")
+            .await
+            .unwrap();
+        assert_eq!(
+            model.build_snapshot().await.unwrap().meta.last_log_id,
+            Some(first.log_id)
+        );
+    }
+    let stale = *nodes.keys().find(|&&id| id != primary).unwrap();
+    nodes[&stale].0.runtime_config().elect(false);
+    network.0.write().unwrap().remove(&stale);
+    let updated = PutPair([
+        (b"a".to_vec(), b"new-a".to_vec()),
+        (b"b".to_vec(), b"new-b".to_vec()),
+    ]);
+    let second = tokio::time::timeout(timeout, nodes[&primary].0.client_write(updated.clone()))
+        .await
+        .unwrap()
+        .unwrap();
+    assert_eq!(second.data, 2);
+    let ack = root.path().join("client-replay.json");
+    let log = OpenOptions::new()
+        .write(true)
+        .create_new(true)
+        .open(&ack)
+        .unwrap();
+    serde_json::to_writer(&log, &(second.log_id, second.data, &updated.0)).unwrap();
+    log.sync_all().unwrap();
+    drop(log);
+
+    let mut restart = Paths::new();
+    for (&id, path) in &paths {
+        let recovered = root.path().join(format!("replayed-{id}"));
+        fs::create_dir(&recovered).unwrap();
+        vfs.cut(path.parent().unwrap(), &recovered).unwrap();
+        restart.insert(id, recovered.join("meta.db"));
+    }
+    shutdown(&network, nodes).await;
+    let survivors = Network::default();
+    let mut reopened = BTreeMap::new();
+    for (&id, path) in &restart {
+        let (mut disk, mut model) =
+            Replay::open(RaftDisk::new(Candidate::open(path).unwrap())).unwrap();
+        assert_eq!(model.applied_state().await.unwrap().0, Some(first.log_id));
+        assert_eq!(model.value(b"a").unwrap(), Some(b"one".to_vec()));
+        let suffix = disk
+            .try_get_log_entries(second.log_id.index..=second.log_id.index)
+            .await
+            .unwrap();
+        assert_eq!(suffix.len(), usize::from(id != stale));
+        assert!(
+            disk.purge(second.log_id).await.is_err(),
+            "purged an entry beyond the durable snapshot"
+        );
+        if id == primary {
+            continue;
+        }
+        let raft = start_raft(&survivors, id, disk, model.clone()).await;
+        if reopened.is_empty() {
+            let result =
+                tokio::time::timeout(Duration::from_millis(200), raft.ensure_linearizable()).await;
+            assert!(
+                !matches!(result, Ok(Ok(_))),
+                "a single voter passed the read barrier"
+            );
+        }
+        reopened.insert(id, (raft, model));
+    }
+    let current = leader(&reopened).await;
+    let (raft, state) = &reopened[&current];
+    let raft = raft.clone();
+    let (log_id, rev, values): (openraft::LogId<u64>, u64, [(Vec<u8>, Vec<u8>); 2]) =
+        serde_json::from_reader(fs::File::open(ack).unwrap()).unwrap();
+    assert_eq!((log_id, rev), (second.log_id, second.data));
+    for (key, value) in values {
+        assert_eq!(state.value(&key).unwrap(), Some(value));
+    }
+    let third = tokio::time::timeout(timeout, raft.client_write(updated))
+        .await
+        .unwrap()
+        .unwrap();
+    assert_eq!(third.data, 3);
+    raft.trigger().snapshot().await.unwrap();
+    raft.wait(Some(timeout))
+        .snapshot(third.log_id, "replay checkpoint")
+        .await
+        .unwrap();
+    raft.trigger().purge_log(third.log_id.index).await.unwrap();
+    raft.wait(Some(timeout))
+        .purged(Some(third.log_id), "snapshot permits purge")
+        .await
+        .unwrap();
+
+    let new_id = 4;
+    reopened.insert(
+        new_id,
+        start_replay(
+            &root.path().join("replacement.db"),
+            &survivors,
+            new_id,
+            None,
+        )
+        .await,
+    );
+    tokio::time::timeout(timeout, raft.add_learner(new_id, BasicNode::new("4"), true))
+        .await
+        .unwrap()
+        .unwrap();
+    reopened[&new_id]
+        .0
+        .wait(Some(timeout))
+        .snapshot(third.log_id, "learner installed replay snapshot")
+        .await
+        .unwrap();
+    let voters = reopened.keys().copied().collect::<BTreeSet<_>>();
+    tokio::time::timeout(timeout, raft.change_membership(voters.clone(), false))
+        .await
+        .unwrap()
+        .unwrap();
+    raft.wait(Some(timeout))
+        .voter_ids(voters, "replacement member promoted")
+        .await
+        .unwrap();
+    let fourth = tokio::time::timeout(timeout, raft.client_write(sample()))
+        .await
+        .unwrap()
+        .unwrap();
+    assert_eq!(fourth.data, 4);
+    reopened[&new_id]
+        .0
+        .wait(Some(timeout))
+        .applied_index_at_least(Some(fourth.log_id.index), "replacement applied")
+        .await
+        .unwrap();
+    shutdown(&survivors, reopened).await;
+    println!(
+        "replay_before_barrier={} recovered_ack={} revision={rev} checkpoint={} replacement={new_id}",
+        first.log_id, second.log_id, third.log_id
+    );
 }

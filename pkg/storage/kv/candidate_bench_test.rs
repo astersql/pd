@@ -6,6 +6,7 @@ use std::io;
 use std::net::SocketAddr;
 use std::path::Path;
 use std::sync::Arc;
+use std::time::Instant;
 
 use axum::body::Bytes;
 use axum::extract::State;
@@ -32,7 +33,8 @@ use tokio::net::TcpListener;
 use tokio::signal::unix::{SignalKind, signal};
 
 use super::candidate::Candidate;
-use super::candidate_raft::{PutPair, RaftDisk, Type};
+use super::candidate_profile_test::{event, install};
+use super::candidate_raft::{PutPair, RaftDisk, Replay, Type};
 
 type PeerClient = Client<HttpConnector, Full<Bytes>>;
 type RpcResult<T, E = openraft::error::Infallible> =
@@ -87,7 +89,13 @@ impl RaftNetwork<Type> for Peer {
         req: AppendEntriesRequest<Type>,
         _: RPCOption,
     ) -> RpcResult<AppendEntriesResponse<u64>> {
-        self.send("append", req).await
+        let index = req.entries.last().map(|entry| entry.log_id.index);
+        let started = Instant::now();
+        let result = self.send("append", req).await;
+        if let Some(index) = index {
+            event("replicate", index, started);
+        }
+        result
     }
 
     async fn vote(&mut self, req: VoteRequest<u64>, _: RPCOption) -> RpcResult<VoteResponse<u64>> {
@@ -109,8 +117,14 @@ impl RaftNetwork<Type> for Peer {
 #[derive(Clone)]
 struct ClientState {
     raft: Raft<Type>,
-    disk: RaftDisk,
+    model: ReadModel,
     id: u64,
+}
+
+#[derive(Clone)]
+enum ReadModel {
+    Materialized(RaftDisk),
+    Replayed(Replay),
 }
 
 #[derive(Deserialize)]
@@ -138,6 +152,7 @@ async fn write(
     State(state): State<ClientState>,
     Json(txn): Json<Txn>,
 ) -> Result<Json<Value>, StatusCode> {
+    let started = Instant::now();
     let [left, right] = txn.success;
     let decode = |op: Op| -> Result<_, StatusCode> {
         let key = STANDARD
@@ -156,6 +171,7 @@ async fn write(
         .client_write(PutPair([decode(left)?, decode(right)?]))
         .await
         .map_err(|_| StatusCode::SERVICE_UNAVAILABLE)?;
+    event("http-write", response.log_id.index, started);
     Ok(Json(
         json!({"succeeded": true, "header": {"revision": response.data}}),
     ))
@@ -173,10 +189,11 @@ async fn read(
         .ensure_linearizable()
         .await
         .map_err(|_| StatusCode::SERVICE_UNAVAILABLE)?;
-    let value = state
-        .disk
-        .value(&key)
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+    let value = match &state.model {
+        ReadModel::Materialized(disk) => disk.value(&key),
+        ReadModel::Replayed(model) => model.value(&key),
+    }
+    .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
     let kvs = value
         .map(|value| json!({"value": STANDARD.encode(value)}))
         .into_iter()
@@ -220,7 +237,16 @@ async fn candidate_bench_child() {
     let peer = TcpListener::bind(listen_address(&voters[&id].addr))
         .await
         .unwrap();
-    let disk = RaftDisk::new(Candidate::open(Path::new(&path)).unwrap());
+    install();
+    let candidate = Candidate::open(Path::new(&path)).unwrap();
+    if let Ok(pages) = std::env::var("PD_CANDIDATE_WAL_PAGES") {
+        let pages: u32 = pages.parse().unwrap();
+        candidate
+            .db
+            .pragma_update(None, "wal_autocheckpoint", pages)
+            .unwrap();
+    }
+    let disk = RaftDisk::new(candidate);
     let config = Config {
         heartbeat_interval: 30,
         election_timeout_min: 120,
@@ -230,15 +256,20 @@ async fn candidate_bench_child() {
     }
     .validate()
     .unwrap();
-    let raft = Raft::new(
-        id,
-        Arc::new(config),
-        Loopback(Client::builder(TokioExecutor::new()).build_http()),
-        disk.clone(),
-        disk.clone(),
-    )
-    .await
-    .unwrap();
+    let network = Loopback(Client::builder(TokioExecutor::new()).build_http());
+    let config = Arc::new(config);
+    let (raft, model) = if std::env::var_os("PD_CANDIDATE_REPLAY").is_some() {
+        let (disk, model) = Replay::open(disk).unwrap();
+        let raft = Raft::new(id, config, network, disk, model.clone())
+            .await
+            .unwrap();
+        (raft, ReadModel::Replayed(model))
+    } else {
+        let raft = Raft::new(id, config, network, disk.clone(), disk.clone())
+            .await
+            .unwrap();
+        (raft, ReadModel::Materialized(disk))
+    };
     let peer_router =
         Router::new()
             .route(
@@ -271,7 +302,7 @@ async fn candidate_bench_child() {
         .route("/v3/kv/range", post(read))
         .with_state(ClientState {
             raft: raft.clone(),
-            disk,
+            model,
             id,
         });
     let mut termination = signal(SignalKind::terminate()).unwrap();

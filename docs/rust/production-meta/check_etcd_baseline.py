@@ -3,6 +3,8 @@
 
 import argparse
 import base64
+import functools
+import gzip
 import hashlib
 import http.client
 import json
@@ -75,14 +77,18 @@ class Cluster:
         for i, (client, peer) in enumerate(zip(self.client, self.peer)):
             with (self.root / f"n{i}.log").open("ab") as log:
                 self.nodes.append(self.spawn(i, client, peer, log))
+        return self.wait_leader()
+
+    def wait_leader(self, offline=()):
+        active = [(i, port) for i, port in enumerate(self.client) if i not in offline]
         deadline = time.monotonic() + 20
         while time.monotonic() < deadline:
-            if any(p.poll() is not None for p in self.nodes):
+            if any(self.nodes[i].poll() is not None for i, _ in active):
                 detail = [(i, p.returncode, (self.root / f"n{i}.log").read_text()[-2000:])
-                          for i, p in enumerate(self.nodes) if p.poll() is not None]
+                          for i, p in enumerate(self.nodes) if i not in offline and p.poll() is not None]
                 raise RuntimeError(f"node exited before readiness: {detail}")
             statuses = []
-            for port in self.client:
+            for _, port in active:
                 conn = http.client.HTTPConnection("127.0.0.1", port, timeout=0.5)
                 try:
                     statuses.append(request(conn, "maintenance/status", {}))
@@ -90,10 +96,10 @@ class Cluster:
                     break
                 finally:
                     conn.close()
-            if len(statuses) == 3:
+            if len(statuses) == len(active):
                 leaders = {s.get("leader") for s in statuses}
                 if len(leaders) == 1:
-                    for status, port in zip(statuses, self.client):
+                    for status, (_, port) in zip(statuses, active):
                         if status["header"]["member_id"] in leaders:
                             return http.client.HTTPConnection("127.0.0.1", port, timeout=3)
             time.sleep(0.05)
@@ -116,6 +122,12 @@ class Cluster:
 
 
 class CandidateCluster(Cluster):
+    def __init__(self, binary, root, profile=False, wal_pages=None, replay=False):
+        super().__init__(binary, root)
+        self.profile = profile
+        self.wal_pages = wal_pages
+        self.replay = replay
+
     def spawn(self, i, client, _peer, log):
         db = self.root / f"node{i}.db"
         env = dict(os.environ, PD_CANDIDATE_ID=str(i + 1), PD_CANDIDATE_DB=str(db),
@@ -124,10 +136,29 @@ class CandidateCluster(Cluster):
         env.pop("PD_CANDIDATE_INITIALIZE", None)
         if not db.exists():
             env["PD_CANDIDATE_INITIALIZE"] = "1"
+        env.pop("PD_CANDIDATE_PROFILE", None)
+        env.pop("PD_CANDIDATE_WAL_PAGES", None)
+        env.pop("PD_CANDIDATE_REPLAY", None)
+        if self.profile:
+            env["PD_CANDIDATE_PROFILE"] = "1"
+        if self.wal_pages is not None:
+            env["PD_CANDIDATE_WAL_PAGES"] = str(self.wal_pages)
+        if self.replay:
+            env["PD_CANDIDATE_REPLAY"] = "1"
         return subprocess.Popen([
             str(self.binary), "--ignored", "--exact", "candidate_bench_test::candidate_bench_child",
             "--nocapture",
         ], env=env, stdout=log, stderr=log)
+
+    def trace(self):
+        events = []
+        for i in range(len(self.client)):
+            for line in (self.root / f"n{i}.log").read_text().splitlines():
+                if line.startswith("PD_PROFILE "):
+                    _, phase, detail, end, elapsed = line.split()
+                    events.append({"node": i + 1, "phase": phase, "detail": detail,
+                                   "end_us": int(end), "elapsed_us": int(elapsed)})
+        return sorted(events, key=lambda e: e["end_us"])
 
 
 def verify(conn, index):
@@ -169,25 +200,37 @@ def run(binary, root, cluster_type=Cluster):
             conn.close()
     finally:
         cluster.stop()
-    return {"write_p99_ms": latency(writes), "read_pair_p99_ms": latency(reads),
-            "write_txn_per_second": round(TRANSACTIONS / sum(writes), 3),
-            "reopen_ms": round(reopen * 1e3, 3), "recovered_pairs": TRANSACTIONS}
+    metrics = {"write_p99_ms": latency(writes), "read_pair_p99_ms": latency(reads),
+               "write_txn_per_second": round(TRANSACTIONS / sum(writes), 3),
+               "reopen_ms": round(reopen * 1e3, 3), "recovered_pairs": TRANSACTIONS}
+    if isinstance(cluster, CandidateCluster) and cluster.profile:
+        metrics["profile"] = cluster.trace()
+    return metrics
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("etcd", type=Path, help="verified etcd 3.5.15 binary")
     parser.add_argument("--candidate", type=Path, help="release storage-kv unit test binary")
+    parser.add_argument("--profile-output", type=Path, help="store candidate trace as gzip JSON")
+    parser.add_argument("--wal-pages", type=int, help="override auto-checkpoint only for a candidate diagnostic run")
+    parser.add_argument("--replay", action="store_true", help="derive candidate state from the durable quorum log")
     args = parser.parse_args()
     binary = args.etcd.resolve(strict=True)
     if hashlib.sha256(binary.read_bytes()).hexdigest() != ETCD_SHA:
         raise RuntimeError("etcd binary does not match the pinned oracle")
     if args.candidate:
         binary = args.candidate.resolve(strict=True)
-    cluster_type = CandidateCluster if args.candidate else Cluster
+    if not args.candidate and (args.profile_output or args.wal_pages is not None or args.replay):
+        parser.error("candidate diagnostics require --candidate")
+    cluster_type = functools.partial(CandidateCluster, profile=bool(args.profile_output),
+                                     wal_pages=args.wal_pages, replay=args.replay) if args.candidate else Cluster
     with tempfile.TemporaryDirectory(prefix="pd-meta-etcd-baseline-") as work:
         root = Path(work)
         samples = [run(binary, root / f"run{i}", cluster_type) for i in range(RUNS)]
+    if args.profile_output:
+        traces = [sample.pop("profile") for sample in samples]
+        args.profile_output.write_bytes(gzip.compress(json.dumps(traces).encode(), mtime=0))
     report = {"voters": 3, "transactions": TRANSACTIONS, "bytes_per_value": PAYLOAD,
               "etcd_sha256": ETCD_SHA, "samples": samples}
     if args.candidate:
@@ -199,6 +242,8 @@ def main():
         thresholds = {key: extremum(s[key] for s in baseline["samples"])
                       for key, extremum in metrics.items()}
         report["candidate_sha256"] = hashlib.sha256(binary.read_bytes()).hexdigest()
+        report["candidate_mode"] = "replay" if args.replay else "materialized"
+        report["diagnostic"] = bool(args.profile_output) or args.wal_pages is not None
         report["frozen_thresholds"] = thresholds
         report["meets_thresholds"] = {
             key: all(extremum((s[key], thresholds[key])) == thresholds[key] for s in samples)

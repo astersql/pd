@@ -53,6 +53,8 @@ mod candidate_open_test;
 #[cfg(test)]
 mod candidate_power_vfs_test;
 #[cfg(test)]
+mod candidate_profile_test;
+#[cfg(test)]
 mod candidate_raft;
 #[cfg(test)]
 mod candidate_raft_test;
