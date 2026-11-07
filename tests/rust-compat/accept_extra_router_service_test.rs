@@ -1,21 +1,34 @@
 // Copyright 2026 AsterSQL.
-use crate::{accept_extra_rm_service_test::Sidecar, harness::Server};
+use crate::accept_modes::Deployment;
 use astersql_pd_proto::{metapb, pdpb, routerpb::router_client::RouterClient};
 use serde_json::json;
 use std::{path::PathBuf, time::Duration};
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
 async fn sa_016_router_standalone_registered_methods_and_query_eof() {
+    matrix().await;
+}
+pub(super) async fn matrix() {
     let go = crate::readonly_oracle::pinned_go_binary().unwrap();
     let rust = PathBuf::from(std::env::var_os("PD_COMPAT_RUST_BIN").unwrap());
     let mut records = Vec::new();
     let mut expected = None;
     let mut expected_populated = None;
-    for (binary, is_rust) in [(&go, false), (&rust, true)] {
-        let mut pd = Server::start(&go).unwrap();
-        pd.ready().unwrap();
-        let mut identity = pdpb::pd_client::PdClient::connect(pd.url.clone())
-            .await
-            .unwrap();
+    let certs = super::accept_extra_transport_config_test::certificates("router-business");
+    for (binary, is_rust, embedded, tls) in [
+        (&go, false, false, false),
+        (&rust, true, false, false),
+        (&rust, true, true, false),
+        (&go, false, false, true),
+        (&rust, true, false, true),
+        (&rust, true, true, true),
+    ] {
+        let cert_path = tls.then_some(certs.0.as_path());
+        let mut pd = super::accept_modes::pd_owner(&go, &[], &[], cert_path).await;
+        let mut identity = pdpb::pd_client::PdClient::new(
+            super::accept_modes::channel(&pd.url, cert_path, Some("allowed"))
+                .await
+                .unwrap(),
+        );
         let cluster = identity
             .get_members(pdpb::GetMembersRequest::default())
             .await
@@ -24,10 +37,22 @@ async fn sa_016_router_standalone_registered_methods_and_query_eof() {
             .header
             .unwrap()
             .cluster_id;
-        let mut sidecar = Sidecar::start_service(binary, pd.metadata_url(), "router", "http");
+        let argument = cert_path.map(|p| super::accept_modes::tls_argument(p, "router"));
+        let extra = argument.iter().map(String::as_str).collect::<Vec<_>>();
+        let mut sidecar = Deployment::start(
+            binary,
+            pd.metadata_url(),
+            "router",
+            cluster,
+            &extra,
+            embedded,
+            cert_path,
+        )
+        .await;
         let deadline = tokio::time::Instant::now() + Duration::from_secs(15);
         let mut client = loop {
-            if let Some(status) = sidecar.child.try_wait().unwrap() {
+            if sidecar.failed().unwrap() {
+                let status = "unexpected process exit";
                 records.push(json!({"rust":is_rust,"stage":"startup","exit":status.to_string(),"log":sidecar.logs()}));
                 save(&records);
                 panic!(
@@ -35,7 +60,10 @@ async fn sa_016_router_standalone_registered_methods_and_query_eof() {
                     sidecar.logs()
                 );
             }
-            if let Ok(mut client) = RouterClient::connect(sidecar.url.clone()).await {
+            if let Ok(channel) =
+                super::accept_modes::channel(&sidecar.url, cert_path, Some("allowed")).await
+            {
+                let mut client = RouterClient::new(channel);
                 if client
                     .get_all_stores(pdpb::GetAllStoresRequest {
                         header: Some(pdpb::RequestHeader::default()),
@@ -285,7 +313,7 @@ async fn sa_016_router_standalone_registered_methods_and_query_eof() {
         let mut query = stream.message().await.unwrap().unwrap();
         assert!(stream.message().await.unwrap().is_none());
         use prost::Message;
-        records.push(json!({"rust":is_rust,"stage":"populated raw wire","point":point.encode_to_vec(),"previous":previous.encode_to_vec(),"by_id":by_id.encode_to_vec(),"scan":scan.encode_to_vec(),"store":store.encode_to_vec(),"all":all.encode_to_vec(),"query":query.encode_to_vec()}));
+        records.push(json!({"rust":is_rust,"embedded":embedded,"tls":tls,"stage":"populated raw wire","point":point.encode_to_vec(),"previous":previous.encode_to_vec(),"by_id":by_id.encode_to_vec(),"scan":scan.encode_to_vec(),"store":store.encode_to_vec(),"all":all.encode_to_vec(),"query":query.encode_to_vec()}));
         save(&records);
         assert_eq!(point.region.as_ref().unwrap().id, 2);
         assert_eq!(by_id.region.as_ref().unwrap().id, 2);
@@ -352,7 +380,23 @@ async fn sa_016_router_standalone_registered_methods_and_query_eof() {
             records.push(json!({"rust":is_rust,"stage":phase,"response_raw":raw,"same_shared_cache_response":true,"normal_eof":phase.starts_with("reopen")}));
             save(&records);
         }
-        sidecar.stop();
+        if let Some(certs) = cert_path {
+            for identity in [None, Some("denied"), Some("rogue")] {
+                let response =
+                    match super::accept_modes::channel(&sidecar.url, Some(certs), identity).await {
+                        Ok(channel) => RouterClient::new(channel)
+                            .get_all_stores(pdpb::GetAllStoresRequest::default())
+                            .await
+                            .map(|r| format!("{:?}", r.into_inner()))
+                            .map_err(|e| e.to_string()),
+                        Err(e) => Err(e),
+                    };
+                assert!(response.is_err());
+                records.push(json!({"rust":is_rust,"embedded":embedded,"tls":true,"stage":"router business TLS refusal","identity":identity,"raw":format!("{response:?}")}));
+                save(&records);
+            }
+        }
+        sidecar.stop().await;
         pd.stop().unwrap();
     }
 }

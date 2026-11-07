@@ -1,5 +1,5 @@
 // Copyright 2026 AsterSQL.
-use super::{accept_extra_rm_service_test::Sidecar, harness::Server};
+use super::{accept_modes::Deployment, harness::Server};
 use astersql_pd_proto::{pdpb, tsopb as p};
 use astersql_pd_storage_kv::{Consistency, EtcdMetaStore, MetaStore, Read};
 use prost::Message;
@@ -43,7 +43,12 @@ async fn connect(
         endpoint.connect().await.map_err(|e| e.to_string())?,
     ))
 }
-async fn run(binary: &Path, go: &Path, certs: Option<&Path>) -> Result<Value, String> {
+async fn run(
+    binary: &Path,
+    go: &Path,
+    certs: Option<&Path>,
+    embedded: bool,
+) -> Result<Value, String> {
     let mut pd =
         Server::start_with_environment(go, &[], &[("PD_SERVICE_MODE".into(), "api".into())])
             .map_err(|e| e.to_string())?;
@@ -68,16 +73,24 @@ async fn run(binary: &Path, go: &Path, certs: Option<&Path>) -> Result<Value, St
         format!("--config={}",path.display())
     });
     let extra = config_arg.iter().map(String::as_str).collect::<Vec<_>>();
-    let mut sidecar =
-        Sidecar::start_service_with_args(binary, pd.metadata_url(), "tso", "http", &extra);
+    let mut sidecar = Deployment::start(
+        binary,
+        pd.metadata_url(),
+        "tso",
+        cluster,
+        &extra,
+        embedded,
+        certs,
+    )
+    .await;
     let header = Some(p::RequestHeader {
         cluster_id: cluster,
         ..Default::default()
     });
     let (mut client, discovery) = tokio::time::timeout(Duration::from_secs(20), async {
         loop {
-            if let Some(exit) = sidecar.child.try_wait().map_err(|e| e.to_string())? {
-                return Err(format!("startup {exit}: {}", sidecar.logs()));
+            if sidecar.failed()? {
+                return Err(format!("startup exited: {}", sidecar.logs()));
             }
             if let Ok(mut c) = connect(&sidecar.url, certs, Some("allowed")).await {
                 if let Ok(r) = c
@@ -279,7 +292,7 @@ async fn run(binary: &Path, go: &Path, certs: Option<&Path>) -> Result<Value, St
             refusals.push(json!({"identity":identity,"accepted":response.is_ok(),"raw":format!("{response:?}")}));
         }
     }
-    sidecar.stop();
+    sidecar.stop().await;
     let after = backend
         .read(Read::range(
             group_key.as_bytes(),
@@ -296,19 +309,24 @@ async fn run(binary: &Path, go: &Path, certs: Option<&Path>) -> Result<Value, St
 }
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
 async fn sa_016_tso_three_methods_real_timestamps_discovery_and_errors() {
+    matrix().await;
+}
+pub(super) async fn matrix() {
     let go = crate::readonly_oracle::pinned_go_binary().unwrap();
     let rust = PathBuf::from(std::env::var_os("PD_COMPAT_RUST_BIN").unwrap());
     let mut rows = vec![];
     let certs = super::accept_extra_transport_config_test::certificates("tso-domain");
-    for (binary, is_rust, tls) in [
-        (&go, false, false),
-        (&rust, true, false),
-        (&go, false, true),
-        (&rust, true, true),
+    for (binary, is_rust, tls, embedded) in [
+        (&go, false, false, false),
+        (&rust, true, false, false),
+        (&rust, true, false, true),
+        (&go, false, true, false),
+        (&rust, true, true, false),
+        (&rust, true, true, true),
     ] {
         let r = tokio::time::timeout(
             Duration::from_secs(40),
-            run(binary, &go, tls.then_some(certs.0.as_path())),
+            run(binary, &go, tls.then_some(certs.0.as_path()), embedded),
         )
         .await;
         let mut row = match r {
@@ -317,6 +335,7 @@ async fn sa_016_tso_three_methods_real_timestamps_discovery_and_errors() {
         };
         row["rust"] = json!(is_rust);
         row["tls"] = json!(tls);
+        row["embedded"] = json!(embedded);
         rows.push(row);
         std::fs::write(
             PathBuf::from(std::env::var_os("PD_SA016_EVIDENCE").unwrap())
@@ -344,7 +363,7 @@ async fn sa_016_tso_three_methods_real_timestamps_discovery_and_errors() {
         "minimum_normalized",
         "errors",
     ] {
-        for pair in [[0, 1], [2, 3]] {
+        for pair in [[0, 1], [0, 2], [3, 4], [3, 5]] {
             assert_eq!(rows[pair[0]][field], rows[pair[1]][field], "{field}");
         }
     }

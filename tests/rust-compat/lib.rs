@@ -180,3 +180,15 @@ mod accept_extra_tso_service_test;
 
 #[cfg(test)]
 mod accept_extra_keyspace_watch_test;
+
+#[cfg(test)]
+mod accept_extra_rm_follower_test;
+
+#[cfg(test)]
+mod accept_extra_rm_domain_tls_test;
+
+#[cfg(test)]
+mod accept_modes;
+
+#[cfg(test)]
+mod accept_modes_test;

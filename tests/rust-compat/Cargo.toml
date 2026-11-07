@@ -35,6 +35,12 @@ name = "tso"
 path = "tso_test.rs"
 
 [dev-dependencies]
+astersql-pd-runtime.workspace = true
+astersql-pd-rm-server.workspace = true
+astersql-pd-mcs-router-server.workspace = true
+astersql-pd-mcs-discovery.workspace = true
+astersql-pd-grpcutil.workspace = true
+axum.workspace = true
 tonic-prost.workspace = true
 astersql-pd-typeutil.workspace = true
 chrono.workspace = true

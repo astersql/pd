@@ -1,0 +1,931 @@
+{
+  "schema": 1,
+  "scope": "finite acceptance16 registration/domain/stream/state and real dual-mode handoff, not all possible subsystem/platform regressions",
+  "methods": [
+    {
+      "wire_id": "wire:e17b42dd6f886f0372095932",
+      "method": "deadlock.Deadlock/GetWaitForEntries",
+      "unique_implementation_owner": "验收16：仅未注册边界",
+      "implementation": "pkg/mcs/server/unregistered_service.rs",
+      "registration": "expected unregistered on classic and four MCS roles",
+      "test": "sa_016_descriptor_only_services_remain_unregistered_on_all_listener_roles",
+      "archive": "task-16-unregistered-signals.json.gz",
+      "raw_locator": "seven methods / ten actual Go+Rust listeners / exact status and text",
+      "mode_scope": "negative registered-boundary only; do not implement a fictitious domain",
+      "stream_applicability": "unary; stream lifecycle not applicable",
+      "persistent_effect": "not applicable: no domain service registered",
+      "tls": "shared pre-dispatch classic/MCS TLS policy evidence12 and16 front TLS; no separate method-specific hardware or TLS stress claim",
+      "scope_status": "expected Unimplemented boundary verified",
+      "archive_paths": [
+        "docs/rust/server-api/acceptance/task-16-unregistered-signals.json.gz"
+      ]
+    },
+    {
+      "wire_id": "wire:6fb6a00aa58b90dd21a15ba8",
+      "method": "deadlock.Deadlock/Detect",
+      "unique_implementation_owner": "验收16：仅未注册边界",
+      "implementation": "pkg/mcs/server/unregistered_service.rs",
+      "registration": "expected unregistered on classic and four MCS roles",
+      "test": "sa_016_descriptor_only_services_remain_unregistered_on_all_listener_roles",
+      "archive": "task-16-unregistered-signals.json.gz",
+      "raw_locator": "seven methods / ten actual Go+Rust listeners / exact status and text",
+      "mode_scope": "negative registered-boundary only; do not implement a fictitious domain",
+      "stream_applicability": "negative-stream admission/half-close for Detect; no resumable cursor",
+      "persistent_effect": "not applicable: no domain service registered",
+      "tls": "shared pre-dispatch classic/MCS TLS policy evidence12 and16 front TLS; no separate method-specific hardware or TLS stress claim",
+      "scope_status": "expected Unimplemented boundary verified",
+      "archive_paths": [
+        "docs/rust/server-api/acceptance/task-16-unregistered-signals.json.gz"
+      ]
+    },
+    {
+      "wire_id": "wire:ef8b5be6c5113d55d2215d9b",
+      "method": "resource_manager.ResourceManager/ListResourceGroups",
+      "unique_implementation_owner": "控制面100",
+      "implementation": "pkg/mcs/resourcemanager/server/grpc_service.rs",
+      "registration": "classic fallback=true: local RM; false: shared proxy; standalone: real RM with metadata writes rejected",
+      "test": "mcs_148_classic_rm_fallback / mcs_148_resource_manager_modes",
+      "archive": "task-148.json.gz",
+      "raw_locator": "raw/modes-upstream-tls-closed-wire-rpc.rm-follower.json; raw/modes-upstream-tls-closed-wire-rpc.rm-domain-tls.json",
+      "mode_scope": "same request set on actual Go CLI / Rust CLI / genuine Rust caller-runtime embedded host",
+      "stream_applicability": "unary; stream lifecycle not applicable",
+      "persistent_effect": "full settings bytes/create/modrevision/version/lease; PD metadata-only no token state; real grant5 and initial-pool balance99995; prior138 actual periodic190000/handoff state",
+      "tls": "actual business RPCs and refusal of no/denied/rogue identities in process and embedded profiles, using canonical authenticated listener",
+      "scope_status": "finite acceptance16 behavior verified",
+      "archive_paths": [
+        "docs/rust/control-plane-mcs/task-148.json.gz"
+      ]
+    },
+    {
+      "wire_id": "wire:3b03fab280d7325da6448677",
+      "method": "resource_manager.ResourceManager/GetResourceGroup",
+      "unique_implementation_owner": "控制面100",
+      "implementation": "pkg/mcs/resourcemanager/server/grpc_service.rs",
+      "registration": "classic fallback=true: local RM; false: shared proxy; standalone: real RM with metadata writes rejected",
+      "test": "mcs_148_classic_rm_fallback / mcs_148_resource_manager_modes",
+      "archive": "task-148.json.gz",
+      "raw_locator": "raw/modes-upstream-tls-closed-wire-rpc.rm-follower.json; raw/modes-upstream-tls-closed-wire-rpc.rm-domain-tls.json",
+      "mode_scope": "same request set on actual Go CLI / Rust CLI / genuine Rust caller-runtime embedded host",
+      "stream_applicability": "unary; stream lifecycle not applicable",
+      "persistent_effect": "full settings bytes/create/modrevision/version/lease; PD metadata-only no token state; real grant5 and initial-pool balance99995; prior138 actual periodic190000/handoff state",
+      "tls": "actual business RPCs and refusal of no/denied/rogue identities in process and embedded profiles, using canonical authenticated listener",
+      "scope_status": "finite acceptance16 behavior verified",
+      "archive_paths": [
+        "docs/rust/control-plane-mcs/task-148.json.gz"
+      ]
+    },
+    {
+      "wire_id": "wire:939c1d3fb566aa23bde5c591",
+      "method": "resource_manager.ResourceManager/AddResourceGroup",
+      "unique_implementation_owner": "控制面100",
+      "implementation": "pkg/mcs/resourcemanager/server/grpc_service.rs",
+      "registration": "classic fallback=true: local RM; false: shared proxy; standalone: real RM with metadata writes rejected",
+      "test": "mcs_148_classic_rm_fallback / mcs_148_resource_manager_modes",
+      "archive": "task-148.json.gz",
+      "raw_locator": "raw/modes-upstream-tls-closed-wire-rpc.rm-follower.json; raw/modes-upstream-tls-closed-wire-rpc.rm-domain-tls.json",
+      "mode_scope": "same request set on actual Go CLI / Rust CLI / genuine Rust caller-runtime embedded host",
+      "stream_applicability": "unary; stream lifecycle not applicable",
+      "persistent_effect": "full settings bytes/create/modrevision/version/lease; PD metadata-only no token state; real grant5 and initial-pool balance99995; prior138 actual periodic190000/handoff state",
+      "tls": "actual business RPCs and refusal of no/denied/rogue identities in process and embedded profiles, using canonical authenticated listener",
+      "scope_status": "finite acceptance16 behavior verified",
+      "archive_paths": [
+        "docs/rust/control-plane-mcs/task-148.json.gz"
+      ]
+    },
+    {
+      "wire_id": "wire:e5d9dfcc1a114a11264e9005",
+      "method": "resource_manager.ResourceManager/ModifyResourceGroup",
+      "unique_implementation_owner": "控制面100",
+      "implementation": "pkg/mcs/resourcemanager/server/grpc_service.rs",
+      "registration": "classic fallback=true: local RM; false: shared proxy; standalone: real RM with metadata writes rejected",
+      "test": "mcs_148_classic_rm_fallback / mcs_148_resource_manager_modes",
+      "archive": "task-148.json.gz",
+      "raw_locator": "raw/modes-upstream-tls-closed-wire-rpc.rm-follower.json; raw/modes-upstream-tls-closed-wire-rpc.rm-domain-tls.json",
+      "mode_scope": "same request set on actual Go CLI / Rust CLI / genuine Rust caller-runtime embedded host",
+      "stream_applicability": "unary; stream lifecycle not applicable",
+      "persistent_effect": "full settings bytes/create/modrevision/version/lease; PD metadata-only no token state; real grant5 and initial-pool balance99995; prior138 actual periodic190000/handoff state",
+      "tls": "actual business RPCs and refusal of no/denied/rogue identities in process and embedded profiles, using canonical authenticated listener",
+      "scope_status": "finite acceptance16 behavior verified",
+      "archive_paths": [
+        "docs/rust/control-plane-mcs/task-148.json.gz"
+      ]
+    },
+    {
+      "wire_id": "wire:315f48e34233558345694e1e",
+      "method": "resource_manager.ResourceManager/DeleteResourceGroup",
+      "unique_implementation_owner": "控制面100",
+      "implementation": "pkg/mcs/resourcemanager/server/grpc_service.rs",
+      "registration": "classic fallback=true: local RM; false: shared proxy; standalone: real RM with metadata writes rejected",
+      "test": "mcs_148_classic_rm_fallback / mcs_148_resource_manager_modes",
+      "archive": "task-148.json.gz",
+      "raw_locator": "raw/modes-upstream-tls-closed-wire-rpc.rm-follower.json; raw/modes-upstream-tls-closed-wire-rpc.rm-domain-tls.json",
+      "mode_scope": "same request set on actual Go CLI / Rust CLI / genuine Rust caller-runtime embedded host",
+      "stream_applicability": "unary; stream lifecycle not applicable",
+      "persistent_effect": "full settings bytes/create/modrevision/version/lease; PD metadata-only no token state; real grant5 and initial-pool balance99995; prior138 actual periodic190000/handoff state",
+      "tls": "actual business RPCs and refusal of no/denied/rogue identities in process and embedded profiles, using canonical authenticated listener",
+      "scope_status": "finite acceptance16 behavior verified",
+      "archive_paths": [
+        "docs/rust/control-plane-mcs/task-148.json.gz"
+      ]
+    },
+    {
+      "wire_id": "wire:41fd52349110370dc146081a",
+      "method": "resource_manager.ResourceManager/AcquireTokenBuckets",
+      "unique_implementation_owner": "控制面101",
+      "implementation": "pkg/mcs/resourcemanager/server/grpc_service.rs",
+      "registration": "classic fallback=true: local RM; false: shared proxy; standalone: real RM with metadata writes rejected",
+      "test": "mcs_148_classic_rm_fallback / mcs_148_resource_manager_modes",
+      "archive": "task-148.json.gz",
+      "raw_locator": "raw/modes-upstream-tls-closed-wire-rpc.rm-follower.json; raw/modes-upstream-tls-closed-wire-rpc.rm-domain-tls.json",
+      "mode_scope": "same request set on actual Go CLI / Rust CLI / genuine Rust caller-runtime embedded host",
+      "stream_applicability": "token multi-frame/half-close/EOF/cancel/upstream loss and next-stream recovery from prior proxy archive; no replay; token protocol has no revision cursor/compaction",
+      "persistent_effect": "full settings bytes/create/modrevision/version/lease; PD metadata-only no token state; real grant5 and initial-pool balance99995; prior138 actual periodic190000/handoff state",
+      "tls": "actual business RPCs and refusal of no/denied/rogue identities in process and embedded profiles, using canonical authenticated listener",
+      "scope_status": "finite acceptance16 behavior verified",
+      "archive_paths": [
+        "docs/rust/control-plane-mcs/task-148.json.gz"
+      ]
+    },
+    {
+      "wire_id": "wire:6760157a800da9106e2ada99",
+      "method": "tracepb.TraceRecordPubSub/Subscribe",
+      "unique_implementation_owner": "验收16：仅未注册边界",
+      "implementation": "pkg/mcs/server/unregistered_service.rs",
+      "registration": "expected unregistered on classic and four MCS roles",
+      "test": "sa_016_descriptor_only_services_remain_unregistered_on_all_listener_roles",
+      "archive": "task-16-unregistered-signals.json.gz",
+      "raw_locator": "seven methods / ten actual Go+Rust listeners / exact status and text",
+      "mode_scope": "negative registered-boundary only; do not implement a fictitious domain",
+      "stream_applicability": "Subscribe admission rejected; no successful subscription or cursor",
+      "persistent_effect": "not applicable: no domain service registered",
+      "tls": "shared pre-dispatch classic/MCS TLS policy evidence12 and16 front TLS; no separate method-specific hardware or TLS stress claim",
+      "scope_status": "expected Unimplemented boundary verified",
+      "archive_paths": [
+        "docs/rust/server-api/acceptance/task-16-unregistered-signals.json.gz"
+      ]
+    },
+    {
+      "wire_id": "wire:f35d1f2e444550e4b90b62e1",
+      "method": "keyspacepb.Namespace/CreateNamespace",
+      "unique_implementation_owner": "验收16：仅未注册边界",
+      "implementation": "pkg/mcs/server/unregistered_service.rs",
+      "registration": "expected unregistered on classic and four MCS roles",
+      "test": "sa_016_descriptor_only_services_remain_unregistered_on_all_listener_roles",
+      "archive": "task-16-unregistered-signals.json.gz",
+      "raw_locator": "seven methods / ten actual Go+Rust listeners / exact status and text",
+      "mode_scope": "negative registered-boundary only; do not implement a fictitious domain",
+      "stream_applicability": "unary; stream lifecycle not applicable",
+      "persistent_effect": "not applicable: no domain service registered",
+      "tls": "shared pre-dispatch classic/MCS TLS policy evidence12 and16 front TLS; no separate method-specific hardware or TLS stress claim",
+      "scope_status": "expected Unimplemented boundary verified",
+      "archive_paths": [
+        "docs/rust/server-api/acceptance/task-16-unregistered-signals.json.gz"
+      ]
+    },
+    {
+      "wire_id": "wire:6a0cea2b1388b7b75a8de838",
+      "method": "keyspacepb.Namespace/LoadNamespace",
+      "unique_implementation_owner": "验收16：仅未注册边界",
+      "implementation": "pkg/mcs/server/unregistered_service.rs",
+      "registration": "expected unregistered on classic and four MCS roles",
+      "test": "sa_016_descriptor_only_services_remain_unregistered_on_all_listener_roles",
+      "archive": "task-16-unregistered-signals.json.gz",
+      "raw_locator": "seven methods / ten actual Go+Rust listeners / exact status and text",
+      "mode_scope": "negative registered-boundary only; do not implement a fictitious domain",
+      "stream_applicability": "unary; stream lifecycle not applicable",
+      "persistent_effect": "not applicable: no domain service registered",
+      "tls": "shared pre-dispatch classic/MCS TLS policy evidence12 and16 front TLS; no separate method-specific hardware or TLS stress claim",
+      "scope_status": "expected Unimplemented boundary verified",
+      "archive_paths": [
+        "docs/rust/server-api/acceptance/task-16-unregistered-signals.json.gz"
+      ]
+    },
+    {
+      "wire_id": "wire:3a168d8e446608339598c85c",
+      "method": "keyspacepb.Namespace/GetAllNamespaces",
+      "unique_implementation_owner": "验收16：仅未注册边界",
+      "implementation": "pkg/mcs/server/unregistered_service.rs",
+      "registration": "expected unregistered on classic and four MCS roles",
+      "test": "sa_016_descriptor_only_services_remain_unregistered_on_all_listener_roles",
+      "archive": "task-16-unregistered-signals.json.gz",
+      "raw_locator": "seven methods / ten actual Go+Rust listeners / exact status and text",
+      "mode_scope": "negative registered-boundary only; do not implement a fictitious domain",
+      "stream_applicability": "unary; stream lifecycle not applicable",
+      "persistent_effect": "not applicable: no domain service registered",
+      "tls": "shared pre-dispatch classic/MCS TLS policy evidence12 and16 front TLS; no separate method-specific hardware or TLS stress claim",
+      "scope_status": "expected Unimplemented boundary verified",
+      "archive_paths": [
+        "docs/rust/server-api/acceptance/task-16-unregistered-signals.json.gz"
+      ]
+    },
+    {
+      "wire_id": "wire:26898258c7377b580446c567",
+      "method": "keyspacepb.Namespace/UpdateNamespaceState",
+      "unique_implementation_owner": "验收16：仅未注册边界",
+      "implementation": "pkg/mcs/server/unregistered_service.rs",
+      "registration": "expected unregistered on classic and four MCS roles",
+      "test": "sa_016_descriptor_only_services_remain_unregistered_on_all_listener_roles",
+      "archive": "task-16-unregistered-signals.json.gz",
+      "raw_locator": "seven methods / ten actual Go+Rust listeners / exact status and text",
+      "mode_scope": "negative registered-boundary only; do not implement a fictitious domain",
+      "stream_applicability": "unary; stream lifecycle not applicable",
+      "persistent_effect": "not applicable: no domain service registered",
+      "tls": "shared pre-dispatch classic/MCS TLS policy evidence12 and16 front TLS; no separate method-specific hardware or TLS stress claim",
+      "scope_status": "expected Unimplemented boundary verified",
+      "archive_paths": [
+        "docs/rust/server-api/acceptance/task-16-unregistered-signals.json.gz"
+      ]
+    },
+    {
+      "wire_id": "wire:1396be1dde54de95c636a380",
+      "method": "keyspacepb.Keyspace/LoadKeyspace",
+      "unique_implementation_owner": "控制面131",
+      "implementation": "pkg/server/grpc_keyspace.rs",
+      "registration": "classic/API PD; shared term-owned KeyspaceManager",
+      "test": "sa_016_keyspace_watch_cancel_reopen_and_live_backend_compaction",
+      "archive": "task-148.json.gz",
+      "raw_locator": "raw/modes-keyspace-six-real-boundaries-rpc.keyspace-watch.json",
+      "mode_scope": "classic shared PD router;09/14/15 admitted behavior plus current explicit Keyspace six-method TCP and common MCS auxiliary registration; diagnostics platform scope retained",
+      "stream_applicability": "unary; stream lifecycle not applicable",
+      "persistent_effect": "actual metadata bytes/revisions and09 same-WAL recovery; positive name load after real PD-ID region-heartbeat boundaries",
+      "tls": "shared pre-dispatch classic/MCS TLS policy evidence12 and16 front TLS; no separate method-specific hardware or TLS stress claim",
+      "scope_status": "finite acceptance16 behavior verified",
+      "archive_paths": [
+        "docs/rust/control-plane-mcs/task-148.json.gz"
+      ]
+    },
+    {
+      "wire_id": "wire:e4aa723a4c35186d20e39c06",
+      "method": "keyspacepb.Keyspace/LookupKeyspace",
+      "unique_implementation_owner": "控制面131",
+      "implementation": "pkg/server/grpc_keyspace.rs",
+      "registration": "classic/API PD; shared term-owned KeyspaceManager",
+      "test": "sa_016_keyspace_watch_cancel_reopen_and_live_backend_compaction",
+      "archive": "task-148.json.gz",
+      "raw_locator": "raw/modes-keyspace-six-real-boundaries-rpc.keyspace-watch.json",
+      "mode_scope": "classic shared PD router;09/14/15 admitted behavior plus current explicit Keyspace six-method TCP and common MCS auxiliary registration; diagnostics platform scope retained",
+      "stream_applicability": "unary; stream lifecycle not applicable",
+      "persistent_effect": "actual metadata bytes/revisions and09 same-WAL recovery; positive name load after real PD-ID region-heartbeat boundaries",
+      "tls": "shared pre-dispatch classic/MCS TLS policy evidence12 and16 front TLS; no separate method-specific hardware or TLS stress claim",
+      "scope_status": "expected Unimplemented boundary verified",
+      "archive_paths": [
+        "docs/rust/control-plane-mcs/task-148.json.gz"
+      ]
+    },
+    {
+      "wire_id": "wire:bab45497756ebf705ecbbe3d",
+      "method": "keyspacepb.Keyspace/LoadKeyspaceByID",
+      "unique_implementation_owner": "控制面131",
+      "implementation": "pkg/server/grpc_keyspace.rs",
+      "registration": "classic/API PD; shared term-owned KeyspaceManager",
+      "test": "sa_016_keyspace_watch_cancel_reopen_and_live_backend_compaction",
+      "archive": "task-148.json.gz",
+      "raw_locator": "raw/modes-keyspace-six-real-boundaries-rpc.keyspace-watch.json",
+      "mode_scope": "classic shared PD router;09/14/15 admitted behavior plus current explicit Keyspace six-method TCP and common MCS auxiliary registration; diagnostics platform scope retained",
+      "stream_applicability": "unary; stream lifecycle not applicable",
+      "persistent_effect": "actual metadata bytes/revisions and09 same-WAL recovery; positive name load after real PD-ID region-heartbeat boundaries",
+      "tls": "shared pre-dispatch classic/MCS TLS policy evidence12 and16 front TLS; no separate method-specific hardware or TLS stress claim",
+      "scope_status": "finite acceptance16 behavior verified",
+      "archive_paths": [
+        "docs/rust/control-plane-mcs/task-148.json.gz"
+      ]
+    },
+    {
+      "wire_id": "wire:c9c01aef0ae87c0da31bf16d",
+      "method": "keyspacepb.Keyspace/WatchKeyspaces",
+      "unique_implementation_owner": "控制面131",
+      "implementation": "pkg/server/grpc_keyspace.rs",
+      "registration": "classic/API PD; shared term-owned KeyspaceManager",
+      "test": "sa_016_keyspace_watch_cancel_reopen_and_live_backend_compaction",
+      "archive": "task-148.json.gz",
+      "raw_locator": "raw/modes-keyspace-six-real-boundaries-rpc.keyspace-watch.json",
+      "mode_scope": "classic shared PD router;09/14/15 admitted behavior plus current explicit Keyspace six-method TCP and common MCS auxiliary registration; diagnostics platform scope retained",
+      "stream_applicability": "Watch client cancel/drop, reopen snapshot, live-backend compaction/incremental; no request cursor or finite normal EOF; classic process terminal22",
+      "persistent_effect": "actual metadata bytes/revisions and09 same-WAL recovery; positive name load after real PD-ID region-heartbeat boundaries",
+      "tls": "shared pre-dispatch classic/MCS TLS policy evidence12 and16 front TLS; no separate method-specific hardware or TLS stress claim",
+      "scope_status": "finite acceptance16 behavior verified",
+      "archive_paths": [
+        "docs/rust/control-plane-mcs/task-148.json.gz"
+      ]
+    },
+    {
+      "wire_id": "wire:ddd38cf64f9369c1c5e32c65",
+      "method": "keyspacepb.Keyspace/UpdateKeyspaceState",
+      "unique_implementation_owner": "控制面131",
+      "implementation": "pkg/server/grpc_keyspace.rs",
+      "registration": "classic/API PD; shared term-owned KeyspaceManager",
+      "test": "sa_016_keyspace_watch_cancel_reopen_and_live_backend_compaction",
+      "archive": "task-148.json.gz",
+      "raw_locator": "raw/modes-keyspace-six-real-boundaries-rpc.keyspace-watch.json",
+      "mode_scope": "classic shared PD router;09/14/15 admitted behavior plus current explicit Keyspace six-method TCP and common MCS auxiliary registration; diagnostics platform scope retained",
+      "stream_applicability": "unary; stream lifecycle not applicable",
+      "persistent_effect": "actual metadata bytes/revisions and09 same-WAL recovery; positive name load after real PD-ID region-heartbeat boundaries",
+      "tls": "shared pre-dispatch classic/MCS TLS policy evidence12 and16 front TLS; no separate method-specific hardware or TLS stress claim",
+      "scope_status": "finite acceptance16 behavior verified",
+      "archive_paths": [
+        "docs/rust/control-plane-mcs/task-148.json.gz"
+      ]
+    },
+    {
+      "wire_id": "wire:da597dfb2c06f6829f427ed3",
+      "method": "keyspacepb.Keyspace/GetAllKeyspaces",
+      "unique_implementation_owner": "控制面131",
+      "implementation": "pkg/server/grpc_keyspace.rs",
+      "registration": "classic/API PD; shared term-owned KeyspaceManager",
+      "test": "sa_016_keyspace_watch_cancel_reopen_and_live_backend_compaction",
+      "archive": "task-148.json.gz",
+      "raw_locator": "raw/modes-keyspace-six-real-boundaries-rpc.keyspace-watch.json",
+      "mode_scope": "classic shared PD router;09/14/15 admitted behavior plus current explicit Keyspace six-method TCP and common MCS auxiliary registration; diagnostics platform scope retained",
+      "stream_applicability": "unary; stream lifecycle not applicable",
+      "persistent_effect": "actual metadata bytes/revisions and09 same-WAL recovery; positive name load after real PD-ID region-heartbeat boundaries",
+      "tls": "shared pre-dispatch classic/MCS TLS policy evidence12 and16 front TLS; no separate method-specific hardware or TLS stress claim",
+      "scope_status": "finite acceptance16 behavior verified",
+      "archive_paths": [
+        "docs/rust/control-plane-mcs/task-148.json.gz"
+      ]
+    },
+    {
+      "wire_id": "wire:a5a03ba0ba4c676c25e3177d",
+      "method": "diagnosticspb.Diagnostics/search_log",
+      "unique_implementation_owner": "验收14",
+      "implementation": "pkg/mcs/server/diagnostics_log.rs",
+      "registration": "classic/API PD and all four MCS auxiliary listeners",
+      "test": "sa_014_log_stream / sa_015_server_info",
+      "archive": "task-14.json.gz / task-15.json.gz",
+      "raw_locator": "rpc/logs and admitted source/binary inputs; common MCS registration archive separately",
+      "mode_scope": "classic shared PD router;09/14/15 admitted behavior plus current explicit Keyspace six-method TCP and common MCS auxiliary registration; diagnostics platform scope retained",
+      "stream_applicability": "SearchLog finite EOF/cancel per14; process-exit transport differences22; admitted macOS amd64 CGO=0, platform expansion21",
+      "persistent_effect": "read-only logs/system information; no metadata mutation",
+      "tls": "shared pre-dispatch classic/MCS TLS policy evidence12 and16 front TLS; no separate method-specific hardware or TLS stress claim",
+      "scope_status": "finite acceptance16 behavior verified",
+      "archive_paths": [
+        "docs/rust/server-api/acceptance/task-14.json.gz",
+        "docs/rust/server-api/acceptance/task-15.json.gz"
+      ]
+    },
+    {
+      "wire_id": "wire:652c16ee3bcb0a4e873e87ce",
+      "method": "diagnosticspb.Diagnostics/server_info",
+      "unique_implementation_owner": "验收15",
+      "implementation": "pkg/mcs/server/diagnostics_info.rs",
+      "registration": "classic/API PD and all four MCS auxiliary listeners",
+      "test": "sa_014_log_stream / sa_015_server_info",
+      "archive": "task-14.json.gz / task-15.json.gz",
+      "raw_locator": "rpc/logs and admitted source/binary inputs; common MCS registration archive separately",
+      "mode_scope": "classic shared PD router;09/14/15 admitted behavior plus current explicit Keyspace six-method TCP and common MCS auxiliary registration; diagnostics platform scope retained",
+      "stream_applicability": "unary; stream lifecycle not applicable",
+      "persistent_effect": "read-only logs/system information; no metadata mutation",
+      "tls": "shared pre-dispatch classic/MCS TLS policy evidence12 and16 front TLS; no separate method-specific hardware or TLS stress claim",
+      "scope_status": "finite acceptance16 behavior verified",
+      "archive_paths": [
+        "docs/rust/server-api/acceptance/task-14.json.gz",
+        "docs/rust/server-api/acceptance/task-15.json.gz"
+      ]
+    },
+    {
+      "wire_id": "wire:6a6b90a86873c0331a84283e",
+      "method": "tsopb.TSO/Tso",
+      "unique_implementation_owner": "控制面78",
+      "implementation": "pkg/mcs/tso/server/grpc_service.rs",
+      "registration": "standalone TSO; genuine caller-runtime TsoServiceHost; absent from classic PD service package",
+      "test": "mcs_148_tso_modes",
+      "archive": "task-148.json.gz",
+      "raw_locator": "raw/modes-upstream-tls-closed-wire-rpc.tso-methods.json",
+      "mode_scope": "same request set on actual Go CLI / Rust CLI / genuine Rust caller-runtime embedded host",
+      "stream_applicability": "Tso count1/4/2 non-overlap, half-close EOF, invalid first frame terminal; host retained-stream cancellation; reconnect new stream/allocation and canonical group-watch compaction, no client revision cursor",
+      "persistent_effect": "actual timestamp byte/revision persistence; group directory unchanged; virtual default revision0; canonical11/13 real split/merge/wal timelines consumed",
+      "tls": "actual business RPCs and refusal of no/denied/rogue identities in process and embedded profiles, using canonical authenticated listener",
+      "scope_status": "finite acceptance16 behavior verified",
+      "archive_paths": [
+        "docs/rust/control-plane-mcs/task-148.json.gz"
+      ]
+    },
+    {
+      "wire_id": "wire:ce8a3004621529e648a92abc",
+      "method": "tsopb.TSO/FindGroupByKeyspaceID",
+      "unique_implementation_owner": "控制面79",
+      "implementation": "pkg/mcs/tso/server/grpc_service.rs",
+      "registration": "standalone TSO; genuine caller-runtime TsoServiceHost; absent from classic PD service package",
+      "test": "mcs_148_tso_modes",
+      "archive": "task-148.json.gz",
+      "raw_locator": "raw/modes-upstream-tls-closed-wire-rpc.tso-methods.json",
+      "mode_scope": "same request set on actual Go CLI / Rust CLI / genuine Rust caller-runtime embedded host",
+      "stream_applicability": "unary; stream lifecycle not applicable",
+      "persistent_effect": "actual timestamp byte/revision persistence; group directory unchanged; virtual default revision0; canonical11/13 real split/merge/wal timelines consumed",
+      "tls": "actual business RPCs and refusal of no/denied/rogue identities in process and embedded profiles, using canonical authenticated listener",
+      "scope_status": "finite acceptance16 behavior verified",
+      "archive_paths": [
+        "docs/rust/control-plane-mcs/task-148.json.gz"
+      ]
+    },
+    {
+      "wire_id": "wire:e3d43f40ba5eaf5e8a0f9825",
+      "method": "tsopb.TSO/GetMinTS",
+      "unique_implementation_owner": "控制面79",
+      "implementation": "pkg/mcs/tso/server/grpc_service.rs",
+      "registration": "standalone TSO; genuine caller-runtime TsoServiceHost; absent from classic PD service package",
+      "test": "mcs_148_tso_modes",
+      "archive": "task-148.json.gz",
+      "raw_locator": "raw/modes-upstream-tls-closed-wire-rpc.tso-methods.json",
+      "mode_scope": "same request set on actual Go CLI / Rust CLI / genuine Rust caller-runtime embedded host",
+      "stream_applicability": "unary; stream lifecycle not applicable",
+      "persistent_effect": "actual timestamp byte/revision persistence; group directory unchanged; virtual default revision0; canonical11/13 real split/merge/wal timelines consumed",
+      "tls": "actual business RPCs and refusal of no/denied/rogue identities in process and embedded profiles, using canonical authenticated listener",
+      "scope_status": "finite acceptance16 behavior verified",
+      "archive_paths": [
+        "docs/rust/control-plane-mcs/task-148.json.gz"
+      ]
+    },
+    {
+      "wire_id": "wire:699593e8cf2e419ac96a432c",
+      "method": "schedulingpb.Scheduling/StoreHeartbeat",
+      "unique_implementation_owner": "控制面120",
+      "implementation": "pkg/mcs/scheduling/server/service.rs",
+      "registration": "standalone Scheduling; genuine caller-runtime SchedulingHost; absent from classic PD service package",
+      "test": "mcs_148_scheduling_split_modes / mcs_148_scheduling_scatter_modes",
+      "archive": "task-148.json.gz",
+      "raw_locator": "raw/modes-upstream-tls-closed-wire-rpc.manual-split.json; raw/modes-upstream-tls-closed-wire-rpc.manual-scatter.json",
+      "mode_scope": "same request set on actual Go CLI / Rust CLI / genuine Rust caller-runtime embedded host",
+      "stream_applicability": "unary; stream lifecycle not applicable",
+      "persistent_effect": "full all-key namespace bytes/create/modrevision/version/lease unchanged after host stop; real PD-owned split IDs; actual split/transfer commands+ACK+SUCCESS; bucket shared-cache/HotStat supplement",
+      "tls": "actual business RPCs and refusal of no/denied/rogue identities in process and embedded profiles, using canonical authenticated listener",
+      "scope_status": "finite acceptance16 behavior verified",
+      "archive_paths": [
+        "docs/rust/control-plane-mcs/task-148.json.gz"
+      ]
+    },
+    {
+      "wire_id": "wire:d13584abfe3daadf8819e464",
+      "method": "schedulingpb.Scheduling/RegionHeartbeat",
+      "unique_implementation_owner": "控制面119",
+      "implementation": "pkg/mcs/scheduling/server/service.rs",
+      "registration": "standalone Scheduling; genuine caller-runtime SchedulingHost; absent from classic PD service package",
+      "test": "mcs_148_scheduling_split_modes / mcs_148_scheduling_scatter_modes",
+      "archive": "task-148.json.gz",
+      "raw_locator": "raw/modes-upstream-tls-closed-wire-rpc.manual-split.json; raw/modes-upstream-tls-closed-wire-rpc.manual-scatter.json",
+      "mode_scope": "same request set on actual Go CLI / Rust CLI / genuine Rust caller-runtime embedded host",
+      "stream_applicability": "RegionHeartbeat commands, actual ACK, half-close terminal; valid RegionBuckets ACK/EOF and versions3/2/3/4; config consumer real Compacted/replacement and cancel/join; heartbeat/bucket requests have no metadata revision cursor",
+      "persistent_effect": "full all-key namespace bytes/create/modrevision/version/lease unchanged after host stop; real PD-owned split IDs; actual split/transfer commands+ACK+SUCCESS; bucket shared-cache/HotStat supplement",
+      "tls": "actual business RPCs and refusal of no/denied/rogue identities in process and embedded profiles, using canonical authenticated listener",
+      "scope_status": "finite acceptance16 behavior verified",
+      "archive_paths": [
+        "docs/rust/control-plane-mcs/task-148.json.gz"
+      ]
+    },
+    {
+      "wire_id": "wire:b8afc494f38f3276acbc8ef0",
+      "method": "schedulingpb.Scheduling/SplitRegions",
+      "unique_implementation_owner": "控制面122",
+      "implementation": "pkg/mcs/scheduling/server/service.rs",
+      "registration": "standalone Scheduling; genuine caller-runtime SchedulingHost; absent from classic PD service package",
+      "test": "mcs_148_scheduling_split_modes / mcs_148_scheduling_scatter_modes",
+      "archive": "task-148.json.gz",
+      "raw_locator": "raw/modes-upstream-tls-closed-wire-rpc.manual-split.json; raw/modes-upstream-tls-closed-wire-rpc.manual-scatter.json",
+      "mode_scope": "same request set on actual Go CLI / Rust CLI / genuine Rust caller-runtime embedded host",
+      "stream_applicability": "unary; stream lifecycle not applicable",
+      "persistent_effect": "full all-key namespace bytes/create/modrevision/version/lease unchanged after host stop; real PD-owned split IDs; actual split/transfer commands+ACK+SUCCESS; bucket shared-cache/HotStat supplement",
+      "tls": "actual business RPCs and refusal of no/denied/rogue identities in process and embedded profiles, using canonical authenticated listener",
+      "scope_status": "finite acceptance16 behavior verified",
+      "archive_paths": [
+        "docs/rust/control-plane-mcs/task-148.json.gz"
+      ]
+    },
+    {
+      "wire_id": "wire:eb4079b3088f75f87c50eb7b",
+      "method": "schedulingpb.Scheduling/ScatterRegions",
+      "unique_implementation_owner": "控制面122",
+      "implementation": "pkg/mcs/scheduling/server/service.rs",
+      "registration": "standalone Scheduling; genuine caller-runtime SchedulingHost; absent from classic PD service package",
+      "test": "mcs_148_scheduling_split_modes / mcs_148_scheduling_scatter_modes",
+      "archive": "task-148.json.gz",
+      "raw_locator": "raw/modes-upstream-tls-closed-wire-rpc.manual-split.json; raw/modes-upstream-tls-closed-wire-rpc.manual-scatter.json",
+      "mode_scope": "same request set on actual Go CLI / Rust CLI / genuine Rust caller-runtime embedded host",
+      "stream_applicability": "unary; stream lifecycle not applicable",
+      "persistent_effect": "full all-key namespace bytes/create/modrevision/version/lease unchanged after host stop; real PD-owned split IDs; actual split/transfer commands+ACK+SUCCESS; bucket shared-cache/HotStat supplement",
+      "tls": "actual business RPCs and refusal of no/denied/rogue identities in process and embedded profiles, using canonical authenticated listener",
+      "scope_status": "finite acceptance16 behavior verified",
+      "archive_paths": [
+        "docs/rust/control-plane-mcs/task-148.json.gz"
+      ]
+    },
+    {
+      "wire_id": "wire:06c11b199fc8271de7383e69",
+      "method": "schedulingpb.Scheduling/GetOperator",
+      "unique_implementation_owner": "控制面122",
+      "implementation": "pkg/mcs/scheduling/server/service.rs",
+      "registration": "standalone Scheduling; genuine caller-runtime SchedulingHost; absent from classic PD service package",
+      "test": "mcs_148_scheduling_split_modes / mcs_148_scheduling_scatter_modes",
+      "archive": "task-148.json.gz",
+      "raw_locator": "raw/modes-upstream-tls-closed-wire-rpc.manual-split.json; raw/modes-upstream-tls-closed-wire-rpc.manual-scatter.json",
+      "mode_scope": "same request set on actual Go CLI / Rust CLI / genuine Rust caller-runtime embedded host",
+      "stream_applicability": "unary; stream lifecycle not applicable",
+      "persistent_effect": "full all-key namespace bytes/create/modrevision/version/lease unchanged after host stop; real PD-owned split IDs; actual split/transfer commands+ACK+SUCCESS; bucket shared-cache/HotStat supplement",
+      "tls": "actual business RPCs and refusal of no/denied/rogue identities in process and embedded profiles, using canonical authenticated listener",
+      "scope_status": "finite acceptance16 behavior verified",
+      "archive_paths": [
+        "docs/rust/control-plane-mcs/task-148.json.gz"
+      ]
+    },
+    {
+      "wire_id": "wire:66a98a89c2c80ac5573cba5b",
+      "method": "schedulingpb.Scheduling/AskBatchSplit",
+      "unique_implementation_owner": "控制面121",
+      "implementation": "pkg/mcs/scheduling/server/service.rs",
+      "registration": "standalone Scheduling; genuine caller-runtime SchedulingHost; absent from classic PD service package",
+      "test": "mcs_148_scheduling_split_modes / mcs_148_scheduling_scatter_modes",
+      "archive": "task-148.json.gz",
+      "raw_locator": "raw/modes-upstream-tls-closed-wire-rpc.manual-split.json; raw/modes-upstream-tls-closed-wire-rpc.manual-scatter.json",
+      "mode_scope": "same request set on actual Go CLI / Rust CLI / genuine Rust caller-runtime embedded host",
+      "stream_applicability": "unary; stream lifecycle not applicable",
+      "persistent_effect": "full all-key namespace bytes/create/modrevision/version/lease unchanged after host stop; real PD-owned split IDs; actual split/transfer commands+ACK+SUCCESS; bucket shared-cache/HotStat supplement",
+      "tls": "actual business RPCs and refusal of no/denied/rogue identities in process and embedded profiles, using canonical authenticated listener",
+      "scope_status": "finite acceptance16 behavior verified",
+      "archive_paths": [
+        "docs/rust/control-plane-mcs/task-148.json.gz"
+      ]
+    },
+    {
+      "wire_id": "wire:24be74d67ce37728d2eaca9f",
+      "method": "schedulingpb.Scheduling/RegionBuckets",
+      "unique_implementation_owner": "控制面120",
+      "implementation": "pkg/mcs/scheduling/server/service.rs",
+      "registration": "standalone Scheduling; genuine caller-runtime SchedulingHost; absent from classic PD service package",
+      "test": "mcs_148_scheduling_split_modes / mcs_148_scheduling_scatter_modes",
+      "archive": "task-148.json.gz",
+      "raw_locator": "raw/modes-upstream-tls-closed-wire-rpc.manual-split.json; raw/modes-upstream-tls-closed-wire-rpc.manual-scatter.json",
+      "mode_scope": "same request set on actual Go CLI / Rust CLI / genuine Rust caller-runtime embedded host",
+      "stream_applicability": "RegionHeartbeat commands, actual ACK, half-close terminal; valid RegionBuckets ACK/EOF and versions3/2/3/4; config consumer real Compacted/replacement and cancel/join; heartbeat/bucket requests have no metadata revision cursor",
+      "persistent_effect": "full all-key namespace bytes/create/modrevision/version/lease unchanged after host stop; real PD-owned split IDs; actual split/transfer commands+ACK+SUCCESS; bucket shared-cache/HotStat supplement",
+      "tls": "actual business RPCs and refusal of no/denied/rogue identities in process and embedded profiles, using canonical authenticated listener",
+      "scope_status": "finite acceptance16 behavior verified",
+      "archive_paths": [
+        "docs/rust/control-plane-mcs/task-148.json.gz"
+      ]
+    },
+    {
+      "wire_id": "wire:0883781e75d62818a67168f5",
+      "method": "meta_storagepb.MetaStorage/Watch",
+      "unique_implementation_owner": "控制面67",
+      "implementation": "pkg/server/grpc_metastorage.rs",
+      "registration": "PD registry in classic/API process; same PdNodeBuilder embedded host",
+      "test": "mcs_148_metastorage_modes",
+      "archive": "task-148.json.gz",
+      "raw_locator": "raw/modes-upstream-tls-closed-wire-rpc.meta-modes.json",
+      "mode_scope": "same request set on actual Go CLI / Rust CLI / genuine Rust caller-runtime embedded host",
+      "stream_applicability": "unary; stream lifecycle not applicable",
+      "persistent_effect": "actual SDK key/value/create/modrevision; unary projection matches Go key/value only and deleted field0; delete verified on same backend;65-68 WAL recovery consumed",
+      "tls": "shared pre-dispatch classic/MCS TLS policy evidence12 and16 front TLS; no separate method-specific hardware or TLS stress claim",
+      "scope_status": "finite acceptance16 behavior verified",
+      "archive_paths": [
+        "docs/rust/control-plane-mcs/task-148.json.gz"
+      ]
+    },
+    {
+      "wire_id": "wire:b211befe98fd66909e97212f",
+      "method": "meta_storagepb.MetaStorage/Get",
+      "unique_implementation_owner": "控制面65",
+      "implementation": "pkg/server/grpc_metastorage.rs",
+      "registration": "PD registry in classic/API process; same PdNodeBuilder embedded host",
+      "test": "mcs_148_metastorage_modes",
+      "archive": "task-148.json.gz",
+      "raw_locator": "raw/modes-upstream-tls-closed-wire-rpc.meta-modes.json",
+      "mode_scope": "same request set on actual Go CLI / Rust CLI / genuine Rust caller-runtime embedded host",
+      "stream_applicability": "unary; stream lifecycle not applicable",
+      "persistent_effect": "actual SDK key/value/create/modrevision; unary projection matches Go key/value only and deleted field0; delete verified on same backend;65-68 WAL recovery consumed",
+      "tls": "shared pre-dispatch classic/MCS TLS policy evidence12 and16 front TLS; no separate method-specific hardware or TLS stress claim",
+      "scope_status": "finite acceptance16 behavior verified",
+      "archive_paths": [
+        "docs/rust/control-plane-mcs/task-148.json.gz"
+      ]
+    },
+    {
+      "wire_id": "wire:0cea8d5001f0baf5449a6d48",
+      "method": "meta_storagepb.MetaStorage/Put",
+      "unique_implementation_owner": "控制面66",
+      "implementation": "pkg/server/grpc_metastorage.rs",
+      "registration": "PD registry in classic/API process; same PdNodeBuilder embedded host",
+      "test": "mcs_148_metastorage_modes",
+      "archive": "task-148.json.gz",
+      "raw_locator": "raw/modes-upstream-tls-closed-wire-rpc.meta-modes.json",
+      "mode_scope": "same request set on actual Go CLI / Rust CLI / genuine Rust caller-runtime embedded host",
+      "stream_applicability": "unary; stream lifecycle not applicable",
+      "persistent_effect": "actual SDK key/value/create/modrevision; unary projection matches Go key/value only and deleted field0; delete verified on same backend;65-68 WAL recovery consumed",
+      "tls": "shared pre-dispatch classic/MCS TLS policy evidence12 and16 front TLS; no separate method-specific hardware or TLS stress claim",
+      "scope_status": "finite acceptance16 behavior verified",
+      "archive_paths": [
+        "docs/rust/control-plane-mcs/task-148.json.gz"
+      ]
+    },
+    {
+      "wire_id": "wire:453882faaa41bd44f75abe16",
+      "method": "meta_storagepb.MetaStorage/Delete",
+      "unique_implementation_owner": "控制面66",
+      "implementation": "pkg/server/grpc_metastorage.rs",
+      "registration": "PD registry in classic/API process; same PdNodeBuilder embedded host",
+      "test": "mcs_148_metastorage_modes",
+      "archive": "task-148.json.gz",
+      "raw_locator": "raw/modes-upstream-tls-closed-wire-rpc.meta-modes.json",
+      "mode_scope": "same request set on actual Go CLI / Rust CLI / genuine Rust caller-runtime embedded host",
+      "stream_applicability": "unary; stream lifecycle not applicable",
+      "persistent_effect": "actual SDK key/value/create/modrevision; unary projection matches Go key/value only and deleted field0; delete verified on same backend;65-68 WAL recovery consumed",
+      "tls": "shared pre-dispatch classic/MCS TLS policy evidence12 and16 front TLS; no separate method-specific hardware or TLS stress claim",
+      "scope_status": "finite acceptance16 behavior verified",
+      "archive_paths": [
+        "docs/rust/control-plane-mcs/task-148.json.gz"
+      ]
+    },
+    {
+      "wire_id": "wire:97cfa63b5dc6f8c106cb0e92",
+      "method": "routerpb.Router/GetRegion",
+      "unique_implementation_owner": "控制面86",
+      "implementation": "pkg/mcs/router/server/router_query.rs",
+      "registration": "standalone Router; genuine caller-runtime RouterHost; absent from classic PD service package",
+      "test": "mcs_148_router_modes",
+      "archive": "task-148.json.gz",
+      "raw_locator": "raw/modes-upstream-tls-closed-wire-rpc.router.json",
+      "mode_scope": "same request set on actual Go CLI / Rust CLI / genuine Rust caller-runtime embedded host",
+      "stream_applicability": "unary; stream lifecycle not applicable",
+      "persistent_effect": "same canonical region/store cache from actual Go PD bootstrap and SyncRegions; host StoreWatcher real update/delete; no second index",
+      "tls": "actual business RPCs and refusal of no/denied/rogue identities in process and embedded profiles, using canonical authenticated listener",
+      "scope_status": "finite acceptance16 behavior verified",
+      "archive_paths": [
+        "docs/rust/control-plane-mcs/task-148.json.gz"
+      ]
+    },
+    {
+      "wire_id": "wire:05048320c392d22119efc567",
+      "method": "routerpb.Router/GetPrevRegion",
+      "unique_implementation_owner": "控制面86",
+      "implementation": "pkg/mcs/router/server/router_query.rs",
+      "registration": "standalone Router; genuine caller-runtime RouterHost; absent from classic PD service package",
+      "test": "mcs_148_router_modes",
+      "archive": "task-148.json.gz",
+      "raw_locator": "raw/modes-upstream-tls-closed-wire-rpc.router.json",
+      "mode_scope": "same request set on actual Go CLI / Rust CLI / genuine Rust caller-runtime embedded host",
+      "stream_applicability": "unary; stream lifecycle not applicable",
+      "persistent_effect": "same canonical region/store cache from actual Go PD bootstrap and SyncRegions; host StoreWatcher real update/delete; no second index",
+      "tls": "actual business RPCs and refusal of no/denied/rogue identities in process and embedded profiles, using canonical authenticated listener",
+      "scope_status": "finite acceptance16 behavior verified",
+      "archive_paths": [
+        "docs/rust/control-plane-mcs/task-148.json.gz"
+      ]
+    },
+    {
+      "wire_id": "wire:d524cc7c25febe7c5c67c433",
+      "method": "routerpb.Router/GetRegionByID",
+      "unique_implementation_owner": "控制面86",
+      "implementation": "pkg/mcs/router/server/router_query.rs",
+      "registration": "standalone Router; genuine caller-runtime RouterHost; absent from classic PD service package",
+      "test": "mcs_148_router_modes",
+      "archive": "task-148.json.gz",
+      "raw_locator": "raw/modes-upstream-tls-closed-wire-rpc.router.json",
+      "mode_scope": "same request set on actual Go CLI / Rust CLI / genuine Rust caller-runtime embedded host",
+      "stream_applicability": "unary; stream lifecycle not applicable",
+      "persistent_effect": "same canonical region/store cache from actual Go PD bootstrap and SyncRegions; host StoreWatcher real update/delete; no second index",
+      "tls": "actual business RPCs and refusal of no/denied/rogue identities in process and embedded profiles, using canonical authenticated listener",
+      "scope_status": "finite acceptance16 behavior verified",
+      "archive_paths": [
+        "docs/rust/control-plane-mcs/task-148.json.gz"
+      ]
+    },
+    {
+      "wire_id": "wire:3cec09d7dd369a9064f4d33a",
+      "method": "routerpb.Router/QueryRegion",
+      "unique_implementation_owner": "控制面86",
+      "implementation": "pkg/mcs/router/server/router_query.rs",
+      "registration": "standalone Router; genuine caller-runtime RouterHost; absent from classic PD service package",
+      "test": "mcs_148_router_modes",
+      "archive": "task-148.json.gz",
+      "raw_locator": "raw/modes-upstream-tls-closed-wire-rpc.router.json",
+      "mode_scope": "same request set on actual Go CLI / Rust CLI / genuine Rust caller-runtime embedded host",
+      "stream_applicability": "QueryRegion half-close EOF, wrong-cluster error, cancel populated response and reopen same cache; source sync recovery/store compaction in canonical shared watcher; no QueryRegion revision input",
+      "persistent_effect": "same canonical region/store cache from actual Go PD bootstrap and SyncRegions; host StoreWatcher real update/delete; no second index",
+      "tls": "actual business RPCs and refusal of no/denied/rogue identities in process and embedded profiles, using canonical authenticated listener",
+      "scope_status": "finite acceptance16 behavior verified",
+      "archive_paths": [
+        "docs/rust/control-plane-mcs/task-148.json.gz"
+      ]
+    },
+    {
+      "wire_id": "wire:be76ac8ee8c178f2158a3546",
+      "method": "routerpb.Router/BatchScanRegions",
+      "unique_implementation_owner": "控制面87",
+      "implementation": "pkg/mcs/router/server/router_query.rs",
+      "registration": "standalone Router; genuine caller-runtime RouterHost; absent from classic PD service package",
+      "test": "mcs_148_router_modes",
+      "archive": "task-148.json.gz",
+      "raw_locator": "raw/modes-upstream-tls-closed-wire-rpc.router.json",
+      "mode_scope": "same request set on actual Go CLI / Rust CLI / genuine Rust caller-runtime embedded host",
+      "stream_applicability": "unary; stream lifecycle not applicable",
+      "persistent_effect": "same canonical region/store cache from actual Go PD bootstrap and SyncRegions; host StoreWatcher real update/delete; no second index",
+      "tls": "actual business RPCs and refusal of no/denied/rogue identities in process and embedded profiles, using canonical authenticated listener",
+      "scope_status": "finite acceptance16 behavior verified",
+      "archive_paths": [
+        "docs/rust/control-plane-mcs/task-148.json.gz"
+      ]
+    },
+    {
+      "wire_id": "wire:66bd9cd4443003641b407cf2",
+      "method": "routerpb.Router/GetStore",
+      "unique_implementation_owner": "控制面86",
+      "implementation": "pkg/mcs/router/server/router_query.rs",
+      "registration": "standalone Router; genuine caller-runtime RouterHost; absent from classic PD service package",
+      "test": "mcs_148_router_modes",
+      "archive": "task-148.json.gz",
+      "raw_locator": "raw/modes-upstream-tls-closed-wire-rpc.router.json",
+      "mode_scope": "same request set on actual Go CLI / Rust CLI / genuine Rust caller-runtime embedded host",
+      "stream_applicability": "unary; stream lifecycle not applicable",
+      "persistent_effect": "same canonical region/store cache from actual Go PD bootstrap and SyncRegions; host StoreWatcher real update/delete; no second index",
+      "tls": "actual business RPCs and refusal of no/denied/rogue identities in process and embedded profiles, using canonical authenticated listener",
+      "scope_status": "finite acceptance16 behavior verified",
+      "archive_paths": [
+        "docs/rust/control-plane-mcs/task-148.json.gz"
+      ]
+    },
+    {
+      "wire_id": "wire:737f1ca1a6e7d55493cfe47b",
+      "method": "routerpb.Router/GetAllStores",
+      "unique_implementation_owner": "控制面86",
+      "implementation": "pkg/mcs/router/server/router_query.rs",
+      "registration": "standalone Router; genuine caller-runtime RouterHost; absent from classic PD service package",
+      "test": "mcs_148_router_modes",
+      "archive": "task-148.json.gz",
+      "raw_locator": "raw/modes-upstream-tls-closed-wire-rpc.router.json",
+      "mode_scope": "same request set on actual Go CLI / Rust CLI / genuine Rust caller-runtime embedded host",
+      "stream_applicability": "unary; stream lifecycle not applicable",
+      "persistent_effect": "same canonical region/store cache from actual Go PD bootstrap and SyncRegions; host StoreWatcher real update/delete; no second index",
+      "tls": "actual business RPCs and refusal of no/denied/rogue identities in process and embedded profiles, using canonical authenticated listener",
+      "scope_status": "finite acceptance16 behavior verified",
+      "archive_paths": [
+        "docs/rust/control-plane-mcs/task-148.json.gz"
+      ]
+    }
+  ],
+  "count": 42,
+  "expected_unregistered_methods": 7,
+  "registered_lookup_unimplemented": 1,
+  "consumed_archives": [
+    {
+      "path": "docs/rust/server-api/acceptance/task-16-common-registration.json.gz",
+      "sha256": "e75a7dc16303edc01765d3e9682fc280031956c7a0da055b4fff3f14b09185ea",
+      "use": "immutable historical phase; not a claim of rerunning every old command"
+    },
+    {
+      "path": "docs/rust/server-api/acceptance/task-16-http-tls-config.json.gz",
+      "sha256": "e61722eec678bbd767d8a651ee6fbd49b493f48c96d375550dfa2648b504bcbb",
+      "use": "immutable historical phase; not a claim of rerunning every old command"
+    },
+    {
+      "path": "docs/rust/server-api/acceptance/task-16-mcs-backend-tls.json.gz",
+      "sha256": "98f3a9440e29dc1689b6ae976c69577e6297c56709a6ba81f6a5819df43beccc",
+      "use": "immutable historical phase; not a claim of rerunning every old command"
+    },
+    {
+      "path": "docs/rust/server-api/acceptance/task-16-mcs-front-tls.json.gz",
+      "sha256": "7e429f2b075a7c83ae8956e255fdc8814a4180092ff99a8f8089d7ea6a40a4f5",
+      "use": "immutable historical phase; not a claim of rerunning every old command"
+    },
+    {
+      "path": "docs/rust/server-api/acceptance/task-16-mcs-process-config.json.gz",
+      "sha256": "db5e1954aed5c8c22f3ecdf69b5c0aa141bd1721b9462c6d160ea873e59df2bf",
+      "use": "immutable historical phase; not a claim of rerunning every old command"
+    },
+    {
+      "path": "docs/rust/server-api/acceptance/task-16-metastorage.json.gz",
+      "sha256": "54ab6814b96fb8d81b5bd248f1394da273ac3126618431c6eadcc4acee9fff3b",
+      "use": "immutable historical phase; not a claim of rerunning every old command"
+    },
+    {
+      "path": "docs/rust/server-api/acceptance/task-16-rm-proxy.json.gz",
+      "sha256": "d16aa177bce165ab8c268246e33b7262609014ec5e568e4f02ad2940b382524a",
+      "use": "immutable historical phase; not a claim of rerunning every old command"
+    },
+    {
+      "path": "docs/rust/server-api/acceptance/task-16-rm-quota-watch.json.gz",
+      "sha256": "299777618d60df873eda94c5ae133f95db56d0e36830bf71655181072a8646c0",
+      "use": "immutable historical phase; not a claim of rerunning every old command"
+    },
+    {
+      "path": "docs/rust/server-api/acceptance/task-16-rm-tls-primary.json.gz",
+      "sha256": "49708e0a18e256ad826f7f4691cc893cfae07dd14af23ab3ca953d38d1c693e4",
+      "use": "immutable historical phase; not a claim of rerunning every old command"
+    },
+    {
+      "path": "docs/rust/server-api/acceptance/task-16-rm.json.gz",
+      "sha256": "f94e5838959f20fec2423cc7a97b60a429c4c0a185fb6537dd27b6f1039543e2",
+      "use": "immutable historical phase; not a claim of rerunning every old command"
+    },
+    {
+      "path": "docs/rust/server-api/acceptance/task-16-router.json.gz",
+      "sha256": "97a77f443293a85379723ce87ea4d3672d5b7733d9224ac20965b98543d7626f",
+      "use": "immutable historical phase; not a claim of rerunning every old command"
+    },
+    {
+      "path": "docs/rust/server-api/acceptance/task-16-scheduling-ack.json.gz",
+      "sha256": "6079c2a77670600bfbe1e76a225784dbda6a341261ddd1c615c54c0f51e38f32",
+      "use": "immutable historical phase; not a claim of rerunning every old command"
+    },
+    {
+      "path": "docs/rust/server-api/acceptance/task-16-scheduling-authority.json.gz",
+      "sha256": "92a9921876e8120e5d365e27fe9c0405284721aab3d4ac54331e8e32cbd2ce25",
+      "use": "immutable historical phase; not a claim of rerunning every old command"
+    },
+    {
+      "path": "docs/rust/server-api/acceptance/task-16-scheduling-bootstrap.json.gz",
+      "sha256": "0141cd1d573ed0915989d658f44a668b8093a889bd55341724069649fc38409a",
+      "use": "immutable historical phase; not a claim of rerunning every old command"
+    },
+    {
+      "path": "docs/rust/server-api/acceptance/task-16-scheduling-config-faults.json.gz",
+      "sha256": "cc092faf2745344b80cfc6d4ad68e1b8369b9eef57ad9302fe5364b301a0d917",
+      "use": "immutable historical phase; not a claim of rerunning every old command"
+    },
+    {
+      "path": "docs/rust/server-api/acceptance/task-16-scheduling-config-watch.json.gz",
+      "sha256": "3e4356ba46a3ce5e3e158f4cee8dc865ac2901c2e1ffd72c6a0cc3a49af05226",
+      "use": "immutable historical phase; not a claim of rerunning every old command"
+    },
+    {
+      "path": "docs/rust/server-api/acceptance/task-16-scheduling-discovery.json.gz",
+      "sha256": "2a7985c8be44f3bf578b9d646b46a6888966425801012472e605c862ac3801d5",
+      "use": "immutable historical phase; not a claim of rerunning every old command"
+    },
+    {
+      "path": "docs/rust/server-api/acceptance/task-16-scheduling-methods.json.gz",
+      "sha256": "5ac91a649b1fa0a74356574bd54c4b4764179104149cbd7cc8ee649b89f1e236",
+      "use": "immutable historical phase; not a claim of rerunning every old command"
+    },
+    {
+      "path": "docs/rust/server-api/acceptance/task-16-scheduling-operators.json.gz",
+      "sha256": "2b75cabaad0bbf8a44c623f482d70e8f3b88e1922e603b5b281698e93785fab4",
+      "use": "immutable historical phase; not a claim of rerunning every old command"
+    },
+    {
+      "path": "docs/rust/server-api/acceptance/task-16-scheduling.json.gz",
+      "sha256": "4058b52097ead140b4ee296053ca3e12bb2b5ea627e02cb1cc4bc24fabff0108",
+      "use": "immutable historical phase; not a claim of rerunning every old command"
+    },
+    {
+      "path": "docs/rust/server-api/acceptance/task-16-streams-tso.json.gz",
+      "sha256": "aa953d1de1eae64303c8226a91bc85e662cc9d24b9d7beef11160368ffcf23ca",
+      "use": "immutable historical phase; not a claim of rerunning every old command"
+    },
+    {
+      "path": "docs/rust/server-api/acceptance/task-16-tso-https.json.gz",
+      "sha256": "000b7c3b1d9be4366756cab3147c95e8c471d4db5af488aa1ef6005f1093a8e5",
+      "use": "immutable historical phase; not a claim of rerunning every old command"
+    },
+    {
+      "path": "docs/rust/server-api/acceptance/task-16-unregistered-signals.json.gz",
+      "sha256": "0ab6164fd0a6a88fb6b09a04317aee44823d4d18cf81cb19b0c907211d79e2cf",
+      "use": "immutable historical phase; not a claim of rerunning every old command"
+    },
+    {
+      "path": "docs/rust/server-api/acceptance/task-09.json.gz",
+      "sha256": "5f664096fd929ef2f8584da33a74ae7892501e7e4cf08254a550edc0abe24780",
+      "use": "admitted predecessor within its stated source/platform and behavioral scope"
+    },
+    {
+      "path": "docs/rust/server-api/acceptance/task-11.json.gz",
+      "sha256": "83a32a35320aaedddb01f6b1281ebd19e26be3a648b8722eedf16668a77979d4",
+      "use": "admitted predecessor within its stated source/platform and behavioral scope"
+    },
+    {
+      "path": "docs/rust/server-api/acceptance/task-13.json.gz",
+      "sha256": "f2bc6187e50740a0a2224db301b878adf9eb4cc7009c957b1e421fa8fd560e56",
+      "use": "admitted predecessor within its stated source/platform and behavioral scope"
+    },
+    {
+      "path": "docs/rust/server-api/acceptance/task-14.json.gz",
+      "sha256": "5c22917510f009c5786f03324e2d1032f919624861c8d8bfe35d04c2b9c533ea",
+      "use": "admitted predecessor within its stated source/platform and behavioral scope"
+    },
+    {
+      "path": "docs/rust/server-api/acceptance/task-15.json.gz",
+      "sha256": "64a0753f4bb9e0a8eea5c45fd3996a5101d18bca2dbccef0e6cd126e5c681b8f",
+      "use": "admitted predecessor within its stated source/platform and behavioral scope"
+    }
+  ],
+  "source_sha256": {
+    "pkg/mcs/resourcemanager/server/grpc_service.rs": "58c42a6809ea7e711ba4d1002dc01e3f21e68c3981d65e72c3ff21ee35c85181",
+    "pkg/mcs/router/server/router_query.rs": "ecf56f37e514b0b70589b6ebdf0d65af4f79390e273e5da10bafd0267c348671",
+    "pkg/mcs/scheduling/server/service.rs": "9048a8d17487ac380d092b2a9516a6c4bcd6d7413d72ec818bd2b6599b8b291b",
+    "pkg/mcs/server/diagnostics_info.rs": "121d493c2d54b90ed864749c698ed73b9148461a5469d592d61c6349fef858f6",
+    "pkg/mcs/server/diagnostics_log.rs": "29b33ee20241e2e13dc8082975792cce96b4b32fb52f5e68b855a5889d72cbf9",
+    "pkg/mcs/server/unregistered_service.rs": "ba469f6d2964a6776d435cd81490ad3f04094c16ef3b01849a98e9c245027719",
+    "pkg/mcs/tso/server/grpc_service.rs": "d01fb2dee084c83fbaf5f156f92ff8cbd671831caadd516bb1b14e4377a82f40",
+    "pkg/server/grpc_keyspace.rs": "4cde24014ff1d43e4169ad8c57e119fa763ee76416ef502aadce0ab24808e683",
+    "pkg/server/grpc_metastorage.rs": "9b541861487d2dbdf85b2d676b438eb9e4ae071d961ba013d0adcc38d466aae4"
+  },
+  "deferred_owners": {
+    "17": "native Rust production durability; external native etcd/WAL is transitional proof",
+    "18": "global topology matrix",
+    "19": "global source reconciliation",
+    "20": "global protocol catalogue",
+    "21": "all configuration/metrics/CLI/platform matrix",
+    "22": "classic56 and process terminal/shutdown transport differences",
+    "23": "whole HTTP/metrics/lifecycle integration",
+    "24": "whole workspace tests, prior unrelated failures and ignored tests"
+  },
+  "normalization": "raw responses retained. Dynamic cluster/address/time and MVCC revisions normalized only with separate domain/cursor/state assertions; no omitted metadata keys in Scheduling namespace comparison. Expected negative contracts remain negative."
+}

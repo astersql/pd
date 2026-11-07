@@ -1,5 +1,11 @@
 # 控制面与MCS来源覆盖
 
+验收16最终交付：42个稳定wire ID逐行关联注册条件、唯一实现拥有者、实际测试/
+原始响应、流适用性、持久副作用与TLS范围，见[148机器索引](task-148-methods.json)
+和[真实双模式回执](task-148.md)。[138装配回执](task-138.md)包含当前caller-runtime
+周期余额保存/换主恢复专项；不是以目录或历史通过替代领域检查。7个未注册方法
+及LookupKeyspace仍保持Go的Unimplemented；17–24全局回归边界不变。
+
 16-B/E/F有限流补充：Keyspace前端重连/取消/跨压缩增量、Router同一缓存新流，
 TSO三方法HTTP/双向TLS及真实嵌入调用通过；修复TSO错误header、分组mod revision
 及response group hint，记录实际timestamp持久条目。见

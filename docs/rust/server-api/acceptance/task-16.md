@@ -1,9 +1,13 @@
 # 验收16：额外gRPC注册与责任交接审计
 
 2026-11-06；基准HEAD `128c50050748fac7820b48039759d77a522929ec`。
-后续实施说明：用户已解除此前纯文档/Cargo/服务实现的限制，允许按原拥有任务
-继续Rust实施及现成Go oracle验证。当前正在实施，尚未获得整项协议验收证据；
-下文是提交9ceedb1be时的只读审计和当时授权边界，不再作为停止实施的理由。
+2026-11-07收口：按本项有限清单A–I完成42方法的注册、行为、流、状态与双模式
+证据交接，见[148逐方法回执](../../control-plane-mcs/task-148.md)和
+[机器索引](../../control-plane-mcs/task-148-methods.json)。7个未注册方法及
+LookupKeyspace按Go保留Unimplemented，不宣称新增其领域功能。
+用户已解除此前纯文档/Cargo/服务实现的限制，允许按原拥有任务继续Rust实施
+及现成Go oracle验证。下文保留各阶段历史，早期“进行中/缺口”不覆盖最终回执；
+17–24明确拥有的全局回归继续由后续批次执行。
 方法责任和注册条件见[extra-services.md](extra-services.md)。
 
 ## 本次实际交付
@@ -972,3 +976,45 @@ GetMinTS保留caller给出的response group hint。新增真实后端两组事�
 
 原始RPC、red/green、准入和确切命令见[本阶段回执](task-16-streams-tso.json.gz)。
 这不等于138/148索引已交付；16-D/H/I继续按有限清单收口。
+
+## 最终有限收口：42行与真实双模式（16-A–I）
+
+最终[138装配回执](../../control-plane-mcs/task-138.md)、
+[148双模式回执](../../control-plane-mcs/task-148.md)、
+[42行机器索引](../../control-plane-mcs/task-148-methods.json)及
+[原始压缩回执](../../control-plane-mcs/task-148.json.gz)完成本项交接。
+每个稳定ID保留唯一实现拥有者、实际入口/请求/原始响应、流适用性、TLS和状态
+副作用，不以目录计数或classic同名PD方法替代额外服务。7个未注册方法和
+LookupKeyspace的Unimplemented保留为Go契约，不宣称新功能完成。
+
+命名`mcs_148_`目标7通过/0失败/0忽略：同一请求函数实际运行Go进程、Rust进程
+和调用方runtime中的Rust canonical宿主。四个MCS均有真实业务TLS及拒绝身份；
+Router和Scheduling连接真实HTTPS PD上游，SDK和PD delegate均使用已准入的
+共享认证/连接池。MetaStorage同一四方法/Watch回放、RM两分支真实双PD follower、
+TSO三方法及时间戳、Router七方法非空cache、Scheduling七方法命令/实际ACK/
+SUCCESS和完整持久namespace均获记录。未创建第二套领域内核或私有runtime。
+
+Keyspace专项另为1通过/0失败/0忽略，逐一运行全部六方法。名称读取先以真实
+未分裂区间拒绝，再通过实际PD分配ID和region heartbeat建立边界后成功；
+目录/ID读取、Lookup拒绝、状态迁移、Watch取消/重连/跨压缩增量与持久行均保存。
+这补齐09以HTTP为主的旧证据无法独立证明的三项gRPC调用。
+
+138当前专项1通过/0失败/0忽略：真实后端周期保存190000余额，换主后恢复，
+旧流关闭且父runtime仍可用。历史摘要显示装配/状态代码变化，因此只重跑这一项
+相关持久性检查；没有重复整个runtime/server或workspace test。
+
+所有失败原样保留并分类：新夹具误要求unary KV MVCC字段/deleted计数，而Go
+只投影key/value且deleted留0；缺少等长bucket统计向量在双方触发边界失败；
+TLS前端配置也用于Go PD delegate，明文上游因此失败，改用真实TLS PD而非
+放宽断言。RM首次请求使用100000初始池，消费5后99995，未把metadata初值25
+或关闭前强制保存当作Go语义。上述是夹具修正，不冒充新生产行为red。
+
+最终workspace check、fmt check、metadata、文档/稳定ID/输入摘要、diff及Go/
+plan守卫见压缩回执和[最终检查](../../control-plane-mcs/task-148-validation.json)。1142项受保护Go/模块/plan.md首尾一致；仅新增现有
+workspace内部dev依赖以启动真实宿主，Cargo.lock无外部包版本变化。槽位动态
+领取并记录绝对路径，最终释放；保留用户既有计划变更，本项提交不含它们。
+
+本项有限清单已无必需缺口。17原生Rust生产耐久、18全拓扑、19全来源、20全目录、
+21全配置/CLI/平台、22 classic56与进程退出传输差异、23完整HTTP/指标/生命周期、
+24全workspace及既有失败/忽略项按原后续责任执行。外部原生etcd/WAL不冒充
+原生Rust持久化，历史完整server失败也未隐藏或宣称由本项修复。

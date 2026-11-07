@@ -11,10 +11,12 @@ Scheduling有效split/scatter/buckets增量：三个方法已有真实非空领�
 比较不排除键，见[有效方法说明](task-16.md#scheduling三个有效方法与嵌入缓存证据16-g)。
 本增量不关闭16其它明确流/双模式缺口或后续全配置回归。
 
-2026-11-06，审计基准 `128c50050748fac7820b48039759d77a522929ec`。
-**责任计划、MetaStorage前置及classic RM RU子集已有证据，整体协议验收尚未完成。** 最初只读审计之后，
-用户已授权实施；MetaStorage见下表65–68，classic RM阶段见[本轮回执](task-16.md#classic-rm-ru前置阶段)。
-其它服务继续保留各自缺口，不代表42方法均通过。
+2026-11-07：验收16有限清单已收口，42个稳定ID逐方法交付注册、实际行为、
+流和持久副作用证据，见[148回执](../../control-plane-mcs/task-148.md)与
+[机器索引](../../control-plane-mcs/task-148-methods.json)。7个未注册方法和
+LookupKeyspace保持Go的Unimplemented边界，不虚构领域实现。
+下文保留2026-11-06基准 `128c50050748fac7820b48039759d77a522929ec` 之后的
+阶段历史；早期缺口说明由最终回执收口，后续17–24全局责任保持独立。
 检查记录及恢复条件见[task-16.md](task-16.md)。
 
 固定输入：[wire-inventory.md](../wire-inventory.md)第80–121行、
@@ -29,13 +31,13 @@ Scheduling有效split/scatter/buckets增量：三个方法已有真实非空领�
 
 | 服务 | Go注册条件 | 当前Rust及证据边界 |
 | --- | --- | --- |
-| Keyspace | classic始终注册 | 同条件已注册；[131](../../control-plane-mcs/task-131.md)和[验收09](task-09.md)交付manager共享、读写、初始/后续watch及WAL子集；LookupKeyspace双方保留Unimplemented，不是功能完成；流重连/取消/compaction/EOF仍须精确关联回执 |
+| Keyspace | classic始终注册 | 六方法实际TCP逐项核验；名称读取先拒绝未分裂状态，再由实际PD IDs/region heartbeat建立边界后成功；Watch取消/重连/跨压缩增量及09持久证据已关联；LookupKeyspace双方保留Unimplemented；无限Watch不伪造有限EOF |
 | Diagnostics | classic始终注册 | 同条件已注册；[14](task-14.md)41配对日志场景，[15](task-15.md)21配对机器信息场景；ServerInfo只准入macOS amd64/CGO=0，退出进程时SearchLog传输错误差异交22；不将历史记录计为本轮执行 |
-| ResourceManager | fallback=true由registry装配真实RM；false装配classic proxy | classic按fallback条件注册本地RM或代理；已有12项Go/Rust进程回执、四种PD/RM组合及缓存primary观察，见[阶段证据](task-16.md)。完整TLS、follower故障及148继续实施，不销项100/101/138 |
-| MetaStorage | registry始终注册，含classic | 已有canonical四方法及同一listener接线；[65](../../control-plane-mcs/task-065.md)/[66](../../control-plane-mcs/task-066.md)/[67](../../control-plane-mcs/task-067.md)/[68](../../control-plane-mcs/task-068.md)交付当前进程/嵌入、故障/流/WAL证据，148继续完整双模式/TLS组合，不扩大为整体16完成 |
-| TSO | 独立MCS注册，classic不注册该服务 | canonical TsoServiceHost及三个方法已存在；[验收11](task-11.md)/[13](task-13.md)只交付已消费子集，不能替代所有方法/TLS/取消的双模式回执 |
-| Router | 独立MCS注册，classic不注册该服务 | canonical七方法Service、RouterHost和services router入口已接通；[阶段证据](task-16.md)覆盖Go上游的空/真实缓存查询、错误与EOF，不能替代完整145/148、TLS或配置验收；86/87/137/141仍按各自范围交付 |
-| Scheduling | 独立MCS注册，classic不注册该服务 | canonical七方法和独立入口已接通，复用ClusterHost/公共辅助服务/TLS，在线bootstrap阶段已有实际对照；119–123/139/143/147/148完整领域/故障矩阵继续保留 |
+| ResourceManager | fallback=true由registry装配真实RM；false装配classic proxy | 六方法/写角色、实际双PD follower、forwarded-host拒绝、HTTP/TLS业务与token余额已核验；Go/Rust进程和真实嵌入宿主使用相同请求；[138](../../control-plane-mcs/task-138.md)及[148](../../control-plane-mcs/task-148.md)保留逐项证据 |
+| MetaStorage | PD registry始终注册，含classic/API | canonical四方法同listener，实际Go/Rust进程和PdNode嵌入使用同一Put/Get/Watch/Delete/取消/重连回放请求；SDK元数据及65–68故障/压缩/WAL证据已关联；unary KV及deleted未设置字段保持Go投影 |
+| TSO | 独立MCS注册，classic不注册该服务 | 三方法实际时间戳/分组/持久行、错误header及EOF；Go/Rust进程和TsoServiceHost同请求HTTP/TLS及认证拒绝通过；11/13迁移/WAL与嵌入取消证据已逐项消费 |
+| Router | 独立MCS注册，classic不注册该服务 | 七方法实际PD同步非空cache、错误/EOF、取消后重开；Go/Rust进程和RouterHost同请求HTTP/TLS及拒绝通过，TLS上游为真实HTTPS PD；共享同步/StoreWatcher恢复证据已关联；全配置/拓扑仍归后续 |
+| Scheduling | 独立MCS注册，classic不注册该服务 | 七方法正向领域/错误、实际split/scatter命令/ACK/SUCCESS、PD-owned IDs与有效bucket；Go/Rust进程和SchedulingHost同请求HTTP/TLS通过；完整持久namespace无排除比较，配置故障和同一cache/HotStat证据已关联 |
 | Deadlock / TraceRecordPubSub / Namespace | descriptor传递导入，当前Go注册链未见注册 | classic及四MCS的七方法70次负向RPC已比较完整Unimplemented状态/文本，另核对10次HTTP 404；Namespace历史“独立MCS”描述无注册源码支持，不新增领域实现，见[阶段回执](task-16.md#未注册服务回退与mcs信号清理阶段进行中) |
 
 Go来源为 `server/server.go:316–341`及五个MCS的
