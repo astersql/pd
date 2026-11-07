@@ -1,10 +1,13 @@
 # 原生元数据候选实验提案
 
-状态为实验草案。首个候选是 OpenRaft 0.9.22 加 rusqlite 0.37.0 的 bundled
-SQLite。两者作为评估版本，待生产任务3确定特性、解析并记录 Cargo.lock 及
-SQLite 运行时版本。生产任务10依据故障结果作出裁决。
+状态为实验草案。首个候选是 OpenRaft 0.9.22 加 bundled SQLite。
+原提案的 rusqlite 0.37.0 搭配 libsqlite3-sys 0.35.0 时使用 SQLite 3.50.2。
+该版本处于上游公布的 WAL reset 并发损坏影响范围。后续实验接线应选用包含
+修复的绑定和 SQLite 版本。已用相同场景测过 SQLite 3.51.3 修复版本。
+待生产任务3确定绑定和特性并记录 Cargo.lock 及运行时版本，任务10依据故障结果裁决。
 [OpenRaft 版本](https://docs.rs/crate/openraft/0.9.22)、
 [rusqlite 版本及依赖](https://docs.rs/crate/rusqlite/0.37.0)、
+[SQLite WAL reset 公告](https://sqlite.org/wal.html#the_wal_reset_bug)、
 [SQLite 许可说明](https://www.sqlite.org/copyright.html)。
 
 | 路线 | 取舍与待证范围 |
@@ -29,13 +32,13 @@ SQLite 运行时版本。生产任务10依据故障结果作出裁决。
   撤销与删除通过复制状态机生效。重开及换主需要验证时钟回退、旧任期 fencing
   及租约状态，不能以观察到本机定时器触发替代集群行为。
 - 掉电实验记录镜像隔离、flush/FUA、输入摘要、外部客户端确认和重开后的实盘
-  对账。模型层已校验三个串行场景。接入候选时须捕获实际 SQLite I/O 边界，
-  例如经 SQLite VFS 测试接线或专用虚拟块设备，且验证提前确认的负对照。
-  [模型校验](power-model-calibration.md)、[SQLite VFS](https://sqlite.org/vfs.html)。
+  对账。模型层已校验三个串行场景，单节点 SQLite VFS 已在两种引擎版本上
+  验证真实 WAL I/O。后续需在 Rust 候选和共识确认链上复用这类故障对账。
+  [模型校验](power-model-calibration.md)、[SQLite 实验回执](sqlite-power-evidence.md)。
 
 任何已确认提交丢失、少数派确认线性读写、损坏静默通过、落后节点无法从
 快照恢复或已移除成员仍可提交，均使该候选无法进入生产实现。备份恢复工具及
-发布门依赖主题9实际交付。此次仅使用本机 Darwin arm64 校验模型。
+发布门依赖主题9实际交付。设备模型与 SQLite 实验均在 Darwin arm64 上执行。
 目标平台、负载、吞吐与 p99、容量、RTO/RPO 和长稳窗口暂缓确定。
 实验数据可以帮助设定这些门槛，生产验收仍需要部署需求依据。
 [旧原型裁决](../adr-native-meta-store.md)、[当前准入](task-01.md)。
