@@ -1,5 +1,10 @@
 # 额外gRPC服务注册与责任交接
 
+16-B/E/F流与TSO补充：Keyspace取消后重连、存活流跨后端压缩及后续增量，
+Router取消后重开同一实际缓存，TSO三方法HTTP/TLS/错误header与嵌入宿主均有
+运行证据；虚拟默认revision与unary业务错误差异已修复，见
+[阶段说明](task-16.md#keyspace与router流补齐及tso三方法16-bef)。
+
 Scheduling有效split/scatter/buckets增量：三个方法已有真实非空领域证据；split
 等待实际子区间心跳并返回PD-owned ID，scatter由ACK完成transfer，buckets同时
 核验wire ACK及实际嵌入宿主的canonical cache/HotStat。关闭后完整namespace

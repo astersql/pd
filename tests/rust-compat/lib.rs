@@ -174,3 +174,9 @@ mod accept_startup_config_test;
 
 #[cfg(test)]
 mod accept_extra_scheduling_manual_test;
+
+#[cfg(test)]
+mod accept_extra_tso_service_test;
+
+#[cfg(test)]
+mod accept_extra_keyspace_watch_test;

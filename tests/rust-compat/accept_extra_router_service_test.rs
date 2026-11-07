@@ -311,6 +311,47 @@ async fn sa_016_router_standalone_registered_methods_and_query_eof() {
         } else {
             expected_populated = Some(populated);
         }
+        // Dropping a live response cancels only that request; the same genuine cache
+        // must remain usable by a new stream, which then half-closes normally.
+        for phase in ["cancel live populated query", "reopen populated query"] {
+            let (sender, receiver) = tokio::sync::mpsc::channel(1);
+            sender
+                .send(pdpb::QueryRegionRequest {
+                    header: header.clone(),
+                    keys: vec![b"foo".to_vec()],
+                    prev_keys: vec![b"foo".to_vec()],
+                    ids: vec![2, 17],
+                    ..Default::default()
+                })
+                .await
+                .unwrap();
+            let mut output = client
+                .query_region(tokio_stream::wrappers::ReceiverStream::new(receiver))
+                .await
+                .unwrap()
+                .into_inner();
+            let mut response = tokio::time::timeout(Duration::from_secs(5), output.message())
+                .await
+                .unwrap()
+                .unwrap()
+                .unwrap();
+            let raw = response.encode_to_vec();
+            response.header.as_mut().unwrap().cluster_id = 0;
+            assert_eq!(response, query, "{phase}");
+            drop(sender);
+            if phase.starts_with("reopen") {
+                assert!(
+                    tokio::time::timeout(Duration::from_secs(5), output.message())
+                        .await
+                        .unwrap()
+                        .unwrap()
+                        .is_none()
+                );
+            }
+            drop(output);
+            records.push(json!({"rust":is_rust,"stage":phase,"response_raw":raw,"same_shared_cache_response":true,"normal_eof":phase.starts_with("reopen")}));
+            save(&records);
+        }
         sidecar.stop();
         pd.stop().unwrap();
     }

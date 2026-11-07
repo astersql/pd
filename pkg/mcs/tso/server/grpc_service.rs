@@ -20,13 +20,42 @@ fn header(cluster: u64, group: u32) -> p::ResponseHeader {
         ..Default::default()
     }
 }
+fn error_header(
+    cluster: u64,
+    group: u32,
+    kind: p::ErrorType,
+    message: String,
+) -> p::ResponseHeader {
+    let mut h = header(cluster, group);
+    h.error = Some(p::Error {
+        r#type: kind as i32,
+        message,
+    });
+    h
+}
 impl Service {
     fn validate(&self, h: Option<&p::RequestHeader>) -> Result<(), Status> {
-        let h = h.ok_or_else(|| Status::invalid_argument("missing request header"))?;
-        if h.cluster_id != self.cluster {
-            return Err(Status::failed_precondition("mismatch cluster id"));
+        let received = h.map_or(0, |h| h.cluster_id);
+        if h.is_none() || received != self.cluster {
+            return Err(Status::failed_precondition(format!(
+                "mismatch cluster id, need {} but got {received}",
+                self.cluster
+            )));
         }
         Ok(())
+    }
+    fn invalid_header(&self, h: Option<&p::RequestHeader>) -> Option<p::ResponseHeader> {
+        self.validate(h).err().map(|error| {
+            error_header(
+                self.cluster,
+                h.map_or(0, |h| h.keyspace_group_id),
+                p::ErrorType::ClusterMismatched,
+                format!(
+                    "rpc error: code = FailedPrecondition desc = {}",
+                    error.message()
+                ),
+            )
+        })
     }
 }
 #[tonic::async_trait]
@@ -88,7 +117,11 @@ impl p::tso_server::Tso for Service {
                     })
                 }
                 .await;
+                let terminal = result.is_err();
                 tokio::select! {_=service.cancel.cancelled()=>break,r=tx.send(result)=>{if r.is_err(){break;}}}
+                if terminal {
+                    break;
+                }
             }
         });
         Ok(Response::new(Box::pin(
@@ -100,7 +133,12 @@ impl p::tso_server::Tso for Service {
         request: Request<p::FindGroupByKeyspaceIdRequest>,
     ) -> Result<Response<p::FindGroupByKeyspaceIdResponse>, Status> {
         let r = request.into_inner();
-        self.validate(r.header.as_ref())?;
+        if let Some(header) = self.invalid_header(r.header.as_ref()) {
+            return Ok(Response::new(p::FindGroupByKeyspaceIdResponse {
+                header: Some(header),
+                ..Default::default()
+            }));
+        }
         let key = match r.keyspace {
             Some(p::find_group_by_keyspace_id_request::Keyspace::KeyspaceId(id)) => id,
             _ => 0,
@@ -113,7 +151,7 @@ impl p::tso_server::Tso for Service {
             .find(|g| g.keyspaces.as_ref().is_some_and(|ids| ids.contains(&key)))
             .ok_or_else(|| Status::not_found("keyspace not assigned"))?
             .clone();
-        let revision = w.revision();
+        let revision = w.group_revision(g.id).unwrap_or(0);
         drop(w);
         use astersql_pd_storage_domain::{Consistency, Read};
         use prost::Message;
@@ -159,7 +197,14 @@ impl p::tso_server::Tso for Service {
         &self,
         request: Request<p::GetMinTsRequest>,
     ) -> Result<Response<p::GetMinTsResponse>, Status> {
-        self.validate(request.into_inner().header.as_ref())?;
+        let request = request.into_inner();
+        if let Some(header) = self.invalid_header(request.header.as_ref()) {
+            return Ok(Response::new(p::GetMinTsResponse {
+                header: Some(header),
+                ..Default::default()
+            }));
+        }
+        let response_group = request.header.as_ref().map_or(0, |h| h.keyspace_group_id);
         let w = self.watch.lock().await;
         let mut minimum = None;
         let mut serving = 0;
@@ -170,7 +215,7 @@ impl p::tso_server::Tso for Service {
             }
         }
         Ok(Response::new(p::GetMinTsResponse {
-            header: Some(header(self.cluster, 0)),
+            header: Some(header(self.cluster, response_group)),
             timestamp: minimum.map(|t| pdpb::Timestamp {
                 physical: t.physical as i64,
                 logical: t.logical as i64,

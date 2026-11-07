@@ -501,3 +501,40 @@ mod gated_revoke {
         }
     }
 }
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn sa_016_group_modification_revisions_survive_other_group_events_and_reload() {
+    let fixture = fixture::Fixture::start();
+    let store = Arc::new(fixture.store().await);
+    let mut watch = GroupAllocatorWatch::load(config(store.clone(), "http://127.0.0.1:1".into()))
+        .await
+        .unwrap();
+    assert_eq!(watch.group_revision(0), Some(0));
+    assert_eq!(watch.group_revision(1), None);
+    let first = write_group(store.as_ref(), 0, vec![0], vec![]).await;
+    catch_up(&mut watch, first).await;
+    assert_eq!(watch.group_revision(0), Some(first));
+    let second = write_group(store.as_ref(), 1, vec![1], vec![]).await;
+    catch_up(&mut watch, second).await;
+    assert_eq!(watch.group_revision(0), Some(first));
+    assert_eq!(watch.group_revision(1), Some(second));
+    watch.reload().await.unwrap();
+    assert_eq!(watch.group_revision(0), Some(first));
+    assert_eq!(watch.group_revision(1), Some(second));
+    let deleted = store
+        .transact(
+            vec![],
+            vec![Mutation::Delete {
+                key: ClusterPaths::new(760)
+                    .keyspace_group_id_path(0)
+                    .into_bytes(),
+            }],
+        )
+        .await
+        .unwrap()
+        .revision;
+    catch_up(&mut watch, deleted).await;
+    assert_eq!(watch.group_revision(0), Some(0));
+    assert_eq!(watch.group_revision(1), Some(second));
+    watch.shutdown().await.unwrap();
+}

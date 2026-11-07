@@ -1,5 +1,10 @@
 # 控制面与MCS来源覆盖
 
+16-B/E/F有限流补充：Keyspace前端重连/取消/跨压缩增量、Router同一缓存新流，
+TSO三方法HTTP/双向TLS及真实嵌入调用通过；修复TSO错误header、分组mod revision
+及response group hint，记录实际timestamp持久条目。见
+[阶段回执](../server-api/acceptance/task-16.md#keyspace与router流补齐及tso三方法16-bef)。
+
 16-G有效方法增量：SplitRegions实际命令/子区间完成/PD IDs，ScatterRegions
 实际transfer/ACK/SUCCESS，以及四帧RegionBuckets的wire与嵌入宿主同一cache/
 HotStat已获正向证据。失败夹具保留，完整namespace无排除比较，见

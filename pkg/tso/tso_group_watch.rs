@@ -284,6 +284,7 @@ pub struct GroupAllocatorWatch {
     config: GroupWatchConfig,
     allocators: BTreeMap<u32, GroupAllocator>,
     groups: BTreeMap<u32, KeyspaceGroup>,
+    group_revisions: BTreeMap<u32, i64>,
     watch: ReconciledWatch,
     pending: Option<WatchBatch>,
     revision: i64,
@@ -308,6 +309,7 @@ impl GroupAllocatorWatch {
             config,
             allocators: BTreeMap::new(),
             groups: BTreeMap::new(),
+            group_revisions: BTreeMap::new(),
             watch,
             pending: None,
             revision: 0,
@@ -331,6 +333,12 @@ impl GroupAllocatorWatch {
     }
     pub fn group(&self, id: u32) -> Option<&KeyspaceGroup> {
         self.groups.get(&id)
+    }
+    /// Modification revision of this group; the local virtual default has revision zero.
+    pub fn group_revision(&self, id: u32) -> Option<i64> {
+        self.groups
+            .contains_key(&id)
+            .then(|| self.group_revisions.get(&id).copied().unwrap_or(0))
     }
     pub fn revision(&self) -> i64 {
         self.revision
@@ -410,6 +418,7 @@ impl GroupAllocatorWatch {
     }
     async fn apply(&mut self, batch: &WatchBatch) -> Result<(), TsoError> {
         let mut groups = self.groups.clone();
+        let mut group_revisions = self.group_revisions.clone();
         // Decode the whole batch before changing live resources or publishing a cursor.
         for event in &batch.events {
             let id = parse_id(event.key())?;
@@ -424,9 +433,11 @@ impl GroupAllocatorWatch {
                         return Err(StoreError::Backend.into());
                     }
                     groups.insert(id, group);
+                    group_revisions.insert(id, row.mod_revision);
                 }
                 Event::Delete { .. } => {
                     groups.remove(&id);
+                    group_revisions.remove(&id);
                 }
             }
         }
@@ -485,6 +496,7 @@ impl GroupAllocatorWatch {
                 .or_insert_with(|| GroupAllocator::start(&self.config, id, transitioning));
         }
         self.groups = groups;
+        self.group_revisions = group_revisions;
         self.revision = batch.revision;
         Ok(())
     }

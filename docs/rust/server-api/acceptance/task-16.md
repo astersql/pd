@@ -940,3 +940,35 @@ PD 仍可用。这是实际嵌入宿主行为，不是另建 domain 内核或只
 原始命令、失败夹具、protobuf、完整 namespace、共享缓存观察与输入摘要见
 [有效方法回执](task-16-scheduling-methods.json.gz)。该回执关闭本段三个正向方法缺口；
 16-B/D/E/F/H 的明确剩余项仍按有限清单推进，不据此宣称42方法整体完成。
+
+## Keyspace与Router流补齐及TSO三方法（16-B/E/F）
+
+Keyspace消费09既有六方法/HTTP共享manager/持久证据，新增真实Go/Rust前端
+取消旧Watch、状态更新、重连当前快照、存活流后端压缩、后续增量及再次重连。
+保留完整protobuf及metadata bytes/revision；只归一cluster ID与领域时间。
+这是存活流跨压缩证明，不冒充强制后端stale cursor故障；该后端能力由同一
+ReconciledWatch故障回执提供。WatchKeyspaces没有请求游标/CloseSend，也没有
+正常有限EOF；进程退出终止差异由22拥有。Diagnostics仍消费14/15已准入平台，
+不扩展机器、平台或shutdown矩阵。
+
+Router七方法非空缓存既有证据上，新增真实QueryRegion客户端取消与重开：
+新流读取同一缓存的完整相同响应并正常半关闭EOF；原流取消不关闭宿主。
+StoreWatcher更新/删除、共享SyncRegions恢复及宿主退出继续消费原相关回执。
+
+TSO实际独立Go/Rust进程三方法，覆盖三帧count=1/4/2的非重叠递增时间戳、
+FindGroup默认分组/primary、GetMinTS及真正落盘的timestamp条目；组目录未被
+改写。HTTP和双向TLS均运行相同业务，TLS无证书/错误CN/非受信证书的GetMinTS
+实际请求均拒绝。保留原始时间戳，比较时只归一动态cluster、地址与时间数值，
+单独断言分配区间和最小时间戳递增。缺失/错误header也逐一比较原始响应。
+
+实际red发现：Rust unary错误走transport，而Go返回CLUSTER_MISMATCHED业务
+header；Rust虚拟默认分组误返回watch总revision而Go返回0。现在共用校验输出
+准确错误文本/业务header，TSO流终止首个错误；每组revision随同一批原始Put
+记录并原子发布，虚拟默认为0，不被其它group事件或reload推进。
+GetMinTS保留caller给出的response group hint。新增真实后端两组事件/reload/
+删除专项；嵌入TsoServiceHost使用有效Participant protobuf，实际调用三方法并
+保留原双实例/启动失败/关闭流/父runtime隔离断言。11/13分组迁移及时间线持久
+证据继续按原范围消费，不重跑无关全量HTTP或TSO压力。
+
+原始RPC、red/green、准入和确切命令见[本阶段回执](task-16-streams-tso.json.gz)。
+这不等于138/148索引已交付；16-D/H/I继续按有限清单收口。
