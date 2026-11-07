@@ -3,30 +3,40 @@
 
 use std::fmt::Debug;
 use std::io::{self, Cursor};
+use std::marker::PhantomData;
 use std::ops::{Bound, RangeBounds};
 use std::sync::{Arc, Mutex};
 use std::time::Instant;
 
-use openraft::storage::{LogFlushed, RaftLogStorage, RaftStateMachine};
+use openraft::storage::{LogFlushed, RaftLogStorage};
 use openraft::{
-    AnyError, BasicNode, Entry, EntryPayload, ErrorSubject, ErrorVerb, LogId, LogState,
-    RaftLogReader, RaftSnapshotBuilder, Snapshot, SnapshotMeta, StorageError, StorageIOError,
-    StoredMembership, Vote,
+    AnyError, BasicNode, Entry, ErrorSubject, ErrorVerb, LogId, LogState, RaftLogReader,
+    RaftTypeConfig, Snapshot, SnapshotMeta, StorageError, StorageIOError, StoredMembership, Vote,
 };
+#[cfg(test)]
+use openraft::{EntryPayload, RaftSnapshotBuilder, storage::RaftStateMachine};
 use rusqlite::{Connection, OptionalExtension, params};
 use serde::{Deserialize, Serialize, de::DeserializeOwned};
 use sha2::{Digest, Sha256};
 
 use super::candidate::Candidate;
+#[cfg(test)]
 use super::candidate_profile_test::event;
+
+#[cfg(not(test))]
+fn event(_: &str, _: u64, _: Instant) {}
 
 #[path = "candidate_replay.rs"]
 mod replay;
-pub(super) use replay::Replay;
+pub(super) use replay::{ReplayApplication, ReplayMachine};
+#[cfg(test)]
+pub(super) type Replay = ReplayMachine<Type, replay::PairState>;
 
+#[cfg(test)]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub(super) struct PutPair(#[serde(with = "pair_codec")] pub [(Vec<u8>, Vec<u8>); 2]);
 
+#[cfg(test)]
 mod pair_codec {
     use base64::{Engine, engine::general_purpose::STANDARD};
     use serde::{Deserialize, Deserializer, Serialize, Serializer};
@@ -63,14 +73,17 @@ mod pair_codec {
     }
 }
 
+#[cfg(test)]
 openraft::declare_raft_types!(pub(super) Type: D = PutPair, R = u64);
 
 type Local<T> = Result<T, Box<dyn std::error::Error + Send + Sync>>;
 type StoreResult<T> = Result<T, StorageError<u64>>;
 type Membership = StoredMembership<u64, BasicNode>;
 type Meta = SnapshotMeta<u64, BasicNode>;
+#[cfg(test)]
 type Records = Vec<(Vec<u8>, Vec<u8>)>;
 
+#[cfg(test)]
 #[derive(Deserialize, Serialize)]
 struct Image {
     meta: Meta,
@@ -86,7 +99,7 @@ struct SnapshotEnvelope {
 }
 
 impl SnapshotEnvelope {
-    fn from_image(image: &Image) -> Local<Self> {
+    fn from_image<T: Serialize>(image: &T) -> Local<Self> {
         let payload = serde_json::to_vec(image)?;
         Ok(Self {
             version: 1,
@@ -95,7 +108,7 @@ impl SnapshotEnvelope {
         })
     }
 
-    fn image(&self) -> Local<Image> {
+    fn image<T: DeserializeOwned>(&self) -> Local<T> {
         let digest: [u8; 32] = Sha256::digest(&self.payload).into();
         if self.version != 1 || self.sha256 != digest {
             return Err(io::Error::new(
@@ -107,7 +120,7 @@ impl SnapshotEnvelope {
         Ok(serde_json::from_slice(&self.payload)?)
     }
 
-    fn into_snapshot(self, meta: Meta) -> Local<Snapshot<Type>> {
+    fn into_snapshot<C: DiskConfig>(self, meta: Meta) -> Local<Snapshot<C>> {
         let bytes = serde_json::to_vec(&self)?;
         Ok(Snapshot {
             meta,
@@ -116,8 +129,29 @@ impl SnapshotEnvelope {
     }
 }
 
+pub(super) trait DiskConfig:
+    RaftTypeConfig<NodeId = u64, Node = BasicNode, Entry = Entry<Self>, SnapshotData = Cursor<Vec<u8>>>
+{
+}
+impl<C> DiskConfig for C where
+    C: RaftTypeConfig<
+            NodeId = u64,
+            Node = BasicNode,
+            Entry = Entry<C>,
+            SnapshotData = Cursor<Vec<u8>>,
+        >
+{
+}
+
+#[cfg(test)]
+pub(super) type RaftDisk = SqliteRaftLog<Type>;
+
 #[derive(Clone)]
-pub(super) struct RaftDisk(Arc<Mutex<Connection>>, Option<Arc<replay::InstallFence>>);
+pub(super) struct SqliteRaftLog<C>(
+    Arc<Mutex<Candidate>>,
+    Option<Arc<replay::InstallFence>>,
+    PhantomData<C>,
+);
 
 fn failure(verb: ErrorVerb, error: impl std::fmt::Display) -> StorageError<u64> {
     StorageIOError::new(ErrorSubject::Store, verb, AnyError::error(error)).into()
@@ -142,24 +176,28 @@ fn save<T: Serialize>(db: &Connection, key: &str, value: &T) -> Local<()> {
     Ok(())
 }
 
-impl RaftDisk {
+impl<C: DiskConfig> SqliteRaftLog<C> {
     pub(super) fn new(candidate: Candidate) -> Self {
-        Self(Arc::new(Mutex::new(candidate.db)), None)
+        Self(Arc::new(Mutex::new(candidate)), None, PhantomData)
     }
 
     fn read<T>(&self, f: impl FnOnce(&Connection) -> Local<T>) -> StoreResult<T> {
         let db = self.0.lock().map_err(|e| failure(ErrorVerb::Read, e))?;
-        f(&db).map_err(|e| failure(ErrorVerb::Read, e))
+        f(&db.db).map_err(|e| failure(ErrorVerb::Read, e))
     }
 
     fn write<T>(&self, f: impl FnOnce(&Connection) -> Local<T>) -> StoreResult<T> {
         let mut db = self.0.lock().map_err(|e| failure(ErrorVerb::Write, e))?;
-        let tx = db.transaction().map_err(|e| failure(ErrorVerb::Write, e))?;
+        let tx = db
+            .db
+            .transaction()
+            .map_err(|e| failure(ErrorVerb::Write, e))?;
         let result = f(&tx).map_err(|e| failure(ErrorVerb::Write, e))?;
         tx.commit().map_err(|e| failure(ErrorVerb::Write, e))?;
         Ok(result)
     }
 
+    #[cfg(test)]
     pub(super) fn value(&self, key: &[u8]) -> StoreResult<Option<Vec<u8>>> {
         self.read(|db| {
             Ok(db
@@ -171,11 +209,11 @@ impl RaftDisk {
     }
 }
 
-impl RaftLogReader<Type> for RaftDisk {
+impl<C: DiskConfig> RaftLogReader<C> for SqliteRaftLog<C> {
     async fn try_get_log_entries<R: RangeBounds<u64> + Clone + Debug + Send>(
         &mut self,
         range: R,
-    ) -> StoreResult<Vec<Entry<Type>>> {
+    ) -> StoreResult<Vec<Entry<C>>> {
         let lower = match range.start_bound() {
             Bound::Included(&n) => n,
             Bound::Excluded(&n) => n.saturating_add(1),
@@ -204,10 +242,10 @@ impl RaftLogReader<Type> for RaftDisk {
     }
 }
 
-impl RaftLogStorage<Type> for RaftDisk {
+impl<C: DiskConfig> RaftLogStorage<C> for SqliteRaftLog<C> {
     type LogReader = Self;
 
-    async fn get_log_state(&mut self) -> StoreResult<LogState<Type>> {
+    async fn get_log_state(&mut self) -> StoreResult<LogState<C>> {
         self.read(|db| {
             let last_purged_log_id = load(db, "purged")?;
             let payload: Option<Vec<u8>> = db
@@ -218,7 +256,7 @@ impl RaftLogStorage<Type> for RaftDisk {
                 )
                 .optional()?;
             let last_log_id = match payload {
-                Some(data) => Some(serde_json::from_slice::<Entry<Type>>(&data)?.log_id),
+                Some(data) => Some(serde_json::from_slice::<Entry<C>>(&data)?.log_id),
                 None => last_purged_log_id,
             };
             Ok(LogState {
@@ -243,9 +281,9 @@ impl RaftLogStorage<Type> for RaftDisk {
     // OpenRaft recovers the commit watermark from durable applied state.
     // apply() commits its data and applied index together before acknowledging.
 
-    async fn append<I>(&mut self, entries: I, callback: LogFlushed<Type>) -> StoreResult<()>
+    async fn append<I>(&mut self, entries: I, callback: LogFlushed<C>) -> StoreResult<()>
     where
-        I: IntoIterator<Item = Entry<Type>> + Send,
+        I: IntoIterator<Item = Entry<C>> + Send,
         I::IntoIter: Send,
     {
         let started = Instant::now();
@@ -297,6 +335,7 @@ impl RaftLogStorage<Type> for RaftDisk {
     }
 }
 
+#[cfg(test)]
 impl RaftStateMachine<Type> for RaftDisk {
     type SnapshotBuilder = Self;
 
@@ -365,7 +404,7 @@ impl RaftStateMachine<Type> for RaftDisk {
     ) -> StoreResult<()> {
         let envelope: SnapshotEnvelope =
             serde_json::from_slice(snapshot.get_ref()).map_err(|e| failure(ErrorVerb::Read, e))?;
-        let image = envelope.image().map_err(|e| failure(ErrorVerb::Read, e))?;
+        let image: Image = envelope.image().map_err(|e| failure(ErrorVerb::Read, e))?;
         if &image.meta != meta {
             return Err(failure(ErrorVerb::Read, "snapshot metadata mismatch"));
         }
@@ -390,12 +429,13 @@ impl RaftStateMachine<Type> for RaftDisk {
             let Some(envelope) = load::<SnapshotEnvelope>(db, "snapshot")? else {
                 return Ok(None);
             };
-            let meta = envelope.image()?.meta;
+            let meta = envelope.image::<Image>()?.meta;
             envelope.into_snapshot(meta).map(Some)
         })
     }
 }
 
+#[cfg(test)]
 impl RaftSnapshotBuilder<Type> for RaftDisk {
     async fn build_snapshot(&mut self) -> StoreResult<Snapshot<Type>> {
         self.write(|db| {

@@ -1588,6 +1588,7 @@ dependencies = [
  "axum",
  "base64",
  "etcd-client",
+ "fs2",
  "getrandom 0.4.3",
  "http-body-util",
  "hyper",

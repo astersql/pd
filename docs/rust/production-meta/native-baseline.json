@@ -1,0 +1,46 @@
+{
+  "voters": 3,
+  "transactions": 128,
+  "bytes_per_value": 256,
+  "etcd_sha256": "ec97cf20f1dc01a4d4b3727784b876a2b5a24afbd05409ea5142ea6dcba55a13",
+  "samples": [
+    {
+      "write_p99_ms": 18.673,
+      "read_pair_p99_ms": 0.635,
+      "write_txn_per_second": 80.376,
+      "reopen_ms": 59.503,
+      "recovered_pairs": 128
+    },
+    {
+      "write_p99_ms": 18.481,
+      "read_pair_p99_ms": 0.642,
+      "write_txn_per_second": 77.618,
+      "reopen_ms": 61.302,
+      "recovered_pairs": 128
+    },
+    {
+      "write_p99_ms": 16.245,
+      "read_pair_p99_ms": 0.62,
+      "write_txn_per_second": 80.317,
+      "reopen_ms": 62.014,
+      "recovered_pairs": 128
+    }
+  ],
+  "candidate_sha256": "db10e88a94fc77e88f4525a9241a2baf34af6bfaf419e9470af77da0d497bbb6",
+  "candidate_mode": "native",
+  "diagnostic": false,
+  "frozen_thresholds": {
+    "write_p99_ms": 37.879,
+    "read_pair_p99_ms": 16.618,
+    "write_txn_per_second": 73.58,
+    "reopen_ms": 418.032,
+    "recovered_pairs": 128
+  },
+  "meets_thresholds": {
+    "write_p99_ms": true,
+    "read_pair_p99_ms": true,
+    "write_txn_per_second": true,
+    "reopen_ms": true,
+    "recovered_pairs": true
+  }
+}

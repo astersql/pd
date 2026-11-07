@@ -161,6 +161,21 @@ class CandidateCluster(Cluster):
         return sorted(events, key=lambda e: e["end_us"])
 
 
+class NativeCluster(Cluster):
+    def spawn(self, i, client, _peer, log):
+        directory = self.root / f"node-{i + 1}"
+        env = dict(os.environ, PD_NATIVE_ID=str(i + 1), PD_NATIVE_CLUSTER="72",
+                   PD_NATIVE_DIR=str(directory), PD_NATIVE_CLIENT=f"127.0.0.1:{client}",
+                   PD_NATIVE_PEERS=",".join(f"127.0.0.1:{port}" for port in self.peer))
+        env.pop("PD_NATIVE_INITIALIZE", None)
+        if not directory.exists():
+            env["PD_NATIVE_INITIALIZE"] = "1"
+        return subprocess.Popen([
+            str(self.binary), "--ignored", "--exact", "native_process_test::native_node_child",
+            "--nocapture",
+        ], env=env, stdout=log, stderr=log)
+
+
 def verify(conn, index):
     for key in keys(index):
         entries = request(conn, "kv/range", {"key": key})["kvs"]
@@ -211,7 +226,9 @@ def run(binary, root, cluster_type=Cluster):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("etcd", type=Path, help="verified etcd 3.5.15 binary")
-    parser.add_argument("--candidate", type=Path, help="release storage-kv unit test binary")
+    variants = parser.add_mutually_exclusive_group()
+    variants.add_argument("--candidate", type=Path, help="release storage-kv unit test binary")
+    variants.add_argument("--native", type=Path, help="release storage-kv native fixture")
     parser.add_argument("--profile-output", type=Path, help="store candidate trace as gzip JSON")
     parser.add_argument("--wal-pages", type=int, help="override auto-checkpoint only for a candidate diagnostic run")
     parser.add_argument("--replay", action="store_true", help="derive candidate state from the durable quorum log")
@@ -219,12 +236,12 @@ def main():
     binary = args.etcd.resolve(strict=True)
     if hashlib.sha256(binary.read_bytes()).hexdigest() != ETCD_SHA:
         raise RuntimeError("etcd binary does not match the pinned oracle")
-    if args.candidate:
-        binary = args.candidate.resolve(strict=True)
+    if args.candidate or args.native:
+        binary = (args.candidate or args.native).resolve(strict=True)
     if not args.candidate and (args.profile_output or args.wal_pages is not None or args.replay):
         parser.error("candidate diagnostics require --candidate")
     cluster_type = functools.partial(CandidateCluster, profile=bool(args.profile_output),
-                                     wal_pages=args.wal_pages, replay=args.replay) if args.candidate else Cluster
+                                     wal_pages=args.wal_pages, replay=args.replay) if args.candidate else NativeCluster if args.native else Cluster
     with tempfile.TemporaryDirectory(prefix="pd-meta-etcd-baseline-") as work:
         root = Path(work)
         samples = [run(binary, root / f"run{i}", cluster_type) for i in range(RUNS)]
@@ -233,7 +250,7 @@ def main():
         args.profile_output.write_bytes(gzip.compress(json.dumps(traces).encode(), mtime=0))
     report = {"voters": 3, "transactions": TRANSACTIONS, "bytes_per_value": PAYLOAD,
               "etcd_sha256": ETCD_SHA, "samples": samples}
-    if args.candidate:
+    if args.candidate or args.native:
         baseline = json.loads(Path(__file__).with_name("etcd-baseline.json").read_text())
         assert all(baseline[key] == report[key] for key in (
             "voters", "transactions", "bytes_per_value", "etcd_sha256"))
@@ -242,7 +259,7 @@ def main():
         thresholds = {key: extremum(s[key] for s in baseline["samples"])
                       for key, extremum in metrics.items()}
         report["candidate_sha256"] = hashlib.sha256(binary.read_bytes()).hexdigest()
-        report["candidate_mode"] = "replay" if args.replay else "materialized"
+        report["candidate_mode"] = "native" if args.native else "replay" if args.replay else "materialized"
         report["diagnostic"] = bool(args.profile_output) or args.wal_pages is not None
         report["frozen_thresholds"] = thresholds
         report["meets_thresholds"] = {

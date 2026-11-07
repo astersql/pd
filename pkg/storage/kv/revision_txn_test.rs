@@ -9,7 +9,7 @@ async fn snapshot(store: &dyn MetaStore) -> Snapshot {
         .unwrap()
 }
 
-async fn revision_txn_contract(store: &dyn MetaStore) {
+pub(super) async fn revision_txn_contract(store: &dyn MetaStore) {
     let base = Base::new(store);
     // Both reads return identical bytes; only revision protection rejects a rewrite.
     // Channels form deterministic barriers, without sleeps or simulated transactions.

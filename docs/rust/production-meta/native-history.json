@@ -1,0 +1,925 @@
+{
+  "run_id": "history-731091-v3",
+  "started_unix": 1794039983.744873,
+  "seed": 731091,
+  "window_hours": null,
+  "window_cycles": 32,
+  "binary_sha256": "db10e88a94fc77e88f4525a9241a2baf34af6bfaf419e9470af77da0d497bbb6",
+  "sha256": {
+    "checkpoints.jsonl": "b5442b2a2f38c93ab643336ddbee8321dc1bf86bd97a0884bb21105d09dda616",
+    "histories.jsonl": "0c31c68a6db97a663e4be364d8c3c45df1903a20b0c440ca6c7003aed69793fd"
+  },
+  "overlap_at_fault": {
+    "partition": 64,
+    "sigkill": 64
+  },
+  "ended_unix": 1794040041.920925,
+  "elapsed_seconds": 58.176031542000004,
+  "cycles": 32,
+  "all_processes_reaped": true,
+  "checkpoints": [
+    {
+      "confirmed": 16,
+      "unknown": 8,
+      "committed": 16,
+      "reads": 24,
+      "tail": "1:23",
+      "cycle": 1,
+      "fault": "partition",
+      "victim": 2,
+      "in_flight_at_fault": 4,
+      "revision": 17,
+      "elapsed_seconds": 0.2799285,
+      "wall_elapsed_seconds": 0.27992892265319824,
+      "resources": {
+        "1": {
+          "bytes": 164616,
+          "rss_kib": 14816
+        },
+        "2": {
+          "bytes": 86336,
+          "rss_kib": 13488
+        },
+        "3": {
+          "bytes": 131656,
+          "rss_kib": 13488
+        }
+      }
+    },
+    {
+      "confirmed": 1,
+      "unknown": 23,
+      "committed": 4,
+      "reads": 3,
+      "tail": "2:5",
+      "cycle": 2,
+      "fault": "sigkill",
+      "victim": 1,
+      "in_flight_at_fault": 4,
+      "revision": 21,
+      "elapsed_seconds": 0.838305834,
+      "wall_elapsed_seconds": 0.8383059501647949,
+      "resources": {
+        "2": {
+          "bytes": 131656,
+          "rss_kib": 14176
+        },
+        "3": {
+          "bytes": 168736,
+          "rss_kib": 14576
+        },
+        "1": {
+          "bytes": 197576,
+          "rss_kib": 12864
+        }
+      }
+    },
+    {
+      "confirmed": 6,
+      "unknown": 18,
+      "committed": 6,
+      "reads": 23,
+      "tail": "3:22",
+      "cycle": 3,
+      "fault": "partition",
+      "victim": 3,
+      "in_flight_at_fault": 4,
+      "revision": 27,
+      "elapsed_seconds": 6.909043459,
+      "wall_elapsed_seconds": 6.909045934677124,
+      "resources": {
+        "2": {
+          "bytes": 185216,
+          "rss_kib": 15104
+        },
+        "3": {
+          "bytes": 222296,
+          "rss_kib": 14896
+        },
+        "1": {
+          "bytes": 255256,
+          "rss_kib": 14416
+        }
+      }
+    },
+    {
+      "confirmed": 0,
+      "unknown": 24,
+      "committed": 0,
+      "reads": 0,
+      "tail": "3:22",
+      "cycle": 4,
+      "fault": "sigkill",
+      "victim": 2,
+      "in_flight_at_fault": 4,
+      "revision": 27,
+      "elapsed_seconds": 8.361707125,
+      "wall_elapsed_seconds": 8.36171007156372,
+      "resources": {
+        "3": {
+          "bytes": 292336,
+          "rss_kib": 15024
+        },
+        "1": {
+          "bytes": 308816,
+          "rss_kib": 14816
+        },
+        "2": {
+          "bytes": 201696,
+          "rss_kib": 12864
+        }
+      }
+    },
+    {
+      "confirmed": 20,
+      "unknown": 4,
+      "committed": 20,
+      "reads": 24,
+      "tail": "5:23",
+      "cycle": 5,
+      "fault": "partition",
+      "victim": 2,
+      "in_flight_at_fault": 4,
+      "revision": 47,
+      "elapsed_seconds": 8.533380334,
+      "wall_elapsed_seconds": 8.533383846282959,
+      "resources": {
+        "3": {
+          "bytes": 366496,
+          "rss_kib": 15088
+        },
+        "1": {
+          "bytes": 407696,
+          "rss_kib": 15184
+        },
+        "2": {
+          "bytes": 201696,
+          "rss_kib": 13920
+        }
+      }
+    },
+    {
+      "confirmed": 1,
+      "unknown": 23,
+      "committed": 3,
+      "reads": 3,
+      "tail": "6:5",
+      "cycle": 6,
+      "fault": "sigkill",
+      "victim": 1,
+      "in_flight_at_fault": 4,
+      "revision": 50,
+      "elapsed_seconds": 9.571799125,
+      "wall_elapsed_seconds": 9.57180404663086,
+      "resources": {
+        "3": {
+          "bytes": 407696,
+          "rss_kib": 15200
+        },
+        "2": {
+          "bytes": 267616,
+          "rss_kib": 14448
+        },
+        "1": {
+          "bytes": 440656,
+          "rss_kib": 12928
+        }
+      }
+    },
+    {
+      "confirmed": 17,
+      "unknown": 7,
+      "committed": 17,
+      "reads": 24,
+      "tail": "7:21",
+      "cycle": 7,
+      "fault": "partition",
+      "victim": 2,
+      "in_flight_at_fault": 4,
+      "revision": 67,
+      "elapsed_seconds": 10.148150584,
+      "wall_elapsed_seconds": 10.148154973983765,
+      "resources": {
+        "3": {
+          "bytes": 494216,
+          "rss_kib": 15440
+        },
+        "2": {
+          "bytes": 275856,
+          "rss_kib": 14496
+        },
+        "1": {
+          "bytes": 510696,
+          "rss_kib": 14320
+        }
+      }
+    },
+    {
+      "confirmed": 4,
+      "unknown": 20,
+      "committed": 4,
+      "reads": 5,
+      "tail": "8:4",
+      "cycle": 8,
+      "fault": "sigkill",
+      "victim": 3,
+      "in_flight_at_fault": 4,
+      "revision": 71,
+      "elapsed_seconds": 10.703650542,
+      "wall_elapsed_seconds": 10.70365595817566,
+      "resources": {
+        "2": {
+          "bytes": 317056,
+          "rss_kib": 14656
+        },
+        "1": {
+          "bytes": 556016,
+          "rss_kib": 15008
+        },
+        "3": {
+          "bytes": 523056,
+          "rss_kib": 12960
+        }
+      }
+    },
+    {
+      "confirmed": 13,
+      "unknown": 11,
+      "committed": 13,
+      "reads": 23,
+      "tail": "9:24",
+      "cycle": 9,
+      "fault": "partition",
+      "victim": 1,
+      "in_flight_at_fault": 4,
+      "revision": 84,
+      "elapsed_seconds": 14.811965709,
+      "wall_elapsed_seconds": 14.811970949172974,
+      "resources": {
+        "2": {
+          "bytes": 415936,
+          "rss_kib": 15168
+        },
+        "1": {
+          "bytes": 609576,
+          "rss_kib": 15232
+        },
+        "3": {
+          "bytes": 621936,
+          "rss_kib": 14656
+        }
+      }
+    },
+    {
+      "confirmed": 4,
+      "unknown": 20,
+      "committed": 4,
+      "reads": 6,
+      "tail": "10:8",
+      "cycle": 10,
+      "fault": "sigkill",
+      "victim": 2,
+      "in_flight_at_fault": 4,
+      "revision": 88,
+      "elapsed_seconds": 15.776179042,
+      "wall_elapsed_seconds": 15.776185989379883,
+      "resources": {
+        "1": {
+          "bytes": 675496,
+          "rss_kib": 15312
+        },
+        "3": {
+          "bytes": 650776,
+          "rss_kib": 14976
+        },
+        "2": {
+          "bytes": 453016,
+          "rss_kib": 13040
+        }
+      }
+    },
+    {
+      "confirmed": 18,
+      "unknown": 6,
+      "committed": 18,
+      "reads": 24,
+      "tail": "11:23",
+      "cycle": 11,
+      "fault": "partition",
+      "victim": 2,
+      "in_flight_at_fault": 4,
+      "revision": 106,
+      "elapsed_seconds": 15.937489542,
+      "wall_elapsed_seconds": 15.937495946884155,
+      "resources": {
+        "1": {
+          "bytes": 741416,
+          "rss_kib": 15328
+        },
+        "3": {
+          "bytes": 749656,
+          "rss_kib": 15312
+        },
+        "2": {
+          "bytes": 453016,
+          "rss_kib": 14096
+        }
+      }
+    },
+    {
+      "confirmed": 0,
+      "unknown": 24,
+      "committed": 1,
+      "reads": 2,
+      "tail": "12:1",
+      "cycle": 12,
+      "fault": "sigkill",
+      "victim": 3,
+      "in_flight_at_fault": 4,
+      "revision": 107,
+      "elapsed_seconds": 17.422404542,
+      "wall_elapsed_seconds": 17.422411918640137,
+      "resources": {
+        "1": {
+          "bytes": 799096,
+          "rss_kib": 15440
+        },
+        "2": {
+          "bytes": 523056,
+          "rss_kib": 14784
+        },
+        "3": {
+          "bytes": 770256,
+          "rss_kib": 13008
+        }
+      }
+    },
+    {
+      "confirmed": 16,
+      "unknown": 8,
+      "committed": 16,
+      "reads": 23,
+      "tail": "13:23",
+      "cycle": 13,
+      "fault": "partition",
+      "victim": 1,
+      "in_flight_at_fault": 4,
+      "revision": 123,
+      "elapsed_seconds": 21.507307083999997,
+      "wall_elapsed_seconds": 21.507314920425415,
+      "resources": {
+        "1": {
+          "bytes": 844416,
+          "rss_kib": 15632
+        },
+        "2": {
+          "bytes": 642536,
+          "rss_kib": 15408
+        },
+        "3": {
+          "bytes": 885616,
+          "rss_kib": 14608
+        }
+      }
+    },
+    {
+      "confirmed": 0,
+      "unknown": 24,
+      "committed": 0,
+      "reads": 0,
+      "tail": "13:23",
+      "cycle": 14,
+      "fault": "sigkill",
+      "victim": 2,
+      "in_flight_at_fault": 4,
+      "revision": 123,
+      "elapsed_seconds": 22.513971834,
+      "wall_elapsed_seconds": 22.513980865478516,
+      "resources": {
+        "1": {
+          "bytes": 910336,
+          "rss_kib": 15648
+        },
+        "3": {
+          "bytes": 906216,
+          "rss_kib": 14944
+        },
+        "2": {
+          "bytes": 671376,
+          "rss_kib": 13152
+        }
+      }
+    },
+    {
+      "confirmed": 14,
+      "unknown": 10,
+      "committed": 14,
+      "reads": 24,
+      "tail": "15:19",
+      "cycle": 15,
+      "fault": "partition",
+      "victim": 1,
+      "in_flight_at_fault": 4,
+      "revision": 137,
+      "elapsed_seconds": 23.057280042,
+      "wall_elapsed_seconds": 23.057288885116577,
+      "resources": {
+        "1": {
+          "bytes": 930936,
+          "rss_kib": 15664
+        },
+        "3": {
+          "bytes": 980376,
+          "rss_kib": 15344
+        },
+        "2": {
+          "bytes": 733176,
+          "rss_kib": 14496
+        }
+      }
+    },
+    {
+      "confirmed": 0,
+      "unknown": 24,
+      "committed": 0,
+      "reads": 0,
+      "tail": "15:19",
+      "cycle": 16,
+      "fault": "sigkill",
+      "victim": 3,
+      "in_flight_at_fault": 4,
+      "revision": 137,
+      "elapsed_seconds": 23.597317874999998,
+      "wall_elapsed_seconds": 23.597327947616577,
+      "resources": {
+        "1": {
+          "bytes": 972136,
+          "rss_kib": 15728
+        },
+        "2": {
+          "bytes": 757896,
+          "rss_kib": 15264
+        },
+        "3": {
+          "bytes": 996856,
+          "rss_kib": 13120
+        }
+      }
+    },
+    {
+      "confirmed": 15,
+      "unknown": 9,
+      "committed": 15,
+      "reads": 23,
+      "tail": "17:21",
+      "cycle": 17,
+      "fault": "partition",
+      "victim": 2,
+      "in_flight_at_fault": 4,
+      "revision": 152,
+      "elapsed_seconds": 27.717685499999998,
+      "wall_elapsed_seconds": 27.717695951461792,
+      "resources": {
+        "1": {
+          "bytes": 1103976,
+          "rss_kib": 14784
+        },
+        "2": {
+          "bytes": 811456,
+          "rss_kib": 15568
+        },
+        "3": {
+          "bytes": 1108096,
+          "rss_kib": 14768
+        }
+      }
+    },
+    {
+      "confirmed": 0,
+      "unknown": 24,
+      "committed": 1,
+      "reads": 1,
+      "tail": "18:1",
+      "cycle": 18,
+      "fault": "sigkill",
+      "victim": 1,
+      "in_flight_at_fault": 4,
+      "revision": 153,
+      "elapsed_seconds": 28.717885084,
+      "wall_elapsed_seconds": 28.71789574623108,
+      "resources": {
+        "2": {
+          "bytes": 877376,
+          "rss_kib": 15664
+        },
+        "3": {
+          "bytes": 1132816,
+          "rss_kib": 15104
+        },
+        "1": {
+          "bytes": 1128696,
+          "rss_kib": 13296
+        }
+      }
+    },
+    {
+      "confirmed": 16,
+      "unknown": 8,
+      "committed": 16,
+      "reads": 23,
+      "tail": "19:23",
+      "cycle": 19,
+      "fault": "partition",
+      "victim": 3,
+      "in_flight_at_fault": 4,
+      "revision": 169,
+      "elapsed_seconds": 32.842143167,
+      "wall_elapsed_seconds": 32.84215593338013,
+      "resources": {
+        "2": {
+          "bytes": 972136,
+          "rss_kib": 15968
+        },
+        "3": {
+          "bytes": 1198736,
+          "rss_kib": 15664
+        },
+        "1": {
+          "bytes": 1223456,
+          "rss_kib": 14944
+        }
+      }
+    },
+    {
+      "confirmed": 1,
+      "unknown": 23,
+      "committed": 4,
+      "reads": 2,
+      "tail": "20:6",
+      "cycle": 20,
+      "fault": "sigkill",
+      "victim": 2,
+      "in_flight_at_fault": 4,
+      "revision": 173,
+      "elapsed_seconds": 34.429885125000006,
+      "wall_elapsed_seconds": 34.42989778518677,
+      "resources": {
+        "3": {
+          "bytes": 1272896,
+          "rss_kib": 15760
+        },
+        "1": {
+          "bytes": 1297616,
+          "rss_kib": 15408
+        },
+        "2": {
+          "bytes": 996856,
+          "rss_kib": 13200
+        }
+      }
+    },
+    {
+      "confirmed": 10,
+      "unknown": 14,
+      "committed": 10,
+      "reads": 20,
+      "tail": "21:24",
+      "cycle": 21,
+      "fault": "partition",
+      "victim": 1,
+      "in_flight_at_fault": 4,
+      "revision": 183,
+      "elapsed_seconds": 37.463731167,
+      "wall_elapsed_seconds": 37.46374702453613,
+      "resources": {
+        "3": {
+          "bytes": 1532456,
+          "rss_kib": 16752
+        },
+        "1": {
+          "bytes": 1392376,
+          "rss_kib": 16080
+        },
+        "2": {
+          "bytes": 1248176,
+          "rss_kib": 15792
+        }
+      }
+    },
+    {
+      "confirmed": 0,
+      "unknown": 24,
+      "committed": 1,
+      "reads": 3,
+      "tail": "22:3",
+      "cycle": 22,
+      "fault": "sigkill",
+      "victim": 3,
+      "in_flight_at_fault": 4,
+      "revision": 184,
+      "elapsed_seconds": 38.025546459000005,
+      "wall_elapsed_seconds": 38.025562047958374,
+      "resources": {
+        "1": {
+          "bytes": 1614856,
+          "rss_kib": 16992
+        },
+        "2": {
+          "bytes": 1281136,
+          "rss_kib": 15872
+        },
+        "3": {
+          "bytes": 1548936,
+          "rss_kib": 14720
+        }
+      }
+    },
+    {
+      "confirmed": 17,
+      "unknown": 7,
+      "committed": 17,
+      "reads": 24,
+      "tail": "23:20",
+      "cycle": 23,
+      "fault": "partition",
+      "victim": 3,
+      "in_flight_at_fault": 4,
+      "revision": 201,
+      "elapsed_seconds": 38.178713834,
+      "wall_elapsed_seconds": 38.17873001098633,
+      "resources": {
+        "1": {
+          "bytes": 1701376,
+          "rss_kib": 17104
+        },
+        "2": {
+          "bytes": 1347056,
+          "rss_kib": 15920
+        },
+        "3": {
+          "bytes": 1557176,
+          "rss_kib": 15696
+        }
+      }
+    },
+    {
+      "confirmed": 4,
+      "unknown": 20,
+      "committed": 5,
+      "reads": 7,
+      "tail": "24:9",
+      "cycle": 24,
+      "fault": "sigkill",
+      "victim": 1,
+      "in_flight_at_fault": 4,
+      "revision": 206,
+      "elapsed_seconds": 39.38746175,
+      "wall_elapsed_seconds": 39.38748097419739,
+      "resources": {
+        "2": {
+          "bytes": 1400616,
+          "rss_kib": 16320
+        },
+        "3": {
+          "bytes": 1627216,
+          "rss_kib": 16368
+        },
+        "1": {
+          "bytes": 1742576,
+          "rss_kib": 14832
+        }
+      }
+    },
+    {
+      "confirmed": 15,
+      "unknown": 9,
+      "committed": 15,
+      "reads": 22,
+      "tail": "25:24",
+      "cycle": 25,
+      "fault": "partition",
+      "victim": 2,
+      "in_flight_at_fault": 4,
+      "revision": 221,
+      "elapsed_seconds": 43.532289750000004,
+      "wall_elapsed_seconds": 43.532307863235474,
+      "resources": {
+        "2": {
+          "bytes": 1478896,
+          "rss_kib": 16592
+        },
+        "3": {
+          "bytes": 1717856,
+          "rss_kib": 16976
+        },
+        "1": {
+          "bytes": 1845576,
+          "rss_kib": 16112
+        }
+      }
+    },
+    {
+      "confirmed": 1,
+      "unknown": 23,
+      "committed": 4,
+      "reads": 3,
+      "tail": "26:12",
+      "cycle": 26,
+      "fault": "sigkill",
+      "victim": 3,
+      "in_flight_at_fault": 4,
+      "revision": 225,
+      "elapsed_seconds": 45.020716334,
+      "wall_elapsed_seconds": 45.02073383331299,
+      "resources": {
+        "2": {
+          "bytes": 1553056,
+          "rss_kib": 16656
+        },
+        "1": {
+          "bytes": 1907376,
+          "rss_kib": 16544
+        },
+        "3": {
+          "bytes": 1734336,
+          "rss_kib": 14480
+        }
+      }
+    },
+    {
+      "confirmed": 9,
+      "unknown": 15,
+      "committed": 9,
+      "reads": 17,
+      "tail": "27:22",
+      "cycle": 27,
+      "fault": "partition",
+      "victim": 1,
+      "in_flight_at_fault": 4,
+      "revision": 234,
+      "elapsed_seconds": 51.123879417000005,
+      "wall_elapsed_seconds": 51.12390089035034,
+      "resources": {
+        "2": {
+          "bytes": 1627216,
+          "rss_kib": 16784
+        },
+        "1": {
+          "bytes": 1985656,
+          "rss_kib": 16880
+        },
+        "3": {
+          "bytes": 1804376,
+          "rss_kib": 15824
+        }
+      }
+    },
+    {
+      "confirmed": 4,
+      "unknown": 20,
+      "committed": 5,
+      "reads": 4,
+      "tail": "28:5",
+      "cycle": 28,
+      "fault": "sigkill",
+      "victim": 2,
+      "in_flight_at_fault": 4,
+      "revision": 239,
+      "elapsed_seconds": 52.175312917,
+      "wall_elapsed_seconds": 52.175333976745605,
+      "resources": {
+        "1": {
+          "bytes": 2047456,
+          "rss_kib": 16944
+        },
+        "3": {
+          "bytes": 1845576,
+          "rss_kib": 16304
+        },
+        "2": {
+          "bytes": 1664296,
+          "rss_kib": 14608
+        }
+      }
+    },
+    {
+      "confirmed": 14,
+      "unknown": 10,
+      "committed": 14,
+      "reads": 21,
+      "tail": "29:24",
+      "cycle": 29,
+      "fault": "partition",
+      "victim": 3,
+      "in_flight_at_fault": 4,
+      "revision": 253,
+      "elapsed_seconds": 55.670954625,
+      "wall_elapsed_seconds": 55.67097592353821,
+      "resources": {
+        "1": {
+          "bytes": 2171056,
+          "rss_kib": 17248
+        },
+        "3": {
+          "bytes": 1907376,
+          "rss_kib": 16816
+        },
+        "2": {
+          "bytes": 1734336,
+          "rss_kib": 16032
+        }
+      }
+    },
+    {
+      "confirmed": 4,
+      "unknown": 20,
+      "committed": 4,
+      "reads": 5,
+      "tail": "30:8",
+      "cycle": 30,
+      "fault": "sigkill",
+      "victim": 1,
+      "in_flight_at_fault": 4,
+      "revision": 257,
+      "elapsed_seconds": 56.27109575,
+      "wall_elapsed_seconds": 56.27111792564392,
+      "resources": {
+        "3": {
+          "bytes": 1969176,
+          "rss_kib": 16928
+        },
+        "2": {
+          "bytes": 1771416,
+          "rss_kib": 16320
+        },
+        "1": {
+          "bytes": 2208136,
+          "rss_kib": 14704
+        }
+      }
+    },
+    {
+      "confirmed": 20,
+      "unknown": 4,
+      "committed": 20,
+      "reads": 24,
+      "tail": "31:22",
+      "cycle": 31,
+      "fault": "partition",
+      "victim": 2,
+      "in_flight_at_fault": 4,
+      "revision": 277,
+      "elapsed_seconds": 57.101207459,
+      "wall_elapsed_seconds": 57.101232051849365,
+      "resources": {
+        "3": {
+          "bytes": 2105136,
+          "rss_kib": 17136
+        },
+        "2": {
+          "bytes": 1792016,
+          "rss_kib": 16528
+        },
+        "1": {
+          "bytes": 2311136,
+          "rss_kib": 16192
+        }
+      }
+    },
+    {
+      "confirmed": 1,
+      "unknown": 23,
+      "committed": 3,
+      "reads": 3,
+      "tail": "32:4",
+      "cycle": 32,
+      "fault": "sigkill",
+      "victim": 3,
+      "in_flight_at_fault": 4,
+      "revision": 280,
+      "elapsed_seconds": 58.109829209000004,
+      "wall_elapsed_seconds": 58.10985207557678,
+      "resources": {
+        "2": {
+          "bytes": 1833216,
+          "rss_kib": 16560
+        },
+        "1": {
+          "bytes": 2344096,
+          "rss_kib": 16640
+        },
+        "3": {
+          "bytes": 2142216,
+          "rss_kib": 14704
+        }
+      }
+    }
+  ],
+  "summary": {
+    "confirmed": 261,
+    "unknown": 507,
+    "committed": 279,
+    "reads": 410,
+    "resolved_unknown_commits": 18
+  }
+}

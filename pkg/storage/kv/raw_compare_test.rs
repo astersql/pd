@@ -17,7 +17,7 @@ async fn snapshot(store: &dyn MetaStore) -> Snapshot {
         .unwrap()
 }
 
-async fn raw_compare_contract(store: &dyn MetaStore) {
+pub(super) async fn raw_compare_contract(store: &dyn MetaStore) {
     use RawTxnCmpType::*;
     let base = Base::new(store);
     // Missing, present-empty, ASCII and non-UTF8 byte values use the same matrix.

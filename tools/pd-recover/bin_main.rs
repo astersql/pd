@@ -8,6 +8,20 @@ use astersql_pd_recover::{Action, USAGE, parse, recover_new_with_timestamp, reco
 async fn main() -> ExitCode {
     let options = match parse(std::env::args().skip(1)) {
         Ok(Action::Recover(options)) => options,
+        Ok(Action::NativeRestore {
+            archive,
+            directory,
+            cluster,
+            node,
+        }) => {
+            let result = async {
+                let bytes = std::fs::read(archive)?;
+                astersql_pd_storage_kv::restore_native_backup(&bytes, &directory, cluster, node)
+                    .await
+            }
+            .await;
+            return report(result);
+        }
         Ok(Action::Help) => {
             println!("{USAGE}");
             return ExitCode::SUCCESS;
@@ -36,6 +50,10 @@ async fn main() -> ExitCode {
         }
     }
     .await;
+    report(result)
+}
+
+fn report(result: Result<(), Box<dyn std::error::Error + Send + Sync>>) -> ExitCode {
     match result {
         Ok(()) => {
             println!("recover success! please restart the PD cluster");

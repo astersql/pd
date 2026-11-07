@@ -19,7 +19,7 @@ fn delete(key: &[u8]) -> Mutation {
     Mutation::Delete { key: key.to_vec() }
 }
 
-async fn raw_branches_contract(store: &dyn MetaStore) {
+pub(super) async fn raw_branches_contract(store: &dyn MetaStore) {
     let base = Base::new(store);
     for succeeds in [true, false] {
         base.save(b"gate", b"open").await.unwrap();

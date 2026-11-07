@@ -20,7 +20,7 @@ fn item(pairs: &[(&[u8], &[u8])]) -> RawTxnResponseItem {
             .collect(),
     }
 }
-async fn raw_range_contract(store: &dyn MetaStore) {
+pub(super) async fn raw_range_contract(store: &dyn MetaStore) {
     let base = Base::new(store);
     let pairs: &[(&[u8], &[u8])] = &[
         (b"a", b"old"),

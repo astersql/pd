@@ -6,6 +6,7 @@ use std::io;
 use std::net::SocketAddr;
 use std::path::Path;
 use std::sync::Arc;
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::Instant;
 
 use axum::body::Bytes;
@@ -37,21 +38,25 @@ use super::candidate_profile_test::{event, install};
 use super::candidate_raft::{PutPair, RaftDisk, Replay, Type};
 
 type PeerClient = Client<HttpConnector, Full<Bytes>>;
-type RpcResult<T, E = openraft::error::Infallible> =
+pub(super) type RpcResult<T, E = openraft::error::Infallible> =
     Result<T, RPCError<u64, BasicNode, RaftError<u64, E>>>;
 
-struct Peer {
+pub(super) struct Peer {
     client: PeerClient,
     address: String,
+    isolated: Arc<AtomicBool>,
 }
 
 impl Peer {
-    async fn send<Req: Serialize, Resp: DeserializeOwned>(
+    async fn send<Req: Serialize, Resp: DeserializeOwned, E: std::error::Error>(
         &self,
         path: &str,
         payload: Req,
-    ) -> RpcResult<Resp> {
+    ) -> RpcResult<Resp, E> {
         let result = async {
+            if self.isolated.load(Ordering::Acquire) {
+                return Err(io::Error::other("isolated test peer").into());
+            }
             let bytes = serde_json::to_vec(&payload)?;
             let request = Request::post(format!("http://{}/{path}", self.address))
                 .header("content-type", "application/json")
@@ -70,23 +75,39 @@ impl Peer {
     }
 }
 
-impl RaftNetworkFactory<Type> for Loopback {
+impl<C> RaftNetworkFactory<C> for Loopback
+where
+    C: openraft::RaftTypeConfig<NodeId = u64, Node = BasicNode, Entry = openraft::Entry<C>>,
+{
     type Network = Peer;
 
     async fn new_client(&mut self, _: u64, node: &BasicNode) -> Peer {
         Peer {
             client: self.0.clone(),
             address: node.addr.clone(),
+            isolated: self.1.clone(),
         }
     }
 }
 
-struct Loopback(PeerClient);
+pub(super) struct Loopback(PeerClient, Arc<AtomicBool>);
 
-impl RaftNetwork<Type> for Peer {
+impl Loopback {
+    pub(super) fn new() -> Self {
+        Self::with_gate(Arc::new(AtomicBool::new(false)))
+    }
+    pub(super) fn with_gate(isolated: Arc<AtomicBool>) -> Self {
+        Self(Client::builder(TokioExecutor::new()).build_http(), isolated)
+    }
+}
+
+impl<C> RaftNetwork<C> for Peer
+where
+    C: openraft::RaftTypeConfig<NodeId = u64, Node = BasicNode, Entry = openraft::Entry<C>>,
+{
     async fn append_entries(
         &mut self,
-        req: AppendEntriesRequest<Type>,
+        req: AppendEntriesRequest<C>,
         _: RPCOption,
     ) -> RpcResult<AppendEntriesResponse<u64>> {
         let index = req.entries.last().map(|entry| entry.log_id.index);
@@ -104,13 +125,10 @@ impl RaftNetwork<Type> for Peer {
 
     async fn install_snapshot(
         &mut self,
-        _: InstallSnapshotRequest<Type>,
+        req: InstallSnapshotRequest<C>,
         _: RPCOption,
     ) -> RpcResult<InstallSnapshotResponse<u64>, InstallSnapshotError> {
-        Err(Unreachable::new(&io::Error::other(
-            "snapshot traffic is outside this workload",
-        ))
-        .into())
+        self.send("snapshot", req).await
     }
 }
 
@@ -206,7 +224,7 @@ async fn status(State(state): State<ClientState>) -> Json<Value> {
     Json(json!({"leader": leader, "header": {"member_id": state.id.to_string()}}))
 }
 
-fn listen_address(text: &str) -> SocketAddr {
+pub(super) fn listen_address(text: &str) -> SocketAddr {
     let addr: SocketAddr = text.parse().unwrap();
     assert!(addr.ip().is_loopback());
     addr
@@ -256,7 +274,7 @@ async fn candidate_bench_child() {
     }
     .validate()
     .unwrap();
-    let network = Loopback(Client::builder(TokioExecutor::new()).build_http());
+    let network = Loopback::new();
     let config = Arc::new(config);
     let (raft, model) = if std::env::var_os("PD_CANDIDATE_REPLAY").is_some() {
         let (disk, model) = Replay::open(disk).unwrap();

@@ -1,20 +1,26 @@
 // Copyright 2026 AsterSQL.
 //! Parse the PD recover command and validate local input before any RPC.
 
-use std::{fs, time::Duration};
+use std::{fs, path::PathBuf, time::Duration};
 
 use etcd_client::{Certificate, Client, ConnectOptions, Identity, TlsOptions};
 
 use crate::{Result, rejected};
 
 /// Supported command-line options.
-pub const USAGE: &str = "Usage: pd-recover [-V] [-endpoints URLS] [-cluster-id ID -alloc-id ID [-alloc-timestamp NS] | -from-old-member] [-cacert PATH] [-cert PATH -key PATH]";
+pub const USAGE: &str = "Usage: pd-recover [-V] [-endpoints URLS] [-cluster-id ID -alloc-id ID [-alloc-timestamp NS] | -from-old-member] [-cacert PATH] [-cert PATH -key PATH]\n       pd-recover --native-restore ARCHIVE NEW_DIRECTORY NEW_CLUSTER_ID NODE_ID";
 
 /// Validated action for the recovery binary.
 pub enum Action {
     Help,
     Version,
     Recover(Options),
+    NativeRestore {
+        archive: PathBuf,
+        directory: PathBuf,
+        cluster: u64,
+        node: u64,
+    },
 }
 
 /// Connection and recovery inputs.
@@ -54,6 +60,26 @@ pub fn parse(arguments: impl IntoIterator<Item = String>) -> Result<Action> {
     let mut args = arguments.into_iter().peekable();
     if args.peek().is_none() {
         return Ok(Action::Help);
+    }
+    if args.peek().is_some_and(|arg| arg == "--native-restore") {
+        args.next();
+        let mut required = || {
+            args.next()
+                .ok_or_else(|| rejected("missing native restore argument"))
+        };
+        let archive = required()?.into();
+        let directory = required()?.into();
+        let cluster = required()?.parse()?;
+        let node = required()?.parse()?;
+        if cluster == 0 || node == 0 || args.next().is_some() {
+            return Err(rejected("invalid native restore arguments"));
+        }
+        return Ok(Action::NativeRestore {
+            archive,
+            directory,
+            cluster,
+            node,
+        });
     }
     let mut endpoints = "http://127.0.0.1:2379".to_owned();
     let (mut ca, mut cert, mut key) = (None, None, None);

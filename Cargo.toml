@@ -8,6 +8,7 @@ rust-version = "1.85"
 license = "Apache-2.0"
 
 [workspace.dependencies]
+fs2 = "=0.4.3"
 astersql-pd-mcs-scheduling-server = { path = "pkg/mcs/scheduling/server" }
 astersql-pd-mcs-router-server = { path = "pkg/mcs/router/server" }
 astersql-pd-mcs-server = { path = "pkg/mcs/server" }

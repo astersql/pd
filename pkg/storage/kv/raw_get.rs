@@ -3,7 +3,7 @@ use crate::*;
 
 /// Backend-neutral operations in a RawTxn branch.
 /// Reading and writing the same key in one transaction is unspecified by Go RawTxn.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub enum RawTxnOp {
     Write(Mutation),
     Get(Vec<u8>),
@@ -19,19 +19,19 @@ impl From<Mutation> for RawTxnOp {
         Self::Write(value)
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct KeyValuePair {
     pub key: Vec<u8>,
     pub value: Vec<u8>,
 }
 /// One item per selected operation; writes and missing gets have no pairs.
-#[derive(Debug, Clone, Default, PartialEq, Eq)]
+#[derive(Debug, Clone, Default, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct RawTxnResponseItem {
     /// True when a limited range has additional keys at the transaction revision.
     pub more: bool,
     pub key_value_pairs: Vec<KeyValuePair>,
 }
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct RawTxnResponse {
     pub succeeded: bool,
     pub revision: Revision,

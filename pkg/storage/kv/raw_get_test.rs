@@ -16,7 +16,7 @@ async fn snapshot(store: &dyn MetaStore) -> Snapshot {
         .await
         .unwrap()
 }
-async fn raw_get_contract(store: &dyn MetaStore) {
+pub(super) async fn raw_get_contract(store: &dyn MetaStore) {
     let base = Base::new(store);
     base.save(b"a", b"old").await.unwrap();
     base.save(b"aa", b"prefix-neighbor").await.unwrap();

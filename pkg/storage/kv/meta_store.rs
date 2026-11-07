@@ -7,7 +7,7 @@ pub type LeaseId = i64;
 pub type Result<T> = std::result::Result<T, StoreError>;
 
 /// Stable error categories; transport and protobuf types stay in adapters.
-#[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
+#[derive(Debug, Clone, PartialEq, Eq, thiserror::Error, serde::Serialize, serde::Deserialize)]
 pub enum StoreError {
     #[error("operation cancelled")]
     Cancelled,
@@ -93,7 +93,7 @@ impl Read {
         Ok(())
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct Entry {
     pub key: Vec<u8>,
     pub value: Vec<u8>,
@@ -110,7 +110,7 @@ pub struct Snapshot {
     pub entries: Vec<Entry>,
     pub more: bool,
 }
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub enum Compare {
     CreateRevision(Vec<u8>, Revision),
     ModRevision(Vec<u8>, Revision),
@@ -123,7 +123,7 @@ pub enum Compare {
     NotExists(Vec<u8>),
     Lease(Vec<u8>, LeaseId),
 }
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub enum Mutation {
     Put {
         key: Vec<u8>,
@@ -176,12 +176,12 @@ pub struct Commit {
     pub succeeded: bool,
     pub revision: Revision,
 }
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, serde::Serialize, serde::Deserialize)]
 pub struct Lease {
     pub id: LeaseId,
     pub ttl_seconds: i64,
 }
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub enum Event {
     Put(Entry),
     Delete { key: Vec<u8>, revision: Revision },

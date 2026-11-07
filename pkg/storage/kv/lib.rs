@@ -42,7 +42,6 @@ mod raw_range_test;
 #[cfg(test)]
 mod txn_cancel_test;
 
-#[cfg(test)]
 mod candidate;
 #[cfg(all(test, unix))]
 mod candidate_bench_test;
@@ -54,8 +53,21 @@ mod candidate_open_test;
 mod candidate_power_vfs_test;
 #[cfg(test)]
 mod candidate_profile_test;
-#[cfg(test)]
 mod candidate_raft;
+mod native;
+mod native_backup;
+#[cfg(test)]
+mod native_contract_test;
+#[cfg(test)]
+mod native_failover_test;
+#[cfg(test)]
+mod native_open_test;
+#[cfg(all(test, unix))]
+mod native_process_test;
+mod native_state;
+mod native_watch;
+pub use native::{NativeCommand, NativeMetaStore, NativeRaft, NativeReply};
+pub use native_backup::{RecoveryImage, open_isolated, restore_native_backup};
 #[cfg(test)]
 mod candidate_raft_test;
 

@@ -26,3 +26,11 @@ Use it with the PD processes stopped and the recovery metadata store available.
 
 The Rust tool returns a nonzero exit status for invalid input, identity or boundary conflicts,
 and failed recovery. Restart PD after a successful recovery.
+
+An isolated native MetaStore archive can be restored with
+`pd-recover --native-restore ARCHIVE NEW_DIRECTORY NEW_CLUSTER_ID NODE_ID`.
+The destination directory must not exist and its consensus cluster ID must
+differ from the source. The archive is verified before the directory is
+created. This operation starts one offline voter and preserves PD identity and
+durable allocator and TSO records. Clients must resnapshot their watches and
+reacquire leases after restore. See the [native recovery drill](../../docs/rust/production-meta/task-30.md).
