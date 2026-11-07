@@ -1,0 +1,15 @@
+[package]
+name = "astersql-pd-backup"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[lib]
+path = "lib.rs"
+
+[dependencies]
+astersql-pd-keypath.workspace = true
+etcd-client.workspace = true
+serde = { workspace = true, features = ["derive"] }
+serde_json.workspace = true

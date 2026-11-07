@@ -200,6 +200,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "astersql-pd-backup"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-keypath",
+ "etcd-client",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "astersql-pd-balancer"
 version = "0.1.0"
 dependencies = [
@@ -825,6 +835,25 @@ dependencies = [
  "prometheus",
  "thiserror 2.0.21",
  "tokio",
+ "tokio-util",
+]
+
+[[package]]
+name = "astersql-pd-recover"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-backup",
+ "astersql-pd-keypath",
+ "astersql-pd-proto",
+ "astersql-pd-runtime",
+ "astersql-pd-storage-kv",
+ "etcd-client",
+ "prometheus",
+ "prost",
+ "serde_json",
+ "tempfile",
+ "tokio",
+ "tokio-stream",
  "tokio-util",
 ]
 
