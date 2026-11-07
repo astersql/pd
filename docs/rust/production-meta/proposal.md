@@ -1,0 +1,41 @@
+# 原生元数据候选实验提案
+
+状态为实验草案。首个候选是 OpenRaft 0.9.22 加 rusqlite 0.37.0 的 bundled
+SQLite。两者作为评估版本，待生产任务3确定特性、解析并记录 Cargo.lock 及
+SQLite 运行时版本。生产任务10依据故障结果作出裁决。
+[OpenRaft 版本](https://docs.rs/crate/openraft/0.9.22)、
+[rusqlite 版本及依赖](https://docs.rs/crate/rusqlite/0.37.0)、
+[SQLite 许可说明](https://www.sqlite.org/copyright.html)。
+
+| 路线 | 取舍与待证范围 |
+| --- | --- |
+| 嵌入 OpenRaft 和 SQLite | 复用共识、成员与快照接口。节点本地日志和状态仍须实现一致的崩溃边界。bundled C 依赖的目标平台构建仍需实测 |
+| 窄语义自研共识或复用 raft-rs 低层接口 | 可以控制日志和执行路径，仍需自行负责 Ready 顺序、应用索引和快照传输。旧原型的快照缺陷给出了可复现的拒绝用例 |
+| 外部 etcd 3.5.15 | 复用现有适配与真实契约对照。启动和持久化仍依赖外部服务，保留为过渡路线 |
+
+生产任务3仅建立候选打开及真实重开验证。后续用同一候选分别检查以下边界。
+
+- 串行化节点的日志、vote、截断和已提交索引写入。SQLite 先以 `journal_mode=WAL`
+  和 `synchronous=FULL` 评估，读取配置返回值确认生效。持久事务成功后才触发
+  Raft 日志完成回调。客户端成功等待多数派提交以及本节点应用事务持久化。
+  磁盘错误、提交结果未知或任期过期时停止确认。设计依据见
+  [RaftLogStorage](https://docs.rs/openraft/0.9.22/openraft/storage/trait.RaftLogStorage.html)
+  和 [SQLite PRAGMA](https://sqlite.org/pragma.html#pragma_synchronous)。
+- 实验格式在数据库中记录 schema 版本、集群及节点身份。应用索引、成员视图、
+  revision 和业务变更在同一事务提交。发布快照前校验内容、边界索引、身份及
+  格式版本。截断日志之前验证快照已可读取，落后节点恢复必须核对 payload。
+- 读屏障须证明当前领导权。watch 通过持久 revision 排序及显式压缩水位保留，
+  在完整契约阶段对照边界、重放和取消。租约的超时判断由 leader 发起，
+  撤销与删除通过复制状态机生效。重开及换主需要验证时钟回退、旧任期 fencing
+  及租约状态，不能以观察到本机定时器触发替代集群行为。
+- 掉电实验记录镜像隔离、flush/FUA、输入摘要、外部客户端确认和重开后的实盘
+  对账。模型层已校验三个串行场景。接入候选时须捕获实际 SQLite I/O 边界，
+  例如经 SQLite VFS 测试接线或专用虚拟块设备，且验证提前确认的负对照。
+  [模型校验](power-model-calibration.md)、[SQLite VFS](https://sqlite.org/vfs.html)。
+
+任何已确认提交丢失、少数派确认线性读写、损坏静默通过、落后节点无法从
+快照恢复或已移除成员仍可提交，均使该候选无法进入生产实现。备份恢复工具及
+发布门依赖主题9实际交付。此次仅使用本机 Darwin arm64 校验模型。
+目标平台、负载、吞吐与 p99、容量、RTO/RPO 和长稳窗口暂缓确定。
+实验数据可以帮助设定这些门槛，生产验收仍需要部署需求依据。
+[旧原型裁决](../adr-native-meta-store.md)、[当前准入](task-01.md)。

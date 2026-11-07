@@ -1,0 +1,101 @@
+{
+  "sector_size": 512,
+  "sector_count": 4,
+  "cases": [
+    {
+      "case": "premature_ack",
+      "events": [
+        {
+          "op": "write",
+          "sector": 0,
+          "sha256": "640440dcc02502c89db14bf0879ab06eee6a114d0aca31974805eead4ebfdb98"
+        },
+        {
+          "op": "client_ack",
+          "sector": 0
+        },
+        {
+          "op": "write",
+          "sector": 1,
+          "sha256": "448c75b8baab4585e8198bcb3fb12fc94ad29b6845e0df93a63f0b6bc344640b"
+        },
+        {
+          "op": "cut",
+          "lost_sectors": [
+            0,
+            1
+          ]
+        }
+      ],
+      "missing_acknowledged_sectors": [
+        0
+      ],
+      "recovered_image_sha256": "e5a00aa9991ac8a5ee3109844d84a55583bd20572ad3ffcd42792f3c36b183ad"
+    },
+    {
+      "case": "flush",
+      "events": [
+        {
+          "op": "write",
+          "sector": 0,
+          "sha256": "640440dcc02502c89db14bf0879ab06eee6a114d0aca31974805eead4ebfdb98"
+        },
+        {
+          "op": "flush",
+          "sectors": [
+            0
+          ]
+        },
+        {
+          "op": "client_ack",
+          "sector": 0
+        },
+        {
+          "op": "write",
+          "sector": 1,
+          "sha256": "448c75b8baab4585e8198bcb3fb12fc94ad29b6845e0df93a63f0b6bc344640b"
+        },
+        {
+          "op": "cut",
+          "lost_sectors": [
+            1
+          ]
+        }
+      ],
+      "missing_acknowledged_sectors": [],
+      "recovered_image_sha256": "69264abf8fed2e157d5367a377bfc625a50375c5d490040299173cf5d83e6f19"
+    },
+    {
+      "case": "fua",
+      "events": [
+        {
+          "op": "write",
+          "sector": 0,
+          "sha256": "448c75b8baab4585e8198bcb3fb12fc94ad29b6845e0df93a63f0b6bc344640b"
+        },
+        {
+          "op": "fua",
+          "sector": 0,
+          "sha256": "640440dcc02502c89db14bf0879ab06eee6a114d0aca31974805eead4ebfdb98"
+        },
+        {
+          "op": "client_ack",
+          "sector": 0
+        },
+        {
+          "op": "write",
+          "sector": 1,
+          "sha256": "448c75b8baab4585e8198bcb3fb12fc94ad29b6845e0df93a63f0b6bc344640b"
+        },
+        {
+          "op": "cut",
+          "lost_sectors": [
+            1
+          ]
+        }
+      ],
+      "missing_acknowledged_sectors": [],
+      "recovered_image_sha256": "69264abf8fed2e157d5367a377bfc625a50375c5d490040299173cf5d83e6f19"
+    }
+  ]
+}
