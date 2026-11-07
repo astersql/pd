@@ -13,7 +13,6 @@ use astersql_pd_schedule_config::{ProviderSnapshot, ScheduleDefaults};
 use astersql_pd_server::{Identity, PdServices};
 use astersql_pd_server_config::{ConfigDefaultsContext, PersistedConfig};
 use astersql_pd_storage::{Compare, Consistency, Event, MetaStore, Read};
-use astersql_pd_storage_endpoint::StorageEndpoint;
 use futures_util::{FutureExt, future::FusedFuture};
 use prost::Message;
 use std::{
@@ -295,8 +294,7 @@ async fn open(
         leader.clone(),
         cancel.clone(),
     ));
-    let endpoint = StorageEndpoint::new(fenced.clone());
-    let (_, config_watch) = astersql_pd_etcdutil::ReconciledWatch::load(
+    let (config_snapshot, config_watch) = astersql_pd_etcdutil::ReconciledWatch::load(
         config.store.clone(),
         paths.config_path().into_bytes(),
         false,
@@ -309,18 +307,21 @@ async fn open(
     // before PD bootstrap and lets the metadata watcher populate stores later.
     let mut persisted = PersistedConfig::default();
     let cwd = std::env::current_dir().map_err(|e| e.to_string())?;
-    let found = persisted
-        .reload(
-            &endpoint,
-            &paths,
-            ConfigDefaultsContext {
-                hostname: &config.entry.name,
-                cwd: &cwd,
-            },
-            &mut ScheduleDefaults::default(),
-        )
-        .await
-        .map_err(|e| e.to_string())?;
+    let found = if let Some(entry) = config_snapshot.entries.first() {
+        persisted
+            .apply_document(
+                &entry.value,
+                ConfigDefaultsContext {
+                    hostname: &config.entry.name,
+                    cwd: &cwd,
+                },
+                &mut ScheduleDefaults::default(),
+            )
+            .map_err(|e| e.to_string())?;
+        true
+    } else {
+        false
+    };
     if !found {
         persisted
             .config
@@ -544,3 +545,7 @@ async fn watch_membership(state: Arc<State>, lookup: PdLeaderLookup) {
 #[cfg(test)]
 #[path = "embed_scheduling_test.rs"]
 mod tests;
+
+#[cfg(test)]
+#[path = "embed_scheduling_config_test.rs"]
+mod config_tests;

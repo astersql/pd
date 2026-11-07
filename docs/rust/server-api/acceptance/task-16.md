@@ -851,3 +851,36 @@ workspace依赖，不引入外部库。最初一次Rust check因新模块注册�
 保存config value/revision，MCS完成操作后要求二者不变。最终模块/恢复与watch契约
 回归计数及workspace检查见[在线配置观察回执](task-16-scheduling-config-watch.json.gz)。
 16与148保持进行中，不由一次live update关闭完整配置或故障矩阵。
+
+## Scheduling原生配置观察故障补充（进行中）
+
+增加原生etcd加实际Rust PD身份的库级consumer专项；真实Scheduling election通过
+canonical campaign获得lease，再用生产open及同一配置观察循环。直接metadata故障
+输入不冒充PD公共API，也不冒充完整MCS CLI或Go故障差分。记录器/延迟门只观察或
+暂缓实际native watch响应，不制造Compacted结果或替换事件内容。
+
+先加载replicas=5并保存旧cursor，再写canonical replicas=2并压缩真实etcd历史，
+然后启动consumer；要求实际Compacted错误、旧cursor及重建cursor超过compact
+revision，共享配置最终为2，后端完整entry没有观察者写回。删除与损坏JSON也必须
+实际送达consumer并保留上一有效配置，后续有效4恢复；坏值被拒绝后继续观察时
+取消，须两秒内join、domain关闭并清除Scheduling primary键，坏字节仍原样存在。
+
+首次有限场景通过，但格式化后的重复运行暴露consumer没有继续消费某个坏值事件。
+原因是原实现以事件为唤醒信号，再读取latest配置：读取可能越过当前事件，遇到后续
+损坏值后一直重试。强化的实际native响应延迟门保留合法replicas=6事件，故障producer
+在它交给consumer之前写坏JSON；真实red为仍停留在2，遗漏了合法6。Go LoopWatcher
+对每个event.Kv调用putFn，Scheduling putFn直接解码event.Kv.Value，坏事件记录错误
+后继续；此顺序语义由只读Go源码核对，未声称执行了完整Go故障矩阵。
+
+修复改为按原事件顺序把完整document送入已有串行actor。PersistedConfig提取唯一
+纯document入口，与原reload复用相同默认、校验和迁移逻辑，不再额外读latest；
+primary初始配置也与watch snapshot使用同一revision。坏document保留上一代并继续
+下一事件，暂时性fencing错误保留队列待重试；没有第二套配置解析/调度算法或写回。
+强化后的native专项保留合法6后面的坏值，正确发布6，再完成删除/坏值/有效替换与
+取消检查。中间一次测试因移除父模块import后缺少独立StorageEndpoint import未编译，
+修正并保留日志，不当作行为red。原数据格式及迁移专项也另行回归。
+
+最终计数、实际revision/cursor/Compacted计数、red/green及源码摘要见
+[原生配置观察故障回执](task-16-scheduling-config-faults.json.gz)。
+这不是完整换主/网络分区/CLI/TLS故障或其它watch、掉电/原生Rust生产持久化证明，
+16与148继续。

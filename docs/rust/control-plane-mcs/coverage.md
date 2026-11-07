@@ -350,3 +350,9 @@ Scheduling在线配置增量：PD公共HTTP更新副本数后，既有Reconciled
 与Go一致，PD配置value/revision没有MCS写回。fixture header时序失败及真实旧值
 超时red见[阶段记录](../server-api/acceptance/task-16.md#scheduling在线复制配置观察阶段进行中)。
 其它TTL/规则/affinity/scheduler watches和完整故障收敛仍未整体验收。
+
+Scheduling配置consumer故障补充：原生后端实际Compacted错误及更新cursor、删除/
+损坏JSON保留上一代、有效替换恢复、取消/join与lease清理专项通过。
+实际合法事件后紧接坏值的red还修复了latest重读越过事件：现在共享decoder按原值顺序应用。
+[证明边界](../server-api/acceptance/task-16.md#scheduling原生配置观察故障补充进行中)
+明确这是实际Rust PD身份及真实MCS选举下的库级consumer，不冒充完整Go故障差分或CLI矩阵。

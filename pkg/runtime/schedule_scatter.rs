@@ -77,7 +77,10 @@ pub(super) enum Command {
     ),
     Replication(bool, serde_json::Value, oneshot::Sender<Result<(), String>>),
     Configure(serde_json::Value, oneshot::Sender<Result<(), String>>),
-    ReloadConfig(oneshot::Sender<Result<(), String>>),
+    ObserveConfig(
+        Vec<u8>,
+        oneshot::Sender<Result<(), super::scheduling_config_watch::ApplyError>>,
+    ),
     Split(super::schedule_split::Pending),
     Scatter(
         ScatterRequest,
@@ -86,11 +89,14 @@ pub(super) enum Command {
     Operator(u64, oneshot::Sender<Result<Option<OperatorResult>, String>>),
 }
 impl ClusterHost {
-    pub(crate) async fn reload_scheduling_configuration(&self) -> Result<(), String> {
+    pub(crate) async fn observe_scheduling_configuration(
+        &self,
+        document: Vec<u8>,
+    ) -> Result<(), super::scheduling_config_watch::ApplyError> {
         let (tx, rx) = oneshot::channel();
-        tokio::select! {biased;_=self.cancel.cancelled()=>Err("server not started".into()),result=async {
-            self.schedule_requests.send(Command::ReloadConfig(tx)).await.map_err(|_|"scheduling stopped")?;
-            rx.await.map_err(|_|"scheduling stopped")?
+        tokio::select! {biased;_=self.cancel.cancelled()=>Err(super::scheduling_config_watch::ApplyError::Transient("server not started".into())),result=async {
+            self.schedule_requests.send(Command::ObserveConfig(document,tx)).await.map_err(|_|super::scheduling_config_watch::ApplyError::Transient("scheduling stopped".into()))?;
+            rx.await.map_err(|_|super::scheduling_config_watch::ApplyError::Transient("scheduling stopped".into()))?
         }=>result}
     }
 
@@ -523,8 +529,8 @@ pub(super) async fn serve(
             tokio::select! { biased; _ = cancel.cancelled() => {}, _ = reply.closed() => {}, result = work => {let _ = reply.send(result);} }
         }
 
-        Command::ReloadConfig(mut reply) => {
-            let work = super::scheduling_config_watch::reload(coordinator, resources);
+        Command::ObserveConfig(document, mut reply) => {
+            let work = super::scheduling_config_watch::apply(document, coordinator, resources);
             tokio::select! {biased;_=cancel.cancelled()=>{},_=reply.closed()=>{},result=work=>{let _=reply.send(result);}}
         }
         Command::Configure(patch, mut reply) => {

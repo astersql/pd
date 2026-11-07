@@ -51,6 +51,29 @@ impl PersistedConfig {
         context: ConfigDefaultsContext<'_>,
         defaults: &mut ScheduleDefaults,
     ) -> Result<bool, ConfigPersistenceError> {
+        let (candidate, next_defaults) = Self::candidate(context, defaults)?;
+        let Some(raw) = endpoint.load_config::<Value>(paths).await? else {
+            return Ok(false);
+        };
+        self.apply_value(raw, candidate, next_defaults, defaults)?;
+        Ok(true)
+    }
+    /// Apply one observed JSON document using the same validation and migration
+    /// as reload, without another backend read or persistence effect.
+    pub fn apply_document(
+        &mut self,
+        document: &[u8],
+        context: ConfigDefaultsContext<'_>,
+        defaults: &mut ScheduleDefaults,
+    ) -> Result<(), ConfigPersistenceError> {
+        let (candidate, next_defaults) = Self::candidate(context, defaults)?;
+        let raw = serde_json::from_slice(document).map_err(EndpointError::JsonUnmarshal)?;
+        self.apply_value(raw, candidate, next_defaults, defaults)
+    }
+    fn candidate(
+        context: ConfigDefaultsContext<'_>,
+        defaults: &ScheduleDefaults,
+    ) -> Result<(Self, ScheduleDefaults), ConfigPersistenceError> {
         let mut next_defaults = defaults.clone();
         let mut candidate = Self::default();
         candidate
@@ -62,9 +85,15 @@ impl PersistedConfig {
                 &mut next_defaults,
             )
             .map_err(ConfigPersistenceError::Invalid)?;
-        let Some(raw) = endpoint.load_config::<Value>(paths).await? else {
-            return Ok(false);
-        };
+        Ok((candidate, next_defaults))
+    }
+    fn apply_value(
+        &mut self,
+        raw: Value,
+        mut candidate: Self,
+        mut next_defaults: ScheduleDefaults,
+        defaults: &mut ScheduleDefaults,
+    ) -> Result<(), ConfigPersistenceError> {
         let mut value = serde_json::to_value(&candidate).map_err(EndpointError::JsonMarshal)?;
         if !raw.is_object() && !raw.is_null() {
             return Err(ConfigPersistenceError::Invalid(
@@ -108,7 +137,7 @@ impl PersistedConfig {
         copy_dynamic(&mut self.config, &candidate.config);
         self.store = candidate.store;
         *defaults = next_defaults;
-        Ok(true)
+        Ok(())
     }
 }
 fn copy_dynamic(to: &mut Config, from: &Config) {
