@@ -101,6 +101,11 @@ astersql-pd-typeutil = { path = "pkg/utils/typeutil" }
 astersql-pd-movingaverage = { path = "pkg/movingaverage" }
 astersql-pd-errs = { path = "pkg/errs" }
 raft = { version = "=0.7.0", default-features = false, features = ["protobuf-codec"] }
+openraft = { version = "=0.9.22", features = ["serde", "storage-v2"] }
+rusqlite = { version = "=0.39.0", default-features = false, features = ["bundled"] }
+tempfile = "=3.27.0"
+sqlite-vfs = "=0.2.0"
+getrandom = "=0.4.3"
 protobuf = "=2.28.0"
 slog = "=2.8.2"
 astersql-pd-server = { path = "pkg/server" }

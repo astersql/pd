@@ -42,6 +42,17 @@ mod raw_range_test;
 #[cfg(test)]
 mod txn_cancel_test;
 
+#[cfg(test)]
+mod candidate;
+#[cfg(test)]
+mod candidate_open_test;
+#[cfg(test)]
+mod candidate_power_vfs_test;
+#[cfg(test)]
+mod candidate_raft;
+#[cfg(test)]
+mod candidate_raft_test;
+
 pub use astersql_pd_storage_domain::{
     HistoryCipher, HistoryError, HistoryHotRegion, HistoryQuery, HotHistory,
 };

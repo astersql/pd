@@ -18,6 +18,15 @@ tokio-util.workspace = true
 tonic.workspace = true
 tower.workspace = true
 
+[dev-dependencies]
+openraft.workspace = true
+rusqlite.workspace = true
+serde = { workspace = true, features = ["derive"] }
+serde_json.workspace = true
+tempfile.workspace = true
+sqlite-vfs.workspace = true
+getrandom.workspace = true
+
 [[test]]
 name = "etcd_contract"
 path = "etcd_store_test.rs"

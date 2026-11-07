@@ -1,0 +1,29 @@
+{
+  "voters": 3,
+  "transactions": 128,
+  "bytes_per_value": 256,
+  "etcd_sha256": "ec97cf20f1dc01a4d4b3727784b876a2b5a24afbd05409ea5142ea6dcba55a13",
+  "samples": [
+    {
+      "write_p99_ms": 34.835,
+      "read_pair_p99_ms": 3.2,
+      "write_txn_per_second": 83.344,
+      "reopen_ms": 315.788,
+      "recovered_pairs": 128
+    },
+    {
+      "write_p99_ms": 37.879,
+      "read_pair_p99_ms": 1.848,
+      "write_txn_per_second": 73.58,
+      "reopen_ms": 418.032,
+      "recovered_pairs": 128
+    },
+    {
+      "write_p99_ms": 29.834,
+      "read_pair_p99_ms": 16.618,
+      "write_txn_per_second": 81.621,
+      "reopen_ms": 345.495,
+      "recovered_pairs": 128
+    }
+  ]
+}
