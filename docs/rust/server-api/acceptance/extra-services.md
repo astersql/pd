@@ -204,3 +204,9 @@ canonical恢复，未bootstrap不额外写config key。实际native etcd+Rust PD
 与Go embedded拓扑、文件restart差分见
 [阶段说明](task-16.md#scheduling外置后端发现与pd启动配置阶段进行中)。
 此为外置后端过渡证据，不是原生Rust持久化或完整换主/TLS/watch/148完成回执。
+
+Scheduling在线配置增量：PD公共HTTP更新副本数后，既有ReconciledWatch和串行actor
+加载canonical配置并发布共享provider generation，实际learner/ACK/SUCCESS及ID
+与Go一致，PD配置value/revision没有MCS写回。fixture header时序失败及真实旧值
+超时red见[阶段记录](task-16.md#scheduling在线复制配置观察阶段进行中)。
+其它TTL/规则/affinity/scheduler watches和完整故障收敛仍未整体验收。

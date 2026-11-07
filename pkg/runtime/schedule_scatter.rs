@@ -77,6 +77,7 @@ pub(super) enum Command {
     ),
     Replication(bool, serde_json::Value, oneshot::Sender<Result<(), String>>),
     Configure(serde_json::Value, oneshot::Sender<Result<(), String>>),
+    ReloadConfig(oneshot::Sender<Result<(), String>>),
     Split(super::schedule_split::Pending),
     Scatter(
         ScatterRequest,
@@ -85,6 +86,14 @@ pub(super) enum Command {
     Operator(u64, oneshot::Sender<Result<Option<OperatorResult>, String>>),
 }
 impl ClusterHost {
+    pub(crate) async fn reload_scheduling_configuration(&self) -> Result<(), String> {
+        let (tx, rx) = oneshot::channel();
+        tokio::select! {biased;_=self.cancel.cancelled()=>Err("server not started".into()),result=async {
+            self.schedule_requests.send(Command::ReloadConfig(tx)).await.map_err(|_|"scheduling stopped")?;
+            rx.await.map_err(|_|"scheduling stopped")?
+        }=>result}
+    }
+
     pub(crate) async fn affinity_read(
         &self,
         request: astersql_pd_server::http_affinity_read::Request,
@@ -514,6 +523,10 @@ pub(super) async fn serve(
             tokio::select! { biased; _ = cancel.cancelled() => {}, _ = reply.closed() => {}, result = work => {let _ = reply.send(result);} }
         }
 
+        Command::ReloadConfig(mut reply) => {
+            let work = super::scheduling_config_watch::reload(coordinator, resources);
+            tokio::select! {biased;_=cancel.cancelled()=>{},_=reply.closed()=>{},result=work=>{let _=reply.send(result);}}
+        }
         Command::Configure(patch, mut reply) => {
             let work = async {
                 let mut guard = resources.lock().await;

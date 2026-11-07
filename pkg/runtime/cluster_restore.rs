@@ -54,37 +54,7 @@ pub(crate) async fn restore_with_encryption(
             .adjust(&Default::default(), true, &mut ScheduleDefaults::default())?;
         config.replication.adjust(&Default::default())?;
         if found {
-            config.schedule = persisted.config.schedule.clone();
-            config.replication = persisted.config.replication.clone();
-            config.store = persisted.store.clone();
-            config.flow_round_by_digit = persisted.config.pd_server.flow_round_by_digit;
-            config.key_type = match persisted.config.pd_server.key_type.trim() {
-                "" | "table" => astersql_pd_core_constant::KeyType::TABLE,
-                "raw" => astersql_pd_core_constant::KeyType::RAW,
-                "txn" => astersql_pd_core_constant::KeyType::TXN,
-                _ => return Err("invalid persisted key type".into()),
-            };
-            config.label_properties = persisted
-                .config
-                .label_property
-                .as_ref()
-                .into_iter()
-                .flat_map(|properties| properties.iter())
-                .map(|(key, labels)| {
-                    (
-                        key.clone(),
-                        labels
-                            .as_deref()
-                            .unwrap_or_default()
-                            .iter()
-                            .map(|label| astersql_pd_core::StoreLabel {
-                                key: label.key.clone(),
-                                value: label.value.clone(),
-                            })
-                            .collect(),
-                    )
-                })
-                .collect();
+            apply_persisted_config(&persisted, &mut config)?;
         }
         endpoint
             .load_stores(&paths, |store| cluster.stores.put_store(Arc::new(store)))
@@ -106,4 +76,43 @@ pub(crate) async fn restore_with_encryption(
         _ = cancel.cancelled() => Err(astersql_pd_member::MemberError::Cancelled.into()),
         result = recover => result,
     }
+}
+
+/// Convert canonical persisted options into the existing scheduling generation.
+pub(super) fn apply_persisted_config(
+    persisted: &PersistedConfig,
+    provider: &mut ProviderSnapshot<()>,
+) -> Result<(), crate::NodeError> {
+    provider.schedule = persisted.config.schedule.clone();
+    provider.replication = persisted.config.replication.clone();
+    provider.store = persisted.store.clone();
+    provider.flow_round_by_digit = persisted.config.pd_server.flow_round_by_digit;
+    provider.key_type = match persisted.config.pd_server.key_type.trim() {
+        "" | "table" => astersql_pd_core_constant::KeyType::TABLE,
+        "raw" => astersql_pd_core_constant::KeyType::RAW,
+        "txn" => astersql_pd_core_constant::KeyType::TXN,
+        _ => return Err("invalid persisted key type".into()),
+    };
+    provider.label_properties = persisted
+        .config
+        .label_property
+        .as_ref()
+        .into_iter()
+        .flat_map(|properties| properties.iter())
+        .map(|(key, labels)| {
+            (
+                key.clone(),
+                labels
+                    .as_deref()
+                    .unwrap_or_default()
+                    .iter()
+                    .map(|label| astersql_pd_core::StoreLabel {
+                        key: label.key.clone(),
+                        value: label.value.clone(),
+                    })
+                    .collect(),
+            )
+        })
+        .collect();
+    Ok(())
 }

@@ -823,3 +823,31 @@ consensus URL不等于PD URL，恰好一次peer ID分配且PD region持久键不
 完整命令模块、启动文件restart及默认策略/生命周期回归和检查计数见
 [外置发现与启动配置回执](task-16-scheduling-discovery.json.gz)。
 TLS换主、故障时发现收敛、配置watch及148/16/17–25仍待继续。
+
+## Scheduling在线复制配置观察阶段（进行中）
+
+新增真实Go/Rust专项，在Scheduling启动前通过PD公共replicate HTTP API把副本数
+设为1，发送真实region heartbeat保持双向RPC存活，确认700ms内没有命令；再通过
+同一PD API改成2，等待实际AddLearner、promotion及ACK后的SUCCESS。初版fixture
+把第二次配置更新放在等待response headers之后，Go在首命令前不发送headers，
+导致Go也超时。修正为并发轮询整个stream建立/首响应future，不把header发送时序
+当成业务消息；保留该fixture失败。
+
+修正fixture后的实际red：Go完成操作并消费一个peer ID，Rust保持旧副本数，30秒
+没有命令且未分配peer ID。原因是Rust只在primary初始化时读取PersistedConfig。
+当前接入已有canonical ReconciledWatch，按exact config key观察PD事件，观察任务
+由调用者runtime及term取消/关闭管理；配置通过现有串行coordinator actor重新加载，
+使用既有PersistedConfig decoder及从classic恢复提取的同一provider转换，验证成功
+后原子发布一代配置。没有第二套调度算法、私有runtime或观察者写回PD配置。
+
+删除事件维持Go的忽略策略；compaction/reconnect使用既有watch恢复。这里只对
+正常在线replication更新进行端到端差分，其它配置/规则/TTL/affinity/scheduler watches
+及完整watch故障差分仍待补。新增内部etcdutil依赖复用现有实现，lock仅增加内部
+workspace依赖，不引入外部库。最初一次Rust check因新模块注册层级错误失败，
+修正到ClusterHost内部；日志保留，不当作行为red。
+
+当前真实专项通过，比较完整命令、运行及SUCCESS protobuf与两次ACK，cluster ID
+之外不归一，严格核对一次peer ID和PD region持久键不变；同时在PD第二次更新后
+保存config value/revision，MCS完成操作后要求二者不变。最终模块/恢复与watch契约
+回归计数及workspace检查见[在线配置观察回执](task-16-scheduling-config-watch.json.gz)。
+16与148保持进行中，不由一次live update关闭完整配置或故障矩阵。

@@ -16,6 +16,7 @@ fn save(records: &[Value], profile: &str) {
 async fn scenario(profile: &str) {
     let native = profile.starts_with("native-");
     let case = profile.strip_prefix("native-").unwrap_or(profile);
+    let live_config = case.contains("watch");
     let go = crate::readonly_oracle::pinned_go_binary().unwrap();
     let rust = PathBuf::from(std::env::var_os("PD_COMPAT_RUST_BIN").unwrap());
     let work = Work(std::env::temp_dir().join(format!(
@@ -144,6 +145,11 @@ async fn scenario(profile: &str) {
             ))
             .await
             .unwrap();
+        let mut config_updates = vec![];
+        let mut updated_config = None;
+        if live_config {
+            config_updates.push(set_replicas(&owner, 1).unwrap());
+        }
         let baseline = pd
             .alloc_id(pdpb::AllocIdRequest {
                 header: pd_header.clone(),
@@ -245,20 +251,41 @@ async fn scenario(profile: &str) {
         let (sender, receiver) = tokio::sync::mpsc::channel(4);
         sender.send(request.clone()).await.unwrap();
         let mut stream_client = client.clone();
-        let result = tokio::time::timeout(Duration::from_secs(30), async {
-            let mut stream = stream_client
-                .region_heartbeat(tokio_stream::wrappers::ReceiverStream::new(receiver))
-                .await
-                .map_err(|e| e.to_string())?
-                .into_inner();
-            let response = stream
-                .message()
-                .await
-                .map_err(|e| e.to_string())?
-                .ok_or("unexpected EOF")?;
-            Ok::<_, String>((response, stream))
-        })
-        .await;
+        let result = {
+            let first_response = async {
+                let mut stream = stream_client
+                    .region_heartbeat(tokio_stream::wrappers::ReceiverStream::new(receiver))
+                    .await
+                    .map_err(|e| e.to_string())?
+                    .into_inner();
+                let response = stream
+                    .message()
+                    .await
+                    .map_err(|e| e.to_string())?
+                    .ok_or("unexpected EOF")?;
+                Ok::<_, String>((response, stream))
+            };
+            tokio::pin!(first_response);
+            if live_config {
+                match tokio::time::timeout(Duration::from_millis(700), &mut first_response).await {
+                    Ok(early) => Ok(Err(format!("command before live config update: {early:?}"))),
+                    Err(_) => {
+                        config_updates.push(set_replicas(&owner, 2).unwrap());
+                        let key = astersql_pd_keypath::ClusterPaths::new(cluster).config_path();
+                        updated_config = Some(
+                            backend
+                                .read(Read::range(key.as_bytes(), b"", Consistency::Linearizable))
+                                .await
+                                .unwrap()
+                                .entries,
+                        );
+                        tokio::time::timeout(Duration::from_secs(30), &mut first_response).await
+                    }
+                }
+            } else {
+                tokio::time::timeout(Duration::from_secs(30), &mut first_response).await
+            }
+        };
         let consensus_client = backend.consensus_leader_client_url().await.unwrap();
         let primary_key = astersql_pd_keypath::ClusterPaths::new(cluster).election_path(None);
         let primary = backend
@@ -274,7 +301,7 @@ async fn scenario(profile: &str) {
         if native && is_rust {
             assert_ne!(consensus_client.as_deref(), Some(owner.url.as_str()));
         }
-        let mut row = json!({"metadata_url":owner.metadata_url(),"pd_url":owner.url,"consensus_client":consensus_client,"primary_member_raw":primary.entries[0].value,"rust":is_rust,"profile":profile,"request":request.encode_to_vec(),"baseline_pd_id":baseline});
+        let mut row = json!({"metadata_url":owner.metadata_url(),"pd_url":owner.url,"consensus_client":consensus_client,"primary_member_raw":primary.entries[0].value,"config_updates":config_updates,"rust":is_rust,"profile":profile,"request":request.encode_to_vec(),"baseline_pd_id":baseline});
         if let Ok(Ok((mut command, mut stream))) = result {
             row["split_command"] = json!(command.split_region.is_some());
             row["peer_command"] =
@@ -334,6 +361,20 @@ async fn scenario(profile: &str) {
             .await
             .unwrap();
         row["pd_region_unchanged"] = json!(before.entries == after.entries);
+        if let Some(expected) = updated_config {
+            let key = astersql_pd_keypath::ClusterPaths::new(cluster).config_path();
+            let actual = backend
+                .read(Read::range(key.as_bytes(), b"", Consistency::Linearizable))
+                .await
+                .unwrap();
+            row["config_pd_owned"] = json!(expected == actual.entries);
+            row["pd_updated_config"] = json!(
+                expected
+                    .iter()
+                    .map(|e| json!({"value":e.value,"mod_revision":e.mod_revision}))
+                    .collect::<Vec<_>>()
+            );
+        }
         row["logs"] = json!(sidecar.logs());
         records.push(row);
         save(&records, profile);
@@ -345,6 +386,12 @@ async fn scenario(profile: &str) {
     for row in &records {
         assert!(row.get("error").is_none(), "real scheduling command: {row}");
         assert_eq!(row["pd_region_unchanged"], true);
+        if live_config {
+            assert_eq!(
+                row["config_pd_owned"], true,
+                "MCS must not write observed PD config: {row}"
+            );
+        }
         assert_eq!(row["split_command"], case == "split");
         assert_eq!(row["peer_command"], case.starts_with("replica"));
         assert_eq!(
@@ -498,4 +545,37 @@ async fn sa_016_scheduling_ack_replica_v2_promotes_and_completes() {
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
 async fn sa_016_scheduling_native_pd_replica_ack_uses_real_pd_discovery() {
     scenario("native-replica-complete").await;
+}
+
+fn set_replicas(owner: &crate::harness::Server, count: u64) -> Result<Value, String> {
+    let body = json!({"max-replicas":count,"enable-placement-rules":"false"}).to_string();
+    let result = std::process::Command::new("curl")
+        .args([
+            "-sS",
+            "--max-time",
+            "5",
+            "-X",
+            "POST",
+            "-H",
+            "Content-Type: application/json",
+            "--data-binary",
+            &body,
+            "-w",
+            "\n%{http_code}",
+            &format!("{}/pd/api/v1/config/replicate", owner.url),
+        ])
+        .output()
+        .map_err(|e| e.to_string())?;
+    let response = String::from_utf8_lossy(&result.stdout).into_owned();
+    if !result.status.success() || !response.ends_with("\n200") {
+        return Err(format!(
+            "replication config update: {response}, {:?}",
+            result.stderr
+        ));
+    }
+    Ok(json!({"body":body,"response":response}))
+}
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn sa_016_scheduling_live_replication_config_watch_drives_replica_completion() {
+    scenario("replica-watch-complete").await;
 }

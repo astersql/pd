@@ -847,6 +847,7 @@ dependencies = [
  "astersql-pd-core",
  "astersql-pd-core-constant",
  "astersql-pd-encryption",
+ "astersql-pd-etcdutil",
  "astersql-pd-gc",
  "astersql-pd-grpcutil",
  "astersql-pd-id",

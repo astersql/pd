@@ -281,7 +281,14 @@ async fn open(
     leader: Arc<Leadership>,
     cancel: CancellationToken,
     member_reload: Arc<Notify>,
-) -> Result<(Arc<Term>, StoreWatcher), String> {
+) -> Result<
+    (
+        Arc<Term>,
+        StoreWatcher,
+        astersql_pd_etcdutil::ReconciledWatch,
+    ),
+    String,
+> {
     let paths = ClusterPaths::new(config.cluster_id);
     let fenced: Arc<dyn MetaStore> = Arc::new(LeadershipStore::new(
         config.store.clone(),
@@ -289,6 +296,15 @@ async fn open(
         cancel.clone(),
     ));
     let endpoint = StorageEndpoint::new(fenced.clone());
+    let (_, config_watch) = astersql_pd_etcdutil::ReconciledWatch::load(
+        config.store.clone(),
+        paths.config_path().into_bytes(),
+        false,
+        128,
+        &cancel,
+    )
+    .await
+    .map_err(|e| e.to_string())?;
     // A Scheduling primary owns an independent in-memory cache. Go starts it
     // before PD bootstrap and lets the metadata watcher populate stores later.
     let mut persisted = PersistedConfig::default();
@@ -319,12 +335,9 @@ async fn open(
             )
             .map_err(|e| e.to_string())?;
     }
-    let provider = ProviderSnapshot {
-        schedule: persisted.config.schedule.clone(),
-        replication: persisted.config.replication.clone(),
-        store: persisted.store.clone(),
-        ..Default::default()
-    };
+    let mut provider = ProviderSnapshot::default();
+    crate::cluster_restore::apply_persisted_config(&persisted, &mut provider)
+        .map_err(|e| e.to_string())?;
     let cluster = BasicCluster::new();
     let watch = StoreWatcher::load(config.store.clone(), paths, cluster.stores.clone(), &cancel)
         .await
@@ -392,7 +405,7 @@ async fn open(
         cancel: cancel.clone(),
         ids,
     });
-    Ok((term, watch))
+    Ok((term, watch, config_watch))
 }
 async fn run(config: SchedulingHostConfig, state: Arc<State>, primary_lease: i64) {
     let paths = ClusterPaths::new(config.cluster_id);
@@ -458,7 +471,15 @@ async fn run(config: SchedulingHostConfig, state: Arc<State>, primary_lease: i64
             let keep_join = keep.join().fuse();
             tokio::pin!(keep_join);
             let opened = tokio::select! {biased;_=state.cancel.cancelled()=>None,_=&mut keep_join=>None,result=open(&config,leader.clone(),cancel.clone(),state.member_reload.clone())=>match result {Ok(opened)=>Some(opened),Err(error)=>{tracing::warn!(component="scheduling",%error,"primary initialization failed");None}}};
-            if let Some((term, mut watch)) = opened {
+            if let Some((term, mut watch, config_watch)) = opened {
+                let config_worker =
+                    config
+                        .runtime
+                        .spawn(crate::cluster_host::scheduling_config_watch::run(
+                            term.cluster.clone(),
+                            config_watch,
+                            cancel.clone(),
+                        ));
                 if let Some(row) = &expected {
                     let _ = astersql_pd_mcs_utils::clear_expected_primary(
                         config.store.as_ref(),
@@ -480,6 +501,7 @@ async fn run(config: SchedulingHostConfig, state: Arc<State>, primary_lease: i64
                 }
                 state.term.write().unwrap().take();
                 cancel.cancel();
+                let _ = config_worker.await;
                 if let Err(error) = term.cluster.shutdown().await {
                     tracing::warn!(component="scheduling",%error,"domain shutdown failed");
                 }

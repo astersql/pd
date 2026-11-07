@@ -2247,3 +2247,6 @@ mod affinity_write_http;
 
 #[path = "replication_mode.rs"]
 mod replication_mode;
+
+#[path = "scheduling_config_watch.rs"]
+pub(crate) mod scheduling_config_watch;
