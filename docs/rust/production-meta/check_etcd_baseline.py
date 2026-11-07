@@ -7,6 +7,7 @@ import hashlib
 import http.client
 import json
 import math
+import os
 import signal
 import socket
 import subprocess
@@ -60,21 +61,26 @@ class Cluster:
             self.client, self.peer = ports[:3], ports[3:]
         self.cluster = ",".join(f"n{i}=http://127.0.0.1:{p}" for i, p in enumerate(self.peer))
 
+    def spawn(self, i, client, peer, log):
+        client_url, peer_url = f"http://127.0.0.1:{client}", f"http://127.0.0.1:{peer}"
+        return subprocess.Popen([
+            str(self.binary), "--name", f"n{i}", "--data-dir", str(self.root / f"n{i}"),
+            "--listen-client-urls", client_url, "--advertise-client-urls", client_url,
+            "--listen-peer-urls", peer_url, "--initial-advertise-peer-urls", peer_url,
+            "--initial-cluster", self.cluster, "--initial-cluster-token", "acceptance17",
+            "--initial-cluster-state", "new", "--log-level", "error",
+        ], stdout=log, stderr=log)
+
     def start(self):
         for i, (client, peer) in enumerate(zip(self.client, self.peer)):
-            client_url, peer_url = f"http://127.0.0.1:{client}", f"http://127.0.0.1:{peer}"
             with (self.root / f"n{i}.log").open("ab") as log:
-                self.nodes.append(subprocess.Popen([
-                    str(self.binary), "--name", f"n{i}", "--data-dir", str(self.root / f"n{i}"),
-                    "--listen-client-urls", client_url, "--advertise-client-urls", client_url,
-                    "--listen-peer-urls", peer_url, "--initial-advertise-peer-urls", peer_url,
-                    "--initial-cluster", self.cluster, "--initial-cluster-token", "acceptance17",
-                    "--initial-cluster-state", "new", "--log-level", "error",
-                ], stdout=log, stderr=log))
+                self.nodes.append(self.spawn(i, client, peer, log))
         deadline = time.monotonic() + 20
         while time.monotonic() < deadline:
             if any(p.poll() is not None for p in self.nodes):
-                raise RuntimeError("etcd node exited before readiness")
+                detail = [(i, p.returncode, (self.root / f"n{i}.log").read_text()[-2000:])
+                          for i, p in enumerate(self.nodes) if p.poll() is not None]
+                raise RuntimeError(f"node exited before readiness: {detail}")
             statuses = []
             for port in self.client:
                 conn = http.client.HTTPConnection("127.0.0.1", port, timeout=0.5)
@@ -91,16 +97,37 @@ class Cluster:
                         if status["header"]["member_id"] in leaders:
                             return http.client.HTTPConnection("127.0.0.1", port, timeout=3)
             time.sleep(0.05)
-        raise RuntimeError("etcd election timed out")
+        raise RuntimeError("cluster election timed out")
 
     def stop(self):
         nodes, self.nodes = self.nodes, []
         for process in nodes:
             if process.poll() is None:
                 process.terminate()
-        statuses = [process.wait(timeout=20) for process in nodes]
+        statuses = []
+        for process in nodes:
+            try:
+                statuses.append(process.wait(timeout=20))
+            except subprocess.TimeoutExpired:
+                process.kill()
+                statuses.append(process.wait())
         if any(status not in (0, -signal.SIGTERM) for status in statuses):
-            raise RuntimeError(f"unexpected etcd exit codes: {statuses}")
+            raise RuntimeError(f"unexpected node exit codes: {statuses}")
+
+
+class CandidateCluster(Cluster):
+    def spawn(self, i, client, _peer, log):
+        db = self.root / f"node{i}.db"
+        env = dict(os.environ, PD_CANDIDATE_ID=str(i + 1), PD_CANDIDATE_DB=str(db),
+                   PD_CANDIDATE_CLIENT=f"127.0.0.1:{client}",
+                   PD_CANDIDATE_PEERS=",".join(f"127.0.0.1:{port}" for port in self.peer))
+        env.pop("PD_CANDIDATE_INITIALIZE", None)
+        if not db.exists():
+            env["PD_CANDIDATE_INITIALIZE"] = "1"
+        return subprocess.Popen([
+            str(self.binary), "--ignored", "--exact", "candidate_bench_test::candidate_bench_child",
+            "--nocapture",
+        ], env=env, stdout=log, stderr=log)
 
 
 def verify(conn, index):
@@ -110,9 +137,9 @@ def verify(conn, index):
             raise RuntimeError(f"unexpected state for transaction {index}")
 
 
-def run(binary, root):
+def run(binary, root, cluster_type=Cluster):
     root.mkdir()
-    cluster = Cluster(binary, root)
+    cluster = cluster_type(binary, root)
     writes, reads = [], []
     try:
         conn = cluster.start()
@@ -150,15 +177,34 @@ def run(binary, root):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("etcd", type=Path, help="verified etcd 3.5.15 binary")
+    parser.add_argument("--candidate", type=Path, help="release storage-kv unit test binary")
     args = parser.parse_args()
     binary = args.etcd.resolve(strict=True)
     if hashlib.sha256(binary.read_bytes()).hexdigest() != ETCD_SHA:
         raise RuntimeError("etcd binary does not match the pinned oracle")
+    if args.candidate:
+        binary = args.candidate.resolve(strict=True)
+    cluster_type = CandidateCluster if args.candidate else Cluster
     with tempfile.TemporaryDirectory(prefix="pd-meta-etcd-baseline-") as work:
         root = Path(work)
-        samples = [run(binary, root / f"run{i}") for i in range(RUNS)]
-    print(json.dumps({"voters": 3, "transactions": TRANSACTIONS, "bytes_per_value": PAYLOAD,
-                      "etcd_sha256": ETCD_SHA, "samples": samples}, indent=2))
+        samples = [run(binary, root / f"run{i}", cluster_type) for i in range(RUNS)]
+    report = {"voters": 3, "transactions": TRANSACTIONS, "bytes_per_value": PAYLOAD,
+              "etcd_sha256": ETCD_SHA, "samples": samples}
+    if args.candidate:
+        baseline = json.loads(Path(__file__).with_name("etcd-baseline.json").read_text())
+        assert all(baseline[key] == report[key] for key in (
+            "voters", "transactions", "bytes_per_value", "etcd_sha256"))
+        metrics = {"write_p99_ms": max, "read_pair_p99_ms": max,
+                   "write_txn_per_second": min, "reopen_ms": max, "recovered_pairs": min}
+        thresholds = {key: extremum(s[key] for s in baseline["samples"])
+                      for key, extremum in metrics.items()}
+        report["candidate_sha256"] = hashlib.sha256(binary.read_bytes()).hexdigest()
+        report["frozen_thresholds"] = thresholds
+        report["meets_thresholds"] = {
+            key: all(extremum((s[key], thresholds[key])) == thresholds[key] for s in samples)
+            for key, extremum in metrics.items()
+        }
+    print(json.dumps(report, indent=2))
 
 
 if __name__ == "__main__":

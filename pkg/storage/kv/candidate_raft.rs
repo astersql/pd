@@ -14,6 +14,7 @@ use openraft::{
 };
 use rusqlite::{Connection, OptionalExtension, params};
 use serde::{Deserialize, Serialize, de::DeserializeOwned};
+use sha2::{Digest, Sha256};
 
 use super::candidate::Candidate;
 
@@ -33,6 +34,44 @@ struct Image {
     meta: Meta,
     records: Records,
     revision: u64,
+}
+
+#[derive(Deserialize, Serialize)]
+struct SnapshotEnvelope {
+    version: u32,
+    sha256: [u8; 32],
+    payload: Vec<u8>,
+}
+
+impl SnapshotEnvelope {
+    fn from_image(image: &Image) -> Local<Self> {
+        let payload = serde_json::to_vec(image)?;
+        Ok(Self {
+            version: 1,
+            sha256: Sha256::digest(&payload).into(),
+            payload,
+        })
+    }
+
+    fn image(&self) -> Local<Image> {
+        let digest: [u8; 32] = Sha256::digest(&self.payload).into();
+        if self.version != 1 || self.sha256 != digest {
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidData,
+                "invalid snapshot version or checksum",
+            )
+            .into());
+        }
+        Ok(serde_json::from_slice(&self.payload)?)
+    }
+
+    fn into_snapshot(self, meta: Meta) -> Local<Snapshot<Type>> {
+        let bytes = serde_json::to_vec(&self)?;
+        Ok(Snapshot {
+            meta,
+            snapshot: Box::new(Cursor::new(bytes)),
+        })
+    }
 }
 
 #[derive(Clone)]
@@ -159,13 +198,8 @@ impl RaftLogStorage<Type> for RaftDisk {
         self.read(|db| load(db, "vote"))
     }
 
-    async fn save_committed(&mut self, committed: Option<LogId<u64>>) -> StoreResult<()> {
-        self.write(|db| save(db, "committed", &committed))
-    }
-
-    async fn read_committed(&mut self) -> StoreResult<Option<LogId<u64>>> {
-        self.read(|db| Ok(load::<Option<LogId<u64>>>(db, "committed")?.flatten()))
-    }
+    // OpenRaft recovers the commit watermark from durable applied state.
+    // apply() commits its data and applied index together before acknowledging.
 
     async fn append<I>(&mut self, entries: I, callback: LogFlushed<Type>) -> StoreResult<()>
     where
@@ -273,8 +307,9 @@ impl RaftStateMachine<Type> for RaftDisk {
         meta: &Meta,
         snapshot: Box<Cursor<Vec<u8>>>,
     ) -> StoreResult<()> {
-        let image: Image =
+        let envelope: SnapshotEnvelope =
             serde_json::from_slice(snapshot.get_ref()).map_err(|e| failure(ErrorVerb::Read, e))?;
+        let image = envelope.image().map_err(|e| failure(ErrorVerb::Read, e))?;
         if &image.meta != meta {
             return Err(failure(ErrorVerb::Read, "snapshot metadata mismatch"));
         }
@@ -290,21 +325,19 @@ impl RaftStateMachine<Type> for RaftDisk {
             }
             save(db, "revision", &image.revision)?;
             save(db, "membership", &meta.last_membership)?;
-            save(db, "snapshot", &image)
+            save(db, "snapshot", &envelope)
         })
     }
 
     async fn get_current_snapshot(&mut self) -> StoreResult<Option<Snapshot<Type>>> {
-        self.read(|db| load::<Image>(db, "snapshot")?.map(to_snapshot).transpose())
+        self.read(|db| {
+            let Some(envelope) = load::<SnapshotEnvelope>(db, "snapshot")? else {
+                return Ok(None);
+            };
+            let meta = envelope.image()?.meta;
+            envelope.into_snapshot(meta).map(Some)
+        })
     }
-}
-
-fn to_snapshot(image: Image) -> Local<Snapshot<Type>> {
-    let data = serde_json::to_vec(&image)?;
-    Ok(Snapshot {
-        meta: image.meta,
-        snapshot: Box::new(Cursor::new(data)),
-    })
 }
 
 impl RaftSnapshotBuilder<Type> for RaftDisk {
@@ -325,8 +358,9 @@ impl RaftSnapshotBuilder<Type> for RaftDisk {
                 records,
                 revision: load(db, "revision")?.unwrap_or(0),
             };
-            save(db, "snapshot", &image)?;
-            to_snapshot(image)
+            let envelope = SnapshotEnvelope::from_image(&image)?;
+            save(db, "snapshot", &envelope)?;
+            envelope.into_snapshot(image.meta)
         })
     }
 }

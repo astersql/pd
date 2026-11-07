@@ -1,0 +1,44 @@
+{
+  "voters": 3,
+  "transactions": 128,
+  "bytes_per_value": 256,
+  "etcd_sha256": "ec97cf20f1dc01a4d4b3727784b876a2b5a24afbd05409ea5142ea6dcba55a13",
+  "samples": [
+    {
+      "write_p99_ms": 57.099,
+      "read_pair_p99_ms": 1.203,
+      "write_txn_per_second": 23.889,
+      "reopen_ms": 60.5,
+      "recovered_pairs": 128
+    },
+    {
+      "write_p99_ms": 53.787,
+      "read_pair_p99_ms": 1.085,
+      "write_txn_per_second": 24.495,
+      "reopen_ms": 62.969,
+      "recovered_pairs": 128
+    },
+    {
+      "write_p99_ms": 943.754,
+      "read_pair_p99_ms": 0.972,
+      "write_txn_per_second": 17.861,
+      "reopen_ms": 62.567,
+      "recovered_pairs": 128
+    }
+  ],
+  "candidate_sha256": "72887946108841501c5eaf4c9614ea780804fa967824cd161d5684e49d1802fd",
+  "frozen_thresholds": {
+    "write_p99_ms": 37.879,
+    "read_pair_p99_ms": 16.618,
+    "write_txn_per_second": 73.58,
+    "reopen_ms": 418.032,
+    "recovered_pairs": 128
+  },
+  "meets_thresholds": {
+    "write_p99_ms": false,
+    "read_pair_p99_ms": true,
+    "write_txn_per_second": false,
+    "reopen_ms": true,
+    "recovered_pairs": true
+  }
+}

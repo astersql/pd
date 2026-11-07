@@ -15,6 +15,15 @@ const MAX_FILE: usize = 4 * 1024 * 1024;
 struct Device {
     cut: bool,
     syncs: Vec<PathBuf>,
+    fault: Option<(PathBuf, Fault)>,
+    rejected_io: usize,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub(super) enum Fault {
+    Sync,
+    Full,
+    ShortWrite,
 }
 
 #[derive(Clone)]
@@ -67,6 +76,15 @@ impl PowerVfs {
         }
         Ok(device.syncs.clone())
     }
+
+    pub(super) fn reject_wal_io(&self, source: &Path, fault: Fault) {
+        self.device.lock().unwrap().fault =
+            Some((source.canonicalize().unwrap().join("meta.db-wal"), fault));
+    }
+
+    pub(super) fn rejected_io(&self) -> usize {
+        self.device.lock().unwrap().rejected_io
+    }
 }
 
 pub(super) struct CachedFile {
@@ -109,7 +127,17 @@ impl DatabaseHandle for CachedFile {
     }
 
     fn write_all_at(&mut self, buf: &[u8], offset: u64) -> io::Result<()> {
-        let _power = powered(&self.device)?;
+        let mut device = powered(&self.device)?;
+        let fault = device
+            .fault
+            .as_ref()
+            .and_then(|(path, fault)| (path == &self.path).then_some(*fault));
+        if fault == Some(Fault::Full) {
+            device.rejected_io += 1;
+            return Err(io::ErrorKind::WriteZero.into());
+        }
+        let short = fault == Some(Fault::ShortWrite) && !buf.is_empty();
+        let buf = if short { &buf[..buf.len() / 2] } else { buf };
         let start = usize::try_from(offset).map_err(io::Error::other)?;
         let end = start
             .checked_add(buf.len())
@@ -120,12 +148,24 @@ impl DatabaseHandle for CachedFile {
         }
         self.bytes[start..end].copy_from_slice(buf);
         self.dirty = true;
+        if short {
+            device.rejected_io += 1;
+            return Err(io::Error::other("injected short WAL write"));
+        }
         Ok(())
     }
 
     fn sync(&mut self, _data_only: bool) -> io::Result<()> {
         let mut device = powered(&self.device)?;
         if self.dirty {
+            if device
+                .fault
+                .as_ref()
+                .is_some_and(|(path, fault)| path == &self.path && *fault == Fault::Sync)
+            {
+                device.rejected_io += 1;
+                return Err(io::Error::other("injected WAL sync error"));
+            }
             self.file.seek(SeekFrom::Start(0))?;
             self.file.write_all(&self.bytes)?;
             self.file.set_len(self.bytes.len() as u64)?;

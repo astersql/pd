@@ -24,6 +24,10 @@ impl Candidate {
             }
             None => Connection::open_with_flags(path, flags)?,
         };
+        // etcd uses F_FULLFSYNC on macOS. Request the same device-cache
+        // barrier from SQLite's native VFS before opening its WAL.
+        #[cfg(target_os = "macos")]
+        db.pragma_update(None, "fullfsync", true)?;
         db.pragma_update(None, "journal_mode", "WAL")?;
         db.pragma_update(None, "synchronous", "FULL")?;
         let journal: String = db.pragma_query_value(None, "journal_mode", |row| row.get(0))?;

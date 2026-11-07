@@ -2,13 +2,13 @@
 
 状态为实验草案。首个候选是 OpenRaft 0.9.22 加 bundled SQLite。
 原提案的 rusqlite 0.37.0 搭配 libsqlite3-sys 0.35.0 时使用 SQLite 3.50.2。
-该版本处于上游公布的 WAL reset 并发损坏影响范围。后续实验接线应选用包含
-修复的绑定和 SQLite 版本。已用相同场景测过 SQLite 3.51.3 修复版本。
-待生产任务3确定绑定和特性并记录 Cargo.lock 及运行时版本，任务10依据故障结果裁决。
+该版本处于上游公布的 WAL reset 并发损坏影响范围。Rust 实验接线使用
+rusqlite 0.39.0 和 bundled SQLite 3.51.3，绑定与运行时版本均已核实。
+当前裁决和复核条件见独立 ADR。
 [OpenRaft 版本](https://docs.rs/crate/openraft/0.9.22)、
 [rusqlite 版本及依赖](https://docs.rs/crate/rusqlite/0.37.0)、
 [SQLite WAL reset 公告](https://sqlite.org/wal.html#the_wal_reset_bug)、
-[SQLite 许可说明](https://www.sqlite.org/copyright.html)。
+[SQLite 许可说明](https://www.sqlite.org/copyright.html)、[本轮 ADR](adr.md)。
 
 | 路线 | 取舍与待证范围 |
 | --- | --- |
@@ -18,8 +18,8 @@
 
 生产任务3仅建立候选打开及真实重开验证。后续用同一候选分别检查以下边界。
 
-- 串行化节点的日志、vote、截断和已提交索引写入。SQLite 先以 `journal_mode=WAL`
-  和 `synchronous=FULL` 评估，读取配置返回值确认生效。持久事务成功后才触发
+- 串行化节点的日志、vote、截断和应用事务。SQLite 采用 `journal_mode=WAL`
+  和 `synchronous=FULL`，macOS 额外启用 `fullfsync`。持久事务成功后才触发
   Raft 日志完成回调。客户端成功等待多数派提交以及本节点应用事务持久化。
   磁盘错误、提交结果未知或任期过期时停止确认。设计依据见
   [RaftLogStorage](https://docs.rs/openraft/0.9.22/openraft/storage/trait.RaftLogStorage.html)

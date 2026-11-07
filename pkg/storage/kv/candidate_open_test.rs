@@ -8,6 +8,13 @@ fn theme10_candidate_open() {
     let path = dir.path().join("meta.db");
     let store = Candidate::open(&path).unwrap();
     assert_eq!(rusqlite::version(), "3.51.3");
+    #[cfg(target_os = "macos")]
+    assert!(
+        store
+            .db
+            .pragma_query_value(None, "fullfsync", |row| row.get::<_, bool>(0))
+            .unwrap()
+    );
     store
         .db
         .execute(

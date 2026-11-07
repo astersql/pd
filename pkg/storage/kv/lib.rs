@@ -44,6 +44,10 @@ mod txn_cancel_test;
 
 #[cfg(test)]
 mod candidate;
+#[cfg(all(test, unix))]
+mod candidate_bench_test;
+#[cfg(test)]
+mod candidate_commit_test;
 #[cfg(test)]
 mod candidate_open_test;
 #[cfg(test)]

@@ -19,10 +19,16 @@ tonic.workspace = true
 tower.workspace = true
 
 [dev-dependencies]
+axum.workspace = true
+base64.workspace = true
+http-body-util.workspace = true
+hyper.workspace = true
+hyper-util = { workspace = true, features = ["client-legacy", "http1"] }
 openraft.workspace = true
 rusqlite.workspace = true
 serde = { workspace = true, features = ["derive"] }
 serde_json.workspace = true
+sha2.workspace = true
 tempfile.workspace = true
 sqlite-vfs.workspace = true
 getrandom.workspace = true
