@@ -485,8 +485,8 @@ impl ClusterHost {
         ));
         let mut rules = RuleManager::new(storage.clone(), paths);
         {
-            // Scatter uses the canonical default voter rule even when placement rules
-            // are disabled, so the term must initialize the shared rule manager.
+            // Both roles use the same manager. PD initializes defaults;
+            // Scheduling consumes the authoritative policy projection.
             let stores = cluster
                 .stores
                 .get_stores()
@@ -498,11 +498,36 @@ impl ClusterHost {
                     config.replication.max_replicas as i64,
                     config.replication.location_labels.as_slice(),
                     &config.replication.isolation_level,
-                    false,
+                    role == ClusterRole::Scheduling,
                     &config,
                     &stores,
                 )
                 .await?;
+            if role == ClusterRole::Scheduling {
+                // Go's MCS manager starts without synthesizing a default rule;
+                // authoritative rules/groups arrive through the policy cache.
+                let mut patch = rules.config().begin_patch();
+                let mut observed_rules = Vec::new();
+                storage
+                    .load_rules(&paths, |_, raw| observed_rules.push(raw.to_vec()))
+                    .await?;
+                for raw in observed_rules {
+                    let mut rule = astersql_pd_schedule_placement::Rule::from_json(&raw)?;
+                    rules.adjust_rule(&mut rule, &config, &stores)?;
+                    patch.set_rule(rule);
+                }
+                let mut observed_groups = Vec::new();
+                storage
+                    .load_rule_groups(&paths, |_, raw| observed_groups.push(raw.to_vec()))
+                    .await?;
+                for raw in observed_groups {
+                    patch.set_group(astersql_pd_schedule_placement::RuleGroup::from_json(&raw)?);
+                }
+                if patch.mutation_counts() != (0, 0) {
+                    let update = rules.prepare_patch(patch, now().0 as u64)?;
+                    rules.publish_patch(update);
+                }
+            }
         }
         let hot = HotStat::new(&tokio::runtime::Handle::current(), registry, 128)?;
         for store in cluster

@@ -17,6 +17,8 @@ async fn scenario(profile: &str) {
     let native = profile.starts_with("native-");
     let case = profile.strip_prefix("native-").unwrap_or(profile);
     let live_config = case.contains("watch");
+    let authority = case.contains("authority");
+    let placement_rules = case.contains("rules");
     let go = crate::readonly_oracle::pinned_go_binary().unwrap();
     let rust = PathBuf::from(std::env::var_os("PD_COMPAT_RUST_BIN").unwrap());
     let work = Work(std::env::temp_dir().join(format!(
@@ -28,12 +30,13 @@ async fn scenario(profile: &str) {
     std::fs::write(
         &config,
         format!(
-            "{}[replication]\nmax-replicas=2\nenable-placement-rules=false\n",
+            "{}[replication]\nmax-replicas=2\nenable-placement-rules={}\n",
             if case.starts_with("replica-v2") {
                 "cluster-version={Major=5,Minor=0,Patch=0}\n"
             } else {
                 ""
-            }
+            },
+            placement_rules
         ),
     )
     .unwrap();
@@ -52,7 +55,7 @@ async fn scenario(profile: &str) {
         assert_eq!(configuration.1["replication"]["max-replicas"], 2);
         assert_eq!(
             configuration.1["replication"]["enable-placement-rules"],
-            "false"
+            if placement_rules { "true" } else { "false" }
         );
         let mut pd = pdpb::pd_client::PdClient::connect(owner.url.clone())
             .await
@@ -159,6 +162,17 @@ async fn scenario(profile: &str) {
             .unwrap()
             .into_inner()
             .id;
+        let namespace_before = if authority {
+            Some(
+                backend
+                    .read(Read::prefix(b"", Consistency::Linearizable))
+                    .await
+                    .unwrap()
+                    .entries,
+            )
+        } else {
+            None
+        };
         let discovery = if native && is_rust {
             vec!["--pd-discovery=primary-key"]
         } else {
@@ -375,10 +389,23 @@ async fn scenario(profile: &str) {
                     .collect::<Vec<_>>()
             );
         }
+        sidecar.stop();
+        if let Some(before) = namespace_before {
+            let after = backend
+                .read(Read::prefix(b"", Consistency::Linearizable))
+                .await
+                .unwrap()
+                .entries;
+            row["namespace_unchanged"] = json!(before == after);
+            let encode = |entries: &Vec<astersql_pd_storage_kv::Entry>| {
+                entries.iter().map(|e|json!({"key":String::from_utf8_lossy(&e.key),"value":e.value,"create_revision":e.create_revision,"mod_revision":e.mod_revision,"version":e.version,"lease":e.lease})).collect::<Vec<_>>()
+            };
+            row["namespace_before"] = json!(encode(&before));
+            row["namespace_after"] = json!(encode(&after));
+        }
         row["logs"] = json!(sidecar.logs());
         records.push(row);
         save(&records, profile);
-        sidecar.stop();
         drop(backend);
         drop(pd);
         owner.stop().unwrap();
@@ -386,6 +413,12 @@ async fn scenario(profile: &str) {
     for row in &records {
         assert!(row.get("error").is_none(), "real scheduling command: {row}");
         assert_eq!(row["pd_region_unchanged"], true);
+        if authority {
+            assert_eq!(
+                row["namespace_unchanged"], true,
+                "Scheduling must preserve PD-owned metadata namespace: {row}"
+            );
+        }
         if live_config {
             assert_eq!(
                 row["config_pd_owned"], true,
@@ -578,4 +611,14 @@ fn set_replicas(owner: &crate::harness::Server, count: u64) -> Result<Value, Str
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
 async fn sa_016_scheduling_live_replication_config_watch_drives_replica_completion() {
     scenario("replica-watch-complete").await;
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn sa_016_scheduling_complete_namespace_authority_after_operator_completion() {
+    scenario("replica-authority-complete").await;
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn sa_016_scheduling_observed_placement_rules_keep_pd_namespace_unchanged() {
+    scenario("replica-rules-authority-complete").await;
 }

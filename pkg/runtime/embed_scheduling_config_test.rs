@@ -280,8 +280,18 @@ async fn sa_016_scheduling_native_config_compaction_invalid_delete_and_cancel() 
     observed(&term, 5).await;
     let cursor = config_watch.next_revision();
     let updated = produce(backend.clone(), &paths, 2).await;
-    backend.compact(updated.revision).await.unwrap();
-    assert!(cursor <= updated.revision);
+    // Keep the stale cursor strictly older than compaction. The consumer no
+    // longer performs shared-storage housekeeping writes to advance revisions.
+    let barrier_key = format!("/sa016/config-compaction/{cluster}");
+    let barrier = backend
+        .transact(
+            vec![],
+            vec![Mutation::put(barrier_key.as_bytes(), b"barrier")],
+        )
+        .await
+        .unwrap();
+    backend.compact(barrier.revision).await.unwrap();
+    assert!(cursor < barrier.revision);
     let worker = runtime.spawn(crate::cluster_host::scheduling_config_watch::run(
         term.cluster.clone(),
         config_watch,
@@ -299,7 +309,7 @@ async fn sa_016_scheduling_native_config_compaction_invalid_delete_and_cancel() 
     .expect("actual native compacted cursor must be replaced");
     let starts = observations.starts.lock().unwrap().clone();
     assert_eq!(starts[0], cursor);
-    assert!(starts[1] > updated.revision);
+    assert!(starts[1] > barrier.revision);
     assert_eq!(
         configuration(backend.as_ref(), &key).await.entries,
         updated.entries
@@ -392,7 +402,16 @@ async fn sa_016_scheduling_native_config_compaction_invalid_delete_and_cancel() 
         configuration(backend.as_ref(), &key).await.entries[0].value,
         b"{"
     );
-    let receipt = json!({"backend":pd.metadata_url(),"pd_url":pd.url,"cluster":cluster,"native_primary_lease":leader.lease_id(),"initial_revision":initial.revision,"stale_cursor":cursor,"compacted_revision":updated.revision,"replacement_cursors":starts,"native_compaction_errors":observations.compacted.load(Ordering::SeqCst),"deletion_revision":deletion.revision,"invalid_revision":invalid.revision,"recovered_revision":recovered.revision,"cancel_invalid_revision":last_bad.revision,"burst_valid_revision":valid_six.revision,"burst_invalid_revision":burst_bad.revision,"observed_replica_generations":[5,2,6,2,2,2,4],"no_writeback":true,"cancel_join_seconds_bound":2,"primary_removed":true,"scope":"real native etcd with actual Rust PD identity and real Scheduling election; canonical private term assembly and config consumer, not full MCS CLI or Go fault differential; producer inputs are direct canonical metadata fault writes"});
+    backend
+        .transact(
+            vec![],
+            vec![Mutation::Delete {
+                key: barrier_key.into_bytes(),
+            }],
+        )
+        .await
+        .unwrap();
+    let receipt = json!({"backend":pd.metadata_url(),"pd_url":pd.url,"cluster":cluster,"native_primary_lease":leader.lease_id(),"initial_revision":initial.revision,"stale_cursor":cursor,"compacted_revision":barrier.revision,"replacement_cursors":starts,"native_compaction_errors":observations.compacted.load(Ordering::SeqCst),"deletion_revision":deletion.revision,"invalid_revision":invalid.revision,"recovered_revision":recovered.revision,"cancel_invalid_revision":last_bad.revision,"burst_valid_revision":valid_six.revision,"burst_invalid_revision":burst_bad.revision,"observed_replica_generations":[5,2,6,2,2,2,4],"no_writeback":true,"cancel_join_seconds_bound":2,"primary_removed":true,"scope":"real native etcd with actual Rust PD identity and real Scheduling election; canonical private term assembly and config consumer, not full MCS CLI or Go fault differential; producer inputs are direct canonical metadata fault writes"});
     let evidence = std::path::PathBuf::from(std::env::var_os("PD_SA016_EVIDENCE").unwrap())
         .with_extension("native-config-faults.json");
     std::fs::write(evidence, serde_json::to_vec(&receipt).unwrap()).unwrap();

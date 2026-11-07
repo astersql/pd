@@ -7,7 +7,7 @@ use astersql_pd_mcs_discovery::{ServiceRegister, ServiceRegistryEntry};
 use astersql_pd_mcs_scheduling_server::{Host, PdLeaderLookup, RemoteIds, Service};
 use astersql_pd_mcs_server::{BaseServer, DelegateConnections};
 use astersql_pd_mcs_utils::StoreWatcher;
-use astersql_pd_member::{LeaderWatch, Leadership, LeadershipStore};
+use astersql_pd_member::{LeaderWatch, Leadership};
 use astersql_pd_proto::schedulingpb::{Participant, scheduling_server::SchedulingServer};
 use astersql_pd_schedule_config::{ProviderSnapshot, ScheduleDefaults};
 use astersql_pd_server::{Identity, PdServices};
@@ -289,11 +289,34 @@ async fn open(
     String,
 > {
     let paths = ClusterPaths::new(config.cluster_id);
-    let fenced: Arc<dyn MetaStore> = Arc::new(LeadershipStore::new(
-        config.store.clone(),
-        leader.clone(),
-        cancel.clone(),
-    ));
+    // Domain persistence is a term-local projection, matching Go MemoryKV.
+    // Election, registry and observations retain the real shared backend.
+    let domain: Arc<dyn MetaStore> = Arc::new(astersql_pd_storage::MemoryStore::default());
+    // Seed only PD-owned policy inputs into the local storage projection.
+    // Canonical managers build their indices from these snapshots; all ensuing
+    // scheduler configuration/rule housekeeping remains local to this term.
+    for prefix in [
+        paths.rule_common_path_prefix(),
+        paths.region_label_path_prefix(),
+        paths.affinity_groups_prefix(),
+        paths.scheduler_config_path_prefix(),
+    ] {
+        let snapshot = astersql_pd_etcdutil::SnapshotLoader::new(prefix.into_bytes(), true, 128)
+            .load(config.store.as_ref(), &cancel)
+            .await
+            .map_err(|e| e.to_string())?;
+        let writes = snapshot
+            .entries
+            .into_iter()
+            .map(|entry| astersql_pd_storage::Mutation::put(&entry.key, &entry.value))
+            .collect::<Vec<_>>();
+        if !writes.is_empty() {
+            domain
+                .transact(vec![], writes)
+                .await
+                .map_err(|e| e.to_string())?;
+        }
+    }
     let (config_snapshot, config_watch) = astersql_pd_etcdutil::ReconciledWatch::load(
         config.store.clone(),
         paths.config_path().into_bytes(),
@@ -362,7 +385,7 @@ async fn open(
             cluster,
             provider,
             Some(persisted),
-            fenced,
+            domain,
             config.cluster_id,
             member_id,
             cancel.clone(),

@@ -884,3 +884,33 @@ primary初始配置也与watch snapshot使用同一revision。坏document保留�
 [原生配置观察故障回执](task-16-scheduling-config-faults.json.gz)。
 这不是完整换主/网络分区/CLI/TLS故障或其它watch、掉电/原生Rust生产持久化证明，
 16与148继续。
+
+## Scheduling完整持久空间与本地策略投影（16-G）
+
+按编号16有限清单继续核验必需持久副作用，增加同一真实replica/ACK/SUCCESS场景
+前后完整MetaStore key/value/create/mod revision/version/lease快照（在sidecar退出后
+比较，不删除或忽略某类键）。Go不改变该空间；实际Rust red新增一个默认placement
+rule和五个scheduler_config记录。此前仅region/config单键不变的证据不足以发现它。
+
+只读Go装配显示MCS使用MemoryKV，而Rust复用domain时误用了共享fenced backend。
+现在Scheduling term使用canonical MemoryStore作为领域存储；真实backend继续独立
+拥有election/registry及PD配置、store观察。仅把规则/组、region labels、affinity及
+scheduler配置的权威输入快照放入本地投影，由原canonical managers建立索引，
+不复制调度算法、区域索引或创建私有runtime；此阶段不冒充所有policy的完整live watch。
+
+第一次仅切换MemoryStore消除了越权写入，但标签分裂回归实际收到replica命令，
+暴露遗漏PD label输入。导入策略快照后，placement开启场景通过；空rule缓存却因
+强行prepare空patch而启动失败。按Go MCS skip-load语义初始化空manager，只有真实
+rule/group变更才提交canonical patch，不合成PD默认规则，随后九项命令专项全部通过。
+包含placement开启/关闭两种完整namespace对照，实际protobuf、ACK及PD ID断言保留。
+
+相关native compaction回归还暴露旧夹具对这些额外共享写入推进revision的依赖：
+移除写入后cursor等于压缩点，未出现Compacted。测试producer现显式写入独立barrier，
+要求cursor严格小于实际compact revision；保留真实Compacted和更新cursor断言并清理
+barrier。原失败及通过日志均保存，没有放宽成“无错误即可通过”。
+
+当前编号16已维护九项有限收口清单与17–24明确后续责任；本阶段只修复16-G必要的
+领域输入及越权持久差异。源码、完整namespace差异、输入及最终窄回归见
+[持久空间与投影回执](task-16-scheduling-authority.json.gz)。
+SplitRegions/ScatterRegions/RegionBuckets有效输入及16-D/E/F/H所列缺口继续，
+不在本阶段扩展无关HTTP、指标、全配置或全workspace test矩阵。

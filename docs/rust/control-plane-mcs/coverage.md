@@ -356,3 +356,9 @@ Scheduling配置consumer故障补充：原生后端实际Compacted错误及更�
 实际合法事件后紧接坏值的red还修复了latest重读越过事件：现在共享decoder按原值顺序应用。
 [证明边界](../server-api/acceptance/task-16.md#scheduling原生配置观察故障补充进行中)
 明确这是实际Rust PD身份及真实MCS选举下的库级consumer，不冒充完整Go故障差分或CLI矩阵。
+
+16-G持久空间增量：完整MetaStore前后对照捕获并修复默认rule及五个scheduler配置
+越权写入。Scheduling领域改用canonical MemoryStore与权威策略快照；election、
+registry及观察仍使用真实backend，空rule按Go MCS语义处理。placement开/关及
+原命令/ACK九项通过，边界见[回执](../server-api/acceptance/task-16.md#scheduling完整持久空间与本地策略投影16-g)。
+只按编号16有限清单继续必要方法和流，不扩展后续17–24拥有的无关完整回归。
