@@ -1,5 +1,6 @@
 // Copyright 2026 AsterSQL.
 use std::collections::{BTreeMap, BTreeSet};
+use std::sync::Arc;
 use std::time::Duration;
 
 use crate::native_contract_test::contract;
@@ -11,9 +12,27 @@ async fn theme10_native_fencing_after_partition_and_snapshot() {
     let root = tempfile::tempdir().unwrap();
     let directory = |id| root.path().join(format!("node-{id}"));
     let network = Network::default();
+    // This test removes one of three nodes while other suites can contend
+    // for device flushes. Keep the two available voters' election stable.
+    let config = Arc::new(
+        openraft::Config {
+            heartbeat_interval: 50,
+            election_timeout_min: 750,
+            election_timeout_max: 1500,
+            snapshot_policy: openraft::SnapshotPolicy::Never,
+            ..openraft::Config::default()
+        }
+        .validate()
+        .unwrap(),
+    );
     let mut nodes = BTreeMap::new();
     for id in 1..=3 {
-        nodes.insert(id, network.open(&directory(id), 72, id).await);
+        nodes.insert(
+            id,
+            network
+                .open_with_config(&directory(id), 72, id, config.clone())
+                .await,
+        );
     }
     nodes[&1]
         .consensus()
@@ -22,7 +41,7 @@ async fn theme10_native_fencing_after_partition_and_snapshot() {
         .unwrap();
     let initial = leader(nodes.values()).await;
     let old_id = initial.consensus().metrics().borrow().id;
-    let lease = initial.grant(5).await.unwrap();
+    let lease = initial.grant(15).await.unwrap();
     let key = b"leader";
     let attach = |id| Mutation::Put {
         key: key.to_vec(),
@@ -105,7 +124,9 @@ async fn theme10_native_fencing_after_partition_and_snapshot() {
         )
         .await
         .unwrap();
-    let learner = network.open(&directory(4), 72, 4).await;
+    let learner = network
+        .open_with_config(&directory(4), 72, 4, config.clone())
+        .await;
     new.consensus()
         .add_learner(4, openraft::BasicNode::default(), true)
         .await
@@ -131,6 +152,14 @@ async fn theme10_native_fencing_after_partition_and_snapshot() {
         .await
         .unwrap();
     assert_eq!(locally.entries[0].lease, Some(next_lease.id));
+    assert!(
+        learner
+            .read(Read::prefix(b"forbidden", Consistency::Serializable))
+            .await
+            .unwrap()
+            .entries
+            .is_empty()
+    );
     let mut compacted = Read::prefix(key, Consistency::Serializable);
     compacted.revision = Some(first.revision);
     assert_eq!(
@@ -141,7 +170,9 @@ async fn theme10_native_fencing_after_partition_and_snapshot() {
         }
     );
     network.close(4, learner).await;
-    let learner = network.open(&directory(4), 72, 4).await;
+    let learner = network
+        .open_with_config(&directory(4), 72, 4, config.clone())
+        .await;
     assert_eq!(
         learner
             .read(Read::prefix(key, Consistency::Serializable))

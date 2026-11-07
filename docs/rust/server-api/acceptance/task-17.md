@@ -17,3 +17,8 @@
 - 使用实际 `pd-recover` 进程从检查过的原生归档恢复至新共识集群，重开后保留
   持久数据，旧 lease fenced，PD 的 ID 和 TSO 均越过备份边界。
   [原生恢复](../../production-meta/task-30.md)。
+
+整仓 Cargo metadata、格式检查和 `cargo check --offline --workspace --locked`
+通过。整仓测试仍有历史及环境失败。放置规则失败在变更前已有的测试产物可复现。
+TLS etcd 夹具单跑通过。全量差分还有缺少 Go oracle 环境和既有 MCS 依赖边。
+本轮修订后存储包连续三轮 76 项通过，恢复包 4 项通过。

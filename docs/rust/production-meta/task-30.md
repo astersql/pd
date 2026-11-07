@@ -20,3 +20,7 @@
 4 项通过。单次恢复 CLI 到新集群首个已核验读为 152 ms。该值是本地演练测量，
 同配置重开仍使用独立冻结门槛。实际槽位 1，绝对 `CARGO_TARGET_DIR` 为
 `/Users/xiangmin/worker/code/pd/target/rust-slot-1`。
+
+恢复路径复用存储 endpoint 的持久集群元数据编码。恢复工具的正常依赖保持
+后端适配边界，protobuf 客户端依赖只用于测试。修订后同一恢复包的 4 个测试通过。
+整仓依赖审计继续报告既有 `astersql-pd-mcs-server -> astersql-pd-proto` 边。

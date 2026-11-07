@@ -253,8 +253,6 @@ async fn assert_pd_boundaries(
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
 async fn theme10_native_recovery_drill() {
-    use prost::Message;
-
     let root = tempfile::tempdir().unwrap();
     let source_path = root.path().join("source");
     let target_path = root.path().join("target");
@@ -292,11 +290,11 @@ async fn theme10_native_recovery_drill() {
                 Mutation::put(paths.timestamp_path(0).as_bytes(), &timestamp.to_be_bytes()),
                 Mutation::put(
                     paths.cluster_path().as_bytes(),
-                    &astersql_pd_proto::metapb::Cluster {
+                    &astersql_pd_storage_endpoint::Cluster {
                         id: pd_id,
                         ..Default::default()
                     }
-                    .encode_to_vec(),
+                    .encode(),
                 ),
                 Mutation::put(
                     paths.cluster_bootstrap_time_path().as_bytes(),

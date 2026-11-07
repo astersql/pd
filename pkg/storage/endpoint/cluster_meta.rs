@@ -20,6 +20,18 @@ struct WireCluster {
     max_peer_count: u32,
 }
 
+impl Cluster {
+    /// Encode cluster metadata for an atomic storage transaction.
+    pub fn encode(&self) -> Vec<u8> {
+        use prost::Message;
+        WireCluster {
+            id: self.id,
+            max_peer_count: self.max_peer_count,
+        }
+        .encode_to_vec()
+    }
+}
+
 impl StorageEndpoint {
     /// Read cluster metadata; missing and empty values are absent.
     pub async fn load_meta(&self, paths: &ClusterPaths) -> Result<Option<Cluster>, EndpointError> {
@@ -62,12 +74,7 @@ impl StorageEndpoint {
         unix_nanos: u64,
     ) -> Result<bool, EndpointError> {
         use astersql_pd_storage_kv::{Compare, Mutation};
-        use prost::Message;
-        let cluster = WireCluster {
-            id: meta.id,
-            max_peer_count: meta.max_peer_count,
-        }
-        .encode_to_vec();
+        let cluster = meta.encode();
         Ok(self
             .store
             .transact(

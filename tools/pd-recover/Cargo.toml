@@ -14,14 +14,14 @@ path = "bin_main.rs"
 
 [dependencies]
 astersql-pd-keypath.workspace = true
-astersql-pd-proto.workspace = true
+astersql-pd-storage-endpoint.workspace = true
 astersql-pd-storage-kv.workspace = true
 etcd-client.workspace = true
-prost.workspace = true
 tokio = { workspace = true, features = ["macros", "rt", "time"] }
 
 [dev-dependencies]
 astersql-pd-backup.workspace = true
+astersql-pd-proto.workspace = true
 astersql-pd-runtime.workspace = true
 prometheus.workspace = true
 serde_json.workspace = true

@@ -22,3 +22,9 @@ Go 构建分支。
 运行环境使用绝对 `CARGO_TARGET_DIR`，构建目录为
 `/Users/xiangmin/worker/code/pd/target/rust-slot-1`。本轮 release 单元测试复用
 已校验的 etcd fixture，并以新临时目录承载数据。
+
+整仓回归中重现了隔离用例在设备同步争用下的短选举窗口抖动。三节点测试独立
+放宽选举窗口，保持少数派拒绝和 learner 快照断言。修订后
+`cargo test --offline --locked -p astersql-pd-storage-kv -- --test-threads=4`
+连续三轮均退出 0，每轮 64 项单元和 12 项 etcd 契约通过。原生 release 进程的
+选举参数未改变，独立故障与长稳使用原先冻结的 release 二进制。

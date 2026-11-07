@@ -93,7 +93,17 @@ pub(super) fn config() -> Arc<Config> {
 
 impl Network {
     pub(super) async fn open(&self, dir: &Path, cluster: u64, id: u64) -> NativeMetaStore {
-        let store = NativeMetaStore::open(dir, cluster, id, config(), Self(self.0.clone(), id))
+        self.open_with_config(dir, cluster, id, config()).await
+    }
+
+    pub(super) async fn open_with_config(
+        &self,
+        dir: &Path,
+        cluster: u64,
+        id: u64,
+        config: Arc<Config>,
+    ) -> NativeMetaStore {
+        let store = NativeMetaStore::open(dir, cluster, id, config, Self(self.0.clone(), id))
             .await
             .unwrap();
         self.connect(id, &store);

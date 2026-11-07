@@ -3,9 +3,8 @@
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use astersql_pd_keypath::{CLUSTER_ID_PATH, ClusterPaths};
-use astersql_pd_proto::metapb::Cluster;
+use astersql_pd_storage_endpoint::Cluster;
 use etcd_client::{Client, Compare, CompareOp, Txn, TxnOp};
-use prost::Message;
 
 use crate::{Result, metadata_u64, rejected, unchanged};
 
@@ -53,7 +52,7 @@ pub async fn recover_new_with_timestamp(
                 id,
                 ..Default::default()
             }
-            .encode_to_vec(),
+            .encode(),
             None,
         ),
         TxnOp::put(
