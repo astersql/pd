@@ -1,6 +1,7 @@
 // Copyright 2026 AsterSQL.
 //! Process-owned argument and file merge; pure defaults remain in server/config.
 use crate::classic_process::{Config, ProcessError};
+use crate::local_native::LocalNative;
 use astersql_pd_server_config::{ConfigDefaultsContext, decode_toml_config};
 use std::collections::BTreeMap;
 
@@ -28,6 +29,8 @@ pub(crate) const STRING_FLAGS: &[&str] = &[
     "--etcd-endpoints",
     "--etcd-member-endpoint",
     "--etcd-member-id",
+    LocalNative::DATA_DIR_FLAG,
+    LocalNative::CLUSTER_ID_FLAG,
 ];
 
 pub(crate) fn parse(args: impl Iterator<Item = String>) -> Result<Config, ProcessError> {
@@ -138,10 +141,11 @@ pub(crate) fn parse(args: impl Iterator<Item = String>) -> Result<Config, Proces
         .map(|s| boolean(s))
         .transpose()?
         .unwrap_or(false);
-    let config = Config {
+    let mut config = Config {
         config_check,
         unsupported,
         endpoint: flags.get("--etcd-endpoints").cloned().unwrap_or_default(),
+        local_native: None,
         join: values.scalars.join.clone(),
         diagnostic_endpoint: flags.get("--etcd-member-endpoint").cloned(),
         diagnostic_member: flags
@@ -170,6 +174,7 @@ pub(crate) fn parse(args: impl Iterator<Item = String>) -> Result<Config, Proces
     if config.dedicated_member && config.diagnostic_member.is_none() {
         return Err("exclusive ownership requires an explicit etcd member endpoint and ID".into());
     }
+    config.local_native = LocalNative::from_flags(&config, &flags)?;
     Ok(config)
 }
 

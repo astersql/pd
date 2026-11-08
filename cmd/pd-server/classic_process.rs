@@ -14,6 +14,7 @@ pub(crate) struct Config {
     pub config_check: bool,
     pub unsupported: Vec<String>,
     pub endpoint: String,
+    pub local_native: Option<crate::local_native::LocalNative>,
     pub join: String,
     pub security: astersql_pd_server_config::Config,
     pub diagnostic_endpoint: Option<String>,
@@ -118,7 +119,10 @@ where
             Arc::new(prometheus::Registry::new()),
         )
         .await?;
-    node.ready().await?;
+    if let Err(error) = node.ready().await {
+        node.shutdown().await?;
+        return Err(error);
+    }
     tracing::info!(target: "pd", "PD ready");
     let signal_result =
         tokio::select! { result = shutdown => result, result = node.wait() => { result?; Ok(()) } };

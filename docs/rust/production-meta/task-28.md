@@ -1,5 +1,9 @@
 # 生产任务 28 的独立测试目标回执
 
+下文为此前测试夹具的历史回执。服务端验收 18 已另行记录正式二进制的显式
+本地原生入口，生产任务仍按原计划验收。
+[本地拓扑交接](../server-api/acceptance/native-topology.md)。
+
 `cargo test --bin pd-server` 的 Unix 测试目标编译正式配置解析和经典进程
 装配。测试子进程显式注入现有隔离 SQLite/OpenRaft 后端。正式入口的连接器
 继续使用外部 etcd，测试夹具仅由 `cfg(test)` 模块注册。抽出的公共装配

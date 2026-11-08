@@ -1,5 +1,9 @@
 # 生产任务 40 的本地嵌入进程回执
 
+下文为此前测试夹具的历史回执。服务端验收 18 已另行记录正式二进制的显式
+本地原生入口，生产任务仍按原计划验收。
+[本地拓扑交接](../server-api/acceptance/native-topology.md)。
+
 基准 `7b60522a95454ca8e90a9cde2bba0ad3ab87a517`。新登记的
 `theme10_native_single_binary_embedded_wal` 启动同一个 Rust 测试可执行文件的
 两个先后子进程。各子进程作为宿主，调用现有 `PdNodeBuilder`，在调用方 Tokio

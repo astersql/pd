@@ -6,6 +6,8 @@ pub use entry::main;
 
 mod classic_process;
 
+mod local_native;
+
 #[cfg(test)]
 #[path = "main_test.rs"]
 mod main_test;

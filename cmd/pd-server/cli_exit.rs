@@ -22,12 +22,15 @@ Flags:
       --log-file=FILE
       --metrics-addr=URL
       --cacert=FILE --cert=FILE --key=FILE
-      --etcd-endpoints=URLS      REQUIRED for startup; comma-separated external etcd endpoints
+      --etcd-endpoints=URLS      comma-separated external etcd endpoints (default backend)
       --etcd-member-endpoint=URL --etcd-member-id=ID
       --etcd-member-exclusive=true
+      --local-native-data-dir=DIR
+      --local-native-cluster-id=ID
 
-Requires a running external etcd MetaStore; Rust does not embed etcd.
-Help, version and config-check do not connect to etcd.
+Default startup requires external etcd. Supply both local-native flags for
+isolated, loopback-only, single-voter SQLite/OpenRaft development.
+Help, version and config-check do not open a store.
 ";
 
 pub(crate) struct Arguments {
@@ -73,13 +76,18 @@ pub(crate) fn parse(args: Vec<String>) -> Result<Arguments, String> {
     }
     Ok(result)
 }
-pub(crate) fn version() -> String {
+pub(crate) fn version(local_native: bool) -> String {
     format!(
-        "Release Version: {}\nEdition: Community\nKernel Type: Classic\nGit Commit Hash: {}\nGit Branch: {}\nUTC Build Time:  {}\nImplementation: Rust (external etcd MetaStore)",
+        "Release Version: {}\nEdition: Community\nKernel Type: Classic\nGit Commit Hash: {}\nGit Branch: {}\nUTC Build Time:  {}\nImplementation: Rust ({})",
         env!("CARGO_PKG_VERSION"),
         option_env!("PD_GIT_HASH").unwrap_or("unknown"),
         option_env!("PD_GIT_BRANCH").unwrap_or("unknown"),
-        option_env!("PD_BUILD_TIME").unwrap_or("unknown")
+        option_env!("PD_BUILD_TIME").unwrap_or("unknown"),
+        if local_native {
+            "local native MetaStore"
+        } else {
+            "external etcd MetaStore"
+        },
     )
 }
 

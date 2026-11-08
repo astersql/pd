@@ -16,25 +16,11 @@ pub(super) struct Host {
 }
 
 impl Host {
-    pub(super) fn start(
-        root: &Path,
-        label: &str,
-        address: Option<SocketAddr>,
-        fixture: &str,
-    ) -> Self {
+    pub(super) fn start(root: &Path, label: &str, command: &mut Command) -> Self {
         let log = root.join(format!("{label}.log"));
         let output = File::create(&log).unwrap();
-        let ready = root.join(format!("{label}.ready"));
-        let child = Command::new(std::env::current_exe().unwrap())
-            .args(["--ignored", "--exact", fixture, "--nocapture"])
-            .env_clear()
-            .env("PATH", "/nonexistent")
-            .env("PD_NATIVE_HOST_STORE", root.join("store"))
-            .env("PD_NATIVE_HOST_READY", &ready)
-            .env(
-                "PD_NATIVE_HOST_ADDRESS",
-                address.map(|a| a.to_string()).unwrap_or_default(),
-            )
+        let child = command
+            .current_dir(root)
             .stdin(Stdio::null())
             .stdout(output.try_clone().unwrap())
             .stderr(output)

@@ -2,7 +2,7 @@
 
 use std::{
     collections::BTreeSet, fs, net::SocketAddr, os::unix::process::ExitStatusExt, path::PathBuf,
-    sync::Arc, time::Duration,
+    process::Command, sync::Arc, time::Duration,
 };
 
 use astersql_pd_runtime::{PdNodeBuilder, bootstrap_config};
@@ -13,6 +13,25 @@ use tokio_util::sync::CancellationToken;
 use crate::native_process_test_support::{Host, observe};
 
 const FIXTURE: &str = "native_single_binary_test::run_native_host_fixture";
+
+fn start_host(root: &std::path::Path, label: &str, address: Option<SocketAddr>) -> Host {
+    Host::start(
+        root,
+        label,
+        Command::new(std::env::current_exe().unwrap())
+            .args(["--ignored", "--exact", FIXTURE, "--nocapture"])
+            .env_clear()
+            .env("PATH", "/nonexistent")
+            .env("PD_NATIVE_HOST_STORE", root.join("store"))
+            .env("PD_NATIVE_HOST_READY", root.join(format!("{label}.ready")))
+            .env(
+                "PD_NATIVE_HOST_ADDRESS",
+                address
+                    .map(|address| address.to_string())
+                    .unwrap_or_default(),
+            ),
+    )
+}
 
 #[tokio::test]
 #[ignore = "test subprocess driven by theme10_native_single_binary_embedded_wal"]
@@ -88,10 +107,9 @@ async fn run_native_host_fixture() {
 
 #[tokio::test]
 async fn theme10_native_single_binary_embedded_wal() {
-    // This executes the embedded host only. The standalone pd-server CLI is
-    // exercised separately when its native backend selection is available.
+    // The native_local_cli integration target covers the standalone binary.
     let root = tempfile::tempdir().unwrap();
-    let mut first = Host::start(root.path(), "first", None, FIXTURE);
+    let mut first = start_host(root.path(), "first", None);
     let ready = root.path().join("first.ready");
     first.wait_for(|_| ready.is_file()).await;
     let address: SocketAddr = fs::read_to_string(ready).unwrap().parse().unwrap();
@@ -108,7 +126,7 @@ async fn theme10_native_single_binary_embedded_wal() {
     assert!(wal.is_file());
     assert!(tokio::net::TcpStream::connect(address).await.is_err());
 
-    let mut reopened = Host::start(root.path(), "reopen", Some(address), FIXTURE);
+    let mut reopened = start_host(root.path(), "reopen", Some(address));
     reopened
         .wait_for(|_| root.path().join("reopen.ready").is_file())
         .await;

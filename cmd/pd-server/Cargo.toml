@@ -38,14 +38,18 @@ astersql-pd-runtime.workspace = true
 tokio.workspace = true
 tokio-util.workspace = true
 astersql-pd-storage.workspace = true
+astersql-pd-storage-kv.workspace = true
 prometheus.workspace = true
 [dev-dependencies]
 tonic.workspace = true
 tokio-stream.workspace = true
-astersql-pd-storage-kv.workspace = true
 serde_json.workspace = true
 tempfile.workspace = true
 
 [[test]]
 name = "tls_listener"
 path = "tls_listener_test.rs"
+
+[[test]]
+name = "native_local_cli"
+path = "native_standalone_test.rs"

@@ -5,6 +5,7 @@ use astersql_pd_storage::{EtcdMetaStore, MetaStore};
 
 use crate::classic_process::run_with_backend;
 pub(crate) use crate::classic_process::{Config, ProcessError, prepare_shutdown_signal};
+use crate::local_native::LocalNative;
 
 async fn shutdown_signal() -> Result<(), std::io::Error> {
     prepare_shutdown_signal()?.await
@@ -24,10 +25,13 @@ pub(crate) async fn run_until(
     run_with_logging(config, shutdown, None).await
 }
 async fn run_with_logging(
-    config: Config,
+    mut config: Config,
     shutdown: impl Future<Output = Result<(), std::io::Error>>,
     log_level: Option<Arc<dyn astersql_pd_logutil::LogLevelControl>>,
 ) -> Result<Vec<&'static str>, ProcessError> {
+    if let Some(local) = config.local_native.take() {
+        return local.run(config, shutdown, log_level).await;
+    }
     run_with_backend(config, shutdown, log_level, |endpoint| async move {
         let endpoints: Vec<_> = endpoint.split(',').map(String::from).collect();
         let store: Arc<dyn MetaStore> =
@@ -61,15 +65,30 @@ pub fn main() -> ExitCode {
         print!("{}", crate::cli_exit::HELP);
         return ExitCode::SUCCESS;
     }
+    let local_native = args.config.iter().any(|arg| {
+        arg.split_once('=').is_some_and(|(key, _)| {
+            matches!(
+                key,
+                LocalNative::DATA_DIR_FLAG | LocalNative::CLUSTER_ID_FLAG
+            )
+        })
+    });
     let config = match Config::parse(args.config.into_iter()) {
         Ok(config) => config,
         Err(error) => {
             println!("{}", crate::cli_logging::config_error(&error.to_string()));
-            return ExitCode::SUCCESS;
+            return if local_native {
+                ExitCode::FAILURE
+            } else {
+                ExitCode::SUCCESS
+            };
         }
     };
     if args.version {
-        println!("{}", crate::cli_exit::version());
+        println!(
+            "{}",
+            crate::cli_exit::version(config.local_native.is_some())
+        );
         return ExitCode::SUCCESS;
     }
     if config.config_check {
@@ -82,7 +101,7 @@ pub fn main() -> ExitCode {
         }
         return ExitCode::SUCCESS;
     }
-    if config.endpoint.is_empty() {
+    if config.endpoint.is_empty() && config.local_native.is_none() {
         eprintln!("pd-server: --etcd-endpoints is required for the transitional backend");
         return ExitCode::FAILURE;
     }

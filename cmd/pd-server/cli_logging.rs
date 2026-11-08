@@ -118,6 +118,11 @@ pub(crate) fn config_error(error: &str) -> &'static str {
     for message in [
         "-initial-cluster and -join can not be provided at the same time",
         "log directory shouldn't be the subdirectory of data directory",
+        "local native mode requires both data directory and cluster ID",
+        "local native cluster ID must be a nonzero integer",
+        "local native data directory must not be empty",
+        "local native mode requires classic PD without etcd or join settings",
+        "local native mode requires literal loopback URLs with ports",
     ] {
         if error == message {
             return message;
