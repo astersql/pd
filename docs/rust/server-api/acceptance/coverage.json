@@ -41,5 +41,38 @@
         "after": "9f5465a21b1230b39d248b1d3f5606b5ffca84aaddc8365bbc5755d3a71749f4"
       }
     }
+  },
+  "surface_audit_21": {
+    "receipt": "docs/rust/server-api/acceptance/task-21.json.gz",
+    "head": "ab03aa33858110882818c0df586e3af515a47ee1",
+    "source_counts": {
+      "same": 230,
+      "added": 193,
+      "changed": 37
+    },
+    "owned_rows": 2394,
+    "bound_rows": 18,
+    "source_transition": {
+      "docs/rust/server-api/surface-inventory.md": {
+        "before": "a64666b05bd794e4e32303a16fd62f361f97e255fd97b84e2c3e0708b6c677e4",
+        "after": "8ddc01727e37af6704b5d7c46fa2fcf59c126cf9b628fed654bb319c1964c724"
+      },
+      "pkg/runtime/member_role_worker.rs": {
+        "before": "e2569e7dd2dc7d76a6e8f13503dfeb67218e5cff69c7338453276adc07c9261b",
+        "after": "45800a8679690edae735df51635e932e2b474ff75976b72de0952ab4925393b8"
+      },
+      "tests/rust-compat/accept_inventory_19_test.rs": {
+        "before": "9f5465a21b1230b39d248b1d3f5606b5ffca84aaddc8365bbc5755d3a71749f4",
+        "after": "2027bac9c1d91115da15a94b4c892c4ae5532b3886d992389cde5433cc436c77"
+      },
+      "tests/rust-compat/accept_inventory_20_test.rs": {
+        "before": "244c9a2118050e32f42b93fb255b0d8fbbc3f2c0843fdc087ad4394d219abae9",
+        "after": "e9cd7baf9e46de3c3b90b24317b73af010085bd04fa38b4bb646e0e44de04570"
+      },
+      "tests/rust-compat/lib.rs": {
+        "before": "b76c4b489adb29c825b7aeff634af6c40ff65cd65aea6e79188640a13b95ba73",
+        "after": "d5e8155b08d6aea45f3868f31681340d0d9fad8531b692775e39de6499b58d23"
+      }
+    }
   }
 }

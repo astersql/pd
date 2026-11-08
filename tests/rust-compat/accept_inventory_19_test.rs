@@ -284,6 +284,13 @@ fn sa_019_inventory() {
         .map(|path| path.as_str().unwrap())
         .collect();
     let transition = &coverage["wire_audit_20"]["source_transition"];
+    let surface = &coverage["surface_audit_21"]["source_transition"];
+    let refreshed: Value = if surface.is_null() {
+        Value::Null
+    } else {
+        let path = coverage["surface_audit_21"]["receipt"].as_str().unwrap();
+        serde_json::from_slice(&read_command(&root, "gzip", &["-dc", path])).unwrap()
+    };
     let paths = audit_paths(
         &historical,
         std::str::from_utf8(&base).unwrap(),
@@ -307,6 +314,10 @@ fn sa_019_inventory() {
                     | "docs/rust/server-api/acceptance/task-20.md"
                     | "docs/rust/server-api/acceptance/task-20.json.gz"
             ) || transition.is_null())
+            .filter(
+                |path| !super::accept_inventory_21_test::owns_new_audit_path(path)
+                    || surface.is_null()
+            )
             .collect(),
         "source path set drift"
     );
@@ -359,7 +370,7 @@ fn sa_019_inventory() {
         } else {
             // The protocol audit owns these exact audit-only changes. Keep the
             // previous bytes pinned as well as the explicit successor hashes.
-            if matches!(
+            let prior = if matches!(
                 path.as_str(),
                 "docs/rust/server-api/wire-inventory.md"
                     | "tests/rust-compat/accept_inventory_19_test.rs"
@@ -368,12 +379,12 @@ fn sa_019_inventory() {
             {
                 let handoff = &transition[path];
                 assert_eq!(handoff["before"], row["current_sha256"], "{path}");
-                check_input(&handoff["after"], current.as_deref())
-                    .unwrap_or_else(|err| panic!("{err}: {path}"));
+                &handoff["after"]
             } else {
-                check_input(&row["current_sha256"], current.as_deref())
-                    .unwrap_or_else(|err| panic!("{err}: {path}"));
-            }
+                &row["current_sha256"]
+            };
+            let expected = super::accept_inventory_21_test::successor_hash(surface, path, prior);
+            check_input(expected, current.as_deref()).unwrap_or_else(|err| panic!("{err}: {path}"));
         }
         let successor = row["successor"].as_str().unwrap();
         assert!(
@@ -408,11 +419,22 @@ fn sa_019_inventory() {
         );
         for claim in row["runs"].as_array().unwrap() {
             let id = claim.as_str().unwrap();
-            let receipt = &snapshot["runs"][id];
+            let prior = &snapshot["runs"][id];
+            let replay = refreshed["replays_19"]["runs"].get(id);
+            let receipt = replay.unwrap_or(prior);
+            assert_eq!(receipt["test"], prior["test"], "{id}");
             check_run(receipt, path, current.as_deref())
                 .unwrap_or_else(|err| panic!("{err}: {path} / {id}"));
             if checked_runs.insert(id) {
-                for (input, expected) in receipt["inputs"].as_object().unwrap() {
+                let prior_inputs = prior["inputs"].as_object().unwrap();
+                let inputs = if replay.is_some() {
+                    let inputs = refreshed["replays_19"]["inputs"].as_object().unwrap();
+                    assert!(inputs.keys().eq(prior_inputs.keys()), "{id}");
+                    inputs
+                } else {
+                    prior_inputs
+                };
+                for (input, expected) in inputs {
                     assert!(canonical(input), "{input}");
                     let bytes = fs::read(root.join(input)).unwrap();
                     check_input(expected, Some(&digest(&bytes)))

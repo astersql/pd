@@ -198,3 +198,6 @@ mod accept_inventory_19_test;
 
 #[cfg(test)]
 mod accept_inventory_20_test;
+
+#[cfg(test)]
+mod accept_inventory_21_test;

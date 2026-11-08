@@ -334,6 +334,7 @@ fn sa_020_inventory() {
     let coverage: Value = serde_json::from_slice(&fs::read(root.join(COVERAGE)).unwrap()).unwrap();
     let report = read_report(&root);
     let index = &coverage["wire_audit_20"];
+    let surface = &coverage["surface_audit_21"]["source_transition"];
     assert_eq!(index["receipt"], RECEIPT);
     assert_eq!(index["head"], report["head"]);
     assert_eq!(index["counts"], report["counts"]);
@@ -387,6 +388,9 @@ fn sa_020_inventory() {
     let mut expected: BTreeSet<_> = std::str::from_utf8(&files)
         .unwrap()
         .split_terminator('\0')
+        .filter(|path| {
+            !super::accept_inventory_21_test::owns_new_audit_path(path) || surface.is_null()
+        })
         .chain(original.keys().copied())
         .collect();
     for row in report["registrations"].as_object().unwrap().values() {
@@ -448,11 +452,20 @@ fn sa_020_inventory() {
             fs::read(root.join(path)).unwrap_or_else(|err| panic!("{path}: {err}"))
         };
         let hash = digest(&bytes);
-        check_current(entry, &hash).unwrap_or_else(|err| panic!("{path}: {err}"));
+        if surface.get(path).is_some() {
+            let expected = super::accept_inventory_21_test::successor_hash(
+                surface,
+                path,
+                &entry["current_sha256"],
+            );
+            assert_eq!(expected, &hash, "wire source input drift: {path}");
+        } else {
+            check_current(entry, &hash).unwrap_or_else(|err| panic!("{path}: {err}"));
+        }
         if path != RETIRED {
             let expected = match original.get(path.as_str()) {
                 None => "added",
-                Some(old) if *old == hash => "same",
+                Some(old) if entry["current_sha256"] == *old => "same",
                 Some(_) => "changed",
             };
             assert_eq!(entry["change"], expected, "{path}");

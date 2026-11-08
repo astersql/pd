@@ -6280,3 +6280,15 @@ Go collector/runtime/cgroup 指标依赖 Go 运行时，owner主题9/86/102须�
 Markdown文档，运行验证不适用。后续Rust/Cargo/脚本增删单独列入同一审计记录。
 GC/keyspace/MCS/生产后端仍按既有领域缺口交接，未重新拆分或宣布兼容。
 本补记本身是后续文档漂移，既有冻结集合与历史失败记录保持原口径。
+
+## 第 21 项当前审计
+
+[审计说明](acceptance/task-21.md)和[逐行回执](acceptance/task-21.json.gz)
+保留本轮来源摘要、原 owner、当前文件及具体场景。上面的原始 manifest
+和历史 SHA-256 保持原样。当前入口在 [coverage.json](acceptance/coverage.json)
+的 `surface_audit_21`。
+
+classic 与 API 模式均复验 CLI 覆盖 TOML 日志配置、配置 HTTP 和实际日志文件，
+并按 AllocID 的原始响应和真实 etcd 字节核对 `pd_cluster_id{type="idalloc"}`。
+额外的 keyspace 标签和 TSO 模式差异单列。指标记录的准入范围限于实际采样；
+全 HTTP 矩阵和指标生命周期回归归第 23 项。

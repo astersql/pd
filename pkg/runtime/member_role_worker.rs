@@ -505,6 +505,9 @@ impl PdServices for RoleServices {
         config.keyspace = dynamic.keyspace;
         config.microservice = dynamic.microservice;
         if let Some(telemetry) = self.telemetry_config() {
+            if !telemetry.log.level.is_empty() {
+                config.log = telemetry.log.clone();
+            }
             if !telemetry.pd_server.metric_storage.is_empty() {
                 config.pd_server.metric_storage = telemetry.pd_server.metric_storage.clone();
             }
