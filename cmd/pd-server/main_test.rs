@@ -9,25 +9,17 @@ fn standalone_runtime_lifecycle() {
         .enable_all()
         .build()
         .unwrap();
+    let config = crate::entry::Config::parse(
+        [
+            "--name=standalone".to_owned(),
+            "--client-urls=http://127.0.0.1:0".to_owned(),
+            format!("--etcd-endpoints={}", fixture.endpoint),
+        ]
+        .into_iter(),
+    )
+    .unwrap();
     let events = runtime
-        .block_on(crate::entry::run_until(
-            crate::entry::Config {
-                config_check: false,
-                unsupported: Vec::new(),
-                diagnostic_endpoint: None,
-                diagnostic_member: None,
-                dedicated_member: false,
-                endpoint: fixture.endpoint.clone(),
-                join: String::new(),
-                security: Default::default(),
-                client: "http://127.0.0.1:0".into(),
-                peer: "http://127.0.0.1:2380".into(),
-                name: "standalone".into(),
-                advertise_client: None,
-                advertise_peer: None,
-            },
-            async { Ok(()) },
-        ))
+        .block_on(crate::entry::run_until(config, async { Ok(()) }))
         .unwrap();
     assert_eq!(
         events,

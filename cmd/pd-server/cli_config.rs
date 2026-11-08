@@ -1,6 +1,6 @@
 // Copyright 2026 AsterSQL.
 //! Process-owned argument and file merge; pure defaults remain in server/config.
-use crate::entry::{Config, ProcessError};
+use crate::classic_process::{Config, ProcessError};
 use astersql_pd_server_config::{ConfigDefaultsContext, decode_toml_config};
 use std::collections::BTreeMap;
 

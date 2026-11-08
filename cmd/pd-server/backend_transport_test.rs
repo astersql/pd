@@ -2,9 +2,7 @@
 #[allow(dead_code)]
 #[path = "../../pkg/storage/kv/contract_test.rs"]
 mod contract;
-#[allow(dead_code)]
-#[path = "../../pkg/storage/kv/etcd_fixture_test.rs"]
-mod fixture;
+use crate::main_test::fixture;
 use astersql_pd_storage::{Consistency, MetaStore, Read, StoreError};
 use std::{path::PathBuf, process::Command};
 use tokio_util::sync::CancellationToken;

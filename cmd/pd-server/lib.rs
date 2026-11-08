@@ -4,6 +4,8 @@
 mod entry;
 pub use entry::main;
 
+mod classic_process;
+
 #[cfg(test)]
 #[path = "main_test.rs"]
 mod main_test;
@@ -28,6 +30,12 @@ mod process_shutdown_test;
 
 #[cfg(all(test, unix))]
 mod native_single_binary_test;
+
+#[cfg(all(test, unix))]
+mod native_process_test_support;
+
+#[cfg(all(test, unix))]
+mod native_etcd_cutover_test;
 
 mod standalone_tso;
 
