@@ -1,0 +1,39 @@
+[package]
+name = "astersql-pd-backup-cli"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[lib]
+path = "lib.rs"
+
+[[bin]]
+name = "pd-backup"
+path = "bin_main.rs"
+
+[dependencies]
+astersql-pd-backup.workspace = true
+etcd-client.workspace = true
+http-body-util.workspace = true
+hyper.workspace = true
+hyper-rustls.workspace = true
+hyper-util = { workspace = true, features = ["client-legacy"] }
+rustls.workspace = true
+rustls-native-certs.workspace = true
+serde_json.workspace = true
+tempfile.workspace = true
+tokio.workspace = true
+
+[dev-dependencies]
+astersql-pd-keypath.workspace = true
+astersql-pd-runtime.workspace = true
+astersql-pd-server-config.workspace = true
+astersql-pd-storage-kv.workspace = true
+prometheus.workspace = true
+tonic.workspace = true
+tokio-util.workspace = true
+
+[[test]]
+name = "entry"
+path = "entry_test.rs"

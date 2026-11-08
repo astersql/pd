@@ -136,6 +136,20 @@ async fn ops_088_old_member_respects_identity_and_allocator_floor() {
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
 async fn ops_092_roundtrip_backup_recover_and_restart() {
+    roundtrip(None).await;
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+#[ignore = "build pd-backup in the same claimed Cargo slot and provide PD_TEST_BACKUP_BIN"]
+async fn ops_092_roundtrip_process() {
+    let binary = std::path::PathBuf::from(std::env::var_os("PD_TEST_BACKUP_BIN").unwrap());
+    let slot = std::path::PathBuf::from(std::env::var_os("CARGO_TARGET_DIR").unwrap());
+    assert!(slot.is_absolute());
+    assert_eq!(binary, slot.join("debug/pd-backup"));
+    roundtrip(Some(&binary)).await;
+}
+
+async fn roundtrip(backup_binary: Option<&std::path::Path>) {
     let source = fixture::Fixture::start();
     let mut source_client = connect(&source).await;
     assert!(
@@ -145,28 +159,54 @@ async fn ops_092_roundtrip_backup_recover_and_restart() {
     );
     let paths = ClusterPaths::new(99);
     let (mut source_pd, source_url) = node(&source, 99).await;
-    let config = Command::new("curl")
-        .args(["-fsS", "--max-time", "4"])
-        .arg(format!("{source_url}/pd/api/v1/config"))
-        .output()
-        .unwrap();
-    assert!(
-        config.status.success(),
-        "{}",
-        String::from_utf8_lossy(&config.stderr)
-    );
-    let backup = collect(
-        &mut source_client,
-        serde_json::from_slice(&config.stdout).unwrap(),
-    )
-    .await
-    .unwrap();
-    assert!(backup.alloc_timestamp_max > 0);
-    source_pd.shutdown().await.unwrap();
     let dir = tempfile::tempdir().unwrap();
     let file = dir.path().join("backup.json");
-    write_backup(File::create(&file).unwrap(), &backup).unwrap();
+    if let Some(binary) = backup_binary {
+        let output = Command::new(binary)
+            .args([
+                "-pd",
+                &source_url,
+                "--etcd-endpoints",
+                &source.endpoint,
+                "-file",
+            ])
+            .arg(&file)
+            .output()
+            .unwrap();
+        assert!(
+            output.status.success(),
+            "pd-backup exited {}: {}",
+            output.status,
+            String::from_utf8_lossy(&output.stderr)
+        );
+        assert!(
+            String::from_utf8(output.stdout)
+                .unwrap()
+                .starts_with("pd backup successful!")
+        );
+    } else {
+        let config = Command::new("curl")
+            .args(["-fsS", "--max-time", "4"])
+            .arg(format!("{source_url}/pd/api/v1/config"))
+            .output()
+            .unwrap();
+        assert!(
+            config.status.success(),
+            "{}",
+            String::from_utf8_lossy(&config.stderr)
+        );
+        let backup = collect(
+            &mut source_client,
+            serde_json::from_slice(&config.stdout).unwrap(),
+        )
+        .await
+        .unwrap();
+        write_backup(File::create(&file).unwrap(), &backup).unwrap();
+    }
+    source_pd.shutdown().await.unwrap();
     let backup: BackupInfo = serde_json::from_slice(&fs::read(file).unwrap()).unwrap();
+    assert_eq!(backup.cluster_id, 99);
+    assert!(backup.alloc_timestamp_max > 0);
 
     let mut target = fixture::Fixture::start();
     let id = format!("-cluster-id={}", backup.cluster_id);
@@ -248,6 +288,10 @@ async fn assert_pd_boundaries(
     assert!(response.header.unwrap().error.is_none());
     let physical = u64::try_from(response.timestamp.unwrap().physical).unwrap();
     assert!(physical > alloc_timestamp_max / 1_000_000);
+    println!(
+        "restored cluster {cluster_id}: ID {id} > {alloc_id_max}, TSO physical {physical} ms > {} ms",
+        alloc_timestamp_max / 1_000_000
+    );
     drop(tso);
 }
 

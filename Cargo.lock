@@ -210,6 +210,30 @@ dependencies = [
 ]
 
 [[package]]
+name = "astersql-pd-backup-cli"
+version = "0.1.0"
+dependencies = [
+ "astersql-pd-backup",
+ "astersql-pd-keypath",
+ "astersql-pd-runtime",
+ "astersql-pd-server-config",
+ "astersql-pd-storage-kv",
+ "etcd-client",
+ "http-body-util",
+ "hyper",
+ "hyper-rustls",
+ "hyper-util",
+ "prometheus",
+ "rustls",
+ "rustls-native-certs",
+ "serde_json",
+ "tempfile",
+ "tokio",
+ "tokio-util",
+ "tonic",
+]
+
+[[package]]
 name = "astersql-pd-balancer"
 version = "0.1.0"
 dependencies = [
