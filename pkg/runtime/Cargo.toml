@@ -81,4 +81,5 @@ astersql-pd-statistics-buckets.workspace = true
 rusty-leveldb.workspace = true
 astersql-pd-compat-tests.workspace = true
 astersql-pd-storage-kv.workspace = true
+tempfile.workspace = true
 tokio-stream.workspace = true
