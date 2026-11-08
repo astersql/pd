@@ -26,6 +26,9 @@ mod cli_logging;
 #[cfg(test)]
 mod process_shutdown_test;
 
+#[cfg(all(test, unix))]
+mod native_single_binary_test;
+
 mod standalone_tso;
 
 mod standalone_mcs;

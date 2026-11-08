@@ -44,6 +44,7 @@ tonic.workspace = true
 tokio-stream.workspace = true
 astersql-pd-storage-kv.workspace = true
 serde_json.workspace = true
+tempfile.workspace = true
 
 [[test]]
 name = "tls_listener"
