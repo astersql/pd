@@ -1,29 +1,64 @@
 // Copyright 2026 AsterSQL.
-use super::grpc_regression::cases;
-use std::collections::BTreeSet;
+use super::grpc_regression::{cases, dual_supervisor};
+use std::{collections::BTreeSet, path::Path};
+
+const MANIFEST_DIR: &str = env!("CARGO_MANIFEST_DIR");
 
 #[test]
-fn task_100_behavior() {
+fn sa_022_full_classic_catalog() {
     let inventory = include_str!("../../docs/rust/server-api/wire-inventory.md");
     let expected: BTreeSet<_> = inventory
         .lines()
         .filter(|l| l.starts_with("| ") && l.contains("RPC-"))
-        .filter_map(|line| {
-            let columns: Vec<_> = line.split('|').collect();
-            let method = columns[1].trim();
-            (columns[5].trim() != "78" || matches!(method, "WatchGCSafePointV2" | "WatchGCStates"))
-                .then_some(method)
-        })
+        .map(|line| line.split('|').nth(1).unwrap().trim())
         .collect();
-    let actual: BTreeSet<_> = cases()
+    let catalog = cases();
+    let actual: BTreeSet<_> = catalog
         .iter()
         .flat_map(|(_, methods)| methods.iter().copied())
         .collect();
     assert_eq!(
         actual, expected,
-        "every implemented PD matrix method needs a real differential entrypoint"
+        "every classic PD method needs a real differential entrypoint"
     );
-    super::grpc_regression::run(&std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../.."));
+    assert_eq!(actual.len(), 56);
+    assert_eq!(
+        catalog
+            .iter()
+            .map(|(_, methods)| methods.len())
+            .sum::<usize>(),
+        actual.len(),
+        "duplicate RPC method in the catalog"
+    );
+    assert_eq!(
+        catalog
+            .iter()
+            .map(|(case, _)| case)
+            .collect::<BTreeSet<_>>()
+            .len(),
+        catalog.len(),
+        "duplicate scenario in the catalog"
+    );
+    println!(
+        "classic RPC catalog: {}",
+        serde_json::to_string(&catalog).unwrap()
+    );
+}
+
+#[test]
+fn sa_022_go_client_dual() {
+    let root = Path::new(MANIFEST_DIR).join("../..");
+    let status = dual_supervisor(&root)
+        .args(["--case", "go-client-core"])
+        .status()
+        .expect("read-only Go client supervisor");
+    assert!(status.success(), "Go client regression failed: {status}");
+}
+
+#[test]
+fn task_100_behavior() {
+    sa_022_full_classic_catalog();
+    super::grpc_regression::run(&Path::new(MANIFEST_DIR).join("../.."));
 }
 
 /// Mutate actual generated messages, including optional defaults and enum numbers;

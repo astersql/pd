@@ -20,6 +20,17 @@ ROOT = Path(__file__).resolve().parent.parent
 MODULES = {'go.mod', 'go.sum', 'go.work', 'go.work.sum'}
 
 
+# These are the complete dual matrices, rather than their Rust-only admission tests.
+GC_CASES = {
+    'gc-legacy': ('accept_gc_03_test::sa_003_behavior', 'SA_003_REPORT'),
+    'gc-v2': ('accept_gc_04_test::sa_004_behavior', 'PD_SA004_REPORT'),
+    'gc-advance': ('accept_gc_05_test::sa_005_dual_matrix', 'PD_SA005_REPORT'),
+    'gc-barrier': ('accept_gc_06_test::sa_006_dual_matrix', 'PD_SA006_REPORT'),
+    'gc-global-barrier': ('accept_gc_07_test::sa_007_dual_matrix', 'PD_SA007_REPORT'),
+    'gc-state': ('accept_gc_08_test::sa_008_dual_matrix', 'PD_SA008_REPORT'),
+}
+
+
 def validate_go_build_info(info):
     """Reject unrelated binaries and protocol drift before starting an oracle."""
     records = [line.split() for line in info.splitlines()]
@@ -111,10 +122,11 @@ def main():
     parser.add_argument('--require-pinned-protocol', action='store_true',
                         help='require the exact protocol revision for full wire acceptance')
     parser.add_argument('--mode', choices=['go', 'rust', 'dual'], default=os.environ.get('PD_COMPAT_MODE', 'dual'))
-    parser.add_argument('--case', choices=['health-member', 'tso', 'cluster-host', 'cluster-restore', 'member-role', 'bucket-heartbeat', 'sync-regions', 'store-state', 'store-stats', 'store-config', 'cluster-metrics', 'resolved-ts', 'schedule-coordinator', 'request-role', 'members', 'bootstrap', 'alloc-id', 'store-registration', 'region-lookup', 'region-scan', 'region-query', 'ask-split', 'report-split', 'cluster-config', 'scatter', 'split-regions', 'split-scatter', 'global-config', 'process-shutdown', 'rolling-restart', 'go-client-core', 'embedded-isolation', 'shutdown-workers', 'global-watch', 'report-min-resolved-ts', 'external-timestamp', 'classic-tso', 'deprecated-rpc', 'diagnostics-info'], action='append')
+    parser.add_argument('--case', choices=['health-member', 'tso', 'cluster-host', 'cluster-restore', 'member-role', 'bucket-heartbeat', 'sync-regions', 'store-state', 'store-stats', 'store-config', 'cluster-metrics', 'resolved-ts', 'schedule-coordinator', 'request-role', 'members', 'bootstrap', 'alloc-id', 'store-registration', 'region-lookup', 'region-scan', 'region-query', 'ask-split', 'report-split', 'cluster-config', 'scatter', 'split-regions', 'split-scatter', 'global-config', 'process-shutdown', 'rolling-restart', 'go-client-core', 'embedded-isolation', 'shutdown-workers', 'global-watch', 'report-min-resolved-ts', 'external-timestamp', 'classic-tso', 'deprecated-rpc', 'diagnostics-info', *GC_CASES], action='append')
     args = parser.parse_args()
-    if any(case in (args.case or []) for case in ['cluster-host', 'cluster-restore', 'member-role', 'bucket-heartbeat', 'sync-regions', 'store-state', 'store-stats', 'store-config', 'cluster-metrics', 'resolved-ts', 'schedule-coordinator', 'request-role', 'members', 'bootstrap', 'alloc-id', 'store-registration', 'region-lookup', 'region-scan', 'region-query', 'ask-split', 'report-split', 'cluster-config', 'scatter', 'split-regions', 'split-scatter', 'global-config', 'process-shutdown', 'rolling-restart', 'go-client-core', 'embedded-isolation', 'shutdown-workers', 'global-watch', 'report-min-resolved-ts', 'external-timestamp', 'classic-tso', 'deprecated-rpc', 'diagnostics-info']) and args.mode != 'dual':
-        raise ValueError('cluster-host, cluster-restore and member-role require dual mode')
+    if any(case in (args.case or []) for case in ['cluster-host', 'cluster-restore', 'member-role', 'bucket-heartbeat', 'sync-regions', 'store-state', 'store-stats', 'store-config', 'cluster-metrics', 'resolved-ts', 'schedule-coordinator', 'request-role', 'members', 'bootstrap', 'alloc-id', 'store-registration', 'region-lookup', 'region-scan', 'region-query', 'ask-split', 'report-split', 'cluster-config', 'scatter', 'split-regions', 'split-scatter', 'global-config', 'process-shutdown', 'rolling-restart', 'go-client-core', 'embedded-isolation', 'shutdown-workers', 'global-watch', 'report-min-resolved-ts', 'external-timestamp', 'classic-tso', 'deprecated-rpc', 'diagnostics-info', *GC_CASES]) and args.mode != 'dual':
+        raise ValueError('selected compatibility cases require dual mode')
+    gc_selected = bool(GC_CASES.keys() & set(args.case or []))
     go = binary('PD_COMPAT_GO_BIN') if args.mode != 'rust' else None
     rust = binary('PD_COMPAT_RUST_BIN') if args.mode != 'go' else None
     target = Path(os.environ.get('CARGO_TARGET_DIR', ''))
@@ -140,21 +152,33 @@ def main():
         info = subprocess.check_output(['go', 'version', '-m', str(go)], env=env).decode()
         if '\tdep\tgithub.com/tikv/pd\t' not in info and '\tmod\tgithub.com/tikv/pd\t' not in info:
             raise ValueError('PD_COMPAT_GO_BIN is not a Go PD binary')
-        if args.require_pinned_protocol:
+        if args.require_pinned_protocol or gc_selected:
             validate_go_build_info(info)
     else:
         info = ''
+    etcd = None
+    if gc_selected or (args.require_pinned_protocol and 'go-client-core' in (args.case or [])):
+        etcd = binary('PD_COMPAT_ETCD_BIN')
+        version = subprocess.check_output([str(etcd), '--version'], env=env).decode()
+        if 'etcd Version: 3.5.15' not in version.splitlines():
+            raise ValueError('compatibility cases require official etcd 3.5.15')
     record = target / f'compat-readonly-{time.time_ns()}.json'
     before = snapshot()
     sources = [ROOT / name for name in (
         'scripts/pd-compat-readonly.py', 'tests/rust-compat/oracle_runner.rs',
         'tests/rust-compat/oracle_runner_test.rs', 'tests/rust-compat/readonly_oracle.rs',
         'tests/rust-compat/harness.rs',
-        'tests/rust-compat/accept_diagnostics_info_test.rs', 'pkg/server/diagnostics_info.rs',
-        'pkg/server/diagnostics_info_test.rs', 'pkg/server/diagnostics_log.rs',
+        'tests/rust-compat/accept_diagnostics_info_test.rs', 'pkg/mcs/server/diagnostics_info.rs',
+        'pkg/mcs/server/diagnostics_info_test.rs', 'pkg/mcs/server/diagnostics_log.rs',
         'tests/rust-compat/accept_http_09_test.rs', 'pkg/server/accept_http_09.rs', 'pkg/server/grpc_keyspace.rs', 'pkg/runtime/control_keyspace.rs', 'pkg/keyspace/keyspace_watch.rs',
         'tests/rust-compat/accept_gc_08_test.rs', 'pkg/server/grpc_gc_read.rs', 'pkg/server/http_gc_read.rs',
         'tests/rust-compat/accept_gc_05_test.rs', 'pkg/server/grpc_gc_advance.rs',
+        'tests/rust-compat/accept_gc_03_test.rs', 'pkg/server/grpc_gc_legacy.rs',
+        'tests/rust-compat/accept_gc_04_test.rs', 'pkg/server/grpc_gc_v2.rs',
+        'tests/rust-compat/accept_gc_06_test.rs', 'pkg/server/grpc_gc_barrier.rs',
+        'tests/rust-compat/accept_gc_07_test.rs',
+        'tests/rust-compat/grpc_regression.rs', 'tests/rust-compat/grpc_regression_test.rs',
+        'docs/rust/server-api/wire-inventory.md',
         'pkg/server/grpc_unsupported.rs', 'pkg/server/grpc_unsupported_test.rs', 'pkg/server/grpc_unsupported_scenarios_test.rs', 'pkg/runtime/grpc_unsupported_differential_test.rs',
         'pkg/server/grpc_tso.rs', 'pkg/server/grpc_tso_test.rs', 'pkg/server/grpc_tso_scenarios_test.rs', 'pkg/runtime/grpc_tso_differential_test.rs', 'pkg/runtime/grpc_tso_clock_test.rs', 'pkg/runtime/tso.rs',
         'pkg/server/grpc_external_ts.rs', 'pkg/server/grpc_external_ts_test.rs', 'pkg/server/grpc_external_ts_scenarios_test.rs', 'pkg/runtime/grpc_external_ts_differential_test.rs', 'pkg/runtime/grpc_external_ts_fault_test.rs',
@@ -195,7 +219,7 @@ def main():
     report = {'baseline': subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode().strip(),
               'target': str(target), 'before': before, 'go_build_info': info,
               'inputs': {str(p): hashlib.sha256(p.read_bytes()).hexdigest()
-                         for p in [go, rust, *fixtures, *sources] if p}, 'commands': []}
+                         for p in [go, rust, etcd, *fixtures, *sources] if p}, 'commands': []}
     if 'go-client-core' in (args.case or []):
         for name in ('pd-region-bench', 'pd-tso-bench', 'pd-heartbeat-bench'):
             tool = target / name
@@ -204,6 +228,11 @@ def main():
             build = subprocess.check_output(['go', 'version', '-m', str(tool)], env=env).decode()
             if '\tmod\tgithub.com/tikv/pd/tools\t' not in build:
                 raise ValueError(f'not a Go PD tools binary: {tool}')
+            if args.require_pinned_protocol:
+                if not any(line.split()[:3] == [
+                        'dep', 'github.com/pingcap/kvproto',
+                        'v0.0.0-20261016101550-f8ad079c8e98'] for line in build.splitlines()):
+                    raise ValueError(f'Go tool must use pinned kvproto f8ad079c8e98: {tool}')
             report.setdefault('go_client_build_info', {})[name] = build
             report['inputs'][str(tool)] = hashlib.sha256(tool.read_bytes()).hexdigest()
     work = Path(tempfile.mkdtemp(prefix='compat-readonly-work-', dir=target))
@@ -220,6 +249,14 @@ def main():
             command = ['cargo', 'test', '--locked', '-p', 'astersql-pd-compat-tests', '--test',
                        'health_member' if case == 'health-member' else 'tso',
                        'health_member_processes' if case == 'health-member' else 'tso_processes', '--']
+            evidence_path = None
+            case_env = env.copy()
+            if case in GC_CASES:
+                test, report_var = GC_CASES[case]
+                command = ['cargo', 'test', '--locked', '-p', 'astersql-pd-compat-tests',
+                           '--lib', test, '--', '--exact']
+                evidence_path = work / f'{case}.json'
+                case_env[report_var] = str(evidence_path)
             if case == 'diagnostics-info':
                 command = ['cargo', 'test', '--locked', '-p', 'astersql-pd-compat-tests', '--lib',
                            'sa_015_server_info', '--']
@@ -337,12 +374,12 @@ def main():
             if case == 'tso':
                 command.append('--ignored')
             command.append('--nocapture')
-            entry = {'argv': command}
+            entry = {'case': case, 'argv': command}
             report['commands'].append(entry)
             log = record.with_name(f'{record.stem}-{case}.log')
             entry['log'] = str(log)
             with log.open('w') as output:
-                child = subprocess.Popen(command, env=env, start_new_session=True, stdout=output, stderr=subprocess.STDOUT)
+                child = subprocess.Popen(command, env=case_env, start_new_session=True, stdout=output, stderr=subprocess.STDOUT)
                 entry['pid'] = child.pid
                 code = child.wait()
             transcript = log.read_text()
@@ -352,6 +389,11 @@ def main():
             if code == 0 and summaries != [('1', '0', '0')]:
                 print('expected exactly one effective scenario test', file=sys.stderr)
                 code = 1
+            if evidence_path is not None and code == 0:
+                evidence = json.loads(evidence_path.read_text())
+                if not isinstance(evidence, (dict, list)) or not evidence:
+                    raise ValueError(f'{case} did not record RPC and persisted state')
+                entry['evidence'] = evidence
             entry['exit'] = code
             # Reap/terminate any descendants even when a test exits abnormally.
             cleanup(child)
@@ -362,7 +404,7 @@ def main():
     except InterruptedError as error:
         report['cancelled'] = str(error)
         code = 130
-    except (OSError, subprocess.SubprocessError) as error:
+    except (ValueError, OSError, subprocess.SubprocessError) as error:
         report['error'] = str(error)
         code = 2
         print(str(error), file=sys.stderr)

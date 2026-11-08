@@ -2,9 +2,8 @@
 //! Reuse the reviewed TCP/tonic/MetaStore scenarios instead of copying domain behavior.
 use std::{path::Path, process::Command};
 
-/// Every implemented classic PD method has one required real differential entrypoint.
-/// Owner 78 domain methods remain outside theme 7; its two obsolete watches have an
-/// implemented exact Unimplemented contract and therefore remain in this catalog.
+/// Each classic PD method has a required differential scenario, including the
+/// exact Unimplemented contract for the two obsolete GC watches.
 pub(crate) fn cases() -> Vec<(&'static str, &'static [&'static str])> {
     vec![
         ("members", &["GetMembers", "GetClusterInfo"]),
@@ -47,17 +46,49 @@ pub(crate) fn cases() -> Vec<(&'static str, &'static [&'static str])> {
             ],
         ),
         ("admin-markers", &["IsSnapshotRecovering"]),
+        (
+            "gc-legacy",
+            &[
+                "GetGCSafePoint",
+                "UpdateGCSafePoint",
+                "UpdateServiceGCSafePoint",
+            ],
+        ),
+        (
+            "gc-v2",
+            &[
+                "GetGCSafePointV2",
+                "UpdateGCSafePointV2",
+                "UpdateServiceSafePointV2",
+                "GetAllGCSafePointV2",
+            ],
+        ),
+        ("gc-advance", &["AdvanceTxnSafePoint", "AdvanceGCSafePoint"]),
+        ("gc-barrier", &["SetGCBarrier", "DeleteGCBarrier"]),
+        (
+            "gc-global-barrier",
+            &["SetGlobalGCBarrier", "DeleteGlobalGCBarrier"],
+        ),
+        ("gc-state", &["GetGCState", "GetAllKeyspacesGCStates"]),
     ]
 }
 
-pub(crate) fn run(root: &Path) {
-    let target = std::env::var_os("CARGO_TARGET_DIR").expect("claim a shared Cargo slot first");
-    let rust = std::env::var_os("PD_COMPAT_RUST_BIN")
-        .unwrap_or_else(|| Path::new(&target).join("debug/pd-server").into_os_string());
-    let go = std::env::var_os("PD_COMPAT_GO_BIN")
-        .unwrap_or_else(|| root.join("bin/pd-server").into_os_string());
+pub(crate) fn dual_supervisor(root: &Path) -> Command {
+    assert_eq!(
+        std::env::var("PD_COMPAT_MODE").as_deref(),
+        Ok("dual"),
+        "the protocol regression requires both implementations"
+    );
     let mut command = Command::new("bash");
-    command.arg(root.join("scripts/run-pd-compat-readonly.sh"));
+    command
+        .current_dir(root)
+        .arg(root.join("scripts/run-pd-compat-readonly.sh"))
+        .arg("--require-pinned-protocol");
+    command
+}
+
+pub(crate) fn run(root: &Path) {
+    let mut command = dual_supervisor(root);
     for (case, _) in cases() {
         if case != "admin-markers" {
             command.args(["--case", case]);
@@ -75,9 +106,6 @@ pub(crate) fn run(root: &Path) {
     {
         let output = command
             .current_dir(root)
-            .env("PD_COMPAT_MODE", "dual")
-            .env("PD_COMPAT_GO_BIN", &go)
-            .env("PD_COMPAT_RUST_BIN", &rust)
             .output()
             .expect("read-only regression supervisor");
         println!("{}", String::from_utf8_lossy(&output.stdout));
