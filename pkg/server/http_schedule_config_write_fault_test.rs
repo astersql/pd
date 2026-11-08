@@ -118,7 +118,9 @@ async fn task_048_fault_cancel_and_concurrent() {
     node.ready().await.unwrap();
     let mut progress = node.cluster().watch_schedule();
     tokio::time::timeout(std::time::Duration::from_secs(10), async {
-        while progress.borrow().phase != astersql_pd_runtime::cluster_host::SchedulePhase::Running {
+        // Without a bootstrap record, the scheduler waits in Preparing.
+        while progress.borrow().phase != astersql_pd_runtime::cluster_host::SchedulePhase::Preparing
+        {
             progress.changed().await.unwrap();
         }
     })

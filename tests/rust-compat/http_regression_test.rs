@@ -312,6 +312,32 @@ fn task_101_inventory_negative_controls() {
     changed[0]["dependency"] = serde_json::json!("");
     assert!(validate(&rows, &changed).is_err());
 }
+
+#[test]
+fn task_101_domain_and_report_negative_controls() {
+    use super::http_regression::{catalog, inventory, validate, validate_replay_reports};
+    use serde_json::json;
+    use std::collections::BTreeSet;
+
+    let mut rows = catalog();
+    let keyspace = rows.iter_mut().find(|row| row["id"] == "HTTP-179").unwrap();
+    keyspace["replays"] = json!(["http-v2-boundary"]);
+    assert!(validate(&inventory(), &rows).is_err());
+
+    let expected = BTreeSet::from(["classic".to_owned(), "domain".to_owned()]);
+    let classic = json!({"case":"classic","exit":0});
+    let domain = json!({"case":"domain","exit":0});
+    assert!(validate_replay_reports(&expected, &[classic.clone(), domain.clone()]).is_ok());
+    for reports in [
+        vec![classic.clone()],
+        vec![classic.clone(), classic.clone()],
+        vec![classic.clone(), json!({"case":"unexpected","exit":0})],
+        vec![classic.clone(), json!({"case":"domain","exit":1})],
+        vec![classic, json!({"case":"domain"})],
+    ] {
+        assert!(validate_replay_reports(&expected, &reports).is_err());
+    }
+}
 // A real-process control for non-core classic telemetry. No constructor-only zeros.
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn task_101_classic_metrics_differential() {
@@ -489,7 +515,7 @@ fn task_101_deleted_store_cannot_recreate_series() {
     let stale = stores.get_store(101).unwrap();
     stale.record_filter_metrics("balance-region-scheduler", "store-state-filter", false);
     stale.record_scatter_metrics(true, "tikv");
-    let present = || {
+    let families_with_stale_label = || {
         registry
             .gather()
             .iter()
@@ -500,14 +526,26 @@ fn task_101_deleted_store_cannot_recreate_series() {
                 ]
                 .contains(&family.name())
             })
-            .flat_map(|family| family.get_metric())
-            .any(|metric| {
-                metric.get_label().iter().any(|label| {
-                    ["store", "target"].contains(&label.name()) && label.value() == "101"
+            .filter(|family| {
+                family.get_metric().iter().any(|metric| {
+                    metric.get_label().iter().any(|label| {
+                        ["store", "target"].contains(&label.name()) && label.value() == "101"
+                    })
                 })
             })
+            .map(|family| family.name().to_owned())
+            .collect::<std::collections::BTreeSet<_>>()
     };
-    assert!(present());
+    let before = families_with_stale_label();
+    assert_eq!(
+        before,
+        [
+            "pd_schedule_target_filter",
+            "pd_schedule_scatter_distribution"
+        ]
+        .map(str::to_owned)
+        .into()
+    );
     let barrier = Arc::new(std::sync::Barrier::new(2));
     let worker = {
         let stale = stale.clone();
@@ -529,9 +567,13 @@ fn task_101_deleted_store_cannot_recreate_series() {
     worker.join().unwrap();
     stale.record_filter_metrics("balance-region-scheduler", "store-state-filter", false);
     stale.record_scatter_metrics(true, "tikv");
+    let after = families_with_stale_label();
     assert!(
-        !present(),
+        after.is_empty(),
         "in-flight immutable store snapshots recreated deleted series"
+    );
+    println!(
+        "store 101 metric families before deletion: {before:?}; after stale writes: {after:?}"
     );
 }
 

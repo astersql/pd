@@ -7,6 +7,14 @@ use std::{
     process::Command,
 };
 
+pub(crate) fn report_path(default: impl AsRef<Path>) -> std::path::PathBuf {
+    let default = default.as_ref();
+    match std::env::var_os("PD_COMPAT_HTTP_REPORT_DIR") {
+        Some(dir) => Path::new(&dir).join(default.file_name().unwrap()),
+        None => default.to_owned(),
+    }
+}
+
 pub(crate) fn catalog() -> Vec<Value> {
     serde_json::from_str(include_str!("fixtures/task-101-catalog.json")).expect("reviewed catalog")
 }
@@ -36,6 +44,24 @@ pub(crate) fn inventory() -> BTreeMap<String, String> {
     }
     rows
 }
+// These route IDs were admitted by the named domain matrices. The old
+// boundary replay remains independent coverage for malformed and absent routes.
+fn domain_replay(key: &str) -> Option<&'static str> {
+    if key == "M-037" {
+        return Some("domain-maintenance");
+    }
+    match key.strip_prefix("HTTP-")?.parse::<u16>().ok()? {
+        161 | 162 | 197 => Some("domain-gc-http"),
+        179..=185 => Some("domain-keyspace"),
+        186..=189 => Some("domain-maintenance"),
+        190..=192 => Some("domain-meta-service-group"),
+        193..=195 => Some("domain-mcs-discovery"),
+        198..=204 => Some("domain-tso-directory"),
+        205..=209 => Some("domain-tso-transition"),
+        _ => None,
+    }
+}
+
 pub(crate) fn validate(rows: &BTreeMap<String, String>, catalog: &[Value]) -> Result<(), String> {
     let mut seen = BTreeSet::new();
     for entry in catalog {
@@ -83,8 +109,18 @@ pub(crate) fn validate(rows: &BTreeMap<String, String>, catalog: &[Value]) -> Re
         if replays.is_empty() && dependency.is_empty() {
             return Err(format!("no witness or explicit dependency {key}"));
         }
+        let mut witnesses = BTreeSet::new();
         for replay in replays {
             let name = replay.as_str().ok_or("invalid witness")?;
+            if !witnesses.insert(name) {
+                return Err(format!("duplicate witness {key}: {name}"));
+            }
+            if name.starts_with("domain-") {
+                if Some(name) != domain_replay(key) {
+                    return Err(format!("unexpected domain replay {key}: {name}"));
+                }
+                continue;
+            }
             if name.starts_with('@')
                 && !["@core", "@cluster-metrics", "@shared-metrics"].contains(&name)
             {
@@ -98,25 +134,18 @@ pub(crate) fn validate(rows: &BTreeMap<String, String>, catalog: &[Value]) -> Re
                 return Err(format!("missing supervisor {name}"));
             }
         }
+        if let Some(expected) = domain_replay(key)
+            && (!witnesses.contains(expected) || !dependency.is_empty())
+        {
+            return Err(format!("missing domain replay {key}: {expected}"));
+        }
     }
     if seen != rows.keys().map(String::as_str).collect() {
         return Err("matrix contains an unknown/unowned row".into());
     }
     Ok(())
 }
-pub(crate) fn run(root: &Path) {
-    let rows = catalog();
-    validate(&inventory(), &rows).unwrap();
-    let etcd=std::path::PathBuf::from(std::env::var_os("PD_ETCD_BIN").expect("set PD_ETCD_BIN to the existing etcd binary; member/leader oracles require adjacent etcdctl"));
-    assert!(
-        etcd.is_absolute() && etcd.is_file() && etcd.with_file_name("etcdctl").is_file(),
-        "existing etcd and adjacent etcdctl are required before starting the matrix"
-    );
-    let target = std::env::var_os("CARGO_TARGET_DIR").expect("claim a Cargo slot");
-    let rust = std::env::var_os("PD_COMPAT_RUST_BIN")
-        .unwrap_or_else(|| Path::new(&target).join("debug/pd-server").into_os_string());
-    let go = std::env::var_os("PD_COMPAT_GO_BIN")
-        .unwrap_or_else(|| root.join("bin/pd-server").into_os_string());
+pub(crate) fn replay_cases(rows: &[Value]) -> BTreeSet<String> {
     let mut scripts: BTreeSet<String> = rows
         .iter()
         .flat_map(|row| row["replays"].as_array().unwrap().iter())
@@ -127,6 +156,7 @@ pub(crate) fn run(root: &Path) {
     scripts.extend(
         [
             "http-contract",
+            "http-v2-boundary",
             "request-context",
             "http-redirect",
             "service-audit",
@@ -142,12 +172,57 @@ pub(crate) fn run(root: &Path) {
     // Include the real health worker's full-duration trace before comparing
     // timer-driven metric families across independently timed business cases.
     scripts.insert("cluster-metrics".into());
+    scripts
+}
+
+pub(crate) fn validate_replay_reports(
+    expected: &BTreeSet<String>,
+    reports: &[Value],
+) -> Result<(), String> {
+    let mut actual = BTreeSet::new();
+    let mut failures = Vec::new();
+    for report in reports {
+        let case = report["case"].as_str().ok_or("missing report case")?;
+        if !actual.insert(case.to_owned()) {
+            return Err(format!("duplicate report case {case}"));
+        }
+        if report["exit"].as_i64() != Some(0) {
+            failures.push(case);
+        }
+    }
+    if &actual != expected || actual.is_empty() {
+        return Err(format!(
+            "missing report cases {:?}; unexpected report cases {:?}",
+            expected.difference(&actual).collect::<Vec<_>>(),
+            actual.difference(expected).collect::<Vec<_>>(),
+        ));
+    }
+    if !failures.is_empty() {
+        return Err(format!("failed business reports: {failures:?}"));
+    }
+    Ok(())
+}
+
+pub(crate) fn run(root: &Path) {
+    let rows = catalog();
+    validate(&inventory(), &rows).unwrap();
+    let etcd=std::path::PathBuf::from(std::env::var_os("PD_ETCD_BIN").expect("set PD_ETCD_BIN to the existing etcd binary; member/leader oracles require adjacent etcdctl"));
+    assert!(
+        etcd.is_absolute() && etcd.is_file() && etcd.with_file_name("etcdctl").is_file(),
+        "existing etcd and adjacent etcdctl are required before starting the matrix"
+    );
+    let target = std::env::var_os("CARGO_TARGET_DIR").expect("claim a Cargo slot");
+    let rust = std::env::var_os("PD_COMPAT_RUST_BIN")
+        .unwrap_or_else(|| Path::new(&target).join("debug/pd-server").into_os_string());
+    let go = crate::readonly_oracle::pinned_go_binary().expect("pinned Go PD binary");
+    let scripts = replay_cases(&rows);
+    let mut report_paths = Vec::new();
     let mut reports = Vec::new();
     let mut failures = Vec::new();
-    for name in scripts {
+    for name in &scripts {
         let output = Command::new("python3")
             .arg(root.join("scripts/http-regression-oracle.py"))
-            .args(["--case", &name])
+            .args(["--case", name])
             .current_dir(root)
             .env("PD_COMPAT_MODE", "dual")
             .env("PD_COMPAT_GO_BIN", &go)
@@ -183,9 +258,15 @@ pub(crate) fn run(root: &Path) {
             .lines()
             .find_map(|line| line.strip_prefix("HTTP_METRICS_REPORT="))
             .ok_or_else(|| format!("missing observation report: {}", log.display()))
-            .and_then(|path| std::fs::read(path).map_err(|error| error.to_string()))
-            .and_then(|bytes| {
-                serde_json::from_slice::<Value>(&bytes).map_err(|error| error.to_string())
+            .and_then(|path| {
+                let bytes = std::fs::read(path).map_err(|error| error.to_string())?;
+                let report: Value =
+                    serde_json::from_slice(&bytes).map_err(|error| error.to_string())?;
+                if report["case"].as_str() != Some(name.as_str()) {
+                    return Err(format!("wrong case in report {path}"));
+                }
+                report_paths.push(path.to_owned());
+                Ok(report)
             });
         match report {
             Ok(report) => reports.push(report),
@@ -195,6 +276,9 @@ pub(crate) fn run(root: &Path) {
             failures.push(format!("{name}: {}; log={}", output.status, log.display()));
         }
     }
+    if let Err(error) = validate_replay_reports(&scripts, &reports) {
+        failures.push(error);
+    }
     if let Err(error) = validate_live_metrics(&rows, &reports) {
         failures.push(error);
     }
@@ -203,6 +287,12 @@ pub(crate) fn run(root: &Path) {
         "HTTP/metrics regression failures:\n{}",
         failures.join("\n")
     );
+    let index = Path::new(&target).join(format!(
+        "http-regression-reports-{}.json",
+        std::process::id()
+    ));
+    std::fs::write(&index, serde_json::to_vec(&report_paths).unwrap()).unwrap();
+    println!("HTTP_REGRESSION_REPORTS={}", index.display());
 }
 
 /// Live values remain unnormalized in the reports. Compare schemas only for

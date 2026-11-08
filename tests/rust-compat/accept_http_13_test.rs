@@ -1,5 +1,5 @@
 // Copyright 2026 AsterSQL.
-use crate::harness::Server;
+use crate::{harness::Server, http_regression::report_path};
 fn source_routes() -> Vec<(&'static str, String)> {
     let routes = include_str!("../../server/apiv2/handlers/microservice.go")
         .lines()
@@ -84,9 +84,9 @@ fn observe(url: &str, method: &str, path: &str, body: &str) -> Value {
         })
     };
     let v = json!({"status":status.parse::<u16>().unwrap(),"content_type":header("content-type"),"location":header("location"),"body":serde_json::from_str::<Value>(contents).unwrap_or(json!(contents))});
-    let dir = std::path::Path::new("/tmp/pd-sa013-implementation");
-    std::fs::create_dir_all(dir).unwrap();
-    writeln!(std::fs::OpenOptions::new().create(true).append(true).open(dir.join("http.jsonl")).unwrap(),"{}",json!({"url":request_url,"method":method,"request_body":body,"raw_response":raw,"observation":v})).unwrap();
+    let capture = report_path("/tmp/pd-sa013-implementation/http.jsonl");
+    std::fs::create_dir_all(capture.parent().unwrap()).unwrap();
+    writeln!(std::fs::OpenOptions::new().create(true).append(true).open(capture).unwrap(),"{}",json!({"url":request_url,"method":method,"request_body":body,"raw_response":raw,"observation":v})).unwrap();
     println!("sa013 HTTP {method} {path}: {v}");
     v
 }
@@ -653,7 +653,7 @@ async fn sa_013_dual_discovery_eviction_and_wal() {
     }
     assert_eq!(compared[0], compared[1], "paired HTTP observations");
     std::fs::write(
-        "/tmp/pd-sa013-implementation/dual-matrix.json",
+        report_path("/tmp/pd-sa013-implementation/dual-matrix.json"),
         serde_json::to_vec_pretty(&reports).unwrap(),
     )
     .unwrap();

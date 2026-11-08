@@ -104,9 +104,10 @@ def main():
     parser.add_argument('--case', required=True)
     args = parser.parse_args()
     assert re.fullmatch(r'[a-z0-9-]+', args.case)
-    if args.case == 'cluster-metrics':
+    if args.case == 'cluster-metrics' or args.case.startswith('domain-'):
         script = ROOT / 'scripts/run-pd-compat-readonly.sh'
-        supervisor_command = ['bash', str(script), '--case', 'cluster-metrics']
+        case = 'gc-state' if args.case == 'domain-gc-http' else args.case
+        supervisor_command = ['bash', str(script), '--require-pinned-protocol', '--case', case]
     else:
         script = ROOT / f'scripts/{args.case}-oracle.py'
         supervisor_command = [sys.executable, str(script)]

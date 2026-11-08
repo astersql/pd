@@ -1,5 +1,5 @@
 // Copyright 2026 AsterSQL.
-use crate::harness::Server;
+use crate::{harness::Server, http_regression::report_path};
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
 async fn sa_011_behavior() {
     let rust = std::path::PathBuf::from(std::env::var_os("PD_COMPAT_RUST_BIN").unwrap());
@@ -236,7 +236,7 @@ async fn sa_011_dual_transitions_and_wal() {
                     .push(json!({"method":method,"path":path,"input":input,"response":response}));
                 physical.push(json!({"before":before,"after":after}));
                 std::fs::write(
-                    format!("/tmp/sa011-progress-{api}-{is_rust}.json"),
+                    report_path(format!("/tmp/sa011-progress-{api}-{is_rust}.json")),
                     serde_json::to_vec_pretty(&json!({"http":observations,"physical":physical}))
                         .unwrap(),
                 )
@@ -342,7 +342,7 @@ async fn sa_011_dual_transitions_and_wal() {
             compared.push(observations);
             physical_compared.push(physical_signature(&physical));
             std::fs::write(
-                "/tmp/sa011-matrix.json",
+                report_path("/tmp/sa011-matrix.json"),
                 serde_json::to_vec_pretty(&reports).unwrap(),
             )
             .unwrap();
@@ -399,7 +399,7 @@ async fn service_timestamp(
                     std::fs::OpenOptions::new()
                         .create(true)
                         .append(true)
-                        .open("/tmp/sa011-rpc-errors.jsonl")
+                        .open(report_path("/tmp/sa011-rpc-errors.jsonl"))
                         .unwrap(),
                     "{}",
                     json!({"group":expected_group,"node":node,"key":key,"error":format!("{e:?}")})
@@ -408,7 +408,7 @@ async fn service_timestamp(
             }
             if let Ok(Some(r)) = reply {
                 use std::io::Write;
-                writeln!(std::fs::OpenOptions::new().create(true).append(true).open("/tmp/sa011-rpc.jsonl").unwrap(),"{}",json!({"node":node,"cluster":cluster,"keyspace":key,"requested_group":expected_group,"count":1,"response":format!("{r:?}")})).unwrap();
+                writeln!(std::fs::OpenOptions::new().create(true).append(true).open(report_path("/tmp/sa011-rpc.jsonl")).unwrap(),"{}",json!({"node":node,"cluster":cluster,"keyspace":key,"requested_group":expected_group,"count":1,"response":format!("{r:?}")})).unwrap();
                 let t = r.timestamp.unwrap();
                 return (
                     r.header.unwrap().keyspace_group_id,
@@ -427,7 +427,7 @@ async fn service_timestamp(
 async fn sa_011_mcs_144_behavior() {
     let rust = std::path::PathBuf::from(std::env::var_os("PD_COMPAT_RUST_BIN").unwrap());
     let go = crate::readonly_oracle::pinned_go_binary().unwrap();
-    std::fs::write("/tmp/sa011-rpc.jsonl", "").unwrap();
+    std::fs::write(report_path("/tmp/sa011-rpc.jsonl"), "").unwrap();
     let mut semantics = vec![];
     for is_rust in [false, true] {
         let env = [("PD_SERVICE_MODE".into(), "api".into())];
@@ -492,11 +492,11 @@ async fn sa_011_mcs_144_behavior() {
             nodes.push(address.clone());
             if !is_rust {
                 drop(listener);
-                let log = std::fs::File::create(format!(
+                let log = std::fs::File::create(report_path(format!(
                     "/tmp/sa011-go-tso-{}-{}.log",
                     std::process::id(),
                     nodes.len()
-                ))
+                )))
                 .unwrap();
                 let child = std::process::Command::new(&go)
                     .args([
@@ -654,7 +654,7 @@ async fn sa_011_mcs_144_behavior() {
         semantics.push(semantic);
         let mut evidence = json!({"nodes":nodes,"split":split,"split_state":split_state,"merged":merged,"final_state":final_state,"before":format!("{before:?}"),"after_split":format!("{after_split:?}"),"source":format!("{source_stamp:?}"),"after_merge":format!("{after_merge:?}"),"merge_all":all,"after_all":format!("{after_all:?}"),"physical":rows(store.as_ref(),&paths).await});
         std::fs::write(
-            format!("/tmp/sa011-tso-chain-{is_rust}.json"),
+            report_path(format!("/tmp/sa011-tso-chain-{is_rust}.json")),
             serde_json::to_vec_pretty(&evidence).unwrap(),
         )
         .unwrap();
@@ -707,10 +707,10 @@ async fn sa_011_mcs_144_behavior() {
                     .unwrap(),
                 );
             } else {
-                let log = std::fs::File::create(format!(
+                let log = std::fs::File::create(report_path(format!(
                     "/tmp/sa011-go-tso-{}-restart-{index}.log",
                     std::process::id()
-                ))
+                )))
                 .unwrap();
                 restarted_go.push(GoTso(
                     std::process::Command::new(&go)
@@ -737,7 +737,7 @@ async fn sa_011_mcs_144_behavior() {
         evidence["after_wal"] = json!(format!("{recovered:?}"));
         evidence["wal_directory"] = durable;
         std::fs::write(
-            format!("/tmp/sa011-tso-chain-{is_rust}.json"),
+            report_path(format!("/tmp/sa011-tso-chain-{is_rust}.json")),
             serde_json::to_vec_pretty(&evidence).unwrap(),
         )
         .unwrap();
@@ -919,7 +919,7 @@ async fn sa_011_legacy_assignment_before_split() {
     }
     assert_eq!(compared[0], compared[1]);
     std::fs::write(
-        "/tmp/sa011-legacy.json",
+        report_path("/tmp/sa011-legacy.json"),
         serde_json::to_vec_pretty(&json!({"http":compared,"physical":reports})).unwrap(),
     )
     .unwrap();
@@ -952,7 +952,7 @@ async fn sa_011_patch_trailing_behavior() {
         observations.push(observed);
     }
     std::fs::write(
-        "/tmp/sa011-patch-trailing.json",
+        report_path("/tmp/sa011-patch-trailing.json"),
         serde_json::to_vec_pretty(&observations).unwrap(),
     )
     .unwrap();

@@ -319,8 +319,7 @@ async fn scenario(url: &str) -> BTreeMap<String, f64> {
         assert_eq!(delta, expected, "heartbeat measurement {key}");
         observed.insert(key.into(), delta);
     }
-    let (operator_sample, delta) = operator_disappearance(url, &mut client, header.clone()).await;
-    observed.insert(operator_sample, delta);
+    observed.extend(operator_disappearance(url, &mut client, header.clone()).await);
     if let Ok(directory) = std::env::var("PD_METRICS_SNAPSHOTS") {
         let kind = if std::env::var("PD_METRICS_GO_URL").as_deref() == Ok(url) {
             "go"
@@ -461,7 +460,7 @@ async fn operator_disappearance(
     url: &str,
     client: &mut PdClient<tonic::transport::Channel>,
     header: Option<pdpb::RequestHeader>,
-) -> (String, f64) {
+) -> [(String, f64); 2] {
     let reply = client
         .put_store(pdpb::PutStoreRequest {
             header: header.clone(),
@@ -530,19 +529,23 @@ async fn operator_disappearance(
         .into_inner();
     assert!(operator.header.unwrap().error.is_none());
     let desc = String::from_utf8(operator.desc).unwrap();
-    let key = format!("pd_schedule_operators_count{{event=\"disappear\",type=\"{desc}\"}}");
-    let before = sample(&scrape(url), &key);
+    let [not_found, disappear] = ["not-found", "disappear"]
+        .map(|event| format!("pd_schedule_operators_count{{event=\"{event}\",type=\"{desc}\"}}"));
+    let before = scrape(url);
     http("DELETE", "admin/cache/region/2", "");
     let deadline = tokio::time::Instant::now() + std::time::Duration::from_secs(10);
     loop {
-        let delta = sample(&scrape(url), &key) - before;
-        if delta > 0.0 {
-            assert_eq!(delta, 1.0);
-            return (key, delta);
+        let after = scrape(url);
+        let disappear_delta = sample(&after, &disappear) - sample(&before, &disappear);
+        if disappear_delta > 0.0 {
+            let not_found_delta = sample(&after, &not_found) - sample(&before, &not_found);
+            assert_eq!(disappear_delta, 1.0, "{disappear}");
+            assert_eq!(not_found_delta, 1.0, "{not_found}");
+            return [(not_found, not_found_delta), (disappear, disappear_delta)];
         }
         assert!(
             tokio::time::Instant::now() < deadline,
-            "missing real disappearance observation: {key}"
+            "missing real disappearance observation: {disappear}"
         );
         tokio::time::sleep(std::time::Duration::from_millis(20)).await;
     }

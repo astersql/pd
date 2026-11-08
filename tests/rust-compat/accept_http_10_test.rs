@@ -1,5 +1,5 @@
 // Copyright 2026 AsterSQL.
-use crate::harness::Server;
+use crate::{harness::Server, http_regression::report_path};
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
 async fn sa_010_behavior() {
     let rust = std::path::PathBuf::from(std::env::var_os("PD_COMPAT_RUST_BIN").unwrap());
@@ -243,7 +243,7 @@ async fn sa_010_dual_matrix() {
                 );
                 physical.push(json!({"before":before,"after":after}));
                 std::fs::write(
-                    format!("/tmp/sa010-raw-{is_rust}-{api}.json"),
+                    report_path(format!("/tmp/sa010-raw-{is_rust}-{api}.json")),
                     serde_json::to_vec_pretty(&json!({"http":all,"physical":physical})).unwrap(),
                 )
                 .unwrap();
@@ -435,7 +435,7 @@ async fn sa_010_dual_matrix() {
                 assert_eq!(serving["body"]["primary"], nodes[issuer], "{serving}");
                 let raw_service = json!({"nodes":nodes,"set_nodes_input":input,"set_nodes":set_nodes,"allocated":allocated,"priority":priority,"directory":dto,"physical":rows(store.as_ref(),&p).await,"primary":serving,"timestamp":format!("{stamp:?}"),"assigned":service_watches.iter().map(|w|w.assigned_ids()).collect::<Vec<_>>()});
                 std::fs::write(
-                    format!("/tmp/sa010-service-{is_rust}.json"),
+                    report_path(format!("/tmp/sa010-service-{is_rust}.json")),
                     serde_json::to_vec_pretty(&raw_service).unwrap(),
                 )
                 .unwrap();
@@ -529,7 +529,7 @@ async fn sa_010_dual_matrix() {
             );
             compared.push(all);
             std::fs::write(
-                "/tmp/sa010-progress.json",
+                report_path("/tmp/sa010-progress.json"),
                 serde_json::to_vec_pretty(&reports).unwrap(),
             )
             .unwrap();
@@ -541,7 +541,7 @@ async fn sa_010_dual_matrix() {
     }
     assert_eq!(routes().len(), 7);
     std::fs::write(
-        "/tmp/sa010-matrix.json",
+        report_path("/tmp/sa010-matrix.json"),
         serde_json::to_vec_pretty(&reports).unwrap(),
     )
     .unwrap();
@@ -668,7 +668,7 @@ async fn sa_010_shared_manager_and_priority_error() {
         group_results.push(group.clone());
         bridges.push(json!({"rust":is_rust,"http":created,"rpc":format!("{rpc:?}"),"group":group,"physical":rows(&store,&p).await}));
         std::fs::write(
-            "/tmp/sa010-user-kind.json",
+            report_path("/tmp/sa010-user-kind.json"),
             serde_json::to_vec_pretty(&bridges).unwrap(),
         )
         .unwrap();
@@ -676,7 +676,7 @@ async fn sa_010_shared_manager_and_priority_error() {
         std::fs::remove_file(config_path).unwrap();
     }
     std::fs::write(
-        "/tmp/sa010-priority-error.json",
+        report_path("/tmp/sa010-priority-error.json"),
         serde_json::to_vec_pretty(&responses).unwrap(),
     )
     .unwrap();

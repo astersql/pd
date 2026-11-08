@@ -309,6 +309,9 @@ impl<'a, C: SharedConfigProvider> ControllerDispatch<'a, C> {
             return result;
         };
         let Some(region) = self.cluster.regions.get_region(op.region_id()) else {
+            if let Some(metrics) = op.metrics.get() {
+                metrics.event("not-found");
+            }
             result.removed = self.remove(&op, CancelReason::RegionNotFound);
             if !result.removed.is_empty() {
                 if let Some(metrics) = op.metrics.get() {

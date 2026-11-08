@@ -29,6 +29,14 @@ GC_CASES = {
     'gc-global-barrier': ('accept_gc_07_test::sa_007_dual_matrix', 'PD_SA007_REPORT'),
     'gc-state': ('accept_gc_08_test::sa_008_dual_matrix', 'PD_SA008_REPORT'),
 }
+HTTP_DOMAIN_CASES = {
+    'domain-keyspace': ('sa_009_', 4, 'sa009-matrix.json'),
+    'domain-tso-directory': ('sa_010_', 3, 'sa010-matrix.json'),
+    'domain-tso-transition': ('sa_011_', 5, 'sa011-matrix.json'),
+    'domain-meta-service-group': ('sa_012_', 2, 'sa012-matrix.json'),
+    'domain-mcs-discovery': ('sa_013_', 2, 'dual-matrix.json'),
+    'domain-maintenance': ('workspace_acceptance_test::task_102_maintenance_live_differential', 1, None),
+}
 
 
 def validate_go_build_info(info):
@@ -122,11 +130,13 @@ def main():
     parser.add_argument('--require-pinned-protocol', action='store_true',
                         help='require the exact protocol revision for full wire acceptance')
     parser.add_argument('--mode', choices=['go', 'rust', 'dual'], default=os.environ.get('PD_COMPAT_MODE', 'dual'))
-    parser.add_argument('--case', choices=['health-member', 'tso', 'cluster-host', 'cluster-restore', 'member-role', 'bucket-heartbeat', 'sync-regions', 'store-state', 'store-stats', 'store-config', 'cluster-metrics', 'resolved-ts', 'schedule-coordinator', 'request-role', 'members', 'bootstrap', 'alloc-id', 'store-registration', 'region-lookup', 'region-scan', 'region-query', 'ask-split', 'report-split', 'cluster-config', 'scatter', 'split-regions', 'split-scatter', 'global-config', 'process-shutdown', 'rolling-restart', 'go-client-core', 'embedded-isolation', 'shutdown-workers', 'global-watch', 'report-min-resolved-ts', 'external-timestamp', 'classic-tso', 'deprecated-rpc', 'diagnostics-info', *GC_CASES], action='append')
+    parser.add_argument('--case', choices=['health-member', 'tso', 'cluster-host', 'cluster-restore', 'member-role', 'bucket-heartbeat', 'sync-regions', 'store-state', 'store-stats', 'store-config', 'cluster-metrics', 'resolved-ts', 'schedule-coordinator', 'request-role', 'members', 'bootstrap', 'alloc-id', 'store-registration', 'region-lookup', 'region-scan', 'region-query', 'ask-split', 'report-split', 'cluster-config', 'scatter', 'split-regions', 'split-scatter', 'global-config', 'process-shutdown', 'rolling-restart', 'go-client-core', 'embedded-isolation', 'shutdown-workers', 'global-watch', 'report-min-resolved-ts', 'external-timestamp', 'classic-tso', 'deprecated-rpc', 'diagnostics-info', *GC_CASES, *HTTP_DOMAIN_CASES], action='append')
     args = parser.parse_args()
-    if any(case in (args.case or []) for case in ['cluster-host', 'cluster-restore', 'member-role', 'bucket-heartbeat', 'sync-regions', 'store-state', 'store-stats', 'store-config', 'cluster-metrics', 'resolved-ts', 'schedule-coordinator', 'request-role', 'members', 'bootstrap', 'alloc-id', 'store-registration', 'region-lookup', 'region-scan', 'region-query', 'ask-split', 'report-split', 'cluster-config', 'scatter', 'split-regions', 'split-scatter', 'global-config', 'process-shutdown', 'rolling-restart', 'go-client-core', 'embedded-isolation', 'shutdown-workers', 'global-watch', 'report-min-resolved-ts', 'external-timestamp', 'classic-tso', 'deprecated-rpc', 'diagnostics-info', *GC_CASES]) and args.mode != 'dual':
+    if any(case in (args.case or []) for case in ['cluster-host', 'cluster-restore', 'member-role', 'bucket-heartbeat', 'sync-regions', 'store-state', 'store-stats', 'store-config', 'cluster-metrics', 'resolved-ts', 'schedule-coordinator', 'request-role', 'members', 'bootstrap', 'alloc-id', 'store-registration', 'region-lookup', 'region-scan', 'region-query', 'ask-split', 'report-split', 'cluster-config', 'scatter', 'split-regions', 'split-scatter', 'global-config', 'process-shutdown', 'rolling-restart', 'go-client-core', 'embedded-isolation', 'shutdown-workers', 'global-watch', 'report-min-resolved-ts', 'external-timestamp', 'classic-tso', 'deprecated-rpc', 'diagnostics-info', *GC_CASES, *HTTP_DOMAIN_CASES]) and args.mode != 'dual':
         raise ValueError('selected compatibility cases require dual mode')
-    gc_selected = bool(GC_CASES.keys() & set(args.case or []))
+    selected = set(args.case or [])
+    gc_selected = bool(GC_CASES.keys() & selected)
+    http_selected = bool(HTTP_DOMAIN_CASES.keys() & selected)
     go = binary('PD_COMPAT_GO_BIN') if args.mode != 'rust' else None
     rust = binary('PD_COMPAT_RUST_BIN') if args.mode != 'go' else None
     target = Path(os.environ.get('CARGO_TARGET_DIR', ''))
@@ -152,12 +162,12 @@ def main():
         info = subprocess.check_output(['go', 'version', '-m', str(go)], env=env).decode()
         if '\tdep\tgithub.com/tikv/pd\t' not in info and '\tmod\tgithub.com/tikv/pd\t' not in info:
             raise ValueError('PD_COMPAT_GO_BIN is not a Go PD binary')
-        if args.require_pinned_protocol or gc_selected:
+        if args.require_pinned_protocol or gc_selected or http_selected:
             validate_go_build_info(info)
     else:
         info = ''
     etcd = None
-    if gc_selected or (args.require_pinned_protocol and 'go-client-core' in (args.case or [])):
+    if gc_selected or http_selected or (args.require_pinned_protocol and 'go-client-core' in selected):
         etcd = binary('PD_COMPAT_ETCD_BIN')
         version = subprocess.check_output([str(etcd), '--version'], env=env).decode()
         if 'etcd Version: 3.5.15' not in version.splitlines():
@@ -216,6 +226,15 @@ def main():
         'pkg/runtime/cluster_metrics_worker_test.rs', 'server/cluster/cluster_metrics_worker.rs', 'server/cluster/cluster_metrics_worker_test.rs', 'pkg/server/http.rs',
         'pkg/runtime/store_config_worker_test.rs', 'server/cluster/store_config_worker.rs', 'server/cluster/store_config_worker_test.rs',
         'pkg/runtime/store_stats_worker_test.rs', 'server/cluster/store_stats_worker.rs', 'server/cluster/store_stats_worker_test.rs', 'pkg/runtime/store_state_worker_test.rs', 'server/cluster/lib.rs', 'server/cluster/store_state_worker.rs', 'server/cluster/store_state_worker_test.rs', 'pkg/runtime/wire_sync_regions_test.rs', 'pkg/runtime/wire_bucket_heartbeat_test.rs', 'pkg/server/bucket_heartbeat_adapter.rs', 'server/cluster/bucket_heartbeat.rs', 'server/cluster/state_pipeline.rs', 'pkg/statistics/buckets/bucket_worker.rs', 'pkg/runtime/Cargo.toml', 'Cargo.toml')]
+    if http_selected:
+        sources.extend(ROOT / name for name in (
+            'scripts/http-regression-oracle.py',
+            'tests/rust-compat/fixtures/task-101-catalog.json',
+            'tests/rust-compat/http_regression.rs',
+            'tests/rust-compat/workspace_acceptance.rs',
+            'tests/rust-compat/workspace_acceptance_test.rs',
+            *(f'tests/rust-compat/accept_http_{n:02}_test.rs' for n in range(10, 14)),
+        ))
     report = {'baseline': subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode().strip(),
               'target': str(target), 'before': before, 'go_build_info': info,
               'inputs': {str(p): hashlib.sha256(p.read_bytes()).hexdigest()
@@ -251,6 +270,20 @@ def main():
                        'health_member_processes' if case == 'health-member' else 'tso_processes', '--']
             evidence_path = None
             case_env = env.copy()
+            expected_count = 1
+            evidence_dir = None
+            if case in HTTP_DOMAIN_CASES:
+                test, expected_count, receipt = HTTP_DOMAIN_CASES[case]
+                command = ['cargo', 'test', '--locked', '-p', 'astersql-pd-compat-tests',
+                           '--lib', test, '--']
+                evidence_dir = work / case
+                evidence_dir.mkdir()
+                case_env.update(PD_COMPAT_HTTP_REPORT_DIR=str(evidence_dir),
+                                PD_COMPAT_HTTP_CAPTURE=str(evidence_dir / 'http.jsonl'))
+                if receipt is None:
+                    command.extend(['--ignored', '--exact'])
+                elif case == 'domain-keyspace':
+                    case_env['SA009_RECEIPT'] = str(evidence_dir / receipt)
             if case in GC_CASES:
                 test, report_var = GC_CASES[case]
                 command = ['cargo', 'test', '--locked', '-p', 'astersql-pd-compat-tests',
@@ -386,9 +419,16 @@ def main():
             print(transcript, end='', flush=True)
             summaries = re.findall(r'test result: ok\. (\d+) passed; (\d+) failed; (\d+) ignored;', transcript)
             entry['test_summaries'] = summaries
-            if code == 0 and summaries != [('1', '0', '0')]:
-                print('expected exactly one effective scenario test', file=sys.stderr)
+            if code == 0 and summaries != [(str(expected_count), '0', '0')]:
+                print(f'expected {expected_count} effective scenario tests', file=sys.stderr)
                 code = 1
+            if evidence_dir is not None:
+                artifacts = {p.name: p.read_text() for p in sorted(evidence_dir.iterdir())}
+                entry['evidence'] = artifacts
+                required = [receipt] if receipt else ['maintenance-go.json', 'maintenance-rust.json']
+                if code == 0 and any(not artifacts.get(name) for name in required):
+                    print(f'{case} did not record required raw evidence: {required}', file=sys.stderr)
+                    code = 1
             if evidence_path is not None and code == 0:
                 evidence = json.loads(evidence_path.read_text())
                 if not isinstance(evidence, (dict, list)) or not evidence:

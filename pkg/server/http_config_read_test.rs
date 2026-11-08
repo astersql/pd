@@ -162,8 +162,11 @@ async fn task_047_differential() {
         node.ready().await.unwrap();
         let mut progress = node.cluster().watch_schedule();
         tokio::time::timeout(std::time::Duration::from_secs(10), async {
+            // This fixture restores configuration without bootstrapping PD.
+            // The worker has prepared its resources but cannot normalize the
+            // persisted schedule until the bootstrap gate opens.
             while progress.borrow().phase
-                != astersql_pd_runtime::cluster_host::SchedulePhase::Running
+                != astersql_pd_runtime::cluster_host::SchedulePhase::Preparing
             {
                 progress.changed().await.unwrap();
             }
@@ -185,6 +188,7 @@ async fn task_047_differential() {
             "Go defaults: {}\nRust defaults: {}",
             defaults.1, rust_defaults.1
         );
+        println!("Go running configuration: {expected}\nRust restored configuration: {actual}");
         assert_eq!(rust_defaults, defaults);
         assert_eq!(actual["name"], "config");
         assert_eq!(actual["client-urls"], url);

@@ -1,5 +1,5 @@
 // Copyright 2026 AsterSQL.
-use crate::harness::Server;
+use crate::{harness::Server, http_regression::report_path};
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
 async fn sa_009_behavior() {
     let rust = std::path::PathBuf::from(std::env::var_os("PD_COMPAT_RUST_BIN").unwrap());
@@ -274,7 +274,7 @@ async fn sa_009_dual_matrix() {
                 all.push(json!({"method":method,"path":path,"input":body,"response":r}));
                 physical.push(json!({"before":before,"after":after}));
                 std::fs::write(
-                    format!("/tmp/sa009-raw-{is_rust}.json"),
+                    report_path(format!("/tmp/sa009-raw-{is_rust}.json")),
                     serde_json::to_vec_pretty(&json!({"http":all,"physical":physical})).unwrap(),
                 )
                 .unwrap();
@@ -494,7 +494,8 @@ async fn sa_009_dual_matrix() {
         assert_eq!(compared[0], compared[1]);
     }
     std::fs::write(
-        std::env::var("SA009_RECEIPT").unwrap_or("/tmp/sa009-matrix.json".into()),
+        std::env::var_os("SA009_RECEIPT")
+            .map_or_else(|| report_path("/tmp/sa009-matrix.json"), Into::into),
         serde_json::to_vec_pretty(&reports).unwrap(),
     )
     .unwrap();
@@ -613,7 +614,7 @@ async fn sa_009_split_rollback_and_cancel() {
     }
     assert_eq!(reports[0]["response"], reports[1]["response"]);
     std::fs::write(
-        "/tmp/sa009-fault.json",
+        report_path("/tmp/sa009-fault.json"),
         serde_json::to_vec_pretty(&reports).unwrap(),
     )
     .unwrap();
@@ -724,7 +725,7 @@ async fn sa_009_host_preallocation() {
     }
     assert_eq!(results[0], results[1]);
     std::fs::write(
-        "/tmp/sa009-preallocation.json",
+        report_path("/tmp/sa009-preallocation.json"),
         serde_json::to_vec_pretty(&results).unwrap(),
     )
     .unwrap();

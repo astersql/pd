@@ -81,4 +81,9 @@ async fn task_101_transactions_success_fault_cancel_and_recovery() {
             .get_sample_count(),
         3
     );
+    println!(
+        "etcd WAL recovered task101=durable; transaction counters: success={}, failed={}",
+        count("success"),
+        count("failed")
+    );
 }

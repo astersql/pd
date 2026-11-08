@@ -326,4 +326,11 @@ async fn mcs_053_host_metrics_lifetime() {
             .iter()
             .all(|f| f.name() != "pd_gc_barrier_timestamp_seconds")
     );
+    for sample in text
+        .lines()
+        .filter(|line| line.contains("pd_gc_barrier_timestamp_seconds"))
+    {
+        println!("{sample}");
+    }
+    println!("pd_gc_barrier_timestamp_seconds absent after shutdown");
 }

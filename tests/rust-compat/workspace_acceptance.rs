@@ -15,6 +15,7 @@ pub(crate) fn maintenance(binary: &Path, rust: bool) -> Vec<Value> {
     let mut raw = Vec::new();
     let mut result = Vec::new();
     let mut timestamp = None;
+    let mut expected_gauge = None;
     for (method, suffix, status) in [
         ("GET", "", 404),
         ("GET", "/upgrade", 404),
@@ -49,15 +50,51 @@ pub(crate) fn maintenance(binary: &Path, rust: bool) -> Vec<Value> {
         let content_type = parts.next().unwrap();
         let actual_status: u16 = parts.next().unwrap().parse().unwrap();
         let body = parts.next().unwrap();
-        raw.push(json!({"method":method,"path":suffix,"status":actual_status,"content_type":content_type,"body":body}));
-        let path =
-            std::path::PathBuf::from(std::env::var("CARGO_TARGET_DIR").unwrap()).join(format!(
-                "task102-maintenance-{}-{}.json",
-                if rust { "rust" } else { "go" },
+        if (method, status) == ("PUT", 200) {
+            expected_gauge = Some("1");
+        }
+        if (method, status) == ("DELETE", 200) {
+            expected_gauge = Some("0");
+        }
+        let metrics = Command::new("curl")
+            .args([
+                "-fsS",
+                "--max-time",
+                "5",
+                &format!("{}/metrics", server.url),
+            ])
+            .output()
+            .unwrap();
+        assert!(metrics.status.success(), "{metrics:?}");
+        let metrics = String::from_utf8(metrics.stdout).unwrap();
+        let lines: Vec<_> = metrics
+            .lines()
+            .filter(|line| line.contains("pd_maintenance_task_info"))
+            .collect();
+        raw.push(json!({"method":method,"path":suffix,"status":actual_status,"content_type":content_type,"body":body,"metrics":lines}));
+        let implementation = if rust { "rust" } else { "go" };
+        let path = match std::env::var_os("PD_COMPAT_HTTP_REPORT_DIR") {
+            Some(dir) => Path::new(&dir).join(format!("maintenance-{implementation}.json")),
+            None => Path::new(&std::env::var_os("CARGO_TARGET_DIR").unwrap()).join(format!(
+                "task102-maintenance-{implementation}-{}.json",
                 std::process::id()
-            ));
+            )),
+        };
         std::fs::write(path, serde_json::to_vec_pretty(&raw).unwrap()).unwrap();
         assert_eq!(actual_status, status, "{method} {suffix}: {body}");
+        let expected: Vec<_> = expected_gauge
+            .map(|value| {
+                vec![
+                    "# HELP pd_maintenance_task_info Current maintenance task info in PD"
+                        .to_owned(),
+                    "# TYPE pd_maintenance_task_info gauge".to_owned(),
+                    format!(
+                        "pd_maintenance_task_info{{task_id=\"one\",task_type=\"upgrade\"}} {value}"
+                    ),
+                ]
+            })
+            .unwrap_or_default();
+        assert_eq!(lines, expected, "{method} {suffix}: maintenance metrics");
         let mut value: Value = serde_json::from_str(body).unwrap();
         normalize_timestamp(&mut value, &mut timestamp);
         result.push(json!({"method":method,"path":suffix,"status":actual_status,"content_type":content_type,"body":value}));

@@ -1,5 +1,5 @@
 // Copyright 2026 AsterSQL.
-use crate::harness::Server;
+use crate::{harness::Server, http_regression::report_path};
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
 async fn sa_012_behavior() {
     let rust = std::path::PathBuf::from(std::env::var_os("PD_COMPAT_RUST_BIN").unwrap());
@@ -328,7 +328,7 @@ async fn sa_012_dual_matrix_and_wal() {
                     .entries
             );
             std::fs::write(
-                format!("/tmp/sa012-config-failure-{api}-{is_rust}.json"),
+                report_path(format!("/tmp/sa012-config-failure-{api}-{is_rust}.json")),
                 serde_json::to_vec_pretty(&failed).unwrap(),
             )
             .unwrap();
@@ -505,13 +505,13 @@ async fn sa_012_dual_matrix_and_wal() {
             compared.push(observations);
             std::fs::remove_file(config_path).unwrap();
             std::fs::write(
-                "/tmp/sa012-matrix.json",
+                report_path("/tmp/sa012-matrix.json"),
                 serde_json::to_vec_pretty(&reports).unwrap(),
             )
             .unwrap();
         }
         std::fs::write(
-            "/tmp/sa012-matrix.json",
+            report_path("/tmp/sa012-matrix.json"),
             serde_json::to_vec_pretty(&reports).unwrap(),
         )
         .unwrap();

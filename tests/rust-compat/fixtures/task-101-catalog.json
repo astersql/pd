@@ -1581,9 +1581,9 @@
     "row": "| GET | /pd/api/v1/gc/safepoint | [server/api/router.go:364](../../../server/api/router.go#L364) `serviceGCSafepointHandler.GetGCSafePoint` | apiRouter；v1 ServiceValidator→Redirector→service middleware（audit/ratelimit）；精确模板 | [pkg/server/http.rs](../../../pkg/server/http.rs)；未挂接该路由 | 78 | 主题8待准入 | HTTP-161：成功/参数错误/非leader/未bootstrap/取消；写入追加回滚重载 | task-078.md；缺新差分 |",
     "owner": "78",
     "replays": [
-      "http-v2-boundary"
+      "domain-gc-http"
     ],
-    "dependency": "theme-8/9/10, owner 78; not compatible until domain/topology admission"
+    "dependency": ""
   },
   {
     "id": "HTTP-162",
@@ -1591,9 +1591,9 @@
     "row": "| DELETE | /pd/api/v1/gc/safepoint/{service_id} | [server/api/router.go:365](../../../server/api/router.go#L365) `serviceGCSafepointHandler.DeleteGCSafePoint` | apiRouter；v1 ServiceValidator→Redirector→service middleware（audit/ratelimit）；精确模板 | [pkg/server/http.rs](../../../pkg/server/http.rs)；未挂接该路由 | 78 | 主题8待准入 | HTTP-162：成功/参数错误/非leader/未bootstrap/取消；写入追加回滚重载 | task-078.md；缺新差分 |",
     "owner": "78",
     "replays": [
-      "http-v2-boundary"
+      "domain-gc-http"
     ],
-    "dependency": "theme-8/9/10, owner 78; not compatible until domain/topology admission"
+    "dependency": ""
   },
   {
     "id": "HTTP-163",
@@ -1759,9 +1759,9 @@
     "row": "| POST | /pd/api/v2/keyspaces | [server/apiv2/handlers/keyspace.go:42](../../../server/apiv2/handlers/keyspace.go#L42) `CreateKeyspace` | v2 ServerContext；Redirector | [http_v2_boundary.rs](../../../pkg/server/http_v2_boundary.rs)；逐路由显式依赖拒绝，不标领域等价 | 78 | 主题8待准入 | HTTP-179：成功/参数错误/非leader/未bootstrap/取消；写入追加回滚重载 | [task-078.md](task-078.md)：真实HTTP503、compatible=false、无领域副作用；主题8/9兼容缺口保留 |",
     "owner": "78",
     "replays": [
-      "http-v2-boundary"
+      "domain-keyspace"
     ],
-    "dependency": "theme-8/9/10, owner 78; not compatible until domain/topology admission"
+    "dependency": ""
   },
   {
     "id": "HTTP-180",
@@ -1769,9 +1769,9 @@
     "row": "| POST | /pd/api/v2/keyspaces/id | [server/apiv2/handlers/keyspace.go:43](../../../server/apiv2/handlers/keyspace.go#L43) `CreateKeyspaceByID` | v2 ServerContext；Redirector | [http_v2_boundary.rs](../../../pkg/server/http_v2_boundary.rs)；逐路由显式依赖拒绝，不标领域等价 | 78 | 主题8待准入 | HTTP-180：成功/参数错误/非leader/未bootstrap/取消；写入追加回滚重载 | [task-078.md](task-078.md)：真实HTTP503、compatible=false、无领域副作用；主题8/9兼容缺口保留 |",
     "owner": "78",
     "replays": [
-      "http-v2-boundary"
+      "domain-keyspace"
     ],
-    "dependency": "theme-8/9/10, owner 78; not compatible until domain/topology admission"
+    "dependency": ""
   },
   {
     "id": "HTTP-181",
@@ -1779,9 +1779,9 @@
     "row": "| GET | /pd/api/v2/keyspaces | [server/apiv2/handlers/keyspace.go:44](../../../server/apiv2/handlers/keyspace.go#L44) `LoadAllKeyspaces` | v2 ServerContext；Redirector | [http_v2_boundary.rs](../../../pkg/server/http_v2_boundary.rs)；逐路由显式依赖拒绝，不标领域等价 | 78 | 主题8待准入 | HTTP-181：成功/参数错误/非leader/未bootstrap/取消；写入追加回滚重载 | [task-078.md](task-078.md)：真实HTTP503、compatible=false、无领域副作用；主题8/9兼容缺口保留 |",
     "owner": "78",
     "replays": [
-      "http-v2-boundary"
+      "domain-keyspace"
     ],
-    "dependency": "theme-8/9/10, owner 78; not compatible until domain/topology admission"
+    "dependency": ""
   },
   {
     "id": "HTTP-182",
@@ -1789,9 +1789,9 @@
     "row": "| GET | /pd/api/v2/keyspaces/:name | [server/apiv2/handlers/keyspace.go:45](../../../server/apiv2/handlers/keyspace.go#L45) `LoadKeyspace` | v2 ServerContext；Redirector | [http_v2_boundary.rs](../../../pkg/server/http_v2_boundary.rs)；逐路由显式依赖拒绝，不标领域等价 | 78 | 主题8待准入 | HTTP-182：成功/参数错误/非leader/未bootstrap/取消；写入追加回滚重载 | [task-078.md](task-078.md)：真实HTTP503、compatible=false、无领域副作用；主题8/9兼容缺口保留 |",
     "owner": "78",
     "replays": [
-      "http-v2-boundary"
+      "domain-keyspace"
     ],
-    "dependency": "theme-8/9/10, owner 78; not compatible until domain/topology admission"
+    "dependency": ""
   },
   {
     "id": "HTTP-183",
@@ -1799,9 +1799,9 @@
     "row": "| PATCH | /pd/api/v2/keyspaces/:name/config | [server/apiv2/handlers/keyspace.go:46](../../../server/apiv2/handlers/keyspace.go#L46) `UpdateKeyspaceConfig` | v2 ServerContext；Redirector | [http_v2_boundary.rs](../../../pkg/server/http_v2_boundary.rs)；逐路由显式依赖拒绝，不标领域等价 | 78 | 主题8待准入 | HTTP-183：成功/参数错误/非leader/未bootstrap/取消；写入追加回滚重载 | [task-078.md](task-078.md)：真实HTTP503、compatible=false、无领域副作用；主题8/9兼容缺口保留 |",
     "owner": "78",
     "replays": [
-      "http-v2-boundary"
+      "domain-keyspace"
     ],
-    "dependency": "theme-8/9/10, owner 78; not compatible until domain/topology admission"
+    "dependency": ""
   },
   {
     "id": "HTTP-184",
@@ -1809,9 +1809,9 @@
     "row": "| PUT | /pd/api/v2/keyspaces/:name/state | [server/apiv2/handlers/keyspace.go:47](../../../server/apiv2/handlers/keyspace.go#L47) `UpdateKeyspaceState` | v2 ServerContext；Redirector | [http_v2_boundary.rs](../../../pkg/server/http_v2_boundary.rs)；逐路由显式依赖拒绝，不标领域等价 | 78 | 主题8待准入 | HTTP-184：成功/参数错误/非leader/未bootstrap/取消；写入追加回滚重载 | [task-078.md](task-078.md)：真实HTTP503、compatible=false、无领域副作用；主题8/9兼容缺口保留 |",
     "owner": "78",
     "replays": [
-      "http-v2-boundary"
+      "domain-keyspace"
     ],
-    "dependency": "theme-8/9/10, owner 78; not compatible until domain/topology admission"
+    "dependency": ""
   },
   {
     "id": "HTTP-185",
@@ -1819,9 +1819,9 @@
     "row": "| GET | /pd/api/v2/keyspaces/id/:id | [server/apiv2/handlers/keyspace.go:48](../../../server/apiv2/handlers/keyspace.go#L48) `LoadKeyspaceByID` | v2 ServerContext；Redirector | [http_v2_boundary.rs](../../../pkg/server/http_v2_boundary.rs)；逐路由显式依赖拒绝，不标领域等价 | 78 | 主题8待准入 | HTTP-185：成功/参数错误/非leader/未bootstrap/取消；写入追加回滚重载 | [task-078.md](task-078.md)：真实HTTP503、compatible=false、无领域副作用；主题8/9兼容缺口保留 |",
     "owner": "78",
     "replays": [
-      "http-v2-boundary"
+      "domain-keyspace"
     ],
-    "dependency": "theme-8/9/10, owner 78; not compatible until domain/topology admission"
+    "dependency": ""
   },
   {
     "id": "HTTP-186",
@@ -1829,9 +1829,9 @@
     "row": "| PUT | /pd/api/v2/maintenance/:task_type/:task_id | [server/apiv2/handlers/maintenance.go:42](../../../server/apiv2/handlers/maintenance.go#L42) `StartMaintenanceTask` | v2 ServerContext；Redirector | [http_v2_boundary.rs](../../../pkg/server/http_v2_boundary.rs)；逐路由显式依赖拒绝，不标领域等价 | 78 | 主题9待准入；现有原子存储API不标领域等价 | HTTP-186：成功/参数错误/非leader/未bootstrap/取消；写入追加回滚重载 | [task-078.md](task-078.md)：真实HTTP503、compatible=false、无领域副作用；主题8/9兼容缺口保留 |",
     "owner": "78",
     "replays": [
-      "http-v2-boundary"
+      "domain-maintenance"
     ],
-    "dependency": "theme-8/9/10, owner 78; not compatible until domain/topology admission"
+    "dependency": ""
   },
   {
     "id": "HTTP-187",
@@ -1839,9 +1839,9 @@
     "row": "| GET | /pd/api/v2/maintenance | [server/apiv2/handlers/maintenance.go:43](../../../server/apiv2/handlers/maintenance.go#L43) `GetMaintenanceTasks` | v2 ServerContext；Redirector | [http_v2_boundary.rs](../../../pkg/server/http_v2_boundary.rs)；逐路由显式依赖拒绝，不标领域等价 | 78 | 主题9待准入；现有原子存储API不标领域等价 | HTTP-187：成功/参数错误/非leader/未bootstrap/取消；写入追加回滚重载 | [task-078.md](task-078.md)：真实HTTP503、compatible=false、无领域副作用；主题8/9兼容缺口保留 |",
     "owner": "78",
     "replays": [
-      "http-v2-boundary"
+      "domain-maintenance"
     ],
-    "dependency": "theme-8/9/10, owner 78; not compatible until domain/topology admission"
+    "dependency": ""
   },
   {
     "id": "HTTP-188",
@@ -1849,9 +1849,9 @@
     "row": "| GET | /pd/api/v2/maintenance/:task_type | [server/apiv2/handlers/maintenance.go:44](../../../server/apiv2/handlers/maintenance.go#L44) `GetMaintenanceTaskByType` | v2 ServerContext；Redirector | [http_v2_boundary.rs](../../../pkg/server/http_v2_boundary.rs)；逐路由显式依赖拒绝，不标领域等价 | 78 | 主题9待准入；现有原子存储API不标领域等价 | HTTP-188：成功/参数错误/非leader/未bootstrap/取消；写入追加回滚重载 | [task-078.md](task-078.md)：真实HTTP503、compatible=false、无领域副作用；主题8/9兼容缺口保留 |",
     "owner": "78",
     "replays": [
-      "http-v2-boundary"
+      "domain-maintenance"
     ],
-    "dependency": "theme-8/9/10, owner 78; not compatible until domain/topology admission"
+    "dependency": ""
   },
   {
     "id": "HTTP-189",
@@ -1859,9 +1859,9 @@
     "row": "| DELETE | /pd/api/v2/maintenance/:task_type/:task_id | [server/apiv2/handlers/maintenance.go:45](../../../server/apiv2/handlers/maintenance.go#L45) `DeleteMaintenanceTask` | v2 ServerContext；Redirector | [http_v2_boundary.rs](../../../pkg/server/http_v2_boundary.rs)；逐路由显式依赖拒绝，不标领域等价 | 78 | 主题9待准入；现有原子存储API不标领域等价 | HTTP-189：成功/参数错误/非leader/未bootstrap/取消；写入追加回滚重载 | [task-078.md](task-078.md)：真实HTTP503、compatible=false、无领域副作用；主题8/9兼容缺口保留 |",
     "owner": "78",
     "replays": [
-      "http-v2-boundary"
+      "domain-maintenance"
     ],
-    "dependency": "theme-8/9/10, owner 78; not compatible until domain/topology admission"
+    "dependency": ""
   },
   {
     "id": "HTTP-190",
@@ -1869,9 +1869,9 @@
     "row": "| GET | /pd/api/v2/meta-service-groups | [server/apiv2/handlers/meta_service_group.go:41](../../../server/apiv2/handlers/meta_service_group.go#L41) `GetMetaServiceGroups` | v2 ServerContext；Redirector | [http_v2_boundary.rs](../../../pkg/server/http_v2_boundary.rs)；逐路由显式依赖拒绝，不标领域等价 | 78 | 主题8待准入 | HTTP-190：成功/参数错误/非leader/未bootstrap/取消；写入追加回滚重载 | [task-078.md](task-078.md)：真实HTTP503、compatible=false、无领域副作用；主题8/9兼容缺口保留 |",
     "owner": "78",
     "replays": [
-      "http-v2-boundary"
+      "domain-meta-service-group"
     ],
-    "dependency": "theme-8/9/10, owner 78; not compatible until domain/topology admission"
+    "dependency": ""
   },
   {
     "id": "HTTP-191",
@@ -1879,9 +1879,9 @@
     "row": "| PATCH | /pd/api/v2/meta-service-groups | [server/apiv2/handlers/meta_service_group.go:42](../../../server/apiv2/handlers/meta_service_group.go#L42) `PatchMetaServiceGroups` | v2 ServerContext；Redirector | [http_v2_boundary.rs](../../../pkg/server/http_v2_boundary.rs)；逐路由显式依赖拒绝，不标领域等价 | 78 | 主题8待准入 | HTTP-191：成功/参数错误/非leader/未bootstrap/取消；写入追加回滚重载 | [task-078.md](task-078.md)：真实HTTP503、compatible=false、无领域副作用；主题8/9兼容缺口保留 |",
     "owner": "78",
     "replays": [
-      "http-v2-boundary"
+      "domain-meta-service-group"
     ],
-    "dependency": "theme-8/9/10, owner 78; not compatible until domain/topology admission"
+    "dependency": ""
   },
   {
     "id": "HTTP-192",
@@ -1889,9 +1889,9 @@
     "row": "| PATCH | /pd/api/v2/meta-service-groups/:id/status | [server/apiv2/handlers/meta_service_group.go:43](../../../server/apiv2/handlers/meta_service_group.go#L43) `PatchMetaServiceGroupStatus` | v2 ServerContext；Redirector | [http_v2_boundary.rs](../../../pkg/server/http_v2_boundary.rs)；逐路由显式依赖拒绝，不标领域等价 | 78 | 主题8待准入 | HTTP-192：成功/参数错误/非leader/未bootstrap/取消；写入追加回滚重载 | [task-078.md](task-078.md)：真实HTTP503、compatible=false、无领域副作用；主题8/9兼容缺口保留 |",
     "owner": "78",
     "replays": [
-      "http-v2-boundary"
+      "domain-meta-service-group"
     ],
-    "dependency": "theme-8/9/10, owner 78; not compatible until domain/topology admission"
+    "dependency": ""
   },
   {
     "id": "HTTP-193",
@@ -1899,9 +1899,9 @@
     "row": "| GET | /pd/api/v2/ms/members/:service | [server/apiv2/handlers/microservice.go:40](../../../server/apiv2/handlers/microservice.go#L40) `GetMembers` | v2 ServerContext；Redirector | [http_v2_boundary.rs](../../../pkg/server/http_v2_boundary.rs)；逐路由显式依赖拒绝，不标领域等价 | 78 | 主题8待准入 | HTTP-193：成功/参数错误/非leader/未bootstrap/取消；写入追加回滚重载 | [task-078.md](task-078.md)：真实HTTP503、compatible=false、无领域副作用；主题8/9兼容缺口保留 |",
     "owner": "78",
     "replays": [
-      "http-v2-boundary"
+      "domain-mcs-discovery"
     ],
-    "dependency": "theme-8/9/10, owner 78; not compatible until domain/topology admission"
+    "dependency": ""
   },
   {
     "id": "HTTP-194",
@@ -1909,9 +1909,9 @@
     "row": "| GET | /pd/api/v2/ms/primary/:service | [server/apiv2/handlers/microservice.go:41](../../../server/apiv2/handlers/microservice.go#L41) `GetPrimary` | v2 ServerContext；Redirector | [http_v2_boundary.rs](../../../pkg/server/http_v2_boundary.rs)；逐路由显式依赖拒绝，不标领域等价 | 78 | 主题8待准入 | HTTP-194：成功/参数错误/非leader/未bootstrap/取消；写入追加回滚重载 | [task-078.md](task-078.md)：真实HTTP503、compatible=false、无领域副作用；主题8/9兼容缺口保留 |",
     "owner": "78",
     "replays": [
-      "http-v2-boundary"
+      "domain-mcs-discovery"
     ],
-    "dependency": "theme-8/9/10, owner 78; not compatible until domain/topology admission"
+    "dependency": ""
   },
   {
     "id": "HTTP-195",
@@ -1919,9 +1919,9 @@
     "row": "| POST | /pd/api/v2/ms/tso/primary/evict | [server/apiv2/handlers/microservice.go:42](../../../server/apiv2/handlers/microservice.go#L42) `EvictTSOPrimary` | v2 ServerContext；Redirector | [http_v2_boundary.rs](../../../pkg/server/http_v2_boundary.rs)；逐路由显式依赖拒绝，不标领域等价 | 78 | 主题8待准入 | HTTP-195：成功/参数错误/非leader/未bootstrap/取消；写入追加回滚重载 | [task-078.md](task-078.md)：真实HTTP503、compatible=false、无领域副作用；主题8/9兼容缺口保留 |",
     "owner": "78",
     "replays": [
-      "http-v2-boundary"
+      "domain-mcs-discovery"
     ],
-    "dependency": "theme-8/9/10, owner 78; not compatible until domain/topology admission"
+    "dependency": ""
   },
   {
     "id": "HTTP-196",
@@ -1939,9 +1939,9 @@
     "row": "| GET | /pd/api/v2/gc/safepoint/:keyspaceID | [server/apiv2/handlers/safe_point.go:31](../../../server/apiv2/handlers/safe_point.go#L31) `LoadGCSafePoint` | v2 ServerContext；Redirector | [http_v2_boundary.rs](../../../pkg/server/http_v2_boundary.rs)；逐路由显式依赖拒绝，不标领域等价 | 78 | 主题8待准入 | HTTP-197：成功/参数错误/非leader/未bootstrap/取消；写入追加回滚重载 | [task-078.md](task-078.md)：真实HTTP503、compatible=false、无领域副作用；主题8/9兼容缺口保留 |",
     "owner": "78",
     "replays": [
-      "http-v2-boundary"
+      "domain-gc-http"
     ],
-    "dependency": "theme-8/9/10, owner 78; not compatible until domain/topology admission"
+    "dependency": ""
   },
   {
     "id": "HTTP-198",
@@ -1949,9 +1949,9 @@
     "row": "| POST | /pd/api/v2/tso/keyspace-groups | [server/apiv2/handlers/tso_keyspace_group.go:47](../../../server/apiv2/handlers/tso_keyspace_group.go#L47) `CreateKeyspaceGroups` | v2 ServerContext；Redirector | [http_v2_boundary.rs](../../../pkg/server/http_v2_boundary.rs)；逐路由显式依赖拒绝，不标领域等价 | 78 | 主题8待准入 | HTTP-198：成功/参数错误/非leader/未bootstrap/取消；写入追加回滚重载 | [task-078.md](task-078.md)：真实HTTP503、compatible=false、无领域副作用；主题8/9兼容缺口保留 |",
     "owner": "78",
     "replays": [
-      "http-v2-boundary"
+      "domain-tso-directory"
     ],
-    "dependency": "theme-8/9/10, owner 78; not compatible until domain/topology admission"
+    "dependency": ""
   },
   {
     "id": "HTTP-199",
@@ -1959,9 +1959,9 @@
     "row": "| GET | /pd/api/v2/tso/keyspace-groups | [server/apiv2/handlers/tso_keyspace_group.go:48](../../../server/apiv2/handlers/tso_keyspace_group.go#L48) `GetKeyspaceGroups` | v2 ServerContext；Redirector | [http_v2_boundary.rs](../../../pkg/server/http_v2_boundary.rs)；逐路由显式依赖拒绝，不标领域等价 | 78 | 主题8待准入 | HTTP-199：成功/参数错误/非leader/未bootstrap/取消；写入追加回滚重载 | [task-078.md](task-078.md)：真实HTTP503、compatible=false、无领域副作用；主题8/9兼容缺口保留 |",
     "owner": "78",
     "replays": [
-      "http-v2-boundary"
+      "domain-tso-directory"
     ],
-    "dependency": "theme-8/9/10, owner 78; not compatible until domain/topology admission"
+    "dependency": ""
   },
   {
     "id": "HTTP-200",
@@ -1969,9 +1969,9 @@
     "row": "| GET | /pd/api/v2/tso/keyspace-groups/:id | [server/apiv2/handlers/tso_keyspace_group.go:49](../../../server/apiv2/handlers/tso_keyspace_group.go#L49) `GetKeyspaceGroupByID` | v2 ServerContext；Redirector | [http_v2_boundary.rs](../../../pkg/server/http_v2_boundary.rs)；逐路由显式依赖拒绝，不标领域等价 | 78 | 主题8待准入 | HTTP-200：成功/参数错误/非leader/未bootstrap/取消；写入追加回滚重载 | [task-078.md](task-078.md)：真实HTTP503、compatible=false、无领域副作用；主题8/9兼容缺口保留 |",
     "owner": "78",
     "replays": [
-      "http-v2-boundary"
+      "domain-tso-directory"
     ],
-    "dependency": "theme-8/9/10, owner 78; not compatible until domain/topology admission"
+    "dependency": ""
   },
   {
     "id": "HTTP-201",
@@ -1979,9 +1979,9 @@
     "row": "| DELETE | /pd/api/v2/tso/keyspace-groups/:id | [server/apiv2/handlers/tso_keyspace_group.go:50](../../../server/apiv2/handlers/tso_keyspace_group.go#L50) `DeleteKeyspaceGroupByID` | v2 ServerContext；Redirector | [http_v2_boundary.rs](../../../pkg/server/http_v2_boundary.rs)；逐路由显式依赖拒绝，不标领域等价 | 78 | 主题8待准入 | HTTP-201：成功/参数错误/非leader/未bootstrap/取消；写入追加回滚重载 | [task-078.md](task-078.md)：真实HTTP503、compatible=false、无领域副作用；主题8/9兼容缺口保留 |",
     "owner": "78",
     "replays": [
-      "http-v2-boundary"
+      "domain-tso-directory"
     ],
-    "dependency": "theme-8/9/10, owner 78; not compatible until domain/topology admission"
+    "dependency": ""
   },
   {
     "id": "HTTP-202",
@@ -1989,9 +1989,9 @@
     "row": "| PATCH | /pd/api/v2/tso/keyspace-groups/:id | [server/apiv2/handlers/tso_keyspace_group.go:51](../../../server/apiv2/handlers/tso_keyspace_group.go#L51) `SetNodesForKeyspaceGroup` | v2 ServerContext；Redirector | [http_v2_boundary.rs](../../../pkg/server/http_v2_boundary.rs)；逐路由显式依赖拒绝，不标领域等价 | 78 | 主题8待准入 | HTTP-202：成功/参数错误/非leader/未bootstrap/取消；写入追加回滚重载 | [task-078.md](task-078.md)：真实HTTP503、compatible=false、无领域副作用；主题8/9兼容缺口保留 |",
     "owner": "78",
     "replays": [
-      "http-v2-boundary"
+      "domain-tso-directory"
     ],
-    "dependency": "theme-8/9/10, owner 78; not compatible until domain/topology admission"
+    "dependency": ""
   },
   {
     "id": "HTTP-203",
@@ -1999,9 +1999,9 @@
     "row": "| PATCH | /pd/api/v2/tso/keyspace-groups/:id/*node | [server/apiv2/handlers/tso_keyspace_group.go:52](../../../server/apiv2/handlers/tso_keyspace_group.go#L52) `SetPriorityForKeyspaceGroup` | v2 ServerContext；Redirector | [http_v2_boundary.rs](../../../pkg/server/http_v2_boundary.rs)；逐路由显式依赖拒绝，不标领域等价 | 78 | 主题8待准入 | HTTP-203：成功/参数错误/非leader/未bootstrap/取消；写入追加回滚重载 | [task-078.md](task-078.md)：真实HTTP503、compatible=false、无领域副作用；主题8/9兼容缺口保留 |",
     "owner": "78",
     "replays": [
-      "http-v2-boundary"
+      "domain-tso-directory"
     ],
-    "dependency": "theme-8/9/10, owner 78; not compatible until domain/topology admission"
+    "dependency": ""
   },
   {
     "id": "HTTP-204",
@@ -2009,9 +2009,9 @@
     "row": "| POST | /pd/api/v2/tso/keyspace-groups/:id/alloc | [server/apiv2/handlers/tso_keyspace_group.go:53](../../../server/apiv2/handlers/tso_keyspace_group.go#L53) `AllocNodesForKeyspaceGroup` | v2 ServerContext；Redirector | [http_v2_boundary.rs](../../../pkg/server/http_v2_boundary.rs)；逐路由显式依赖拒绝，不标领域等价 | 78 | 主题8待准入 | HTTP-204：成功/参数错误/非leader/未bootstrap/取消；写入追加回滚重载 | [task-078.md](task-078.md)：真实HTTP503、compatible=false、无领域副作用；主题8/9兼容缺口保留 |",
     "owner": "78",
     "replays": [
-      "http-v2-boundary"
+      "domain-tso-directory"
     ],
-    "dependency": "theme-8/9/10, owner 78; not compatible until domain/topology admission"
+    "dependency": ""
   },
   {
     "id": "HTTP-205",
@@ -2019,9 +2019,9 @@
     "row": "| POST | /pd/api/v2/tso/keyspace-groups/:id/split | [server/apiv2/handlers/tso_keyspace_group.go:54](../../../server/apiv2/handlers/tso_keyspace_group.go#L54) `SplitKeyspaceGroupByID` | v2 ServerContext；Redirector | [http_v2_boundary.rs](../../../pkg/server/http_v2_boundary.rs)；逐路由显式依赖拒绝，不标领域等价 | 78 | 主题8待准入 | HTTP-205：成功/参数错误/非leader/未bootstrap/取消；写入追加回滚重载 | [task-078.md](task-078.md)：真实HTTP503、compatible=false、无领域副作用；主题8/9兼容缺口保留 |",
     "owner": "78",
     "replays": [
-      "http-v2-boundary"
+      "domain-tso-transition"
     ],
-    "dependency": "theme-8/9/10, owner 78; not compatible until domain/topology admission"
+    "dependency": ""
   },
   {
     "id": "HTTP-206",
@@ -2029,9 +2029,9 @@
     "row": "| DELETE | /pd/api/v2/tso/keyspace-groups/:id/split | [server/apiv2/handlers/tso_keyspace_group.go:55](../../../server/apiv2/handlers/tso_keyspace_group.go#L55) `FinishSplitKeyspaceByID` | v2 ServerContext；Redirector | [http_v2_boundary.rs](../../../pkg/server/http_v2_boundary.rs)；逐路由显式依赖拒绝，不标领域等价 | 78 | 主题8待准入 | HTTP-206：成功/参数错误/非leader/未bootstrap/取消；写入追加回滚重载 | [task-078.md](task-078.md)：真实HTTP503、compatible=false、无领域副作用；主题8/9兼容缺口保留 |",
     "owner": "78",
     "replays": [
-      "http-v2-boundary"
+      "domain-tso-transition"
     ],
-    "dependency": "theme-8/9/10, owner 78; not compatible until domain/topology admission"
+    "dependency": ""
   },
   {
     "id": "HTTP-207",
@@ -2039,9 +2039,9 @@
     "row": "| POST | /pd/api/v2/tso/keyspace-groups/:id/merge | [server/apiv2/handlers/tso_keyspace_group.go:56](../../../server/apiv2/handlers/tso_keyspace_group.go#L56) `MergeKeyspaceGroups` | v2 ServerContext；Redirector | [http_v2_boundary.rs](../../../pkg/server/http_v2_boundary.rs)；逐路由显式依赖拒绝，不标领域等价 | 78 | 主题8待准入 | HTTP-207：成功/参数错误/非leader/未bootstrap/取消；写入追加回滚重载 | [task-078.md](task-078.md)：真实HTTP503、compatible=false、无领域副作用；主题8/9兼容缺口保留 |",
     "owner": "78",
     "replays": [
-      "http-v2-boundary"
+      "domain-tso-transition"
     ],
-    "dependency": "theme-8/9/10, owner 78; not compatible until domain/topology admission"
+    "dependency": ""
   },
   {
     "id": "HTTP-208",
@@ -2049,9 +2049,9 @@
     "row": "| DELETE | /pd/api/v2/tso/keyspace-groups/:id/merge | [server/apiv2/handlers/tso_keyspace_group.go:57](../../../server/apiv2/handlers/tso_keyspace_group.go#L57) `FinishMergeKeyspaceByID` | v2 ServerContext；Redirector | [http_v2_boundary.rs](../../../pkg/server/http_v2_boundary.rs)；逐路由显式依赖拒绝，不标领域等价 | 78 | 主题8待准入 | HTTP-208：成功/参数错误/非leader/未bootstrap/取消；写入追加回滚重载 | [task-078.md](task-078.md)：真实HTTP503、compatible=false、无领域副作用；主题8/9兼容缺口保留 |",
     "owner": "78",
     "replays": [
-      "http-v2-boundary"
+      "domain-tso-transition"
     ],
-    "dependency": "theme-8/9/10, owner 78; not compatible until domain/topology admission"
+    "dependency": ""
   },
   {
     "id": "HTTP-209",
@@ -2059,9 +2059,9 @@
     "row": "| DELETE | /pd/api/v2/tso/keyspace-groups/:id/keyspaces | [server/apiv2/handlers/tso_keyspace_group.go:58](../../../server/apiv2/handlers/tso_keyspace_group.go#L58) `RemoveKeyspacesFromGroup` | v2 ServerContext；Redirector | [http_v2_boundary.rs](../../../pkg/server/http_v2_boundary.rs)；逐路由显式依赖拒绝，不标领域等价 | 78 | 主题8待准入 | HTTP-209：成功/参数错误/非leader/未bootstrap/取消；写入追加回滚重载 | [task-078.md](task-078.md)：真实HTTP503、compatible=false、无领域副作用；主题8/9兼容缺口保留 |",
     "owner": "78",
     "replays": [
-      "http-v2-boundary"
+      "domain-tso-transition"
     ],
-    "dependency": "theme-8/9/10, owner 78; not compatible until domain/topology admission"
+    "dependency": ""
   },
   {
     "id": "HTTP-210",
@@ -6092,8 +6092,10 @@
     "inventory": "surface-inventory.md",
     "row": "| M-037 [pkg/maintenance/metrics.go:20](../../../pkg/maintenance/metrics.go#L20) maintenanceTaskInfo = | GaugeVec | \"pd\" / \"maintenance\" / \"task_info\" | \"Current maintenance task info in PD\" | prometheus.NewGaugeVec(<br>\t\tprometheus.GaugeOpts{<br>\t\t\tNamespace: \"pd\",<br>\t\t\tSubsystem: \"maintenance\",<br>\t\t\tName:      \"task_info\",<br>\t\t\tHelp:      \"Current maintenance task info in PD\",<br>\t\t}, []string{\"task_type\", \"task_id\"}) | [pkg/runtime/node.rs](../../../pkg/runtime/node.rs) / 15/86/101；逐项未验收 |",
     "owner": "[pkg/runtime/node.rs](../../../pkg/runtime/node.rs) / 15/86/101；逐项未验收",
-    "replays": [],
-    "dependency": "theme-8: maintenance domain or MCS TSO keyspace-group lifecycle; classical PD replay does not implement this domain"
+    "replays": [
+      "domain-maintenance"
+    ],
+    "dependency": ""
   },
   {
     "id": "M-038",

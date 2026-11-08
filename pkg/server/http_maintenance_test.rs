@@ -143,6 +143,7 @@ async fn maintenance_contract(
             registry.gather().is_empty(),
             "host collectors must be released"
         );
+        println!("maintenance host registry empty after shutdown (restart={restart})");
         if !restart {
             if let Some(fixture) = fixture.as_mut() {
                 fixture.command("stop", "stopped");

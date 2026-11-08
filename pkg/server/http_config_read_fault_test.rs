@@ -140,7 +140,9 @@ async fn task_047_follower_recovery_fault_and_cancel() {
     assert!(nodes[1].try_cluster().is_none());
     let mut progress = nodes[0].cluster().watch_schedule();
     tokio::time::timeout(Duration::from_secs(10), async {
-        while progress.borrow().phase != astersql_pd_runtime::cluster_host::SchedulePhase::Running {
+        // Without a bootstrap record, the scheduler waits in Preparing.
+        while progress.borrow().phase != astersql_pd_runtime::cluster_host::SchedulePhase::Preparing
+        {
             progress.changed().await.unwrap();
         }
     })
