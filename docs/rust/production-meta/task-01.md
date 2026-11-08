@@ -29,7 +29,7 @@ MetaStorage RPC 和 WAL 重启属于外部 etcd 对照，适用于该服务层�
 [验收15环境](../server-api/acceptance/task-15.json.gz)、
 [MetaStorage 原始回执](../server-api/acceptance/task-16-metastorage.json.gz)。
 
-原主题9批次86、87、88、92均未交付。仓库中 `tools/pd-recover` 只有 Go
+初次盘点时，原主题9批次86、87、88、92均未交付，当时 `tools/pd-recover` 只有 Go
 入口和说明，缺 Rust recover crate、参数预检、旧成员身份保护以及备份恢复回执。
 现有 Rust runtime 的恢复启动专项和 Go 工具源码是后续实施输入。生产任务30
 要求复用主题9恢复工具，所以此处保留对应依赖。
@@ -46,22 +46,12 @@ MetaStorage RPC 和 WAL 重启属于外部 etcd 对照，适用于该服务层�
 
 ## 2026-11-08 准入差距复核
 
-生产任务 1 明定主题 9 的完成证据是生产编码和发布验收的前置。
-运维 134 要求运维组件、Go client、工具 golden、备份恢复、构建均有记录，
-并要求前置 `coverage.md`、`consumers.md`、最终
-`docs/rust/ops-tools/acceptance.md`。本轮未发现上述三个产物。Go 专属
-运行时行为的范围须引用已确认的豁免或替代决策。
-[运维 134 验收条件](../../../.plans/2026-10-29-pd-rust-运维客户端与工具/134-主题九验收与缺口交接.md)、
-[生产任务 1](../../../.plans/2026-10-29-pd-rust-生产元数据与发布切换/1-核验准入与现有契约.md)。
-
-| 运维 134 要接收的条目 | 实际证据与仍需交接的条件 |
-| --- | --- |
-| 运维 1–27 的覆盖、运行时与运维能力 | 版本、计量配置及部分服务面已有 Rust 路径。维护 API、持久化与指标已有真实回执。需要逐项来源和消费者矩阵，以及审计、计量、资源监控和 Go 专属调优的真实行为或已确认替代范围。[维护回执](../server-api/task-102.md) |
-| 运维 28–45 的客户端 | Go client 三工具在本轮对 Go 与 Rust 两侧完成真实切主、重连和取消。待按运维 3 的消费者选择交接 Rust client 能力及错误、取消、TLS 和服务发现边界。[运维 45](../ops-tools/task-045.md) |
-| 运维 46–85、93–124 的工具 golden | 现有 Go 工具可作 oracle。Rust 独立 `pd-ctl` 与模拟器入口仍缺，导出、诊断和 benchmark 需按原选择矩阵交接 |
-| 运维 86–92 的备份恢复 | Rust 命令、真实 etcd 重启和同源 Go 工具差分已具备。Go 备份空文件失败和重复恢复退出码差异已实测，仍需在交接中固定允许差异的范围。[运维 91](../ops-tools/task-091.md)、[运维 92](../ops-tools/task-092.md) |
-| 运维 125–133 的构建与 Dashboard | 当前 `pd-server` 本地构建通过，仍需 132 的无 Dashboard 发行验收及 133 的完整运维发行验收，含 125–131 的实际 Swagger/Dashboard 接线或已确认范围 |
-| 主题 8 上游与来源完整性 | 由运维 1/134 按实际调用和新证据接收主题 8；现有服务端回执可逐项引用，完整准入表待生成 |
+生产 22/28 继续等待主题 9 正式交接。运维 134 已整理当前证据、工具
+消费者及解除条件。新增的本地默认发行回执覆盖实际 Rust release 启停和
+禁用 Dashboard 行为；完整 Dashboard/Swagger 装配、所选 Rust client
+和工具、运维组件及范围决策仍待交付。
+[覆盖矩阵](../ops-tools/coverage.md)、[消费者矩阵](../ops-tools/consumers.md)、
+[发行回执](../ops-tools/task-132.md)、[准入交接](../ops-tools/acceptance.md)。
 
 生产 38 的隔离迁移与双向回滚、28/40 的原生测试进程以及 39 的同 etcd
 切换提供本地行为证据。生产后端选择还须等待认证传输和受控成员接入，
