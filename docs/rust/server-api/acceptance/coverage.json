@@ -11,5 +11,35 @@
       "added": 1212,
       "scope-added": 3
     }
+  },
+  "wire_audit_20": {
+    "head": "7ce928296bd41ab64b2df4394ee08b7a385d14d9",
+    "receipt": "docs/rust/server-api/acceptance/task-20.json.gz",
+    "counts": {
+      "classic-pd": 56,
+      "descriptor-only": 7,
+      "extra-grpc": 38,
+      "http": 263
+    },
+    "source_counts": {
+      "same": 339,
+      "retired": 1,
+      "added": 378,
+      "changed": 25
+    },
+    "source_transition": {
+      "docs/rust/server-api/wire-inventory.md": {
+        "before": "4540629edddbc35c14c77aa9701681eeaafa863b900feb13a7cca6464ae6dbb9",
+        "after": "7ea60801dbf47a80a9072f3e59a7083de0f56fc45e37d96c5c10367e6520444e"
+      },
+      "tests/rust-compat/lib.rs": {
+        "before": "e8bf80a0cac039c8a9a4a5d57ac91a6bc17633100cbaf46afee762ac37a80b03",
+        "after": "b76c4b489adb29c825b7aeff634af6c40ff65cd65aea6e79188640a13b95ba73"
+      },
+      "tests/rust-compat/accept_inventory_19_test.rs": {
+        "before": "4d77465d1cd8948035ad9009706688ea4486f3130c434bba709dd9c7b5bb9657",
+        "after": "9f5465a21b1230b39d248b1d3f5606b5ffca84aaddc8365bbc5755d3a71749f4"
+      }
+    }
   }
 }

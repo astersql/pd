@@ -980,3 +980,14 @@ descriptor SHA-256：`b337c0aefcf0e158427ae4c039e78c3fc50cf5c02a55193a6adfbb2dd3
 Markdown文档，运行验证不适用。后续Rust/Cargo/脚本增删单独列入同一审计记录。
 GC/keyspace/MCS/生产后端仍按既有领域缺口交接，未重新拆分或宣布兼容。
 本补记本身是后续文档漂移，既有冻结集合与历史失败记录保持原口径。
+
+## 分项验收 20 当前来源
+
+[当前审计](acceptance/task-20.md)保留旧表及原 manifest 哈希，通过独立回执登记当前
+文件字节、增删来源和各行验收归属。gRPC 使用完整服务名与方法，HTTP 使用方法与
+完整路径，调度器动态挂载另带来源类型。历史 owner 只读取专用列。
+
+当前 classic、独立 MCS 与传递协议分开登记。Namespace 同 Deadlock 和
+TraceRecordPubSub 一样，当前属于传递未注册协议。四类独立 MCS 的辅助
+`grpc.health.v1.Health` 由单独固定的 descriptor 补充，三项方法归验收 16。
+etcd 自身的服务仍由后端拓扑验收接收。第 19 项记录的 RM 双流取消差异仍待处理。

@@ -17,15 +17,15 @@ const BASE: &str = "bdec774cc277fc2bb65ffa44cfbfb1849bfbe0e2";
 
 type Manifest<'a> = BTreeMap<&'a str, (&'a str, &'a str)>;
 
-fn canonical(path: &str) -> bool {
+pub(super) fn canonical(path: &str) -> bool {
     !path.contains('\\') && path.split('/').all(|part| !matches!(part, "" | "." | ".."))
 }
 
-fn digest(bytes: &[u8]) -> String {
+pub(super) fn digest(bytes: &[u8]) -> String {
     format!("{:x}", Sha256::digest(bytes))
 }
 
-fn sha256(hash: &str) -> bool {
+pub(super) fn sha256(hash: &str) -> bool {
     hash.len() == 64
         && hash
             .bytes()
@@ -79,7 +79,7 @@ fn check_historical_set(rows: &Manifest<'_>, expected: &str) -> Result<(), &'sta
     Ok(())
 }
 
-fn read_command(root: &Path, command: &str, args: &[&str]) -> Vec<u8> {
+pub(super) fn read_command(root: &Path, command: &str, args: &[&str]) -> Vec<u8> {
     let output = Command::new(command)
         .args(args)
         .current_dir(root)
@@ -283,6 +283,7 @@ fn sa_019_inventory() {
         .flat_map(|run| run["paths"].as_array().unwrap())
         .map(|path| path.as_str().unwrap())
         .collect();
+    let transition = &coverage["wire_audit_20"]["source_transition"];
     let paths = audit_paths(
         &historical,
         std::str::from_utf8(&base).unwrap(),
@@ -298,7 +299,15 @@ fn sa_019_inventory() {
         .expect("missing current source audit rows");
     assert_eq!(
         rows.keys().map(String::as_str).collect::<BTreeSet<_>>(),
-        paths,
+        paths
+            .into_iter()
+            .filter(|path| !matches!(
+                *path,
+                "tests/rust-compat/accept_inventory_20_test.rs"
+                    | "docs/rust/server-api/acceptance/task-20.md"
+                    | "docs/rust/server-api/acceptance/task-20.json.gz"
+            ) || transition.is_null())
+            .collect(),
         "source path set drift"
     );
 
@@ -348,8 +357,23 @@ fn sa_019_inventory() {
                 "unexpected bytes at retired path {path}"
             );
         } else {
-            check_input(&row["current_sha256"], current.as_deref())
-                .unwrap_or_else(|err| panic!("{err}: {path}"));
+            // The protocol audit owns these exact audit-only changes. Keep the
+            // previous bytes pinned as well as the explicit successor hashes.
+            if matches!(
+                path.as_str(),
+                "docs/rust/server-api/wire-inventory.md"
+                    | "tests/rust-compat/accept_inventory_19_test.rs"
+                    | "tests/rust-compat/lib.rs"
+            ) && !transition.is_null()
+            {
+                let handoff = &transition[path];
+                assert_eq!(handoff["before"], row["current_sha256"], "{path}");
+                check_input(&handoff["after"], current.as_deref())
+                    .unwrap_or_else(|err| panic!("{err}: {path}"));
+            } else {
+                check_input(&row["current_sha256"], current.as_deref())
+                    .unwrap_or_else(|err| panic!("{err}: {path}"));
+            }
         }
         let successor = row["successor"].as_str().unwrap();
         assert!(
@@ -370,7 +394,7 @@ fn sa_019_inventory() {
             match row["historical_sha256"].as_str() {
                 None if base_files.contains(path.as_str()) => "scope-added",
                 None => "added",
-                hash if hash == current.as_deref() => "same",
+                hash if hash == row["current_sha256"].as_str() => "same",
                 Some(_) => "changed",
             }
         };
