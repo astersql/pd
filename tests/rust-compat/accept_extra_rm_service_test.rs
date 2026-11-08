@@ -756,13 +756,46 @@ async fn sa_016_rm_proxy_token_frames_half_close_and_both_service_deployments() 
         pd.stop().unwrap();
     }
 }
-#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
-async fn sa_016_rm_proxy_frontend_disconnect_preserves_other_stream() {
-    let go = crate::readonly_oracle::pinned_go_binary().unwrap();
-    let rust = PathBuf::from(std::env::var_os("PD_COMPAT_RUST_BIN").unwrap());
+async fn rm_disconnect_snapshot(store: &EtcdMetaStore) -> Value {
+    let mut snapshot = serde_json::Map::new();
+    for (name, key) in [
+        (
+            "setting",
+            astersql_pd_keypath::keyspace_resource_group_setting_path(7, "watched"),
+        ),
+        (
+            "state",
+            astersql_pd_keypath::keyspace_resource_group_state_path(7, "watched"),
+        ),
+    ] {
+        let read = store
+            .read(Read::range(key.as_bytes(), b"", Consistency::Linearizable))
+            .await
+            .unwrap();
+        snapshot.insert(
+            name.into(),
+            json!(read.entries.iter().map(|entry| {
+            json!({"key":entry.key,"value":entry.value,"create_revision":entry.create_revision,
+                   "mod_revision":entry.mod_revision,"lease":entry.lease})
+        }).collect::<Vec<_>>()),
+        );
+    }
+    Value::Object(snapshot)
+}
+
+async fn rm_disconnect_case(
+    go: &Path,
+    binary: &Path,
+    is_rust: bool,
+    wait_for_go_close: bool,
+    records: &mut Vec<Value>,
+) -> Result<p::TokenBucketsResponse, String> {
+    use prost::Message;
+
     let config = File(std::env::temp_dir().join(format!(
-        "pd-sa016-rm-cancel-proxy-{}.toml",
-        std::process::id()
+        "pd-sa016-rm-cancel-proxy-{}-{}.toml",
+        std::process::id(),
+        is_rust
     )));
     std::fs::write(
         &config.0,
@@ -771,96 +804,174 @@ async fn sa_016_rm_proxy_frontend_disconnect_preserves_other_stream() {
     .unwrap();
     let argument = format!("--config={}", config.0.display());
     let environment = [("PD_SERVICE_MODE".into(), "api".into())];
-    let mut records = Vec::new();
-    for (binary, is_rust) in [(&go, false), (&rust, true)] {
-        let mut pd = if is_rust {
-            Server::start_rust_with_environment(binary, &[&argument], &environment)
-        } else {
-            Server::start_with_environment(binary, &[&argument], &environment)
-        }
-        .unwrap();
-        pd.ready().unwrap();
-        let mut client = ResourceManagerClient::connect(pd.url.clone())
-            .await
-            .unwrap();
-        let mut resource = group(9, 75.0);
-        resource
-            .r_u_settings
-            .as_mut()
-            .unwrap()
-            .r_u
-            .as_mut()
-            .unwrap()
-            .settings
-            .as_mut()
-            .unwrap()
-            .burst_limit = -1;
-        client
-            .add_resource_group(p::PutResourceGroupRequest {
-                group: Some(resource),
-            })
-            .await
-            .unwrap();
-        let mut sidecar = Sidecar::start(&go, pd.metadata_url());
-        proxy_ready(&mut client, &sidecar).await;
-        let (send_a, receive_a) = tokio::sync::mpsc::channel(1);
-        send_a.send(proxy_token_request(5.0)).await.unwrap();
-        let front = astersql_pd_mcs_server::DelegateConnections::new(
-            tokio::runtime::Handle::current(),
-            &tokio_util::sync::CancellationToken::new(),
-            None,
-        );
-        let mut client_a = ResourceManagerClient::new(front.get(&pd.url).await.unwrap());
-        let mut a = client_a
-            .acquire_token_buckets(tokio_stream::wrappers::ReceiverStream::new(receive_a))
-            .await
-            .unwrap()
-            .into_inner();
-        assert!(a.message().await.unwrap().is_some());
-        let (send_b, receive_b) = tokio::sync::mpsc::channel(1);
-        let mut request_b = proxy_token_request(7.0);
-        request_b.client_unique_id = 24;
-        send_b.send(request_b).await.unwrap();
-        let mut b = client
-            .acquire_token_buckets(tokio_stream::wrappers::ReceiverStream::new(receive_b))
-            .await
-            .unwrap()
-            .into_inner();
-        assert!(b.message().await.unwrap().is_some());
-        front.shutdown();
-        let first_end = tokio::time::timeout(Duration::from_secs(1), a.message())
-            .await
-            .unwrap();
-        assert!(
-            !matches!(first_end, Ok(Some(_))),
-            "frontend connection shutdown must terminate the first RPC"
-        );
-        // Both senders stay alive; closing the owned frontend TCP transport is cancellation.
-        let mut next = proxy_token_request(9.0);
-        next.client_unique_id = 24;
-        send_b.send(next).await.unwrap();
-        let response = tokio::time::timeout(Duration::from_secs(3), b.message()).await;
-        records.push(json!({"rust":is_rust,"stage":"frontend disconnect and independent live stream","other_stream":format!("{response:?}"),"first_sender_closed":send_a.is_closed(),"first_stream":format!("{first_end:?}")}));
-        save(&records);
-        let response = response
-            .expect("other stream must keep responding after frontend disconnect")
-            .unwrap()
-            .unwrap();
-        assert_eq!(
-            response.responses[0].granted_r_u_tokens[0]
-                .granted_tokens
-                .as_ref()
-                .unwrap()
-                .tokens,
-            9.0
-        );
-        drop(send_a);
-        drop(send_b);
-        drop(b);
-        proxy_ready(&mut client, &sidecar).await;
-        sidecar.stop();
-        pd.stop().unwrap();
+    let args = [argument.as_str(), "--log-level=debug"];
+    let mut pd = if is_rust {
+        Server::start_rust_with_environment(binary, &args, &environment)
+    } else {
+        Server::start_with_environment(binary, &args, &environment)
     }
+    .unwrap();
+    pd.ready().unwrap();
+    let mut client = ResourceManagerClient::connect(pd.url.clone())
+        .await
+        .unwrap();
+    let mut resource = group(9, 75.0);
+    resource
+        .r_u_settings
+        .as_mut()
+        .unwrap()
+        .r_u
+        .as_mut()
+        .unwrap()
+        .settings
+        .as_mut()
+        .unwrap()
+        .burst_limit = -1;
+    let put = p::PutResourceGroupRequest {
+        group: Some(resource),
+    };
+    let added = client
+        .add_resource_group(put.clone())
+        .await
+        .unwrap()
+        .into_inner();
+    let store = EtcdMetaStore::connect(&[pd.metadata_url().into()], Duration::from_secs(3))
+        .await
+        .unwrap();
+    let mut sidecar = Sidecar::start(go, pd.metadata_url());
+    proxy_ready(&mut client, &sidecar).await;
+
+    let (send_a, receive_a) = tokio::sync::mpsc::channel(1);
+    let request_a = proxy_token_request(5.0);
+    send_a.send(request_a.clone()).await.unwrap();
+    let front = astersql_pd_mcs_server::DelegateConnections::new(
+        tokio::runtime::Handle::current(),
+        &tokio_util::sync::CancellationToken::new(),
+        None,
+    );
+    let mut client_a = ResourceManagerClient::new(front.get(&pd.url).await.unwrap());
+    let mut a = client_a
+        .acquire_token_buckets(tokio_stream::wrappers::ReceiverStream::new(receive_a))
+        .await
+        .unwrap()
+        .into_inner();
+    let first_a = a.message().await.unwrap().unwrap();
+
+    let (send_b, receive_b) = tokio::sync::mpsc::channel(1);
+    let mut request_b = proxy_token_request(7.0);
+    request_b.client_unique_id = 24;
+    send_b.send(request_b.clone()).await.unwrap();
+    let mut b = client
+        .acquire_token_buckets(tokio_stream::wrappers::ReceiverStream::new(receive_b))
+        .await
+        .unwrap()
+        .into_inner();
+    let first_b = b.message().await.unwrap().unwrap();
+    let before = rm_disconnect_snapshot(&store).await;
+
+    let close_line = |line: &&str| {
+        line.contains("close delegate client connection") && line.contains(&sidecar.url)
+    };
+    let previous_closures = pd.logs().lines().filter(close_line).count();
+    let delegate_closed = || {
+        pd.logs()
+            .lines()
+            .filter(close_line)
+            .nth(previous_closures)
+            .map(str::to_owned)
+    };
+    front.shutdown();
+    let first_end = tokio::time::timeout(Duration::from_secs(1), a.message())
+        .await
+        .unwrap();
+    assert!(
+        !matches!(first_end, Ok(Some(_))),
+        "frontend connection shutdown must terminate the first RPC"
+    );
+    if wait_for_go_close && !is_rust {
+        tokio::time::timeout(Duration::from_secs(3), async {
+            while delegate_closed().is_none() {
+                tokio::time::sleep(Duration::from_millis(10)).await;
+            }
+        })
+        .await
+        .expect("Go did not log closure of the delegate used by both streams");
+    }
+
+    // Both senders stay alive; closing the owned frontend TCP transport is cancellation.
+    let mut next = proxy_token_request(9.0);
+    next.client_unique_id = 24;
+    send_b.send(next.clone()).await.unwrap();
+    let response = tokio::time::timeout(Duration::from_secs(3), b.message()).await;
+    let after = rm_disconnect_snapshot(&store).await;
+    let response_bytes = response
+        .as_ref()
+        .ok()
+        .and_then(|r| r.as_ref().ok())
+        .and_then(|r| r.as_ref())
+        .map(Message::encode_to_vec);
+    records.push(json!({
+        "rust":is_rust,"wait_for_go_close":wait_for_go_close,"pd":pd.url,
+        "metadata":pd.metadata_url(),"sidecar":sidecar.url,
+        "put":put.encode_to_vec(),"added":added.encode_to_vec(),
+        "requests":[request_a.encode_to_vec(),request_b.encode_to_vec(),next.encode_to_vec()],
+        "initial_responses":[first_a.encode_to_vec(),first_b.encode_to_vec()],
+        "first_sender_closed":send_a.is_closed(),"first_stream":format!("{first_end:?}"),
+        "other_stream":format!("{response:?}"),"other_response":response_bytes,
+        "previous_delegate_closures":previous_closures,"delegate_closed_before_cleanup":delegate_closed(),
+        "etcd_before":before,"etcd_after":after,"pd_log_before_cleanup":pd.logs(),
+        "sidecar_log_before_cleanup":sidecar.logs(),
+    }));
+    save(records);
+    assert_eq!(before["setting"].as_array().unwrap().len(), 1);
+    assert_eq!(
+        before["setting"], after["setting"],
+        "RM settings changed after disconnect"
+    );
+
+    drop(send_a);
+    drop(send_b);
+    drop(b);
+    proxy_ready(&mut client, &sidecar).await;
+    sidecar.stop();
+    pd.stop().unwrap();
+    records.last_mut().unwrap()["graceful_cleanup"] = json!(true);
+    save(records);
+    response
+        .map_err(|error| error.to_string())?
+        .map_err(|error| error.to_string())?
+        .ok_or_else(|| "unexpected EOF".into())
+}
+
+fn assert_surviving_rm_stream(response: Result<p::TokenBucketsResponse, String>) {
+    let response = response.expect("other stream must keep responding after frontend disconnect");
+    assert_eq!(
+        response.responses[0].granted_r_u_tokens[0]
+            .granted_tokens
+            .as_ref()
+            .unwrap()
+            .tokens,
+        9.0
+    );
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn sa_016_rm_proxy_frontend_disconnect_rust_branch() {
+    let go = crate::readonly_oracle::pinned_go_binary().unwrap();
+    let rust = PathBuf::from(std::env::var_os("PD_COMPAT_RUST_BIN").unwrap());
+    assert_surviving_rm_stream(rm_disconnect_case(&go, &rust, true, false, &mut Vec::new()).await);
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn sa_016_rm_proxy_frontend_disconnect_preserves_other_stream() {
+    let go = crate::readonly_oracle::pinned_go_binary().unwrap();
+    let rust = PathBuf::from(std::env::var_os("PD_COMPAT_RUST_BIN").unwrap());
+    let wait_for_go_close = std::env::var_os("PD_SA019_RM_WAIT_FOR_GO_CLOSE").is_some();
+    let mut records = Vec::new();
+    let rust_response = rm_disconnect_case(&go, &rust, true, false, &mut records).await;
+    let go_response = rm_disconnect_case(&go, &go, false, wait_for_go_close, &mut records).await;
+    assert_surviving_rm_stream(rust_response);
+    assert_surviving_rm_stream(go_response);
 }
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
 async fn sa_016_rm_proxy_upstream_loss_then_next_send_ends_without_replay() {

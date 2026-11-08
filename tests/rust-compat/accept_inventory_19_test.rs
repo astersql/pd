@@ -175,6 +175,51 @@ fn check_run<'a>(
     Ok(test)
 }
 
+fn check_rm_divergence(run: &Value) {
+    use astersql_pd_proto::resource_manager::TokenBucketsResponse;
+    use prost::Message;
+
+    assert_eq!(run["exit"], 101);
+    assert_eq!(run["admission"], "failed");
+    assert!(
+        run["log"]
+            .as_str()
+            .unwrap()
+            .contains("0 passed; 1 failed; 0 ignored")
+    );
+    let [rust, go] = run["observations"].as_array().unwrap().as_slice() else {
+        panic!("RM divergence requires observations from both implementations");
+    };
+    assert_eq!(rust["rust"], true);
+    assert_eq!(go["rust"], false);
+    for input in ["put", "requests", "initial_responses"] {
+        assert!(!rust[input].as_array().unwrap().is_empty());
+        assert_eq!(rust[input], go[input], "{input}");
+    }
+    for observation in [rust, go] {
+        assert_eq!(observation["graceful_cleanup"], true);
+        let before = &observation["etcd_before"]["setting"];
+        assert_eq!(before.as_array().unwrap().len(), 1);
+        assert_eq!(*before, observation["etcd_after"]["setting"]);
+    }
+    let wire: Vec<u8> = serde_json::from_value(rust["other_response"].clone()).unwrap();
+    let response = TokenBucketsResponse::decode(wire.as_slice()).unwrap();
+    assert_eq!(
+        response.responses[0].granted_r_u_tokens[0]
+            .granted_tokens
+            .as_ref()
+            .unwrap()
+            .tokens,
+        9.0
+    );
+    assert!(go["other_response"].is_null());
+    assert_eq!(go["wait_for_go_close"], true);
+    let close = go["delegate_closed_before_cleanup"].as_str().unwrap();
+    assert!(close.contains("close delegate client connection"));
+    assert!(close.contains(go["sidecar"].as_str().unwrap()));
+    assert!(go["other_stream"].as_str().unwrap().starts_with("Ok(Err("));
+}
+
 #[test]
 fn sa_019_inventory() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"))
@@ -209,6 +254,7 @@ fn sa_019_inventory() {
     let snapshot: Value =
         serde_json::from_slice(&read_command(&root, "gzip", &["-dc", SNAPSHOT])).unwrap();
     assert_eq!(index["head"], snapshot["head"]);
+    assert_eq!(index["latest_inputs_head"], snapshot["rm_followup"]["head"]);
     let head = index["head"].as_str().unwrap();
     let frozen_sha = index["historical_sha256"].as_str().unwrap();
     check_historical_set(&historical, frozen_sha).unwrap();
@@ -230,10 +276,10 @@ fn sa_019_inventory() {
         ],
     );
     let runs = snapshot["runs"].as_object().unwrap();
-    let blocked = snapshot["blocked_cases"].as_object().unwrap();
+    let divergences = snapshot["observed_divergences"].as_object().unwrap();
     let observed: BTreeSet<_> = runs
         .values()
-        .chain(blocked.values())
+        .chain(divergences.values())
         .flat_map(|run| run["paths"].as_array().unwrap())
         .map(|path| path.as_str().unwrap())
         .collect();
@@ -272,17 +318,13 @@ fn sa_019_inventory() {
             );
         }
     }
-    for (id, run) in blocked {
-        assert_ne!(run["exit"], 0, "blocked run reported success: {id}");
-        assert!(
-            run["observations"]
-                .as_array()
-                .is_some_and(|raw| !raw.is_empty()),
-            "missing failure observations: {id}"
-        );
+    let rm_divergence = "rm-proxy-independent-stream";
+    check_rm_divergence(&divergences[rm_divergence]);
+    for (id, run) in divergences {
         for path in run["paths"].as_array().unwrap() {
             let path = path.as_str().unwrap();
-            assert_eq!(rows[path]["blocked_case"], *id, "{path}");
+            assert_eq!(rows[path]["observed_divergence"], *id, "{path}");
+            assert!(rows[path]["runs"].as_array().unwrap().is_empty(), "{path}");
             assert_eq!(rows[path]["current_sha256"], run["inputs"][path], "{path}");
         }
     }

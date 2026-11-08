@@ -44,12 +44,12 @@
   506792 字节 WAL，重开后读回已确认的 MetaStorage 字节与 revision 11，
   ID 从 1 前进到 1001，TSO 前进。固定 Go oracle 同跑核心请求。
   release 和嵌入拓扑的原证据见 [任务 18](task-18.md)。
-- 批次 16 的 RM 代理取消隔离仍缺本轮同输入通过证据。批量补跑中第二条
+- 首次审计中，批次 16 的 RM 代理取消隔离缺双边同输入运行证据。批量补跑中第二条
   token 流超时。单独补跑退出 101，固定 Go oracle 在第一条前端连接关闭后，
   第二条仍在使用的流返回 `Unknown: EOF`，Rust 分支尚未执行。
   Go `AcquireTokenBuckets` 的非 EOF 错误路径关闭目标共享 delegate，
   与观察一致。保留原断言及 [任务 16 历史记录](task-16.md)，把本轮差异
-  单独登记在 `blocked_cases.rm-proxy-independent-stream`。
+  单独登记在 `historical_incomplete_cases.rm-proxy-independent-stream`。
 
 ## 验证
 
@@ -84,3 +84,35 @@ ServerInfo 首次对照混用了 arm64 Rust 与 amd64 Go，内存页大小不同
 保留构建缓存。1101 个受保护的 Go 和模块路径首尾字节及 Git 状态一致，
 守卫记录 SHA-256 为
 `50b0502587d211282ec08855b2dcbc46f9db7e4d55e4d52881ca05d7256e1e3a`。
+
+## RM 双流归因复验
+
+以 `6fb38f37c` 为续跑基准。原测试与独立 Rust 测试共用同一夹具。
+PD 使用 API 模式并关闭嵌入 RM fallback，两条已建立的前端流请求同一真实
+Go RM primary。两边的建组请求、5/7/9 token 请求及关闭前两条响应的 protobuf
+字节一致。真实 etcd 读回的组配置字节和修订号在各自进程的故障前后保持一致。
+两边均在故障观测完成后查询 primary 并正常关闭进程。
+
+- Rust 单独执行退出 0，第二条流继续返回 9 token。
+- 默认时序的严格双实现重跑有一次退出 0。Go 已返回 9 token 后仍记录了
+  delegate 关闭。此前的超时和 `Unknown: EOF` 均保留。
+- 对照运行在第一条 TCP 前端关闭后，等待 Go 对实际 RM 地址记录
+  `close delegate client connection`，然后在第二条流发送原有的第三帧。
+  日志计数从故障注入前开始，排除启动阶段的旧关闭记录。
+  arm64 Rust 与 amd64 Rust 分别对照同一 amd64 Go，均观察到 Go 的第二条流
+  以 `Cancelled` 结束，Rust 在同场景返回 9 token。
+  Go 源码中的 `reportErr` 经 `closeClient` 关闭按目标地址复用的连接。
+  关闭发生在客户端及服务清理之前。
+- 四种 PD/RM 组合的正常半关闭与上游丢失不重放各 1 项通过。请求头、组绑定
+  和拓扑沿用原夹具，首两帧的成功响应与物理键值也均已记录。
+
+第 19 项的归因证据已齐备。机器回执将当前双边复验存入
+`observed_divergences.rm-proxy-independent-stream`，兼容断言的结果为失败。
+[批次 16](task-16.md) 原有通过记录仅覆盖其当时的时序，该行仍是兼容缺口，
+不计入当前通过场景。第 19 项的审计入口核对这条失败回执与通过回执的不同归类。
+
+复验重新采集旧版 GC、SearchLog、ServerInfo、原生 WAL 各 1 个成功回执，
+并重跑 `sa_019_` 和 `task_102_source_` 各 2 项，均退出 0。
+两次等待 delegate 关闭的严格测试均退出 101，各 1 失败、0 忽略。
+本次使用槽位 1，`CARGO_TARGET_DIR=/Users/xiangmin/worker/code/pd/target/rust-slot-1`。
+锁已释放，缓存保留。1101 个 Go 源码及模块路径的首尾守卫一致，格式和 diff 检查通过。

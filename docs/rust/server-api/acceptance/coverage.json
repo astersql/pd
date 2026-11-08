@@ -2,6 +2,7 @@
   "source_audit_19": {
     "receipt": "docs/rust/server-api/acceptance/task-19.json.gz",
     "head": "5f84295157d7ed78d9709fabe2896c0900a5e615",
+    "latest_inputs_head": "6fb38f37c46f97f7eb9d9f4e5eea32bd9b248897",
     "historical_sha256": "a6765e82a34496928c803b5cd616955b17c430bd5ebd243aa16239c9c5cdee91",
     "counts": {
       "same": 1697,
