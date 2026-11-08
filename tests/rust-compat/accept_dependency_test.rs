@@ -4,6 +4,28 @@ use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
 use std::{collections::BTreeSet, path::Path, process::Command};
 
+// These crates own transport or persisted-wire conversions. Their domain
+// dependencies remain subject to the same protocol and host restrictions.
+const PROTOCOL_ADAPTERS: &[(&str, &str)] = &[
+    ("astersql-pd-server", "pkg/server/"),
+    ("astersql-pd-proto", "pkg/proto/"),
+    ("astersql-pd-storage-endpoint", "pkg/storage/endpoint/"),
+    ("astersql-pd-mcs-server", "pkg/mcs/server/"),
+    ("astersql-pd-mcs-tso-server", "pkg/mcs/tso/server/"),
+    ("astersql-pd-rm-server", "pkg/mcs/resourcemanager/server/"),
+    (
+        "astersql-pd-mcs-metastorage-server",
+        "pkg/mcs/metastorage/server/",
+    ),
+    ("astersql-pd-mcs-router-server", "pkg/mcs/router/server/"),
+    (
+        "astersql-pd-mcs-scheduling-server",
+        "pkg/mcs/scheduling/server/",
+    ),
+    ("astersql-pd-mcs-utils", "pkg/mcs/utils/"),
+    ("astersql-pd-grpcutil", "pkg/utils/grpcutil/"),
+];
+
 fn audit(metadata: &Value, sources: &[(String, String)]) -> Result<(), String> {
     let mut names = BTreeSet::new();
     let mut locations = BTreeSet::new();
@@ -33,19 +55,21 @@ fn audit(metadata: &Value, sources: &[(String, String)]) -> Result<(), String> {
                 | "astersql-pd-compat-tests"
         );
         let adapter = host
-            || matches!(
-                name,
-                "astersql-pd-server"
-                    | "astersql-pd-proto"
-                    | "astersql-pd-storage-endpoint"
-                    | "astersql-pd-mcs-tso-server"
-            );
+            || PROTOCOL_ADAPTERS
+                .iter()
+                .any(|(package, _)| name == *package);
+        // Router and Scheduling reuse common PD server transport adapters.
+        let reuses_pd_transport = matches!(
+            name,
+            "astersql-pd-mcs-router-server" | "astersql-pd-mcs-scheduling-server"
+        );
         for dep in package["dependencies"].as_array().unwrap() {
             if dep["kind"] == "dev" {
                 continue;
             }
             let dependency = dep["name"].as_str().unwrap();
-            if (!host && matches!(dependency, "astersql-pd-runtime" | "astersql-pd-server"))
+            if (!host && dependency == "astersql-pd-runtime")
+                || (!host && !reuses_pd_transport && dependency == "astersql-pd-server")
                 || (name != "astersql-pd-compat-tests" && dependency == "astersql-pd-compat-tests")
                 || (!adapter && dependency == "astersql-pd-proto")
                 || (name == "astersql-pd-core"
@@ -67,18 +91,12 @@ fn audit(metadata: &Value, sources: &[(String, String)]) -> Result<(), String> {
             }
         }
         // Adapter paths are explicit, never inferred from the substring "server".
-        let adapter = [
-            "pkg/server/",
-            "pkg/mcs/tso/server/",
-            "pkg/runtime/",
-            "pkg/proto/",
-            "pkg/storage/endpoint/",
-            "pkg/storage/kv/",
-            "cmd/",
-            "tests/",
-        ]
-        .iter()
-        .any(|prefix| path.starts_with(prefix));
+        let adapter = PROTOCOL_ADAPTERS
+            .iter()
+            .any(|(_, prefix)| path.starts_with(prefix))
+            || ["pkg/runtime/", "pkg/storage/kv/", "cmd/", "tests/"]
+                .iter()
+                .any(|prefix| path.starts_with(prefix));
         if !adapter
             && (source.contains("astersql_pd_proto")
                 || source.contains("prost::")

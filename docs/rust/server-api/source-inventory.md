@@ -2803,3 +2803,10 @@ Go keypath常量按原文固定，涵盖绝对和相对路径；GC/keyspace/reso
 Markdown文档，运行验证不适用。后续Rust/Cargo/脚本增删单独列入同一审计记录。
 GC/keyspace/MCS/生产后端仍按既有领域缺口交接，未重新拆分或宣布兼容。
 本补记本身是后续文档漂移，既有冻结集合与历史失败记录保持原口径。
+
+## 分项验收 19 的当前来源核验
+
+原 manifest、1909 项基准计数和历史摘要继续作为冻结输入。当前来源集合及逐路径
+后继记录见 [任务 19 回执](acceptance/task-19.md) 和
+[机器记录](acceptance/task-19.json.gz)，入口在 [coverage.json](acceptance/coverage.json)
+的 `source_audit_19`。记录区分原始字节、来源变动、候选回执和本轮实际同输入运行。
